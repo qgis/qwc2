@@ -1,0 +1,39 @@
+{
+  "rootDir": ".",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "jsx": "react",
+    "module": "amd",
+    "target": "es5",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "outDir": "build",
+    "declaration": true,
+    "declarationMap": true,
+    // "declarationDir": "dist",
+    "emitDeclarationOnly": true,
+    "outFile": "dist/qwc2.js",
+    "paths": {
+      "qwc2/*": ["./*"]
+    }
+  },
+  "include": [
+    "./typings/**/*",
+    "./actions/**/*",
+    "./components/**/*",
+    "./plugins/**/*",
+    "./reducers/**/*",
+    "./selectors/**/*",
+    "./stores/**/*",
+    "./utils/**/*"
+  ],
+  "exclude": [
+    "node_modules", 
+    "build/**/*",
+    "dist/**/*",
+  ],
+  "lib": [
+    "dom", "es2015.iterable", "es5"
+  ]
+}

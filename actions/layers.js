@@ -30,6 +30,10 @@ export const SET_SWIPE = 'SET_SWIPE';
 export const SET_LAYERS = 'SET_LAYERS';
 
 /**
+ * @typedef {import('qwc2/typings').Layer} Layer
+ */
+
+/**
  * Layer role constants.
  * 
  * - `BACKGROUND`: Background layer.
@@ -50,6 +54,14 @@ export const LayerRole = {
 };
 
 
+/**
+ * Add a layer to the map.
+ * 
+ * @param {Layer} layer - The layer to add.
+ * @param {number|null} pos - The position to add the layer at.
+ * @param {string|null} beforename - The name of the layer to
+ *  insert the new layer before.
+ */
 export function addLayer(layer, pos = null, beforename = null) {
     return {
         type: ADD_LAYER,
@@ -59,6 +71,16 @@ export function addLayer(layer, pos = null, beforename = null) {
     };
 }
 
+
+/**
+ * Add a layer separator to the map.
+ * 
+ * @param {string} title - The title of the separator.
+ * @param {string|null} afterLayerId - The id of the layer to
+ *  insert the separator after.
+ * @param {string[]} afterSublayerPath - The sublayer path of the layer to
+ *  insert the separator after.
+ */
 export function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
     return {
         type: ADD_LAYER_SEPARATOR,
@@ -68,6 +90,12 @@ export function addLayerSeparator(title, afterLayerId, afterSublayerPath) {
     };
 }
 
+/**
+ * Remove a layer from the map.
+ * 
+ * @param {string} layerId - The id of the layer to remove.
+*  @param {string[]} sublayerpath - The sublayer path of the layer to remove.
+ */
 export function removeLayer(layerId, sublayerpath = []) {
     return {
         type: REMOVE_LAYER,
@@ -76,6 +104,14 @@ export function removeLayer(layerId, sublayerpath = []) {
     };
 }
 
+
+/**
+ * Change the position of a layer in the map.
+ * 
+ * @param {Layer} layer - The layer to reorder.
+ * @param {string[]} sublayerpath - The sublayer path of the layer to reorder.
+ * @param {number} direction - The direction to move the layer in.
+ */
 export function reorderLayer(layer, sublayerpath, direction) {
     return (dispatch, getState) => {
         dispatch({
@@ -83,11 +119,22 @@ export function reorderLayer(layer, sublayerpath, direction) {
             layer,
             sublayerpath,
             direction,
-            preventSplittingGroups: ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", getState().theme.current)
+            preventSplittingGroups: ConfigUtils.getConfigProp(
+                "preventSplittingGroupsWhenReordering",
+                getState().theme.current
+            )
         });
     };
 }
 
+
+/**
+ * Add features to a layer.
+ * 
+ * @param {Layer} layer - The layer to add the features to.
+ * @param {object[]} features - The features to add.
+ * @param {boolean} clear - Whether to clear the layer first.
+ */
 export function addLayerFeatures(layer, features, clear = false) {
     return {
         type: ADD_LAYER_FEATURES,
@@ -97,7 +144,19 @@ export function addLayerFeatures(layer, features, clear = false) {
     };
 }
 
-export function removeLayerFeatures(layerId, featureIds, keepEmptyLayer = false) {
+
+/**
+ * Remove features from a layer.
+ * 
+ * @param {string} layerId - The id of the layer to remove
+ *  the features from.
+ * @param {string[]} featureIds - The ids of the features to remove.
+ * @param {boolean} keepEmptyLayer - Whether to keep the
+ *  layer if it becomes empty.
+ */
+export function removeLayerFeatures(
+    layerId, featureIds, keepEmptyLayer = false
+) {
     return {
         type: REMOVE_LAYER_FEATURES,
         layerId,
@@ -106,6 +165,12 @@ export function removeLayerFeatures(layerId, featureIds, keepEmptyLayer = false)
     };
 }
 
+
+/**
+ * Remove all features from a layer and clear its bounding box.
+ * 
+ * @param {string} layerId - The id of the layer to clear.
+ */
 export function clearLayer(layerId) {
     return {
         type: CLEAR_LAYER,
@@ -113,6 +178,12 @@ export function clearLayer(layerId) {
     };
 }
 
+
+/**
+ * Add a sublayer to a theme layer.
+ * 
+ * @param {Layer} layer - The layer to add the sublayer to.
+ */
 export function addThemeSublayer(layer) {
     return {
         type: ADD_THEME_SUBLAYER,
@@ -120,8 +191,19 @@ export function addThemeSublayer(layer) {
     };
 }
 
-// recurseDirection: null (don't recurse), 'parents', 'children', 'both'
-export function changeLayerProperty(layerUuid, property, newvalue, sublayerpath = [], recurseDirection = null) {
+/**
+ * Change a property of a layer.
+ * 
+ * @param {string} layerUuid - The uuid of the layer to change.
+ * @param {string} property - The property to change.
+ * @param {*} newvalue - The new value of the property.
+ * @param {string[]} sublayerpath - The sublayer path of the layer to change.
+ * @param {"parents"|"children"|"both"|null} recurseDirection - The
+ *  direction to recurse in (null means don't recurse).
+ */
+export function changeLayerProperty(
+    layerUuid, property, newvalue, sublayerpath = [], recurseDirection = null
+) {
     return {
         type: CHANGE_LAYER_PROPERTY,
         layerUuid,
@@ -132,6 +214,14 @@ export function changeLayerProperty(layerUuid, property, newvalue, sublayerpath 
     };
 }
 
+
+/**
+ * Set the dimensions of a layer.
+ * 
+ * @param {string} layerId - The id of the layer to change.
+ * @param {{width: number, height: number}} dimensions - The new
+ *  dimensions of the layer.
+ */
 export function setLayerDimensions(layerId, dimensions) {
     return {
         type: SET_LAYER_DIMENSIONS,
@@ -140,6 +230,13 @@ export function setLayerDimensions(layerId, dimensions) {
     };
 }
 
+
+/**
+ * Set the loading state of a layer.
+ * 
+ * @param {string} layerId - The id of the layer to change.
+ * @param {boolean} loading - The new loading state of the layer.
+ */
 export function setLayerLoading(layerId, loading) {
     return {
         type: SET_LAYER_LOADING,
@@ -148,7 +245,19 @@ export function setLayerLoading(layerId, loading) {
     };
 }
 
-export function addMarker(id, point, label = '', crs = 'EPSG:4326', zIndex = null) {
+
+/**
+ * Add a marker layer and adds a feature to it.
+ * 
+ * @param {string} id - The id of the layer.
+ * @param {string} point - The position.
+ * @param {string} label - The label of the layer.
+ * @param {string} crs - The CRS of the layer.
+ * @param {number} zIndex - The z-index of the layer.
+ */
+export function addMarker(
+    id, point, label = '', crs = 'EPSG:4326', zIndex = null
+) {
     const layer = {
         id: "markers",
         role: LayerRole.MARKER,
@@ -167,10 +276,23 @@ export function addMarker(id, point, label = '', crs = 'EPSG:4326', zIndex = nul
     return addLayerFeatures(layer, [feature]);
 }
 
+
+/**
+ * Removes a marker feature.
+ * 
+ * @param {string} id - The id of the feature to remove.
+ */
 export function removeMarker(id) {
     return removeLayerFeatures("markers", [id]);
 }
 
+
+/**
+ * Sets the rev(ision) to current time for all layers that pass the filter.
+ * 
+ * @param {(layer: any) => boolean} filter - The filter 
+ *  callback that decides which layers to refresh.
+ */
 export function refreshLayer(filter) {
     return {
         type: REFRESH_LAYER,
@@ -178,12 +300,23 @@ export function refreshLayer(filter) {
     };
 }
 
+
+/**
+ * Removes all layers from the map.
+ */
 export function removeAllLayers() {
     return {
         type: REMOVE_ALL_LAYERS
     };
 }
 
+
+/**
+ * Replaces a placeholder layer with a real layer.
+ * 
+ * @param {string} id - The id of the placeholder layer.
+ * @param {Layer} layer - The layer to replace the placeholder with.
+ */
 export function replacePlaceholderLayer(id, layer) {
     return {
         type: REPLACE_PLACEHOLDER_LAYER,
@@ -192,6 +325,12 @@ export function replacePlaceholderLayer(id, layer) {
     };
 }
 
+
+/**
+ * Set the swipe state.
+ * 
+ * @param {object|null} swipe - The new swipe state.
+ */
 export function setSwipe(swipe) {
     return {
         type: SET_SWIPE,
@@ -199,6 +338,12 @@ export function setSwipe(swipe) {
     };
 }
 
+
+/**
+ * Set the flat list of layers.
+ * 
+ * @param {Layer[]} layers - The new layers.
+ */
 export function setLayers(layers) {
     return {
         type: SET_LAYERS,

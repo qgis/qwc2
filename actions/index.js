@@ -70,4 +70,4 @@ export {
     replacePlaceholderLayer,
     setSwipe,
     setLayers
-}
+} from './layers';

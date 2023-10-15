@@ -65,13 +65,18 @@ export default (env, argv) => {
             globalObject: 'this',
         },
         resolve: {
-            extensions: [".mjs", ".js", ".jsx"],
+            extensions: [".mjs", ".js", ".jsx", '.ts', '.tsx'],
             symlinks: false,
             mainFiles: ['index'],
         },
 
         module: {
             rules: [
+                { 
+                    test: /\.tsx?$/, 
+                    loader: 'ts-loader',
+                    exclude: /node_modules/,
+                },
                 {
                     test: /\.(js|jsx)$/,
                     use: 'babel-loader',

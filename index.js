@@ -4,4 +4,5 @@
 // lighter bundles via tree shaking if users are only consuming certain parts of
 // the library.
 
+export * from './actions';
 export * from './utils';
