@@ -1,0 +1,4 @@
+{
+    "json.format.keepLines": false,
+    "files.associations": { "*.json": "jsonc" }
+}
