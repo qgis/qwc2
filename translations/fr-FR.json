@@ -10,6 +10,7 @@
         "DxfExport": "Export DXF",
         "Editing": "Editer",
         "FeatureForm": "Formulaire d'objet",
+        "FeatureSearch": "Recherche objet",
         "Help": "Aide",
         "IdentifyPoint": "Interroger point",
         "IdentifyRegion": "Interroger la région",
@@ -125,10 +126,16 @@
       "unsavedchanged": "Il y a des modifications non enregistrées. Faut-il quand même quitter la page?"
     },
     "featureform": {
-      "feature": "Object",
+      "feature": "Objet",
       "noresults": "Pas de résultats",
       "querying": "Identification en cours...",
       "title": "Formulaire d'objet"
+    },
+    "featuresearch": {
+      "noresults": "Pas de résultats",
+      "query": "Terme",
+      "select": "Sélectionner",
+      "title": "Recherche objet"
     },
     "fileselector": {
       "files": "Fichiers",

@@ -20,6 +20,10 @@ export default (searchProviders) => createSelector(
         const themeProviders = theme && theme.current && theme.current.searchProviders ? theme.current.searchProviders : [];
         const providerKeys = new Set();
         for (const entry of themeProviders) {
+            // Omit qgis provider with field configuration, this is only supported through the FeatureSearch plugin
+            if (entry.provider === 'qgis' && entry?.params?.fields) {
+                continue;
+            }
             // "key" is the legacy name for "provider"
             const provider = searchProviders[entry.provider ?? entry.key ?? entry];
             if (provider) {

@@ -1,0 +1,59 @@
+div#FeatureSearch div.sidebar-body {
+    overflow: hidden;
+}
+
+div.feature-search-body {
+    /* topbar: 3.5em */
+    /* bottombar is high 3em at 75% font size, hence at 100% font size it is 0.75 * 3em = 2.25em */
+    /* titlebar: 2.5em */
+    max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
+    max-height: calc(var(--vh, 1vh) * 100 - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
+    
+    padding: 0.25em;
+    display: flex;
+    flex-direction: column;
+}
+
+div.feature-search-selection {
+    flex: 0 0 auto;
+}
+
+div.feature-search-selection > select {
+    width: 100%;
+}
+
+form.feature-search-form {
+    flex: 0 0 auto;
+}
+
+form.feature-search-form > fieldset {
+    margin: 0;
+    padding: 0.25em;
+    border-color: var(--border-color);
+    border-style: solid;
+    border-width: 0 1px 0 1px;
+}
+
+form.feature-search-form > fieldset table {
+    width: 100%;
+}
+form.feature-search-form > fieldset td > input {
+    width: 100%;
+}
+
+div.feature-search-bar > button {
+    width: 100%;
+}
+
+div.feature-search-results {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+div.feature-search-noresults {
+    font-style: italic;
+    padding: 0.25em;
+    margin-top: 0.25em;
+    border: 1px solid var(--border-color);
+    color: var(--text-color-disabled);
+}

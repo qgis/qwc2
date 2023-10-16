@@ -10,6 +10,7 @@
         "DxfExport": "Eksporter DXF",
         "Editing": "Rediger",
         "FeatureForm": "",
+        "FeatureSearch": "",
         "Help": "Hjelp",
         "IdentifyPoint": "",
         "IdentifyRegion": "Identifiser med område",
@@ -128,6 +129,12 @@
       "feature": "",
       "noresults": "",
       "querying": "",
+      "title": ""
+    },
+    "featuresearch": {
+      "noresults": "",
+      "query": "",
+      "select": "",
       "title": ""
     },
     "fileselector": {

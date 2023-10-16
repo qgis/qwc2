@@ -10,6 +10,7 @@
         "DxfExport": "DXF'e Veri Aktar",
         "Editing": "Düzenleme",
         "FeatureForm": "",
+        "FeatureSearch": "",
         "Help": "Yardım",
         "IdentifyPoint": "",
         "IdentifyRegion": "Bölgeden Bilgi Al",
@@ -128,6 +129,12 @@
       "feature": "",
       "noresults": "",
       "querying": "",
+      "title": ""
+    },
+    "featuresearch": {
+      "noresults": "",
+      "query": "",
+      "select": "",
       "title": ""
     },
     "fileselector": {
