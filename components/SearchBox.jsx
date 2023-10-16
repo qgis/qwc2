@@ -412,6 +412,7 @@ class SearchBox extends React.Component {
         }
         this.setState({searchText: '', searchResults: {}});
         this.props.removeLayer('searchselection');
+        UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
     };
     startSearch = () => {
         const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
