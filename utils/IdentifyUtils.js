@@ -157,7 +157,7 @@ const IdentifyUtils = {
     },
     parseResponse(response, layer, format, clickPoint, projection, featureInfoReturnsLayerName, layers) {
         const digits = CoordinatesUtils.getUnits(projection).units === 'degrees' ? 4 : 0;
-        const posstr = clickPoint[0].toFixed(digits) + ", " + clickPoint[1].toFixed(digits);
+        const posstr = clickPoint ? clickPoint[0].toFixed(digits) + ", " + clickPoint[1].toFixed(digits) : "";
         let results = {};
         if (["application/json", "application/geojson", "application/geo+json", "GeoJSON"].includes(format)) {
             results = IdentifyUtils.parseGeoJSONResponse(response, projection, layer);
