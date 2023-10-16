@@ -149,6 +149,7 @@ class IdentifyViewer extends React.Component {
         addLayerFeatures: PropTypes.func,
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
+        collapsible: PropTypes.bool,
         customExporters: PropTypes.array,
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.bool,
@@ -173,6 +174,7 @@ class IdentifyViewer extends React.Component {
     };
     state = {
         expanded: {},
+        expandedResults: {},
         resultTree: {},
         currentResult: null,
         currentLayer: null,
@@ -450,18 +452,26 @@ class IdentifyViewer extends React.Component {
         if (result.bbox && result.crs) {
             zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.props.zoomToExtent(result.bbox, result.crs)} />);
         }
+        const key = result + ":" + result.id;
+        const expanded = this.state.expandedResults[key];
         return (
             <div className={resultClass} key="results-attributes">
                 <div className="identify-result-title">
-                    <Icon icon="minus" onClick={() => this.removeResult(layer, result)} />
+                    {this.props.collapsible ? (
+                        <Icon icon={expanded ? "tree_minus" : "tree_plus"} onClick={() => this.setState(state => ({expandedResults: {...state.expandedResults, [key]: !expanded}}))} />
+                    ) : (
+                        <Icon icon="minus" onClick={() => this.removeResult(layer, result)} />
+                    )}
                     <span>{result.layertitle + ": " + result.displayname}</span>
                     {zoomToFeatureButton}
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
                 </div>
-                <div className="identify-result-container">
-                    {resultbox}
-                    {extraattribs}
-                </div>
+                {this.props.collapsible && !expanded ? null : (
+                    <div className="identify-result-container">
+                        {resultbox}
+                        {extraattribs}
+                    </div>
+                )}
             </div>
         );
     };
