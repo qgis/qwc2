@@ -11,6 +11,7 @@ Plugin reference
 * [DxfExport](#dxfexport)
 * [Editing](#editing)
 * [FeatureForm](#featureform)
+* [FeatureSearch](#featuresearch)
 * [HeightProfile](#heightprofile)
 * [Help](#help)
 * [HomeButton](#homebutton)
@@ -224,6 +225,14 @@ Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` 
 |----------|------|-------------|---------------|
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 
+FeatureSearch<a name="featuresearch"></a>
+----------------------------------------------------------------
+
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
+
 HeightProfile<a name="heightprofile"></a>
 ----------------------------------------------------------------
 Displays a height profile along a measured line.
@@ -410,7 +419,7 @@ Allows exporting a selected portion of the map to a variety of formats.
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale. | `0.5` |
 | dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
 | exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
-| formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `query` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS | `undefined` |
+| formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `query` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS. | `undefined` |
 | pageSizes | `[{`<br />`  name: string,`<br />`  width: number,`<br />`  height: number,`<br />`}]` | List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. | `[`<br />`    {name: '15 x 15 cm', width: 150, height: 150},`<br />`    {name: '30 x 30 cm', width: 300, height: 300}`<br />`]` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
