@@ -8,9 +8,13 @@
 
 import { TOGGLE_FULLSCREEN } from '../actions/display';
 
+/**
+ * @typedef {object} DisplayState
+ * @property {boolean} fullscreen  - Whether the application is in fullscreen mode
+ */
 
 /**
- * Default state for the display reducer.
+ * @type {DisplayState}
  * @private
  */
 const defaultState = {

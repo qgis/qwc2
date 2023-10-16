@@ -16,7 +16,6 @@ import { SET_ACTIVE_LAYERINFO } from '../actions/layerinfo';
 
 
 /**
- * Default state for the layerinfo reducer.
  * @type {LayerInfoState}
  * @private
  */

@@ -50,7 +50,7 @@ export function endFullscreen() {
  * 
  * @param {boolean} fullscreen - true to enter full
  *  screen mode, false to exit it.
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function toggleFullscreen(fullscreen) {
     if (fullscreen) {

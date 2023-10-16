@@ -41,7 +41,7 @@ export const CHANGE_LOCALE = 'CHANGE_LOCALE';
  * @param {object} defaultLangData - The default language data.
  * @param {string} defaultLang - The default language.
  * 
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function loadLocale(defaultLangData, defaultLang = "") {
     return dispatch => {

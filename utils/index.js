@@ -7,7 +7,12 @@ export { showImageEditor } from './ImageEditor';
 export { default as LayerUtils } from './LayerUtils';
 export { default as LocaleUtils } from './LocaleUtils';
 export { default as MapUtils } from './MapUtils';
-export { default as MeasureUtils } from './MeasureUtils';
+export {
+    default as MeasureUtils,
+    LengthUnits,
+    AreaUnits,
+    MeasUnits
+} from './MeasureUtils';
 export { default as MiscUtils } from './MiscUtils';
 export { default as PermaLinkUtils } from './PermaLinkUtils';
 export { default as RoutingInterface } from './RoutingInterface';

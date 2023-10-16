@@ -29,7 +29,7 @@ export const SET_IDENTIFY_TOOL = 'SET_IDENTIFY_TOOL';
  * @param {boolean} enabled - whether identify tool is enabled.
  * @param {string} theme - optional theme name to use for identify tool.
  * 
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function setIdentifyEnabled(enabled, theme = null) {
     return (dispatch, getState) => {

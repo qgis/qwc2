@@ -10,6 +10,18 @@
 import { CHANGE_LOCALE } from '../actions/locale';
 import flatten from 'flat';
 
+
+/**
+ * @typedef {object} LocaleState
+ * @property {Record<string, string>} messages - the current locale messages
+ * @property {string} current - the identifier for current locale
+ */
+
+
+/**
+ * @type {LocaleState}
+ * @private
+ */
 const defaultState = {
     messages: {},
     current: ''

@@ -30,13 +30,17 @@ export const SET_THEME_LAYERS_LIST = 'SET_THEME_LAYERS_LIST';
 export const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 export const SWITCHING_THEME = 'SWITCHING_THEME';
 
-
+/**
+ * Sets the list of themes in redux store.
+ * @param {Theme[]} themes - The themes to set
+ */
 export function themesLoaded(themes) {
     return {
         type: THEMES_LOADED,
         themes
     };
 }
+
 
 export function setThemeLayersList(theme) {
     return {

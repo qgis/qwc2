@@ -15,5 +15,29 @@
     "entryPointStrategy": "resolve",
     "theme": "hierarchy",
     "plugin": ["typedoc-theme-hierarchy"],
-    "excludeNotDocumented": true
+    "excludeInternal": true,
+    "excludePrivate": true,
+    "excludeNotDocumented": true,
+    "excludeReferences": true,
+    "excludeNotDocumentedKinds": [
+        // "Module",
+        // "Namespace",
+        // "Enum",
+        // "EnumMember",
+        "Variable",
+        "Function",
+        "Class",
+        // "Interface",
+        // "Constructor",
+        // "Property",
+        // "Method",
+        "CallSignature",
+        "IndexSignature",
+        "ConstructorSignature",
+        "Accessor",
+        "GetSignature",
+        "SetSignature",
+        "TypeAlias",
+        "Reference"
+    ]
 }

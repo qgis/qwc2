@@ -18,7 +18,7 @@ export const CHANGE_BROWSER_PROPERTIES = 'CHANGE_BROWSER_PROPERTIES';
  * 
  * @param {import("qwc2/typings").BrowserData} properties - information
  *  retrieved by {@link ConfigUtils.getBrowserProperties}.
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function changeBrowserProperties(properties) {
     return {

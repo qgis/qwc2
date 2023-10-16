@@ -13,6 +13,18 @@ import {
     LOCATE_ERROR
 } from '../actions/locate';
 
+
+/**
+ * @typedef {object} LocateState
+ * @property {string} state - the current locate state
+ * @property {object} position - the current locate position
+ */
+
+
+/**
+ * @type {LocateState}
+ * @private
+ */
 const defaultState = {
     state: "DISABLED",
     position: null

@@ -13,7 +13,7 @@ import isMobile from 'ismobilejs';
 import StandardStore from '../stores/StandardStore';
 
 /**
- * @typedef {import("qwc2/typings").Config} Config
+ * @typedef {import("qwc2/typings").ConfigData} ConfigData
  */
 
 /**
@@ -24,9 +24,10 @@ import StandardStore from '../stores/StandardStore';
  * @typedef {import("qwc2/typings").Plugin} Plugin
  */
 
+
 /**
  * Default configuration.
- * @type {Config}
+ * @type {ConfigData}
  */
 let defaultConfig = {
     translationsPath: "translations",
@@ -50,7 +51,7 @@ const ConfigUtils = {
     /**
      * Get the default configuration.
      * 
-     * @returns {Config} the default configuration
+     * @returns {ConfigData} the default configuration
      */
     getDefaults() {
         return defaultConfig;

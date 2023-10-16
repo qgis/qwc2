@@ -14,8 +14,8 @@ import {SET_IDENTIFY_TOOL} from '../actions/identify';
  */
 
 /**
- * Default state for the identify reducer.
  * @type {IdentifyState} 
+ * @private
  */
 const defaultState = {
     tool: null

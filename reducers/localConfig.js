@@ -16,11 +16,22 @@ import {
 import ConfigUtils from '../utils/ConfigUtils';
 import { UrlParams } from '../utils/PermaLinkUtils';
 
+
+/**
+ * @typedef {import("qwc2/typings").ConfigState} ConfigState
+ */
+
+
+/**
+ * @type {ConfigState}
+ * @private
+ */
 const defaultState = {
     ...ConfigUtils.getDefaults(),
     startupParams: {},
     colorScheme: 'default'
 };
+
 
 export default function localConfig(state = defaultState, action) {
     switch (action.type) {

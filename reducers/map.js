@@ -18,13 +18,18 @@ import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 
 /**
- * @typedef {import('qwc2/typings').MapData} MapData
+ * @typedef {import('qwc2/typings').MapState} MapState
  */
 
 
 /**
- * State of map in the store.
- * @type {MapData}
+ * State of map in the redux store.
+ * 
+ * TODO: This assumes that there is only one map in the application;
+ * either use a key to identify the map or offer the ability to
+ * host this data in a context component.
+ * 
+ * @type {MapState}
  * @private
  */
 const defaultState = {

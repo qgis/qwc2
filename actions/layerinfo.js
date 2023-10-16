@@ -22,7 +22,7 @@ export const SET_ACTIVE_LAYERINFO = 'SET_ACTIVE_LAYERINFO';
  * @param {string} sublayer - a sublayer of the active layer
  *  to mark as the active one.
  * 
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function setActiveLayerInfo(layer, sublayer) {
     return {

@@ -19,7 +19,7 @@ export const SET_COLOR_SCHEME = 'SET_COLOR_SCHEME';
  * Load local config.
  * 
  * @param {object} config - The local config.
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function localConfigLoaded(config) {
     return {
@@ -34,7 +34,7 @@ export function localConfigLoaded(config) {
  * 
  * @param {object} params - The new parameters.
  * 
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function setStartupParameters(params) {
     return {
@@ -51,7 +51,7 @@ export function setStartupParameters(params) {
  * @param {boolean} storeInLocalStorage - Whether to store the color
  *  scheme in local storage.
  * 
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function setColorScheme(colorScheme, storeInLocalStorage = false) {
     return {

@@ -23,7 +23,7 @@ export const CLEAR_EDIT_CONTEXT = 'CLEAR_EDIT_CONTEXT';
  * 
  * @param {string} contextId - the ID of this context.
  * @param {object} editContext - the context.
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function setEditContext(contextId, editContext) {
     return {
@@ -43,7 +43,7 @@ export function setEditContext(contextId, editContext) {
  * 
  * @param {string} contextId - the ID of this context.
  * @param {object} newActiveContextId - the context.
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function clearEditContext(contextId, newActiveContextId = null) {
     return {

@@ -35,7 +35,7 @@ export function changeLocateState(state) {
  *
  * @param {object} position - The new position.
  *
- * @memberof Redux Store.Actions
+ * @group Redux Store.Actions
  */
 export function changeLocatePosition(position) {
     return {

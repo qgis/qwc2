@@ -11,8 +11,6 @@ import { CHANGE_BROWSER_PROPERTIES } from '../actions/browser';
 
 
 /**
- * Default state for the browser reducer.
- * 
  * @type {import("qwc2/typings").BrowserData}
  * @private
  */

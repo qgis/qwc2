@@ -65,6 +65,7 @@ function propagateLayerProperty(newlayer, property, value, path = null) {
 /**
  * Default state for the layers reducer.
  * @type {LayerState}
+ * @private
  */
 const defaultState = {
     flat: [],

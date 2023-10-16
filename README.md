@@ -55,9 +55,10 @@ To run the tests in watch mode:
 
 ### Documentation
 
-We use JsDoc to document the QWC2 library. It is configured in `jsdoc.json`
+We use TypeDoc to document the QWC2 library. It is configured in `typedoc.json`
 and the resulting documentation is deposited in `documentation/`.
 
-JsDoc documentation can be generated with:
+JsDoc documentation can be generated with one of the following commands:
 
     yarn doc
+    yarn doc --watch

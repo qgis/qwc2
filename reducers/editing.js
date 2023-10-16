@@ -9,7 +9,6 @@
 import { SET_EDIT_CONTEXT, CLEAR_EDIT_CONTEXT } from '../actions/editing';
 
 /**
- * Default state for the editing reducer.
  * @type {import("qwc2/typings").QwcContextState}
  * @private
  */
