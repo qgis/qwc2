@@ -107,11 +107,7 @@ class FeatureSearch extends React.Component {
         );
     };
     renderField = (fieldname, fieldcfg) => {
-        if (fieldcfg.type === "number") {
-            return (<input name={fieldname} type="number" {...fieldcfg.options} />);
-        } else {
-            return (<input name={fieldname} type="text" />);
-        }
+        return (<input name={fieldname} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
     };
     renderSearchResults = () => {
         if (!this.state.searchResults) {
