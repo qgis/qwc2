@@ -19,12 +19,13 @@ export default (searchProviders) => createSelector(
         const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
         const themeProviders = theme && theme.current && theme.current.searchProviders ? theme.current.searchProviders : [];
         for (const entry of themeProviders) {
-            const provider = searchProviders[entry.key ?? entry];
+            // "key" is the legacy name for "provider"
+            const provider = searchProviders[entry.provider ?? entry.key ?? entry];
             if (provider) {
                 if (provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
                     continue;
                 }
-                availableProviders[entry.key ?? entry] = {
+                availableProviders[entry.provider ?? entry.key ?? entry] = {
                     ...provider,
                     params: entry.params
                 };
