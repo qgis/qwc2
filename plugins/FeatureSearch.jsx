@@ -107,7 +107,17 @@ class FeatureSearch extends React.Component {
         );
     };
     renderField = (fieldname, fieldcfg) => {
-        return (<input name={fieldname} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
+        if (fieldcfg.type === "select") {
+            return (
+                <select name={fieldname}>
+                    {fieldcfg.options.map(entry => (
+                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? entry}</option>
+                    ))}
+                </select>
+            );
+        } else {
+            return (<input name={fieldname} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
+        }
     };
     renderSearchResults = () => {
         if (!this.state.searchResults) {
