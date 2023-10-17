@@ -204,6 +204,9 @@ const ServiceLayerUtils = {
         };
     },
     mergeCalledServiceUrlQuery(capabilityUrl, calledServiceUrlParts) {
+        if (ConfigUtils.getConfigProp("trustWmsCapabilityURLs")) {
+            return url.format(calledServiceUrlParts);
+        }
         try {
             const urlParts = url.parse(capabilityUrl, true);
             urlParts.host = calledServiceUrlParts.host;
