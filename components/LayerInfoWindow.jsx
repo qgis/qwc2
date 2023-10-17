@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import ResizeableWindow from '../components/ResizeableWindow';
+import {Image} from './widgets/Primitives';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -59,7 +60,7 @@ class LayerInfoWindow extends React.Component {
         const scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         const legendUrl = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, scale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
         if (legendUrl) {
-            legend = (<img className="layer-info-window-legend" src={legendUrl} />);
+            legend = (<Image className="layer-info-window-legend" src={legendUrl} />);
         } else if (this.props.layer.color) {
             legend = (<span className="layer-info-window-coloricon" style={{backgroundColor: this.props.layer.color}} />);
         }
