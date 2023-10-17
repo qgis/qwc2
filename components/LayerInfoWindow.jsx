@@ -22,11 +22,11 @@ class LayerInfoWindow extends React.Component {
     static propTypes = {
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         layer: PropTypes.object,
+        layerInfoGeometry: PropTypes.object,
         map: PropTypes.object,
         scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         setActiveLayerInfo: PropTypes.func,
-        sublayer: PropTypes.object,
-        geometry: PropTypes.object,
+        sublayer: PropTypes.object
     };
     renderLink(text, url) {
         if (url) {
@@ -66,8 +66,9 @@ class LayerInfoWindow extends React.Component {
         }
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.layerInfoGeometry.initialHeight} initialWidth={this.props.layerInfoGeometry.initialWidth}
-                    initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY} initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
-                title={LocaleUtils.trmsg("layerinfo.title")}>
+                initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY} initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
+                title={LocaleUtils.trmsg("layerinfo.title")}
+            >
                 <div className="layer-info-window-body" role="body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
                     <div className="layer-info-window-frame">
