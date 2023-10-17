@@ -44,7 +44,10 @@ const LocaleUtils = {
     },
     toLocaleFixed(number, digits) {
         if (ConfigUtils.getConfigProp("localeAwareNumbers")) {
-            return number.toLocaleString(LocaleUtils.lang(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
+            return number.toLocaleString(
+                LocaleUtils.lang(), {
+                minimumFractionDigits: digits, maximumFractionDigits: digits
+            });
         } else {
             return number.toFixed(digits);
         }

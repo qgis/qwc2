@@ -85,10 +85,12 @@ export const MeasUnits = {
 const MeasureUtils = {
 
     /**
-     * Computes a DD° MM' SS'' formatted bearing value from an
+     * Computes a `N/S DD° MM' SS'' E/W` formatted bearing value from an
      * azimuth value.
      * 
      * The azimuth's 0 value is north oriented and increases clockwise.
+     * For negative values the function returns "N/A". Values above
+     * 360 are wrapped around.
      * 
      * @param {number} azimuth - the azimuth value in degrees
      * 
@@ -96,14 +98,17 @@ const MeasureUtils = {
      */
     getFormattedBearingValue(azimuth) {
         let bearing = "";
+        azimuth = azimuth % 360;
         if (azimuth >= 0 && azimuth < 90) {
-            bearing = "N " + this.degToDms(azimuth) + " E";
-        } else if (azimuth > 90 && azimuth <= 180) {
-            bearing = "S " + this.degToDms(180.0 - azimuth) + " E";
-        } else if (azimuth > 180 && azimuth < 270) {
-            bearing = "S " + this.degToDms(azimuth - 180.0) + " W";
+            bearing = "N " + this.degToDms(azimuth) + "E";
+        } else if (azimuth >= 90 && azimuth <= 180) {
+            bearing = "S " + this.degToDms(180.0 - azimuth) + "E";
+        } else if (azimuth >= 180 && azimuth < 270) {
+            bearing = "S " + this.degToDms(azimuth - 180.0) + "W";
         } else if (azimuth >= 270 && azimuth <= 360) {
-            bearing = "N " + this.degToDms(360 - azimuth) + " W";
+            bearing = "N " + this.degToDms(360 - azimuth) + "W";
+        } else {
+            bearing = "N/A";
         }
         return bearing;
     },
@@ -122,6 +127,9 @@ const MeasureUtils = {
      * @param {string} dstCrs - the CRS to use for formatting
      * @param {number} decimals - the number of decimals to use
      *  (-1 to automatically set the number of decimals)
+     * 
+     * @returns {string} the formatted coordinates as a list of
+     * comma-separated values
      */
     getFormattedCoordinate(coo, srcCrs = null, dstCrs = null, decimals = -1) {
         if (srcCrs && dstCrs && srcCrs !== dstCrs) {
@@ -143,9 +151,13 @@ const MeasureUtils = {
     /**
      * Pretty-print a time interval.
      * 
-     * @param {number} valueSeconds - the time interval in seconds
+     * Note that time intervals longer than 23:59:59 are going to
+     * be wrapped back to [0..86400) range and fractional part
+     * is simply ignored (so 66.99 will be returned as 00:01:06).
      * 
-     * @returns {string} the formatted time interval
+     * @param {number} valueSeconds - the time interval in seconds (integer)
+     * 
+     * @returns {string} the time interval formatted as HH:MM:SS
      */
     formatDuration(valueSeconds) {
         return new Date(valueSeconds * 1000).toISOString().slice(11, 19);
@@ -220,7 +232,7 @@ const MeasureUtils = {
                         unitlabel = 'mi²';
                     } else if (valueMetric > 4046.86) {
                         result = LocaleUtils.toLocaleFixed(
-                            valueMetric * 0.0001, decimals
+                            valueMetric * 0.000247105381467, decimals
                         );
                         unitlabel = 'acre';
                     } else {
@@ -328,22 +340,22 @@ const MeasureUtils = {
     getFormattedLength(unit, length, decimals = 2, withUnit = true) {
         let result = '';
         switch (unit) {
-            case 'm':
+            case LengthUnits.METRES:
                 result = LocaleUtils.toLocaleFixed(
                     length, decimals
                 );
                 break;
-            case 'ft':
+            case LengthUnits.FEET:
                 result = LocaleUtils.toLocaleFixed(
                     length * 3.28084, decimals
                 );
                 break;
-            case 'km':
+            case LengthUnits.KILOMETRES:
                 result = LocaleUtils.toLocaleFixed(
                     length * 0.001, decimals
                 );
                 break;
-            case 'mi':
+            case LengthUnits.MILES:
                 result = LocaleUtils.toLocaleFixed(
                     length * 0.000621371, decimals
                 );
@@ -383,36 +395,36 @@ const MeasureUtils = {
         let result = '';
         let unitlabel = unit;
         switch (unit) {
-            case 'sqm':
+            case AreaUnits.SQUARE_METRES:
                 result = LocaleUtils.toLocaleFixed(
                     area, decimals
                 );
                 unitlabel = 'm²';
                 break;
-            case 'sqft':
+            case AreaUnits.SQUARE_FEET:
                 result = LocaleUtils.toLocaleFixed(
                     area * 10.7639, decimals
                 );
                 unitlabel = 'ft²';
                 break;
-            case 'sqkm':
+            case AreaUnits.SQUARE_KILOMETRES:
                 result = LocaleUtils.toLocaleFixed(
                     area * 0.000001, decimals
                 );
                 unitlabel = 'km²';
                 break;
-            case 'sqmi':
+            case AreaUnits.SQUARE_MILES:
                 result = LocaleUtils.toLocaleFixed(
                     area * 0.000000386102159, decimals
                 );
                 unitlabel = 'mi²';
                 break;
-            case 'ha':
+            case AreaUnits.HECTARES:
                 result = LocaleUtils.toLocaleFixed(
                     area * 0.0001, decimals
                 );
                 break;
-            case 'acre':
+            case AreaUnits.ACRES:
                 result = LocaleUtils.toLocaleFixed(
                     area * 0.000247105381467, decimals
                 );
@@ -480,6 +492,9 @@ const MeasureUtils = {
         const geom = feature.getGeometry();
 
         if (geomType === MeasGeomTypes.POINT) {
+            // TODO: is this right? The CRS of the feature is not used.
+            // The coordinates of the feature are stored in map CRS?
+            // This is the only instance where the mapCrs is used in this function.
             feature.set('label', MeasureUtils.getFormattedCoordinate(
                 geom.getCoordinates(), settings.mapCrs, settings.displayCrs)
             );
@@ -561,7 +576,8 @@ const MeasureUtils = {
                 );
             }
         } else {
-            const conv = units === 'feet' ? 0.3048 : 1;
+            const conv = (units === 'feet' || units === 'us-ft') ? 0.3048 : 1;
+            console.log("conv = %O, units = %O", conv, units);
             for (let i = 0; i < coordinates.length - 1; ++i) {
                 const dx = coordinates[i + 1][0] - coordinates[i][0];
                 const dy = coordinates[i + 1][1] - coordinates[i][1];
@@ -595,7 +611,7 @@ const MeasureUtils = {
                 projection: featureCrs
             });
         } else {
-            const conv = units === 'feet' ? 0.3048 : 1;
+            const conv = (units === 'feet' || units === 'us-ft') ? 0.3048 : 1;
             return geometry.getArea() * conv * conv;
         }
     }
