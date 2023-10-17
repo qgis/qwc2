@@ -577,7 +577,6 @@ const MeasureUtils = {
             }
         } else {
             const conv = (units === 'feet' || units === 'us-ft') ? 0.3048 : 1;
-            console.log("conv = %O, units = %O", conv, units);
             for (let i = 0; i < coordinates.length - 1; ++i) {
                 const dx = coordinates[i + 1][0] - coordinates[i][0];
                 const dy = coordinates[i + 1][1] - coordinates[i][1];
