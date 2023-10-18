@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
+import {Image} from '../components/widgets/Primitives';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -149,7 +150,7 @@ class MapLegend extends React.Component {
                 <div className="map-legend-legend-entry" key={sublayer.name}>
                     <div>
                         {this.props.addLayerTitles ? (<div className="map-legend-entry-title">{sublayer.title || sublayer.name}</div>) : null}
-                        <div><img src={request} /></div>
+                        <div><Image src={request} /></div>
                     </div>
                 </div>) : null;
         }

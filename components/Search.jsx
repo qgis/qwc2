@@ -500,7 +500,7 @@ class Search extends React.Component {
     showFeatureGeometry = (item, response, text) => {
         if (!isEmpty(response.geometry)) {
             let features = [];
-            const highlightFeature = VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
+            const highlightFeature = response.geometry.coordinates ? {type: "Feature", geometry: response.geometry} : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
                 features = [highlightFeature];

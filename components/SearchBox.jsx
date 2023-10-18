@@ -412,6 +412,7 @@ class SearchBox extends React.Component {
         }
         this.setState({searchText: '', searchResults: {}});
         this.props.removeLayer('searchselection');
+        UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
     };
     startSearch = () => {
         const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
@@ -566,7 +567,7 @@ class SearchBox extends React.Component {
     showProviderResultGeometry = (item, response, text, zoom) => {
         if (!isEmpty(response.geometry)) {
             let features = [];
-            const highlightFeature = VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
+            const highlightFeature = response.geometry.coordinates ? {type: "Feature", geometry: response.geometry} : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
                 if (!item.x || !item.y) {

@@ -10,6 +10,7 @@
         "DxfExport": "DXF Export",
         "Editing": "Editing",
         "FeatureForm": "Feature Form",
+        "FeatureSearch": "Feature Search",
         "Help": "Help",
         "IdentifyPoint": "Identify Point",
         "IdentifyRegion": "Identify Region",
@@ -129,6 +130,12 @@
       "noresults": "No results",
       "querying": "Querying...",
       "title": "Feature form"
+    },
+    "featuresearch": {
+      "noresults": "No results",
+      "query": "Query",
+      "select": "Select...",
+      "title": "Feature search"
     },
     "fileselector": {
       "files": "files",

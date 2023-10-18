@@ -10,6 +10,7 @@
         "DxfExport": "DXF vienti",
         "Editing": "Editointi",
         "FeatureForm": "",
+        "FeatureSearch": "",
         "Help": "Apua",
         "IdentifyPoint": "",
         "IdentifyRegion": "Tunnista alue",
@@ -128,6 +129,12 @@
       "feature": "",
       "noresults": "",
       "querying": "",
+      "title": ""
+    },
+    "featuresearch": {
+      "noresults": "",
+      "query": "",
+      "select": "",
       "title": ""
     },
     "fileselector": {

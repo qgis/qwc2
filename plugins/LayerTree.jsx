@@ -23,6 +23,7 @@ import LayerInfoWindow from '../components/LayerInfoWindow';
 import ServiceInfoWindow from '../components/ServiceInfoWindow';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
+import {Image} from '../components/widgets/Primitives';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -303,7 +304,7 @@ class LayerTree extends React.Component {
         if (this.props.showLegendIcons) {
             const legendUrl = LayerUtils.getLegendUrl(layer, sublayer, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
             if (legendUrl) {
-                legendicon = (<img className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
+                legendicon = (<Image className="layertree-item-legend-thumbnail" onMouseOut={this.hideLegendTooltip} onMouseOver={ev => this.showLegendTooltip(ev, legendUrl)} onTouchStart={ev => this.showLegendTooltip(ev, legendUrl)} src={legendUrl + "&TYPE=thumbnail"} />);
             } else if (layer.color) {
                 legendicon = (<span className="layertree-item-legend-coloricon" style={{backgroundColor: layer.color}} />);
             }
@@ -450,7 +451,7 @@ class LayerTree extends React.Component {
                 visibility: 'hidden'
             };
             legendTooltip = (
-                <img className="layertree-item-legend-tooltip" onLoad={this.legendTooltipLoaded} onTouchStart={this.hideLegendTooltip} src={this.state.legendTooltip.img} style={style} />
+                <Image className="layertree-item-legend-tooltip" onLoad={this.legendTooltipLoaded} onTouchStart={this.hideLegendTooltip} src={this.state.legendTooltip.img} style={style} />
             );
         }
 
@@ -517,7 +518,7 @@ class LayerTree extends React.Component {
                     })}
                 </SideBar>
                 {legendTooltip}
-                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} scaleDependentLegend={this.props.scaleDependentLegend} layerInfoGeometry={this.props.layerInfoGeometry} />
+                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} layerInfoGeometry={this.props.layerInfoGeometry} scaleDependentLegend={this.props.scaleDependentLegend} />
                 <ServiceInfoWindow layerInfoGeometry={this.props.layerInfoGeometry} />
             </div>
         );

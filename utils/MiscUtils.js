@@ -6,6 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import ConfigUtils from './ConfigUtils';
+
+
 /**
  * Various other utility functions.
  * 
@@ -18,7 +21,16 @@ const MiscUtils = {
         if (tagRegEx.exec(text)) {
             return text;
         }
-        const urlRegEx = /(\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=\u00C0-\u00FF\u0370-\u03FF]*)/g;
+        const urlRegEx = new RegExp(
+            ConfigUtils.getConfigProp(
+                "urlRegEx",
+                null,
+                // Original String: (\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=\u00C0-\u00FF\u0370-\u03FF]*)
+                // Escaped with https://www.freeformatter.com/json-escape.html
+                "(\\s|^)((http(s)?|(s)?ftp):\\\/\\\/.)?(www\\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_+.~#?&\/\/=\\u00C0-\\u00FF\\u0370-\\u03FF]*)"
+            ),
+            "g"
+        );
 
         let value = text;
         let match = null;

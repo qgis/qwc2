@@ -10,6 +10,7 @@
         "DxfExport": "DXF-Export",
         "Editing": "Editieren",
         "FeatureForm": "Objektformular",
+        "FeatureSearch": "Objektsuche",
         "Help": "Hilfe",
         "IdentifyPoint": "Punkt abfragen",
         "IdentifyRegion": "Region abfragen",
@@ -129,6 +130,12 @@
       "noresults": "Keine Ergebnisse",
       "querying": "Objekte werden abgefragt...",
       "title": "Objektformular"
+    },
+    "featuresearch": {
+      "noresults": "Keine Ergebnisse",
+      "query": "Begriff",
+      "select": "Auswählen...",
+      "title": "Objektsuche"
     },
     "fileselector": {
       "files": "Dateien",

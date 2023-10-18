@@ -10,6 +10,7 @@
         "DxfExport": "DXF Exportálás",
         "Editing": "Szerkesztés",
         "FeatureForm": "",
+        "FeatureSearch": "",
         "Help": "Segítség",
         "IdentifyPoint": "",
         "IdentifyRegion": "Adatok lekérdezése",
@@ -128,6 +129,12 @@
       "feature": "",
       "noresults": "",
       "querying": "",
+      "title": ""
+    },
+    "featuresearch": {
+      "noresults": "",
+      "query": "",
+      "select": "",
       "title": ""
     },
     "fileselector": {

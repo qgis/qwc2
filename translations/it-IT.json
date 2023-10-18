@@ -10,6 +10,7 @@
         "DxfExport": "Esporta su DXF",
         "Editing": "Strumenti di modifica",
         "FeatureForm": "Formulario oggetto",
+        "FeatureSearch": "Ricerca oggetto",
         "Help": "Aiuto",
         "IdentifyPoint": "Identifica punto",
         "IdentifyRegion": "Identifica in un poligono",
@@ -129,6 +130,12 @@
       "noresults": "Nessun risultato",
       "querying": "Caricando...",
       "title": "Formulario oggetto"
+    },
+    "featuresearch": {
+      "noresults": "Nessun risultato",
+      "query": "Ricerca",
+      "select": "Seleziona",
+      "title": "Ricerca oggetto"
     },
     "fileselector": {
       "files": "File",

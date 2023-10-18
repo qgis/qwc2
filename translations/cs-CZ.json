@@ -10,6 +10,7 @@
         "DxfExport": "DXF Export",
         "Editing": "Úpravy",
         "FeatureForm": "Editační formulář",
+        "FeatureSearch": "",
         "Help": "Nápověda",
         "IdentifyPoint": "Informace o bodu",
         "IdentifyRegion": "Informace o oblasti",
@@ -129,6 +130,12 @@
       "noresults": "Žádné výsledky",
       "querying": "Načítání...",
       "title": "Editační formulář"
+    },
+    "featuresearch": {
+      "noresults": "",
+      "query": "",
+      "select": "",
+      "title": ""
     },
     "fileselector": {
       "files": "Soubory",

@@ -10,6 +10,7 @@
         "DxfExport": "Exportar DXF",
         "Editing": "Editant",
         "FeatureForm": "Formulari d'element",
+        "FeatureSearch": "",
         "Help": "Ajuda",
         "IdentifyPoint": "Identificar punt",
         "IdentifyRegion": "Identificar zona",
@@ -129,6 +130,12 @@
       "noresults": "Sense resultats",
       "querying": "Consultant...",
       "title": "Formulari d'element"
+    },
+    "featuresearch": {
+      "noresults": "",
+      "query": "",
+      "select": "",
+      "title": ""
     },
     "fileselector": {
       "files": "fitxers",

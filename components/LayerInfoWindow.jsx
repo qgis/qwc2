@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import ResizeableWindow from '../components/ResizeableWindow';
+import {Image} from './widgets/Primitives';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -21,11 +22,11 @@ class LayerInfoWindow extends React.Component {
     static propTypes = {
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         layer: PropTypes.object,
+        layerInfoGeometry: PropTypes.object,
         map: PropTypes.object,
         scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         setActiveLayerInfo: PropTypes.func,
-        sublayer: PropTypes.object,
-        geometry: PropTypes.object,
+        sublayer: PropTypes.object
     };
     renderLink(text, url) {
         if (url) {
@@ -59,14 +60,15 @@ class LayerInfoWindow extends React.Component {
         const scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         const legendUrl = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, scale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
         if (legendUrl) {
-            legend = (<img className="layer-info-window-legend" src={legendUrl} />);
+            legend = (<Image className="layer-info-window-legend" src={legendUrl} />);
         } else if (this.props.layer.color) {
             legend = (<span className="layer-info-window-coloricon" style={{backgroundColor: this.props.layer.color}} />);
         }
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.layerInfoGeometry.initialHeight} initialWidth={this.props.layerInfoGeometry.initialWidth}
-                    initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY} initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
-                title={LocaleUtils.trmsg("layerinfo.title")}>
+                initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY} initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
+                title={LocaleUtils.trmsg("layerinfo.title")}
+            >
                 <div className="layer-info-window-body" role="body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
                     <div className="layer-info-window-frame">
