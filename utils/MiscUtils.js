@@ -202,7 +202,6 @@ const MiscUtils = {
         const hsp = Math.sqrt(
             0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)
         );
-        console.log("R=%O, G=%O, B=%O, HSP=%O", r, g, b, hsp);
         return hsp > 127.5;
     },
 
@@ -214,9 +213,6 @@ const MiscUtils = {
      * @return {string} The adjusted URL.
      */
     adjustProtocol(url) {
-        console.log("Adjusting protocol of %O", url);
-        console.log("location.protocol %O", location.protocol);
-        console.log("starts %O", url.startsWith('http:'));
         if (location.protocol === 'https:' && url.startsWith('http:')) {
             return 'https:' + url.substr(5);
         }
