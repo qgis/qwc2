@@ -21,10 +21,10 @@
         "clean": "rimraf dist && rimraf dist-dev && rimraf documentation && rimraf coverage",
         "build-dev": "webpack --mode development --config webpack.dev.js",
         "build-prod": "webpack --mode production --config webpack.prod.js",
-        "test": "jest",
-        "test-watch": "jest --watch",
+        "test": "jest --config ./jest.config.js",
+        "test-watch": "jest --watch --config ./config/jest.config.js",
         "start": "webpack serve --hot --mode development --config webpack.dev.js",
-        "doc": "typedoc --logLevel Verbose"
+        "doc": "typedoc --logLevel Verbose --options ./config/typedoc.json"
     },
     "peerDependencies": {
         "@turf/buffer": "^6.5.0",

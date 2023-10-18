@@ -1,16 +1,16 @@
 {
     "$schema": "https://typedoc.org/schema.json",
-    "out": "./documentation",
-    "basePath": ".",
+    "out": "../documentation",
+    "basePath": "..",
     "entryPoints": [
-        "./actions",
-        "./components",
-        "./plugins",
-        "./reducers",
-        "./selectors",
-        "./stores",
-        "./typings",
-        "./utils"
+        "../actions",
+        "../components",
+        "../plugins",
+        "../reducers",
+        "../selectors",
+        "../stores",
+        "../typings",
+        "../utils"
     ],
     "entryPointStrategy": "resolve",
     "theme": "hierarchy",

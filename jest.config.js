@@ -12,10 +12,7 @@ const config = {
         "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
             "<rootDir>/__mocks__/fileMock.js",
         "\\.(css|less)$": "identity-obj-proxy",
-        "^openlayers$": "<rootDir>/libs/openlayers.js",
-        //"^ol/(.*)$": "<rootDir>/node_modules/ol/dist/ol.js",
-        //"^ol-ext/(.*)$": "<rootDir>/node_modules/ol-ext/dist/ol-ext.js",
-        //"^openlayers$": "ol",
+        "^openlayers$": "<rootDir>/libs/openlayers.js"
     },
     transform: {
         "^.+\\.jsx?$": "babel-jest",
@@ -25,8 +22,11 @@ const config = {
     ],
     testEnvironment: "jsdom",
     setupFiles: [
-        "jest-canvas-mock"
+        "jest-canvas-mock",
     ],
+    setupFilesAfterEnv: [
+        "./config/setupTests.js",
+    ]
 };
 
 export default config;

@@ -6,7 +6,6 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 
@@ -16,7 +15,7 @@ const METERS_PER_UNIT = {
     'm': 1,
     'degrees': 111194.87428468118,
     'ft': 0.3048,
-    'us-ft': 1200 / 3937
+    'us-ft': 1200 / 3937 // 0.3048006096
 };
 
 const hooks = {};
@@ -33,33 +32,90 @@ const MapUtils = {
     GET_COORDINATES_FROM_PIXEL_HOOK: 'GET_COORDINATES_FROM_PIXEL_HOOK',
     GET_NATIVE_LAYER: 'GET_NATIVE_LAYER',
 
+    /**
+     * Save a hook in internal registry (library-wide)
+     * 
+     * This mechanism imposes no constraints on the hook function. See
+     * the documentation for the specific hook key to understand the
+     * expected function signature.
+     * 
+     * @param {string} name - the unique identifier of the hook
+     * @param {function} hook - the hook function
+     */
     registerHook(name, hook) {
         hooks[name] = hook;
     },
+
+    /**
+     * Retrieve a hook from internal registry (library-wide).
+     * 
+     * This mechanism imposes no constraints on the hook function. See
+     * the documentation for the specific hook key to understand the
+     * expected function signature.
+     * 
+     * @param {string} name - the unique identifier of the hook
+     * @return {function} the hook function or undefined if 
+     * the identifier was not found
+     */
     getHook(name) {
         return hooks[name];
     },
+
     /**
-     * @param dpi {number} dot per inch resolution
-     * @return {number} dot per meter resolution
+     * Convert a resolution expreseed in dots per inch to a resolution
+     * expressed in dots per meter.
+     * 
+     * @param {number?} dpi - dot per inch resolution (default is 96).
+     * @return {number} dot per meter resolution.
      */
-    dpi2dpm(dpi) {
+    dpi2dpm(dpi = null) {
         return (dpi || DEFAULT_SCREEN_DPI) * (100 / 2.54);
     },
+
     /**
-     * @param dpi {number} screen resolution in dots per inch.
-     * @param projection {string} map projection.
+     * Convert a resolution expreseed in dots per meter to a resolution
+     * expressed in dots per units in a particular projection.
+     *
+     * The function supports projections with following units:
+     * - meters;
+     * - degrees (default if the projection does not define units);
+     * - feet;
+     * - us-feet.
+     * 
+     * @param {number} dpi - screen resolution in dots per
+     *  inch (default is 96).
+     * @param {string} projection - the projection used to retrieve
+     *  the units.
+     *
+     * @throws {Error} if the projection units are not supported.
+     * @throws {Error} if the projection is not supported.
      * @return {number} dots per map unit.
      */
     dpi2dpu(dpi, projection) {
         const units = CoordinatesUtils.getUnits(projection);
-        return METERS_PER_UNIT[units] * MapUtils.dpi2dpm(dpi);
+        const mpu = METERS_PER_UNIT[units];
+        if (!mpu) {
+            throw new Error(
+                `Unsupported projection ${projection} units: ${units}`
+            );
+        }
+        return mpu * MapUtils.dpi2dpm(dpi);
     },
+
     /**
-     * Get a list of scales for each zoom level of the Google Mercator.
-     * @param minZoom {number} min zoom level.
-     * @param maxZoom {number} max zoom level.
-     * @return {array} a list of scale for each zoom level in the given interval.
+     * Get a list of scales, one for each zoom level
+     * of the Google Mercator.
+     * 
+     * @param {number} minZoom - the first zoom level to compute
+     *  the scale for (integer >= 0).
+     * @param {number} maxZoom - the last zoom level to compute
+     *  the scale for (integer).
+     * @param {number} dpi - screen resolution in dots per
+     *  inch (96 by default).
+     * 
+     * @return {number[]} a list of scales, one for each zoom level
+     *  in the given interval (the lower the zoom level, the
+     *  larger the scale).
      */
     getGoogleMercatorScales(minZoom, maxZoom, dpi = DEFAULT_SCREEN_DPI) {
         // Google mercator params
@@ -67,35 +123,51 @@ const MapUtils = {
         const TILE_WIDTH = 256;
         const ZOOM_FACTOR = 2;
 
+        const dpm = MapUtils.dpi2dpm(dpi);
+        const twoPiRad = 2 * Math.PI * RADIUS;
         const retval = [];
         for (let l = minZoom; l <= maxZoom; l++) {
-            retval.push(2 * Math.PI * RADIUS / (TILE_WIDTH * Math.pow(ZOOM_FACTOR, l) / MapUtils.dpi2dpm(dpi)));
+            retval.push(
+                twoPiRad / (
+                    TILE_WIDTH * Math.pow(ZOOM_FACTOR, l) / dpm
+                )
+            );
         }
         return retval;
     },
+
     /**
-     * @param scales {array} list of scales.
-     * @param projection {string} map projection.
-     * @param dpi {number} screen resolution in dots per inch.
-     * @return {array} a list of resolutions corresponding to the given scales, projection and dpi.
+     * Compute resolution for scale.
+     * 
+     * @param {number[]} scales - the list of scales.
+     * @param {string} projection - the map projection.
+     * @param {number} dpi - the screen resolution in dots per
+     *  inch (96 by default).
+     * 
+     * @return {number[]} a list of resolutions corresponding to
+     *  the given scales, projection and dpi.
      */
     getResolutionsForScales(scales, projection, dpi = DEFAULT_SCREEN_DPI) {
         const dpu = MapUtils.dpi2dpu(dpi, projection);
-        const resolutions = scales.map((scale) => {
-            return scale / dpu;
-        });
-        return resolutions;
+        return scales.map((scale) => scale / dpu);
     },
+
     /**
      * Calculates the best fitting zoom level for the given extent.
      *
-     * @param extent {Array} [minx, miny, maxx, maxy]
-     * @param resolutions {Array} The list of available map resolutions
-     * @param mapSize {Object} current size of the map.
-     * @param minZoom {number} min zoom level.
-     * @param maxZoom {number} max zoom level.
-     * @param dpi {number} screen resolution in dot per inch.
-     * @return {Number} the zoom level fitting th extent
+     * Depending on the `allowFractionalZoom` configuration, the returned
+     * zoom level can be fractional (a real number) or it will be one that
+     * matches one of the `resolutions` (an integer).
+     * 
+     * @param {[number, number, number, number]} extent - the
+     *  bounding box as an array of `[minx, miny, maxx, maxy]`.
+     * @param {number[]} resolutions - the list of available map resolutions.
+     * @param {{width: number, height: number}} mapSize - current size
+     *  of the map in pixels.
+     * @param {number} minZoom - minimum allowed zoom level (integer >= 0).
+     * @param {number} maxZoom - maximum allowed zoom level (integer).
+     * 
+     * @return {number} the zoom level fitting the extent
      */
     getZoomForExtent(extent, resolutions, mapSize, minZoom, maxZoom) {
         const wExtent = extent[2] - extent[0];
@@ -106,28 +178,50 @@ const MapUtils = {
         const extentResolution = Math.max(xResolution, yResolution);
 
         if (ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
-            return Math.max(minZoom, Math.min(this.computeZoom(resolutions, extentResolution), maxZoom));
+            return Math.max(
+                minZoom,
+                Math.min(
+                    this.computeZoom(resolutions, extentResolution),
+                    maxZoom
+                )
+            );
         } else {
             const calc = resolutions.reduce((previous, resolution, index) => {
                 const diff = Math.abs(resolution - extentResolution);
-                return diff > previous.diff ? previous : {diff: diff, zoom: index};
-            }, {diff: Number.POSITIVE_INFINITY, zoom: 0});
+                return diff > previous.diff
+                    ? previous
+                    : { diff: diff, zoom: index };
+            }, {
+                diff: Number.POSITIVE_INFINITY,
+                zoom: 0
+            });
             return Math.max(minZoom, Math.min(calc.zoom, maxZoom));
         }
     },
+
     /**
-     * Calculates the extent for the provided center and zoom level
-     * @param center {Array} [x, y]
-     * @param zoom {number} The zoom level
-     * @param resolutions {Array} The list of map resolutions
-     * @param mapSize {Object} The current size of the map
+     * Calculates the extent in map units for the provided
+     * center and zoom level.
+     * 
+     * @param {[number, number]} center - the position of the center as an
+     *  `[x, y]` array in map units.
+     * @param {number} zoom - the (potentially fractional) zoom level. If
+     *  `allowFractionalZoom` library configuration is false, the zoom
+     *  level will be rounded to the nearest integer.
+     * @param {number[]} resolutions - the list of map resolutions.
+     * @param {{width: number, height: number}} mapSize - current size
+     *  of the map in pixels.
+     * 
+     * @return {[number, number, number, number]} the bounding box as an
+     *  array of `[minx, miny, maxx, maxy]` coordinates in map units.
      */
     getExtentForCenterAndZoom(center, zoom, resolutions, mapSize) {
         if (ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
             zoom = Math.round(zoom);
         }
-        const width = this.computeForZoom(resolutions, zoom) * mapSize.width;
-        const height = this.computeForZoom(resolutions, zoom) * mapSize.height;
+        const res = this.computeForZoom(resolutions, zoom);
+        const width = res * mapSize.width;
+        const height = res * mapSize.height;
         return [
             center[0] - 0.5 * width,
             center[1] - 0.5 * height,
@@ -135,35 +229,66 @@ const MapUtils = {
             center[1] + 0.5 * height
         ];
     },
+
     /**
-     * Transform width and height specified in meters to the units of the specified projection
+     * Transform width and height specified in meters to the units
+     * of the specified projection
      *
-     * @param projection {string} projection.
-     * @param center {Array} Center of extent in EPSG:4326 coordinates.
-     * @param width {number} Width in meters.
-     * @param height {number} Height in meters.
+     * The function supports projections with following units:
+     * - meters;
+     * - degrees (default if the projection does not define units);
+     * - feet;
+     * - us-feet.
+     * 
+     * @param {string} projection - the proj4 identifier of the projection.
+     * @param {[number, number]} center - center of extent in 
+     *  `EPSG:4326` (WGS 84) coordinates (degrees).
+     * @param {number} width - the width of the extent in meters.
+     * @param {number} height - the height of the extent in meters.
+     * 
+     * @throws {Error} if the projection is not supported.
+     * @return {{width: number, height: number}} the width and height
+     * in the units of the specified projection.
      */
     transformExtent(projection, center, width, height) {
         const units = CoordinatesUtils.getUnits(projection);
         if (units === 'ft') {
-            return {width: width / METERS_PER_UNIT.ft, height: height / METERS_PER_UNIT.ft};
+            return { 
+                width: width / METERS_PER_UNIT.ft, 
+                height: height / METERS_PER_UNIT.ft 
+            };
         } else if (units === 'us-ft') {
-            return {width: width / METERS_PER_UNIT['us-ft'], height: height / METERS_PER_UNIT['us-ft']};
+            return { 
+                width: width / METERS_PER_UNIT['us-ft'], 
+                height: height / METERS_PER_UNIT['us-ft'] 
+            };
         } else if (units === 'degrees') {
             // https://en.wikipedia.org/wiki/Geographic_coordinate_system#Length_of_a_degree
             const phi = center[1] / 180 * Math.PI;
-            const latPerM = 111132.92 - 559.82 * Math.cos(2 * phi) + 1.175 * Math.cos(4 * phi) - 0.0023 * Math.cos(6 * phi);
-            const lonPerM = 111412.84 * Math.cos(phi) - 93.5 * Math.cos(3 * phi) + 0.118 * Math.cos(5 * phi);
-            return {width: width / lonPerM, height: height / latPerM};
+            const latPerM = (
+                111132.92 - 
+                559.82 * Math.cos(2 * phi) + 
+                1.175 * Math.cos(4 * phi) - 
+                0.0023 * Math.cos(6 * phi)
+            );
+            const lonPerM = (
+                111412.84 * Math.cos(phi) - 
+                93.5 * Math.cos(3 * phi) + 
+                0.118 * Math.cos(5 * phi)
+            );
+            return { width: width / lonPerM, height: height / latPerM };
         }
-        return {width, height};
+        return { width, height };
     },
+
     /**
-     * Compute the scale or resolution matching a (possibly fractional) zoom level.
+     * Compute the scale or resolution matching a(possibly fractional)
+     * zoom level.
      *
-     * @param list {Array} List of scales or resolutions.
-     * @param zoomLevel (number) Zoom level (integer or fractional).
-     * @return Scale of resolution matching zoomLevel
+     * @param {number[]} list - The list of scales or resolutions.
+     * @param {number} zoomLevel - The zoom level (integer or fractional).
+     * 
+     * @return Scale of resolution matching `zoomLevel`
      */
     computeForZoom(list, zoomLevel) {
         if (ConfigUtils.getConfigProp("allowFractionalZoom") !== true) {
@@ -178,11 +303,14 @@ const MapUtils = {
         const frac = zoomLevel - lower;
         return list[lower] * (1 - frac) + list[upper] * frac;
     },
+
     /**
-     * Compute the (possibly fractional) zoom level matching the specified scale or resolution.
+     * Compute the (possibly fractional) zoom level matching the
+     * specified scale or resolution.
      *
-     * @param list {Array} List of scales or resolutions.
-     * @param value (number) Scale or resolution.
+     * @param {number[]} list - The list of scales or resolutions.
+     * @param {number} value - The scale or resolution.
+     * 
      * @return Zoom level matching the specified scale or resolution.
      */
     computeZoom(list, value) {
@@ -210,7 +338,8 @@ const MapUtils = {
 
     /**
      * Convert degrees to radians
-     * @param degrees {number}
+     * 
+     * @param {number} degrees - the value to convert
      * @return {number} in radians
      */
     degreesToRadians(degrees) {

@@ -1,6 +1,6 @@
 import CoordinatesUtils from './CoordinatesUtils';
 
-const invalidProjections = ['XXYY', 'GOOGLE', 'WGS84'];
+const invalidProjections = ['XXYY', 'ABCD', 'EPSG'];
 
 
 describe('setCrsLabels', () => {

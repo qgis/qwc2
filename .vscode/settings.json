@@ -1,4 +1,5 @@
 {
     "json.format.keepLines": false,
-    "files.associations": { "*.json": "jsonc" }
+    "files.associations": { "*.json": "jsonc" },
+    "editor.rulers": [80]
 }
