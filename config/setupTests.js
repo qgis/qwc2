@@ -3,7 +3,7 @@ import { register as olProj4Register } from 'ol/proj/proj4';
 import { 
     toBeDeepCloseTo, toMatchCloseTo 
 } from 'jest-matcher-deep-close-to';
-
+import "jest-location-mock";
 
 expect.extend({ 
     toBeDeepCloseTo, toMatchCloseTo 

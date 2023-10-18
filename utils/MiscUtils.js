@@ -15,6 +15,13 @@ import ConfigUtils from './ConfigUtils';
  * @namespace
  */
 const MiscUtils = {
+    /**
+     * Add anchor tags to URLs in text.
+     * 
+     * @param {string} text - the text to process.
+     * 
+     * @return {string} The processed text.
+     */
     addLinkAnchors(text) {
         // If text already contains tags, do nothing
         const tagRegEx = /(<.[^(><.)]+>)/;
@@ -56,6 +63,14 @@ const MiscUtils = {
         urlRegEx.lastIndex = 0;
         return value;
     },
+
+    /**
+     * Encode HTML special characters in text.
+     * 
+     * @param {string} text - the text to process.
+     * 
+     * @return {string} The processed text.
+     */
     htmlEncode(text) {
         return text
             .replace(/&/g, "&amp;")
@@ -64,25 +79,76 @@ const MiscUtils = {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     },
+
+    /**
+     * Retrieve the CSRF token from the page.
+     * 
+     * The function looks for a `meta` tag with name `csrf-token`
+     * and returns its `content` attribute.
+     * 
+     * @return {string} The CSRF token if it exists or an
+     *  empty string otherwise.
+     */
     getCsrfToken() {
-        const csrfTag = Array.from(document.getElementsByTagName('meta')).find(tag => tag.getAttribute('name') === "csrf-token");
+        const csrfTag = Array.from(
+            document.getElementsByTagName('meta')
+        ).find(
+            tag => tag.getAttribute('name') === "csrf-token"
+        );
         return csrfTag ? csrfTag.getAttribute('content') : "";
     },
+
+    /**
+     * Install a `touchmove` event handler on the given element
+     * to stop the event from propagating to the parent.
+     * 
+     * We need to do this to stop touchmove propagating to
+     * parent which can trigger a swipe.
+     * 
+     * @param {Element} el - the element to install the handler on.
+     */
     setupKillTouchEvents(el) {
         if (el) {
-            // To stop touchmove propagating to parent which can trigger a swipe
-            el.addEventListener('touchmove', (ev) => { ev.stopPropagation(); }, {passive: false});
+            el.addEventListener(
+                'touchmove', (ev) => {
+                    ev.stopPropagation();
+                }, {
+                passive: false
+            });
         }
     },
+
+    /**
+     * Stop the given event from propagating and prevent its default action.
+     */
     killEvent(ev) {
         if (ev.cancelable) {
             ev.stopPropagation();
             ev.preventDefault();
         }
     },
+
+    /**
+     * Average two colors.
+     * 
+     * @param {string} color1 - the first color as a #RRGGBB string.
+     * @param {string} color2 - the second color as a #RRGGBB string.
+     * @param {number} ratio - the ratio of the first color
+     *  relative to the second.
+     * 
+     * @return {string} The average color as a #RRGGBB string.
+     */
     blendColors(color1, color2, ratio) {
-        color1 = [parseInt(color1[1] + color1[2], 16), parseInt(color1[3] + color1[4], 16), parseInt(color1[5] + color1[6], 16)];
-        color2 = [parseInt(color2[1] + color2[2], 16), parseInt(color2[3] + color2[4], 16), parseInt(color2[5] + color2[6], 16)];
+        color1 = [
+            parseInt(color1[1] + color1[2], 16),
+            parseInt(color1[3] + color1[4], 16),
+            parseInt(color1[5] + color1[6], 16)
+        ];
+        color2 = [
+            parseInt(color2[1] + color2[2], 16),
+            parseInt(color2[3] + color2[4], 16),
+            parseInt(color2[5] + color2[6], 16)
+        ];
         const color3 = [
             (1 - ratio) * color1[0] + ratio * color2[0],
             (1 - ratio) * color1[1] + ratio * color2[1],
@@ -91,6 +157,15 @@ const MiscUtils = {
         const toHex = (num) => ("0" + Math.round(num).toString(16)).slice(-2);
         return '#' + toHex(color3[0]) + toHex(color3[1]) + toHex(color3[2]);
     },
+
+    /**
+     * Ensure that the given element is an array.
+     * 
+     * @param {*} el - the element to ensure.
+     * 
+     * @return {Array} an array containing the element or
+     * an empty array if the element is undefined.
+     */
     ensureArray(el) {
         if (el === undefined) {
             return [];
@@ -99,19 +174,49 @@ const MiscUtils = {
         }
         return [el];
     },
+
+    /**
+     * Capitalize the first letter of the given text.
+     * 
+     * @param {string} text - the text to process.
+     * 
+     * @return {string} The processed text.
+     */
     capitalizeFirst(text) {
-        return text.slice(0, 1).toUpperCase() + text.slice(1).toLowerCase();
+        return (
+            text.slice(0, 1).toUpperCase() +
+            text.slice(1).toLowerCase()
+        );
     },
+
+    /**
+     * Check if the given color is bright.
+     */
     isBrightColor(hex) {
-        const color = +("0x" + hex.slice(1).replace(hex.length < 5 && /./g, '$&$&'));
+        const color = +(
+            "0x" + hex.slice(1).replace(hex.length < 5 && /./g, '$&$&')
+        );
         const r = color >> 16;
         const g = color >> 8 & 255;
         const b = color & 255;
-
-        const hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+        const hsp = Math.sqrt(
+            0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)
+        );
+        console.log("R=%O, G=%O, B=%O, HSP=%O", r, g, b, hsp);
         return hsp > 127.5;
     },
+
+    /**
+     * Adjust the protocol of the given URL to the current protocol.
+     * 
+     * @param {string} url - the URL to adjust.
+     * 
+     * @return {string} The adjusted URL.
+     */
     adjustProtocol(url) {
+        console.log("Adjusting protocol of %O", url);
+        console.log("location.protocol %O", location.protocol);
+        console.log("starts %O", url.startsWith('http:'));
         if (location.protocol === 'https:' && url.startsWith('http:')) {
             return 'https:' + url.substr(5);
         }
