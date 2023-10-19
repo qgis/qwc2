@@ -45,6 +45,15 @@ const VectorLayerUtils = {
                 }
                 const properties = feature.properties || {};
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
+                // Filter degenerate geometries coordinates
+                if (feature.geometry.type === "LineString") {
+                    const filteredCoordinates = geometry.coordinates.filter((item, pos, arr) => {
+                        return pos === 0 || item[0] !== arr[pos - 1][0] || item[1] !== arr[pos - 1][1];
+                    });
+                    if (filteredCoordinates.length < 2) {
+                        continue;
+                    }
+                }
                 if (feature.geometry.type === "LineString" && !isEmpty(properties.segment_labels)) {
                     // Split line into single segments and label them individually
                     const coords = geometry.coordinates;
