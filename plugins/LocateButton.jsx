@@ -32,21 +32,6 @@ class LocateButton extends React.Component {
     static defaultProps = {
         position: 2
     };
-    constructor(props) {
-        super(props);
-
-        if (!navigator.geolocation) {
-            props.changeLocateState("PERMISSION_DENIED");
-        } else {
-            navigator.geolocation.getCurrentPosition(() => {
-                // OK!
-            }, (err) => {
-                if (err.code === 1) {
-                    props.changeLocateState("PERMISSION_DENIED");
-                }
-            });
-        }
-    }
     onClick = () => {
         if (this.props.locateState === "DISABLED") {
             this.props.changeLocateState("ENABLED");

@@ -16,11 +16,6 @@ button.map-button {
     cursor: pointer;
 }
 
-button.map-button.locate-button-DISABLED {
-    opacity: 0.7;
-    cursor: default;
-}
-
 button.map-button:hover {
     background-color: var(--map-button-hover-bg-color);
     color: var(--map-button-hover-text-color);
@@ -29,6 +24,16 @@ button.map-button:hover {
 button.map-button-active {
     background-color: var(--map-button-active-bg-color);
     color: var(--map-button-active-text-color);
+}
+
+button.map-button.locate-button-PERMISSION_DENIED {
+    opacity: 0.7;
+    cursor: default;
+}
+
+button.map-button.locate-button-PERMISSION_DENIED:hover {
+    background-color: var(--map-button-bg-color);
+    color: var(--map-button-text-color);
 }
 
 button.map-button.locate-button-LOCATING,
