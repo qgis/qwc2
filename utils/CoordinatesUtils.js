@@ -84,7 +84,7 @@ const CoordinatesUtils = {
     getUnits(projection) {
         const proj = ol.proj.get(projection);
         if (!proj) {
-            throw new Error("Invalid projection: " + projection);
+            throw new Error(`Invalid projection: ${projection}`);
         }
         return proj.getUnits() || 'degrees';
     },

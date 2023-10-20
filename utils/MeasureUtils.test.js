@@ -5,7 +5,7 @@ import MeasureUtils, {
     LengthUnits, MeasUnits, AreaUnits, MeasGeomTypes
 } from './MeasureUtils';
 import LayerUtils from './LocaleUtils';
-import { feetCRS } from '../config/setupTests';
+import { feetCRS } from '../config/setupTestsAfterEnv';
 
 
 jest.mock('./LocaleUtils');

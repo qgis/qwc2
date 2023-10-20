@@ -23,9 +23,10 @@ const config = {
     testEnvironment: "jsdom",
     setupFiles: [
         "jest-canvas-mock",
+        "./config/setupTests.js",
     ],
     setupFilesAfterEnv: [
-        "./config/setupTests.js",
+        "./config/setupTestsAfterEnv.js",
     ]
 };
 

@@ -1,5 +1,5 @@
 import MapUtils from './MapUtils';
-import { feetCRS } from '../config/setupTests';
+import { feetCRS } from '../config/setupTestsAfterEnv';
 
 let mockAllowFractionalZoom = false;
 
