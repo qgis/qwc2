@@ -414,9 +414,9 @@ Allows exporting a selected portion of the map to a variety of formats.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowedFormats | `[string]` | Whitelist of allowed export format mimetypes. If empty, supported formats are listed. | `undefined` |
-| allowedScales | `[number]` | List of scales at which to export the map. | `undefined` |
+| allowedScales | `{[number], bool}` | List of scales at which to export the map. If empty, scale can be freely specified. If `false`, the map can only be exported at the current scale. | `undefined` |
 | defaultFormat | `string` | Default export format mimetype. If empty, first available format is used. | `undefined` |
-| defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale. | `0.5` |
+| defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale (if `allowedScales` is not `false`). | `0.5` |
 | dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
 | exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
 | formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `query` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS. | `undefined` |
