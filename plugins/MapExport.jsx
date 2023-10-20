@@ -378,7 +378,7 @@ class MapExport extends React.Component {
 
         if (formatConfiguration) {
             const keyCaseMap = Object.keys(params).reduce((res, key) => ({...res, [key.toLowerCase()]: key}), {});
-            (formatConfiguration.extraQuery || "").split(/[?&]/).forEach(entry => {
+            (formatConfiguration.extraQuery || "").split(/[?&]/).filter(Boolean).forEach(entry => {
                 const [key, value] = entry.split("=");
                 const caseKey = keyCaseMap[key.toLowerCase()] || key;
                 params[caseKey] = (value ?? "");
