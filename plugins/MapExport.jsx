@@ -392,7 +392,8 @@ class MapExport extends React.Component {
         axios.post(this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
-            FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.pdf');
+            const ext = this.state.selectedFormat.split(";")[0].split("/").pop();
+            FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.' + ext);
         }).catch(e => {
             this.setState({exporting: false});
             if (e.response) {
