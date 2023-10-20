@@ -140,6 +140,7 @@
         "jest-environment-jsdom": "^29.7.0",
         "jest-location-mock": "^2.0.0",
         "jest-matcher-deep-close-to": "^3.0.2",
+        "jest-mock-axios": "^4.7.3",
         "jsdoc": "^4.0.2",
         "jszip": "^3.10.1",
         "lodash.isempty": "^4.4.0",
