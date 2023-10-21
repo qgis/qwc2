@@ -19,41 +19,43 @@ const defaultState = {
 
 export default function processNotifications(state = defaultState, action) {
     switch (action.type) {
-    case PROCESS_STARTED: {
-        return {
-            ...state,
-            processes: {
-                ...state.processes,
-                [action.id]: {
-                    id: action.id,
-                    name: action.name,
-                    status: ProcessStatus.BUSY
+        case PROCESS_STARTED: {
+            return {
+                ...state,
+                processes: {
+                    ...state.processes,
+                    [action.id]: {
+                        id: action.id,
+                        name: action.name,
+                        status: ProcessStatus.BUSY
+                    }
                 }
-            }
-        };
-    }
-    case PROCESS_FINISHED: {
-        return {
-            ...state,
-            processes: {
-                ...state.processes,
-                [action.id]: {
-                    ...state.processes[action.id],
-                    status: action.success ? ProcessStatus.SUCCESS : ProcessStatus.FAILURE,
-                    message: action.message
+            };
+        }
+        case PROCESS_FINISHED: {
+            return {
+                ...state,
+                processes: {
+                    ...state.processes,
+                    [action.id]: {
+                        ...state.processes[action.id],
+                        status: action.success
+                            ? ProcessStatus.SUCCESS
+                            : ProcessStatus.FAILURE,
+                        message: action.message
+                    }
                 }
-            }
-        };
-    }
-    case CLEAR_PROCESS: {
-        const newState = {
-            ...state,
-            processes: {...state.processes}
-        };
-        delete newState.processes[action.id];
-        return newState;
-    }
-    default:
-        return state;
+            };
+        }
+        case CLEAR_PROCESS: {
+            const newState = {
+                ...state,
+                processes: { ...state.processes }
+            };
+            delete newState.processes[action.id];
+            return newState;
+        }
+        default:
+            return state;
     }
 }

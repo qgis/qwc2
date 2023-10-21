@@ -14,7 +14,11 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import {getDefaultImageStyle} from 'ol/format/KML';
 
-
+/**
+ * Utility functions for working with vector layers.
+ * 
+ * @namespace
+ */
 const VectorLayerUtils = {
     createPrintHighlighParams(layers, printCrs, dpi = 96, scaleFactor = 1.0) {
         const qgisServerVersion = ConfigUtils.getConfigProp("qgisServerVersion") || 3;

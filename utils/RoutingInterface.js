@@ -242,7 +242,14 @@ function computeIsochrone(costing, locations, contourOptions, options, callback)
     });
 }
 
-export default {
+
+/**
+ * Utility functions for routing.
+ * 
+ * @namespace
+ */
+const RoutingInterface = {
     computeRoute,
     computeIsochrone
 };
+export default RoutingInterface;

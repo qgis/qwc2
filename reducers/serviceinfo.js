@@ -6,16 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {SET_ACTIVE_SERVICEINFO} from '../actions/serviceinfo';
+import { SET_ACTIVE_SERVICEINFO } from '../actions/serviceinfo';
 
 const defaultState = {};
 
 export default function serviceInfo(state = defaultState, action) {
     switch (action.type) {
-    case SET_ACTIVE_SERVICEINFO: {
-        return {...state, service: action.service};
-    }
-    default:
-        return state;
+        case SET_ACTIVE_SERVICEINFO: {
+            return { ...state, service: action.service };
+        }
+        default:
+            return state;
     }
 }

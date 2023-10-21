@@ -1,0 +1,45 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "out": "../documentation",
+    "basePath": "..",
+    "entryPoints": [
+        "../actions",
+        "../components",
+        "../plugins",
+        "../reducers",
+        "../selectors",
+        "../stores",
+        "../typings",
+        "../utils"
+    ],
+    "entryPointStrategy": "resolve",
+    "theme": "hierarchy",
+    "plugin": [
+        "typedoc-theme-hierarchy"
+    ],
+    "excludeInternal": true,
+    "excludePrivate": true,
+    "excludeNotDocumented": true,
+    "excludeReferences": true,
+    "excludeNotDocumentedKinds": [
+        // "Module",
+        // "Namespace",
+        // "Enum",
+        // "EnumMember",
+        "Variable",
+        "Function",
+        "Class",
+        // "Interface",
+        // "Constructor",
+        // "Property",
+        // "Method",
+        "CallSignature",
+        "IndexSignature",
+        "ConstructorSignature",
+        "Accessor",
+        "GetSignature",
+        "SetSignature",
+        "TypeAlias",
+        "Reference"
+    ]
+}

@@ -19,6 +19,10 @@ import url from 'url';
 import {CHANGE_BROWSER_PROPERTIES} from '../actions/browser';
 import ReducerIndex from '../reducers/index';
 
+/**
+ * The library uses a global store.
+ * @namespace Redux Store
+ */
 
 const DevTools = createDevTools(
     <DockMonitor changePositionKey="ctrl-q" toggleVisibilityKey="ctrl-h">
@@ -26,8 +30,21 @@ const DevTools = createDevTools(
     </DockMonitor>
 );
 
-export default class StandardStore {
+
+/**
+ * The global store interface.
+ * 
+ * @memberof Redux Store
+ */
+class StandardStore {
     static store = null;
+
+    /**
+     * Initializes the global store.
+     * 
+     * @param {object} initialState - the initial state of the store
+     * @param {function} actionLogger - a function to log actions
+     */
     static init = (initialState, actionLogger) => {
         const allReducers = combineReducers(ReducerIndex.reducers);
 
@@ -63,7 +80,15 @@ export default class StandardStore {
         }
         StandardStore.store = finalCreateStore(rootReducer, defaultState);
     }
+
+    /**
+     * Retrieve the global store.
+     * 
+     * @return {object} the global store
+     */
     static get = () => {
         return StandardStore.store;
     }
 }
+
+export default StandardStore;

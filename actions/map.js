@@ -36,12 +36,13 @@ export function changeMapView(center, zoom, bbox, size, mapStateSource, projecti
 }
 
 /**
- * @param crs {string} The map projection
- * @param scales {Array} List of map scales
- * @param view {Object} The map view, as follows:
- *               {center: [x, y], zoom: ..., crs: ...}
- *             or
- *               {bounds: [xmin, ymin, xmax, ymax], crs: ...}
+ * Configure the map.
+ * 
+ * @param {string} crs - The map projection
+ * @param {Array} scales - List of map scales
+ * @param {Object} view - The map view, as follows:
+ *  {center: [x, y], zoom: ..., crs: ...} or
+ *  {bounds: [xmin, ymin, xmax, ymax], crs: ...}
  */
 export function configureMap(crs, scales, view) {
     return {

@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED} from '../actions/task';
+import { SET_CURRENT_TASK, SET_CURRENT_TASK_BLOCKED } from '../actions/task';
 
 const defaultState = {
     id: null,
@@ -18,16 +18,22 @@ const defaultState = {
 
 export default function task(state = defaultState, action) {
     switch (action.type) {
-    case SET_CURRENT_TASK: {
-        if (state.blocked) {
-            return state;
+        case SET_CURRENT_TASK: {
+            if (state.blocked) {
+                return state;
+            }
+            return {
+                ...state,
+                id: action.id,
+                mode: action.mode,
+                data: action.data,
+                unsetOnMapClick: action.unsetOnMapClick
+            };
         }
-        return {...state, id: action.id, mode: action.mode, data: action.data, unsetOnMapClick: action.unsetOnMapClick};
-    }
-    case SET_CURRENT_TASK_BLOCKED: {
-        return {...state, blocked: action.blocked};
-    }
-    default:
-        return state;
+        case SET_CURRENT_TASK_BLOCKED: {
+            return { ...state, blocked: action.blocked };
+        }
+        default:
+            return state;
     }
 }

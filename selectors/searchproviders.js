@@ -6,15 +6,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {createSelector} from 'reselect';
-import {LayerRole} from '../actions/layers';
+import { createSelector } from 'reselect';
+import { LayerRole } from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
-export default (searchProviders) => createSelector(
-    [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
-        searchProviders = {...searchProviders, ...window.QWC2SearchProviders || {}};
+/**
+ * Retrieve search providers.
+ * @memberof Redux Store.Selectors
+ */
+const getSearchProviders = (searchProviders) => createSelector(
+    [
+        state => state.theme,
+        state => state.layers && state.layers.flat || null
+    ], (theme, layers) => {
+        searchProviders = {
+            ...searchProviders,
+            ...window.QWC2SearchProviders || {}
+        };
         const availableProviders = {};
         const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
         const themeProviders = theme && theme.current && theme.current.searchProviders ? theme.current.searchProviders : [];
@@ -27,7 +37,10 @@ export default (searchProviders) => createSelector(
             // "key" is the legacy name for "provider"
             const provider = searchProviders[entry.provider ?? entry.key ?? entry];
             if (provider) {
-                if (provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
+                if (
+                    provider.requiresLayer &&
+                    !themeLayerNames.includes(provider.requiresLayer)
+                ) {
                     continue;
                 }
                 let key = entry.provider ?? entry.key ?? entry;
@@ -47,10 +60,13 @@ export default (searchProviders) => createSelector(
             availableProviders.themes = {
                 labelmsgid: LocaleUtils.trmsg("search.themes"),
                 onSearch: (text, options, callback) => {
-                    setTimeout(() => callback({results: ThemeUtils.searchThemes(theme.themes, text)}), 50);
+                    setTimeout(() => callback({
+                        results: ThemeUtils.searchThemes(theme.themes, text)
+                    }), 50);
                 }
             };
         }
         return availableProviders;
     }
 );
+export default getSearchProviders;

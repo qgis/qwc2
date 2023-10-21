@@ -14,6 +14,7 @@ import LayerUtils from '../utils/LayerUtils';
 
 let UrlQuery = {};
 
+
 export const UrlParams = {
     updateParams(dict, forceLocationUrl = false) {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
@@ -189,3 +190,21 @@ export function updateBookmark(state, bkey, description, callback) {
         .then(() => callback(true))
         .catch(() => callback(false));
 }
+
+
+/**
+ * Utility functions for working with permanent links.
+ * 
+ * @namespace
+ */
+const PermaLinkUtils = {
+    UrlParams,
+    generatePermaLink,
+    resolvePermaLink,
+    getUserBookmarks,
+    removeBookmark,
+    createBookmark,
+    updateBookmark
+};
+
+export default PermaLinkUtils;

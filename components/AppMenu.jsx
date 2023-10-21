@@ -22,7 +22,10 @@ import Icon from './Icon';
 import './style/AppMenu.css';
 import isEqual from 'lodash.isequal';
 
-
+/**
+ * A menu component for the main menu.
+ * 
+ */
 class AppMenu extends React.Component {
     static propTypes = {
         appMenuClearsTask: PropTypes.bool,

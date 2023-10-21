@@ -16,6 +16,11 @@ import {LayerRole} from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import LayerUtils from './LayerUtils';
 
+/**
+ * Utility functions for working with themes.
+ * 
+ * @namespace
+ */
 const ThemeUtils = {
     getThemeById(themes, id) {
         for (let i = 0, n = themes.items.length; i < n; ++i) {

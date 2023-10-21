@@ -11,29 +11,36 @@ import themeReducer from '../reducers/theme';
 ReducerIndex.register("theme", themeReducer);
 
 import isEmpty from 'lodash.isempty';
-import {setIdentifyEnabled} from '../actions/identify';
+import { setIdentifyEnabled } from '../actions/identify';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
-import {UrlParams} from '../utils/PermaLinkUtils';
+import { UrlParams } from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';
-import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} from './layers';
-import {configureMap} from './map';
+import {
+    LayerRole, addLayer, removeLayer,
+    removeAllLayers, replacePlaceholderLayer, setSwipe
+} from './layers';
+import { configureMap } from './map';
 
 export const THEMES_LOADED = 'THEMES_LOADED';
 export const SET_THEME_LAYERS_LIST = 'SET_THEME_LAYERS_LIST';
 export const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
 export const SWITCHING_THEME = 'SWITCHING_THEME';
 
-
+/**
+ * Sets the list of themes in redux store.
+ * @param {Theme[]} themes - The themes to set
+ */
 export function themesLoaded(themes) {
     return {
         type: THEMES_LOADED,
         themes
     };
 }
+
 
 export function setThemeLayersList(theme) {
     return {
@@ -60,7 +67,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
             }
         }
         if (isEmpty(layers)) {
-            layers = [{...themeLayer, sublayers: []}];
+            layers = [{ ...themeLayer, sublayers: [] }];
         }
     }
 
@@ -69,7 +76,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         dispatch(addLayer(bgLayer));
     }
     if (visibleBgLayer === "") {
-        UrlParams.updateParams({bl: ""});
+        UrlParams.updateParams({ bl: "" });
     }
 
     for (const layer of layers.reverse()) {
@@ -160,10 +167,10 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                 const b2 = getState().map.bbox.bounds;
                 if (b2[0] >= b1[0] && b2[1] >= b1[1] && b2[2] <= b1[2] && b2[3] <= b1[3]) {
                     // theme bbox (b1) includes current bbox (b2)
-                    initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
+                    initialView = { bounds: getState().map.bbox.bounds, crs: getState().map.projection };
                 }
             } else if (ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === "force") {
-                initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
+                initialView = { bounds: getState().map.bbox.bounds, crs: getState().map.projection };
             }
         }
 
@@ -181,7 +188,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
             const layerNames = LayerUtils.getSublayerNames(theme);
             missingThemeLayers = layerConfigs.reduce((missing, layerConfig) => {
                 if (layerConfig.type === 'theme' && !layerNames.includes(layerConfig.name)) {
-                    return {...missing, [layerConfig.name]: layerConfig};
+                    return { ...missing, [layerConfig.name]: layerConfig };
                 } else {
                     return missing;
                 }
@@ -189,11 +196,11 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         }
         if (themeLayerRestorer && !isEmpty(missingThemeLayers)) {
             themeLayerRestorer(Object.keys(missingThemeLayers), theme, (newLayers, newLayerNames) => {
-                const newTheme = LayerUtils.mergeSubLayers(theme, {sublayers: newLayers});
+                const newTheme = LayerUtils.mergeSubLayers(theme, { sublayers: newLayers });
                 if (newLayerNames) {
                     layerConfigs = layerConfigs.reduce((res, layerConfig) => {
                         if (layerConfig.name in newLayerNames) {
-                            return [...res, ...newLayerNames[layerConfig.name].map(name => ({...layerConfig, name}))];
+                            return [...res, ...newLayerNames[layerConfig.name].map(name => ({ ...layerConfig, name }))];
                         } else {
                             return [...res, layerConfig];
                         }
