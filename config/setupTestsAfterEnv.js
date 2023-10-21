@@ -40,3 +40,13 @@ global.document = dom.window.document;
 global.window = dom.window;
 global.navigator = dom.window.navigator;
 global.location = dom.window.location;
+
+beforeAll(() => {
+    // We need this so that we can test new Date() in the code.
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(new Date(2020, 3, 1));
+});
+
+afterAll(() => {
+    jest.useRealTimers();
+});

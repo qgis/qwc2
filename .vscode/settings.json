@@ -1,5 +1,10 @@
 {
     "json.format.keepLines": false,
     "files.associations": { "*.json": "jsonc" },
-    "editor.rulers": [80]
+    "editor.rulers": [
+        80
+    ],
+    "cSpell.words": [
+        "EPSG"
+    ]
 }
