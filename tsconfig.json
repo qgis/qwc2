@@ -5,12 +5,15 @@
     "sourceMap": true,
     "jsx": "react",
     "module": "amd",
-    "target": "es5",
+    "target": "es2019",
     "allowJs": true,
+    // "checkJs": true,
     "esModuleInterop": true,
-    "outDir": "build",
+    "outDir": "./build",
+    "rootDir": "./",
     "declaration": true,
     "declarationMap": true,
+    "composite": true,
     // "declarationDir": "dist",
     "emitDeclarationOnly": true,
     "outFile": "dist/qwc2.js",
@@ -29,11 +32,13 @@
     "./utils/**/*"
   ],
   "exclude": [
-    "node_modules", 
+    "node_modules/**/*", 
     "build/**/*",
     "dist/**/*",
+    "config/**/*",
+    "*/**/*.test.*",
   ],
   "lib": [
-    "dom", "es2015.iterable", "es5"
+    "dom", "es2015.iterable", "es5", "es2019"
   ]
 }
