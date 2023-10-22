@@ -78,6 +78,7 @@ export function showImageEditor(imageData, imageDataCallback) {
             document.body.removeChild(modalDialogContainer);
         }
     }).show(imageData);
+    console.log(window.ptro);
 
     closeIcon.addEventListener('click', () => {
         // eslint-disable-next-line
