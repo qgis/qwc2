@@ -1,6 +1,5 @@
 import mockAxios from 'jest-mock-axios';
 import ConfigUtils from "./ConfigUtils";
-import { beforeEach } from 'node:test';
 
 let mockIsMobile = false;
 jest.mock('ismobilejs', () => ({

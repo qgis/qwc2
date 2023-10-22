@@ -15,6 +15,10 @@ import LayerUtils from '../utils/LayerUtils';
 let UrlQuery = {};
 
 
+/**
+ * Utilities for working with URL parameters.
+ * @namespace
+ */
 export const UrlParams = {
     updateParams(dict, forceLocationUrl = false) {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
