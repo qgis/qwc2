@@ -33,10 +33,12 @@ jest.mock("./ConfigUtils", () => ({
 }));
 
 let mockGetUnits = 'm';
+let mockAxisOrder = 'ne';
 jest.mock("./CoordinatesUtils", () => ({
     __esModule: true,
     default: {
-        getUnits: () => mockGetUnits
+        getUnits: () => mockGetUnits,
+        getAxisOrder: () => mockAxisOrder,
     },
 }));
 

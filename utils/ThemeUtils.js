@@ -22,6 +22,15 @@ import LayerUtils from './LayerUtils';
  * @namespace
  */
 const ThemeUtils = {
+    /**
+     * Retrieve a theme definition by its ID.
+     * 
+     * @param {object} themes - the themes collection
+     * @param {string} id - the unique identifier of the theme
+     * 
+     * @returns {object|null} the theme that was found or `null` if the theme
+     *  could not be found
+     */
     getThemeById(themes, id) {
         for (let i = 0, n = themes.items.length; i < n; ++i) {
             if (themes.items[i].id === id) {
@@ -36,6 +45,24 @@ const ThemeUtils = {
         }
         return null;
     },
+
+    /**
+     * Create background layers from a theme definition.
+     * 
+     * The theme definition only contains in its `backgroundLayers` property
+     * a list of background layer names and their visibility status. 
+     * This function looks up the background layers in the themes collection
+     * and returns a list of background layers with all their properties.
+     * 
+     * @param {object} theme - the theme definition to create the
+     *  background layers for
+     * @param {object} themes - the themes collection
+     * @param {string} visibleLayer - the name of the background layer to
+     *  make visible
+     * @param {object} externalLayers - the external layers collection
+     * 
+     * @return {object[]} the background layers list.
+     */
     createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers) {
         const bgLayers = [];
         let visibleIdx = -1;
@@ -85,14 +112,14 @@ const ThemeUtils = {
                 } else if (bgLayer.type === "group") {
                     bgLayer.items = bgLayer.items.map(item => {
                         if (item.ref) {
-                            const sublayer = themes.backgroundLayers.find(
+                            const subLayer = themes.backgroundLayers.find(
                                 l => l.name === item.ref
                             );
-                            if (sublayer) {
+                            if (subLayer) {
                                 item = {
                                     ...item,
-                                    ...sublayer,
-                                    ...LayerUtils.buildWMSLayerParams(sublayer)
+                                    ...subLayer,
+                                    ...LayerUtils.buildWMSLayerParams(subLayer)
                                 };
                                 if (item.type === "wms") {
                                     item.version = (
@@ -123,6 +150,18 @@ const ThemeUtils = {
         }
         return bgLayers;
     },
+
+    /**
+     * Create a theme layer.
+     * 
+     * @param {object} theme - the theme definition to create the
+     *  background layers for
+     * @param {object} themes - the themes collection
+     * @param {LayerRole} role - the role to assign to the new layer
+     * @param {object[]} subLayers - the sub-layers to assign to the new layer
+     * 
+     * @returns {object} the new layer object
+     */
     createThemeLayer(theme, themes, role = LayerRole.THEME, subLayers = []) {
         const urlParts = url.parse(theme.url, true);
         // Resolve relative urls
@@ -188,6 +227,16 @@ const ThemeUtils = {
         }
         return layer;
     },
+
+    /**
+     * Compute the parameters from capability and base urls.
+     * 
+     * @param {string} capabilityUrl - the URL for GetCapabilities
+     * @param {string} baseUrl - the base URL
+     * @param {object} baseParams - extra parameters to include in the query
+     * 
+     * @returns {string} the computed URL
+     */
     inheritBaseUrlParams(capabilityUrl, baseUrl, baseParams) {
         if (!capabilityUrl) {
             return baseUrl;
@@ -195,13 +244,28 @@ const ThemeUtils = {
         if (capabilityUrl.split("?")[0] === baseUrl.split("?")[0]) {
             const parts = url.parse(capabilityUrl, true);
             parts.query = { ...baseParams, ...parts.query };
+            
+            // If we don't do this the search parameter is used to
+            // construct the url. We want `query` to be used.
+            delete parts.search;
+
             return url.format(parts);
         }
         return capabilityUrl;
     },
-    searchThemes(themes, searchtext) {
+
+    /**
+     * Find themes by text.
+     * 
+     * @param {themes} - the theme collection to search in
+     * @param {searchText} - the string to search
+     * 
+     * @returns {object[]} an empty array if there is no match
+     * or a list of item that matched (these can be sub-items)
+     */
+    searchThemes(themes, searchText) {
         const filter = new RegExp(
-            removeDiacritics(searchtext).replace(
+            removeDiacritics(searchText).replace(
                 /[-[\]/{}()*+?.\\^$|]/g, "\\$&"
             ), "i"
         );
@@ -219,6 +283,18 @@ const ThemeUtils = {
             }))
         }];
     },
+
+    /**
+     * Finds the theme items that matches given pattern.
+     * 
+     * The function looks into `title`, `keywords` and `abstract` fields
+     * of the `themeGroup` and the child themes.
+     * 
+     * @param {object} themeGroup - the theme to search
+     * @param {RegExp} filter - the filter to apply
+     * @returns {object[]} the themes that were found to match the
+     *  pattern
+     */
     searchThemeGroup(themeGroup, filter) {
         const matches = [];
         (themeGroup.subdirs || []).map(
