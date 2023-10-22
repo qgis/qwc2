@@ -7,9 +7,15 @@
     "cSpell.words": [
         "bbox",
         "EPSG",
+        "GEOMETRYCOLLECTION",
+        "LINESTRING",
+        "MULTILINESTRING",
+        "MULTIPOINT",
+        "MULTIPOLYGON",
         "openlayers",
         "painterro",
         "qgis",
-        "reproject"
+        "reproject",
+        "Symbolizer"
     ]
 }

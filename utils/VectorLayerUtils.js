@@ -20,6 +20,16 @@ import { getDefaultImageStyle } from 'ol/format/KML';
  * @namespace
  */
 const VectorLayerUtils = {
+    /**
+     * Create a print highlight set of parameters for the given layers.
+     * 
+     * @param {object[]} layers - the layers to create the parameters for
+     * @param {string} printCrs - the CRS to use for the print
+     * @param {number} dpi - the print DPI
+     * @param {number} scaleFactor - the print scale factor
+     * 
+     * @return {object} the print highlight parameters
+     */
     createPrintHighlighParams(layers, printCrs, dpi = 96, scaleFactor = 1.0) {
         const qgisServerVersion = ConfigUtils.getConfigProp(
             "qgisServerVersion"
@@ -29,14 +39,14 @@ const VectorLayerUtils = {
             styles: [],
             labels: [],
             labelFillColors: [],
-            labelOultineColors: [],
+            labelOutlineColors: [],
             labelOutlineSizes: [],
             labelSizes: []
         };
         const defaultFeatureStyle = ConfigUtils.getConfigProp(
             "defaultFeatureStyle"
         );
-        let ensureHex = null;
+        let ensureHex;
         if (qgisServerVersion >= 3) {
             ensureHex = (rgb) => (
                 !Array.isArray(rgb)
@@ -102,7 +112,7 @@ const VectorLayerUtils = {
                         params.labelFillColors.push(
                             defaultFeatureStyle.textFill
                         );
-                        params.labelOultineColors.push(
+                        params.labelOutlineColors.push(
                             defaultFeatureStyle.textStroke
                         );
                         params.labelOutlineSizes.push(scaleFactor);
@@ -136,7 +146,7 @@ const VectorLayerUtils = {
                         params.labelFillColors.push(ensureHex(
                             feature.styleOptions.fillColor
                         ));
-                        params.labelOultineColors.push(ensureHex(
+                        params.labelOutlineColors.push(ensureHex(
                             feature.styleOptions.strokeColor
                         ));
                         params.labelOutlineSizes.push(
@@ -154,7 +164,7 @@ const VectorLayerUtils = {
                         params.labelFillColors.push(
                             defaultFeatureStyle.textFill
                         );
-                        params.labelOultineColors.push(
+                        params.labelOutlineColors.push(
                             defaultFeatureStyle.textStroke
                         );
                         params.labelOutlineSizes.push(scaleFactor);
@@ -165,8 +175,21 @@ const VectorLayerUtils = {
         }
         return params;
     },
+
+    /**
+     * Create a SLD style for the given geometry type and style options.
+     * 
+     * @param {string} geometryType - the geometry type
+     * @param {string} styleName - the style name
+     * @param {object} styleOptions - the style options
+     * @param {number} layerOpacity - the layer opacity
+     * @param {number} dpi - the print DPI
+     * @param {number} scaleFactor - the print scale factor
+     * 
+     * @return {string} the SLD style
+     */
     createSld(
-        geometrytype, styleName, styleOptions,
+        geometryType, styleName, styleOptions,
         layerOpacity, dpi = 96, scaleFactor = 1.0
     ) {
         let opts = {};
@@ -239,7 +262,7 @@ const VectorLayerUtils = {
             '</se:Fill>';
 
         let rule = null;
-        if (geometrytype.endsWith("Point")) {
+        if (geometryType.endsWith("Point")) {
             rule = '<se:PointSymbolizer>' +
                 '<se:Graphic>' +
                 '<se:Mark>' +
@@ -260,11 +283,11 @@ const VectorLayerUtils = {
                 '<se:Size>' + (2 * opts.circleRadius * dpiScale) + '</se:Size>' +
                 '</se:Graphic>' +
                 '</se:PointSymbolizer>';
-        } else if (geometrytype.endsWith("LineString")) {
+        } else if (geometryType.endsWith("LineString")) {
             rule = '<se:LineSymbolizer>' +
                 stroke +
                 '</se:LineSymbolizer>';
-        } else if (geometrytype.endsWith("Polygon")) {
+        } else if (geometryType.endsWith("Polygon")) {
             rule = '<se:PolygonSymbolizer>' +
                 stroke +
                 fill +
@@ -292,17 +315,16 @@ const VectorLayerUtils = {
         }
         return null;
     },
-    reprojectGeometry(geometry, srccrs, dstcrs) {
-        if (srccrs === dstcrs || !srccrs || !dstcrs) {
+    reprojectGeometry(geometry, srcCrs, dstCrs) {
+        if (srcCrs === dstCrs || !srcCrs || !dstCrs) {
             return geometry;
         }
         if (geometry.type === "Point") {
-            const wgscoo = CoordinatesUtils.reproject(
-                geometry.coordinates, srccrs, dstcrs
-            );
             return {
                 type: geometry.type,
-                coordinates: wgscoo
+                coordinates: CoordinatesUtils.reproject(
+                    geometry.coordinates, srcCrs, dstCrs
+                )
             };
         } else if (
             geometry.type === "LineString" ||
@@ -311,7 +333,7 @@ const VectorLayerUtils = {
             return {
                 type: geometry.type,
                 coordinates: geometry.coordinates.map(tuple => {
-                    return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
+                    return CoordinatesUtils.reproject(tuple, srcCrs, dstCrs);
                 })
             };
         } else if (
@@ -323,7 +345,7 @@ const VectorLayerUtils = {
                 coordinates: geometry.coordinates.map(ring => {
                     return ring.map(tuple => {
                         return CoordinatesUtils.reproject(
-                            tuple, srccrs, dstcrs
+                            tuple, srcCrs, dstCrs
                         );
                     });
                 })
@@ -335,7 +357,7 @@ const VectorLayerUtils = {
                     return part.map(ring => {
                         return ring.map(tuple => {
                             return CoordinatesUtils.reproject(
-                                tuple, srccrs, dstcrs
+                                tuple, srcCrs, dstCrs
                             );
                         });
                     });
@@ -345,7 +367,7 @@ const VectorLayerUtils = {
             return geometry;
         }
     },
-    wktToGeoJSON(wkt, srccrs, dstcrs, id = uuidv1()) {
+    wktToGeoJSON(wkt, srcCrs, dstCrs, id = uuidv1()) {
         wkt = wkt
             .replace(/Point(\w+)/i, "Point $1")
             .replace(/LineString(\w+)/i, "LineString $1")
@@ -353,8 +375,8 @@ const VectorLayerUtils = {
             .replace(/MultiSurface(\w*)/i, "GeometryCollection $1");
         try {
             const feature = new ol.format.WKT().readFeature(wkt, {
-                dataProjection: srccrs,
-                featureProjection: dstcrs
+                dataProjection: srcCrs,
+                featureProjection: dstCrs
             });
             const featureObj = new ol.format.GeoJSON().writeFeatureObject(
                 feature
@@ -367,6 +389,15 @@ const VectorLayerUtils = {
             return null;
         }
     },
+
+    /**
+     * Convert a GeoJSON geometry to WKT.
+     * 
+     * @param {object} gj - the GeoJSON geometry
+     * @param {number} precision - the number of decimal places to use
+     * 
+     * @return {string} the WKT representation of the geometry
+     */
     geoJSONGeomToWkt(gj, precision = 4) {
         if (gj.type === 'Feature') {
             gj = gj.geometry;
@@ -409,6 +440,14 @@ const VectorLayerUtils = {
                 throw new Error('Invalid geometry object');
         }
     },
+
+    /**
+     * Convert WKT geometry to GeoJSON.
+     * 
+     * @param {string} kml - the WKT geometry
+     * 
+     * @return {object} the GeoJSON representation of the geometry
+     */
     kmlToGeoJSON(kml) {
         const kmlFormat = new ol.format.KML({
             defaultStyle: [new ol.style.Style()]
@@ -486,6 +525,14 @@ const VectorLayerUtils = {
         }
         return features;
     },
+
+    /**
+     * Convert an array of coordinates to an array of 2D coordinates.
+     * 
+     * @param {number[]|number[][]} entry - the array of coordinates
+     * 
+     * @return {number[]|number[][]} the array of 2D coordinates
+     */
     convert3dto2d(entry) {
         if (!Array.isArray(entry)) {
             return entry;
@@ -496,6 +543,14 @@ const VectorLayerUtils = {
         }
         return entry;
     },
+
+    /**
+     * Compute the bounding box of the given features.
+     * 
+     * @param {object[]} features - the features to compute the bounding box for
+     * 
+     * @return {{crs: string, bounds: object}} the bounding box of the features
+     */
     computeFeaturesBBox(features) {
         const featureCrs = new Set();
         features.forEach(feature => {
@@ -527,6 +582,15 @@ const VectorLayerUtils = {
             bounds: bounds
         };
     },
+
+    /**
+     * Compute the bounding box of the given feature.
+     * 
+     * @param {object} feature - the feature to compute the bounding box for
+     * 
+     * @return {number[]} the bounding box of the feature as 
+     *  `[minx, miny, maxx, maxy]`
+     */
     computeFeatureBBox(feature) {
         let bounds = geojsonBbox(feature);
         // Discard z component
@@ -535,6 +599,14 @@ const VectorLayerUtils = {
         }
         return bounds;
     },
+
+    /**
+     * Compute the center of the given feature.
+     * 
+     * @param {object} feature - the feature to compute the center for
+     * 
+     * @return {number[]} the center of the feature as `[x, y]`
+     */
     getFeatureCenter(feature) {
         const geojson = new ol.format.GeoJSON().readFeature(feature);
         const geometry = geojson.getGeometry();
@@ -542,12 +614,13 @@ const VectorLayerUtils = {
         let center = null;
         switch (type) {
             case "Polygon":
-                center = geometry.getInteriorPoint().getCoordinates();
+                center = geometry.getInteriorPoint()
+                    .getCoordinates().splice(0, 2);
                 break;
             case "MultiPolygon":
                 center = geometry.getInteriorPoints().getClosestPoint(
                     ol.extent.getCenter(geometry.getExtent())
-                );
+                ).splice(0, 2);
                 break;
             case "Point":
                 center = geometry.getCoordinates();
