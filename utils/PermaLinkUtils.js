@@ -8,7 +8,7 @@
 
 import url from 'url';
 import axios from 'axios';
-import {LayerRole} from '../actions/layers';
+import { LayerRole } from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 
@@ -30,7 +30,8 @@ export const UrlParams = {
                 return;
             }
         }
-        // Timeout: avoid wierd issue where Firefox triggers a full reload when invoking history-replaceState directly
+        // Timeout: avoid weird issue where Firefox triggers a full
+        // reload when invoking history-replaceState directly
         setTimeout(() => {
             const urlObj = url.parse(window.location.href, true);
             urlObj.query = Object.assign(urlObj.query, dict);
@@ -42,7 +43,7 @@ export const UrlParams = {
                 }
             }
             delete urlObj.search;
-            history.replaceState({id: urlObj.host}, '', url.format(urlObj));
+            history.replaceState({ id: urlObj.host }, '', url.format(urlObj));
         }, 0);
     },
     getParam(key) {
@@ -56,13 +57,17 @@ export const UrlParams = {
     getParams() {
         const query = url.parse(window.location.href, true).query;
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
-            return {...UrlQuery, ...query};
+            return { ...UrlQuery, ...query };
         } else {
             return query;
         }
     },
     clear() {
-        this.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, bk: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined}, true);
+        this.updateParams({
+            k: undefined, t: undefined, l: undefined, bl: undefined,
+            bk: undefined, c: undefined, s: undefined, e: undefined,
+            crs: undefined, st: undefined, sp: undefined
+        }, true);
     },
     getFullUrl() {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
@@ -84,18 +89,31 @@ export function generatePermaLink(state, callback, user = false) {
     }
     const permalinkState = {};
     if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
-        permalinkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
+        permalinkState.layers = state.layers.flat.filter(
+            layer => layer.role !== LayerRole.BACKGROUND
+        );
     } else {
         // Only store redlining layers
-        const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
-        const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
-            .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
-            .map(entry => ({...entry.layer, pos: entry.pos}));
+        const exploded = LayerUtils.explodeLayers(
+            state.layers.flat.filter(
+                layer => layer.role !== LayerRole.BACKGROUND
+            )
+        );
+        const redliningLayers = exploded
+            .map((entry, idx) => ({ ...entry, pos: idx }))
+            .filter(entry => (
+                entry.layer.role === LayerRole.USERLAYER &&
+                entry.layer.type === 'vector'
+            ))
+            .map(entry => ({ ...entry.layer, pos: entry.pos }));
         permalinkState.layers = redliningLayers;
     }
     permalinkState.url = fullUrl;
     const route = user ? "userpermalink" : "createpermalink";
-    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState)
+    const url = ConfigUtils.getConfigProp(
+        "permalinkServiceUrl"
+    ).replace(/\/$/, '') + "/" + route;
+    axios.post(url, permalinkState)
         .then(response => callback(response.data.permalink || fullUrl))
         .catch(() => callback(fullUrl));
 }
@@ -103,18 +121,27 @@ export function generatePermaLink(state, callback, user = false) {
 export function resolvePermaLink(initialParams, callback) {
     const key = UrlParams.getParam('k');
     const bkey = UrlParams.getParam('bk');
+    const url = ConfigUtils.getConfigProp(
+        "permalinkServiceUrl"
+    ).replace(/\/$/, '');
     if (key) {
-        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
+        axios.get(url + "/resolvepermalink?key=" + key)
             .then(response => {
-                callback({...initialParams, ...(response.data.query || {})}, response.data.state || {});
+                callback({
+                    ...initialParams,
+                    ...(response.data.query || {})
+                }, response.data.state || {});
             })
             .catch(() => {
                 callback(initialParams, {});
             });
     } else if (bkey) {
-        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
+        axios.get(url + "/bookmarks/" + bkey)
             .then(response => {
-                callback({...initialParams, ...(response.data.query || {})}, response.data.state || {});
+                callback({
+                    ...initialParams,
+                    ...(response.data.query || {})
+                }, response.data.state || {});
             })
             .catch(() => {
                 callback(initialParams, {});
@@ -126,7 +153,10 @@ export function resolvePermaLink(initialParams, callback) {
 
 export function getUserBookmarks(user, callback) {
     if (user) {
-        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/")
+        const url = ConfigUtils.getConfigProp(
+            "permalinkServiceUrl"
+        ).replace(/\/$/, '');
+        axios.get(url + "/bookmarks/")
             .then(response => {
                 callback(response.data || []);
             })
@@ -138,7 +168,10 @@ export function getUserBookmarks(user, callback) {
 
 export function removeBookmark(bkey, callback) {
     if (bkey) {
-        axios.delete(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
+        const url = ConfigUtils.getConfigProp(
+            "permalinkServiceUrl"
+        ).replace(/\/$/, '');
+        axios.delete(url + "/bookmarks/" + bkey)
             .then(() => {
                 callback(true);
             }).catch(() => callback(false));
@@ -151,19 +184,29 @@ export function createBookmark(state, description, callback) {
         return;
     }
     // Only store redlining layers
-    const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
+    const exploded = LayerUtils.explodeLayers(
+        state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND)
+    );
     const bookmarkState = {};
     if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
-        bookmarkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
+        bookmarkState.layers = state.layers.flat.filter(
+            layer => layer.role !== LayerRole.BACKGROUND
+        );
     } else {
-        const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
-            .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
-            .map(entry => ({...entry.layer, pos: entry.pos}));
+        const redliningLayers = exploded
+            .map((entry, idx) => ({ ...entry, pos: idx }))
+            .filter(entry => (
+                entry.layer.role === LayerRole.USERLAYER &&
+                entry.layer.type === 'vector'
+            ))
+            .map(entry => ({ ...entry.layer, pos: entry.pos }));
         bookmarkState.layers = redliningLayers;
     }
     bookmarkState.url = UrlParams.getFullUrl();
-    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" +
-        "?description=" + description, bookmarkState)
+    const url = ConfigUtils.getConfigProp(
+        "permalinkServiceUrl"
+    ).replace(/\/$/, '');
+    axios.post(url + "/bookmarks/?description=" + description, bookmarkState)
         .then(() => callback(true))
         .catch(() => callback(false));
 }
@@ -174,18 +217,29 @@ export function updateBookmark(state, bkey, description, callback) {
         return;
     }
     // Only store redlining layers
-    const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
+    const exploded = LayerUtils.explodeLayers(
+        state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND)
+    );
     const bookmarkState = {};
     if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
-        bookmarkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
+        bookmarkState.layers = state.layers.flat.filter(
+            layer => layer.role !== LayerRole.BACKGROUND
+        );
     } else {
-        const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
-            .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
-            .map(entry => ({...entry.layer, pos: entry.pos}));
+        const redliningLayers = exploded
+            .map((entry, idx) => ({ ...entry, pos: idx }))
+            .filter(entry => (
+                entry.layer.role === LayerRole.USERLAYER &&
+                entry.layer.type === 'vector'
+            ))
+            .map(entry => ({ ...entry.layer, pos: entry.pos }));
         bookmarkState.layers = redliningLayers;
     }
     bookmarkState.url = UrlParams.getFullUrl();
-    axios.put(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey +
+    const url = ConfigUtils.getConfigProp(
+        "permalinkServiceUrl"
+    ).replace(/\/$/, '');
+    axios.put(url + "/bookmarks/" + bkey +
         "?description=" + description, bookmarkState)
         .then(() => callback(true))
         .catch(() => callback(false));

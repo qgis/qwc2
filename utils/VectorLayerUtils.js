@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {v1 as uuidv1} from 'uuid';
+import { v1 as uuidv1 } from 'uuid';
 import ol from 'openlayers';
 import isEmpty from 'lodash.isempty';
 import geojsonBbox from 'geojson-bounding-box';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
-import {getDefaultImageStyle} from 'ol/format/KML';
+import { getDefaultImageStyle } from 'ol/format/KML';
 
 /**
  * Utility functions for working with vector layers.
@@ -21,7 +21,9 @@ import {getDefaultImageStyle} from 'ol/format/KML';
  */
 const VectorLayerUtils = {
     createPrintHighlighParams(layers, printCrs, dpi = 96, scaleFactor = 1.0) {
-        const qgisServerVersion = ConfigUtils.getConfigProp("qgisServerVersion") || 3;
+        const qgisServerVersion = ConfigUtils.getConfigProp(
+            "qgisServerVersion"
+        ) || 3;
         const params = {
             geoms: [],
             styles: [],
@@ -31,16 +33,40 @@ const VectorLayerUtils = {
             labelOutlineSizes: [],
             labelSizes: []
         };
-        const defaultFeatureStyle = ConfigUtils.getConfigProp("defaultFeatureStyle");
+        const defaultFeatureStyle = ConfigUtils.getConfigProp(
+            "defaultFeatureStyle"
+        );
         let ensureHex = null;
         if (qgisServerVersion >= 3) {
-            ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : '#' + [255 - (rgb.length > 3 ? rgb[3] : 1) * 255, ...rgb.slice(0, 3)].map(v => v.toString(16).padStart(2, '0')).join(''));
+            ensureHex = (rgb) => (
+                !Array.isArray(rgb)
+                    ? rgb
+                    : '#' + [
+                        255 - (rgb.length > 3 ? rgb[3] : 1) * 255,
+                        ...rgb.slice(0, 3)
+                    ].map(v => v.toString(16).padStart(2, '0')).join('')
+            );
         } else {
-            ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
+            ensureHex = (rgb) => (
+                !Array.isArray(rgb)
+                    ? rgb :
+                    (
+                        '#' + (
+                            0x1000000 + (
+                                rgb[2] | (rgb[1] << 8) | (rgb[0] << 16)
+                            )
+                        ).toString(16).slice(1)
+                    )
+            );
         }
 
         for (const layer of layers.slice(0).reverse()) {
-            if (layer.type !== 'vector' || (layer.features || []).length === 0 || layer.visibility === false || layer.skipPrint === true) {
+            if (
+                layer.type !== 'vector' ||
+                (layer.features || []).length === 0 ||
+                layer.visibility === false ||
+                layer.skipPrint === true
+            ) {
                 continue;
             }
             for (const feature of layer.features) {
@@ -48,28 +74,50 @@ const VectorLayerUtils = {
                     continue;
                 }
                 const properties = feature.properties || {};
-                let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
-                if (feature.geometry.type === "LineString" && !isEmpty(properties.segment_labels)) {
-                    // Split line into single segments and label them individually
+                let geometry = VectorLayerUtils.reprojectGeometry(
+                    feature.geometry, feature.crs || printCrs, printCrs
+                );
+                if (
+                    feature.geometry.type === "LineString" &&
+                    !isEmpty(properties.segment_labels)
+                ) {
+                    // Split line into single segments and label
+                    // them individually
                     const coords = geometry.coordinates;
                     for (let i = 0; i < coords.length - 1; ++i) {
                         const segment = {
                             type: "LineString",
                             coordinates: [coords[i], coords[i + 1]]
                         };
-                        params.styles.push(VectorLayerUtils.createSld(segment.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
+                        params.styles.push(
+                            VectorLayerUtils.createSld(
+                                segment.type, feature.styleName,
+                                feature.styleOptions,
+                                layer.opacity, dpi, scaleFactor
+                            ));
                         params.labels.push(properties.segment_labels[i] || " ");
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(segment, printCrs === "EPSG:4326" ? 4 : 2));
-                        params.labelFillColors.push(defaultFeatureStyle.textFill);
-                        params.labelOultineColors.push(defaultFeatureStyle.textStroke);
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(
+                            segment, printCrs === "EPSG:4326" ? 4 : 2
+                        ));
+                        params.labelFillColors.push(
+                            defaultFeatureStyle.textFill
+                        );
+                        params.labelOultineColors.push(
+                            defaultFeatureStyle.textStroke
+                        );
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                     }
                 } else {
-                    params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
+                    params.styles.push(VectorLayerUtils.createSld(
+                        geometry.type, feature.styleName,
+                        feature.styleOptions, layer.opacity,
+                        dpi, scaleFactor
+                    ));
                     params.labels.push(properties.label || " ");
                     if (feature.styleName === "text") {
-                        // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
+                        // Make point a tiny square, so that QGIS server
+                        // centers the text inside the polygon when labelling
                         const x = geometry.coordinates[0];
                         const y = geometry.coordinates[1];
                         geometry = {
@@ -82,15 +130,33 @@ const VectorLayerUtils = {
                                 [x - 0.01, y - 0.01]
                             ]]
                         };
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
-                        params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
-                        params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
-                        params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth * 0.5);
-                        params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(
+                            geometry, printCrs === "EPSG:4326" ? 4 : 2
+                        ));
+                        params.labelFillColors.push(ensureHex(
+                            feature.styleOptions.fillColor
+                        ));
+                        params.labelOultineColors.push(ensureHex(
+                            feature.styleOptions.strokeColor
+                        ));
+                        params.labelOutlineSizes.push(
+                            scaleFactor * feature.styleOptions.strokeWidth * 0.5
+                        );
+                        params.labelSizes.push(Math.round(
+                            10 * feature.styleOptions.strokeWidth * scaleFactor
+                        ));
                     } else {
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
-                        params.labelFillColors.push(defaultFeatureStyle.textFill);
-                        params.labelOultineColors.push(defaultFeatureStyle.textStroke);
+                        params.geoms.push(
+                            VectorLayerUtils.geoJSONGeomToWkt(
+                                geometry, printCrs === "EPSG:4326" ? 4 : 2
+                            )
+                        );
+                        params.labelFillColors.push(
+                            defaultFeatureStyle.textFill
+                        );
+                        params.labelOultineColors.push(
+                            defaultFeatureStyle.textStroke
+                        );
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                     }
@@ -99,7 +165,10 @@ const VectorLayerUtils = {
         }
         return params;
     },
-    createSld(geometrytype, styleName, styleOptions, layerOpacity, dpi = 96, scaleFactor = 1.0) {
+    createSld(
+        geometrytype, styleName, styleOptions,
+        layerOpacity, dpi = 96, scaleFactor = 1.0
+    ) {
         let opts = {};
         // Special cases
         if (styleName === 'text') {
@@ -117,12 +186,23 @@ const VectorLayerUtils = {
             };
         } else {
             // Default style
-            opts = {...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...styleOptions};
+            opts = {
+                ...ConfigUtils.getConfigProp("defaultFeatureStyle"),
+                ...styleOptions
+            };
         }
         const dpiScale = dpi / 96 * scaleFactor;
 
-        const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
-        const opacity =  (rgb) => {
+        const ensureHex = (rgb) => (
+            !Array.isArray(rgb)
+                ? rgb
+                : (
+                    '#' + (
+                        0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))
+                    ).toString(16).slice(1)
+                )
+        );
+        const opacity = (rgb) => {
             if (Array.isArray(rgb) && rgb.length > 3) {
                 return rgb[3] * layerOpacity / 255;
             }
@@ -130,54 +210,85 @@ const VectorLayerUtils = {
         };
 
         const stroke = '<se:Stroke>' +
-                     '<se:SvgParameter name="stroke">' + ensureHex(opts.strokeColor) + '</se:SvgParameter>' +
-                     '<se:SvgParameter name="stroke-opacity">' + opacity(opts.strokeColor) + '</se:SvgParameter>' +
-                     '<se:SvgParameter name="stroke-width">' + (opts.strokeWidth * dpiScale) + '</se:SvgParameter>' +
-                     '<se:SvgParameter name="stroke-linejoin">round</se:SvgParameter>' +
-                     (!isEmpty(opts.strokeDash) ? '<CssParameter name="stroke-dasharray">' + opts.strokeDash.join(' ') + '</CssParameter>' : '') +
-                     '</se:Stroke>';
+            '<se:SvgParameter name="stroke">' +
+            ensureHex(opts.strokeColor) +
+            '</se:SvgParameter>' +
+            '<se:SvgParameter name="stroke-opacity">' +
+            opacity(opts.strokeColor) +
+            '</se:SvgParameter>' +
+            '<se:SvgParameter name="stroke-width">' +
+            (opts.strokeWidth * dpiScale) +
+            '</se:SvgParameter>' +
+            '<se:SvgParameter name="stroke-linejoin">round</se:SvgParameter>' +
+            (
+                !isEmpty(opts.strokeDash)
+                    ? (
+                        '<CssParameter name="stroke-dasharray">' +
+                        opts.strokeDash.join(' ') +
+                        '</CssParameter>'
+                    ) : ''
+            ) +
+            '</se:Stroke>';
         const fill = '<se:Fill>' +
-                   '<se:SvgParameter name="fill">' + ensureHex(opts.fillColor) + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="fill-opacity">' + opacity(opts.fillColor) + '</se:SvgParameter>' +
-                   '</se:Fill>';
+            '<se:SvgParameter name="fill">' +
+            ensureHex(opts.fillColor) +
+            '</se:SvgParameter>' +
+            '<se:SvgParameter name="fill-opacity">' +
+            opacity(opts.fillColor) +
+            '</se:SvgParameter>' +
+            '</se:Fill>';
 
         let rule = null;
         if (geometrytype.endsWith("Point")) {
             rule = '<se:PointSymbolizer>' +
-                   '<se:Graphic>' +
-                   '<se:Mark>' +
-                   '<se:WellKnownName>circle</se:WellKnownName>' +
-                   '<se:Stroke>' +
-                   '<se:SvgParameter name="stroke">' + ensureHex(opts.strokeColor) + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-opacity">' + opacity(opts.strokeColor) + '</se:SvgParameter>' +
-                   '<se:SvgParameter name="stroke-width">' + (opts.strokeWidth * dpiScale) + '</se:SvgParameter>' +
-                   '</se:Stroke>' +
-                   fill +
-                   '</se:Mark>' +
-                   '<se:Size>' + (2 * opts.circleRadius * dpiScale) + '</se:Size>' +
-                   '</se:Graphic>' +
-                   '</se:PointSymbolizer>';
+                '<se:Graphic>' +
+                '<se:Mark>' +
+                '<se:WellKnownName>circle</se:WellKnownName>' +
+                '<se:Stroke>' +
+                '<se:SvgParameter name="stroke">' +
+                ensureHex(opts.strokeColor) +
+                '</se:SvgParameter>' +
+                '<se:SvgParameter name="stroke-opacity">' +
+                opacity(opts.strokeColor) +
+                '</se:SvgParameter>' +
+                '<se:SvgParameter name="stroke-width">' +
+                (opts.strokeWidth * dpiScale) +
+                '</se:SvgParameter>' +
+                '</se:Stroke>' +
+                fill +
+                '</se:Mark>' +
+                '<se:Size>' + (2 * opts.circleRadius * dpiScale) + '</se:Size>' +
+                '</se:Graphic>' +
+                '</se:PointSymbolizer>';
         } else if (geometrytype.endsWith("LineString")) {
             rule = '<se:LineSymbolizer>' +
-                   stroke +
-                   '</se:LineSymbolizer>';
+                stroke +
+                '</se:LineSymbolizer>';
         } else if (geometrytype.endsWith("Polygon")) {
             rule = '<se:PolygonSymbolizer>' +
-                   stroke +
-                   fill +
-                   '</se:PolygonSymbolizer>';
+                stroke +
+                fill +
+                '</se:PolygonSymbolizer>';
         }
         if (rule) {
             return '<?xml version="1.0" encoding="UTF-8"?>' +
-                   '<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:se="http://www.opengis.net/se">' +
-                   '<UserStyle>' +
-                   '<se:FeatureTypeStyle>' +
-                   '<se:Rule>' +
-                   rule +
-                   '</se:Rule>' +
-                   '</se:FeatureTypeStyle>' +
-                   '</UserStyle>' +
-                   '</StyledLayerDescriptor>';
+                '<StyledLayerDescriptor' +
+                ' xmlns="http://www.opengis.net/sld"' +
+                ' xmlns:ogc="http://www.opengis.net/ogc"' +
+                ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+                ' version="1.1.0"' +
+                ' xmlns:xlink="http://www.w3.org/1999/xlink"' +
+                ' xsi:schemaLocation="http://www.opengis.net/sld ' +
+                'http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd"' +
+                ' xmlns:se="http://www.opengis.net/se">' +
+                '<UserStyle>' +
+                '<se:FeatureTypeStyle>' +
+                '<se:Rule>' +
+                rule +
+                '</se:Rule>' +
+                '</se:FeatureTypeStyle>' +
+                '</UserStyle>' +
+                '</StyledLayerDescriptor>';
         }
         return null;
     },
@@ -186,24 +297,34 @@ const VectorLayerUtils = {
             return geometry;
         }
         if (geometry.type === "Point") {
-            const wgscoo = CoordinatesUtils.reproject(geometry.coordinates, srccrs, dstcrs);
+            const wgscoo = CoordinatesUtils.reproject(
+                geometry.coordinates, srccrs, dstcrs
+            );
             return {
                 type: geometry.type,
                 coordinates: wgscoo
             };
-        } else if (geometry.type === "LineString" || geometry.type === "MultiPoint") {
+        } else if (
+            geometry.type === "LineString" ||
+            geometry.type === "MultiPoint"
+        ) {
             return {
                 type: geometry.type,
                 coordinates: geometry.coordinates.map(tuple => {
                     return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
                 })
             };
-        } else if (geometry.type === "Polygon" || geometry.type === "MultiLineString") {
+        } else if (
+            geometry.type === "Polygon" ||
+            geometry.type === "MultiLineString"
+        ) {
             return {
                 type: geometry.type,
                 coordinates: geometry.coordinates.map(ring => {
                     return ring.map(tuple => {
-                        return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
+                        return CoordinatesUtils.reproject(
+                            tuple, srccrs, dstcrs
+                        );
                     });
                 })
             };
@@ -213,7 +334,9 @@ const VectorLayerUtils = {
                 coordinates: geometry.coordinates.map(part => {
                     return part.map(ring => {
                         return ring.map(tuple => {
-                            return CoordinatesUtils.reproject(tuple, srccrs, dstcrs);
+                            return CoordinatesUtils.reproject(
+                                tuple, srccrs, dstcrs
+                            );
                         });
                     });
                 })
@@ -233,7 +356,9 @@ const VectorLayerUtils = {
                 dataProjection: srccrs,
                 featureProjection: dstcrs
             });
-            const featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
+            const featureObj = new ol.format.GeoJSON().writeFeatureObject(
+                feature
+            );
             featureObj.id = id;
             return featureObj;
         } catch (e) {
@@ -247,35 +372,47 @@ const VectorLayerUtils = {
             gj = gj.geometry;
         }
 
-        const wrapParens = (s) =>  { return '(' + s + ')'; };
-        const pairWKT = (c) => { return c.map(x => x.toFixed(precision)).join(' '); };
-        const ringWKT = (r) => { return r.map(pairWKT).join(', '); };
-        const ringsWKT = (r) => { return r.map(ringWKT).map(wrapParens).join(', '); };
-        const multiRingsWKT = (r) => { return r.map(ringsWKT).map(wrapParens).join(', '); };
+        const wrapParens = (s) => {
+            return '(' + s + ')';
+        };
+        const pairWKT = (c) => {
+            return c.map(x => x.toFixed(precision)).join(' ');
+        };
+        const ringWKT = (r) => {
+            return r.map(pairWKT).join(', ');
+        };
+        const ringsWKT = (r) => {
+            return r.map(ringWKT).map(wrapParens).join(', ');
+        };
+        const multiRingsWKT = (r) => {
+            return r.map(ringsWKT).map(wrapParens).join(', ');
+        };
 
         switch (gj.type) {
-        case 'Point':
-            return 'POINT (' + pairWKT(gj.coordinates) + ')';
-        case 'LineString':
-            return 'LINESTRING (' + ringWKT(gj.coordinates) + ')';
-        case 'Polygon':
-            return 'POLYGON (' + ringsWKT(gj.coordinates) + ')';
-        case 'MultiPoint':
-            return 'MULTIPOINT (' + ringWKT(gj.coordinates) + ')';
-        case 'MultiPolygon':
-            return 'MULTIPOLYGON (' + multiRingsWKT(gj.coordinates) + ')';
-        case 'MultiLineString':
-            return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
-        case 'GeometryCollection':
-            return 'GEOMETRYCOLLECTION (' + gj.geometries.map(
-                (x) => VectorLayerUtils.geoJSONGeomToWkt(x, precision)
-            ).join(', ') + ')';
-        default:
-            throw new Error('Invalid geometry object');
+            case 'Point':
+                return 'POINT (' + pairWKT(gj.coordinates) + ')';
+            case 'LineString':
+                return 'LINESTRING (' + ringWKT(gj.coordinates) + ')';
+            case 'Polygon':
+                return 'POLYGON (' + ringsWKT(gj.coordinates) + ')';
+            case 'MultiPoint':
+                return 'MULTIPOINT (' + ringWKT(gj.coordinates) + ')';
+            case 'MultiPolygon':
+                return 'MULTIPOLYGON (' + multiRingsWKT(gj.coordinates) + ')';
+            case 'MultiLineString':
+                return 'MULTILINESTRING (' + ringsWKT(gj.coordinates) + ')';
+            case 'GeometryCollection':
+                return 'GEOMETRYCOLLECTION (' + gj.geometries.map(
+                    (x) => VectorLayerUtils.geoJSONGeomToWkt(x, precision)
+                ).join(', ') + ')';
+            default:
+                throw new Error('Invalid geometry object');
         }
     },
     kmlToGeoJSON(kml) {
-        const kmlFormat = new ol.format.KML({defaultStyle: [new ol.style.Style()]});
+        const kmlFormat = new ol.format.KML({
+            defaultStyle: [new ol.style.Style()]
+        });
         const geojsonFormat = new ol.format.GeoJSON();
         const features = [];
         let fid = 0;
@@ -284,17 +421,38 @@ const VectorLayerUtils = {
             style = style[0] || style;
 
             const styleOptions = {
-                strokeColor: style.getStroke() ? style.getStroke().getColor() : [0, 0, 0, 1],
-                strokeWidth: style.getStroke() ? style.getStroke().getWidth() : 1,
-                strokeDash: style.getStroke() ? style.getStroke().getLineDash() : [],
-                fillColor: style.getFill() ? style.getFill().getColor() : [255, 255, 255, 1],
-                textFill: style.getText() && style.getText().getFill() ? style.getText().getFill().getColor() : [0, 0, 0, 1],
-                textStroke: style.getText() && style.getText().getStroke() ? style.getText().getStroke().getColor() : [255, 255, 255, 1]
+                strokeColor: style.getStroke()
+                    ? style.getStroke().getColor()
+                    : [0, 0, 0, 1],
+                strokeWidth: style.getStroke()
+                    ? style.getStroke().getWidth()
+                    : 1,
+                strokeDash: style.getStroke()
+                    ? style.getStroke().getLineDash()
+                    : [],
+                fillColor: style.getFill()
+                    ? style.getFill().getColor()
+                    : [255, 255, 255, 1],
+                textFill: style.getText() && style.getText().getFill()
+                    ? style.getText().getFill().getColor()
+                    : [0, 0, 0, 1],
+                textStroke: style.getText() && style.getText().getStroke()
+                    ? style.getText().getStroke().getColor()
+                    : [255, 255, 255, 1]
             };
-            if (style.getImage() && style.getImage() !== getDefaultImageStyle() && style.getImage().getSrc()) {
-                // FIXME: Uses private members of ol.style.Icon, style.getImage().getAnchor() returns null because style.getImage.getSize() is null because the the image is not yet loaded
+            if (
+                style.getImage() &&
+                style.getImage() !== getDefaultImageStyle() &&
+                style.getImage().getSrc()
+            ) {
+                // FIXME: Uses private members of ol.style.Icon, 
+                // style.getImage().getAnchor() returns null because 
+                // style.getImage.getSize() is null because the the image
+                // is not yet loaded
                 const anchor = style.getImage().anchor_ || [0.5, 0.5];
-                const anchorOrigin = (style.getImage().anchorOrigin_ || "").split("-");
+                const anchorOrigin = (
+                    style.getImage().anchorOrigin_ || ""
+                ).split("-");
                 if (anchorOrigin.includes("right")) {
                     anchor[0] = 1 - anchor[0];
                 }
@@ -313,7 +471,9 @@ const VectorLayerUtils = {
                 properties: {}
             });
             const properties = olFeature.getProperties();
-            const excludedProperties = ['visibility', olFeature.getGeometryName()];
+            const excludedProperties = [
+                'visibility', olFeature.getGeometryName()
+            ];
             for (const key of Object.keys(properties)) {
                 if (!excludedProperties.includes(key)) {
                     feature.properties[key] = properties[key];
@@ -343,12 +503,19 @@ const VectorLayerUtils = {
                 featureCrs.add(feature.crs);
             }
         });
-        const bboxCrs = featureCrs.size === 1 ? [...featureCrs.keys()][0] : "EPSG:4326";
+        const bboxCrs = featureCrs.size === 1
+            ? [...featureCrs.keys()][0]
+            : "EPSG:4326";
         let bounds = geojsonBbox({
             type: "FeatureCollection",
-            features: features.filter(feature => feature.geometry).map(feature => ({
+            features: features.filter(
+                feature => feature.geometry
+            ).map(feature => ({
                 ...feature,
-                geometry: feature.crs ? VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, bboxCrs) : feature.geometry
+                geometry: feature.crs
+                    ? VectorLayerUtils.reprojectGeometry(
+                        feature.geometry, feature.crs, bboxCrs
+                    ) : feature.geometry
             }))
         });
         // Discard z component
@@ -374,29 +541,35 @@ const VectorLayerUtils = {
         const type = geometry.getType();
         let center = null;
         switch (type) {
-        case "Polygon":
-            center = geometry.getInteriorPoint().getCoordinates();
-            break;
-        case "MultiPolygon":
-            center = geometry.getInteriorPoints().getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-            break;
-        case "Point":
-            center = geometry.getCoordinates();
-            break;
-        case "MultiPoint":
-            center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-            break;
-        case "LineString":
-            center = geometry.getCoordinateAt(0.5);
-            break;
-        case "MultiLineString":
-            center = geometry.getClosestPoint(ol.extent.getCenter(geometry.getExtent()));
-            break;
-        case "Circle":
-            center = geometry.getCenter();
-            break;
-        default:
-            break;
+            case "Polygon":
+                center = geometry.getInteriorPoint().getCoordinates();
+                break;
+            case "MultiPolygon":
+                center = geometry.getInteriorPoints().getClosestPoint(
+                    ol.extent.getCenter(geometry.getExtent())
+                );
+                break;
+            case "Point":
+                center = geometry.getCoordinates();
+                break;
+            case "MultiPoint":
+                center = geometry.getClosestPoint(
+                    ol.extent.getCenter(geometry.getExtent())
+                );
+                break;
+            case "LineString":
+                center = geometry.getCoordinateAt(0.5);
+                break;
+            case "MultiLineString":
+                center = geometry.getClosestPoint(
+                    ol.extent.getCenter(geometry.getExtent())
+                );
+                break;
+            case "Circle":
+                center = geometry.getCenter();
+                break;
+            default:
+                break;
         }
         return center;
     }

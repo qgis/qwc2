@@ -12,7 +12,8 @@ import StandardStore from '../stores/StandardStore';
 import '../components/style/ModalDialog.css';
 
 export function showImageEditor(imageData, imageDataCallback) {
-    // Do old-school JS rather than react portal as portal event bubbling messes up Painterro
+    // Do old-school JS rather than react portal as portal
+    // event bubbling messes up Painterro
     const modalDialogContainer = document.createElement("div");
     modalDialogContainer.className = "modal-dialog-container";
 
@@ -54,7 +55,8 @@ export function showImageEditor(imageData, imageDataCallback) {
     window.ptro = Painterro({
         id: 'painterro',
         hiddenTools: ['open'],
-        language: StandardStore.get().getState().locale.current.slice(0, 2).toLowerCase(),
+        language: StandardStore.get().getState()
+            .locale.current.slice(0, 2).toLowerCase(),
         onBeforeClose: (hasUnsaved, doClose) => {
             if (hasUnsaved) {
                 // eslint-disable-next-line

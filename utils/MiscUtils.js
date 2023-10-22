@@ -43,7 +43,11 @@ const MiscUtils = {
         let match = null;
         while ((match = urlRegEx.exec(value))) {
             // If URL is part of a HTML attribute, don't add anchor
-            if (value.substring(match.index - 2, match.index).match(/^=['"]$/) === null) {
+            if (
+                value.substring(
+                    match.index - 2, match.index
+                ).match(/^=['"]$/) === null
+            ) {
                 const url = match[0].substr(match[1].length);
                 let protoUrl = url;
                 if (match[2] === undefined) {
@@ -54,8 +58,18 @@ const MiscUtils = {
                     }
                 }
                 const pos = match.index + match[1].length;
-                const anchor = "<a href=\"" + MiscUtils.htmlEncode(protoUrl) + "\" target=\"_blank\">" + MiscUtils.htmlEncode(url) + "</a>";
-                value = value.substring(0, pos) + anchor + value.substring(pos + url.length);
+                const anchor = (
+                    "<a href=\"" + 
+                    MiscUtils.htmlEncode(protoUrl) + 
+                    "\" target=\"_blank\">" + 
+                    MiscUtils.htmlEncode(url) + 
+                    "</a>"
+                );
+                value = (
+                    value.substring(0, pos) + 
+                    anchor + 
+                    value.substring(pos + url.length)
+                );
                 urlRegEx.lastIndex = pos + anchor.length;
             }
         }

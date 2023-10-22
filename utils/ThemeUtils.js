@@ -8,11 +8,11 @@
 
 import isEmpty from 'lodash.isempty';
 import url from 'url';
-import {v4 as uuidv4} from 'uuid';
-import {remove as removeDiacritics} from 'diacritics';
+import { v4 as uuidv4 } from 'uuid';
+import { remove as removeDiacritics } from 'diacritics';
 
-import {SearchResultType} from '../actions/search';
-import {LayerRole} from '../actions/layers';
+import { SearchResultType } from '../actions/search';
+import { LayerRole } from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import LayerUtils from './LayerUtils';
 
@@ -44,7 +44,9 @@ const ThemeUtils = {
             if (!entry.name) {
                 continue;
             }
-            let bgLayer = themes.backgroundLayers.find(lyr => lyr.name === entry.name);
+            let bgLayer = themes.backgroundLayers.find(
+                lyr => lyr.name === entry.name
+            );
             if (bgLayer) {
                 if (entry.visibility === true) {
                     defaultVisibleIdx = bgLayers.length;
@@ -57,26 +59,48 @@ const ThemeUtils = {
                     role: LayerRole.BACKGROUND,
                     thumbnail: bgLayer.thumbnail || "img/mapthumbs/default.jpg",
                     visibility: false,
-                    opacity: bgLayer.opacity !== undefined ? bgLayer.opacity : 255
+                    opacity: bgLayer.opacity !== undefined
+                        ? bgLayer.opacity
+                        : 255
                 };
                 if (bgLayer.resource) {
                     bgLayer.id = uuidv4();
                     bgLayer.type = "placeholder";
-                    const params = LayerUtils.splitLayerUrlParam(bgLayer.resource);
+                    const params = LayerUtils.splitLayerUrlParam(
+                        bgLayer.resource
+                    );
                     params.id = bgLayer.id;
                     const key = params.type + ":" + params.url;
-                    (externalLayers[key] = externalLayers[key] || []).push(params);
+                    (
+                        externalLayers[key] = externalLayers[key] || []
+                    ).push(params);
                     delete bgLayer.resource;
                 } else if (bgLayer.type === "wms") {
-                    bgLayer.version = bgLayer.params.VERSION || bgLayer.version || themes.defaultWMSVersion || "1.3.0";
+                    bgLayer.version = (
+                        bgLayer.params.VERSION ||
+                        bgLayer.version ||
+                        themes.defaultWMSVersion ||
+                        "1.3.0"
+                    );
                 } else if (bgLayer.type === "group") {
                     bgLayer.items = bgLayer.items.map(item => {
                         if (item.ref) {
-                            const sublayer = themes.backgroundLayers.find(l => l.name === item.ref);
+                            const sublayer = themes.backgroundLayers.find(
+                                l => l.name === item.ref
+                            );
                             if (sublayer) {
-                                item = {...item, ...sublayer, ...LayerUtils.buildWMSLayerParams(sublayer)};
+                                item = {
+                                    ...item,
+                                    ...sublayer,
+                                    ...LayerUtils.buildWMSLayerParams(sublayer)
+                                };
                                 if (item.type === "wms") {
-                                    item.version = item.params.VERSION || item.version || themes.defaultWMSVersion || "1.3.0";
+                                    item.version = (
+                                        item.params.VERSION ||
+                                        item.version ||
+                                        themes.defaultWMSVersion ||
+                                        "1.3.0"
+                                    );
                                 }
                                 delete item.ref;
                             } else {
@@ -117,7 +141,9 @@ const ThemeUtils = {
             name: theme.name,
             title: theme.title,
             bbox: theme.bbox,
-            sublayers: (Array.isArray(subLayers) && subLayers.length) ? subLayers : theme.sublayers,
+            sublayers: (
+                Array.isArray(subLayers) && subLayers.length
+            ) ? subLayers : theme.sublayers,
             tiled: theme.tiled,
             tileSize: theme.tileSize,
             ratio: !theme.tiled ? 1 : undefined,
@@ -126,23 +152,38 @@ const ThemeUtils = {
             rev: +new Date(),
             role: role,
             attribution: theme.attribution,
-            legendUrl: ThemeUtils.inheritBaseUrlParams(theme.legendUrl, theme.url, baseParams),
-            printUrl: ThemeUtils.inheritBaseUrlParams(theme.printUrl, theme.url, baseParams),
-            featureInfoUrl: ThemeUtils.inheritBaseUrlParams(theme.featureInfoUrl, theme.url, baseParams),
+            legendUrl: ThemeUtils.inheritBaseUrlParams(
+                theme.legendUrl, theme.url, baseParams
+            ),
+            printUrl: ThemeUtils.inheritBaseUrlParams(
+                theme.printUrl, theme.url, baseParams
+            ),
+            featureInfoUrl: ThemeUtils.inheritBaseUrlParams(
+                theme.featureInfoUrl, theme.url, baseParams
+            ),
             infoFormats: theme.infoFormats,
             externalLayerMap: {
                 ...theme.externalLayerMap,
                 ...(theme.externalLayers || []).reduce((res, cur) => {
                     res[cur.internalLayer] = {
-                        ...themes.externalLayers.find(entry => entry.name === cur.name)
+                        ...themes.externalLayers.find(
+                            entry => entry.name === cur.name
+                        )
                     };
-                    LayerUtils.completeExternalLayer(res[cur.internalLayer], LayerUtils.searchSubLayer(theme, 'name', cur.internalLayer));
+                    LayerUtils.completeExternalLayer(
+                        res[cur.internalLayer],
+                        LayerUtils.searchSubLayer(
+                            theme, 'name', cur.internalLayer
+                        )
+                    );
                     return res;
                 }, {})
             }
         };
         // Drawing order only makes sense if layer reordering is disabled
-        if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
+        if (
+            ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true
+        ) {
             layer.drawingOrder = theme.drawingOrder;
         }
         return layer;
@@ -153,13 +194,17 @@ const ThemeUtils = {
         }
         if (capabilityUrl.split("?")[0] === baseUrl.split("?")[0]) {
             const parts = url.parse(capabilityUrl, true);
-            parts.query = {...baseParams, ...parts.query};
+            parts.query = { ...baseParams, ...parts.query };
             return url.format(parts);
         }
         return capabilityUrl;
     },
     searchThemes(themes, searchtext) {
-        const filter = new RegExp(removeDiacritics(searchtext).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
+        const filter = new RegExp(
+            removeDiacritics(searchtext).replace(
+                /[-[\]/{}()*+?.\\^$|]/g, "\\$&"
+            ), "i"
+        );
         const matches = ThemeUtils.searchThemeGroup(themes, filter);
         return isEmpty(matches) ? [] : [{
             id: "themes",
@@ -176,9 +221,17 @@ const ThemeUtils = {
     },
     searchThemeGroup(themeGroup, filter) {
         const matches = [];
-        (themeGroup.subdirs || []).map(subdir => matches.push(...ThemeUtils.searchThemeGroup(subdir, filter)));
+        (themeGroup.subdirs || []).map(
+            subdir => matches.push(
+                ...ThemeUtils.searchThemeGroup(subdir, filter)
+            )
+        );
         matches.push(...(themeGroup.items || []).filter(item => {
-            return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords || "").match(filter) || removeDiacritics(item.abstract || "").match(filter);
+            return (
+                removeDiacritics(item.title).match(filter) || 
+                removeDiacritics(item.keywords || "").match(filter) || 
+                removeDiacritics(item.abstract || "").match(filter)
+            );
         }));
         return matches;
     }

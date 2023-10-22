@@ -8,12 +8,12 @@
 
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import url from 'url';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import MapUtils from './MapUtils';
-import {LayerRole} from '../actions/layers';
+import { LayerRole } from '../actions/layers';
 
 /**
  * Utility functions for working with layers.
@@ -21,14 +21,23 @@ import {LayerRole} from '../actions/layers';
  * @namespace
  */
 const LayerUtils = {
-    restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
+    restoreLayerParams(
+        themeLayer, layerConfigs, permalinkLayers, externalLayers
+    ) {
         let exploded = LayerUtils.explodeLayers([themeLayer]);
         // Restore theme layer configuration
         for (const entry of exploded) {
-            const layerConfig = layerConfigs.find(layer => layer.type === 'theme' && layer.name === entry.sublayer.name);
+            const layerConfig = layerConfigs.find(
+                layer => (
+                    layer.type === 'theme' &&
+                    layer.name === entry.sublayer.name
+                )
+            );
             if (layerConfig) {
                 entry.sublayer.opacity = layerConfig.opacity;
-                entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
+                entry.sublayer.visibility = (
+                    layerConfig.visibility || layerConfig.tristate
+                );
                 entry.sublayer.tristate = layerConfig.tristate;
             } else {
                 entry.sublayer.visibility = false;
@@ -49,23 +58,36 @@ const LayerUtils = {
         LayerUtils.setGroupVisiblities(layers);
         return layers;
     },
-    restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
+    restoreOrderedLayerParams(
+        themeLayer, layerConfigs, permalinkLayers, externalLayers
+    ) {
         const exploded = LayerUtils.explodeLayers([themeLayer]);
         let reordered = [];
-        // Iterate over layer configs and reorder items accordingly, create external layer placeholders as neccessary
+        // Iterate over layer configs and reorder items accordingly, create
+        // external layer placeholders as neccessary
         for (const layerConfig of layerConfigs) {
             if (layerConfig.type === 'theme') {
-                const entry = exploded.find(e => e.sublayer.name === layerConfig.name);
+                const entry = exploded.find(
+                    e => e.sublayer.name === layerConfig.name
+                );
                 if (entry) {
                     entry.sublayer.opacity = layerConfig.opacity;
-                    entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
+                    entry.sublayer.visibility = (
+                        layerConfig.visibility || layerConfig.tristate
+                    );
                     entry.sublayer.tristate = layerConfig.tristate;
                     reordered.push(entry);
                 }
             } else if (layerConfig.type === 'separator') {
-                reordered = reordered.concat(LayerUtils.createSeparatorLayer(layerConfig.name));
+                reordered = reordered.concat(
+                    LayerUtils.createSeparatorLayer(layerConfig.name)
+                );
             } else {
-                reordered = reordered.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers, layerConfig.id));
+                reordered = reordered.concat(
+                    LayerUtils.createExternalLayerPlaceholder(
+                        layerConfig, externalLayers, layerConfig.id
+                    )
+                );
             }
         }
         LayerUtils.insertPermalinkLayers(reordered, permalinkLayers);
@@ -78,7 +100,9 @@ const LayerUtils = {
         let parentInvisible = false;
         for (const layer of layers) {
             if (!isEmpty(layer.sublayers)) {
-                layer.visibility = LayerUtils.setGroupVisiblities(layer.sublayers);
+                layer.visibility = LayerUtils.setGroupVisiblities(
+                    layer.sublayers
+                );
             }
             parentInvisible = parentInvisible || layer.tristate;
             delete layer.tristate;
@@ -117,31 +141,46 @@ const LayerUtils = {
     insertPermalinkLayers(exploded, layers) {
         for (const layer of layers || []) {
             const insLayer = LayerUtils.explodeLayers([layer])[0];
-            if (insLayer.layer.role !== LayerRole.USERLAYER || insLayer.layer.type !== 'vector') {
+            if (
+                insLayer.layer.role !== LayerRole.USERLAYER ||
+                insLayer.layer.type !== 'vector'
+            ) {
                 continue;
             }
             delete insLayer.layer.pos;
             exploded.splice(layer.pos, 0, insLayer);
         }
     },
-    collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryable, visibilities, parentVisibility) {
-        const layerVisibility = (sublayer.visibility === undefined ? true : sublayer.visibility);
+    collectWMSSublayerParams(
+        sublayer, layerNames, opacities, styles, queryable,
+        visibilities, parentVisibility
+    ) {
+        const layerVisibility = (
+            sublayer.visibility === undefined ? true : sublayer.visibility
+        );
         const visibility = layerVisibility && parentVisibility;
         if (visibility || visibilities) {
             if (!isEmpty(sublayer.sublayers)) {
                 // Is group
                 sublayer.sublayers.map(sublyr => {
-                    LayerUtils.collectWMSSublayerParams(sublyr, layerNames, opacities, styles, queryable, visibilities, visibility);
+                    LayerUtils.collectWMSSublayerParams(
+                        sublyr, layerNames, opacities, styles,
+                        queryable, visibilities, visibility
+                    );
                 });
             } else {
                 layerNames.push(sublayer.name);
-                opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
+                opacities.push(
+                    Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255
+                );
                 styles.push(sublayer.style || "");
                 if (sublayer.queryable) {
                     queryable.push(sublayer.name);
                 }
                 if (visibilities) {
-                    visibilities.push(layerVisibility ? (parentVisibility ? 1 : 0.5) : 0);
+                    visibilities.push(
+                        layerVisibility ? (parentVisibility ? 1 : 0.5) : 0
+                    );
                 }
             }
         }
@@ -152,12 +191,18 @@ const LayerUtils = {
         let queryLayers = [];
 
         if (!Array.isArray(layer.sublayers)) {
-            const layers = (params.LAYERS || layer.name).split(",").filter(Boolean);
-            const opacities = (params.OPACITIES || "").split(",").filter(Boolean);
+            const layers = (
+                params.LAYERS || layer.name
+            ).split(",").filter(Boolean);
+            const opacities = (
+                params.OPACITIES || ""
+            ).split(",").filter(Boolean);
             const opacityMult = (layer.opacity ?? 255) / 255;
             newParams = {
                 LAYERS: layers.join(","),
-                OPACITIES: layers.map((x, i) => (opacities[i] ?? "255") * opacityMult).join(","),
+                OPACITIES: layers.map((x, i) => (
+                    (opacities[i] ?? "255") * opacityMult).join(",")
+                ),
                 STYLES: params.STYLES ?? "",
                 ...layer.dimensionValues
             };
@@ -167,13 +212,18 @@ const LayerUtils = {
             let opacities = [];
             let styles = [];
             layer.sublayers.map(sublayer => {
-                LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
+                LayerUtils.collectWMSSublayerParams(
+                    sublayer, layerNames, opacities, styles,
+                    queryLayers, null, layer.visibility
+                );
             });
             layerNames.reverse();
             opacities.reverse();
             styles.reverse();
             if (layer.drawingOrder && layer.drawingOrder.length > 0) {
-                const indices = layer.drawingOrder.map(lyr => layerNames.indexOf(lyr)).filter(idx => idx >= 0);
+                const indices = layer.drawingOrder.map(
+                    lyr => layerNames.indexOf(lyr)
+                ).filter(idx => idx >= 0);
                 layerNames = indices.map(idx => layerNames[idx]);
                 opacities = indices.map(idx => opacities[idx]);
                 styles = indices.map(idx => styles[idx]);
@@ -191,12 +241,16 @@ const LayerUtils = {
         };
     },
     addUUIDs(group, usedUUIDs = new Set()) {
-        group.uuid = !group.uuid || usedUUIDs.has(group.uuid) ? uuidv4() : group.uuid;
+        group.uuid = (
+            !group.uuid || usedUUIDs.has(group.uuid)
+                ? uuidv4()
+                : group.uuid
+        );
         usedUUIDs.add(group.uuid);
         if (!isEmpty(group.sublayers)) {
-            Object.assign(group, {sublayers: group.sublayers.slice(0)});
+            Object.assign(group, { sublayers: group.sublayers.slice(0) });
             for (let i = 0; i < group.sublayers.length; ++i) {
-                group.sublayers[i] = {...group.sublayers[i]};
+                group.sublayers[i] = { ...group.sublayers[i] };
                 LayerUtils.addUUIDs(group.sublayers[i], usedUUIDs);
             }
         }
@@ -209,21 +263,49 @@ const LayerUtils = {
         const queryable = [];
         for (const layer of layers) {
             if (layer.role === LayerRole.THEME) {
-                LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, styles, queryable, visibilities, layer.visibility);
-            } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
+                LayerUtils.collectWMSSublayerParams(
+                    layer, layernames, opacities, styles,
+                    queryable, visibilities, layer.visibility
+                );
+            } else if (
+                layer.role === LayerRole.USERLAYER &&
+                layer.type === "wms"
+            ) {
                 const sublayernames = [];
-                LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
+                LayerUtils.collectWMSSublayerParams(
+                    layer, sublayernames, opacities, styles, queryable,
+                    visibilities, layer.visibility
+                );
                 let layerurl = layer.url;
                 if (layer.extwmsparams) {
-                    layerurl += (layerurl.includes('?') ? '&' : '?') + Object.entries(layer.extwmsparams || {}).map(([key, value]) => 'extwms.' + key + "=" + value).join('&');
+                    layerurl += (
+                        (layerurl.includes('?') ? '&' : '?') +
+                        Object.entries(layer.extwmsparams || {}).map(
+                            ([key, value]) => 'extwms.' + key + "=" + value
+                        ).join('&')
+                    );
                 }
-                layernames.push(...sublayernames.map(name => "wms:" + layerurl + "#" + name));
-            } else if (layer.role === LayerRole.USERLAYER && (layer.type === "wfs" || layer.type === "wmts")) {
-                layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
+                layernames.push(
+                    ...sublayernames.map(
+                        name => "wms:" + layerurl + "#" + name
+                    )
+                );
+            } else if (
+                layer.role === LayerRole.USERLAYER &&
+                (layer.type === "wfs" || layer.type === "wmts")
+            ) {
+                layernames.push(
+                    layer.type + ':' +
+                    (layer.capabilitiesUrl || layer.url) + "#" +
+                    layer.name
+                );
                 opacities.push(layer.opacity);
                 styles.push(layer.style);
                 visibilities.push(layer.visibility);
-            } else if (layer.role === LayerRole.USERLAYER && layer.type === "separator") {
+            } else if (
+                layer.role === LayerRole.USERLAYER &&
+                layer.type === "separator"
+            ) {
                 layernames.push("sep:" + layer.title);
                 opacities.push(255);
                 styles.push('');
@@ -233,7 +315,9 @@ const LayerUtils = {
         const result = layernames.map((layername, idx) => {
             let param = layername;
             if (opacities[idx] < 255) {
-                param += "[" + (100 - Math.round(opacities[idx] / 255 * 100)) + "]";
+                param += "[" + (
+                    100 - Math.round(opacities[idx] / 255 * 100)
+                ) + "]";
             }
             if (visibilities[idx] === 0) {
                 param += '!';
@@ -278,18 +362,25 @@ const LayerUtils = {
             type = 'separator';
             name = name.slice(4);
         }
-        return {id, type, url: layerUrl, name, opacity, visibility, tristate};
+        return { id, type, url: layerUrl, name, opacity, visibility, tristate };
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
     },
     removeLayer(layers, layer, sublayerpath) {
         // Extract foreground layers
-        const fglayers = layers.filter(lyr => lyr.role !== LayerRole.BACKGROUND);
+        const fglayers = layers.filter(
+            lyr => lyr.role !== LayerRole.BACKGROUND
+        );
         // Explode layers (one entry for every single sublayer)
         let exploded = LayerUtils.explodeLayers(fglayers);
         // Remove matching entries
-        exploded = exploded.filter(entry => entry.layer.uuid !== layer.uuid || !LayerUtils.pathEqualOrBelow(sublayerpath, entry.path));
+        exploded = exploded.filter(
+            entry => (
+                entry.layer.uuid !== layer.uuid ||
+                !LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)
+            )
+        );
         // Re-assemble layers
         const newlayers = LayerUtils.implodeLayers(exploded);
         for (const lyr of newlayers) {
@@ -299,10 +390,15 @@ const LayerUtils = {
         }
         // Ensure theme layer is never removed
         if (!newlayers.find(lyr => lyr.role === LayerRole.THEME)) {
-            const oldThemeLayer = layers.find(lyr => lyr.role === LayerRole.THEME);
+            const oldThemeLayer = layers.find(
+                lyr => lyr.role === LayerRole.THEME
+            );
             if (oldThemeLayer) {
-                const newThemeLayer = {...oldThemeLayer, sublayers: []};
-                Object.assign(newThemeLayer, LayerUtils.buildWMSLayerParams(newThemeLayer));
+                const newThemeLayer = { ...oldThemeLayer, sublayers: [] };
+                Object.assign(
+                    newThemeLayer,
+                    LayerUtils.buildWMSLayerParams(newThemeLayer)
+                );
                 newlayers.push(newThemeLayer);
             }
         }
@@ -314,11 +410,18 @@ const LayerUtils = {
     },
     insertSeparator(layers, title, beforelayerId, beforesublayerpath) {
         // Extract foreground layers
-        const fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
+        const fglayers = layers.filter(
+            layer => layer.role !== LayerRole.BACKGROUND
+        );
         // Explode layers (one entry for every single sublayer)
         const exploded = LayerUtils.explodeLayers(fglayers);
         // Remove matching entries
-        const pos = exploded.findIndex(entry => entry.layer.id === beforelayerId && isEqual(beforesublayerpath, entry.path));
+        const pos = exploded.findIndex(
+            entry => (
+                entry.layer.id === beforelayerId &&
+                isEqual(beforesublayerpath, entry.path)
+            )
+        );
         if (pos !== -1) {
             // Add separator
             exploded.splice(pos, 0, LayerUtils.createSeparatorLayer(title)[0]);
@@ -338,13 +441,18 @@ const LayerUtils = {
     },
     reorderLayer(layers, movelayer, sublayerpath, delta, preventSplittingGroups) {
         // Extract foreground layers
-        const fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
+        const fglayers = layers.filter(
+            layer => layer.role !== LayerRole.BACKGROUND
+        );
         // Explode layers (one entry for every single sublayer)
         const exploded = LayerUtils.explodeLayers(fglayers);
         // Find entry to move
         if (movelayer) {
             const indices = exploded.reduce((result, entry, index) => {
-                if (entry.layer.uuid === movelayer.uuid && LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)) {
+                if (
+                    entry.layer.uuid === movelayer.uuid &&
+                    LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)
+                ) {
                     return [...result, index];
                 }
                 return result;
@@ -353,25 +461,59 @@ const LayerUtils = {
                 return layers;
             }
             indices.sort((a, b) => a - b);
-            if ((delta < 0 && indices[0] <= 0) || (delta > 0 && indices[indices.length - 1] >= exploded.length - 1)) {
+            if (
+                (delta < 0 && indices[0] <= 0) ||
+                (
+                    delta > 0 &&
+                    indices[indices.length - 1] >= exploded.length - 1
+                )
+            ) {
                 return layers;
             }
             if (preventSplittingGroups) {
                 // Prevent moving an entry out of a containing group
-                const idx = delta < 0 ? indices[0] : indices[indices.length - 1];
+                const idx = delta < 0
+                    ? indices[0]
+                    : indices[indices.length - 1];
                 const level = sublayerpath.length;
-                if (level > exploded[idx + delta].path.length || !isEqual(exploded[idx + delta].path.slice(0, level - 1), sublayerpath.slice(0, -1))) {
+                if (
+                    level > exploded[idx + delta].path.length ||
+                    !isEqual(
+                        exploded[idx + delta].path.slice(0, level - 1),
+                        sublayerpath.slice(0, -1)
+                    )
+                ) {
                     return layers;
                 }
                 // Avoid splitting sibling groups when reordering
-                if (exploded[idx + delta].path.length > level || !isEqual(exploded[idx + delta].path.slice(0, -1), sublayerpath.slice(0, -1))) {
+                if (
+                    exploded[idx + delta].path.length > level ||
+                    !isEqual(
+                        exploded[idx + delta].path.slice(0, -1),
+                        sublayerpath.slice(0, -1)
+                    )
+                ) {
                     // Find next slot
-                    const siblinggrouppath = exploded[idx + delta].path.slice(0, level);
-                    siblinggrouppath[siblinggrouppath.length - 1] += delta;
-                    while (idx + delta >= 0 && idx + delta < exploded.length && (exploded[idx + delta].path.length > level || !isEqual(exploded[idx + delta].path.slice(0, level), siblinggrouppath))) {
+                    const siblingGroupPath = (
+                        exploded[idx + delta].path.slice(0, level)
+                    );
+                    siblingGroupPath[siblingGroupPath.length - 1] += delta;
+                    while (
+                        idx + delta >= 0 &&
+                        idx + delta < exploded.length &&
+                        (
+                            exploded[idx + delta].path.length > level ||
+                            !isEqual(
+                                exploded[idx + delta].path.slice(0, level),
+                                siblingGroupPath
+                            )
+                        )
+                    ) {
                         delta += delta > 0 ? 1 : -1;
                     }
-                    // The above logic adds the number of items to skip to the delta which is already -1 or +1, so we need to decrease delta by one accordingly
+                    // The above logic adds the number of items to skip to
+                    // the delta which is already -1 or +1, so we need
+                    // to decrease delta by one accordingly
                     if (Math.abs(delta) > 1) {
                         delta += delta > 0 ? -1 : 1;
                     }
@@ -406,11 +548,15 @@ const LayerUtils = {
             if (!isEmpty(layer.sublayers)) {
                 this.explodeSublayers(layer, layer, exploded);
             } else {
-                const newLayer = {...layer};
+                const newLayer = { ...layer };
                 if (newLayer.sublayers) {
                     newLayer.sublayers = [...newLayer.sublayers];
                 }
-                exploded.push({layer: newLayer, path: [], sublayer: newLayer});
+                exploded.push({
+                    layer: newLayer,
+                    path: [],
+                    sublayer: newLayer
+                });
             }
         }
         return exploded;
@@ -419,16 +565,22 @@ const LayerUtils = {
         for (let idx = 0; idx < parent.sublayers.length; ++idx) {
             const path = [...parentpath, idx];
             if (parent.sublayers[idx].sublayers) {
-                LayerUtils.explodeSublayers(layer, parent.sublayers[idx], exploded, path);
+                LayerUtils.explodeSublayers(
+                    layer, parent.sublayers[idx], exploded, path
+                );
             } else {
                 // Reduced layer with one single sublayer per level, up to leaf
-                const redLayer = {...layer};
+                const redLayer = { ...layer };
                 let group = redLayer;
                 for (const jdx of path) {
-                    group.sublayers = [{...group.sublayers[jdx]}];
+                    group.sublayers = [{ ...group.sublayers[jdx] }];
                     group = group.sublayers[0];
                 }
-                exploded.push({layer: redLayer, path: path, sublayer: group});
+                exploded.push({
+                    layer: redLayer,
+                    path: path,
+                    sublayer: group
+                });
             }
         }
     },
@@ -441,16 +593,24 @@ const LayerUtils = {
             const layer = entry.layer;
 
             // Attempt to merge with previous if possible
-            let target = newlayers.length > 0 ? newlayers[newlayers.length - 1] : null;
+            let target = newlayers.length > 0
+                ? newlayers[newlayers.length - 1]
+                : null;
             let source = layer;
             if (target && target.sublayers && target.id === layer.id) {
                 let innertarget = target.sublayers[target.sublayers.length - 1];
-                let innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
-                while (innertarget && innertarget.sublayers && innertarget.name === innersource.name) {
+                // Exploded entries have only one entry per sublayer level
+                let innersource = source.sublayers[0];
+                while (
+                    innertarget &&
+                    innertarget.sublayers &&
+                    innertarget.name === innersource.name
+                ) {
                     target = innertarget;
                     source = innersource;
                     innertarget = target.sublayers[target.sublayers.length - 1];
-                    innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
+                    // Exploded entries have only one entry per sublayer level
+                    innersource = source.sublayers[0];
                 }
                 target.sublayers.push(source.sublayers[0]);
                 LayerUtils.addUUIDs(source.sublayers[0], usedLayerUUids);
@@ -473,7 +633,9 @@ const LayerUtils = {
     insertLayer(layers, newlayer, beforeattr, beforeval) {
         const exploded = LayerUtils.explodeLayers(layers);
         const explodedAdd = LayerUtils.explodeLayers([newlayer]);
-        const index = exploded.findIndex(entry => entry.sublayer[beforeattr] === beforeval);
+        const index = exploded.findIndex(
+            entry => entry.sublayer[beforeattr] === beforeval
+        );
         if (index !== -1) {
             exploded.splice(index, 0, ...explodedAdd);
         }
@@ -482,8 +644,16 @@ const LayerUtils = {
     ensureMutuallyExclusive(group) {
         if (!isEmpty(group.sublayers)) {
             if (group.mutuallyExclusive) {
-                const tristateSublayer = group.sublayers.find(sublayer => sublayer.tristate === true);
-                const visibleSublayer = tristateSublayer || group.sublayers.find(sublayer => sublayer.visibility === true) || group.sublayers[0];
+                const tristateSublayer = group.sublayers.find(
+                    sublayer => sublayer.tristate === true
+                );
+                const visibleSublayer = (
+                    tristateSublayer ||
+                    group.sublayers.find(
+                        sublayer => sublayer.visibility === true
+                    ) ||
+                    group.sublayers[0]
+                );
                 for (const sublayer of group.sublayers) {
                     sublayer.visibility = sublayer === visibleSublayer;
                 }
@@ -494,17 +664,19 @@ const LayerUtils = {
         }
     },
     getSublayerNames(layer) {
-        return [layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
-            return list.concat([...this.getSublayerNames(sublayer)]);
-        }, [])).filter(x => x);
+        return [layer.name].concat(
+            (layer.sublayers || []).reduce((list, sublayer) => {
+                return list.concat([...this.getSublayerNames(sublayer)]);
+            }, [])
+        ).filter(x => x);
     },
     mergeSubLayers(baselayer, addlayer) {
-        addlayer = {...baselayer, sublayers: addlayer.sublayers};
+        addlayer = { ...baselayer, sublayers: addlayer.sublayers };
         addlayer.externalLayerMap = addlayer.externalLayerMap || {};
         LayerUtils.extractExternalLayersFromSublayers(addlayer, addlayer);
         LayerUtils.addUUIDs(addlayer);
         if (isEmpty(addlayer.sublayers)) {
-            return {...baselayer};
+            return { ...baselayer };
         }
         if (isEmpty(baselayer.sublayers)) {
             return addlayer;
@@ -512,14 +684,20 @@ const LayerUtils = {
         const explodedBase = LayerUtils.explodeLayers([baselayer]);
         const existing = explodedBase.map(entry => entry.sublayer.name);
         let explodedAdd = LayerUtils.explodeLayers([addlayer]);
-        explodedAdd = explodedAdd.filter(entry => !existing.includes(entry.sublayer.name));
+        explodedAdd = explodedAdd.filter(
+            entry => !existing.includes(entry.sublayer.name)
+        );
         return LayerUtils.implodeLayers(explodedAdd.concat(explodedBase))[0];
     },
     searchSubLayer(layer, attr, value, path = []) {
         if (layer.sublayers) {
             let idx = 0;
             for (const sublayer of layer.sublayers) {
-                const match = sublayer[attr] === value ? sublayer : LayerUtils.searchSubLayer(sublayer, attr, value, path);
+                const match = (
+                    sublayer[attr] === value
+                        ? sublayer
+                        : LayerUtils.searchSubLayer(sublayer, attr, value, path)
+                );
                 if (match) {
                     path.unshift(idx);
                     return match;
@@ -533,12 +711,16 @@ const LayerUtils = {
         }
         return null;
     },
-    searchLayer(layers, key, value, roles = [LayerRole.THEME, LayerRole.USERLAYER]) {
+    searchLayer(
+        layers, key, value, roles = [LayerRole.THEME, LayerRole.USERLAYER]
+    ) {
         for (const layer of layers) {
             if (roles.includes(layer.role)) {
-                const matchsublayer = LayerUtils.searchSubLayer(layer, key, value);
+                const matchsublayer = LayerUtils.searchSubLayer(
+                    layer, key, value
+                );
                 if (matchsublayer) {
-                    return {layer: layer, sublayer: matchsublayer};
+                    return { layer: layer, sublayer: matchsublayer };
                 }
             }
         }
@@ -562,7 +744,9 @@ const LayerUtils = {
         }
         let visible = 0;
         layer.sublayers.map(sublayer => {
-            const sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
+            const sublayervisibility = sublayer.visibility === undefined
+                ? true
+                : sublayer.visibility;
             if (sublayer.sublayers && sublayervisibility) {
                 visible += LayerUtils.computeLayerVisibility(sublayer);
             } else {
@@ -572,27 +756,31 @@ const LayerUtils = {
         return visible / layer.sublayers.length;
     },
     cloneLayer(layer, sublayerpath) {
-        const newlayer = {...layer};
+        const newlayer = { ...layer };
         let cur = newlayer;
         for (let i = 0; i < sublayerpath.length; ++i) {
             const idx = sublayerpath[i];
             cur.sublayers = [
                 ...cur.sublayers.slice(0, idx),
-                {...cur.sublayers[idx]},
+                { ...cur.sublayers[idx] },
                 ...cur.sublayers.slice(idx + 1)
             ];
             cur = cur.sublayers[idx];
         }
-        return {newlayer, newsublayer: cur};
+        return { newlayer, newsublayer: cur };
     },
     collectGroupLayers(layer, parentGroups, groupLayers) {
         if (!isEmpty(layer.sublayers)) {
             for (const sublayer of layer.sublayers) {
-                LayerUtils.collectGroupLayers(sublayer, parentGroups.concat(layer.name), groupLayers);
+                LayerUtils.collectGroupLayers(
+                    sublayer, parentGroups.concat(layer.name), groupLayers
+                );
             }
         } else {
             for (const group of parentGroups) {
-                groupLayers[group] = (groupLayers[group] || []).concat(layer.name);
+                groupLayers[group] = (
+                    groupLayers[group] || []
+                ).concat(layer.name);
             }
         }
     },
@@ -602,7 +790,11 @@ const LayerUtils = {
         const newLayerConfigs = [];
         for (const layerConfig of layerConfigs) {
             if (layerConfig.name in groupLayers) {
-                newLayerConfigs.push(...groupLayers[layerConfig.name].map(name => ({...layerConfig, name})));
+                newLayerConfigs.push(
+                    ...groupLayers[layerConfig.name].map(
+                        name => ({ ...layerConfig, name })
+                    )
+                );
             } else {
                 newLayerConfigs.push(layerConfig);
             }
@@ -613,38 +805,62 @@ const LayerUtils = {
         if (layer.sublayers) {
             layer.sublayers = layer.sublayers.map(sublayer => {
                 if (sublayer.externalLayer) {
-                    const externalLayer = {...sublayer.externalLayer};
+                    const externalLayer = { ...sublayer.externalLayer };
                     LayerUtils.completeExternalLayer(externalLayer, sublayer);
                     toplayer.externalLayerMap[sublayer.name] = externalLayer;
-                    sublayer = {...sublayer};
+                    sublayer = { ...sublayer };
                     delete sublayer.externalLayer;
                 }
                 if (sublayer.sublayers) {
-                    LayerUtils.extractExternalLayersFromSublayers(toplayer, sublayer);
+                    LayerUtils.extractExternalLayersFromSublayers(
+                        toplayer, sublayer
+                    );
                 }
                 return sublayer;
             });
         }
     },
     completeExternalLayer(externalLayer, sublayer) {
-        externalLayer.title = externalLayer.title || (sublayer || {}).title || externalLayer.name;
+        externalLayer.title = (
+            externalLayer.title ||
+            (sublayer || {}).title ||
+            externalLayer.name
+        );
         externalLayer.uuid = uuidv4();
         if (externalLayer.type === "wms" || externalLayer.params) {
             externalLayer.version = externalLayer.version || "1.3.0";
-            externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;
-            externalLayer.legendUrl = externalLayer.legendUrl || externalLayer.url;
-            externalLayer.queryLayers = externalLayer.queryLayers || externalLayer.params.LAYERS.split(",");
+            externalLayer.featureInfoUrl = (
+                externalLayer.featureInfoUrl || externalLayer.url
+            );
+            externalLayer.legendUrl = (
+                externalLayer.legendUrl || externalLayer.url
+            );
+            externalLayer.queryLayers = (
+                externalLayer.queryLayers ||
+                externalLayer.params.LAYERS.split(",")
+            );
 
-            const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
+            const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp(
+                "externalLayerFeatureInfoFormats"
+            ) || {};
             for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
-                if (externalLayer.featureInfoUrl.toLowerCase().includes(entry.toLowerCase())) {
-                    externalLayer.infoFormats = [externalLayerFeatureInfoFormats[entry]];
+                if (
+                    externalLayer.featureInfoUrl.toLowerCase().includes(
+                        entry.toLowerCase()
+                    )
+                ) {
+                    externalLayer.infoFormats = [
+                        externalLayerFeatureInfoFormats[entry]
+                    ];
                     break;
                 }
             }
         }
     },
-    getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend, extraLegendParameters) {
+    getLegendUrl(
+        layer, sublayer, scale, map, bboxDependentLegend,
+        scaleDependentLegend, extraLegendParameters
+    ) {
         if (layer.type !== "wms") {
             return layer.legendUrl || "";
         }
@@ -656,17 +872,43 @@ const LayerUtils = {
             SLD_VERSION: "1.1.0"
         };
         if (extraLegendParameters) {
-            Object.assign(requestParams, Object.fromEntries(extraLegendParameters.split("&").map(entry => entry.split("="))));
+            Object.assign(
+                requestParams,
+                Object.fromEntries(
+                    extraLegendParameters.split("&").map(
+                        entry => entry.split("=")
+                    )
+                )
+            );
         }
-        if (scaleDependentLegend === true || (scaleDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
+        if (
+            scaleDependentLegend === true ||
+            (
+                scaleDependentLegend === "theme" &&
+                layer.role === LayerRole.THEME
+            )
+        ) {
             requestParams.SCALE = Math.round(scale);
         }
-        if (bboxDependentLegend === true || (bboxDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
+        if (
+            bboxDependentLegend === true ||
+            (
+                bboxDependentLegend === "theme" &&
+                layer.role === LayerRole.THEME
+            )
+        ) {
             requestParams.WIDTH = map.size.width;
             requestParams.HEIGHT = map.size.height;
             const bounds = map.bbox.bounds;
-            if (CoordinatesUtils.getAxisOrder(map.projection).substr(0, 2) === 'ne' && layer.version === '1.3.0') {
-                requestParams.BBOX = [bounds[1], bounds[0], bounds[3], bounds[2]].join(",");
+            if (
+                CoordinatesUtils.getAxisOrder(
+                    map.projection
+                ).substr(0, 2) === 'ne' &&
+                layer.version === '1.3.0'
+            ) {
+                requestParams.BBOX = [
+                    bounds[1], bounds[0], bounds[3], bounds[2]
+                ].join(",");
             } else {
                 requestParams.BBOX = bounds.join(",");
             }
@@ -686,7 +928,9 @@ const LayerUtils = {
             delete urlParts.search;
             return url.format(urlParts);
         } else {
-            const layername = layer === sublayer ? layer.name.replace(/.*\//, '') : sublayer.name;
+            const layername = layer === sublayer
+                ? layer.name.replace(/.*\//, '')
+                : sublayer.name;
             const urlParts = url.parse(layer.legendUrl, true);
             urlParts.query = {
                 VERSION: layer.version,
@@ -699,16 +943,28 @@ const LayerUtils = {
         }
     },
     layerScaleInRange(layer, mapScale) {
-        return (layer.minScale === undefined || mapScale >= layer.minScale) && (layer.maxScale === undefined || mapScale < layer.maxScale);
+        return (
+            (
+                layer.minScale === undefined ||
+                mapScale >= layer.minScale
+            ) && (
+                layer.maxScale === undefined ||
+                mapScale < layer.maxScale
+            )
+        );
     },
     addExternalLayerPrintParams(layer, params, printCrs, counterRef) {
-        const qgisServerVersion = (ConfigUtils.getConfigProp("qgisServerVersion") || 3);
+        const qgisServerVersion = (
+            ConfigUtils.getConfigProp("qgisServerVersion") || 3
+        );
         if (qgisServerVersion >= 3) {
             if (layer.type === "wms") {
                 const names = layer.params.LAYERS.split(",");
                 const opacities = layer.params.OPACITIES.split(",");
                 for (let idx = 0; idx < names.length; ++idx) {
-                    const identifier = String.fromCharCode(65 + (counterRef[0]++));
+                    const identifier = String.fromCharCode(
+                        65 + (counterRef[0]++)
+                    );
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                     params.OPACITIES.push(opacities[idx]);
                     params.COLORS.push("");
@@ -732,7 +988,9 @@ const LayerUtils = {
                     if (layer.url.includes("?")) {
                         params[identifier + ":IgnoreGetMapUrl"] = "1";
                     }
-                    Object.entries(layer.extwmsparams || {}).forEach(([key, value]) => {
+                    Object.entries(
+                        layer.extwmsparams || {}
+                    ).forEach(([key, value]) => {
                         params[identifier + ":" + key] = value;
                     });
                 }
@@ -755,7 +1013,9 @@ const LayerUtils = {
             }
         }
     },
-    collectPrintParams(layers, theme, printScale, printCrs, printExternalLayers) {
+    collectPrintParams(
+        layers, theme, printScale, printCrs, printExternalLayers
+    ) {
         const params = {
             LAYERS: [],
             OPACITIES: [],
@@ -767,17 +1027,35 @@ const LayerUtils = {
             if (layer.role === LayerRole.THEME && layer.params.LAYERS) {
                 params.LAYERS.push(layer.params.LAYERS);
                 params.OPACITIES.push(layer.params.OPACITIES);
-                params.COLORS.push(layer.params.LAYERS.split(",").map(() => "").join(","));
-            } else if (printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility !== false && LayerUtils.layerScaleInRange(layer, printScale)) {
-                LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
+                params.COLORS.push(
+                    layer.params.LAYERS.split(",").map(() => "").join(",")
+                );
+            } else if (
+                printExternalLayers &&
+                layer.role === LayerRole.USERLAYER &&
+                layer.visibility !== false &&
+                LayerUtils.layerScaleInRange(layer, printScale)
+            ) {
+                LayerUtils.addExternalLayerPrintParams(
+                    layer, params, printCrs, counterRef
+                );
             }
         }
 
-        const backgroundLayer = layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
+        const backgroundLayer = layers.find(
+            layer => (
+                layer.role === LayerRole.BACKGROUND &&
+                layer.visibility === true
+            )
+        );
         if (backgroundLayer) {
             const backgroundLayerName = backgroundLayer.name;
-            const themeBackgroundLayer = theme.backgroundLayers.find(entry => entry.name === backgroundLayerName);
-            const printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
+            const themeBackgroundLayer = theme.backgroundLayers.find(
+                entry => entry.name === backgroundLayerName
+            );
+            const printBackgroundLayer = themeBackgroundLayer
+                ? themeBackgroundLayer.printLayer
+                : null;
             if (printBackgroundLayer) {
                 // Use printLayer defined in qgis project
                 let printBgLayerName = printBackgroundLayer;
@@ -797,10 +1075,14 @@ const LayerUtils = {
                 }
             } else if (printExternalLayers) {
                 // Inject client-side wms as external layer for print
-                const items = backgroundLayer.type === "group" ? backgroundLayer.items : [backgroundLayer];
+                const items = backgroundLayer.type === "group"
+                    ? backgroundLayer.items
+                    : [backgroundLayer];
                 items.slice(0).reverse().forEach(layer => {
                     if (LayerUtils.layerScaleInRange(layer, printScale)) {
-                        LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
+                        LayerUtils.addExternalLayerPrintParams(
+                            layer, params, printCrs, counterRef
+                        );
                     }
                 });
             }
@@ -820,8 +1102,13 @@ const LayerUtils = {
             (layer.dimensions || []).forEach(dimension => {
                 if (dimension.units === "ISO8601" && dimension.value) {
                     result.names.add(dimension.name);
-                    dimension.value.split(/,\s+/).filter(x => x).forEach(x => result.values.add(x));
-                    result.attributes[layer.name] = [dimension.fieldName, dimension.endFieldName];
+                    dimension.value
+                        .split(/,\s+/)
+                        .filter(x => x)
+                        .forEach(x => result.values.add(x));
+                    result.attributes[layer.name] = [
+                        dimension.fieldName, dimension.endFieldName
+                    ];
                 }
             });
         }
@@ -829,12 +1116,24 @@ const LayerUtils = {
             const sublayerResult = LayerUtils.getTimeDimensionValues(sublayer);
             sublayerResult.names.forEach(x => result.names.add(x));
             sublayerResult.values.forEach(x => result.values.add(x));
-            result.attributes = {...result.attributes, ...sublayerResult.attributes};
+            result.attributes = {
+                ...result.attributes,
+                ...sublayerResult.attributes
+            };
         });
         return result;
     },
-    getAttribution(layer, map, showThemeAttributionOnly = false, transformedMapBBoxes = {}) {
-        if (layer.visibility === false || (showThemeAttributionOnly && layer.role !== LayerRole.THEME)) {
+    getAttribution(
+        layer, map,
+        showThemeAttributionOnly = false,
+        transformedMapBBoxes = {}
+    ) {
+        if (
+            layer.visibility === false || (
+                showThemeAttributionOnly &&
+                layer.role !== LayerRole.THEME
+            )
+        ) {
             return {};
         }
 
@@ -846,7 +1145,9 @@ const LayerUtils = {
         if (layer.bbox && layer.bbox.bounds) {
             const layerCrs = layer.bbox.crs || map.projection;
             if (!transformedMapBBoxes[layerCrs]) {
-                transformedMapBBoxes[layerCrs] = CoordinatesUtils.reprojectBbox(map.bbox.bounds, map.projection, layerCrs);
+                transformedMapBBoxes[layerCrs] = CoordinatesUtils.reprojectBbox(
+                    map.bbox.bounds, map.projection, layerCrs
+                );
             }
             const mapbbox = transformedMapBBoxes[layerCrs];
             const laybbox = layer.bbox.bounds;
@@ -864,19 +1165,34 @@ const LayerUtils = {
         if (layer.sublayers) {
             Object.assign(
                 copyrights,
-                layer.sublayers.reduce((res, sublayer) => ({...res, ...LayerUtils.getAttribution(sublayer, map, false, transformedMapBBoxes)}), {})
+                layer.sublayers.reduce((res, sublayer) => ({
+                    ...res,
+                    ...LayerUtils.getAttribution(
+                        sublayer, map, false, transformedMapBBoxes
+                    )
+                }), {})
             );
         } else if (layer.type === "group" && layer.items) {
             Object.assign(
                 copyrights,
-                layer.items.reduce((res, sublayer) => ({...res, ...LayerUtils.getAttribution(sublayer, map, false, transformedMapBBoxes)}), {})
+                layer.items.reduce((res, sublayer) => ({
+                    ...res,
+                    ...LayerUtils.getAttribution(
+                        sublayer, map, false, transformedMapBBoxes
+                    )
+                }), {})
             );
         }
         if (layer.attribution && layer.attribution.Title) {
-            const key = layer.attribution.OnlineResource || layer.attribution.Title;
+            const key = (
+                layer.attribution.OnlineResource ||
+                layer.attribution.Title
+            );
             copyrights[key] = {
-                title: layer.attribution.OnlineResource ? layer.attribution.Title : null,
-                layers: [ ...((copyrights[key] || {}).layers || []), layer]
+                title: layer.attribution.OnlineResource
+                    ? layer.attribution.Title
+                    : null,
+                layers: [...((copyrights[key] || {}).layers || []), layer]
             };
         }
         return copyrights;

@@ -58,7 +58,8 @@ const CoordinatesUtils = {
      * The `label` property of each CRS code is set to the
      * previously registered label of the CRS code, if available.
      *
-     * @returns {Object.<string, {label: string}>} the list of available CRS codes
+     * @returns {Object.<string, {label: string}>} the list of available
+     *  CRS codes
      * @see {@link CoordinatesUtils.setCrsLabels}
      * @see {@link CoordinatesUtils.getCrsLabel}
      */
@@ -78,7 +79,8 @@ const CoordinatesUtils = {
      * 
      * @param {string} projection - the projection code, e.g. 'EPSG:3857'
      * 
-     * @returns {string} the units of the projection (e.g. 'degrees' or 'm')
+     * @returns {import("ol/proj/Units").Units} the units of the projection 
+     *  (e.g. 'degrees' or 'm')
      * @throws {Error} if the projection is unknown
      */
     getUnits(projection) {
@@ -95,7 +97,8 @@ const CoordinatesUtils = {
      * 
      * @param {string} projection - the projection code, e.g. 'EPSG:3857'
      * 
-     * @returns {string} the string indicating the orientation (e.g. 'enu' or 'neu')
+     * @returns {string} the string indicating the orientation
+     *  (e.g. 'enu' or 'neu')
      * @throws {Error} if the projection is unknown
      * @see {@link https://openlayers.org/en/v7.5.2/apidoc/module-ol_proj_Projection-Projection.html#getAxisOrientation}
      */

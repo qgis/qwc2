@@ -5,6 +5,11 @@
         80
     ],
     "cSpell.words": [
-        "EPSG"
+        "bbox",
+        "EPSG",
+        "openlayers",
+        "painterro",
+        "qgis",
+        "reproject"
     ]
 }

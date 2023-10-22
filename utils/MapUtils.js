@@ -11,6 +11,9 @@ import CoordinatesUtils from './CoordinatesUtils';
 
 
 const DEFAULT_SCREEN_DPI = 96;
+
+// TODO: any reason ro not using the ol defaults?
+// ol/proj/Units.js -> METERS_PER_UNIT
 const METERS_PER_UNIT = {
     'm': 1,
     'degrees': 111194.87428468118,

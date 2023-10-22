@@ -177,7 +177,8 @@ const MeasureUtils = {
      * metric system
      * @param {boolean} isArea - whether the measurement is an area
      *  or a length
-     * @param {MeasUnits} unit - the unit to use for formatting (default: metric)
+     * @param {MeasUnits} unit - the unit to use for formatting
+     *  (default: metric)
      * @param {number} decimals - the number of decimals to use
      *  (2 by default)
      * @param {boolean} withUnit - whether to append the unit to the
@@ -494,7 +495,8 @@ const MeasureUtils = {
         if (geomType === MeasGeomTypes.POINT) {
             // TODO: is this right? The CRS of the feature is not used.
             // The coordinates of the feature are stored in map CRS?
-            // This is the only instance where the mapCrs is used in this function.
+            // This is the only instance where the mapCrs is used in
+            // this function.
             feature.set('label', MeasureUtils.getFormattedCoordinate(
                 geom.getCoordinates(), settings.mapCrs, settings.displayCrs)
             );
