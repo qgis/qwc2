@@ -172,7 +172,7 @@ class FeatureSearch extends React.Component {
         });
         params.LAYERS = params.LAYERS.join(",");
         params.FILTER = params.FILTER.join(";");
-        this.setState({busy: true});
+        this.setState({busy: true, searchResults: null});
         axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
             const results = IdentifyUtils.parseResponse(response.data, null, 'text/xml', null, this.props.map.projection);
             this.setState({busy: false, searchResults: results});
