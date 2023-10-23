@@ -1,6 +1,11 @@
 {
   "locale": "en-US",
   "messages": {
+    "app": {
+      "missingbg": "Unable to find the background \"{0}\", displaying the default background.",
+      "missinglayers": "Unable to find the following layers: {0}.",
+      "missingtheme": "Unable to find the theme \"{0}\", loading the default theme."
+    },
     "appmenu": {
       "filter": "Filter menu...",
       "menulabel": "Map & Tools",

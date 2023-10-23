@@ -50,6 +50,9 @@
     "appmenu.items.Settings"
   ],
   "strings": [
+    "app.missingbg",
+    "app.missinglayers",
+    "app.missingtheme",
     "appmenu.filter",
     "appmenu.menulabel",
     "attribtable.addfeature",

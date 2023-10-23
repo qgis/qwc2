@@ -1,6 +1,11 @@
 {
   "locale": "ca-ES",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "Menú de filtres...",
       "menulabel": "Mapa & Eines",

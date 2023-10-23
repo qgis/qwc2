@@ -16,11 +16,13 @@ import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} from './layers';
 import {configureMap} from './map';
+import {showNotification, NotificationType} from './windows';
 
 export const THEMES_LOADED = 'THEMES_LOADED';
 export const SET_THEME_LAYERS_LIST = 'SET_THEME_LAYERS_LIST';
@@ -65,7 +67,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
     }
 
     // Add background layers for theme
-    for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer, externalLayers)) {
+    for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer, externalLayers, dispatch)) {
         dispatch(addLayer(bgLayer));
     }
     if (visibleBgLayer === "") {
@@ -199,9 +201,16 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                         }
                     }, []);
                 }
+                const diff = Object.keys(missingThemeLayers).filter(entry => !(entry in newLayerNames));
+                if (!isEmpty(diff)) {
+                    dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
+                }
                 finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer);
             });
         } else {
+            if (!isEmpty(missingThemeLayers)) {
+                dispatch(showNotification("missinglayer", LocaleUtils.tr("app.missinglayers", Object.keys(missingThemeLayers).join(", ")), NotificationType.WARN, true));
+            }
             finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer);
         }
     };

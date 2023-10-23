@@ -1,6 +1,11 @@
 {
   "locale": "tr-TR",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Harita & Araçlar",

@@ -1,6 +1,11 @@
 {
   "locale": "fr-FR",
   "messages": {
+    "app": {
+      "missingbg": "Impossible de trouver le fond \"{0}\", affichage du fond par défaut.",
+      "missinglayers": "Impossible de trouver les couches suivantes: {0}.",
+      "missingtheme": "Impossible de trouver le thème \"{0}\", chargement du thème par défaut."
+    },
     "appmenu": {
       "filter": "Filtrer le menu...",
       "menulabel": "Cartes et outils",

@@ -1,6 +1,11 @@
 {
   "locale": "sv-SE",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Karta & Verktyg",

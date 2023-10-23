@@ -1,6 +1,11 @@
 {
   "locale": "fi-FI",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Kartat & Työkalut",

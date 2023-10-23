@@ -1,6 +1,11 @@
 {
   "locale": "es-ES",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "Menú de filtros...",
       "menulabel": "Mapa & Herramientas",

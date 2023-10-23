@@ -1,6 +1,11 @@
 {
   "locale": "ro-RO",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Hărți & Unelte",

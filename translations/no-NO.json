@@ -1,6 +1,11 @@
 {
   "locale": "no-NO",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Kart & Verktøy",

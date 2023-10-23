@@ -1,6 +1,11 @@
 {
   "locale": "it-IT",
   "messages": {
+    "app": {
+      "missingbg": "Impossibile trovare lo sfondo \"{0}\", viene visualizzato lo sfondo predefinito.",
+      "missinglayers": "Impossibile trovare i seguenti livelli: {0}.",
+      "missingtheme": "Impossibile trovare il tema \"{0}\", è stato caricato il tema predefinito."
+    },
     "appmenu": {
       "filter": "Filtra menù...",
       "menulabel": "Mappa e strumenti",

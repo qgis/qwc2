@@ -13,8 +13,10 @@ import {remove as removeDiacritics} from 'diacritics';
 
 import {SearchResultType} from '../actions/search';
 import {LayerRole} from '../actions/layers';
+import {NotificationType, showNotification} from '../actions/windows';
 import ConfigUtils from './ConfigUtils';
 import LayerUtils from './LayerUtils';
+import LocaleUtils from './LocaleUtils';
 
 const ThemeUtils = {
     getThemeById(themes, id) {
@@ -31,7 +33,7 @@ const ThemeUtils = {
         }
         return null;
     },
-    createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers) {
+    createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers, dispatch) {
         const bgLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
@@ -89,7 +91,8 @@ const ThemeUtils = {
         }
         if (visibleIdx >= 0) {
             bgLayers[visibleIdx].visibility = true;
-        } else if (defaultVisibleIdx >= 0 && visibleLayer !== "") {
+        } else if (defaultVisibleIdx >= 0 && visibleLayer) {
+            dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleLayer), NotificationType.WARN, true));
             bgLayers[defaultVisibleIdx].visibility = true;
         }
         return bgLayers;

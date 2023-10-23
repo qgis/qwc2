@@ -1,6 +1,11 @@
 {
   "locale": "ru-RU",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Карта и инструменты",

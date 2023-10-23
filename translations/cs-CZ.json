@@ -1,6 +1,11 @@
 {
   "locale": "cs-CZ",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "Hledat v menu...",
       "menulabel": "Mapa & Nástroje",

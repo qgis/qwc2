@@ -1,6 +1,11 @@
 {
   "locale": "hu-HU",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Eszközök",

@@ -1,6 +1,11 @@
 {
   "locale": "pl-PL",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Zawartość mapy i narzędzia",

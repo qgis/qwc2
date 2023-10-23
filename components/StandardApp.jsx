@@ -31,9 +31,11 @@ import {addLayer} from '../actions/layers';
 import {changeSearch} from '../actions/search';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
+import {NotificationType, showNotification} from '../actions/windows';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
@@ -68,6 +70,7 @@ class AppInitComponent extends React.Component {
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         setStartupParameters: PropTypes.func,
+        showNotification: PropTypes.func,
         themesLoaded: PropTypes.func
     };
     constructor(props) {
@@ -101,13 +104,17 @@ class AppInitComponent extends React.Component {
 
             // Resolve permalink and restore settings
             resolvePermaLink(this.props.initialParams, (params, state) => {
-                this.props.setStartupParameters(params);
+                this.props.setStartupParameters({...params});
                 let theme = ThemeUtils.getThemeById(themes,  params.t);
                 if (!theme || theme.restricted) {
                     if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
                         return;
                     }
+                    if (params.t) {
+                        this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
+                    }
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
+                    params.l = undefined;
                 }
                 const layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
@@ -173,7 +180,8 @@ const AppInit = connect(state => ({
     setColorScheme: setColorScheme,
     setCurrentTheme: setCurrentTheme,
     setStartupParameters: setStartupParameters,
-    addLayer: addLayer
+    addLayer: addLayer,
+    showNotification: showNotification
 })(AppInitComponent);
 
 

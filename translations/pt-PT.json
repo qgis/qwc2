@@ -1,6 +1,11 @@
 {
   "locale": "pt-PT",
   "messages": {
+    "app": {
+      "missingbg": "",
+      "missinglayers": "",
+      "missingtheme": ""
+    },
     "appmenu": {
       "filter": "",
       "menulabel": "Mapas & Ferramentas",
