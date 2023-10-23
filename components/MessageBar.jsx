@@ -35,15 +35,13 @@ class MessageBar extends React.Component {
         const contents = (typeof this.props.children === "function") ? this.props.children() : null;
         return (
             <div>
-                <div id="MessageBar">
-                    <div className={"messagebar " + (this.props.className || "")}>
-                        <div className="body">
-                            {contents ? contents.body || null : this.renderRole("body")}
-                        </div>
-                        <span className="closewrapper">
-                            <Icon className="close" icon="remove" onClick={this.props.onHide} size="large"/>
-                        </span>
+                <div className={"messagebar " + (this.props.className || "")}>
+                    <div className="body">
+                        {contents ? contents.body || null : this.renderRole("body")}
                     </div>
+                    <span className="closewrapper">
+                        <Icon className="close" icon="remove" onClick={this.props.onHide} size="large"/>
+                    </span>
                 </div>
                 {contents ? contents.extra || null : this.renderRole("extra")}
             </div>
