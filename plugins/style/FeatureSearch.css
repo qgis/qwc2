@@ -47,6 +47,12 @@ div.feature-search-bar > button {
     width: 100%;
 }
 
+div.feature-search-bar > button > div.Spinner {
+    width: 2em;
+    height: 2em;
+    margin-right: 1em;
+}
+
 div.feature-search-results {
     flex: 1 1 auto;
     overflow-y: auto;
