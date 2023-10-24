@@ -402,9 +402,6 @@ const LayerUtils = {
                 this.explodeSublayers(layer, layer, exploded);
             } else {
                 const newLayer = {...layer};
-                if (newLayer.sublayers) {
-                    newLayer.sublayers = [...newLayer.sublayers];
-                }
                 exploded.push({layer: newLayer, path: [], sublayer: newLayer});
             }
         }
