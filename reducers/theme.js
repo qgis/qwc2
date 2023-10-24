@@ -20,8 +20,8 @@ import { UrlParams } from '../utils/PermaLinkUtils';
 
 const defaultState = {
     switching: false,
-    themes: [],
-    themelist: [],
+    themes: {},
+    themelist: {},
     current: null
 };
 
