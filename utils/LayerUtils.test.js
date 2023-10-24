@@ -133,7 +133,7 @@ describe("searchSubLayer", () => {
     
 });
 
-describe("setGroupVisiblities", () => {
+describe("setGroupVisibilities", () => {
     
 });
 

@@ -15,12 +15,18 @@ import CoordinatesUtils from './CoordinatesUtils';
 import MapUtils from './MapUtils';
 import { LayerRole } from '../actions/layers';
 
+/** @typedef {import("qwc2/typings/layers").LayerData} LayerData */
+/** @typedef {import("qwc2/typings/map").MapState} MapState */
+
 /**
  * Utility functions for working with layers.
  * 
  * @namespace
  */
 const LayerUtils = {
+    /**
+     * 
+     */
     restoreLayerParams(
         themeLayer, layerConfigs, permalinkLayers, externalLayers
     ) {
@@ -49,13 +55,17 @@ const LayerUtils = {
             if (layerConfig.type === 'separator') {
                 // No point restoring separators
             } else if (layerConfig.type !== 'theme') {
-                external = external.concat(LayerUtils.createExternalLayerPlaceholder(layerConfig, externalLayers, layerConfig.id));
+                external = external.concat(
+                    LayerUtils.createExternalLayerPlaceholder(
+                        layerConfig, externalLayers, layerConfig.id
+                    )
+                );
             }
         }
         exploded = [...external, ...exploded];
         LayerUtils.insertPermalinkLayers(exploded, permalinkLayers);
         const layers = LayerUtils.implodeLayers(exploded);
-        LayerUtils.setGroupVisiblities(layers);
+        LayerUtils.setGroupVisibilities(layers);
         return layers;
     },
     restoreOrderedLayerParams(
@@ -92,15 +102,15 @@ const LayerUtils = {
         }
         LayerUtils.insertPermalinkLayers(reordered, permalinkLayers);
         const layers = LayerUtils.implodeLayers(reordered);
-        LayerUtils.setGroupVisiblities(layers);
+        LayerUtils.setGroupVisibilities(layers);
         return layers;
     },
-    setGroupVisiblities(layers) {
+    setGroupVisibilities(layers) {
         let parentVisible = false;
         let parentInvisible = false;
         for (const layer of layers) {
             if (!isEmpty(layer.sublayers)) {
-                layer.visibility = LayerUtils.setGroupVisiblities(
+                layer.visibility = LayerUtils.setGroupVisibilities(
                     layer.sublayers
                 );
             }
@@ -541,14 +551,19 @@ const LayerUtils = {
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
+
+    /**
+     * Return array with one entry for every single sublayer.
+     */
     explodeLayers(layers) {
-        // Return array with one entry for every single sublayer)
         const exploded = [];
         for (const layer of layers) {
             if (!isEmpty(layer.sublayers)) {
                 this.explodeSublayers(layer, layer, exploded);
             } else {
                 const newLayer = { ...layer };
+                // How can there be sublayers if we have
+                // just checked that there are none?
                 if (newLayer.sublayers) {
                     newLayer.sublayers = [...newLayer.sublayers];
                 }
@@ -561,6 +576,11 @@ const LayerUtils = {
         }
         return exploded;
     },
+
+    /**
+     * Go through all sublayers and create an array with one entry for every
+     * single sublayer.
+     */
     explodeSublayers(layer, parent, exploded, parentpath = []) {
         for (let idx = 0; idx < parent.sublayers.length; ++idx) {
             const path = [...parentpath, idx];
@@ -1123,6 +1143,20 @@ const LayerUtils = {
         });
         return result;
     },
+
+    /**
+     * Retrieve the attribution for a layer.
+     * 
+     * The layer data is the one kept in the state.
+     * 
+     * @param {LayerData} layer - the layer to get the attribution for
+     * @param {MapState} map - the map state
+     * @param {boolean} showThemeAttributionOnly - whether to show only the
+     *  attribution for theme layers (the function will return an empty
+     *  object for other types of layers)
+     * @param {*} transformedMapBBoxes 
+     * @returns 
+     */
     getAttribution(
         layer, map,
         showThemeAttributionOnly = false,
