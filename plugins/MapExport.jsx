@@ -37,11 +37,11 @@ class MapExport extends React.Component {
     static propTypes = {
         /** Whitelist of allowed export format mimetypes. If empty, supported formats are listed. */
         allowedFormats: PropTypes.arrayOf(PropTypes.string),
-        /** List of scales at which to export the map. */
-        allowedScales: PropTypes.arrayOf(PropTypes.number),
+        /** List of scales at which to export the map. If empty, scale can be freely specified. If `false`, the map can only be exported at the current scale. */
+        allowedScales: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.bool]),
         /** Default export format mimetype. If empty, first available format is used. */
         defaultFormat: PropTypes.string,
-        /** The factor to apply to the map scale to determine the initial export map scale.  */
+        /** The factor to apply to the map scale to determine the initial export map scale (if `allowedScales` is not `false`).  */
         defaultScaleFactor: PropTypes.number,
         /** List of dpis at which to export the map. If empty, the default server dpi is used.  */
         dpis: PropTypes.arrayOf(PropTypes.number),
@@ -107,11 +107,12 @@ class MapExport extends React.Component {
         ) {
             if (this.state.pageSize !== null) {
                 this.setState((state) => {
+                    const scale = this.getExportScale(state);
                     const center = this.props.map.center;
                     const mapCrs = this.props.map.projection;
                     const pageSize = this.props.pageSizes[state.pageSize];
-                    const widthm = state.scale * pageSize.width / 1000;
-                    const heightm = state.scale * pageSize.height / 1000;
+                    const widthm = scale * pageSize.width / 1000;
+                    const heightm = scale * pageSize.height / 1000;
                     const {width, height} = MapUtils.transformExtent(mapCrs, center, widthm, heightm);
                     let extent = [center[0] - 0.5 * width, center[1] - 0.5 * height, center[0] + 0.5 * width, center[1] + 0.5 * height];
                     extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) === 'ne' && this.props.theme.version === '1.3.0') ?
@@ -156,7 +157,7 @@ class MapExport extends React.Component {
                 <select onChange={ev => this.setState({scale: ev.target.value})} role="input" value={this.state.scale}>
                     {this.props.allowedScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
                 </select>);
-        } else {
+        } else if (this.props.allowedScales !== false) {
             scaleChooser = (
                 <input min="1" onChange={ev => this.setState({scale: ev.target.value})} role="input" type="number" value={this.state.scale} />
             );
@@ -167,7 +168,7 @@ class MapExport extends React.Component {
 
         const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         let scaleFactor = 1;
-        if (this.state.pageSize === null) {
+        if (this.state.pageSize === null && this.props.allowedScales !== false) {
             scaleFactor = mapScale / this.state.scale;
         }
         const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, mapScale, this.props.map.projection, exportExternalLayers);
@@ -213,15 +214,17 @@ class MapExport extends React.Component {
                                     </td>
                                 </tr>
                             ) : null}
-                            <tr>
-                                <td>{LocaleUtils.tr("mapexport.scale")}</td>
-                                <td>
-                                    <InputContainer>
-                                        <span role="prefix">1&nbsp;:&nbsp;</span>
-                                        {scaleChooser}
-                                    </InputContainer>
-                                </td>
-                            </tr>
+                            {scaleChooser ? (
+                                <tr>
+                                    <td>{LocaleUtils.tr("mapexport.scale")}</td>
+                                    <td>
+                                        <InputContainer>
+                                            <span role="prefix">1&nbsp;:&nbsp;</span>
+                                            {scaleChooser}
+                                        </InputContainer>
+                                    </td>
+                                </tr>
+                            ) : null}
                             {this.props.dpis ? (
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.resolution")}</td>
@@ -272,7 +275,7 @@ class MapExport extends React.Component {
     };
     renderFrame = () => {
         if (this.state.pageSize !== null) {
-            const px2m =  1 / (this.state.dpi * 39.3701) * this.state.scale;
+            const px2m =  1 / (this.state.dpi * 39.3701) * this.getExportScale(this.state);
             const frame = {
                 width: this.state.width * px2m,
                 height: this.state.height * px2m
@@ -332,6 +335,13 @@ class MapExport extends React.Component {
             height: ''
         });
     };
+    getExportScale = (state) => {
+        if (this.props.allowedScales === false) {
+            return Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
+        } else {
+            return state.scale;
+        }
+    };
     bboxSelected = (bbox, crs, pixelsize) => {
         const version = this.props.theme.version;
         let extent = '';
@@ -368,7 +378,7 @@ class MapExport extends React.Component {
 
         if (formatConfiguration) {
             const keyCaseMap = Object.keys(params).reduce((res, key) => ({...res, [key.toLowerCase()]: key}), {});
-            (formatConfiguration.extraQuery || "").split(/[?&]/).forEach(entry => {
+            (formatConfiguration.extraQuery || "").split(/[?&]/).filter(Boolean).forEach(entry => {
                 const [key, value] = entry.split("=");
                 const caseKey = keyCaseMap[key.toLowerCase()] || key;
                 params[caseKey] = (value ?? "");
@@ -392,7 +402,8 @@ class MapExport extends React.Component {
         axios.post(this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
-            FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.pdf');
+            const ext = this.state.selectedFormat.split(";")[0].split("/").pop();
+            FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.' + ext);
         }).catch(e => {
             this.setState({exporting: false});
             if (e.response) {

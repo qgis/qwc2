@@ -67,8 +67,13 @@ class Redlining extends React.Component {
         if (prevProps.redlining.geomType !== this.props.redlining.geomType && this.props.redlining.geomType === 'Text' && !this.state.selectText) {
             this.setState({selectText: true});
         }
-        if (!this.props.layers.find(layer => layer.id === this.props.redlining.layer) && this.props.redlining.layer !== 'redlining') {
-            this.props.changeRedliningState({layer: 'redlining', layerTitle: 'Redlining'});
+        if (!this.props.layers.find(layer => layer.id === this.props.redlining.layer)) {
+            const vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
+            if (vectorLayers.length >= 1) {
+                this.props.changeRedliningState({layer: vectorLayers[0].id, layerTitle: vectorLayers[0].title});
+            } else if (this.props.redlining.layer !== 'redlining') {
+                this.props.changeRedliningState({layer: 'redlining', layerTitle: 'Redlining'});
+            }
         }
     }
     componentWillUnmount() {
@@ -139,8 +144,8 @@ class Redlining extends React.Component {
             editButtons.push(plugin.cfg);
         }
         let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
-        // Ensure list always contains "Redlining" layer
-        if (!vectorLayers.find(layer => layer.id === 'redlining')) {
+        // Ensure list always contains at least a "Redlining" layer
+        if (vectorLayers.length === 0) {
             vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
         }
 

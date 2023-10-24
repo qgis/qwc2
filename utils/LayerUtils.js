@@ -1089,9 +1089,24 @@ const LayerUtils = {
                     }
                 }
                 if (printBgLayerName) {
-                    params.LAYERS.push(printBgLayerName);
-                    params.OPACITIES.push("255");
-                    params.COLORS.push("");
+                    let match = null;
+                    if (
+                        (match = printBgLayerName.match(/^(\w+):(.*)#([^#]+)$/)) && 
+                        match[1] === "wms"
+                    ) {
+                        const layer = {
+                            type: 'wms',
+                            params: {LAYERS: match[3], OPACITIES: '255'},
+                            url: match[2]
+                        };
+                        LayerUtils.addExternalLayerPrintParams(
+                            layer, params, printCrs, counterRef
+                        );
+                    } else {
+                        params.LAYERS.push(printBgLayerName);
+                        params.OPACITIES.push("255");
+                        params.COLORS.push("");
+                    }
                 }
             } else if (printExternalLayers) {
                 // Inject client-side wms as external layer for print

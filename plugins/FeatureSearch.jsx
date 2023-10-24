@@ -13,12 +13,13 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {v1 as uuidv1} from 'uuid';
 import isEmpty from 'lodash.isempty';
+import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
+import Spinner from '../components/Spinner';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import "./style/FeatureSearch.css";
-import IdentifyViewer from '../components/IdentifyViewer';
 
 class FeatureSearch extends React.Component {
     static propTypes = {
@@ -101,7 +102,10 @@ class FeatureSearch extends React.Component {
                     </tbody></table>
                 </fieldset>
                 <div className="feature-search-bar">
-                    <button className="button" disabled={this.state.busy} type="submit">{LocaleUtils.tr("search.search")}</button>
+                    <button className="button" disabled={this.state.busy} type="submit">
+                        {this.state.busy ? (<Spinner />) : null}
+                        {LocaleUtils.tr("search.search")}
+                    </button>
                 </div>
             </form>
         );
@@ -128,7 +132,7 @@ class FeatureSearch extends React.Component {
                 {isEmpty(this.state.searchResults) ? (
                     <div className="feature-search-noresults">{LocaleUtils.tr("featuresearch.noresults")}</div>
                 ) : (
-                    <IdentifyViewer collapsible displayResultTree={false} identifyResults={this.state.searchResults} />
+                    <IdentifyViewer collapsible displayResultTree={false} enableExport identifyResults={this.state.searchResults} />
                 )}
             </div>
         );
@@ -172,7 +176,7 @@ class FeatureSearch extends React.Component {
         });
         params.LAYERS = params.LAYERS.join(",");
         params.FILTER = params.FILTER.join(";");
-        this.setState({busy: true});
+        this.setState({busy: true, searchResults: null});
         axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
             const results = IdentifyUtils.parseResponse(response.data, null, 'text/xml', null, this.props.map.projection);
             this.setState({busy: false, searchResults: results});

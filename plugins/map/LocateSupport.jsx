@@ -85,7 +85,12 @@ class LocateSupport extends React.Component {
     };
     onLocationError = (err) => {
         this.props.onLocateError(err.message);
-        this.props.changeLocateState("DISABLED");
+        // User denied geolocation prompt
+        if (err.code === 1) {
+            this.props.changeLocateState("PERMISSION_DENIED");
+        } else {
+            this.props.changeLocateState("DISABLED");
+        }
     };
     render() {
         return null;
