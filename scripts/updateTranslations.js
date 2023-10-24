@@ -6,9 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const fs = require('fs');
-const merge = require('deepmerge');
-const objectPath = require('object-path');
+import fs from 'fs';
+import merge from 'deepmerge';
+import objectPath from 'object-path';
+
 
 const readJSON = (path) => {
     try {

@@ -5,18 +5,19 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import urlUtil from 'url';
+import axios from 'axios';
+import xml2js from 'xml2js';
+import fs from 'fs';
+import path from 'path';
+import objectPath from 'object-path';
+import isEmpty from 'lodash.isempty';
+import { v1 as uuidv1 } from 'uuid';
+import os from 'os';
+import dns from 'dns';
+import { createRequire } from 'node:module';
 
-const urlUtil = require('url');
-const axios = require('axios');
-const xml2js = require('xml2js');
-const fs = require('fs');
-const path = require('path');
-const objectPath = require('object-path');
-const isEmpty = require('lodash.isempty');
-const uuidv1 = require('uuid').v1;
-const os = require('os');
-const dns = require('dns');
-
+const require = createRequire(import.meta.url);
 const { lookup, lookupService } = dns.promises;
 
 let hostFqdn = "";

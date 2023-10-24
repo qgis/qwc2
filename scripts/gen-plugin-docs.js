@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const reactDocs = require("react-docgen");
+import fs from 'fs';
+import path from 'path';
+import reactDocs from 'react-docgen';
 
 const qwcPluginDir = './qwc2/plugins';
 let pluginData = [];

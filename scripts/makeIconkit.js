@@ -1,8 +1,9 @@
-const webfontsGenerator = require('@vusion/webfonts-generator');
-const glob = require('glob');
-const mkdirp = require('mkdirp');
-const fs = require('fs');
-const path = require('path');
+import webfontsGenerator from '@vusion/webfonts-generator';
+import glob from 'glob';
+import mkdirp from 'mkdirp';
+import fs from 'fs';
+import path from 'path';
+
 
 const readJSON = (filename) => {
     try {
