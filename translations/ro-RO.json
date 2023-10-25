@@ -416,10 +416,15 @@
       "title": "Infomrații Temă"
     },
     "settings": {
+      "bookmarks": "",
       "colorscheme": "Schema de culori",
       "confirmlang": "Aplicația va fi reîncărcată pentru a aplica schimbarea limbii. Continuați?",
+      "default": "",
+      "defaulttheme": "",
+      "defaultthemefailed": "",
       "language": "Limba",
-      "systemlang": "Liba sistemului"
+      "systemlang": "Liba sistemului",
+      "themes": ""
     },
     "share": {
       "QRCodeLinkTitle": "Cod QR",

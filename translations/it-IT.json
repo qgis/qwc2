@@ -416,10 +416,15 @@
       "title": "Informazioni sul tema"
     },
     "settings": {
+      "bookmarks": "Segnalibri",
       "colorscheme": "Stile",
       "confirmlang": "L'applicazione sarà ricaricata per cambiare la lingua. Procedere?",
+      "default": "Predefinito",
+      "defaulttheme": "Tema predefinito",
+      "defaultthemefailed": "Impossibile cambiare il tema predefinito: {0}",
       "language": "Lingua",
-      "systemlang": "Lingua del sistema"
+      "systemlang": "Lingua del sistema",
+      "themes": "Temi"
     },
     "share": {
       "QRCodeLinkTitle": "Codice QR",

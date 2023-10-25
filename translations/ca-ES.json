@@ -416,10 +416,15 @@
       "title": "Informació del tema"
     },
     "settings": {
+      "bookmarks": "",
       "colorscheme": "Tema",
       "confirmlang": "L'aplicació es reiniciarà per canviar l'idioma. Vol continuar?",
+      "default": "",
+      "defaulttheme": "",
+      "defaultthemefailed": "",
       "language": "Idioma",
-      "systemlang": "Idioma del sistema"
+      "systemlang": "Idioma del sistema",
+      "themes": ""
     },
     "share": {
       "QRCodeLinkTitle": "Codi QR",

@@ -416,10 +416,15 @@
       "title": "Informationen zum Thema"
     },
     "settings": {
+      "bookmarks": "Lesezeichen",
       "colorscheme": "Farbschema",
       "confirmlang": "Die Anwendung wird neugeladen, um die Sprache zu wechseln. Fortsetzen?",
+      "default": "Standard",
+      "defaulttheme": "Standardthema",
+      "defaultthemefailed": "Konnte das Standardthema nicht ändern: {0}",
       "language": "Sprache",
-      "systemlang": "Systemsprache"
+      "systemlang": "Systemsprache",
+      "themes": "Themen"
     },
     "share": {
       "QRCodeLinkTitle": "QR Code (Smartphone)",

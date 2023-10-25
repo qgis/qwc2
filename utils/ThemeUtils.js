@@ -179,6 +179,13 @@ const ThemeUtils = {
             return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords || "").match(filter) || removeDiacritics(item.abstract || "").match(filter);
         }));
         return matches;
+    },
+    getThemeNames(themes) {
+        const names = (themes.items || []).reduce((res, theme) => ({...res, [theme.id]: theme.title}), {});
+        (themes.groups || []).forEach(group => {
+            Object.assign(names, ThemeUtils.getThemeNames(group));
+        });
+        return names;
     }
 };
 
