@@ -13,6 +13,7 @@ ReducerIndex.register("localConfig", localConfigReducer);
 export const LOCAL_CONFIG_LOADED = 'LOCAL_CONFIG_LOADED';
 export const SET_STARTUP_PARAMETERS = 'SET_STARTUP_PARAMETERS';
 export const SET_COLOR_SCHEME = 'SET_COLOR_SCHEME';
+export const SET_USER_INFO_FIELDS = 'SET_USER_INFO_FIELDS';
 
 export function localConfigLoaded(config) {
     return {
@@ -33,5 +34,12 @@ export function setColorScheme(colorScheme, storeInLocalStorage = false) {
         type: SET_COLOR_SCHEME,
         colorScheme,
         storeInLocalStorage
+    };
+}
+
+export function setUserInfoFields(fields) {
+    return {
+        type: SET_USER_INFO_FIELDS,
+        fields
     };
 }

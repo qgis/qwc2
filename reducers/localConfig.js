@@ -7,7 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS, SET_COLOR_SCHEME} from '../actions/localConfig';
+import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS, SET_COLOR_SCHEME, SET_USER_INFO_FIELDS} from '../actions/localConfig';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
@@ -42,6 +42,15 @@ export default function localConfig(state = defaultState, action) {
             localStorage.setItem('qwc2-color-scheme', newColorScheme);
         }
         return {...state, colorScheme: newColorScheme};
+    }
+    case SET_USER_INFO_FIELDS: {
+        return {
+            ...state,
+            user_infos: {
+                ...state.user_infos,
+                ...action.fields
+            }
+        };
     }
     default:
         return state;
