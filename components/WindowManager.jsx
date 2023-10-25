@@ -73,7 +73,7 @@ class WindowManager extends React.Component {
             className = 'windows-notification-error';
         }
         return (
-            <div className={className}>
+            <div className={className} key={key}>
                 <div>{data.text}</div>
                 <span>
                     <Icon icon="remove" onClick={() => this.closeWindow(key)} size="large"/>
