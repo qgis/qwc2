@@ -721,14 +721,28 @@ const LayerUtils = {
         }
         return newlayers;
     },
-    insertLayer(layers, newlayer, beforeattr, beforeval) {
+
+    /**
+     * Inserts a layer into a list.
+     * 
+     * The function creates a linear representation of the tree of layers
+     * through {@link LayerUtils.explodeLayers}, inserts the layer
+     * then it recreates the tree through {@link LayerUtils.implodeLayers}
+     * 
+     */
+    insertLayer(layers, newLayer, beforeAttr, beforeVal) {
         const exploded = LayerUtils.explodeLayers(layers);
-        const explodedAdd = LayerUtils.explodeLayers([newlayer]);
+        const explodedAdd = LayerUtils.explodeLayers([newLayer]);
         const index = exploded.findIndex(
-            entry => entry.sublayer[beforeattr] === beforeval
+            entry => entry.sublayer[beforeAttr] === beforeVal
         );
         if (index !== -1) {
             exploded.splice(index, 0, ...explodedAdd);
+        } else {
+            throw new Error(
+                "Failed to find 'before' layer item with " + 
+                `'${beforeAttr}'=${beforeVal}`
+            );
         }
         return LayerUtils.implodeLayers(exploded);
     },

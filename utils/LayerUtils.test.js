@@ -31,7 +31,7 @@ describe("addUUIDs", () => {
         const layer = {
             sublayers: subLayers
         };
-        LayerUtils.addUUIDs(layer, used); 
+        LayerUtils.addUUIDs(layer, used);
         expect(layer.uuid).toMatch(uuidRegex);
         expect(layer.sublayers).not.toBe(subLayers);
         expect(layer.sublayers[0].uuid).toMatch(uuidRegex);
@@ -344,10 +344,8 @@ describe("implodeLayers", () => {
         expect(LayerUtils.implodeLayers([{
             layer: {
                 id: "one",
-                name: "one",
                 sublayers: [{
                     id: "one-one",
-                    name: "one-one",
                     sublayers: [{
                         id: "one-one-one",
                     }]
@@ -364,18 +362,106 @@ describe("implodeLayers", () => {
             },
             path: [1],
             sublayer: { id: "one-two" },
-        }])).toEqual([{
+        }])).toMatchObject([{
             id: "one",
-            uuid: expect.stringMatching(uuidRegex)
-        }, {
-            id: "two",
-            uuid: expect.stringMatching(uuidRegex)
+            uuid: expect.stringMatching(uuidRegex),
+            sublayers: [{
+                id: "one-one",
+                uuid: expect.stringMatching(uuidRegex),
+                sublayers: [{
+                    id: "one-one-one",
+                    uuid: expect.stringMatching(uuidRegex)
+                }]
+            }, {
+                id: "one-two",
+                uuid: expect.stringMatching(uuidRegex),
+            }]
         }]);
     });
 });
 
 describe("insertLayer", () => {
-
+    it("should throw an error with an empty list", () => {
+        expect(() => {
+            LayerUtils.insertLayer([], { id: "one" }, "xxx", null)
+        }).toThrow("Failed to find");
+    });
+    it("should throw an error if before item is not found", () => {
+        expect(() => {
+            LayerUtils.insertLayer([{
+                id: "lorem"
+            }], {
+                id: "one"
+            }, "xxx", null)
+        }).toThrow("Failed to find");
+    });
+    it("should insert the layer before another top layer", () => {
+        expect(
+            LayerUtils.insertLayer([{
+                id: "lorem"
+            }], {
+                id: "ipsum"
+            }, "id", "lorem")
+        ).toMatchObject([{
+            id: "ipsum",
+            uuid: expect.stringMatching(uuidRegex)
+        }, {
+            id: "lorem",
+            uuid: expect.stringMatching(uuidRegex)
+        }]);
+    });
+    it("should insert the layer before another sub-layer", () => {
+        expect(
+            LayerUtils.insertLayer([{
+                id: "lorem",
+                sublayers: [{
+                    id: "ipsum"
+                }, {
+                    id: "dolor",
+                    sublayers: [{
+                        id: "amet"
+                    }, {
+                        id: "consectetur"
+                    }]
+                }]
+            }], {
+                id: "lorem",
+                sublayers: [{
+                    id: "dolor",
+                    sublayers: [{
+                        id: "sit",
+                    }]
+                }]
+            }, "id", "amet")
+        ).toMatchObject([{
+            id: "lorem",
+            uuid: expect.stringMatching(uuidRegex),
+            sublayers: [
+                {
+                    id: "ipsum",
+                    uuid: expect.stringMatching(uuidRegex)
+                },
+                {
+                    id: "dolor",
+                    uuid: expect.stringMatching(uuidRegex),
+                    sublayers: [
+                        {
+                            id: "sit",
+                            uuid: expect.stringMatching(uuidRegex)
+                        },
+                        {
+                            id: "amet",
+                            uuid: expect.stringMatching(uuidRegex)
+                        },
+                        {
+                            id: "consectetur",
+                            uuid: expect.stringMatching(uuidRegex)
+                        },
+                    ],
+                },
+            ],
+        }]);
+    });
 });
 
 describe("insertPermalinkLayers", () => {
