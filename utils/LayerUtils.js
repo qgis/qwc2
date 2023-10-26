@@ -723,12 +723,24 @@ const LayerUtils = {
     },
 
     /**
-     * Inserts a layer into a list.
+     * Inserts a layer into a tree.
      * 
      * The function creates a linear representation of the tree of layers
      * through {@link LayerUtils.explodeLayers}, inserts the layer
-     * then it recreates the tree through {@link LayerUtils.implodeLayers}
+     * then it recreates the tree through {@link LayerUtils.implodeLayers}.
      * 
+     * To determine the position of the insertion the function compares the
+     * value of the `beforeAttr` property of each leaf layer with the
+     * `beforeVal` argument.
+     * 
+     * @param {LayerData[]} layers - the list of layers to change
+     * @param {LayerData} newLayer - the layer to insert
+     * @param {string} beforeAttr - the attribute to examine (e.g. 
+     *  `name` or `id`)
+     * @param {*} beforeVal - the value to examine
+     * 
+     * @throws {Error} if the reference leaf layer is not found
+     * @returns {LayerData[]} a new list that includes the `newLayer`
      */
     insertLayer(layers, newLayer, beforeAttr, beforeVal) {
         const exploded = LayerUtils.explodeLayers(layers);
