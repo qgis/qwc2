@@ -738,7 +738,98 @@ describe("searchSubLayer", () => {
 });
 
 describe("setGroupVisibilities", () => {
+    it("should accept an empty list", () => {
+        expect(LayerUtils.setGroupVisibilities([])).toBe(false);
+    });
+    it("should work with a single top layer", () => {
+        let layer = {};
+        expect(LayerUtils.setGroupVisibilities([layer])).toBeFalsy();
 
+        layer = { visibility: true };
+        expect(LayerUtils.setGroupVisibilities([layer])).toBeTruthy();
+
+        const parts = [
+            [true, false, true],
+            [false, false, false],
+            [true, true, false],
+            [false, true, false],
+        ]
+        for (let part of parts) {
+            layer = { visibility: part[0], tristate: part[1] };
+            const x = expect(LayerUtils.setGroupVisibilities([layer]));
+            if (part[2]) {
+                x.toBeTruthy();
+            } else {
+                x.toBeFalsy();
+            }
+            expect(layer.tristate).toBeUndefined();
+        }
+
+        layer = { visibility: true, tristate: false };
+        expect(LayerUtils.setGroupVisibilities([layer])).toBeTruthy();
+        expect(layer.tristate).toBeUndefined();
+
+        layer = { visibility: false, tristate: false };
+        expect(LayerUtils.setGroupVisibilities([layer])).toBeFalsy();
+        expect(layer.tristate).toBeUndefined();
+
+        layer = { visibility: false, tristate: true };
+        expect(LayerUtils.setGroupVisibilities([layer])).toBeFalsy();
+        expect(layer.tristate).toBeUndefined();
+
+        layer = { visibility: true, tristate: true };
+        expect(LayerUtils.setGroupVisibilities([layer])).toBeFalsy();
+        expect(layer.tristate).toBeUndefined();
+    });
+    it("should work with a multiple top layer", () => {
+        let layer1 = {};
+        let layer2 = {};
+        expect(LayerUtils.setGroupVisibilities([layer1, layer2])).toBeFalsy();
+
+        layer1 = { visibility: true };
+        layer2 = { visibility: true };
+        expect(LayerUtils.setGroupVisibilities([layer1, layer2])).toBeTruthy();
+
+        layer1 = { visibility: true };
+        layer2 = { visibility: false };
+        expect(LayerUtils.setGroupVisibilities([layer1, layer2])).toBeTruthy();
+
+        //  L1V,   L1Tr,  L2V,  L2Tr,  result
+        const parts = [
+            [true, true, true, true, false],
+            [true, true, true, false, false],
+            [true, true, false, true, false],
+            [true, true, false, false, false],
+            [true, false, true, true, false],
+            [true, false, true, false, true],
+            [true, false, false, true, false],
+            [true, false, false, false, true],
+            [false, true, true, true, false],
+            [false, true, true, false, false],
+            [false, true, false, true, false],
+            [false, true, false, false, false],
+            [false, false, true, true, false],
+            [false, false, true, false, true],
+            [false, false, false, true, false],
+            [false, false, false, false, false],
+        ];
+        for (let part of parts) {
+            layer1 = { visibility: part[0], tristate: part[1] };
+            layer2 = { visibility: part[2], tristate: part[3] };
+            const x = expect(
+                LayerUtils.setGroupVisibilities([layer1, layer2]),
+                `L1V=${part[0]}, L1Tr=${part[1]}, L2V=${part[2]}, ` +
+                `L2Tr=${part[3]}, result=${part[4]}`
+            );
+            if (part[4]) {
+                x.toBeTruthy();
+            } else {
+                x.toBeFalsy();
+            }
+            expect(layer1.tristate).toBeUndefined();
+            expect(layer2.tristate).toBeUndefined();
+        }
+    });
 });
 
 describe("splitLayerUrlParam", () => {

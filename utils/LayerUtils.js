@@ -117,8 +117,19 @@ const LayerUtils = {
     },
 
     /**
+     * Determines the visibility of a tree based on its members.
      * 
+     * For each layer in the list (either the one the user provided or
+     * the list of sub-layers for group layers) the function determines a
+     * layer to be visible if:
+     * - any of its sub-layers are visible and
+     * - none of its sub-layers are in tri-state.
      * 
+     * While walking the tree of layers the function will remove the
+     * `tristate` property from all layers and - for group layers -
+     * the `visibility` property will be set to the result of
+     * running this function over its sub-layers.
+     *
      * @param {LayerData[]} layers - the tree of layers
      * 
      * @returns {boolean} 

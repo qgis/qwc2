@@ -26,6 +26,7 @@ const config = {
         "./config/setupTests.js",
     ],
     setupFilesAfterEnv: [
+        "jest-expect-message",
         "./config/setupTestsAfterEnv.js",
     ]
 };
