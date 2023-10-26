@@ -13,8 +13,10 @@ import { remove as removeDiacritics } from 'diacritics';
 
 import { SearchResultType } from '../actions/search';
 import { LayerRole } from '../actions/layers';
+import { NotificationType, showNotification } from '../actions/windows';
 import ConfigUtils from './ConfigUtils';
 import LayerUtils from './LayerUtils';
+import LocaleUtils from './LocaleUtils';
 
 /**
  * Utility functions for working with themes.
@@ -60,10 +62,13 @@ const ThemeUtils = {
      * @param {string} visibleLayer - the name of the background layer to
      *  make visible
      * @param {object} externalLayers - the external layers collection
+     * @param {*} dispatch - redux store dispatcher
      * 
      * @return {object[]} the background layers list.
      */
-    createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers) {
+    createThemeBackgroundLayers(
+        theme, themes, visibleLayer, externalLayers, dispatch
+    ) {
         const bgLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
@@ -78,9 +83,13 @@ const ThemeUtils = {
                 if (entry.visibility === true) {
                     defaultVisibleIdx = bgLayers.length;
                 }
+                console.log("entry.visibility", entry.visibility)
+                console.log("defaultVisibleIdx", defaultVisibleIdx)
                 if (bgLayer.name === visibleLayer) {
                     visibleIdx = bgLayers.length;
                 }
+                console.log("visibleLayer", visibleLayer)
+                console.log("visibleIdx", visibleIdx)
                 bgLayer = {
                     ...bgLayer,
                     role: LayerRole.BACKGROUND,
@@ -145,7 +154,14 @@ const ThemeUtils = {
         }
         if (visibleIdx >= 0) {
             bgLayers[visibleIdx].visibility = true;
-        } else if (defaultVisibleIdx >= 0 && visibleLayer !== "") {
+        } else if (defaultVisibleIdx >= 0 && visibleLayer) {
+            dispatch(
+                showNotification(
+                    "missingbglayer",
+                    LocaleUtils.tr("app.missingbg", visibleLayer),
+                    NotificationType.WARN, true
+                )
+            );
             bgLayers[defaultVisibleIdx].visibility = true;
         }
         return bgLayers;
@@ -244,7 +260,7 @@ const ThemeUtils = {
         if (capabilityUrl.split("?")[0] === baseUrl.split("?")[0]) {
             const parts = url.parse(capabilityUrl, true);
             parts.query = { ...baseParams, ...parts.query };
-            
+
             // If we don't do this the search parameter is used to
             // construct the url. We want `query` to be used.
             delete parts.search;
@@ -304,8 +320,8 @@ const ThemeUtils = {
         );
         matches.push(...(themeGroup.items || []).filter(item => {
             return (
-                removeDiacritics(item.title).match(filter) || 
-                removeDiacritics(item.keywords || "").match(filter) || 
+                removeDiacritics(item.title).match(filter) ||
+                removeDiacritics(item.keywords || "").match(filter) ||
                 removeDiacritics(item.abstract || "").match(filter)
             );
         }));

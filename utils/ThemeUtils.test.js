@@ -1,6 +1,15 @@
 import ThemeUtils from './ThemeUtils';
 import { LayerRole } from '../actions/layers';
 
+let mockLocale = "xy";
+jest.mock("./LocaleUtils", () => ({
+    __esModule: true,
+    default: {
+        lang: () => mockLocale,
+        tr: (msg) => msg,
+    },
+}));
+
 let mockAllowReorderingLayers = true;
 let mockAssetsPath = '';
 jest.mock("./ConfigUtils", () => ({
@@ -191,6 +200,82 @@ describe("createThemeBackgroundLayers", () => {
             },
         ]);
     });
+    it("should notify the user that background layer is missing", () => {
+        const theme = {
+            backgroundLayers: [
+                { name: "test" },
+                {
+                    name: "lorem",
+                    visibility: true
+                },
+            ]
+        };
+        const themes = {
+            backgroundLayers: [
+                {
+                    name: "test",
+                    type: "wms",
+                    params: {},
+                    version: "1.2.3",
+                },
+                {
+                    name: "lorem",
+                    type: "wms",
+                    params: {},
+                    version: "3.2.1"
+                },
+            ]
+        };
+        const visibleLayer = "not-found";
+        const externalLayers = {};
+        const dispatch = jest.fn();
+        ThemeUtils.createThemeBackgroundLayers(
+            theme, themes, visibleLayer, externalLayers, dispatch
+        );
+        expect(dispatch).toHaveBeenCalledWith({
+            "name": "missingbglayer",
+            "notificationType": 2,
+            "sticky": true,
+            "text": "app.missingbg",
+            "type": "SHOW_NOTIFICATION"
+        });
+    });
+    it(
+        "should not (!) notify the user that background layer is " +
+        "missing but there are no visible layers", () => {
+            const theme = {
+                backgroundLayers: [
+                    { name: "test" },
+                    {
+                        name: "lorem",
+                        visibility: false
+                    },
+                ]
+            };
+            const themes = {
+                backgroundLayers: [
+                    {
+                        name: "test",
+                        type: "wms",
+                        params: {},
+                        version: "1.2.3",
+                    },
+                    {
+                        name: "lorem",
+                        type: "wms",
+                        params: {},
+                        version: "3.2.1"
+                    },
+                ]
+            };
+            const dispatch = jest.fn();
+            const visibleLayer = "not-found";
+            const externalLayers = {};
+            ThemeUtils.createThemeBackgroundLayers(
+                theme, themes, visibleLayer, externalLayers, dispatch
+            );
+            expect(dispatch).not.toHaveBeenCalled();
+        });
 });
 
 describe("createThemeLayer", () => {

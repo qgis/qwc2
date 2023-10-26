@@ -45,7 +45,9 @@ export default function windows(state = defaultState, action) {
                     ...state.entries,
                     [action.name]: {
                         type: 'notification',
-                        text: action.text
+                        text: action.text,
+                        notificationType: action.notificationType,
+                        sticky: action.sticky
                     }
                 }
             };
@@ -61,7 +63,13 @@ export default function windows(state = defaultState, action) {
         case CLOSE_ALL_WINDOWS: {
             return {
                 ...state,
-                entries: {}
+                entries: Object.entries(state.entries)
+                    .reduce((res, [name, entry]) => {
+                        if (entry.sticky) {
+                            res[name] = entry;
+                        }
+                        return res;
+                    }, {})
             };
         }
         case REGISTER_WINDOW: {
@@ -80,7 +88,7 @@ export default function windows(state = defaultState, action) {
             return {
                 ...state,
                 stacking: [
-                    ...state.stacking.filter(x => x !== action.id), 
+                    ...state.stacking.filter(x => x !== action.id),
                     action.id
                 ]
             };

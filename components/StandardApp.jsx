@@ -8,7 +8,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Provider, connect } from 'react-redux';
+import {Provider, connect} from 'react-redux';
 
 // Needed for IE11 to avoid 'Promise not defined' error in axios
 import "core-js/stable";
@@ -17,26 +17,28 @@ import "regenerator-runtime/runtime";
 
 import axios from 'axios';
 import Proj4js from 'proj4';
-import { register as olProj4Register } from 'ol/proj/proj4';
+import {register as olProj4Register} from 'ol/proj/proj4';
 import deepmerge from 'deepmerge';
 
 import Localized from './Localized';
 import StandardStore from '../stores/StandardStore';
 import PluginsContainer from './PluginsContainer';
 
-import { changeBrowserProperties } from '../actions/browser';
-import { loadLocale } from '../actions/locale';
-import { localConfigLoaded, setStartupParameters, setColorScheme } from '../actions/localConfig';
-import { addLayer } from '../actions/layers';
-import { changeSearch } from '../actions/search';
-import { themesLoaded, setCurrentTheme } from '../actions/theme';
-import { setCurrentTask } from '../actions/task';
+import {changeBrowserProperties} from '../actions/browser';
+import {loadLocale} from '../actions/locale';
+import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
+import {addLayer} from '../actions/layers';
+import {changeSearch} from '../actions/search';
+import {themesLoaded, setCurrentTheme} from '../actions/theme';
+import {setCurrentTask} from '../actions/task';
+import {NotificationType, showNotification} from '../actions/windows';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
-import { UrlParams, resolvePermaLink } from '../utils/PermaLinkUtils';
+import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/DefaultColorScheme.css';
@@ -68,6 +70,7 @@ class AppInitComponent extends React.Component {
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         setStartupParameters: PropTypes.func,
+        showNotification: PropTypes.func,
         themesLoaded: PropTypes.func
     };
     constructor(props) {
@@ -101,13 +104,17 @@ class AppInitComponent extends React.Component {
 
             // Resolve permalink and restore settings
             resolvePermaLink(this.props.initialParams, (params, state) => {
-                this.props.setStartupParameters(params);
-                let theme = ThemeUtils.getThemeById(themes, params.t);
+                this.props.setStartupParameters({...params});
+                let theme = ThemeUtils.getThemeById(themes,  params.t);
                 if (!theme || theme.restricted) {
                     if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
                         return;
                     }
+                    if (params.t) {
+                        this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
+                    }
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
+                    params.l = undefined;
                 }
                 const layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
@@ -124,8 +131,7 @@ class AppInitComponent extends React.Component {
                             initialView = {
                                 center: coords,
                                 zoom: zoom,
-                                crs: params.crs || theme.mapCrs
-                            };
+                                crs: params.crs || theme.mapCrs};
                         }
                     } else if (params.e) {
                         const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x));
@@ -174,7 +180,8 @@ const AppInit = connect(state => ({
     setColorScheme: setColorScheme,
     setCurrentTheme: setCurrentTheme,
     setStartupParameters: setStartupParameters,
-    addLayer: addLayer
+    addLayer: addLayer,
+    showNotification: showNotification
 })(AppInitComponent);
 
 
@@ -200,14 +207,14 @@ export default class StandardApp extends React.Component {
     }
     computeVh = () => {
         // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
-        document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+        document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
     };
     render() {
         const plugins = this.props.appConfig.pluginsDef.plugins;
         return (
             <Provider store={this.store}>
                 <div ref={this.setupTouchEvents}>
-                    <AppInit appConfig={this.props.appConfig} initialParams={this.initialParams} />
+                    <AppInit appConfig={this.props.appConfig} initialParams={this.initialParams}/>
                     <Localized>
                         <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
                     </Localized>
@@ -255,9 +262,7 @@ export default class StandardApp extends React.Component {
     };
     init = () => {
         // Detect browser properties
-        this.store.dispatch(
-            changeBrowserProperties(ConfigUtils.getBrowserProperties())
-        );
+        this.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
 
         // Load config.json
         const urlParams = UrlParams.getParams();
@@ -271,15 +276,15 @@ export default class StandardApp extends React.Component {
             // Merge common config into mobile/desktop config
             const commonConfig = (config.plugins.common || []).reduce((res, entry) => {
                 const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
-                return { ...res, [key]: entry };
+                return {...res, [key]: entry};
             }, {});
             config.plugins.desktop = Object.values(deepmerge(commonConfig, config.plugins.desktop.reduce((res, entry) => {
                 const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
-                return { ...res, [key]: entry };
+                return {...res, [key]: entry};
             }, {})));
             config.plugins.mobile = Object.values(deepmerge(commonConfig, config.plugins.mobile.reduce((res, entry) => {
                 const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
-                return { ...res, [key]: entry };
+                return {...res, [key]: entry};
             }, {})));
             delete config.plugins.common;
             this.store.dispatch(localConfigLoaded(config));
@@ -291,7 +296,7 @@ export default class StandardApp extends React.Component {
                 if (Proj4js.defs(proj.code) === undefined) {
                     Proj4js.defs(proj.code, proj.proj);
                 }
-                CoordinatesUtils.setCrsLabels({ [proj.code]: proj.label });
+                CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
             }
             olProj4Register(Proj4js);
         });

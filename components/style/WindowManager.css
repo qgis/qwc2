@@ -7,3 +7,43 @@ iframe.windows-iframe-dialog-body {
 div.dock-window iframe.windows-iframe-dialog-body {
     height: calc(100vh - 5.75em);
 }
+
+div.windows-notification-container {
+    position: absolute;
+    top: 3.5em;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    max-width: calc(100% - 0.5em);
+    background-color: var(--container-bg-color);
+    box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
+    border-top: 1px solid rgba(136, 136, 136, 0.5);
+    z-index: 3;
+}
+
+div.windows-notification-container > div {
+    padding: 0 1.25em 0 0.25em;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+}
+
+div.windows-notification-container > div > div {
+    padding: 0.25em 0.5em 0.25em 0.25em;
+    display: inline-block;
+}
+
+div.windows-notification-container > div > span {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 0.125em 0.125em 0 0;
+}
+
+div.windows-notification-warn {
+    background-color: orange;
+}
+
+div.windows-notification-error {
+    background-color: red;
+}
