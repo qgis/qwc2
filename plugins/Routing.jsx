@@ -174,6 +174,17 @@ class Routing extends React.Component {
                 this.updateIsoConfig({points: [...this.state.isoConfig.points, taskData.isoextracenter]});
             }
         }
+        // Window closed
+        if (!this.state.visible && prevState.visible) {
+            this.props.removeLayer("routingggeometries");
+            this.props.removeLayer("routingmarkers");
+            this.updateRouteConfig({points: [{text: '', pos: null, crs: null}, {text: '', pos: null, crs: null}], result: null}, false);
+            this.updateIsoConfig({point: {text: '', pos: null, crs: null}, result: null}, false);
+        }
+        // No further processing beyond here if not visible
+        if (!this.state.visible) {
+            return;
+        }
         // Tab changed
         if (this.state.currentTab !== prevState.currentTab) {
             this.props.removeLayer("routingggeometries");
@@ -183,13 +194,6 @@ class Routing extends React.Component {
         // Mode changed
         if (this.state.mode !== prevState.mode) {
             this.recomputeIfNeeded();
-        }
-        // Window closed
-        if (!this.state.visible && prevState.visible) {
-            this.props.removeLayer("routingggeometries");
-            this.props.removeLayer("routingmarkers");
-            this.updateRouteConfig({points: [{text: '', pos: null, crs: null}, {text: '', pos: null, crs: null}], result: null});
-            this.updateIsoConfig({point: {text: '', pos: null, crs: null}, result: null});
         }
         // Routing markers
         if (
