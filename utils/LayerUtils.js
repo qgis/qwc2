@@ -115,6 +115,14 @@ const LayerUtils = {
         LayerUtils.setGroupVisibilities(layers);
         return layers;
     },
+
+    /**
+     * 
+     * 
+     * @param {LayerData[]} layers - the tree of layers
+     * 
+     * @returns {boolean} 
+     */
     setGroupVisibilities(layers) {
         let parentVisible = false;
         let parentInvisible = false;
@@ -758,6 +766,19 @@ const LayerUtils = {
         }
         return LayerUtils.implodeLayers(exploded);
     },
+
+    /**
+     * Changes the visibility attribute of all sub-layers in the entire tree
+     * for layers that represents mutually-exclusive groups.
+     * 
+     * At each level the function will set exactly one visible sub-layer
+     * in a mutually-exclusive group based on following rules:
+     * - the first tri-state sub-layer or
+     * - the first visible sub-layer or
+     * - the first sub-layer in the group.
+     * 
+     * @param {LayerData} group - the group to edit
+     */
     ensureMutuallyExclusive(group) {
         if (!isEmpty(group.sublayers)) {
             if (group.mutuallyExclusive) {
@@ -843,6 +864,18 @@ const LayerUtils = {
         }
         return null;
     },
+
+    /**
+     * Check if a sub-layer and all of its parents are visible.
+     * 
+     * @param {LayerData} layer - the layer to query
+     * @param {number[]} sublayerpath - path to the sub-layer as a list of
+     * 0-based indices; each number is the index of a child in its parent's
+     * list of `sublayers`
+     * 
+     * @returns {boolean} true if sub-layer and all of its parents are visible
+     * (either explicitly or implicitly).
+     */
     sublayerVisible(layer, sublayerpath) {
         let visible = layer.visibility !== false;
         let sublayer = layer;
@@ -855,19 +888,30 @@ const LayerUtils = {
         }
         return true;
     },
+
+    /**
+     * Computes the visibility of the layer based on the visibility of
+     * sub-layers.
+     * 
+     * Layers that have no `visibility` attribute are assumed to be visible.
+     * 
+     * @param {LayerData} layer - the layer to query
+     * 
+     * @returns {number} - the visibility of this layer in the `[0..1]` interval.
+     */
     computeLayerVisibility(layer) {
         if (isEmpty(layer.sublayers) || layer.visibility === false) {
             return layer.visibility ? 1 : 0;
         }
         let visible = 0;
         layer.sublayers.map(sublayer => {
-            const sublayervisibility = sublayer.visibility === undefined
+            const subLayerVisibility = sublayer.visibility === undefined
                 ? true
                 : sublayer.visibility;
-            if (sublayer.sublayers && sublayervisibility) {
+            if (sublayer.sublayers && subLayerVisibility) {
                 visible += LayerUtils.computeLayerVisibility(sublayer);
             } else {
-                visible += sublayervisibility ? 1 : 0;
+                visible += subLayerVisibility ? 1 : 0;
             }
         });
         return visible / layer.sublayers.length;
@@ -1059,6 +1103,16 @@ const LayerUtils = {
             return url.format(urlParts);
         }
     },
+
+    /**
+     * Checks if the the layer should be visible given a map scale.
+     * 
+     * @param {LayerData} layer - the layer to investigate
+     * @param {number} mapScale - current scale of the map
+     * 
+     * @returns {boolean} true if the layer should be visible
+     * @todo throw an error in degenerate cases (`minScale` >= `maxScale`)
+     */
     layerScaleInRange(layer, mapScale) {
         return (
             (

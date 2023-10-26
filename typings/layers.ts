@@ -121,8 +121,22 @@ export interface LayerData {
 
     /**
      * Is this layer visible?
+     * 
+     * Note that the layers are assumed to be visible (`undefined` === `true`)
+     * and are only considered invisible if this attribute is `false`.
      */
-    visibility: boolean;
+    visibility?: boolean;
+
+    /**
+     * TODO ?
+     */
+    tristate?: boolean;
+
+    /**
+     * If true identifies this layer as a group in which only a single
+     * sub-layer can be visible at any given time.
+     */
+    mutuallyExclusive?: boolean;
 
     /**
      * The opacity of the layer [0-255].
@@ -158,5 +172,24 @@ export interface LayerData {
      * The list of sub-layers.
      */
     sublayers?: LayerData[];
+
+    /**
+     * The map scale below which the layer should became visible
+     * (inclusive).
+     * 
+     * This is the actual scale, not the denominator.
+     * If `undefined` the layer has no minimum scale.
+     */
+    minScale?: number;
+
+
+    /**
+     * The map scale above which the layer should became visible
+     * (exclusive).
+     * 
+     * This is the actual scale, not the denominator.
+     * If `undefined` the layer has no maximum scale.
+     */
+    maxScale?: number;
 }
 

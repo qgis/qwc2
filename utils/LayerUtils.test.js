@@ -68,7 +68,59 @@ describe("completeExternalLayer", () => {
 });
 
 describe("computeLayerVisibility", () => {
-
+    it("should be simple if there are no sub-layers", () => {
+        expect(LayerUtils.computeLayerVisibility({
+            visibility: true
+        })).toBe(1);
+        expect(LayerUtils.computeLayerVisibility({
+            visibility: false
+        })).toBe(0);
+    });
+    it("should return 0 if visibility is false", () => {
+        expect(LayerUtils.computeLayerVisibility({
+            visibility: false,
+            sublayers: [{
+                visibility: true,
+            }]
+        })).toBe(0);
+    });
+    it("should use immediate sublayers", () => {
+        expect(LayerUtils.computeLayerVisibility({
+            sublayers: [{
+                visibility: true,
+            }, {
+                visibility: false,
+            }]
+        })).toBe(0.5);
+    });
+    it("should use deep sublayers", () => {
+        expect(LayerUtils.computeLayerVisibility({
+            sublayers: [{
+                visibility: true,
+            }, {
+                sublayers: [{
+                    visibility: true,
+                }, {
+                    sublayers: [{
+                        visibility: true,
+                    }, {
+                        visibility: false,
+                    }]
+                }]
+            }]
+        })).toBe(0.875);
+    });
+    it("should assume visibility=true", () => {
+        expect(LayerUtils.computeLayerVisibility({
+            sublayers: [{}, {
+                sublayers: [{}, {
+                    sublayers: [{}, {
+                        visibility: false,
+                    }]
+                }]
+            }]
+        })).toBe(0.875);
+    });
 });
 
 describe("createExternalLayerPlaceholder", () => {
@@ -80,7 +132,118 @@ describe("createSeparatorLayer", () => {
 });
 
 describe("ensureMutuallyExclusive", () => {
-
+    it("should not throw if the groups is empty", () => {
+        expect(() => LayerUtils.ensureMutuallyExclusive({
+            mutuallyExclusive: true,
+            sublayers: []
+        })).not.toThrow();
+        expect(() => LayerUtils.ensureMutuallyExclusive({
+            mutuallyExclusive: true,
+        })).not.toThrow();
+    });
+    it("should set visible the only sub-layer", () => {
+        const layer = {
+            visibility: false
+        };
+        LayerUtils.ensureMutuallyExclusive({
+            mutuallyExclusive: true,
+            sublayers: [layer]
+        });
+        expect(layer.visibility).toBeTruthy();
+    });
+    it("should set visible the first sub-layer", () => {
+        const layer1 = {
+            visibility: false
+        };
+        const layer2 = {
+            visibility: false
+        };
+        LayerUtils.ensureMutuallyExclusive({
+            mutuallyExclusive: true,
+            sublayers: [layer1, layer2]
+        });
+        expect(layer1.visibility).toBeTruthy();
+        expect(layer2.visibility).toBeFalsy();
+    });
+    it("should set visible the visible sub-layer", () => {
+        const layer1 = {
+            visibility: false
+        };
+        const layer2 = {
+            visibility: true
+        };
+        LayerUtils.ensureMutuallyExclusive({
+            mutuallyExclusive: true,
+            sublayers: [layer1, layer2]
+        });
+        expect(layer1.visibility).toBeFalsy();
+        expect(layer2.visibility).toBeTruthy();
+    });
+    it("should set visible the tristate sub-layer", () => {
+        const layer1 = {
+            visibility: false,
+            tristate: false
+        };
+        const layer2 = {
+            visibility: false,
+            tristate: true
+        };
+        LayerUtils.ensureMutuallyExclusive({
+            mutuallyExclusive: true,
+            sublayers: [layer1, layer2]
+        });
+        expect(layer1.visibility).toBeFalsy();
+        expect(layer2.visibility).toBeTruthy();
+    });
+    it("should work inside a non mutually-exclusive group", () => {
+        const layer1 = {
+            visibility: false,
+            tristate: false
+        };
+        const layer2 = {
+            visibility: false,
+            tristate: true
+        };
+        LayerUtils.ensureMutuallyExclusive({
+            sublayers: [{
+                mutuallyExclusive: true,
+                sublayers: [layer1, layer2]
+            }]
+        });
+        expect(layer1.visibility).toBeFalsy();
+        expect(layer2.visibility).toBeTruthy();
+    });
+    it("should allow nested mutually-exclusive groups", () => {
+        const layer1 = {
+            visibility: false,
+            tristate: false
+        };
+        const layer2 = {
+            visibility: false,
+            tristate: true
+        };
+        const layer3 = {
+            visibility: false
+        };
+        const layer4 = {
+            visibility: false
+        };
+        LayerUtils.ensureMutuallyExclusive({
+            mutuallyExclusive: true,
+            sublayers: [
+                layer1,
+                layer2,
+                {
+                    mutuallyExclusive: true,
+                    sublayers: [layer3, layer4]
+                }
+            ]
+        });
+        expect(layer1.visibility).toBeFalsy();
+        expect(layer2.visibility).toBeTruthy();
+        expect(layer3.visibility).toBeTruthy();
+        expect(layer4.visibility).toBeFalsy();
+    });
 });
 
 describe("explodeLayers", () => {
@@ -473,7 +636,69 @@ describe("insertSeparator", () => {
 });
 
 describe("layerScaleInRange", () => {
-
+    it("should be true if no constraints are explicitly set", () => {
+        expect(LayerUtils.layerScaleInRange({}, 0)).toBeTruthy();
+        expect(LayerUtils.layerScaleInRange({}, 10000)).toBeTruthy();
+        expect(LayerUtils.layerScaleInRange({}, "ignored")).toBeTruthy();
+    });
+    it("should use the lower limit", () => {
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 1
+        }, 0)).toBeFalsy();
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 1
+        }, 1)).toBeTruthy();
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 1
+        }, 2)).toBeTruthy();
+    });
+    it("should use the upper limit", () => {
+        expect(LayerUtils.layerScaleInRange({
+            maxScale: 1
+        }, 2)).toBeFalsy();
+        expect(LayerUtils.layerScaleInRange({
+            maxScale: 1
+        }, 1)).toBeFalsy();
+        expect(LayerUtils.layerScaleInRange({
+            maxScale: 1
+        }, 0)).toBeTruthy();
+    });
+    it("should use the both limit", () => {
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 1,
+            maxScale: 2
+        }, 0)).toBeFalsy();
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 1,
+            maxScale: 2
+        }, 1)).toBeTruthy();
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 1,
+            maxScale: 2
+        }, 2)).toBeFalsy();
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 1,
+            maxScale: 2
+        }, 3)).toBeFalsy();
+    });
+    it("should return false (!) in degenerate cases", () => {
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 1,
+            maxScale: 1
+        }, 1)).toBeFalsy();
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 2,
+            maxScale: 1
+        }, 1)).toBeFalsy();
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 2,
+            maxScale: 1
+        }, 0)).toBeFalsy();
+        expect(LayerUtils.layerScaleInRange({
+            minScale: 2,
+            maxScale: 1
+        }, 3)).toBeFalsy();
+    });
 });
 
 describe("mergeSubLayers", () => {
@@ -521,5 +746,95 @@ describe("splitLayerUrlParam", () => {
 });
 
 describe("sublayerVisible", () => {
-
+    it("should throw an error if the index is out of bounds", () => {
+        expect(() => { LayerUtils.sublayerVisible({}, [0]) }).toThrow(TypeError);
+    });
+    it("should assume is visible if attribute is missing", () => {
+        expect(LayerUtils.sublayerVisible({
+            sublayers: [{}]
+        }, [0])).toBeTruthy();
+    });
+    it("should return the value of visible attribute", () => {
+        expect(LayerUtils.sublayerVisible({
+            sublayers: [{
+                visibility: true
+            }]
+        }, [0])).toBeTruthy();
+        expect(LayerUtils.sublayerVisible({
+            sublayers: [{
+                visibility: false
+            }]
+        }, [0])).toBeFalsy();
+    });
+    it("should work with deep trees", () => {
+        expect(LayerUtils.sublayerVisible({
+            sublayers: [{
+                visibility: true,
+                sublayers: [{
+                    visibility: true,
+                    sublayers: [{
+                        visibility: true,
+                        sublayers: [{
+                            visibility: true,
+                            sublayers: [{
+                                visibility: true,
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }, [0, 0, 0, 0, 0])).toBeTruthy();
+        expect(LayerUtils.sublayerVisible({
+            sublayers: [{
+                visibility: true,
+                sublayers: [{
+                    visibility: true,
+                    sublayers: [{
+                        visibility: true,
+                        sublayers: [{
+                            visibility: true,
+                            sublayers: [{
+                                visibility: false,
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }, [0, 0, 0, 0, 0])).toBeFalsy();
+        expect(LayerUtils.sublayerVisible({
+            sublayers: [{
+                visibility: true,
+                sublayers: [{
+                    visibility: false,
+                    sublayers: [{
+                        visibility: true,
+                        sublayers: [{
+                            visibility: true,
+                            sublayers: [{
+                                visibility: true,
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }, [0, 0, 0, 0, 0])).toBeFalsy();
+        expect(LayerUtils.sublayerVisible({
+            visibility: false,
+            sublayers: [{
+                visibility: true,
+                sublayers: [{
+                    visibility: true,
+                    sublayers: [{
+                        visibility: true,
+                        sublayers: [{
+                            visibility: true,
+                            sublayers: [{
+                                visibility: true,
+                            }]
+                        }]
+                    }]
+                }]
+            }]
+        }, [0, 0, 0, 0, 0])).toBeFalsy();
+    });
 });
