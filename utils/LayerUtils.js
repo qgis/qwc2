@@ -468,6 +468,8 @@ const LayerUtils = {
         const index = exploded.findIndex(entry => entry.sublayer[beforeattr] === beforeval);
         if (index !== -1) {
             exploded.splice(index, 0, ...explodedAdd);
+        } else {
+            exploded.splice(exploded.length, 0, ...explodedAdd);
         }
         return LayerUtils.implodeLayers(exploded);
     },
