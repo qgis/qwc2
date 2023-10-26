@@ -19,6 +19,16 @@ import { LayerRole } from '../actions/layers';
 /** @typedef {import("qwc2/typings/map").MapState} MapState */
 
 /**
+ * A structure that contains a leaf layer and the path to it
+ * from the top level layer.
+ * @typedef ExplodedLayer
+ * @property {LayerData} layer - the top level layer
+ * @property {number[]} path - the 0-based index of each sub-layer in parent, up
+ *  until the leaf (last one in this list is the index of the leaf)
+ * @property {LayerData} sublayer - the leaf layer
+ */
+
+/**
  * Utility functions for working with layers.
  * 
  * @namespace
@@ -250,6 +260,17 @@ const LayerUtils = {
             queryLayers: queryLayers
         };
     },
+
+    /**
+     * Add UUIDs to layers that don't have one and to all of their sublayers.
+     * 
+     * Note that this function will create a deep clone of the `sublayers`
+     * property. 
+     * 
+     * @param {LayerData} group - the layer that will be equipped with an uuid
+     * @param {Set<string>} usedUUIDs - a set of UUIDs to avoid; new UUIDs
+     *  will be added to this set, if provided
+     */
     addUUIDs(group, usedUUIDs = new Set()) {
         group.uuid = (
             !group.uuid || usedUUIDs.has(group.uuid)
@@ -553,7 +574,17 @@ const LayerUtils = {
     },
 
     /**
-     * Return array with one entry for every single sublayer.
+     * Return array with one entry for every single leaf sublayer.
+     * 
+     * The result is a list of records, each of which contains a copy of the top
+     * level layer, the path to the leaf layer as indices inside parent
+     * and a copy of the leaf layer.
+     * 
+     * @param {LayerData[]} layers - the list of top level layers
+     * 
+     * @returns {ExplodedLayer[]} - an array that includes only
+     *  leaf layers, with their paths and the root layer where they belong
+     * @see {LayerUtils.explodeSublayers}
      */
     explodeLayers(layers) {
         const exploded = [];
@@ -562,8 +593,7 @@ const LayerUtils = {
                 this.explodeSublayers(layer, layer, exploded);
             } else {
                 const newLayer = { ...layer };
-                // How can there be sublayers if we have
-                // just checked that there are none?
+                // This check is true only if layer.sublayers = []
                 if (newLayer.sublayers) {
                     newLayer.sublayers = [...newLayer.sublayers];
                 }
@@ -579,18 +609,46 @@ const LayerUtils = {
 
     /**
      * Go through all sublayers and create an array with one entry for every
-     * single sublayer.
+     * single leaf sublayer.
+     * 
+     * This method calls itself recursively to create the list with `layer`
+     * unchanged and `parent` being the current layer that is being explored.
+     * 
+     * @param {LayerData} layer - the top level layer
+     * @param {LayerData} parent - the current layer
+     * @param {ExplodedLayer[]} exploded - an array that includes only
+     *  leaf layers, with their paths and the root layer where they belong
+     * @param {number[]} parentPath - the list of parent layers expresses as
+     *  the 0-based index of that layer inside its parent
+     * 
+     * @see {LayerUtils.explodeLayers}
      */
-    explodeSublayers(layer, parent, exploded, parentpath = []) {
+    explodeSublayers(layer, parent, exploded, parentPath = []) {
+        // We go through teach sublayer in parent.
         for (let idx = 0; idx < parent.sublayers.length; ++idx) {
-            const path = [...parentpath, idx];
-            if (parent.sublayers[idx].sublayers) {
+            // The path for this item is the path of the parent
+            // and its own index.
+            const path = [...parentPath, idx];
+
+            // Get the sub-layer at his index.
+            const subitem = parent.sublayers[idx];
+
+            // See if this layer has its own sublayers.
+            if (subitem.sublayers) {
+                // If it does simply go through those.
                 LayerUtils.explodeSublayers(
-                    layer, parent.sublayers[idx], exploded, path
+                    layer, subitem, exploded, path
                 );
             } else {
+                // This is a leaf layer (has no sublayers).
                 // Reduced layer with one single sublayer per level, up to leaf
+                
+                // Make a copy of the top level layer.
                 const redLayer = { ...layer };
+                
+                // Start from the top level and create a clone of this
+                // branch. Each node in the branch has a single sublayer
+                // except the last one (the leaf) which nas none.
                 let group = redLayer;
                 for (const jdx of path) {
                     group.sublayers = [{ ...group.sublayers[jdx] }];
@@ -604,12 +662,21 @@ const LayerUtils = {
             }
         }
     },
+
+    /**
+     * Creates a tree structure from an array of layers.
+     * 
+     * @param {ExplodedLayer[]} exploded - the flat list of layers
+     * 
+     * @returns {LayerData[]} the reconstructed layer tree
+     */
     implodeLayers(exploded) {
         const newlayers = [];
         const usedLayerUUids = new Set();
 
         // Merge all possible items of an exploded layer array
         for (const entry of exploded) {
+            // Get the top level layer.
             const layer = entry.layer;
 
             // Attempt to merge with previous if possible
@@ -618,20 +685,24 @@ const LayerUtils = {
                 : null;
             let source = layer;
             if (target && target.sublayers && target.id === layer.id) {
-                let innertarget = target.sublayers[target.sublayers.length - 1];
+                let innerTarget = target.sublayers[target.sublayers.length - 1];
+                
                 // Exploded entries have only one entry per sublayer level
-                let innersource = source.sublayers[0];
+                let innerSource = source.sublayers[0];
+
                 while (
-                    innertarget &&
-                    innertarget.sublayers &&
-                    innertarget.name === innersource.name
+                    innerTarget &&
+                    innerTarget.sublayers &&
+                    innerTarget.id === innerSource.id
                 ) {
-                    target = innertarget;
-                    source = innersource;
-                    innertarget = target.sublayers[target.sublayers.length - 1];
+                    target = innerTarget;
+                    source = innerSource;
+
+                    innerTarget = target.sublayers[target.sublayers.length - 1];
                     // Exploded entries have only one entry per sublayer level
-                    innersource = source.sublayers[0];
+                    innerSource = source.sublayers[0];
                 }
+
                 target.sublayers.push(source.sublayers[0]);
                 LayerUtils.addUUIDs(source.sublayers[0], usedLayerUUids);
             } else {

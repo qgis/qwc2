@@ -94,7 +94,7 @@ export interface LayerData {
     type: "vector" | "wms" | "wmts" | "placeholder";
 
     /**
-     * The ;abel for the label in the UI.
+     * The label for the label in the UI.
      */
     name: string;
 
@@ -153,5 +153,10 @@ export interface LayerData {
      * Is the layer loading?
      */
     loading: boolean;
+    
+    /**
+     * The list of sub-layers.
+     */
+    sublayers?: LayerData[];
 }
 
