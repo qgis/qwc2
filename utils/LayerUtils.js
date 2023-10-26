@@ -469,7 +469,10 @@ const LayerUtils = {
         if (index !== -1) {
             exploded.splice(index, 0, ...explodedAdd);
         } else {
-            exploded.splice(exploded.length, 0, ...explodedAdd);
+            throw new Error(
+                "Failed to find 'before' layer item with " + 
+                `'${beforeAttr}'=${beforeVal}`
+            );
         }
         return LayerUtils.implodeLayers(exploded);
     },
