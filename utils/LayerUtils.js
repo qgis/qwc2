@@ -307,6 +307,7 @@ const LayerUtils = {
             ...layers.filter(lyr => lyr.role === LayerRole.BACKGROUND)
         ];
     },
+    // todo: establish normal behavior
     insertSeparator(layers, title, beforelayerId, beforesublayerpath) {
         // Extract foreground layers
         const fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
