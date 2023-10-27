@@ -3,6 +3,24 @@ import { LayerRole } from '../actions/layers';
 
 const uuidRegex = /[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+/;
 
+let mockUrlReverseLayerOrder = false;
+jest.mock("./ConfigUtils", () => ({
+    __esModule: true,
+    default: {
+        getConfigProp: (name) => {
+            if (name === 'urlReverseLayerOrder') {
+                return mockUrlReverseLayerOrder;
+            } else {
+                throw new Error(`Unknown config prop: ${name}`);
+            }
+        },
+    },
+}));
+
+beforeEach(() => {
+    mockUrlReverseLayerOrder = false;
+});
+
 describe("addUUIDs", () => {
     it("should assign a new uuid if one is missing", () => {
         const layer = {};
@@ -285,7 +303,229 @@ describe("buildWMSLayerParams", () => {
 });
 
 describe("buildWMSLayerUrlParam", () => {
-
+    it("should return an empty string if no params are passed", () => {
+        expect(LayerUtils.buildWMSLayerUrlParam([])).toBe("");
+    });
+    it("should ignore layer types other than theme and user", () => {
+        expect(LayerUtils.buildWMSLayerUrlParam([{
+            role: LayerRole.BACKGROUND
+        }, {
+            role: LayerRole.SELECTION
+        }, {
+            role: LayerRole.MARKER
+        }, {
+            role: LayerRole.USERLAYER,
+            type: "xyz"
+        }])).toBe("");
+    });
+    describe("with theme layers", () => {
+        it("should accept theme layers", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.THEME,
+                name: "lorem"
+            }])).toBe("lorem~");
+        });
+        it("should use opacity", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.THEME,
+                name: "lorem",
+                opacity: 123
+            }])).toBe("lorem[52]~");
+        });
+        it("should use visibility", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.THEME,
+                name: "lorem",
+                visibility: false
+            }])).toBe("lorem!");
+        });
+        it("should work with sublayers", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.THEME,
+                name: "lorem",
+                sublayers: [{
+                    name: "ipsum"
+                }, {
+                    name: "dolor",
+                    sublayers: [{
+                        name: "sit",
+                        opacity: 73
+                    }, {
+                        name: "amet",
+                        visibility: false
+                    }]
+                }]
+            }])).toBe("ipsum~,sit[71]~,amet!");
+        });
+        it("should reverse the layers", () => {
+            mockUrlReverseLayerOrder = true;
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.THEME,
+                name: "lorem",
+                sublayers: [{
+                    name: "ipsum"
+                }, {
+                    name: "dolor",
+                    sublayers: [{
+                        name: "sit",
+                        opacity: 73
+                    }, {
+                        name: "amet",
+                        visibility: false
+                    }]
+                }]
+            }])).toBe("amet!,sit[71]~,ipsum~");
+        });
+    });
+    describe("with WMS user layers", () => {
+        it("should accept WMS user layers", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "wms",
+                url: "ipsum",
+                name: "lorem"
+            }])).toBe("wms:ipsum#lorem~");
+        });
+        it("should use opacity", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "wms",
+                url: "ipsum",
+                name: "lorem",
+                opacity: 123
+            }])).toBe("wms:ipsum#lorem[52]~");
+        });
+        it("should use visibility", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "wms",
+                url: "ipsum",
+                name: "lorem",
+                visibility: false
+            }])).toBe("wms:ipsum#lorem!");
+        });
+        it("should use extended wms params", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "wms",
+                url: "ipsum",
+                name: "lorem",
+                visibility: false,
+                extwmsparams: {
+                    "tempor": "incididunt",
+                    "ut": "labore"
+                }
+            }])).toBe(
+                "wms:ipsum?extwms.tempor=incididunt&extwms.ut=labore#lorem!"
+            );
+        });
+        it("should work with sublayers", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "wms",
+                url: "ipsum",
+                name: "lorem",
+                sublayers: [{
+                    name: "dolor"
+                }, {
+                    name: "sit",
+                    sublayers: [{
+                        name: "amet",
+                        opacity: 73
+                    }, {
+                        name: "consectetur",
+                        visibility: false
+                    }]
+                }]
+            }])).toBe(
+                "wms:ipsum#dolor~,wms:ipsum#amet[71]~,wms:ipsum#consectetur!"
+            );
+        });
+    });
+    describe("with WFS and WMTS user layers", () => {
+        it("should accept the layers", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "wfs",
+                url: "ipsum",
+                name: "lorem"
+            }, {
+                role: LayerRole.USERLAYER,
+                type: "wmts",
+                capabilitiesUrl: "ipsum",
+                name: "lorem"
+            }])).toBe("wfs:ipsum#lorem,wmts:ipsum#lorem");
+        });
+        it("should use opacity", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "wfs",
+                url: "ipsum",
+                name: "lorem",
+                opacity: 123
+            }, {
+                role: LayerRole.USERLAYER,
+                type: "wmts",
+                capabilitiesUrl: "sit",
+                name: "dolor",
+                opacity: 10
+            }])).toBe("wfs:ipsum#lorem[52],wmts:sit#dolor[96]");
+        });
+        it("should use visibility", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "wfs",
+                capabilitiesUrl: "ipsum",
+                name: "lorem",
+                visibility: false
+            }, {
+                role: LayerRole.USERLAYER,
+                type: "wmts",
+                url: "sit",
+                name: "dolor",
+                visibility: false
+            }])).toBe("wfs:ipsum#lorem!,wmts:sit#dolor!");
+        });
+    });
+    describe("with separator layers", () => {
+        it("should accept separator layers", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "separator",
+                name: "lorem",
+                title: "ipsum"
+            }])).toBe("sep:ipsum");
+        });
+        it("should ignore opacity", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                opacity: 123,
+                type: "separator",
+                name: "lorem",
+                title: "ipsum"
+            }])).toBe("sep:ipsum");
+        });
+        it("should ignore visibility", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                visibility: false,
+                type: "separator",
+                name: "lorem",
+                title: "ipsum"
+            }])).toBe("sep:ipsum");
+        });
+        it("should ignore sublayers", () => {
+            expect(LayerUtils.buildWMSLayerUrlParam([{
+                role: LayerRole.USERLAYER,
+                type: "separator",
+                name: "lorem",
+                title: "ipsum",
+                sublayers: [{
+                    name: "dolor"
+                }]
+            }])).toBe("sep:ipsum");
+        });
+    });
 });
 
 describe("cloneLayer", () => {
@@ -391,7 +631,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = null;
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -410,7 +650,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = null;
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -428,7 +668,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = [];
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -447,7 +687,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = [];
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -467,7 +707,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = [];
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -487,7 +727,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = [];
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -507,7 +747,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = [];
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -527,7 +767,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = [];
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -555,7 +795,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = [];
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,
@@ -590,7 +830,7 @@ describe("collectWMSSubLayerParams", () => {
                 name: "adipiscing",
                 opacity: 0,
                 style: "",
-                queryable: true, 
+                queryable: true,
                 sublayers: [{
                     name: "elit",
                     opacity: 75,
@@ -612,7 +852,7 @@ describe("collectWMSSubLayerParams", () => {
         const layerNames = [];
         const opacities = [];
         const styles = [];
-        const  queryable = [];
+        const queryable = [];
         const visibilities = [];
         LayerUtils.collectWMSSublayerParams(
             subLayer, layerNames, opacities, styles,

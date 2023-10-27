@@ -373,8 +373,18 @@ const LayerUtils = {
             }
         }
     },
+
+    
+    /**
+     * Builds a comma-separated string of layer names and parameters
+     * for a list of layers.
+     * 
+     * @param {LayerData[]} layers - an array of layer objects
+     * 
+     * @returns {string} A comma-separated string of layer names and parameters
+     */
     buildWMSLayerUrlParam(layers) {
-        const layernames = [];
+        const layerNames = [];
         const opacities = [];
         const styles = [];
         const visibilities = [];
@@ -382,56 +392,61 @@ const LayerUtils = {
         for (const layer of layers) {
             if (layer.role === LayerRole.THEME) {
                 LayerUtils.collectWMSSublayerParams(
-                    layer, layernames, opacities, styles,
+                    layer, layerNames, opacities, styles,
                     queryable, visibilities, layer.visibility
                 );
             } else if (
                 layer.role === LayerRole.USERLAYER &&
                 layer.type === "wms"
             ) {
-                const sublayernames = [];
+                const subLayerNames = [];
                 LayerUtils.collectWMSSublayerParams(
-                    layer, sublayernames, opacities, styles, queryable,
+                    layer, subLayerNames, opacities, styles, queryable,
                     visibilities, layer.visibility
                 );
-                let layerurl = layer.url;
+                let layerUrl = layer.url;
                 if (layer.extwmsparams) {
-                    layerurl += (
-                        (layerurl.includes('?') ? '&' : '?') +
+                    layerUrl += (
+                        (layerUrl.includes('?') ? '&' : '?') +
                         Object.entries(layer.extwmsparams || {}).map(
                             ([key, value]) => 'extwms.' + key + "=" + value
                         ).join('&')
                     );
                 }
-                layernames.push(
-                    ...sublayernames.map(
-                        name => "wms:" + layerurl + "#" + name
+                layerNames.push(
+                    ...subLayerNames.map(
+                        name => "wms:" + layerUrl + "#" + name
                     )
                 );
             } else if (
                 layer.role === LayerRole.USERLAYER &&
                 (layer.type === "wfs" || layer.type === "wmts")
             ) {
-                layernames.push(
+                layerNames.push(
                     layer.type + ':' +
                     (layer.capabilitiesUrl || layer.url) + "#" +
                     layer.name
                 );
                 opacities.push(layer.opacity);
                 styles.push(layer.style);
-                visibilities.push(layer.visibility);
+                visibilities.push(
+                    layer.visibility === undefined ? 1 : (
+                        layer.visibility ? 1 : 0
+                    )
+                );
             } else if (
                 layer.role === LayerRole.USERLAYER &&
                 layer.type === "separator"
             ) {
-                layernames.push("sep:" + layer.title);
+                layerNames.push("sep:" + layer.title);
                 opacities.push(255);
                 styles.push('');
                 visibilities.push(true);
             }
         }
-        const result = layernames.map((layername, idx) => {
-            let param = layername;
+        // TODO: styles are not used.
+        const result = layerNames.map((layerName, idx) => {
+            let param = layerName;
             if (opacities[idx] < 255) {
                 param += "[" + (
                     100 - Math.round(opacities[idx] / 255 * 100)
@@ -448,8 +463,9 @@ const LayerUtils = {
             result.reverse();
         }
         return result.join(",");
-
     },
+
+
     splitLayerUrlParam(entry) {
         const nameOpacityPattern = /([^[]+)\[(\d+)]/;
         const id = uuidv4();
