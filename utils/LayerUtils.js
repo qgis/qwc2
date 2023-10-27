@@ -217,7 +217,7 @@ const LayerUtils = {
                 layernames.push(layer.type + ':' + (layer.capabilitiesUrl || layer.url) + "#" + layer.name);
                 opacities.push(layer.opacity);
                 styles.push(layer.style);
-                visibilities.push(layer.visibility);
+                visibilities.push(layer.visibility ? 1 : 0);
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "separator") {
                 layernames.push("sep:" + layer.title);
                 opacities.push(255);
