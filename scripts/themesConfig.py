@@ -417,6 +417,8 @@ def getTheme(config, configItem, result, resultItem):
         resultItem["availableFormats"] = availableFormats
         if "tiled" in configItem:
             resultItem["tiled"] = configItem["tiled"]
+        if "tileSize" in configItem:
+            resultItem["tileSize"] = configItem["tileSize"]
         if "version" in configItem:
             resultItem["version"] = configItem["version"]
         elif "defaultWMSVersion" in config:

@@ -431,6 +431,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.format = configItem.format;
             resultItem.availableFormats = capabilities.Capability.Request.GetMap.Format;
             resultItem.tiled = configItem.tiled;
+            resultItem.tileSize = configItem.tileSize;
             resultItem.version = configItem.version ? configItem.version : config.defaultWMSVersion;
             resultItem.infoFormats = capabilities.Capability.Request.GetFeatureInfo.Format;
             // use geographic bounding box for theme, as default CRS may have inverted axis order with WMS 1.3.0
