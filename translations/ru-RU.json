@@ -429,6 +429,7 @@
     "share": {
       "QRCodeLinkTitle": "QR-код",
       "directLinkTitle": "По прямой ссылке",
+      "expires": "",
       "refresh": "",
       "shareTitle": "QWC2",
       "showpin": "",

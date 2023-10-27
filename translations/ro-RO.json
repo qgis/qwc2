@@ -429,6 +429,7 @@
     "share": {
       "QRCodeLinkTitle": "Cod QR",
       "directLinkTitle": "Via link direct",
+      "expires": "",
       "refresh": "Generare link permanent",
       "shareTitle": "Link permanent",
       "showpin": "Arată pin",

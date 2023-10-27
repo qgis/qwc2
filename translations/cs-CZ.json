@@ -429,6 +429,7 @@
     "share": {
       "QRCodeLinkTitle": "QR kód",
       "directLinkTitle": "Přes přímý odkaz",
+      "expires": "",
       "refresh": "Generovat odkaz",
       "shareTitle": "QWC2",
       "showpin": "Zobrazit bod",

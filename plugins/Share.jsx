@@ -49,6 +49,7 @@ class Share extends React.Component {
     };
     state = {
         location: "",
+        expires: null,
         pin: false
     };
     componentDidUpdate(prevProps, prevState) {
@@ -62,7 +63,7 @@ class Share extends React.Component {
             }
         }
         if (isVisible !== wasVisible || this.props.state.map.center !== prevProps.state.map.center) {
-            this.setState({location: ""});
+            this.setState({location: "", expires: null});
         }
     }
     renderBody = () => {
@@ -96,6 +97,9 @@ class Share extends React.Component {
                         {shareSocials}
                         {shareLink}
                         {shareQRCode}
+                        {this.state.expires ? (
+                            <div className="share-validity">{LocaleUtils.tr("share.expires", this.state.expires)}</div>
+                        ) : null}
                     </div>
                 )}
             </div>
@@ -112,8 +116,8 @@ class Share extends React.Component {
         );
     }
     refreshPermalink = () => {
-        generatePermaLink(this.props.state, (permalink => {
-            this.setState({location: permalink});
+        generatePermaLink(this.props.state, ((permalink, expires) => {
+            this.setState({location: permalink, expires: expires});
         }));
     };
 }

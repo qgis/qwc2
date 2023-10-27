@@ -429,6 +429,7 @@
     "share": {
       "QRCodeLinkTitle": "Karekod",
       "directLinkTitle": "Doğrudan bağlantı yolu ile",
+      "expires": "",
       "refresh": "",
       "shareTitle": "QWC2",
       "showpin": "",

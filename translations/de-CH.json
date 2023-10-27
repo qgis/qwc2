@@ -429,6 +429,7 @@
     "share": {
       "QRCodeLinkTitle": "QR Code (Smartphone)",
       "directLinkTitle": "Über einen direkten Link",
+      "expires": "Dieser Permalink ist bis am {0} gültig.",
       "refresh": "Permalink generieren",
       "shareTitle": "QWC2",
       "showpin": "Pin anzeigen",

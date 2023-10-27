@@ -429,6 +429,7 @@
     "share": {
       "QRCodeLinkTitle": "Codi QR",
       "directLinkTitle": "Via link",
+      "expires": "",
       "refresh": "Generar l'enllaç permanent",
       "shareTitle": "QWC2",
       "showpin": "Mostrar el pin",

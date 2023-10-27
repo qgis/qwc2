@@ -429,6 +429,7 @@
     "share": {
       "QRCodeLinkTitle": "QR-koodi",
       "directLinkTitle": "Suora linkillä",
+      "expires": "",
       "refresh": "",
       "shareTitle": "QWC2",
       "showpin": "",

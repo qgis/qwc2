@@ -363,6 +363,7 @@
     "settings.themes",
     "share.QRCodeLinkTitle",
     "share.directLinkTitle",
+    "share.expires",
     "share.refresh",
     "share.shareTitle",
     "share.showpin",

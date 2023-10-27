@@ -429,6 +429,7 @@
     "share": {
       "QRCodeLinkTitle": "Codice QR",
       "directLinkTitle": "Collegamento diretto",
+      "expires": "Questo permalink è valido fino al {0}.",
       "refresh": "Genera permalink",
       "shareTitle": "QWC2",
       "showpin": "Mostra pin",
