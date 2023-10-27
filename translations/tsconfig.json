@@ -52,6 +52,7 @@
   "strings": [
     "app.missingbg",
     "app.missinglayers",
+    "app.missingpermalink",
     "app.missingtheme",
     "appmenu.filter",
     "appmenu.menulabel",

@@ -95,7 +95,7 @@ export function generatePermaLink(state, callback, user = false) {
     permalinkState.url = fullUrl;
     const route = user ? "userpermalink" : "createpermalink";
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState)
-        .then(response => callback(response.data.permalink || fullUrl))
+        .then(response => callback(response.data.permalink || fullUrl, response.data.expires || null))
         .catch(() => callback(fullUrl));
 }
 
@@ -105,21 +105,23 @@ export function resolvePermaLink(initialParams, callback) {
     if (key) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
             .then(response => {
-                callback({...initialParams, ...(response.data.query || {})}, response.data.state || {});
+                const data = response.data;
+                callback({...initialParams, ...(data.query || {})}, data.state || {}, !!data.query);
             })
             .catch(() => {
-                callback(initialParams, {});
+                callback(initialParams, {}, false);
             });
     } else if (bkey) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
             .then(response => {
-                callback({...initialParams, ...(response.data.query || {})}, response.data.state || {});
+                const data = response.data;
+                callback({...initialParams, ...(data.query || {})}, (data.state || {}), !!data.query);
             })
             .catch(() => {
-                callback(initialParams, {});
+                callback(initialParams, {}, false);
             });
     } else {
-        callback(initialParams, {});
+        callback(initialParams, {}, true);
     }
 }
 

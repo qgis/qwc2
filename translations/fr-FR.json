@@ -4,6 +4,7 @@
     "app": {
       "missingbg": "Impossible de trouver le fond \"{0}\", affichage du fond par défaut.",
       "missinglayers": "Impossible de trouver les couches suivantes: {0}.",
+      "missingpermalink": "Le permalien ou le signet n'est pas valide ou a expiré.",
       "missingtheme": "Impossible de trouver le thème \"{0}\", chargement du thème par défaut."
     },
     "appmenu": {

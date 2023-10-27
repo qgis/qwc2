@@ -103,7 +103,10 @@ class AppInitComponent extends React.Component {
             this.props.themesLoaded(themes);
 
             // Resolve permalink and restore settings
-            resolvePermaLink(this.props.initialParams, (params, state) => {
+            resolvePermaLink(this.props.initialParams, (params, state, success) => {
+                if (!success) {
+                    this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingpermalink"), NotificationType.WARN, true);
+                }
                 this.props.setStartupParameters({...params});
                 let theme = ThemeUtils.getThemeById(themes,  params.t);
                 if (!theme || theme.restricted) {

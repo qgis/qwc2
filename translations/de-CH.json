@@ -4,6 +4,7 @@
     "app": {
       "missingbg": "Der Hintergrund \"{0}\" konnte nicht gefunden werden, der Standardhintergrund wird angezeigt.",
       "missinglayers": "Die folgenden Ebenen können nicht gefunden werden: {0}.",
+      "missingpermalink": "Der Permalink oder das Lesezeichen ist ungültig oder abgelaufen.",
       "missingtheme": "Das Thema \"{0}\" konnte nicht gefunden werden, das Standardthema wurde geladen."
     },
     "appmenu": {
