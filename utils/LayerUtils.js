@@ -464,8 +464,25 @@ const LayerUtils = {
         }
         return result.join(",");
     },
-
-
+    
+    /**
+     * Splits a layer URL parameter into its components.
+     *
+     * Parameters consist of: 
+     * - an optional prefix that indicate the type of the
+     * layer and the url (e.g. `foo:bar` indicates layer of type `foo` with
+     * URL `bar`),
+     * - a layer name, an optional opacity (e.g. `foo[50]` indicates a foo
+     * layer with 50% opacity) and 
+     * - an optional visibility indicator (e.g. `foo!` indicates
+     * a foo layer that is not visible, `foo~` indicates a group
+     * layer with some sub-layers visible and some invisible).
+     * 
+     * @param {string} entry - the layer URL parameter to split
+     * 
+     * @returns {Object} An object containing the ID, type, URL, name,
+     * opacity, visibility, and tristate of the layer.
+     */
     splitLayerUrlParam(entry) {
         const nameOpacityPattern = /([^[]+)\[(\d+)]/;
         const id = uuidv4();

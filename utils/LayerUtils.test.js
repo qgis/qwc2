@@ -1901,7 +1901,83 @@ describe("setGroupVisibilities", () => {
 });
 
 describe("splitLayerUrlParam", () => {
-
+    it("should return defaults with an empty string", () => {
+        expect(LayerUtils.splitLayerUrlParam("")).toEqual({
+            id: expect.stringMatching(uuidRegex),
+            name: "",
+            opacity: 255,
+            tristate: false,
+            type: "theme",
+            url: null,
+            visibility: true,
+        });
+    });
+    it("should pick up the layer name", () => {
+        expect(LayerUtils.splitLayerUrlParam("lorem")).toEqual({
+            id: expect.stringMatching(uuidRegex),
+            name: "lorem",
+            opacity: 255,
+            tristate: false,
+            type: "theme",
+            url: null,
+            visibility: true,
+        });
+    });
+    it("should read visibility = false", () => {
+        expect(LayerUtils.splitLayerUrlParam("lorem!")).toEqual({
+            id: expect.stringMatching(uuidRegex),
+            name: "lorem",
+            opacity: 255,
+            tristate: false,
+            type: "theme",
+            url: null,
+            visibility: false,
+        });
+    });
+    it("should read tristate", () => {
+        expect(LayerUtils.splitLayerUrlParam("lorem~")).toEqual({
+            id: expect.stringMatching(uuidRegex),
+            name: "lorem",
+            opacity: 255,
+            tristate: true,
+            type: "theme",
+            url: null,
+            visibility: false,
+        });
+    });
+    it("should read opacity", () => {
+        expect(LayerUtils.splitLayerUrlParam("lorem[10]")).toEqual({
+            id: expect.stringMatching(uuidRegex),
+            name: "lorem",
+            opacity: 230,
+            tristate: false,
+            type: "theme",
+            url: null,
+            visibility: true,
+        });
+    });
+    it("should parse type and url", () => {
+        expect(LayerUtils.splitLayerUrlParam("foo:ipsum#lorem")).toEqual({
+            id: expect.stringMatching(uuidRegex),
+            name: "lorem",
+            opacity: 255,
+            tristate: false,
+            type: "foo",
+            url: "ipsum",
+            visibility: true,
+        });
+    });
+    it("should parse a separator", () => {
+        expect(LayerUtils.splitLayerUrlParam("sep:ipsum")).toEqual({
+            id: expect.stringMatching(uuidRegex),
+            name: "ipsum",
+            opacity: 255,
+            tristate: false,
+            type: "separator",
+            url: null,
+            visibility: true,
+        });
+    });
 });
 
 describe("sublayerVisible", () => {
