@@ -1,4 +1,5 @@
 import LayerUtils from './LayerUtils';
+import { LayerRole } from '../actions/layers';
 
 const uuidRegex = /[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+/;
 
@@ -40,7 +41,247 @@ describe("addUUIDs", () => {
 });
 
 describe("buildWMSLayerParams", () => {
-
+    describe("without sublayers", () => {
+        it("should work with a simple layer", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem"
+            })).toEqual({
+                params: {
+                    LAYERS: "lorem",
+                    OPACITIES: "255",
+                    STYLES: "",
+                },
+                queryLayers: []
+            });
+        });
+        it("should use layer opacity", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                opacity: 191
+            })).toEqual({
+                params: {
+                    LAYERS: "lorem",
+                    OPACITIES: "191",
+                    STYLES: "",
+                },
+                queryLayers: []
+            });
+        });
+        it("should filter out empty strings", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                opacity: 0,
+                params: {
+                    LAYERS: "ipsum,,dolor",
+                    OPACITIES: "191,,255",
+                }
+            })).toEqual({
+                params: {
+                    LAYERS: "ipsum,dolor",
+                    OPACITIES: "0,0",
+                    STYLES: "",
+                },
+                queryLayers: []
+            });
+        });
+        it("should copy the style", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                params: {
+                    STYLES: "ipsum,dolor"
+                }
+            })).toEqual({
+                params: {
+                    LAYERS: "lorem",
+                    OPACITIES: "255",
+                    STYLES: "ipsum,dolor",
+                },
+                queryLayers: []
+            });
+        });
+        it("should include dimensionValues content", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                dimensionValues: {
+                    "ipsum": "dolor",
+                    "sit": "amet",
+                }
+            })).toEqual({
+                params: {
+                    LAYERS: "lorem",
+                    OPACITIES: "255",
+                    STYLES: "",
+                    ipsum: "dolor",
+                    sit: "amet",
+                },
+                queryLayers: []
+            });
+        });
+        it("should add the layer to queryLayers", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                queryable: true
+            })).toEqual({
+                params: {
+                    LAYERS: "lorem",
+                    OPACITIES: "255",
+                    STYLES: "",
+                },
+                queryLayers: ["lorem"]
+            });
+        });
+    });
+    describe("with sublayers", () => {
+        it("excludes invisible layers", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                sublayers: [{
+                    name: "lorem"
+                }]
+            })).toEqual({
+                params: {
+                    LAYERS: "",
+                    OPACITIES: "",
+                    STYLES: "",
+                },
+                queryLayers: []
+            });
+        });
+        it("includes visible sublayers", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                visibility: true,
+                sublayers: [{
+                    name: "ipsum"
+                }]
+            })).toEqual({
+                params: {
+                    LAYERS: "ipsum",
+                    OPACITIES: "255",
+                    STYLES: "",
+                },
+                queryLayers: []
+            });
+        });
+        it("adds the styles", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                visibility: true,
+                sublayers: [{
+                    name: "ipsum",
+                    style: "dolor",
+                    opacity: 191
+                }]
+            })).toEqual({
+                params: {
+                    LAYERS: "ipsum",
+                    OPACITIES: "191",
+                    STYLES: "dolor",
+                },
+                queryLayers: []
+            });
+        });
+        it("adds queryable layers", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                visibility: true,
+                sublayers: [{
+                    name: "ipsum",
+                    queryable: true
+                }]
+            })).toEqual({
+                params: {
+                    LAYERS: "ipsum",
+                    OPACITIES: "255",
+                    STYLES: "",
+                },
+                queryLayers: ["ipsum"]
+            });
+        });
+        it("includes multiple visible sublayers", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                visibility: true,
+                sublayers: [{
+                    name: "ipsum",
+                }, {
+                    name: "dolor",
+                }]
+            })).toEqual({
+                params: {
+                    LAYERS: "dolor,ipsum",
+                    OPACITIES: "255,255",
+                    STYLES: ",",
+                },
+                queryLayers: []
+            });
+        });
+        it("adds the styles from multiple layers", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                visibility: true,
+                sublayers: [{
+                    name: "ipsum",
+                    style: "dolor",
+                    opacity: 191
+                }, {
+                    name: "sit",
+                    style: "amet",
+                    opacity: 215
+                }]
+            })).toEqual({
+                params: {
+                    LAYERS: "sit,ipsum",
+                    OPACITIES: "215,191",
+                    STYLES: "amet,dolor",
+                },
+                queryLayers: []
+            });
+        });
+        it("adds multiple queryable layers", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                visibility: true,
+                sublayers: [{
+                    name: "ipsum",
+                    queryable: true
+                }, {
+                    name: "dolor",
+                    queryable: true
+                }]
+            })).toEqual({
+                params: {
+                    LAYERS: "dolor,ipsum",
+                    OPACITIES: "255,255",
+                    STYLES: ",",
+                },
+                queryLayers: ["ipsum", "dolor"]
+            });
+        });
+        it("follows the drawing order", () => {
+            expect(LayerUtils.buildWMSLayerParams({
+                name: "lorem",
+                visibility: true,
+                drawingOrder: ["dolor", "ipsum", "sit"],
+                sublayers: [{
+                    name: "ipsum",
+                    opacity: 191
+                }, {
+                    name: "dolor",
+                    style: "sit",
+                }, {
+                    name: "amet",
+                    queryable: true
+                }]
+            })).toEqual({
+                params: {
+                    LAYERS: "dolor,ipsum",
+                    OPACITIES: "255,191",
+                    STYLES: "sit,",
+                },
+                queryLayers: ["amet"]
+            });
+        });
+    });
 });
 
 describe("buildWMSLayerUrlParam", () => {
@@ -48,19 +289,345 @@ describe("buildWMSLayerUrlParam", () => {
 });
 
 describe("cloneLayer", () => {
-
+    it("should clone a layer without sublayers", () => {
+        const layer = {
+            id: "lorem",
+        };
+        const clone = LayerUtils.cloneLayer(layer, []);
+        const newLayer = clone.newlayer;
+        const newSubLayer = clone.newsublayer;
+        expect(newLayer).not.toBe(layer);
+        expect(newLayer).toMatchObject(layer);
+        expect(newSubLayer).not.toBe(layer);
+        expect(newSubLayer).toMatchObject(layer);
+    });
+    it("should clone a layer with a sub-layer", () => {
+        const subLayer = {
+            id: "ipsum",
+        };
+        const layer = {
+            id: "lorem",
+            sublayers: [subLayer]
+        };
+        const clone = LayerUtils.cloneLayer(layer, [0]);
+        const newLayer = clone.newlayer;
+        const newSubLayer = clone.newsublayer;
+        expect(newLayer).not.toBe(layer);
+        expect(newLayer).toMatchObject(layer);
+        expect(newSubLayer).not.toBe(subLayer);
+        expect(newSubLayer).toMatchObject(subLayer);
+    });
 });
 
 describe("collectGroupLayers", () => {
-
+    it("should return an empty list", () => {
+        const groupLayers = {};
+        LayerUtils.collectGroupLayers({
+            name: "lorem"
+        }, [], groupLayers);
+        expect(groupLayers).toEqual({});
+    });
+    it("should add the layer to a single group", () => {
+        const groupLayers = {};
+        LayerUtils.collectGroupLayers({
+            name: "lorem"
+        }, ['ipsum'], groupLayers);
+        expect(groupLayers).toEqual({
+            ipsum: ["lorem"]
+        });
+    });
+    it("should add the layer to multiple groups", () => {
+        const groupLayers = {};
+        LayerUtils.collectGroupLayers({
+            name: "lorem"
+        }, ['ipsum', 'dolor'], groupLayers);
+        expect(groupLayers).toEqual({
+            ipsum: ["lorem"],
+            dolor: ["lorem"]
+        });
+    });
+    it("should add the layer and sub-layer to a single group", () => {
+        const groupLayers = {};
+        LayerUtils.collectGroupLayers({
+            name: "lorem",
+            sublayers: [{
+                name: "consectetur"
+            }, {
+                name: "adipiscing"
+            }]
+        }, ['ipsum'], groupLayers);
+        expect(groupLayers).toEqual({
+            ipsum: ["consectetur", "adipiscing"],
+            lorem: ["consectetur", "adipiscing"]
+        });
+    });
+    it("should add the layer and sub-layer to multiple groups", () => {
+        const groupLayers = {};
+        LayerUtils.collectGroupLayers({
+            name: "lorem",
+            sublayers: [{
+                name: "consectetur"
+            }, {
+                name: "adipiscing"
+            }]
+        }, ['ipsum', 'dolor'], groupLayers);
+        expect(groupLayers).toEqual({
+            ipsum: ["consectetur", "adipiscing"],
+            dolor: ["consectetur", "adipiscing"],
+            lorem: ["consectetur", "adipiscing"]
+        });
+    });
 });
 
 describe("collectPrintParams", () => {
 
 });
 
-describe("collectWMSSublayerParams", () => {
-
+describe("collectWMSSubLayerParams", () => {
+    it("should return an empty list if visibilities is not set", () => {
+        const subLayer = {
+            name: "lorem"
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = null;
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual([]);
+        expect(opacities).toEqual([]);
+        expect(styles).toEqual([]);
+        expect(queryable).toEqual([]);
+    });
+    it("should return an empty list if layer visibility is off", () => {
+        const subLayer = {
+            name: "lorem",
+            visibility: false
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = null;
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual([]);
+        expect(opacities).toEqual([]);
+        expect(styles).toEqual([]);
+        expect(queryable).toEqual([]);
+    });
+    it("should return the layer if it is visible", () => {
+        const subLayer = {
+            name: "lorem"
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = [];
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, true
+        )
+        expect(layerNames).toEqual(["lorem"]);
+        expect(opacities).toEqual([255]);
+        expect(styles).toEqual([""]);
+        expect(queryable).toEqual([]);
+        expect(visibilities).toEqual([1]);
+    });
+    it("should take into account the visibility of its parent", () => {
+        const subLayer = {
+            name: "lorem"
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = [];
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual(["lorem"]);
+        expect(opacities).toEqual([255]);
+        expect(styles).toEqual([""]);
+        expect(queryable).toEqual([]);
+        expect(visibilities).toEqual([0.5]);
+    });
+    it("should not use a non-integer opacity", () => {
+        const subLayer = {
+            name: "lorem",
+            opacity: "123"
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = [];
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual(["lorem"]);
+        expect(opacities).toEqual([255]);
+        expect(styles).toEqual([""]);
+        expect(queryable).toEqual([]);
+        expect(visibilities).toEqual([0.5]);
+    });
+    it("should use an integer opacity", () => {
+        const subLayer = {
+            name: "lorem",
+            opacity: 123
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = [];
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual(["lorem"]);
+        expect(opacities).toEqual([123]);
+        expect(styles).toEqual([""]);
+        expect(queryable).toEqual([]);
+        expect(visibilities).toEqual([0.5]);
+    });
+    it("should use layer style", () => {
+        const subLayer = {
+            name: "lorem",
+            style: "ipsum"
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = [];
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual(["lorem"]);
+        expect(opacities).toEqual([255]);
+        expect(styles).toEqual(["ipsum"]);
+        expect(queryable).toEqual([]);
+        expect(visibilities).toEqual([0.5]);
+    });
+    it("should add the layer to the list of queryable layers", () => {
+        const subLayer = {
+            name: "lorem",
+            queryable: true
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = [];
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual(["lorem"]);
+        expect(opacities).toEqual([255]);
+        expect(styles).toEqual([""]);
+        expect(queryable).toEqual(["lorem"]);
+        expect(visibilities).toEqual([0.5]);
+    });
+    it("should work with one sub-layer", () => {
+        const subLayer = {
+            name: "lorem",
+            queryable: true,
+            style: "ipsum",
+            opacity: 12,
+            sublayers: [{
+                name: "dolor",
+                opacity: 123,
+                style: "sit",
+                queryable: true
+            }]
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = [];
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual(["dolor"]);
+        expect(opacities).toEqual([123]);
+        expect(styles).toEqual(["sit"]);
+        expect(queryable).toEqual(["dolor"]);
+        expect(visibilities).toEqual([0.5]);
+    });
+    it("should work with multiple sub-layers", () => {
+        const subLayer = {
+            name: "lorem",
+            queryable: true,
+            style: "ipsum",
+            opacity: 12,
+            sublayers: [{
+                name: "dolor",
+                opacity: 123,
+                style: "sit",
+                queryable: true
+            }, {
+                name: "amet",
+                visibility: false,
+            }, {
+                name: "consectetur",
+                opacity: 0,
+                style: "",
+                queryable: false
+            }, {
+                name: "adipiscing",
+                opacity: 0,
+                style: "",
+                queryable: true, 
+                sublayers: [{
+                    name: "elit",
+                    opacity: 75,
+                    style: "sed",
+                    queryable: true
+                }, {
+                    name: "do",
+                    visibility: false,
+                }, {
+                    name: "eiusmod",
+                    visibility: false,
+                    sublayers: [{
+                        name: "tempor",
+                        style: "incididunt",
+                    }]
+                }]
+            }]
+        };
+        const layerNames = [];
+        const opacities = [];
+        const styles = [];
+        const  queryable = [];
+        const visibilities = [];
+        LayerUtils.collectWMSSublayerParams(
+            subLayer, layerNames, opacities, styles,
+            queryable, visibilities, false
+        )
+        expect(layerNames).toEqual([
+            "dolor", "amet", "consectetur", "elit", "do", "tempor"
+        ]);
+        expect(opacities).toEqual([123, 255, 0, 75, 255, 255]);
+        expect(styles).toEqual(["sit", "", "", "sed", "", "incididunt"]);
+        expect(queryable).toEqual(["dolor", "elit"]);
+        expect(visibilities).toEqual([
+            0.5, 0, 0.5, 0.5, 0, 0.5
+        ]);
+    });
 });
 
 describe("completeExternalLayer", () => {
@@ -124,11 +691,55 @@ describe("computeLayerVisibility", () => {
 });
 
 describe("createExternalLayerPlaceholder", () => {
-
+    it("should create the layer and add it to ", () => {
+        const externalLayers = {};
+        expect(LayerUtils.createExternalLayerPlaceholder({
+            name: "ipsum",
+            opacity: 0.75,
+            visibility: false,
+            params: "dolor"
+        }, externalLayers, "lorem")).toMatchObject([{
+            layer: {
+                id: "lorem",
+                type: "placeholder",
+                name: "ipsum",
+                title: "ipsum",
+                role: LayerRole.USERLAYER,
+                uuid: expect.stringMatching(uuidRegex)
+            },
+            path: [],
+            sublayer: {
+                id: "lorem",
+                type: "placeholder",
+                name: "ipsum",
+                title: "ipsum",
+                role: LayerRole.USERLAYER,
+                uuid: expect.stringMatching(uuidRegex)
+            }
+        }])
+    });
 });
 
 describe("createSeparatorLayer", () => {
-
+    it("should create a new layer", () => {
+        expect(LayerUtils.createSeparatorLayer("lorem")).toMatchObject([{
+            layer: {
+                type: "separator",
+                title: "lorem",
+                role: LayerRole.USERLAYER,
+                uuid: expect.stringMatching(uuidRegex),
+                id: expect.stringMatching(uuidRegex),
+            },
+            path: [],
+            sublayer: {
+                type: "separator",
+                title: "lorem",
+                role: LayerRole.USERLAYER,
+                uuid: expect.stringMatching(uuidRegex),
+                id: expect.stringMatching(uuidRegex),
+            }
+        }]);
+    });
 });
 
 describe("ensureMutuallyExclusive", () => {
@@ -453,7 +1064,138 @@ describe("explodeSublayers", () => {
 });
 
 describe("extractExternalLayersFromSublayers", () => {
-
+    it("should clone an empty list", () => {
+        const sublayers = [];
+        const layer = { sublayers };
+        const topLayer = {};
+        LayerUtils.extractExternalLayersFromSublayers(
+            topLayer, layer
+        );
+        expect(layer.sublayers).toEqual(sublayers);
+        expect(layer.sublayers).not.toBe(sublayers);
+        expect(topLayer).toEqual({});
+    });
+    it("should clone a list with a single layer without external data", () => {
+        const sublayers = [{
+            name: "one"
+        }];
+        const layer = { sublayers };
+        const topLayer = {};
+        LayerUtils.extractExternalLayersFromSublayers(
+            topLayer, layer
+        );
+        expect(layer.sublayers).toEqual(sublayers);
+        expect(layer.sublayers).not.toBe(sublayers);
+        expect(topLayer).toEqual({});
+    });
+    it("should add external data", () => {
+        const sublayers = [{
+            name: "lorem",
+            externalLayer: {
+                name: "ipsum",
+            }
+        }];
+        const layer = { sublayers };
+        const topLayer = {
+            externalLayerMap: {}
+        };
+        LayerUtils.extractExternalLayersFromSublayers(
+            topLayer, layer
+        );
+        expect(layer.sublayers).toEqual([{ name: "lorem" }]);
+        expect(layer.sublayers).not.toBe(sublayers);
+        expect(topLayer).toEqual({
+            externalLayerMap: {
+                "lorem": {
+                    name: "ipsum",
+                    title: "ipsum",
+                    uuid: expect.stringMatching(uuidRegex),
+                }
+            }
+        });
+    });
+    it("should add WMS data", () => {
+        const sublayers = [{
+            name: "lorem",
+            externalLayer: {
+                name: "ipsum",
+                type: "wms",
+                url: "dolor",
+                params: {
+                    LAYERS: "sit,amet",
+                }
+            }
+        }];
+        const layer = { sublayers };
+        const topLayer = {
+            externalLayerMap: {}
+        };
+        LayerUtils.extractExternalLayersFromSublayers(
+            topLayer, layer
+        );
+        expect(layer.sublayers).toEqual([{ name: "lorem" }]);
+        expect(layer.sublayers).not.toBe(sublayers);
+        expect(topLayer).toEqual({
+            externalLayerMap: {
+                lorem: {
+                    name: "ipsum",
+                    type: "wms",
+                    url: "dolor",
+                    title: "ipsum",
+                    uuid: expect.stringMatching(uuidRegex),
+                    featureInfoUrl: "dolor",
+                    legendUrl: "dolor",
+                    params: {
+                        LAYERS: "sit,amet",
+                    },
+                    version: "1.3.0",
+                    queryLayers: [
+                        "sit",
+                        "amet",
+                    ],
+                }
+            }
+        });
+    });
+    it("should work with nested data", () => {
+        const sublayers = [{
+            name: "lorem",
+            externalLayer: {
+                name: "ipsum",
+            },
+            sublayers: [{
+                name: "dolor",
+                externalLayer: {
+                    name: "sit",
+                },
+            }],
+        }];
+        const layer = { sublayers };
+        const topLayer = {
+            externalLayerMap: {}
+        };
+        LayerUtils.extractExternalLayersFromSublayers(
+            topLayer, layer
+        );
+        expect(layer.sublayers).toEqual([
+            { name: "lorem", sublayers: [{ name: "dolor" }] },
+        ]);
+        expect(layer.sublayers).not.toBe(sublayers);
+        expect(topLayer).toEqual({
+            externalLayerMap: {
+                lorem: {
+                    name: "ipsum",
+                    title: "ipsum",
+                    uuid: expect.stringMatching(uuidRegex),
+                },
+                dolor: {
+                    name: "sit",
+                    title: "sit",
+                    uuid: expect.stringMatching(uuidRegex),
+                }
+            }
+        });
+    });
 });
 
 describe("getAttribution", () => {
@@ -464,7 +1206,7 @@ describe("getLegendUrl", () => {
 
 });
 
-describe("getSublayerNames", () => {
+describe("getSubLayerNames", () => {
 
 });
 
@@ -718,7 +1460,93 @@ describe("reorderLayer", () => {
 });
 
 describe("replaceLayerGroups", () => {
-
+    // it("deals with an empty array of configurations", () => {
+    //     expect(LayerUtils.replaceLayerGroups([], {})).toEqual([]);
+    // });
+    // it("deals with a layer without sublayers", () => {
+    //     expect(LayerUtils.replaceLayerGroups([{
+    //         name: "lorem"
+    //     }], {})).toEqual([{
+    //         name: "lorem"
+    //     }]);
+    // });
+    // it("deals with a layer with sublayers", () => {
+    //     expect(LayerUtils.replaceLayerGroups([{
+    //         name: "lorem",
+    //     }], {
+    //         sublayers: [{
+    //             name: "ipsum"
+    //         }]
+    //     })).toEqual([{
+    //         name: "lorem",
+    //     }]);
+    // });
+    // it("deals with a layer with sublayers", () => {
+    //     expect(LayerUtils.replaceLayerGroups([{
+    //         name: "lorem",
+    //     }], {
+    //         name: "lorem",
+    //         sublayers: [{
+    //             name: "ipsum"
+    //         }]
+    //     })).toEqual([{
+    //         name: "ipsum",
+    //     }]);
+    // });
+    it("makes the world a better place", () => {
+        expect(LayerUtils.replaceLayerGroups([{
+            name: "lorem",
+            params: "ipsum",
+        }], {
+            name: "lorem",
+            sublayers: [{
+                name: "consectetur"
+            }, {
+                name: "adipiscing"
+            }]
+        })).toEqual([{
+            name: "consectetur",
+            params: "ipsum",
+        }, {
+            name: "adipiscing",
+            params: "ipsum",
+        }]);
+    });
+    it("makes the world a better place again", () => {
+        expect(LayerUtils.replaceLayerGroups([{
+            name: "lorem",
+            params: "ipsum",
+        }], {
+            name: "lorem",
+            sublayers: [{
+                name: "consectetur",
+                sublayers: [{
+                    name: "sed"
+                }, {
+                    name: "eiusmod"
+                }]
+            }, {
+                name: "adipiscing",
+                sublayers: [{
+                    name: "tempor"
+                }, {
+                    name: "incididunt"
+                }]
+            }]
+        })).toEqual([{
+            name: "sed",
+            params: "ipsum",
+        }, {
+            name: "eiusmod",
+            params: "ipsum",
+        }, {
+            name: "tempor",
+            params: "ipsum",
+        }, {
+            name: "incididunt",
+            params: "ipsum",
+        }]);
+    });
 });
 
 describe("restoreLayerParams", () => {
@@ -753,7 +1581,7 @@ describe("setGroupVisibilities", () => {
             [false, false, false],
             [true, true, false],
             [false, true, false],
-        ]
+        ];
         for (let part of parts) {
             layer = { visibility: part[0], tristate: part[1] };
             const x = expect(LayerUtils.setGroupVisibilities([layer]));

@@ -15,7 +15,11 @@ import CoordinatesUtils from './CoordinatesUtils';
 import MapUtils from './MapUtils';
 import { LayerRole } from '../actions/layers';
 
+/** @typedef {import("qwc2/typings/layers").ExternalLayerKey} ExternalLayerKey */
+/** @typedef {import("qwc2/typings/layers").ExternalLayer} ExternalLayer */
+/** @typedef {import("qwc2/typings/layers").LayerConfig} LayerConfig */
 /** @typedef {import("qwc2/typings/layers").LayerData} LayerData */
+/** @typedef {import("qwc2/typings/layers").ExternalLayerList} ExternalLayerList */
 /** @typedef {import("qwc2/typings/map").MapState} MapState */
 
 /**
@@ -149,6 +153,17 @@ const LayerUtils = {
         }
         return parentVisible && !parentInvisible;
     },
+
+    /**
+     * Creates a new *exploded* layer to act as a separator.
+     * 
+     * @param {string} title - the title to assign to this layer
+     * 
+     * @returns {ExplodedLayer[]} the array that contains a single
+     * structure suitable to be merged with other exploded layers
+     * and reconstructed into a tree via {@link LayerUtils.implodeLayers}.
+     * @see {@link LayerUtils.explodeLayers}
+     */
     createSeparatorLayer(title) {
         return LayerUtils.explodeLayers([{
             type: "separator",
@@ -158,6 +173,20 @@ const LayerUtils = {
             id: uuidv4()
         }]);
     },
+
+    /**
+     * Creates a layer from external layer configuration.
+     * 
+     * @param {LayerConfig} layerConfig - the configuration of the
+     *  external layer
+     * @param {ExternalLayerList} externalLayers - the list of external layers
+     * @param {LayerId} id - unique identifier for the layer
+     * 
+     * @returns {ExplodedLayer[]} the array that contains a single
+     * structure suitable to be merged with other exploded layers
+     * and reconstructed into a tree via {@link LayerUtils.implodeLayers}.
+     * @see {@link LayerUtils.explodeLayers}
+     */
     createExternalLayerPlaceholder(layerConfig, externalLayers, id) {
         const key = layerConfig.type + ":" + layerConfig.url;
         (externalLayers[key] = externalLayers[key] || []).push({
@@ -177,6 +206,7 @@ const LayerUtils = {
             uuid: uuidv4()
         }]);
     },
+
     insertPermalinkLayers(exploded, layers) {
         for (const layer of layers || []) {
             const insLayer = LayerUtils.explodeLayers([layer])[0];
@@ -190,6 +220,27 @@ const LayerUtils = {
             exploded.splice(layer.pos, 0, insLayer);
         }
     },
+
+
+    /**
+     * Collects parameters for WMS sub-layers recursively.
+     *
+     * @param {LayerData} sublayer - the sublayer object to collect
+     *  parameters for
+     * @param {string[]} layerNames - the array to push the layer names to
+     * @param {number[]} opacities - the array to push the layer opacities to
+     * @param {string[]} styles - the array to push the layer styles to
+     * @param {string[]} queryable - the array to push the queryable layer
+     *  names to
+     * @param {number[]} visibilities - the array to push the layer
+     *  visibilities to; if you set this argument to a *falsy value*,
+     *  only layers that are either implicitly (`undefined`)
+     *  or explicitly (`true`) visible will be considered
+     * @param {boolean} parentVisibility - the visibility of the parent layer
+     *
+     * @see {@link LayerUtils.buildWMSLayerParams}, 
+     *  {@link LayerUtils.buildWMSLayerUrlParam}, 
+     */
     collectWMSSublayerParams(
         sublayer, layerNames, opacities, styles, queryable,
         visibilities, parentVisibility
@@ -224,6 +275,22 @@ const LayerUtils = {
             }
         }
     },
+
+    /**
+     * Build WMS layer parameters.
+     * 
+     * @param {LayerData} layer - the layer to build parameters for
+     * 
+     * @return {{ 
+     *   params: {
+     *     LAYERS: string,
+     *     OPACITIES: string,
+     *     STYLES: string
+     *   }, 
+     *   queryLayers: string[] 
+     * }} the parameters
+     * and the list of queryable layer names
+     */
     buildWMSLayerParams(layer) {
         const params = layer.params || {};
         let newParams = {};
@@ -236,12 +303,12 @@ const LayerUtils = {
             const opacities = (
                 params.OPACITIES || ""
             ).split(",").filter(Boolean);
-            const opacityMult = (layer.opacity ?? 255) / 255;
+            const opacityFactor = (layer.opacity ?? 255) / 255;
             newParams = {
                 LAYERS: layers.join(","),
-                OPACITIES: layers.map((x, i) => (
-                    (opacities[i] ?? "255") * opacityMult).join(",")
-                ),
+                OPACITIES: layers.map(
+                    (x, i) => ((opacities[i] ?? "255") * opacityFactor)
+                ).join(","),
                 STYLES: params.STYLES ?? "",
                 ...layer.dimensionValues
             };
@@ -263,6 +330,7 @@ const LayerUtils = {
                 const indices = layer.drawingOrder.map(
                     lyr => layerNames.indexOf(lyr)
                 ).filter(idx => idx >= 0);
+
                 layerNames = indices.map(idx => layerNames[idx]);
                 opacities = indices.map(idx => opacities[idx]);
                 styles = indices.map(idx => styles[idx]);
@@ -276,7 +344,7 @@ const LayerUtils = {
         }
         return {
             params: newParams,
-            queryLayers: queryLayers
+            queryLayers
         };
     },
 
@@ -661,10 +729,10 @@ const LayerUtils = {
             } else {
                 // This is a leaf layer (has no sublayers).
                 // Reduced layer with one single sublayer per level, up to leaf
-                
+
                 // Make a copy of the top level layer.
                 const redLayer = { ...layer };
-                
+
                 // Start from the top level and create a clone of this
                 // branch. Each node in the branch has a single sublayer
                 // except the last one (the leaf) which nas none.
@@ -705,7 +773,7 @@ const LayerUtils = {
             let source = layer;
             if (target && target.sublayers && target.id === layer.id) {
                 let innerTarget = target.sublayers[target.sublayers.length - 1];
-                
+
                 // Exploded entries have only one entry per sublayer level
                 let innerSource = source.sublayers[0];
 
@@ -771,7 +839,7 @@ const LayerUtils = {
             exploded.splice(index, 0, ...explodedAdd);
         } else {
             throw new Error(
-                "Failed to find 'before' layer item with " + 
+                "Failed to find 'before' layer item with " +
                 `'${beforeAttr}'=${beforeVal}`
             );
         }
@@ -838,6 +906,10 @@ const LayerUtils = {
         );
         return LayerUtils.implodeLayers(explodedAdd.concat(explodedBase))[0];
     },
+
+    /**
+     * 
+     */
     searchSubLayer(layer, attr, value, path = []) {
         if (layer.sublayers) {
             let idx = 0;
@@ -860,16 +932,18 @@ const LayerUtils = {
         }
         return null;
     },
+
+
     searchLayer(
         layers, key, value, roles = [LayerRole.THEME, LayerRole.USERLAYER]
     ) {
         for (const layer of layers) {
             if (roles.includes(layer.role)) {
-                const matchsublayer = LayerUtils.searchSubLayer(
+                const matchSubLayer = LayerUtils.searchSubLayer(
                     layer, key, value
                 );
-                if (matchsublayer) {
-                    return { layer: layer, sublayer: matchsublayer };
+                if (matchSubLayer) {
+                    return { layer: layer, sublayer: matchSubLayer };
                 }
             }
         }
@@ -927,9 +1001,23 @@ const LayerUtils = {
         });
         return visible / layer.sublayers.length;
     },
+
+    /**
+     * Create a layer duplicate.
+     * 
+     * @param {LayerData} layer - the layer to clone
+     * @param {number[]} sublayerpath - the path to the sub-layer to clone
+     * as a list of 0-based indices; each number is the index of a child in
+     * its parent's list of `sublayers`
+     * 
+     * @returns {{newlayer: LayerData, newsublayer: LayerData}} the
+     * cloned top level layer and the cloned leaf sub-layer; the top layer
+     * will have all the sub-layers leading down to the lead sub-layer
+     * cloned as well but other layers sill be simply copied.
+     */
     cloneLayer(layer, sublayerpath) {
-        const newlayer = { ...layer };
-        let cur = newlayer;
+        const newLayer = { ...layer };
+        let cur = newLayer;
         for (let i = 0; i < sublayerpath.length; ++i) {
             const idx = sublayerpath[i];
             cur.sublayers = [
@@ -939,8 +1027,39 @@ const LayerUtils = {
             ];
             cur = cur.sublayers[idx];
         }
-        return { newlayer, newsublayer: cur };
+        return { newlayer: newLayer, newsublayer: cur };
     },
+
+    /**
+     * Creates a map of group names to the list of layer names that
+     * belong to that group.
+     * 
+     * The layers that contain sub-layers are groups.
+     * Usually you call the function with an empty `parentGroups` array.
+     * If the `layer` has no sub-layers, the function will return the
+     * `groupLayers` unchanged.
+     * If the layer does have sub-layers, the function will call itself
+     * recursively for each sub-layer, passing the `parentGroups` array
+     * with the name of the current layer added to it, thus each leaf
+     * layer will have a list of all the group names that it belongs to,
+     * all the way tot the top level layer.
+     * 
+     * When the function encounters a leaf layer, it will add the layer
+     * name to the `groupLayers` map for each group name in the
+     * `parentGroups` array, so each leaf layers will show up once for
+     * each group it belongs to at every depth level.
+     * 
+     * @param {LayerData} layer - the layer to start the query from
+     * @param {string[]} parentGroups - the initial list of group names;
+     *  the function 
+     * @param {Object} groupLayers - the map of group names to the list of
+     * layer names that belong to that group
+     * 
+     * @todo this function assumes that the names of the groups are unique
+     * across the tree of layers, no matter the depth level. Is this true?
+     * If not true a group can eat up layers from different parts of the
+     * tree.
+     */
     collectGroupLayers(layer, parentGroups, groupLayers) {
         if (!isEmpty(layer.sublayers)) {
             for (const sublayer of layer.sublayers) {
@@ -956,42 +1075,110 @@ const LayerUtils = {
             }
         }
     },
+
+    /**
+     * Replaces the configuration for groups with one configuration for
+     * each leaf layer in the group.
+     * 
+     * A shallow copy of each configuration is made and the `name` property
+     * is replaced with the name of the leaf layer in the group.
+     * 
+     * @param {LayerConfig[]} layerConfigs - the list of layer configurations
+     * @param {LayerData} layer - the layer from which to extract the groups
+     * 
+     * @returns {LayerConfig[]} the list of layer configurations with
+     * the group configurations replaced with configurations for each
+     * leaf layer in the group.
+     * 
+     * @todo for a leaf layer at depth level 2 (has a parent and a grand-parent) 
+     * there will be two copies of the configuration with same name.
+     */
     replaceLayerGroups(layerConfigs, layer) {
+        // We accumulate here the list of all group names that
+        // contain sub-layers associated with all their leaf layers.
         const groupLayers = {};
         LayerUtils.collectGroupLayers(layer, [], groupLayers);
+
         const newLayerConfigs = [];
         for (const layerConfig of layerConfigs) {
+            // TODO: this assumes that the group names are unique across the
+            // tree of layers.
             if (layerConfig.name in groupLayers) {
+                // We have now determined that this layer config belongs
+                // to a group.
+
+                // Here we expand the single layer config into multiple layer
+                // configs, one for each leaf layer in the group.
                 newLayerConfigs.push(
                     ...groupLayers[layerConfig.name].map(
                         name => ({ ...layerConfig, name })
                     )
                 );
             } else {
+                // If this is not a group, we simply copy the layer config.
                 newLayerConfigs.push(layerConfig);
             }
         }
         return newLayerConfigs;
     },
-    extractExternalLayersFromSublayers(toplayer, layer) {
+
+    /**
+     * Create a new list of sublayers with external layer information
+     * stripped from them.
+     * 
+     * The information about the external layers is collected in the
+     * `externalLayerMap` property of the top level layer.
+     * 
+     * @param {LayerData} topLayer - the top level layer
+     * @param {LayerData} layer - the current layer
+     */
+    extractExternalLayersFromSublayers(topLayer, layer) {
         if (layer.sublayers) {
+            // Create a new list of sublayers that does not contain
+            // the external layers.
             layer.sublayers = layer.sublayers.map(sublayer => {
                 if (sublayer.externalLayer) {
+                    // Take the data from sublayer, enhance it and save it
+                    // in the externalLayerMap of the top level layer under the
+                    // name of this layer. The enhance part will make sure
+                    // that the external layer has a title, an uuid and
+                    // wms properties.
                     const externalLayer = { ...sublayer.externalLayer };
                     LayerUtils.completeExternalLayer(externalLayer, sublayer);
-                    toplayer.externalLayerMap[sublayer.name] = externalLayer;
+                    topLayer.externalLayerMap[sublayer.name] = externalLayer;
+
+                    // Remove the external data from the sublayer.
                     sublayer = { ...sublayer };
                     delete sublayer.externalLayer;
                 }
                 if (sublayer.sublayers) {
                     LayerUtils.extractExternalLayersFromSublayers(
-                        toplayer, sublayer
+                        topLayer, sublayer
                     );
                 }
                 return sublayer;
             });
         }
     },
+
+    /**
+     * Ensure that the layer has an uuid, a title and WMS properties.
+     * 
+     * The title is taken from the layer itself, or from the sublayer
+     * or from the `name` of the external layer.
+     * The `uuid` is always generated with `uuidv4`.
+     * 
+     * For WMS layers the `version` defaults to `1.3.0` if not set,
+     * the `featureInfoUrl` and `legendUrl` default to `url` if not set,
+     * the `queryLayers` are extracted from `LAYER` parameter if not set.
+     * If the `externalLayerFeatureInfoFormats` configuration is set,
+     * the `infoFormats` are set based on the it and the `featureInfoUrl`
+     * content.
+     * 
+     * @param {ExternalLayer} externalLayer - the external layer data to enhance
+     * @param {LayerData} sublayer - the sublayer that contains the
+     *  external layer data
+     */
     completeExternalLayer(externalLayer, sublayer) {
         externalLayer.title = (
             externalLayer.title ||
@@ -1015,12 +1202,11 @@ const LayerUtils = {
             const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp(
                 "externalLayerFeatureInfoFormats"
             ) || {};
+            const featureInfoUrl = externalLayer.featureInfoUrl.toLowerCase();
             for (const entry of Object.keys(externalLayerFeatureInfoFormats)) {
-                if (
-                    externalLayer.featureInfoUrl.toLowerCase().includes(
-                        entry.toLowerCase()
-                    )
-                ) {
+                // TODO: this is a very simplistic check, we should
+                // probably parse the url and check the query parameters.
+                if (featureInfoUrl.includes(entry.toLowerCase())) {
                     externalLayer.infoFormats = [
                         externalLayerFeatureInfoFormats[entry]
                     ];
@@ -1253,12 +1439,12 @@ const LayerUtils = {
                 if (printBgLayerName) {
                     let match = null;
                     if (
-                        (match = printBgLayerName.match(/^(\w+):(.*)#([^#]+)$/)) && 
+                        (match = printBgLayerName.match(/^(\w+):(.*)#([^#]+)$/)) &&
                         match[1] === "wms"
                     ) {
                         const layer = {
                             type: 'wms',
-                            params: {LAYERS: match[3], OPACITIES: '255'},
+                            params: { LAYERS: match[3], OPACITIES: '255' },
                             url: match[2]
                         };
                         LayerUtils.addExternalLayerPrintParams(
