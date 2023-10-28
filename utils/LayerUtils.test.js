@@ -2808,6 +2808,7 @@ describe("pathEqualOrBelow", () => {
     });
 });
 
+
 describe("removeLayer", () => {
     it("should silently ignore an empty list", () => {
         expect(LayerUtils.removeLayer([], {}, [])).toEqual([]);
@@ -2916,6 +2917,7 @@ describe("removeLayer", () => {
         }]);
     });
 });
+
 
 describe("reorderLayer", () => {
     it("should silently ignore an empty list", () => {
@@ -3126,6 +3128,7 @@ describe("replaceLayerGroups", () => {
     });
 });
 
+
 describe("restoreLayerParams", () => {
     it("should create a top level layer", () => {
         expect(LayerUtils.restoreLayerParams({
@@ -3220,17 +3223,96 @@ describe("restoreLayerParams", () => {
     });
 });
 
+
 describe("restoreOrderedLayerParams", () => {
 
 });
+
 
 describe("searchLayer", () => {
 
 });
 
-describe("searchSubLayer", () => {
 
+describe("searchSubLayer", () => {
+    it("should look into layer's attributes", () => {
+        const layer = {
+            name: "lorem"
+        };
+        expect(LayerUtils.searchSubLayer(layer, "name", "lorem")).toEqual(layer);
+        expect(LayerUtils.searchSubLayer(layer, "name", "xyz")).toBeNull();
+    });
+    it("should look into layer's sublayers", () => {
+        const path = [];
+        const layer = {
+            sublayers: [{
+                name: "lorem"
+            }]
+        };
+        expect(
+            LayerUtils.searchSubLayer(layer, "name", "lorem")
+        ).toEqual(layer.sublayers[0]);
+        expect(
+            LayerUtils.searchSubLayer(layer, "name", "xyz")
+        ).toBeNull();
+    });
+    it("should set the path to an empty array for top level layer", () => {
+        const path = [];
+        const layer = {
+            name: "lorem"
+        };
+        LayerUtils.searchSubLayer(layer, "name", "lorem", path);
+        expect(path).toEqual([]);
+    });
+    it("should set the path to an array with the index for sublayers", () => {
+        const path = [];
+        const layer = {
+            sublayers: [{
+                name: "lorem"
+            }]
+        };
+        LayerUtils.searchSubLayer(layer, "name", "lorem", path);
+        expect(path).toEqual([0]);
+    });
+    it("should work with deep nested layers", () => {
+        let path = [];
+        const layer = {
+            sublayers: [{
+                name: "lorem"
+            }, {
+                name: "ipsum",
+                sublayers: [{
+                    name: "dolor",
+                    sublayers: [{
+                        name: "sit"
+                    }, {
+                        name: "amet",
+                        sublayers: [{
+                            name: "consectetur"
+                        }]
+                    }]
+                }, {
+                    name: "adipiscing"
+                }]
+            }]
+        };
+        LayerUtils.searchSubLayer(layer, "name", "consectetur", path);
+        expect(path).toEqual([1, 0, 1, 0]);
+
+        path = [];
+        LayerUtils.searchSubLayer(layer, "name", "ipsum", path);
+        expect(path).toEqual([1]);
+
+        path = [];
+        LayerUtils.searchSubLayer(layer, "name", "lorem", path);
+        expect(path).toEqual([0]);
+
+        path = [];
+        LayerUtils.searchSubLayer(layer, "name", "adipiscing", path);
+        expect(path).toEqual([1, 1]);
+    });
 });
+
 
 describe("setGroupVisibilities", () => {
     it("should accept an empty list", () => {
@@ -3327,6 +3409,7 @@ describe("setGroupVisibilities", () => {
     });
 });
 
+
 describe("splitLayerUrlParam", () => {
     it("should return defaults with an empty string", () => {
         expect(LayerUtils.splitLayerUrlParam("")).toEqual({
@@ -3406,6 +3489,7 @@ describe("splitLayerUrlParam", () => {
         });
     });
 });
+
 
 describe("sublayerVisible", () => {
     it("should throw an error if the index is out of bounds", () => {

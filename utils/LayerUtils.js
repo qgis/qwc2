@@ -1071,7 +1071,16 @@ const LayerUtils = {
 
 
     /**
+     * Recursively searches for a sublayer with the given attribute
+     * and value.
      * 
+     * @param {LayerData} layer - the layer to search in
+     * @param {keyof LayerData} attr - the attribute to search for
+     * @param {*} value - the value to search for
+     * @param {number[]} path - the path to the sublayer that was located
+     * 
+     * @returns {object|null} the sublayer with the given attribute
+     *  and value, or null if not found.
      */
     searchSubLayer(layer, attr, value, path = []) {
         if (layer.sublayers) {
