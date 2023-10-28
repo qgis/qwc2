@@ -1106,6 +1106,25 @@ const LayerUtils = {
     },
 
 
+    
+    /**
+     * Recursively searches for a sublayer with the given attribute.
+     * 
+     * Searches for a layer in the given array of layers that matches
+     * the specified key-value pair, and returns an object containing
+     * the matching layer and its matching sublayer (if any).
+     *
+     * @param {LayerData[]} layers - the array of layers to search in
+     * @param {keyof LayerData} key - the key to search for in the
+     *  layer properties
+     * @param {*} value - the value to search for in the layer properties
+     * @param {LayerRole[]} roles - only layers that have the roles specified
+     *  in this array will be included in the search
+     * 
+     * @returns {Object|null} an object containing the matching layer
+     *  and its matching sublayer (if any), or null if no matching
+     *  layer was found.
+     */
     searchLayer(
         layers, key, value, roles = [LayerRole.THEME, LayerRole.USERLAYER]
     ) {

@@ -3230,7 +3230,89 @@ describe("restoreOrderedLayerParams", () => {
 
 
 describe("searchLayer", () => {
-
+    it("should look into layer's attributes", () => {
+        const layers = [{
+            name: "lorem",
+            role: LayerRole.BACKGROUND
+        }, {
+            name: "ipsum",
+            role: LayerRole.BACKGROUND
+        }, {
+            name: "dolor",
+            role: LayerRole.BACKGROUND
+        }];
+        expect(
+            LayerUtils.searchLayer(layers, "name", "lorem")
+        ).toBeNull();
+        expect(
+            LayerUtils.searchLayer(layers, "name", "xyz")
+        ).toBeNull();
+        expect(
+            LayerUtils.searchLayer(layers, "name", "lorem", [LayerRole.BACKGROUND])
+        ).toEqual({
+            layer: layers[0],
+            sublayer: layers[0]
+        });
+        expect(
+            LayerUtils.searchLayer(layers, "name", "xyz", [LayerRole.BACKGROUND])
+        ).toBeNull();
+    });
+    it("should look into layer's sublayers", () => {
+        const roles = [LayerRole.BACKGROUND];
+        const layers = [{
+            name: "lorem",
+            role: LayerRole.BACKGROUND,
+            sublayers: [{
+                name: "ipsum",
+                role: LayerRole.BACKGROUND
+            }, {
+                name: "dolor",
+                role: LayerRole.BACKGROUND
+            }],
+        }, {
+            name: "sit",
+            role: LayerRole.BACKGROUND,
+            sublayers: [{
+                name: "amet",
+                role: LayerRole.BACKGROUND
+            }, {
+                name: "consectetur",
+                role: LayerRole.BACKGROUND
+            }],
+        }, {
+            name: "adipiscing",
+            role: LayerRole.BACKGROUND,
+            sublayers: [{
+                name: "elit",
+                role: LayerRole.BACKGROUND
+            }, {
+                name: "sed",
+                role: LayerRole.BACKGROUND
+            }],
+        }];
+        expect(
+            LayerUtils.searchLayer(layers, "name", "consectetur", roles)
+        ).toEqual({
+            "layer": {
+                name: "sit",
+                role: 1,
+                sublayers: [
+                    {
+                        name: "amet",
+                        role: 1,
+                    },
+                    {
+                        name: "consectetur",
+                        role: 1,
+                    },
+                ],
+            },
+            sublayer: {
+                name: "consectetur",
+                role: 1,
+            },
+        });
+    });
 });
 
 
