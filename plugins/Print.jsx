@@ -319,10 +319,11 @@ class Print extends React.Component {
                             if (label.startsWith("__")) {
                                 return null;
                             }
-                            const opts = {rows: 1, name: label.toUpperCase()};
-                            if (this.props.theme.printLabelConfig) {
-                                Object.assign(opts, this.props.theme.printLabelConfig[label]);
-                            }
+                            const opts = {
+                                rows: 1,
+                                name: label.toUpperCase(),
+                                ...this.props.theme.printLabelConfig?.[label]
+                            };
                             return this.renderPrintLabelField(label, opts);
                         })}
                         {this.props.allowGeoPdfExport ? (
@@ -372,46 +373,30 @@ class Print extends React.Component {
         );
     };
     renderPrintLabelField = (label, opts) => {
-        if (this.props.theme.printLabelForSearchResult === label) {
-            if (this.props.hideAutopopulatedFields) {
-                return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={this.getSearchMarkerLabel()} name={opts.name} type="hidden" /></td></tr>);
-            } else {
-                return (
-                    <tr key={"label." + label}>
-                        <td>{MiscUtils.capitalizeFirst(label)}</td>
-                        <td><textarea {...opts} defaultValue={this.getSearchMarkerLabel()} readOnly /></td>
-                    </tr>
-                );
-            }
-        } else if (this.props.theme.printLabelForAttribution === label) {
-            if (this.props.hideAutopopulatedFields) {
-                return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={this.getAttributionLabel()} name={opts.name} type="hidden" /></td></tr>);
-            } else {
-                return (
-                    <tr key={"label." + label}>
-                        <td>{MiscUtils.capitalizeFirst(label)}</td>
-                        <td><textarea {...opts} defaultValue={this.getAttributionLabel()} readOnly /></td>
-                    </tr>
-                );
-            }
+        let defaultValue = opts.defaultValue || "";
+        let autopopulated = false;
+        if (label === this.props.theme.printLabelForSearchResult) {
+            defaultValue = this.getSearchMarkerLabel();
+            autopopulated = true;
+        } else if (label === this.props.theme.printLabelForAttribution) {
+            defaultValue = this.getAttributionLabel();
+            autopopulated = true;
+        }
+        if (autopopulated && this.props.hideAutopopulatedFields) {
+            return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={defaultValue} name={opts.name} type="hidden" /></td></tr>);
         } else {
             return (
                 <tr key={"label." + label}>
                     <td>{MiscUtils.capitalizeFirst(label)}</td>
-                    <td><textarea {...opts}/></td>
+                    <td><textarea {...opts} defaultValue={defaultValue} readOnly={autopopulated} /></td>
                 </tr>
             );
         }
     };
     getSearchMarkerLabel = () => {
         const searchsellayer = this.props.layers.find(layer => layer.id === "searchselection");
-        if (searchsellayer && searchsellayer.features) {
-            const feature = searchsellayer.features.find(f => f.id === "searchmarker");
-            if (feature && feature.properties) {
-                return feature.properties.label;
-            }
-        }
-        return "";
+        const feature = (searchsellayer?.features || []).find(f => f.id === "searchmarker");
+        return feature?.properties?.label || "";
     };
     getAttributionLabel = () => {
         const copyrights = this.props.layers.reduce((res, layer) => ({...res, ...LayerUtils.getAttribution(layer, this.props.map)}), {});
