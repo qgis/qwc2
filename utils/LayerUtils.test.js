@@ -1896,7 +1896,122 @@ describe("removeLayer", () => {
 });
 
 describe("reorderLayer", () => {
-
+    it("should silently ignore an empty list", () => {
+        expect(LayerUtils.reorderLayer([], {}, [], 1, true)).toEqual([]);
+    });
+    it("should silently ignore a list with an unknown layer", () => {
+        expect(LayerUtils.reorderLayer([{
+            id: "lorem",
+            uuid: "ipsum"
+        }], {
+            uuid: "dolor"
+        }, [])).toEqual([{
+            id: "lorem",
+            uuid: "ipsum"
+        }]);
+    });
+    it("should move a top-level layer one position to the back", () => {
+        expect(LayerUtils.reorderLayer([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "dolor",
+            uuid: "sit"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }], {
+            uuid: "sit"
+        }, [], 1, true)).toEqual([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }, {
+            id: "dolor",
+            uuid: "sit"
+        }]);
+    });
+    it("should move background layers to the back", () => {
+        expect(LayerUtils.reorderLayer([{
+            id: "background",
+            uuid: "background",
+            role: LayerRole.BACKGROUND
+        }, {
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "dolor",
+            uuid: "sit"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }], {
+            uuid: "sit"
+        }, [], 1, true)).toEqual([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }, {
+            id: "dolor",
+            uuid: "sit"
+        }, {
+            id: "background",
+            uuid: "background",
+            role: LayerRole.BACKGROUND
+        }]);
+    });
+    it("should move a top-level layer one position to the front", () => {
+        expect(LayerUtils.reorderLayer([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "dolor",
+            uuid: "sit"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }], {
+            uuid: "sit"
+        }, [], -1, true)).toEqual([{
+            id: "dolor",
+            uuid: "sit"
+        }, {
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }]);
+    });
+    it("should move a sub-layer one position to the back", () => {
+        expect(LayerUtils.reorderLayer([{
+            id: "lorem",
+            uuid: "ipsum",
+            sublayers: [{
+                id: "dolor",
+                uuid: "sit"
+            }, {
+                id: "amet",
+                uuid: "consectetur"
+            }]
+        }], {
+            uuid: "ipsum"
+        }, [0], 1, true)).toEqual([{
+            id: "lorem",
+            uuid: "ipsum",
+            sublayers: [{
+                id: "amet",
+                uuid: "consectetur"
+            }, {
+                id: "dolor",
+                uuid: "sit"
+            }]
+        }]);
+    });
 });
 
 describe("replaceLayerGroups", () => {

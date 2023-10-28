@@ -664,6 +664,21 @@ const LayerUtils = {
     },
 
 
+    /**
+     * Reorders the given layers by moving the specified layer by the
+     * given delta.
+     * 
+     * @param {LayerData[]} layers - the array of layers to reorder
+     * @param {LayerData} moveLayer - the top layer
+     * @param {number[]} subLayerPath - the path of the sublayer to move
+     *  relative to the top level layer or an empty array if the top level
+     *  layer itself is to be moved
+     * @param {number} delta - the amount to move the layer by
+     * @param {boolean} preventSplittingGroups - whether to prevent
+     *  splitting sibling groups when reordering
+     * 
+     * @returns {LayerData[]} - the reordered array of layers
+     */
     reorderLayer(
         layers, moveLayer, subLayerPath, delta, preventSplittingGroups
     ) {
