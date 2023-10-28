@@ -39,8 +39,16 @@ import { LayerRole } from '../actions/layers';
  * @namespace
  */
 const LayerUtils = {
+    
     /**
+     * Restores the parameters of a theme layer and external layers.
      * 
+     * @param {LayerData} themeLayer - the theme layer to restore
+     * @param {LayerConfig[]} layerConfigs - an array of layer configurations
+     * @param {LayerData[]} permalinkLayers - an array of permalink layers
+     * @param {ExternalLayerList} externalLayers - the list of external layers
+     * 
+     * @returns {LayerData[]} - the restored layers
      */
     restoreLayerParams(
         themeLayer, layerConfigs, permalinkLayers, externalLayers
@@ -49,9 +57,9 @@ const LayerUtils = {
         // Restore theme layer configuration
         for (const entry of exploded) {
             const layerConfig = layerConfigs.find(
-                layer => (
-                    layer.type === 'theme' &&
-                    layer.name === entry.sublayer.name
+                cfg => (
+                    cfg.type === 'theme' &&
+                    cfg.name === entry.sublayer.name
                 )
             );
             if (layerConfig) {
@@ -125,7 +133,8 @@ const LayerUtils = {
 
 
     /**
-     * Determines the visibility of a tree based on its members.
+     * Determines and sets the visibility of a tree of layers based on
+     * the visibilities of each layer members.
      * 
      * For each layer in the list (either the one the user provided or
      * the list of sub-layers for group layers) the function determines a
@@ -213,7 +222,7 @@ const LayerUtils = {
         }]);
     },
 
-    
+
     /**
      * Inserts permalink layers into the exploded layer array.
      *
@@ -545,7 +554,7 @@ const LayerUtils = {
         return isEqual(child.slice(0, parent.length), parent);
     },
 
-    
+
     /**
      * Removes a foreground layer from the list of layers.
      * 

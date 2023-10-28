@@ -2180,7 +2180,97 @@ describe("replaceLayerGroups", () => {
 });
 
 describe("restoreLayerParams", () => {
-
+    it("should create a top level layer", () => {
+        expect(LayerUtils.restoreLayerParams({
+            id: "lorem",
+            uuid: "ipsum",
+        }, [], [], {})).toEqual([{
+            id: "lorem",
+            uuid: "ipsum",
+            visibility: false
+        }]);
+    });
+    it("should use theme layer configuration", () => {
+        expect(LayerUtils.restoreLayerParams({
+            id: "lorem",
+            uuid: "ipsum",
+            name: "dolor",
+        }, [{
+            name: "dolor",
+            type: "theme",
+            opacity: 122,
+            tristate: true,
+        }], [], {})).toEqual([{
+            id: "lorem",
+            uuid: "ipsum",
+            visibility: true,
+            name: "dolor",
+            opacity: 122
+        }]);
+    });
+    it("should add external layers from config", () => {
+        const externalLayers = {};
+        expect(LayerUtils.restoreLayerParams({
+            id: "lorem",
+            uuid: "ipsum",
+        }, [{
+            name: "dolor",
+            id: "sit",
+            type: "wms",
+            url: "amet",
+            opacity: 122,
+            visibility: true,
+            params: {
+                LAYERS: "consectetur",
+            }
+        }], [], externalLayers)).toEqual([{
+            id: "sit",
+            loading: true,
+            name: "dolor",
+            role: LayerRole.USERLAYER,
+            title: "dolor",
+            type: "placeholder",
+            uuid: expect.stringMatching(uuidRegex),
+        }, {
+            id: "lorem",
+            uuid: "ipsum",
+            visibility: false
+        }]);
+        expect(externalLayers).toEqual({
+            "wms:amet": [{
+                id: "sit",
+                name: "dolor",
+                opacity: 122,
+                params: {
+                    LAYERS: "consectetur"
+                },
+                visibility: true
+            }]
+        });
+    });
+    it("should add permalink layers", () => {
+        const externalLayers = {};
+        expect(LayerUtils.restoreLayerParams({
+            id: "lorem",
+            uuid: "ipsum",
+        }, [], [{
+            id: "sit",
+            uuid: "amet",
+            role: LayerRole.USERLAYER,
+            type: "vector",
+            pos: 0
+        }], {})).toEqual([{
+            id: "sit",
+            uuid: "amet",
+            role: LayerRole.USERLAYER,
+            type: "vector",
+        }, {
+            id: "lorem",
+            uuid: "ipsum",
+            visibility: false
+        }]);
+        expect(externalLayers).toEqual({});
+    });
 });
 
 describe("restoreOrderedLayerParams", () => {
