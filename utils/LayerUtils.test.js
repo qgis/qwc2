@@ -25,6 +25,7 @@ beforeEach(() => {
     mockExternalLayerFeatureInfoFormats = undefined;
 });
 
+
 describe("addUUIDs", () => {
     it("should assign a new uuid if one is missing", () => {
         const layer = {};
@@ -61,6 +62,7 @@ describe("addUUIDs", () => {
         expect(layer.sublayers[0].sublayers[0].uuid).toMatch(uuidRegex);
     });
 });
+
 
 describe("buildWMSLayerParams", () => {
     describe("without sublayers", () => {
@@ -306,6 +308,7 @@ describe("buildWMSLayerParams", () => {
     });
 });
 
+
 describe("buildWMSLayerUrlParam", () => {
     it("should return an empty string if no params are passed", () => {
         expect(LayerUtils.buildWMSLayerUrlParam([])).toBe("");
@@ -532,6 +535,7 @@ describe("buildWMSLayerUrlParam", () => {
     });
 });
 
+
 describe("cloneLayer", () => {
     it("should clone a layer without sublayers", () => {
         const layer = {
@@ -562,6 +566,7 @@ describe("cloneLayer", () => {
         expect(newSubLayer).toEqual(subLayer);
     });
 });
+
 
 describe("collectGroupLayers", () => {
     it("should return an empty list", () => {
@@ -623,9 +628,62 @@ describe("collectGroupLayers", () => {
     });
 });
 
-describe("collectPrintParams", () => {
 
+describe("collectPrintParams", () => {
+    const emptyResponse = {
+        LAYERS: "",
+        OPACITIES: "",
+        STYLES: "",
+    };
+    it("should return an empty list if no params are passed", () => {
+        expect(LayerUtils.collectPrintParams([])).toEqual(emptyResponse);
+    });
+    it("should ignore layer types other than theme and user", () => {
+        expect(LayerUtils.collectPrintParams([{
+            role: LayerRole.BACKGROUND,
+            visibility: false
+        }, {
+            role: LayerRole.SELECTION
+        }, {
+            role: LayerRole.MARKER
+        }, {
+            role: LayerRole.USERLAYER,
+            type: "xyz"
+        }])).toEqual(emptyResponse);
+    });
+    describe("with theme layers", () => {
+        it("should accept theme layers", () => {
+
+        });
+        it("should use opacity", () => {
+
+        });
+        it("should use visibility", () => {
+
+        });
+        it("should work with sublayers", () => {
+
+        });
+    });
+    describe("with WMS user layers", () => {
+        it("should accept WMS user layers", () => {
+
+        });
+        it("should use opacity", () => {
+
+        });
+        it("should use visibility", () => {
+
+        });
+        it("should use extended wms params", () => {
+
+        });
+        it("should work with sublayers", () => {
+            
+        });
+    });
 });
+
 
 describe("collectWMSSubLayerParams", () => {
     it("should return an empty list if visibilities is not set", () => {

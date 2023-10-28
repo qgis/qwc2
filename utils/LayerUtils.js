@@ -311,8 +311,7 @@ const LayerUtils = {
      *     STYLES: string
      *   }, 
      *   queryLayers: string[] 
-     * }} the parameters
-     * and the list of queryable layer names
+     * }} the parameters and the list of queryable layer names
      */
     buildWMSLayerParams(layer) {
         const params = layer.params || {};
@@ -1544,6 +1543,24 @@ const LayerUtils = {
     },
 
 
+    
+    /**
+     * Collects print parameters for the given layers, theme, print
+     * scale, print CRS, and print external layers.
+     * 
+     * @param {Array} layers - the layers to collect print parameters for.
+     * @param {Object} theme - the theme to use for printing.
+     * @param {number} printScale - the print scale.
+     * @param {string} printCrs - the print CRS.
+     * @param {boolean} printExternalLayers - whether to print
+     *  external layers.
+     * 
+     * @return {{ 
+    *     LAYERS: string,
+    *     OPACITIES: string,
+    *     STYLES: string
+    * }} the parameters
+     */
     collectPrintParams(
         layers, theme, printScale, printCrs, printExternalLayers
     ) {
