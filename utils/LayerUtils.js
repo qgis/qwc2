@@ -32,6 +32,7 @@ import { LayerRole } from '../actions/layers';
  * @property {LayerData} sublayer - the leaf layer
  */
 
+
 /**
  * Utility functions for working with layers.
  * 
@@ -82,13 +83,15 @@ const LayerUtils = {
         LayerUtils.setGroupVisibilities(layers);
         return layers;
     },
+
+
     restoreOrderedLayerParams(
         themeLayer, layerConfigs, permalinkLayers, externalLayers
     ) {
         const exploded = LayerUtils.explodeLayers([themeLayer]);
         let reordered = [];
         // Iterate over layer configs and reorder items accordingly, create
-        // external layer placeholders as neccessary
+        // external layer placeholders as necessary
         for (const layerConfig of layerConfigs) {
             if (layerConfig.type === 'theme') {
                 const entry = exploded.find(
@@ -119,6 +122,7 @@ const LayerUtils = {
         LayerUtils.setGroupVisibilities(layers);
         return layers;
     },
+
 
     /**
      * Determines the visibility of a tree based on its members.
@@ -154,6 +158,7 @@ const LayerUtils = {
         return parentVisible && !parentInvisible;
     },
 
+
     /**
      * Creates a new *exploded* layer to act as a separator.
      * 
@@ -173,6 +178,7 @@ const LayerUtils = {
             id: uuidv4()
         }]);
     },
+
 
     /**
      * Creates a layer from external layer configuration.
@@ -252,9 +258,9 @@ const LayerUtils = {
         if (visibility || visibilities) {
             if (!isEmpty(sublayer.sublayers)) {
                 // Is group
-                sublayer.sublayers.map(sublyr => {
+                sublayer.sublayers.map(subLayer => {
                     LayerUtils.collectWMSSublayerParams(
-                        sublyr, layerNames, opacities, styles,
+                        subLayer, layerNames, opacities, styles,
                         queryable, visibilities, visibility
                     );
                 });
@@ -275,6 +281,7 @@ const LayerUtils = {
             }
         }
     },
+
 
     /**
      * Build WMS layer parameters.
@@ -348,6 +355,7 @@ const LayerUtils = {
         };
     },
 
+
     /**
      * Add UUIDs to layers that don't have one and to all of their sublayers.
      * 
@@ -374,7 +382,7 @@ const LayerUtils = {
         }
     },
 
-    
+
     /**
      * Builds a comma-separated string of layer names and parameters
      * for a list of layers.
@@ -464,7 +472,8 @@ const LayerUtils = {
         }
         return result.join(",");
     },
-    
+
+
     /**
      * Splits a layer URL parameter into its components.
      *
@@ -515,32 +524,65 @@ const LayerUtils = {
         }
         return { id, type, url: layerUrl, name, opacity, visibility, tristate };
     },
+
+
+    /**
+     * Checks if the parent array is a prefix for the child array. 
+     * 
+     * @param {number[]} parent - the shorter path
+     * @param {number[]} child - the longer path
+     * 
+     * @returns {boolean} - true if the parent is a prefix for the child
+     */
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
     },
-    removeLayer(layers, layer, sublayerpath) {
+
+    
+    /**
+     * Removes a foreground layer from the list of layers.
+     * 
+     * To remove a top level layer call this function with `layer` being the
+     * layer to remove and `subLayerPath` being an empty array.
+     * 
+     * To remove a sub-layer call this function with `layer` being the
+     * top level layer and `subLayerPath` being the path to the sub-layer.
+     * 
+     * The function silently ignores layers that are not found in the list.
+     * 
+     * @param {LayerData[]} layers - the array of layers to remove the
+     *  layer from
+     * @param {LayerData} layer - the top layer
+     * @param {number[]} subLayerPath - the path to the sub-layer to be removed
+     *  relative to the top level layer or an empty array if the top level
+     *  layer itself is to be removed
+     * 
+     * @returns {LayerData[]} - the new array of layers with the
+     *  layer removed
+     */
+    removeLayer(layers, layer, subLayerPath) {
         // Extract foreground layers
-        const fglayers = layers.filter(
+        const fgLayers = layers.filter(
             lyr => lyr.role !== LayerRole.BACKGROUND
         );
         // Explode layers (one entry for every single sublayer)
-        let exploded = LayerUtils.explodeLayers(fglayers);
+        let exploded = LayerUtils.explodeLayers(fgLayers);
         // Remove matching entries
         exploded = exploded.filter(
             entry => (
                 entry.layer.uuid !== layer.uuid ||
-                !LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)
+                !LayerUtils.pathEqualOrBelow(subLayerPath, entry.path)
             )
         );
         // Re-assemble layers
-        const newlayers = LayerUtils.implodeLayers(exploded);
-        for (const lyr of newlayers) {
+        const newLayers = LayerUtils.implodeLayers(exploded);
+        for (const lyr of newLayers) {
             if (lyr.type === "wms") {
                 Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr));
             }
         }
         // Ensure theme layer is never removed
-        if (!newlayers.find(lyr => lyr.role === LayerRole.THEME)) {
+        if (!newLayers.find(lyr => lyr.role === LayerRole.THEME)) {
             const oldThemeLayer = layers.find(
                 lyr => lyr.role === LayerRole.THEME
             );
@@ -550,59 +592,93 @@ const LayerUtils = {
                     newThemeLayer,
                     LayerUtils.buildWMSLayerParams(newThemeLayer)
                 );
-                newlayers.push(newThemeLayer);
+                newLayers.push(newThemeLayer);
             }
         }
         // Re-add background layers
         return [
-            ...newlayers,
+            ...newLayers,
             ...layers.filter(lyr => lyr.role === LayerRole.BACKGROUND)
         ];
     },
-    insertSeparator(layers, title, beforelayerId, beforesublayerpath) {
+
+
+    /**
+     * Inserts a separator layer with the given title before another layer.
+     * 
+     * @param {LayerData[]} layers - the array of layers to insert
+     *  the separator into
+     * @param {string} title - the title of the separator layer to insert
+     * @param {string} beforeLayerId - The ID of the top level layer used
+     *  with `beforeSubLayerPath` for locating the layer to insert
+     *  the separator before.
+     * @param {Array} beforeSubLayerPath - the path of the sublayer to insert
+     *  the separator before relative to the top level layer specified
+     *  by `beforeLayerId`
+     * 
+     * @returns {LayerData[]} - the new array of layers with the
+     *  separator layer inserted
+     * @throws {Error} - if the layer specified by `beforeLayerId` and
+     *  `beforeSubLayerPath` is not found in the `layers` array
+     */
+    insertSeparator(layers, title, beforeLayerId, beforeSubLayerPath) {
         // Extract foreground layers
-        const fglayers = layers.filter(
+        const fgLayers = layers.filter(
             layer => layer.role !== LayerRole.BACKGROUND
         );
+
         // Explode layers (one entry for every single sublayer)
-        const exploded = LayerUtils.explodeLayers(fglayers);
+        const exploded = LayerUtils.explodeLayers(fgLayers);
+        console.log("exploded", exploded);
+
         // Remove matching entries
         const pos = exploded.findIndex(
             entry => (
-                entry.layer.id === beforelayerId &&
-                isEqual(beforesublayerpath, entry.path)
+                entry.layer.id === beforeLayerId &&
+                isEqual(beforeSubLayerPath, entry.path)
             )
         );
         if (pos !== -1) {
             // Add separator
             exploded.splice(pos, 0, LayerUtils.createSeparatorLayer(title)[0]);
+        } else {
+            throw new Error(
+                "Failed to find 'before' layer item with " +
+                `ID '${beforeLayerId}' and path ${beforeSubLayerPath}`
+            );
         }
+
         // Re-assemble layers
-        const newlayers = LayerUtils.implodeLayers(exploded);
-        for (const layer of newlayers) {
+        const newLayers = LayerUtils.implodeLayers(exploded);
+        for (const layer of newLayers) {
             if (layer.type === "wms") {
                 Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
             }
         }
+
         // Re-add background layers
         return [
-            ...newlayers,
+            ...newLayers,
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
-    reorderLayer(layers, movelayer, sublayerpath, delta, preventSplittingGroups) {
+
+
+    reorderLayer(
+        layers, moveLayer, subLayerPath, delta, preventSplittingGroups
+    ) {
         // Extract foreground layers
-        const fglayers = layers.filter(
+        const fgLayers = layers.filter(
             layer => layer.role !== LayerRole.BACKGROUND
         );
         // Explode layers (one entry for every single sublayer)
-        const exploded = LayerUtils.explodeLayers(fglayers);
+        const exploded = LayerUtils.explodeLayers(fgLayers);
         // Find entry to move
-        if (movelayer) {
+        if (moveLayer) {
             const indices = exploded.reduce((result, entry, index) => {
                 if (
-                    entry.layer.uuid === movelayer.uuid &&
-                    LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)
+                    entry.layer.uuid === moveLayer.uuid &&
+                    LayerUtils.pathEqualOrBelow(subLayerPath, entry.path)
                 ) {
                     return [...result, index];
                 }
@@ -626,12 +702,12 @@ const LayerUtils = {
                 const idx = delta < 0
                     ? indices[0]
                     : indices[indices.length - 1];
-                const level = sublayerpath.length;
+                const level = subLayerPath.length;
                 if (
                     level > exploded[idx + delta].path.length ||
                     !isEqual(
                         exploded[idx + delta].path.slice(0, level - 1),
-                        sublayerpath.slice(0, -1)
+                        subLayerPath.slice(0, -1)
                     )
                 ) {
                     return layers;
@@ -641,7 +717,7 @@ const LayerUtils = {
                     exploded[idx + delta].path.length > level ||
                     !isEqual(
                         exploded[idx + delta].path.slice(0, -1),
-                        sublayerpath.slice(0, -1)
+                        subLayerPath.slice(0, -1)
                     )
                 ) {
                     // Find next slot
@@ -685,13 +761,14 @@ const LayerUtils = {
             }
         }
         // Re-assemble layers
-        const newlayers = LayerUtils.implodeLayers(exploded);
+        const newLayers = LayerUtils.implodeLayers(exploded);
         // Re-add background layers
         return [
-            ...newlayers,
+            ...newLayers,
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
+
 
     /**
      * Return array with one entry for every single leaf sublayer.
@@ -726,6 +803,7 @@ const LayerUtils = {
         }
         return exploded;
     },
+
 
     /**
      * Go through all sublayers and create an array with one entry for every
@@ -783,6 +861,7 @@ const LayerUtils = {
         }
     },
 
+
     /**
      * Creates a tree structure from an array of layers.
      * 
@@ -791,7 +870,7 @@ const LayerUtils = {
      * @returns {LayerData[]} the reconstructed layer tree
      */
     implodeLayers(exploded) {
-        const newlayers = [];
+        const newLayers = [];
         const usedLayerUUids = new Set();
 
         // Merge all possible items of an exploded layer array
@@ -800,8 +879,8 @@ const LayerUtils = {
             const layer = entry.layer;
 
             // Attempt to merge with previous if possible
-            let target = newlayers.length > 0
-                ? newlayers[newlayers.length - 1]
+            let target = newLayers.length > 0
+                ? newLayers[newLayers.length - 1]
                 : null;
             let source = layer;
             if (target && target.sublayers && target.id === layer.id) {
@@ -826,21 +905,22 @@ const LayerUtils = {
                 target.sublayers.push(source.sublayers[0]);
                 LayerUtils.addUUIDs(source.sublayers[0], usedLayerUUids);
             } else {
-                newlayers.push(layer);
+                newLayers.push(layer);
                 LayerUtils.addUUIDs(layer, usedLayerUUids);
             }
         }
         // Ensure mutually exclusive groups have exactly one visible layer
-        for (const layer of newlayers) {
+        for (const layer of newLayers) {
             LayerUtils.ensureMutuallyExclusive(layer);
         }
-        for (const layer of newlayers) {
+        for (const layer of newLayers) {
             if (layer.type === "wms") {
                 Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
             }
         }
-        return newlayers;
+        return newLayers;
     },
+
 
     /**
      * Inserts a layer into a tree.
@@ -879,6 +959,7 @@ const LayerUtils = {
         return LayerUtils.implodeLayers(exploded);
     },
 
+
     /**
      * Changes the visibility attribute of all sub-layers in the entire tree
      * for layers that represents mutually-exclusive groups.
@@ -913,6 +994,8 @@ const LayerUtils = {
             }
         }
     },
+
+
     getSublayerNames(layer) {
         return [layer.name].concat(
             (layer.sublayers || []).reduce((list, sublayer) => {
@@ -920,25 +1003,28 @@ const LayerUtils = {
             }, [])
         ).filter(x => x);
     },
-    mergeSubLayers(baselayer, addlayer) {
-        addlayer = { ...baselayer, sublayers: addlayer.sublayers };
-        addlayer.externalLayerMap = addlayer.externalLayerMap || {};
-        LayerUtils.extractExternalLayersFromSublayers(addlayer, addlayer);
-        LayerUtils.addUUIDs(addlayer);
-        if (isEmpty(addlayer.sublayers)) {
-            return { ...baselayer };
+
+
+    mergeSubLayers(baseLayer, addLayer) {
+        addLayer = { ...baseLayer, sublayers: addLayer.sublayers };
+        addLayer.externalLayerMap = addLayer.externalLayerMap || {};
+        LayerUtils.extractExternalLayersFromSublayers(addLayer, addLayer);
+        LayerUtils.addUUIDs(addLayer);
+        if (isEmpty(addLayer.sublayers)) {
+            return { ...baseLayer };
         }
-        if (isEmpty(baselayer.sublayers)) {
-            return addlayer;
+        if (isEmpty(baseLayer.sublayers)) {
+            return addLayer;
         }
-        const explodedBase = LayerUtils.explodeLayers([baselayer]);
+        const explodedBase = LayerUtils.explodeLayers([baseLayer]);
         const existing = explodedBase.map(entry => entry.sublayer.name);
-        let explodedAdd = LayerUtils.explodeLayers([addlayer]);
+        let explodedAdd = LayerUtils.explodeLayers([addLayer]);
         explodedAdd = explodedAdd.filter(
             entry => !existing.includes(entry.sublayer.name)
         );
         return LayerUtils.implodeLayers(explodedAdd.concat(explodedBase))[0];
     },
+
 
     /**
      * 
@@ -983,21 +1069,22 @@ const LayerUtils = {
         return null;
     },
 
+
     /**
      * Check if a sub-layer and all of its parents are visible.
      * 
      * @param {LayerData} layer - the layer to query
-     * @param {number[]} sublayerpath - path to the sub-layer as a list of
+     * @param {number[]} subLayerPath - path to the sub-layer as a list of
      * 0-based indices; each number is the index of a child in its parent's
      * list of `sublayers`
      * 
      * @returns {boolean} true if sub-layer and all of its parents are visible
      * (either explicitly or implicitly).
      */
-    sublayerVisible(layer, sublayerpath) {
+    sublayerVisible(layer, subLayerPath) {
         let visible = layer.visibility !== false;
         let sublayer = layer;
-        for (const index of sublayerpath) {
+        for (const index of subLayerPath) {
             sublayer = sublayer.sublayers[index];
             visible &= sublayer.visibility !== false;
             if (!visible) {
@@ -1006,6 +1093,7 @@ const LayerUtils = {
         }
         return true;
     },
+
 
     /**
      * Computes the visibility of the layer based on the visibility of
@@ -1035,11 +1123,12 @@ const LayerUtils = {
         return visible / layer.sublayers.length;
     },
 
+
     /**
      * Create a layer duplicate.
      * 
      * @param {LayerData} layer - the layer to clone
-     * @param {number[]} sublayerpath - the path to the sub-layer to clone
+     * @param {number[]} subLayerPath - the path to the sub-layer to clone
      * as a list of 0-based indices; each number is the index of a child in
      * its parent's list of `sublayers`
      * 
@@ -1048,11 +1137,11 @@ const LayerUtils = {
      * will have all the sub-layers leading down to the lead sub-layer
      * cloned as well but other layers sill be simply copied.
      */
-    cloneLayer(layer, sublayerpath) {
+    cloneLayer(layer, subLayerPath) {
         const newLayer = { ...layer };
         let cur = newLayer;
-        for (let i = 0; i < sublayerpath.length; ++i) {
-            const idx = sublayerpath[i];
+        for (let i = 0; i < subLayerPath.length; ++i) {
+            const idx = subLayerPath[i];
             cur.sublayers = [
                 ...cur.sublayers.slice(0, idx),
                 { ...cur.sublayers[idx] },
@@ -1062,6 +1151,7 @@ const LayerUtils = {
         }
         return { newlayer: newLayer, newsublayer: cur };
     },
+
 
     /**
      * Creates a map of group names to the list of layer names that
@@ -1109,6 +1199,7 @@ const LayerUtils = {
         }
     },
 
+
     /**
      * Replaces the configuration for groups with one configuration for
      * each leaf layer in the group.
@@ -1155,6 +1246,7 @@ const LayerUtils = {
         return newLayerConfigs;
     },
 
+
     /**
      * Create a new list of sublayers with external layer information
      * stripped from them.
@@ -1193,6 +1285,7 @@ const LayerUtils = {
             });
         }
     },
+
 
     /**
      * Ensure that the layer has an uuid, a title and WMS properties.
@@ -1248,6 +1341,8 @@ const LayerUtils = {
             }
         }
     },
+
+
     getLegendUrl(
         layer, sublayer, scale, map, bboxDependentLegend,
         scaleDependentLegend, extraLegendParameters
@@ -1319,7 +1414,7 @@ const LayerUtils = {
             delete urlParts.search;
             return url.format(urlParts);
         } else {
-            const layername = layer === sublayer
+            const layerName = layer === sublayer
                 ? layer.name.replace(/.*\//, '')
                 : sublayer.name;
             const urlParts = url.parse(layer.legendUrl, true);
@@ -1327,12 +1422,13 @@ const LayerUtils = {
                 VERSION: layer.version,
                 ...urlParts.query,
                 ...requestParams,
-                LAYER: layername
+                LAYER: layerName
             };
             delete urlParts.search;
             return url.format(urlParts);
         }
     },
+
 
     /**
      * Checks if the the layer should be visible given a map scale.
@@ -1354,6 +1450,8 @@ const LayerUtils = {
             )
         );
     },
+
+
     addExternalLayerPrintParams(layer, params, printCrs, counterRef) {
         const qgisServerVersion = (
             ConfigUtils.getConfigProp("qgisServerVersion") || 3
@@ -1414,6 +1512,8 @@ const LayerUtils = {
             }
         }
     },
+
+
     collectPrintParams(
         layers, theme, printScale, printCrs, printExternalLayers
     ) {
@@ -1508,6 +1608,8 @@ const LayerUtils = {
         params.COLORS = params.COLORS.reverse().join(",");
         return params;
     },
+
+
     getTimeDimensionValues(layer) {
         const result = {
             names: new Set(),
@@ -1539,6 +1641,7 @@ const LayerUtils = {
         });
         return result;
     },
+
 
     /**
      * Retrieve the attribution for a layer.
@@ -1579,11 +1682,11 @@ const LayerUtils = {
                     map.bbox.bounds, map.projection, layerCrs
                 );
             }
-            const mapbbox = transformedMapBBoxes[layerCrs];
-            const laybbox = layer.bbox.bounds;
+            const mapBbox = transformedMapBBoxes[layerCrs];
+            const layBbox = layer.bbox.bounds;
             if (
-                mapbbox[0] > laybbox[2] || mapbbox[2] < laybbox[0] ||
-                mapbbox[1] > laybbox[3] || mapbbox[3] < laybbox[1]
+                mapBbox[0] > layBbox[2] || mapBbox[2] < layBbox[0] ||
+                mapBbox[1] > layBbox[3] || mapBbox[3] < layBbox[1]
             ) {
                 // Extents don't overlap
                 return {};

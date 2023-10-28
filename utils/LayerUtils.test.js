@@ -4,12 +4,15 @@ import { LayerRole } from '../actions/layers';
 const uuidRegex = /[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+/;
 
 let mockUrlReverseLayerOrder = false;
+let mockExternalLayerFeatureInfoFormats = undefined;
 jest.mock("./ConfigUtils", () => ({
     __esModule: true,
     default: {
         getConfigProp: (name) => {
             if (name === 'urlReverseLayerOrder') {
                 return mockUrlReverseLayerOrder;
+            } else if (name === 'externalLayerFeatureInfoFormats') {
+                return mockExternalLayerFeatureInfoFormats;
             } else {
                 throw new Error(`Unknown config prop: ${name}`);
             }
@@ -19,6 +22,7 @@ jest.mock("./ConfigUtils", () => ({
 
 beforeEach(() => {
     mockUrlReverseLayerOrder = false;
+    mockExternalLayerFeatureInfoFormats = undefined;
 });
 
 describe("addUUIDs", () => {
@@ -537,9 +541,9 @@ describe("cloneLayer", () => {
         const newLayer = clone.newlayer;
         const newSubLayer = clone.newsublayer;
         expect(newLayer).not.toBe(layer);
-        expect(newLayer).toMatchObject(layer);
+        expect(newLayer).toEqual(layer);
         expect(newSubLayer).not.toBe(layer);
-        expect(newSubLayer).toMatchObject(layer);
+        expect(newSubLayer).toEqual(layer);
     });
     it("should clone a layer with a sub-layer", () => {
         const subLayer = {
@@ -553,9 +557,9 @@ describe("cloneLayer", () => {
         const newLayer = clone.newlayer;
         const newSubLayer = clone.newsublayer;
         expect(newLayer).not.toBe(layer);
-        expect(newLayer).toMatchObject(layer);
+        expect(newLayer).toEqual(layer);
         expect(newSubLayer).not.toBe(subLayer);
-        expect(newSubLayer).toMatchObject(subLayer);
+        expect(newSubLayer).toEqual(subLayer);
     });
 });
 
@@ -938,10 +942,11 @@ describe("createExternalLayerPlaceholder", () => {
             opacity: 0.75,
             visibility: false,
             params: "dolor"
-        }, externalLayers, "lorem")).toMatchObject([{
+        }, externalLayers, "lorem")).toEqual([{
             layer: {
                 id: "lorem",
                 type: "placeholder",
+                loading: true,
                 name: "ipsum",
                 title: "ipsum",
                 role: LayerRole.USERLAYER,
@@ -951,6 +956,7 @@ describe("createExternalLayerPlaceholder", () => {
             sublayer: {
                 id: "lorem",
                 type: "placeholder",
+                loading: true,
                 name: "ipsum",
                 title: "ipsum",
                 role: LayerRole.USERLAYER,
@@ -962,7 +968,7 @@ describe("createExternalLayerPlaceholder", () => {
 
 describe("createSeparatorLayer", () => {
     it("should create a new layer", () => {
-        expect(LayerUtils.createSeparatorLayer("lorem")).toMatchObject([{
+        expect(LayerUtils.createSeparatorLayer("lorem")).toEqual([{
             layer: {
                 type: "separator",
                 title: "lorem",
@@ -1355,6 +1361,7 @@ describe("extractExternalLayersFromSublayers", () => {
         });
     });
     it("should add WMS data", () => {
+        mockExternalLayerFeatureInfoFormats = undefined;
         const sublayers = [{
             name: "lorem",
             externalLayer: {
@@ -1507,7 +1514,7 @@ describe("implodeLayers", () => {
             },
             path: [1],
             sublayer: { id: "one-two" },
-        }])).toMatchObject([{
+        }])).toEqual([{
             id: "one",
             uuid: expect.stringMatching(uuidRegex),
             sublayers: [{
@@ -1547,7 +1554,7 @@ describe("insertLayer", () => {
             }], {
                 id: "ipsum"
             }, "id", "lorem")
-        ).toMatchObject([{
+        ).toEqual([{
             id: "ipsum",
             uuid: expect.stringMatching(uuidRegex)
         }, {
@@ -1578,7 +1585,7 @@ describe("insertLayer", () => {
                     }]
                 }]
             }, "id", "amet")
-        ).toMatchObject([{
+        ).toEqual([{
             id: "lorem",
             uuid: expect.stringMatching(uuidRegex),
             sublayers: [
@@ -1614,7 +1621,78 @@ describe("insertPermalinkLayers", () => {
 });
 
 describe("insertSeparator", () => {
-
+    it("inserts into an empty list throws an error", () => {
+        expect(() => {
+            LayerUtils.insertSeparator([], "lorem");
+        }).toThrow("Failed to find");
+    });
+    it("inserts into a list with unknown ID throws an error", () => {
+        expect(() => {
+            LayerUtils.insertSeparator([{
+                id: "ipsum",
+                role: LayerRole.USERLAYER
+            }], "lorem", "xxx", [0, 1, 2]);
+        }).toThrow("Failed to find");
+    });
+    it("inserts before a top-level layer", () => {
+        expect(LayerUtils.insertSeparator([{
+            id: "ipsum",
+            role: LayerRole.USERLAYER
+        }], "lorem", "ipsum", [])).toEqual([{
+            id: expect.stringMatching(uuidRegex),
+            uuid: expect.stringMatching(uuidRegex),
+            role: LayerRole.USERLAYER,
+            title: "lorem",
+            type: "separator",
+        }, {
+            id: "ipsum",
+            role: LayerRole.USERLAYER,
+            uuid: expect.stringMatching(uuidRegex)
+        }]);
+    });
+    it("inserts before a sub-layer", () => {
+        expect(LayerUtils.insertSeparator([{
+            id: "ipsum",
+            role: LayerRole.USERLAYER,
+            sublayers: [{
+                id: "dolor",
+                role: LayerRole.USERLAYER
+            }, {
+                id: "sit",
+                role: LayerRole.USERLAYER
+            }]
+        }], "lorem", "ipsum", [1])).toEqual([{
+            "id": "ipsum",
+            "role": 3,
+            "sublayers": [
+                {
+                    "id": "dolor",
+                    "role": 3,
+                    "uuid": expect.stringMatching(uuidRegex),
+                },
+            ],
+            "uuid": expect.stringMatching(uuidRegex),
+        },
+        {
+            "id": expect.stringMatching(uuidRegex),
+            "role": 3,
+            "title": "lorem",
+            "type": "separator",
+            "uuid": expect.stringMatching(uuidRegex),
+        },
+        {
+            "id": "ipsum",
+            "role": 3,
+            "sublayers": [
+                {
+                    "id": "sit",
+                    "role": 3,
+                    "uuid": expect.stringMatching(uuidRegex),
+                },
+            ],
+            "uuid": expect.stringMatching(uuidRegex),
+        }]);
+    });
 });
 
 describe("layerScaleInRange", () => {
@@ -1688,11 +1766,133 @@ describe("mergeSubLayers", () => {
 });
 
 describe("pathEqualOrBelow", () => {
-
+    it("should consider two empty arrays equal", () => {
+        expect(LayerUtils.pathEqualOrBelow([], [])).toBeTruthy();
+    });
+    it("should accept equal arrays", () => {
+        expect(LayerUtils.pathEqualOrBelow([1], [1])).toBeTruthy();
+    });
+    it("should reject different arrays", () => {
+        expect(LayerUtils.pathEqualOrBelow([1], [2])).toBeFalsy();
+    });
+    it("should accept a goos array", () => {
+        expect(LayerUtils.pathEqualOrBelow([1], [1, 2])).toBeTruthy();
+    });
+    it("should reject a longer array", () => {
+        expect(LayerUtils.pathEqualOrBelow([1, 2], [1])).toBeFalsy();
+    });
+    it("should reject the empty array", () => {
+        expect(LayerUtils.pathEqualOrBelow([1], [])).toBeFalsy();
+    });
 });
 
 describe("removeLayer", () => {
-
+    it("should silently ignore an empty list", () => {
+        expect(LayerUtils.removeLayer([], {}, [])).toEqual([]);
+    });
+    it("should silently ignore a list with an unknown layer", () => {
+        expect(LayerUtils.removeLayer([{
+            id: "lorem",
+            uuid: "ipsum"
+        }], {
+            uuid: "dolor"
+        }, [])).toEqual([{
+            id: "lorem",
+            uuid: "ipsum"
+        }]);
+    });
+    it("should remove a top-level layer", () => {
+        expect(LayerUtils.removeLayer([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "dolor",
+            uuid: "sit"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }], {
+            uuid: "sit"
+        }, [])).toEqual([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }]);
+    });
+    it("should remove a sub-layer", () => {
+        expect(LayerUtils.removeLayer([{
+            id: "lorem",
+            uuid: "ipsum",
+            sublayers: [{
+                id: "dolor",
+                uuid: "sit"
+            }, {
+                id: "amet",
+                uuid: "consectetur"
+            }]
+        }], {
+            uuid: "ipsum"
+        }, [0])).toEqual([{
+            id: "lorem",
+            uuid: "ipsum",
+            sublayers: [{
+                id: "amet",
+                uuid: "consectetur"
+            }]
+        }]);
+    });
+    it("should move background layer to the back of the list", () => {
+        expect(LayerUtils.removeLayer([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "dolor",
+            uuid: "sit",
+            role: LayerRole.BACKGROUND
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }], {
+            uuid: "xxx"
+        }, [])).toEqual([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }, {
+            id: "dolor",
+            uuid: "sit",
+            role: LayerRole.BACKGROUND
+        }]);
+    });
+    it("should not remove a top-level background layer", () => {
+        expect(LayerUtils.removeLayer([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "dolor",
+            uuid: "sit",
+            role: LayerRole.BACKGROUND
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }], {
+            uuid: "sit"
+        }, [])).toEqual([{
+            id: "lorem",
+            uuid: "ipsum"
+        }, {
+            id: "amet",
+            uuid: "consectetur"
+        }, {
+            id: "dolor",
+            uuid: "sit",
+            role: LayerRole.BACKGROUND
+        }]);
+    });
 });
 
 describe("reorderLayer", () => {
@@ -1700,39 +1900,39 @@ describe("reorderLayer", () => {
 });
 
 describe("replaceLayerGroups", () => {
-    // it("deals with an empty array of configurations", () => {
-    //     expect(LayerUtils.replaceLayerGroups([], {})).toEqual([]);
-    // });
-    // it("deals with a layer without sublayers", () => {
-    //     expect(LayerUtils.replaceLayerGroups([{
-    //         name: "lorem"
-    //     }], {})).toEqual([{
-    //         name: "lorem"
-    //     }]);
-    // });
-    // it("deals with a layer with sublayers", () => {
-    //     expect(LayerUtils.replaceLayerGroups([{
-    //         name: "lorem",
-    //     }], {
-    //         sublayers: [{
-    //             name: "ipsum"
-    //         }]
-    //     })).toEqual([{
-    //         name: "lorem",
-    //     }]);
-    // });
-    // it("deals with a layer with sublayers", () => {
-    //     expect(LayerUtils.replaceLayerGroups([{
-    //         name: "lorem",
-    //     }], {
-    //         name: "lorem",
-    //         sublayers: [{
-    //             name: "ipsum"
-    //         }]
-    //     })).toEqual([{
-    //         name: "ipsum",
-    //     }]);
-    // });
+    it("deals with an empty array of configurations", () => {
+        expect(LayerUtils.replaceLayerGroups([], {})).toEqual([]);
+    });
+    it("deals with a layer without sublayers", () => {
+        expect(LayerUtils.replaceLayerGroups([{
+            name: "lorem"
+        }], {})).toEqual([{
+            name: "lorem"
+        }]);
+    });
+    it("deals with a layer with sublayers", () => {
+        expect(LayerUtils.replaceLayerGroups([{
+            name: "lorem",
+        }], {
+            sublayers: [{
+                name: "ipsum"
+            }]
+        })).toEqual([{
+            name: "lorem",
+        }]);
+    });
+    it("deals with a layer with sublayers", () => {
+        expect(LayerUtils.replaceLayerGroups([{
+            name: "lorem",
+        }], {
+            name: "lorem",
+            sublayers: [{
+                name: "ipsum"
+            }]
+        })).toEqual([{
+            name: "ipsum",
+        }]);
+    });
     it("makes the world a better place", () => {
         expect(LayerUtils.replaceLayerGroups([{
             name: "lorem",
