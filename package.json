@@ -68,12 +68,12 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
-        "@babel/core": "^7.20.12",
-        "@babel/eslint-parser": "^7.19.1",
-        "@babel/plugin-proposal-class-properties": "^7.18.6",
-        "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
-        "@babel/preset-env": "^7.20.2",
-        "@babel/preset-react": "^7.18.6",
+        "@babel/core": "^7.23.2",
+        "@babel/eslint-parser": "^7.22.15",
+        "@babel/plugin-transform-class-properties": "^7.22.5",
+        "@babel/plugin-transform-object-rest-spread": "^7.22.15",
+        "@babel/preset-env": "^7.23.2",
+        "@babel/preset-react": "^7.22.15",
         "@redux-devtools/core": "^3.13.1",
         "@redux-devtools/dock-monitor": "^3.0.1",
         "@redux-devtools/log-monitor": "^4.0.2",
@@ -86,8 +86,8 @@
     },
     "babel": {
         "plugins": [
-            "@babel/plugin-proposal-class-properties",
-            "@babel/plugin-proposal-object-rest-spread"
+            "@babel/plugin-transform-class-properties",
+            "@babel/plugin-transform-object-rest-spread"
         ],
         "presets": [
             [
