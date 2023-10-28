@@ -2472,6 +2472,7 @@ describe("implodeLayers", () => {
     });
 });
 
+
 describe("insertLayer", () => {
     it("should throw an error with an empty list", () => {
         expect(() => {
@@ -2556,6 +2557,7 @@ describe("insertLayer", () => {
     });
 });
 
+
 describe("insertPermalinkLayers", () => {
     it("should ignore an empty exploded list", () => {
         const exploded = [];
@@ -2635,6 +2637,7 @@ describe("insertPermalinkLayers", () => {
     });
 });
 
+
 describe("insertSeparator", () => {
     it("inserts into an empty list throws an error", () => {
         expect(() => {
@@ -2709,6 +2712,7 @@ describe("insertSeparator", () => {
         }]);
     });
 });
+
 
 describe("layerScaleInRange", () => {
     it("should be true if no constraints are explicitly set", () => {
@@ -3268,6 +3272,7 @@ describe("reorderLayer", () => {
     });
 });
 
+
 describe("replaceLayerGroups", () => {
     it("deals with an empty array of configurations", () => {
         expect(LayerUtils.replaceLayerGroups([], {})).toEqual([]);
@@ -3455,7 +3460,119 @@ describe("restoreLayerParams", () => {
 
 
 describe("restoreOrderedLayerParams", () => {
-
+    it("should return an empty array for no configs", () => {
+        expect(
+            LayerUtils.restoreOrderedLayerParams([{
+                id: "lorem",
+            }, {}], [], [])
+        ).toEqual([]);
+    });
+    it("should work with a theme layer", () => {
+        const themeLayer = {
+            name: "lorem"
+        };
+        const layerConfigs = [{
+            type: "theme",
+            name: "lorem",
+            opacity: 127,
+            visibility: true
+        }];
+        const permalinkLayers = [];
+        const externalLayers = [];
+        expect(
+            LayerUtils.restoreOrderedLayerParams(
+                themeLayer, layerConfigs, permalinkLayers,
+                externalLayers
+            )
+        ).toEqual([{
+            name: "lorem",
+            opacity: 127,
+            visibility: true,
+            uuid: expect.stringMatching(uuidRegex),
+        }]);
+    });
+    it("should work with a separator layer", () => {
+        const themeLayer = {};
+        const layerConfigs = [{
+            type: "separator",
+            name: "lorem",
+        }];
+        const permalinkLayers = [];
+        const externalLayers = [];
+        expect(
+            LayerUtils.restoreOrderedLayerParams(
+                themeLayer, layerConfigs, permalinkLayers,
+                externalLayers
+            )
+        ).toEqual([{
+            title: "lorem",
+            type: "separator",
+            role: LayerRole.USERLAYER,
+            uuid: expect.stringMatching(uuidRegex),
+            id: expect.stringMatching(uuidRegex),
+        }]);
+    });
+    it("should work with a external layer", () => {
+        const themeLayer = {};
+        const layerConfigs = [{
+            id: "ipsum",
+            type: "other",
+            url: "url",
+            name: "lorem",
+        }];
+        const permalinkLayers = [];
+        const externalLayers = [];
+        expect(
+            LayerUtils.restoreOrderedLayerParams(
+                themeLayer, layerConfigs, permalinkLayers,
+                externalLayers
+            )
+        ).toEqual([{
+            id: "ipsum",
+            title: "lorem",
+            type: "placeholder",
+            loading: true,
+            name: "lorem",
+            role: LayerRole.USERLAYER,
+            uuid: expect.stringMatching(uuidRegex),
+        }]);
+    });
+    it("should insert permalink layers", () => {
+        const themeLayer = {};
+        const layerConfigs = [{
+            id: "ipsum",
+            type: "other",
+            url: "url",
+            name: "lorem",
+        }];
+        const permalinkLayers = [{
+            id: "sit",
+            uuid: "amet",
+            role: LayerRole.USERLAYER,
+            type: "vector",
+            pos: 0
+        }];
+        const externalLayers = [];
+        expect(
+            LayerUtils.restoreOrderedLayerParams(
+                themeLayer, layerConfigs, permalinkLayers,
+                externalLayers
+            )
+        ).toEqual([{
+            id: "sit",
+            uuid: "amet",
+            role: LayerRole.USERLAYER,
+            type: "vector",
+        }, {
+            id: "ipsum",
+            title: "lorem",
+            type: "placeholder",
+            loading: true,
+            name: "lorem",
+            role: LayerRole.USERLAYER,
+            uuid: expect.stringMatching(uuidRegex),
+        }]);
+    });    
 });
 
 
