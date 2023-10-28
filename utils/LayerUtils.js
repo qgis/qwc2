@@ -1770,15 +1770,34 @@ const LayerUtils = {
     /**
      * Retrieve the attribution for a layer.
      * 
-     * The layer data is the one kept in the state.
+     * If the layer has a valid range the function will use it to check
+     * if the layer is visible at the current map scale and omit this
+     * layer if it is not.
+     * 
+     * If the layer has a bounding box the function will use it to check
+     * if the layer is visible in the current map extent and omit this
+     * layer if it is not.
+     * 
+     * The function calls itself recursively for each sub-layer and
+     * group item.
      * 
      * @param {LayerData} layer - the layer to get the attribution for
      * @param {MapState} map - the map state
      * @param {boolean} showThemeAttributionOnly - whether to show only the
      *  attribution for theme layers (the function will return an empty
      *  object for other types of layers)
-     * @param {*} transformedMapBBoxes 
-     * @returns 
+     * @param {{ 
+     *   [string]: [number, number, number, number]
+     * }} transformedMapBBoxes - the bounds of the map transformed in the
+     *  CRS of the layers; the function uses this trick to avoid reprojecting
+     *  the map bounds for each layer and sub-layer
+     * @returns {{ 
+     *   [string]: { 
+     *     title: string, 
+     *     layers: LayerData[] 
+     *   }
+     * }} - the attribution for the layer and its sublayers as an associative
+     * array that maps the attribution title to the list of layers
      */
     getAttribution(
         layer, map,
@@ -1818,7 +1837,6 @@ const LayerUtils = {
         }
 
         const copyrights = {};
-
         if (layer.sublayers) {
             Object.assign(
                 copyrights,

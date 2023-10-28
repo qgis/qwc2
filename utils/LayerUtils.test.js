@@ -6,6 +6,7 @@ const uuidRegex = /[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+/;
 let mockUrlReverseLayerOrder = false;
 let mockExternalLayerFeatureInfoFormats = undefined;
 let mockQgisServerVersion = 3;
+let mockAllowFractionalZoom = false;
 jest.mock("./ConfigUtils", () => ({
     __esModule: true,
     default: {
@@ -16,6 +17,8 @@ jest.mock("./ConfigUtils", () => ({
                 return mockExternalLayerFeatureInfoFormats;
             } else if (name === 'qgisServerVersion') {
                 return mockQgisServerVersion;
+            } else if (name === 'allowFractionalZoom') {
+                return mockAllowFractionalZoom;
             } else {
                 throw new Error(`Unknown config prop: ${name}`);
             }
@@ -40,6 +43,7 @@ beforeEach(() => {
     mockQgisServerVersion = 3;
     mockGetUnits = 'm';
     mockAxisOrder = 'ne';
+    mockAllowFractionalZoom = false;
 });
 
 
@@ -1299,6 +1303,7 @@ describe("computeLayerVisibility", () => {
     });
 });
 
+
 describe("createExternalLayerPlaceholder", () => {
     it("should create the layer and add it to ", () => {
         const externalLayers = {};
@@ -1331,6 +1336,7 @@ describe("createExternalLayerPlaceholder", () => {
     });
 });
 
+
 describe("createSeparatorLayer", () => {
     it("should create a new layer", () => {
         expect(LayerUtils.createSeparatorLayer("lorem")).toEqual([{
@@ -1352,6 +1358,7 @@ describe("createSeparatorLayer", () => {
         }]);
     });
 });
+
 
 describe("ensureMutuallyExclusive", () => {
     it("should not throw if the groups is empty", () => {
@@ -1468,6 +1475,7 @@ describe("ensureMutuallyExclusive", () => {
     });
 });
 
+
 describe("explodeLayers", () => {
     it("should work with an empty list", () => {
         expect(LayerUtils.explodeLayers([])).toEqual([]);
@@ -1560,6 +1568,7 @@ describe("explodeLayers", () => {
     });
 
 });
+
 
 describe("explodeSublayers", () => {
     it("should ignore a leaf layer (empty subitems property)", () => {
@@ -1673,6 +1682,7 @@ describe("explodeSublayers", () => {
     });
 
 });
+
 
 describe("extractExternalLayersFromSublayers", () => {
     it("should clone an empty list", () => {
@@ -1812,8 +1822,136 @@ describe("extractExternalLayersFromSublayers", () => {
 
 
 describe("getAttribution", () => {
-
+    const map = {
+        scales: [
+            500,
+            250,
+            100,
+        ],
+        zoom: 100
+    };
+    it("should ignore invisible layers", () => {
+        const layer = {
+            visibility: false,
+            attribution: {
+                Title: "lorem",
+                OnlineResource: true
+            }
+        };
+        const showThemeAttributionOnly = false;
+        const transformedMapBBoxes = {};
+        expect(LayerUtils.getAttribution(
+            layer, map, showThemeAttributionOnly, transformedMapBBoxes
+        )).toEqual({});
+    });
+    it("should ignore non-theme layers", () => {
+        const layer = {
+            visibility: true,
+            role: LayerRole.USERLAYER,
+            attribution: {
+                Title: "lorem",
+                OnlineResource: true
+            }
+        };
+        const showThemeAttributionOnly = true;
+        const transformedMapBBoxes = {};
+        expect(LayerUtils.getAttribution(
+            layer, map, showThemeAttributionOnly, transformedMapBBoxes
+        )).toEqual({});
+    });
+    it("should ignore layers that are outside visible scale range", () => {
+        const layer = {
+            visibility: true,
+            minScale: 10,
+            maxScale: 90,
+            attribution: {
+                Title: "lorem",
+                OnlineResource: true
+            }
+        };
+        const showThemeAttributionOnly = false;
+        const transformedMapBBoxes = {};
+        expect(LayerUtils.getAttribution(
+            layer, map, showThemeAttributionOnly, transformedMapBBoxes
+        )).toEqual({});
+    });
+    it("should add visible layers", () => {
+        const layer = {
+            visibility: true,
+            attribution: {
+                Title: "lorem",
+                OnlineResource: "ipsum"
+            }
+        };
+        const showThemeAttributionOnly = false;
+        const transformedMapBBoxes = {};
+        expect(LayerUtils.getAttribution(
+            layer, map, showThemeAttributionOnly, transformedMapBBoxes
+        )).toEqual({
+            ipsum: {
+                title: "lorem",
+                layers: [{
+                    visibility: true,
+                    attribution: {
+                        Title: "lorem",
+                        OnlineResource: "ipsum"
+                    }
+                }]
+            }
+        });
+    });
+    it("should add visible layers and sublayers", () => {
+        const layer = {
+            visibility: true,
+            attribution: {
+                Title: "lorem",
+                OnlineResource: "ipsum"
+            },
+            sublayers: [{
+                visibility: true,
+                attribution: {
+                    Title: "dolor",
+                    OnlineResource: "sit"
+                }
+            }]
+        };
+        const showThemeAttributionOnly = false;
+        const transformedMapBBoxes = {};
+        expect(LayerUtils.getAttribution(
+            layer, map, showThemeAttributionOnly, transformedMapBBoxes
+        )).toEqual({
+            ipsum: {
+                layers: [{
+                    attribution: {
+                        OnlineResource: "ipsum",
+                        Title: "lorem",
+                    },
+                    sublayers: [{
+                        attribution: {
+                            OnlineResource: "sit",
+                            Title: "dolor",
+                        },
+                        visibility: true,
+                    },
+                    ],
+                    visibility: true,
+                }],
+                title: "lorem",
+            },
+            sit: {
+                layers: [{
+                    attribution: {
+                        OnlineResource: "sit",
+                        Title: "dolor",
+                    },
+                    visibility: true,
+                }],
+                title: "dolor",
+            }
+        });
+    });
 });
+
 
 describe("getLegendUrl", () => {
     it("simply returns the legendUrl property if not a WMS layer", () => {
