@@ -2305,7 +2305,99 @@ describe("getSublayerNames", () => {
 
 
 describe("getTimeDimensionValues", () => {
-
+    it("should return an empty object if the layer is invisible", () => {
+        expect(LayerUtils.getTimeDimensionValues({
+            visibility: false
+        })).toEqual({
+            names: new Set(),
+            values: new Set(),
+            attributes: {}
+        });
+    });
+    it("should return an empty object if the layer has no time dimension", () => {
+        expect(LayerUtils.getTimeDimensionValues({
+            visibility: true,
+            dimensions: []
+        })).toEqual({
+            names: new Set(),
+            values: new Set(),
+            attributes: {}
+        });
+    });
+    it("should return an empty object if the units are wrong", () => {
+        expect(LayerUtils.getTimeDimensionValues({
+            visibility: true,
+            dimensions: [{
+                units: "lorem"
+            }]
+        })).toEqual({
+            names: new Set(),
+            values: new Set(),
+            attributes: {}
+        });
+    });
+    it("should return an empty object if there is no value", () => {
+        expect(LayerUtils.getTimeDimensionValues({
+            visibility: true,
+            dimensions: [{
+                units: "ISO8601",
+                value: undefined
+            }]
+        })).toEqual({
+            names: new Set(),
+            values: new Set(),
+            attributes: {}
+        });
+    });
+    it("should add records with values", () => {
+        expect(LayerUtils.getTimeDimensionValues({
+            name: "amet",
+            visibility: true,
+            dimensions: [{
+                name: "sit",
+                units: "ISO8601",
+                value: "one, two, three",
+                fieldName: "lorem",
+                endFieldName: "ipsum"
+            }]
+        })).toEqual({
+            names: new Set(["sit"]),
+            values: new Set(["one", "two", "three"]),
+            attributes: {
+                amet: ["lorem", "ipsum"]
+            }
+        });
+    });
+    it("should descend into sub-layers", () => {
+        expect(LayerUtils.getTimeDimensionValues({
+            name: "amet",
+            visibility: true,
+            dimensions: [{
+                name: "sit",
+                units: "ISO8601",
+                value: "one, two, three",
+                fieldName: "lorem1",
+                endFieldName: "ipsum1"
+            }],
+            sublayers: [{
+                name: "dolor",
+                dimensions: [{
+                    name: "adipiscing",
+                    units: "ISO8601",
+                    value: "four, five, six",
+                    fieldName: "lorem2",
+                    endFieldName: "ipsum2"
+                }]
+            }]
+        })).toEqual({
+            names: new Set(["sit", "adipiscing"]),
+            values: new Set(["one", "two", "three", "four", "five", "six"]),
+            attributes: {
+                amet: ["lorem1", "ipsum1"],
+                dolor: ["lorem2", "ipsum2"]
+            }
+        });
+    });
 });
 
 

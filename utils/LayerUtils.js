@@ -1734,6 +1734,24 @@ const LayerUtils = {
     },
 
 
+    /**
+     * Returns an object containing the time dimension values of
+     * the given layer and its sublayers.
+     * 
+     * @param {LayerData} layer - the layer to get the time
+     *  dimension values from.
+     * @returns {{
+     *   names: Set<string>,
+     *   values: Set<string>,
+     *   attributes: {
+     *      [string]: [string, string]
+     *   }
+     * }} - an object with the following properties:
+     *   - names: a Set of the names of the time dimensions;
+     *   - values: a Set of the values of the time dimensions;
+     *   - attributes: An object mapping layer names to arrays of field names
+     *     for the time dimensions.
+     */
     getTimeDimensionValues(layer) {
         const result = {
             names: new Set(),
