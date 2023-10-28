@@ -213,6 +213,13 @@ const LayerUtils = {
         }]);
     },
 
+    
+    /**
+     * Inserts permalink layers into the exploded layer array.
+     *
+     * @param {ExplodedLayer[]} exploded - the exploded layer array
+     * @param {LayerData[]} layers - the permalink layers to insert
+     */
     insertPermalinkLayers(exploded, layers) {
         for (const layer of layers || []) {
             const insLayer = LayerUtils.explodeLayers([layer])[0];
@@ -629,7 +636,6 @@ const LayerUtils = {
 
         // Explode layers (one entry for every single sublayer)
         const exploded = LayerUtils.explodeLayers(fgLayers);
-        console.log("exploded", exploded);
 
         // Remove matching entries
         const pos = exploded.findIndex(

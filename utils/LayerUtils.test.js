@@ -1617,7 +1617,82 @@ describe("insertLayer", () => {
 });
 
 describe("insertPermalinkLayers", () => {
-
+    it("should ignore an empty exploded list", () => {
+        const exploded = [];
+        LayerUtils.insertPermalinkLayers(exploded, []);
+        expect(exploded).toEqual([]);
+    });
+    it("should ignore an empty input list", () => {
+        const exploded = [{
+            layer: {},
+            path: [],
+            sublayer: {}
+        }];
+        LayerUtils.insertPermalinkLayers(exploded, []);
+        expect(exploded).toEqual(exploded);
+    });
+    it("should insert a top-level layer in an empty list", () => {
+        const exploded = [];
+        LayerUtils.insertPermalinkLayers(exploded, [{
+            id: "lorem",
+            uuid: "ipsum",
+            role: LayerRole.USERLAYER,
+            type: "vector",
+            pos: 0
+        }]);
+        expect(exploded).toEqual([{
+            layer: {
+                id: "lorem",
+                uuid: "ipsum",
+                role: LayerRole.USERLAYER,
+                type: "vector"
+            },
+            path: [],
+            sublayer: {
+                id: "lorem",
+                uuid: "ipsum",
+                role: LayerRole.USERLAYER,
+                type: "vector"
+            }
+        }]);
+    });
+    it("should insert a top-level layer", () => {
+        const someLayer = {
+            id: "sit",
+            uuid: "dolor",
+        }
+        const exploded = [{
+            layer: someLayer,
+            path: [],
+            sublayer: someLayer
+        }];
+        LayerUtils.insertPermalinkLayers(exploded, [{
+            id: "lorem",
+            uuid: "ipsum",
+            role: LayerRole.USERLAYER,
+            type: "vector",
+            pos: 0
+        }]);
+        expect(exploded).toEqual([{
+            layer: {
+                id: "lorem",
+                uuid: "ipsum",
+                role: LayerRole.USERLAYER,
+                type: "vector"
+            },
+            path: [],
+            sublayer: {
+                id: "lorem",
+                uuid: "ipsum",
+                role: LayerRole.USERLAYER,
+                type: "vector"
+            }
+        }, {
+            layer: someLayer,
+            path: [],
+            sublayer: someLayer
+        }]);
+    });
 });
 
 describe("insertSeparator", () => {
