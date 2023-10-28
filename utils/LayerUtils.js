@@ -1478,7 +1478,20 @@ const LayerUtils = {
         );
     },
 
-
+    
+    /**
+     * Adds external layer print parameters to the given params
+     * object for the specified layer.
+     * 
+     * @param {LayerData} layer - the layer object to add print parameters for
+     * @param {object} params - the params object to add the print parameters to
+     * @param {string} printCrs - the CRS to use for printing
+     * @param {[number]} counterRef - an array reference to generate new
+     *  unique identifiers for each layer
+     * 
+     * @throws {Error} Unsupported value in `qgisServerVersion` configuration
+     *  variable.
+     */
     addExternalLayerPrintParams(layer, params, printCrs, counterRef) {
         const qgisServerVersion = (
             ConfigUtils.getConfigProp("qgisServerVersion") || 3

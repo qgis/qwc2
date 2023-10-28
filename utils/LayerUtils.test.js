@@ -1071,9 +1071,164 @@ describe("collectWMSSubLayerParams", () => {
     });
 });
 
-describe("completeExternalLayer", () => {
 
+describe("completeExternalLayer", () => {
+    describe("non-WMS layers", () => {
+        it("adds an uuid", () => {
+            const externalLayer = {};
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                title: undefined,
+                uuid: expect.stringMatching(uuidRegex)
+            });
+        });
+        it("keeps the title of the layer", () => {
+            const externalLayer = {
+                title: "lorem"
+            };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                title: "lorem",
+                uuid: expect.stringMatching(uuidRegex)
+            });
+        });
+        it("uses the name if there's no title", () => {
+            const externalLayer = {
+                name: "lorem"
+            };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                title: "lorem",
+                name: "lorem",
+                uuid: expect.stringMatching(uuidRegex)
+            });
+        });
+        it("uses the title of the sublayer", () => {
+            const externalLayer = {};
+            const sublayer = {
+                title: "lorem"
+            };
+            LayerUtils.completeExternalLayer(externalLayer, sublayer);
+            expect(externalLayer).toEqual({
+                title: "lorem",
+                uuid: expect.stringMatching(uuidRegex)
+            });
+        });
+    });
+    describe("WMS layers", () => {
+        const baseInput = {
+            type: "wms",
+            featureInfoUrl: "ipsum",
+            params: {
+                LAYERS: "lorem",
+                OPACITIES: "255",
+                STYLES: "",
+            }
+        };
+        const baseOutput = {
+            title: undefined,
+            uuid: expect.stringMatching(uuidRegex),
+            type: "wms",
+            legendUrl: undefined,
+            featureInfoUrl: "ipsum",
+            params: {
+                LAYERS: "lorem",
+                OPACITIES: "255",
+                STYLES: "",
+            },
+            queryLayers: ["lorem",],
+            version: "1.3.0",
+        }
+        beforeEach(() => {
+            mockExternalLayerFeatureInfoFormats = {};
+        });
+        it("adds the defaults", () => {
+            const externalLayer = { ...baseInput };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual(baseOutput);
+        });
+        it("uses the version from the layer", () => {
+            const externalLayer = {
+                ...baseInput,
+                version: "1.1.1"
+            };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                ...baseOutput,
+                version: "1.1.1"
+            });
+        });
+        it("uses the url property if featureInfoUrl is missing", () => {
+            const externalLayer = {
+                ...baseInput,
+                featureInfoUrl: undefined,
+                url: "ipsum"
+            };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                ...baseOutput,
+                featureInfoUrl: "ipsum",
+                url: "ipsum",
+                legendUrl: "ipsum"
+            });
+        });
+        it("uses the legendUrl property", () => {
+            const externalLayer = {
+                ...baseInput,
+                legendUrl: "dolor"
+            };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                ...baseOutput,
+                legendUrl: "dolor"
+            });
+        });
+        it("uses the queryLayers property", () => {
+            const externalLayer = {
+                ...baseInput,
+                queryLayers: ["lorem", "ipsum", "dolor"],
+            };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                ...baseOutput,
+                queryLayers: ["lorem", "ipsum", "dolor"],
+            });
+        });
+        it("uses the LAYERS in parameters if no queryLayers property", () => {
+            const externalLayer = {
+                ...baseInput,
+                params: {
+                    LAYERS: "lorem,ipsum,dolor"
+                }
+            };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                ...baseOutput,
+                params: {
+                    LAYERS: "lorem,ipsum,dolor"
+                },
+                queryLayers: ["lorem", "ipsum", "dolor"],
+            });
+        });
+        it("provides info formats", () => {
+            mockExternalLayerFeatureInfoFormats = {
+                "ipsum": "dolor",
+                "lorem": "sit"
+            }
+            const externalLayer = {
+                ...baseInput,
+                featureInfoUrl: "ipsum+lorem"
+            };
+            LayerUtils.completeExternalLayer(externalLayer, undefined);
+            expect(externalLayer).toEqual({
+                ...baseOutput,
+                featureInfoUrl: "ipsum+lorem",
+                infoFormats: ["dolor"]
+            });
+        });
+    });
 });
+
 
 describe("computeLayerVisibility", () => {
     it("should be simple if there are no sub-layers", () => {
