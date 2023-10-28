@@ -102,7 +102,10 @@ class Print extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
-                const layout = this.props.theme.print.filter(l => l.map).find(l => l.default) || this.props.theme.print[0];
+                const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
+                    return a.name.localeCompare(b.name, undefined, {numeric: true});
+                });
+                const layout = layouts.find(l => l.default) || layouts[0];
                 this.setState({layout: layout, atlasFeatures: []});
             } else {
                 this.setState({layout: null, atlasFeatures: []});
@@ -221,6 +224,9 @@ class Print extends React.Component {
         }, {});
 
         const extraOptions = Object.fromEntries((this.props.theme.extraPrintParameters || "").split("&").map(entry => entry.split("=")));
+        const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
+            return a.name.localeCompare(b.name, undefined, {numeric: true});
+        });
 
         return (
             <div className="print-body">
@@ -234,7 +240,7 @@ class Print extends React.Component {
                             <td>{LocaleUtils.tr("print.layout")}</td>
                             <td>
                                 <select onChange={this.changeLayout} value={this.state.layout.name}>
-                                    {this.props.theme.print.filter(l => l.map).map(item => {
+                                    {layouts.filter(l => l.map).map(item => {
                                         return (
                                             <option key={item.name} value={item.name}>{item.name}</option>
                                         );
