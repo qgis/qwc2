@@ -2107,14 +2107,14 @@ describe("getLegendUrl", () => {
                 layer, sublayer, undefined, map,
                 undefined, undefined, undefined
             )).toBe(
-                "http://www.lorem.com/ipsum?" + 
-                "VERSION=1.2.3&" + 
-                "a=b&c=d&q=1&search=sit&" + 
-                "SERVICE=WMS&" + 
-                "REQUEST=GetLegendGraphic&" + 
-                "FORMAT=image%2Fpng&" + 
-                "CRS=EPSG%3A3857&" + 
-                "SLD_VERSION=1.1.0&" + 
+                "http://www.lorem.com/ipsum?" +
+                "VERSION=1.2.3&" +
+                "a=b&c=d&q=1&search=sit&" +
+                "SERVICE=WMS&" +
+                "REQUEST=GetLegendGraphic&" +
+                "FORMAT=image%2Fpng&" +
+                "CRS=EPSG%3A3857&" +
+                "SLD_VERSION=1.1.0&" +
                 "LAYER=sit%2Camet"
             );
         });
@@ -2122,8 +2122,47 @@ describe("getLegendUrl", () => {
 });
 
 
-describe("getSubLayerNames", () => {
+describe("getSublayerNames", () => {
+    it("should deal with no sublayers", () => {
+        const layer = { name: "Layer 1" };
+        const result = LayerUtils.getSublayerNames(layer);
+        expect(result).toEqual(["Layer 1"]);
+    });
 
+    it("should use all sublayer names", () => {
+        const layer = {
+            name: "Layer 1",
+            sublayers: [
+                { name: "Sublayer 1.1" },
+                {
+                    name: "Sublayer 1.2",
+                    sublayers: [{ name: "Sublayer 1.2.1" }]
+                },
+            ],
+        };
+        const result = LayerUtils.getSublayerNames(layer);
+        expect(result).toEqual([
+            "Layer 1",
+            "Sublayer 1.1",
+            "Sublayer 1.2",
+            "Sublayer 1.2.1",
+        ]);
+    });
+
+    it("should filter out falsy sublayer names", () => {
+        const layer = {
+            name: "Layer 1",
+            sublayers: [{
+                name: "Sublayer 1.1"
+            }, {
+                name: ""
+            }, {
+                name: "Sublayer 1.2"
+            }],
+        };
+        const result = LayerUtils.getSublayerNames(layer);
+        expect(result).toEqual(["Layer 1", "Sublayer 1.1", "Sublayer 1.2"]);
+    });
 });
 
 
