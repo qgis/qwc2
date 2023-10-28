@@ -23,10 +23,23 @@ jest.mock("./ConfigUtils", () => ({
     },
 }));
 
+let mockGetUnits = 'm';
+let mockAxisOrder = 'ne';
+jest.mock("./CoordinatesUtils", () => ({
+    __esModule: true,
+    default: {
+        getUnits: () => mockGetUnits,
+        getAxisOrder: () => mockAxisOrder,
+    },
+}));
+
+
 beforeEach(() => {
     mockUrlReverseLayerOrder = false;
     mockExternalLayerFeatureInfoFormats = undefined;
     mockQgisServerVersion = 3;
+    mockGetUnits = 'm';
+    mockAxisOrder = 'ne';
 });
 
 
@@ -1797,21 +1810,327 @@ describe("extractExternalLayersFromSublayers", () => {
     });
 });
 
+
 describe("getAttribution", () => {
 
 });
 
 describe("getLegendUrl", () => {
+    it("simply returns the legendUrl property if not a WMS layer", () => {
+        expect(LayerUtils.getLegendUrl({})).toBe("");
+        expect(LayerUtils.getLegendUrl({
+            legendUrl: "lorem"
+        })).toBe("lorem");
+        expect(LayerUtils.getLegendUrl({
+            legendUrl: "lorem",
+            type: "xxx"
+        })).toBe("lorem");
+    });
+    it("should create an url for a simple layer", () => {
+        const layer = {
+            type: "wms",
+            legendUrl: "http://www.example.com/lorem",
+            name: "ipsum",
+        };
+        const sublayer = layer;
+        const map = {};
+        expect(LayerUtils.getLegendUrl(
+            layer, sublayer, undefined, map,
+            undefined, undefined, undefined
+        )).toBe(
+            "http://www.example.com/lorem?" +
+            "VERSION=&" +
+            "SERVICE=WMS&" +
+            "REQUEST=GetLegendGraphic&" +
+            "FORMAT=image%2Fpng&" +
+            "CRS=&" +
+            "SLD_VERSION=1.1.0&" +
+            "LAYER=ipsum"
+        );
+    });
+    it("should use the name from the sublayer", () => {
+        const layer = {
+            type: "wms",
+            legendUrl: "http://www.example.com/lorem",
+            name: "ipsum",
+        };
+        const sublayer = {
+            name: "dolor"
+        };
+        const map = {};
+        expect(LayerUtils.getLegendUrl(
+            layer, sublayer, undefined, map,
+            undefined, undefined, undefined
+        )).toBe(
+            "http://www.example.com/lorem?" +
+            "VERSION=&" +
+            "SERVICE=WMS&" +
+            "REQUEST=GetLegendGraphic&" +
+            "FORMAT=image%2Fpng&" +
+            "CRS=&" +
+            "SLD_VERSION=1.1.0&" +
+            "LAYER=dolor"
+        );
+    });
+    it("should kep query parameters in the url", () => {
+        const layer = {
+            type: "wms",
+            legendUrl: "http://www.example.com/lorem?a=b&c=d&q=1&search=sit",
+            name: "ipsum",
+        };
+        const sublayer = {
+            name: "dolor"
+        };
+        const map = {};
+        expect(LayerUtils.getLegendUrl(
+            layer, sublayer, undefined, map,
+            undefined, undefined, undefined
+        )).toBe(
+            "http://www.example.com/lorem?" +
+            "VERSION=&" +
+            "a=b&c=d&q=1&search=sit&" +
+            "SERVICE=WMS&" +
+            "REQUEST=GetLegendGraphic&" +
+            "FORMAT=image%2Fpng&" +
+            "CRS=&" +
+            "SLD_VERSION=1.1.0&" +
+            "LAYER=dolor"
+        );
+    });
+    it("should use extra legend parameters", () => {
+        const layer = {
+            type: "wms",
+            legendUrl: "http://www.example.com/lorem",
+            name: "ipsum",
+        };
+        const sublayer = layer;
+        const map = {};
+        expect(LayerUtils.getLegendUrl(
+            layer, sublayer, undefined, map,
+            undefined, undefined, "a=b1&c=d2&q=1&search=sit"
+        )).toBe(
+            "http://www.example.com/lorem?" +
+            "VERSION=&" +
+            "SERVICE=WMS&" +
+            "REQUEST=GetLegendGraphic&" +
+            "FORMAT=image%2Fpng&" +
+            "CRS=&" +
+            "SLD_VERSION=1.1.0&" +
+            "a=b1&c=d2&q=1&search=sit&" +
+            "LAYER=ipsum"
+        );
+    });
+    describe("scaleDependentLegend", () => {
+        const scale = 15.5;
+        const map = {};
 
+        it("should accept boolean", () => {
+            const layer = {
+                type: "wms",
+                legendUrl: "http://www.example.com/lorem",
+                name: "ipsum",
+            };
+            const sublayer = layer;
+            const scaleDependentLegend = true;
+            expect(LayerUtils.getLegendUrl(
+                layer, sublayer, scale, map,
+                undefined, scaleDependentLegend, undefined
+            )).toBe(
+                "http://www.example.com/lorem?" +
+                "VERSION=&" +
+                "SERVICE=WMS&" +
+                "REQUEST=GetLegendGraphic&" +
+                "FORMAT=image%2Fpng&" +
+                "CRS=&" +
+                "SLD_VERSION=1.1.0&" +
+                "SCALE=16&" +
+                "LAYER=ipsum"
+            );
+        });
+        it("should accept theme and ignore non-theme layers", () => {
+            const layer = {
+                type: "wms",
+                legendUrl: "http://www.example.com/lorem",
+                name: "ipsum",
+                role: LayerRole.USERLAYER,
+            };
+            const sublayer = layer;
+            const scaleDependentLegend = "theme";
+            expect(LayerUtils.getLegendUrl(
+                layer, sublayer, scale, map,
+                undefined, scaleDependentLegend, undefined
+            )).toBe(
+                "http://www.example.com/lorem?" +
+                "VERSION=&" +
+                "SERVICE=WMS&" +
+                "REQUEST=GetLegendGraphic&" +
+                "FORMAT=image%2Fpng&" +
+                "CRS=&" +
+                "SLD_VERSION=1.1.0&" +
+                "LAYER=ipsum"
+            );
+        });
+        it("should accept theme and use it for theme layers", () => {
+            const layer = {
+                type: "wms",
+                legendUrl: "http://www.example.com/lorem",
+                name: "ipsum",
+                role: LayerRole.THEME,
+            };
+            const sublayer = layer;
+            const scaleDependentLegend = "theme";
+            expect(LayerUtils.getLegendUrl(
+                layer, sublayer, scale, map,
+                undefined, scaleDependentLegend, undefined
+            )).toBe(
+                "http://www.example.com/lorem?" +
+                "VERSION=&" +
+                "SERVICE=WMS&" +
+                "REQUEST=GetLegendGraphic&" +
+                "FORMAT=image%2Fpng&" +
+                "CRS=&" +
+                "SLD_VERSION=1.1.0&" +
+                "SCALE=16&" +
+                "LAYER=ipsum"
+            );
+        });
+    });
+    describe("bboxDependentLegend", () => {
+        const map = {
+            size: {
+                width: 100,
+                height: 200
+            },
+            bbox: {
+                bounds: [0, 0, 100, 200]
+            }
+        };
+        it("should accept boolean", () => {
+            mockAxisOrder = "yx";
+            const layer = {
+                type: "wms",
+                legendUrl: "http://www.example.com/lorem",
+                name: "ipsum",
+            };
+            const sublayer = layer;
+            const bboxDependentLegend = true;
+            expect(LayerUtils.getLegendUrl(
+                layer, sublayer, undefined, map,
+                bboxDependentLegend, undefined, undefined
+            )).toBe(
+                "http://www.example.com/lorem?" +
+                "VERSION=&" +
+                "SERVICE=WMS&" +
+                "REQUEST=GetLegendGraphic&" +
+                "FORMAT=image%2Fpng&" +
+                "CRS=&" +
+                "SLD_VERSION=1.1.0&" +
+                "WIDTH=100&" +
+                "HEIGHT=200&" +
+                "BBOX=0%2C0%2C100%2C200&" +
+                "LAYER=ipsum"
+            );
+        });
+        it("should account for version 1.3.0", () => {
+            mockAxisOrder = "ne";
+            const layer = {
+                type: "wms",
+                legendUrl: "http://www.example.com/lorem",
+                name: "ipsum",
+                version: "1.3.0"
+            };
+            const sublayer = layer;
+            const bboxDependentLegend = true;
+            expect(LayerUtils.getLegendUrl(
+                layer, sublayer, undefined, map,
+                bboxDependentLegend, undefined, undefined
+            )).toBe(
+                "http://www.example.com/lorem?" +
+                "VERSION=1.3.0&" +
+                "SERVICE=WMS&" +
+                "REQUEST=GetLegendGraphic&" +
+                "FORMAT=image%2Fpng&" +
+                "CRS=&" +
+                "SLD_VERSION=1.1.0&" +
+                "WIDTH=100&" +
+                "HEIGHT=200&" +
+                "BBOX=0%2C0%2C200%2C100&" +
+                "LAYER=ipsum"
+            );
+        });
+    });
+    describe("with external layer map", () => {
+        it("should create an url for a simple layer", () => {
+            const externalLayerMap = {
+                "ipsum": {
+                    type: "xyz",
+                    legendUrl: "http://www.lorem.com/ipsum",
+                    name: "ipsum",
+                }
+            };
+            const layer = {
+                type: "wms",
+                legendUrl: "http://www.example.com/lorem",
+                name: "ipsum",
+                externalLayerMap
+            };
+            const sublayer = layer;
+            const map = {};
+            expect(LayerUtils.getLegendUrl(
+                layer, sublayer, undefined, map,
+                undefined, undefined, undefined
+            )).toBe("http://www.lorem.com/ipsum");
+        });
+        it("should deal with a wms sub-layer", () => {
+            const externalLayerMap = {
+                "ipsum": {
+                    type: "wms",
+                    legendUrl: "http://www.lorem.com/ipsum?a=b&c=d&q=1&search=sit",
+                    name: "ipsum",
+                    params: {
+                        LAYERS: "sit,amet",
+                    }
+                }
+            };
+            const layer = {
+                type: "wms",
+                legendUrl: "http://www.example.com/lorem",
+                name: "ipsum",
+                externalLayerMap,
+                version: "1.2.3",
+            };
+            const sublayer = layer;
+            const map = {
+                projection: "EPSG:3857"
+            };
+            expect(LayerUtils.getLegendUrl(
+                layer, sublayer, undefined, map,
+                undefined, undefined, undefined
+            )).toBe(
+                "http://www.lorem.com/ipsum?" + 
+                "VERSION=1.2.3&" + 
+                "a=b&c=d&q=1&search=sit&" + 
+                "SERVICE=WMS&" + 
+                "REQUEST=GetLegendGraphic&" + 
+                "FORMAT=image%2Fpng&" + 
+                "CRS=EPSG%3A3857&" + 
+                "SLD_VERSION=1.1.0&" + 
+                "LAYER=sit%2Camet"
+            );
+        });
+    });
 });
+
 
 describe("getSubLayerNames", () => {
 
 });
 
+
 describe("getTimeDimensionValues", () => {
 
 });
+
 
 describe("implodeLayers", () => {
     it("should return an empty list", () => {

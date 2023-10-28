@@ -1370,6 +1370,28 @@ const LayerUtils = {
     },
 
 
+    /**
+     * Returns the legend URL for a given layer and sublayer.
+     *
+     * For non-WMS layers the function simply returns `legendUrl` 
+     * layer property.
+     * 
+     * @param {LayerData} layer - the layer object
+     * @param {LayerData} sublayer - the sublayer object
+     * @param {number} scale - the scale of the map used to compute
+     *  the `SCALE` parameter, but only when `scaleDependentLegend` is set
+     * @param {MapState} map - the map object
+     * @param {boolean|"theme"} bboxDependentLegend - whether the legend
+     *  is dependent on the map's bounding box (`true`); if `theme` is used
+     *  then this only applies to theme layers
+     * @param {boolean|"theme"} scaleDependentLegend - whether the legend
+     *  is dependent on the map's scale (`true`); if `theme` is used
+     *  then this only applies to theme layers
+     * @param {string} extraLegendParameters - extra parameters to add
+     *  to the legend URL after the `VERSION` parameter
+     * 
+     * @returns {string} the legend URL
+     */
     getLegendUrl(
         layer, sublayer, scale, map, bboxDependentLegend,
         scaleDependentLegend, extraLegendParameters
@@ -1426,34 +1448,33 @@ const LayerUtils = {
                 requestParams.BBOX = bounds.join(",");
             }
         }
+        let urlParts;
         if (layer.externalLayerMap && layer.externalLayerMap[sublayer.name]) {
             const externalLayer = layer.externalLayerMap[sublayer.name];
             if (externalLayer.type !== "wms") {
                 return externalLayer.legendUrl || "";
             }
-            const urlParts = url.parse(externalLayer.legendUrl, true);
+            urlParts = url.parse(externalLayer.legendUrl, true);
             urlParts.query = {
                 VERSION: layer.version,
                 ...urlParts.query,
                 ...requestParams,
                 LAYER: externalLayer.params.LAYERS
             };
-            delete urlParts.search;
-            return url.format(urlParts);
         } else {
             const layerName = layer === sublayer
                 ? layer.name.replace(/.*\//, '')
                 : sublayer.name;
-            const urlParts = url.parse(layer.legendUrl, true);
+            urlParts = url.parse(layer.legendUrl, true);
             urlParts.query = {
                 VERSION: layer.version,
                 ...urlParts.query,
                 ...requestParams,
                 LAYER: layerName
             };
-            delete urlParts.search;
-            return url.format(urlParts);
         }
+        delete urlParts.search;
+        return url.format(urlParts);
     },
 
 
