@@ -385,12 +385,25 @@ class Print extends React.Component {
         if (autopopulated && this.props.hideAutopopulatedFields) {
             return (<tr key={"label." + label}><td colSpan="2"><input defaultValue={defaultValue} name={opts.name} type="hidden" /></td></tr>);
         } else {
-            return (
-                <tr key={"label." + label}>
-                    <td>{MiscUtils.capitalizeFirst(label)}</td>
-                    <td><textarea {...opts} defaultValue={defaultValue} readOnly={autopopulated} /></td>
-                </tr>
-            );
+            if (opts.options) {
+                return (
+                    <tr key={"label." + label}>
+                        <td>{MiscUtils.capitalizeFirst(label)}</td>
+                        <td>
+                            <select defaultValue={defaultValue} name={opts.name}>
+                                {opts.options.map(value => (<option key={value} value={value}>{value}</option>))}
+                            </select>
+                        </td>
+                    </tr>
+                );
+            } else {
+                return (
+                    <tr key={"label." + label}>
+                        <td>{MiscUtils.capitalizeFirst(label)}</td>
+                        <td><textarea {...opts} defaultValue={defaultValue} readOnly={autopopulated} /></td>
+                    </tr>
+                );
+            }
         }
     };
     getSearchMarkerLabel = () => {
