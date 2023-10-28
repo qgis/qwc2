@@ -1025,6 +1025,14 @@ const LayerUtils = {
     },
 
 
+    /**
+     * Returns an array of sublayer names for the given layer, including
+     * the layer's own name.
+     * 
+     * @param {object} layer - the layer object to get sublayer names for.
+     * 
+     * @returns {string[]} An array of sublayer names.
+     */
     getSublayerNames(layer) {
         return [layer.name].concat(
             (layer.sublayers || []).reduce((list, sublayer) => {
@@ -1034,6 +1042,13 @@ const LayerUtils = {
     },
 
 
+    /**
+     * Merges the sub-layers of two layers into a single layer.
+     *
+     * @param {LayerData} baseLayer - the base layer to merge into.
+     * @param {LayerData} addLayer - the layer to merge into the base layer.
+     * @returns {LayerData} the merged layer.
+     */
     mergeSubLayers(baseLayer, addLayer) {
         addLayer = { ...baseLayer, sublayers: addLayer.sublayers };
         addLayer.externalLayerMap = addLayer.externalLayerMap || {};

@@ -2546,9 +2546,246 @@ describe("layerScaleInRange", () => {
     });
 });
 
-describe("mergeSubLayers", () => {
 
+describe("mergeSubLayers", () => {
+    it("should ignore two layers without sublayers", () => {
+        const baseLayer = {
+            id: "lorem",
+        };
+        const addLayer = {
+            id: "ipsum",
+        };
+        expect(
+            LayerUtils.mergeSubLayers(baseLayer, addLayer)
+        ).toEqual({
+            id: "lorem",
+        });
+    });
+    it("should add layers from the second layer", () => {
+        const baseLayer = {
+            id: "lorem",
+        };
+        const addLayer = {
+            id: "ipsum",
+            sublayers: [{
+                id: "dolor",
+            }],
+        };
+        expect(
+            LayerUtils.mergeSubLayers(baseLayer, addLayer)
+        ).toEqual({
+            id: "lorem",
+            externalLayerMap: {},
+            sublayers: [{
+                id: "dolor",
+                uuid: expect.stringMatching(uuidRegex),
+            }],
+            uuid: expect.stringMatching(uuidRegex),
+        });
+    });
+    it("should keep existing layers", () => {
+        const baseLayer = {
+            id: "lorem",
+            sublayers: [{
+                id: "dolor",
+            }],
+        };
+        const addLayer = {
+            id: "ipsum",
+
+        };
+        expect(
+            LayerUtils.mergeSubLayers(baseLayer, addLayer)
+        ).toEqual({
+            id: "lorem",
+            sublayers: [{
+                id: "dolor",
+            }],
+        });
+    });
+    it("should merge the layers", () => {
+        const baseLayer = {
+            id: "lorem",
+            name: "lorem",
+            sublayers: [{
+                id: "dolor",
+                name: "dolor",
+            }],
+        };
+        const addLayer = {
+            id: "ipsum",
+            name: "ipsum",
+            sublayers: [{
+                id: "sit",
+                name: "sit",
+            }],
+        };
+        expect(
+            LayerUtils.mergeSubLayers(baseLayer, addLayer)
+        ).toEqual({
+            id: "lorem",
+            name: "lorem",
+            externalLayerMap: {},
+            sublayers: [{
+                id: "sit",
+                name: "sit",
+                uuid: expect.stringMatching(uuidRegex),
+            }, {
+                id: "dolor",
+                name: "dolor",
+                uuid: expect.stringMatching(uuidRegex),
+            }],
+            uuid: expect.stringMatching(uuidRegex),
+        });
+    });
+    it("should merge layers with same name", () => {
+        const baseLayer = {
+            id: "lorem",
+            name: "lorem",
+            sublayers: [{
+                id: "one",
+                name: "dolor",
+            }],
+        };
+        const addLayer = {
+            id: "ipsum",
+            name: "ipsum",
+            sublayers: [{
+                id: "two",
+                name: "dolor",
+            }],
+        };
+        expect(
+            LayerUtils.mergeSubLayers(baseLayer, addLayer)
+        ).toEqual({
+            id: "lorem",
+            name: "lorem",
+            sublayers: [{
+                id: "one",
+                name: "dolor",
+                uuid: expect.stringMatching(uuidRegex),
+            }],
+            uuid: expect.stringMatching(uuidRegex),
+        });
+    });
+    it("should merge deeply nested layers", () => {
+        const baseLayer = {
+            id: "lorem",
+            name: "lorem",
+            sublayers: [{
+                id: "dolor",
+                name: "dolor",
+                sublayers: [{
+                    id: "sit",
+                    name: "sit",
+                    sublayers: [{
+                        id: "amet",
+                        name: "amet",
+                        sublayers: [{
+                            id: "consectetur",
+                            name: "consectetur",
+                        }, {
+                            id: "adipiscing",
+                            name: "adipiscing",
+                        }],
+                    }, {
+                        id: "elit",
+                        name: "elit",
+                    }, {
+                        id: "sed",
+                        name: "sed",
+                    }],
+                }, {
+                    id: "eiusmod",
+                    name: "eiusmod",
+                }],
+            }],
+        };
+        const addLayer = {
+            id: "ipsum",
+            name: "ipsum",
+            sublayers: [{
+                id: "amet2",
+                name: "amet",
+            }, {
+                id: "adipiscing2",
+                name: "adipiscing",
+            }, {
+                id: "tempor",
+                name: "tempor",
+                sublayers: [{
+                    id: "incididunt",
+                    name: "incididunt",
+                }, {
+                    id: "labore",
+                    name: "labore",
+                }]
+            }],
+        };
+        expect(
+            LayerUtils.mergeSubLayers(baseLayer, addLayer)
+        ).toEqual({
+            externalLayerMap: {},
+            id: "lorem",
+            name: "lorem",
+            sublayers: [{
+                id: "amet2",
+                name: "amet",
+                uuid: expect.stringMatching(uuidRegex),
+            }, {
+                id: "tempor",
+                name: "tempor",
+                sublayers: [{
+                    id: "incididunt",
+                    name: "incididunt",
+                    uuid: expect.stringMatching(uuidRegex),
+                }, {
+                    id: "labore",
+                    name: "labore",
+                    uuid: expect.stringMatching(uuidRegex),
+                }],
+                uuid: expect.stringMatching(uuidRegex),
+            }, {
+                id: "dolor",
+                name: "dolor",
+                sublayers: [{
+                    id: "sit",
+                    name: "sit",
+                    sublayers: [{
+                        id: "amet",
+                        name: "amet",
+                        sublayers: [{
+                            id: "consectetur",
+                            name: "consectetur",
+                            uuid: expect.stringMatching(uuidRegex),
+                        }, {
+                            id: "adipiscing",
+                            name: "adipiscing",
+                            uuid: expect.stringMatching(uuidRegex),
+                        }],
+                        uuid: expect.stringMatching(uuidRegex),
+                    }, {
+                        id: "elit",
+                        name: "elit",
+                        uuid: expect.stringMatching(uuidRegex),
+                    }, {
+                        id: "sed",
+                        name: "sed",
+                        uuid: expect.stringMatching(uuidRegex),
+                    }],
+                    uuid: expect.stringMatching(uuidRegex),
+                }, {
+                    id: "eiusmod",
+                    name: "eiusmod",
+                    uuid: expect.stringMatching(uuidRegex),
+                }],
+                uuid: expect.stringMatching(uuidRegex),
+            }],
+            uuid: expect.stringMatching(uuidRegex),
+        });
+    });
 });
+
 
 describe("pathEqualOrBelow", () => {
     it("should consider two empty arrays equal", () => {
