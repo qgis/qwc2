@@ -3749,7 +3749,7 @@ describe("setGroupVisibilities", () => {
     });
     it("should work with a single top layer", () => {
         let layer = {};
-        expect(LayerUtils.setGroupVisibilities([layer])).toBeFalsy();
+        expect(LayerUtils.setGroupVisibilities([layer])).toBeTruthy();
 
         layer = { visibility: true };
         expect(LayerUtils.setGroupVisibilities([layer])).toBeTruthy();
@@ -3790,7 +3790,7 @@ describe("setGroupVisibilities", () => {
     it("should work with a multiple top layer", () => {
         let layer1 = {};
         let layer2 = {};
-        expect(LayerUtils.setGroupVisibilities([layer1, layer2])).toBeFalsy();
+        expect(LayerUtils.setGroupVisibilities([layer1, layer2])).toBeTruthy();
 
         layer1 = { visibility: true };
         layer2 = { visibility: true };

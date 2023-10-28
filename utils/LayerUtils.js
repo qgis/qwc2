@@ -93,6 +93,22 @@ const LayerUtils = {
     },
 
 
+    /**
+     * Restores the ordered layer parameters based on the given theme layer,
+     * layer configurations, permalink layers, and external layers.
+     *
+     * @param {LayerData} themeLayer - the theme layer to use as a base for
+     *  restoring the ordered layer parameters
+     * @param {LayerConfig[]} layerConfigs - the layer configurations to use
+     *  for reordering the layers
+     * @param {LayerData[]} permalinkLayers - the permalink layers to insert
+     *  into the reordered layers
+     * @param {LayerData[]} externalLayers - the external layers to use
+     *  for creating placeholders
+     * 
+     * @returns {LayerData[]} the reordered layers with the permalink
+     *  layers inserted and the group visibilities set
+     */
     restoreOrderedLayerParams(
         themeLayer, layerConfigs, permalinkLayers, externalLayers
     ) {
