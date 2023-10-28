@@ -81,7 +81,7 @@ const IdentifyUtils = {
         let result = [];
         // All non-background WMS layers with a non-empty queryLayers list
         mapLayers.filter((l) => (
-            l.visibility &&
+            l.visibility !== false &&
             l.type === 'wms' &&
             l.role !== LayerRole.BACKGROUND &&
             (l.queryLayers || []).length > 0

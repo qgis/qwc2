@@ -122,7 +122,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
 
         // Get current background layer if it needs to be preserved
         if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
-            const curBgLayer = getState().layers.flat.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
+            const curBgLayer = getState().layers.flat.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility !== false);
             visibleBgLayer = curBgLayer ? curBgLayer.name : null;
         }
 

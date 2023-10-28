@@ -162,7 +162,7 @@ const LayerUtils = {
             }
             parentInvisible = parentInvisible || layer.tristate;
             delete layer.tristate;
-            parentVisible = parentVisible || layer.visibility;
+            parentVisible = parentVisible || layer.visibility !== false;
         }
         return parentVisible && !parentInvisible;
     },
@@ -1010,7 +1010,7 @@ const LayerUtils = {
                 const visibleSublayer = (
                     tristateSublayer ||
                     group.sublayers.find(
-                        sublayer => sublayer.visibility === true
+                        sublayer => sublayer.visibility !== false
                     ) ||
                     group.sublayers[0]
                 );
@@ -1140,9 +1140,7 @@ const LayerUtils = {
         }
         let visible = 0;
         layer.sublayers.map(sublayer => {
-            const subLayerVisibility = sublayer.visibility === undefined
-                ? true
-                : sublayer.visibility;
+            const subLayerVisibility = sublayer.visibility !== false;
             if (sublayer.sublayers && subLayerVisibility) {
                 visible += LayerUtils.computeLayerVisibility(sublayer);
             } else {
@@ -1593,7 +1591,7 @@ const LayerUtils = {
         const backgroundLayer = layers.find(
             layer => (
                 layer.role === LayerRole.BACKGROUND &&
-                layer.visibility === true
+                layer.visibility !== false
             )
         );
         if (backgroundLayer) {
@@ -1663,7 +1661,7 @@ const LayerUtils = {
             values: new Set(),
             attributes: {}
         };
-        if (layer.visibility) {
+        if (layer.visibility !== false) {
             (layer.dimensions || []).forEach(dimension => {
                 if (dimension.units === "ISO8601" && dimension.value) {
                     result.names.add(dimension.name);

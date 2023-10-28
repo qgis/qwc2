@@ -80,16 +80,12 @@ const ThemeUtils = {
                 lyr => lyr.name === entry.name
             );
             if (bgLayer) {
-                if (entry.visibility === true) {
+                if (entry.visibility !== false) {
                     defaultVisibleIdx = bgLayers.length;
                 }
-                console.log("entry.visibility", entry.visibility)
-                console.log("defaultVisibleIdx", defaultVisibleIdx)
                 if (bgLayer.name === visibleLayer) {
                     visibleIdx = bgLayers.length;
                 }
-                console.log("visibleLayer", visibleLayer)
-                console.log("visibleIdx", visibleIdx)
                 bgLayer = {
                     ...bgLayer,
                     role: LayerRole.BACKGROUND,

@@ -161,7 +161,7 @@ export default function layers(state = defaultState, action) {
                     }
                     if (newlayer.role === LayerRole.BACKGROUND) {
                         UrlParams.updateParams({
-                            bl: newlayer.visibility ? newlayer.name : ''
+                            bl: newlayer.visibility !== false ? newlayer.name : ''
                         });
                     }
                     return newlayer;
@@ -205,9 +205,7 @@ export default function layers(state = defaultState, action) {
                 name: action.layer.name || layerId,
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
-                visibility: action.layer.visibility !== undefined
-                    ? action.layer.visibility
-                    : true,
+                visibility: action.layer.visibility !== false,
                 opacity: action.layer.opacity || 255,
                 layertreehidden: (
                     action.layer.layertreehidden ||
@@ -242,7 +240,7 @@ export default function layers(state = defaultState, action) {
             });
             if (
                 newLayer.role === LayerRole.BACKGROUND &&
-                newLayer.visibility
+                newLayer.visibility !== false
             ) {
                 UrlParams.updateParams({ bl: newLayer.name });
             }
@@ -301,7 +299,7 @@ export default function layers(state = defaultState, action) {
                     features: newFeatures,
                     role: action.layer.role || LayerRole.USERLAYER,
                     queryable: action.layer.queryable || false,
-                    visibility: action.layer.visibility || true,
+                    visibility: action.layer.visibility !== false,
                     opacity: action.layer.opacity || 255,
                     layertreehidden: (
                         action.layer.layertreehidden ||
