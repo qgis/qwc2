@@ -5,6 +5,7 @@ const uuidRegex = /[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+-[a-z0-9]+/;
 
 let mockUrlReverseLayerOrder = false;
 let mockExternalLayerFeatureInfoFormats = undefined;
+let mockQgisServerVersion = 3;
 jest.mock("./ConfigUtils", () => ({
     __esModule: true,
     default: {
@@ -13,6 +14,8 @@ jest.mock("./ConfigUtils", () => ({
                 return mockUrlReverseLayerOrder;
             } else if (name === 'externalLayerFeatureInfoFormats') {
                 return mockExternalLayerFeatureInfoFormats;
+            } else if (name === 'qgisServerVersion') {
+                return mockQgisServerVersion;
             } else {
                 throw new Error(`Unknown config prop: ${name}`);
             }
@@ -23,6 +26,108 @@ jest.mock("./ConfigUtils", () => ({
 beforeEach(() => {
     mockUrlReverseLayerOrder = false;
     mockExternalLayerFeatureInfoFormats = undefined;
+    mockQgisServerVersion = 3;
+});
+
+
+describe("addExternalLayerPrintParams", () => {
+    const printCrs = "EPSG:3857";
+    let params;
+    let counterRef;
+    beforeEach(() => {
+        params = {
+            LAYERS: [],
+            OPACITIES: [],
+            COLORS: [],
+        };
+        counterRef = [0];
+    });
+    it("ignores git versions other than 2 and 3", () => {
+        mockQgisServerVersion = 1;
+        expect(() => {
+            LayerUtils.addExternalLayerPrintParams({
+                name: "lorem",
+                role: LayerRole.USERLAYER,
+                type: "wms",
+            }, params, printCrs, counterRef);
+        }).toThrow("Unsupported qgisServerVersion: 1");
+        expect(params).toEqual(params);
+        expect(counterRef[0]).toBe(0);
+    });
+    it("ignores non-WMS layers", () => {
+        mockQgisServerVersion = 3;
+        LayerUtils.addExternalLayerPrintParams({
+            name: "lorem",
+            role: LayerRole.USERLAYER,
+            type: "xyz",
+        }, params, printCrs, counterRef);
+        expect(params).toEqual(params);
+        expect(counterRef[0]).toBe(0);
+    });
+    it("deals with WMS, QGis 3 layers", () => {
+        mockQgisServerVersion = 3;
+        LayerUtils.addExternalLayerPrintParams({
+            name: "lorem",
+            role: LayerRole.USERLAYER,
+            type: "wms",
+            url: "ipsum",
+            params: {
+                LAYERS: "dolor",
+                OPACITIES: "255",
+                COLORS: "",
+            }
+        }, params, printCrs, counterRef);
+        expect(params).toEqual({
+            LAYERS: ["EXTERNAL_WMS:A"],
+            OPACITIES: ["255"],
+            COLORS: [""],
+            "A:contextualWMSLegend": "0",
+            "A:crs": "EPSG:3857",
+            "A:dpiMode": "7",
+            "A:format": "image/png",
+            "A:layers": "dolor",
+            "A:styles": "",
+            "A:url": "http://localhost/ipsum",
+        });
+        expect(counterRef[0]).toBe(1);
+    });
+    it("deals with WMS, QGis 2 layers", () => {
+        mockQgisServerVersion = 2;
+        LayerUtils.addExternalLayerPrintParams({
+            name: "lorem",
+            role: LayerRole.USERLAYER,
+            type: "wms",
+            url: "ipsum",
+            params: {
+                LAYERS: "dolor",
+                OPACITIES: "255",
+                COLORS: "",
+            }
+        }, params, printCrs, counterRef);
+        expect(params).toEqual({
+            LAYERS: ["wms:ipsum#dolor"],
+            OPACITIES: ["255"],
+            COLORS: [""],
+        });
+        expect(counterRef[0]).toBe(0);
+    });
+    it("deals with WFS, QGis 2 layers", () => {
+        mockQgisServerVersion = 2;
+        LayerUtils.addExternalLayerPrintParams({
+            name: "lorem",
+            role: LayerRole.USERLAYER,
+            type: "wfs",
+            url: "ipsum",
+            opacity: 127,
+            color: "#123456",
+        }, params, printCrs, counterRef);
+        expect(params).toEqual({
+            LAYERS: ["wfs:ipsum#lorem"],
+            OPACITIES: [127],
+            COLORS: ["#123456"],
+        });
+        expect(counterRef[0]).toBe(0);
+    });
 });
 
 
@@ -633,10 +738,12 @@ describe("collectPrintParams", () => {
     const emptyResponse = {
         LAYERS: "",
         OPACITIES: "",
-        STYLES: "",
+        COLORS: "",
     };
     it("should return an empty list if no params are passed", () => {
-        expect(LayerUtils.collectPrintParams([])).toEqual(emptyResponse);
+        expect(
+            LayerUtils.collectPrintParams([], {}, 1, "EPSG:3857", true)
+        ).toEqual(emptyResponse);
     });
     it("should ignore layer types other than theme and user", () => {
         expect(LayerUtils.collectPrintParams([{
@@ -649,37 +756,69 @@ describe("collectPrintParams", () => {
         }, {
             role: LayerRole.USERLAYER,
             type: "xyz"
-        }])).toEqual(emptyResponse);
+        }], {}, 1, "EPSG:3857", true)).toEqual(emptyResponse);
     });
-    describe("with theme layers", () => {
-        it("should accept theme layers", () => {
-
-        });
-        it("should use opacity", () => {
-
-        });
-        it("should use visibility", () => {
-
-        });
-        it("should work with sublayers", () => {
-
+    it("should accept theme layers", () => {
+        expect(LayerUtils.collectPrintParams([{
+            role: LayerRole.THEME,
+            visibility: false,
+            params: {
+                LAYERS: "lorem",
+                OPACITIES: "255",
+                COLORS: "",
+            }
+        }], {}, 1, "EPSG:3857", true)).toEqual({
+            LAYERS: "lorem",
+            OPACITIES: "255",
+            COLORS: "",
         });
     });
-    describe("with WMS user layers", () => {
-        it("should accept WMS user layers", () => {
-
+    it("should accept user layers", () => {
+        expect(LayerUtils.collectPrintParams([{
+            role: LayerRole.USERLAYER,
+            visibility: true,
+            type: "wms",
+            url: "ipsum",
+            params: {
+                LAYERS: "lorem",
+                OPACITIES: "255",
+                COLORS: "",
+            }
+        }], {}, 1, "EPSG:3857", true)).toEqual({
+            LAYERS: "EXTERNAL_WMS:A",
+            OPACITIES: "255",
+            COLORS: "",
+            "A:contextualWMSLegend": "0",
+            "A:crs": "EPSG:3857",
+            "A:dpiMode": "7",
+            "A:format": "image/png",
+            "A:layers": "lorem",
+            "A:styles": "",
+            "A:url": "http://localhost/ipsum",
         });
-        it("should use opacity", () => {
-
-        });
-        it("should use visibility", () => {
-
-        });
-        it("should use extended wms params", () => {
-
-        });
-        it("should work with sublayers", () => {
-            
+    });
+    it("should accept background layers", () => {
+        expect(LayerUtils.collectPrintParams([{
+            name: "ipsum",
+            role: LayerRole.BACKGROUND,
+            visibility: true,
+            params: {
+                LAYERS: "lorem",
+                OPACITIES: "255",
+                COLORS: "",
+            }
+        }, {
+            name: "dolor",
+            role: LayerRole.USERLAYER,
+        }], {
+            backgroundLayers: [{
+                name: "ipsum",
+                printLayer: "dolor"
+            }]
+        }, 1, "EPSG:3857", true)).toEqual({
+            LAYERS: "dolor",
+            OPACITIES: "255",
+            COLORS: "",
         });
     });
 });

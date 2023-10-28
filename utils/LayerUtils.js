@@ -1537,9 +1537,12 @@ const LayerUtils = {
                 params.OPACITIES.push(layer.opacity);
                 params.COLORS.push(layer.color);
             }
+        } else {
+            throw new Error(
+                `Unsupported qgisServerVersion: ${qgisServerVersion}`
+            );
         }
     },
-
 
     
     /**
@@ -1556,7 +1559,7 @@ const LayerUtils = {
      * @return {{ 
     *     LAYERS: string,
     *     OPACITIES: string,
-    *     STYLES: string
+    *     COLORS: string
     * }} the parameters
      */
     collectPrintParams(
@@ -1568,7 +1571,6 @@ const LayerUtils = {
             COLORS: []
         };
         const counterRef = [0];
-
         for (const layer of layers) {
             if (layer.role === LayerRole.THEME && layer.params.LAYERS) {
                 params.LAYERS.push(layer.params.LAYERS);
