@@ -147,6 +147,9 @@
       "files": "fitxers",
       "placeholder": "Selecciona arxiu..."
     },
+    "heigghtprofile": {
+      "title": ""
+    },
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distància",
@@ -155,6 +158,7 @@
       "export": "Exportar",
       "height": "Alçada",
       "loading": "Càlculant el perfil...",
+      "print": "",
       "title": ""
     },
     "identify": {

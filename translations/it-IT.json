@@ -147,6 +147,9 @@
       "files": "File",
       "placeholder": "Seleziona file..."
     },
+    "heigghtprofile": {
+      "title": ""
+    },
     "heightprofile": {
       "asl": "s.l.m.",
       "distance": "Distanza",
@@ -155,6 +158,7 @@
       "export": "Esporta",
       "height": "Altitudine",
       "loading": "Calcolo del profilo di altezza...",
+      "print": "Stampa profilo d'altezza",
       "title": "Profilo di altezza"
     },
     "identify": {

@@ -147,6 +147,9 @@
       "files": "",
       "placeholder": "Selecione ficheiro..."
     },
+    "heigghtprofile": {
+      "title": ""
+    },
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distância",
@@ -155,6 +158,7 @@
       "export": "",
       "height": "Altura",
       "loading": "Calcular o perfil de altura...",
+      "print": "",
       "title": ""
     },
     "identify": {

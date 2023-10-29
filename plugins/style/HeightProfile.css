@@ -1,20 +1,5 @@
-#HeightProfile {
-    display: flex;
-    align-items: flex-end;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 2.25em;
-    background-color: rgba(255, 255, 255, 0.80);
-    box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
-    padding-top: 0.5em;
-    z-index: 2;
-}
-
 div.height-profile-chart-container {
-    position: relative;
     height: 100%;
-    width: 100%;
 }
 
 div.height-profile-loading-indicator {

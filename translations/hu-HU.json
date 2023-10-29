@@ -147,6 +147,9 @@
       "files": "",
       "placeholder": "Fájl választása..."
     },
+    "heigghtprofile": {
+      "title": ""
+    },
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Távolság",
@@ -155,6 +158,7 @@
       "export": "",
       "height": "Magasság",
       "loading": "A magassági profil kiszámítása...",
+      "print": "",
       "title": ""
     },
     "identify": {

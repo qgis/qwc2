@@ -10,6 +10,7 @@ import React from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import ReactDOM from 'react-dom';
 import isEmpty from 'lodash.isempty';
 import {Line} from "react-chartjs-2";
 import {
@@ -25,7 +26,6 @@ import {
 import FileSaver from 'file-saver';
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
-import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -44,12 +44,68 @@ ChartJS.register(
     Filler
 );
 
+class HeightProfilePrintDialog extends React.PureComponent {
+    static propTypes = {
+        children: PropTypes.func,
+        onClose: PropTypes.func
+    };
+    constructor(props) {
+        super(props);
+        this.externalWindow = null;
+        this.chart = null;
+    }
+    state = {
+        portalEl: null
+    };
+    componentDidMount() {
+        const assetsPath = ConfigUtils.getAssetsPath();
+        this.externalWindow = window.open(assetsPath + "/templates/heightprofileprint.html", LocaleUtils.tr("heigghtprofile.title"), "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
+        this.externalWindow.addEventListener('load', this.setWindowContent, false);
+        this.externalWindow.addEventListener('resize', this.windowResized, false);
+    }
+    setWindowContent = () => {
+        this.externalWindow.addEventListener('beforeunload', this.props.onClose, false);
+        const container = this.externalWindow.document.getElementById("heightprofilecontainer");
+        if (container) {
+            const portalEl = this.externalWindow.document.createElement('div');
+            container.appendChild(portalEl);
+            const printBtn = this.externalWindow.document.createElement('div');
+            printBtn.id = "print";
+            printBtn.innerHTML = '<style type="text/css">@media print{ #print { display: none; }}</style>' +
+                '<button onClick="(function(){window.print();})()">' + LocaleUtils.tr("heightprofile.print") + '</button>' +
+                '</div>';
+            container.appendChild(printBtn);
+            this.setState({portalEl});
+            this.externalWindow.document.body.style.overflow = 'hidden';
+        } else {
+            this.externalWindow.document.body.innerHTML = "Broken template. An element with id=heightprofilecontainer must exist.";
+        }
+    };
+    windowResized = () => {
+        if (this.chart) {
+            this.chart.resize();
+        }
+    };
+    componentWillUnmount() {
+        this.externalWindow.close();
+    }
+    render() {
+        if (!this.state.portalEl) {
+            return null;
+        }
+        return ReactDOM.createPortal(this.props.children(el => {this.chart = el;}, false), this.state.portalEl);
+    }
+}
+
 /**
  * Displays a height profile along a measured line.
  *
  * Triggered automatically when a line is measured via the `Measure` plugin.
  *
  * Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`.
+ *
+ * The print height profile functionality requires a template located at assets/templates/heightprofileprint.html
+ * with containing a container element with id=heightprofilecontainer.
  */
 class HeightProfile extends React.Component {
     static propTypes = {
@@ -69,34 +125,24 @@ class HeightProfile extends React.Component {
     static defaultProps = {
         samples: 500,
         heighProfilePrecision: 0,
-        height: 125
+        height: 150
     };
     state = {
         data: {},
         isloading: false,
-        drawnodes: true
+        drawnodes: true,
+        printdialog: false
     };
     constructor(props) {
         super(props);
         this.chart = null;
-    }
-    exportProfile = () => {
-        if (!this.state.data.x) {
-            return;
-        }
-        let csv = "";
-        csv += "index" + "\t" + "distance" + "\t" + "elevation" + "\n";
-        this.state.data.x.forEach((x, idx) => {
-            const sample = {x: x, y: this.state.data.y[idx]};
-            const heighProfilePrecision = this.props.heighProfilePrecision;
-            const distance = Math.round(sample.x * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
-            const height = Math.round(sample.y * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
-            csv += String(idx).replace('"', '""') + "\t"
-                + String(distance) + "\t"
-                + String(height) + "\n";
+        this.profilePrintWindow = null;
+        window.addEventListener('beforeunload', () => {
+            if (this.profilePrintWindow && !this.profilePrintWindow.closed) {
+                this.profilePrintWindow.close();
+            }
         });
-        FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "heightprofile.csv");
-    };
+    }
     componentDidUpdate(prevProps) {
         if (this.props.measurement.coordinates !== prevProps.measurement.coordinates) {
             if (this.props.measurement.drawing === false && this.props.measurement.geomType === "LineString" && !isEmpty(this.props.measurement.coordinates) ) {
@@ -159,19 +205,25 @@ class HeightProfile extends React.Component {
         }
         const extraControls = [
             {icon: 'circle', active: this.state.drawnodes, callback: () => this.setState(state => ({drawnodes: !state.drawnodes})), msgid: LocaleUtils.trmsg("heightprofile.drawnodes")},
-            {icon: 'export', callback: this.exportProfile, msgid: LocaleUtils.trmsg("heightprofile.export")}
+            {icon: 'export', callback: this.exportProfile, msgid: LocaleUtils.trmsg("heightprofile.export")},
+            {icon: 'print', active: this.state.printdialog, callback: () => this.setState(state => ({printdialog: !state.printdialog})), msgid: LocaleUtils.trmsg("heightprofile.print")}
         ];
-        return (
-            <ResizeableWindow dockable="bottom" extraControls={extraControls} icon="line" initialHeight={150} initialWidth={600} initiallyDocked onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("heightprofile.title")}>
+        return [(
+            <ResizeableWindow dockable="bottom" extraControls={extraControls} icon="line" initialHeight={this.props.height} initialWidth={600} initiallyDocked key="ProfileDialog" onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("heightprofile.title")}>
                 {this.state.isloading ? (
                     <div className="height-profile-loading-indicator" role="body">
                         <Spinner className="spinner" /> {LocaleUtils.tr("heightprofile.loading")}
                     </div>
-                ) : this.renderHeightProfile()}
+                ) : this.renderHeightProfile((el) => { this.chart = el; }, true)}
             </ResizeableWindow>
-        );
+        ),
+        this.state.printdialog ? (
+            <HeightProfilePrintDialog key="ProfilePrintDialog" onClose={() => this.setState({printdialog: false})}>
+                {this.renderHeightProfile}
+            </HeightProfilePrintDialog>
+        ) : null];
     }
-    renderHeightProfile = () => {
+    renderHeightProfile = (saveRef, interactive) => {
         if (this.props.measurement.drawing ) {
             return null;
         }
@@ -226,6 +278,7 @@ class HeightProfile extends React.Component {
                     display: false
                 },
                 tooltip: {
+                    enabled: interactive,
                     intersect: false,
                     displayColors: false,
                     bodyFont: {weight: 'bold'},
@@ -262,16 +315,16 @@ class HeightProfile extends React.Component {
                     max: Math.ceil(this.state.data.maxY)
                 }
             },
-            onHover: (evt, activeEls, chart) => {
+            onHover: interactive ? (evt, activeEls, chart) => {
                 const chartArea = chart.chartArea;
                 const chartX = Math.min(Math.max(evt.x - chartArea.left), chartArea.width);
                 this.updateMarker(chartX / chartArea.width * this.state.data.totLength);
-            }
+            } : undefined
         };
 
         return (
-            <div className="height-profile-chart-container" role="body">
-                <Line data={data} options={options} ref={el => { this.chart = el; }} />
+            <div className="height-profile-chart-container" role="body" style={{position: 'relative'}}>
+                <Line data={data} options={options} ref={saveRef} />
             </div>
         );
     };
@@ -351,6 +404,23 @@ class HeightProfile extends React.Component {
         } else {
             return (p1[1] <= q[1] && q[1] <= p2[1]) || (p2[1] <= q[1] && q[1] <= p1[1]);
         }
+    };
+    exportProfile = () => {
+        if (!this.state.data.x) {
+            return;
+        }
+        let csv = "";
+        csv += "index" + "\t" + "distance" + "\t" + "elevation" + "\n";
+        this.state.data.x.forEach((x, idx) => {
+            const sample = {x: x, y: this.state.data.y[idx]};
+            const heighProfilePrecision = this.props.heighProfilePrecision;
+            const distance = Math.round(sample.x * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
+            const height = Math.round(sample.y * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
+            csv += String(idx).replace('"', '""') + "\t"
+                + String(distance) + "\t"
+                + String(height) + "\n";
+        });
+        FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "heightprofile.csv");
     };
 }
 

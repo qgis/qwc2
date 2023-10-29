@@ -147,6 +147,9 @@
       "files": "Dateien",
       "placeholder": "Datei auswählen"
     },
+    "heigghtprofile": {
+      "title": ""
+    },
     "heightprofile": {
       "asl": "ü. NHN",
       "distance": "Distanz",
@@ -155,6 +158,7 @@
       "export": "Exportieren",
       "height": "Höhe",
       "loading": "Höhenprofil wird berechnet...",
+      "print": "Höhenprofil drucken",
       "title": "Höhenprofil"
     },
     "identify": {

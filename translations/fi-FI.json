@@ -147,6 +147,9 @@
       "files": "",
       "placeholder": "Valitse tiedosto..."
     },
+    "heigghtprofile": {
+      "title": ""
+    },
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Etäisyys",
@@ -155,6 +158,7 @@
       "export": "",
       "height": "Korkeus",
       "loading": "Korkeusprofiilin laskenta käynnissä...",
+      "print": "",
       "title": ""
     },
     "identify": {
