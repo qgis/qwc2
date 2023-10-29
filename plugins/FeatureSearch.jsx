@@ -174,7 +174,7 @@ class FeatureSearch extends React.Component {
             params.LAYERS.push(layer);
             params.FILTER.push(layer + ":" + filter[layer]);
         });
-        params.LAYERS = params.LAYERS.join(",");
+        params.QUERY_LAYERS = params.LAYERS = params.LAYERS.join(",");
         params.FILTER = params.FILTER.join(";");
         this.setState({busy: true, searchResults: null});
         axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
