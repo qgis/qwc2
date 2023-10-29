@@ -35,6 +35,9 @@ import './style/LayerTree.css';
 
 /**
  * Displays the map layer tree in a sidebar.
+ *
+ * The print legend functionality requires a template located at assets/templates/legendprint.html
+ * with containing a container element with id=legendcontainer.
  */
 class LayerTree extends React.Component {
     static propTypes = {
