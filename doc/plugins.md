@@ -12,6 +12,7 @@ Plugin reference
 * [Editing](#editing)
 * [FeatureForm](#featureform)
 * [FeatureSearch](#featuresearch)
+* [HeightProfilePrintDialog](#heightprofileprintdialog)
 * [HeightProfile](#heightprofile)
 * [Help](#help)
 * [HomeButton](#homebutton)
@@ -225,14 +226,6 @@ Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` 
 |----------|------|-------------|---------------|
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 
-FeatureSearch<a name="featuresearch"></a>
-----------------------------------------------------------------
-
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
-
 HeightProfile<a name="heightprofile"></a>
 ----------------------------------------------------------------
 Displays a height profile along a measured line.
@@ -244,7 +237,7 @@ Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-ser
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | heighProfilePrecision | `number` | The precision of displayed and exported values (0: no decimals, 0.1: 1 decimal position, etc). | `0` |
-| height | `number` | The height of the height profile widget in pixels. | `100` |
+| height | `number` | The height of the height profile widget in pixels. | `150` |
 | samples | `number` | The number of elevation samples to query. | `500` |
 
 Help<a name="help"></a>
