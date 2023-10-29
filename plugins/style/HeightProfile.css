@@ -17,69 +17,6 @@ div.height-profile-chart-container {
     width: 100%;
 }
 
-/*
-#HeightProfile g.ct-grids line.ct-grid {
-    stroke: lightgray;
-    stroke-width: 1px;
-}
-
-#HeightProfile g.ct-series-a path.ct-line {
-    stroke: red;
-    stroke-width: 2px;
-    fill: none;
-}
-
-#HeightProfile g.ct-series-a path.ct-area {
-    fill: rgba(255,0,0,0.5);
-}
-
-#HeightProfile g.ct-labels .ct-label {
-    color: gray;
-    fill: gray;
-    text-anchor: middle;
-    font-size: 0.75rem;
-    display: flex;
-}
-
-#HeightProfile g.ct-labels span.ct-vertical {
-    justify-content: flex-end;
-    align-items: center;
-    transform: translate(0, 50%);
-}
-
-#HeightProfile g.ct-labels span.ct-horizontal {
-    justify-content: center;
-    transform: translate(-50%,0);
-}
-
-#HeightProfile text.ct-axis-title {
-    fill: gray;
-    font-size: 0.8rem;
-}
-*/
-#HeightProfile span.height-profile-tooltip {
-    visibility: hidden;
-    position: absolute;
-    display: inline-block;
-    background-color: var(--tooltip-bg-color);
-    border: 1px solid var(--tooltip-border-color);
-    border-radius: 0.5em;
-    padding: 0.5em;
-    color: var(--tooltip-text-color);
-    transform: translate(-50%, 0%);
-    white-space: nowrap;
-    font-size: 90%;;
-}
-
-#HeightProfile span.height-profile-marker {
-    visibility: hidden;
-    position: absolute;
-    display: inline-block;
-    width: 1px;
-    background-color: rgba(0, 0, 0, 0.5);
-    pointer-events: none;
-}
-
 #HeightProfile div.height-profile-loading-indicator {
     display: flex;
     align-items: center;
