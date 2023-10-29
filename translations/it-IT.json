@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "s.l.m.",
       "distance": "Distanza",
+      "error": "Impossibile caricare il profilo di altezza",
       "export": "Esporta",
       "height": "Altitudine",
-      "loading": "Calcolo del profilo di altezza..."
+      "loading": "Calcolo del profilo di altezza...",
+      "title": "Profilo di altezza"
     },
     "identify": {
       "clipboard": "Copia negli appunti",

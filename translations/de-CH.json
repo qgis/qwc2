@@ -148,11 +148,13 @@
       "placeholder": "Datei auswählen"
     },
     "heightprofile": {
-      "asl": "ü.M.",
+      "asl": "ü. NHN",
       "distance": "Distanz",
+      "error": "Fehler beim Berechnen des Höhenprofils",
       "export": "Exportieren",
       "height": "Höhe",
-      "loading": "Höhenprofil wird berechnet..."
+      "loading": "Höhenprofil wird berechnet...",
+      "title": "Höhenprofil"
     },
     "identify": {
       "clipboard": "Nach Zwischenablage kopieren",

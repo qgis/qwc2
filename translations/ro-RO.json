@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "dM",
       "distance": "Distanța",
+      "error": "",
       "export": "Export profil",
       "height": "Înălțimea",
-      "loading": "Se calculează profilul..."
+      "loading": "Se calculează profilul...",
+      "title": ""
     },
     "identify": {
       "clipboard": "Copiere în clipboard",

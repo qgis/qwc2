@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distància",
+      "error": "",
       "export": "Exportar",
       "height": "Alçada",
-      "loading": "Càlculant el perfil..."
+      "loading": "Càlculant el perfil...",
+      "title": ""
     },
     "identify": {
       "clipboard": "Copiar al porta-retalls",

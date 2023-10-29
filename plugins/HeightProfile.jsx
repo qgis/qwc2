@@ -26,6 +26,7 @@ import FileSaver from 'file-saver';
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
 import Icon from '../components/Icon';
+import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -71,7 +72,6 @@ class HeightProfile extends React.Component {
         height: 125
     };
     state = {
-        width: window.innerWidth,
         data: {},
         isloading: false
     };
@@ -79,13 +79,10 @@ class HeightProfile extends React.Component {
         super(props);
         this.chart = null;
     }
-    componentDidMount() {
-        window.addEventListener('resize', this.handleResize);
-    }
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.handleResize);
-    }
     exportProfile = () => {
+        if (!this.state.data.x) {
+            return;
+        }
         let csv = "";
         csv += "index" + "\t" + "distance" + "\t" + "elevation" + "\n";
         this.state.data.x.forEach((x, idx) => {
@@ -99,55 +96,71 @@ class HeightProfile extends React.Component {
         });
         FileSaver.saveAs(new Blob([csv], {type: "text/plain;charset=utf-8"}), "heightprofile.csv");
     };
-    handleResize = () => {
-        this.setState({width: window.innerWidth});
-    };
     componentDidUpdate(prevProps) {
         if (this.props.measurement.coordinates !== prevProps.measurement.coordinates) {
             if (this.props.measurement.drawing === false && this.props.measurement.geomType === "LineString" && !isEmpty(this.props.measurement.coordinates) ) {
                 this.queryElevations(this.props.measurement.coordinates, this.props.measurement.segment_lengths, this.props.projection);
             } else if (!isEmpty(this.state.data)) {
-                this.setState({data: {}, pickPositionCallback: null});
+                this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: null});
             }
         }
     }
     queryElevations(coordinates, distances, projection) {
         const serviceUrl = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
+        const totLength = this.props.measurement.length;
         if (serviceUrl) {
             this.setState({ isloading: true });
             axios.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection, samples: this.props.samples}).then(response => {
-                this.setState({ isloading: false });
+                if (this.state.isloading !== true) {
+                    // Since aborted
+                    return;
+                }
                 const data = {
-                    x: response.data.elevations.map((entry, idx, a) => (idx / (a.length - 1) * this.props.measurement.length).toFixed(0)),
+                    x: response.data.elevations.map((entry, idx, a) => (idx / (a.length - 1) * totLength).toFixed(0)),
                     y: response.data.elevations,
-                    maxY: Math.max(...response.data.elevations)
+                    maxY: Math.max(...response.data.elevations),
+                    totLength: totLength
                 };
-                this.setState({data: data});
+                this.setState({isloading: false, data: data});
                 this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: this.pickPositionCallback});
             }).catch(e => {
-                this.setState({ isloading: false });
+                this.setState({isloading: false, data: {error: String(e)}});
                 // eslint-disable-next-line
                 console.log("Query failed: " + e);
             });
         }
     }
+    onClose = () => {
+        this.setState({data: {}, isloading: false});
+        this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: null});
+    };
     render() {
-        if (!this.props.measurement.length) {
+        if (isEmpty(this.state.data) && !this.state.isloading) {
             return null;
         }
-        if (isEmpty(this.state.data)) {
-            if (this.state.isloading) {
-                return (
-                    <div id="HeightProfile">
-                        <div className="height-profile-loading-indicator">
-                            <Spinner className="spinner" />
-                            {LocaleUtils.tr("heightprofile.loading")}
-                        </div>
+        const extraControls = [
+            {icon: 'export', callback: this.exportProfile, msgid: LocaleUtils.trmsg("heightprofile.export")}
+        ];
+        return (
+            <ResizeableWindow dockable="bottom" extraControls={extraControls} icon="line" initialHeight={150} initialWidth={600} initiallyDocked onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("heightprofile.title")}>
+                {this.state.isloading ? (
+                    <div className="height-profile-loading-indicator" role="body">
+                        <Spinner className="spinner" /> {LocaleUtils.tr("heightprofile.loading")}
                     </div>
-                );
-            } else {
-                return null;
-            }
+                ) : this.renderHeightProfile()}
+            </ResizeableWindow>
+        );
+    }
+    renderHeightProfile = () => {
+        if (this.props.measurement.drawing ) {
+            return null;
+        }
+        if (this.state.data.error) {
+            return (
+                <div className="height-profile-error" role="body">
+                    {LocaleUtils.tr("heightprofile.error") + ": " + this.state.data.error}
+                </div>
+            );
         }
         const distanceStr = LocaleUtils.tr("heightprofile.distance");
         const heightStr = LocaleUtils.tr("heightprofile.height");
@@ -168,8 +181,8 @@ class HeightProfile extends React.Component {
             ]
         };
         // Approx 10 ticks
-        const stepSizeFact = Math.pow(10, Math.ceil(Math.log10(this.props.measurement.length / 10)));
-        const stepSize = Math.round(this.props.measurement.length / (stepSizeFact)) * stepSizeFact / 10;
+        const stepSizeFact = Math.pow(10, Math.ceil(Math.log10(this.state.data.totLength / 10)));
+        const stepSize = Math.round(this.state.data.totLength / (stepSizeFact)) * stepSizeFact / 10;
         const options = {
             responsive: true,
             maintainAspectRatio: false,
@@ -200,7 +213,7 @@ class HeightProfile extends React.Component {
                         text: distanceStr + " [m]",
                         padding: 0
                     },
-                    max: Math.ceil(this.props.measurement.length)
+                    max: Math.ceil(this.state.data.totLength)
                 },
                 y: {
                     ticks: {
@@ -217,21 +230,16 @@ class HeightProfile extends React.Component {
             onHover: (evt, activeEls, chart) => {
                 const chartArea = chart.chartArea;
                 const chartX = Math.min(Math.max(evt.x - chartArea.left), chartArea.width);
-                this.updateMarker(chartX / chartArea.width * this.props.measurement.length);
+                this.updateMarker(chartX / chartArea.width * this.state.data.totLength);
             }
         };
 
-        const height = 'calc(' + this.props.height + 'px + 0.5em)';
         return (
-            <div id="HeightProfile" style={{height: height}}>
-                <div className="height-profile-chart-container">
-                    <Line data={data} options={options} ref={el => { this.chart = el; }} />
-                </div>
-                <Icon className="export-profile-button" icon="export" onClick={this.exportProfile}
-                    title={LocaleUtils.tr("heightprofile.export")} />
+            <div className="height-profile-chart-container" role="body">
+                <Line data={data} options={options} ref={el => { this.chart = el; }} />
             </div>
         );
-    }
+    };
     updateMarker = (x) => {
         const segmentLengths = this.props.measurement.segment_lengths;
         const coo = this.props.measurement.coordinates;
@@ -291,8 +299,7 @@ class HeightProfile extends React.Component {
                 x += segmentLengths[iSegment];
             }
         }
-        const totLength = this.props.measurement.length;
-        const k = Math.min(1, x / totLength);
+        const k = Math.min(1, x / this.state.data.totLength);
         const idx = Math.min(this.state.data.y.length - 1, Math.floor(k * this.props.samples));
         this.showTooltip(idx);
     };

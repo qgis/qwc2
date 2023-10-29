@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Odległość",
+      "error": "",
       "export": "",
       "height": "Wysokość",
-      "loading": "Obliczanie profilu wysokości..."
+      "loading": "Obliczanie profilu wysokości...",
+      "title": ""
     },
     "identify": {
       "clipboard": "",

@@ -26,7 +26,8 @@ class ResizeableWindow extends React.Component {
         dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         extraControls: PropTypes.arrayOf(PropTypes.shape({
             icon: PropTypes.string.isRequired,
-            callback: PropTypes.func.isRequired
+            callback: PropTypes.func.isRequired,
+            msgid: PropTypes.string
         })),
         icon: PropTypes.string,
         initialHeight: PropTypes.number,

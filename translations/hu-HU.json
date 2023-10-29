@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Távolság",
+      "error": "",
       "export": "",
       "height": "Magasság",
-      "loading": "A magassági profil kiszámítása..."
+      "loading": "A magassági profil kiszámítása...",
+      "title": ""
     },
     "identify": {
       "clipboard": "",

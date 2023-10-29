@@ -17,21 +17,25 @@ div.height-profile-chart-container {
     width: 100%;
 }
 
-#HeightProfile div.height-profile-loading-indicator {
+div.height-profile-loading-indicator {
     display: flex;
     align-items: center;
+    justify-content: center;
     padding-left: 0.5em;
     padding-bottom: 0.5em;
+    height: 100%;
 }
 
-#HeightProfile div.height-profile-loading-indicator > div.spinner {
+div.height-profile-loading-indicator > div.spinner {
     width: 1.5em;
     height: 1.5em;
     margin-right: 0.25em;
 }
 
-#HeightProfile span.export-profile-button {
-    cursor: pointer;
-    font-size: large;
-    margin-bottom: 0.25em;
+div.height-profile-error {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: red;
 }

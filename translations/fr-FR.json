@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "s/mer",
       "distance": "Distance",
+      "error": "Échec du calcul du profil de hauteur",
       "export": "Exporter le profil",
       "height": "Altitude",
-      "loading": "Calcul du profil de hauteur..."
+      "loading": "Calcul du profil de hauteur...",
+      "title": "Profil de hauteur"
     },
     "identify": {
       "clipboard": "Copier dans le presse-papiers",

@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Etäisyys",
+      "error": "",
       "export": "",
       "height": "Korkeus",
-      "loading": "Korkeusprofiilin laskenta käynnissä..."
+      "loading": "Korkeusprofiilin laskenta käynnissä...",
+      "title": ""
     },
     "identify": {
       "clipboard": "",

@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "m.o.h.",
       "distance": "Avstand",
+      "error": "",
       "export": "",
       "height": "Høyde",
-      "loading": "Beregner høydeprofil..."
+      "loading": "Beregner høydeprofil...",
+      "title": ""
     },
     "identify": {
       "clipboard": "",

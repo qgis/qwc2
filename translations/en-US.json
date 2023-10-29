@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distance",
+      "error": "Failed to compute height profile",
       "export": "Export profile",
       "height": "Height",
-      "loading": "Calculating height profile..."
+      "loading": "Calculating height profile...",
+      "title": "Height profile"
     },
     "identify": {
       "clipboard": "Copy to clipboard",

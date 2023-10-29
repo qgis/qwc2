@@ -150,9 +150,11 @@
     "heightprofile": {
       "asl": "m n. m.",
       "distance": "Vzdálenost",
+      "error": "",
       "export": "Export výškového profilu",
       "height": "Výška",
-      "loading": "Výpočet výškového profilu..."
+      "loading": "Výpočet výškového profilu...",
+      "title": ""
     },
     "identify": {
       "clipboard": "Zkopírovat do schránky",
