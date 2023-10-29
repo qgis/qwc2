@@ -150,6 +150,7 @@
     "heightprofile": {
       "asl": "dM",
       "distance": "Distanța",
+      "drawnodes": "",
       "error": "",
       "export": "Export profil",
       "height": "Înălțimea",

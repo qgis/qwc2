@@ -142,6 +142,7 @@
     "fileselector.placeholder",
     "heightprofile.asl",
     "heightprofile.distance",
+    "heightprofile.drawnodes",
     "heightprofile.error",
     "heightprofile.export",
     "heightprofile.height",

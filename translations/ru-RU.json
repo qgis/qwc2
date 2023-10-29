@@ -150,6 +150,7 @@
     "heightprofile": {
       "asl": "над у.м.",
       "distance": "Дистанция",
+      "drawnodes": "",
       "error": "",
       "export": "",
       "height": "Высота",

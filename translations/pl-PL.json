@@ -150,6 +150,7 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Odległość",
+      "drawnodes": "",
       "error": "",
       "export": "",
       "height": "Wysokość",

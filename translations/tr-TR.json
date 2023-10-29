@@ -150,6 +150,7 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Mesafe",
+      "drawnodes": "",
       "error": "",
       "export": "",
       "height": "Yükseklik",

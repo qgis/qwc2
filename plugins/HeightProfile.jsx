@@ -73,7 +73,8 @@ class HeightProfile extends React.Component {
     };
     state = {
         data: {},
-        isloading: false
+        isloading: false,
+        drawnodes: true
     };
     constructor(props) {
         super(props);
@@ -157,6 +158,7 @@ class HeightProfile extends React.Component {
             return null;
         }
         const extraControls = [
+            {icon: 'circle', active: this.state.drawnodes, callback: () => this.setState(state => ({drawnodes: !state.drawnodes})), msgid: LocaleUtils.trmsg("heightprofile.drawnodes")},
             {icon: 'export', callback: this.exportProfile, msgid: LocaleUtils.trmsg("heightprofile.export")}
         ];
         return (
@@ -205,7 +207,8 @@ class HeightProfile extends React.Component {
                     radius: 5,
                     hoverRadius: 0,
                     hoverBorderWidth: 2,
-                    order: 0
+                    order: 0,
+                    hidden: !this.state.drawnodes
                 }
             ]
         };

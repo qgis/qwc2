@@ -150,6 +150,7 @@
     "heightprofile": {
       "asl": "s/mer",
       "distance": "Distance",
+      "drawnodes": "Dessiner des nœuds",
       "error": "Échec du calcul du profil de hauteur",
       "export": "Exporter le profil",
       "height": "Altitude",

@@ -150,6 +150,7 @@
     "heightprofile": {
       "asl": "m n. m.",
       "distance": "Vzdálenost",
+      "drawnodes": "",
       "error": "",
       "export": "Export výškového profilu",
       "height": "Výška",

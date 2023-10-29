@@ -150,6 +150,7 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Távolság",
+      "drawnodes": "",
       "error": "",
       "export": "",
       "height": "Magasság",

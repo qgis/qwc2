@@ -150,6 +150,7 @@
     "heightprofile": {
       "asl": "ü. NHN",
       "distance": "Distanz",
+      "drawnodes": "Knoten zeichnen",
       "error": "Fehler beim Berechnen des Höhenprofils",
       "export": "Exportieren",
       "height": "Höhe",
