@@ -115,11 +115,29 @@ class HeightProfile extends React.Component {
                     // Since aborted
                     return;
                 }
+                // Compute x-axis distances and get node points
+                const nodes = [];
+                let cumDist = distances[0];
+                let distIdx = 0;
+                const y = response.data.elevations;
+                const x = y.map((entry, idx, a) => {
+                    const dist = (idx / (a.length - 1) * totLength).toFixed(0);
+                    if (dist >= cumDist) {
+                        nodes.push({x: dist, y: y[idx]});
+                        cumDist += distances[++distIdx];
+                    }
+                    return dist;
+                });
+                // First and last node
+                nodes.unshift({x: x[0], y: y[0]});
+                nodes.push({x: x[x.length - 1], y: y[y.length - 1]});
+
                 const data = {
-                    x: response.data.elevations.map((entry, idx, a) => (idx / (a.length - 1) * totLength).toFixed(0)),
+                    x: x,
                     y: response.data.elevations,
                     maxY: Math.max(...response.data.elevations),
-                    totLength: totLength
+                    totLength: totLength,
+                    nodes: nodes
                 };
                 this.setState({isloading: false, data: data});
                 this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: this.pickPositionCallback});
@@ -170,13 +188,24 @@ class HeightProfile extends React.Component {
             labels: this.state.data.x,
             datasets: [
                 {
-                    label: "Elevation",
                     data: this.state.data.y,
                     fill: true,
                     backgroundColor: "rgba(255,0,0,0.5)",
                     borderColor: "rgb(255,0,0)",
                     borderWidth: 2,
-                    pointRadius: 0
+                    pointRadius: 0,
+                    order: 1
+                },
+                {
+                    type: 'bubble',
+                    data: this.state.data.nodes,
+                    backgroundColor: 'rgb(255, 255, 255)',
+                    borderColor: 'rgb(255, 0, 0)',
+                    borderWidth: 2,
+                    radius: 5,
+                    hoverRadius: 0,
+                    hoverBorderWidth: 2,
+                    order: 0
                 }
             ]
         };
@@ -186,6 +215,9 @@ class HeightProfile extends React.Component {
         const options = {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                duration: 0
+            },
             plugins: {
                 legend: {
                     display: false
