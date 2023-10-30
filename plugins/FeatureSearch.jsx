@@ -165,7 +165,8 @@ class FeatureSearch extends React.Component {
             FILTER: [],
             WITH_GEOMETRY: true,
             WITH_MAPTIP: false,
-            feature_count: 100
+            feature_count: 100,
+            info_format: 'text/xml'
         };
         Object.keys(filter).forEach(layer => {
             Object.entries(values).forEach(([key, value]) => {
