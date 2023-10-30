@@ -234,6 +234,9 @@ Triggered automatically when a line is measured via the `Measure` plugin.
 
 Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`.
 
+The print height profile functionality requires a template located at assets/templates/heightprofileprint.html
+with containing a container element with id=heightprofilecontainer.
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | heighProfilePrecision | `number` | The precision of displayed and exported values (0: no decimals, 0.1: 1 decimal position, etc). | `0` |
@@ -328,6 +331,9 @@ LayerTree<a name="layertree"></a>
 ----------------------------------------------------------------
 Displays the map layer tree in a sidebar.
 
+The print legend functionality requires a template located at assets/templates/legendprint.html
+with containing a container element with id=legendcontainer.
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | addLayerSeparator | `func` | Whether to allow adding separator entries in the layer tree, useful for organizing the tree. | `undefined` |
@@ -344,7 +350,6 @@ Displays the map layer tree in a sidebar.
 | groupTogglesSublayers | `bool` | Whether toggling a group also toggles all sublayers. | `false` |
 | infoInSettings | `bool` | Whether to display the layer info button inside the layer settings menu rather than next to the layer title. | `true` |
 | layerInfoGeometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default layer info window geometry with size, position and docking status. | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 480,`<br />`    initialX: null,`<br />`    initialY: null,`<br />`    initiallyDocked: false`<br />`}` |
-| mapTipsEnabled | `bool` | Whether map tips are enabled by default. | `undefined` |
 | scaleDependentLegend | `{bool, string}` | Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
 | showLegendIcons | `bool` | Whether to display legend icons. | `true` |
 | showQueryableIcon | `bool` | Whether to display the queryable icon to indicate that a layer is identifyable. | `true` |
