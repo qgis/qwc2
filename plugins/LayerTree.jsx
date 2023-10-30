@@ -80,7 +80,6 @@ class LayerTree extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object,
         mapScale: PropTypes.number,
-        /** Whether map tips are enabled by default. */
         mapTipsEnabled: PropTypes.bool,
         mobile: PropTypes.bool,
         removeLayer: PropTypes.func,
