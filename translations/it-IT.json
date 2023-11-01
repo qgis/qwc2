@@ -330,6 +330,7 @@
       "label": "Ettichetta",
       "layer": "Layer",
       "line": "Linea",
+      "markers": "Punte",
       "measurements": "Mostra misurazioni",
       "numericinput": "Formulario numerico",
       "pick": "Seleziona",

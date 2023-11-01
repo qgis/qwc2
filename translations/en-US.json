@@ -330,6 +330,7 @@
       "label": "Label",
       "layer": "Layer",
       "line": "Line",
+      "markers": "Markers",
       "measurements": "Show measurements",
       "numericinput": "Show numeric input panel",
       "pick": "Pick",

@@ -330,6 +330,7 @@
       "label": "Beschriftung",
       "layer": "Ebene",
       "line": "Linie",
+      "markers": "Spitzen",
       "measurements": "Messungen anzeigen",
       "numericinput": "Numerische Eingabe",
       "pick": "Auswählen",

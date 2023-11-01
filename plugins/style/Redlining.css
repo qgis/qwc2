@@ -85,3 +85,16 @@ div.redlining-shapewarning {
 span.redlining-control-icon {
     margin-right: 0.125em;
 }
+
+div.redlining-marker-combo-entry {
+    display: flex;
+    align-items: center;
+    height: 16px;
+    width: 16px;
+}
+
+div.redlining-marker-combo-entry img {
+    /* Marker images are white, invert them to black */
+    filter: invert(1);
+    height: 100%;
+}

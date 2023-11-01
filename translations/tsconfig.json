@@ -278,6 +278,7 @@
     "redlining.label",
     "redlining.layer",
     "redlining.line",
+    "redlining.markers",
     "redlining.measurements",
     "redlining.numericinput",
     "redlining.pick",

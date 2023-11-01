@@ -20,10 +20,12 @@ import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ColorButton from '../components/widgets/ColorButton';
+import ComboBox from '../components/widgets/ComboBox';
 import MenuButton from '../components/widgets/MenuButton';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import {END_MARKERS} from '../utils/FeatureStyles';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/Redlining.css';
 
@@ -254,6 +256,27 @@ class Redlining extends React.Component {
                         mobile onChange={(nr) => this.updateRedliningStyle({size: nr})} precision={0} step={1}
                         strict value={this.props.redlining.style.size}/>
                 </span>
+                {this.props.redlining.geomType === 'LineString' ? (
+                    <span>
+                        <span>{LocaleUtils.tr("redlining.markers")}:&nbsp;</span>
+                        <ComboBox className="redlining-marker-combo" onChange={value => this.updateRedliningStyle({headmarker: value})} value={this.props.redlining.style.headmarker || ""}>
+                            <div className="redlining-marker-combo-entry" value="" />
+                            {Object.entries(END_MARKERS).map(([key, params]) => (
+                                <div className="redlining-marker-combo-entry" key={key} value={key}>
+                                    <img src={params.src} style={{transform: 'rotate(' + params.baserotation + 'deg)'}}/>
+                                </div>
+                            ))}
+                        </ComboBox>
+                        <ComboBox className="redlining-marker-combo" onChange={value => this.updateRedliningStyle({tailmarker: value})} value={this.props.redlining.style.tailmarker || ""}>
+                            <div className="redlining-marker-combo-entry" value="" />
+                            {Object.entries(END_MARKERS).map(([key, params]) => (
+                                <div className="redlining-marker-combo-entry" key={key} value={key}>
+                                    <img src={params.src} style={{transform: 'rotate(' + (180 + params.baserotation) + 'deg)'}}/>
+                                </div>
+                            ))}
+                        </ComboBox>
+                    </span>
+                ) : null}
                 {this.props.redlining.geomType !== 'Text' ? (
                     <button
                         className={"button" + (this.props.redlining.measurements ? " pressed" : "")}

@@ -137,7 +137,9 @@ class RedliningSupport extends React.Component {
             strokeWidth: 1 + 0.5 * styleProps.size,
             fillColor: styleProps.fillColor,
             circleRadius: 5 + styleProps.size,
-            strokeDash: []
+            strokeDash: [],
+            headmarker: styleProps.headmarker,
+            tailmarker: styleProps.tailmarker
         };
     };
     styleProps = (feature) => {
@@ -147,7 +149,9 @@ class RedliningSupport extends React.Component {
             borderColor: styleOptions.strokeColor,
             size: (styleOptions.strokeWidth - 1) * 2,
             fillColor: styleOptions.fillColor,
-            text: label
+            text: label,
+            headmarker: styleOptions.headmarker,
+            tailmarker: styleOptions.tailmarker
         };
     };
     updateFeatureStyle = (styleProps) => {
