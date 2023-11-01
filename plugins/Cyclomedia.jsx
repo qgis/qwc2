@@ -305,11 +305,12 @@ class Cyclomedia extends React.Component {
         }
         const loginOauth = !!this.props.clientId && !this.state.loginFailed;
         return `
+            <!DOCTYPE html>
             <html>
             <head>
             <script type="text/javascript" src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
             <script type="text/javascript" src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
-            <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v${this.props.cyclomediaVersion}/StreetSmartApi.js?f1733f8beb7131559070"></script>
+            <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v${this.props.cyclomediaVersion}/StreetSmartApi.js"></script>
             <script type="text/javascript">
             let apiInitialized = false;
             let initCallback = null;
