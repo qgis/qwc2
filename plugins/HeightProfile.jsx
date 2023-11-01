@@ -59,7 +59,7 @@ class HeightProfilePrintDialog extends React.PureComponent {
     };
     componentDidMount() {
         const assetsPath = ConfigUtils.getAssetsPath();
-        this.externalWindow = window.open(assetsPath + "/templates/heightprofileprint.html", LocaleUtils.tr("heigghtprofile.title"), "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
+        this.externalWindow = window.open(assetsPath + "/templates/heightprofileprint.html", LocaleUtils.tr("heightprofile.title"), "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
         this.externalWindow.addEventListener('load', this.setWindowContent, false);
         this.externalWindow.addEventListener('resize', this.windowResized, false);
     }

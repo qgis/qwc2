@@ -147,9 +147,6 @@
       "files": "files",
       "placeholder": "Select file..."
     },
-    "heigghtprofile": {
-      "title": ""
-    },
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "Distance",
