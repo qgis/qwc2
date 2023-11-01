@@ -91,8 +91,10 @@ const ThemeUtils = {
         }
         if (visibleIdx >= 0) {
             bgLayers[visibleIdx].visibility = true;
-        } else if (defaultVisibleIdx >= 0 && visibleLayer) {
-            dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleLayer), NotificationType.WARN, true));
+        } else if (defaultVisibleIdx >= 0 && visibleLayer !== "") {
+            if (visibleLayer !== null) {
+                dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleLayer), NotificationType.WARN, true));
+            }
             bgLayers[defaultVisibleIdx].visibility = true;
         }
         return bgLayers;
