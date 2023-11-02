@@ -132,7 +132,8 @@ class Search extends React.Component {
             const searchParams = {
                 mapcrs: this.props.map.projection,
                 displaycrs: this.props.displaycrs,
-                lang: LocaleUtils.lang()
+                lang: LocaleUtils.lang(),
+                theme: this.props.theme
             };
             props.startSearch(props.searchText, searchParams, this.activeProviders(props), startup);
         }
