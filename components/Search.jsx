@@ -234,7 +234,7 @@ class Search extends React.Component {
                             return (
                                 <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])} title="">
                                     {
-                                        prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label
+                                        prov?.params?.title || (prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label)
                                     }
                                 </li>
                             );
