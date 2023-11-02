@@ -122,6 +122,7 @@ class Cyclomedia extends React.Component {
     onClose = () => {
         this.props.setCurrentTask(null);
         this.setState({status: Status.LOGIN, loginFailed: false});
+        this.iframe = null;
     };
     render() {
         if (!this.props.active) {
