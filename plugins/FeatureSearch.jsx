@@ -92,6 +92,7 @@ class FeatureSearch extends React.Component {
         return (
             <form className="feature-search-form" disabled={this.state.busy} onChange={() => this.setState({searchResults: null})} onSubmit={this.search}>
                 <fieldset disabled={this.state.busy}>
+                    {provider.params.description ? (<div className="feature-search-form-descr">{provider.params.description}</div>) : null}
                     <table><tbody>
                         {Object.entries(provider.params.fields).map(([key, value]) => (
                             <tr key={key}>
@@ -127,12 +128,13 @@ class FeatureSearch extends React.Component {
         if (!this.state.searchResults) {
             return null;
         }
+        const provider = this.state.searchProviders[this.state.selectedProvider];
         return (
             <div className="feature-search-results">
                 {isEmpty(this.state.searchResults) ? (
                     <div className="feature-search-noresults">{LocaleUtils.tr("featuresearch.noresults")}</div>
                 ) : (
-                    <IdentifyViewer collapsible displayResultTree={false} enableExport identifyResults={this.state.searchResults} />
+                    <IdentifyViewer collapsible displayResultTree={false} enableExport identifyResults={this.state.searchResults} showLayerTitles={!provider.params.resultTitle} />
                 )}
             </div>
         );
@@ -180,6 +182,18 @@ class FeatureSearch extends React.Component {
         this.setState({busy: true, searchResults: null});
         axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
             const results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);
+            if (provider.params.resultTitle) {
+                Object.entries(results).forEach(([layername, features]) => {
+                    features.forEach(feature => {
+                        const formatValues = {
+                            ...feature.properties,
+                            id: feature.id,
+                            layername: layername
+                        };
+                        feature.displayname = provider.params.resultTitle.replace(/{([^}]+)}/g, match => formatValues[match.slice(1, -1)]);
+                    });
+                });
+            }
             this.setState({busy: false, searchResults: results});
         }).catch(() => {
             this.setState({busy: false, searchResults: {}});

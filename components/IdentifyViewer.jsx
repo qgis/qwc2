@@ -162,6 +162,7 @@ class IdentifyViewer extends React.Component {
         replaceImageUrls: PropTypes.bool,
         setActiveLayerInfo: PropTypes.func,
         showIframeDialog: PropTypes.func,
+        showLayerTitles: PropTypes.bool,
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
     };
@@ -170,7 +171,8 @@ class IdentifyViewer extends React.Component {
         customExporters: [],
         displayResultTree: true,
         attributeCalculator: (/* layer, feature */) => { return []; },
-        attributeTransform: (name, value /* , layer, feature */) => value
+        attributeTransform: (name, value /* , layer, feature */) => value,
+        showLayerNames: true
     };
     state = {
         expanded: {},
@@ -462,7 +464,7 @@ class IdentifyViewer extends React.Component {
                     ) : (
                         <Icon icon="minus" onClick={() => this.removeResult(layer, result)} />
                     )}
-                    <span>{result.layertitle + ": " + result.displayname}</span>
+                    <span>{(this.props.showLayerTitles ? (result.layertitle + ": ") : "") + result.displayname}</span>
                     {zoomToFeatureButton}
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
                 </div>
