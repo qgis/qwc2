@@ -216,12 +216,12 @@ class Cyclomedia extends React.Component {
                 this.iframe = iframe;
             }
         } else if (!iframe.getAttribute("callback-registered")) {
-            if (iframe.contentWindow.registerCallbacks) {
+            if (iframe.contentWindow && iframe.contentWindow.registerCallbacks) {
                 iframe.setAttribute("callback-registered", true);
                 iframe.contentWindow.registerCallbacks(this.apiInitialized, this.panoramaPositionChanged, this.measurementChanged);
             }
         } else if (!iframe.getAttribute("init-called")) {
-            if (iframe.contentWindow.StreetSmartApi) {
+            if (iframe.contentWindow && iframe.contentWindow.StreetSmartApi) {
                 iframe.setAttribute("init-called", true);
                 iframe.contentWindow.initApi();
             }
