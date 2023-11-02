@@ -403,6 +403,9 @@ class Cyclomedia extends React.Component {
                 measureCallback = _measureCallback;
             }
             </script>
+            <style>
+              html, body, #streetsmartApi {height: 100%;}
+            </style>
             </head>
             <body style="margin: 0">
             <div id="streetsmartApi">
