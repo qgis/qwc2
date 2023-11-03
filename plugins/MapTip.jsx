@@ -10,6 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
+import {v1 as uuidv1} from 'uuid';
 import htmlReactParser, {domToReact} from 'html-react-parser';
 import {showIframeDialog} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -48,17 +49,13 @@ class MapTip extends React.Component {
         maxWidth: "20em"
     };
     state = {
+        reqId: null,
         maptips: [],
         pos: null
     };
-    componentDidMount() {
-        document.getElementById('map').addEventListener('mouseleave', () => {
-            this.clearMaptip();
-        });
-    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.map !== prevProps.map || this.props.theme !== prevProps.theme) {
-            clearTimeout(this.timeoutId);
+            this.clearMaptip();
         }
         if (this.props.mapTipsEnabled && this.props.mousepos &&
             this.props.mousepos !== prevProps.mousepos &&
@@ -69,23 +66,20 @@ class MapTip extends React.Component {
             )
         ) {
             this.clearMaptip();
-            const pos = this.props.mousepos.pixel;
-            this.setState({pos});
-            this.timeoutId = setTimeout(() => this.queryMapTip(), 500);
+            this.timeoutId = setTimeout(() => this.queryMapTip(this.props.mousepos.pixel), 500);
         } else if (!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
-            this.clearMaptip();
-        }
-        if (!isEmpty(prevState.maptips) && isEmpty(this.state.maptips)) {
             this.clearMaptip();
         }
     }
     clearMaptip = () => {
         clearTimeout(this.timeoutId);
         this.timeoutId = null;
-        this.props.removeLayer('maptipselection');
-        this.setState({maptips: [], pos: null});
+        if (this.state.pos) {
+            this.props.removeLayer('maptipselection');
+            this.setState({maptips: [], pos: null, reqId: null});
+        }
     };
-    queryMapTip = () => {
+    queryMapTip = (pos) => {
         this.timeoutId = null;
         const options = {
             info_format: 'text/xml',
@@ -106,18 +100,22 @@ class MapTip extends React.Component {
         if (!ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) && layer.drawingOrder) {
             queryLayers = layer.drawingOrder.slice(0).reverse().filter(entry => layer.queryLayers.includes(entry)).join(",");
         }
+        const reqId = uuidv1();
+        this.setState({reqId: reqId});
 
         const request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
         IdentifyUtils.sendRequest(request, (response) => {
-            const mapTips = [];
-            if (response) {
-                const result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+            if (this.state.reqId === reqId) {
+                const mapTips = [];
                 const features = [];
-                for (const layerName of request.params.layers.split(",")) {
-                    for (const feature of result[layerName] || []) {
-                        if (feature.properties.maptip) {
-                            features.push(feature);
-                            mapTips.push(feature.properties.maptip);
+                if (response) {
+                    const result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                    for (const layerName of request.params.layers.split(",")) {
+                        for (const feature of result[layerName] || []) {
+                            if (feature.properties.maptip) {
+                                features.push(feature);
+                                mapTips.push(feature.properties.maptip);
+                            }
                         }
                     }
                 }
@@ -128,8 +126,8 @@ class MapTip extends React.Component {
                     };
                     this.props.addLayerFeatures(sellayer, features, true);
                 }
+                this.setState({pos: pos, maptips: mapTips, reqId: null});
             }
-            this.setState({maptips: mapTips});
         });
     };
     render() {
@@ -146,7 +144,7 @@ class MapTip extends React.Component {
                 top: (this.state.pos[1] - 8) + "px"
             };
             return [(
-                <div id="MapTipPointerBuffer" key="MapTipPointerBuffer" style={bufferPos} />
+                <div className="MapTipPointerBufferr" key="MapTipPointerBuffer" style={bufferPos} />
             ), (
                 <div
                     id="MapTip" key="MapTip"
