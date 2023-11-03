@@ -283,7 +283,6 @@ const VectorLayerUtils = {
         const kmlFormat = new ol.format.KML({defaultStyle: [new ol.style.Style()]});
         const geojsonFormat = new ol.format.GeoJSON();
         const features = [];
-        let fid = 0;
         for (const olFeature of kmlFormat.readFeatures(kml)) {
             let style = olFeature.getStyleFunction()(olFeature);
             style = style[0] || style;
@@ -313,7 +312,7 @@ const VectorLayerUtils = {
             Object.assign(feature, {
                 styleName: styleOptions.iconSrc ? 'marker' : 'default',
                 styleOptions: styleOptions,
-                id: fid++,
+                id: uuidv1(),
                 crs: "EPSG:4326",
                 properties: {}
             });
