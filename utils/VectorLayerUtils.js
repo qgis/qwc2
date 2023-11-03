@@ -10,13 +10,15 @@ import {v1 as uuidv1} from 'uuid';
 import ol from 'openlayers';
 import isEmpty from 'lodash.isempty';
 import geojsonBbox from 'geojson-bounding-box';
+import svgpath from 'svgpath';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import {getDefaultImageStyle} from 'ol/format/KML';
+import {END_MARKERS} from '../utils/FeatureStyles';
 
 
 const VectorLayerUtils = {
-    createPrintHighlighParams(layers, printCrs, dpi = 96, scaleFactor = 1.0) {
+    createPrintHighlighParams(layers, printCrs, printScale, dpi = 96, scaleFactor = 1.0) {
         const qgisServerVersion = ConfigUtils.getConfigProp("qgisServerVersion") || 3;
         const params = {
             geoms: [],
@@ -52,6 +54,13 @@ const VectorLayerUtils = {
                     });
                     if (filteredCoordinates.length < 2) {
                         continue;
+                    }
+                    // Generate arrow heads
+                    if (feature.styleOptions.headmarker) {
+                        VectorLayerUtils.generateMarkerGeometry(params, feature.styleOptions.headmarker, false, feature, layer, dpi, printScale, printCrs, scaleFactor);
+                    }
+                    if (feature.styleOptions.tailmarker) {
+                        VectorLayerUtils.generateMarkerGeometry(params, feature.styleOptions.tailmarker, true, feature, layer, dpi, printScale, printCrs, scaleFactor);
                     }
                 }
                 if (feature.geometry.type === "LineString" && !isEmpty(properties.segment_labels)) {
@@ -185,6 +194,68 @@ const VectorLayerUtils = {
                    '</StyledLayerDescriptor>';
         }
         return null;
+    },
+    generateMarkerGeometry(params, markername, tail, feature, layer, dpi, mapScale, printCrs, scaleFactor) {
+        if (!END_MARKERS[markername]) {
+            return;
+        }
+        const marker = END_MARKERS[markername];
+        // Read the SVG and generate a matching WKT geometry for the marker
+        let path = '';
+        let width = 0;
+        let height = 0;
+        try {
+            const parser = new DOMParser();
+            const svgSrc = atob(marker.src.slice(26));
+            const svgDoc = parser.parseFromString(svgSrc, "text/xml");
+            width = parseInt(svgDoc.getElementsByTagName("svg")[0].getAttribute("width"), 10);
+            height = parseInt(svgDoc.getElementsByTagName("svg")[0].getAttribute("height"), 10);
+            path = svgDoc.getElementsByTagName("path")[0].getAttribute("d");
+        } catch (e) {
+            /* eslint-disable-next-line */
+            console.warn("Could not parse path for marker " + markername);
+            return;
+        }
+        //                        [        Same as in FeatureStyles.js         ] [   pixel to map units  ]
+        const markerScaleFactor = 0.125 * (1 + feature.styleOptions.strokeWidth) / dpi * 0.0254 * mapScale * scaleFactor;
+        const origin = feature.geometry.coordinates[tail ? feature.geometry.coordinates.length - 1 : 0];
+        const p2 = feature.geometry.coordinates[tail ? feature.geometry.coordinates.length - 2 : 1];
+        const coordinates = [];
+        const angle = 0.5 * Math.PI + Math.atan2(origin[0] - p2[0], origin[1] - p2[1]);
+        const alpha = marker.baserotation / 180 * Math.PI + angle;
+        const cosa = Math.cos(alpha);
+        const sina = Math.sin(alpha);
+        svgpath(path).iterate((segment, index, x, y) => {
+            // Skip move instructions
+            if (["m", "M"].includes(segment[0])) {
+                return;
+            }
+            const dx = (x - marker.anchor[0] * width) * markerScaleFactor;
+            const dy = (y - marker.anchor[1] * height) * markerScaleFactor;
+            const rx = cosa * dx + sina * dy;
+            const ry = -sina * dx + cosa * dy;
+            coordinates.push([origin[0] + rx, origin[1] + ry]);
+        });
+        // Closing coordinate
+        coordinates.push(coordinates[0]);
+        const geometry = {
+            type: "Polygon",
+            coordinates: [coordinates]
+        };
+        const styleOptions = {
+            strokeWidth: 1,
+            strokeDash: [],
+            strokeColor: feature.styleOptions.strokeColor,
+            fillColor: feature.styleOptions.strokeColor
+        };
+
+        params.styles.push(VectorLayerUtils.createSld(geometry.type, "default", styleOptions, layer.opacity, dpi, scaleFactor));
+        params.labels.push(" ");
+        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
+        params.labelFillColors.push("");
+        params.labelOultineColors.push("");
+        params.labelOutlineSizes.push("");
+        params.labelSizes.push("");
     },
     reprojectGeometry(geometry, srccrs, dstcrs) {
         if (srccrs === dstcrs || !srccrs || !dstcrs) {

@@ -172,7 +172,7 @@ class MapExport extends React.Component {
             scaleFactor = mapScale / this.state.scale;
         }
         const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, mapScale, this.props.map.projection, exportExternalLayers);
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.props.map.projection, this.state.dpi);
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.props.map.projection, mapScale, this.state.dpi);
 
         return (
             <div className="mapexport-body">

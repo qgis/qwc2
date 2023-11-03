@@ -145,7 +145,7 @@ const defaultStyle = (feature, options) => {
                 anchorYUnits: 'fraction',
                 color: opts.strokeColor,
                 rotation: END_MARKERS[opts.headmarker].baserotation / 180 * Math.PI + rotation,
-                scale: 0.125 * (1 + opts.strokeWidth)
+                scale: 0.125 * (1 + opts.strokeWidth) // Also update in VectorLayerUtils.generateMarkerGeometry
             })
         }));
     }
@@ -162,7 +162,7 @@ const defaultStyle = (feature, options) => {
                 anchorYUnits: 'fraction',
                 color: opts.strokeColor,
                 rotation: END_MARKERS[opts.tailmarker].baserotation / 180 * Math.PI + rotation,
-                scale: 0.125 * (1 + opts.strokeWidth)
+                scale: 0.125 * (1 + opts.strokeWidth) // Also update in VectorLayerUtils.generateMarkerGeometry
             })
         }));
     }

@@ -210,7 +210,7 @@ class Print extends React.Component {
 
         const labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, printDpi, this.props.scaleFactor);
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, printDpi, this.props.scaleFactor);
 
         const dimensionValues = this.props.layers.reduce((res, layer) => {
             if (layer.role === LayerRole.THEME) {
