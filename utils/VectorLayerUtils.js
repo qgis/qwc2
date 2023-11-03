@@ -313,10 +313,11 @@ const VectorLayerUtils = {
             Object.assign(feature, {
                 styleName: styleOptions.iconSrc ? 'marker' : 'default',
                 styleOptions: styleOptions,
-                id: fid++,
+                id: uuidv1(),
                 crs: "EPSG:4326",
                 properties: {}
             });
+            fid++
             const properties = olFeature.getProperties();
             const excludedProperties = ['visibility', olFeature.getGeometryName()];
             for (const key of Object.keys(properties)) {
