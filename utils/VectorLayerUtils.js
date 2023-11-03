@@ -283,7 +283,6 @@ const VectorLayerUtils = {
         const kmlFormat = new ol.format.KML({defaultStyle: [new ol.style.Style()]});
         const geojsonFormat = new ol.format.GeoJSON();
         const features = [];
-        let fid = 0;
         for (const olFeature of kmlFormat.readFeatures(kml)) {
             let style = olFeature.getStyleFunction()(olFeature);
             style = style[0] || style;
@@ -317,7 +316,6 @@ const VectorLayerUtils = {
                 crs: "EPSG:4326",
                 properties: {}
             });
-            fid++
             const properties = olFeature.getProperties();
             const excludedProperties = ['visibility', olFeature.getGeometryName()];
             for (const key of Object.keys(properties)) {
