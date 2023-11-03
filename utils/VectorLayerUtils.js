@@ -42,19 +42,12 @@ const VectorLayerUtils = {
                 continue;
             }
             for (const feature of layer.features) {
-                if (!feature.geometry) {
+                if (!VectorLayerUtils.validateGeometry(feature.geometry)) {
                     continue;
                 }
                 const properties = feature.properties || {};
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
-                // Filter degenerate geometries coordinates
                 if (feature.geometry.type === "LineString") {
-                    const filteredCoordinates = geometry.coordinates.filter((item, pos, arr) => {
-                        return pos === 0 || item[0] !== arr[pos - 1][0] || item[1] !== arr[pos - 1][1];
-                    });
-                    if (filteredCoordinates.length < 2) {
-                        continue;
-                    }
                     // Generate arrow heads
                     if (feature.styleOptions.headmarker) {
                         VectorLayerUtils.generateMarkerGeometry(params, feature.styleOptions.headmarker, false, feature, layer, dpi, printScale, printCrs, scaleFactor);
@@ -112,6 +105,33 @@ const VectorLayerUtils = {
             }
         }
         return params;
+    },
+    validateGeometry(geometry) {
+        if (!geometry) {
+            return false;
+        }
+        if (geometry.type === "Point") {
+            return !isEmpty(geometry.coordinates);
+        }
+        const removeDuplicates = (coordinates) => {
+            if (Array.isArray(coordinates[0][0])) {
+                return coordinates.map(removeDuplicates);
+            } else {
+                return coordinates.filter((item, pos, arr) => {
+                    return pos === 0 || item[0] !== arr[pos - 1][0] || item[1] !== arr[pos - 1][1];
+                });
+            }
+        };
+        const cleanCoordinates = removeDuplicates(geometry.coordinates);
+        const minLength = geometry.type.endsWith("LineString") ? 2 : 3;
+        const isDegenerate = (coordinates) => {
+            if (Array.isArray(coordinates[0][0])) {
+                return coordinates.map(isDegenerate).find(entry => entry === false);
+            } else {
+                return coordinates.length < minLength;
+            }
+        };
+        return !isDegenerate(cleanCoordinates);
     },
     createSld(geometrytype, styleName, styleOptions, layerOpacity, dpi = 96, scaleFactor = 1.0) {
         let opts = {};
