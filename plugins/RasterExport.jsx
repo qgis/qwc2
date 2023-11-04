@@ -251,6 +251,7 @@ class RasterExport extends React.Component {
                     <input name="HIGHLIGHT_LABELBUFFERCOLOR" readOnly type="hidden" value={highlightParams.labelOultineColors.join(";")} />
                     <input name="HIGHLIGHT_LABELBUFFERSIZE" readOnly type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
                     <input name="HIGHLIGHT_LABELSIZE" readOnly type="hidden" value={highlightParams.labelSizes.join(";")} />
+                    <input name="HIGHLIGHT_LABEL_DISTANCE" readOnly type="hidden" value={highlightParams.labelDist.join(";")} />
                     {Object.entries(dimensionValues).map(([key, value]) => (
                         <input key={key} name={key} readOnly type="hidden" value={value} />
                     ))}

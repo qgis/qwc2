@@ -27,7 +27,8 @@ const VectorLayerUtils = {
             labelFillColors: [],
             labelOultineColors: [],
             labelOutlineSizes: [],
-            labelSizes: []
+            labelSizes: [],
+            labelDist: []
         };
         let ensureHex = null;
         if (qgisServerVersion >= 3) {
@@ -72,6 +73,7 @@ const VectorLayerUtils = {
                         params.labelOultineColors.push(styleOptions.textStroke);
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
+                        params.labelDist.push("-5");
                     }
                 } else {
                     params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, styleOptions, layer.opacity, dpi, scaleFactor));
@@ -102,6 +104,7 @@ const VectorLayerUtils = {
                         params.labelOultineColors.push(styleOptions.textStroke);
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
+                        params.labelDist.push("-5");
                     }
                 }
             }
@@ -278,6 +281,7 @@ const VectorLayerUtils = {
         params.labelOultineColors.push("#FFF");
         params.labelOutlineSizes.push(scaleFactor);
         params.labelSizes.push(Math.round(10 * scaleFactor));
+        params.labelDist.push("0");
     },
     reprojectGeometry(geometry, srccrs, dstcrs) {
         if (srccrs === dstcrs || !srccrs || !dstcrs) {
