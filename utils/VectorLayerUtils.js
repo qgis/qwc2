@@ -270,12 +270,12 @@ const VectorLayerUtils = {
         };
 
         params.styles.push(VectorLayerUtils.createSld(geometry.type, "default", styleOptions, layer.opacity, dpi, scaleFactor));
-        params.labels.push(" ");
         params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
-        params.labelFillColors.push("");
-        params.labelOultineColors.push("");
-        params.labelOutlineSizes.push("");
-        params.labelSizes.push("");
+        params.labels.push(" ");
+        params.labelFillColors.push("#FFF");
+        params.labelOultineColors.push("#FFF");
+        params.labelOutlineSizes.push(scaleFactor);
+        params.labelSizes.push(Math.round(10 * scaleFactor));
     },
     reprojectGeometry(geometry, srccrs, dstcrs) {
         if (srccrs === dstcrs || !srccrs || !dstcrs) {
