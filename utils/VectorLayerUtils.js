@@ -14,7 +14,7 @@ import svgpath from 'svgpath';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import {getDefaultImageStyle} from 'ol/format/KML';
-import {END_MARKERS} from '../utils/FeatureStyles';
+import {END_MARKERS, computeFeatureStyle} from '../utils/FeatureStyles';
 
 
 const VectorLayerUtils = {
@@ -29,7 +29,6 @@ const VectorLayerUtils = {
             labelOutlineSizes: [],
             labelSizes: []
         };
-        const defaultFeatureStyle = ConfigUtils.getConfigProp("defaultFeatureStyle");
         let ensureHex = null;
         if (qgisServerVersion >= 3) {
             ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : '#' + [255 - (rgb.length > 3 ? rgb[3] : 1) * 255, ...rgb.slice(0, 3)].map(v => v.toString(16).padStart(2, '0')).join(''));
@@ -45,15 +44,17 @@ const VectorLayerUtils = {
                 if (!VectorLayerUtils.validateGeometry(feature.geometry)) {
                     continue;
                 }
+                const styleOptions = computeFeatureStyle(feature);
+
                 const properties = feature.properties || {};
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
                 if (feature.geometry.type === "LineString") {
                     // Generate arrow heads
-                    if (feature.styleOptions.headmarker) {
-                        VectorLayerUtils.generateMarkerGeometry(params, feature.styleOptions.headmarker, false, feature, layer, dpi, printScale, printCrs, scaleFactor);
+                    if (styleOptions.headmarker) {
+                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.headmarker, false, feature, layer, dpi, printScale, printCrs, scaleFactor);
                     }
-                    if (feature.styleOptions.tailmarker) {
-                        VectorLayerUtils.generateMarkerGeometry(params, feature.styleOptions.tailmarker, true, feature, layer, dpi, printScale, printCrs, scaleFactor);
+                    if (styleOptions.tailmarker) {
+                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.tailmarker, true, feature, layer, dpi, printScale, printCrs, scaleFactor);
                     }
                 }
                 if (feature.geometry.type === "LineString" && !isEmpty(properties.segment_labels)) {
@@ -64,16 +65,16 @@ const VectorLayerUtils = {
                             type: "LineString",
                             coordinates: [coords[i], coords[i + 1]]
                         };
-                        params.styles.push(VectorLayerUtils.createSld(segment.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
+                        params.styles.push(VectorLayerUtils.createSld(segment.type, feature.styleName, styleOptions, layer.opacity, dpi, scaleFactor));
                         params.labels.push(properties.segment_labels[i] || " ");
                         params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(segment, printCrs === "EPSG:4326" ? 4 : 2));
-                        params.labelFillColors.push(defaultFeatureStyle.textFill);
-                        params.labelOultineColors.push(defaultFeatureStyle.textStroke);
+                        params.labelFillColors.push(styleOptions.textFill);
+                        params.labelOultineColors.push(styleOptions.textStroke);
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                     }
                 } else {
-                    params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, feature.styleOptions, layer.opacity, dpi, scaleFactor));
+                    params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, styleOptions, layer.opacity, dpi, scaleFactor));
                     params.labels.push(properties.label || " ");
                     if (feature.styleName === "text") {
                         // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
@@ -90,14 +91,15 @@ const VectorLayerUtils = {
                             ]]
                         };
                         params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
-                        params.labelFillColors.push(ensureHex(feature.styleOptions.fillColor));
-                        params.labelOultineColors.push(ensureHex(feature.styleOptions.strokeColor));
-                        params.labelOutlineSizes.push(scaleFactor * feature.styleOptions.strokeWidth * 0.5);
-                        params.labelSizes.push(Math.round(10 * feature.styleOptions.strokeWidth * scaleFactor));
+                        params.labelFillColors.push(ensureHex(styleOptions.fillColor));
+                        params.labelOultineColors.push(ensureHex(styleOptions.strokeColor));
+                        params.labelOutlineSizes.push(scaleFactor * styleOptions.strokeWidth * 0.5);
+                        params.labelSizes.push(Math.round(10 * styleOptions.strokeWidth * scaleFactor));
+                        params.labelDist.push("5");
                     } else {
                         params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
-                        params.labelFillColors.push(defaultFeatureStyle.textFill);
-                        params.labelOultineColors.push(defaultFeatureStyle.textStroke);
+                        params.labelFillColors.push(styleOptions.textFill);
+                        params.labelOultineColors.push(styleOptions.textStroke);
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                     }
@@ -151,7 +153,7 @@ const VectorLayerUtils = {
             };
         } else {
             // Default style
-            opts = {...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...styleOptions};
+            opts = styleOptions;
         }
         const dpiScale = dpi / 96 * scaleFactor;
 
