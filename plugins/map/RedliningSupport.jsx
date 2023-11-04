@@ -503,7 +503,6 @@ class RedliningSupport extends React.Component {
             this.resetSelectedFeature();
             return;
         }
-        this.updateMeasurements();
 
         const feature = this.currentFeatureObject();
         if (this.currentFeature.getGeometry() instanceof ol.geom.Circle) {
