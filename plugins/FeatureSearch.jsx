@@ -33,12 +33,15 @@ class FeatureSearch extends React.Component {
     };
     state = {
         busy: false,
-        searchProviders: [],
+        searchProviders: {},
+        providerGroups: {},
         selectedProvider: '',
         searchResults: null
     };
     componentDidUpdate(prevProps) {
         if (this.props.theme !== prevProps.theme) {
+            let defaultProvider = '';
+            const providerGroups = {};
             const searchProviders = (this.props.theme?.searchProviders || []).reduce((res, entry) => {
                 if (entry.provider === "qgis" && entry.params) {
                     const providerDef = {...entry};
@@ -48,11 +51,27 @@ class FeatureSearch extends React.Component {
                             TEXT: {label: LocaleUtils.tr("featuresearch.query"), type: "text"}
                         };
                     }
-                    res[uuidv1()] = providerDef;
+                    if (providerDef.params.titlemsgid) {
+                        providerDef.params.title = LocaleUtils.tr(providerDef.params.titlemsgid);
+                    }
+                    const providerId = uuidv1();
+                    res[providerId] = providerDef;
+                    if (providerDef.params.default) {
+                        defaultProvider = providerId;
+                    }
+                    const group = providerDef.params.group || '';
+                    providerGroups[group] = [
+                        ...(providerGroups[group] || []),
+                        providerId
+                    ];
                 }
                 return res;
             }, {});
-            this.setState({searchProviders: searchProviders});
+            const sortedProviderGroups = Object.keys(providerGroups).sort().reduce((res, group) => {
+                res[group] = providerGroups[group].sort((a, b) => searchProviders[a].params.title.localeCompare(searchProviders[b].params.title));
+                return res;
+            }, {});
+            this.setState({searchProviders: searchProviders, selectedProvider: defaultProvider, providerGroups: sortedProviderGroups});
         }
     }
     onHide = () => {
@@ -74,9 +93,16 @@ class FeatureSearch extends React.Component {
                 <div className="feature-search-selection">
                     <select onChange={this.selectProvider} value={this.state.selectedProvider}>
                         <option disabled value="">{LocaleUtils.tr("featuresearch.select")}</option>
-                        {Object.entries(this.state.searchProviders).map(([key, entry]) => (
-                            <option key={key} value={key}>{entry.params.title || LocaleUtils.tr(entry.params.titlemsgid)}</option>
-                        ))}
+                        {Object.entries(this.state.providerGroups).map(([group, entries]) => {
+                            return [
+                                group !== '' ? (<option disabled key={group} value={group}>{group}</option>) : null,
+                                entries.map(providerId => (
+                                    <option key={providerId} value={providerId}>
+                                        {this.state.searchProviders[providerId].params.title}
+                                    </option>
+                                ))
+                            ];
+                        })}
                     </select>
                 </div>
                 {this.renderSearchForm()}
