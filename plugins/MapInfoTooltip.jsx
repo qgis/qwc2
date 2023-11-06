@@ -199,7 +199,7 @@ class MapInfoTooltip extends React.Component {
                             </tbody>
                         </table>
                         {routingButtons}
-                        {this.props.plugins.map((Plugin, idx) => (<Plugin key={idx} point={this.state.point} closePopup={this.clear} />))}
+                        {this.props.plugins.map((Plugin, idx) => (<Plugin key={idx} point={this.state.point} closePopup={this.clear} projection={this.props.map.projection} />))}
                     </div>
                 </div>
             </div>
