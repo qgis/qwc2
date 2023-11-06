@@ -172,7 +172,7 @@ class IdentifyViewer extends React.Component {
         displayResultTree: true,
         attributeCalculator: (/* layer, feature */) => { return []; },
         attributeTransform: (name, value /* , layer, feature */) => value,
-        showLayerNames: true
+        showLayerTitles: true
     };
     state = {
         expanded: {},
