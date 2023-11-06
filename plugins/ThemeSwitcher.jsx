@@ -28,10 +28,10 @@ class ThemeSwitcher extends React.Component {
         /** Whether to allow collapsing theme groups. */
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.object,
-        /** Wether to show the theme filter field in the top bar. **/
-        showThemeFilter: PropTypes.bool,
         /** Whether to show the LayerTree by default after switching the theme. */
         showLayerAfterChangeTheme: PropTypes.bool,
+        /** Wether to show the theme filter field in the top bar. **/
+        showThemeFilter: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         /** The default window size for the theme layers dialog. */
