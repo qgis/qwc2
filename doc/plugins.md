@@ -639,6 +639,7 @@ Theme switcher panel.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | collapsibleGroups | `bool` | Whether to allow collapsing theme groups. | `undefined` |
+| showThemeFilter | `bool` | Wether to show the theme filter field in the top bar. * | `true` |
 | showLayerAfterChangeTheme | `bool` | Whether to show the LayerTree by default after switching the theme. | `false` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | themeLayersListWindowSize | `{`<br />`  width: number,`<br />`  height: number,`<br />`}` | The default window size for the theme layers dialog. | `{width: 400, height: 300}` |
