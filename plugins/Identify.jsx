@@ -15,6 +15,7 @@ import buffer from "@turf/buffer";
 import { point as turfpoint } from "@turf/helpers";
 import {LayerRole, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import {changeSelectionState} from '../actions/selection';
+import {setCurrentTask} from '../actions/task';
 import IdentifyViewer from '../components/IdentifyViewer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
@@ -55,6 +56,8 @@ class Identify extends React.Component {
         displayResultTree: PropTypes.bool,
         /** Whether to enable the export functionality. */
         enableExport: PropTypes.bool,
+        /** Whether to clear the task when the results window is closed. */
+        exitTaskOnResultsClose: PropTypes.bool,
         /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
         featureInfoReturnsLayerName: PropTypes.bool,
         /** Default window geometry with size, position and docking status. */
@@ -78,7 +81,8 @@ class Identify extends React.Component {
         removeMarker: PropTypes.func,
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
-        selection: PropTypes.object
+        selection: PropTypes.object,
+        setCurrentTask: PropTypes.func
     };
     static defaultProps = {
         enableExport: true,
@@ -303,6 +307,12 @@ class Identify extends React.Component {
             this.clearResults();
         }
     };
+    onWindowClose = () => {
+        this.clearResults();
+        if (this.props.exitTaskOnResultsClose) {
+            this.props.setCurrentTask(null);
+        }
+    };
     clearResults = () => {
         this.props.removeMarker('identify');
         this.props.removeLayer("identifyslection");
@@ -385,7 +395,7 @@ class Identify extends React.Component {
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY} initiallyDocked={this.props.geometry.initiallyDocked}
                     key="IdentifyWindow"
-                    onClose={this.clearResults} title={LocaleUtils.trmsg("identify.title")}
+                    onClose={this.onWindowClose} title={LocaleUtils.trmsg("identify.title")}
                 >
                     {body}
                 </ResizeableWindow>
@@ -415,5 +425,6 @@ export default connect(selector, {
     addMarker: addMarker,
     changeSelectionState: changeSelectionState,
     removeMarker: removeMarker,
-    removeLayer: removeLayer
+    removeLayer: removeLayer,
+    setCurrentTask: setCurrentTask
 })(Identify);

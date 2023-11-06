@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
+import {setCurrentTask} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
@@ -43,7 +44,8 @@ class FeatureForm extends React.Component {
         currentEditContext: PropTypes.string,
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
-        iface: PropTypes.object,
+        /** Whether to clear the task when the results window is closed. */
+        exitTaskOnResultsClose: PropTypes.bool,
         /** Default window geometry with size, position and docking status. */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -52,8 +54,10 @@ class FeatureForm extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
+        iface: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
+        setCurrentTask: PropTypes.func,
         setEditContext: PropTypes.func,
         theme: PropTypes.object
     };
@@ -198,7 +202,7 @@ class FeatureForm extends React.Component {
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="FeatureForm"
-                    onClose={this.clearResults} title={LocaleUtils.trmsg("featureform.title")}
+                    onClose={this.onWindowClose} title={LocaleUtils.trmsg("featureform.title")}
                 >
                     {body}
                 </ResizeableWindow>
@@ -214,6 +218,12 @@ class FeatureForm extends React.Component {
     }
     setSelectedFeature = (ev) => {
         this.setState({selectedFeature: ev.target.value});
+    };
+    onWindowClose = () => {
+        this.clearResults();
+        if (this.props.exitTaskOnResultsClose) {
+            this.props.setCurrentTask(null);
+        }
     };
     clearResults = () => {
         if (!this.props.editContext.changed) {
@@ -233,6 +243,7 @@ export default (iface = EditingInterface) => {
         map: state.map,
         theme: state.theme.current
     }), {
+        setCurrentTask: setCurrentTask,
         clearEditContext: clearEditContext,
         setEditContext: setEditContext
     })(FeatureForm);
