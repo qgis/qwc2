@@ -28,6 +28,8 @@ class ThemeSwitcher extends React.Component {
         /** Whether to allow collapsing theme groups. */
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.object,
+        /** Wether to show the theme filter field in the top bar. **/
+        showThemeFilter: PropTypes.bool,
         /** Whether to show the LayerTree by default after switching the theme. */
         showLayerAfterChangeTheme: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
@@ -42,6 +44,7 @@ class ThemeSwitcher extends React.Component {
     };
     static defaultProps = {
         width: "50%",
+        showThemeFilter: true,
         showLayerAfterChangeTheme: false,
         themeLayersListWindowSize: {width: 400, height: 300},
         side: 'right'
@@ -51,7 +54,7 @@ class ThemeSwitcher extends React.Component {
     };
     render() {
         const allowAddingOtherThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true;
-        const extraTitlebarContent = (
+        const themeFilter = this.props.showThemeFilter ? (
             <InputContainer className="theme-switcher-filter">
                 <input onChange={ev => this.setState({filter: ev.target.value})}
                     placeholder={LocaleUtils.tr("themeswitcher.filter")}
@@ -59,7 +62,8 @@ class ThemeSwitcher extends React.Component {
                     type="text" value={this.state.filter}/>
                 <Icon icon="remove" onClick={() => this.setState({filter: ""})} role="suffix" />
             </InputContainer>
-        );
+        ) : null;
+        const extraTitlebarContent = (themeFilter)
         return (
             <div>
                 <SideBar extraTitlebarContent={extraTitlebarContent} icon="themes" id="ThemeSwitcher" minWidth="16em" side={this.props.side}
