@@ -33,7 +33,7 @@ const ThemeUtils = {
         }
         return null;
     },
-    createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers, dispatch) {
+    createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers, dispatch, initialTheme) {
         const bgLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
@@ -91,11 +91,11 @@ const ThemeUtils = {
         }
         if (visibleIdx >= 0) {
             bgLayers[visibleIdx].visibility = true;
-        } else if (defaultVisibleIdx >= 0 && visibleLayer !== "") {
-            if (visibleLayer !== null) {
-                dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleLayer), NotificationType.WARN, true));
-            }
+        } else if (defaultVisibleIdx >= 0) {
             bgLayers[defaultVisibleIdx].visibility = true;
+        }
+        if (initialTheme && visibleIdx === -1 && visibleLayer) {
+            dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleLayer), NotificationType.WARN, true));
         }
         return bgLayers;
     },

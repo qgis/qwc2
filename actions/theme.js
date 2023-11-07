@@ -44,7 +44,7 @@ export function setThemeLayersList(theme) {
     };
 }
 
-export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer) {
+export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme) {
     // Create layer
     const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
     let layers = [themeLayer];
@@ -67,7 +67,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
     }
 
     // Add background layers for theme
-    for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer, externalLayers, dispatch)) {
+    for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer, externalLayers, dispatch, initialTheme)) {
         dispatch(addLayer(bgLayer));
     }
     if (visibleBgLayer === "") {
@@ -108,6 +108,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
 
 export function setCurrentTheme(theme, themes, preserve = true, initialView = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null) {
     return (dispatch, getState) => {
+        const initialTheme = !getState().theme.current;
         dispatch({
             type: SWITCHING_THEME,
             switching: true
@@ -205,13 +206,13 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                 if (!isEmpty(diff)) {
                     dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
                 }
-                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer);
+                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
             });
         } else {
             if (!isEmpty(missingThemeLayers)) {
                 dispatch(showNotification("missinglayer", LocaleUtils.tr("app.missinglayers", Object.keys(missingThemeLayers).join(", ")), NotificationType.WARN, true));
             }
-            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer);
+            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
         }
     };
 }
