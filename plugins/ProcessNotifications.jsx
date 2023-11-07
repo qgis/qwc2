@@ -50,6 +50,9 @@ class ProcessNotifications extends React.Component {
             icon = (<Icon icon="ok" />);
             close = true;
         } else if (process.status === ProcessStatus.FAILURE) {
+            setTimeout(() => {
+                this.props.clearProcess(process.id);
+            }, 12000);
             icon = (<Icon icon="warning" />);
             close = true;
         }
