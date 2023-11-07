@@ -18,6 +18,7 @@ export default {
                 projection: options.projection,
                 format: new ol.format.MVT({}),
                 url: options.url,
+                tileGrid: options.tileGridConfig ? new ol.tilegrid.TileGrid({...options.tileGridConfig}) : undefined,
                 ...(options.sourceConfig || {})
             }),
             ...(options.layerConfig || {})
