@@ -313,7 +313,7 @@ def getTheme(config, configItem, result, resultItem):
                     keywords.append(value)
 
         # collect WMS layers for printing
-        printLayers = []
+        printLayers = configItem["extraPrintLayers"] if "extraPrintLayers" in configItem else []
         if "backgroundLayers" in configItem:
             printLayers = [entry["printLayer"] for entry in configItem["backgroundLayers"] if "printLayer" in entry]
 

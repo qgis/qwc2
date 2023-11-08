@@ -331,7 +331,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             }
 
             // collect WMS layers for printing
-            let printLayers = [];
+            let printLayers = configItem.extraPrintLayers || [];
             if (configItem.backgroundLayers !== undefined) {
                 printLayers = configItem.backgroundLayers.reduce((printLyrs, entry) => {
                     if (entry.printLayer) {
