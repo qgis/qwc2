@@ -224,6 +224,7 @@ Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` 
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| exitTaskOnResultsClose | `bool` | Whether to clear the task when the results window is closed. | `undefined` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 
 HeightProfile<a name="heightprofile"></a>
@@ -281,6 +282,7 @@ for customized queries and templates for the result presentation.
 | customExporters | `array` | Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `[]` |
 | displayResultTree | `bool` | Whether to display a tree overview of results (as opposed to a flat list of results). | `true` |
 | enableExport | `bool` | Whether to enable the export functionality. | `true` |
+| exitTaskOnResultsClose | `bool` | Whether to clear the task when the results window is closed. | `undefined` |
 | featureInfoReturnsLayerName | `bool` | Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. | `true` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry with size, position and docking status. | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false`<br />`}` |
 | initialRadius | `number` | The initial radius of the identify dialog in radius mode. | `50` |
@@ -417,7 +419,7 @@ Allows exporting a selected portion of the map to a variety of formats.
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale (if `allowedScales` is not `false`). | `0.5` |
 | dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
 | exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
-| formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `query` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS. | `undefined` |
+| formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `query` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS instead of the background layer. | `undefined` |
 | pageSizes | `[{`<br />`  name: string,`<br />`  width: number,`<br />`  height: number,`<br />`}]` | List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. | `[`<br />`    {name: '15 x 15 cm', width: 150, height: 150},`<br />`    {name: '30 x 30 cm', width: 300, height: 300}`<br />`]` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
@@ -639,8 +641,8 @@ Theme switcher panel.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | collapsibleGroups | `bool` | Whether to allow collapsing theme groups. | `undefined` |
-| showThemeFilter | `bool` | Wether to show the theme filter field in the top bar. * | `true` |
 | showLayerAfterChangeTheme | `bool` | Whether to show the LayerTree by default after switching the theme. | `false` |
+| showThemeFilter | `bool` | Wether to show the theme filter field in the top bar. * | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | themeLayersListWindowSize | `{`<br />`  width: number,`<br />`  height: number,`<br />`}` | The default window size for the theme layers dialog. | `{width: 400, height: 300}` |
 | width | `string` | Default width as a CSS string. | `"50%"` |
