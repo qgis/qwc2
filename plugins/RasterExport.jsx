@@ -156,11 +156,11 @@ class RasterExport extends React.Component {
         const exportExternalLayers = this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
 
         const mapScale = this.state.pageSize !== null ? this.state.scale : MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, mapScale, this.props.map.projection, exportExternalLayers);
+        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers);
 
         // Local vector layer features
         const mapCrs = this.props.map.projection;
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, mapScale, this.state.dpi);
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, this.state.dpi);
         const dimensionValues = this.props.layers.reduce((res, layer) => {
             if (layer.role === LayerRole.THEME) {
                 Object.entries(layer.dimensionValues || {}).forEach(([key, value]) => {
