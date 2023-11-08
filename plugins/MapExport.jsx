@@ -171,7 +171,8 @@ class MapExport extends React.Component {
         if (this.state.pageSize === null && this.props.allowedScales !== false) {
             scaleFactor = mapScale / this.state.scale;
         }
-        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, mapScale, this.props.map.projection, exportExternalLayers);
+        const selectedFormatConfiguration = formatConfiguration.find(entry => entry.name === this.state.selectedFormatConfiguration) || {};
+        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, mapScale, this.props.map.projection, exportExternalLayers, !!selectedFormatConfiguration.baseLayer);
         const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.props.map.projection, mapScale, this.state.dpi);
 
         return (

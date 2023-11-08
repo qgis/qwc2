@@ -747,7 +747,7 @@ const LayerUtils = {
             }
         }
     },
-    collectPrintParams(layers, theme, printScale, printCrs, printExternalLayers) {
+    collectPrintParams(layers, theme, printScale, printCrs, printExternalLayers, omitBackgroundLayer) {
         const params = {
             LAYERS: [],
             OPACITIES: [],
@@ -766,7 +766,7 @@ const LayerUtils = {
         }
 
         const backgroundLayer = layers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
-        if (backgroundLayer) {
+        if (backgroundLayer && !omitBackgroundLayer) {
             const backgroundLayerName = backgroundLayer.name;
             const themeBackgroundLayer = theme.backgroundLayers.find(entry => entry.name === backgroundLayerName);
             const printBackgroundLayer = themeBackgroundLayer ? themeBackgroundLayer.printLayer : null;
