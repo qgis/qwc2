@@ -31,7 +31,11 @@ export default class PrintFrame extends React.Component {
         this.recomputeBox(this.props, {});
     }
     componentDidUpdate(prevProps) {
-        if (this.props.map !== prevProps.map || !isEqual(this.props.fixedFrame, prevProps.fixedFrame)) {
+        if (
+            this.props.map.center !== prevProps.map.center ||
+            this.props.map.bbox !== prevProps.map.bbox ||
+            !isEqual(this.props.fixedFrame, prevProps.fixedFrame)
+        ) {
             this.recomputeBox();
         }
         if (!this.props.fixedFrame && prevProps.fixedFrame) {
@@ -64,6 +68,7 @@ export default class PrintFrame extends React.Component {
             };
             this.setState(newState);
         }
+        this.endSelection();
     };
     startSelection = (ev) => {
         const x = Math.round(ev.clientX);

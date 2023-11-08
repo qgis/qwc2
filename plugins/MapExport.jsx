@@ -101,6 +101,7 @@ class MapExport extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (
             this.props.map.center !== prevProps.map.center ||
+            this.props.map.bbox !== prevProps.map.bbox ||
             this.state.pageSize !== prevState.pageSize ||
             this.state.scale !== prevState.scale ||
             this.state.dpi !== prevState.dpi
