@@ -21,7 +21,8 @@ import {
     LineElement,
     Title,
     Tooltip,
-    Filler
+    Filler,
+    BubbleController
 } from 'chart.js';
 import FileSaver from 'file-saver';
 import {addMarker, removeMarker} from '../actions/layers';
@@ -41,7 +42,8 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Filler
+    Filler,
+    BubbleController
 );
 
 class HeightProfilePrintDialog extends React.PureComponent {
