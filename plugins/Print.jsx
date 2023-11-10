@@ -120,7 +120,7 @@ class Print extends React.Component {
                     skipPrint: true
                 };
                 this.props.addLayerFeatures(layer, this.state.atlasFeatures, true);
-            } else {
+            } else if (!isEmpty(prevState.atlasFeatures)) {
                 this.props.clearLayer("print-pick-selection");
             }
         }

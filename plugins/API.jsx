@@ -52,13 +52,23 @@ import * as windowsActions from '../actions/windows';
  *
  * `window.qwc2.drawScratch(geomType, message, drawMultiple, callback, style = null)`
  *
- *  Draw scratch geometries, and return these as GeoJSON to the calling application.
+ *  Deprecated, use `window.qwc2.drawGeometry` instead.
+ *
+ * ---
+ *
+ * `window.qwc2.drawGeometry(geomType, message, callback, options)`
+ *
+ *  Draw geometries, and return these as GeoJSON to the calling application.
  *
  *   * `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
  *   * `message`: A descriptive string to display in the tool taskbar.
- *   * `drawMultiple`: Whether to allow drawing multiple geometries.
  *   * `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
- *   * `style`: Optional, a custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
+ *   * `options`: Optional configuration:
+ *         `drawMultiple`: Whether to allow drawing multiple geometries (default: `false`).
+ *         `style`: A custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
+ *         `initialFeatures`: Array of initial geometries.
+ *         `snapping`: Whether snapping is available while drawing (default: `false`).
+ *         `snappingActive`: Whether snapping is initially active (default: `false`)
  *
  * ---
  *
@@ -77,6 +87,7 @@ class API extends React.Component {
         window.qwc2.LayerRole = LayerRole;
         window.qwc2.addExternalLayer = this.addExternalLayer;
         window.qwc2.drawScratch = this.drawScratch;
+        window.qwc2.drawGeometry = this.drawGeometry;
         window.qwc2.getState = this.getState;
     }
     static propTypes = {
@@ -97,7 +108,20 @@ class API extends React.Component {
         });
     };
     drawScratch = (geomType, message, drawMultiple, callback, style = null) => {
+        /* eslint-disable-next-line */
+        console.warn("window.qwc2.drawScratch is deprecated, use window.qwc2.drawGeometry instead");
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
+    };
+    drawGeometry = (geomType, message, callback, options = {}) => {
+        this.props.setCurrentTask("ScratchDrawing", null, null, {
+            geomType: geomType,
+            message: message,
+            drawMultiple: options.drawMultiple || false,
+            style: options.style,
+            snapping: options.snapping || false,
+            snappingActive: options.snappingActive || false,
+            initialFeatures: options.initialFeatures
+        });
     };
     getState = () => {
         return this.props.state;

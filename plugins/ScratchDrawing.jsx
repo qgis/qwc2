@@ -10,8 +10,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import Mousetrap from 'mousetrap';
+import {v1 as uuidv1} from 'uuid';
 import {changeRedliningState} from '../actions/redlining';
-import {LayerRole, addLayer, removeLayer, clearLayer} from '../actions/layers';
+import {LayerRole, addLayerFeatures, removeLayer, clearLayer} from '../actions/layers';
+import {setSnappingConfig} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -29,7 +31,7 @@ import './style/ScratchDrawing.css';
  */
 class ScratchDrawing extends React.Component {
     static propTypes = {
-        addLayer: PropTypes.func,
+        addLayerFeatures: PropTypes.func,
         changeRedliningState: PropTypes.func,
         clearLayer: PropTypes.func,
         layers: PropTypes.array,
@@ -37,6 +39,7 @@ class ScratchDrawing extends React.Component {
         redlining: PropTypes.object,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        setSnappingConfig: PropTypes.func,
         task: PropTypes.object
     };
     constructor(props) {
@@ -53,19 +56,48 @@ class ScratchDrawing extends React.Component {
         if (prevProps.redlining.layer === "__scratchdrawing" && this.props.redlining.layer !== "__scratchdrawing") {
             this.props.removeLayer("__scratchdrawing");
         }
-        // Call callback if task unset
-        if (this.props.task.id !== prevProps.task.id && prevProps.task.id === "ScratchDrawing" && !this.submitted) {
-            prevProps.task.data.callback(null, null);
+        // Setup redlining state when task is set
+        if (this.props.task.id !== prevProps.task.id && this.props.task.id === "ScratchDrawing") {
+            this.prevstyle = this.props.redlining.style;
+            const data = this.props.task.data || {};
+            this.createDrawLayer(data);
+            this.props.setSnappingConfig(data.snapping, data.snappingActive);
+            this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
+            this.submitted = false;
+            Mousetrap.bind('del', this.triggerDelete);
+        }
+        // Call callback and reset redlining state if task unset
+        if (this.props.task.id !== prevProps.task.id && prevProps.task.id === "ScratchDrawing") {
+            if (!this.submitted) {
+                prevProps.task.data.callback(null, null);
+            }
+            this.props.changeRedliningState({action: null, geomType: null, layer: null, layerTitle: null, drawMultiple: true, style: this.prevstyle || this.props.redlining.style});
+            this.prevstyle = null;
+            Mousetrap.unbind('del', this.triggerDelete);
         }
         this.submitted = false;
-        // Change drawing mode if task data changes
-        if (this.props.task.id === "ScratchDrawing" && this.props.task.data !== prevProps.task.data) {
+        // Reset drawing mode if task data changes
+        if (this.props.task.id === "ScratchDrawing" && prevProps.task.id === "ScratchDrawing" && this.props.task.data !== prevProps.task.data) {
             const data = this.props.task.data || {};
-            this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
+            this.createDrawLayer(data);
+            this.props.setSnappingConfig(data.snapping, data.snappingActive);
+            this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
         }
-        if (this.props.task.id === "ScratchDrawing" && this.props.redlining.geomType !== prevProps.redlining.geomType) {
-            this.props.clearLayer('__scratchdrawing');
-        }
+    }
+    createDrawLayer = (data) => {
+        const features = (data.initialFeatures || []).map(feature => ({
+            ...feature,
+            id: uuidv1(),
+            shape: feature.geometry.type,
+            styleName: 'default',
+            styleOptions: this.styleOptions(this.drawingStyle(data.style))
+        }));
+        const layer = {
+            id: "__scratchdrawing",
+            role: LayerRole.USERLAYER,
+            type: 'vector'
+        };
+        this.props.addLayerFeatures(layer, features, true);
     }
     drawingStyle = (style) => {
         return {
@@ -76,30 +108,23 @@ class ScratchDrawing extends React.Component {
             ...style
         };
     };
+    styleOptions = (styleProps) => {
+        return {
+            strokeColor: styleProps.borderColor,
+            strokeWidth: 1 + 0.5 * styleProps.size,
+            fillColor: styleProps.fillColor,
+            circleRadius: 5 + styleProps.size,
+            strokeDash: [],
+            headmarker: styleProps.headmarker,
+            tailmarker: styleProps.tailmarker
+        };
+    };
     keyPressed = (ev) => {
         if (this.props.task.id === "ScratchDrawing" && ev.keyCode === 27) {
-            if (this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
+            if (this.props.redlining.action === 'PickDraw' && !this.props.redlining.selectedFeature) {
                 this.props.changeRedliningState({action: 'Delete'});
             }
         }
-    };
-    onShow = () => {
-        this.prevstyle = this.props.redlining.style;
-        const data = this.props.task.data || {};
-        const layer = {
-            id: "__scratchdrawing",
-            role: LayerRole.USERLAYER,
-            type: 'vector'
-        };
-        this.props.addLayer(layer);
-        this.props.changeRedliningState({action: 'Draw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
-        this.submitted = false;
-        Mousetrap.bind('del', this.triggerDelete);
-    };
-    onHide = () => {
-        this.props.changeRedliningState({action: null, geomType: null, layer: null, layerTitle: null, drawMultiple: true, style: this.prevstyle || this.props.redlining.style});
-        this.prevstyle = null;
-        Mousetrap.unbind('del', this.triggerDelete);
     };
     updateRedliningState = (diff) => {
         const newState = {...this.props.redlining, ...diff};
@@ -117,7 +142,7 @@ class ScratchDrawing extends React.Component {
     };
     render() {
         return (
-            <TaskBar onHide={this.onHide} onShow={this.onShow} task="ScratchDrawing">
+            <TaskBar task="ScratchDrawing">
                 {() => ({
                     body: this.renderBody()
                 })}
@@ -144,8 +169,9 @@ export default connect((state) => ({
     theme: state.theme.current
 }), {
     changeRedliningState: changeRedliningState,
-    addLayer: addLayer,
+    addLayerFeatures: addLayerFeatures,
     clearLayer: clearLayer,
     removeLayer: removeLayer,
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    setSnappingConfig: setSnappingConfig
 })(ScratchDrawing);
