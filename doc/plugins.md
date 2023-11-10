@@ -77,13 +77,23 @@ Convenience method for adding an external layer.
 
 `window.qwc2.drawScratch(geomType, message, drawMultiple, callback, style = null)`
 
- Draw scratch geometries, and return these as GeoJSON to the calling application.
+ Deprecated, use `window.qwc2.drawGeometry` instead.
+
+---
+
+`window.qwc2.drawGeometry(geomType, message, callback, options)`
+
+ Draw geometries, and return these as GeoJSON to the calling application.
 
   * `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
   * `message`: A descriptive string to display in the tool taskbar.
-  * `drawMultiple`: Whether to allow drawing multiple geometries.
   * `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
-  * `style`: Optional, a custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
+  * `options`: Optional configuration:
+        `drawMultiple`: Whether to allow drawing multiple geometries (default: `false`).
+        `style`: A custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
+        `initialFeatures`: Array of initial geometries.
+        `snapping`: Whether snapping is available while drawing (default: `false`).
+        `snappingActive`: Whether snapping is initially active (default: `false`)
 
 ---
 
