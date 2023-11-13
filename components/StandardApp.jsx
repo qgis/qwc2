@@ -10,11 +10,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Provider, connect} from 'react-redux';
 
-// Needed for IE11 to avoid 'Promise not defined' error in axios
-import "core-js/stable";
-import "regenerator-runtime/runtime";
-
-
 import axios from 'axios';
 import Proj4js from 'proj4';
 import {register as olProj4Register} from 'ol/proj/proj4';
