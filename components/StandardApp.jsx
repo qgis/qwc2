@@ -115,9 +115,9 @@ class AppInitComponent extends React.Component {
                     }
                     if (params.t) {
                         this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
+                        params.l = undefined;
                     }
                     theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
-                    params.l = undefined;
                 }
                 const layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
