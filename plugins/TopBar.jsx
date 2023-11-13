@@ -33,6 +33,8 @@ class TopBar extends React.Component {
         appMenuFilterField: PropTypes.bool,
         /** The shortcut for tiggering the app menu, i.e. alt+shift+m. */
         appMenuShortcut: PropTypes.string,
+        /** Whether to open the app menu on hover on visible icons. */
+        appMenuVisibleOnHover: PropTypes.bool,
         /** Whether to open the app menu on application startup. */
         appMenuVisibleOnStartup: PropTypes.bool,
         components: PropTypes.object,
@@ -120,6 +122,7 @@ class TopBar extends React.Component {
                             appMenuClearsTask={this.props.appMenuClearsTask}
                             appMenuShortcut={this.props.appMenuShortcut}
                             buttonContents={buttonContents}
+                            keepMenuOpenShowOnHover={this.props.appMenuVisibleOnHover}
                             menuItems={this.props.menuItems}
                             openExternalUrl={this.openUrl}
                             showFilterField={this.props.appMenuFilterField}

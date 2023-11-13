@@ -31,6 +31,7 @@ class AppMenu extends React.Component {
         currentTaskBlocked: PropTypes.bool,
         currentTheme: PropTypes.object,
         keepMenuOpen: PropTypes.bool,
+        keepMenuOpenShowOnHover: PropTypes.bool,
         menuItems: PropTypes.array,
         onMenuToggled: PropTypes.func,
         openExternalUrl: PropTypes.func,
@@ -180,7 +181,7 @@ class AppMenu extends React.Component {
         this.setState((state) => ({menuVisible: !state.menuVisible, submenusVisible: [], filter: ""}));
     };
     checkCloseMenu = (ev) => {
-        if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen) {
+        if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen && !this.props.keepMenuOpenShowOnHover) {
             this.toggleMenu();
         }
     };
@@ -189,7 +190,7 @@ class AppMenu extends React.Component {
         this.setState((state) => ({submenusVisible: state.submenusVisible.slice(0, level).concat(a)}));
     };
     onMenuitemClicked = (item) => {
-        if (!this.props.keepMenuOpen && this.state.menuVisible) {
+        if (!this.props.keepMenuOpen && !this.props.keepMenuOpenShowOnHover && this.state.menuVisible) {
             this.toggleMenu();
         }
         if (item.url) {
@@ -261,12 +262,12 @@ class AppMenu extends React.Component {
         }
     };
     render() {
-        let className = "";
-        if (this.props.currentTaskBlocked) {
-            className = "appmenu-blocked";
-        } else if (this.state.menuVisible) {
-            className = "appmenu-visible";
-        }
+        const visible = !this.props.currentTaskBlocked && this.state.menuVisible;
+        const className = classnames({
+            "appmenu-blocked": this.props.currentTaskBlocked,
+            "appmenu-visible": visible,
+            "appmenu-onhover": this.props.keepMenuOpenShowOnHover
+        });
         const filter = removeDiacritics(this.state.filter.toLowerCase());
         return (
             <div className={"AppMenu " + className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
