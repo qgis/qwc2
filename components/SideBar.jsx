@@ -83,7 +83,7 @@ class SideBar extends React.Component {
             minWidth: this.props.minWidth,
             zIndex: visible ? 5 : 4
         };
-        
+
         const isLeftSide = this.props.side === "left";
         const classes = classnames({
             "sidebar": true,
@@ -91,7 +91,7 @@ class SideBar extends React.Component {
             "sidebar-left": isLeftSide,
             "sidebar-right": !isLeftSide,
         });
-        const closeIcon = isLeftSide ? "chevron-left" : "chevron-right";
+        const closeIcon = "remove";
 
         let contents = null;
         if (render && typeof this.props.children === "function") {
