@@ -88,7 +88,8 @@
     },
     "copybtn": {
       "click_to_copy": "Clicca per copiare",
-      "copied": "Copiato"
+      "copied": "Copiato",
+      "copyfailed": "Impossibile copiare"
     },
     "cyclomedia": {
       "clickonmap": "Seleziona un punto di registrazione sulla mappa",

@@ -8,14 +8,17 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import Icon from '../Icon';
 import LocaleUtils from '../../utils/LocaleUtils';
 import './style/CopyButton.css';
 
+
 export default class CopyButton extends React.Component {
     static propTypes = {
         buttonClass: PropTypes.string,
+        /* getClipboardData(callback({mimeType: blob}) */
+        getClipboardData: PropTypes.func,
+        /* Alternative to getClipboardData for plain text. */
         text: PropTypes.string,
         tooltipAlign: PropTypes.string
     };
@@ -23,7 +26,7 @@ export default class CopyButton extends React.Component {
         tooltipAlign: 'center'
     };
     state = {
-        copied: false
+        copied: null
     };
     render() {
         const tooltipStyle = {};
@@ -35,17 +38,39 @@ export default class CopyButton extends React.Component {
             tooltipStyle.left = '50%';
             tooltipStyle.transform = 'translateX(-50%)';
         }
+        let tooltipMessage = '';
+        if (this.state.copied === false) {
+            tooltipMessage = LocaleUtils.tr("copybtn.copyfailed");
+        } else if (this.state.copied === true) {
+            tooltipMessage = LocaleUtils.tr("copybtn.copied");
+        } else {
+            tooltipMessage = LocaleUtils.tr("copybtn.click_to_copy");
+        }
         return (
-            <CopyToClipboard onCopy={ () => this.setState({copied: true}) } text={this.props.text} >
-                <span className="CopyButton">
-                    <button className={"button " + this.props.buttonClass} onMouseLeave={() => {this.setState({copied: false}); }} >
-                        <Icon icon="copy"/>
-                    </button>
-                    <span className="copybutton-tooltip" style={tooltipStyle}>
-                        {this.state.copied ? LocaleUtils.tr("copybtn.copied") : LocaleUtils.tr("copybtn.click_to_copy")}
-                    </span>
+            <span className="CopyButton">
+                <button className={"button " + this.props.buttonClass} onClick={this.copyToClipboard} onMouseLeave={() => {this.setState({copied: null}); }} >
+                    <Icon icon="copy"/>
+                </button>
+                <span className="copybutton-tooltip" style={tooltipStyle}>
+                    {tooltipMessage}
                 </span>
-            </CopyToClipboard>
+            </span>
         );
     }
+    copyToClipboard = () => {
+        if (this.props.getClipboardData) {
+            this.props.getClipboardData((data) => {
+                try {
+                    const item = new ClipboardItem(data);
+                    navigator.clipboard.write([item]);
+                    this.setState({copied: true});
+                } catch (e) {
+                    this.setState({copied: false});
+                }
+            });
+        } else if (this.props.text) {
+            this.setState({copied: true});
+            navigator.clipboard.writeText(this.props.text);
+        }
+    };
 }

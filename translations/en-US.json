@@ -88,7 +88,8 @@
     },
     "copybtn": {
       "click_to_copy": "Click to copy",
-      "copied": "Copied"
+      "copied": "Copied",
+      "copyfailed": "Copy failed"
     },
     "cyclomedia": {
       "clickonmap": "Click on a recording on the map",

@@ -88,7 +88,8 @@
     },
     "copybtn": {
       "click_to_copy": "Klicka för att kopiera",
-      "copied": "Kopierade"
+      "copied": "Kopierade",
+      "copyfailed": ""
     },
     "cyclomedia": {
       "clickonmap": "",

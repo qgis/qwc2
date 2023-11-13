@@ -88,7 +88,8 @@
     },
     "copybtn": {
       "click_to_copy": "In Zwischenablage kopieren",
-      "copied": "Kopiert"
+      "copied": "Kopiert",
+      "copyfailed": "Kopieren fehlgeschlagen"
     },
     "cyclomedia": {
       "clickonmap": "Wähle eine Aufnahme in der Karte aus",

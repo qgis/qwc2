@@ -88,7 +88,8 @@
     },
     "copybtn": {
       "click_to_copy": "Click per copiar",
-      "copied": "Copiat"
+      "copied": "Copiat",
+      "copyfailed": ""
     },
     "cyclomedia": {
       "clickonmap": "",
