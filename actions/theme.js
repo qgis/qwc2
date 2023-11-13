@@ -67,10 +67,12 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
     }
 
     // Add background layers for theme
+    let haveVisibleBg = false;
     for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer, externalLayers, dispatch, initialTheme)) {
+        haveVisibleBg |= bgLayer.visibility;
         dispatch(addLayer(bgLayer));
     }
-    if (visibleBgLayer === "") {
+    if (!haveVisibleBg) {
         UrlParams.updateParams({bl: ""});
     }
 
