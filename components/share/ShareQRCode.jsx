@@ -9,7 +9,8 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import QRCode from 'qrcode.react';
+import {QRCodeCanvas} from 'qrcode.react';
+import CopyButton from '../widgets/CopyButton';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 export default class ShareQRCode extends React.Component {
@@ -17,13 +18,18 @@ export default class ShareQRCode extends React.Component {
         shareUrl: PropTypes.string
     };
     render() {
+        const canCopy = navigator.clipboard.write !== undefined;
         return (
             <div className="qr-code">
                 <h4>
                     {LocaleUtils.tr("share.QRCodeLinkTitle")}
+                    {canCopy ? (<CopyButton buttonClass="qr-code-copy-button" getClipboardData={this.getClipboardData} />) : null}
                 </h4>
-                <QRCode value={this.props.shareUrl} />
+                <QRCodeCanvas id="qwc2-share-qr-canvas" size={128} value={this.props.shareUrl} />
             </div>
         );
     }
+    getClipboardData = (callback) => {
+        document.getElementById("qwc2-share-qr-canvas").toBlob((blob) => callback({"image/png": blob}));
+    };
 }
