@@ -285,7 +285,7 @@ class MapExport extends React.Component {
             };
             return (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} />);
         } else {
-            return (<PrintFrame bboxSelected={this.bboxSelected} key="PrintFrame" map={this.props.map} />);
+            return (<PrintFrame bboxSelected={this.bboxSelected} dpi={parseInt(this.state.dpi, 10)} key="PrintFrame" map={this.props.map} />);
         }
     };
     render() {
@@ -353,11 +353,11 @@ class MapExport extends React.Component {
                 bbox[1] + "," + bbox[0] + "," + bbox[3] + "," + bbox[2] :
                 bbox.join(',');
         }
-        this.setState((state) => ({
+        this.setState({
             extent: extent,
-            width: Math.round(pixelsize[0] * parseInt(state.dpi || 96, 10) / 96),
-            height: Math.round(pixelsize[1] * parseInt(state.dpi || 96, 10) / 96)
-        }));
+            width: pixelsize[0],
+            height: pixelsize[1]
+        });
     };
     export = (ev) => {
         ev.preventDefault();

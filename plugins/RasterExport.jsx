@@ -276,7 +276,7 @@ class RasterExport extends React.Component {
             };
             return (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} />);
         } else {
-            return (<PrintFrame bboxSelected={this.bboxSelected} key="PrintFrame" map={this.props.map} />);
+            return (<PrintFrame bboxSelected={this.bboxSelected} dpi={this.state.dpi} key="PrintFrame" map={this.props.map} />);
         }
     };
     render() {

@@ -15,6 +15,7 @@ import './style/PrintFrame.css';
 export default class PrintFrame extends React.Component {
     static propTypes = {
         bboxSelected: PropTypes.func,
+        dpi: PropTypes.number,
         fixedFrame: PropTypes.shape({
             width: PropTypes.number, // in meters
             height: PropTypes.number // in meters
@@ -22,7 +23,8 @@ export default class PrintFrame extends React.Component {
         map: PropTypes.object.isRequired
     };
     static defaultProps = {
-        bboxSelected: () => {}
+        bboxSelected: () => {},
+        dpi: 96
     };
     state = {
         x: 0, y: 0, width: 0, height: 0, moving: false
@@ -34,6 +36,7 @@ export default class PrintFrame extends React.Component {
         if (
             this.props.map.center !== prevProps.map.center ||
             this.props.map.bbox !== prevProps.map.bbox ||
+            this.props.dpi !== prevProps.dpi ||
             !isEqual(this.props.fixedFrame, prevProps.fixedFrame)
         ) {
             this.recomputeBox();
@@ -107,7 +110,8 @@ export default class PrintFrame extends React.Component {
             Math.max(p1[1], p2[1])
         ];
         if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
-            this.props.bboxSelected(bbox, this.props.map.projection, [this.state.width, this.state.height]);
+            const dpiScale = this.props.dpi / 96;
+            this.props.bboxSelected(bbox, this.props.map.projection, [this.state.width * dpiScale, this.state.height * dpiScale]);
         } else {
             this.props.bboxSelected(null, this.props.map.projection, [0, 0]);
         }
