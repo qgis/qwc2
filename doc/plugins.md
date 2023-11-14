@@ -214,7 +214,7 @@ This plugin queries the dataset via the editing service specified by
 | allowCloneGeometry | `bool` | Whether to enable the "Clone existing geometry" functionality. | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
-| snappingActive | `bool` | Whether snapping is enabled by default when editing. | `true` |
+| snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
 | width | `string` | The default width of the editing sidebar, as a CSS width string. | `"30em"` |
 
 FeatureForm<a name="featureform"></a>
@@ -503,7 +503,7 @@ Allows measuring points/lines/areas on the map.
 |----------|------|-------------|---------------|
 | showMeasureModeSwitcher | `bool` | Whether to show the widget to switch between measure modes. | `true` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
-| snappingActive | `bool` | Whether snapping is enabled by default when editing. | `true` |
+| snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
 
 NewsPopup<a name="newspopup"></a>
 ----------------------------------------------------------------
@@ -571,7 +571,7 @@ Allows drawing figures and text labels on the map.
 |----------|------|-------------|---------------|
 | allowGeometryLabels | `bool` | Whether to allow labeling geometric figures. | `true` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
-| snappingActive | `bool` | Whether snapping is enabled by default when editing. | `true` |
+| snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
 
 Routing<a name="routing"></a>
 ----------------------------------------------------------------
