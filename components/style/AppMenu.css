@@ -81,10 +81,6 @@ div.AppMenu ul.appmenu-menu li {
     font-weight: bold;
 }
 
-div.AppMenu ul.appmenu-menu li:not(:last-child) {
-    border-bottom: 1px solid var(--app-menu-text-color);
-}
-
 div.AppMenu ul.appmenu-menu > li.appmenu-leaf-active,
 div.AppMenu ul.appmenu-menu > li.appmenu-submenu-active,
 div.AppMenu ul.appmenu-menu > li.appmenu-submenu-expanded {
