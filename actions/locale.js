@@ -12,7 +12,7 @@ import localeReducer from '../reducers/locale';
 ReducerIndex.register("locale", localeReducer);
 
 import axios from 'axios';
-import {getLanguageCountries} from 'country-language';
+import {getLanguageCountries} from '@ladjs/country-language';
 import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import deepmerge from 'deepmerge';
