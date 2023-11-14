@@ -23,7 +23,6 @@ div.AppMenu .appmenu-icon {
     color: var(--app-menu-text-color);
     padding: 0.25em;
     margin: 0 1em;
-    border: 2px solid var(--app-menu-text-color);
     transition: color 0.25s, border-color 0.25s, background-color 0.25s;
 }
 
@@ -51,6 +50,16 @@ div.AppMenu div.appmenu-menu-container {
     overflow-y: auto;
     max-height: calc(100vh - 5.8em);
     max-height: calc(var(--vh, 1vh) * 100 - 5.8em);
+}
+
+div.AppMenu.appmenu-onhover div.appmenu-menu-container {
+    right: -11.5em !important;
+    width: 15em !important;
+    transition: transform 0.25s, opacity 0.25s, right 0.5s !important;
+}
+
+div.AppMenu.appmenu-onhover div.appmenu-menu-container:hover {
+    right: 0 !important;
 }
 
 div.AppMenu ul.appmenu-menu {
