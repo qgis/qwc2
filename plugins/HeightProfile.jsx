@@ -372,7 +372,7 @@ class HeightProfile extends React.Component {
         }
     };
     pickPositionCallback = (pos) => {
-        if (!pos) {
+        if (!pos || !this.state.data) {
             this.clearMarkerAndTooltip();
             return;
         }
