@@ -443,8 +443,10 @@
       "socialIntro": "En tu red social favorita"
     },
     "snapping": {
+      "edge": "",
       "loading": "Cargando geometrías de snapping...",
-      "snappingenabled": "Snapping"
+      "snappingenabled": "Snapping",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "Agregar capa",

@@ -443,8 +443,10 @@
       "socialIntro": "W twoich ulubionych mediach społecznościowych"
     },
     "snapping": {
+      "edge": "",
       "loading": "",
-      "snappingenabled": ""
+      "snappingenabled": "",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "",

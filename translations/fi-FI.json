@@ -443,8 +443,10 @@
       "socialIntro": "Jaa someen"
     },
     "snapping": {
+      "edge": "",
       "loading": "",
-      "snappingenabled": ""
+      "snappingenabled": "",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "Lisää taso",

@@ -60,8 +60,9 @@ class Editing extends React.Component {
         side: PropTypes.string,
         /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
-        /** Whether snapping is enabled by default when editing. */
-        snappingActive: PropTypes.bool,
+        /** Whether snapping is enabled by default when editing.
+         *  Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). */
+        snappingActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         taskData: PropTypes.object,
         theme: PropTypes.object,
         /** The default width of the editing sidebar, as a CSS width string. */

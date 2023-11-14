@@ -48,8 +48,9 @@ class Redlining extends React.Component {
         setSnappingConfig: PropTypes.func,
         /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
-        /** Whether snapping is enabled by default when editing. */
-        snappingActive: PropTypes.bool
+        /** Whether snapping is enabled by default when editing.
+         *  Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). */
+        snappingActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
     };
     static defaultProps = {
         allowGeometryLabels: true,

@@ -443,8 +443,10 @@
       "socialIntro": "In your favourite social network"
     },
     "snapping": {
+      "edge": "Snap to edges",
       "loading": "Loading snapping geometries...",
-      "snappingenabled": "Snapping"
+      "snappingenabled": "Snapping",
+      "vertex": "Snap to vertices"
     },
     "themelayerslist": {
       "addlayer": "Add layer",

@@ -443,8 +443,10 @@
       "socialIntro": "Social network"
     },
     "snapping": {
+      "edge": "Snap ai bordi",
       "loading": "Caricamento delle geometrie per snapping",
-      "snappingenabled": "Snapping"
+      "snappingenabled": "Snapping",
+      "vertex": "Snap ai vertici"
     },
     "themelayerslist": {
       "addlayer": "Aggiungi layer",

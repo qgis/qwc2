@@ -443,8 +443,10 @@
       "socialIntro": "In den sozialen Medien"
     },
     "snapping": {
+      "edge": "An Kanten einrasten",
       "loading": "Einrastungsgeometrien werden geladen...",
-      "snappingenabled": "Einrasten"
+      "snappingenabled": "Einrasten",
+      "vertex": "An Ecken einrasten"
     },
     "themelayerslist": {
       "addlayer": "Layer hinzufügen",

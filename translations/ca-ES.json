@@ -443,8 +443,10 @@
       "socialIntro": "En la teva xarxa social preferida"
     },
     "snapping": {
+      "edge": "",
       "loading": "Carregant geometries de snapping",
-      "snappingenabled": "Snapping"
+      "snappingenabled": "Snapping",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "Afegir capa",

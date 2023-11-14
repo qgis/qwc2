@@ -43,4 +43,10 @@ export default class SnapInteraction extends ol.interaction.Snap {
         }
         super.setActive(active);
     }
+    setSnapEdge(snap) {
+        this.edge_ = snap;
+    }
+    setSnapVertex(snap) {
+        this.vertex_ = snap;
+    }
 }

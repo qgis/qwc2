@@ -443,8 +443,10 @@
       "socialIntro": "Na sociální síti"
     },
     "snapping": {
+      "edge": "",
       "loading": "Načítání...",
-      "snappingenabled": ""
+      "snappingenabled": "",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "Přidat vrstvu",

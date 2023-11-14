@@ -443,8 +443,10 @@
       "socialIntro": "Sosiale nettvert"
     },
     "snapping": {
+      "edge": "",
       "loading": "",
-      "snappingenabled": ""
+      "snappingenabled": "",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "",

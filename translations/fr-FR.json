@@ -443,8 +443,10 @@
       "socialIntro": "Via votre réseau social favori"
     },
     "snapping": {
+      "edge": "Snapping aux bords",
       "loading": "Chargement",
-      "snappingenabled": "Snapping activé"
+      "snappingenabled": "Snapping activé",
+      "vertex": "Snapping aux sommets"
     },
     "themelayerslist": {
       "addlayer": "Ajouter la couche",

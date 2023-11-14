@@ -443,8 +443,10 @@
       "socialIntro": "Sua rede social favorita"
     },
     "snapping": {
+      "edge": "",
       "loading": "Carregando...",
-      "snappingenabled": "Ajuste ativado"
+      "snappingenabled": "Ajuste ativado",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "Adicionar camada",

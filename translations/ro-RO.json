@@ -443,8 +443,10 @@
       "socialIntro": "În rețeaua socială favorită"
     },
     "snapping": {
+      "edge": "",
       "loading": "Geometriile se încarcă...",
-      "snappingenabled": "Sari la punct"
+      "snappingenabled": "Sari la punct",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "Adaugă strat",

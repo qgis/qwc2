@@ -443,8 +443,10 @@
       "socialIntro": "В Вашей любимой соцсети"
     },
     "snapping": {
+      "edge": "",
       "loading": "",
-      "snappingenabled": ""
+      "snappingenabled": "",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "",

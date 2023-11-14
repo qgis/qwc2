@@ -443,8 +443,10 @@
       "socialIntro": "Favori sosyal ağınıza"
     },
     "snapping": {
+      "edge": "",
       "loading": "",
-      "snappingenabled": ""
+      "snappingenabled": "",
+      "vertex": ""
     },
     "themelayerslist": {
       "addlayer": "Katman ekle",
