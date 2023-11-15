@@ -542,9 +542,9 @@ class Print extends React.Component {
         return [x1, y1, x2, y2];
     };
     print = (ev) => {
-        if (this.props.inlinePrintOutput) {
-            this.setState({printOutputVisible: true, outputLoaded: false});
-        }
+            if (this.props.inlinePrintOutput) {
+                this.setState({printOutputVisible: true, outputLoaded: false});
+            }
             ev.preventDefault();
             this.setState({printing: true});
             const formData = formDataEntries(new FormData(this.printForm));
