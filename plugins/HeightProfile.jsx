@@ -150,6 +150,7 @@ class HeightProfile extends React.Component {
             if (this.props.measurement.drawing === false && this.props.measurement.geomType === "LineString" && !isEmpty(this.props.measurement.coordinates) ) {
                 this.queryElevations(this.props.measurement.coordinates, this.props.measurement.segment_lengths, this.props.projection);
             } else if (!isEmpty(this.state.data)) {
+                this.setState({data: {}});
                 this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: null});
             }
         }
