@@ -542,39 +542,39 @@ class Print extends React.Component {
         return [x1, y1, x2, y2];
     };
     print = (ev) => {
+        if (this.props.inlinePrintOutput) {
+            this.setState({printOutputVisible: true, outputLoaded: false});
+        }
+        ev.preventDefault();
+        this.setState({printing: true});
+        const formData = formDataEntries(new FormData(this.printForm));
+        const data = Object.entries(formData).map((pair) =>
+            pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
+        ).join("&");
+        const config = {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded' },
+            responseType: "arraybuffer"
+        };
+        axios.post(this.props.theme.printUrl, data, config).then(response => {
+            this.setState({printing: false});
+            const contentType = response.headers["content-type"];
+            const file = new Blob([response.data], { type: contentType });
             if (this.props.inlinePrintOutput) {
-                this.setState({printOutputVisible: true, outputLoaded: false});
+                const fileURL = URL.createObjectURL(file); 
+                this.setState({ pdfData: fileURL, outputLoaded: true });
             }
-            ev.preventDefault();
-            this.setState({printing: true});
-            const formData = formDataEntries(new FormData(this.printForm));
-            const data = Object.entries(formData).map((pair) =>
-                pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
-            ).join("&");
-            const config = {
-                headers: {'Content-Type': 'application/x-www-form-urlencoded' },
-                responseType: "arraybuffer"
-            };
-            axios.post(this.props.theme.printUrl, data, config).then(response => {
-                this.setState({printing: false});
-                const contentType = response.headers["content-type"];
-                const file = new Blob([response.data], { type: contentType });
-                if (this.props.inlinePrintOutput) {
-                    const fileURL = URL.createObjectURL(file); 
-                    this.setState({ pdfData: fileURL, outputLoaded: true });
-                }
-                else {
-                    FileSaver.saveAs(file, this.props.theme.name + '.pdf');
-                }
-            }).catch(e => {
-                this.setState({printing: false});
-                if (e.response) {
-                    /* eslint-disable-next-line */
-                    console.log(new TextDecoder().decode(e.response.data));
-                }
+            else {
+                FileSaver.saveAs(file, this.props.theme.name + '.pdf');
+            }
+        }).catch(e => {
+            this.setState({printing: false});
+            if (e.response) {
                 /* eslint-disable-next-line */
-                alert('Print failed');
-            });
+                console.log(new TextDecoder().decode(e.response.data));
+            }
+            /* eslint-disable-next-line */
+            alert('Print failed');
+        });
     };
 }
 
