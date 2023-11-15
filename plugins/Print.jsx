@@ -232,7 +232,6 @@ class Print extends React.Component {
             <div className="print-body">
                 <form action={this.props.theme.printUrl} method="POST"
                     onSubmit={this.print} ref={el => { this.printForm = el; }}
-                    target="print-output-window"
                 >
                     <input name="TEMPLATE" type="hidden" value={printLegend && this.state.legend ? printLegend : this.state.layout.name} />
                     <table className="options-table"><tbody>
@@ -448,7 +447,7 @@ class Print extends React.Component {
                             <Spinner /> {LocaleUtils.tr("print.wait")}
                         </span>
                     ) : null}
-                    <iframe name="print-output-window" onLoad={() => this.setState({outputLoaded: true})}/>
+                    <iframe src={this.state.pdfData} name="print-output-window" onLoad={() => this.setState({outputLoaded: true})}/>
                 </div>
             </ResizeableWindow>
         );
@@ -545,31 +544,37 @@ class Print extends React.Component {
     print = (ev) => {
         if (this.props.inlinePrintOutput) {
             this.setState({printOutputVisible: true, outputLoaded: false});
-        } else {
-            ev.preventDefault();
-            this.setState({printing: true});
-            const formData = formDataEntries(new FormData(this.printForm));
-            const data = Object.entries(formData).map((pair) =>
-                pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
-            ).join("&");
-            const config = {
-                headers: {'Content-Type': 'application/x-www-form-urlencoded' },
-                responseType: "arraybuffer"
-            };
-            axios.post(this.props.theme.printUrl, data, config).then(response => {
-                this.setState({printing: false});
-                const contentType = response.headers["content-type"];
-                FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.pdf');
-            }).catch(e => {
-                this.setState({printing: false});
-                if (e.response) {
-                    /* eslint-disable-next-line */
-                    console.log(new TextDecoder().decode(e.response.data));
-                }
-                /* eslint-disable-next-line */
-                alert('Print failed');
-            });
         }
+        ev.preventDefault();
+        this.setState({printing: true});
+        const formData = formDataEntries(new FormData(this.printForm));
+        const data = Object.entries(formData).map((pair) =>
+            pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
+        ).join("&");
+        const config = {
+            headers: {'Content-Type': 'application/x-www-form-urlencoded' },
+            responseType: "arraybuffer"
+        };
+        axios.post(this.props.theme.printUrl, data, config).then(response => {
+            this.setState({printing: false});
+            const contentType = response.headers["content-type"];
+            const file = new Blob([response.data], { type: contentType });
+            if (this.props.inlinePrintOutput) {
+                const fileURL = URL.createObjectURL(file); 
+                this.setState({ pdfData: fileURL, outputLoaded: true });
+            }
+            else {
+                FileSaver.saveAs(file, this.props.theme.name + '.pdf');
+            }
+        }).catch(e => {
+            this.setState({printing: false});
+            if (e.response) {
+                /* eslint-disable-next-line */
+                console.log(new TextDecoder().decode(e.response.data));
+            }
+            /* eslint-disable-next-line */
+            alert('Print failed');
+        });
     };
 }
 
