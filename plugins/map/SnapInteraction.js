@@ -5,12 +5,6 @@ export default class SnapInteraction extends ol.interaction.Snap {
         super(options);
         this.layer = new ol.layer.Vector({
             source: new ol.source.Vector(),
-            style: new ol.style.Style({
-                image: new ol.style.Circle({
-                    stroke: new ol.style.Stroke({color: '#FF0000', width: 2}),
-                    radius: 10
-                })
-            }),
             zIndex: Infinity
         });
         this.currentMap = null;
@@ -21,9 +15,27 @@ export default class SnapInteraction extends ol.interaction.Snap {
         if (result) {
             evt.coordinate = result.vertex.slice(0, 2);
             evt.pixel = result.vertexPixel;
-            this.layer.getSource().addFeature(new ol.Feature({
+            const feature = new ol.Feature({
                 geometry: new ol.geom.Point(evt.coordinate)
-            }));
+            });
+            if (result.segment) {
+                feature.setStyle(new ol.style.Style({
+                    image: new ol.style.RegularShape({
+                        stroke: new ol.style.Stroke({color: '#FF0000', width: 3}),
+                        points: 4,
+                        radius: 14,
+                        angle: Math.PI / 4
+                    })
+                }));
+            } else {
+                feature.setStyle(new ol.style.Style({
+                    image: new ol.style.Circle({
+                        stroke: new ol.style.Stroke({color: '#FF0000', width: 3}),
+                        radius: 10
+                    })
+                }));
+            }
+            this.layer.getSource().addFeature(feature);
         }
         return ol.interaction.Pointer.prototype.handleEvent.call(this, evt);
     }
