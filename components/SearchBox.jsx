@@ -177,7 +177,7 @@ class SearchBox extends React.Component {
                             <td>{providerSelection}</td>
                         </tr>
                         <tr>
-                            <td>{LocaleUtils.tr("search.geometry")}:</td>
+                            <td>{LocaleUtils.tr("search.limittoarea")}:</td>
                             <td>
                                 <div className="searchbox-filter-options-geometry">
                                     <ButtonBar active={this.props.selection.geomType} buttons={filterButtons} onClick={this.setGeometryFilter} />
