@@ -160,8 +160,9 @@ div.searchbox-filter-options-geometry > div.ButtonBar {
 }
 
 div.searchbox-filter-options-geometry > select {
-    margin-left: 0.25em;
     flex: 1 1 auto;
+    margin-left: -1px;
+    z-index: 1;
 }
 
 div.searchbox-filter-options-geometry > button {
