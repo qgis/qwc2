@@ -555,7 +555,7 @@ class SearchBox extends React.Component {
         };
         Object.entries(availableProviders).forEach(([key, entry]) => {
             entry.onSearch(searchText, {...searchParams, cfgParams: entry.params}, (response) => {
-                const results = entry.supportsGeomFilter ? response.results : this.filterResults(response.results);
+                const results = entry.handlesGeomFilter ? response.results : this.filterResults(response.results);
                 const count = response.results.reduce((tot, cur) => (tot + cur.items.length), 0);
                 this.addSearchResults(searchSession, key, {results: results, tot_result_count: count});
             }, axios);
