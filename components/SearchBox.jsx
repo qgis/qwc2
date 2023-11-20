@@ -201,7 +201,8 @@ class SearchBox extends React.Component {
     setFilterRegion = (value, searchRegions) => {
         if (value) {
             const parts = value.split(":");
-            const coordinates = searchRegions[parts[0]].items[parts[1]].coordinates;
+            const item = searchRegions[parts[0]].items[parts[1]];
+            const coordinates = item.coordinates;
             const layer = {
                 id: "searchfilter",
                 role: LayerRole.SELECTION
@@ -213,8 +214,9 @@ class SearchBox extends React.Component {
                     coordinates: [coordinates]
                 }
             };
+            feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, item.crs, this.props.map.projection);
             this.props.addLayerFeatures(layer, [feature], true);
-            this.setState({selectedFilterRegion: {value, coordinates}});
+            this.setState({selectedFilterRegion: {value, coordinates: feature.geometry.coordinates[0]}});
         } else {
             this.props.removeLayer("searchfilter");
             this.setState({selectedFilterRegion: null});
