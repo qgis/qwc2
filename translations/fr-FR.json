@@ -389,8 +389,11 @@
     },
     "search": {
       "all": "Tous",
+      "clearfilter": "Effaccer",
       "enablelayer": "Activer la couche",
       "existinglayer": "La couche existe déjà dans la carte",
+      "filter": "Filtre",
+      "geometry": "Géométrie",
       "invisiblelayer": "Le résultat est sur une couche désactivé",
       "more": "Plus...",
       "noresults": "Pas de résultats",
@@ -399,6 +402,7 @@
       "searchall": "Rechercher un lieu ou ajouter une carte...",
       "searchinprogress": "Recherche en cours",
       "searchreset": "Réinitialiser la recherche",
+      "solr": "Recherche en plein texte",
       "themes": "Cartes"
     },
     "searchbox": {

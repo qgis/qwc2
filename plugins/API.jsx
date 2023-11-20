@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {LayerRole} from '../actions/layers';
 import LayerUtils from '../utils/LayerUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 
 import * as displayActions from '../actions/display';
@@ -89,6 +90,7 @@ class API extends React.Component {
         window.qwc2.drawScratch = this.drawScratch;
         window.qwc2.drawGeometry = this.drawGeometry;
         window.qwc2.getState = this.getState;
+        window.qwc2.CoordinatesUtils = CoordinatesUtils;
     }
     static propTypes = {
         addLayer: PropTypes.func,

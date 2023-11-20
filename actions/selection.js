@@ -16,6 +16,8 @@ export function changeSelectionState(selectionState) {
     return {
         type: CHANGE_SELECTION_STATE,
         geomType: selectionState.geomType,
+        active: selectionState.active,
+        measure: selectionState.measure,
         box: selectionState.box,
         circle: selectionState.circle,
         point: selectionState.point,

@@ -389,8 +389,11 @@
     },
     "search": {
       "all": "Kaikki",
+      "clearfilter": "",
       "enablelayer": "Aktivoi taso",
       "existinglayer": "Taso on jo lisätty karttaan",
+      "filter": "",
+      "geometry": "",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "Lisää...",
       "noresults": "",
@@ -399,6 +402,7 @@
       "searchall": "Etsi kohteita tai lisää kartta...",
       "searchinprogress": "",
       "searchreset": "",
+      "solr": "",
       "themes": "Teemat"
     },
     "searchbox": {

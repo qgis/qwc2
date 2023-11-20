@@ -14,6 +14,7 @@ import ol from 'openlayers';
 import {changeSelectionState} from '../../actions/selection';
 import FeatureStyles from '../../utils/FeatureStyles';
 import './style/SelectionSupport.css';
+import MeasureUtils from '../../utils/MeasureUtils';
 
 
 class SelectionSupport extends React.Component {
@@ -26,6 +27,9 @@ class SelectionSupport extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.selection.geomType && this.props.selection.geomType !== prevProps.selection.geomType ) {
             this.addDrawInteraction(this.props);
+        }
+        if (this.props.selection.active !== prevProps.selection.active && this.drawInteraction) {
+            this.drawInteraction.setActive(this.props.selection.active);
         }
 
         if (!this.props.selection.geomType) {
@@ -89,9 +93,10 @@ class SelectionSupport extends React.Component {
                 geometryFunction: this.props.selection.geomType === "Box" ? ol.interaction.createBox() : undefined
             });
 
-            interaction.on('drawstart', () => {
+            interaction.on('drawstart', (evt) => {
                 // clear previous sketches
                 source.clear();
+                evt.feature.on('change', () => this.updateMeasurements(evt.feature));
             }, this);
             interaction.on('drawend', (evt) => {
                 this.updateSelectionState(evt.feature.getGeometry());
@@ -137,7 +142,27 @@ class SelectionSupport extends React.Component {
                     Math.max(coords[0][0][1], coords[0][2][1])
                 ] : null
         };
+        if (this.props.selection.geomType === 'Circle') {
+            // Also store poligonized circle
+            const center = newSelectionState.circle.center;
+            const radius = newSelectionState.circle.radius;
+            const deg2rad = Math.PI / 180;
+            newSelectionState.polygon = Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]));
+        }
         this.props.changeSelectionState(newSelectionState);
+    };
+    updateMeasurements = (feature) => {
+        if (!this.props.selection.measure) {
+            return;
+        }
+        const settings = {
+            mapCrs: this.props.projection,
+            displayCrs: this.props.projection,
+            lenUnit: 'metric',
+            areaUnit: 'metric',
+            decimals: 2
+        };
+        MeasureUtils.updateFeatureMeasurements(feature, this.props.selection.geomType, this.props.projection, settings);
     };
 }
 

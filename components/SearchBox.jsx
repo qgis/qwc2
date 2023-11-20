@@ -13,16 +13,21 @@ import {createSelector} from 'reselect';
 import isEmpty from 'lodash.isempty';
 import axios from 'axios';
 import {v1 as uuidv1} from 'uuid';
+import classnames from 'classnames';
+import polygonIntersectTest from 'polygon-intersect-test';
+import pointInPolygon from 'point-in-polygon';
 import {SearchResultType} from '../actions/search';
 import {logAction} from '../actions/logging';
 import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
 import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
+import {changeSelectionState} from '../actions/selection';
 import {setCurrentTheme} from '../actions/theme';
 import {openExternalUrl, setCurrentTask} from '../actions/task';
 import {showIframeDialog, showNotification} from '../actions/windows';
 import Icon from './Icon';
 import InputContainer from './InputContainer';
 import Spinner from './Spinner';
+import ButtonBar from './widgets/ButtonBar';
 import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -40,6 +45,7 @@ class SearchBox extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         addThemeSublayer: PropTypes.func,
+        changeSelectionState: PropTypes.func,
         displaycrs: PropTypes.string,
         layers: PropTypes.array,
         localConfig: PropTypes.object,
@@ -50,11 +56,13 @@ class SearchBox extends React.Component {
         removeLayer: PropTypes.func,
         searchFilter: PropTypes.string,
         searchOptions: PropTypes.shape({
+            allowSearchFilters: PropTypes.bool,
             minScaleDenom: PropTypes.number,
             resultLimit: PropTypes.number,
             sectionsDefaultCollapsed: PropTypes.bool
         }),
         searchProviders: PropTypes.object,
+        selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         showIframeDialog: PropTypes.func,
@@ -73,7 +81,8 @@ class SearchBox extends React.Component {
         resultsVisible: false,
         collapsedSections: {},
         expandedLayerGroup: null,
-        activeLayerInfo: null
+        activeLayerInfo: null,
+        filterOptionsVisible: false
     };
     constructor(props) {
         super(props);
@@ -83,7 +92,7 @@ class SearchBox extends React.Component {
         this.state.searchText = UrlParams.getParam('st') || "";
         UrlParams.updateParams({st: undefined});
     }
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         // Restore highlight from URL as soon as theme is loaded
         if (this.props.theme && !prevProps.theme) {
             const hp = UrlParams.getParam('hp');
@@ -119,7 +128,53 @@ class SearchBox extends React.Component {
             }
             UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined});
         }
+        // Trigger search when closing filter options
+        if (!this.state.filterOptionsVisible && prevState.filterOptionsVisible) {
+            this.startSearch();
+        }
     }
+    renderFilterOptions = () => {
+        if (!this.state.filterOptionsVisible) {
+            return null;
+        }
+        const haveFulltext = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr");
+        const providerSelection = (
+            <select onChange={ev => this.setState({selectedProvider: ev.target.value})} value={this.state.selectedProvider}>
+                <option value="">{LocaleUtils.tr("search.all")}</option>
+                {haveFulltext ? (<option value="__fulltext">{LocaleUtils.tr("search.solr")}</option>) : null}
+                {Object.entries(this.props.searchProviders).map(([key, prov]) => (
+                    <option key={key} value={key}>{prov?.params?.title || (prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label)}</option>
+                ))}
+            </select>
+        );
+        const filterButtons = [
+            {key: "Polygon", tooltip: LocaleUtils.trmsg("redlining.polygon"), icon: "polygon", label: LocaleUtils.trmsg("redlining.polygon")},
+            {key: "Circle", tooltip: LocaleUtils.trmsg("redlining.circle"), icon: "circle", label: LocaleUtils.trmsg("redlining.circle")}
+        ];
+        return (
+            <div className="searchbox-filter-options">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>{LocaleUtils.tr("search.providerselection")}:</td>
+                            <td>{providerSelection}</td>
+                        </tr>
+                        <tr>
+                            <td>{LocaleUtils.tr("search.geometry")}:</td>
+                            <td>
+                                <div className="searchbox-filter-options-geometry">
+                                    <ButtonBar active={this.props.selection.geomType} buttons={filterButtons} onClick={key => this.props.changeSelectionState({geomType: key, measure: true})} />
+                                    <button className="button" onClick={() => this.props.changeSelectionState({geomType: null})}>
+                                        <Icon icon="clear" />&nbsp;{LocaleUtils.tr("search.clearfilter")}
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+    };
     renderRecentResults = () => {
         const recentSearches = this.state.recentSearches.filter(entry => entry.toLowerCase().includes(this.state.searchText.toLowerCase()));
         if (isEmpty(recentSearches) || (recentSearches.length === 1 && recentSearches[0].toLowerCase() === this.state.searchText.toLowerCase())) {
@@ -354,6 +409,11 @@ class SearchBox extends React.Component {
     };
     render() {
         const placeholder = LocaleUtils.tr("searchbox.placeholder");
+        const filterButtonClasses = classnames({
+            "button": true,
+            "searchbox-filter-button": true,
+            "pressed": this.state.filterOptionsVisible || this.state.selectedProvider || this.props.selection.polygon
+        });
         return (
             <div className="SearchBox">
                 <InputContainer className="searchbox-field">
@@ -365,10 +425,24 @@ class SearchBox extends React.Component {
                         type="text" value={this.state.searchText} />
                     {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="remove" onClick={this.clear} role="suffix" />)}
                 </InputContainer>
+                {this.props.searchOptions.allowSearchFilters ? (
+                    <button className={filterButtonClasses} onClick={() => this.toggleFilterOptions()} title={LocaleUtils.tr("search.filter")}>
+                        <Icon icon="filter" />
+                        <Icon icon="chevron-down" />
+                    </button>
+                ) : null}
                 {this.renderSearchResults()}
+                {this.renderFilterOptions()}
             </div>
         );
     }
+    toggleFilterOptions = (newState = null) => {
+        this.props.changeSelectionState({...this.props.selection, active: newState ?? !this.state.filterOptionsVisible});
+        this.setState((state) => {
+            newState = newState ?? !state.filterOptionsVisible;
+            return {filterOptionsVisible: newState};
+        });
+    };
     searchTextChanged = (el, text, expandSections = false) => {
         if (this.props.layers.find(layer => layer.id === 'searchselection')) {
             this.props.removeLayer('searchselection');
@@ -389,6 +463,7 @@ class SearchBox extends React.Component {
         if (isEmpty(this.state.searchResults)) {
             this.startSearch();
         }
+        this.toggleFilterOptions(false);
     };
     onBlur = () => {
         if (this.preventBlur && this.searchBox) {
@@ -410,11 +485,25 @@ class SearchBox extends React.Component {
         if (this.searchBox) {
             this.searchBox.blur();
         }
-        this.setState({searchText: '', searchResults: {}});
+        this.setState({searchText: '', searchResults: {}, selectedProvider: ''});
         this.props.removeLayer('searchselection');
+        this.props.changeSelectionState({geomType: null});
         UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
     };
     startSearch = () => {
+        let availableProviders = this.props.searchProviders;
+        let fulltextSearchEnabled = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr");
+        if (this.state.selectedProvider) {
+            if (this.state.selectedProvider === "__fulltext") {
+                fulltextSearchEnabled = true;
+                availableProviders = {};
+            } else {
+                fulltextSearchEnabled = false;
+                availableProviders = {
+                    [this.state.selectedProvider]: this.props.searchProviders[this.state.selectedProvider]
+                };
+            }
+        }
         const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
         // eslint-disable-next-line
         const searchText = this.state.searchText.trim();
@@ -425,17 +514,17 @@ class SearchBox extends React.Component {
         const searchSession = uuidv1();
         const pendingSearches = [];
         // Collect pending searches
-        if ((this.props.theme.searchProviders || []).find(entry => entry.provider === "solr")) {
+        if (fulltextSearchEnabled) {
             pendingSearches.push("__fulltext");
         }
-        pendingSearches.push(...Object.keys(this.props.searchProviders));
+        pendingSearches.push(...Object.keys(availableProviders));
         this.setState({
             searchResults: {query_text: searchText},
             searchSession: searchSession,
             pendingSearches: pendingSearches
         });
         // Fulltext search
-        if ((this.props.theme.searchProviders || []).find(entry => entry.provider === "solr")) {
+        if (fulltextSearchEnabled) {
             const params = {
                 searchtext: searchText,
                 filter: this.props.searchFilter,
@@ -452,18 +541,50 @@ class SearchBox extends React.Component {
             });
         }
         // Additional provider searches
+        const filterFeature = this.props.selection.polygon ? {
+            type: "Feature",
+            geometry: {type: "Polygon", coordinates: [this.props.selection.polygon]}
+        } : null;
         const searchParams = {
             mapcrs: this.props.map.projection,
             displaycrs: this.props.displaycrs,
             lang: LocaleUtils.lang(),
-            theme: this.props.theme
+            theme: this.props.theme,
+            filterPoly: this.props.selection.polygon,
+            filterBBox: filterFeature ? VectorLayerUtils.computeFeatureBBox(filterFeature) : null
         };
-        Object.entries(this.props.searchProviders).forEach(([key, entry]) => {
+        Object.entries(availableProviders).forEach(([key, entry]) => {
             entry.onSearch(searchText, {...searchParams, cfgParams: entry.params}, (response) => {
+                const results = entry.supportsGeomFilter ? response.results : this.filterResults(response.results);
                 const count = response.results.reduce((tot, cur) => (tot + cur.items.length), 0);
-                this.addSearchResults(searchSession, key, {results: response.results, tot_result_count: count});
+                this.addSearchResults(searchSession, key, {results: results, tot_result_count: count});
             }, axios);
         });
+    };
+    filterResults = (results) => {
+        if (!this.props.selection.polygon) {
+            return results;
+        }
+        return results.map(group => {
+            const newItems = group.items.filter(item => {
+                let geometry = null;
+                if (item.geometry) {
+                    geometry = VectorLayerUtils.reprojectGeometry(item.geometry, item.crs, this.props.map.projection);
+                } else {
+                    geometry = {type: 'Point', coordinates: CoordinatesUtils.reproject([item.x, item.y], item.crs, this.props.map.projection)};
+                }
+                if (geometry.type === 'Point') {
+                    return pointInPolygon(geometry.coordinates, this.props.selection.polygon);
+                } else if (geometry.type === 'Polygon') {
+                    return polygonIntersectTest(geometry.coordinates[0], this.props.selection.polygon);
+                }
+                return true;
+            });
+            if (newItems.length > 0) {
+                return {...group, items: newItems};
+            }
+            return null;
+        }).filter(Boolean);
     };
     addSearchResults = (searchSession, searchId, results) => {
         if (searchSession !== this.state.searchSession) {
@@ -767,12 +888,14 @@ export default (searchProviders) => {
             themes: state.theme.themes,
             localConfig: state.localConfig,
             searchFilter: searchFilter,
+            selection: state.selection,
             displaycrs: displaycrs,
             searchProviders: searchproviders
         })), {
             addThemeSublayer: addThemeSublayer,
             addLayer: addLayer,
             addLayerFeatures: addLayerFeatures,
+            changeSelectionState: changeSelectionState,
             removeLayer: removeLayer,
             setCurrentTask: setCurrentTask,
             zoomToExtent: zoomToExtent,

@@ -389,8 +389,11 @@
     },
     "search": {
       "all": "Minden",
+      "clearfilter": "",
       "enablelayer": "",
       "existinglayer": "",
+      "filter": "",
+      "geometry": "",
       "invisiblelayer": "",
       "more": "Több...",
       "noresults": "",
@@ -399,6 +402,7 @@
       "searchall": "",
       "searchinprogress": "",
       "searchreset": "",
+      "solr": "",
       "themes": ""
     },
     "searchbox": {

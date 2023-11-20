@@ -21,6 +21,8 @@ export default function selection(state = defaultState, action) {
         return {
             ...state,
             geomType: action.geomType,
+            measure: action.measure || false,
+            active: action.active ?? true,
             box: action.box,
             circle: action.circle,
             point: action.point,

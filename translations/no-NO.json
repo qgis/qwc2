@@ -389,8 +389,11 @@
     },
     "search": {
       "all": "Alle",
+      "clearfilter": "",
       "enablelayer": "Aktiver lag",
       "existinglayer": "Laget finnes allerede på kartet",
+      "filter": "",
+      "geometry": "",
       "invisiblelayer": "Resultatet finnes på et lag som er usynlig",
       "more": "Flere resultater",
       "noresults": "",
@@ -399,6 +402,7 @@
       "searchall": "Søk etter steder eller legg til kart",
       "searchinprogress": "",
       "searchreset": "",
+      "solr": "",
       "themes": "Tema"
     },
     "searchbox": {

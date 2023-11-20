@@ -389,8 +389,11 @@
     },
     "search": {
       "all": "Tutti",
+      "clearfilter": "Azzera",
       "enablelayer": "Attivare il livello",
       "existinglayer": "Il livello esiste già nella mappa",
+      "filter": "Filtro",
+      "geometry": "Geometria",
       "invisiblelayer": "Il risultato si trova su un livello che non è visibile.",
       "more": "Altri risultati",
       "noresults": "Nessun risultato",
@@ -399,6 +402,7 @@
       "searchall": "Cerca località o aggiungi cartine...",
       "searchinprogress": "Ricerca in corso...",
       "searchreset": "Resetta ricerca",
+      "solr": "Full text",
       "themes": "Temi"
     },
     "searchbox": {

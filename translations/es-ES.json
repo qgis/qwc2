@@ -389,8 +389,11 @@
     },
     "search": {
       "all": "Todo",
+      "clearfilter": "",
       "enablelayer": "Habilitar capa",
       "existinglayer": "La capa ya existe en el mapa",
+      "filter": "",
+      "geometry": "",
       "invisiblelayer": "El resultado se encuentra en una capa no visible",
       "more": "Más...",
       "noresults": "Sin resultados",
@@ -399,6 +402,7 @@
       "searchall": "Buscar lugares o agregar mapas...",
       "searchinprogress": "Buscando...",
       "searchreset": "Reiniciar búsqueda",
+      "solr": "",
       "themes": "Temas"
     },
     "searchbox": {
