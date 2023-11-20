@@ -1,6 +1,7 @@
 div.Toolbar {
     margin: 0.25em;
     flex: 0 0 auto;
+    display: flex;
 }
 
 div.Toolbar > .icon {
