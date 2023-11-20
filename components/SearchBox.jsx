@@ -591,10 +591,13 @@ class SearchBox extends React.Component {
                 } else {
                     geometry = {type: 'Point', coordinates: CoordinatesUtils.reproject([item.x, item.y], item.crs, this.props.map.projection)};
                 }
-                if (geometry.type === 'Point') {
-                    return pointInPolygon(geometry.coordinates, this.props.selection.polygon);
-                } else if (geometry.type === 'Polygon') {
+                if (geometry.type === 'Polygon') {
                     return polygonIntersectTest(geometry.coordinates[0], this.props.selection.polygon);
+                } else if (item.bbox) {
+                    const [xmin, ymin, xmax, ymax] = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.map.projection);
+                    return polygonIntersectTest([[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax], [xmin, ymin]], this.props.selection.polygon);
+                } else if (geometry.type === 'Point') {
+                    return pointInPolygon(geometry.coordinates, this.props.selection.polygon);
                 }
                 return true;
             });
