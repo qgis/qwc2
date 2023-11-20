@@ -531,7 +531,8 @@ class SearchBox extends React.Component {
                 limit: this.props.searchOptions.resultLimit
             };
             axios.get(service, {params}).then(response => {
-                const searchResults = {...response.data, query_text: searchText};
+                const results = this.filterFulltextResults(response.data);
+                const searchResults = {...results, query_text: searchText};
                 searchResults.tot_result_count = (searchResults.result_counts || []).reduce((res, entry) => res + (entry.count || 0), 0);
                 this.addSearchResults(searchSession, "__fulltext", searchResults);
             }).catch(e => {
@@ -555,13 +556,30 @@ class SearchBox extends React.Component {
         };
         Object.entries(availableProviders).forEach(([key, entry]) => {
             entry.onSearch(searchText, {...searchParams, cfgParams: entry.params}, (response) => {
-                const results = entry.handlesGeomFilter ? response.results : this.filterResults(response.results);
+                const results = entry.handlesGeomFilter ? response.results : this.filterProviderResults(response.results);
                 const count = response.results.reduce((tot, cur) => (tot + cur.items.length), 0);
                 this.addSearchResults(searchSession, key, {results: results, tot_result_count: count});
             }, axios);
         });
     };
-    filterResults = (results) => {
+    filterFulltextResults = (data) => {
+        if (!this.props.selection.polygon) {
+            return data;
+        }
+        data.results = data.results.filter(result => {
+            if (!result.feature || !result.feature.bbox) {
+                return true;
+            }
+            const [xmin, ymin, xmax, ymax] = CoordinatesUtils.reprojectBbox(result.feature.bbox, "EPSG:" + result.feature.srid, this.props.map.projection);
+            const intersects = polygonIntersectTest([[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax], [xmin, ymin]], this.props.selection.polygon);
+            if (!intersects) {
+                data.result_counts.find(entry => entry.dataproduct_id === result.feature.dataproduct_id).count -= 1;
+            }
+            return intersects;
+        });
+        return data;
+    };
+    filterProviderResults = (results) => {
         if (!this.props.selection.polygon) {
             return results;
         }
