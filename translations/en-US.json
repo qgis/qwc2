@@ -396,6 +396,7 @@
       "geometry": "Geometry",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "more": "More...",
+      "none": "None",
       "noresults": "No results",
       "providerselection": "Search providers",
       "search": "Search",

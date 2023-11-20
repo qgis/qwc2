@@ -338,6 +338,7 @@
     "search.geometry",
     "search.invisiblelayer",
     "search.more",
+    "search.none",
     "search.noresults",
     "search.providerselection",
     "search.search",
