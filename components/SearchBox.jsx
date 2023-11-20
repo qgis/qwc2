@@ -641,6 +641,10 @@ class SearchBox extends React.Component {
         }
         return results.map(group => {
             const newItems = group.items.filter(item => {
+                const resultType = item.type || SearchResultType.PLACE;
+                if (resultType !== SearchResultType.PLACE) {
+                    return true;
+                }
                 let geometry = null;
                 if (item.geometry) {
                     geometry = VectorLayerUtils.reprojectGeometry(item.geometry, item.crs, this.props.map.projection);
