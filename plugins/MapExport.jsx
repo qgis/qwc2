@@ -85,7 +85,7 @@ class MapExport extends React.Component {
     constructor(props) {
         super(props);
         this.form = null;
-        this.state.dpi = props.dpis[0] || 96;
+        this.state.dpi = (props.dpis || [])[0] || 96;
     }
     state = {
         extent: '',
