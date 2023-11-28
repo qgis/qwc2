@@ -165,7 +165,7 @@ class MapExport extends React.Component {
         }
         const filename = this.props.theme.name + "." + this.state.selectedFormat.split(";")[0].split("/").pop();
         const action = this.props.theme.url;
-        const exportExternalLayers = this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
+        const exportExternalLayers = this.state.selectedFormat !== "application/dxf" && this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
 
         const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         let scaleFactor = 1;
