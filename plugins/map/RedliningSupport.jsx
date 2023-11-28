@@ -85,6 +85,12 @@ class RedliningSupport extends React.Component {
             // pass
         } else if (!this.props.redlining || !this.props.redlining.action) {
             this.reset(layerChanged);
+        } else if (this.props.redlining.action === 'Commit') {
+            if (this.props.redlining.style !== prevProps.redlining.style) {
+                this.updateFeatureStyle(this.props.redlining.style);
+            }
+            this.commitCurrentFeature();
+            this.props.changeRedliningState({...prevProps.redlining, action: 'Pick', selectedFeature: null});
         } else if ((this.props.redlining.action === 'Pick' || this.props.redlining.action === 'Buffer') && (prevProps.redlining.action !== this.props.redlining.action || layerChanged || (!this.props.redlining.selectedFeature && prevProps.redlining.selectedFeature))) {
             this.addPickInteraction(layerChanged);
         } else if (this.props.redlining.action === 'PickDraw' && (prevProps.redlining.action !== 'PickDraw' || this.props.redlining.geomType !== prevProps.redlining.geomType)) {
