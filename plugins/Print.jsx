@@ -447,7 +447,7 @@ class Print extends React.Component {
                             <Spinner /> {LocaleUtils.tr("print.wait")}
                         </span>
                     ) : null}
-                    <iframe src={this.state.pdfData} name="print-output-window" onLoad={() => this.setState({outputLoaded: true})}/>
+                    <iframe name="print-output-window" onLoad={() => this.setState({outputLoaded: true})} src={this.state.pdfData}/>
                 </div>
             </ResizeableWindow>
         );
@@ -560,10 +560,9 @@ class Print extends React.Component {
             const contentType = response.headers["content-type"];
             const file = new Blob([response.data], { type: contentType });
             if (this.props.inlinePrintOutput) {
-                const fileURL = URL.createObjectURL(file); 
+                const fileURL = URL.createObjectURL(file);
                 this.setState({ pdfData: fileURL, outputLoaded: true });
-            }
-            else {
+            } else {
                 FileSaver.saveAs(file, this.props.theme.name + '.pdf');
             }
         }).catch(e => {
