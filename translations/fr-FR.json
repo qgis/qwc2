@@ -287,8 +287,9 @@
     },
     "print": {
       "atlasfeature": "Objet atlas",
+      "format": "Format",
       "grid": "Grille",
-      "layout": "Format",
+      "layout": "Mise en page",
       "legend": "Légende",
       "maximize": "Maximiser",
       "minimize": "Minimiser",
@@ -299,7 +300,7 @@
       "resolution": "Résolution",
       "rotation": "Rotation",
       "scale": "Echelle",
-      "submit": "Créer le PDF",
+      "submit": "Imprimer",
       "wait": "Veuillez patienter..."
     },
     "qtdesignerform": {

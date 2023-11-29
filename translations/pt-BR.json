@@ -287,6 +287,7 @@
     },
     "print": {
       "atlasfeature": "Feições do atlas",
+      "format": "Formato",
       "grid": "Grade",
       "layout": "Layout",
       "legend": "Legenda",

@@ -287,6 +287,7 @@
     },
     "print": {
       "atlasfeature": "",
+      "format": "Формат бумаги",
       "grid": "Сетка",
       "layout": "Формат бумаги",
       "legend": "",
