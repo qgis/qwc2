@@ -91,13 +91,16 @@ class Print extends React.Component {
         outputLoaded: false,
         printing: false,
         atlasFeatures: [],
-        geoPdf: false
+        geoPdf: false,
+        availableFormats: ['application/pdf', 'image/jpeg', 'image/png', 'image/svg'],
+        selectedFormat: null
     };
     constructor(props) {
         super(props);
         this.printForm = null;
         this.state.grid = props.gridInitiallyEnabled;
         this.fixedMapCenter = null;
+        this.state.selectedFormat = 'application/pdf';
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.theme !== this.props.theme) {
@@ -228,6 +231,14 @@ class Print extends React.Component {
             return a.name.localeCompare(b.name, undefined, {numeric: true});
         });
 
+        const formatMap = {
+            "application/pdf": "PDF",
+            "image/jpeg": "JPEG",
+            "image/png": "PNG",
+            "image/svg": "SVG"
+        };
+        const selectedFormat = this.state.selectedFormat;
+
         return (
             <div className="print-body">
                 <form action={this.props.theme.printUrl} method="POST"
@@ -243,6 +254,16 @@ class Print extends React.Component {
                                         return (
                                             <option key={item.name} value={item.name}>{item.name}</option>
                                         );
+                                    })}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{LocaleUtils.tr("print.format")}</td>
+                            <td>
+                                <select name="FORMAT" onChange={this.formatChanged} value={this.state.selectedFormat}>
+                                    {this.state.availableFormats.map(format => {
+                                        return (<option key={format} value={format}>{formatMap[format] || format}</option>);
                                     })}
                                 </select>
                             </td>
@@ -325,7 +346,7 @@ class Print extends React.Component {
                             };
                             return this.renderPrintLabelField(label, opts);
                         })}
-                        {this.props.allowGeoPdfExport ? (
+                        {selectedFormat === "application/pdf" && this.props.allowGeoPdfExport ? (
                             <tr>
                                 <td>GeoPDF</td>
                                 <td>
@@ -340,7 +361,7 @@ class Print extends React.Component {
                         <input name="SERVICE" readOnly type={formvisibility} value="WMS" />
                         <input name="VERSION" readOnly type={formvisibility} value={version} />
                         <input name="REQUEST" readOnly type={formvisibility} value="GetPrint" />
-                        <input name="FORMAT" readOnly type={formvisibility} value="pdf" />
+                        <input name="FORMAT" readOnly type={formvisibility} value={selectedFormat} />
                         <input name="TRANSPARENT" readOnly type={formvisibility} value="true" />
                         <input name="SRS" readOnly type={formvisibility} value={mapCrs} />
                         {Object.entries(printParams).map(([key, value]) => (<input key={key} name={key} type={formvisibility} value={value} />))}
@@ -354,7 +375,7 @@ class Print extends React.Component {
                         <input name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} readOnly type={formvisibility} value={highlightParams.labelOutlineSizes.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELSIZE"} readOnly type={formvisibility} value={highlightParams.labelSizes.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABEL_DISTANCE"} readOnly type={formvisibility} value={highlightParams.labelDist.join(";")} />
-                        {this.props.allowGeoPdfExport  ? (<input name="FORMAT_OPTIONS" readOnly type={formvisibility} value={this.state.geoPdf ? "WRITE_GEO_PDF:true" : "WRITE_GEO_PDF:false"} />) : null}
+                        {selectedFormat === "application/pdf" && this.props.allowGeoPdfExport  ? (<input name="FORMAT_OPTIONS" readOnly type={formvisibility} value={this.state.geoPdf ? "WRITE_GEO_PDF:true" : "WRITE_GEO_PDF:false"} />) : null}
                         {gridIntervalX}
                         {gridIntervalY}
                         {resolutionInput}
@@ -526,6 +547,9 @@ class Print extends React.Component {
             }
             this.props.changeRotation(angle / 180 * Math.PI);
         }
+    };
+    formatChanged = (ev) => {
+        this.setState({selectedFormat: ev.target.value});
     };
     computeCurrentExtent = () => {
         if (!this.props.map || !this.state.layout || !this.state.scale) {
