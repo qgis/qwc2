@@ -126,7 +126,7 @@ function getFeatures(layerId, mapCrs, callback, bbox = null, filter = null) {
         "Accept-Language": LocaleUtils.lang()
     };
     axios.get(req, {headers, params}).then(response => {
-        if (response.data && !isEmpty(response.data.features)) {
+        if (response.data && Array.isArray(response.data.features)) {
             const version = +new Date();
             response.data.features.forEach(feature => {
                 feature.__version__ = version;
