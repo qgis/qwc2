@@ -149,10 +149,9 @@ const LayerUtils = {
         if (!Array.isArray(layer.sublayers)) {
             const layers = (params.LAYERS || layer.name).split(",").filter(Boolean);
             const opacities = (params.OPACITIES || "").split(",").filter(Boolean);
-            const opacityMult = (layer.opacity ?? 255) / 255;
             newParams = {
                 LAYERS: layers.join(","),
-                OPACITIES: layers.map((x, i) => (opacities[i] ?? "255") * opacityMult).map(Math.round).join(","),
+                OPACITIES: layers.map((x, i) => (opacities[i] ?? "255")).map(Math.round).join(","),
                 STYLES: params.STYLES ?? "",
                 ...layer.dimensionValues
             };
