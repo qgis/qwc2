@@ -13,6 +13,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 
 let UrlQuery = {};
+let historyUpdateTimeout = null;
 
 export const UrlParams = {
     updateParams(dict, forceLocationUrl = false) {
@@ -29,8 +30,11 @@ export const UrlParams = {
                 return;
             }
         }
-        // Timeout: avoid wierd issue where Firefox triggers a full reload when invoking history-replaceState directly
-        setTimeout(() => {
+        // Delay URL updates to avoid "Too many calls to Location or History APIs within a short timeframe."
+        if (historyUpdateTimeout !== null) {
+            clearTimeout(historyUpdateTimeout);
+        }
+        historyUpdateTimeout = setTimeout(() => {
             const urlObj = url.parse(window.location.href, true);
             urlObj.query = Object.assign(urlObj.query, dict);
             const propNames = Object.getOwnPropertyNames(urlObj.query);
@@ -42,7 +46,7 @@ export const UrlParams = {
             }
             delete urlObj.search;
             history.replaceState({id: urlObj.host}, '', url.format(urlObj));
-        }, 0);
+        }, 250);
     },
     getParam(key) {
         const urlObj = url.parse(window.location.href, true);
