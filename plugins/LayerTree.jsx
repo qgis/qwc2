@@ -289,7 +289,7 @@ class LayerTree extends React.Component {
             }
             editframe = (
                 <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
-                    <div className="layertree-item-edit-items">
+                    <div className="layertree-item-edit-items" onMouseDown={this.preventLayerTreeItemDrag}>
                         {zoomToLayerButton}
                         {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
                         <input className="layertree-item-transparency-slider" max="255" min="0"
@@ -348,6 +348,14 @@ class LayerTree extends React.Component {
                 {editframe}
             </div>
         );
+    };
+    preventLayerTreeItemDrag = (ev) => {
+        if (ev.currentTarget.parentNode.parentNode.draggable) {
+            ev.currentTarget.parentNode.parentNode.draggable = false;
+            ev.currentTarget.addEventListener('mouseup', (ev2) => {
+                ev2.currentTarget.parentNode.parentNode.draggable = true;
+            }, {once: true});
+        }
     };
     renderLayerTree = (layer) => {
         if (layer.role === LayerRole.BACKGROUND || layer.layertreehidden) {
