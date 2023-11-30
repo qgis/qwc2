@@ -14,6 +14,7 @@ import LayerUtils from '../utils/LayerUtils';
 
 let UrlQuery = {};
 let historyUpdateTimeout = null;
+let pendingParams = {};
 
 export const UrlParams = {
     updateParams(dict, forceLocationUrl = false) {
@@ -34,9 +35,10 @@ export const UrlParams = {
         if (historyUpdateTimeout !== null) {
             clearTimeout(historyUpdateTimeout);
         }
+        pendingParams = {...pendingParams, ...dict};
         historyUpdateTimeout = setTimeout(() => {
             const urlObj = url.parse(window.location.href, true);
-            urlObj.query = Object.assign(urlObj.query, dict);
+            urlObj.query = Object.assign(urlObj.query, pendingParams);
             const propNames = Object.getOwnPropertyNames(urlObj.query);
 
             for (const propName of propNames) {
@@ -46,6 +48,8 @@ export const UrlParams = {
             }
             delete urlObj.search;
             history.replaceState({id: urlObj.host}, '', url.format(urlObj));
+            historyUpdateTimeout = null;
+            pendingParams = {};
         }, 250);
     },
     getParam(key) {
