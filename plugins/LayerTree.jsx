@@ -570,7 +570,7 @@ class LayerTree extends React.Component {
         this.props.changeLayerProperty(layer.uuid, "visibility", !oldvisibility, grouppath, recurseDirection);
     };
     layerTransparencyChanged = (layer, sublayerpath, value) => {
-        this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - Math.round(value)), sublayerpath);
+        this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath);
     };
     layerMenuToggled = (sublayeruuid) => {
         this.setState((state) => ({activemenu: state.activemenu === sublayeruuid ? null : sublayeruuid}));
