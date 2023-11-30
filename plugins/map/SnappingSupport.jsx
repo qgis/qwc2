@@ -196,7 +196,7 @@ class SnappingSupport extends React.Component {
                 const format = new ol.format.GeoJSON();
                 const olFeatures = format.readFeatures({
                     type: "FeatureCollection",
-                    features: features
+                    features: features.map(feature => ({...feature, id: uuid.v1()}))
                 });
                 this.source.addFeatures(olFeatures);
                 this.setState({invalid: false, reqId: null, havesnaplayers: true});
