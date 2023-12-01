@@ -268,16 +268,18 @@ class Print extends React.Component {
                                 </select>
                             </td>
                         </tr>
-                        <tr>
-                            <td>{LocaleUtils.tr("print.format")}</td>
-                            <td>
-                                <select name="FORMAT" onChange={this.formatChanged} value={this.state.selectedFormat}>
-                                    {this.state.availableFormats.map(format => {
-                                        return (<option key={format} value={format}>{formatMap[format] || format}</option>);
-                                    })}
-                                </select>
-                            </td>
-                        </tr>
+                        {this.state.availableFormats.length > 1 ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("print.format")}</td>
+                                <td>
+                                    <select name="FORMAT" onChange={this.formatChanged} value={this.state.selectedFormat}>
+                                        {this.state.availableFormats.map(format => {
+                                            return (<option key={format} value={format}>{formatMap[format] || format}</option>);
+                                        })}
+                                    </select>
+                                </td>
+                            </tr>
+                        ) : null}
                         {this.state.layout.atlasCoverageLayer ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.atlasfeature")}</td>
