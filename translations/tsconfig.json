@@ -241,6 +241,7 @@
     "numericinput.width",
     "numericinput.windowtitle",
     "print.atlasfeature",
+    "print.format",
     "print.grid",
     "print.layout",
     "print.legend",
