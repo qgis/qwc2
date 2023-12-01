@@ -51,6 +51,8 @@ class Print extends React.Component {
         defaultScaleFactor: PropTypes.number,
         /** Whether to display the map rotation control. */
         displayRotation: PropTypes.bool,
+        /** Export layout format mimetypes. If empty, supported formats are listed. If format is not supported by QGIS Server, print will fail */
+        formats: PropTypes.arrayOf(PropTypes.string),
         /** Whether the grid is enabled by default. */
         gridInitiallyEnabled: PropTypes.bool,
         /** Whether to hide form fields which contain autopopulated values (i.e. search result label). */
@@ -92,7 +94,7 @@ class Print extends React.Component {
         printing: false,
         atlasFeatures: [],
         geoPdf: false,
-        availableFormats: ['application/pdf', 'image/jpeg', 'image/png', 'image/svg'],
+        availableFormats: [],
         selectedFormat: null
     };
     constructor(props) {
@@ -100,7 +102,6 @@ class Print extends React.Component {
         this.printForm = null;
         this.state.grid = props.gridInitiallyEnabled;
         this.fixedMapCenter = null;
-        this.state.selectedFormat = 'application/pdf';
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.theme !== this.props.theme) {
@@ -129,6 +130,9 @@ class Print extends React.Component {
         }
     }
     onShow = () => {
+        const defaultFormats = ['application/pdf', 'image/jpeg', 'image/png', 'image/svg'];
+        const availableFormats = !isEmpty(this.props.formats) ? this.props.formats : defaultFormats;
+        const selectedFormat = availableFormats[0];
         let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) * this.props.defaultScaleFactor);
         if (this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             let closestVal = Math.abs(scale - this.props.theme.printScales[0]);
@@ -142,7 +146,13 @@ class Print extends React.Component {
             }
             scale = this.props.theme.printScales[closestIdx];
         }
-        this.setState({scale: scale, initialRotation: this.props.map.bbox.rotation, dpi: this.props.defaultDpi});
+        this.setState({
+            scale: scale,
+            initialRotation: this.props.map.bbox.rotation,
+            dpi: this.props.defaultDpi,
+            availableFormats: availableFormats,
+            selectedFormat: selectedFormat
+        });
     };
     onHide = () => {
         this.props.changeRotation(this.state.initialRotation);
