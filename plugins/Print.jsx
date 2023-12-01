@@ -95,7 +95,8 @@ class Print extends React.Component {
         atlasFeatures: [],
         geoPdf: false,
         availableFormats: [],
-        selectedFormat: null
+        selectedFormat: "",
+        printOutputData: undefined
     };
     constructor(props) {
         super(props);
