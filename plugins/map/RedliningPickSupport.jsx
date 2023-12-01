@@ -71,7 +71,7 @@ class RedliningPickSupport extends React.Component {
             // Add newly selected features
             for (const feature of evt.selected || []) {
                 // Skip text features for now
-                if (feature.get("isText")) {
+                if (feature.shape === "Text") {
                     continue;
                 }
                 selectedFeatures.push(feature.getId());

@@ -24,6 +24,7 @@
         "flat": "^5.0.2",
         "formdata-json": "^1.0.0",
         "geojson-bounding-box": "^0.2.0",
+        "geojson-polygon-self-intersections": "^1.2.1",
         "html-react-parser": "^3.0.8",
         "ismobilejs": "^1.1.1",
         "jszip": "^3.10.1",

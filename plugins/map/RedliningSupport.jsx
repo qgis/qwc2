@@ -12,6 +12,8 @@ import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import {v4 as uuidv4} from 'uuid';
 import ol from 'openlayers';
+import polySelfIntersections from 'geojson-polygon-self-intersections';
+import isEmpty from 'lodash.isempty';
 import {changeRedliningState} from '../../actions/redlining';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
@@ -131,8 +133,8 @@ class RedliningSupport extends React.Component {
     };
     updateCurrentFeature = (feature) => {
         if (this.currentFeature && this.props.redlining.selectedFeature) {
-            if (feature.properties.circleParams) {
-                const circleParams = feature.properties.circleParams;
+            if (feature.circleParams) {
+                const circleParams = feature.circleParams;
                 this.currentFeature.setGeometry(new ol.geom.Circle(circleParams.center, circleParams.radius));
             } else {
                 this.currentFeature.getGeometry().setCoordinates(feature.geometry.coordinates);
@@ -165,11 +167,11 @@ class RedliningSupport extends React.Component {
     };
     updateFeatureStyle = (styleProps) => {
         if (this.currentFeature) {
-            const isText = this.currentFeature.get("shape") === "Text";
+            const styleName = this.currentFeature.get("shape") === "Text" ? "text" : "default";
             const opts = this.styleOptions(styleProps);
             this.blockOnChange = true;
             this.currentFeature.set('label', styleProps.text);
-            this.currentFeature.set('styleName', isText ? "text" : "default");
+            this.currentFeature.set('styleName', styleName);
             this.currentFeature.set('styleOptions', opts);
             this.blockOnChange = false;
         }
@@ -572,48 +574,29 @@ class RedliningSupport extends React.Component {
         this.interactions.push(transformInteraction);
     };
     commitCurrentFeature = (newFeature = false) => {
-        if (!this.currentFeature) {
+        const feature = this.currentFeatureObject();
+        if (!feature) {
             return;
         }
-        // Don't commit empty text features
-        const isText = this.currentFeature.get("shape") === "Text";
-        if (isText && !this.currentFeature.get("label")) {
+        // Don't commit empty/invalid features
+        if (
+            (feature.shape === "Text" && !feature.properties.label) ||
+            (feature.shape === "Circle" && feature.circleParams.radius === 0) ||
+            (feature.geometry?.type === "Polygon" && (!isEmpty(polySelfIntersections(feature).geometry.coordinates) || this.currentFeature.getGeometry().getArea() === 0))
+        ) {
             if (!newFeature) {
-                this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()]);
+                this.props.removeLayerFeatures(this.props.redlining.layer, [feature.id]);
             }
             this.resetSelectedFeature();
             return;
         }
-
-        const feature = this.currentFeatureObject();
-        if (this.currentFeature.getGeometry() instanceof ol.geom.Circle) {
-            const center = this.currentFeature.getGeometry().getCenter();
-            const radius = this.currentFeature.getGeometry().getRadius();
+        if (feature.shape === "Circle") {
+            const {center, radius} = feature.circleParams;
             const deg2rad = Math.PI / 180;
             feature.geometry.type = "Polygon";
             feature.geometry.coordinates = [
                 Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))
             ];
-            feature.circleParams = {
-                center: center,
-                radius: radius
-            };
-        }
-        feature.isText = isText;
-        feature.styleName = this.currentFeature.get('styleName');
-        feature.styleOptions = this.currentFeature.get('styleOptions');
-        feature.shape = this.currentFeature.get('shape');
-        feature.measurements = this.currentFeature.get('measurements');
-        // Don't pollute GeoJSON object properties with internal props
-        delete feature.properties.styleName;
-        delete feature.properties.styleOptions;
-        delete feature.properties.isText;
-        delete feature.properties.circleParams;
-        delete feature.properties.shape;
-        delete feature.properties.measurements;
-        // Don't store empty label prop
-        if (feature.properties.label === "") {
-            delete feature.properties.label;
         }
         const layer = {
             id: this.props.redlining.layer,
@@ -650,8 +633,8 @@ class RedliningSupport extends React.Component {
     resetSelectedFeature = () => {
         if (this.currentFeature) {
             // Reset selection style
-            const isText = this.currentFeature.get("shape") === "Text";
-            const style = FeatureStyles[isText ? "text" : "default"](this.currentFeature, this.currentFeature.get('styleOptions'));
+            const styleName = this.currentFeature.get("shape") === "Text" ? "text" : "default";
+            const style = FeatureStyles[styleName](this.currentFeature, this.currentFeature.get('styleOptions'));
             this.currentFeature.setStyle(style);
             this.currentFeature.un('change', this.updateMeasurements);
             this.currentFeature = null;
@@ -673,11 +656,25 @@ class RedliningSupport extends React.Component {
         }
         const format = new ol.format.GeoJSON();
         const feature = format.writeFeatureObject(this.currentFeature);
-        if (this.currentFeature.getGeometry() instanceof ol.geom.Circle) {
-            feature.properties.circleParams = {
+        if (this.currentFeature.get("shape") === "Circle") {
+            feature.circleParams = {
                 center: this.currentFeature.getGeometry().getCenter(),
                 radius: this.currentFeature.getGeometry().getRadius()
             };
+        }
+        feature.styleName = this.currentFeature.get('styleName');
+        feature.styleOptions = this.currentFeature.get('styleOptions');
+        feature.shape = this.currentFeature.get('shape');
+        feature.measurements = this.currentFeature.get('measurements');
+        // Don't pollute GeoJSON object properties with internal props
+        delete feature.properties.styleName;
+        delete feature.properties.styleOptions;
+        delete feature.properties.shape;
+        delete feature.properties.measurements;
+        delete feature.properties.circleParams;
+        // Don't store empty label prop
+        if (feature.properties.label === "") {
+            delete feature.properties.label;
         }
         return feature;
     };

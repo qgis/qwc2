@@ -66,8 +66,8 @@ class NumericInputWindow extends React.Component {
         let body = null;
         if (!this.state.geometry) {
             body = (<span>{LocaleUtils.tr("numericinput.nofeature")}</span>);
-        } else if (shapeInputForms[this.state.feature.properties.shape]) {
-            body = shapeInputForms[this.state.feature.properties.shape]();
+        } else if (shapeInputForms[this.state.feature.shape]) {
+            body = shapeInputForms[this.state.feature.shape]();
         } else {
             body = LocaleUtils.tr("numericinput.featureunsupported");
         }
@@ -121,7 +121,7 @@ class NumericInputWindow extends React.Component {
     };
     renderCoordinateListInputForm = () => {
         let coordinates = this.state.geometry.coordinates;
-        if (this.state.feature.properties.shape === 'Polygon') {
+        if (this.state.feature.shape === 'Polygon') {
             coordinates = coordinates[0];
         }
         return (
@@ -146,7 +146,7 @@ class NumericInputWindow extends React.Component {
     updateListCoordinate = (number, nodeidx, ord) => {
         const newCoordinates = [...this.state.geometry.coordinates];
         let newpoint = null;
-        if (this.state.feature.properties.shape === 'Polygon') {
+        if (this.state.feature.shape === 'Polygon') {
             newCoordinates[0] = [...newCoordinates[0]];
             newCoordinates[0][nodeidx] = [...newCoordinates[0][nodeidx]];
             newCoordinates[0][nodeidx][ord] = number;
@@ -173,7 +173,7 @@ class NumericInputWindow extends React.Component {
     };
     insertCoordinate = (idx) => {
         const newCoordinates = [...this.state.geometry.coordinates];
-        if (this.state.feature.properties.shape === 'Polygon') {
+        if (this.state.feature.shape === 'Polygon') {
             newCoordinates[0] = [...newCoordinates[0]];
             newCoordinates[0].splice(idx, 0, this.computeInsPoint(newCoordinates[0], idx));
         } else {
@@ -184,7 +184,7 @@ class NumericInputWindow extends React.Component {
     };
     removeCoordinate = (idx) => {
         const newCoordinates = [...this.state.geometry.coordinates];
-        if (this.state.feature.properties.shape === 'Polygon') {
+        if (this.state.feature.shape === 'Polygon') {
             newCoordinates[0] = [...newCoordinates[0]];
             newCoordinates[0].splice(idx, 1);
         } else {
@@ -194,7 +194,7 @@ class NumericInputWindow extends React.Component {
         this.props.removeLayer("numericinputselection");
     };
     highlightListCoordinate = (idx, newpoint = null) => {
-        const isPolygon = this.state.feature.properties.shape === 'Polygon';
+        const isPolygon = this.state.feature.shape === 'Polygon';
         const coordinates = this.state.geometry.coordinates;
         const point = CoordinatesUtils.reproject(newpoint || (isPolygon ? coordinates[0][idx] : coordinates[idx]), this.state.displayCrs, this.props.mapCrs);
         this.setState({highlightedNode: idx});
@@ -218,7 +218,7 @@ class NumericInputWindow extends React.Component {
         }
     };
     renderCircleInputForm = () => {
-        const circleParams = this.state.feature.properties.circleParams;
+        const circleParams = this.state.feature.circleParams;
         const center = CoordinatesUtils.reproject(circleParams.center, this.props.mapCrs, this.state.displayCrs);
         return (
             <table>
@@ -240,18 +240,15 @@ class NumericInputWindow extends React.Component {
         const center = CoordinatesUtils.reproject([x, y], this.state.displayCrs, this.props.mapCrs);
         const newFeature = {
             ...this.state.feature,
-            properties: {
-                ...this.state.feature.properties,
-                circleParams: {
-                    center: center,
-                    radius: r
-                }
+            circleParams: {
+                center: center,
+                radius: r
             }
         };
         this.props.onFeatureChanged(newFeature);
     };
     renderBoxInputForm = () => {
-        const shape = this.state.feature.properties.shape;
+        const shape = this.state.feature.shape;
         const coordinates = this.state.geometry.coordinates[0];
         const x = 0.5 * (coordinates[0][0] + coordinates[2][0]);
         const y = 0.5 * (coordinates[0][1] + coordinates[2][1]);
