@@ -34,13 +34,6 @@ class MapLegend extends React.Component {
         bboxDependentLegend: PropTypes.bool,
         /** Extra parameters to add to the GetLegendGraphics request. */
         extraLegendParameters: PropTypes.string,
-        layers: PropTypes.array,
-        map: PropTypes.object,
-        /** Whether to only include enabled layers in the legend by default. */
-        onlyVisibleLegend: PropTypes.bool,
-        /** Whether to display a scale-dependent legend by default. */
-        scaleDependentLegend: PropTypes.bool,
-        setCurrentTask: PropTypes.func,
         /** Default window geometry with size, position and docking status. */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -49,6 +42,13 @@ class MapLegend extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
+        layers: PropTypes.array,
+        map: PropTypes.object,
+        /** Whether to only include enabled layers in the legend by default. */
+        onlyVisibleLegend: PropTypes.bool,
+        /** Whether to display a scale-dependent legend by default. */
+        scaleDependentLegend: PropTypes.bool,
+        setCurrentTask: PropTypes.func
     };
     static defaultProps = {
         addGroupTitles: false,
