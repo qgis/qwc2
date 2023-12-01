@@ -91,7 +91,7 @@ const ThemeUtils = {
         }
         if (visibleIdx >= 0) {
             bgLayers[visibleIdx].visibility = true;
-        } else if (defaultVisibleIdx >= 0) {
+        } else if (defaultVisibleIdx >= 0 && visibleLayer !== "") {
             bgLayers[defaultVisibleIdx].visibility = true;
         }
         if (initialTheme && visibleIdx === -1 && visibleLayer) {
