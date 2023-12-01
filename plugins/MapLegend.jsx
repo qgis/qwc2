@@ -125,7 +125,7 @@ class MapLegend extends React.Component {
     printLayerLegend = (layer, sublayer, mapScale) => {
         if (sublayer.sublayers && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
             if (this.props.addGroupTitles) {
-                const children = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer)).filter(x => x);
+                const children = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer, mapScale)).filter(x => x);
                 if (isEmpty(children)) {
                     return null;
                 } else {
@@ -133,16 +133,19 @@ class MapLegend extends React.Component {
                         <div className="map-legend-group" key={sublayer.name}>
                             <div className="map-legend-group-title">{sublayer.title || sublayer.name}</div>
                             <div className="map-legend-group-entries">
-                                {sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer))}
+                                {sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer, mapScale))}
                             </div>
                         </div>
                     );
                 }
             } else {
-                return sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer));
+                return sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer, mapScale));
             }
         } else {
             if (this.state.onlyVisibleLegend && !sublayer.visibility) {
+                return null;
+            }
+            if ((this.state.onlyVisibleLegend || this.state.scaleDependentLegend) && !LayerUtils.layerScaleInRange(sublayer, mapScale)) {
                 return null;
             }
             const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, mapScale, this.props.map, this.state.bboxDependentLegend, this.state.scaleDependentLegend, this.props.extraLegendParameters);
