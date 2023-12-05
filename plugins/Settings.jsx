@@ -37,7 +37,11 @@ class Settings extends React.Component {
         })),
         defaultUrlParams: PropTypes.string,
         /** List of available languages. Value is the lang code, title/titleMsgId the display name. */
-        languages: PropTypes.array,
+        languages: PropTypes.arrayOf(PropTypes.shape({
+            title: PropTypes.string,
+            titleMsgId: PropTypes.string,
+            value: PropTypes.string
+        })),
         setColorScheme: PropTypes.func,
         setUserInfoFields: PropTypes.func,
         /** Whether to show a selector to set the default theme/bookmark (of a logged in user). */
