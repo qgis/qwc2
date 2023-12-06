@@ -78,7 +78,10 @@ class OlMap extends React.Component {
         });
         this.keyboardPanInteractions = [];
         interactions.extend([
-            new ol.interaction.DragPan({kinetic: null}),
+            new ol.interaction.DragPan({
+                kinetic: null,
+                condition: (ev) => { return ev.originalEvent.isPrimary !== false && (ev.originalEvent.button === 0 || ev.originalEvent.button === 1); }
+            }),
             new ol.interaction.MouseWheelZoom({
                 duration: this.state.mapOptions.zoomDuration || 250,
                 constrainResolution: ConfigUtils.getConfigProp('allowFractionalZoom') === true ? false : true
@@ -316,6 +319,7 @@ class OlMap extends React.Component {
         return new ol.View(viewOptions);
     };
     registerHooks = () => {
+        MapUtils.registerHook(MapUtils.GET_MAP, this.map);
         MapUtils.registerHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK, (pos) => {
             return this.map.getPixelFromCoordinate(pos);
         });
