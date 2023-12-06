@@ -148,7 +148,8 @@ class MapExport extends React.Component {
             "image/png; mode=1bit": "PNG 1bit",
             "image/geotiff": "GeoTIFF",
             "image/tiff": "GeoTIFF",
-            "application/dxf": "DXF"
+            "application/dxf": "DXF",
+            "application/pdf": "GeoPDF"
         };
         const formatConfiguration = this.props.formatConfiguration?.[this.state.selectedFormat.split(";")[0]] || [];
 
