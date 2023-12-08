@@ -270,6 +270,9 @@
       "metric": "Mărimi metrice",
       "pointLabel": "Poziție"
     },
+    "misc": {
+      "ctrlclickhint": ""
+    },
     "navbar": {
       "perpage": "pe pagină"
     },

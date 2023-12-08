@@ -270,6 +270,9 @@
       "metric": "Metricky",
       "pointLabel": "Poloha"
     },
+    "misc": {
+      "ctrlclickhint": ""
+    },
     "navbar": {
       "perpage": "na stránku"
     },

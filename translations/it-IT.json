@@ -270,6 +270,9 @@
       "metric": "Metrico",
       "pointLabel": "Posizione"
     },
+    "misc": {
+      "ctrlclickhint": "Apri con Ctrl+Click"
+    },
     "navbar": {
       "perpage": "per pagina"
     },

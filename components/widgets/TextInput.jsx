@@ -9,6 +9,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import LocaleUtils from '../../utils/LocaleUtils';
+import MiscUtils from '../../utils/MiscUtils';
 import './style/TextInput.css';
 
 class TextInput extends React.Component {
@@ -35,9 +37,12 @@ class TextInput extends React.Component {
     constructor(props) {
         super(props);
         this.skipNextCommitOnBlur = false;
+        this.focusEnterClick = false;
         this.initialHeight = null;
         this.input = null;
         this.formEl = null;
+        this.tooltipEl = null;
+        this.tooltipTimeout = null;
     }
     static getDerivedStateFromProps(nextProps, state) {
         if (state.value !== nextProps.value) {
@@ -92,8 +97,12 @@ class TextInput extends React.Component {
                     contentEditable={!this.props.disabled && !this.props.readOnly}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
+                    onClick={this.onClick}
                     onInput={this.onChange}
                     onKeyDown={this.onKeyDown}
+                    onMouseDown={this.onMouseDown}
+                    onMouseLeave={this.onMouseLeave}
+                    onMouseMove={this.onMouseMove}
                     ref={el => {this.input = el;}}
                     style={this.props.style}
                 />
@@ -116,6 +125,46 @@ class TextInput extends React.Component {
             this.commit();
         }
     };
+    onClick = (ev) => {
+        if (ev.ctrlKey && this.focusEnterClick && ev.target.nodeName === 'A' && ev.target.href) {
+            window.open(ev.target.href, "_blank");
+        }
+    };
+    onMouseDown = () => {
+        this.focusEnterClick = document.activeElement !== this.input;
+    };
+    onMouseMove = (ev) => {
+        clearTimeout(this.tooltipTimeout);
+        const editable = !this.props.disabled && !this.props.readOnly;
+        if (editable && ev.target.nodeName === 'A') {
+            const rect = ev.target.getBoundingClientRect();
+            const left = rect.left + window.scrollX;
+            const bottom = rect.bottom + window.scrollY + 2;
+            this.tooltipTimeout = setTimeout(() => {
+                if (!this.tooltipEl) {
+                    this.tooltipEl = document.createElement("span");
+                    this.tooltipEl.className = "text-input-link-tooltip";
+                    this.tooltipEl.innerHTML = LocaleUtils.tr("misc.ctrlclickhint");
+                    this.tooltipEl.style.position = 'absolute';
+                    this.tooltipEl.style.zIndex = 10000000000;
+                    document.body.appendChild(this.tooltipEl);
+                }
+                this.tooltipEl.style.left = left + 'px';
+                this.tooltipEl.style.top = bottom + 'px';
+                this.tooltipTimeout = null;
+            }, 250);
+        } else if (this.tooltipEl) {
+            document.body.removeChild(this.tooltipEl);
+            this.tooltipEl = null;
+        }
+    };
+    onMouseLeave = () => {
+        clearTimeout(this.tooltipTimeout);
+        if (this.tooltipEl) {
+            document.body.removeChild(this.tooltipEl);
+            this.tooltipEl = null;
+        }
+    }
     onKeyDown = (ev) => {
         if (ev.keyCode === 17) { // Ctrl
             const prevValue = this.input.contentEditable;
@@ -139,7 +188,8 @@ class TextInput extends React.Component {
     };
     commit = () => {
         if (this.state.changed) {
-            this.props.onChange(this.state.curValue);
+            const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
+            this.props.onChange(valueWithLinks);
             if (this.formEl.form) {
                 // https://stackoverflow.com/a/46012210
                 const nativeSet = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;

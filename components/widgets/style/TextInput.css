@@ -63,3 +63,13 @@ div.text-input-resize-handle {
     z-index: 1;
     cursor: ns-resize;
 }
+
+span.text-input-link-tooltip {
+    border: 1px solid var(--tooltip-border-color);
+    background-color: var(--tooltip-bg-color);
+    color: var(--tooltip-text-color);
+    font-size: 75%;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    pointer-events: none;
+}

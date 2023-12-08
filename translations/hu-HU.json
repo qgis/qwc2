@@ -270,6 +270,9 @@
       "metric": "",
       "pointLabel": "Pozíció"
     },
+    "misc": {
+      "ctrlclickhint": ""
+    },
     "navbar": {
       "perpage": ""
     },

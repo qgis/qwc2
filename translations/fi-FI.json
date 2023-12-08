@@ -270,6 +270,9 @@
       "metric": "",
       "pointLabel": "Sijainti"
     },
+    "misc": {
+      "ctrlclickhint": ""
+    },
     "navbar": {
       "perpage": ""
     },
