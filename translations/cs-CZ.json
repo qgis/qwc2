@@ -183,6 +183,8 @@
       "localfile": "Soubor z počítače",
       "nofeatures": "Žádné prvku nebyly importovány.",
       "noresults": "Bez výsledku nebo nevalidní URL",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "Vložit URL pro WMS, WMTS, WFS..."
     },

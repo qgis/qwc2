@@ -183,6 +183,8 @@
       "localfile": "Yerel dosya",
       "nofeatures": "Herhangi bir obje içeriye aktarılamadı.",
       "noresults": "Sonuç yok ya da geçersiz URL",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "WMS, WMTS, WFS Adresini giriniz..."
     },

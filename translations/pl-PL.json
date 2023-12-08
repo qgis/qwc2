@@ -183,6 +183,8 @@
       "localfile": "Plik lokalny",
       "nofeatures": "Elementy nie mogły zostać zaimportowane",
       "noresults": "Brak wyników lub błędny adres URL",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "Podaj URL do WMS, WFS, WMTS..."
     },

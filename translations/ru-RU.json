@@ -183,6 +183,8 @@
       "localfile": "",
       "nofeatures": "Нет объектов, доступных для импорта",
       "noresults": "",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "",
       "urlplaceholder": "Введите URL для WMS, WMTS, WFS..."
     },

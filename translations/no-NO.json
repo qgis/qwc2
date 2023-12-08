@@ -183,6 +183,8 @@
       "localfile": "Lokal fil",
       "nofeatures": "Ingen objekt kunne importeres",
       "noresults": "Ingen svar eller ugyldig URL",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "Skriv inn URL til WMS, WMTS, WFS..."
     },

@@ -63,6 +63,7 @@ import OlObject from 'ol/Object';
 import OlOverlay from 'ol/Overlay';
 import * as OlProj from 'ol/proj';
 import OlSourceBingMaps from 'ol/source/BingMaps';
+import OlSourceImageStatic from 'ol/source/ImageStatic';
 import OlSourceImageWMS from 'ol/source/ImageWMS';
 import OlSourceOSM from 'ol/source/OSM';
 import OlSourceTileWMS from 'ol/source/TileWMS';
@@ -155,6 +156,7 @@ export default {
     proj: OlProj,
     source: {
         BingMaps: OlSourceBingMaps,
+        ImageStatic: OlSourceImageStatic,
         ImageWMS: OlSourceImageWMS,
         OSM: OlSourceOSM,
         TileWMS: OlSourceTileWMS,

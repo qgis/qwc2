@@ -183,6 +183,8 @@
       "localfile": "Arxiu local",
       "nofeatures": "No s'han pogut importar els elements.",
       "noresults": "Sense resultats o l'adreça URL no és vàlida",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "Adreça URL o WMS, WMTS, WFS..."
     },

@@ -183,6 +183,8 @@
       "localfile": "Paikallinen tiedosto",
       "nofeatures": "Ominaisuustietoja ei voitu tuoda.",
       "noresults": "Tuloksia ei ole tai virheellinen URL-osoite",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "Anna rajapinnoille URL..."
     },

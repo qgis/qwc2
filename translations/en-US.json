@@ -183,6 +183,8 @@
       "localfile": "Local file",
       "nofeatures": "No features could be imported.",
       "noresults": "No results or invalid URL",
+      "notgeopdf": "The selected file does not seem to be a GeoPDF.",
+      "unknownproj": "The selected GeoPDF uses an unknown projection: {0}.",
       "url": "URL",
       "urlplaceholder": "Enter URL to WMS, WMTS, WFS..."
     },

@@ -183,6 +183,8 @@
       "localfile": "",
       "nofeatures": "Nem sikerült az importálás.",
       "noresults": "",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "",
       "urlplaceholder": "URL a WMS, WMTS, WFS adatokhoz..."
     },

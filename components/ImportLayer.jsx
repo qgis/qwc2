@@ -12,10 +12,12 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import axios from 'axios';
 import url from 'url';
+import Proj4js from 'proj4';
+import {WorkerMessageHandler} from "pdfjs-dist/build/pdf.worker";
 import LayerCatalogWidget from './widgets/LayerCatalogWidget';
 import Spinner from './Spinner';
 import EditableSelect from '../components/widgets/EditableSelect';
-import {addLayerFeatures} from '../actions/layers';
+import {addLayer, addLayerFeatures} from '../actions/layers';
 import FileSelector from './widgets/FileSelector';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -28,6 +30,7 @@ import MiscUtils from '../utils/MiscUtils';
 
 class ImportLayer extends React.Component {
     static propTypes = {
+        addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         mapCrs: PropTypes.string,
         theme: PropTypes.object,
@@ -38,14 +41,15 @@ class ImportLayer extends React.Component {
         file: null,
         url: '',
         pendingRequests: 0,
-        serviceLayers: null
+        serviceLayers: null,
+        addingLayer: false
     };
     renderInputField() {
         const placeholder = LocaleUtils.tr("importlayer.urlplaceholder");
         const urlPresets = ConfigUtils.getConfigProp("importLayerUrlPresets", this.props.theme) || [];
         if (this.state.type === "Local") {
             return (
-                <FileSelector accept=".kml,.json,.geojson" file={this.state.file} onFileSelected={this.onFileSelected} />
+                <FileSelector accept=".kml,.json,.geojson,.pdf" file={this.state.file} onFileSelected={this.onFileSelected} />
             );
         } else {
             return (
@@ -66,7 +70,8 @@ class ImportLayer extends React.Component {
             );
         } else {
             button = (
-                <button className="button importlayer-addbutton" disabled={this.state.file === null} onClick={this.importFileLayer} type="button">
+                <button className="button importlayer-addbutton" disabled={this.state.file === null || this.state.addingLayer} onClick={this.importFileLayer} type="button">
+                    {this.state.addingLayer ? (<Spinner />) : null}
                     {LocaleUtils.tr("importlayer.addlayer")}
                 </button>
             );
@@ -230,23 +235,30 @@ class ImportLayer extends React.Component {
         if (!this.state.file) {
             return;
         }
+        this.setState({addingLayer: true});
         const file = this.state.file;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            if (file.name.toLowerCase().endsWith(".kml")) {
-                this.addKMLLayer(file.name, ev.target.result);
-            } else if (file.name.toLowerCase().endsWith(".geojson") || file.name.toLowerCase().endsWith(".json")) {
-                let data = {};
-                try {
-                    data = JSON.parse(ev.target.result);
-                    this.addGeoJSONLayer(file.name, data);
-                } catch (e) {
-                    /* Pass */
+        if (file.name.toLowerCase().endsWith(".pdf")) {
+            this.addGeoPDFLayer(file);
+        } else {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                if (file.name.toLowerCase().endsWith(".kml")) {
+                    this.addKMLLayer(file.name, ev.target.result);
+                } else if (file.name.toLowerCase().endsWith(".geojson") || file.name.toLowerCase().endsWith(".json")) {
+                    let data = {};
+                    try {
+                        data = JSON.parse(ev.target.result);
+                        this.addGeoJSONLayer(file.name, data);
+                    } catch (e) {
+                        /* Pass */
+                    }
+                } else if (file.name.toLowerCase().endsWith(".pdf")) {
+                    this.addGeoPDFLayer(file.name, ev.target.result);
                 }
-            }
-            this.setState({file: null});
-        };
-        reader.readAsText(this.state.file);
+                this.setState({file: null, addingLayer: false});
+            };
+            reader.readAsText(this.state.file);
+        }
     };
     addKMLLayer = (filename, data) => {
         this.addGeoJSONLayer(filename, {features: VectorLayerUtils.kmlToGeoJSON(data)});
@@ -280,11 +292,97 @@ class ImportLayer extends React.Component {
             alert(LocaleUtils.tr("importlayer.nofeatures"));
         }
     };
+    addGeoPDFLayer = (file) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const pdfText = atob(ev.target.result.slice(28));
+            /* FIXME: This is a very ugly way to extract PDF objects */
+            const GPTS = pdfText.match(/\/GPTS\s+\[([^\]]+)\]/);
+            const LPTS = pdfText.match(/\/LPTS\s+\[([^\]]+)\]/);
+            const Viewport = pdfText.match(/<<([^>]+\/Type\s+\/Viewport[^>]+)>>/);
+            const EPSG = pdfText.match(/\/EPSG\s*(\d+)/);
+            if (!GPTS || !LPTS || !Viewport || !EPSG) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("importlayer.notgeopdf"));
+                this.setState({file: null, addingLayer: false});
+                return;
+            }
+            const pairs = (res, value, idx, array) => idx % 2 === 0 ? [...res, array.slice(idx, idx + 2)] : res;
+            const gpts = GPTS[1].split(/\s+/).filter(Boolean).map(Number).reduce(pairs, []).map(e => e.reverse()); // lat-lon => lon-lat
+            const lpts = LPTS[1].split(/\s+/).filter(Boolean).map(Number).reduce(pairs, []);
+            const viewport = Viewport[1].match(/\/BBox\s+\[([^\]]+)\]/)[1].split(/\s+/).filter(Boolean).map(Number);
+            const epsg = EPSG[1];
+            const projDef = Proj4js.defs('EPSG:' + epsg);
+            if (!projDef) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("importlayer.unknownproj", 'EPSG:' + epsg));
+                this.setState({file: null, addingLayer: false});
+                return;
+            }
+            // Construct geog CS
+            const geogCs = {
+                projName: 'longlat',
+                ellps: projDef.ellps,
+                datum_params: projDef.datum_params,
+                no_defs: projDef.no_defs
+            };
+
+            // Compute the georeferenced area
+            // Note: this is a simplistic implementation, assuming that the frame is rectangular and not skewed
+            const getCornerIdx = (x, y) => lpts.findIndex(entry => Math.round(entry[0]) === x && Math.round(entry[1]) === y);
+            const idxBL = getCornerIdx(0, 0);
+            const idxTR = getCornerIdx(1, 1);
+
+            const computeCorner = (idx) => ({
+                pixel: [
+                    viewport[0] * (1 - lpts[idx][0]) + viewport[2] * lpts[idx][0],
+                    viewport[1] * (1 - lpts[idx][1]) + viewport[3] * lpts[idx][1]
+                ],
+                coo: Proj4js(geogCs, this.props.mapCrs, gpts[idx])
+            });
+            const bl = computeCorner(idxBL);
+            const tr = computeCorner(idxTR);
+            const geoextent = [bl.coo[0], bl.coo[1], tr.coo[0], tr.coo[1]];
+            const imgextent = [bl.pixel[0], bl.pixel[1], tr.pixel[0], tr.pixel[1]];
+
+            import('pdfjs-dist/build/pdf').then(pdfjsLib => {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = WorkerMessageHandler;
+
+                pdfjsLib.getDocument(ev.target.result).promise.then((pdf) => {
+                    pdf.getPage(1).then((page) => {
+                        const pageViewport = page.getViewport({scale: 1});
+                        const canvas = document.createElement('canvas');
+                        canvas.width = imgextent[2] - imgextent[0];
+                        canvas.height = imgextent[3] - imgextent[1];
+                        const context = canvas.getContext('2d');
+                        context.translate(-imgextent[0], -(pageViewport.height - imgextent[3]));
+                        page.render({canvasContext: context, viewport: pageViewport}).promise.then(() => {
+                            this.props.addLayer({
+                                type: "image",
+                                name: file.name,
+                                title: file.name,
+                                url: canvas.toDataURL(),
+                                projection: this.props.mapCrs,
+                                imageExtent: geoextent
+                            });
+                            this.setState({file: null, addingLayer: false});
+                        });
+                    });
+                });
+            }).catch(() => {
+                /* eslint-disable-next-line */
+                console.warn("pdfjs import failed");
+                this.setState({file: null, addingLayer: false});
+            });
+        };
+        reader.readAsDataURL(file);
+    };
 }
 
 export default connect((state) => ({
     mapCrs: state.map.projection,
     themes: state.theme.themes
 }), {
+    addLayer: addLayer,
     addLayerFeatures: addLayerFeatures
 })(ImportLayer);

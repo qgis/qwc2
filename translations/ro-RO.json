@@ -183,6 +183,8 @@
       "localfile": "Fișier local",
       "nofeatures": "Nu s-a putut importa niciun obiect spațial",
       "noresults": "Fără rezultat sau adresă URL invalidă",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "Adresă URL",
       "urlplaceholder": "Introduceți adresa URL către WMS, WMTS, WFS..."
     },

@@ -183,6 +183,8 @@
       "localfile": "Arquivo local",
       "nofeatures": "Nenhuma característica poderia ser importada.",
       "noresults": "Sem resultados ou URL inválido",
+      "notgeopdf": "",
+      "unknownproj": "",
       "url": "",
       "urlplaceholder": "Ingrese dirección URL o WMS, WMTS, WFS..."
     },

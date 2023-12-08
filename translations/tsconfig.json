@@ -169,6 +169,8 @@
     "importlayer.localfile",
     "importlayer.nofeatures",
     "importlayer.noresults",
+    "importlayer.notgeopdf",
+    "importlayer.unknownproj",
     "importlayer.url",
     "importlayer.urlplaceholder",
     "infotool.clickhelpPoint",
