@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
-import ContentEditable from 'react-contenteditable';
 import {getFeatureTemplate} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
@@ -20,8 +19,9 @@ import EditComboField, {KeyValCache} from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
-import Spinner from '../components/Spinner';
 import NavBar from '../components/widgets/NavBar';
+import Spinner from '../components/Spinner';
+import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import EditingInterface from '../utils/EditingInterface';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -413,18 +413,11 @@ class AttributeTable extends React.Component {
         } else if (field.type === "file") {
             return (<EditUploadField constraints={constraints} dataset={this.editLayerId(this.state.selectedLayer)} disabled={disabled} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
-            if (constraints.multiline) {
-                input = [
-                    (<input className="attribtable-content-editable-hiddeninput" key={field.id + "_input"} name={field.id} readOnly required={constraints.required} type="text" value={value} />),
-                    (<ContentEditable className="attribtable-content-editable" disabled={disabled} html={value} key={field.id + "_div"} onChange={(ev) => updateField(field.id, ev.target.value)} />)
-                ];
-            } else {
-                input = (
-                    <input disabled={disabled} name={field.id}
-                        onChange={(ev) => updateField(field.id, ev.target.value)}
-                        required={constraints.required} type={field.type} value={value}/>
-                );
-            }
+            input = (
+                <TextInput disabled={disabled} multiline={constraints.multiline} name={field.id}
+                    onChange={(val) => updateField(field.id, val)}
+                    required={constraints.required} value={value} />
+            );
         } else {
             input = (
                 <input disabled={disabled} name={field.id} type={field.type} {...constraints}

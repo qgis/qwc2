@@ -166,32 +166,13 @@ table.attribtable-table td {
 
 table.attribtable-table td > input:not([type=checkbox]),
 table.attribtable-table td > select,
+table.attribtable-table td pre.text-input,
 table.attribtable-table td > span.edit-upload-field {
     width: 100%;
     min-width: 4em;
     border: none!important;
     background-color: transparent!important;
     margin: 0;
-}
-
-table.attribtable-table td > input.attribtable-content-editable-hiddeninput {
-    visibility: hidden;
-    min-width: 6em;
-}
-
-table.attribtable-table td > div.attribtable-content-editable {
-    padding: 0.125em;
-    text-align: left;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    overflow: auto;
-}
-
-table.attribtable-table td > div.attribtable-content-editable:focus {
-    outline: var(--focus-outline);
 }
 
 table.attribtable-table td > *:disabled,
