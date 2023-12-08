@@ -139,8 +139,10 @@ class SideBar extends React.Component {
         const resizeSidebar = (event) => {
             sidebar.style.width = (startWidth + sign * (startMouseX - event.clientX)) + 'px';
         };
+        document.body.style.userSelect = 'none';
         window.addEventListener("mousemove", resizeSidebar);
         window.addEventListener("mouseup", () => {
+            document.body.style.userSelect = '';
             window.removeEventListener("mousemove", resizeSidebar);
         }, {once: true});
     };
@@ -154,8 +156,10 @@ class SideBar extends React.Component {
         const resizeSidebar = (event) => {
             sidebar.style.height = (startHeight + (event.clientY - startMouseY)) + 'px';
         };
+        document.body.style.userSelect = 'none';
         window.addEventListener("mousemove", resizeSidebar);
         window.addEventListener("mouseup", () => {
+            document.body.style.userSelect = '';
             window.removeEventListener("mousemove", resizeSidebar);
         }, {once: true});
     };
