@@ -1,0 +1,65 @@
+div.text-input-wrapper {
+    position: relative;
+}
+
+textarea.text-input-form-el {
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    width: 0;
+    left: 0;
+    bottom: 0;
+    height: 0;
+}
+
+pre.text-input {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    margin: 0;
+    padding: 0.25em;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
+    overflow: auto;
+    cursor: text;
+    text-align: left;
+}
+
+pre.text-input[contenteditable="true"] a {
+    cursor: text;
+    text-decoration: none;
+}
+
+pre.text-input-disabled {
+    background-color: var(--input-bg-color-disabled);
+}
+
+pre.div.text-input-readonly {
+    color: var(--text-color-disabled);
+}
+
+div.text-input-placeholder {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    z-index: 1;
+    padding: 0.25em;
+    color: var(--text-color-disabled);
+    pointer-events: none;
+    border: 1px solid transparent;
+}
+
+div.text-input-resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid var(--border-color);
+    border-left: 10px solid transparent;
+    z-index: 1;
+    cursor: ns-resize;
+}
