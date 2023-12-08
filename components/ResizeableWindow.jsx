@@ -149,9 +149,6 @@ class ResizeableWindow extends React.Component {
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
     };
-    stopEvent = (ev) => {
-        ev.stopPropagation();
-    };
     onClose = (ev) => {
         this.props.onClose();
         ev.stopPropagation();
@@ -214,7 +211,7 @@ class ResizeableWindow extends React.Component {
                 {maximizeable ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} titlemsgid={maximized ? LocaleUtils.trmsg("window.unmaximize") : LocaleUtils.trmsg("window.maximize")} />) : null}
                 {this.props.onClose ? (<Icon className="resizeable-window-nodrag resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} titlemsgid={LocaleUtils.trmsg("window.close")} />) : null}
             </div>),
-            (<div className={bodyclasses} key="body" onMouseDown={(ev) => { this.stopEvent(ev); this.props.raiseWindow(this.id); }} onMouseUp={this.stopEvent} onTouchStart={this.stopEvent}>
+            (<div className={bodyclasses} key="body" onMouseDown={() => this.props.raiseWindow(this.id)}>
                 <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
                 {this.renderRole("body")}
             </div>)
