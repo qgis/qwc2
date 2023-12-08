@@ -655,7 +655,7 @@ class AttributeTable extends React.Component {
             };
             const resizeDo = resizeCol ? (event) => {
                 const delta = event.clientX - resize.anchor;
-                resize.element.style.minWidth = Math.max((resize.initial + delta), 16) + "px";
+                resize.element.style.width = Math.max((resize.initial + delta), 16) + "px";
             } : (event) => {
                 const delta = event.clientY - resize.anchor;
                 resize.element.style.height = Math.max((resize.initial + delta), 16) + "px";

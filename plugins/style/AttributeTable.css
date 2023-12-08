@@ -157,6 +157,10 @@ span.attribtable-table-bdraghandle {
     bottom: 0px;
 }
 
+table.attribtable-table {
+    table-layout: fixed;
+}
+
 table.attribtable-table td {
     border: 1px solid var(--border-color);
     text-align: center;
