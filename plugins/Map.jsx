@@ -82,19 +82,22 @@ class MapPlugin extends React.Component {
                             const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
                             const sublayerVisible = LayerUtils.layerScaleInRange(sublayer, mapScale);
                             if (sublayerVisible) {
-                                renderLayers.push({
+                                const extlayer = {
                                     ...layer.externalLayerMap[sublayers[i]],
-                                    params: {
-                                        ...layer.params,
-                                        ...layer.externalLayerMap[sublayers[i]].params,
-                                        OPACITIES: opacities[i],
-                                        STYLES: ""
-                                    },
                                     rev: layer.rev,
                                     opacity: parseInt(opacities[i], 10),
                                     visibility: true,
                                     role: LayerRole.THEME
-                                });
+                                };
+                                if (extlayer.type === "wms") {
+                                    extlayer.params = {
+                                        ...layer.params,
+                                        ...layer.externalLayerMap[sublayers[i]].params,
+                                        OPACITIES: opacities[i],
+                                        STYLES: ""
+                                    };
+                                }
+                                renderLayers.push(extlayer);
                             }
                         } else if (renderLayers.length > 0 && renderLayers[renderLayers.length - 1].id === layer.id) {
                             // Compress with previous renderlayer
