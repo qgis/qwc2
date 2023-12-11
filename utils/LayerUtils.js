@@ -605,7 +605,7 @@ const LayerUtils = {
             layer.sublayers = layer.sublayers.map(sublayer => {
                 if (sublayer.externalLayer) {
                     const externalLayer = {...sublayer.externalLayer};
-                    LayerUtils.completeExternalLayer(externalLayer, sublayer);
+                    LayerUtils.completeExternalLayer(externalLayer, sublayer, toplayer.mapCrs);
                     toplayer.externalLayerMap[sublayer.name] = externalLayer;
                     sublayer = {...sublayer};
                     delete sublayer.externalLayer;
@@ -617,7 +617,7 @@ const LayerUtils = {
             });
         }
     },
-    completeExternalLayer(externalLayer, sublayer) {
+    completeExternalLayer(externalLayer, sublayer, mapCrs) {
         externalLayer.title = externalLayer.title || (sublayer || {}).title || externalLayer.name;
         externalLayer.uuid = uuidv4();
         if (externalLayer.type === "wms" || externalLayer.params) {
@@ -633,6 +633,15 @@ const LayerUtils = {
                     break;
                 }
             }
+        } else if (externalLayer.type === "mvt") {
+            externalLayer.projection = mapCrs;
+            if (externalLayer.tileGridName) {
+                externalLayer.tileGridConfig = (ConfigUtils.getConfigProp("mvtTileGrids") || {})[externalLayer.tileGridName];
+                if (!externalLayer.tileGridConfig) {
+                    console.warn("Tile grid config not found: " + externalLayer.tileGridName);
+                }
+            }
+
         }
     },
     getLegendUrl(layer, sublayer, scale, map, bboxDependentLegend, scaleDependentLegend, extraLegendParameters) {
