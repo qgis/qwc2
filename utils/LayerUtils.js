@@ -145,13 +145,20 @@ const LayerUtils = {
         const params = layer.params || {};
         let newParams = {};
         let queryLayers = [];
+        let initialOpacities = undefined;
 
         if (!Array.isArray(layer.sublayers)) {
+            // Background layers may just contain layer.params.OPACITIES
+            // User layers will be controlled with layer.opacity, and value will be replicated in layer.params.OPACITIES
+            // => Store the initial layer.params.OPACITIES as initialOpacities, compute actual opacities
+            // by multipliying layer.opacity with initialOpacities
+            initialOpacities = layer.initialOpacities ?? params.OPACITIES ?? "";
             const layers = (params.LAYERS || layer.name).split(",").filter(Boolean);
-            const opacities = (params.OPACITIES || "").split(",").filter(Boolean);
+            const opacities = initialOpacities.split(",").filter(Boolean);
+            const opacityMult = (layer.opacity ?? 255) / 255;
             newParams = {
                 LAYERS: layers.join(","),
-                OPACITIES: layers.map((x, i) => (opacities[i] ?? "255")).map(Math.round).join(","),
+                OPACITIES: layers.map((x, i) => Math.round((opacities[i] ?? "255") * opacityMult)).map(Math.round).join(","),
                 STYLES: params.STYLES ?? "",
                 ...layer.dimensionValues
             };
@@ -181,7 +188,8 @@ const LayerUtils = {
         }
         return {
             params: newParams,
-            queryLayers: queryLayers
+            queryLayers: queryLayers,
+            initialOpacities: initialOpacities
         };
     },
     addUUIDs(group, usedUUIDs = new Set()) {
