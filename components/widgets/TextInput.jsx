@@ -118,7 +118,15 @@ class TextInput extends React.Component {
         );
     }
     onChange = (ev) => {
-        this.setState({curValue: ev.target.innerHTML.replace(/<br\s*\/?>$/, ''), changed: true});
+        const curValue = ev.target.innerHTML.replace(/<br\s*\/?>$/, '');
+        this.setState({curValue: curValue, changed: true});
+        if (this.formEl.form) {
+            // Notify parent form picks of changed field
+            // https://stackoverflow.com/a/46012210
+            const nativeSet = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+            nativeSet.call(this.formEl, curValue);
+            this.formEl.dispatchEvent(new Event('input', { bubbles: true }));
+        }
     };
     onBlur = () => {
         if (!this.skipNextCommitOnBlur) {
@@ -164,7 +172,7 @@ class TextInput extends React.Component {
             document.body.removeChild(this.tooltipEl);
             this.tooltipEl = null;
         }
-    }
+    };
     onKeyDown = (ev) => {
         if (ev.keyCode === 17) { // Ctrl
             const prevValue = this.input.contentEditable;
@@ -191,6 +199,7 @@ class TextInput extends React.Component {
             const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
             this.props.onChange(valueWithLinks);
             if (this.formEl.form) {
+                // Notify parent form picks of changed field
                 // https://stackoverflow.com/a/46012210
                 const nativeSet = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
                 nativeSet.call(this.formEl, this.state.curValue);
