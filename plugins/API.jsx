@@ -13,6 +13,7 @@ import {LayerRole} from '../actions/layers';
 import LayerUtils from '../utils/LayerUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import * as displayActions from '../actions/display';
 import * as layerActions from '../actions/layers';
@@ -91,6 +92,7 @@ class API extends React.Component {
         window.qwc2.drawGeometry = this.drawGeometry;
         window.qwc2.getState = this.getState;
         window.qwc2.CoordinatesUtils = CoordinatesUtils;
+        window.qwc2.VectorLayerUtils = VectorLayerUtils;
     }
     static propTypes = {
         addLayer: PropTypes.func,
