@@ -15,7 +15,6 @@ import immutable from 'redux-immutable-state-invariant';
 import logger from 'redux-logger';
 import thunkMiddleware from  'redux-thunk';
 import merge from 'deepmerge';
-import url from 'url';
 import {CHANGE_BROWSER_PROPERTIES} from '../actions/browser';
 import ReducerIndex from '../reducers/index';
 
@@ -51,8 +50,8 @@ export default class StandardStore {
         };
 
         let finalCreateStore;
-        const urlQuery = url.parse(window.location.href, true).query;
-        if (process.env.NODE_ENV !== "production" && (urlQuery.debug || "").toLowerCase() === "true") {
+        const searchParams = new URLSearchParams(window.location.search);
+        if (process.env.NODE_ENV !== "production" && (searchParams.get("debug") || "").toLowerCase() === "true") {
             const middlewares = [immutable(), thunkMiddleware, logger];
             finalCreateStore = compose(
                 applyMiddleware.apply(null, middlewares),
