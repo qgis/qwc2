@@ -142,9 +142,10 @@ class TextInput extends React.Component {
         this.focusEnterClick = document.activeElement !== this.input;
     };
     onMouseMove = (ev) => {
+        const isTouch = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
         clearTimeout(this.tooltipTimeout);
         const editable = !this.props.disabled && !this.props.readOnly;
-        if (editable && ev.target.nodeName === 'A') {
+        if (!isTouch && editable && ev.target.nodeName === 'A') {
             const rect = ev.target.getBoundingClientRect();
             const left = rect.left + window.scrollX;
             const bottom = rect.bottom + window.scrollY + 2;
