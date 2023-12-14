@@ -293,7 +293,7 @@ class Identify extends React.Component {
                 });
                 identifyResults[layername] = existingFeatures;
             });
-            return { identifyResults: identifyResults };
+            return {identifyResults: identifyResults};
         });
     };
     onShow = (mode) => {
