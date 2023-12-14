@@ -280,15 +280,20 @@ class Identify extends React.Component {
         const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection, this.props.featureInfoReturnsLayerName, this.props.layers);
         // Merge with previous
         this.setState((state) => {
-            const identifyResults = {...state.identifyResults};
-            Object.keys(newResults).map(layername => {
-                const newFeatureIds = newResults[layername].map(feature => feature.id);
-                identifyResults[layername] = [
-                    ...(identifyResults[layername] || []).filter(feature => !newFeatureIds.includes(feature.id)),
-                    ...newResults[layername]
-                ];
+            const identifyResults = { ...state.identifyResults };
+            Object.keys(newResults).forEach((layername) => {
+                let existingFeatures = identifyResults[layername] || [];
+                newResults[layername].forEach((newFeature) => {
+                    const featureIndex = existingFeatures.findIndex((feature) => feature.id === newFeature.id);
+                    if (featureIndex !== -1) {
+                        existingFeatures.splice(featureIndex, 1);
+                    } else {
+                        existingFeatures.push(newFeature);
+                    }
+                });
+                identifyResults[layername] = existingFeatures;
             });
-            return {identifyResults: identifyResults};
+            return { identifyResults: identifyResults };
         });
     };
     onShow = (mode) => {
