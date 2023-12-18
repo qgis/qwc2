@@ -109,7 +109,9 @@ class RedliningSupport extends React.Component {
             this.updateFeatureStyle(this.props.redlining.style);
         }
         if (this.snapInteraction && this.props.snappingConfig.active !== prevProps.snappingConfig.active) {
-            this.snapInteraction.setActive(this.props.snappingConfig.active);
+            this.snapInteraction.setActive(this.props.snappingConfig.active !== false);
+            this.snapInteraction.setSnapEdge(this.props.snappingConfig.active === true || this.props.snappingConfig.active === 'edge');
+            this.snapInteraction.setSnapVertex(this.props.snappingConfig.active === true || this.props.snappingConfig.active === 'vertex');
         }
         if (this.currentFeature && (
             this.props.displayCrs !== prevProps.displayCrs ||
