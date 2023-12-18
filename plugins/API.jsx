@@ -118,6 +118,7 @@ class API extends React.Component {
     };
     drawGeometry = (geomType, message, callback, options = {}) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {
+            callback: callback,
             geomType: geomType,
             message: message,
             drawMultiple: options.drawMultiple || false,
