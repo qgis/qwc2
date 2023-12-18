@@ -91,7 +91,8 @@ class SnappingSupport extends React.Component {
             // Don't display snapping control if no snapping is configuted for current theme
             return null;
         }
-        const toolbarClass = !this.state.havesnaplayers ? "snapping-toolbar-inactive" : "";
+        const disabled = !this.state.havesnaplayers && !["Redlining", "ScratchDrawing"].includes(this.props.task);
+        const toolbarClass = disabled ? "snapping-toolbar-inactive" : "";
         const snapEdge = this.props.mapObj.snapping.active === true || this.props.mapObj.snapping.active === 'edge';
         const snapVertex = this.props.mapObj.snapping.active === true || this.props.mapObj.snapping.active === 'vertex';
         return (
@@ -101,10 +102,10 @@ class SnappingSupport extends React.Component {
                         <Spinner/>
                     ) : (
                         <span>
-                            <button className={"button" + (snapVertex ? " pressed" : "")} disabled={!this.state.havesnaplayers} onClick={() => this.toggleSnap('vertex')} title={LocaleUtils.tr("snapping.vertex")}>
+                            <button className={"button" + (snapVertex ? " pressed" : "")} disabled={disabled} onClick={() => this.toggleSnap('vertex')} title={LocaleUtils.tr("snapping.vertex")}>
                                 <Icon icon="snap_vertex" size="large" />
                             </button>
-                            <button className={"button" + (snapEdge ? " pressed" : "")} disabled={!this.state.havesnaplayers} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
+                            <button className={"button" + (snapEdge ? " pressed" : "")} disabled={disabled} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
                                 <Icon icon="snap_edge" size="large" />
                             </button>
                         </span>
