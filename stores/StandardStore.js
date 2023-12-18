@@ -43,7 +43,9 @@ export default class StandardStore {
             },
             preloadedState: defaultState,
             middleware: (getDefaultMiddleware) => {
-                const middleware = getDefaultMiddleware();
+                const middleware = getDefaultMiddleware({
+                    serializableCheck: false
+                });
                 if (enableDevTools) {
                     middleware.push(logger);
                 }
