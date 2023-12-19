@@ -80,7 +80,14 @@ class OlMap extends React.Component {
         interactions.extend([
             new ol.interaction.DragPan({
                 kinetic: null,
-                condition: (ev) => { return ev.originalEvent.isPrimary !== false && (ev.originalEvent.button === 0 || ev.originalEvent.button === 1); }
+                condition: (ev) => {
+                    const oev = ev.originalEvent;
+                    return (
+                        (!oev.altKey && !(oev.metaKey || oev.ctrlKey) && !oev.shiftKey) &&
+                        oev.isPrimary !== false &&
+                        (oev.button === 0 || oev.button === 1)
+                    );
+                }
             }),
             new ol.interaction.MouseWheelZoom({
                 duration: this.state.mapOptions.zoomDuration || 250,
