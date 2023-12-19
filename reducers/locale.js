@@ -8,7 +8,7 @@
  */
 
 import {CHANGE_LOCALE} from '../actions/locale';
-import flatten from 'flat';
+import {flatten} from 'flat';
 
 const defaultState = {
     messages: {},
