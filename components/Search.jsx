@@ -54,11 +54,12 @@ class Search extends React.Component {
         results: PropTypes.array,
         searchMore: PropTypes.func,
         searchOptions: PropTypes.shape({
+            highlightStyle: PropTypes.object,
+            minScaleDenom: PropTypes.number,
             showProviderSelection: PropTypes.bool,
             showProvidersInPlaceholder: PropTypes.bool,
             providerSelectionAllowAll: PropTypes.bool,
-            zoomToLayers: PropTypes.bool,
-            minScaleDenom: PropTypes.number
+            zoomToLayers: PropTypes.bool
         }),
         searchProviders: PropTypes.object, // All available search providers
         searchText: PropTypes.string,
@@ -501,8 +502,13 @@ class Search extends React.Component {
     showFeatureGeometry = (item, response, text) => {
         if (!isEmpty(response.geometry)) {
             let features = [];
-            const highlightFeature = response.geometry.coordinates ? {type: "Feature", geometry: response.geometry} : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
+            const highlightFeature = response.geometry.coordinates ? {
+                type: "Feature",
+                geometry: response.geometry
+            } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
+                highlightFeature.styleName = 'default';
+                highlightFeature.styleOptions = this.props.searchOptions.highlightStyle || {};
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
                 features = [highlightFeature];
                 if (!response.hidemarker) {

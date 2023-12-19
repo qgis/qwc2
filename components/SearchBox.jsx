@@ -57,6 +57,7 @@ class SearchBox extends React.Component {
         searchFilter: PropTypes.string,
         searchOptions: PropTypes.shape({
             allowSearchFilters: PropTypes.bool,
+            highlightStyle: PropTypes.object,
             minScaleDenom: PropTypes.number,
             resultLimit: PropTypes.number,
             sectionsDefaultCollapsed: PropTypes.bool
@@ -735,6 +736,7 @@ class SearchBox extends React.Component {
                     geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
                     properties: { label: label },
                     styleName: result.geometry ? 'default' : 'marker',
+                    styleOptions: this.props.searchOptions.highlightStyle || {},
                     crs: result.crs,
                     id: 'searchmarker'
                 };
@@ -772,8 +774,12 @@ class SearchBox extends React.Component {
     showProviderResultGeometry = (item, response, text, zoom) => {
         if (!isEmpty(response.geometry)) {
             let features = [];
-            const highlightFeature = response.geometry.coordinates ? {type: "Feature", geometry: response.geometry} : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
+            const highlightFeature = response.geometry.coordinates ? {
+                type: "Feature", geometry: response.geometry
+            } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
+                highlightFeature.styleName = 'default';
+                highlightFeature.styleOptions = this.props.searchOptions.highlightStyle || {};
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
                 if (!item.x || !item.y) {
                     item.x = center[0];
@@ -881,6 +887,8 @@ class SearchBox extends React.Component {
         if (!isEmpty(data.features)) {
             data.features[0].properties = {...data.features[0].properties, label: label};
             data.features[0].id = 'searchmarker';
+            data.features[0].styleName = 'default';
+            data.features[0].styleOptions = this.props.searchOptions.highlightStyle || {};
         }
         this.props.addLayerFeatures(layer, data.features, true);
     };
