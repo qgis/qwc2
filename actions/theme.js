@@ -12,6 +12,7 @@ ReducerIndex.register("theme", themeReducer);
 
 import isEmpty from 'lodash.isempty';
 import {setIdentifyEnabled} from '../actions/identify';
+import {setCurrentTask} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import MapUtils from '../utils/MapUtils';
@@ -107,6 +108,11 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         type: SWITCHING_THEME,
         switching: false
     });
+    const task = theme.config?.startupTask;
+    if (task) {
+        const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
+        dispatch(setCurrentTask(task.key, task.mode, mapClickAction));
+    }
 }
 
 export function setCurrentTheme(theme, themes, preserve = true, initialView = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null) {
