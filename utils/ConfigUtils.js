@@ -25,6 +25,8 @@ let defaultConfig = {
     }
 };
 
+let mobile = undefined;
+
 const ConfigUtils = {
     getDefaults() {
         return defaultConfig;
@@ -64,7 +66,7 @@ const ConfigUtils = {
         const android23 = ua.search('android [23]') !== -1;
         const gecko = ua.indexOf('gecko') !== -1;
 
-        const mobile = isMobile(window.navigator).any;
+        mobile = isMobile(window.navigator).any;
         const msPointer = !window.PointerEvent && window.MSPointerEvent;
         const pointer = (window.PointerEvent && window.navigator.pointerEnabled && window.navigator.maxTouchPoints) || msPointer;
         const retina = ('devicePixelRatio' in window && window.devicePixelRatio > 1) ||
@@ -114,10 +116,9 @@ const ConfigUtils = {
         };
     },
     getConfigProp(prop, theme, defval = undefined) {
-        if (theme && theme.config && theme.config[prop] !== undefined) {
-            return theme.config[prop];
-        }
-        return defaultConfig[prop] ?? defval;
+        const section = mobile ? "mobile" : "desktop";
+        const themeProp = theme?.config?.[section]?.[prop] ?? theme?.config?.[prop];
+        return themeProp ?? defaultConfig[section]?.[prop] ?? defaultConfig[prop] ?? defval;
     },
     getAssetsPath() {
         return (ConfigUtils.getConfigProp("assetsPath") || "assets").replace(/\/$/g, "");
