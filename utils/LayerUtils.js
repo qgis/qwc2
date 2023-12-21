@@ -704,7 +704,7 @@ const LayerUtils = {
             delete urlParts.search;
             return url.format(urlParts);
         } else {
-            const layername = layer === sublayer ? layer.name.replace(/.*\//, '') : sublayer.name;
+            const layername = layer === sublayer ? layer.params.LAYERS : sublayer.name;
             const urlParts = url.parse(layer.legendUrl, true);
             urlParts.query = {
                 VERSION: layer.version,
