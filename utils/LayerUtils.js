@@ -25,6 +25,10 @@ const LayerUtils = {
                 entry.sublayer.opacity = layerConfig.opacity;
                 entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
                 entry.sublayer.tristate = layerConfig.tristate;
+                entry.sublayer.style = layerConfig.style;
+                if (!entry.sublayer.style) {
+                    entry.sublayer.style = Object.keys(entry.sublayer.styles)[0];
+                }
             } else {
                 entry.sublayer.visibility = false;
             }
@@ -55,6 +59,10 @@ const LayerUtils = {
                     entry.sublayer.opacity = layerConfig.opacity;
                     entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
                     entry.sublayer.tristate = layerConfig.tristate;
+                    entry.sublayer.style = layerConfig.style;
+                    if (!entry.sublayer.style) {
+                        entry.sublayer.style = Object.keys(entry.sublayer.styles)[0];
+                    }
                     reordered.push(entry);
                 }
             } else if (layerConfig.type === 'separator') {
@@ -97,6 +105,7 @@ const LayerUtils = {
             name: layerConfig.name,
             opacity: layerConfig.opacity,
             visibility: layerConfig.visibility,
+            style: layerConfig.style,
             params: layerConfig.params
         });
         return LayerUtils.explodeLayers([{
@@ -131,7 +140,8 @@ const LayerUtils = {
             } else {
                 layerNames.push(sublayer.name);
                 opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
-                styles.push(sublayer.style || "");
+                // Only specify style if more than one style choice exists
+                styles.push(Object.keys(sublayer.styles || {}).length > 1 ? (sublayer.style || "") : "");
                 if (sublayer.queryable) {
                     queryable.push(sublayer.name);
                 }
@@ -159,7 +169,7 @@ const LayerUtils = {
             newParams = {
                 LAYERS: layers.join(","),
                 OPACITIES: layers.map((x, i) => Math.round((opacities[i] ?? "255") * opacityMult)).map(Math.round).join(","),
-                STYLES: params.STYLES ?? "",
+                STYLES: layer.style ?? params.STYLES ?? "",
                 ...layer.dimensionValues
             };
             queryLayers = layer.queryable ? [layer.name] : [];
@@ -237,6 +247,9 @@ const LayerUtils = {
             if (opacities[idx] < 255) {
                 param += "[" + (100 - Math.round(opacities[idx] / 255 * 100)) + "]";
             }
+            if (styles[idx]) {
+                param += "{" + styles[idx] + "}";
+            }
             if (visibilities[idx] === 0) {
                 param += '!';
             } else if (visibilities[idx] === 0.5) {
@@ -251,11 +264,14 @@ const LayerUtils = {
 
     },
     splitLayerUrlParam(entry) {
-        const nameOpacityPattern = /([^[]+)\[(\d+)]/;
+        const opacityPattern = /\[(\d+)\]/;
+        const stylePattern = /{([^}]+)}/;
+        const extPattern = /^(\w+):(.*)#([^#]+)$/;
         const id = uuidv4();
         let type = 'theme';
         let layerUrl = null;
         let opacity = 255;
+        let style = '';
         let visibility = true;
         let tristate = false;
         if (entry.endsWith('!')) {
@@ -266,21 +282,25 @@ const LayerUtils = {
             tristate = true;
             entry = entry.slice(0, -1);
         }
-        let name = entry;
-        let match = nameOpacityPattern.exec(entry);
-        if (match) {
-            name = match[1];
-            opacity = Math.round(255 - parseFloat(match[2]) / 100 * 255);
+        let m = null;
+        if ((m = entry.match(opacityPattern))) {
+            opacity = Math.round(255 - parseFloat(m[1]) / 100 * 255);
+            entry = entry.slice(0, m.index) + entry.slice(m.index + m[0].length);
         }
-        if ((match = name.match(/^(\w+):(.*)#([^#]+)$/))) {
-            type = match[1];
-            layerUrl = match[2];
-            name = match[3];
+        if ((m = entry.match(stylePattern))) {
+            style = m[1];
+            entry = entry.slice(0, m.index) + entry.slice(m.index + m[0].length);
+        }
+        let name = entry;
+        if ((m = entry.match(extPattern))) {
+            type = m[1];
+            layerUrl = m[2];
+            name = m[3];
         } else if (name.startsWith('sep:')) {
             type = 'separator';
             name = name.slice(4);
         }
-        return {id, type, url: layerUrl, name, opacity, visibility, tristate};
+        return {id, type, url: layerUrl, name, opacity, style, visibility, tristate};
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
@@ -561,7 +581,7 @@ const LayerUtils = {
         }
         let visible = 0;
         layer.sublayers.map(sublayer => {
-            const sublayervisibility = sublayer.visibility === undefined ? true : sublayer.visibility;
+            const sublayervisibility = sublayer.visibility ?? true;
             if (sublayer.sublayers && sublayervisibility) {
                 visible += LayerUtils.computeLayerVisibility(sublayer);
             } else {
@@ -705,12 +725,14 @@ const LayerUtils = {
             return url.format(urlParts);
         } else {
             const layername = layer === sublayer ? layer.params.LAYERS : sublayer.name;
+            const style = layer === sublayer ? layer.params.STYLES : sublayer.style;
             const urlParts = url.parse(layer.legendUrl, true);
             urlParts.query = {
                 VERSION: layer.version,
                 ...urlParts.query,
                 ...requestParams,
-                LAYER: layername
+                LAYER: layername,
+                STYLES: style
             };
             delete urlParts.search;
             return url.format(urlParts);

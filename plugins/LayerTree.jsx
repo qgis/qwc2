@@ -137,6 +137,7 @@ class LayerTree extends React.Component {
     };
     state = {
         activemenu: null,
+        activestylemenu: null,
         legendTooltip: null,
         sidebarwidth: null,
         importvisible: false,
@@ -244,6 +245,10 @@ class LayerTree extends React.Component {
             "layertree-item-menubutton": true,
             "layertree-item-menubutton-active": this.state.activemenu === sublayer.uuid
         });
+        const styleMenuClasses = classnames({
+            "layertree-item-menubutton": true,
+            "layertree-item-menubutton-active": this.state.activestylemenu === sublayer.uuid
+        });
         const itemclasses = {
             "layertree-item": true,
             "layertree-item-disabled": layer.type !== "separator" && ((!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !sublayer.visibility)),
@@ -299,6 +304,7 @@ class LayerTree extends React.Component {
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {this.state.activemenu === sublayer.uuid ? this.renderOptionsMenu(layer, sublayer, path, allowRemove) : null}
+                {this.state.activestylemenu === sublayer.uuid ? this.renderStyleMenu(layer, sublayer, path, allowOptions + allowRemove) : null}
             </div>
         );
     };
@@ -333,6 +339,18 @@ class LayerTree extends React.Component {
                 {reorderButtons}
                 {this.props.infoInSettings ? infoButton : null}
                 {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
+            </div>
+        );
+    };
+    renderStyleMenu = (layer, sublayer, path, marginRight = 0) => {
+        return (
+            <div className="layertree-item-stylemenu" style={{marginRight: (marginRight * 1.75) + 'em'}}>
+                {Object.entries(sublayer.styles).map(([name, title]) => (
+                    <div key={name} onClick={() => this.layerStyleChanged(layer, path, name)}>
+                        <Icon icon={sublayer.style === name ? "radio_checked" : "radio_unchecked"} />
+                        <div>{title}</div>
+                    </div>
+                ))}
             </div>
         );
     };
@@ -567,8 +585,14 @@ class LayerTree extends React.Component {
     layerTransparencyChanged = (layer, sublayerpath, value, recurse = null) => {
         this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath, recurse);
     };
+    layerStyleChanged = (layer, sublayerpath, value) => {
+        this.props.changeLayerProperty(layer.uuid, "style", value, sublayerpath);
+    };
     layerMenuToggled = (sublayeruuid) => {
         this.setState((state) => ({activemenu: state.activemenu === sublayeruuid ? null : sublayeruuid, activestylemenu: null}));
+    };
+    layerStyleMenuToggled = (sublayeruuid) => {
+        this.setState((state) => ({activestylemenu: state.activestylemenu === sublayeruuid ? null : sublayeruuid, activemenu: null}));
     };
     showLegendTooltip = (ev, request) => {
         this.setState({

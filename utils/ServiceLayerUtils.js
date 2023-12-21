@@ -206,6 +206,8 @@ const ServiceLayerUtils = {
         } catch (e) {
             /* pass */
         }
+        const styles = MiscUtils.ensureArray(layer.Style).reduce((res, entry) => ({...res, [entry.Name]: entry.Title}), {});
+        const style = styles.default ? 'default' : (Object.keys(styles)[0] ?? '');
         return {
             type: "wms",
             name: layer.Name,
@@ -225,7 +227,9 @@ const ServiceLayerUtils = {
             opacity: 255,
             extwmsparams: extwmsparams,
             minScale: layer.MinScaleDenominator,
-            maxScale: layer.MaxScaleDenominator
+            maxScale: layer.MaxScaleDenominator,
+            styles: styles,
+            style: style
         };
     },
     mergeCalledServiceUrlQuery(capabilityUrl, calledServiceUrlParts) {
@@ -398,6 +402,7 @@ const ServiceLayerUtils = {
                         id: layerConfig.id,
                         opacity: layerConfig.opacity,
                         visibility: layerConfig.visibility,
+                        style: layerConfig.style,
                         role: LayerRole.USERLAYER
                     };
                     callback(layerConfig.id, layer);

@@ -223,6 +223,14 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             layerEntry["keywords"] = ", ".join(keywords)
         except:
             pass
+        
+        styles = {}
+        for style in layer.getElementsByTagName("Style"):
+            name = getChildElementValue(style, "Name")
+            title = getChildElementValue(style, "Title")
+            styles[name] = title
+        layerEntry["styles"] = styles
+        layerEntry['style'] = 'default' if 'default' in styles else (list(styles)[0] if len(styles) > 0 else '')
 
         if layer.getAttribute("transparency"):
             layerEntry["opacity"] = 255 - int(float(layer.getAttribute("transparency")) * 255)

@@ -204,6 +204,10 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             });
             layerEntry.keywords = keywords.join(", ");
         }
+        if (layer.Style) {
+            layerEntry.styles = toArray(layer.Style).reduce((res, entry) => ({...res, [entry.Name]: entry.Title}), {});
+            layerEntry.style = layerEntry.styles.default ? 'default' : (Object.keys(layerEntry)[0] ?? '');
+        }
         if (layer.MinScaleDenominator !== undefined) {
             layerEntry.minScale = Math.round(parseFloat(layer.MinScaleDenominator));
             layerEntry.maxScale = Math.round(parseFloat(layer.MaxScaleDenominator));
