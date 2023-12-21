@@ -151,6 +151,7 @@ class Redlining extends React.Component {
         if (vectorLayers.length === 0) {
             vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
         }
+        const haveLayer = this.props.layers.find(l => l.id === this.props.redlining.layer) !== undefined;
 
         const activePlugin = Object.values(this.props.plugins || {}).find(plugin => plugin.cfg.key === this.props.redlining.action);
         const controls = activePlugin ? (<activePlugin.controls />) : this.renderStandardControls();
@@ -183,7 +184,7 @@ class Redlining extends React.Component {
                     </div>
                     <div className="redlining-group">
                         <div>&nbsp;</div>
-                        <MenuButton className="redlining-export-menu" menuIcon="export" onActivate={this.export}>
+                        <MenuButton className="redlining-export-menu" disabled={!haveLayer} menuIcon="export" onActivate={this.export}>
                             <div className="redlining-export-menu-entry" key="GeoJSON" value="geojson">GeoJSON</div>
                             <div className="redlining-export-menu-entry" key="KML" value="kml">KML</div>
                         </MenuButton>

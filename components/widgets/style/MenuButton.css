@@ -3,6 +3,10 @@ div.menubutton {
     align-items: center;
 }
 
+div.menubutton-disabled {
+    pointer-events: none;
+}
+
 div.menubutton-button {
     position: relative;
     flex: 1 1 auto;
@@ -12,6 +16,10 @@ div.menubutton-button {
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
     border: 1px solid var(--border-color);
+}
+
+div.menubutton-disabled div.menubutton-button {
+    color: var(--text-color-disabled);
 }
 
 div.menubutton-button:active > span.menubutton-button-content {

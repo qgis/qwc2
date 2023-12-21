@@ -10,18 +10,15 @@ export default class MenuButton extends React.Component {
         active: PropTypes.string,
         children: PropTypes.array,
         className: PropTypes.string,
+        disabled: PropTypes.bool,
         menuClassName: PropTypes.string,
         menuIcon: PropTypes.string,
         menuLabel: PropTypes.string,
-        onActivate: PropTypes.func,
-        readOnly: PropTypes.bool
+        onActivate: PropTypes.func
     };
     state = {
         popup: false,
         selected: null
-    };
-    static defaultProps = {
-        readOnly: false
     };
     constructor(props) {
         super(props);
@@ -47,13 +44,18 @@ export default class MenuButton extends React.Component {
         } else {
             buttonContents = children.filter((child) => child.props.value === this.state.selected);
         }
+        const classes = classnames({
+            "menubutton": true,
+            "menubutton-disabled": this.props.disabled,
+            [this.props.className]: !!this.props.className
+        });
         const buttonClassnames = classnames({
             "menubutton-button": true,
             "menubutton-button-active": !!this.props.active,
             "menubutton-button-hover": this.state.popup
         });
         return (
-            <div className={"menubutton " + (this.props.className || "")} ref={el => { this.el = el; }}>
+            <div className={classes} ref={el => { this.el = el; }}>
                 <div className={buttonClassnames}>
                     <span className="menubutton-button-content" onClick={this.onButtonClicked}>
                         {buttonContents}
@@ -81,7 +83,7 @@ export default class MenuButton extends React.Component {
         );
     }
     onMenuClicked = () => {
-        if (!this.props.readOnly) {
+        if (!this.props.disabled) {
             this.setState({popup: true});
         }
     };
