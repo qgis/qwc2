@@ -56,11 +56,11 @@ export default class MenuButton extends React.Component {
         });
         return (
             <div className={classes} ref={el => { this.el = el; }}>
-                <div className={buttonClassnames}>
+                <div className={buttonClassnames} onClick={this.onMenuClicked}>
                     <span className="menubutton-button-content" onClick={this.onButtonClicked}>
                         {buttonContents}
                     </span>
-                    <span className="menubotton-combo-arrow" onClick={this.onMenuClicked}>
+                    <span className="menubotton-combo-arrow">
                         <Icon icon="chevron-down" />
                     </span>
                 </div>
@@ -87,7 +87,8 @@ export default class MenuButton extends React.Component {
             this.setState({popup: true});
         }
     };
-    onButtonClicked = () => {
+    onButtonClicked = (ev) => {
+        ev.stopPropagation();
         if (this.state.selected) {
             this.props.onActivate(this.state.selected);
         } else {
