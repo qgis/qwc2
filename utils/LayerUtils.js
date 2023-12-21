@@ -747,11 +747,13 @@ const LayerUtils = {
             if (layer.type === "wms") {
                 const names = layer.params.LAYERS.split(",");
                 const opacities = layer.params.OPACITIES.split(",");
+                const styles = layer.params.STYLES.split(",");
                 for (let idx = 0; idx < names.length; ++idx) {
                     const identifier = String.fromCharCode(65 + (counterRef[0]++));
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
                     params.OPACITIES.push(opacities[idx]);
                     params.COLORS.push("");
+                    params.STYLES.push("");
                     let layerUrl = layer.url;
                     const urlParts = url.parse(layerUrl, true);
                     // Resolve relative urls
@@ -766,7 +768,7 @@ const LayerUtils = {
                     params[identifier + ":layers"] = names[idx];
                     params[identifier + ":format"] = "image/png";
                     params[identifier + ":crs"] = printCrs;
-                    params[identifier + ":styles"] = "";
+                    params[identifier + ":styles"] = styles[idx];
                     params[identifier + ":dpiMode"] = "7";
                     params[identifier + ":contextualWMSLegend"] = "0";
                     if (layer.url.includes("?")) {
@@ -786,12 +788,14 @@ const LayerUtils = {
                     params.LAYERS.push(`wms:${layer.url}#${names[idx]}`);
                     params.OPACITIES.push(opacities[idx]);
                     params.COLORS.push("");
+                    params.STYLES.push("");
                 }
             } else if (layer.type === "wfs") {
                 // Handled by qwc-print-service
                 params.LAYERS.push(`wfs:${layer.url}#${layer.name}`);
                 params.OPACITIES.push(layer.opacity);
                 params.COLORS.push(layer.color);
+                params.STYLES.push("");
             }
         }
     },
@@ -799,6 +803,7 @@ const LayerUtils = {
         const params = {
             LAYERS: [],
             OPACITIES: [],
+            STYLES: [],
             COLORS: []
         };
         const counterRef = [0];
@@ -807,6 +812,7 @@ const LayerUtils = {
             if (layer.role === LayerRole.THEME && layer.params.LAYERS) {
                 params.LAYERS.push(layer.params.LAYERS);
                 params.OPACITIES.push(layer.params.OPACITIES);
+                params.STYLES.push(layer.params.STYLES);
                 params.COLORS.push(layer.params.LAYERS.split(",").map(() => "").join(","));
             } else if (printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility !== false && LayerUtils.layerScaleInRange(layer, printScale)) {
                 LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
@@ -843,6 +849,7 @@ const LayerUtils = {
                         params.LAYERS.push(printBgLayerName);
                         params.OPACITIES.push("255");
                         params.COLORS.push("");
+                        params.STYLES.push("");
                     }
                 }
             } else if (printExternalLayers) {
@@ -858,6 +865,7 @@ const LayerUtils = {
         params.LAYERS = params.LAYERS.reverse().join(",");
         params.OPACITIES = params.OPACITIES.reverse().join(",");
         params.COLORS = params.COLORS.reverse().join(",");
+        params.STYLES = params.STYLES.reverse().join(",");
         return params;
     },
     getTimeDimensionValues(layer) {

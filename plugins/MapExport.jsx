@@ -248,7 +248,6 @@ class MapExport extends React.Component {
                     {Object.entries(exportParams).map(([key, value]) => (<input key={key} name={key} type="hidden" value={value} />))}
                     <input name="TRANSPARENT" readOnly type="hidden" value="true" />
                     <input name="TILED" readOnly type="hidden" value="false" />
-                    <input name="STYLES" readOnly type="hidden" value="" />
                     <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
                     <input name="filename" readOnly type="hidden" value={filename} />
                     <input name="BBOX" readOnly type="hidden" value={this.state.extent} />

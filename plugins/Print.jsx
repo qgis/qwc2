@@ -380,6 +380,7 @@ class Print extends React.Component {
                         {Object.entries(printParams).map(([key, value]) => (<input key={key} name={key} type={formvisibility} value={value} />))}
                         <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
                         <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printParams.LAYERS} />
+                        <input name={mapName + ":STYLES"} readOnly type={formvisibility} value={printParams.STYLES} />
                         <input name={mapName + ":HIGHLIGHT_GEOM"} readOnly type={formvisibility} value={highlightParams.geoms.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_SYMBOL"} readOnly type={formvisibility} value={highlightParams.styles.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELSTRING"} readOnly type={formvisibility} value={highlightParams.labels.join(";")} />
