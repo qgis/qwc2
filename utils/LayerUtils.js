@@ -570,6 +570,16 @@ const LayerUtils = {
         });
         return visible / layer.sublayers.length;
     },
+    computeLayerOpacity(layer) {
+        if (isEmpty(layer.sublayers)) {
+            return layer.opacity ?? 255;
+        }
+        let opacity = 0;
+        layer.sublayers.map(sublayer => {
+            opacity += LayerUtils.computeLayerOpacity(sublayer);
+        });
+        return opacity / layer.sublayers.length;
+    },
     cloneLayer(layer, sublayerpath) {
         const newlayer = {...layer};
         let cur = newlayer;

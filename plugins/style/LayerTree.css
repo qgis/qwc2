@@ -195,37 +195,34 @@ img.layertree-item-legend-tooltip {
     color: red;
 }
 
-#LayerTree span.layertree-item-cog {
+#LayerTree span.layertree-item-menubutton {
     text-align: center;
     width: 1.75em;
     flex: 0 0 auto;
-    margin-left: 0.25em;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#LayerTree span.layertree-item-cog-active {
+#LayerTree span.layertree-item-menubutton-active {
     background-color: var(--color-active);
     color: white;
 }
 
-#LayerTree div.layertree-item-edit-frame {
+#LayerTree div.layertree-item-optionsmenu {
+    margin-left: 1em;
+    height: 1.75em;
     display: flex;
-    flex-direction: row-reverse;
     align-items: center;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
 }
 
-#LayerTree div.layertree-item-edit-items {
+#LayerTree div.layertree-item-optionsmenu > span.icon {
     flex: 0 0 auto;
-    max-width: calc(100% - 1em);
-    height: 1.75em;
-    border: 1px solid var(--border-color);
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    background-color: var(--input-bg-color);
+    width: 1.75em;
+    text-align: center;
 }
 
 #LayerTree input.layertree-item-transparency-slider {
@@ -237,10 +234,6 @@ img.layertree-item-legend-tooltip {
     margin: 0 0.25em;
 }
 
-#LayerTree div.layertree-item-edit-items span.icon {
-    flex: 0 0 auto;
-    width: 1.75em;
-    text-align: center;
 }
 
 #LayerTree div.layertree-item-addsep {

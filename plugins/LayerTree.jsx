@@ -206,29 +206,13 @@ class LayerTree extends React.Component {
         if (group.expanded) {
             sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility, group.mutuallyExclusive === true);
         }
-        const cogclasses = classnames({
-            "layertree-item-cog": true,
-            "layertree-item-cog-active": this.state.activemenu === group.uuid
+        const optMenuClasses = classnames({
+            "layertree-item-menubutton": true,
+            "layertree-item-menubutton-active": this.state.activemenu === group.uuid
         });
-        let editframe = null;
-        let infoButton = null;
-        if (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
-            infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, group)}/>);
-        }
         const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
-        if (this.state.activemenu === group.uuid && allowReordering) {
-            editframe = (
-                <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
-                    <div className="layertree-item-edit-items">
-                        <Icon className="layertree-item-move" icon="arrow-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />
-                        <Icon className="layertree-item-move" icon="arrow-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />
-                        {infoButton}
-                    </div>
-                </div>
-            );
-        }
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={group.uuid}>
                 <div className={classnames(itemclasses)}>
@@ -236,10 +220,10 @@ class LayerTree extends React.Component {
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                     <span className="layertree-item-spacer" />
-                    {allowReordering ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>) : null}
+                    <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
-                {editframe}
+                {this.state.activemenu === group.uuid ? this.renderOptionsMenu(layer, group, path, allowRemove) : null}
                 <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
                 </Sortable>
@@ -256,9 +240,9 @@ class LayerTree extends React.Component {
         if (inMutuallyExclusiveGroup) {
             checkboxstate = 'radio_' + checkboxstate;
         }
-        const cogclasses = classnames({
-            "layertree-item-cog": true,
-            "layertree-item-cog-active": this.state.activemenu === sublayer.uuid
+        const optMenuClasses = classnames({
+            "layertree-item-menubutton": true,
+            "layertree-item-menubutton-active": this.state.activemenu === sublayer.uuid
         });
         const itemclasses = {
             "layertree-item": true,
@@ -266,41 +250,9 @@ class LayerTree extends React.Component {
             "layertree-item-separator": layer.type === "separator",
             "layertree-item-outsidescalerange": (sublayer.minScale !== undefined && this.props.mapScale < sublayer.minScale) || (sublayer.maxScale !== undefined && this.props.mapScale > sublayer.maxScale)
         };
-        let editframe = null;
         let infoButton = null;
         if (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
             infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
-        }
-        if (this.state.activemenu === sublayer.uuid) {
-            let reorderButtons = null;
-            if (allowReordering && !this.state.filtervisiblelayers) {
-                reorderButtons = [
-                    (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
-                    (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
-                ];
-            }
-            let zoomToLayerButton = null;
-            if (sublayer.bbox && sublayer.bbox.bounds) {
-                const zoomToLayerTooltip = LocaleUtils.tr("layertree.zoomtolayer");
-                const crs = sublayer.bbox.crs || this.props.map.projection;
-                zoomToLayerButton = (
-                    <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
-                );
-            }
-            editframe = (
-                <div className="layertree-item-edit-frame" style={{marginRight: allowRemove ? '1.75em' : 0}}>
-                    <div className="layertree-item-edit-items" onMouseDown={this.preventLayerTreeItemDrag}>
-                        {zoomToLayerButton}
-                        {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
-                        <input className="layertree-item-transparency-slider" max="255" min="0"
-                            onChange={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value)}
-                            step="1" type="range" value={255 - sublayer.opacity} />
-                        {reorderButtons}
-                        {this.props.infoInSettings ? infoButton : null}
-                        {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
-                    </div>
-                </div>
-            );
         }
         let legendicon = null;
         if (this.props.showLegendIcons) {
@@ -342,10 +294,45 @@ class LayerTree extends React.Component {
                     {layer.loading ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
-                    {allowOptions ? (<Icon className={cogclasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
+                    {Object.keys(sublayer.styles || {}).length > 1 ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(sublayer.uuid)}/>) : null}
+                    {allowOptions ? (<Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(sublayer.uuid)}/>) : null}
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
-                {editframe}
+                {this.state.activemenu === sublayer.uuid ? this.renderOptionsMenu(layer, sublayer, path, allowRemove) : null}
+            </div>
+        );
+    };
+    renderOptionsMenu = (layer, sublayer, path, marginRight = 0) => {
+        const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
+        let reorderButtons = null;
+        if (allowReordering && !this.state.filtervisiblelayers) {
+            reorderButtons = [
+                (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
+                (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
+            ];
+        }
+        let zoomToLayerButton = null;
+        if (sublayer.bbox && sublayer.bbox.bounds) {
+            const zoomToLayerTooltip = LocaleUtils.tr("layertree.zoomtolayer");
+            const crs = sublayer.bbox.crs || this.props.map.projection;
+            zoomToLayerButton = (
+                <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
+            );
+        }
+        let infoButton = null;
+        if (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
+            infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
+        }
+        return (
+            <div className="layertree-item-optionsmenu" onMouseDown={this.preventLayerTreeItemDrag} style={{marginRight: (marginRight * 1.75) + 'em'}}>
+                {zoomToLayerButton}
+                {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
+                <input className="layertree-item-transparency-slider" max="255" min="0"
+                    onChange={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value, !isEmpty(sublayer.sublayers) ? 'children' : null)}
+                    step="1" type="range" value={255 - LayerUtils.computeLayerOpacity(sublayer)} />
+                {reorderButtons}
+                {this.props.infoInSettings ? infoButton : null}
+                {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
             </div>
         );
     };
@@ -577,11 +564,11 @@ class LayerTree extends React.Component {
         }
         this.props.changeLayerProperty(layer.uuid, "visibility", !oldvisibility, grouppath, recurseDirection);
     };
-    layerTransparencyChanged = (layer, sublayerpath, value) => {
-        this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath);
+    layerTransparencyChanged = (layer, sublayerpath, value, recurse = null) => {
+        this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath, recurse);
     };
     layerMenuToggled = (sublayeruuid) => {
-        this.setState((state) => ({activemenu: state.activemenu === sublayeruuid ? null : sublayeruuid}));
+        this.setState((state) => ({activemenu: state.activemenu === sublayeruuid ? null : sublayeruuid, activestylemenu: null}));
     };
     showLegendTooltip = (ev, request) => {
         this.setState({
