@@ -51,6 +51,8 @@ export default class MenuButton extends React.Component {
         });
         const buttonClassnames = classnames({
             "menubutton-button": true,
+            "menubutton-togglebutton": !this.props.menuIcon && !this.props.menuLabel,
+            "menubutton-menubutton": this.props.menuIcon || this.props.menuLabel,
             "menubutton-button-active": !!this.props.active,
             "menubutton-button-hover": this.state.popup
         });
@@ -60,7 +62,7 @@ export default class MenuButton extends React.Component {
                     <span className="menubutton-button-content" onClick={this.onButtonClicked}>
                         {buttonContents}
                     </span>
-                    <span className="menubotton-combo-arrow">
+                    <span className="menubotton-button-arrow">
                         <Icon icon="chevron-down" />
                     </span>
                 </div>
@@ -69,13 +71,13 @@ export default class MenuButton extends React.Component {
                         {children.map(child => {
                             const classNames = classnames({
                                 "menubutton-menu-active": child.props.value === this.state.selected && !child.props.disabled,
-                                "menubutton-menu-disabled": child.props.disabled
+                                "menubutton-menu-disabled": child.props.disabled,
+                                [child.props.className]: !!child.props.className
                             });
-                            return (
-                                <div className={classNames + " " + (child.props.className || "")} key={child.props.value} onClickCapture={() => this.onChildClicked(child)}>
-                                    {child}
-                                </div>
-                            );
+                            return React.cloneElement(child, {
+                                className: classNames,
+                                onClickCapture: () => this.onChildClicked(child)
+                            });
                         })}
                     </PopupMenu>
                 ) : null}

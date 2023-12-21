@@ -22,7 +22,8 @@ div.menubutton-disabled div.menubutton-button {
     color: var(--text-color-disabled);
 }
 
-div.menubutton-button:active > span.menubutton-button-content {
+div.menubutton-button:active > span.menubutton-button-content,
+div.menubutton-button:active > span.menubotton-button-arrow {
     position: relative!important;
     left: 1px;
     top: 1px;
@@ -54,10 +55,16 @@ span.menubutton-button-content {
     align-items: center;
 }
 
-span.menubotton-combo-arrow {
+div.menubutton-menubutton > span.menubotton-button-arrow {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    font-size: 80%;
+    padding: 0.2em;
+}
+
+div.menubutton-togglebutton > span.menubotton-button-arrow {
     padding: 0 0.125em;
-    display: inline-block;
-    flex: 0 0 1em;
     height: 100%;
     display: flex;
     align-items: center;
@@ -68,6 +75,7 @@ div.menubutton-menu {
     background-color: var(--list-bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-color);
+    box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
 }
 
 div.menubutton-menu > div {
