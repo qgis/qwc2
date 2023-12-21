@@ -36,6 +36,11 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
     } else if (infoFormats.includes('application/vnd.ogc.gml')) {
         format = 'application/vnd.ogc.gml';
     }
+    const styles = layer.params.STYLES.split(',');
+    const styleMap = layer.params.LAYERS.split(',').reduce((res, lyr, idx) => ({
+        ...res, [lyr]: styles[idx] ?? ''
+    }));
+    const queryStyles = queryLayers.split(',').map(lyr => styleMap[lyr] ?? '').join(",");
     return {
         url: layer.featureInfoUrl.split("?")[0],
         params: {
@@ -46,7 +51,7 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
             id: layer.id,
             layers: queryLayers,
             query_layers: queryLayers,
-            styles: layer.style,
+            styles: queryStyles,
             srs: projection,
             crs: projection,
             info_format: format,
