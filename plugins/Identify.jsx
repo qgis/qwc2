@@ -60,13 +60,14 @@ class Identify extends React.Component {
         exitTaskOnResultsClose: PropTypes.bool,
         /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
         featureInfoReturnsLayerName: PropTypes.bool,
-        /** Default window geometry with size, position and docking status. */
+        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
             initialX: PropTypes.number,
             initialY: PropTypes.number,
-            initiallyDocked: PropTypes.bool
+            initiallyDocked: PropTypes.bool,
+            side: PropTypes.string
         }),
         iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius of the identify dialog in radius mode. */
@@ -97,7 +98,8 @@ class Identify extends React.Component {
             initialHeight: 320,
             initialX: 0,
             initialY: 0,
-            initiallyDocked: false
+            initiallyDocked: false,
+            side: 'left'
         },
         initialRadius: 50,
         initialRadiusUnits: 'meters'
@@ -398,10 +400,10 @@ class Identify extends React.Component {
             resultWindow = (
                 <ResizeableWindow icon="info-sign"
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
-                    initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY} initiallyDocked={this.props.geometry.initiallyDocked}
-                    key="IdentifyWindow"
+                    initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                    initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side} key="IdentifyWindow"
                     onClose={this.onWindowClose} title={LocaleUtils.trmsg("identify.title")}
-                >
+                    >
                     {body}
                 </ResizeableWindow>
             );

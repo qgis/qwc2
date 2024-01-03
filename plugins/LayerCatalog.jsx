@@ -56,13 +56,14 @@ class LayerCatalog extends React.Component {
         active: PropTypes.bool,
         /** The URL to the catalog JSON file. */
         catalogUrl: PropTypes.string,
-        /** Default window geometry with size, position and docking status. */
+        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
             initialX: PropTypes.number,
             initialY: PropTypes.number,
-            initiallyDocked: PropTypes.bool
+            initiallyDocked: PropTypes.bool,
+            side: PropTypes.string
         }),
         setCurrentTask: PropTypes.func
     };
@@ -72,7 +73,8 @@ class LayerCatalog extends React.Component {
             initialHeight: 320,
             initialX: 0,
             initialY: 0,
-            initiallyDocked: false
+            initiallyDocked: false,
+            side: 'left'
         }
     };
     state = {
@@ -98,9 +100,12 @@ class LayerCatalog extends React.Component {
             return null;
         }
         return (
-            <ResizeableWindow icon="catalog" initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
-                initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY} initiallyDocked={this.props.geometry.initiallyDocked}
-                onClose={this.onClose} title={LocaleUtils.trmsg("layercatalog.windowtitle")} >
+            <ResizeableWindow icon="catalog"
+                initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+                initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side}
+                onClose={this.onClose} title={LocaleUtils.trmsg("layercatalog.windowtitle")}
+                >
                 <div className="layer-catalog" role="body">
                     <LayerCatalogWidget catalog={this.state.catalog} pendingRequests={0} />
                 </div>

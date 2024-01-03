@@ -34,13 +34,14 @@ class MapLegend extends React.Component {
         bboxDependentLegend: PropTypes.bool,
         /** Extra parameters to add to the GetLegendGraphics request. */
         extraLegendParameters: PropTypes.string,
-        /** Default window geometry with size, position and docking status. */
+        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
             initialX: PropTypes.number,
             initialY: PropTypes.number,
-            initiallyDocked: PropTypes.bool
+            initiallyDocked: PropTypes.bool,
+            side: PropTypes.string
         }),
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -61,7 +62,8 @@ class MapLegend extends React.Component {
             initialHeight: 320,
             initialX: 0,
             initialY: 0,
-            initiallyDocked: false
+            initiallyDocked: false,
+            side: 'left'
         }
     };
     state = {
@@ -95,9 +97,12 @@ class MapLegend extends React.Component {
         ];
 
         return (
-            <ResizeableWindow extraControls={extraControls} icon="list-alt" initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+            <ResizeableWindow extraControls={extraControls} icon="list-alt"
+                initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")} >
+                initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side}
+                onClose={this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")}
+                >
                 <div className="map-legend" role="body">
                     {this.props.layers.map(layer => {
                         if (this.state.onlyVisibleLegend && !layer.visibility) {

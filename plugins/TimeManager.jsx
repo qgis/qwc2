@@ -312,9 +312,10 @@ class TimeManager extends React.Component {
             body = this.renderBody(timeValues);
         }
         return (
-            <ResizeableWindow dockable="bottom"  icon="clock" initialHeight={this.props.geometry.initialHeight}
-                initialWidth={this.props.geometry.initialWidth} initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} onGeometryChanged={this.dialogGeomChanged}
+            <ResizeableWindow icon="clock"
+                initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth} initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                initiallyDocked={this.props.geometry.initiallyDocked} dockable="bottom"
+                onClose={this.onClose} onGeometryChanged={this.dialogGeomChanged}
                 scrollable splitScreenWhenDocked title={LocaleUtils.tr("timemanager.title")}>
                 {body}
             </ResizeableWindow>

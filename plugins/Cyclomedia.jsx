@@ -9,14 +9,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {addLayer, addLayerFeatures, changeLayerProperty, removeLayer, LayerRole} from 'qwc2/actions/layers';
-import {setCurrentTask} from 'qwc2/actions/task';
-import ResizeableWindow from 'qwc2/components/ResizeableWindow';
-import Spinner from 'qwc2/components/Spinner';
-import CoordinatesUtils from 'qwc2/utils/CoordinatesUtils';
-import LocaleUtils from 'qwc2/utils/LocaleUtils';
+import {addLayer, addLayerFeatures, changeLayerProperty, removeLayer, LayerRole} from '../actions/layers';
+import {setCurrentTask} from '../actions/task';
+import ResizeableWindow from '../components/ResizeableWindow';
+import Spinner from '../components/Spinner';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import './style/Cyclomedia.css';
-import MapUtils from 'qwc2/utils/MapUtils';
+import MapUtils from '../utils/MapUtils';
 
 
 const Status = {LOGIN: 0, LOADING: 1, LOADED: 2, ERROR: 3, HAVEPOS: 4};
@@ -39,13 +39,14 @@ class Cyclomedia extends React.Component {
         cyclomediaVersion: PropTypes.string,
         /** Whether to display Cyclomedia measurement geometries on the map. */
         displayMeasurements: PropTypes.bool,
-        /** Default window geometry with size, position and docking status. */
+        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
             initialX: PropTypes.number,
             initialY: PropTypes.number,
-            initiallyDocked: PropTypes.bool
+            initiallyDocked: PropTypes.bool,
+            side: PropTypes.string
         }),
         /** The relative path to the redirect login handling of oauth. */
         loginRedirectUri: PropTypes.string,
@@ -69,7 +70,8 @@ class Cyclomedia extends React.Component {
             initialHeight: 640,
             initialX: 0,
             initialY: 0,
-            initiallyDocked: false
+            initiallyDocked: false,
+            side: 'left'
         },
         maxMapScale: 10000,
         projection: 'EPSG:3857'
@@ -177,15 +179,11 @@ class Cyclomedia extends React.Component {
         }
         return (
             <ResizeableWindow icon="cyclomedia"
-                initialHeight={this.props.geometry.initialHeight}
-                initialWidth={this.props.geometry.initialWidth}
-                initialX={this.props.geometry.initialX}
-                initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked}
-                onClose={this.onClose}
-                splitScreenWhenDocked
-                title={LocaleUtils.trmsg("cyclomedia.title")}
-            >
+                initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+                initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side}
+                onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.trmsg("cyclomedia.title")}
+                >
                 <div className="cyclomedia-body" role="body">
                     {this.props.mapScale > this.props.maxMapScale && this.state.status > Status.LOGIN ? (
                         <div className="cyclomedia-scale-hint">
