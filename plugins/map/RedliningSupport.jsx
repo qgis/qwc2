@@ -22,7 +22,6 @@ import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
-import SnapInteraction from './SnapInteraction';
 
 const GeomTypeConfig = {
     Text: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
@@ -43,8 +42,7 @@ class RedliningSupport extends React.Component {
         map: PropTypes.object,
         mapCrs: PropTypes.string,
         redlining: PropTypes.object,
-        removeLayerFeatures: PropTypes.func,
-        snappingConfig: PropTypes.object
+        removeLayerFeatures: PropTypes.func
     };
     static defaultProps = {
         redlining: {}
@@ -53,7 +51,6 @@ class RedliningSupport extends React.Component {
         super(props);
 
         this.interactions = [];
-        this.snapInteraction = null;
         this.picking = false;
         this.currentFeature = null;
         this.blockOnChange = false;
@@ -107,11 +104,6 @@ class RedliningSupport extends React.Component {
             this.addDrawInteraction(layerChanged);
         } else if (this.props.redlining.style !== prevProps.redlining.style) {
             this.updateFeatureStyle(this.props.redlining.style);
-        }
-        if (this.snapInteraction && this.props.snappingConfig.active !== prevProps.snappingConfig.active) {
-            this.snapInteraction.setActive(this.props.snappingConfig.active !== false);
-            this.snapInteraction.setSnapEdge(this.props.snappingConfig.active === true || this.props.snappingConfig.active === 'edge');
-            this.snapInteraction.setSnapVertex(this.props.snappingConfig.active === true || this.props.snappingConfig.active === 'vertex');
         }
         if (this.currentFeature && (
             this.props.displayCrs !== prevProps.displayCrs ||
@@ -251,14 +243,6 @@ class RedliningSupport extends React.Component {
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interactions.push(drawInteraction);
-        if (this.props.snappingConfig.enabled) {
-            const redliningLayer = this.searchRedliningLayer(this.props.redlining.layer);
-            if (redliningLayer) {
-                this.snapInteraction = new SnapInteraction({source: redliningLayer.getSource()});
-                this.snapInteraction.setActive(this.props.snappingConfig.active);
-                this.props.map.addInteraction(this.snapInteraction);
-            }
-        }
     };
     updateMeasurements = () => {
         if (this.blockOnChange || !this.currentFeature) {
@@ -336,16 +320,6 @@ class RedliningSupport extends React.Component {
                 this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
             });
             this.props.map.addInteraction(modifyInteraction);
-            if (this.snapInteraction) {
-                this.props.map.removeInteraction(this.snapInteraction);
-                // Reorder as last
-                this.props.map.addInteraction(this.snapInteraction);
-            } else if (this.props.snappingConfig.enabled) {
-                // Snapping interaction was not created previously as layer did not yet exist
-                this.snapInteraction = new SnapInteraction({source: redliningLayer.getSource()});
-                this.snapInteraction.setActive(this.props.snappingConfig.active);
-                this.props.map.addInteraction(this.snapInteraction);
-            }
             this.interactions.push(modifyInteraction);
             this.picking = true;
         });
@@ -419,16 +393,6 @@ class RedliningSupport extends React.Component {
             setTimeout(() => this.addPickInteraction(true), 300);
         }, this);
         this.props.map.addInteraction(drawInteraction);
-        if (this.snapInteraction) {
-            this.props.map.removeInteraction(this.snapInteraction);
-            // Reorder as last
-            this.props.map.addInteraction(this.snapInteraction);
-        } else if (this.props.snappingConfig.enabled) {
-            // Snapping interaction was not created previously as layer did not yet exist
-            this.snapInteraction = new SnapInteraction({source: redliningLayer.getSource()});
-            this.snapInteraction.setActive(this.props.snappingConfig.active);
-            this.props.map.addInteraction(this.snapInteraction);
-        }
         this.interactions.push(drawInteraction);
         this.picking = false;
 
@@ -445,7 +409,6 @@ class RedliningSupport extends React.Component {
         if (this.picking) {
             // Remove modify interactions
             this.props.map.removeInteraction(this.interactions.pop());
-            // If snapping interaction was added, it will remain as last interaction
             this.picking = false;
         }
     };
@@ -484,9 +447,6 @@ class RedliningSupport extends React.Component {
             if (this.currentFeature) {
                 this.commitCurrentFeature();
             }
-            if (this.snapInteraction) {
-                this.props.map.removeInteraction(this.snapInteraction);
-            }
             if (currentEditInteraction) {
                 this.props.map.removeInteraction(currentEditInteraction);
                 currentEditInteraction = null;
@@ -501,11 +461,6 @@ class RedliningSupport extends React.Component {
                 } else {
                     this.props.map.addInteraction(modifyInteraction);
                     currentEditInteraction = modifyInteraction;
-                }
-                if (this.props.snappingConfig.enabled) {
-                    this.snapInteraction = new SnapInteraction({source: redliningLayer.getSource()});
-                    this.snapInteraction.setActive(this.props.snappingConfig.active);
-                    this.props.map.addInteraction(this.snapInteraction);
                 }
             } else {
                 this.props.changeRedliningState({
@@ -620,10 +575,6 @@ class RedliningSupport extends React.Component {
         while (this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
-        if (this.snapInteraction) {
-            this.props.map.removeInteraction(this.snapInteraction);
-            this.snapInteraction = null;
-        }
         if (this.picking && !layerChanged) {
             this.commitCurrentFeature();
         } else {
@@ -685,8 +636,7 @@ class RedliningSupport extends React.Component {
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     redlining: state.redlining,
     mapCrs: state.map.projection,
-    displayCrs: displaycrs,
-    snappingConfig: state.map.snapping
+    displayCrs: displaycrs
 }));
 
 export default connect(selector, {

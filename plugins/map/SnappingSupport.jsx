@@ -59,22 +59,28 @@ class SnappingSupport extends React.Component {
         props.map.getInteractions().on('add', this.handleInteractionAdded);
         props.map.getInteractions().on('remove', this.handleInteractionRemoved);
     }
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.mapObj.bbox !== prevProps.mapObj.bbox || this.props.theme !== prevProps.theme) {
             this.setState({invalid: true});
             this.refreshFeatureCache(true);
         } else if (this.props.layers !== prevProps.layers && this.state.havesnaplayers) {
-            const revChanged = this.props.layers.find(layer => {
-                const prev = layer.role === LayerRole.THEME ? prevProps.layers.find(prevLayer => layer.uuid === prevLayer.uuid) : null;
-                return prev && layer.rev !== prev.rev;
+            const layersChanged = this.props.layers.find(layer => {
+                if (layer.role === LayerRole.THEME) {
+                    const prev = prevProps.layers.find(prevLayer => layer.uuid === prevLayer.uuid);
+                    return prev && layer.rev !== prev.rev;
+                } else if (layer.role === LayerRole.USERLAYER && layer.type === 'vector') {
+                    const prev = prevProps.layers.find(prevLayer => layer.uuid === prevLayer.uuid);
+                    return prev && prev.features !== layer.features;
+                }
+                return false;
             });
-            if (revChanged) {
+            if (layersChanged) {
                 this.setState({invalid: true});
                 // Delay to avoid refreshing the cache before QGIS Server can pick up the new feature
                 setTimeout(() => { this.refreshFeatureCache(true); }, 1500);
             }
         }
-        if (this.props.mapObj.snapping.active !== prevProps.mapObj.snapping.active) {
+        if (this.props.mapObj.snapping.active !== prevProps.mapObj.snapping.active || this.state.drawing !== prevState.drawing) {
             this.snapInteraction.setActive(this.props.mapObj.snapping.active !== false);
             this.snapInteraction.setSnapEdge(this.props.mapObj.snapping.active === true || this.props.mapObj.snapping.active === 'edge');
             this.snapInteraction.setSnapVertex(this.props.mapObj.snapping.active === true || this.props.mapObj.snapping.active === 'vertex');
@@ -87,7 +93,7 @@ class SnappingSupport extends React.Component {
         if (!this.state.drawing) {
             return null;
         }
-        if (isEmpty(this.props.theme.snapping || {}) && !["Redlining", "ScratchDrawing"].includes(this.props.task)) {
+        if (isEmpty(this.props.theme.snapping) && !["Redlining", "ScratchDrawing"].includes(this.props.task)) {
             // Don't display snapping control if no snapping is configuted for current theme
             return null;
         }
@@ -166,7 +172,6 @@ class SnappingSupport extends React.Component {
                 const interaction = interactions.item(i);
                 if ((interaction instanceof ol.interaction.Draw) || (interaction instanceof ol.interaction.Modify)) {
                     interactions.push(this.snapInteraction);
-                    this.refreshFeatureCache();
                     added = true;
                     break;
                 }
@@ -178,8 +183,9 @@ class SnappingSupport extends React.Component {
         if (!this.state.invalid && !force) {
             return;
         }
+        this.source.clear();
         const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-        if (!this.props.theme || !themeLayer) {
+        if (!this.props.theme || !themeLayer || !this.state.drawing) {
             return;
         }
         const snappingConfig = this.props.theme.snapping || {};
@@ -196,11 +202,23 @@ class SnappingSupport extends React.Component {
             }
             return [...res, cur.name];
         }, []);
-        this.setState({reqId: null, havesnaplayers: !isEmpty(snapLayers)});
-        if (snapLayers.length === 0) {
+        // Gather local snap layers
+        const snapToWfs = scale < snappingConfig.wfsMaxScale;
+        const localLayers = [];
+        this.props.layers.forEach(layer => {
+            if (layer.role === LayerRole.USERLAYER && (layer.type === 'vector' || (layer.type === "wfs" && snapToWfs))) {
+                const olLayer =  this.props.map.getLayers().getArray().find(l => l.get('id') === layer.id);
+                if (olLayer && olLayer.getSource() && olLayer.getSource().getFeaturesInExtent) {
+                    localLayers.push(olLayer);
+                }
+            }
+        });
+        this.setState({reqId: null, havesnaplayers: !isEmpty(snapLayers) || !isEmpty(localLayers)});
+        if (!this.snapInteraction.getMap() || !this.snapInteraction.getActive()) {
             return;
         }
-        if (!this.snapInteraction.getMap() || !this.snapInteraction.getActive()) {
+        if (snapLayers.length === 0) {
+            this.addLocalSnapFeatures(localLayers);
             return;
         }
         const xmin = this.props.mapObj.bbox.bounds[0];
@@ -233,17 +251,26 @@ class SnappingSupport extends React.Component {
             if (response) {
                 const result = IdentifyUtils.parseXmlResponse(response, this.props.mapObj.projection);
                 const features = Object.values(result).reduce((res, cur) => [...res, ...cur], []);
-                this.source.clear();
                 const format = new ol.format.GeoJSON();
                 const olFeatures = format.readFeatures({
                     type: "FeatureCollection",
                     features: features.map(feature => ({...feature, id: uuidv1()}))
                 });
                 this.source.addFeatures(olFeatures);
+                // Add features from local layers
+                this.addLocalSnapFeatures(localLayers);
                 this.setState({invalid: false, reqId: null, havesnaplayers: true});
             } else {
                 this.setState({reqId: null});
             }
+        });
+    };
+    addLocalSnapFeatures = (localLayers) => {
+        const extent = this.props.mapObj.bbox.bounds;
+        const projection = ol.proj.get(this.props.mapObj.projection);
+        localLayers.forEach(olLayer => {
+            const olFeatures = olLayer.getSource().getFeaturesInExtent(extent, projection);
+            this.source.addFeatures(olFeatures);
         });
     };
 }
