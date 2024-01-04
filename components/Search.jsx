@@ -293,7 +293,7 @@ class Search extends React.Component {
                     key="invisibleLayerQuery"
                     onHide={() => this.setState({invisibleLayerQuery: null})}
                 >
-                    <span role="body">{LocaleUtils.tr("search.invisiblelayer")} <button onClick={this.enableLayer}>{LocaleUtils.tr("search.enablelayer")}</button></span>
+                    <span role="body">{LocaleUtils.tr("search.invisiblelayer")} <button className="button" onClick={this.enableLayer}>{LocaleUtils.tr("search.enablelayer")}</button></span>
                 </MessageBar>
             );
         }
