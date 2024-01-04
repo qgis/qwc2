@@ -200,11 +200,10 @@ class FeatureForm extends React.Component {
                 );
             }
             resultWindow = (
-                <ResizeableWindow icon="featureform"
+                <ResizeableWindow dockable={this.props.geometry.side} icon="featureform"
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                    initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side}
-                    key="FeatureForm"
+                    initiallyDocked={this.props.geometry.initiallyDocked} key="FeatureForm"
                     onClose={this.onWindowClose} title={LocaleUtils.trmsg("featureform.title")}
                     >
                     {body}

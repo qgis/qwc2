@@ -100,10 +100,10 @@ class LayerCatalog extends React.Component {
             return null;
         }
         return (
-            <ResizeableWindow icon="catalog"
+            <ResizeableWindow dockable={this.props.geometry.side} icon="catalog"
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side}
+                initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onClose} title={LocaleUtils.trmsg("layercatalog.windowtitle")}
                 >
                 <div className="layer-catalog" role="body">

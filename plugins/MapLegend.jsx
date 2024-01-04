@@ -97,10 +97,10 @@ class MapLegend extends React.Component {
         ];
 
         return (
-            <ResizeableWindow extraControls={extraControls} icon="list-alt"
+            <ResizeableWindow dockable={this.props.geometry.side} extraControls={extraControls} icon="list-alt"
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side}
+                initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")}
                 >
                 <div className="map-legend" role="body">

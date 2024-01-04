@@ -398,10 +398,10 @@ class Identify extends React.Component {
                 );
             }
             resultWindow = (
-                <ResizeableWindow icon="info-sign"
+                <ResizeableWindow dockable={this.props.geometry.side} icon="info-sign"
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                    initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side} key="IdentifyWindow"
+                    initiallyDocked={this.props.geometry.initiallyDocked} key="IdentifyWindow"
                     onClose={this.onWindowClose} title={LocaleUtils.trmsg("identify.title")}
                     >
                     {body}

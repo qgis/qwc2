@@ -178,10 +178,10 @@ class Cyclomedia extends React.Component {
             );
         }
         return (
-            <ResizeableWindow icon="cyclomedia"
+            <ResizeableWindow dockable={this.props.geometry.side} icon="cyclomedia"
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked} dockable={this.props.geometry.side}
+                initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.trmsg("cyclomedia.title")}
                 >
                 <div className="cyclomedia-body" role="body">
