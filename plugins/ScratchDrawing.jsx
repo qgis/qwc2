@@ -98,7 +98,7 @@ class ScratchDrawing extends React.Component {
             type: 'vector'
         };
         this.props.addLayerFeatures(layer, features, true);
-    }
+    };
     drawingStyle = (style) => {
         return {
             borderColor: [255, 0, 0, 1],

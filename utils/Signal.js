@@ -4,10 +4,10 @@ export default class Signal {
     }
     connect = (callback) => {
         this.callbacks.push(callback);
-    }
+    };
     disconnect = (callback) => {
         this.callbacks = this.callbacks.filter(cb => cb !== callback);
-    }
+    };
     notify = (data) => {
         const newcallbacks = [];
         this.callbacks.forEach(callback => {
@@ -18,5 +18,5 @@ export default class Signal {
             }
         });
         this.callbacks = newcallbacks;
-    }
+    };
 }

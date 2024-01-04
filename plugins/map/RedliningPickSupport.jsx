@@ -33,7 +33,7 @@ class RedliningPickSupport extends React.Component {
                 return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
             }
             return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-        }
+        };
         this.selectedStyle = FeatureStyles.interactionVertex({geometryFunction});
     }
     componentDidUpdate(prevProps) {

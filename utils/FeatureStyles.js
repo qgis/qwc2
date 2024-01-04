@@ -232,7 +232,7 @@ export default {
                 radius: 5,
                 angle: Math.PI / 4
             }),
-            geometry: opts.geometryFunction,
+            geometry: opts.geometryFunction
         });
     },
     measureInteraction: (feature, options) => {
@@ -253,7 +253,7 @@ export default {
                 fill: new ol.style.Fill({color: opts.measureVertexFillColor}),
                 stroke: new ol.style.Stroke({ color: opts.measureVertexStrokeColor, width: opts.measureVertexStrokeWidth })
             }),
-            geometry: opts.geometryFunction,
+            geometry: opts.geometryFunction
         });
     },
     sketchInteraction: (options) => {
