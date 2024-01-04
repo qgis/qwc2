@@ -177,6 +177,10 @@ function computeRoute(costing, locations, options, callback) {
                     }))
                 };
             }),
+            locations: trip.locations.map(location => ({
+                lat: location.lat,
+                lon: location.lon
+            })),
             summary: {
                 bounds: [trip.summary.min_lon, trip.summary.min_lat, trip.summary.max_lon, trip.summary.max_lat],
                 time: trip.summary.time,

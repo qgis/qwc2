@@ -709,6 +709,7 @@ class Routing extends React.Component {
         settings.optimized_route = this.state.routeConfig.optimized_route;
         RoutingInterface.computeRoute(this.state.mode, locations, settings, (success, result) => {
             if (success) {
+                // Add routing leg geometries
                 const layer = {
                     id: "routinggeometries",
                     role: LayerRole.SELECTION,
@@ -736,6 +737,26 @@ class Routing extends React.Component {
                     });
                 });
                 this.props.addLayerFeatures(layer, features, true);
+
+                // Add numbered routing markers
+                const markerLayer = {
+                    id: "routingmarkers",
+                    role: LayerRole.MARKER,
+                    styleName: 'marker'
+                };
+                const markerFeatures = result.locations.map((location, idx) => ({
+                    type: "Feature",
+                    crs: "EPSG:4326",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [location.lon, location.lat]
+                    },
+                    properties: {
+                        label: String(idx + 1)
+                    }
+                }));
+                this.props.addLayerFeatures(markerLayer, markerFeatures, true);
+
                 this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
             }
             this.updateRouteConfig({result: {success, data: result}, busy: false}, false);
