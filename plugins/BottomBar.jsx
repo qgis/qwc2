@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import {createSelector} from 'reselect';
 import pickBy from 'lodash.pickby';
 import {changeMousePositionState} from '../actions/mousePosition';
-import {changeZoomLevel} from '../actions/map';
+import {changeZoomLevel, setBottombarHeight} from '../actions/map';
 import {openExternalUrl} from '../actions/task';
 import {showIframeDialog} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
@@ -40,6 +40,7 @@ class BottomBar extends React.Component {
         fullscreen: PropTypes.bool,
         map: PropTypes.object,
         openExternalUrl: PropTypes.func,
+        setBottombarHeight: PropTypes.func,
         showIframeDialog: PropTypes.func,
         /** The URL of the terms label anchor. */
         termsUrl: PropTypes.string,
@@ -146,7 +147,7 @@ class BottomBar extends React.Component {
         }
 
         return (
-            <div id="BottomBar">
+            <div id="BottomBar" ref={this.storeHeight}>
                 <span className="bottombar-spacer" />
                 {coordinates}
                 {scales}
@@ -172,6 +173,11 @@ class BottomBar extends React.Component {
             this.props.changeZoomLevel(this.props.map.zoom);
         }
     };
+    storeHeight = (el) => {
+        if (el) {
+            this.props.setBottombarHeight(el.clientHeight);
+        }
+    };
 }
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {
@@ -187,5 +193,6 @@ export default connect(selector, {
     changeMousePositionState: changeMousePositionState,
     changeZoomLevel: changeZoomLevel,
     openExternalUrl: openExternalUrl,
+    setBottombarHeight: setBottombarHeight,
     showIframeDialog: showIframeDialog
 })(BottomBar);
