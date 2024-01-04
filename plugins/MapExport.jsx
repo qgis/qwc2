@@ -1,5 +1,5 @@
 /**
- * Copyright 2017-2023 Sourcepole AG
+ * Copyright 2017-2024 Sourcepole AG
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
