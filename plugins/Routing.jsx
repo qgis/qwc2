@@ -176,7 +176,7 @@ class Routing extends React.Component {
         }
         // Window closed
         if (!this.state.visible && prevState.visible) {
-            this.props.removeLayer("routingggeometries");
+            this.props.removeLayer("routinggeometries");
             this.props.removeLayer("routingmarkers");
             this.updateRouteConfig({points: [{text: '', pos: null, crs: null}, {text: '', pos: null, crs: null}], result: null}, false);
             this.updateIsoConfig({point: {text: '', pos: null, crs: null}, result: null}, false);
@@ -187,7 +187,7 @@ class Routing extends React.Component {
         }
         // Tab changed
         if (this.state.currentTab !== prevState.currentTab) {
-            this.props.removeLayer("routingggeometries");
+            this.props.removeLayer("routinggeometries");
             this.props.removeLayer("routingmarkers");
             this.recomputeIfNeeded();
         }
@@ -629,7 +629,7 @@ class Routing extends React.Component {
             points: newPoints,
             result: null
         }}));
-        this.props.removeLayer("routingggeometries");
+        this.props.removeLayer("routinggeometries");
         this.props.removeLayer("routingmarkers");
         this.recomputeIfNeeded();
     };
@@ -685,7 +685,7 @@ class Routing extends React.Component {
         const locations = this.state.routeConfig.points.filter(entry => entry.pos).map(entry => {
             return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
         });
-        this.props.removeLayer("routingggeometries");
+        this.props.removeLayer("routinggeometries");
         this.updateRouteConfig({busy: locations.length >= 2, result: null}, false);
         if (locations.length < 2) {
             return;
@@ -710,7 +710,7 @@ class Routing extends React.Component {
         RoutingInterface.computeRoute(this.state.mode, locations, settings, (success, result) => {
             if (success) {
                 const layer = {
-                    id: "routingggeometries",
+                    id: "routinggeometries",
                     role: LayerRole.SELECTION,
                     styleName: "default",
                     styleOptions: {
@@ -749,7 +749,7 @@ class Routing extends React.Component {
         const locations = this.state.isoConfig.points.filter(entry => entry.pos).map(entry => {
             return CoordinatesUtils.reproject(entry.pos, entry.crs, "EPSG:4326");
         });
-        this.props.removeLayer("routingggeometries");
+        this.props.removeLayer("routinggeometries");
         this.updateIsoConfig({busy: true, result: null}, false);
         const contourOptions = {
             mode: this.state.isoConfig.mode,
@@ -758,7 +758,7 @@ class Routing extends React.Component {
         RoutingInterface.computeIsochrone(this.state.mode, locations, contourOptions, this.state.settings[this.state.mode], (success, result) => {
             if (success) {
                 const layer = {
-                    id: "routingggeometries",
+                    id: "routinggeometries",
                     role: LayerRole.SELECTION,
                     styleOptions: {
                         strokeColor: [10, 10, 255, 1],
