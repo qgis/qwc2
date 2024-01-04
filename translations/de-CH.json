@@ -117,7 +117,7 @@
       "draw": "Zeichnen",
       "feature": "Objekt",
       "geomreadonly": "Die Geometrie enthält Z-Werte ungleich Null und kann daher nicht veränderbar.",
-      "invalidform": "Formular umgültig",
+      "invalidform": "Formular ungültig",
       "maximize": "Maximieren",
       "minimize": "Minimieren",
       "nocompatpick": "Keine kompatible Geometrie",
@@ -191,7 +191,7 @@
     "infotool": {
       "clickhelpPoint": "Zu identifizierende Position in der Karte auswählen...",
       "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen",
-      "clickhelpRadius": "Einen Radius setzten und in die Karte clicken um Objekte um den Punkt zu identifizieren...",
+      "clickhelpRadius": "Einen Radius setzten und in die Karte klicken, um Objekte um den Punkt zu identifizieren...",
       "radius": "Radius"
     },
     "layercatalog": {

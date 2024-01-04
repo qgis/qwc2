@@ -96,7 +96,7 @@
       "loaderror": "Fehler beim Initialisieren von Cyclomedia",
       "loading": "Cyclomedia wird initialisiert...",
       "login": "Anmelden",
-      "scalehint": "Die Aufnahmen sind nur ab Massstab 1:{0} auf der Karte sichtbar.",
+      "scalehint": "Die Aufnahmen sind nur ab Maßstab 1:{0} auf der Karte sichtbar.",
       "title": "Cyclomedia Viewer"
     },
     "dxfexport": {
@@ -191,7 +191,7 @@
     "infotool": {
       "clickhelpPoint": "Zu identifizierende Position in der Karte auswählen...",
       "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen",
-      "clickhelpRadius": "Einen Radius setzten und in die Karte clicken um Objekte um den Punkt zu identifizieren...",
+      "clickhelpRadius": "Einen Radius setzten und in die Karte klicken, um Objekte um den Punkt zu identifizieren...",
       "radius": "Radius"
     },
     "layercatalog": {
@@ -344,7 +344,7 @@
       "point": "Punkt",
       "polygon": "Polygon",
       "rectangle": "Rechteck",
-      "size": "Grösse",
+      "size": "Größe",
       "square": "Quadrat",
       "text": "Text",
       "transform": "Transformieren",
