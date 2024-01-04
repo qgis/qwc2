@@ -92,7 +92,7 @@ export default class EditComboField extends React.Component {
             }
         }
         return false;
-    }
+    };
     render() {
         return (
             <select disabled={this.props.readOnly} name={this.props.name}

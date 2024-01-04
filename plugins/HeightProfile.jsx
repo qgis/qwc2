@@ -362,7 +362,7 @@ class HeightProfile extends React.Component {
         ],
         {
             x: (chartArea.left + chartArea.right) / 2,
-            y: (chartArea.top + chartArea.bottom) / 2,
+            y: (chartArea.top + chartArea.bottom) / 2
         });
         this.chart.update();
     };

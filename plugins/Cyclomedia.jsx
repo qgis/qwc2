@@ -294,7 +294,7 @@ class Cyclomedia extends React.Component {
                 this.props.removeLayer("cyclomedia-measurements");
             }
         }
-    }
+    };
     cyclomediaIndexHtml = () => {
         const supportedLang = ["de", "en-GB", "en-US", "fi", "fr", "nl", "tr", "pl"];
         let lang = LocaleUtils.lang();

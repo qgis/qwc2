@@ -77,7 +77,7 @@ class OlLayer extends React.Component {
             projection: projection,
             opacity: options.opacity !== undefined ? options.opacity : 255,
             minResolution: typeof options.minScale === 'number' ? MapUtils.getResolutionsForScales([options.minScale], projection)[0] : undefined,
-            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], projection)[0] : undefined,
+            maxResolution: typeof options.maxScale === 'number' ? MapUtils.getResolutionsForScales([options.maxScale], projection)[0] : undefined
         };
     };
     createLayer = (options) => {

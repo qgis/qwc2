@@ -168,7 +168,7 @@ class Settings extends React.Component {
             alert(LocaleUtils.tr("settings.defaultthemefailed", String(e)));
             ev.target.value = this.props.defaultUrlParams;
         });
-    }
+    };
     changeLocale = (ev) => {
         // eslint-disable-next-line
         if (confirm(LocaleUtils.tr("settings.confirmlang"))) {

@@ -116,7 +116,7 @@ class EditingSupport extends React.Component {
                 }
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             },
-            style: FeatureStyles.sketchInteraction(),
+            style: FeatureStyles.sketchInteraction()
         });
         modifyInteraction.on('modifyend', () => {
             this.commitCurrentFeature();

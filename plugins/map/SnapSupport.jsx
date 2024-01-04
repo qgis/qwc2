@@ -40,8 +40,8 @@ class SnapSupport extends React.Component {
             zIndex: 1000000,
             style: [
                 FeatureStyles.interaction( {}, true),
-                FeatureStyles.interactionVertex({geometryFunction}, true),
-            ],
+                FeatureStyles.interactionVertex({geometryFunction}, true)
+            ]
         });
         this.props.map.addLayer(this.snapLayer);
         this.curPos = null;
