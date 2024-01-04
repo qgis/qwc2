@@ -74,7 +74,7 @@ const qgisDateFormat = new Format({
             result.offset = offset;
         }
         return result;
-    },
+    }
 });
 dateParser.addFormat(qgisDateFormat);
 
@@ -152,7 +152,7 @@ class TimeManager extends React.Component {
             initialX: PropTypes.number,
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
-        }),
+        })
     };
     static defaultState = {
         timeEnabled: false,

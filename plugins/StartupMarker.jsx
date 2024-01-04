@@ -47,7 +47,7 @@ class StartupMarker extends React.Component {
             if (
                 (this.props.removeMode === 'onpan' && this.props.map.center !== prevProps.map.center && this.props.map.zoom === prevProps.map.zoom) ||
                 (this.props.removeMode === 'onzoom' && this.props.map.zoom !== prevProps.map.zoom) ||
-                (this.props.removeMode === 'onclickonmarker' && this.props.click && (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker'))
+                (this.props.removeMode === 'onclickonmarker' && this.props.click && (this.props.click.features || []).find(feature => feature.id === 'startupposmarker'))
             ) {
                 prevProps.removeMarker('startupposmarker');
                 this.markerSet = false;

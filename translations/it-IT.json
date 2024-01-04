@@ -93,8 +93,9 @@
     },
     "cyclomedia": {
       "clickonmap": "Seleziona un punto di registrazione sulla mappa",
+      "initializing": "Inizializzazione di Cyclomedia...",
       "loaderror": "Errore durante l'inizializzazione di Cyclomedia",
-      "loading": "Inizializzazione di Cyclomedia...",
+      "loading": "Caricamento...",
       "login": "Login",
       "scalehint": "Le registrazioni sono solo visibili sulla mappa a partire da una scala di 1:{0}.",
       "title": "Visualizzatore Cyclomedia"

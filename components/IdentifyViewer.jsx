@@ -152,7 +152,8 @@ class IdentifyViewer extends React.Component {
         collapsible: PropTypes.bool,
         customExporters: PropTypes.array,
         displayResultTree: PropTypes.bool,
-        enableExport: PropTypes.bool,
+        enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
+        exportGeometry: PropTypes.bool,
         identifyResults: PropTypes.object,
         iframeDialogsInitiallyDocked: PropTypes.bool,
         layers: PropTypes.array,
@@ -180,12 +181,13 @@ class IdentifyViewer extends React.Component {
         resultTree: {},
         currentResult: null,
         currentLayer: null,
-        exportFormat: 'json'
+        exportFormat: 'geojson'
     };
     constructor(props) {
         super(props);
         this.currentResultElRef = null;
         this.scrollIntoView = false;
+        this.state.exportFormat = !Array.isArray(props.enableExport) || props.enableExport.includes('geojson') ? 'geojson' : props.enableExport[0];
     }
     componentDidMount() {
         this.updateResultTree();
@@ -304,6 +306,11 @@ class IdentifyViewer extends React.Component {
     export = (json, clipboard = false) => {
         const exporter = [...BuiltinExporters, ...this.props.customExporters].find(entry => entry.id === this.state.exportFormat);
         if (exporter) {
+            if (!this.props.exportGeometry) {
+                json = Object.entries(json).reduce((res, [layerId, features]) => (
+                    {...res, [layerId]: features.map(feature => omit(feature, ['geometry']))}
+                ), {});
+            }
             exporter.export(json, (result) => {
                 if (clipboard && exporter.allowClipboard) {
                     navigator.clipboard.writeText(result.data);
@@ -326,7 +333,7 @@ class IdentifyViewer extends React.Component {
                 >
                     <span className="clickable" onClick={()=> this.toggleExpanded(layer, true)}><b>{results[0].layertitle}</b></span>
                     <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResultLayer(layer)} />
-                    {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
+                    {this.props.enableExport === true || !isEmpty(this.props.enableExport) ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResultLayer(layer)} />) : null}
                 </div>
                 <div className="identify-layer-entries">
                     {results.map(result => this.renderResult(layer, result))}
@@ -344,7 +351,7 @@ class IdentifyViewer extends React.Component {
             >
                 <span className={this.state.currentResult === result ? "active clickable" : "clickable"} onClick={()=> this.setCurrentResult(layer, result)} ref={ref}>{result.displayname}</span>
                 <Icon className="identify-remove-result" icon="minus-sign" onClick={() => this.removeResult(layer, result)} />
-                {this.props.enableExport ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
+                {this.props.enableExport === true || !isEmpty(this.props.enableExport) ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layer, result)} />) : null}
             </div>
         );
     };
@@ -515,15 +522,19 @@ class IdentifyViewer extends React.Component {
         return (
             <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } }>
                 {body}
-                {this.props.enableExport ? (
+                {this.props.enableExport === true || !isEmpty(this.props.enableExport) ? (
                     <div className="identify-buttonbox">
                         <span className="identify-buttonbox-spacer" />
                         <span>{LocaleUtils.tr("identify.exportformat")}&nbsp;</span>
                         <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
-                            {Object.values(BuiltinExporters).map(entry => (
+                            {Object.values(BuiltinExporters).filter(entry => {
+                                return !Array.isArray(this.props.enableExport) || this.props.enableExport.includes(entry.id);
+                            }).map(entry => (
                                 <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                             ))}
-                            {Object.values(this.props.customExporters).map(entry => (
+                            {Object.values(this.props.customExporters).filter(entry => {
+                                return !Array.isArray(this.props.enableExport) || this.props.enableExport.includes(entry.id);
+                            }).map(entry => (
                                 <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                             ))}
                         </select>

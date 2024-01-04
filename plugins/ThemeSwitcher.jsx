@@ -63,7 +63,7 @@ class ThemeSwitcher extends React.Component {
                 <Icon icon="remove" onClick={() => this.setState({filter: ""})} role="suffix" />
             </InputContainer>
         ) : null;
-        const extraTitlebarContent = (themeFilter)
+        const extraTitlebarContent = (themeFilter);
         return (
             <div>
                 <SideBar extraTitlebarContent={extraTitlebarContent} icon="themes" id="ThemeSwitcher" minWidth="16em" side={this.props.side}

@@ -97,6 +97,7 @@
     "copybtn.copied",
     "copybtn.copyfailed",
     "cyclomedia.clickonmap",
+    "cyclomedia.initializing",
     "cyclomedia.loaderror",
     "cyclomedia.loading",
     "cyclomedia.login",

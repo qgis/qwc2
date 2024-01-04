@@ -93,6 +93,7 @@
     },
     "cyclomedia": {
       "clickonmap": "Faceți un click pe o înregistrare din hartă",
+      "initializing": "",
       "loaderror": "Aplicația Cyclomedia nu a putut fi inițializată",
       "loading": "Aplicația Cyclomedia se încarcă...",
       "login": "Autentificare",

@@ -28,12 +28,12 @@ class RedliningPickSupport extends React.Component {
         this.selectedFeatures = [];
         const geometryFunction = (feature) => {
             if (feature.getGeometry().getType() === "Point") {
-                return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
+                return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
             } else if (feature.getGeometry().getType() === "LineString") {
                 return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
             }
             return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-        }
+        };
         this.selectedStyle = FeatureStyles.interactionVertex({geometryFunction});
     }
     componentDidUpdate(prevProps) {

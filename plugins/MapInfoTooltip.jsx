@@ -214,6 +214,6 @@ export default (plugins) => {
         displaycrs: displaycrs,
         plugins: plugins
     })), {
-        setCurrentTask: setCurrentTask 
+        setCurrentTask: setCurrentTask
     })(MapInfoTooltip);
 };

@@ -277,11 +277,11 @@ class OlMap extends React.Component {
             return;
         }
         const features = [];
+        const format = new ol.format.GeoJSON();
         this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
-            features.push({ layer: layer ? layer.get('id') : null,
-                feature: feature.getId(),
-                geomType: feature.getGeometry().getType(),
-                geometry: feature.getGeometry().getCoordinates ? feature.getGeometry().getCoordinates() : null});
+            const featureObj = format.writeFeatureObject(feature);
+            featureObj.layerId = layer ? layer.get('id') : null;
+            features.push(featureObj);
         });
         const data = {
             ts: +new Date(),

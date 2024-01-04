@@ -112,11 +112,12 @@ class FeatureForm extends React.Component {
         }
     }
     queryPoint = (prevProps) => {
-        if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker')) {
+        if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(feature => feature.id === 'startupposmarker')) {
             return null;
         }
-        if (this.props.click.feature === 'searchmarker' && this.props.click.geometry && this.props.click.geomType === 'Point') {
-            return this.props.click.geometry;
+        const searchMarker = (this.props.click.features || []).find(feature => feature.id === 'searchmarker');
+        if (searchMarker) {
+            return searchMarker.geometry.coordinates;
         }
         return this.props.click.coordinate;
     };

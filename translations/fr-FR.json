@@ -93,8 +93,9 @@
     },
     "cyclomedia": {
       "clickonmap": "Cliquez sur un enregistrement sur la carte",
+      "initializing": "Initialisation de Cyclomedia...",
       "loaderror": "Échec de l'initialisation de Cyclomedia",
-      "loading": "Initialisation de Cyclomedia...",
+      "loading": "Chargement",
       "login": "Connexion",
       "scalehint": "Les enregistrements ne sont visibles que sur la carte sous l'échelle 1 :{0}.",
       "title": "Visualiseur Cyclomedia"

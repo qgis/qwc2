@@ -54,10 +54,12 @@ class Identify extends React.Component {
         customExporters: PropTypes.array,
         /** Whether to display a tree overview of results (as opposed to a flat list of results). */
         displayResultTree: PropTypes.bool,
-        /** Whether to enable the export functionality. */
-        enableExport: PropTypes.bool,
+        /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`) */
+        enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         /** Whether to clear the task when the results window is closed. */
         exitTaskOnResultsClose: PropTypes.bool,
+        /** Whether to include the geometry in exported features. Default: `true`. */
+        exportGeometry: PropTypes.bool,
         /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
         featureInfoReturnsLayerName: PropTypes.bool,
         /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
@@ -87,6 +89,7 @@ class Identify extends React.Component {
     };
     static defaultProps = {
         enableExport: true,
+        exportGeometry: true,
         clearResultsOnClose: true,
         customExporters: [],
         longAttributesDisplay: 'ellipsis',
@@ -148,18 +151,19 @@ class Identify extends React.Component {
                 });
 
                 if (!isEmpty(this.props.click.features)) {
-                    this.props.click.features.forEach((result) => {
-                        const layer = this.props.layers.find(l => l.id === result.layer);
-                        if (layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
-                            const queryFeature = layer.features.find(feature =>  feature.id === result.feature);
-                            if (queryFeature && !isEmpty(queryFeature.properties)) {
-                                if (!identifyResults[layer.name]) {
-                                    identifyResults[layer.name] = [];
-                                }
-                                queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
-                                queryFeature.layertitle = layer.title || layer.name || layer.id;
-                                identifyResults[layer.name].push(queryFeature);
+                    this.props.click.features.forEach((feature) => {
+                        const layer = this.props.layers.find(l => l.id === feature.layerId);
+                        if (layer && !isEmpty(feature.properties)) {
+                            if (!identifyResults[layer.name]) {
+                                identifyResults[layer.name] = [];
                             }
+                            const queryFeature = {...feature};
+                            queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
+                            queryFeature.layertitle = layer.title || layer.name || layer.id;
+                            queryFeature.properties = Object.entries(queryFeature.properties).reduce((res, [key, val]) => ({
+                                ...res, [key]: typeof val === "object" ? JSON.stringify(val) : val
+                            }), {});
+                            identifyResults[layer.name].push(queryFeature);
                         }
                     });
                 }
@@ -172,8 +176,9 @@ class Identify extends React.Component {
         if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker')) {
             return null;
         }
-        if (this.props.click.feature === 'searchmarker' && this.props.click.geometry && this.props.click.geomType === 'Point') {
-            return this.props.click.geometry;
+        const searchMarker = (this.props.click.features || []).find(feature => feature.id === 'searchmarker');
+        if (searchMarker) {
+            return searchMarker.geometry.coordinates;
         }
         return this.props.click.coordinate;
     };

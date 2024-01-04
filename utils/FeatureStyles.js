@@ -8,6 +8,7 @@
 
 import ol from 'openlayers';
 import ConfigUtils from './ConfigUtils';
+import ResourceRegistry from './ResourceRegistry';
 import markerIcon from './img/marker-icon.png';
 import arrowhead from './img/arrowhead.svg';
 import measurehead from './img/measurehead.svg';
@@ -232,7 +233,7 @@ export default {
                 radius: 5,
                 angle: Math.PI / 4
             }),
-            geometry: opts.geometryFunction,
+            geometry: opts.geometryFunction
         });
     },
     measureInteraction: (feature, options) => {
@@ -253,7 +254,7 @@ export default {
                 fill: new ol.style.Fill({color: opts.measureVertexFillColor}),
                 stroke: new ol.style.Stroke({ color: opts.measureVertexStrokeColor, width: opts.measureVertexStrokeWidth })
             }),
-            geometry: opts.geometryFunction,
+            geometry: opts.geometryFunction
         });
     },
     sketchInteraction: (options) => {
@@ -269,7 +270,7 @@ export default {
     image: (feature, options) => {
         return new ol.style.Style({
             image: new ol.style.Icon({
-                img: options.img,
+                img: ResourceRegistry.getResource(options.img),
                 rotation: options.rotation,
                 anchor: [0.5, 1],
                 imgSize: options.size,
