@@ -54,8 +54,8 @@ class Identify extends React.Component {
         customExporters: PropTypes.array,
         /** Whether to display a tree overview of results (as opposed to a flat list of results). */
         displayResultTree: PropTypes.bool,
-        /** Whether to enable the export functionality. */
-        enableExport: PropTypes.bool,
+        /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`) */
+        enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         /** Whether to clear the task when the results window is closed. */
         exitTaskOnResultsClose: PropTypes.bool,
         /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
