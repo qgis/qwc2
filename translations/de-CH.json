@@ -93,8 +93,9 @@
     },
     "cyclomedia": {
       "clickonmap": "Wähle eine Aufnahme in der Karte aus",
+      "initializing": "Cyclomedia wird initialisiert...",
       "loaderror": "Fehler beim Initialisieren von Cyclomedia",
-      "loading": "Cyclomedia wird initialisiert...",
+      "loading": "Ansicht wird geladen...",
       "login": "Anmelden",
       "scalehint": "Die Aufnahmen sind nur ab Massstab 1:{0} auf der Karte sichtbar.",
       "title": "Cyclomedia Viewer"

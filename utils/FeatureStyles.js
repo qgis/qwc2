@@ -8,6 +8,7 @@
 
 import ol from 'openlayers';
 import ConfigUtils from './ConfigUtils';
+import ResourceRegistry from './ResourceRegistry';
 import markerIcon from './img/marker-icon.png';
 import arrowhead from './img/arrowhead.svg';
 import measurehead from './img/measurehead.svg';
@@ -269,7 +270,7 @@ export default {
     image: (feature, options) => {
         return new ol.style.Style({
             image: new ol.style.Icon({
-                img: options.img,
+                img: ResourceRegistry.getResource(options.img),
                 rotation: options.rotation,
                 anchor: [0.5, 1],
                 imgSize: options.size,

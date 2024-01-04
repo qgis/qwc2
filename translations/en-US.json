@@ -93,8 +93,9 @@
     },
     "cyclomedia": {
       "clickonmap": "Click on a recording on the map",
+      "initializing": "Initializing Cyclomedia...",
       "loaderror": "Failed to initialize Cyclomedia",
-      "loading": "Initializing Cyclomedia...",
+      "loading": "Loading view...",
       "login": "Login",
       "scalehint": "The recordings are only visible on the map below scale 1:{0}.",
       "title": "Cyclomedia Viewer"

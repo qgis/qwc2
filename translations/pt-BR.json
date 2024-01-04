@@ -93,6 +93,7 @@
     },
     "cyclomedia": {
       "clickonmap": "Clique no mapa",
+      "initializing": "",
       "loaderror": "Erro ao carregar",
       "loading": "Carregando",
       "login": "Login",
