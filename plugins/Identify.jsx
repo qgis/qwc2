@@ -58,6 +58,8 @@ class Identify extends React.Component {
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         /** Whether to clear the task when the results window is closed. */
         exitTaskOnResultsClose: PropTypes.bool,
+        /** Whether to include the geometry in exported features. Default: `true`. */
+        exportGeometry: PropTypes.bool,
         /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
         featureInfoReturnsLayerName: PropTypes.bool,
         /** Default window geometry with size, position and docking status. */
@@ -86,6 +88,7 @@ class Identify extends React.Component {
     };
     static defaultProps = {
         enableExport: true,
+        exportGeometry: true,
         clearResultsOnClose: true,
         customExporters: [],
         longAttributesDisplay: 'ellipsis',
