@@ -151,7 +151,7 @@ class Identify extends React.Component {
                 if (!isEmpty(this.props.click.features)) {
                     this.props.click.features.forEach((feature) => {
                         const layer = this.props.layers.find(l => l.id === feature.layerId);
-                        if (layer && !isEmpty(feature.properties)) {
+                        if (layer && layer.role === LayerRole.USERLAYER && !isEmpty(feature.properties)) {
                             if (!identifyResults[layer.name]) {
                                 identifyResults[layer.name] = [];
                             }

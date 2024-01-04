@@ -732,10 +732,11 @@ class SearchBox extends React.Component {
                 this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showProviderResultGeometry(result, response, label, zoom); }, axios);
             } else {
                 this.zoomToResult(result, zoom);
+                const geometry = result.geometry || {type: 'Point', coordinates: [result.x, result.y]};
                 const feature = {
-                    geometry: result.geometry || {type: 'Point', coordinates: [result.x, result.y]},
+                    geometry: geometry,
                     properties: { label: label },
-                    styleName: result.geometry ? 'default' : 'marker',
+                    styleName: geometry.type === 'Point' ? 'marker' : 'default',
                     styleOptions: this.props.searchOptions.highlightStyle || {},
                     crs: result.crs,
                     id: 'searchmarker'
@@ -778,7 +779,8 @@ class SearchBox extends React.Component {
                 type: "Feature", geometry: response.geometry
             } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
             if (highlightFeature) {
-                highlightFeature.styleName = 'default';
+                const isPoint = response.geometry.type === 'Point';
+                highlightFeature.styleName = isPoint ? 'marker' : 'default';
                 highlightFeature.styleOptions = this.props.searchOptions.highlightStyle || {};
                 const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
                 if (!item.x || !item.y) {
@@ -790,7 +792,7 @@ class SearchBox extends React.Component {
                 }
 
                 features = [highlightFeature];
-                if (!response.hidemarker) {
+                if (!isPoint && !response.hidemarker) {
                     features.push(this.createMarker(center, this.props.map.projection, text));
                 }
             } else {
@@ -885,9 +887,10 @@ class SearchBox extends React.Component {
             feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, data.crs.properties.name, this.props.map.projection);
         }
         if (!isEmpty(data.features)) {
+            const styleName = data.features[0].geometry?.type === 'Point' ? 'marker' : 'default';
             data.features[0].properties = {...data.features[0].properties, label: label};
             data.features[0].id = 'searchmarker';
-            data.features[0].styleName = 'default';
+            data.features[0].styleName = styleName;
             data.features[0].styleOptions = this.props.searchOptions.highlightStyle || {};
         }
         this.props.addLayerFeatures(layer, data.features, true);
