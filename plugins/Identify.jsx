@@ -146,18 +146,19 @@ class Identify extends React.Component {
                 });
 
                 if (!isEmpty(this.props.click.features)) {
-                    this.props.click.features.forEach((result) => {
-                        const layer = this.props.layers.find(l => l.id === result.layer);
-                        if (layer && layer.role === LayerRole.USERLAYER && layer.type === "vector" && !isEmpty(layer.features)) {
-                            const queryFeature = layer.features.find(feature =>  feature.id === result.feature);
-                            if (queryFeature && !isEmpty(queryFeature.properties)) {
-                                if (!identifyResults[layer.name]) {
-                                    identifyResults[layer.name] = [];
-                                }
-                                queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
-                                queryFeature.layertitle = layer.title || layer.name || layer.id;
-                                identifyResults[layer.name].push(queryFeature);
+                    this.props.click.features.forEach((feature) => {
+                        const layer = this.props.layers.find(l => l.id === feature.layerId);
+                        if (layer && !isEmpty(feature.properties)) {
+                            if (!identifyResults[layer.name]) {
+                                identifyResults[layer.name] = [];
                             }
+                            const queryFeature = {...feature};
+                            queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
+                            queryFeature.layertitle = layer.title || layer.name || layer.id;
+                            queryFeature.properties = Object.entries(queryFeature.properties).reduce((res, [key, val]) => ({
+                                ...res, [key]: typeof val === "object" ? JSON.stringify(val) : val
+                            }), {});
+                            identifyResults[layer.name].push(queryFeature);
                         }
                     });
                 }
@@ -170,8 +171,9 @@ class Identify extends React.Component {
         if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker')) {
             return null;
         }
-        if (this.props.click.feature === 'searchmarker' && this.props.click.geometry && this.props.click.geomType === 'Point') {
-            return this.props.click.geometry;
+        const searchMarker = (this.props.click.features || []).find(feature => feature.id === 'searchmarker');
+        if (searchMarker) {
+            return searchMarker.geometry.coordinates;
         }
         return this.props.click.coordinate;
     };

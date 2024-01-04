@@ -479,8 +479,8 @@ class Cyclomedia extends React.Component {
         if (this.props.click === prevProps.click)  {
             return null;
         }
-        const cmFeature = this.props.click.features.find(feature => feature.layer === 'cyclomedia-recordings');
-        return cmFeature ? cmFeature.geometry : null;
+        const cmFeature = this.props.click.features.find(feature => feature.layerId === 'cyclomedia-recordings');
+        return cmFeature ? cmFeature.geometry.coordinates : null;
     };
 }
 
