@@ -32,7 +32,6 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
-import ThemeUtils from '../utils/ThemeUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/Search.css';
 

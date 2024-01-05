@@ -289,7 +289,7 @@ class Identify extends React.Component {
         this.setState((state) => {
             const identifyResults = { ...state.identifyResults };
             Object.keys(newResults).forEach((layername) => {
-                let existingFeatures = identifyResults[layername] || [];
+                const existingFeatures = identifyResults[layername] || [];
                 newResults[layername].forEach((newFeature) => {
                     const featureIndex = existingFeatures.findIndex((feature) => feature.id === newFeature.id);
                     if (featureIndex !== -1) {
@@ -408,7 +408,7 @@ class Identify extends React.Component {
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="IdentifyWindow"
                     onClose={this.onWindowClose} title={LocaleUtils.trmsg("identify.title")}
-                    >
+                >
                     {body}
                 </ResizeableWindow>
             );

@@ -392,7 +392,7 @@ class Routing extends React.Component {
             diff.time = new Date(Date.now() - tzoffset).toISOString().slice(0, -1);
         }
         this.updateSetting('transit', diff);
-    }
+    };
     setRedliningTool = () => {
         this.props.setCurrentTask("Redlining", null, null, {layerId: this.state.routeConfig.excludeLayer});
     };
