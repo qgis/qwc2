@@ -130,6 +130,8 @@ class SearchBox extends React.Component {
                 }).catch(() => {});
             }
             UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined});
+        } else if (this.props.theme !== prevProps.theme) {
+            this.clear();
         }
         // Trigger search when closing filter options
         if (!this.state.filterOptionsVisible && prevState.filterOptionsVisible) {
