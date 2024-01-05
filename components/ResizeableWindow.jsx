@@ -22,6 +22,7 @@ const WINDOW_GEOMETRIES = {};
 
 class ResizeableWindow extends React.Component {
     static propTypes = {
+        bottombarHeight: PropTypes.number,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         extraControls: PropTypes.arrayOf(PropTypes.shape({
@@ -51,6 +52,7 @@ class ResizeableWindow extends React.Component {
         splitScreenWhenDocked: PropTypes.bool,
         title: PropTypes.string,
         titlelabel: PropTypes.string,
+        topbarHeight: PropTypes.number,
         unregisterWindow: PropTypes.func,
         visible: PropTypes.bool,
         windowStacking: PropTypes.array
@@ -79,14 +81,15 @@ class ResizeableWindow extends React.Component {
         this.dragShield = null;
         this.titlebar = null;
         this.id = uuidv1();
+        const canvasHeight = window.innerHeight - this.props.bottombarHeight - this.props.topbarHeight;
         const width = Math.min(props.initialWidth, window.innerWidth);
-        const height = Math.min(props.initialHeight, window.innerHeight - 100);
+        const height = Math.min(props.initialHeight, canvasHeight);
         if (WINDOW_GEOMETRIES[props.title]) {
             this.state.geometry = WINDOW_GEOMETRIES[props.title];
         } else {
             this.state.geometry = {
                 x: props.initialX !== null ? this.computeInitialX(props.initialX) : Math.max(0, Math.round(0.5 * (window.innerWidth - width))),
-                y: props.initialY !== null ? this.computeInitialY(props.initialY) : Math.max(0, Math.round(0.5 * (window.innerHeight - height - 100))),
+                y: props.initialY !== null ? this.computeInitialY(props.initialY) : Math.max(0, Math.round(0.5 * (canvasHeight - height))),
                 width: width,
                 height: height,
                 docked: false
@@ -105,7 +108,8 @@ class ResizeableWindow extends React.Component {
         return x >= 0 ? x : window.innerWidth - Math.abs(x);
     };
     computeInitialY = (y) => {
-        return y >= 0 ? y : window.innerHeight - Math.abs(y);
+        const canvasHeight = window.innerHeight - this.props.bottombarHeight - this.props.topbarHeight;
+        return y >= 0 ? this.props.topbarHeight + y : canvasHeight - Math.abs(y);
     };
     componentDidMount() {
         this.props.registerWindow(this.id);
@@ -319,7 +323,9 @@ class ResizeableWindow extends React.Component {
 }
 
 export default connect((state) => ({
-    windowStacking: state.windows.stacking
+    windowStacking: state.windows.stacking,
+    topbarHeight: state.map.topbarHeight,
+    bottombarHeight: state.map.bottombarHeight
 }), {
     raiseWindow: raiseWindow,
     registerWindow: registerWindow,
