@@ -16,10 +16,9 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import {LayerRole, addLayer} from '../actions/layers';
-import {setCurrentTheme} from '../actions/theme';
+import {setCurrentTheme, setThemeLayersList} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
 import {setActiveLayerInfo} from '../actions/layerinfo';
-import {setThemeLayersList} from '../actions/theme';
 import './style/ThemeList.css';
 
 class ThemeList extends React.Component {
