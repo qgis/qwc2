@@ -28,6 +28,7 @@ class BackgroundSwitcher extends React.Component {
         layers: PropTypes.array,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
+        splitScreen: PropTypes.object,
         toggleBackgroundswitcher: PropTypes.func
     };
     static defaultProps = {
@@ -67,10 +68,17 @@ class BackgroundSwitcher extends React.Component {
             return res;
         }, []);
         if (entries.length > 0) {
+            const splitWindows = Object.values(this.props.splitScreen);
+            const right = splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0);
+            const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
+            const style = {
+                right: 'calc(1.5em + ' + right + 'px)',
+                bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
+            };
             return (
                 <div>
                     <button className={classes} onClick={this.buttonClicked}
-                        style={{bottom: (5 + 4 * this.props.position) + 'em'}} title={tooltip}>
+                        style={style} title={tooltip}>
                         <Icon icon="bglayer" title={tooltip} />
                     </button>
                     <div className={this.state.visible ? 'bgswitcher-active' : ''} id="BackgroundSwitcher">
@@ -158,7 +166,8 @@ class BackgroundSwitcher extends React.Component {
 }
 
 const selector = (state) => ({
-    layers: state.layers.flat
+    layers: state.layers.flat,
+    splitScreen: state.windows.splitScreen
 });
 
 export default connect(selector, {
