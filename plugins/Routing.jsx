@@ -244,7 +244,7 @@ class Routing extends React.Component {
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={() => this.setState({visible: false})} title={LocaleUtils.tr("routing.windowtitle")}
-                >
+            >
                 <div className="routing-body" role="body">
                     <ButtonBar active={this.state.currentTab} buttons={tabButtons} className="routing-buttonbar" onClick={(key) => this.setState({currentTab: key})} />
                     <div className="routing-frame">
