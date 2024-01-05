@@ -14,6 +14,7 @@ export default {
         const layer = new ol.layer.VectorTile({
             minResolution: options.minResolution,
             maxResolution: options.maxResolution,
+            declutter: options.declutter,
             source: new ol.source.VectorTile({
                 projection: options.projection,
                 format: new ol.format.MVT({}),
