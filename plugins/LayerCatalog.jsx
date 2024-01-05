@@ -56,7 +56,7 @@ class LayerCatalog extends React.Component {
         active: PropTypes.bool,
         /** The URL to the catalog JSON file. */
         catalogUrl: PropTypes.string,
-        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
+        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negative values to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,

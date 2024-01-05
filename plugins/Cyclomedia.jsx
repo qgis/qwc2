@@ -40,7 +40,7 @@ class Cyclomedia extends React.Component {
         cyclomediaVersion: PropTypes.string,
         /** Whether to display Cyclomedia measurement geometries on the map. */
         displayMeasurements: PropTypes.bool,
-        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
+        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negative values to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
