@@ -47,7 +47,7 @@ export default (searchProviders) => createSelector(
             availableProviders.themes = {
                 labelmsgid: LocaleUtils.trmsg("search.themes"),
                 onSearch: (text, options, callback) => {
-                    setTimeout(() => callback({results: ThemeUtils.searchThemes(theme.themes, text)}), 50);
+                    callback({results: ThemeUtils.searchThemes(theme.themes, text)});
                 }
             };
         }
@@ -55,7 +55,7 @@ export default (searchProviders) => createSelector(
             availableProviders.themelayers = {
                 labelmsgid: LocaleUtils.trmsg("search.themelayers"),
                 onSearch: (text, options, callback) => {
-                    setTimeout(() => callback({results: ThemeUtils.searchThemeLayers(theme.themes, text)}), 50);
+                    callback({results: ThemeUtils.searchThemeLayers(theme.themes, text)});
                 }
             };
         }

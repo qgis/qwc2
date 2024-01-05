@@ -676,10 +676,10 @@ class SearchBox extends React.Component {
         }).filter(Boolean);
     };
     addSearchResults = (searchSession, searchId, results) => {
-        if (searchSession !== this.state.searchSession) {
-            return;
-        }
         this.setState((state) => {
+            if (searchSession !== state.searchSession) {
+                return {};
+            }
             const pendingSearches = state.pendingSearches.filter(entry => entry !== searchId);
             const searchResults = {...state.searchResults, [searchId]: results};
             if (isEmpty(pendingSearches)) {
