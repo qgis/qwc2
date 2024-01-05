@@ -90,6 +90,15 @@ div.searchbox-result > span.icon {
     flex: 0 0 1em;
 }
 
+img.searchbox-result-thumbnail {
+    margin-right: 0.25em;
+}
+
+span.searchbox-result-openicon {
+    font-size: 75%;
+    color: var(--text-color-disabled);
+}
+
 span.searchbox-result-label {
     flex: 1 1 auto;
     overflow: hidden;

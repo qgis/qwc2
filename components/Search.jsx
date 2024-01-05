@@ -389,7 +389,7 @@ class Search extends React.Component {
             >
                 {item.thumbnail ? (<img src={item.thumbnail} />) : null}
                 <span dangerouslySetInnerHTML={{__html: item.text}} />
-                {item.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {this.addThemeLayers(ev, item.theme); this.input.blur();}} title={addTitle}/>) : null}
+                {item.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => { MiscUtils.killEvent(ev); this.addThemeLayers(item.layer); this.input.blur();}} title={addTitle}/>) : null}
             </li>
         );
     };
@@ -467,18 +467,11 @@ class Search extends React.Component {
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
         } else if (resultType === SearchResultType.EXTERNALLAYER) {
-            // Check if layer is already in the LayerTree
-            const sublayers = LayerUtils.getSublayerNames(item.layer);
-            const existing = this.props.layers.find(l => {
-                return l.type === item.layer.type && l.url === item.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
-            });
-            if (existing) {
-                const text = LocaleUtils.tr("search.existinglayer") + ":" + item.layer.title;
-                this.props.showNotification("existinglayer", text);
+            if (item.theme) {
+                this.props.setCurrentTheme(item.theme, this.props.themes);
+            } else {
+                this.addThemeLayers(item.layer);
             }
-            this.props.addLayer(item.layer);
-            // Show layer tree to notify user that something has happened
-            this.props.setCurrentTask('LayerTree');
         } else if (resultType === SearchResultType.THEME) {
             this.props.setCurrentTheme(item.theme, this.props.themes);
         }
@@ -533,9 +526,18 @@ class Search extends React.Component {
             properties: { label: text }
         };
     };
-    addThemeLayers = (ev, theme) => {
-        ev.stopPropagation();
-        this.props.addLayer(ThemeUtils.createThemeLayer(theme, this.props.themes, LayerRole.USERLAYER));
+    addThemeLayers = (layer) => {
+        // Check if layer is already in the LayerTree
+        const sublayers = LayerUtils.getSublayerNames(layer);
+        const existing = this.props.layers.find(l => {
+            return l.type === layer.type && l.url === layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
+        });
+        if (existing) {
+            const text = LocaleUtils.tr("search.existinglayer") + " : " + layer.title;
+            this.props.showNotification("existinglayer", text);
+        } else {
+            this.props.addLayer(layer);
+        }
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
     };

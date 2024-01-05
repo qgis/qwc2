@@ -160,7 +160,14 @@ const ThemeUtils = {
     },
     searchThemes(themes, searchtext) {
         const filter = new RegExp(removeDiacritics(searchtext).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
-        const matches = ThemeUtils.searchThemeGroup(themes, filter);
+        const matches = [];
+        const searchThemeGroup = (themeGroup) => {
+            (themeGroup.subdirs || []).forEach(subdir => searchThemeGroup(subdir, filter));
+            matches.push(...(themeGroup.items || []).filter(item => {
+                return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords || "").match(filter) || removeDiacritics(item.abstract || "").match(filter);
+            }));
+        };
+        searchThemeGroup(themes, filter);
         return isEmpty(matches) ? [] : [{
             id: "themes",
             titlemsgid: "search.themes",
@@ -170,17 +177,39 @@ const ThemeUtils = {
                 id: theme.id,
                 text: theme.title,
                 theme: theme,
+                layer: ThemeUtils.createThemeLayer(theme, themes),
                 thumbnail: ConfigUtils.getAssetsPath() + "/" + theme.thumbnail
             }))
         }];
     },
-    searchThemeGroup(themeGroup, filter) {
+    searchThemeLayers(themes, searchtext) {
+        const filter = new RegExp(removeDiacritics(searchtext).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
         const matches = [];
-        (themeGroup.subdirs || []).map(subdir => matches.push(...ThemeUtils.searchThemeGroup(subdir, filter)));
-        matches.push(...(themeGroup.items || []).filter(item => {
-            return removeDiacritics(item.title).match(filter) || removeDiacritics(item.keywords || "").match(filter) || removeDiacritics(item.abstract || "").match(filter);
-        }));
-        return matches;
+        const searchLayer = (theme, layer) => {
+            (layer.sublayers || []).forEach((sublayer) => {
+                if (removeDiacritics(sublayer.name).match(filter) || removeDiacritics(sublayer.title).match(filter)) {
+                    matches.push({theme: theme, layer: ThemeUtils.createThemeLayer(theme, themes, LayerRole.USERLAYER, [sublayer])});
+                }
+                searchLayer(theme, sublayer);
+            });
+        };
+        const searchThemeGroup = (themeGroup) => {
+            (themeGroup.subdirs || []).forEach(subdir => searchThemeGroup(subdir, filter));
+            (themeGroup.items || []).forEach(item => searchLayer(item, item));
+        };
+        searchThemeGroup(themes, filter);
+        return isEmpty(matches) ? [] : [{
+            id: "themelayers",
+            titlemsgid: "search.themelayers",
+            priority: -1,
+            items: matches.map(result => ({
+                type: SearchResultType.EXTERNALLAYER,
+                id: result.layer.id + ":" + result.layer.sublayers[0].name,
+                text: result.layer.title + ": " + result.layer.sublayers[0].title,
+                layer: result.layer,
+                theme: result.theme
+            }))
+        }];
     },
     getThemeNames(themes) {
         const names = (themes.items || []).reduce((res, theme) => ({...res, [theme.id]: theme.title}), {});

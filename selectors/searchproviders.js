@@ -51,6 +51,14 @@ export default (searchProviders) => createSelector(
                 }
             };
         }
+        if (ConfigUtils.getConfigProp("searchThemeLayers", theme)) {
+            availableProviders.themelayers = {
+                labelmsgid: LocaleUtils.trmsg("search.themelayers"),
+                onSearch: (text, options, callback) => {
+                    setTimeout(() => callback({results: ThemeUtils.searchThemeLayers(theme.themes, text)}), 50);
+                }
+            };
+        }
         return availableProviders;
     }
 );

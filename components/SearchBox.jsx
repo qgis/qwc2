@@ -282,6 +282,8 @@ class SearchBox extends React.Component {
         );
     };
     renderProviderResults = () => {
+        const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
+        const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         const results = Object.keys(this.props.searchProviders).reduce((result, provider) => {
             if (!this.state.searchResults[provider]) {
                 return result;
@@ -300,8 +302,11 @@ class SearchBox extends React.Component {
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry, idx) => (
                                         <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(group, entry, provider); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+                                            {entry.thumbnail ? (<img className="searchbox-result-thumbnail" src={entry.thumbnail} />) : null}
+                                            {entry.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
                                             <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label || entry.text} />
                                             {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { MiscUtils.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label || entry.text); } } /> : null}
+                                            {entry.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => { MiscUtils.killEvent(ev); this.addThemeLayers(entry.layer); this.searchBox.blur(); }} title={addTitle}/>) : null}
                                         </div>
                                     ))}
                                 </div>
@@ -757,22 +762,29 @@ class SearchBox extends React.Component {
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
         } else if (resultType === SearchResultType.EXTERNALLAYER) {
-            // Check if layer is already in the LayerTree
-            const sublayers = LayerUtils.getSublayerNames(result.layer);
-            const existing = this.props.layers.find(l => {
-                return l.type === result.layer.type && l.url === result.layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
-            });
-            if (existing) {
-                const text = LocaleUtils.tr("search.existinglayer") + " : " + result.layer.title;
-                this.props.showNotification("existinglayer", text);
+            if (result.theme) {
+                this.props.setCurrentTheme(result.theme, this.props.themes);
             } else {
-                this.props.addLayer(result.layer);
+                this.addThemeLayers(result.layer);
             }
-            // Show layer tree to notify user that something has happened
-            this.props.setCurrentTask('LayerTree');
         } else if (resultType === SearchResultType.THEME) {
             this.props.setCurrentTheme(result.theme, this.props.themes);
         }
+    };
+    addThemeLayers = (layer) => {
+        // Check if layer is already in the LayerTree
+        const sublayers = LayerUtils.getSublayerNames(layer);
+        const existing = this.props.layers.find(l => {
+            return l.type === layer.type && l.url === layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
+        });
+        if (existing) {
+            const text = LocaleUtils.tr("search.existinglayer") + " : " + layer.title;
+            this.props.showNotification("existinglayer", text);
+        } else {
+            this.props.addLayer(layer);
+        }
+        // Show layer tree to notify user that something has happened
+        this.props.setCurrentTask('LayerTree');
     };
     showProviderResultGeometry = (item, response, text, zoom) => {
         if (!isEmpty(response.geometry)) {
