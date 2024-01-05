@@ -46,13 +46,14 @@ class FeatureForm extends React.Component {
         enabled: PropTypes.bool,
         /** Whether to clear the task when the results window is closed. */
         exitTaskOnResultsClose: PropTypes.bool,
-        /** Default window geometry with size, position and docking status. */
+        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
             initialX: PropTypes.number,
             initialY: PropTypes.number,
-            initiallyDocked: PropTypes.bool
+            initiallyDocked: PropTypes.bool,
+            side: PropTypes.string
         }),
         iface: PropTypes.object,
         layers: PropTypes.array,
@@ -67,7 +68,8 @@ class FeatureForm extends React.Component {
             initialHeight: 480,
             initialX: 0,
             initialY: 0,
-            initiallyDocked: false
+            initiallyDocked: false,
+            side: 'left'
         }
     };
     static defaultState = {
@@ -199,12 +201,12 @@ class FeatureForm extends React.Component {
                 );
             }
             resultWindow = (
-                <ResizeableWindow icon="featureform"
+                <ResizeableWindow dockable={this.props.geometry.side} icon="featureform"
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="FeatureForm"
                     onClose={this.onWindowClose} title={LocaleUtils.trmsg("featureform.title")}
-                >
+                    >
                     {body}
                 </ResizeableWindow>
             );

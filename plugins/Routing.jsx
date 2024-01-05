@@ -48,13 +48,14 @@ class Routing extends React.Component {
         enabledModes: PropTypes.arrayOf(PropTypes.string),
         /** List of search providers to use for routing location search. */
         enabledProviders: PropTypes.arrayOf(PropTypes.string),
-        /** Default window geometry with size, position and docking status. */
+        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negativ values to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
             initialX: PropTypes.number,
             initialY: PropTypes.number,
-            initiallyDocked: PropTypes.bool
+            initiallyDocked: PropTypes.bool,
+            side: PropTypes.string
         }),
         layers: PropTypes.array,
         locatePos: PropTypes.array,
@@ -74,7 +75,8 @@ class Routing extends React.Component {
             initialHeight: 640,
             initialX: 0,
             initialY: 0,
-            initiallyDocked: true
+            initiallyDocked: true,
+            side: 'left'
         }
     };
     state = {
@@ -237,7 +239,12 @@ class Routing extends React.Component {
         ];
         const enabledButtons = this.props.enabledModes.map(entry => buttons.find(button => button.key === entry));
         return (
-            <ResizeableWindow icon="routing" onClose={() => this.setState({visible: false})} title={LocaleUtils.tr("routing.windowtitle")} {...this.props.geometry}>
+            <ResizeableWindow dockable={this.props.geometry.side} icon="routing"
+                initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+                initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                initiallyDocked={this.props.geometry.initiallyDocked}
+                onClose={() => this.setState({visible: false})} title={LocaleUtils.tr("routing.windowtitle")}
+                >
                 <div className="routing-body" role="body">
                     <ButtonBar active={this.state.currentTab} buttons={tabButtons} className="routing-buttonbar" onClick={(key) => this.setState({currentTab: key})} />
                     <div className="routing-frame">

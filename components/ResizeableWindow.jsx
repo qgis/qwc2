@@ -79,14 +79,14 @@ class ResizeableWindow extends React.Component {
         this.dragShield = null;
         this.titlebar = null;
         this.id = uuidv1();
-        const height = Math.min(props.initialHeight, window.innerHeight - 100);
         const width = Math.min(props.initialWidth, window.innerWidth);
+        const height = Math.min(props.initialHeight, window.innerHeight - 100);
         if (WINDOW_GEOMETRIES[props.title]) {
             this.state.geometry = WINDOW_GEOMETRIES[props.title];
         } else {
             this.state.geometry = {
                 x: props.initialX !== null ? this.computeInitialX(props.initialX) : Math.max(0, Math.round(0.5 * (window.innerWidth - width))),
-                y: props.initialY !== null ? this.computeInitialY(props.initialY) : Math.max(0, Math.round(0.5 * (window.innerHeight - height))),
+                y: props.initialY !== null ? this.computeInitialY(props.initialY) : Math.max(0, Math.round(0.5 * (window.innerHeight - height - 100))),
                 width: width,
                 height: height,
                 docked: false
@@ -102,10 +102,18 @@ class ResizeableWindow extends React.Component {
         }
     }
     computeInitialX = (x) => {
-        return x >= 0 ? x : window.innerWidth - Math.abs(x);
+        if (this.props.dockable == "right") {
+            return x > 0 ? x : window.innerWidth - this.props.initialWidth - Math.abs(x);
+        } else {
+            return x >= 0 ? x : window.innerWidth - this.props.initialWidth - Math.abs(x);
+        }
     };
     computeInitialY = (y) => {
-        return y >= 0 ? y : window.innerHeight - Math.abs(y);
+        if (this.props.dockable == "bottom") {
+            return y > 0 ? y : window.innerHeight - this.props.initialHeight - Math.abs(y) - 100;
+        } else {
+            return y >= 0 ? y : window.innerHeight - this.props.initialHeight - Math.abs(y) - 100;
+        }
     };
     componentDidMount() {
         this.props.registerWindow(this.id);
