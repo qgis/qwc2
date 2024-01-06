@@ -36,7 +36,7 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
     } else if (infoFormats.includes('application/vnd.ogc.gml')) {
         format = 'application/vnd.ogc.gml';
     }
-    const styles = layer.params.STYLES.split(',');
+    const styles = (layer.params.STYLES || "").split(',');
     const styleMap = layer.params.LAYERS.split(',').reduce((res, lyr, idx) => ({
         ...res, [lyr]: styles[idx] ?? ''
     }));

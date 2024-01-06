@@ -135,7 +135,7 @@ class MapPlugin extends React.Component {
                     } else if (layer.type === "wms" && layer.params.LAYERS.split(",").length >= 1) {
                         const paramLayers = layer.params.LAYERS.split(",");
                         const paramOpacities = layer.params.OPACITIES.split(",");
-                        const paramStyles = layer.params.STYLES.split(",");
+                        const paramStyles = (layer.params.STYLES || "").split(",");
                         for (let j = paramLayers.length - 1; j >= 0; --j) {
                             const layerName = paramLayers[j];
                             if (swipeLayerNameBlacklist.find(entry => layerName.match(entry))) {

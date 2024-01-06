@@ -747,7 +747,7 @@ const LayerUtils = {
             if (layer.type === "wms") {
                 const names = layer.params.LAYERS.split(",");
                 const opacities = layer.params.OPACITIES.split(",");
-                const styles = layer.params.STYLES.split(",");
+                const styles = (layer.params.STYLES || "").split(",");
                 for (let idx = 0; idx < names.length; ++idx) {
                     const identifier = String.fromCharCode(65 + (counterRef[0]++));
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
