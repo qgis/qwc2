@@ -62,7 +62,7 @@ class Identify extends React.Component {
         exportGeometry: PropTypes.bool,
         /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
         featureInfoReturnsLayerName: PropTypes.bool,
-        /** Default window geometry with size, position and docking status. Positive position values are related to top (InitialY) and left (InitialX), negative values to bottom (InitialY) and right (InitialX). */
+        /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
