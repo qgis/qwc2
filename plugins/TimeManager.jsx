@@ -145,7 +145,7 @@ class TimeManager extends React.Component {
         },
         featureTimelineAvailable: true,
         stepUnits: ["s", "m", "h", "d", "M", "y"],
-        /** Default window geometry with size, position and docking status. */
+        /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
