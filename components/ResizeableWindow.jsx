@@ -84,19 +84,16 @@ class ResizeableWindow extends React.Component {
         const canvasHeight = window.innerHeight - this.props.bottombarHeight - this.props.topbarHeight;
         const width = Math.min(props.initialWidth, window.innerWidth);
         const height = Math.min(props.initialHeight, canvasHeight);
-        if (WINDOW_GEOMETRIES[props.title]) {
-            this.state.geometry = WINDOW_GEOMETRIES[props.title];
+        if (WINDOW_GEOMETRIES[props.title || props.titlelabel]) {
+            this.state.geometry = WINDOW_GEOMETRIES[props.title || props.titlelabel];
         } else {
             this.state.geometry = {
                 x: props.initialX !== null ? this.computeInitialX(props.initialX) : Math.max(0, Math.round(0.5 * (window.innerWidth - width))),
                 y: props.initialY !== null ? this.computeInitialY(props.initialY) : Math.max(0, Math.round(0.5 * (canvasHeight - height))),
                 width: width,
                 height: height,
-                docked: false
+                docked: props.initiallyDocked
             };
-        }
-        if (props.initiallyDocked) {
-            this.state.geometry.docked = true;
         }
         if (props.splitScreenWhenDocked && this.state.geometry.docked) {
             const dockSide = props.dockable === true ? "left" : props.dockable;
@@ -123,30 +120,24 @@ class ResizeableWindow extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
+            this.props.onGeometryChanged(this.state.geometry);
             this.rnd.updatePosition(this.state.geometry);
         }
-        if (this.props.splitScreenWhenDocked && this.props.visible !== prevProps.visible && this.state.geometry.docked) {
-            if (this.props.visible) {
+        if (this.state.geometry !== prevState.geometry) {
+            WINDOW_GEOMETRIES[this.props.title || this.props.titlelabel] = this.state.geometry;
+        }
+        if (this.props.splitScreenWhenDocked && (
+            this.props.visible !== prevProps.visible || this.state.geometry !== prevState.geometry
+        )) {
+            if (
+                (!this.props.visible && prevProps.visible) ||
+                (this.state.geometry.docked === false && prevState.geometry.docked !== false)
+            ) {
+                this.props.setSplitScreen(this.id, null);
+            } else if (this.props.visible && this.state.geometry.docked) {
                 const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
                 const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
                 this.props.setSplitScreen(this.id, dockSide, dockSize);
-            } else {
-                this.props.setSplitScreen(this.id, null);
-            }
-        }
-        if (this.state.geometry !== prevState.geometry) {
-            this.props.onGeometryChanged(this.state.geometry);
-            if (this.props.title) {
-                WINDOW_GEOMETRIES[this.props.title] = this.state.geometry;
-            }
-            if (this.props.splitScreenWhenDocked) {
-                if (this.state.geometry.docked === false && prevState.geometry.docked !== false) {
-                    this.props.setSplitScreen(this.id, null);
-                } else if (this.state.geometry.docked) {
-                    const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
-                    const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
-                    this.props.setSplitScreen(this.id, dockSide, dockSize);
-                }
             }
         }
     }
@@ -264,12 +255,18 @@ class ResizeableWindow extends React.Component {
                     onDragStop={this.onDragStop}
                     onMouseDown={() => this.props.raiseWindow(this.id)}
                     onResizeStop={this.onResizeStop}
-                    ref={c => { this.rnd = c; }} style={{zIndex: zIndex}}>
+                    ref={this.initRnd} style={{zIndex: zIndex}}>
                     {content}
                 </Rnd>
             </div>
         );
     }
+    initRnd = (el) => {
+        if (el) {
+            this.rnd = el;
+            this.rnd.updatePosition(this.state.geometry);
+        }
+    };
     onDragStart = () => {
         if (this.dragShield) {
             this.dragShield.style.display = 'initial';
