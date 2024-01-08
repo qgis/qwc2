@@ -111,6 +111,14 @@ class TimeManager extends React.Component {
         defaultTimelineDisplay: PropTypes.string,
         /** The default timeline mode. One of `fixed`, `infinite`. */
         defaultTimelineMode: PropTypes.string,
+        /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
+        geometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool
+        }),
         layerVisibilities: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -145,14 +153,11 @@ class TimeManager extends React.Component {
         },
         featureTimelineAvailable: true,
         stepUnits: ["s", "m", "h", "d", "M", "y"],
-        /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
-        geometry: PropTypes.shape({
-            initialWidth: PropTypes.number,
-            initialHeight: PropTypes.number,
-            initialX: PropTypes.number,
-            initialY: PropTypes.number,
-            initiallyDocked: PropTypes.bool
-        })
+        geometry: {
+            initialWidth: 800,
+            initialHeight: 320,
+            initiallyDocked: true
+        }
     };
     static defaultState = {
         timeEnabled: false,
