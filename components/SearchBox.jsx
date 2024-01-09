@@ -778,7 +778,7 @@ class SearchBox extends React.Component {
             return l.type === layer.type && l.url === layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
         });
         if (existing) {
-            const text = LocaleUtils.tr("search.existinglayer") + " : " + layer.title;
+            const text = LocaleUtils.tr("search.existinglayer") + ": " + layer.title;
             this.props.showNotification("existinglayer", text);
         } else {
             this.props.addLayer(layer);
