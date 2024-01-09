@@ -93,7 +93,7 @@ class SnappingSupport extends React.Component {
         if (!this.state.drawing) {
             return null;
         }
-        if (isEmpty(this.props.theme.snapping) && !["Redlining", "ScratchDrawing"].includes(this.props.task)) {
+        if (isEmpty(this.props.theme.snapping) && !["Redlining", "ScratchDrawing", "Measure"].includes(this.props.task)) {
             // Don't display snapping control if no snapping is configuted for current theme
             return null;
         }
