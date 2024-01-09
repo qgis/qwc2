@@ -110,6 +110,7 @@ const ThemeUtils = {
         const baseParams = urlParts.query;
         let layer = {
             type: "wms",
+            id: theme.id,
             url: url.format(urlParts),
             version: theme.version || themes.defaultWMSVersion || "1.3.0",
             visibility: true,
