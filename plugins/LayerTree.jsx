@@ -78,6 +78,7 @@ class LayerTree extends React.Component {
             initiallyDocked: PropTypes.bool
         }),
         layers: PropTypes.array,
+        loadingLayers: PropTypes.array,
         map: PropTypes.object,
         mapScale: PropTypes.number,
         mapTipsEnabled: PropTypes.bool,
@@ -296,7 +297,7 @@ class LayerTree extends React.Component {
                     {legendicon}
                     {title}
                     {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
-                    {layer.loading ? (<Spinner />) : null}
+                    {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
                     {Object.keys(sublayer.styles || {}).length > 1 ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(sublayer.uuid)}/>) : null}
@@ -711,6 +712,7 @@ const selector = (state) => ({
     ie: state.browser.ie,
     fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
     layers: state.layers.flat,
+    loadingLayers: state.layers.loading,
     map: state.map,
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
     swipe: state.layers.swipe,

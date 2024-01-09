@@ -51,16 +51,20 @@ function propagateLayerProperty(newlayer, property, value, path = null) {
 
 const defaultState = {
     flat: [],
+    loading: [],
     swipe: null
 };
 
 export default function layers(state = defaultState, action) {
     switch (action.type) {
     case SET_LAYER_LOADING: {
-        const newLayers = (state.flat || []).map((layer) => {
-            return layer.id === action.layerId ? {...layer, loading: action.loading} : layer;
-        });
-        return {...state, flat: newLayers};
+        const loading = state.loading.filter(layerId => layerId !== action.layerId);
+        if (action.loading) {
+            loading.push(action.layerId);
+        }
+        return {
+            ...state, loading: loading
+        };
     }
     case CHANGE_LAYER_PROPERTY: {
         const targetLayer = state.flat.find((layer) => {return layer.uuid === action.layerUuid; });

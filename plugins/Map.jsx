@@ -10,6 +10,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import isEmpty from 'lodash.isempty';
 import {LayerRole} from '../actions/layers';
 import OlMap from '../components/map/OlMap';
 import OlLayer from '../components/map/OlLayer';
@@ -27,6 +28,7 @@ import './style/Map.css';
 class MapPlugin extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
+        loadingLayers: PropTypes.array,
         map: PropTypes.object,
         /** Zoom duration in ms, rotation in degrees, panStepSize and panPageSize as fraction of map width/height. */
         mapOptions: PropTypes.shape({
@@ -217,7 +219,7 @@ class MapPlugin extends React.Component {
     };
     render() {
         let loadingIndicator = null;
-        if (this.props.showLoading && this.props.layers.find(layer => layer.loading === true) !== undefined) {
+        if (this.props.showLoading && !isEmpty(this.props.loadingLayers)) {
             loadingIndicator = (
                 <span className="map-loading-indicator" key="map-loading" ref={el => { this.loadingEl = el; }}>
                     <Spinner className="spinner" />
@@ -243,6 +245,7 @@ export default (tools) => {
     return connect((state) => ({
         map: state.map,
         layers: state.layers.flat,
+        loadingLayers: state.layers.loading,
         swipe: state.layers.swipe,
         theme: state.theme.current,
         tools
