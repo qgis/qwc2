@@ -46,15 +46,18 @@ const BuiltinExporters = [
         export: (json, callback) => {
             const featureCollection = {
                 type: "FeatureCollection",
-                features: Object.values(json).flat().map(entry => ({
-                    ...omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox']),
-                    crs: {
-                        type: "name",
-                        properties: {
-                            name: CoordinatesUtils.toOgcUrnCrs(entry.crs)
-                        }
+                features: Object.values(json).flat().map(entry => {
+                    const feature = omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox']);
+                    if (feature.geometry) {
+                        feature.crs = {
+                            type: "name",
+                            properties: {
+                                name: CoordinatesUtils.toOgcUrnCrs(entry.crs)
+                            }
+                        };
                     }
-                }))
+                    return feature;
+                })
             };
             const data = JSON.stringify(featureCollection, null, ' ');
             callback({
