@@ -63,6 +63,8 @@ class Routing extends React.Component {
         removeLayer: PropTypes.func,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
+        /** Whether to label the routing waypoint pins with the route point number. */
+        showPinLabels: PropTypes.bool,
         task: PropTypes.object,
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
@@ -77,7 +79,8 @@ class Routing extends React.Component {
             initialY: 0,
             initiallyDocked: true,
             side: 'left'
-        }
+        },
+        showPinLabels: true
     };
     state = {
         visible: false,
@@ -746,23 +749,25 @@ class Routing extends React.Component {
                 this.props.addLayerFeatures(layer, features, true);
 
                 // Add numbered routing markers
-                const markerLayer = {
-                    id: "routingmarkers",
-                    role: LayerRole.MARKER,
-                    styleName: 'marker'
-                };
-                const markerFeatures = result.locations.map((location, idx) => ({
-                    type: "Feature",
-                    crs: "EPSG:4326",
-                    geometry: {
-                        type: "Point",
-                        coordinates: [location.lon, location.lat]
-                    },
-                    properties: {
-                        label: String(idx + 1)
-                    }
-                }));
-                this.props.addLayerFeatures(markerLayer, markerFeatures, true);
+                if (this.props.showPinLabels) {
+                    const markerLayer = {
+                        id: "routingmarkers",
+                        role: LayerRole.MARKER,
+                        styleName: 'marker'
+                    };
+                    const markerFeatures = result.locations.map((location, idx) => ({
+                        type: "Feature",
+                        crs: "EPSG:4326",
+                        geometry: {
+                            type: "Point",
+                            coordinates: [location.lon, location.lat]
+                        },
+                        properties: {
+                            label: String(idx + 1)
+                        }
+                    }));
+                    this.props.addLayerFeatures(markerLayer, markerFeatures, true);
+                }
 
                 this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
             }
