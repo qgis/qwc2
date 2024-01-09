@@ -158,6 +158,7 @@ class Identify extends React.Component {
                                 identifyResults[layer.name] = [];
                             }
                             const queryFeature = {...feature};
+                            queryFeature.crs = layer.projection;
                             queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
                             queryFeature.layertitle = layer.title || layer.name || layer.id;
                             queryFeature.properties = Object.entries(queryFeature.properties).reduce((res, [key, val]) => ({
