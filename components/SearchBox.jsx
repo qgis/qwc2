@@ -54,7 +54,6 @@ class SearchBox extends React.Component {
         openExternalUrl: PropTypes.func,
         panTo: PropTypes.func,
         removeLayer: PropTypes.func,
-        searchFilter: PropTypes.string,
         searchOptions: PropTypes.shape({
             allowSearchFilters: PropTypes.bool,
             highlightStyle: PropTypes.object,
@@ -75,6 +74,7 @@ class SearchBox extends React.Component {
     };
     state = {
         searchText: "",
+        searchFilter: [],
         searchSession: null,
         pendingSearches: [],
         recentSearches: [],
@@ -136,6 +136,24 @@ class SearchBox extends React.Component {
         // Trigger search when closing filter options
         if (!this.state.filterOptionsVisible && prevState.filterOptionsVisible) {
             this.searchTextChanged(this.state.searchText);
+        }
+        // Compute search filter
+        if (this.props.theme !== prevProps.theme || this.props.layers !== prevProps.layers) {
+            let searchFilter = [];
+            // default filter from themes.json
+            if (this.props.theme && this.props.theme.searchProviders) {
+                const provider = this.props.theme.searchProviders.find(entry => entry.provider === "solr");
+                if (provider) {
+                    searchFilter = provider.default;
+                }
+            }
+            // searchterms of active layers
+            for (const entry of LayerUtils.explodeLayers(this.props.layers)) {
+                if (entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true) {
+                    searchFilter = searchFilter.concat(entry.sublayer.searchterms || []);
+                }
+            }
+            this.setState({searchFilter: [...new Set(searchFilter)].join(",")});
         }
     }
     renderFilterOptions = () => {
@@ -589,7 +607,7 @@ class SearchBox extends React.Component {
         if (fulltextSearchEnabled) {
             const params = {
                 searchtext: searchText,
-                filter: this.props.searchFilter,
+                filter: this.state.searchFilter,
                 limit: this.props.searchOptions.resultLimit
             };
             axios.get(service, {params}).then(response => {
@@ -962,38 +980,15 @@ class SearchBox extends React.Component {
     };
 }
 
-const searchFilterSelector = createSelector([state => state.theme, state => state.layers.flat], (theme, layers) => {
-    let searchFilter = [];
-    // default filter from themes.json
-    if (theme && theme.current && theme.current.searchProviders) {
-        const provider = theme.current.searchProviders.find(entry => entry.provider === "solr");
-        if (provider) {
-            searchFilter = provider.default;
-        }
-    }
-    // searchterms of active layers
-    for (const layer of layers) {
-        if (layer.role === LayerRole.THEME) {
-            for (const entry of LayerUtils.explodeLayers([layer])) {
-                if (entry.sublayer.visibility === true) {
-                    searchFilter = searchFilter.concat(entry.sublayer.searchterms || []);
-                }
-            }
-        }
-    }
-    return [...new Set(searchFilter)].join(",");
-});
-
 export default (searchProviders) => {
     const providersSelector = searchProvidersSelector(searchProviders);
     return connect(
-        createSelector([state => state, searchFilterSelector, displayCrsSelector, providersSelector], (state, searchFilter, displaycrs, searchproviders) => ({
+        createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, searchproviders) => ({
             map: state.map,
             layers: state.layers.flat,
             theme: state.theme.current,
             themes: state.theme.themes,
             localConfig: state.localConfig,
-            searchFilter: searchFilter,
             selection: state.selection,
             displaycrs: displaycrs,
             searchProviders: searchproviders
