@@ -157,6 +157,8 @@ export default function layers(state = defaultState, action) {
                 inspos = action.pos;
             }
             newLayers.splice(inspos, 0, newLayer);
+            // Compress layers if possible
+            newLayers = LayerUtils.implodeLayers(LayerUtils.explodeLayers(newLayers));
         }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         if (newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
