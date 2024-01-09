@@ -48,8 +48,36 @@ class TopBar extends React.Component {
         mobile: PropTypes.bool,
         openExternalUrl: PropTypes.func,
         restoreDefaultTheme: PropTypes.func,
-        /** Options passed down to the search component. See the searchOption propType of the used search component. */
-        searchOptions: PropTypes.object,
+        /** Options passed down to the search component. */
+        searchOptions: PropTypes.shape({
+            /** Whether to show the search filter widget (SearchBox only). */
+            allowSearchFilters: PropTypes.bool,
+            /** The style used for highlighting search result geometries. */
+            highlightStyle: PropTypes.shape({
+                /* Stroke color rgba array, i.e. [255, 0, 0, 0.5] */
+                strokeColor: PropTypes.array,
+                /* Stroke width */
+                strokeWidth: PropTypes.number,
+                /* Stroke dash/gap pattern array. Empty for solid line. */
+                strokeDash: PropTypes.array,
+                /* Fill color rgba array, i.e. [255, 0, 0, 0.33] */
+                fillColor: PropTypes.array
+            }),
+            /** Minimum scale denominator when zooming to search result. */
+            minScaleDenom: PropTypes.number,
+            /** Maximum number of results the fulltext search should return (SearchBox only). */
+            resultLimit: PropTypes.number,
+            /** Whether to collapse search sections by default (SearchBox only). */
+            sectionsDefaultCollapsed: PropTypes.bool,
+            /** Whether to show provider selection menu (Search only). */
+            showProviderSelection: PropTypes.bool,
+            /** Whether to list the names of active providers as search field placeholder (Search only). */
+            showProvidersInPlaceholder: PropTypes.bool,
+            /** Whether to show the 'All providers' entry in the provider selection menu (Search only). */
+            providerSelectionAllowAll: PropTypes.bool,
+            /** Whether to zoom to layer search results. */
+            zoomToLayers: PropTypes.bool
+        }),
         setTopbarHeight: PropTypes.func,
         showIframeDialog: PropTypes.func,
         toggleFullscreen: PropTypes.func,
