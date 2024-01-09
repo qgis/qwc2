@@ -59,7 +59,8 @@ class SearchBox extends React.Component {
             highlightStyle: PropTypes.object,
             minScaleDenom: PropTypes.number,
             resultLimit: PropTypes.number,
-            sectionsDefaultCollapsed: PropTypes.bool
+            sectionsDefaultCollapsed: PropTypes.bool,
+            zoomToLayers: PropTypes.bool
         }),
         searchProviders: PropTypes.object,
         selection: PropTypes.object,
@@ -800,6 +801,9 @@ class SearchBox extends React.Component {
             this.props.showNotification("existinglayer", text);
         } else {
             this.props.addLayer(layer);
+        }
+        if (this.props.searchOptions.zoomToLayers && layer.bbox) {
+            this.props.zoomToExtent(layer.bbox.bounds, layer.bbox.crs);
         }
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');

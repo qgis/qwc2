@@ -18,7 +18,7 @@ import Icon from './Icon';
 import Spinner from './Spinner';
 import MessageBar from './MessageBar';
 import {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperty} from '../actions/layers';
-import {zoomToPoint} from '../actions/map';
+import {zoomToPoint, zoomToExtent} from '../actions/map';
 import {changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} from '../actions/search';
 import {setCurrentTask} from '../actions/task';
 import {setCurrentTheme} from '../actions/theme';
@@ -70,7 +70,8 @@ class Search extends React.Component {
         startupParams: PropTypes.object,
         startupSearch: PropTypes.bool,
         theme: PropTypes.object,
-        themes: PropTypes.object
+        themes: PropTypes.object,
+        zoomToExtent: PropTypes.func
     };
     state = {
         focused: false,
@@ -537,6 +538,9 @@ class Search extends React.Component {
         } else {
             this.props.addLayer(layer);
         }
+        if (this.props.searchOptions.zoomToLayers && layer.bbox) {
+            this.props.zoomToExtent(layer.bbox.bounds, layer.bbox.crs);
+        }
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
     };
@@ -573,7 +577,8 @@ export default (searchProviders) => {
             changeLayerProperty: changeLayerProperty,
             setCurrentTask: setCurrentTask,
             setCurrentTheme: setCurrentTheme,
-            showNotification: showNotification
+            showNotification: showNotification,
+            zoomToExtent: zoomToExtent
         }
     )(Search);
 };
