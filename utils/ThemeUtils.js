@@ -108,7 +108,7 @@ const ThemeUtils = {
             urlParts.host = locationParts.host;
         }
         const baseParams = urlParts.query;
-        const layer = {
+        let layer = {
             type: "wms",
             url: url.format(urlParts),
             version: theme.version || themes.defaultWMSVersion || "1.3.0",
@@ -141,6 +141,7 @@ const ThemeUtils = {
                 }, {})
             }
         };
+        layer = LayerUtils.recomputeLayerBBox(layer);
         // Drawing order only makes sense if layer reordering is disabled
         if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
             layer.drawingOrder = theme.drawingOrder;

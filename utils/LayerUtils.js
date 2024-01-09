@@ -485,6 +485,7 @@ const LayerUtils = {
         for (const layer of newlayers) {
             if (layer.type === "wms") {
                 Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
+                Object.assign(layer, LayerUtils.recomputeLayerBBox(layer));
             }
         }
         return newlayers;
@@ -938,6 +939,37 @@ const LayerUtils = {
             };
         }
         return copyrights;
+    },
+    recomputeLayerBBox(layer) {
+        let bounds = layer.bbox;
+        let crs = null;
+        const newlayer = {...layer};
+        if (newlayer.sublayers) {
+            newlayer.sublayers = [...newlayer.sublayers];
+            newlayer.sublayers.forEach((sublayer, idx) => {
+                if (sublayer.sublayers) {
+                    newlayer.sublayers[idx] = LayerUtils.recomputeLayerBBox(sublayer);
+                }
+                if (sublayer.bbox) {
+                    if (idx === 0) {
+                        bounds = [...sublayer.bbox.bounds];
+                        crs = sublayer.bbox.crs;
+                    } else {
+                        bounds = [
+                            Math.min(bounds[0], sublayer.bbox.bounds[0]),
+                            Math.min(bounds[1], sublayer.bbox.bounds[1]),
+                            Math.max(bounds[2], sublayer.bbox.bounds[2]),
+                            Math.max(bounds[3], sublayer.bbox.bounds[3])
+                        ];
+                    }
+                }
+            });
+        }
+        newlayer.bbox = {
+            bounds: bounds,
+            crs: crs
+        };
+        return newlayer;
     }
 };
 
