@@ -513,9 +513,9 @@ const LayerUtils = {
             }
         }
     },
-    getSublayerNames(layer) {
-        return [layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
-            return list.concat([...this.getSublayerNames(sublayer)]);
+    getSublayerNames(layer, toplevel = true) {
+        return [toplevel && layer.sublayers ? null : layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
+            return list.concat([...this.getSublayerNames(sublayer, false)]);
         }, [])).filter(x => x);
     },
     mergeSubLayers(baselayer, addlayer) {
