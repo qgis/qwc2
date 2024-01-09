@@ -533,7 +533,8 @@ class Search extends React.Component {
             return l.type === layer.type && l.url === layer.url && !isEmpty(LayerUtils.getSublayerNames(l).filter(v => sublayers.includes(v)));
         });
         if (existing) {
-            const text = LocaleUtils.tr("search.existinglayer") + ": " + layer.title;
+            const existingLayerName = (layer.sublayers || []).length === 1 ? layer.sublayers[0].title : layer.title;
+            const text = LocaleUtils.tr("search.existinglayer") + ": " + existingLayerName;
             this.props.showNotification("existinglayer", text);
         } else {
             this.props.addLayer(layer);
