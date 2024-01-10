@@ -28,6 +28,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 import './style/AttributeTable.css';
 
 /**
@@ -571,7 +572,7 @@ class AttributeTable extends React.Component {
                 const zoom = MapUtils.computeZoom(this.props.mapScales, this.props.zoomLevel);
                 this.props.zoomToPoint(collection.features[0].geometry.coordinates, zoom, this.props.mapCrs);
             } else {
-                this.props.zoomToExtent(geojsonBbox(collection), this.props.mapCrs);
+                this.props.zoomToExtent(VectorLayerUtils.computeFeatureBBox(collection), this.props.mapCrs);
             }
         }
     };
