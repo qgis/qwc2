@@ -60,6 +60,9 @@ const CoordinatesUtils = {
      * @return {array} [minx, miny, maxx, maxy]
      */
     reprojectBbox(bbox, source, dest) {
+        if (source === dest) {
+            return [...bbox];
+        }
         const sw = CoordinatesUtils.reproject([bbox[0], bbox[1]], source, dest);
         const ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
         return [...sw, ...ne];

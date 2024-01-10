@@ -941,34 +941,30 @@ const LayerUtils = {
         return copyrights;
     },
     recomputeLayerBBox(layer) {
-        let bounds = layer.bbox;
-        let crs = null;
-        const newlayer = {...layer};
-        if (newlayer.sublayers) {
-            newlayer.sublayers = [...newlayer.sublayers];
-            newlayer.sublayers.forEach((sublayer, idx) => {
-                if (sublayer.sublayers) {
-                    newlayer.sublayers[idx] = LayerUtils.recomputeLayerBBox(sublayer);
-                }
-                if (sublayer.bbox) {
-                    if (idx === 0) {
-                        bounds = [...sublayer.bbox.bounds];
-                        crs = sublayer.bbox.crs;
-                    } else {
-                        bounds = [
-                            Math.min(bounds[0], sublayer.bbox.bounds[0]),
-                            Math.min(bounds[1], sublayer.bbox.bounds[1]),
-                            Math.max(bounds[2], sublayer.bbox.bounds[2]),
-                            Math.max(bounds[3], sublayer.bbox.bounds[3])
-                        ];
-                    }
-                }
-            });
+        if (isEmpty(layer.sublayers)) {
+            return layer;
         }
-        newlayer.bbox = {
-            bounds: bounds,
-            crs: crs
-        };
+        let bounds = null;
+        const newlayer = {...layer};
+        newlayer.sublayers = newlayer.sublayers.map((sublayer) => {
+            sublayer = LayerUtils.recomputeLayerBBox(sublayer);
+            if (!bounds && sublayer.bbox) {
+                bounds = CoordinatesUtils.reprojectBbox(sublayer.bbox.bounds, sublayer.bbox.crs, "EPSG:4326");
+            } else if (bounds) {
+                const sublayerbounds = CoordinatesUtils.reprojectBbox(sublayer.bbox.bounds, sublayer.bbox.crs, "EPSG:4326");
+                bounds = [
+                    Math.min(bounds[0], sublayerbounds[0]),
+                    Math.min(bounds[1], sublayerbounds[1]),
+                    Math.max(bounds[2], sublayerbounds[2]),
+                    Math.max(bounds[3], sublayerbounds[3])
+                ];
+            }
+            return sublayer;
+        });
+        if (bounds) {
+            console.log(bounds);
+            newlayer.bbox = {bounds, crs: "EPSG:4326"};
+        }
         return newlayer;
     }
 };
