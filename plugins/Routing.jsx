@@ -681,12 +681,15 @@ class Routing extends React.Component {
             role: LayerRole.MARKER,
             styleName: 'marker'
         };
-        const features = points.filter(point => point.pos).map(point => ({
+        const features = points.filter(point => point.pos).map((point, idx) => ({
             type: "Feature",
             crs: point.crs,
             geometry: {
                 type: "Point",
                 coordinates: point.pos
+            },
+            properties: {
+                label: this.props.showPinLabels && this.state.routeConfig.result ? String(idx + 1) : null
             }
         }));
         this.props.addLayerFeatures(layer, features, true);
@@ -748,30 +751,20 @@ class Routing extends React.Component {
                 });
                 this.props.addLayerFeatures(layer, features, true);
 
-                // Add numbered routing markers
-                if (this.props.showPinLabels) {
-                    const markerLayer = {
-                        id: "routingmarkers",
-                        role: LayerRole.MARKER,
-                        styleName: 'marker'
-                    };
-                    const markerFeatures = result.locations.map((location, idx) => ({
-                        type: "Feature",
-                        crs: "EPSG:4326",
-                        geometry: {
-                            type: "Point",
-                            coordinates: [location.lon, location.lat]
-                        },
-                        properties: {
-                            label: String(idx + 1)
-                        }
-                    }));
-                    this.props.addLayerFeatures(markerLayer, markerFeatures, true);
-                }
+                // Reorder locations based on routing result, keeping null entries
+                const {points, nullPoints} = this.state.routeConfig.points.reduce((res, point, idx) => {
+                    return point.pos ? {...res, points: [...res.points, point]} : {...res, nullPoints: [...res.nullPoints, {point, idx}]};
+                }, {points: [], nullPoints: []});
+                const reorderedPoints = result.locations.map(location => points[location.orig_idx]).filter(Boolean);
+                nullPoints.forEach(entry => {
+                    reorderedPoints.splice(entry.idx, 0, entry.point);
+                });
+                this.updateRouteConfig({points: reorderedPoints, result: {success, data: result}, busy: false}, false);
 
                 this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
+            } else {
+                this.updateRouteConfig({result: {success, data: result}, busy: false}, false);
             }
-            this.updateRouteConfig({result: {success, data: result}, busy: false}, false);
         });
     };
     computeIsochrone = () => {
