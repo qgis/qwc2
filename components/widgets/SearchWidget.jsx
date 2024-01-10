@@ -121,13 +121,15 @@ export default class SearchWidget extends React.Component {
 
         this.props.searchProviders.forEach(provider => {
             provider.onSearch(this.state.text, this.props.searchParams, (response) => {
-                if (this.state.reqId !== reqId) {
-                    return;
-                }
-                this.setState((state) => ({
-                    results: [...state.results, ...response.results],
-                    pending: state.pending - 1
-                }));
+                this.setState((state) => {
+                    if (state.reqId !== reqId) {
+                        return {};
+                    }
+                    return {
+                        results: [...state.results, ...response.results],
+                        pending: state.pending - 1
+                    };
+                });
             }, axios);
         });
     };
