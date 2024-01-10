@@ -113,8 +113,10 @@ const BuiltinExporters = [
                     csv += '\n';
                 }
                 features.forEach(feature => {
-                    Object.values(feature.properties || {}).forEach((value) => {
-                        csv += String(value).replace('"', '""') + ';';
+                    Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
+                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
+                            csv += String(value).replace('"', '""') + ';';
+                        }
                     });
                     if (feature.geometry) {
                         csv += VectorLayerUtils.geoJSONGeomToWkt(feature.geometry);
