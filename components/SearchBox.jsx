@@ -540,7 +540,7 @@ class SearchBox extends React.Component {
         if (this.searchBox) {
             this.searchBox.select();
         }
-        if (isEmpty(this.state.searchResults)) {
+        if (isEmpty(this.state.searchResults) && this.props.theme) {
             this.startSearch();
         }
         this.toggleFilterOptions(false);
