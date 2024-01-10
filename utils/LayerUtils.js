@@ -962,7 +962,6 @@ const LayerUtils = {
             return sublayer;
         });
         if (bounds) {
-            console.log(bounds);
             newlayer.bbox = {bounds, crs: "EPSG:4326"};
         }
         return newlayer;
