@@ -575,7 +575,9 @@ class Routing extends React.Component {
                 ...state[config].points.slice(index)
             ]
         }}));
-        this.recomputeIfNeeded();
+        if (entry.pos) {
+            this.recomputeIfNeeded();
+        }
     };
     updatePoint = (config, idx, diff) => {
         this.setState((state) => ({[config]: {
