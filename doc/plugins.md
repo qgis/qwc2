@@ -245,7 +245,7 @@ Triggered automatically when a line is measured via the `Measure` plugin.
 
 Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`.
 
-The print height profile functionality requires a template located at assets/templates/heightprofileprint.html
+The print height profile functionality requires a template located by default at assets/templates/heightprofileprint.html
 with containing a container element with id=heightprofilecontainer.
 
 | Property | Type | Description | Default value |
@@ -253,6 +253,7 @@ with containing a container element with id=heightprofilecontainer.
 | heighProfilePrecision | `number` | The precision of displayed and exported values (0: no decimals, 0.1: 1 decimal position, etc). | `0` |
 | height | `number` | The height of the height profile widget in pixels. | `150` |
 | samples | `number` | The number of elevation samples to query. | `500` |
+| templatePath | `string` | Template location for the height profile print functionality | `":/templates/heightprofileprint.html"` |
 
 Help<a name="help"></a>
 ----------------------------------------------------------------
@@ -339,12 +340,13 @@ Example:
 |----------|------|-------------|---------------|
 | catalogUrl | `string` | The URL to the catalog JSON file. | `undefined` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
+| levelBasedIndentSize | `bool` | Whether to increase the indent size dynamically according to the current level (`true`) or keep the indent size constant (`false`). | `true` |
 
 LayerTree<a name="layertree"></a>
 ----------------------------------------------------------------
 Displays the map layer tree in a sidebar.
 
-The print legend functionality requires a template located at assets/templates/legendprint.html
+The print legend functionality requires a template located by default at assets/templates/legendprint.html
 with containing a container element with id=legendcontainer.
 
 | Property | Type | Description | Default value |
@@ -369,6 +371,7 @@ with containing a container element with id=legendcontainer.
 | showRootEntry | `bool` | Whether to display the root entry of the layertree. | `true` |
 | showToggleAllLayersCheckbox | `bool` | Whether to display a checkbox to toggle all layers. | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
+| templatePath | `string` | Template location for the legend print functionality | `":/templates/legendprint.html"` |
 | width | `string` | The initial width of the layertree, as a CSS width string. | `"25em"` |
 
 LocateButton<a name="locatebutton"></a>
@@ -495,6 +498,7 @@ The map tip needs to be configured in QGIS Layer Properties &rarr; Display.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | layerFeatureCount | `number` | The maximum number of feature maptips to display for a single layer. | `5` |
+| showFeatureSelection | `bool` | Whether to show the maptip feature selection on the map or not | `true` |
 
 Measure<a name="measure"></a>
 ----------------------------------------------------------------
