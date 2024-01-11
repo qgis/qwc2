@@ -36,7 +36,7 @@ import './style/LayerTree.css';
 /**
  * Displays the map layer tree in a sidebar.
  *
- * The print legend functionality requires a template located at assets/templates/legendprint.html
+ * The print legend functionality requires a template located by default at assets/templates/legendprint.html
  * with containing a container element with id=legendcontainer.
  */
 class LayerTree extends React.Component {
@@ -101,6 +101,8 @@ class LayerTree extends React.Component {
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         swipe: PropTypes.number,
+        /** Template location for the legend print functionality */
+        templatePath: PropTypes.string,
         theme: PropTypes.object,
         toggleMapTips: PropTypes.func,
         transparencyIcon: PropTypes.bool,
@@ -134,7 +136,8 @@ class LayerTree extends React.Component {
         infoInSettings: true,
         showToggleAllLayersCheckbox: true,
         transparencyIcon: true,
-        side: 'right'
+        side: 'right',
+        templatePath: ":/templates/legendprint.html"
     };
     state = {
         activemenu: null,
@@ -664,8 +667,12 @@ class LayerTree extends React.Component {
             setLegendPrintContent();
             this.legendPrintWindow.focus();
         } else {
-            const assetsPath = ConfigUtils.getAssetsPath();
-            this.legendPrintWindow = window.open(assetsPath + "/templates/legendprint.html", "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
+            let templatePath = this.props.templatePath;
+            if (templatePath.startsWith(":/")) {
+                const assetsPath = ConfigUtils.getAssetsPath();
+                templatePath = assetsPath + templatePath.substr(1);
+            }
+            this.legendPrintWindow = window.open(templatePath, "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
             if (window.navigator.userAgent.indexOf('Trident/') > 0) {
                 // IE...
                 const interval = setInterval(() => {
