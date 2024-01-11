@@ -49,7 +49,8 @@ ChartJS.register(
 class HeightProfilePrintDialog extends React.PureComponent {
     static propTypes = {
         children: PropTypes.func,
-        onClose: PropTypes.func
+        onClose: PropTypes.func,
+        templatePath: PropTypes.string
     };
     constructor(props) {
         super(props);
@@ -60,8 +61,12 @@ class HeightProfilePrintDialog extends React.PureComponent {
         portalEl: null
     };
     componentDidMount() {
-        const assetsPath = ConfigUtils.getAssetsPath();
-        this.externalWindow = window.open(assetsPath + "/templates/heightprofileprint.html", LocaleUtils.tr("heightprofile.title"), "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
+        let templatePath = this.props.templatePath;
+        if (templatePath.startsWith(":/")) {
+            const assetsPath = ConfigUtils.getAssetsPath();
+            templatePath = assetsPath + templatePath.substr(1);
+        }
+        this.externalWindow = window.open(templatePath, LocaleUtils.tr("heightprofile.title"), "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
         this.externalWindow.addEventListener('load', this.setWindowContent, false);
         this.externalWindow.addEventListener('resize', this.windowResized, false);
     }
@@ -106,7 +111,7 @@ class HeightProfilePrintDialog extends React.PureComponent {
  *
  * Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`.
  *
- * The print height profile functionality requires a template located at assets/templates/heightprofileprint.html
+ * The print height profile functionality requires a template located by default at assets/templates/heightprofileprint.html
  * with containing a container element with id=heightprofilecontainer.
  */
 class HeightProfile extends React.Component {
@@ -122,12 +127,15 @@ class HeightProfile extends React.Component {
         projection: PropTypes.string,
         removeMarker: PropTypes.func,
         /** The number of elevation samples to query. */
-        samples: PropTypes.number
+        samples: PropTypes.number,
+        /** Template location for the height profile print functionality */
+        templatePath: PropTypes.string
     };
     static defaultProps = {
         samples: 500,
         heighProfilePrecision: 0,
-        height: 150
+        height: 150,
+        templatePath: ":/templates/heightprofileprint.html"
     };
     state = {
         data: {},
@@ -221,7 +229,7 @@ class HeightProfile extends React.Component {
             </ResizeableWindow>
         ),
         this.state.printdialog ? (
-            <HeightProfilePrintDialog key="ProfilePrintDialog" onClose={() => this.setState({printdialog: false})}>
+            <HeightProfilePrintDialog key="ProfilePrintDialog" onClose={() => this.setState({printdialog: false})} templatePath={this.props.templatePath}>
                 {this.renderHeightProfile}
             </HeightProfilePrintDialog>
         ) : null];
