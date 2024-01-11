@@ -40,13 +40,16 @@ class MapTip extends React.Component {
         maxWidth: PropTypes.string,
         mousepos: PropTypes.object,
         removeLayer: PropTypes.func,
+        /** Whether to show the maptip feature selection on the map or not */
+        showFeatureSelection: PropTypes.bool,
         showIframeDialog: PropTypes.func,
         theme: PropTypes.object
     };
     static defaultProps = {
         layerFeatureCount: 5,
         maxHeight: "15em",
-        maxWidth: "20em"
+        maxWidth: "20em",
+        showFeatureSelection: true
     };
     state = {
         reqId: null,
@@ -119,7 +122,7 @@ class MapTip extends React.Component {
                         }
                     }
                 }
-                if (!isEmpty(features)) {
+                if (this.props.showFeatureSelection && !isEmpty(features)) {
                     const sellayer = {
                         id: "maptipselection",
                         role: LayerRole.SELECTION
