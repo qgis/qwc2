@@ -190,7 +190,10 @@ const ThemeUtils = {
         const searchLayer = (theme, layer) => {
             (layer.sublayers || []).forEach((sublayer) => {
                 if (removeDiacritics(sublayer.name).match(filter) || removeDiacritics(sublayer.title).match(filter)) {
-                    matches.push({theme: theme, layer: ThemeUtils.createThemeLayer(theme, themes, LayerRole.USERLAYER, [sublayer])});
+                    matches.push({
+                        theme: theme,
+                        layer: ThemeUtils.createThemeLayer(theme, themes, LayerRole.USERLAYER, [{...sublayer, visibility: true}])
+                    });
                 }
                 searchLayer(theme, sublayer);
             });

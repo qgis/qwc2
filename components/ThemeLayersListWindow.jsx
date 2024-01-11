@@ -95,7 +95,8 @@ class ThemeLayersListWindow extends React.Component {
         this.props.setCurrentTask('LayerTree');
     };
     addSelectedLayers = () => {
-        this.props.addLayer(ThemeUtils.createThemeLayer(this.props.theme, this.props.themes, LayerRole.USERLAYER, this.state.selectedLayers));
+        const sublayers = this.state.selectedLayers.map(layer => ({...layer, visibility: true}));
+        this.props.addLayer(ThemeUtils.createThemeLayer(this.props.theme, this.props.themes, LayerRole.USERLAYER, sublayers));
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
     };
