@@ -65,6 +65,8 @@ class LayerCatalog extends React.Component {
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string
         }),
+        /** Whether to increase the indent size dynamically according to the current level (`true`) or keep the indent size constant (`false`). */
+        levelBasedIndentSize: PropTypes.bool,
         setCurrentTask: PropTypes.func
     };
     static defaultProps = {
@@ -75,7 +77,8 @@ class LayerCatalog extends React.Component {
             initialY: 0,
             initiallyDocked: false,
             side: 'left'
-        }
+        },
+        levelBasedIndentSize: true
     };
     state = {
         catalog: null
@@ -107,7 +110,7 @@ class LayerCatalog extends React.Component {
                 onClose={this.onClose} title={LocaleUtils.trmsg("layercatalog.windowtitle")}
                 >
                 <div className="layer-catalog" role="body">
-                    <LayerCatalogWidget catalog={this.state.catalog} pendingRequests={0} />
+                    <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} />
                 </div>
             </ResizeableWindow>
         );
