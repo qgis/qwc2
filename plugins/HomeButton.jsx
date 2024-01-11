@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import classnames from 'classnames';
 import LocaleUtils from '../utils/LocaleUtils';
 import {zoomToExtent} from '../actions/map';
 import Icon from '../components/Icon';
@@ -38,8 +39,12 @@ class HomeButton extends React.Component {
             bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
         };
         const tooltip = LocaleUtils.tr("tooltip.home");
+        const classes = classnames({
+            "map-button": true,
+            ["map-button-" + this.props.position]: true
+        });
         return (
-            <button className="map-button" onClick={this.resetExtent} style={style} title={tooltip}>
+            <button className={classes} onClick={this.resetExtent} style={style} title={tooltip}>
                 <Icon icon="home" title={tooltip}/>
             </button>
         );

@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import classnames from 'classnames';
 import LocaleUtils from '../utils/LocaleUtils';
 import {changeZoomLevel} from '../actions/map';
 import Icon from '../components/Icon';
@@ -46,8 +47,12 @@ class ZoomButton extends React.Component {
             disabled = this.props.currentZoom <= 0;
         }
         const tooltip = this.props.direction > 0 ? LocaleUtils.tr("tooltip.zoomin") : LocaleUtils.tr("tooltip.zoomout");
+        const classes = classnames({
+            "map-button": true,
+            ["map-button-" + this.props.position]: true
+        });
         return (
-            <button className="map-button"
+            <button className={classes}
                 disabled={disabled}
                 onClick={() => this.props.changeZoomLevel(this.props.currentZoom + this.props.direction)}
                 style={style}

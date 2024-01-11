@@ -64,6 +64,7 @@ class LocateButton extends React.Component {
         }
         const classes = classnames({
             "map-button": true,
+            ["map-button-" + this.props.position]: true,
             ["locate-button-" + this.props.locateState]: true
         });
         return (

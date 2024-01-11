@@ -41,6 +41,7 @@ class BackgroundSwitcher extends React.Component {
         const tooltip = LocaleUtils.tr("tooltip.background");
         const classes = classnames({
             "map-button": true,
+            ["map-button-" + this.props.position]: true,
             "map-button-active": this.state.visible
         });
         let backgroundLayers = this.props.layers.filter(layer => layer.role === LayerRole.BACKGROUND).slice(0).reverse();
