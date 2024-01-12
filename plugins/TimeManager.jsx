@@ -133,8 +133,9 @@ class TimeManager extends React.Component {
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setLayerDimensions: PropTypes.func,
-        /** The available temporal anumation step units. */
-        stepUnits: PropTypes.arrayOf(PropTypes.string)
+        /** The available temporal animation step units. */
+        stepUnits: PropTypes.arrayOf(PropTypes.string),
+        theme: PropTypes.object
     };
     static defaultProps = {
         cursorFormat: "datetime",
@@ -226,6 +227,9 @@ class TimeManager extends React.Component {
         }
         if (!activated && !this.state.visible) {
             return;
+        }
+        if (this.props.theme !== prevProps.theme) {
+            this.setState({currentTimestamp: null});
         }
         if (activated || !isEqual(this.props.layerVisibilities, prevProps.layerVisibilities)) {
             this.stopAnimation();
@@ -732,7 +736,8 @@ const selector = createSelector([state => state, layerVisiblitiesSelector], (sta
         active: state.task.id === "TimeManager",
         layers: state.layers.flat,
         layerVisibilities: layerVisibilities,
-        map: state.map
+        map: state.map,
+        theme: state.theme.current
     };
 });
 
