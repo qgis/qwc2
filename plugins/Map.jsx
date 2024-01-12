@@ -82,14 +82,15 @@ class MapPlugin extends React.Component {
                         if (layer.externalLayerMap && layer.externalLayerMap[sublayers[i]]) {
                             // Sublayer is mapped to an external layer
                             const sublayer = LayerUtils.searchSubLayer(layer, "name", sublayers[i]);
-                            const sublayerVisible = LayerUtils.layerScaleInRange(sublayer, mapScale);
-                            if (sublayerVisible) {
+                            if (sublayer.visibility) {
                                 const extlayer = {
                                     ...layer.externalLayerMap[sublayers[i]],
                                     rev: layer.rev,
                                     opacity: parseInt(opacities[i], 10),
                                     visibility: true,
-                                    role: LayerRole.THEME
+                                    role: LayerRole.THEME,
+                                    minScale: sublayer.minScale,
+                                    maxScale: sublayer.maxScale
                                 };
                                 if (extlayer.type === "wms") {
                                     extlayer.params = {
