@@ -54,8 +54,9 @@ class WindowManager extends React.Component {
         }
         const dockable = this.boolVal(data.options.dockable) !== false;
         const docked = this.boolVal(data.options.docked) !== false;
+        const splitScreenWhenDocked = this.boolVal(data.options.splitScreenWhenDocked) !== false;
         return (
-            <ResizeableWindow dockable={dockable || docked} extraControls={extraControls} icon={data.options.icon || ""}
+            <ResizeableWindow dockable={dockable || docked} splitScreenWhenDocked={splitScreenWhenDocked} extraControls={extraControls} icon={data.options.icon || ""}
                 initialHeight={data.options.h || 480}
                 initialWidth={data.options.w || 640}
                 initiallyDocked={docked} key={key}
