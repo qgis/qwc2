@@ -174,7 +174,7 @@ class Identify extends React.Component {
         }
     };
     queryPoint = (prevProps) => {
-        if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(entry => entry.feature === 'startupposmarker')) {
+        if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(feature => feature.id === 'startupposmarker')) {
             return null;
         }
         const searchMarker = (this.props.click.features || []).find(feature => feature.id === 'searchmarker');
