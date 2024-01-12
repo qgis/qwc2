@@ -46,12 +46,16 @@ class BottomBar extends React.Component {
         termsUrl: PropTypes.string,
         /** Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. */
         termsUrlIcon: PropTypes.string,
+        /** Options of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. */
+        termsUrlOptions: PropTypes.object,
         /** The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. */
         termsUrlTarget: PropTypes.string,
         /** The URL of the viewer title label anchor. */
         viewertitleUrl: PropTypes.string,
         /** Icon of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. */
         viewertitleUrlIcon: PropTypes.string,
+        /** Options of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. */
+        viewertitleUrlOptions: PropTypes.object,
         /** The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. */
         viewertitleUrlTarget: PropTypes.string
     };
@@ -81,7 +85,7 @@ class BottomBar extends React.Component {
         let viewertitleLink;
         if (this.props.viewertitleUrl) {
             viewertitleLink = (
-                <a href={this.props.viewertitleUrl} onClick={(ev) => this.openUrl(ev, this.props.viewertitleUrl, this.props.viewertitleUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"), this.props.viewertitleUrlIcon)}>
+                <a href={this.props.viewertitleUrl} onClick={(ev) => this.openUrl(ev, this.props.viewertitleUrl, this.props.viewertitleUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"), {icon: this.props.viewertitleUrlIcon, ...(this.props.viewertitleUrlOptions || {})})}>
                     <span className="viewertitle_label">{LocaleUtils.tr("bottombar.viewertitle_label")}</span>
                 </a>
             );
@@ -89,7 +93,7 @@ class BottomBar extends React.Component {
         let termsLink;
         if (this.props.termsUrl) {
             termsLink = (
-                <a href={this.props.termsUrl} onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.terms_label"), this.props.termsUrlIcon)}>
+                <a href={this.props.termsUrl} onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.terms_label"), {icon: this.props.termsUrlIcon, ...(this.props.termsUrlOptions || {})})}>
                     <span className="terms_label">{LocaleUtils.tr("bottombar.terms_label")}</span>
                 </a>
             );
@@ -156,10 +160,10 @@ class BottomBar extends React.Component {
             </div>
         );
     }
-    openUrl = (ev, url, target, title, icon) => {
+    openUrl = (ev, url, target, title, options) => {
         ev.preventDefault();
         if (target === "iframe") {
-            this.props.showIframeDialog("externallinkiframe", url, {title: title, icon: icon});
+            this.props.showIframeDialog("externallinkiframe", url, {title: title, ...options});
         } else {
             this.props.openExternalUrl(url);
         }
