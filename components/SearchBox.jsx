@@ -56,6 +56,7 @@ class SearchBox extends React.Component {
         removeLayer: PropTypes.func,
         searchOptions: PropTypes.shape({
             allowSearchFilters: PropTypes.bool,
+            hideResultLabels: PropTypes.bool,
             highlightStyle: PropTypes.object,
             minScaleDenom: PropTypes.number,
             resultLimit: PropTypes.number,
@@ -323,8 +324,8 @@ class SearchBox extends React.Component {
                                         <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(group, entry, provider); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                                             {entry.thumbnail ? (<img className="searchbox-result-thumbnail" src={entry.thumbnail} />) : null}
                                             {entry.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
-                                            <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label || entry.text} />
-                                            {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { MiscUtils.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label || entry.text); } } /> : null}
+                                            <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label ?? entry.text} />
+                                            {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { MiscUtils.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label ?? entry.text); } } /> : null}
                                             {entry.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => { MiscUtils.killEvent(ev); this.addThemeLayers(entry.layer); this.searchBox.blur(); }} title={addTitle}/>) : null}
                                         </div>
                                     ))}
@@ -753,7 +754,7 @@ class SearchBox extends React.Component {
         this.updateRecentSearches();
         const resultType = result.type || SearchResultType.PLACE;
         if (resultType === SearchResultType.PLACE) {
-            const label = (result.label !== undefined ? result.label : result.text || '').replace(/<\/?\w+\s*\/?>/g, '');
+            const label = this.props.searchOptions.hideResultLabels ? '' : (result.label ?? result.text ?? '').replace(/<\/?\w+\s*\/?>/g, '');
             if (this.props.searchProviders[provider].getResultGeometry) {
                 this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showProviderResultGeometry(result, response, label, zoom); }, axios);
             } else {

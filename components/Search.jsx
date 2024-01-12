@@ -54,6 +54,7 @@ class Search extends React.Component {
         searchMore: PropTypes.func,
         searchOptions: PropTypes.shape({
             highlightStyle: PropTypes.object,
+            hideResultLabels: PropTypes.bool,
             minScaleDenom: PropTypes.number,
             showProviderSelection: PropTypes.bool,
             showProvidersInPlaceholder: PropTypes.bool,
@@ -449,16 +450,15 @@ class Search extends React.Component {
         }
         if (resultType === SearchResultType.PLACE) {
             this.props.removeLayer("searchselection");
-            let text = item.label !== undefined ? item.label : item.text;
-            text = text.replace(/<[^>]*>/g, '');
+            const label = this.props.searchOptions.hideResultLabels ? '' : (item.label ?? item.text ?? '').replace(/<\/?\w+\s*\/?>/g, '');
             if (item.provider && this.props.searchProviders[item.provider].getResultGeometry) {
-                this.props.searchProviders[item.provider].getResultGeometry(item, (response) => { this.showFeatureGeometry(item, response, text); }, axios);
+                this.props.searchProviders[item.provider].getResultGeometry(item, (response) => { this.showFeatureGeometry(item, response, label); }, axios);
             } else {
                 const layer = {
                     id: "searchselection",
                     role: LayerRole.SELECTION
                 };
-                const marker = this.createMarker([item.x, item.y], item.crs, text);
+                const marker = this.createMarker([item.x, item.y], item.crs, label);
                 this.props.addLayerFeatures(layer, [marker], true);
             }
             this.props.setCurrentSearchResult(item);

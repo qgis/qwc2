@@ -52,6 +52,8 @@ class TopBar extends React.Component {
         searchOptions: PropTypes.shape({
             /** Whether to show the search filter widget (SearchBox only). */
             allowSearchFilters: PropTypes.bool,
+            /** Whether to hide the result labels on the map. */
+            hideResultLabels: PropTypes.bool,
             /** The style used for highlighting search result geometries. */
             highlightStyle: PropTypes.shape({
                 /* Stroke color rgba array, i.e. [255, 0, 0, 0.5] */
