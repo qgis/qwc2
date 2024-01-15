@@ -82,7 +82,7 @@ class Toolbar extends React.Component {
     };
     itemClicked = (item, active) => {
         if (item.url) {
-            this.props.openExternalUrl(item.url, item.target, LocaleUtils.tr("appmenu.items." + item.key));
+            this.props.openExternalUrl(item.url, item.target, LocaleUtils.tr("appmenu.items." + item.key), item.icon);
         } else if (active) {
             this.props.setCurrentTask(null);
         } else {

@@ -158,7 +158,22 @@ class BottomBar extends React.Component {
     }
     openUrl = (ev, url, target, title, icon) => {
         ev.preventDefault();
-        if (target === "iframe") {
+        if (target.startsWith(":")) {
+            const targetParts = target.split(":");
+            const options = targetParts.slice(2).reduce((res, cur) => {
+                const parts = cur.split("=");
+                if (parts.length === 2) {
+                    const value = parseFloat(parts[1]);
+                    res[parts[0]] = isNaN(value) ? parts[1] : value;
+                }
+                return res;
+            }, {});
+            if (targetParts[1] === "iframedialog") {
+                this.props.showIframeDialog(targetParts[2], url, {title: title, icon: icon, ...options});
+            } else {
+                this.props.openExternalUrl(url);
+            }
+        } else if (target === "iframe") {
             this.props.showIframeDialog("externallinkiframe", url, {title: title, icon: icon});
         } else {
             this.props.openExternalUrl(url);
