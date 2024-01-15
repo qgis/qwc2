@@ -165,10 +165,10 @@ Bottom bar, displaying mouse coordinate, scale, etc.
 | displayScales | `bool` | Whether to display the scale in the bottom bar. | `true` |
 | termsUrl | `string` | The URL of the terms label anchor. | `undefined` |
 | termsUrlIcon | `string` | Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. | `undefined` |
-| termsUrlTarget | `string` | The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. | `undefined` |
+| termsUrlTarget | `string` | The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. | `undefined` |
 | viewertitleUrl | `string` | The URL of the viewer title label anchor. | `undefined` |
 | viewertitleUrlIcon | `string` | Icon of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. | `undefined` |
-| viewertitleUrlTarget | `string` | The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. | `undefined` |
+| viewertitleUrlTarget | `string` | The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. | `undefined` |
 
 Cyclomedia<a name="cyclomedia"></a>
 ----------------------------------------------------------------

@@ -44,13 +44,13 @@ class BottomBar extends React.Component {
         termsUrl: PropTypes.string,
         /** Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. */
         termsUrlIcon: PropTypes.string,
-        /** The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. */
+        /** The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. */
         termsUrlTarget: PropTypes.string,
         /** The URL of the viewer title label anchor. */
         viewertitleUrl: PropTypes.string,
         /** Icon of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. */
         viewertitleUrlIcon: PropTypes.string,
-        /** The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. */
+        /** The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. */
         viewertitleUrlTarget: PropTypes.string
     };
     static defaultProps = {
