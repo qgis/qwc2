@@ -160,9 +160,9 @@ class TopBar extends React.Component {
             </Swipeable>
         );
     }
-    openUrl = (url, target, title, options) => {
+    openUrl = (url, target, title, icon) => {
         if (target === "iframe") {
-            this.props.showIframeDialog("externallinkiframe", url, {title: title, ...options});
+            this.props.showIframeDialog("externallinkiframe", url, {title: title, icon: icon});
         } else {
             this.props.openExternalUrl(url);
         }
