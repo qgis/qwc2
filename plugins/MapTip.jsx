@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import {v1 as uuidv1} from 'uuid';
 import htmlReactParser, {domToReact} from 'html-react-parser';
-import {showIframeDialog} from '../actions/windows';
+import {openExternalUrl} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
@@ -39,10 +39,10 @@ class MapTip extends React.Component {
         /* The maximum height of the maptip popop bubble, as a CSS string. */
         maxWidth: PropTypes.string,
         mousepos: PropTypes.object,
+        openExternalUrl: PropTypes.func,
         removeLayer: PropTypes.func,
         /** Whether to show the maptip feature selection on the map or not */
         showFeatureSelection: PropTypes.bool,
-        showIframeDialog: PropTypes.func,
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -182,24 +182,8 @@ class MapTip extends React.Component {
         ev.preventDefault();
     };
     attributeLinkClicked = (ev) => {
-        if (ev.currentTarget.target.startsWith(":")) {
-            const target = ev.target.target.split(":");
-            const options = target.slice(2).reduce((res, cur) => {
-                const parts = cur.split("=");
-                if (parts.length === 2) {
-                    const value = parseFloat(parts[1]);
-                    res[parts[0]] = isNaN(value) ? parts[1] : value;
-                }
-                return res;
-            }, {});
-            if (target[1] === "iframedialog") {
-                if (this.props.iframeDialogsInitiallyDocked) {
-                    options.docked = true;
-                }
-                this.props.showIframeDialog(target[2], ev.target.href, options);
-                ev.preventDefault();
-            }
-        }
+        this.props.openExternalUrl(ev.target.href, ev.target.target, {docked: this.props.iframeDialogsInitiallyDocked});
+        ev.preventDefault();
     };
     positionMapTip = (el) => {
         if (el) {
@@ -230,5 +214,5 @@ const selector = (state) => ({
 export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer,
-    showIframeDialog: showIframeDialog
+    openExternalUrl: openExternalUrl
 })(MapTip);

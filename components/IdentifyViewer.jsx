@@ -16,8 +16,8 @@ import omit from 'lodash.omit';
 import JSZip from 'jszip';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {setActiveLayerInfo} from '../actions/layerinfo';
-import {showIframeDialog} from '../actions/windows';
 import {zoomToExtent} from '../actions/map';
+import {openExternalUrl} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -167,7 +167,7 @@ class IdentifyViewer extends React.Component {
         removeLayer: PropTypes.func,
         replaceImageUrls: PropTypes.bool,
         setActiveLayerInfo: PropTypes.func,
-        showIframeDialog: PropTypes.func,
+        openExternalUrl: PropTypes.func,
         showLayerTitles: PropTypes.bool,
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
@@ -650,24 +650,8 @@ class IdentifyViewer extends React.Component {
         ev.preventDefault();
     };
     attributeLinkClicked = (ev) => {
-        if (ev.currentTarget.target.startsWith(":")) {
-            const target = ev.target.target.split(":");
-            const options = target.slice(2).reduce((res, cur) => {
-                const parts = cur.split("=");
-                if (parts.length === 2) {
-                    const value = parseFloat(parts[1]);
-                    res[parts[0]] = isNaN(value) ? parts[1] : value;
-                }
-                return res;
-            }, {});
-            if (target[1] === "iframedialog") {
-                if (this.props.iframeDialogsInitiallyDocked) {
-                    options.docked = true;
-                }
-                this.props.showIframeDialog(target[2], ev.target.href, options);
-                ev.preventDefault();
-            }
-        }
+        this.props.openExternalUrl(ev.target.href, ev.target.target, {docked: this.props.iframeDialogsInitiallyDocked});
+        ev.preventDefault();
     };
 }
 
@@ -681,6 +665,6 @@ export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer,
     setActiveLayerInfo: setActiveLayerInfo,
-    showIframeDialog: showIframeDialog,
+    openExternalUrl: openExternalUrl,
     zoomToExtent: zoomToExtent
 })(IdentifyViewer);

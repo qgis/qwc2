@@ -11,6 +11,7 @@ import taskReducer from '../reducers/task';
 ReducerIndex.register("task", taskReducer);
 
 import {setIdentifyEnabled} from './identify';
+import {showIframeDialog} from './windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import MapUtils from '../utils/MapUtils';
@@ -66,7 +67,7 @@ export function setCurrentTaskBlocked(blocked, unloadmsg = null) {
     };
 }
 
-export function openExternalUrl(url) {
+export function openExternalUrl(url, target = '', iframeDialogOpts = {}) {
     return (dispatch, getState) => {
         // Replace all entries in URL
         Object.entries(UrlParams.getParams()).forEach(([key, value]) => {
@@ -98,6 +99,19 @@ export function openExternalUrl(url) {
 
         url = url.replace('$user$', ConfigUtils.getConfigProp("username") || "");
 
-        window.open(url);
+        if (target.startsWith(":iframedialog")) {
+            const targetParts = target.split(":");
+            const options = targetParts.slice(2).reduce((res, cur) => {
+                const parts = cur.split("=");
+                if (parts.length === 2) {
+                    const value = parseFloat(parts[1]);
+                    res[parts[0]] = isNaN(value) ? parts[1] : value;
+                }
+                return res;
+            }, {});
+            dispatch(showIframeDialog(targetParts[2], url, {...iframeDialogOpts, ...options}));
+        } else {
+            window.open(url, target || "_blank");
+        }
     };
 }

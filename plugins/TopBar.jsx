@@ -11,10 +11,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {connect} from 'react-redux';
 import {toggleFullscreen} from '../actions/display';
-import {openExternalUrl} from '../actions/task';
 import {setTopbarHeight} from '../actions/map';
+import {openExternalUrl} from '../actions/task';
 import {restoreDefaultTheme} from '../actions/theme';
-import {showIframeDialog} from '../actions/windows';
 import Icon from '../components/Icon';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -81,7 +80,6 @@ class TopBar extends React.Component {
             zoomToLayers: PropTypes.bool
         }),
         setTopbarHeight: PropTypes.func,
-        showIframeDialog: PropTypes.func,
         toggleFullscreen: PropTypes.func,
         /** The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         toolbarItems: PropTypes.array,
@@ -163,26 +161,11 @@ class TopBar extends React.Component {
         );
     }
     openUrl = (url, target, title, icon) => {
-        if (target.startsWith(":")) {
-            const targetParts = target.split(":");
-            const options = targetParts.slice(2).reduce((res, cur) => {
-                const parts = cur.split("=");
-                if (parts.length === 2) {
-                    const value = parseFloat(parts[1]);
-                    res[parts[0]] = isNaN(value) ? parts[1] : value;
-                }
-                return res;
-            }, {});
-            if (targetParts[1] === "iframedialog") {
-                this.props.showIframeDialog(targetParts[2], url, {title: title, icon: icon, ...options});
-            } else {
-                this.props.openExternalUrl(url);
-            }
-        } else if (target === "iframe") {
-            this.props.showIframeDialog("externallinkiframe", url, {title: title, icon: icon});
-        } else {
-            this.props.openExternalUrl(url);
+        if (target === "iframe") {
+            target = ":iframedialog:externallinkiframe";
         }
+        this.props.openExternalUrl(url, target, {title, icon});
+        ev.preventDefault();
     };
     storeHeight = (el) => {
         if (el) {
@@ -200,7 +183,6 @@ export default (components) => {
         toggleFullscreen: toggleFullscreen,
         restoreDefaultTheme: restoreDefaultTheme,
         openExternalUrl: openExternalUrl,
-        setTopbarHeight: setTopbarHeight,
-        showIframeDialog: showIframeDialog
+        setTopbarHeight: setTopbarHeight
     })(TopBar);
 };

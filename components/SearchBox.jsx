@@ -23,7 +23,7 @@ import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} fr
 import {changeSelectionState} from '../actions/selection';
 import {setCurrentTheme} from '../actions/theme';
 import {openExternalUrl, setCurrentTask} from '../actions/task';
-import {showIframeDialog, showNotification} from '../actions/windows';
+import {showNotification} from '../actions/windows';
 import Icon from './Icon';
 import InputContainer from './InputContainer';
 import Spinner from './Spinner';
@@ -67,7 +67,6 @@ class SearchBox extends React.Component {
         selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
-        showIframeDialog: PropTypes.func,
         showNotification: PropTypes.func,
         theme: PropTypes.object,
         themes: PropTypes.object,
@@ -979,10 +978,9 @@ class SearchBox extends React.Component {
     };
     openUrl = (url, target, title) => {
         if (target === "iframe") {
-            this.props.showIframeDialog("externallinkiframe", url, {title: title});
-        } else {
-            this.props.openExternalUrl(url);
+            target = ":iframedialog:externallinkiframe";
         }
+        this.props.openExternalUrl(url, target, {title: title});
     };
 }
 
@@ -1011,8 +1009,7 @@ export default (searchProviders) => {
             logAction: logAction,
             setCurrentTheme: setCurrentTheme,
             showNotification: showNotification,
-            openExternalUrl: openExternalUrl,
-            showIframeDialog: showIframeDialog
+            openExternalUrl: openExternalUrl
         }
     )(SearchBox);
 };

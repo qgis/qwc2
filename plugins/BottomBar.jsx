@@ -14,7 +14,6 @@ import pickBy from 'lodash.pickby';
 import {changeMousePositionState} from '../actions/mousePosition';
 import {changeZoomLevel, setBottombarHeight} from '../actions/map';
 import {openExternalUrl} from '../actions/task';
-import {showIframeDialog} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
 import InputContainer from '../components/InputContainer';
 import displayCrsSelector from '../selectors/displaycrs';
@@ -41,7 +40,6 @@ class BottomBar extends React.Component {
         map: PropTypes.object,
         openExternalUrl: PropTypes.func,
         setBottombarHeight: PropTypes.func,
-        showIframeDialog: PropTypes.func,
         /** The URL of the terms label anchor. */
         termsUrl: PropTypes.string,
         /** Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. */
@@ -157,27 +155,11 @@ class BottomBar extends React.Component {
         );
     }
     openUrl = (ev, url, target, title, icon) => {
-        ev.preventDefault();
-        if (target.startsWith(":")) {
-            const targetParts = target.split(":");
-            const options = targetParts.slice(2).reduce((res, cur) => {
-                const parts = cur.split("=");
-                if (parts.length === 2) {
-                    const value = parseFloat(parts[1]);
-                    res[parts[0]] = isNaN(value) ? parts[1] : value;
-                }
-                return res;
-            }, {});
-            if (targetParts[1] === "iframedialog") {
-                this.props.showIframeDialog(targetParts[2], url, {title: title, icon: icon, ...options});
-            } else {
-                this.props.openExternalUrl(url);
-            }
-        } else if (target === "iframe") {
-            this.props.showIframeDialog("externallinkiframe", url, {title: title, icon: icon});
-        } else {
-            this.props.openExternalUrl(url);
+        if (target === "iframe") {
+            target = ":iframedialog:externallinkiframe";
         }
+        this.props.openExternalUrl(url, target, {title, icon});
+        ev.preventDefault();
     };
     setScale = (value) => {
         const scale = parseInt(value, 10);
@@ -208,6 +190,5 @@ export default connect(selector, {
     changeMousePositionState: changeMousePositionState,
     changeZoomLevel: changeZoomLevel,
     openExternalUrl: openExternalUrl,
-    setBottombarHeight: setBottombarHeight,
-    showIframeDialog: showIframeDialog
+    setBottombarHeight: setBottombarHeight
 })(BottomBar);
