@@ -111,8 +111,8 @@ class HeightProfilePrintDialog extends React.PureComponent {
  *
  * Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`.
  *
- * The print height profile functionality requires a template located by default at assets/templates/heightprofileprint.html
- * with containing a container element with id=heightprofilecontainer.
+ * The print height profile functionality requires a template located by default at `assets/templates/heightprofileprint.html`
+ * with containing a container element with `id=heightprofilecontainer`.
  */
 class HeightProfile extends React.Component {
     static propTypes = {
