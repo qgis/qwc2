@@ -601,7 +601,8 @@ class Print extends React.Component {
                 const fileURL = URL.createObjectURL(file);
                 this.setState({ pdfData: fileURL, outputLoaded: true });
             } else {
-                FileSaver.saveAs(file, this.props.theme.name + '.pdf');
+                const ext = this.state.selectedFormat.split(";")[0].split("/").pop();
+                FileSaver.saveAs(file, this.props.theme.name + '.' + ext);
             }
         }).catch(e => {
             this.setState({printing: false});
