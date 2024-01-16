@@ -21,6 +21,10 @@ import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import "./style/FeatureSearch.css";
 
+
+/**
+ * Displays a dialog with a search form for configured QGIS feature searches with one or more input fields.
+ */
 class FeatureSearch extends React.Component {
     static propTypes = {
         map: PropTypes.object,

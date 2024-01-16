@@ -237,6 +237,14 @@ Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` 
 | exitTaskOnResultsClose | `bool` | Whether to clear the task when the results window is closed. | `undefined` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 
+FeatureSearch<a name="featuresearch"></a>
+----------------------------------------------------------------
+Displays a dialog with a search form for configured QGIS feature searches with one or more input fields.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
+
 HeightProfile<a name="heightprofile"></a>
 ----------------------------------------------------------------
 Displays a height profile along a measured line.
