@@ -948,7 +948,7 @@ const LayerUtils = {
         const newlayer = {...layer};
         newlayer.sublayers = newlayer.sublayers.map((sublayer) => {
             sublayer = LayerUtils.recomputeLayerBBox(sublayer);
-            if (!bounds && sublayer.bbox) {
+            if (!bounds && sublayer.bbox && sublayer.bbox.bounds) {
                 bounds = CoordinatesUtils.reprojectBbox(sublayer.bbox.bounds, sublayer.bbox.crs, "EPSG:4326");
             } else if (bounds) {
                 const sublayerbounds = CoordinatesUtils.reprojectBbox(sublayer.bbox.bounds, sublayer.bbox.crs, "EPSG:4326");
