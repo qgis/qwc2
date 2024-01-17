@@ -155,8 +155,9 @@ div.searchbox-filter-options > table td:last-child {
     width: 99%;
 }
 
-div.searchbox-filter-options > table td:last-child > select {
+div.searchbox-filter-options > table td:last-child > div.combobox {
     width: 100%;
+    height: 2em;
 }
 
 div.searchbox-filter-options-geometry {
@@ -168,13 +169,22 @@ div.searchbox-filter-options-geometry > div.ButtonBar {
     flex: 0 0 auto;
 }
 
-div.searchbox-filter-options-geometry > select {
+div.searchbox-filter-options-geometry > div.combobox {
     flex: 1 1 auto;
     margin-left: -1px;
     z-index: 1;
+    height: 2em;
 }
 
 div.searchbox-filter-options-geometry > button {
     margin-left: 0.25em;
     flex: 0 0 auto;
+}
+
+div.searchbox-filter-combo-title-entry {
+    background-color: var(--list-section-bg-color);
+    color: var(--list-section-text-color);
+    font-weight: bold;
+    padding: 0.25em;
+    margin: -0.25em;
 }

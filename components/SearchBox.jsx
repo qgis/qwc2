@@ -28,6 +28,7 @@ import Icon from './Icon';
 import InputContainer from './InputContainer';
 import Spinner from './Spinner';
 import ButtonBar from './widgets/ButtonBar';
+import ComboBox from './widgets/ComboBox';
 import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -163,27 +164,27 @@ class SearchBox extends React.Component {
         }
         const haveFulltext = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr");
         const providerSelection = (
-            <select onChange={ev => this.setState({selectedProvider: ev.target.value})} value={this.state.selectedProvider}>
-                <option value="">{LocaleUtils.tr("search.all")}</option>
+            <ComboBox onChange={ev => this.setState({selectedProvider: ev.target.value})} value={this.state.selectedProvider}>
+                <div value="">{LocaleUtils.tr("search.all")}</div>
                 {haveFulltext ? (<option value="__fulltext">{LocaleUtils.tr("search.solr")}</option>) : null}
                 {Object.entries(this.props.searchProviders).map(([key, prov]) => (
-                    <option key={key} value={key}>{prov?.params?.title || (prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label)}</option>
+                    <div key={key} value={key}>{prov?.params?.title || (prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label)}</div>
                 ))}
-            </select>
+            </ComboBox>
         );
         let searchRegionSelection = null;
         const searchRegions = ConfigUtils.getConfigProp("searchFilterRegions", this.props.theme);
         if (!isEmpty(searchRegions)) {
             searchRegionSelection = (
-                <select onChange={(ev) => this.setFilterRegion(ev.target.value, searchRegions)} value={this.state.selectedFilterRegion?.value || ""}>
-                    <option value="">{LocaleUtils.tr("search.none")}</option>
+                <ComboBox onChange={(ev) => this.setFilterRegion(ev.target.value, searchRegions)} value={this.state.selectedFilterRegion?.value || ""}>
+                    <div value="">{LocaleUtils.tr("search.none")}</div>
                     {searchRegions.map((group, gidx) => ([
-                        (<option disabled key={"group" + gidx}>{group.name}</option>),
+                        (<div className="searchbox-filter-combo-title-entry" disabled key={"group" + gidx}>{group.name}</div>),
                         ...group.items.map((item, idx) => (
-                            <option key={item.name} value={gidx + ":" + idx + ":" + item.name}>{item.name}</option>
+                            <div key={item.name} value={gidx + ":" + idx + ":" + item.name}>{item.name}</div>
                         ))
                     ]))}
-                </select>
+                </ComboBox>
             );
         }
         const filterButtons = [
