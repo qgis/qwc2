@@ -156,9 +156,7 @@ button.button > * {
 }
 
 button.button:not(:disabled):active > * {
-    position: relative!important;
-    left: 1px;
-    top: 1px;
+    transform: translateX(1px) translateY(1px);
 }
 
 button.button > span:not(.icon) {
