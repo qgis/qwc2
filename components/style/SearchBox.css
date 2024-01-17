@@ -133,7 +133,7 @@ div.searchbox-filter-options {
     position: absolute;
     left: 0;
     top: 100%;
-    width: 100%;
+    min-width: 100%;
     background-color: var(--container-bg-color);
     border-left: 1px solid var(--border-color);
     border-right: 1px solid var(--border-color);
