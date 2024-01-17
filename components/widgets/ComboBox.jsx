@@ -15,7 +15,7 @@ import './style/ComboBox.css';
 
 export default class ComboBox extends React.Component {
     static propTypes = {
-        children: PropTypes.array,
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.array]),
         className: PropTypes.string,
         menuClassName: PropTypes.string,
         onChange: PropTypes.func,
