@@ -374,6 +374,8 @@ def getTheme(config, configItem, result, resultItem):
                 labels = [composerLabel.getAttribute("name") for composerLabel in composerLabels]
                 if "printLabelBlacklist" in configItem:
                     labels = list(filter(lambda label: label not in configItem["printLabelBlacklist"], labels))
+                .
+                p0rintTemplate['default'] = printTemplate['name'] == configItem.get('defaultPrintLayout')
 
                 if labels:
                     printTemplate["labels"] = labels
