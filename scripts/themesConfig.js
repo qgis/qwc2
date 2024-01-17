@@ -392,6 +392,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                             return entry.$.name;
                         }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
                     }
+                    printTemplate.default = configItem.defaultPrintLayout === printTemplate.name;
                     if (composerTemplate.$.atlasEnabled === '1') {
                         const atlasLayer = composerTemplate.$.atlasCoverageLayer;
                         try {
