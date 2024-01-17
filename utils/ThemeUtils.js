@@ -218,7 +218,7 @@ const ThemeUtils = {
     },
     getThemeNames(themes) {
         const names = (themes.items || []).reduce((res, theme) => ({...res, [theme.id]: theme.title}), {});
-        (themes.groups || []).forEach(group => {
+        (themes.subdirs || []).forEach(group => {
             Object.assign(names, ThemeUtils.getThemeNames(group));
         });
         return names;
