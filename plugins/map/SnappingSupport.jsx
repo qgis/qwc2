@@ -38,20 +38,15 @@ class SnappingSupport extends React.Component {
         reqId: null, // FeatureInfo request ID
         invalid: true, // Whether the feature cache needs to be rebuilt
         havesnaplayers: false, // Whether there are any snaplayers
-        active: true, // Whether the interaction is active
-        drawing: false, // WHether a drawing interaction is active,
-        snapedge: true,
-        snapvertex: true
+        drawing: false // Whether a drawing interaction is active,
     };
     constructor(props) {
         super(props);
         this.source = new ol.source.Vector();
-        this.state.snapEdge = props.mapObj.snapping.active === true || props.mapObj.snapping.active === 'edge';
-        this.state.snapVertex = props.mapObj.snapping.active === true || props.mapObj.snapping.active === 'vertex';
         this.snapInteraction = new SnapInteraction({
             source: this.source,
-            edge: this.state.snapEdge,
-            vertex: this.state.snapVertex
+            edge: this.snapToEdge(props.mapObj.snapping),
+            vertex: this.snapToVertex(props.mapObj.snapping)
         });
         this.snapInteraction.setActive(this.props.mapObj.snapping.active);
         this.inEventHandler = false;
@@ -82,25 +77,21 @@ class SnappingSupport extends React.Component {
         }
         if (this.props.mapObj.snapping.active !== prevProps.mapObj.snapping.active || this.state.drawing !== prevState.drawing) {
             this.snapInteraction.setActive(this.props.mapObj.snapping.active !== false);
-            this.snapInteraction.setSnapEdge(this.props.mapObj.snapping.active === true || this.props.mapObj.snapping.active === 'edge');
-            this.snapInteraction.setSnapVertex(this.props.mapObj.snapping.active === true || this.props.mapObj.snapping.active === 'vertex');
+            this.snapInteraction.setSnapEdge(this.snapToEdge(this.props.mapObj.snapping));
+            this.snapInteraction.setSnapVertex(this.snapToVertex(this.props.mapObj.snapping));
             if (this.props.mapObj.snapping.active) {
                 this.refreshFeatureCache();
             }
         }
     }
     render() {
-        if (!this.state.drawing) {
+        if (!this.state.drawing || !this.props.mapObj.snapping.enabled) {
             return null;
         }
-        if (isEmpty(this.props.theme.snapping) && !["Redlining", "ScratchDrawing", "Measure"].includes(this.props.task)) {
-            // Don't display snapping control if no snapping is configuted for current theme
-            return null;
-        }
-        const disabled = !this.state.havesnaplayers && !["Redlining", "ScratchDrawing"].includes(this.props.task);
+        const disabled = !this.state.havesnaplayers || this.props.mapObj.snapping.active === false;
         const toolbarClass = disabled ? "snapping-toolbar-inactive" : "";
-        const snapEdge = this.props.mapObj.snapping.active === true || this.props.mapObj.snapping.active === 'edge';
-        const snapVertex = this.props.mapObj.snapping.active === true || this.props.mapObj.snapping.active === 'vertex';
+        const snapEdge = this.snapToEdge(this.props.mapObj.snapping);
+        const snapVertex = this.snapToVertex(this.props.mapObj.snapping);
         return (
             <div className="snapping-toolbar-container">
                 <div className={toolbarClass}>
@@ -108,10 +99,10 @@ class SnappingSupport extends React.Component {
                         <Spinner/>
                     ) : (
                         <span>
-                            <button className={"button" + (snapVertex ? " pressed" : "")} disabled={disabled} onClick={() => this.toggleSnap('vertex')} title={LocaleUtils.tr("snapping.vertex")}>
+                            <button className={"button" + (snapVertex ? " pressed" : "")} onClick={() => this.toggleSnap('vertex')} title={LocaleUtils.tr("snapping.vertex")}>
                                 <Icon icon="snap_vertex" size="large" />
                             </button>
-                            <button className={"button" + (snapEdge ? " pressed" : "")} disabled={disabled} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
+                            <button className={"button" + (snapEdge ? " pressed" : "")} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
                                 <Icon icon="snap_edge" size="large" />
                             </button>
                         </span>
@@ -122,24 +113,36 @@ class SnappingSupport extends React.Component {
             </div>
         );
     }
+    snapToEdge = (snappingConfig) => {
+        return snappingConfig.active === true || snappingConfig.active === 'edge';
+    };
+    snapToVertex = (snappingConfig) => {
+        return snappingConfig.active === true || snappingConfig.active === 'vertex';
+    };
     toggleSnap = (mode) => {
-        this.setState((state) => {
-            const key = "snap" + mode;
-            const newState = {
-                ...state,
-                [key]: !state[key]
-            };
-            let active = false;
-            if (newState.snapedge && newState.snapvertex) {
+        let active = this.props.mapObj.snapping.active;
+        if (mode === 'edge') {
+            if (active === true) {
+                active = 'vertex';
+            } else if (active === 'edge') {
+                active = false;
+            } else if (active === 'vertex') {
                 active = true;
-            } else if (newState.snapedge) {
+            } else {
                 active = 'edge';
-            } else if (newState.snapvertex) {
+            }
+        } else if (mode === 'vertex') {
+            if (active === true) {
+                active = 'edge';
+            } else if (active === 'vertex') {
+                active = false;
+            } else if (active === 'edge') {
+                active = true;
+            } else {
                 active = 'vertex';
             }
-            this.props.setSnappingConfig(true, active);
-            return newState;
-        });
+        }
+        this.props.setSnappingConfig(true, active);
     };
     handleInteractionAdded = (ev) => {
         if (this.inEventHandler) {
