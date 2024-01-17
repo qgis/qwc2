@@ -51,14 +51,14 @@ export default class ComboBox extends React.Component {
                 </div>
                 {this.el && this.state.popup ? (
                     <PopupMenu className={"combobox-menu" + (this.props.menuClassName ? " " + this.props.menuClassName : "")} onClose={() => this.setState({popup: false})} width={rect.width} x={rect.left} y={rect.bottom}>
-                        {children.map(child => {
+                        {children.map((child, idx) => {
                             const classNames = classnames({
                                 "combobox-menu-entry": true,
                                 "combobox-menu-entry-active": child.props.value === this.props.value && !child.props.disabled,
                                 "combobox-menu-entry-disabled": child.props.disabled
                             });
                             return (
-                                <div className={classNames} key={child.props.value} onClickCapture={() => this.onChildClicked(child)}>
+                                <div className={classNames} key={"child:" + idx} onClickCapture={() => this.onChildClicked(child)}>
                                     {child}
                                 </div>
                             );
