@@ -432,10 +432,17 @@ class Print extends React.Component {
                     </tr>
                 );
             } else {
+                const style = {};
+                if (opts.rows || opts.cols) {
+                    style.resize = 'none';
+                }
+                if (opts.rows) {
+                    style.width = 'initial';
+                }
                 return (
                     <tr key={"label." + label}>
                         <td>{MiscUtils.capitalizeFirst(label)}</td>
-                        <td><textarea {...opts} defaultValue={defaultValue} readOnly={autopopulated} /></td>
+                        <td><textarea {...opts} defaultValue={defaultValue} readOnly={autopopulated} style={style} /></td>
                     </tr>
                 );
             }
