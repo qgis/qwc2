@@ -94,8 +94,6 @@ class SearchBox extends React.Component {
         this.searchBox = null;
         this.searchTimeout = null;
         this.preventBlur = false;
-        this.state.searchText = UrlParams.getParam('st') || "";
-        UrlParams.updateParams({st: undefined});
     }
     componentDidUpdate(prevProps, prevState) {
         // Restore highlight from URL as soon as theme is loaded
@@ -103,6 +101,7 @@ class SearchBox extends React.Component {
             const hp = UrlParams.getParam('hp');
             const hf = UrlParams.getParam('hf');
             const ht = UrlParams.getParam('ht') || "";
+            const st = UrlParams.getParam('st');
             if (hp && hf) {
                 const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
                 axios.get(DATA_URL + "/" + hp + "/?filter=" + hf).then(response => {
@@ -130,8 +129,10 @@ class SearchBox extends React.Component {
                         this.setState({searchText: ht});
                     }
                 }).catch(() => {});
+            } else if (st) {
+                this.setState({searchText: st}, this.startSearch);
             }
-            UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined});
+            UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined, st: undefined});
         } else if (this.props.theme !== prevProps.theme) {
             this.clear();
         }
@@ -156,6 +157,19 @@ class SearchBox extends React.Component {
                 }
             }
             this.setState({searchFilter: [...new Set(searchFilter)].join(",")});
+        }
+        // Select single search result
+        if (this.state.pendingSearches.length === 0 && prevState.pendingSearches.length > 0) {
+            const uniqueResults = Object.entries(this.state.searchResults).filter(([key, value]) => value.tot_result_count === 1);
+            // If a single result is returned, select it immediately if it is a feature or provider result
+            if (uniqueResults.length === 1) {
+                const uniqueResult = uniqueResults[0];
+                if (uniqueResult[0] === "__fulltext" && uniqueResult[1].results[0].feature) {
+                    this.selectFeatureResult(uniqueResult[1].results[0].feature);
+                } else if (uniqueResults[0] !== "__fulltext" && uniqueResult[1].results[0].items[0].bbox) {
+                    this.selectProviderResult(uniqueResult[1].results[0], uniqueResult[1].results[0].items[0], uniqueResult[0]);
+                }
+            }
         }
     }
     renderFilterOptions = () => {
@@ -702,20 +716,6 @@ class SearchBox extends React.Component {
             }
             const pendingSearches = state.pendingSearches.filter(entry => entry !== searchId);
             const searchResults = {...state.searchResults, [searchId]: results};
-            if (isEmpty(pendingSearches)) {
-                const uniqueResults = Object.entries(searchResults).filter((key, value) => { value.tot_result_count === 1; });
-                // If a single result is returned, select it immediately if it is a feature or provider result
-                if (uniqueResults.length === 1) {
-                    const uniqueResult = uniqueResults[0];
-                    if (uniqueResult[0] === "__fulltext" && uniqueResult[1].feature) {
-                        this.selectFeatureResult(uniqueResult[1].feature);
-                        this.blur();
-                    } else if (uniqueResults[0] !== "__fulltext" && uniqueResults[1][0].items[0].bbox) {
-                        this.selectProviderResult(uniqueResults[1][0], uniqueResults[1][0].items[0], uniqueResult[0]);
-                        this.blur();
-                    }
-                }
-            }
             return {
                 searchResults: searchResults,
                 pendingSearches: pendingSearches
