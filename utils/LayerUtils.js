@@ -61,7 +61,7 @@ const LayerUtils = {
                     entry.sublayer.tristate = layerConfig.tristate;
                     entry.sublayer.style = layerConfig.style;
                     if (!entry.sublayer.style) {
-                        entry.sublayer.style = Object.keys(entry.sublayer.styles)[0];
+                        entry.sublayer.style = !isEmpty(entry.sublayer.styles) ? Object.keys(entry.sublayer.styles)[0] : "";
                     }
                     reordered.push(entry);
                 }
