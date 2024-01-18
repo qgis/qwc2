@@ -29,6 +29,7 @@ import InputContainer from './InputContainer';
 import Spinner from './Spinner';
 import ButtonBar from './widgets/ButtonBar';
 import ComboBox from './widgets/ComboBox';
+import NumberInput from './widgets/NumberInput';
 import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -225,6 +226,12 @@ class SearchBox extends React.Component {
                                 </div>
                             </td>
                         </tr>
+                        {this.props.selection.geomType === 'Circle' ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("search.circleradius")}:</td>
+                                <td><NumberInput disabled={!this.props.selection.circle} min={1} onChange={this.setCircleRadius} type="text" value={this.props.selection.circle?.radius || 0}/> m</td>
+                            </tr>
+                        ) : null}
                     </tbody>
                 </table>
             </div>
@@ -259,6 +266,15 @@ class SearchBox extends React.Component {
             this.setState({selectedFilterRegion: null});
         }
         this.props.changeSelectionState({geomType: null});
+    };
+    setCircleRadius = (value) => {
+        this.props.changeSelectionState({
+            ...this.props.selection,
+            circle: {
+                ...this.props.selection.circle,
+                radius: value
+            }
+        });
     };
     clearFilter = () => {
         this.props.changeSelectionState({geomType: null});

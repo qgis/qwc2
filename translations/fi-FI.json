@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Kaikki",
+      "circleradius": "",
       "clearfilter": "",
       "enablelayer": "Aktivoi taso",
       "existinglayer": "Taso on jo lisätty karttaan",

@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Tot",
+      "circleradius": "",
       "clearfilter": "",
       "enablelayer": "Habilitar capa",
       "existinglayer": "La capa ja existeix en el mapa",

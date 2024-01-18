@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Vše",
+      "circleradius": "",
       "clearfilter": "",
       "enablelayer": "Zapnout vrstvu",
       "existinglayer": "Vrstva v mapě již existuje",

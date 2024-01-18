@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Alle",
+      "circleradius": "",
       "clearfilter": "",
       "enablelayer": "Aktiver lag",
       "existinglayer": "Laget finnes allerede på kartet",

@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Toate",
+      "circleradius": "",
       "clearfilter": "",
       "enablelayer": "Activare strat",
       "existinglayer": "Stratul există deja în hartă",

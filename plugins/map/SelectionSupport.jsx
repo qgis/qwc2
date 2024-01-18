@@ -13,8 +13,8 @@ import {connect} from 'react-redux';
 import ol from 'openlayers';
 import {changeSelectionState} from '../../actions/selection';
 import FeatureStyles from '../../utils/FeatureStyles';
-import './style/SelectionSupport.css';
 import MeasureUtils from '../../utils/MeasureUtils';
+import './style/SelectionSupport.css';
 
 
 class SelectionSupport extends React.Component {
@@ -24,6 +24,10 @@ class SelectionSupport extends React.Component {
         projection: PropTypes.string,
         selection: PropTypes.object
     };
+    constructor(props) {
+        super(props);
+        this.layerSource = null;
+    }
     componentDidUpdate(prevProps) {
         if (this.props.selection.geomType && this.props.selection.geomType !== prevProps.selection.geomType ) {
             this.addDrawInteraction(this.props);
@@ -43,6 +47,15 @@ class SelectionSupport extends React.Component {
                 styleOptions: prevProps.selection.styleOptions
             });
         }
+
+        // Geometry specific handling
+        if (this.props.selection.circle && this.props.selection.circle.radius !== prevProps.selection.circle?.radius && !this.props.selection.internalStateUpdate) {
+
+            const feature = this.layerSource.getFeatures()[0];
+            if (feature) {
+                feature.getGeometry().setRadius(this.props.selection.circle.radius);
+            }
+        }
     }
     render() {
         return null;
@@ -53,9 +66,9 @@ class SelectionSupport extends React.Component {
             this.removeDrawInteraction();
         }
         // create a layer to draw on
-        const source = new ol.source.Vector();
+        this.layerSource = new ol.source.Vector();
         const vector = new ol.layer.Vector({
-            source: source,
+            source: this.layerSource,
             zIndex: 1000000,
             style: feature => FeatureStyles[newProps.selection.style](feature, newProps.selection.styleOptions)
         });
@@ -86,7 +99,7 @@ class SelectionSupport extends React.Component {
             // create an interaction to draw with
             interaction = new ol.interaction.Draw({
                 stopClick: true,
-                source: source,
+                source: this.layerSource,
                 condition: event => event.originalEvent.buttons === 1,
                 type: typeMap[this.props.selection.geomType],
                 style: feature => FeatureStyles.default(feature, {circleRadius: 0}),
@@ -95,7 +108,7 @@ class SelectionSupport extends React.Component {
 
             interaction.on('drawstart', (evt) => {
                 // clear previous sketches
-                source.clear();
+                this.layerSource.clear();
                 evt.feature.on('change', () => this.updateMeasurements(evt.feature));
             }, this);
             interaction.on('drawend', (evt) => {
@@ -116,6 +129,7 @@ class SelectionSupport extends React.Component {
             this.props.map.removeInteraction(this.drawInteraction);
             this.drawInteraction = null;
             this.props.map.removeLayer(this.selectionLayer);
+            this.layerSource = null;
         }
         this.props.map.getViewport().style.cursor = '';
     };
@@ -149,7 +163,7 @@ class SelectionSupport extends React.Component {
             const deg2rad = Math.PI / 180;
             newSelectionState.polygon = Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]));
         }
-        this.props.changeSelectionState(newSelectionState);
+        this.props.changeSelectionState(newSelectionState,  true);
     };
     updateMeasurements = (feature) => {
         if (!this.props.selection.measure) {

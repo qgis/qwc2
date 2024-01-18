@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Todos",
+      "circleradius": "",
       "clearfilter": "",
       "enablelayer": "Ativar a camada",
       "existinglayer": "A camada já existe no mapa",

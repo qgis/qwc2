@@ -20,6 +20,7 @@ export default function selection(state = defaultState, action) {
     case CHANGE_SELECTION_STATE: {
         return {
             ...state,
+            internalStateUpdate: action.internalStateUpdate,
             geomType: action.geomType,
             measure: action.measure || false,
             active: action.active ?? true,

@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Tutti",
+      "circleradius": "Raggio del cerchio",
       "clearfilter": "Azzera",
       "enablelayer": "Attivare il livello",
       "existinglayer": "Il livello esiste già nella mappa",

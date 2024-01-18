@@ -12,9 +12,10 @@ ReducerIndex.register("selection", selectionReducer);
 
 export const CHANGE_SELECTION_STATE = 'CHANGE_SELECTION_STATE';
 
-export function changeSelectionState(selectionState) {
+export function changeSelectionState(selectionState, internalStateUpdate = false) {
     return {
         type: CHANGE_SELECTION_STATE,
+        internalStateUpdate: internalStateUpdate,
         geomType: selectionState.geomType,
         active: selectionState.active,
         measure: selectionState.measure,

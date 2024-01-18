@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Alle",
+      "circleradius": "Kreisradius",
       "clearfilter": "Zurücksetzen",
       "enablelayer": "Ebene einschalten",
       "existinglayer": "Die Ebene existiert bereits in der Karte",

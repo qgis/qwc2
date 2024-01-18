@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Tous",
+      "circleradius": "Rayon du cercle",
       "clearfilter": "Effaccer",
       "enablelayer": "Activer la couche",
       "existinglayer": "La couche existe déjà dans la carte",

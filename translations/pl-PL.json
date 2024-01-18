@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Wszystko",
+      "circleradius": "",
       "clearfilter": "",
       "enablelayer": "Włącz warstwę",
       "existinglayer": "",

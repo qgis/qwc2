@@ -396,6 +396,7 @@
     },
     "search": {
       "all": "Tümü",
+      "circleradius": "",
       "clearfilter": "",
       "enablelayer": "Geçerli katman",
       "existinglayer": "Katman zaten haritada mevcut",
