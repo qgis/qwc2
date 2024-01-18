@@ -69,6 +69,14 @@ class HeightProfilePrintDialog extends React.PureComponent {
         this.externalWindow = window.open(templatePath, LocaleUtils.tr("heightprofile.title"), "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
         this.externalWindow.addEventListener('load', this.setWindowContent, false);
         this.externalWindow.addEventListener('resize', this.windowResized, false);
+        window.addEventListener('beforeunload', this.closePrintWindow);
+    }
+    componentWillUnmount() {
+        this.closePrintWindow();
+        window.removeEventListener('beforeunload', this.closePrintWindow);
+    }
+    closePrintWindow = () => {
+        this.externalWindow.close();
     }
     setWindowContent = () => {
         this.externalWindow.addEventListener('beforeunload', this.props.onClose, false);
@@ -93,9 +101,6 @@ class HeightProfilePrintDialog extends React.PureComponent {
             this.chart.resize();
         }
     };
-    componentWillUnmount() {
-        this.externalWindow.close();
-    }
     render() {
         if (!this.state.portalEl) {
             return null;
@@ -147,11 +152,6 @@ class HeightProfile extends React.Component {
         super(props);
         this.chart = null;
         this.profilePrintWindow = null;
-        window.addEventListener('beforeunload', () => {
-            if (this.profilePrintWindow && !this.profilePrintWindow.closed) {
-                this.profilePrintWindow.close();
-            }
-        });
     }
     componentDidUpdate(prevProps) {
         if (this.props.measurement.coordinates !== prevProps.measurement.coordinates) {
