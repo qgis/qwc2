@@ -131,7 +131,7 @@ class SearchBox extends React.Component {
                     }
                 }).catch(() => {});
             } else if (st) {
-                this.setState({searchText: st}, this.startSearch);
+                this.setState({searchText: st}, () => this.startSearch(true));
             }
             UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined, st: undefined});
         } else if (this.props.theme !== prevProps.theme) {
@@ -160,7 +160,7 @@ class SearchBox extends React.Component {
             this.setState({searchFilter: [...new Set(searchFilter)].join(",")});
         }
         // Select single search result
-        if (this.state.pendingSearches.length === 0 && prevState.pendingSearches.length > 0) {
+        if (this.state.pendingSearches.length === 0 && prevState.pendingSearches.length > 0 && this.state.searchResults.zoomToUniqueResult) {
             const uniqueResults = Object.entries(this.state.searchResults).filter(([key, value]) => value.tot_result_count === 1);
             // If a single result is returned, select it immediately if it is a feature or provider result
             if (uniqueResults.length === 1) {
@@ -602,7 +602,7 @@ class SearchBox extends React.Component {
         this.props.changeSelectionState({geomType: null});
         UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
     };
-    startSearch = () => {
+    startSearch = (zoomToUniqueResult = false) => {
         let availableProviders = this.props.searchProviders;
         let fulltextSearchEnabled = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr");
         if (this.state.selectedProvider) {
@@ -631,7 +631,7 @@ class SearchBox extends React.Component {
         }
         pendingSearches.push(...Object.keys(availableProviders));
         this.setState({
-            searchResults: {query_text: searchText},
+            searchResults: {query_text: searchText, zoomToUniqueResult: zoomToUniqueResult},
             searchSession: searchSession,
             pendingSearches: pendingSearches
         });
