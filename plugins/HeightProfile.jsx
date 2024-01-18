@@ -30,8 +30,11 @@ import {changeMeasurementState} from '../actions/measurement';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
+import MiscUtils from '../utils/MiscUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/HeightProfile.css';
 
@@ -46,19 +49,25 @@ ChartJS.register(
     BubbleController
 );
 
-class HeightProfilePrintDialog extends React.PureComponent {
+class HeightProfilePrintDialog_ extends React.PureComponent {
     static propTypes = {
         children: PropTypes.func,
+        layers: PropTypes.array,
+        map: PropTypes.object,
+        measurement: PropTypes.object,
         onClose: PropTypes.func,
-        templatePath: PropTypes.string
+        templatePath: PropTypes.string,
+        theme: PropTypes.object
     };
     constructor(props) {
         super(props);
         this.externalWindow = null;
         this.chart = null;
+        this.portalEl = null;
+        this.imageEl = null;
     }
     state = {
-        portalEl: null
+        initialized: false
     };
     componentDidMount() {
         let templatePath = this.props.templatePath;
@@ -71,6 +80,11 @@ class HeightProfilePrintDialog extends React.PureComponent {
         this.externalWindow.addEventListener('resize', this.windowResized, false);
         window.addEventListener('beforeunload', this.closePrintWindow);
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.layers !== prevProps.layers || this.props.map !== prevProps.map || (this.state.initialized && !prevState.initialized)) {
+            this.refreshImage();
+        }
+    }
     componentWillUnmount() {
         this.closePrintWindow();
         window.removeEventListener('beforeunload', this.closePrintWindow);
@@ -82,19 +96,54 @@ class HeightProfilePrintDialog extends React.PureComponent {
         this.externalWindow.addEventListener('beforeunload', this.props.onClose, false);
         const container = this.externalWindow.document.getElementById("heightprofilecontainer");
         if (container) {
-            const portalEl = this.externalWindow.document.createElement('div');
-            container.appendChild(portalEl);
+            this.imageEl = this.externalWindow.document.createElement('div');
+            this.imageEl.id = 'map';
+            container.appendChild(this.imageEl);
+
+            this.portalEl = this.externalWindow.document.createElement('div');
+            this.portalEl.id = 'profile';
+            container.appendChild(this.portalEl);
+
             const printBtn = this.externalWindow.document.createElement('div');
             printBtn.id = "print";
             printBtn.innerHTML = '<style type="text/css">@media print{ #print { display: none; }}</style>' +
                 '<button onClick="(function(){window.print();})()">' + LocaleUtils.tr("heightprofile.print") + '</button>' +
                 '</div>';
             container.appendChild(printBtn);
-            this.setState({portalEl});
+            this.setState({initialized: true});
             this.externalWindow.document.body.style.overflow = 'hidden';
         } else {
             this.externalWindow.document.body.innerHTML = "Broken template. An element with id=heightprofilecontainer must exist.";
         }
+    };
+    refreshImage = () => {
+        const geom = {
+            coordinates: this.props.measurement.coordinates,
+            type: 'LineString'
+        };
+        const styleOptions = {
+            strokeColor: [255, 0, 0, 1],
+            strokeWidth: 4
+        };
+
+        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, true, false);
+        const imageParams = {
+            SERVICE: 'WMS',
+            VERSION: '1.3.0',
+            REQUEST: 'GetMap',
+            TRANSPARENT: 'true',
+            TILED: 'false',
+            CRS: this.props.map.projection,
+            BBOX: this.props.map.bbox.bounds,
+            WIDTH: this.props.map.size.width,
+            HEIGHT: this.props.map.size.height,
+            HIGHLIGHT_GEOM: VectorLayerUtils.geoJSONGeomToWkt(geom, this.props.map.projection === "EPSG:4326" ? 4 : 2),
+            HIGHLIGHT_SYMBOL: VectorLayerUtils.createSld('LineString', 'default', styleOptions, 255),
+            csrf_token: MiscUtils.getCsrfToken(),
+            ...exportParams
+        };
+        const url = this.props.theme.url.split("?")[0] + "?" + Object.entries(imageParams).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+        this.imageEl.innerHTML = `<img src="${url}" style="width: 100%" />`;
     };
     windowResized = () => {
         if (this.chart) {
@@ -102,12 +151,19 @@ class HeightProfilePrintDialog extends React.PureComponent {
         }
     };
     render() {
-        if (!this.state.portalEl) {
+        if (!this.state.initialized) {
             return null;
         }
-        return ReactDOM.createPortal(this.props.children(el => {this.chart = el;}, false), this.state.portalEl);
+        return ReactDOM.createPortal(this.props.children(el => {this.chart = el;}, false), this.portalEl);
     }
 }
+
+const HeightProfilePrintDialog = connect((state) => ({
+    layers: state.layers.flat,
+    map: state.map,
+    theme: state.theme.current
+}), {
+})(HeightProfilePrintDialog_);
 
 /**
  * Displays a height profile along a measured line.
@@ -229,7 +285,7 @@ class HeightProfile extends React.Component {
             </ResizeableWindow>
         ),
         this.state.printdialog ? (
-            <HeightProfilePrintDialog key="ProfilePrintDialog" onClose={() => this.setState({printdialog: false})} templatePath={this.props.templatePath}>
+            <HeightProfilePrintDialog key="ProfilePrintDialog" measurement={this.props.measurement} onClose={() => this.setState({printdialog: false})} templatePath={this.props.templatePath}>
                 {this.renderHeightProfile}
             </HeightProfilePrintDialog>
         ) : null];
