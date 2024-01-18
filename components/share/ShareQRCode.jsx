@@ -23,8 +23,9 @@ export default class ShareQRCode extends React.Component {
             <div className="qr-code">
                 <h4>
                     {LocaleUtils.tr("share.QRCodeLinkTitle")}
-                    {canCopy ? (<CopyButton buttonClass="qr-code-copy-button" getClipboardData={this.getClipboardData} />) : null}
                 </h4>
+                {canCopy ? (<CopyButton buttonClass="qr-code-copy-button" getClipboardData={this.getClipboardData} />) : null}
+                <br />
                 <QRCodeCanvas id="qwc2-share-qr-canvas" size={128} value={this.props.shareUrl} />
             </div>
         );
