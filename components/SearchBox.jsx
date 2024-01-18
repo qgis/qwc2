@@ -88,7 +88,8 @@ class SearchBox extends React.Component {
         activeLayerInfo: null,
         filterOptionsVisible: false,
         selectedProvider: "",
-        selectedFilterRegion: null
+        selectedFilterRegion: null,
+        comesFromUrl: undefined
     };
     constructor(props) {
         super(props);
@@ -131,7 +132,7 @@ class SearchBox extends React.Component {
                     }
                 }).catch(() => {});
             } else if (st) {
-                this.setState({searchText: st}, this.startSearch);
+                this.setState({searchText: st, comesFromUrl: true}, this.startSearch);
             }
             UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined, st: undefined});
         } else if (this.props.theme !== prevProps.theme) {
@@ -167,7 +168,8 @@ class SearchBox extends React.Component {
                 const uniqueResult = uniqueResults[0];
                 if (uniqueResult[0] === "__fulltext" && uniqueResult[1].results[0].feature) {
                     this.selectFeatureResult(uniqueResult[1].results[0].feature);
-                } else if (uniqueResults[0] !== "__fulltext" && uniqueResult[1].results[0].items[0].bbox) {
+                } else if (uniqueResults[0] !== "__fulltext" && uniqueResult[1].results[0].items[0].bbox && this.state.comesFromUrl == true) {
+                    this.setState({comesFromUrl: undefined});
                     this.selectProviderResult(uniqueResult[1].results[0], uniqueResult[1].results[0].items[0], uniqueResult[0]);
                 }
             }
