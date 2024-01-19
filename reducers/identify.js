@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {SET_IDENTIFY_TOOL, OPEN_IDENTIFY_TOOL, SET_FORCE_OPEN} from '../actions/identify';
+import {SET_IDENTIFY_TOOL, IDENTIFY_PREV_CLICK, SET_FORCE_OPEN} from '../actions/identify';
 
 const defaultState = {
     tool: null
@@ -17,8 +17,8 @@ export default function identify(state = defaultState, action) {
     case SET_IDENTIFY_TOOL: {
         return {...state, tool: action.tool};
     }
-    case OPEN_IDENTIFY_TOOL: {
-        return {...state, tool: 'Identify', forceOpen: action.forceOpen};
+    case IDENTIFY_PREV_CLICK: {
+        return {...state, tool: 'Identify', forceOpen: action.forceOpen, exitTaskOnResultsClose: action.exitTaskOnResultsClose};
     }
     case SET_FORCE_OPEN: {
         return {...state, forceOpen: action.forceOpen};

@@ -23,6 +23,7 @@ import TaskBar from '../components/TaskBar';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+import ConfigUtils from '../utils/ConfigUtils';
 
 import './style/Identify.css';
 
@@ -436,7 +437,8 @@ const selector = (state) => ({
     layers: state.layers.flat,
     map: state.map,
     selection: state.selection,
-    forceOpen: state.identify.forceOpen
+    forceOpen: state.identify.forceOpen,
+    exitTaskOnResultsClose: state.localConfig.plugins.desktop.find(x => x.name === "Identify").cfg.exitTaskOnResultsClose || state.identify.exitTaskOnResultsClose
 });
 
 export default connect(selector, {
