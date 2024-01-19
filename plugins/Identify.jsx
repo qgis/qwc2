@@ -396,6 +396,7 @@ class Identify extends React.Component {
                         customExporters={this.props.customExporters}
                         displayResultTree={this.props.displayResultTree}
                         enableExport={this.props.enableExport}
+                        exportGeometry={this.props.exportGeometry}
                         identifyResults={this.state.identifyResults}
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
