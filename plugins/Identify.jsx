@@ -16,6 +16,7 @@ import { point as turfpoint } from "@turf/helpers";
 import {LayerRole, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import {changeSelectionState} from '../actions/selection';
 import {setCurrentTask} from '../actions/task';
+import {setForceOpen} from '../actions/identify';
 import IdentifyViewer from '../components/IdentifyViewer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
@@ -85,7 +86,8 @@ class Identify extends React.Component {
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        setForceOpen: PropTypes.func
     };
     static defaultProps = {
         enableExport: true,
@@ -174,8 +176,11 @@ class Identify extends React.Component {
         }
     };
     queryPoint = (prevProps) => {
-        if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(feature => feature.id === 'startupposmarker')) {
+        if (!this.props.forceOpen && (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(feature => feature.id === 'startupposmarker'))) {
             return null;
+        }
+        if (this.props.forceOpen) {
+            this.props.setForceOpen(false);
         }
         const searchMarker = (this.props.click.features || []).find(feature => feature.id === 'searchmarker');
         if (searchMarker) {
@@ -430,7 +435,8 @@ const selector = (state) => ({
     currentIdentifyTool: state.identify.tool,
     layers: state.layers.flat,
     map: state.map,
-    selection: state.selection
+    selection: state.selection,
+    forceOpen: state.identify.forceOpen
 });
 
 export default connect(selector, {
@@ -439,5 +445,6 @@ export default connect(selector, {
     changeSelectionState: changeSelectionState,
     removeMarker: removeMarker,
     removeLayer: removeLayer,
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    setForceOpen: setForceOpen
 })(Identify);

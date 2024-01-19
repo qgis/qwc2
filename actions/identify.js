@@ -13,6 +13,8 @@ ReducerIndex.register("identify", identifyReducer);
 import ConfigUtils from '../utils/ConfigUtils';
 
 export const SET_IDENTIFY_TOOL = 'SET_IDENTIFY_TOOL';
+export const OPEN_IDENTIFY_TOOL = 'OPEN_IDENTIFY_TOOL';
+export const SET_FORCE_OPEN = 'SET_FORCE_OPEN';
 
 export function setIdentifyEnabled(enabled, theme = null) {
     return (dispatch, getState) => {
@@ -22,5 +24,19 @@ export function setIdentifyEnabled(enabled, theme = null) {
             type: SET_IDENTIFY_TOOL,
             tool: enabled ? identifyTool : null
         });
+    };
+}
+
+export function openIdentifyTool() {
+    return {
+        type: OPEN_IDENTIFY_TOOL,
+        forceOpen: true
+    };
+}
+
+export function setForceOpen(enabled = true) {
+    return {
+        type: SET_FORCE_OPEN,
+        forceOpen: enabled
     };
 }
