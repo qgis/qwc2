@@ -263,7 +263,7 @@ class Print extends React.Component {
                                 <select onChange={this.changeLayout} value={this.state.layout.name}>
                                     {layouts.filter(l => l.map).map(item => {
                                         return (
-                                            <option key={item.name} value={item.name}>{item.name}</option>
+                                            <option key={item.name} value={item.name}>{item.name.split('/').pop()}</option>
                                         );
                                     })}
                                 </select>
