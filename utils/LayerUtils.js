@@ -382,7 +382,7 @@ const LayerUtils = {
                 // Prevent moving an entry out of a containing group
                 const idx = delta < 0 ? indices[0] : indices[indices.length - 1];
                 const level = sublayerpath.length;
-                if (level > exploded[idx + delta].path.length || !isEqual(exploded[idx + delta].path.slice(0, level - 1), sublayerpath.slice(0, -1))) {
+                if (level > exploded[idx + delta].path.length || (level > 0 && !isEqual(exploded[idx + delta].path.slice(0, level - 1), sublayerpath.slice(0, -1)))) {
                     return layers;
                 }
                 // Avoid splitting sibling groups when reordering
