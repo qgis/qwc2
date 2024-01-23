@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Icon from '../Icon';
 import PopupMenu from '../PopupMenu';
+import MiscUtils from '../../utils/MiscUtils';
 import './style/ComboBox.css';
 
 export default class ComboBox extends React.Component {
@@ -24,7 +25,8 @@ export default class ComboBox extends React.Component {
         value: PropTypes.string
     };
     state = {
-        popup: false
+        popup: false,
+        expanded: []
     };
     static defaultProps = {
         readOnly: false,
@@ -55,10 +57,18 @@ export default class ComboBox extends React.Component {
                             const classNames = classnames({
                                 "combobox-menu-entry": true,
                                 "combobox-menu-entry-active": child.props.value === this.props.value && !child.props.disabled,
-                                "combobox-menu-entry-disabled": child.props.disabled
+                                "combobox-menu-entry-disabled": child.props.disabled,
+                                "combobox-menu-entry-group-header": child.props["data-group-header"] !== undefined
                             });
+                            if (child.props["data-group"] !== undefined && !this.state.expanded.includes(child.props["data-group"])) {
+                                return null;
+                            }
+                            const expanderIcon = this.state.expanded.includes(child.props["data-group-header"]) ? "collapse" : "expand";
                             return (
-                                <div className={classNames} key={"child:" + idx} onClickCapture={() => this.onChildClicked(child)}>
+                                <div className={classNames} key={"child:" + idx} onClickCapture={(ev) => this.onChildClicked(ev, child)}>
+                                    {child.props["data-group-header"] !== undefined ? (
+                                        <Icon icon={expanderIcon} />
+                                    ) : null}
                                     {child}
                                 </div>
                             );
@@ -68,8 +78,18 @@ export default class ComboBox extends React.Component {
             </div>
         );
     }
-    onChildClicked = (child) => {
-        if (!child.props.disabled) {
+    onChildClicked = (ev, child) => {
+        if (child.props["data-group-header"] !== undefined) {
+            MiscUtils.killEvent(ev);
+            this.setState((state) => {
+                const groupid = child.props["data-group-header"];
+                if (state.expanded.includes(groupid)) {
+                    return {expanded: state.expanded.filter(x => x !== groupid)};
+                } else {
+                    return {expanded: [...state.expanded, groupid]};
+                }
+            });
+        } else if (!child.props.disabled) {
             this.props.onChange(child.props.value);
         }
     };

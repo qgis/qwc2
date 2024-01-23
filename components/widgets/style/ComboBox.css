@@ -57,3 +57,14 @@ div.combobox-menu-entry-active:hover {
 div.combobox-menu-entry-disabled {
     color: var(--text-color-disabled);
 }
+
+div.combobox-menu-entry-group-header {
+    display: flex;
+    background-color: var(--list-section-bg-color);
+    color: var(--list-section-text-color);
+    font-weight: bold;
+}
+
+div.combobox-menu-entry-group-header > span.icon {
+    flex: 0 0 auto;
+}
