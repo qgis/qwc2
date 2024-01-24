@@ -179,7 +179,7 @@ class SearchBox extends React.Component {
         }
         const haveFulltext = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr");
         const providerSelection = (
-            <ComboBox onChange={ev => this.setState({selectedProvider: ev.target.value})} value={this.state.selectedProvider}>
+            <ComboBox onChange={value => this.setState({selectedProvider: value})} value={this.state.selectedProvider}>
                 <div value="">{LocaleUtils.tr("search.all")}</div>
                 {haveFulltext ? (<option value="__fulltext">{LocaleUtils.tr("search.solr")}</option>) : null}
                 {Object.entries(this.props.searchProviders).map(([key, prov]) => (
@@ -191,12 +191,12 @@ class SearchBox extends React.Component {
         const searchRegions = ConfigUtils.getConfigProp("searchFilterRegions", this.props.theme);
         if (!isEmpty(searchRegions)) {
             searchRegionSelection = (
-                <ComboBox onChange={(ev) => this.setFilterRegion(ev.target.value, searchRegions)} value={this.state.selectedFilterRegion?.value || ""}>
+                <ComboBox onChange={value => this.setFilterRegion(value, searchRegions)} value={this.state.selectedFilterRegion?.value || ""}>
                     <div value="">{LocaleUtils.tr("search.none")}</div>
                     {searchRegions.map((group, gidx) => ([
-                        (<div className="searchbox-filter-combo-title-entry" disabled key={"group" + gidx}>{group.name}</div>),
+                        (<div data-group-header={gidx} disabled key={"group" + gidx}>{group.name}</div>),
                         ...group.items.map((item, idx) => (
-                            <div key={item.name} value={gidx + ":" + idx + ":" + item.name}>{item.name}</div>
+                            <div data-group={gidx} key={item.name} value={gidx + ":" + idx + ":" + item.name}>{item.name}</div>
                         ))
                     ]))}
                 </ComboBox>
