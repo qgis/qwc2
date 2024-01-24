@@ -13,8 +13,6 @@ ReducerIndex.register("identify", identifyReducer);
 import ConfigUtils from '../utils/ConfigUtils';
 
 export const SET_IDENTIFY_TOOL = 'SET_IDENTIFY_TOOL';
-export const IDENTIFY_PREV_CLICK = 'IDENTIFY_PREV_CLICK';
-export const SET_FORCE_OPEN = 'SET_FORCE_OPEN';
 
 export function setIdentifyEnabled(enabled, theme = null) {
     return (dispatch, getState) => {
@@ -24,20 +22,5 @@ export function setIdentifyEnabled(enabled, theme = null) {
             type: SET_IDENTIFY_TOOL,
             tool: enabled ? identifyTool : null
         });
-    };
-}
-
-export function identifyPrevClick() {
-    return {
-        type: IDENTIFY_PREV_CLICK,
-        forceOpen: true,
-        exitTaskOnResultsClose: true
-    };
-}
-
-export function setForceOpen(enabled = true) {
-    return {
-        type: SET_FORCE_OPEN,
-        forceOpen: enabled
     };
 }

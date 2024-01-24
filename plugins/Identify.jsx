@@ -16,14 +16,12 @@ import { point as turfpoint } from "@turf/helpers";
 import {LayerRole, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import {changeSelectionState} from '../actions/selection';
 import {setCurrentTask} from '../actions/task';
-import {setForceOpen} from '../actions/identify';
 import IdentifyViewer from '../components/IdentifyViewer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import ConfigUtils from '../utils/ConfigUtils';
 
 import './style/Identify.css';
 
@@ -87,8 +85,7 @@ class Identify extends React.Component {
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object,
-        setCurrentTask: PropTypes.func,
-        setForceOpen: PropTypes.func
+        setCurrentTask: PropTypes.func
     };
     static defaultProps = {
         enableExport: true,
@@ -115,7 +112,9 @@ class Identify extends React.Component {
         identifyResults: null,
         pendingRequests: 0,
         radius: this.props.initialRadius,
-        radiusUnits: this.props.initialRadiusUnits
+        radiusUnits: this.props.initialRadiusUnits,
+        clickPoint: null,
+        exitTaskOnResultsClose: null
     };
     componentDidUpdate(prevProps) {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
@@ -132,8 +131,9 @@ class Identify extends React.Component {
         }
     }
     identifyPoint = (prevProps) => {
-        const clickPoint = this.queryPoint(prevProps);
+        const clickPoint = this.state.clickPoint || this.queryPoint(prevProps);
         if (clickPoint) {
+            this.setState({clickPoint: null});
             this.setState((state) => {
                 // Remove any search selection layer to avoid confusion
                 this.props.removeLayer("searchselection");
@@ -177,11 +177,8 @@ class Identify extends React.Component {
         }
     };
     queryPoint = (prevProps) => {
-        if (!this.props.forceOpen && (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(feature => feature.id === 'startupposmarker'))) {
+        if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(feature => feature.id === 'startupposmarker')) {
             return null;
-        }
-        if (this.props.forceOpen) {
-            this.props.setForceOpen(false);
         }
         const searchMarker = (this.props.click.features || []).find(feature => feature.id === 'searchmarker');
         if (searchMarker) {
@@ -310,8 +307,8 @@ class Identify extends React.Component {
             return {identifyResults: identifyResults};
         });
     };
-    onShow = (mode) => {
-        this.setState({mode: mode || 'Point'});
+    onShow = (mode, data) => {
+        this.setState({mode: mode || 'Point', clickPoint: data.pos, exitTaskOnResultsClose: data.exitTaskOnResultsClose});
         if (mode === "Region") {
             this.props.changeSelectionState({geomType: 'Polygon'});
         }
@@ -321,14 +318,14 @@ class Identify extends React.Component {
     };
     onToolClose = () => {
         this.props.changeSelectionState({geomType: undefined});
-        this.setState({mode: 'Point'});
+        this.setState({mode: 'Point', exitTaskOnResultsClose: null});
         if (this.props.clearResultsOnClose) {
             this.clearResults();
         }
     };
     onWindowClose = () => {
         this.clearResults();
-        if (this.props.exitTaskOnResultsClose) {
+        if (this.state.exitTaskOnResultsClose || this.props.exitTaskOnResultsClose) {
             this.props.setCurrentTask(null);
         }
     };
@@ -437,9 +434,7 @@ const selector = (state) => ({
     currentIdentifyTool: state.identify.tool,
     layers: state.layers.flat,
     map: state.map,
-    selection: state.selection,
-    forceOpen: state.identify.forceOpen,
-    exitTaskOnResultsClose: state.localConfig.plugins.desktop.find(x => x.name === "Identify").cfg.exitTaskOnResultsClose || state.identify.exitTaskOnResultsClose
+    selection: state.selection
 });
 
 export default connect(selector, {
@@ -449,5 +444,4 @@ export default connect(selector, {
     removeMarker: removeMarker,
     removeLayer: removeLayer,
     setCurrentTask: setCurrentTask,
-    setForceOpen: setForceOpen
 })(Identify);
