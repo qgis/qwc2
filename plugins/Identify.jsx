@@ -443,5 +443,5 @@ export default connect(selector, {
     changeSelectionState: changeSelectionState,
     removeMarker: removeMarker,
     removeLayer: removeLayer,
-    setCurrentTask: setCurrentTask,
+    setCurrentTask: setCurrentTask
 })(Identify);
