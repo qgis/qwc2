@@ -112,7 +112,8 @@ class Identify extends React.Component {
         identifyResults: null,
         pendingRequests: 0,
         radius: this.props.initialRadius,
-        radiusUnits: this.props.initialRadiusUnits
+        radiusUnits: this.props.initialRadiusUnits,
+        exitTaskOnResultsClose: null
     };
     componentDidUpdate(prevProps) {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
@@ -120,7 +121,8 @@ class Identify extends React.Component {
         }
         if (this.props.currentIdentifyTool === "Identify" || this.props.currentTask === "Identify") {
             if (this.state.mode === "Point") {
-                this.identifyPoint(prevProps);
+                const clickPoint = this.queryPoint(prevProps);
+                this.identifyPoint(clickPoint);
             } else if (this.state.mode === "Region") {
                 this.identifyRegion(prevProps);
             } else if (this.state.mode === "Radius") {
@@ -128,8 +130,7 @@ class Identify extends React.Component {
             }
         }
     }
-    identifyPoint = (prevProps) => {
-        const clickPoint = this.queryPoint(prevProps);
+    identifyPoint = (clickPoint) => {
         if (clickPoint) {
             this.setState((state) => {
                 // Remove any search selection layer to avoid confusion
@@ -304,8 +305,11 @@ class Identify extends React.Component {
             return {identifyResults: identifyResults};
         });
     };
-    onShow = (mode) => {
-        this.setState({mode: mode || 'Point'});
+    onShow = (mode, data) => {
+        this.setState({mode: mode || 'Point', exitTaskOnResultsClose: data.exitTaskOnResultsClose});
+        if (mode === "Point" && data.pos) {
+            this.identifyPoint(data.pos);
+        }
         if (mode === "Region") {
             this.props.changeSelectionState({geomType: 'Polygon'});
         }
@@ -315,14 +319,14 @@ class Identify extends React.Component {
     };
     onToolClose = () => {
         this.props.changeSelectionState({geomType: undefined});
-        this.setState({mode: 'Point'});
+        this.setState({mode: 'Point', exitTaskOnResultsClose: null});
         if (this.props.clearResultsOnClose) {
             this.clearResults();
         }
     };
     onWindowClose = () => {
         this.clearResults();
-        if (this.props.exitTaskOnResultsClose) {
+        if (this.state.exitTaskOnResultsClose || this.props.exitTaskOnResultsClose) {
             this.props.setCurrentTask(null);
         }
     };
