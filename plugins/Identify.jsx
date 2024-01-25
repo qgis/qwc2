@@ -113,7 +113,6 @@ class Identify extends React.Component {
         pendingRequests: 0,
         radius: this.props.initialRadius,
         radiusUnits: this.props.initialRadiusUnits,
-        clickPoint: null,
         exitTaskOnResultsClose: null
     };
     componentDidUpdate(prevProps) {
@@ -122,7 +121,8 @@ class Identify extends React.Component {
         }
         if (this.props.currentIdentifyTool === "Identify" || this.props.currentTask === "Identify") {
             if (this.state.mode === "Point") {
-                this.identifyPoint(prevProps);
+                const clickPoint = this.queryPoint(prevProps);
+                this.identifyPoint(clickPoint);
             } else if (this.state.mode === "Region") {
                 this.identifyRegion(prevProps);
             } else if (this.state.mode === "Radius") {
@@ -130,10 +130,8 @@ class Identify extends React.Component {
             }
         }
     }
-    identifyPoint = (prevProps) => {
-        const clickPoint = this.state.clickPoint || this.queryPoint(prevProps);
+    identifyPoint = (clickPoint) => {
         if (clickPoint) {
-            this.setState({clickPoint: null});
             this.setState((state) => {
                 // Remove any search selection layer to avoid confusion
                 this.props.removeLayer("searchselection");
@@ -308,7 +306,8 @@ class Identify extends React.Component {
         });
     };
     onShow = (mode, data) => {
-        this.setState({mode: mode || 'Point', clickPoint: data.pos, exitTaskOnResultsClose: data.exitTaskOnResultsClose});
+        this.setState({mode: mode || 'Point', exitTaskOnResultsClose: data.exitTaskOnResultsClose});
+        this.identifyPoint(data.pos);
         if (mode === "Region") {
             this.props.changeSelectionState({geomType: 'Polygon'});
         }
@@ -443,5 +442,5 @@ export default connect(selector, {
     changeSelectionState: changeSelectionState,
     removeMarker: removeMarker,
     removeLayer: removeLayer,
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
 })(Identify);
