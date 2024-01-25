@@ -307,7 +307,9 @@ class Identify extends React.Component {
     };
     onShow = (mode, data) => {
         this.setState({mode: mode || 'Point', exitTaskOnResultsClose: data.exitTaskOnResultsClose});
-        this.identifyPoint(data.pos);
+        if (mode === "Point" && data.pos) {
+            this.identifyPoint(data.pos);
+        }
         if (mode === "Region") {
             this.props.changeSelectionState({geomType: 'Polygon'});
         }
@@ -442,5 +444,5 @@ export default connect(selector, {
     changeSelectionState: changeSelectionState,
     removeMarker: removeMarker,
     removeLayer: removeLayer,
-    setCurrentTask: setCurrentTask,
+    setCurrentTask: setCurrentTask
 })(Identify);
