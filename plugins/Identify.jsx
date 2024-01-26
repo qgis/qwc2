@@ -306,8 +306,8 @@ class Identify extends React.Component {
         });
     };
     onShow = (mode, data) => {
-        this.setState({mode: mode || 'Point', exitTaskOnResultsClose: data.exitTaskOnResultsClose});
-        if (mode === "Point" && data.pos) {
+        this.setState({mode: mode || 'Point', exitTaskOnResultsClose: data?.exitTaskOnResultsClose});
+        if (mode === "Point" && data?.pos) {
             this.identifyPoint(data.pos);
         }
         if (mode === "Region") {
