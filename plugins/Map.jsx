@@ -69,7 +69,6 @@ class MapPlugin extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (this.props.layers !== prevProps.layers || (this.props.swipe !== null) !== (prevProps.swipe !== null)) {
-            const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
             const renderLayers = [];
 
             // Inject external layers
