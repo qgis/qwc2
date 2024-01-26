@@ -725,8 +725,8 @@ const LayerUtils = {
             delete urlParts.search;
             return url.format(urlParts);
         } else {
-            const layername = layer === sublayer ? layer.params.LAYERS : sublayer.name;
-            const style = layer === sublayer ? layer.params.STYLES : sublayer.style;
+            const layername = layer === sublayer ? layer.params.LAYERS.split(",").reverse().join(",") : sublayer.name;
+            const style = layer === sublayer ? layer.params.STYLES.split(",").reverse().join(",") : sublayer.style;
             const urlParts = url.parse(layer.legendUrl, true);
             urlParts.query = {
                 VERSION: layer.version,
