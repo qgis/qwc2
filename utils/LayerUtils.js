@@ -746,30 +746,33 @@ const LayerUtils = {
         const qgisServerVersion = (ConfigUtils.getConfigProp("qgisServerVersion") || 3);
         if (qgisServerVersion >= 3) {
             if (layer.type === "wms") {
-                const names = layer.params.LAYERS.split(",");
-                const opacities = layer.params.OPACITIES.split(",");
-                const styles = (layer.params.STYLES || "").split(",");
-                for (let idx = 0; idx < names.length; ++idx) {
+                let layerUrl = layer.url;
+                const urlParts = url.parse(layerUrl, true);
+                // Resolve relative urls
+                if (!urlParts.host) {
+                    const locationParts = url.parse(window.location.href);
+                    urlParts.protocol = locationParts.protocol;
+                    urlParts.host = locationParts.host;
+                    delete urlParts.search;
+                    layerUrl = url.format(urlParts);
+                }
+                const prevLayer = params.LAYERS.slice(-1)[0];
+                if (prevLayer && prevLayer.startsWith("EXTERNAL_WMS:") && params[prevLayer.slice(13) + ":url"] === layerUrl) {
+                    // Compress with previous
+                    const identifier = prevLayer.slice(13);
+                    params[identifier + ":layers"] += "," + layer.params.LAYERS;
+                    params[identifier + ":opacities"] += "," + layer.params.OPACITIES;
+                    params[identifier + ":styles"] += "," + layer.params.STYLES;
+                } else {
                     const identifier = String.fromCharCode(65 + (counterRef[0]++));
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
-                    params.OPACITIES.push(opacities[idx]);
-                    params.COLORS.push("");
-                    params.STYLES.push("");
-                    let layerUrl = layer.url;
-                    const urlParts = url.parse(layerUrl, true);
-                    // Resolve relative urls
-                    if (!urlParts.host) {
-                        const locationParts = url.parse(window.location.href);
-                        urlParts.protocol = locationParts.protocol;
-                        urlParts.host = locationParts.host;
-                        delete urlParts.search;
-                        layerUrl = url.format(urlParts);
-                    }
+                    params.OPACITIES.push(255);
                     params[identifier + ":url"] = layerUrl;
-                    params[identifier + ":layers"] = names[idx];
+                    params[identifier + ":layers"] = layer.params.LAYERS;
+                    params[identifier + ":opacities"] = layer.params.OPACITIES;
+                    params[identifier + ":styles"] = layer.params.STYLES;
                     params[identifier + ":format"] = "image/png";
                     params[identifier + ":crs"] = printCrs;
-                    params[identifier + ":styles"] = styles[idx];
                     params[identifier + ":dpiMode"] = "7";
                     params[identifier + ":contextualWMSLegend"] = "0";
                     if (layer.url.includes("?")) {
