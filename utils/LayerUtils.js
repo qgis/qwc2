@@ -756,32 +756,31 @@ const LayerUtils = {
                     delete urlParts.search;
                     layerUrl = url.format(urlParts);
                 }
-                const prevLayer = params.LAYERS.slice(-1)[0];
-                if (prevLayer && prevLayer.startsWith("EXTERNAL_WMS:") && params[prevLayer.slice(13) + ":url"] === layerUrl) {
-                    // Compress with previous
-                    const identifier = prevLayer.slice(13);
-                    params[identifier + ":layers"] += "," + layer.params.LAYERS;
-                    params[identifier + ":opacities"] += "," + layer.params.OPACITIES;
-                    params[identifier + ":styles"] += "," + layer.params.STYLES;
+                const identifier = String.fromCharCode(65 + (counterRef[0]++));
+                params.LAYERS.push("EXTERNAL_WMS:" + identifier);
+                params[identifier + ":url"] = layerUrl;
+                params[identifier + ":layers"] = layer.params.LAYERS;
+                params[identifier + ":styles"] = layer.params.STYLES;
+                params[identifier + ":format"] = "image/png";
+                params[identifier + ":crs"] = printCrs;
+                params[identifier + ":dpiMode"] = "7";
+                params[identifier + ":contextualWMSLegend"] = "0";
+                // If only one layer is request, request external layer with full opacity
+                // and control opacity at QGIS server level (helps preserving opacity if external server does not support OPACITIES)
+                const opacities = layer.params.OPACITIES.split(",");
+                if (opacities.length === 1) {
+                    params.OPACITIES.push(opacities[0]);
+                    params[identifier + ":opacities"] = "255";
                 } else {
-                    const identifier = String.fromCharCode(65 + (counterRef[0]++));
-                    params.LAYERS.push("EXTERNAL_WMS:" + identifier);
-                    params.OPACITIES.push(255);
-                    params[identifier + ":url"] = layerUrl;
-                    params[identifier + ":layers"] = layer.params.LAYERS;
+                    params.OPACITIES.push("255");
                     params[identifier + ":opacities"] = layer.params.OPACITIES;
-                    params[identifier + ":styles"] = layer.params.STYLES;
-                    params[identifier + ":format"] = "image/png";
-                    params[identifier + ":crs"] = printCrs;
-                    params[identifier + ":dpiMode"] = "7";
-                    params[identifier + ":contextualWMSLegend"] = "0";
-                    if (layer.url.includes("?")) {
-                        params[identifier + ":IgnoreGetMapUrl"] = "1";
-                    }
-                    Object.entries(layer.extwmsparams || {}).forEach(([key, value]) => {
-                        params[identifier + ":" + key] = value;
-                    });
                 }
+                if (layer.url.includes("?")) {
+                    params[identifier + ":IgnoreGetMapUrl"] = "1";
+                }
+                Object.entries(layer.extwmsparams || {}).forEach(([key, value]) => {
+                    params[identifier + ":" + key] = value;
+                });
             }
         } else if (qgisServerVersion === 2) {
             if (layer.type === "wms") {
