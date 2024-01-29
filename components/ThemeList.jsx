@@ -101,12 +101,22 @@ class ThemeList extends React.Component {
                         if ((match = removeDiacritics(item.abstract || "").match(filter))) {
                             matches.push([LocaleUtils.trmsg("themeswitcher.match.abstract"), this.extractSubstr(match, item.abstract), item.abstract]);
                         }
+                        if (isEmpty(matches)) {
+                            return null;
+                        }
                     }
-                    return (!filter || !isEmpty(matches)) ? (
+                    let title = item.abstract;
+                    if (title && item.keywords) {
+                        title += "\n\n";
+                    }
+                    if (item.keywords) {
+                        title += LocaleUtils.tr("themeswitcher.match.keywords") + ": " + item.keywords;
+                    }
+                    return (
                         <li className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                             key={item.id}
                             onClick={() => this.setTheme(item)}
-                            title={item.abstract + "\n\n" + LocaleUtils.tr("themeswitcher.match.keywords") + ": " + item.keywords}
+                            title={title}
                         >
                             <div className="theme-item-title" title={item.title}>
                                 <span>{item.title}</span>
@@ -146,7 +156,8 @@ class ThemeList extends React.Component {
                                     ))}
                                 </div>
                             )}
-                        </li>) : null;
+                        </li>
+                    );
                 })}
                 {subtree}
             </ul>
