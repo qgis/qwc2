@@ -12,7 +12,6 @@ Plugin reference
 * [Editing](#editing)
 * [FeatureForm](#featureform)
 * [FeatureSearch](#featuresearch)
-* [HeightProfilePrintDialog](#heightprofileprintdialog)
 * [HeightProfile](#heightprofile)
 * [Help](#help)
 * [HomeButton](#homebutton)
@@ -30,6 +29,7 @@ Plugin reference
 * [MapTip](#maptip)
 * [Measure](#measure)
 * [NewsPopup](#newspopup)
+* [Portal](#portal)
 * [Print](#print)
 * [ProcessNotifications](#processnotifications)
 * [RasterExport](#rasterexport)
@@ -529,6 +529,18 @@ revision is published (specified via newsRev prop).
 |----------|------|-------------|---------------|
 | newsDocument | `string` | URL to the news HTML document to display in the popup. | `undefined` |
 | newsRev | `string` | Revision of the document. | `undefined` |
+
+Portal<a name="portal"></a>
+----------------------------------------------------------------
+Displays a landing lage, consisting of a full-screen theme switcher and a configurable menu.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| bottomBarLinks | `[{`<br />`  href: string,`<br />`  label: string,`<br />`  labelmsgid: string,`<br />`  target: string,`<br />`}]` | Links to show in the portal bottom bar | `undefined` |
+| logo | `string` | Name of a logo image below assets/img. | `undefined` |
+| menuItems | `array` | Portal menu items, in the same format as the TopBar menu items. | `[]` |
+| showMenuOnStartup | `bool` | Whether the menu should be visible on startup. | `undefined` |
+| topBarText | `string` | Portal title text to show in the top bar. | `undefined` |
 
 Print<a name="print"></a>
 ----------------------------------------------------------------

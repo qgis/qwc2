@@ -20,6 +20,9 @@ import ThemeUtils from '../utils/ThemeUtils';
 import './style/Portal.css';
 
 
+/**
+ * Displays a landing lage, consisting of a full-screen theme switcher and a configurable menu.
+ */
 class Portal extends React.Component {
     static propTypes = {
         /** Links to show in the portal bottom bar */
