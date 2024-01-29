@@ -12,7 +12,6 @@ Plugin reference
 * [Editing](#editing)
 * [FeatureForm](#featureform)
 * [FeatureSearch](#featuresearch)
-* [HeightProfilePrintDialog](#heightprofileprintdialog)
 * [HeightProfile](#heightprofile)
 * [Help](#help)
 * [HomeButton](#homebutton)
