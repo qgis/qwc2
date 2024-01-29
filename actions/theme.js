@@ -117,6 +117,11 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
 
 export function setCurrentTheme(theme, themes, preserve = true, initialView = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null) {
     return (dispatch, getState) => {
+        const mapCrs = theme.mapCrs || themes.defaultMapCrs || "EPSG:3857";
+        if (!(mapCrs in CoordinatesUtils.getAvailableCRS())) {
+            dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missingprojection", theme.title, mapCrs), NotificationType.WARN, true));
+            return;
+        }
         const initialTheme = !getState().theme.current;
         dispatch({
             type: SWITCHING_THEME,
@@ -157,7 +162,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         // Inherit defaults if necessary
         theme = {
             ...theme,
-            mapCrs: theme.mapCrs || themes.defaultMapCrs || "EPSG:3857",
+            mapCrs: mapCrs,
             version: theme.version || themes.defaultWMSVersion || "1.3.0",
             scales: theme.scales || themes.defaultScales || MapUtils.getGoogleMercatorScales(0, 21),
             printScales: theme.printScales || themes.defaultPrintScales || undefined,
