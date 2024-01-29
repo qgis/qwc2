@@ -291,6 +291,10 @@
       "width": "Lățimea",
       "windowtitle": "Valori numerice"
     },
+    "portal": {
+      "filter": "",
+      "menulabel": ""
+    },
     "print": {
       "atlasfeature": "Obiect în atlas",
       "format": "",

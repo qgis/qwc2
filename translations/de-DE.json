@@ -291,6 +291,10 @@
       "width": "Breite",
       "windowtitle": "Numerische Eingabe"
     },
+    "portal": {
+      "filter": "Themen filtern...",
+      "menulabel": "Menu"
+    },
     "print": {
       "atlasfeature": "Atlasobjekt",
       "format": "Format",

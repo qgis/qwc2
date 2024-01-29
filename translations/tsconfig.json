@@ -244,6 +244,8 @@
     "numericinput.side",
     "numericinput.width",
     "numericinput.windowtitle",
+    "portal.filter",
+    "portal.menulabel",
     "print.atlasfeature",
     "print.format",
     "print.grid",

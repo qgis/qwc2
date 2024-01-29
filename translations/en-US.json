@@ -291,6 +291,10 @@
       "width": "Width",
       "windowtitle": "Numeric input"
     },
+    "portal": {
+      "filter": "Filter themes...",
+      "menulabel": "Menu"
+    },
     "print": {
       "atlasfeature": "Atlas feature",
       "format": "Format",

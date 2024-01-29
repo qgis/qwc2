@@ -1,0 +1,129 @@
+div.portal-topbar {
+    background-color: var(--titlebar-bg-color);
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3.5em;
+    z-index: 201;
+    display: flex;
+    align-items: center;
+}
+
+span.portal-topbar-text {
+    color: var(--titlebar-text-color);
+    padding: 0 1.5em 0 0.5em;
+    font-weight: bold;
+}
+
+img.portal-logo {
+    width: auto;
+    height: 3.5em;
+    flex: 0 0 auto;
+}
+
+input.portal-search-field {
+    flex: 1 0 auto;
+    height: 2em;
+    max-width: 70ch;
+    background-color: var(--input-bg-color);
+    border: 1px solid var(--border-color);
+}
+
+span.portal-topbar-spacer {
+    flex: 1 1 auto;
+}
+
+div.portal-topbar div.AppMenu {
+    flex: 0 0 auto;
+    height: 3.5em;
+}
+
+div.portal-topbar div.AppMenu div.appmenu-menu-container {
+    height: calc(100vh - 5.75em);
+    background-color: var(--app-menu-bg-color);
+}
+
+div.portal-topbar div.AppMenu ul.appmenu-menu li:last-child {
+    border-bottom: 1px solid var(--app-menu-text-color);
+}
+
+span.portal-menu-button {
+    margin-right: 1em;
+    width: 19em;
+    display: inline-block;
+}
+
+span.portal-menu-label {
+    font-weight: bold;
+    color: var(--titlebar-text-color);
+}
+
+.portal-menu-icon {
+    color: var(--titlebar-text-color);
+    padding: 0.25em;
+    margin: 0 1em;
+    border: 2px solid var(--titlebar-text-color);
+}
+
+
+div.portal-body {
+    background-color: var(--container-bg-color);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 2.25em;
+    top: 3.5em;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+div.portal-body-menuvisible div.ThemeList {
+    margin-right: 20em;
+}
+
+div.portal-body div.ThemeList {
+    flex: 1 1 auto;
+}
+
+div.portal-bottombar {
+    background-color: var(--titlebar-bg-color);
+    color: var(--titlebar-text-color);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3em;
+    font-size: 75%;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+}
+
+div.portal-bottombar-user {
+    flex: 0 0 auto;
+    padding: 0 0.5em;
+}
+
+div.portal-bottombar-user > span.icon {
+    margin-right: 0.5em;
+}
+
+div.portal-bottombar-links {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0.5em;
+}
+
+div.portal-bottombar-links > a {
+    color: var(--titlebar-text-color);
+    padding: 0 0.5em;
+}
+
+div.portal-bottombar-links > a:not(:last-child) {
+    border-right: 1px solid var(--titlebar-text-color);
+}

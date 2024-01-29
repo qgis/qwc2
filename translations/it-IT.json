@@ -291,6 +291,10 @@
       "width": "Larghezza",
       "windowtitle": "Formulario numerico"
     },
+    "portal": {
+      "filter": "Filtra temi...",
+      "menulabel": "Menu"
+    },
     "print": {
       "atlasfeature": "Oggetto atlante",
       "format": "Formato",

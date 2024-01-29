@@ -291,6 +291,10 @@
       "width": "Largeur",
       "windowtitle": "Entrée numérique"
     },
+    "portal": {
+      "filter": "Filtrer les thèmes...",
+      "menulabel": "Menu"
+    },
     "print": {
       "atlasfeature": "Objet atlas",
       "format": "Format",

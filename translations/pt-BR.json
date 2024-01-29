@@ -291,6 +291,10 @@
       "width": "Largura",
       "windowtitle": "Título da janela"
     },
+    "portal": {
+      "filter": "",
+      "menulabel": ""
+    },
     "print": {
       "atlasfeature": "Feições do atlas",
       "format": "Formato",
