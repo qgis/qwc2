@@ -37,6 +37,7 @@
     "appmenu.items.Measure",
     "appmenu.items.MeasureLineString",
     "appmenu.items.MeasurePolygon",
+    "appmenu.items.Portal",
     "appmenu.items.Print",
     "appmenu.items.RasterExport",
     "appmenu.items.MapExport",

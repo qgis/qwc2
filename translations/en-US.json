@@ -28,6 +28,7 @@
         "Measure": "Measure",
         "MeasureLineString": "Measure a line",
         "MeasurePolygon": "Measure a polygon",
+        "Portal": "Portal",
         "Print": "Print",
         "RasterExport": "Raster Export",
         "MapExport": "Export map",

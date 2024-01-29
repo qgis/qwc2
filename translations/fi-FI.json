@@ -28,6 +28,7 @@
         "Measure": "Mittaa",
         "MeasureLineString": "Mittaa viiva",
         "MeasurePolygon": "Mittaa monikulmion",
+        "Portal": "",
         "Print": "Tulosta",
         "RasterExport": "Rasterin vienti",
         "MapExport": "Vienti kartta",

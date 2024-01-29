@@ -28,6 +28,7 @@
         "Measure": "Messen",
         "MeasureLineString": "Messen Linie",
         "MeasurePolygon": "Messen Polygon",
+        "Portal": "Portal",
         "Print": "Drucken",
         "RasterExport": "Raster-Export",
         "MapExport": "Karte exportieren",
