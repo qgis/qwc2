@@ -28,12 +28,8 @@ export function setCurrentTask(task, mode = null, mapClickAction = null, data = 
         }
         // Attempt to read mapClickAction from plugin configuration block if not set
         if (!mapClickAction) {
-            try {
-                const device = getState().browser && getState().browser.mobile ? 'mobile' : 'desktop';
-                mapClickAction = getState().localConfig.plugins[device].find(config => config.name === task).mapClickAction;
-            } catch (e) {
-                /* Pass */
-            }
+            const device = getState().browser && getState().browser.mobile ? 'mobile' : 'desktop';
+            mapClickAction = (getState().localConfig.plugins[device] || []).find(config => config.name === task)?.mapClickAction;
         }
         dispatch(setIdentifyEnabled(task === null || mapClickAction === 'identify'));
         dispatch({
