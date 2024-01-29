@@ -22,6 +22,7 @@ const WINDOW_GEOMETRIES = {};
 
 class ResizeableWindow extends React.Component {
     static propTypes = {
+        baseZIndex: PropTypes.number,
         bottombarHeight: PropTypes.number,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
@@ -58,6 +59,7 @@ class ResizeableWindow extends React.Component {
         windowStacking: PropTypes.array
     };
     static defaultProps = {
+        baseZIndex: 10,
         initialX: null,
         initialY: null,
         initialWidth: 240,
@@ -170,7 +172,7 @@ class ResizeableWindow extends React.Component {
         const style = {display: this.props.visible ? 'initial' : 'none'};
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
-        const zIndex = 10 + this.props.windowStacking.findIndex(item => item === this.id);
+        const zIndex = this.props.baseZIndex + this.props.windowStacking.findIndex(item => item === this.id);
         const docked = this.state.geometry.docked;
         const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
         let dockIcon = docked ? 'undock' : 'dock';

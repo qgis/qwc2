@@ -56,11 +56,15 @@ class WindowManager extends React.Component {
         const docked = this.boolVal(data.options.docked) !== false;
         const splitScreenWhenDocked = this.boolVal(data.options.splitScreenWhenDocked) !== false;
         return (
-            <ResizeableWindow dockable={dockable || docked} splitScreenWhenDocked={splitScreenWhenDocked} extraControls={extraControls} icon={data.options.icon || ""}
+            <ResizeableWindow
+                baseZIndex={data.options.zIndex || 10}
+                dockable={dockable || docked}
+                extraControls={extraControls} icon={data.options.icon || ""}
                 initialHeight={data.options.h || 480}
                 initialWidth={data.options.w || 640}
                 initiallyDocked={docked} key={key}
                 onClose={() => this.closeWindow(key)}
+                splitScreenWhenDocked={splitScreenWhenDocked}
                 title={data.options.title || "windows." + key}>
                 <iframe className="windows-iframe-dialog-body" name={key} role="body" src={data.url} />
             </ResizeableWindow>
