@@ -35,6 +35,9 @@ output += "================\n";
 output += "\n";
 
 pluginData.forEach(plugin => {
+    if (!plugin.description) {
+        return;
+    }
     output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
 });
 output += "\n";
