@@ -14,6 +14,7 @@ import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from "../utils/LocaleUtils";
+import ThemeUtils from '../utils/ThemeUtils';
 import './style/BackgroundSwitcher.css';
 
 /**
@@ -31,12 +32,20 @@ class TaskButton extends React.Component {
         setCurrentTask: PropTypes.func,
         splitScreen: PropTypes.object,
         /** The task name. */
-        task: PropTypes.string
+        task: PropTypes.string,
+        theme: PropTypes.object,
+        /** Omit the button in themes matching one of these flags. */
+        themeFlagBlacklist: PropTypes.arrayOf(PropTypes.string),
+        /** Only show the button in themes matching one of these flags. */
+        themeFlagWhitelist: PropTypes.arrayOf(PropTypes.string)
     };
     static defaultProps = {
         position: 1
     };
     render() {
+        if (!ThemeUtils.themFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
+            return null;
+        }
         const splitWindows = Object.values(this.props.splitScreen);
         const right = splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0);
         const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
@@ -64,7 +73,8 @@ class TaskButton extends React.Component {
 
 const selector = (state) => ({
     currentTask: state.task.id,
-    splitScreen: state.windows.splitScreen
+    splitScreen: state.windows.splitScreen,
+    theme: state.theme.current
 });
 
 export default connect(selector, {

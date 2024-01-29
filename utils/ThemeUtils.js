@@ -234,6 +234,16 @@ const ThemeUtils = {
             Object.assign(names, ThemeUtils.getThemeNames(group));
         });
         return names;
+    },
+    themFlagsAllowed(theme, flagWhitelist, flagBlacklist) {
+        const themeFlags = theme?.flags || [];
+        if (flagBlacklist && flagBlacklist.find(flag => themeFlags.includes(flag)) !== undefined) {
+            return false;
+        }
+        if (flagWhitelist && flagWhitelist.find(flag => themeFlags.includes(flag)) === undefined) {
+            return false;
+        }
+        return true;
     }
 };
 

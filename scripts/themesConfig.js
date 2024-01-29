@@ -524,6 +524,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
 
             resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes;
             resultItem.config = configItem.config;
+            resultItem.flags = configItem.flags;
             resultItem.mapTips = configItem.mapTips;
             resultItem.userMap = configItem.userMap;
             resultItem.editConfig = getEditConfig(configItem.editConfig);

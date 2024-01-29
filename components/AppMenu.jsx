@@ -18,6 +18,7 @@ import InputContainer from '../components/InputContainer';
 import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import MiscUtils from '../utils/MiscUtils';
+import ThemeUtils from '../utils/ThemeUtils';
 import Icon from './Icon';
 import './style/AppMenu.css';
 import isEqual from 'lodash.isequal';
@@ -302,6 +303,9 @@ class AppMenu extends React.Component {
         }
     };
     itemAllowed = (item) => {
+        if (!ThemeUtils.themFlagsAllowed(this.props.currentTheme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
+            return false;
+        }
         if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
             return false;
         }

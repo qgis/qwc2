@@ -519,6 +519,9 @@ def getTheme(config, configItem, result, resultItem):
         if "config" in configItem:
             resultItem["config"] = configItem["config"]
 
+        if "flags" in configItem:
+            resultItem["flags"] = configItem["flags"]
+
         if "mapTips" in configItem:
             resultItem["mapTips"] = configItem["mapTips"]
 

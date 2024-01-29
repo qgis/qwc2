@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import LocaleUtils from '../utils/LocaleUtils';
 import {changeZoomLevel} from '../actions/map';
 import Icon from '../components/Icon';
+import ThemeUtils from '../utils/ThemeUtils';
 import './style/Buttons.css';
 
 /**
@@ -27,9 +28,17 @@ class ZoomButton extends React.Component {
         maxZoom: PropTypes.number,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
-        splitScreen: PropTypes.object
+        splitScreen: PropTypes.object,
+        theme: PropTypes.object,
+        /** Omit the button in themes matching one of these flags. */
+        themeFlagBlacklist: PropTypes.arrayOf(PropTypes.string),
+        /** Only show the button in themes matching one of these flags. */
+        themeFlagWhitelist: PropTypes.arrayOf(PropTypes.string)
     };
     render() {
+        if (!ThemeUtils.themFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
+            return null;
+        }
         const defaultPosition = (this.props.direction > 0 ? 4 : 3);
         const position = this.props.position >= 0 ? this.props.position : defaultPosition;
         const splitWindows = Object.values(this.props.splitScreen);
@@ -63,7 +72,8 @@ export const ZoomInPlugin = connect((state) => ({
     currentZoom: state.map.zoom,
     maxZoom: state.map.resolutions.length - 1,
     direction: +1,
-    splitScreen: state.windows.splitScreen
+    splitScreen: state.windows.splitScreen,
+    theme: state.theme.current
 }), {
     changeZoomLevel: changeZoomLevel
 })(ZoomButton);
@@ -72,7 +82,8 @@ export const ZoomOutPlugin = connect((state) => ({
     currentZoom: state.map.zoom,
     maxZoom: state.map.resolutions.length - 1,
     direction: -1,
-    splitScreen: state.windows.splitScreen
+    splitScreen: state.windows.splitScreen,
+    theme: state.theme.current
 }), {
     changeZoomLevel: changeZoomLevel
 })(ZoomButton);

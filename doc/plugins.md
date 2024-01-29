@@ -281,6 +281,8 @@ Map button for reverting to the home extent of the theme.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `5` |
+| themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
+| themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
 
 Identify<a name="identify"></a>
 ----------------------------------------------------------------
@@ -389,6 +391,8 @@ Map button for controling the locate (GPS) state.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `2` |
+| themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
+| themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
 
 LoginUser<a name="loginuser"></a>
 ----------------------------------------------------------------
@@ -670,6 +674,8 @@ Generic map button to launch a task.
 | mode | `string` | The task mode. | `undefined` |
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `1` |
 | task | `string` | The task name. | `undefined` |
+| themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
+| themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
 
 ThemeSwitcher<a name="themeswitcher"></a>
 ----------------------------------------------------------------
@@ -730,4 +736,6 @@ Two specific plugins exist: ZoomInPlugin and ZoomOutPlugin, which are instances 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `undefined` |
+| themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
+| themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
 
