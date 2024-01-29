@@ -126,31 +126,37 @@ class ImportLayer extends React.Component {
                     let catalogPendingRequests = 0;
 
                     // Load from QGIS WMS/WFS connections
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(response.data, "text/xml");
-                    for (const service of ["wms", "wfs"]) {
-                        const connections = doc.getElementsByTagName("qgs" + service.toUpperCase() + "Connections");
-                        if (!connections.length) {
-                            continue;
+                    const doc = (new DOMParser()).parseFromString(response.data, "text/xml");
+
+                    const parsers = [{
+                        type: 'wms',
+                        getCapabilities: ServiceLayerUtils.getWMSCapabilities,
+                        getLayers: (capabilities, requestUrl) => ServiceLayerUtils.getWMSLayers(capabilities, requestUrl, true)
+                    }, {
+                        type: 'wfs',
+                        getCapabilities: ServiceLayerUtils.getWFSCapabilities,
+                        getLayers: (capabilities, requestUrl) => ServiceLayerUtils.getWFSLayers(capabilities, requestUrl, this.props.mapCrs)
+                    }];
+                    parsers.forEach(parser => {
+                        const connections = doc.getElementsByTagName("qgs" + parser.type.toUpperCase() + "Connections");
+                        if (connections.length) {
+                            for (const conn of [].slice.call(connections[0].getElementsByTagName(parser.type))) {
+                                ++catalogPendingRequests;
+                                parser.getCapabilities(conn.attributes.url.value).then(({capabilities, requestUrl}) => {
+                                    const result = parser.getLayers(capabilities, requestUrl);
+                                    this.setState((state) => ({
+                                        pendingRequests: state.pendingRequests - 1,
+                                        serviceLayers: (state.serviceLayers || []).concat(result)
+                                    }));
+                                }).catch(() => {
+                                    this.setState((state) => ({
+                                        pendingRequests: state.pendingRequests - 1,
+                                        serviceLayers: state.serviceLayers || []
+                                    }));
+                                });
+                            }
                         }
-                        for (const conn of [].slice.call(connections[0].getElementsByTagName(service))) {
-                            let connUrl = conn.attributes.url.value;
-                            connUrl += (connUrl.includes("?") ? "&" : "?") + "service=" + service.toUpperCase() + "&request=GetCapabilities";
-                            ++catalogPendingRequests;
-                            axios.get(connUrl).then(connResponse => {
-                                const result = service === "wms" ? ServiceLayerUtils.getWMSLayers(connResponse.data, connUrl, true) : ServiceLayerUtils.getWFSLayers(connResponse.data, connUrl, this.props.mapCrs);
-                                this.setState((state) => ({
-                                    pendingRequests: state.pendingRequests - 1,
-                                    serviceLayers: (state.serviceLayers || []).concat(result)
-                                }));
-                            }).catch(() => {
-                                this.setState((state) => ({
-                                    pendingRequests: state.pendingRequests - 1,
-                                    serviceLayers: state.serviceLayers || []
-                                }));
-                            });
-                        }
-                    }
+                    });
                     this.setState((state) => ({pendingRequests: state.pendingRequests - 1 + catalogPendingRequests }));
                 } else if (type === "json" && response.data.catalog) {
                     // Load as JSON catalog
@@ -169,8 +175,8 @@ class ImportLayer extends React.Component {
 
         // Attempt to load as WMTS
         ++pendingRequests;
-        axios.get(reqUrl).then(response => {
-            const result = ServiceLayerUtils.getWMTSLayers(response.data, reqUrl, this.props.mapCrs);
+        ServiceLayerUtils.getWMTSCapabilities(reqUrl).then(({capabilities, requestUrl}) => {
+            const result = ServiceLayerUtils.getWMTSLayers(capabilities, requestUrl, this.props.mapCrs);
             this.setState((state) => ({
                 pendingRequests: state.pendingRequests - 1,
                 serviceLayers: (state.serviceLayers || []).concat(result)
@@ -184,17 +190,8 @@ class ImportLayer extends React.Component {
 
         // Attempt to load as WMS
         ++pendingRequests;
-        const wmsUrlParts = url.parse(reqUrl, true);
-        wmsUrlParts.query = {
-            ...Object.entries(wmsUrlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {}),
-            SERVICE: "WMS",
-            REQUEST: "GetCapabilities",
-            VERSION: this.props.themes.defaultWMSVersion || "1.3.0"
-        };
-        delete wmsUrlParts.search;
-
-        axios.get(url.format(wmsUrlParts)).then(response => {
-            const result = ServiceLayerUtils.getWMSLayers(response.data, reqUrl);
+        ServiceLayerUtils.getWMSCapabilities(reqUrl).then(({capabilities, requestUrl}) => {
+            const result = ServiceLayerUtils.getWMSLayers(capabilities, requestUrl);
             this.setState((state) => ({
                 pendingRequests: state.pendingRequests - 1,
                 serviceLayers: (state.serviceLayers || []).concat(result)
@@ -208,16 +205,8 @@ class ImportLayer extends React.Component {
 
         // Attempt to load as WFS
         ++pendingRequests;
-        const wfsUrlParts = url.parse(reqUrl, true);
-        wfsUrlParts.query = {
-            ...Object.entries(wfsUrlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {}),
-            SERVICE: "WFS",
-            REQUEST: "GetCapabilities"
-        };
-        delete wfsUrlParts.search;
-
-        axios.get(url.format(wfsUrlParts)).then(response => {
-            const result = ServiceLayerUtils.getWFSLayers(response.data, reqUrl, this.props.mapCrs);
+        ServiceLayerUtils.getWFSCapabilies(reqUrl).then(({capabilities, requestUrl}) => {
+            const result = ServiceLayerUtils.getWFSLayers(capabilities, requestUrl, this.props.mapCrs);
             this.setState((state) => ({
                 pendingRequests: state.pendingRequests - 1,
                 serviceLayers: (state.serviceLayers || []).concat(result)
