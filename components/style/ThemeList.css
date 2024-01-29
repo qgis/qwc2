@@ -157,7 +157,7 @@ div.ThemeList div.theme-item-filterinfo-overlay {
     right: 2.29em;
     font-size: 90%;
     background-color: rgba(255, 255, 255, 0.85);
-    color: var(--text-color);
+    color: black;
     font-weight: normal;
     text-align: left;
     padding: 0.25em;
