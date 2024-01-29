@@ -63,6 +63,7 @@ class SearchBox extends React.Component {
             minScaleDenom: PropTypes.number,
             resultLimit: PropTypes.number,
             sectionsDefaultCollapsed: PropTypes.bool,
+            showLayerAfterChangeTheme: PropTypes.bool,
             zoomToLayers: PropTypes.bool
         }),
         searchProviders: PropTypes.object,
@@ -804,6 +805,9 @@ class SearchBox extends React.Component {
                 this.addThemeLayers(result.layer);
             }
         } else if (resultType === SearchResultType.THEME) {
+            if (this.props.searchOptions.showLayerAfterChangeTheme) {
+                this.props.setCurrentTask('LayerTree');
+            }
             this.props.setCurrentTheme(result.theme, this.props.themes);
         }
     };

@@ -56,6 +56,7 @@ class Search extends React.Component {
             highlightStyle: PropTypes.object,
             hideResultLabels: PropTypes.bool,
             minScaleDenom: PropTypes.number,
+            showLayerAfterChangeTheme: PropTypes.bool,
             showProviderSelection: PropTypes.bool,
             showProvidersInPlaceholder: PropTypes.bool,
             providerSelectionAllowAll: PropTypes.bool,
@@ -473,6 +474,9 @@ class Search extends React.Component {
                 this.addThemeLayers(item.layer);
             }
         } else if (resultType === SearchResultType.THEME) {
+            if (this.props.searchOptions.showLayerAfterChangeTheme) {
+                this.props.setCurrentTask('LayerTree');
+            }
             this.props.setCurrentTheme(item.theme, this.props.themes);
         }
 
