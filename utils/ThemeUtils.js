@@ -187,15 +187,27 @@ const ThemeUtils = {
     searchThemeLayers(themes, searchtext) {
         const filter = new RegExp(removeDiacritics(searchtext).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
         const matches = [];
-        const searchLayer = (theme, layer) => {
-            (layer.sublayers || []).forEach((sublayer) => {
+        const searchLayer = (theme, layer, path = []) => {
+            (layer.sublayers || []).forEach((sublayer, idx) => {
+                const subpath = [...path, idx];
                 if (removeDiacritics(sublayer.name).match(filter) || removeDiacritics(sublayer.title).match(filter)) {
+                    // Clone theme, ensuring path to layer is visible
+                    const newtheme = {...theme};
+                    let cur = newtheme;
+                    for (let i = 0; i < subpath.length; ++i) {
+                        const isMutuallyExclusive = cur.mutuallyExclusive;
+                        cur.sublayers = cur.sublayers.map((entry, j) => ({
+                            ...entry,
+                            visibility: j === subpath[i] || (entry.visibility && !isMutuallyExclusive)
+                        }));
+                        cur = cur.sublayers[subpath[i]];
+                    }
                     matches.push({
-                        theme: theme,
-                        layer: ThemeUtils.createThemeLayer(theme, themes, LayerRole.USERLAYER, [{...sublayer, visibility: true}])
+                        theme: newtheme,
+                        layer: ThemeUtils.createThemeLayer(newtheme, themes, LayerRole.USERLAYER, [cur])
                     });
                 }
-                searchLayer(theme, sublayer);
+                searchLayer(theme, sublayer, subpath);
             });
         };
         const searchThemeGroup = (themeGroup) => {
