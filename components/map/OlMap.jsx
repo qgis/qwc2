@@ -240,6 +240,8 @@ class OlMap extends React.Component {
                     }
                 }
             });
+            view.setZoom(this.props.zoom);
+            view.setCenter(this.props.center)
             this.map.render();
         }
 
