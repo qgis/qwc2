@@ -165,7 +165,6 @@ class TopBar extends React.Component {
             target = ":iframedialog:externallinkiframe";
         }
         this.props.openExternalUrl(url, target, {title, icon});
-        ev.preventDefault();
     };
     storeHeight = (el) => {
         if (el) {
