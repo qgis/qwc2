@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Adicionar Camadas ao Mapa Atual",
       "addtotheme": "Adicionar ao Tema Atual",
+      "changedefaulttheme": "",
       "confirmswitch": "Confirmar Mudança",
       "filter": "Filtrar...",
       "match": {

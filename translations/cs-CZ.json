@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Přidat vrstvy do aktuálního tématu",
       "addtotheme": "Přidat k aktuálnímu tématu",
+      "changedefaulttheme": "",
       "confirmswitch": "Vrstvy které nejsou součástí tématu budou při přepnutí tématu ztraceny. Pokračovat?",
       "filter": "Filtr...",
       "match": {

@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Geçerli haritaya katmanları ekle",
       "addtotheme": "Geçerli temaya ekle",
+      "changedefaulttheme": "",
       "confirmswitch": "",
       "filter": "Filtre...",
       "match": {

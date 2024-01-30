@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Adaugă straturi în hartă",
       "addtotheme": "Adaugă în hartă",
+      "changedefaulttheme": "",
       "confirmswitch": "Straturile tematice care nu fac parte din temă vor fi pierdute la schimbarea temei curente. Continuați?",
       "filter": "Filtrare",
       "match": {

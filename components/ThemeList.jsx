@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import {remove as removeDiacritics} from 'diacritics';
 import Icon from './Icon';
@@ -19,6 +20,7 @@ import {LayerRole, addLayer} from '../actions/layers';
 import {setCurrentTheme, setThemeLayersList} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
 import {setActiveLayerInfo} from '../actions/layerinfo';
+import {setUserInfoFields} from '../actions/localConfig';
 import './style/ThemeList.css';
 
 class ThemeList extends React.Component {
@@ -28,6 +30,7 @@ class ThemeList extends React.Component {
         allowAddingOtherThemes: PropTypes.bool,
         changeTheme: PropTypes.func,
         collapsibleGroups: PropTypes.bool,
+        defaultUrlParams: PropTypes.string,
         dontPreserveSettingsOnSwitch: PropTypes.bool,
         filter: PropTypes.string,
         layers: PropTypes.array,
@@ -35,6 +38,8 @@ class ThemeList extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setThemeLayersList: PropTypes.func,
+        setUserInfoFields: PropTypes.func,
+        showDefaultThemeSelector: PropTypes.bool,
         showLayerAfterChangeTheme: PropTypes.bool,
         themes: PropTypes.object
     };
@@ -84,7 +89,10 @@ class ThemeList extends React.Component {
         const activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
         const addLayersTitle = LocaleUtils.tr("themeswitcher.addlayerstotheme");
         const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
+        const changeDefaultUrlTitle = LocaleUtils.tr("themeswitcher.changedefaulttheme");
         const openTabTitle = LocaleUtils.tr("themeswitcher.openintab");
+        const username = ConfigUtils.getConfigProp("username");
+
         return (
             <ul className="theme-group-body">
                 {(!isEmpty(group.items) ? group.items : []).map(item => {
@@ -143,6 +151,7 @@ class ThemeList extends React.Component {
                                     {this.props.allowAddingOtherThemes ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
                                     {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
                                     <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
+                                    {this.props.showDefaultThemeSelector && username  ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }
                                 </div>
                             ) : (
                                 <div className="theme-item-restricted-overlay">
@@ -198,6 +207,9 @@ class ThemeList extends React.Component {
             cleanText.substr(match.index + cleanFilter.length)
         ];
     };
+    extractThemeId = (text) => {
+        return Object.fromEntries(text.split("&").map(x => x.split("="))).t;
+    };
     setTheme = (theme) => {
         if (theme.restricted) {
             // eslint-disable-next-line
@@ -239,19 +251,38 @@ class ThemeList extends React.Component {
         const url = location.href.split("?")[0] + '?t=' + themeid;
         window.open(url, '_blank');
     };
+    changeDefaultUrlParams = (ev, themeid) => {
+        ev.stopPropagation();
+        const params = {
+            default_url_params: "t=" + themeid
+        };
+        const baseurl = location.href.split("?")[0].replace(/\/$/, '');
+        axios.get(baseurl + "/setuserinfo", {params}).then(response => {
+            if (!response.data.success) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("settings.defaultthemefailed", response.data.error));
+            } else {
+                this.props.setUserInfoFields(response.data.fields);
+            }
+        }).catch((e) => {
+            /* eslint-disable-next-line */
+            alert(LocaleUtils.tr("settings.defaultthemefailed", String(e)));
+        });
+    };
 }
 
 const selector = (state) => ({
     themes: state.theme.themes || {},
     layers: state.layers.flat,
-    mapConfig: state.map
+    mapConfig: state.map,
+    defaultUrlParams: state.localConfig.user_infos?.default_url_params || ""
 });
-
 
 export default connect(selector, {
     changeTheme: setCurrentTheme,
     setCurrentTask: setCurrentTask,
     addLayer: addLayer,
     setActiveLayerInfo: setActiveLayerInfo,
-    setThemeLayersList: setThemeLayersList
+    setThemeLayersList: setThemeLayersList,
+    setUserInfoFields: setUserInfoFields
 })(ThemeList);

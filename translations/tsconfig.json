@@ -400,6 +400,7 @@
     "themelayerslist.addselectedlayers",
     "themeswitcher.addlayerstotheme",
     "themeswitcher.addtotheme",
+    "themeswitcher.changedefaulttheme",
     "themeswitcher.confirmswitch",
     "themeswitcher.filter",
     "themeswitcher.match.abstract",
