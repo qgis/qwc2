@@ -38,6 +38,7 @@ class ThemeList extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setThemeLayersList: PropTypes.func,
+        setUserInfoFields: PropTypes.func,
         showDefaultThemeSelector: PropTypes.bool,
         showLayerAfterChangeTheme: PropTypes.bool,
         themes: PropTypes.object
@@ -150,7 +151,7 @@ class ThemeList extends React.Component {
                                     {this.props.allowAddingOtherThemes ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
                                     {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
                                     <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
-                                    {this.props.showDefaultThemeSelector && username  ? (<Icon icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} className={ (this.extractThemeId(this.props.defaultUrlParams) == item.id ? "icon-active" : "")}/>) : null }
+                                    {this.props.showDefaultThemeSelector && username  ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }
                                 </div>
                             ) : (
                                 <div className="theme-item-restricted-overlay">
@@ -207,7 +208,7 @@ class ThemeList extends React.Component {
         ];
     };
     extractThemeId = (text) => {
-        return Object.fromEntries(text.split("&").map(x => x.split("="))).t
+        return Object.fromEntries(text.split("&").map(x => x.split("="))).t;
     };
     setTheme = (theme) => {
         if (theme.restricted) {
@@ -253,7 +254,7 @@ class ThemeList extends React.Component {
     changeDefaultUrlParams = (ev, themeid) => {
         ev.stopPropagation();
         const params = {
-            default_url_params: "t="+themeid
+            default_url_params: "t=" + themeid
         };
         const baseurl = location.href.split("?")[0].replace(/\/$/, '');
         axios.get(baseurl + "/setuserinfo", {params}).then(response => {
@@ -274,7 +275,7 @@ const selector = (state) => ({
     themes: state.theme.themes || {},
     layers: state.layers.flat,
     mapConfig: state.map,
-    defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
+    defaultUrlParams: state.localConfig.user_infos?.default_url_params || ""
 });
 
 export default connect(selector, {

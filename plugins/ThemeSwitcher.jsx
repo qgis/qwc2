@@ -77,7 +77,7 @@ class ThemeSwitcher extends React.Component {
                                 activeTheme={this.props.activeTheme}
                                 allowAddingOtherThemes={allowAddingOtherThemes}
                                 collapsibleGroups={this.props.collapsibleGroups}
-                                filter={this.state.filter} 
+                                filter={this.state.filter}
                                 showDefaultThemeSelector={this.props.showDefaultThemeSelector}
                                 showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme}/>
                         )
