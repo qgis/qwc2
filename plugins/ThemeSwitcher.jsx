@@ -47,8 +47,8 @@ class ThemeSwitcher extends React.Component {
     static defaultProps = {
         width: "50%",
         showThemeFilter: true,
-        showLayerAfterChangeTheme: false,
         showDefaultThemeSelector: true,
+        showLayerAfterChangeTheme: false,
         themeLayersListWindowSize: {width: 400, height: 300},
         side: 'right'
     };

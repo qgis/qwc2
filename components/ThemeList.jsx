@@ -30,6 +30,7 @@ class ThemeList extends React.Component {
         allowAddingOtherThemes: PropTypes.bool,
         changeTheme: PropTypes.func,
         collapsibleGroups: PropTypes.bool,
+        defaultUrlParams: PropTypes.string,
         dontPreserveSettingsOnSwitch: PropTypes.bool,
         filter: PropTypes.string,
         layers: PropTypes.array,
@@ -37,10 +38,9 @@ class ThemeList extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setThemeLayersList: PropTypes.func,
-        showLayerAfterChangeTheme: PropTypes.bool,
-        themes: PropTypes.object,
-        defaultUrlParams: PropTypes.string,
         showDefaultThemeSelector: PropTypes.bool,
+        showLayerAfterChangeTheme: PropTypes.bool,
+        themes: PropTypes.object
     };
     state = {
         expandedGroups: [],
@@ -88,8 +88,8 @@ class ThemeList extends React.Component {
         const activeThemeId = this.props.activeTheme ? this.props.activeTheme.id : null;
         const addLayersTitle = LocaleUtils.tr("themeswitcher.addlayerstotheme");
         const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
-        const openTabTitle = LocaleUtils.tr("themeswitcher.openintab");
         const changeDefaultUrlTitle = LocaleUtils.tr("themeswitcher.changedefaulttheme");
+        const openTabTitle = LocaleUtils.tr("themeswitcher.openintab");
         const username = ConfigUtils.getConfigProp("username");
 
         return (
@@ -207,12 +207,7 @@ class ThemeList extends React.Component {
         ];
     };
     extractThemeId = (text) => {
-        if (text) {
-            if (text.substr(0,2)=='t=') {
-                return text.substr(2)
-            }
-        }
-        return text
+        return Object.fromEntries(text.split("&").map(x => x.split("="))).t
     };
     setTheme = (theme) => {
         if (theme.restricted) {
