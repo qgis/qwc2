@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Agregar capas al mapa actual",
       "addtotheme": "Agregar al actual tema",
+      "changedefaulttheme": "",
       "confirmswitch": "Las capas sin tema se perderán al cambiar de tema. Continuar?",
       "filter": "Filtrar...",
       "match": {

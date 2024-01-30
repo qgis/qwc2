@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Afegir capes al mapa actual",
       "addtotheme": "Afegir al actual tema",
+      "changedefaulttheme": "",
       "confirmswitch": "Confirmar canvi",
       "filter": "Filtrant...",
       "match": {

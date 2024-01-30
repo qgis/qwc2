@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "Dodaj do obecnego motywu",
+      "changedefaulttheme": "",
       "confirmswitch": "",
       "filter": "Filtruj...",
       "match": {

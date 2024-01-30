@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Aggiungi layer alla mappa corrente",
       "addtotheme": "Aggiungere al tema corrente",
+      "changedefaulttheme": "",
       "confirmswitch": "Layer che non fanno parte del tema saranno rimossi. Procedere?",
       "filter": "Filtra...",
       "match": {

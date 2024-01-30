@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "",
+      "changedefaulttheme": "",
       "confirmswitch": "",
       "filter": "Szűrés...",
       "match": {

@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Ebenen der Karte hinzufügen",
       "addtotheme": "Dem aktuellen Thema hinzufügen",
+      "changedefaulttheme": "",
       "confirmswitch": "Ebenen, die nicht Teil des Themas sind, werden entfernt. Fortsetzen?",
       "filter": "Filter",
       "match": {

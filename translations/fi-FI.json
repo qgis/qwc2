@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",
       "addtotheme": "Lisää nykyiseen teemaan",
+      "changedefaulttheme": "",
       "confirmswitch": "",
       "filter": "Suodatus...",
       "match": {

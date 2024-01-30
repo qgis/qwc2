@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "",
       "addtotheme": "Legg til nåværende tema",
+      "changedefaulttheme": "",
       "confirmswitch": "",
       "filter": "Filtrer...",
       "match": {

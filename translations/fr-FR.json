@@ -476,6 +476,7 @@
     "themeswitcher": {
       "addlayerstotheme": "Ajouter des couches à la carte",
       "addtotheme": "Ajouter au thème actuel",
+      "changedefaulttheme": "Sélectionner ce thème comme thème par défaut",
       "confirmswitch": "Les couches ajoutées par vos soins seront perdues en changeant de thème. Voulez-vous continuer ?",
       "filter": "Filtre...",
       "match": {
