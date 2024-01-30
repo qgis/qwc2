@@ -28,6 +28,8 @@ class ThemeSwitcher extends React.Component {
         /** Whether to allow collapsing theme groups. */
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.object,
+        /** Whether to show an icon to select the default theme/bookmark (of a logged in user). */
+        showDefaultThemeSelector: PropTypes.bool,
         /** Whether to show the LayerTree by default after switching the theme. */
         showLayerAfterChangeTheme: PropTypes.bool,
         /** Wether to show the theme filter field in the top bar. **/
@@ -46,6 +48,7 @@ class ThemeSwitcher extends React.Component {
         width: "50%",
         showThemeFilter: true,
         showLayerAfterChangeTheme: false,
+        showDefaultThemeSelector: true,
         themeLayersListWindowSize: {width: 400, height: 300},
         side: 'right'
     };
@@ -74,8 +77,9 @@ class ThemeSwitcher extends React.Component {
                                 activeTheme={this.props.activeTheme}
                                 allowAddingOtherThemes={allowAddingOtherThemes}
                                 collapsibleGroups={this.props.collapsibleGroups}
-                                filter={this.state.filter}
-                                showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme} />
+                                filter={this.state.filter} 
+                                showDefaultThemeSelector={this.props.showDefaultThemeSelector}
+                                showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme}/>
                         )
                     })}
                 </SideBar>
