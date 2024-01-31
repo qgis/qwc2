@@ -28,7 +28,15 @@ div.layer-catalog-widget-entry {
     border-bottom: 1px solid var(--border-color);
 }
 
-div.layer-catalog-widget-entry > span {
+div.layer-catalog-widget-entry > .icon {
+    flex: 0 0 1em;
+}
+
+div.layer-catalog-widget-entry > span.layer-catalog-widget-entry-iconspacer {
+    flex: 0 0 1em;
+}
+
+div.layer-catalog-widget-entry > span.layer-catalog-widget-entry-contents {
     flex: 1 1 auto;
     font-size: small;
     padding: 0.25em;
@@ -36,19 +44,8 @@ div.layer-catalog-widget-entry > span {
     display: inline-block;
 }
 
-div.layer-catalog-widget-entry > .icon {
-    flex: 0 0 auto;
-    top: 0;
-}
-
-div.layer-catalog-widget-entry > span:hover {
+div.layer-catalog-widget-entry > span.layer-catalog-widget-entry-contents:hover {
     color: var(--color-active);
-}
-
-div.layer-catalog-widget-entry > img {
-    flex: 0 0 auto;
-    margin-right: 0.25em;
-    cursor: pointer;
 }
 
 span.layer-catalog-widget-entry-service {

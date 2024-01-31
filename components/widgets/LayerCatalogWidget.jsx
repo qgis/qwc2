@@ -44,8 +44,12 @@ class LayerCatalogWidget extends React.PureComponent {
         return (
             <div key={key} style={{paddingLeft: indentSize + 'em'}}>
                 <div className="layer-catalog-widget-entry">
-                    {hasSublayers ? (<Icon icon={entry.expanded ? 'tree_minus' : 'tree_plus'} onClick={() => this.toggleLayerListEntry(path)} />) : null}
-                    <span onClick={() => type ? this.addServiceLayer(entry) : this.toggleLayerListEntry(path)}>
+                    {hasSublayers ? (
+                        <Icon icon={entry.expanded ? 'tree_minus' : 'tree_plus'} onClick={() => this.toggleLayerListEntry(path)} />
+                    ) : (
+                        <span className="layer-catalog-widget-entry-iconspacer" />
+                    )}
+                    <span className="layer-catalog-widget-entry-contents" onClick={() => type ? this.addServiceLayer(entry) : this.toggleLayerListEntry(path)}>
                         {type ? (<span className="layer-catalog-widget-entry-service">{type}</span>) : null}
                         {entry.title}
                     </span>
