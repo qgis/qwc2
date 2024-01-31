@@ -103,10 +103,13 @@ class API extends React.Component {
     render() {
         return null;
     }
-    addExternalLayer = (resource, beforeLayerName = null) => {
+    addExternalLayer = (resource, beforeLayerName = null, sublayers = true) => {
         const params = LayerUtils.splitLayerUrlParam(resource);
         ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
             if (layer) {
+                if (sublayers === false) {
+                    layer.sublayers = null;
+                }
                 this.props.addLayer(layer, null, beforeLayerName);
             }
         });

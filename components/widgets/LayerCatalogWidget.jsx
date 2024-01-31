@@ -100,6 +100,9 @@ class LayerCatalogWidget extends React.PureComponent {
             const params = LayerUtils.splitLayerUrlParam(entry.resource);
             ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
                 if (layer) {
+                    if (entry.sublayers === false) {
+                        layer.sublayers = null;
+                    }
                     this.props.addLayer(layer);
                 } else {
                     // eslint-disable-next-line

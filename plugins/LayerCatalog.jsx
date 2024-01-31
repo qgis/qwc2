@@ -27,8 +27,9 @@ import './style/LayerCatalog.css';
  * {
  *   "catalog": [
  *     {
- *       "title": "Bauzonen",
- *       "resource": "wms:http://wms.geo.admin.ch#ch.are.bauzonen"
+ *       "title": "Öffentlicher Verkehr swissTLMRegio",
+ *       "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.vec200-transportation-oeffentliche-verkehr",
+ *       "sublayers": false
  *     },
  *     {
  *       "title": "Gewässerschutz",
@@ -108,7 +109,7 @@ class LayerCatalog extends React.Component {
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onClose} title={LocaleUtils.trmsg("layercatalog.windowtitle")}
-                >
+            >
                 <div className="layer-catalog" role="body">
                     <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} />
                 </div>
