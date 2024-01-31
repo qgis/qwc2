@@ -49,6 +49,8 @@ class LayerTree extends React.Component {
         allowImport: PropTypes.bool,
         /** Whether to allow enabling map tips. */
         allowMapTips: PropTypes.bool,
+        /** Whether to allow selection of Identifyable Layers. */
+        allowSelectIdentifyableLayers: PropTypes.bool,
         /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         changeLayerProperty: PropTypes.func,
@@ -118,6 +120,7 @@ class LayerTree extends React.Component {
         allowMapTips: true,
         allowCompare: true,
         allowImport: true,
+        allowSelectIdentifyableLayers: false,
         groupTogglesSublayers: false,
         grayUnchecked: true,
         layerInfoGeometry: {
@@ -299,7 +302,7 @@ class LayerTree extends React.Component {
                     {checkbox}
                     {legendicon}
                     {title}
-                    {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
+                    {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className={this.props.allowSelectIdentifyableLayers ? ("layertree-item-identifyable icon_clickable layertree-item-identifyable-active") : "layertree-item-queryable"} icon="info-sign" />) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}

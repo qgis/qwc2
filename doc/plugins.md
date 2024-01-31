@@ -365,6 +365,7 @@ with containing a container element with id=legendcontainer.
 | allowCompare | `bool` | Whether to enable the compare function. Requires the `MapCompare` plugin. | `true` |
 | allowImport | `bool` | Whether to allow importing external layers. | `true` |
 | allowMapTips | `bool` | Whether to allow enabling map tips. | `true` |
+| allowSelectIdentifyableLayers | `bool` | Whether to allow selection of identifyable layers. showQueryableIcon property should be `true` to be able to select identifyable layers | `false` |
 | bboxDependentLegend | `{bool, string}` | Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `false` |
 | enableLegendPrint | `bool` | Whether to enable the legend print functionality. | `true` |
 | enableServiceInfo | `bool` | Whether to display a service info button to display the WMS service metadata. | `true` |

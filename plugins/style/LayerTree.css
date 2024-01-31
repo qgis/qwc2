@@ -181,6 +181,18 @@ img.layertree-item-legend-tooltip {
     flex: 0 0 auto;
 }
 
+#LayerTree span.layertree-item-identifyable {
+    margin-left: 0.25em;
+    color: var(--border-color);
+    font-size: small;
+    vertical-align: top;
+    flex: 0 0 auto;
+}
+
+#LayerTree span.layertree-item-identifyable-active {
+    color: var(--color-active);
+}
+
 #LayerTree span.layertree-item-spacer {
     flex: 1 1 auto;
 }
