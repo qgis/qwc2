@@ -469,6 +469,9 @@ class Search extends React.Component {
             this.props.setCurrentTask('LayerTree');
         } else if (resultType === SearchResultType.EXTERNALLAYER) {
             if (item.theme) {
+                if (this.props.searchOptions.showLayerAfterChangeTheme) {
+                    this.props.setCurrentTask('LayerTree');
+                }
                 this.props.setCurrentTheme(item.theme, this.props.themes);
             } else {
                 this.addThemeLayers(item.layer);

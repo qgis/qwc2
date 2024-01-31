@@ -800,6 +800,9 @@ class SearchBox extends React.Component {
             this.props.setCurrentTask('LayerTree');
         } else if (resultType === SearchResultType.EXTERNALLAYER) {
             if (result.theme) {
+                if (this.props.searchOptions.showLayerAfterChangeTheme) {
+                    this.props.setCurrentTask('LayerTree');
+                }
                 this.props.setCurrentTheme(result.theme, this.props.themes);
             } else {
                 this.addThemeLayers(result.layer);
