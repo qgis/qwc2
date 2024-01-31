@@ -322,8 +322,9 @@ Example:
 {
   "catalog": [
     {
-      "title": "Bauzonen",
-      "resource": "wms:http://wms.geo.admin.ch#ch.are.bauzonen"
+      "title": "Öffentlicher Verkehr swissTLMRegio",
+      "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.vec200-transportation-oeffentliche-verkehr",
+      "sublayers": false
     },
     {
       "title": "Gewässerschutz",
