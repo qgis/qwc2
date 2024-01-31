@@ -22,6 +22,9 @@ import './style/LayerCatalog.css';
  *
  * Configured through a catalog JSON containing a tree of external layer identifiers.
  *
+ * For `wms` layers, `sublayers: false` denotes that the sublayer structure of the added layer should not
+ * be exposed in the layer tree.
+ *
  * Example:
  * ```json
  * {
