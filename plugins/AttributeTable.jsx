@@ -9,8 +9,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
+import FileSaver from 'file-saver';
 import {getFeatureTemplate} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
@@ -305,6 +305,9 @@ class AttributeTable extends React.Component {
                                 <span>{LocaleUtils.tr("attribtable.discard")}</span>
                             </button>
                         ) : null}
+                        <button className="button" disabled={isEmpty(this.state.features)} onClick={() => this.csvExport()} title={LocaleUtils.tr("attribtable.csvexport")}>
+                            <Icon icon="export" />
+                        </button>
                     </div>
                     <div className="attribtable-contents" ref={el => {this.attribTableContents = el;}}>
                         {table}
@@ -672,6 +675,22 @@ class AttributeTable extends React.Component {
             ev.preventDefault();
             ev.stopPropagation();
         }
+    };
+    csvExport = () => {
+        const editConfig = this.props.theme.editConfig || {};
+        const currentEditConfig = editConfig[this.state.loadedLayer];
+        if (!currentEditConfig) {
+            return;
+        }
+
+        const fields = currentEditConfig.fields.filter(field => field.id !== 'id');
+        let data = "";
+        data += "id\t" + fields.map(field => field.id).join("\t") + "\n";
+
+        this.state.features.forEach(feature => {
+            data += feature.id + "\t" + fields.map(field => feature.properties[field.id]).join("\t") + "\n";
+        });
+        FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), this.state.loadedLayer + ".csv");
     };
 }
 
