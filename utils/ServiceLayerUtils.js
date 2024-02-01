@@ -218,7 +218,7 @@ const ServiceLayerUtils = {
             legendUrl: legendUrl,
             version: version,
             infoFormats: infoFormats,
-            queryable: layer.queryable === "1",
+            queryable: layer.queryable === 1,
             sublayers: isEmpty(sublayers) ? null : sublayers,
             expanded: false,
             bbox: bbox,
