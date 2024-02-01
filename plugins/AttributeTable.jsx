@@ -265,7 +265,7 @@ class AttributeTable extends React.Component {
                                 );
                             })}
                         </select>
-                        <button className="button" disabled={editing || nolayer} onClick={() => this.reload()} title={LocaleUtils.tr("attribtable.reload")}>
+                        <button className="button" disabled={editing || nolayer || this.state.loading} onClick={() => this.reload()} title={LocaleUtils.tr("attribtable.reload")}>
                             <Icon icon="refresh" />
                         </button>
                         {showAddButton ? (
