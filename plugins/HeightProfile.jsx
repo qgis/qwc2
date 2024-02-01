@@ -179,10 +179,10 @@ class HeightProfile extends React.Component {
     static propTypes = {
         addMarker: PropTypes.func,
         changeMeasurementState: PropTypes.func,
-        /** The precision of displayed and exported values (0: no decimals, 0.1: 1 decimal position, etc). */
-        heighProfilePrecision: PropTypes.number,
         /** The height of the height profile widget in pixels. */
         height: PropTypes.number,
+        /** The precision of displayed and exported values (0: no decimals, 0.1: 1 decimal position, etc). */
+        heightProfilePrecision: PropTypes.number,
         measurement: PropTypes.object,
         mobile: PropTypes.bool,
         projection: PropTypes.string,
@@ -194,7 +194,7 @@ class HeightProfile extends React.Component {
     };
     static defaultProps = {
         samples: 500,
-        heighProfilePrecision: 0,
+        heightProfilePrecision: 0,
         height: 150,
         templatePath: ":/templates/heightprofileprint.html"
     };
@@ -334,6 +334,7 @@ class HeightProfile extends React.Component {
         // Approx 10 ticks
         const stepSizeFact = Math.pow(10, Math.ceil(Math.log10(this.state.data.totLength / 10)));
         const stepSize = Math.round(this.state.data.totLength / (stepSizeFact)) * stepSizeFact / 10;
+        const prec = this.props.heightProfilePrecision;
         const options = {
             responsive: true,
             maintainAspectRatio: false,
@@ -351,7 +352,7 @@ class HeightProfile extends React.Component {
                     bodyFont: {weight: 'bold'},
                     callbacks: {
                         title: (ctx) => (distanceStr + ": " + MeasureUtils.formatMeasurement(ctx[0].parsed.x, false, 'metric', 2)),
-                        label: (ctx) => (heightStr + ": " + ctx.parsed.y.toFixed(0) + " m " + aslStr)
+                        label: (ctx) => (heightStr + ": " + ctx.parsed.y.toFixed(prec) + " m " + aslStr)
                     }
                 }
             },
@@ -373,7 +374,7 @@ class HeightProfile extends React.Component {
                 y: {
                     ticks: {
                         font: {size: 10},
-                        callback: (value) => value
+                        callback: (value) => value.toFixed(prec)
                     },
                     title: {
                         display: true,
@@ -480,9 +481,9 @@ class HeightProfile extends React.Component {
         csv += "index" + "\t" + "distance" + "\t" + "elevation" + "\n";
         this.state.data.x.forEach((x, idx) => {
             const sample = {x: x, y: this.state.data.y[idx]};
-            const heighProfilePrecision = this.props.heighProfilePrecision;
-            const distance = Math.round(sample.x * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
-            const height = Math.round(sample.y * Math.pow(10, heighProfilePrecision)) / Math.pow(10, heighProfilePrecision);
+            const prec = this.props.heightProfilePrecision;
+            const distance = Math.round(sample.x * Math.pow(10, prec)) / Math.pow(10, prec);
+            const height = Math.round(sample.y * Math.pow(10, prec)) / Math.pow(10, prec);
             csv += String(idx).replace('"', '""') + "\t"
                 + String(distance) + "\t"
                 + String(height) + "\n";
