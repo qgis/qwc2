@@ -305,7 +305,7 @@ class LayerTree extends React.Component {
                     {checkbox}
                     {legendicon}
                     {title}
-                    {queryable && this.props.showQueryableIcon ? (<Icon className={this.props.allowSelectIdentifyableLayers ? ("layertree-item-identifyable icon_clickable " + identifyableClassName ) : "layertree-item-queryable"} icon="info-sign" onClick={() => this.modifyLayerIdentifyable(sublayer.name, layer)} />) : null}
+                    {queryable && this.props.showQueryableIcon ? (<Icon className={this.props.allowSelectIdentifyableLayers ? ("layertree-item-identifyable icon_clickable " + identifyableClassName ) : "layertree-item-queryable"} icon="info-sign" onClick={() => this.subLayerIdentifyableToggled(sublayer.name, layer)} />) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
@@ -719,7 +719,7 @@ class LayerTree extends React.Component {
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     };
 
-    modifyLayerIdentifyable = (sublayername, layer) => {
+    subLayerIdentifyableToggled = (sublayername, layer) => {
         let newQueryLayers = [];
         if (layer.queryLayers.includes(sublayername)) { // sublayer was identifyable, we should remove it
             newQueryLayers = layer.queryLayers.filter((item) => item !== sublayername);
