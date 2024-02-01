@@ -359,10 +359,11 @@ class LayerTree extends React.Component {
         );
     };
     preventLayerTreeItemDrag = (ev) => {
-        if (ev.currentTarget.parentNode.parentNode.draggable) {
-            ev.currentTarget.parentNode.parentNode.draggable = false;
-            ev.currentTarget.addEventListener('mouseup', (ev2) => {
-                ev2.currentTarget.parentNode.parentNode.draggable = true;
+        const draggableEl = ev.currentTarget.parentNode;
+        if (draggableEl.draggable) {
+            draggableEl.draggable = false;
+            document.addEventListener('mouseup', () => {
+                draggableEl.draggable = true;
             }, {once: true});
         }
     };
