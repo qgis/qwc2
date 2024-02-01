@@ -294,6 +294,9 @@ class LayerTree extends React.Component {
         const allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
         const separatorTitle = LocaleUtils.tr("layertree.separator");
         const separatorTooltip = LocaleUtils.tr("layertree.separatortooltip");
+        const queryable = layer.initialQueryLayers ? (layer.initialQueryLayers.includes(sublayer.name)) : false;
+        const identifyable = layer.queryLayers ? (layer.queryLayers.includes(sublayer.name)) : false;
+        const identifyableClassName = identifyable ? ("layertree-item-identifyable-active") : "";
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={sublayer.uuid}>
                 {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)} title={separatorTooltip} />) : null}
@@ -302,7 +305,7 @@ class LayerTree extends React.Component {
                     {checkbox}
                     {legendicon}
                     {title}
-                    {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className={this.props.allowSelectIdentifyableLayers ? ("layertree-item-identifyable icon_clickable layertree-item-identifyable-active") : "layertree-item-queryable"} icon="info-sign" />) : null}
+                    {queryable && this.props.showQueryableIcon ? (<Icon className={this.props.allowSelectIdentifyableLayers ? ("layertree-item-identifyable icon_clickable " + identifyableClassName ) : "layertree-item-queryable"} icon="info-sign" onClick={() => this.modifyLayerIdentifyable(sublayer.name, layer)} />) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
@@ -714,6 +717,16 @@ class LayerTree extends React.Component {
             features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.map.projection, 'EPSG:4326')}))
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
+    };
+
+    modifyLayerIdentifyable = (sublayername, layer) => {
+        let newQueryLayers = [];
+        if (layer.queryLayers.includes(sublayername)) { // sublayer was identifyable, we should remove it
+            newQueryLayers = layer.queryLayers.filter((item) => item !== sublayername);
+        } else { // sublayer was not identifyable, we should add it
+            newQueryLayers = layer.queryLayers.concat(sublayername);
+        }
+        this.props.changeLayerProperty(layer.uuid, "queryLayers", newQueryLayers, [], "parents");
     };
 }
 

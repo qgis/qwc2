@@ -154,8 +154,9 @@ const LayerUtils = {
     buildWMSLayerParams(layer) {
         const params = layer.params || {};
         let newParams = {};
-        let queryLayers = [];
+        let initialQueryLayers = [];
         let initialOpacities = undefined;
+        let queryLayers = layer.queryLayers;
 
         if (!Array.isArray(layer.sublayers)) {
             // Background layers may just contain layer.params.OPACITIES
@@ -172,13 +173,13 @@ const LayerUtils = {
                 STYLES: layer.style ?? params.STYLES ?? "",
                 ...layer.dimensionValues
             };
-            queryLayers = layer.queryable ? [layer.name] : [];
+            initialQueryLayers = layer.queryable ? [layer.name] : [];
         } else {
             let layerNames = [];
             let opacities = [];
             let styles = [];
             layer.sublayers.map(sublayer => {
-                LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
+                LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, initialQueryLayers, null, layer.visibility);
             });
             layerNames.reverse();
             opacities.reverse();
@@ -196,9 +197,48 @@ const LayerUtils = {
                 ...layer.dimensionValues
             };
         }
+
+        function findFirstDifferenceList(smallList, longList_) {
+            for (let i = 0; i < smallList.length; i++) {
+                if (smallList[i] !== longList_[i]) {
+                    return longList_[i];
+                }
+            }
+            // If all common elements are the same, check if one list is longer
+            if (smallList.length !== longList_.length) {
+                const index = smallList.length;
+                return longList_[index];
+            }
+            // If the lists are identical
+            return null;
+        }
+        if (queryLayers) { // not first add
+            const newParamsLayers = newParams.LAYERS.split(',').sort((a, b) => a.localeCompare(b)) || [];
+            const paramsLayers = params.LAYERS.split(',').sort((a, b) => a.localeCompare(b)) || [];
+            if (JSON.stringify(newParamsLayers) !== JSON.stringify(paramsLayers)) {
+                // If newparams.layers != params.layers there are layers added or not visualised any more
+                if (newParamsLayers.length >= paramsLayers.length) {
+                    // A layer is added. Add this new layer to queryLayers
+                    queryLayers = queryLayers.concat(findFirstDifferenceList(paramsLayers, newParamsLayers));
+                } else {
+                    // A layer is hidden. Remove it from queryLayers
+                    const toRemove = findFirstDifferenceList(newParamsLayers, paramsLayers);
+                    queryLayers = queryLayers.filter(value => value !== toRemove);
+                }
+            } else {
+                // If newparams.layers == params.layers
+                // but there is more layers in layer.queryLayers, a layer was deleted.
+                if (queryLayers.length > paramsLayers.length) {
+                    // Remove this layer from layer.queryLayers
+                    const toRemove = findFirstDifferenceList(paramsLayers, queryLayers);
+                    queryLayers = queryLayers.filter(value => value === toRemove);
+                }
+            }
+        }
         return {
             params: newParams,
-            queryLayers: queryLayers,
+            initialQueryLayers: initialQueryLayers, // store initialQueryLayers List
+            queryLayers: queryLayers || initialQueryLayers,
             initialOpacities: initialOpacities
         };
     },
