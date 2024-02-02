@@ -37,7 +37,8 @@ class MapPlugin extends React.Component {
             rotation: PropTypes.number,
             panStepSize: PropTypes.number,
             panPageSize: PropTypes.number,
-            constrainExtent: PropTypes.bool
+            constrainExtent: PropTypes.bool,
+            kineticPanParams: PropTypes.object,
         }),
         /** Whether to display the loading spinner when layers are loading. */
         showLoading: PropTypes.bool,

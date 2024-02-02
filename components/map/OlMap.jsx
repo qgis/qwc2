@@ -7,6 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import ol from 'openlayers';
+import Kinetic from 'ol/Kinetic.js';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
@@ -77,9 +78,17 @@ class OlMap extends React.Component {
             keyboard: false
         });
         this.keyboardPanInteractions = [];
+        let kinetic = null;
+        if (this.state.mapOptions.kineticPanParams)  {
+            kinetic = new Kinetic(
+                this.state.mapOptions.kineticPanParams.decay,
+                this.state.mapOptions.kineticPanParams.minVelocity,
+                this.state.mapOptions.kineticPanParams.delay
+            );
+        }
         interactions.extend([
             new ol.interaction.DragPan({
-                kinetic: null,
+                kinetic: kinetic,
                 condition: (ev) => {
                     const oev = ev.originalEvent;
                     return (
