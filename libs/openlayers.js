@@ -51,6 +51,7 @@ import OlInteractionSelect from 'ol/interaction/Select';
 import OlInteractionSnap from 'ol/interaction/Snap';
 import OlInteractionTransform from 'ol-ext/interaction/Transform';
 import OlInteractionTranslate from 'ol/interaction/Translate';
+import OlKinetic from 'ol/Kinetic';
 import OlLayer from 'ol/layer/Layer';
 import OlLayerImage from 'ol/layer/Image';
 import OlLayerTile from 'ol/layer/Tile';
@@ -141,6 +142,7 @@ export default {
         Transform: OlInteractionTransform,
         Translate: OlInteractionTranslate
     },
+    Kinetic: OlKinetic,
     layer: {
         Layer: OlLayer,
         Image: OlLayerImage,
