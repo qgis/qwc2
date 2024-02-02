@@ -198,20 +198,6 @@ const LayerUtils = {
             };
         }
 
-        function findFirstDifferenceList(smallList, longList_) {
-            for (let i = 0; i < smallList.length; i++) {
-                if (smallList[i] !== longList_[i]) {
-                    return longList_[i];
-                }
-            }
-            // If all common elements are the same, check if one list is longer
-            if (smallList.length !== longList_.length) {
-                const index = smallList.length;
-                return longList_[index];
-            }
-            // If the lists are identical
-            return null;
-        }
         if (queryLayers) { // not first add
             const newParamsLayers = newParams.LAYERS.split(',').sort((a, b) => a.localeCompare(b)) || [];
             const paramsLayers = params.LAYERS.split(',').sort((a, b) => a.localeCompare(b)) || [];
@@ -219,10 +205,10 @@ const LayerUtils = {
                 // If newparams.layers != params.layers there are layers added or not visualised any more
                 if (newParamsLayers.length >= paramsLayers.length) {
                     // A layer is added. Add this new layer to queryLayers
-                    queryLayers = queryLayers.concat(findFirstDifferenceList(paramsLayers, newParamsLayers));
+                    queryLayers = queryLayers.concat(LayerUtils.findFirstDifferenceList(paramsLayers, newParamsLayers));
                 } else {
                     // A layer is hidden. Remove it from queryLayers
-                    const toRemove = findFirstDifferenceList(newParamsLayers, paramsLayers);
+                    const toRemove = LayerUtils.findFirstDifferenceList(newParamsLayers, paramsLayers);
                     queryLayers = queryLayers.filter(value => value !== toRemove);
                 }
             } else {
@@ -230,7 +216,7 @@ const LayerUtils = {
                 // but there is more layers in layer.queryLayers, a layer was deleted.
                 if (queryLayers.length > paramsLayers.length) {
                     // Remove this layer from layer.queryLayers
-                    const toRemove = findFirstDifferenceList(paramsLayers, queryLayers);
+                    const toRemove = LayerUtils.findFirstDifferenceList(paramsLayers, queryLayers);
                     queryLayers = queryLayers.filter(value => value === toRemove);
                 }
             }
@@ -241,6 +227,20 @@ const LayerUtils = {
             queryLayers: queryLayers || initialQueryLayers,
             initialOpacities: initialOpacities
         };
+    },
+    findFirstDifferenceList(smallList, longList_) {
+        for (let i = 0; i < smallList.length; i++) {
+            if (smallList[i] !== longList_[i]) {
+                return longList_[i];
+            }
+        }
+        // If all common elements are the same, check if one list is longer
+        if (smallList.length !== longList_.length) {
+            const index = smallList.length;
+            return longList_[index];
+        }
+        // If the lists are identical
+        return null;
     },
     addUUIDs(group, usedUUIDs = new Set()) {
         group.uuid = !group.uuid || usedUUIDs.has(group.uuid) ? uuidv4() : group.uuid;
