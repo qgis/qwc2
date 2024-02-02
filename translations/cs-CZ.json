@@ -46,6 +46,7 @@
     "attribtable": {
       "addfeature": "Přidat prvek",
       "commit": "Uložit změněný řádek",
+      "csvexport": "",
       "delete": "Smazat",
       "deletefailed": "Chyba při mazání jednoho nebo více prvků",
       "deletefeatures": "Smazat vybrané prvky",

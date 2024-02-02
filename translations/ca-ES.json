@@ -46,6 +46,7 @@
     "attribtable": {
       "addfeature": "Afegir element",
       "commit": "Commit",
+      "csvexport": "",
       "delete": "Eliminar",
       "deletefailed": "Un o més elements no han pogut eliminar-se",
       "deletefeatures": "Eliminar elements seleccionats",

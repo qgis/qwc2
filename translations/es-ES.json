@@ -46,6 +46,7 @@
     "attribtable": {
       "addfeature": "Añadir elemento",
       "commit": "Commit de la fila modificada",
+      "csvexport": "",
       "delete": "Eliminar",
       "deletefailed": "Uno o más elementos no han podido eliminarse",
       "deletefeatures": "Eliminar elementos seleccionados",

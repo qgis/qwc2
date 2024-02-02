@@ -46,6 +46,7 @@
     "attribtable": {
       "addfeature": "Ajouter un objet",
       "commit": "Enregistrer les modifications",
+      "csvexport": "Exporter à CSV,
       "delete": "Supprimer",
       "deletefailed": "Un ou plusieurs objets n'ont pas pu être supprimés",
       "deletefeatures": "Supression des objets sélectionnés",

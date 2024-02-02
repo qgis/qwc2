@@ -60,6 +60,7 @@
     "appmenu.menulabel",
     "attribtable.addfeature",
     "attribtable.commit",
+    "attribtable.csvexport",
     "attribtable.delete",
     "attribtable.deletefailed",
     "attribtable.deletefeatures",

@@ -46,6 +46,7 @@
     "attribtable": {
       "addfeature": "Adicionar Recurso",
       "commit": "Confirmar",
+      "csvexport": "",
       "delete": "Eliminar",
       "deletefailed": "Falha ao Eliminar",
       "deletefeatures": "Eliminar Recursos",

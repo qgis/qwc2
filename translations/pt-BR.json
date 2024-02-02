@@ -46,6 +46,7 @@
     "attribtable": {
       "addfeature": "Adicionar feição",
       "commit": "Commit",
+      "csvexport": "",
       "delete": "Deletar",
       "deletefailed": "Falha ao deletar",
       "deletefeatures": "Deletar feições",
