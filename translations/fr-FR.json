@@ -31,8 +31,8 @@
         "MeasurePolygon": "Mesurer un polygone",
         "Portal": "Portail",
         "Print": "Imprimer",
-        "RasterExport": "Export image",
-        "MapExport": "Exporter carte",
+        "RasterExport": "Exporter l'image",
+        "MapExport": "Exporter la carte",
         "Redlining": "Dessiner",
         "Routing": "Routage",
         "Share": "Partager",
@@ -46,13 +46,13 @@
     "attribtable": {
       "addfeature": "Ajouter un objet",
       "commit": "Enregistrer les modifications",
-      "csvexport": "Exporter à CSV,
+      "csvexport": "Exporter en CSV",
       "delete": "Supprimer",
       "deletefailed": "Un ou plusieurs objets n'ont pas pu être supprimés",
-      "deletefeatures": "Supression des objets sélectionnés",
+      "deletefeatures": "Suppression des objets sélectionnés",
       "deleting": "Suppression en cours...",
       "discard": "Abandonner les modifications",
-      "formeditmode": "Basculter sur la vue formulaire",
+      "formeditmode": "Basculer sur la vue formulaire",
       "geomnoadd": "Veuillez utiliser le formulaire d'édition pour ajouter de nouveaux objets à cette couche",
       "layer": "Couche",
       "loadfailed": "Echec du chargement de l'objet",
@@ -130,7 +130,7 @@
       "pick": "Choisir",
       "pickdrawfeature": "Copier la géométrie existante",
       "reallydelete": "Supprimer",
-      "relationcommitfailed": "Certaines relations n'ont pas pu être enregistrées. Pour plus de détails consulter le boutons d'informations",
+      "relationcommitfailed": "Certaines relations n'ont pas pu être enregistrées. Pour plus de détails consulter le bouton d'informations",
       "select": "Sélectionner",
       "selectedpicture": "Image sélectionnée",
       "takepicture": "Ajouter une photo",
@@ -202,7 +202,7 @@
       "windowtitle": "Catalogue de couches"
     },
     "layerinfo": {
-      "abstract": "Récapitulation",
+      "abstract": "Résumé",
       "attribution": "Attribution",
       "dataUrl": "URL des données",
       "keywords": "Mots-clés",
@@ -275,7 +275,7 @@
       "pointLabel": "Position"
     },
     "misc": {
-      "ctrlclickhint": "Ouvrir avec Ctrl+Click"
+      "ctrlclickhint": "Ouvrir avec Ctrl+Clic"
     },
     "navbar": {
       "perpage": "Par page"
@@ -384,7 +384,7 @@
       "method": "Méthode",
       "mode_auto": "Automobile",
       "mode_bicycle": "Bicyclette",
-      "mode_heavyvehicle": "Véhicule pesant",
+      "mode_heavyvehicle": "Véhicule lourd",
       "mode_transit": "Transit",
       "mode_walking": "Marcher",
       "optimized_route": "Route optimale",
@@ -404,11 +404,11 @@
     "search": {
       "all": "Tous",
       "circleradius": "Rayon du cercle",
-      "clearfilter": "Effaccer",
+      "clearfilter": "Effacer",
       "enablelayer": "Activer la couche",
       "existinglayer": "La couche existe déjà dans la carte",
       "filter": "Filtre",
-      "invisiblelayer": "Le résultat est sur une couche désactivé",
+      "invisiblelayer": "Le résultat est sur une couche désactivée",
       "limittoarea": "Limiter à la région",
       "more": "Plus...",
       "none": "Aucune",
@@ -457,7 +457,7 @@
     "share": {
       "QRCodeLinkTitle": "QR code",
       "directLinkTitle": "Via un lien direct",
-      "expires": "Cette lien permanent est valide jusqu'au {0}.",
+      "expires": "Ce lien permanent est valide jusqu'au {0}.",
       "refresh": "Générer un lien permanent",
       "shareTitle": "QWC2",
       "showpin": "Afficher les épingles",
@@ -512,13 +512,13 @@
       "starttime": "Début",
       "stepback": "Pas en arrière",
       "stepfwd": "Pas en avant",
-      "stepsize": "aille de pas",
+      "stepsize": "Taille de pas",
       "stop": "Stop",
       "timeline": "Chronologie",
       "timeline_fixed": "Fixe",
-      "timeline_infinite": "Infinite",
+      "timeline_infinite": "Infinie",
       "timelinedisplay": "Affichage",
-      "timelinescale": "Èchelle de temps (non-linéarité)",
+      "timelinescale": "Échelle de temps (non-linéarité)",
       "title": "Ligne du temps",
       "toggle": "Activer le contrôle du temps",
       "unit": {
