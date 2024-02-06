@@ -15,7 +15,6 @@ import {LayerRole} from '../actions/layers';
 import OlMap from '../components/map/OlMap';
 import OlLayer from '../components/map/OlLayer';
 import Spinner from '../components/Spinner';
-import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
