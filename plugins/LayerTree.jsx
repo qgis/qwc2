@@ -227,6 +227,7 @@ class LayerTree extends React.Component {
                     <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
+                    {this.props.allowSelectIdentifyableLayers ? (<Icon className="layertree-item-identifyable icon_clickable layertree-item-identifyable-active" icon="info-sign" onClick={(event) => this.layerGroupIdentifyableToggled(event, layer, path)} />) : null}
                     <span className="layertree-item-spacer" />
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
@@ -294,9 +295,7 @@ class LayerTree extends React.Component {
         const allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
         const separatorTitle = LocaleUtils.tr("layertree.separator");
         const separatorTooltip = LocaleUtils.tr("layertree.separatortooltip");
-        const queryable = layer.initialQueryLayers ? (layer.initialQueryLayers.includes(sublayer.name)) : false;
-        const identifyable = layer.queryLayers ? (layer.queryLayers.includes(sublayer.name)) : false;
-        const identifyableClassName = identifyable ? ("layertree-item-identifyable-active") : "";
+        const identifyableClassName = !sublayer.omitFromQueryLayers ? ("layertree-item-identifyable-active") : "";
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={sublayer.uuid}>
                 {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)} title={separatorTooltip} />) : null}
@@ -305,7 +304,7 @@ class LayerTree extends React.Component {
                     {checkbox}
                     {legendicon}
                     {title}
-                    {queryable && this.props.showQueryableIcon ? (<Icon className={this.props.allowSelectIdentifyableLayers ? ("layertree-item-identifyable icon_clickable " + identifyableClassName ) : "layertree-item-queryable"} icon="info-sign" onClick={() => this.subLayerIdentifyableToggled(sublayer.name, layer)} />) : null}
+                    {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className={this.props.allowSelectIdentifyableLayers ? ("layertree-item-identifyable icon_clickable " + identifyableClassName ) : "layertree-item-queryable"} icon="info-sign" onClick={() => this.subLayerIdentifyableToggled(sublayer, layer, path)} />) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
@@ -719,14 +718,35 @@ class LayerTree extends React.Component {
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     };
 
-    subLayerIdentifyableToggled = (sublayername, layer) => {
-        let newQueryLayers = [];
-        if (layer.queryLayers.includes(sublayername)) { // sublayer was identifyable, we should remove it
-            newQueryLayers = layer.queryLayers.filter((item) => item !== sublayername);
-        } else { // sublayer was not identifyable, we should add it
-            newQueryLayers = layer.queryLayers.concat(sublayername);
+    subLayerIdentifyableToggled = (sublayer, layer, path) => {
+        const currentValue = sublayer.omitFromQueryLayers || false;
+        this.props.changeLayerProperty(layer.uuid, "omitFromQueryLayers", !currentValue, path);
+    };
+    layerGroupIdentifyableToggled = (event, layer, path) => {
+        if (event.currentTarget.classList.contains('layertree-item-identifyable-active')) {
+            // Identifyable icon is active, we want to remove all sublayer from queryLayers
+            // Find group
+            // groupSublayers = findSublayersFromUuid(groupUuid);
+            // newQueryLayers = layer.queryLayers.filter((item) => group.sublayers)
+            this.props.changeLayerProperty(layer.uuid, "omitFromQueryLayers", true, path, "children");
+        } else {
+            this.props.changeLayerProperty(layer.uuid, "omitFromQueryLayers", false, path, "children");
         }
-        this.props.changeLayerProperty(layer.uuid, "queryLayers", newQueryLayers, [], "parents");
+        event.target.classList.toggle('layertree-item-identifyable-active');
+    };
+    findAllSublayers = (layer, sublayersResult = []) => {
+        if (layer.sublayers) {
+            layer.sublayers.map((sublayer) => {
+                if (sublayer.sublayers) {
+                    this.findAllSublayers(sublayer, sublayersResult);
+                } else {
+                    sublayersResult = sublayersResult.concat(sublayer.name);
+                }
+            });
+        } else {
+            sublayersResult = sublayersResult.concat(layer.name);
+        }
+        return sublayersResult;
     };
 }
 
