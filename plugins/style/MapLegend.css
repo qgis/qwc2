@@ -28,6 +28,7 @@ div.map-legend-group-entries {
 div.map-legend-legend-entry {
     display: flex;
     align-items: center;
+    margin-bottom: 1em;
 }
 
 div.map-legend-entry-title {
