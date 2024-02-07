@@ -181,6 +181,25 @@ img.layertree-item-legend-tooltip {
     flex: 0 0 auto;
 }
 
+#LayerTree span.layertree-item-identifyable {
+    margin-left: 0.25em;
+    font-size: small;
+    vertical-align: top;
+    flex: 0 0 auto;
+}
+
+#LayerTree span.layertree-item-identifyable-unchecked {
+    color: var(--border-color);
+}
+
+#LayerTree span.layertree-item-identifyable-checked {
+    color: var(--color-active);
+}
+
+#LayerTree span.layertree-item-identifyable-tristate {
+    color: var(--text-color);
+}
+
 #LayerTree span.layertree-item-spacer {
     flex: 1 1 auto;
 }

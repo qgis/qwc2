@@ -49,6 +49,8 @@ class LayerTree extends React.Component {
         allowImport: PropTypes.bool,
         /** Whether to allow enabling map tips. */
         allowMapTips: PropTypes.bool,
+        /** Whether to allow selection of identifyable layers. The `showQueryableIcon` property should be `true` to be able to select identifyable layers. */
+        allowSelectIdentifyableLayers: PropTypes.bool,
         /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         changeLayerProperty: PropTypes.func,
@@ -118,6 +120,7 @@ class LayerTree extends React.Component {
         allowMapTips: true,
         allowCompare: true,
         allowImport: true,
+        allowSelectIdentifyableLayers: false,
         groupTogglesSublayers: false,
         grayUnchecked: true,
         layerInfoGeometry: {
@@ -199,6 +202,19 @@ class LayerTree extends React.Component {
                 checkboxstate = 'unchecked';
             }
         }
+        let omitqueryable;
+        let identifyableClassName = "";
+        const subtreequeryable = LayerUtils.computeLayerQueryable(group);
+        if (subtreequeryable === 1) {
+            identifyableClassName = "layertree-item-identifyable-checked";
+            omitqueryable = false;
+        } else if (subtreequeryable === 0) {
+            identifyableClassName = "layertree-item-identifyable-unchecked";
+            omitqueryable = true;
+        } else {
+            identifyableClassName = "layertree-item-identifyable-tristate";
+            omitqueryable = true;
+        }
         if (inMutuallyExclusiveGroup) {
             checkboxstate = 'radio_' + checkboxstate;
         }
@@ -224,6 +240,7 @@ class LayerTree extends React.Component {
                     <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
+                    {this.props.allowSelectIdentifyableLayers ? (<Icon className={"layertree-item-identifyable " + identifyableClassName}  icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, omitqueryable)} />) : null}
                     <span className="layertree-item-spacer" />
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
@@ -286,6 +303,13 @@ class LayerTree extends React.Component {
         } else {
             title = (<span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>);
         }
+        let queryableicon = null;
+        if (this.props.allowSelectIdentifyableLayers) {
+            const identifyableClassName = !sublayer.omitFromQueryLayers ? "layertree-item-identifyable-checked" : "layertree-item-identifyable-unchecked";
+            queryableicon = <Icon className={"layertree-item-identifyable " + identifyableClassName} icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, sublayer.omitFromQueryLayers)}/>;
+        } else {
+            queryableicon = <Icon className="layertree-item-queryable" icon="info-sign"/>;
+        }
         const allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         const allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
@@ -299,7 +323,7 @@ class LayerTree extends React.Component {
                     {checkbox}
                     {legendicon}
                     {title}
-                    {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className="layertree-item-queryable" icon="info-sign" />) : null}
+                    {sublayer.queryable && this.props.showQueryableIcon ? (queryableicon) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
@@ -586,6 +610,9 @@ class LayerTree extends React.Component {
             recurseDirection = !oldvisibility ? "parents" : null;
         }
         this.props.changeLayerProperty(layer.uuid, "visibility", !oldvisibility, grouppath, recurseDirection);
+    };
+    itemOmitQueryableToggled = (layer, grouppath, oldomitqueryable) => {
+        this.props.changeLayerProperty(layer.uuid, "omitFromQueryLayers", !oldomitqueryable, grouppath, "children");
     };
     layerTransparencyChanged = (layer, sublayerpath, value, recurse = null) => {
         this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath, recurse);

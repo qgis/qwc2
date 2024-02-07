@@ -142,7 +142,7 @@ const LayerUtils = {
                 opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
                 // Only specify style if more than one style choice exists
                 styles.push(Object.keys(sublayer.styles || {}).length > 1 ? (sublayer.style || "") : "");
-                if (sublayer.queryable) {
+                if (sublayer.queryable && !sublayer.omitFromQueryLayers) {
                     queryable.push(sublayer.name);
                 }
                 if (visibilities) {
@@ -172,7 +172,7 @@ const LayerUtils = {
                 STYLES: layer.style ?? params.STYLES ?? "",
                 ...layer.dimensionValues
             };
-            queryLayers = layer.queryable ? [layer.name] : [];
+            queryLayers = layer.queryable && !layer.omitFromQueryLayers ? [layer.name] : [];
         } else {
             let layerNames = [];
             let opacities = [];
@@ -196,6 +196,7 @@ const LayerUtils = {
                 ...layer.dimensionValues
             };
         }
+
         return {
             params: newParams,
             queryLayers: queryLayers,
@@ -600,6 +601,18 @@ const LayerUtils = {
             opacity += LayerUtils.computeLayerOpacity(sublayer);
         });
         return opacity / layer.sublayers.length;
+    },
+    computeLayerQueryable(layer) {
+        let queryable = 0;
+        layer.sublayers.map(sublayer => {
+            const sublayerqueryable = !sublayer.omitFromQueryLayers ?? true;
+            if (sublayer.sublayers && sublayerqueryable) {
+                queryable += LayerUtils.computeLayerQueryable(sublayer);
+            } else {
+                queryable += sublayerqueryable ? 1 : 0;
+            }
+        });
+        return queryable / layer.sublayers.length;
     },
     cloneLayer(layer, sublayerpath) {
         const newlayer = {...layer};
