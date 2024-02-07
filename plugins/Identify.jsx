@@ -85,7 +85,9 @@ class Identify extends React.Component {
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        /** Whether to highlight all results if no result is hovered */
+        highlightAllResults: PropTypes.bool
     };
     static defaultProps = {
         enableExport: true,
@@ -105,7 +107,8 @@ class Identify extends React.Component {
             side: 'left'
         },
         initialRadius: 50,
-        initialRadiusUnits: 'meters'
+        initialRadiusUnits: 'meters',
+        highlightAllResults: true
     };
     state = {
         mode: 'Point',
@@ -405,6 +408,7 @@ class Identify extends React.Component {
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
+                        highlightAllResults={this.props.highlightAllResults}
                         role="body" />
                 );
             }
