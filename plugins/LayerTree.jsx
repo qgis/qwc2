@@ -49,7 +49,7 @@ class LayerTree extends React.Component {
         allowImport: PropTypes.bool,
         /** Whether to allow enabling map tips. */
         allowMapTips: PropTypes.bool,
-        /** Whether to allow selection of identifyable layers. */
+        /** Whether to allow selection of identifyable layers. The `showQueryableIcon` property should be `true` to be able to select identifyable layers. */
         allowSelectIdentifyableLayers: PropTypes.bool,
         /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
