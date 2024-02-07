@@ -128,7 +128,8 @@ class MapLegend extends React.Component {
         this.setState({visible: false});
     };
     printLayerLegend = (layer, sublayer, mapScale) => {
-        if (sublayer.sublayers && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
+        const isCategorized = (sublayer.sublayers || []).find(entry => entry.category_sublayer === true);
+        if (sublayer.sublayers && !isCategorized && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
             if (this.props.addGroupTitles) {
                 const children = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer, mapScale)).filter(x => x);
                 if (isEmpty(children)) {
@@ -157,7 +158,7 @@ class MapLegend extends React.Component {
             return request ? (
                 <div className="map-legend-legend-entry" key={sublayer.name}>
                     <div>
-                        {this.props.addLayerTitles ? (<div className="map-legend-entry-title">{sublayer.title || sublayer.name}</div>) : null}
+                        {this.props.addLayerTitles && !sublayer.category_sublayer ? (<div className="map-legend-entry-title">{sublayer.title || sublayer.name}</div>) : null}
                         <div><Image src={request} /></div>
                     </div>
                 </div>) : null;
