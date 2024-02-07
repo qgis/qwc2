@@ -305,7 +305,7 @@ class LayerTree extends React.Component {
         }
         let queryableicon = null;
         if (this.props.allowSelectIdentifyableLayers) {
-            const identifyableClassName = !sublayer.omitFromQueryLayers ? ("layertree-item-identifyable-checked") : "layertree-item-identifyable-unchecked";
+            const identifyableClassName = !sublayer.omitFromQueryLayers ? "layertree-item-identifyable-checked" : "layertree-item-identifyable-unchecked";
             queryableicon = <Icon className={"layertree-item-identifyable " + identifyableClassName} icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, sublayer.omitFromQueryLayers)}/>;
         } else {
             queryableicon = <Icon className="layertree-item-queryable" icon="info-sign"/>;
