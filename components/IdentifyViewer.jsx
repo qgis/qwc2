@@ -170,7 +170,8 @@ class IdentifyViewer extends React.Component {
         openExternalUrl: PropTypes.func,
         showLayerTitles: PropTypes.bool,
         theme: PropTypes.object,
-        zoomToExtent: PropTypes.func
+        zoomToExtent: PropTypes.func,
+        highlightAllResults: PropTypes.bool
     };
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
@@ -178,7 +179,8 @@ class IdentifyViewer extends React.Component {
         displayResultTree: true,
         attributeCalculator: (/* layer, feature */) => { return []; },
         attributeTransform: (name, value /* , layer, feature */) => value,
-        showLayerTitles: true
+        showLayerTitles: true,
+        highlightAllResults: true
     };
     state = {
         expanded: {},
@@ -231,12 +233,12 @@ class IdentifyViewer extends React.Component {
         });
     };
     setHighlightedResults = (results, resultTree) => {
-        if (!results) {
+        if (!results && this.props.highlightAllResults) {
             results = Object.keys(resultTree).reduce((res, layer) => {
                 return res.concat(resultTree[layer].map(result => ({...result, id: layer + "." + result.id})));
             }, []);
         }
-        results = results.filter(result => result.type.toLowerCase() === "feature");
+        results = (results || []).filter(result => result.type.toLowerCase() === "feature");
         if (!isEmpty(results)) {
             const layer = {
                 id: "identifyslection",
