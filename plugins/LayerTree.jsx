@@ -202,6 +202,19 @@ class LayerTree extends React.Component {
                 checkboxstate = 'unchecked';
             }
         }
+        let omitqueryable;
+        let identifyableClassName = "";
+        const subtreequeryable = LayerUtils.computeLayerQueryable(group);
+        if (subtreequeryable === 1) {
+            identifyableClassName = "layertree-item-identifyable-checked";
+            omitqueryable = false;
+        } else if (subtreequeryable === 0) {
+            identifyableClassName = "layertree-item-identifyable-unchecked";
+            omitqueryable = true;
+        } else {
+            identifyableClassName = "layertree-item-identifyable-tristate";
+            omitqueryable = true;
+        }
         if (inMutuallyExclusiveGroup) {
             checkboxstate = 'radio_' + checkboxstate;
         }
@@ -227,7 +240,7 @@ class LayerTree extends React.Component {
                     <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
-                    {this.props.allowSelectIdentifyableLayers ? (<Icon className="layertree-item-identifyable icon_clickable layertree-item-identifyable-active" icon="info-sign" onClick={(event) => this.layerGroupIdentifyableToggled(event, layer, path)} />) : null}
+                    {this.props.allowSelectIdentifyableLayers ? (<Icon className={"layertree-item-identifyable " + identifyableClassName}  icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, omitqueryable)} />) : null}
                     <span className="layertree-item-spacer" />
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
@@ -290,12 +303,18 @@ class LayerTree extends React.Component {
         } else {
             title = (<span className="layertree-item-title" title={sublayer.title}>{sublayer.title}</span>);
         }
+        let queryableicon = null;
+        if (this.props.allowSelectIdentifyableLayers) {
+            const identifyableClassName = !sublayer.omitFromQueryLayers ? ("layertree-item-identifyable-checked") : "layertree-item-identifyable-unchecked";
+            queryableicon = <Icon className={"layertree-item-identifyable " + identifyableClassName} icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, sublayer.omitFromQueryLayers)}/>;
+        } else {
+            queryableicon = <Icon className="layertree-item-queryable" icon="info-sign"/>;
+        }
         const allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         const allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
         const separatorTitle = LocaleUtils.tr("layertree.separator");
         const separatorTooltip = LocaleUtils.tr("layertree.separatortooltip");
-        const identifyableClassName = !sublayer.omitFromQueryLayers ? ("layertree-item-identifyable-active") : "";
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={sublayer.uuid}>
                 {allowSeparators ? (<div className="layertree-item-addsep" onClick={() => this.props.addLayerSeparator(separatorTitle, layer.id, path)} title={separatorTooltip} />) : null}
@@ -304,7 +323,7 @@ class LayerTree extends React.Component {
                     {checkbox}
                     {legendicon}
                     {title}
-                    {sublayer.queryable && this.props.showQueryableIcon ? (<Icon className={this.props.allowSelectIdentifyableLayers ? ("layertree-item-identifyable icon_clickable " + identifyableClassName ) : "layertree-item-queryable"} icon="info-sign" onClick={() => this.subLayerIdentifyableToggled(sublayer, layer, path)} />) : null}
+                    {sublayer.queryable && this.props.showQueryableIcon ? (queryableicon) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
@@ -591,6 +610,9 @@ class LayerTree extends React.Component {
         }
         this.props.changeLayerProperty(layer.uuid, "visibility", !oldvisibility, grouppath, recurseDirection);
     };
+    itemOmitQueryableToggled = (layer, grouppath, oldomitqueryable) => {
+        this.props.changeLayerProperty(layer.uuid, "omitFromQueryLayers", !oldomitqueryable, grouppath, "children");
+    };
     layerTransparencyChanged = (layer, sublayerpath, value, recurse = null) => {
         this.props.changeLayerProperty(layer.uuid, "opacity", Math.max(1, 255 - value), sublayerpath, recurse);
     };
@@ -716,37 +738,6 @@ class LayerTree extends React.Component {
             features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.map.projection, 'EPSG:4326')}))
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
-    };
-
-    subLayerIdentifyableToggled = (sublayer, layer, path) => {
-        const currentValue = sublayer.omitFromQueryLayers || false;
-        this.props.changeLayerProperty(layer.uuid, "omitFromQueryLayers", !currentValue, path);
-    };
-    layerGroupIdentifyableToggled = (event, layer, path) => {
-        if (event.currentTarget.classList.contains('layertree-item-identifyable-active')) {
-            // Identifyable icon is active, we want to remove all sublayer from queryLayers
-            // Find group
-            // groupSublayers = findSublayersFromUuid(groupUuid);
-            // newQueryLayers = layer.queryLayers.filter((item) => group.sublayers)
-            this.props.changeLayerProperty(layer.uuid, "omitFromQueryLayers", true, path, "children");
-        } else {
-            this.props.changeLayerProperty(layer.uuid, "omitFromQueryLayers", false, path, "children");
-        }
-        event.target.classList.toggle('layertree-item-identifyable-active');
-    };
-    findAllSublayers = (layer, sublayersResult = []) => {
-        if (layer.sublayers) {
-            layer.sublayers.map((sublayer) => {
-                if (sublayer.sublayers) {
-                    this.findAllSublayers(sublayer, sublayersResult);
-                } else {
-                    sublayersResult = sublayersResult.concat(sublayer.name);
-                }
-            });
-        } else {
-            sublayersResult = sublayersResult.concat(layer.name);
-        }
-        return sublayersResult;
     };
 }
 
