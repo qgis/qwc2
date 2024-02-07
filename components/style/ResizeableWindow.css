@@ -6,6 +6,7 @@ div.resizeable-window-container {
     right: 0;
     pointer-events: none;
 }
+
 div.resizeable-window {
     pointer-events: auto;
     background-color: var(--container-bg-color);

@@ -17,6 +17,7 @@ export const CLOSE_ALL_WINDOWS = 'CLOSE_ALL_WINDOWS';
 export const REGISTER_WINDOW = 'REGISTER_WINDOW';
 export const UNREGISTER_WINDOW = 'UNREGISTER_WINDOW';
 export const RAISE_WINDOW = 'RAISE_WINDOW';
+export const SET_MENU_MARGIN = 'SET_MENU_MARGIN';
 export const SET_SPLIT_SCREEN = 'SET_SPLIT_SCREEN';
 
 export const NotificationType = {
@@ -84,5 +85,13 @@ export function setSplitScreen(windowId, side, size) {
         windowId: windowId,
         side: side,
         size: size
+    };
+}
+
+export function setMenuMargin(right, left) {
+    return {
+        type: SET_MENU_MARGIN,
+        right: right,
+        left: left
     };
 }

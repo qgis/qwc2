@@ -28,6 +28,8 @@ class TopBar extends React.Component {
     static propTypes = {
         /** Whether opening the app menu clears the active task. */
         appMenuClearsTask: PropTypes.bool,
+        /** Whether show an appMenu compact (menu visible on icons hover) - Only available for desktop client. */
+        appMenuCompact: PropTypes.bool,
         /** Whether to display the filter field in the app menu. */
         appMenuFilterField: PropTypes.bool,
         /** The shortcut for tiggering the app menu, i.e. alt+shift+m. */
@@ -99,7 +101,7 @@ class TopBar extends React.Component {
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
         const tooltip = LocaleUtils.tr("appmenu.menulabel");
-        if (this.props.mobile) {
+        if (this.props.mobile || this.props.appMenuCompact) {
             buttonContents = (
                 <span className="appmenu-button">
                     <Icon className="appmenu-icon" icon="menu-hamburger" title={tooltip}/>
@@ -128,6 +130,12 @@ class TopBar extends React.Component {
         const searchOptions = {...this.props.searchOptions};
         searchOptions.minScaleDenom = searchOptions.minScaleDenom || searchOptions.minScale;
         delete searchOptions.minScale;
+        // Menu compact only available for desktop client
+        const menuCompact = !this.props.mobile ? this.props.appMenuCompact : false;
+        // Keep menu open when appMenu is in compact mode (Visible on Hover)
+        const keepMenuOpen = menuCompact;
+        // Menu should be visible on startup when appMenu is in compact mode (Visible on Hover)
+        const showOnStartup = this.props.appMenuVisibleOnStartup || menuCompact;
         return (
             <Swipeable
                 onSwipedDown={() => this.props.toggleFullscreen(false)}
@@ -150,10 +158,12 @@ class TopBar extends React.Component {
                             appMenuClearsTask={this.props.appMenuClearsTask}
                             appMenuShortcut={this.props.appMenuShortcut}
                             buttonContents={buttonContents}
+                            keepMenuOpen={keepMenuOpen}
+                            menuCompact={menuCompact}
                             menuItems={this.props.menuItems}
                             openExternalUrl={this.openUrl}
                             showFilterField={this.props.appMenuFilterField}
-                            showOnStartup={this.props.appMenuVisibleOnStartup} />
+                            showOnStartup={showOnStartup} />
                     ) : null}
                     {this.props.components.FullscreenSwitcher ? (
                         <this.props.components.FullscreenSwitcher />

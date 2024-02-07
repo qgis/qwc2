@@ -26,6 +26,7 @@ class SideBar extends React.Component {
         heightResizeable: PropTypes.bool,
         icon: PropTypes.string,
         id: PropTypes.string.isRequired,
+        menuMargins: PropTypes.object,
         minWidth: PropTypes.string,
         onHide: PropTypes.func,
         onShow: PropTypes.func,
@@ -80,6 +81,7 @@ class SideBar extends React.Component {
         const render = visible || this.state.render || this.props.renderWhenHidden;
         const style = {
             width: this.props.width,
+            right: visible ? 'calc(0.25em + ' + this.props.menuMargins.right + 'px)' : 0,
             minWidth: this.props.minWidth,
             zIndex: visible ? 5 : 4
         };
@@ -166,7 +168,8 @@ class SideBar extends React.Component {
 }
 
 const selector = (state) => ({
-    currentTask: state.task
+    currentTask: state.task,
+    menuMargins: state.windows.menuMargins
 });
 
 export default connect(selector, {

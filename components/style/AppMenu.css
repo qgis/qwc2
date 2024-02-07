@@ -14,6 +14,10 @@ div.AppMenu.appmenu-visible {
     overflow: visible;
 }
 
+div.AppMenu.appmenu-visible.appmenu-compact {
+    background: none;
+}
+
 div.AppMenu .appmenu-label {
     font-weight: bold;
     transition: color 0.25s;
@@ -51,6 +55,20 @@ div.AppMenu div.appmenu-menu-container {
     overflow-y: auto;
     max-height: calc(100vh - 5.8em);
     max-height: calc(var(--vh, 1vh) * 100 - 5.8em);
+}
+
+div.AppMenu.appmenu-compact div.appmenu-menu-container {
+    right: -11.5em;
+    width: 15em;
+    height: calc(100vh - 86px);
+    transition: transform 0.25s, opacity 0.25s, right 0.5s;
+    background: var(--app-menu-bg-color);
+    box-shadow: 0px 0px 4px rgba(136, 136, 136, 0.5);
+    top: 3.7em;
+}
+
+div.AppMenu.appmenu-compact div.appmenu-menu-container:hover {
+    right: 0;
 }
 
 div.AppMenu ul.appmenu-menu {

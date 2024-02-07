@@ -41,6 +41,7 @@ class ResizeableWindow extends React.Component {
         maxHeight: PropTypes.number,
         maxWidth: PropTypes.number,
         maximizeable: PropTypes.bool,
+        menuMargins: PropTypes.object,
         minHeight: PropTypes.number,
         minWidth: PropTypes.number,
         minimizeable: PropTypes.bool,
@@ -117,7 +118,7 @@ class ResizeableWindow extends React.Component {
     componentWillUnmount() {
         this.props.unregisterWindow(this.id);
         if (this.props.splitScreenWhenDocked) {
-            this.props.setSplitScreen(this.id, null);
+            this.props.setSplitScreen(this.id, null, null);
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -135,7 +136,7 @@ class ResizeableWindow extends React.Component {
                 (!this.props.visible && prevProps.visible) ||
                 (this.state.geometry.docked === false && prevState.geometry.docked !== false)
             ) {
-                this.props.setSplitScreen(this.id, null);
+                this.props.setSplitScreen(this.id, null, null);
             } else if (this.props.visible && this.state.geometry.docked) {
                 const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
                 const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
@@ -169,7 +170,10 @@ class ResizeableWindow extends React.Component {
             "resizeable-window-body-scrollable": this.props.scrollable,
             "resizeable-window-body-nonscrollable": !this.props.scrollable
         });
-        const style = {display: this.props.visible ? 'initial' : 'none'};
+        const style = {
+            display: this.props.visible ? 'initial' : 'none',
+            right: 'calc(0.25em + ' + this.props.menuMargins.right + 'px)'
+        };
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
         const zIndex = this.props.baseZIndex + this.props.windowStacking.findIndex(item => item === this.id);
@@ -327,7 +331,8 @@ class ResizeableWindow extends React.Component {
 export default connect((state) => ({
     windowStacking: state.windows.stacking,
     topbarHeight: state.map.topbarHeight,
-    bottombarHeight: state.map.bottombarHeight
+    bottombarHeight: state.map.bottombarHeight,
+    menuMargins: state.windows.menuMargins
 }), {
     raiseWindow: raiseWindow,
     registerWindow: registerWindow,

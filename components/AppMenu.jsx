@@ -13,6 +13,7 @@ import mousetrap from 'mousetrap';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import classnames from 'classnames';
+import {setMenuMargin} from '../actions/windows';
 import {setCurrentTask} from '../actions/task';
 import InputContainer from '../components/InputContainer';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -32,10 +33,12 @@ class AppMenu extends React.Component {
         currentTaskBlocked: PropTypes.bool,
         currentTheme: PropTypes.object,
         keepMenuOpen: PropTypes.bool,
+        menuCompact: PropTypes.bool,
         menuItems: PropTypes.array,
         onMenuToggled: PropTypes.func,
         openExternalUrl: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        setMenuMargin: PropTypes.func,
         showFilterField: PropTypes.bool,
         showOnStartup: PropTypes.bool
     };
@@ -173,14 +176,16 @@ class AppMenu extends React.Component {
         if (!this.state.menuVisible && this.props.appMenuClearsTask) {
             this.props.setCurrentTask(null);
         }
-        if (!this.state.menuVisible) {
-            document.addEventListener('click', this.checkCloseMenu);
-            document.addEventListener('keydown', this.onKeyPress, true);
-            document.addEventListener('mousemove', this.onMouseMove, true);
-        } else {
-            document.removeEventListener('click', this.checkCloseMenu);
-            document.removeEventListener('keydown', this.onKeyPress, true);
-            document.removeEventListener('mousemove', this.onMouseMove, true);
+        if (!this.props.keepMenuOpen) {
+            if (!this.state.menuVisible) {
+                document.addEventListener('click', this.checkCloseMenu);
+                document.addEventListener('keydown', this.onKeyPress, true);
+                document.addEventListener('mousemove', this.onMouseMove, true);
+            } else {
+                document.removeEventListener('click', this.checkCloseMenu);
+                document.removeEventListener('keydown', this.onKeyPress, true);
+                document.removeEventListener('mousemove', this.onMouseMove, true);
+            }
         }
         this.props.onMenuToggled(!this.state.menuVisible);
         this.setState((state) => ({menuVisible: !state.menuVisible, submenusVisible: [], filter: ""}));
@@ -267,12 +272,12 @@ class AppMenu extends React.Component {
         }
     };
     render() {
-        let className = "";
-        if (this.props.currentTaskBlocked) {
-            className = "appmenu-blocked";
-        } else if (this.state.menuVisible) {
-            className = "appmenu-visible";
-        }
+        const visible = !this.props.currentTaskBlocked && this.state.menuVisible;
+        const className = classnames({
+            "appmenu-blocked": this.props.currentTaskBlocked,
+            "appmenu-visible": visible,
+            "appmenu-compact": this.props.menuCompact
+        });
         const filter = removeDiacritics(this.state.filter.toLowerCase());
         return (
             <div className={"AppMenu " + className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
@@ -280,7 +285,7 @@ class AppMenu extends React.Component {
                 <div className="appmenu-button-container" onMouseDown={this.toggleMenu} >
                     {this.props.buttonContents}
                 </div>
-                <div className="appmenu-menu-container">
+                <div className="appmenu-menu-container" ref={this.storeRightMargin}>
                     <ul className="appmenu-menu">
                         {this.props.showFilterField ? (
                             <li className="appmenu-leaf">
@@ -307,6 +312,12 @@ class AppMenu extends React.Component {
             mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
         }
     };
+    storeRightMargin = (el) => {
+        if (this.props.menuCompact && el?.clientWidth > 0) {
+            const rightmargin = el.clientWidth - MiscUtils.convertEmToPx(11.5);
+            this.props.setMenuMargin(rightmargin, 0);
+        }
+    };
     itemAllowed = (item) => {
         if (!ThemeUtils.themFlagsAllowed(this.props.currentTheme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
             return false;
@@ -328,5 +339,6 @@ export default connect((state) => ({
     currentTaskBlocked: state.task.blocked,
     currentTheme: state.theme.current || {}
 }), {
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    setMenuMargin: setMenuMargin
 })(AppMenu);
