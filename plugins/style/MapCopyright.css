@@ -8,6 +8,10 @@
     font-size: x-small;
 }
 
+.appmenu-compact #MapCopyright {
+    right: 5.25em !important;
+}
+
 #MapCopyright > span {
     padding: 0 0.5em;
 }

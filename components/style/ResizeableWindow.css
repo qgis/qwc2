@@ -6,6 +6,11 @@ div.resizeable-window-container {
     right: 0;
     pointer-events: none;
 }
+
+.appmenu-compact div.resizeable-window-container {
+    right: 3.7em;
+}
+
 div.resizeable-window {
     pointer-events: auto;
     background-color: var(--container-bg-color);

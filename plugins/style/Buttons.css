@@ -56,3 +56,7 @@ button.map-button-engaged {
     background-color: yellow;
     color: var(--map-button-bg-color);
 }
+
+.appmenu-compact button.map-button {
+    right: 4em !important;
+}
