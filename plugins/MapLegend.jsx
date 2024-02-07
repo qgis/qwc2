@@ -22,6 +22,8 @@ import isEmpty from 'lodash.isempty';
  * Displays the map legend in a floating dialog.
  *
  * The user can toggle whether to display only layers which are enabled, visible in the current extent and/or visible at the current scale.
+ *
+ * See https://docs.qgis.org/3.28/en/docs/server_manual/services/wms.html#wms-getlegendgraphic for supported extra legend params.
  */
 class MapLegend extends React.Component {
     static propTypes = {
@@ -102,7 +104,7 @@ class MapLegend extends React.Component {
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")}
-                >
+            >
                 <div className="map-legend" role="body">
                     {this.props.layers.map(layer => {
                         if (this.state.onlyVisibleLegend && !layer.visibility) {
