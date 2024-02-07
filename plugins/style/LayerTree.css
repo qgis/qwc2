@@ -197,7 +197,7 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree span.layertree-item-identifyable-tristate {
-    color: var(--color---text-color);
+    color: var(--text-color);
 }
 
 #LayerTree span.layertree-item-spacer {
