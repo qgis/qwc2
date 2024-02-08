@@ -122,12 +122,13 @@ class Editing extends React.Component {
                 const editConfig = this.props.theme.editConfig[this.state.selectedLayer];
                 const editPermissions = editConfig.permissions || {};
                 const editDataset = editConfig.editDataset;
+                const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
                 this.props.iface.getFeature(editDataset, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;
                     this.props.setEditContext('Editing', {feature: feature, changed: false, geomReadOnly: editPermissions.updatable === false});
-                });
+                }, layer.filterParams[this.state.selectedLayer]);
             }
         }
         if (prevProps.editContext.changed !== this.props.editContext.changed) {

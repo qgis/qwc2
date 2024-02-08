@@ -510,6 +510,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.pluginData) {
                 resultItem.pluginData = configItem.pluginData;
             }
+            if (configItem.predefinedFilters) {
+                resultItem.predefinedFilters = configItem.predefinedFilters;
+            }
             if (configItem.snapping) {
                 resultItem.snapping = configItem.snapping;
             }

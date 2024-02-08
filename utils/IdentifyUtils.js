@@ -101,9 +101,6 @@ const IdentifyUtils = {
         if (CoordinatesUtils.getAxisOrder(map.projection).substr(0, 2) === 'ne' && version === '1.3.0') {
             bbox = [center[1] - dx, center[0] - dy, center[1] + dx, center[0] + dy];
         }
-        if (layer.params.FILTER) {
-            options.filter = layer.params.FILTER;
-        }
         const params = {
             height: size[0],
             width: size[1],
@@ -113,6 +110,7 @@ const IdentifyUtils = {
             i: Math.round(size[0] * 0.5),
             j: Math.round(size[1] * 0.5),
             bbox: bbox.join(","),
+            filter: layer.params.FILTER ?? '',
             ...options
         };
         return identifyRequestParams(layer, queryLayers, map.projection, params);

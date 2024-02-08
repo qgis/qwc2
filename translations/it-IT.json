@@ -25,6 +25,7 @@
         "LayerTree": "Livelli",
         "Login": "Accedi",
         "Logout": "Disconnetti",
+        "MapFilter": "Filta mappa",
         "MapLegend": "Legenda",
         "Measure": "Misura",
         "MeasureLineString": "Misura una linea",

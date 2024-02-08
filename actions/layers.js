@@ -28,6 +28,7 @@ export const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
 export const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
 export const SET_SWIPE = 'SET_SWIPE';
 export const SET_LAYERS = 'SET_LAYERS';
+export const SET_FILTER = 'SET_FILTER';
 
 
 export const LayerRole = {
@@ -192,5 +193,12 @@ export function setLayers(layers) {
     return {
         type: SET_LAYERS,
         layers
+    };
+}
+
+export function setFilter(filter) {
+    return {
+        type: SET_FILTER,
+        filter
     };
 }

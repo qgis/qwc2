@@ -25,6 +25,7 @@
         "LayerTree": "Couches",
         "Login": "Connexion",
         "Logout": "Déconnexion",
+        "MapFilter": "Filtrer la carte",
         "MapLegend": "Légende",
         "Measure": "Mesurer",
         "MeasureLineString": "Mesurer une ligne",

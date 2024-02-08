@@ -25,6 +25,7 @@
         "LayerTree": "Capas & Leyenda",
         "Login": "Inicio de sesión",
         "Logout": "Cierre de sesión",
+        "MapFilter": "",
         "MapLegend": "Leyenda",
         "Measure": "Medida",
         "MeasureLineString": "Medir una línea",

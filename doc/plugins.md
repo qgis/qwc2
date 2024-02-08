@@ -24,6 +24,7 @@ Plugin reference
 * [MapComparePlugin](#mapcompareplugin)
 * [MapCopyright](#mapcopyright)
 * [MapExport](#mapexport)
+* [MapFilter](#mapfilter)
 * [MapInfoTooltip](#mapinfotooltip)
 * [MapLegend](#maplegend)
 * [MapTip](#maptip)
@@ -453,6 +454,34 @@ Allows exporting a selected portion of the map to a variety of formats.
 | formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `extraQuery` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS instead of the background layer. | `undefined` |
 | pageSizes | `[{`<br />`  name: string,`<br />`  width: number,`<br />`  height: number,`<br />`}]` | List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. | `[`<br />`    {name: '15 x 15 cm', width: 150, height: 150},`<br />`    {name: '30 x 30 cm', width: 300, height: 300}`<br />`]` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
+
+MapFilter<a name="mapfilter"></a>
+----------------------------------------------------------------
+Allows exporting a selected portion of the map to a variety of formats.
+
+You can set predefined filter expressions for a theme item as follows:
+
+```json
+predefinedFilters: {
+    id: "<filter_id>",
+    title: "<filter_title>",
+    titlemsgid: "<filter_title_msgid>",
+    filter: {
+        "<layer>": <data_service_expression>
+    },
+    fields: {
+        id: "<value_id>",
+        title: "<value_title">,
+        titlemsgid: "<value_title_msgid">",
+        defaultValue: <default_value>,
+        inputConfig: {<input_field_opts>}
+    }
+}
+```
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 
 MapInfoTooltip<a name="mapinfotooltip"></a>
 ----------------------------------------------------------------

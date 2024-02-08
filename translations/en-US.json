@@ -25,6 +25,7 @@
         "LayerTree": "Layers & Legend",
         "Login": "Login",
         "Logout": "Logout",
+        "MapFilter": "Map Filter",
         "MapLegend": "Legend",
         "Measure": "Measure",
         "MeasureLineString": "Measure a line",

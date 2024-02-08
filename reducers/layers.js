@@ -29,7 +29,8 @@ import {
     REMOVE_ALL_LAYERS,
     REPLACE_PLACEHOLDER_LAYER,
     SET_SWIPE,
-    SET_LAYERS
+    SET_LAYERS,
+    SET_FILTER
 } from '../actions/layers';
 
 
@@ -314,6 +315,20 @@ export default function layers(state = defaultState, action) {
     }
     case SET_LAYERS: {
         return {...state, flat: action.layers};
+    }
+    case SET_FILTER: {
+        return {...state, flat: state.flat.map(layer => {
+            if (layer.type === 'wms' && layer.serverType === 'qgis') {
+                const newLayer = {
+                    ...layer,
+                    filterParams: action.filter
+                };
+                Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
+                return newLayer;
+            } else {
+                return layer;
+            }
+        })};
     }
     default:
         return state;

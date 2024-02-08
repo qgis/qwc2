@@ -25,6 +25,7 @@
         "LayerTree": "Camadas & Legendas",
         "Login": "Inicio da sessão",
         "Logout": "Fim da sessão",
+        "MapFilter": "",
         "MapLegend": "Legenda do mapa",
         "Measure": "Medir",
         "MeasureLineString": "Medir uma linha",

@@ -347,10 +347,11 @@ class AttributeTable extends React.Component {
     changeSelectedLayer = (value) => {
         this.setState({selectedLayer: value});
     };
-    reload = (layer = null) => {
+    reload = (layerName = null) => {
         this.setState((state) => {
-            const selectedLayer = layer || state.selectedLayer;
+            const selectedLayer = layerName || state.selectedLayer;
             KeyValCache.clear();
+            const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
             this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
                 if (result) {
                     const features = result.features || [];
@@ -360,7 +361,7 @@ class AttributeTable extends React.Component {
                     alert(LocaleUtils.tr("attribtable.loadfailed"));
                     this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
                 }
-            });
+            }, null, layer.filterParams[selectedLayer]);
             return {...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer};
         });
     };

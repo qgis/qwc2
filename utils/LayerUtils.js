@@ -195,6 +195,14 @@ const LayerUtils = {
                 STYLES: styles.join(","),
                 ...layer.dimensionValues
             };
+            if (layer.filterParams) {
+                newParams.FILTER = Object.entries(layer.filterParams).reduce((res, [layername, filters]) => {
+                    if (!layerNames.includes(layername)) {
+                        return res;
+                    }
+                    return [...res, layername + ":" + filters.map(expr => Array.isArray(expr) ? LayerUtils.formatFilterExpr(expr) : "AND").join(" ")];
+                }, []).join(";");
+            }
         }
 
         return {
@@ -202,6 +210,14 @@ const LayerUtils = {
             queryLayers: queryLayers,
             initialOpacities: initialOpacities
         };
+    },
+    formatFilterExpr(expr) {
+        if (expr.length === 3 && typeof expr[0] === "string" && typeof expr[2] === "string") {
+            const op = expr[1].toUpperCase();
+            return `"${expr[0]}" ${op} ${expr[2]}`;
+        } else {
+            return "( " + expr.map(entry => Array.isArray(entry) ? this.formatFilterExpr(entry) : entry.toUpperCase()).join(" ") + " )";
+        }
     },
     addUUIDs(group, usedUUIDs = new Set()) {
         group.uuid = !group.uuid || usedUUIDs.has(group.uuid) ? uuidv4() : group.uuid;
@@ -746,8 +762,9 @@ const LayerUtils = {
                 ...urlParts.query,
                 ...requestParams,
                 LAYER: layername,
-                STYLES: style
-            };
+                STYLES: style,
+                FILTER: layer.params.FILTER ?? ''
+            }
             delete urlParts.search;
             return url.format(urlParts);
         }
@@ -775,6 +792,9 @@ const LayerUtils = {
                 params[identifier + ":layers"] = layer.params.LAYERS;
                 params[identifier + ":styles"] = layer.params.STYLES;
                 params[identifier + ":format"] = "image/png";
+                if (layer.serverType === 'qgis' && layer.params.FILTER) {
+                    params[identifier + ":filter"] = layer.params.FILTER;
+                }
                 params[identifier + ":crs"] = printCrs;
                 params[identifier + ":dpiMode"] = "7";
                 params[identifier + ":contextualWMSLegend"] = "0";
@@ -820,7 +840,8 @@ const LayerUtils = {
             LAYERS: [],
             OPACITIES: [],
             STYLES: [],
-            COLORS: []
+            COLORS: [],
+            FILTER: ''
         };
         const counterRef = [0];
 
@@ -830,6 +851,7 @@ const LayerUtils = {
                 params.OPACITIES.push(layer.params.OPACITIES);
                 params.STYLES.push(layer.params.STYLES);
                 params.COLORS.push(layer.params.LAYERS.split(",").map(() => "").join(","));
+                params.FILTER = layer.params.FILTER ?? '';
             } else if (printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility !== false && LayerUtils.layerScaleInRange(layer, printScale)) {
                 LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
             }

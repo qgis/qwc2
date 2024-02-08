@@ -33,6 +33,7 @@
     "appmenu.items.LayerTree",
     "appmenu.items.Login",
     "appmenu.items.Logout",
+    "appmenu.items.MapFilter",
     "appmenu.items.MapLegend",
     "appmenu.items.Measure",
     "appmenu.items.MeasureLineString",

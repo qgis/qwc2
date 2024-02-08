@@ -155,7 +155,7 @@ class FeatureForm extends React.Component {
                         pendingRequests: state.pendingRequests - 1
                     }));
                 }
-            });
+            }, layer.filterParams[sublayer.name]);
         });
         this.setState({pendingRequests: pendingRequests, pickedFeatures: {}, selectedFeature: ""});
     };

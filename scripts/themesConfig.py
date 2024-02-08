@@ -468,6 +468,8 @@ def getTheme(config, configItem, result, resultItem):
         resultItem["externalLayers"] = externalLayers
         if "pluginData" in configItem:
             resultItem["pluginData"] = configItem["pluginData"]
+        if "predefinedFilters" in configItem:
+            resultItem["predefinedFilters"] = configItem["predefinedFilters"]
         if "snapping" in configItem:
             resultItem["snapping"] = configItem["snapping"]
         if "minSearchScaleDenom" in configItem:

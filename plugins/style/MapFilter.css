@@ -1,0 +1,38 @@
+#MapFilter div.map-filter-entry {
+    margin: 0.25em;
+    border: 1px solid var(--border-color);
+}
+
+#MapFilter div.map-filter-entry-title {
+    padding: 0.25em;
+    background-color: var(--titlebar-bg-color);
+    color: var(--titlebar-text-color);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+#MapFilter div.map-filter-entry-title > span {
+    flex: 1 1 auto;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#MapFilter div.map-filter-entry-title > div.ToggleSwitch {
+    flex: 0 0 6em;
+    height: 1.5em;
+}
+
+#MapFilter div.map-filter-entry-body {
+    padding: 0.25em;
+}
+
+#MapFilter table.map-filter-entry-fields {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#MapFilter table.map-filter-entry-fields td:last-child > * {
+    width: 100%;
+}
