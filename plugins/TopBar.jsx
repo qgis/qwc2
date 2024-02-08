@@ -28,7 +28,7 @@ class TopBar extends React.Component {
     static propTypes = {
         /** Whether opening the app menu clears the active task. */
         appMenuClearsTask: PropTypes.bool,
-        /** Whether show an appMenu compact (menu visible on icons hover) */
+        /** Whether show an appMenu compact (menu visible on icons hover) - Only available for desktop client. */
         appMenuCompact: PropTypes.bool,
         /** Whether to display the filter field in the app menu. */
         appMenuFilterField: PropTypes.bool,
@@ -130,10 +130,12 @@ class TopBar extends React.Component {
         const searchOptions = {...this.props.searchOptions};
         searchOptions.minScaleDenom = searchOptions.minScaleDenom || searchOptions.minScale;
         delete searchOptions.minScale;
+        // Menu compact only available for desktop client
+        const menuCompact = !this.props.mobile ? this.props.appMenuCompact : false;
         // Keep menu open when appMenu is in compact mode (Visible on Hover)
-        const keepMenuOpen = this.props.appMenuCompact;
+        const keepMenuOpen = menuCompact;
         // Menu should be visible on startup when appMenu is in compact mode (Visible on Hover)
-        const showOnStartup = this.props.appMenuVisibleOnStartup || this.props.appMenuCompact;
+        const showOnStartup = this.props.appMenuVisibleOnStartup || menuCompact;
         return (
             <Swipeable
                 onSwipedDown={() => this.props.toggleFullscreen(false)}
@@ -157,7 +159,7 @@ class TopBar extends React.Component {
                             appMenuShortcut={this.props.appMenuShortcut}
                             buttonContents={buttonContents}
                             keepMenuOpen={keepMenuOpen}
-                            menuCompact={this.props.appMenuCompact}
+                            menuCompact={menuCompact}
                             menuItems={this.props.menuItems}
                             openExternalUrl={this.openUrl}
                             showFilterField={this.props.appMenuFilterField}
