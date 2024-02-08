@@ -9,8 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
-import omit from 'lodash.omit';
 import ol from 'openlayers';
 import {setLayerLoading} from '../../actions/layers';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
@@ -51,7 +49,7 @@ class OlLayer extends React.Component {
             this.state.layer.setVisible(newOptions.visibility);
         }
         this.state.layer.setOpacity(newOptions.opacity / 255.0);
-        this.state.layer.setZIndex(newOptions.zIndex);
+        this.state.layer.setZIndex(this.props.zIndex);
 
         if (this.props.swipe !== prevProps.swipe) {
             this.props.map.render();
@@ -83,7 +81,7 @@ class OlLayer extends React.Component {
     createLayer = (options) => {
         let layer = null;
         if (options.type === 'group') {
-            layer = new ol.layer.Group({zIndex: this.props.options.zIndex});
+            layer = new ol.layer.Group({zIndex: this.props.zIndex});
             layer.setLayers(new ol.Collection(options.items.map(item => {
                 const layerCreator = LayerRegistry[item.type];
                 if (layerCreator) {
@@ -111,7 +109,7 @@ class OlLayer extends React.Component {
     };
     updateLayer = (newOptions, oldOptions) => {
         // optimization to avoid to update the layer if not necessary
-        if (isEqual(omit(newOptions, ["loading"]), omit(oldOptions, ["loading"]) ) ) {
+        if (newOptions === oldOptions) {
             return;
         }
         const layerCreator = LayerRegistry[this.props.options.type];
