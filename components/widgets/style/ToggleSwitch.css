@@ -40,8 +40,10 @@ div.ToggleSwitch > span.toggle-switch-slider > .icon {
 div.ToggleSwitch > span.toggle-switch-yes,
 div.ToggleSwitch > span.toggle-switch-no {
     color: var(--input-bg-color);
-    text-align: center;
     flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 div.ToggleSwitch.toggle-switch-active > span.toggle-switch-no {
