@@ -115,7 +115,7 @@ class SearchBox extends React.Component {
                     filter: hp,
                     limit: 1
                 };
-                const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
+                const service = (ConfigUtils.getConfigProp("searchServiceUrl") || "").replace(/\/$/g, "") + '/';
                 axios.get(service, {params}).then(response => {
                     if (response.data.results && response.data.results.length === 1) {
                         const result = response.data.results[0].feature;
@@ -617,7 +617,7 @@ class SearchBox extends React.Component {
                 };
             }
         }
-        const service = ConfigUtils.getConfigProp("searchServiceUrl").replace(/\/$/g, "") + '/';
+        const service = (ConfigUtils.getConfigProp("searchServiceUrl") || "").replace(/\/$/g, "") + '/';
         // eslint-disable-next-line
         const searchText = this.state.searchText.trim();
         if (isEmpty(searchText)) {
