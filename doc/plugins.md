@@ -481,6 +481,7 @@ predefinedFilters: {
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). Set to -1 to hide the button. | `5` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 
 MapInfoTooltip<a name="mapinfotooltip"></a>

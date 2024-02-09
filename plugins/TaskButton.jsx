@@ -54,7 +54,7 @@ class TaskButton extends React.Component {
         };
         const classes = classnames({
             "map-button": true,
-            "button-active": this.props.currentTask === this.props.task
+            "map-button-active": this.props.currentTask === this.props.task
         });
         const title = LocaleUtils.tr("appmenu.items." + this.props.task + (this.props.mode || ""));
         return (

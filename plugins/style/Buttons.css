@@ -51,3 +51,8 @@ button.map-button.locate-button-LOCATING > div.spinner {
     width: 1.5em;
     height: 1.5em;
 }
+
+button.map-button-engaged {
+    background-color: yellow;
+    color: var(--map-button-bg-color);
+}

@@ -9,9 +9,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {setFilter} from '../actions/layers';
+import classNames from 'classnames';
+import isEmpty from 'lodash.isempty';
+import {LayerRole, setFilter} from '../actions/layers';
+import {setCurrentTask} from '../actions/task';
+import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/MapFilter.css';
 
@@ -41,12 +46,19 @@ import './style/MapFilter.css';
  */
 class MapFilter extends React.Component {
     static propTypes = {
+        currentTask: PropTypes.string,
+        layers: PropTypes.array,
+        mapMargins: PropTypes.object,
+        /** The position slot index of the map button, from the bottom (0: bottom slot). Set to -1 to hide the button. */
+        position: PropTypes.number,
+        setCurrentTask: PropTypes.func,
         setFilter: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         theme: PropTypes.object
     };
     static defaultProps = {
+        position: 5,
         predefinedFilters: []
     };
     state = {
@@ -89,15 +101,44 @@ class MapFilter extends React.Component {
         }
     }
     render() {
-        return (
-            <SideBar icon="filter" id="MapFilter" onShow={this.onShow} side={this.props.side}
-                title="appmenu.items.MapFilter" width="20em">
-                {() => ({
-                    body: this.renderBody()
-                })}
-            </SideBar>
-        );
+        let button = null;
+        if (this.props.position >= 0) {
+            const right = this.props.mapMargins.right;
+            const bottom = this.props.mapMargins.bottom;
+            const style = {
+                right: 'calc(1.5em + ' + right + 'px)',
+                bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
+            };
+            const haveFilter = !isEmpty(this.props.layers.find(layer => layer.role === LayerRole.THEME)?.filterParams);
+            const classes = classNames({
+                "map-button": true,
+                "map-button-active": this.props.currentTask === "MapFilter",
+                "map-button-engaged": haveFilter
+            });
+            const title = LocaleUtils.tr("appmenu.items.MapFilter");
+            button = (
+                <button className={classes} key="MapFilterButton" onClick={this.buttonClicked}
+                    style={style} title={title}>
+                    <Icon icon="filter" />
+                </button>
+            );
+        }
+        return [
+            button,
+            (
+                <SideBar icon="filter" id="MapFilter" key="MapFilterSidebar" onShow={this.onShow} side={this.props.side}
+                    title="appmenu.items.MapFilter" width="20em">
+                    {() => ({
+                        body: this.renderBody()
+                    })}
+                </SideBar>
+            )
+        ];
     }
+    buttonClicked = () => {
+        const mapClickAction = ConfigUtils.getPluginConfig("MapFilter").mapClickAction;
+        this.props.setCurrentTask(this.props.currentTask === "MapFilter" ? null : "MapFilter", null, mapClickAction);
+    };
     renderBody = () => {
         return (this.props.theme.predefinedFilters || []).map(config => (
             <div className="map-filter-entry" key={config.id}>
@@ -177,7 +218,11 @@ class MapFilter extends React.Component {
 }
 
 export default connect((state) => ({
-    theme: state.theme.current
+    currentTask: state.task.id,
+    mapMargins: state.windows.mapMargins,
+    theme: state.theme.current,
+    layers: state.layers.flat
 }), {
-    setFilter: setFilter
+    setFilter: setFilter,
+    setCurrentTask: setCurrentTask
 })(MapFilter);
