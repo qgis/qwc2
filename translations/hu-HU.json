@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "",
-      "menulabel": "Eszközök",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "",
         "Cyclomedia": "",
         "DxfExport": "DXF Exportálás",
@@ -25,7 +25,6 @@
         "LayerTree": "Fóliák és jelmagyarázat",
         "Login": "",
         "Logout": "",
-        "MapFilter": "",
         "MapLegend": "",
         "Measure": "Mérés",
         "MeasureLineString": "Mérési vonal",
@@ -42,7 +41,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Eszközök"
     },
     "attribtable": {
       "addfeature": "",
@@ -56,6 +56,7 @@
       "formeditmode": "",
       "geomnoadd": "",
       "layer": "",
+      "limittoextent": "",
       "loadfailed": "",
       "loading": "",
       "nodelete": "",

@@ -48,6 +48,7 @@ class AttributeTable extends React.Component {
         allowAddForGeometryLayers: PropTypes.bool,
         iface: PropTypes.object,
         layers: PropTypes.array,
+        mapBbox: PropTypes.object,
         mapCrs: PropTypes.string,
         mapScales: PropTypes.array,
         setCurrentTask: PropTypes.func,
@@ -82,7 +83,8 @@ class AttributeTable extends React.Component {
         sortField: null,
         deleteTask: null,
         newFeature: false,
-        confirmDelete: false
+        confirmDelete: false,
+        limitToExtent: false
     };
     constructor(props) {
         super(props);
@@ -101,6 +103,10 @@ class AttributeTable extends React.Component {
             this.setState(AttributeTable.defaultState);
         } else if (this.props.active && !prevProps.active && this.props.taskData && this.props.taskData.layer) {
             this.reload(this.props.taskData.layer);
+        }
+        // Reload conditions when limited to extent
+        if (this.props.active && this.state.limitToExtent && this.state.selectedLayer && (!prevState.limitToExtent || this.props.mapBbox !== prevProps.mapBbox)) {
+            this.reload();
         }
     }
     render() {
@@ -233,6 +239,9 @@ class AttributeTable extends React.Component {
                         <input disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterVal", ev.target.value, true)} type="text" value={this.state.filterVal} />
                         <button className="button" disabled={this.state.changedFeatureIdx !== null} onClick={() => this.updateFilter("filterVal", "")} value={this.state.filterValue}><Icon icon="clear" /></button>
                     </div>
+                    <div>
+                        <label><input checked={this.state.limitToExtent} onChange={(ev) => this.setState({limitToExtent: ev.target.checked})} type="checkbox" /> {LocaleUtils.tr("attribtable.limittoextent")}</label>
+                    </div>
                 </div>
             );
         }
@@ -352,6 +361,7 @@ class AttributeTable extends React.Component {
             const selectedLayer = layerName || state.selectedLayer;
             KeyValCache.clear();
             const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
+            const bbox = this.state.limitToExtent ? this.props.mapBbox.bounds : null;
             this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
                 if (result) {
                     const features = result.features || [];
@@ -361,8 +371,8 @@ class AttributeTable extends React.Component {
                     alert(LocaleUtils.tr("attribtable.loadfailed"));
                     this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
                 }
-            }, null, layer.filterParams[selectedLayer]);
-            return {...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer};
+            }, bbox, layer.filterParams[selectedLayer]);
+            return {...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer, limitToExtent: state.limitToExtent};
         });
     };
     sortBy = (field) => {
@@ -700,6 +710,7 @@ export default (iface = EditingInterface) => {
         active: state.task.id === "AttributeTable",
         iface: iface,
         layers: state.layers.flat,
+        mapBbox: state.map.bbox,
         mapCrs: state.map.projection,
         mapScales: state.map.scales,
         taskData: state.task.id === "AttributeTable" ? state.task.data : null,

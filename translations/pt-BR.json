@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "Filtro",
-      "menulabel": "Mapas & Ferramentas",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "Tabela de atributos",
         "Cyclomedia": "Cyclomedia",
         "DxfExport": "Exportar DXF",
@@ -25,7 +25,6 @@
         "LayerTree": "Camadas & Legendas",
         "Login": "Inicio da sessão",
         "Logout": "Fim da sessão",
-        "MapFilter": "",
         "MapLegend": "Legenda do mapa",
         "Measure": "Medir",
         "MeasureLineString": "Medir uma linha",
@@ -42,7 +41,8 @@
         "Bookmark": "Bookmark",
         "TimeManager": "Gerenciador de tempo",
         "Settings": "Configurações"
-      }
+      },
+      "menulabel": "Mapas & Ferramentas"
     },
     "attribtable": {
       "addfeature": "Adicionar feição",
@@ -56,6 +56,7 @@
       "formeditmode": "Modo de edição de forma",
       "geomnoadd": "Geometria não adicionada",
       "layer": "Camada",
+      "limittoextent": "",
       "loadfailed": "Falha ao carregar",
       "loading": "Carregando",
       "nodelete": "Não excluir",

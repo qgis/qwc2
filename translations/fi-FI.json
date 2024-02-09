@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "",
-      "menulabel": "Kartat & Työkalut",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "",
         "Cyclomedia": "",
         "DxfExport": "DXF vienti",
@@ -25,7 +25,6 @@
         "LayerTree": "Karttatasot ja selite",
         "Login": "Kirjaudu",
         "Logout": "Kirjaudu ulos",
-        "MapFilter": "",
         "MapLegend": "",
         "Measure": "Mittaa",
         "MeasureLineString": "Mittaa viiva",
@@ -42,7 +41,8 @@
         "Bookmark": "Kirjanmerkit",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Kartat & Työkalut"
     },
     "attribtable": {
       "addfeature": "",
@@ -56,6 +56,7 @@
       "formeditmode": "",
       "geomnoadd": "",
       "layer": "",
+      "limittoextent": "",
       "loadfailed": "",
       "loading": "",
       "nodelete": "",

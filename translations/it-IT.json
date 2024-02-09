@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "Filtra menù...",
-      "menulabel": "Mappa e strumenti",
       "items": {
+        "MapFilter": "Filta mappa",
         "AttributeTable": "Tabella attributi",
         "Cyclomedia": "Cyclomedia",
         "DxfExport": "Esporta su DXF",
@@ -25,7 +25,6 @@
         "LayerTree": "Livelli",
         "Login": "Accedi",
         "Logout": "Disconnetti",
-        "MapFilter": "Filta mappa",
         "MapLegend": "Legenda",
         "Measure": "Misura",
         "MeasureLineString": "Misura una linea",
@@ -42,7 +41,8 @@
         "Bookmark": "Segnalibri",
         "TimeManager": "Linea temporale",
         "Settings": "Impostazioni"
-      }
+      },
+      "menulabel": "Mappa e strumenti"
     },
     "attribtable": {
       "addfeature": "Aggiungi oggetto",
@@ -56,6 +56,7 @@
       "formeditmode": "Apri il formulario per l'oggetto selezionato",
       "geomnoadd": "Utilizzare il formulario per creare nuovi oggetti per questo livello",
       "layer": "Livello",
+      "limittoextent": "In estensione mappa",
       "loadfailed": "Errore nel caricamento dei dati",
       "loading": "Caricamento...",
       "nodelete": "Non eliminare",

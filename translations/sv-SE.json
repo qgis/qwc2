@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "",
-      "menulabel": "Karta & Verktyg",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "",
         "Cyclomedia": "",
         "DxfExport": "DXF Export",
@@ -25,7 +25,6 @@
         "LayerTree": "Lager & teckenförklaring",
         "Login": "Logga in",
         "Logout": "Logga ut",
-        "MapFilter": "",
         "MapLegend": "",
         "Measure": "Mät",
         "MeasureLineString": "Mäta en linje",
@@ -42,7 +41,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Karta & Verktyg"
     },
     "attribtable": {
       "addfeature": "",
@@ -56,6 +56,7 @@
       "formeditmode": "",
       "geomnoadd": "",
       "layer": "",
+      "limittoextent": "",
       "loadfailed": "",
       "loading": "",
       "nodelete": "",

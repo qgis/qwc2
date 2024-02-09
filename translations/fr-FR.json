@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "Filtrer le menu...",
-      "menulabel": "Cartes et outils",
       "items": {
+        "MapFilter": "Filtrer la carte",
         "AttributeTable": "Table d'attributs",
         "Cyclomedia": "Cyclomedia",
         "DxfExport": "Export DXF",
@@ -25,7 +25,6 @@
         "LayerTree": "Couches",
         "Login": "Connexion",
         "Logout": "Déconnexion",
-        "MapFilter": "Filtrer la carte",
         "MapLegend": "Légende",
         "Measure": "Mesurer",
         "MeasureLineString": "Mesurer une ligne",
@@ -42,7 +41,8 @@
         "Bookmark": "Marque-pages",
         "TimeManager": "Ligne du temps",
         "Settings": "Paramètres"
-      }
+      },
+      "menulabel": "Cartes et outils"
     },
     "attribtable": {
       "addfeature": "Ajouter un objet",
@@ -56,6 +56,7 @@
       "formeditmode": "Basculer sur la vue formulaire",
       "geomnoadd": "Veuillez utiliser le formulaire d'édition pour ajouter de nouveaux objets à cette couche",
       "layer": "Couche",
+      "limittoextent": "Dans l'étendue de la carte",
       "loadfailed": "Echec du chargement de l'objet",
       "loading": "Chargement en cours...",
       "nodelete": "Ne pas supprimer",

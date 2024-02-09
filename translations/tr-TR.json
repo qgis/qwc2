@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "",
-      "menulabel": "Harita & Araçlar",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "",
         "Cyclomedia": "",
         "DxfExport": "DXF'e Veri Aktar",
@@ -25,7 +25,6 @@
         "LayerTree": "Katmanlar & Gösterim",
         "Login": "Giriş",
         "Logout": "Çıkış",
-        "MapFilter": "",
         "MapLegend": "",
         "Measure": "Ölç",
         "MeasureLineString": "Bir çizgiyi ölçmek",
@@ -42,7 +41,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Harita & Araçlar"
     },
     "attribtable": {
       "addfeature": "",
@@ -56,6 +56,7 @@
       "formeditmode": "",
       "geomnoadd": "",
       "layer": "",
+      "limittoextent": "",
       "loadfailed": "",
       "loading": "",
       "nodelete": "",

@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "Filter menu...",
-      "menulabel": "Map & Tools",
       "items": {
+        "MapFilter": "Map Filter",
         "AttributeTable": "Attribute Table",
         "Cyclomedia": "Cyclomedia",
         "DxfExport": "DXF Export",
@@ -25,7 +25,6 @@
         "LayerTree": "Layers & Legend",
         "Login": "Login",
         "Logout": "Logout",
-        "MapFilter": "Map Filter",
         "MapLegend": "Legend",
         "Measure": "Measure",
         "MeasureLineString": "Measure a line",
@@ -42,7 +41,8 @@
         "Bookmark": "Bookmarks",
         "TimeManager": "Time Manager",
         "Settings": "Settings"
-      }
+      },
+      "menulabel": "Map & Tools"
     },
     "attribtable": {
       "addfeature": "Add feature",
@@ -56,6 +56,7 @@
       "formeditmode": "Open the edit form for the selected feature",
       "geomnoadd": "Please use the edit form for adding new features to this layer",
       "layer": "Layer",
+      "limittoextent": "Limit to map extent",
       "loadfailed": "Failed to load the feature data",
       "loading": "Loading...",
       "nodelete": "Don't delete",

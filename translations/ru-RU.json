@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "",
-      "menulabel": "Карта и инструменты",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "",
         "Cyclomedia": "",
         "DxfExport": "Экспорт в DXF",
@@ -25,7 +25,6 @@
         "LayerTree": "Слои и легенда",
         "Login": "",
         "Logout": "",
-        "MapFilter": "",
         "MapLegend": "",
         "Measure": "Измерения",
         "MeasureLineString": "измерить линию",
@@ -42,7 +41,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Карта и инструменты"
     },
     "attribtable": {
       "addfeature": "",
@@ -56,6 +56,7 @@
       "formeditmode": "",
       "geomnoadd": "",
       "layer": "",
+      "limittoextent": "",
       "loadfailed": "",
       "loading": "",
       "nodelete": "",

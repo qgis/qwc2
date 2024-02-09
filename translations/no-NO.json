@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "",
-      "menulabel": "Kart & Verktøy",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "",
         "Cyclomedia": "",
         "DxfExport": "Eksporter DXF",
@@ -25,7 +25,6 @@
         "LayerTree": "Lag & tegnforklaring",
         "Login": "Logg inn",
         "Logout": "Logg ut",
-        "MapFilter": "",
         "MapLegend": "",
         "Measure": "Mål",
         "MeasureLineString": "Måle en linje",
@@ -42,7 +41,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Kart & Verktøy"
     },
     "attribtable": {
       "addfeature": "",
@@ -56,6 +56,7 @@
       "formeditmode": "",
       "geomnoadd": "",
       "layer": "",
+      "limittoextent": "",
       "loadfailed": "",
       "loading": "",
       "nodelete": "",

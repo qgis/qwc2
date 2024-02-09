@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "",
-      "menulabel": "Hărți & Unelte",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "Tabela de atribute",
         "Cyclomedia": "Cyclomedia",
         "DxfExport": "Export DXF",
@@ -25,7 +25,6 @@
         "LayerTree": "Straturi & Legendă",
         "Login": "Conectează-te",
         "Logout": "Deconectează-te",
-        "MapFilter": "",
         "MapLegend": "Legenda",
         "Measure": "Măsoară",
         "MeasureLineString": "Măsoară o linie",
@@ -42,7 +41,8 @@
         "Bookmark": "Marcaj",
         "TimeManager": "Informații temporale",
         "Settings": "Setări"
-      }
+      },
+      "menulabel": "Hărți & Unelte"
     },
     "attribtable": {
       "addfeature": "Adaugă obiect spațial",
@@ -56,6 +56,7 @@
       "formeditmode": "Deschide formularul de editare pentru obiecte spațiale selectate",
       "geomnoadd": "Vă rugăm să folosiți formularul de editare pentru adăugarea de noi obiecte spațiale",
       "layer": "Strat",
+      "limittoextent": "",
       "loadfailed": "Încărcarea a eșuat",
       "loading": "Se încarcă",
       "nodelete": "Nu șterge",

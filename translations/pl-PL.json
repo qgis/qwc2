@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "",
-      "menulabel": "Zawartość mapy i narzędzia",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "",
         "Cyclomedia": "",
         "DxfExport": "Eksport DXF",
@@ -25,7 +25,6 @@
         "LayerTree": "Warstwy i ich legendy",
         "Login": "Zaloguj",
         "Logout": "Wyloguj",
-        "MapFilter": "",
         "MapLegend": "",
         "Measure": "Pomiary",
         "MeasureLineString": "Zmierzyć linię",
@@ -42,7 +41,8 @@
         "Bookmark": "",
         "TimeManager": "",
         "Settings": ""
-      }
+      },
+      "menulabel": "Zawartość mapy i narzędzia"
     },
     "attribtable": {
       "addfeature": "",
@@ -56,6 +56,7 @@
       "formeditmode": "",
       "geomnoadd": "",
       "layer": "",
+      "limittoextent": "",
       "loadfailed": "",
       "loading": "",
       "nodelete": "",

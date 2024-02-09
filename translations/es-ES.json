@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "Menú de filtros...",
-      "menulabel": "Mapa & Herramientas",
       "items": {
+        "MapFilter": "",
         "AttributeTable": "Tabla de Atributos",
         "Cyclomedia": "",
         "DxfExport": "Exportar DXF",
@@ -25,7 +25,6 @@
         "LayerTree": "Capas & Leyenda",
         "Login": "Inicio de sesión",
         "Logout": "Cierre de sesión",
-        "MapFilter": "",
         "MapLegend": "Leyenda",
         "Measure": "Medida",
         "MeasureLineString": "Medir una línea",
@@ -42,7 +41,8 @@
         "Bookmark": "Marcadores",
         "TimeManager": "Gestor de Tiempo",
         "Settings": "Opciones"
-      }
+      },
+      "menulabel": "Mapa & Herramientas"
     },
     "attribtable": {
       "addfeature": "Añadir elemento",
@@ -56,6 +56,7 @@
       "formeditmode": "Abrir el formulario de edición del elemento seleccionado",
       "geomnoadd": "Por favor use el formulario de edición para añadir elementos a esta capa",
       "layer": "Capa",
+      "limittoextent": "",
       "loadfailed": "No se han podido cargar los datos del elemento",
       "loading": "Cargando...",
       "nodelete": "No eliminar",

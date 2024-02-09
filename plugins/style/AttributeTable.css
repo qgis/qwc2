@@ -189,6 +189,7 @@ table.attribtable-table tr.row-disabled * {
 div.attribtable-footbar {
     flex: 0 0 auto;
     display: flex;
+    align-items: center;
 }
 
 div.attribtable-footbar > div {

@@ -10,8 +10,8 @@
     },
     "appmenu": {
       "filter": "Menü filtern...",
-      "menulabel": "Karte & Werkzeuge",
       "items": {
+        "MapFilter": "Kartenfilter",
         "AttributeTable": "Attributtabelle",
         "Cyclomedia": "Cyclomedia",
         "DxfExport": "DXF-Export",
@@ -25,7 +25,6 @@
         "LayerTree": "Ebenen und Legende",
         "Login": "Anmelden",
         "Logout": "Abmelden",
-        "MapFilter": "Kartenfilter",
         "MapLegend": "Legende",
         "Measure": "Messen",
         "MeasureLineString": "Messen Linie",
@@ -42,7 +41,8 @@
         "Bookmark": "Lesezeichen",
         "TimeManager": "Zeitleiste",
         "Settings": "Einstellungen"
-      }
+      },
+      "menulabel": "Karte & Werkzeuge"
     },
     "attribtable": {
       "addfeature": "Objekt hinzufügen",
@@ -56,6 +56,7 @@
       "formeditmode": "Ausgewähltes Objekt in der Formularansicht editieren",
       "geomnoadd": "Bitte die Formularansicht verwenden, um neue Objekte für diese Ebene zu erstellen",
       "layer": "Ebene",
+      "limittoextent": "In Kartenausschnitt",
       "loadfailed": "Die Objektdaten konnten nicht geladen werden",
       "loading": "Laden...",
       "nodelete": "Nicht löschen",
