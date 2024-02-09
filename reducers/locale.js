@@ -12,6 +12,7 @@ import {flatten} from 'flat';
 
 const defaultState = {
     messages: {},
+    fallbackMessages: {},
     current: ''
 };
 
@@ -20,6 +21,7 @@ export default function locale(state = defaultState, action) {
     case CHANGE_LOCALE: {
         return {
             messages: flatten(action.messages),
+            fallbackMessages: flatten(action.fallbackMessages),
             current: action.locale
         };
     }

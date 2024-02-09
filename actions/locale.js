@@ -35,20 +35,23 @@ export function loadLocale(defaultLangData, defaultLang = "") {
                     dispatch({
                         type: CHANGE_LOCALE,
                         locale: lang,
-                        messages: deepmerge(messages, overrideMessages)
+                        messages: deepmerge(messages, overrideMessages),
+                        fallbackMessages: defaultLangData.messages
                     });
                 }).catch(() => {
                     dispatch({
                         type: CHANGE_LOCALE,
                         locale: lang,
-                        messages: messages
+                        messages: messages,
+                        fallbackMessages: defaultLangData.messages
                     });
                 });
             } else {
                 dispatch({
                     type: CHANGE_LOCALE,
                     locale: lang,
-                    messages: messages
+                    messages: messages,
+                    fallbackMessages: defaultLangData.messages
                 });
             }
         }).catch((e) => {
@@ -66,20 +69,23 @@ export function loadLocale(defaultLangData, defaultLang = "") {
                         dispatch({
                             type: CHANGE_LOCALE,
                             locale: lang,
-                            messages: deepmerge(messages, overrideMessages)
+                            messages: deepmerge(messages, overrideMessages),
+                            fallbackMessages: defaultLangData.messages
                         });
                     }).catch(() => {
                         dispatch({
                             type: CHANGE_LOCALE,
                             locale: lang,
-                            messages: messages
+                            messages: messages,
+                            fallbackMessages: defaultLangData.messages
                         });
                     });
                 } else {
                     dispatch({
                         type: CHANGE_LOCALE,
                         locale: lang,
-                        messages: messages
+                        messages: messages,
+                        fallbackMessages: defaultLangData.messages
                     });
                 }
             }).catch((e2) => {
@@ -88,7 +94,8 @@ export function loadLocale(defaultLangData, defaultLang = "") {
                 dispatch({
                     type: CHANGE_LOCALE,
                     locale: defaultLangData.locale,
-                    messages: defaultLangData.messages
+                    messages: defaultLangData.messages,
+                    fallbackMessages: defaultLangData.messages
                 });
             });
         });
