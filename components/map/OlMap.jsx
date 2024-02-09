@@ -34,6 +34,7 @@ class OlMap extends React.Component {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         fullExtent: PropTypes.object,
         id: PropTypes.string,
+        mapMargins: PropTypes.object,
         mapOptions: PropTypes.object,
         mapStateSource: PropTypes.string,
         onClick: PropTypes.func,
@@ -44,7 +45,6 @@ class OlMap extends React.Component {
         projection: PropTypes.string,
         resolutions: PropTypes.array,
         setCurrentTask: PropTypes.func,
-        splitScreen: PropTypes.object,
         trackMousePos: PropTypes.bool,
         unsetTaskOnMapClick: PropTypes.bool,
         zoom: PropTypes.number.isRequired
@@ -260,12 +260,11 @@ class OlMap extends React.Component {
             }) : null;
         });
 
-        const splitWindows = Object.values(this.props.splitScreen);
         const style = {
-            left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0),
-            right: splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0),
-            top: splitWindows.filter(entry => entry.side === 'top').reduce((res, e) => Math.max(e.size, res), 0),
-            bottom: splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0)
+            left: this.props.mapMargins.left,
+            right: this.props.mapMargins.right,
+            top: this.props.mapMargins.top,
+            bottom: this.props.mapMargins.bottom
         };
 
         return (
@@ -350,7 +349,7 @@ class OlMap extends React.Component {
 }
 
 export default connect((state) => ({
-    splitScreen: state.windows.splitScreen,
+    mapMargins: state.windows.mapMargins,
     trackMousePos: state.mousePosition.enabled || false,
     unsetTaskOnMapClick: state.task.unsetOnMapClick
 }), {

@@ -22,11 +22,11 @@ class MapCopyright extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
+        mapMargins: PropTypes.object,
         /** Whether to prepend the layer name to the attribution string. */
         prefixCopyrightsWithLayerNames: PropTypes.bool,
         /** Whether to only display the attribution of the theme, omitting external layers. */
         showThemeCopyrightOnly: PropTypes.bool,
-        splitScreen: PropTypes.object
     };
     state = {
         currentCopyrights: {}
@@ -51,9 +51,8 @@ class MapCopyright extends React.Component {
         if (isEmpty(copyrights)) {
             return null;
         }
-        const splitWindows = Object.values(this.props.splitScreen);
-        const right = splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0);
-        const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
+        const right = this.props.mapMargins.right;
+        const bottom = this.props.mapMargins.bottom;
         const style = {
             right: 'calc(0.25em + ' + right + 'px)',
             bottom: 'calc(3.4em + ' + bottom + 'px)'
@@ -76,7 +75,7 @@ class MapCopyright extends React.Component {
 const selector = (state) => ({
     layers: state.layers.flat,
     map: state.map,
-    splitScreen: state.windows.splitScreen
+    mapMargins: state.windows.mapMargins
 });
 
 export default connect(selector, {})(MapCopyright);

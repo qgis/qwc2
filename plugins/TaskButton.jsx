@@ -25,12 +25,12 @@ class TaskButton extends React.Component {
         currentTask: PropTypes.string,
         /** The icon name.  */
         icon: PropTypes.string,
+        mapMargins: PropTypes.object,
         /** The task mode. */
         mode: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
         setCurrentTask: PropTypes.func,
-        splitScreen: PropTypes.object,
         /** The task name. */
         task: PropTypes.string,
         theme: PropTypes.object,
@@ -46,9 +46,8 @@ class TaskButton extends React.Component {
         if (!ThemeUtils.themFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
             return null;
         }
-        const splitWindows = Object.values(this.props.splitScreen);
-        const right = splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0);
-        const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
+        const right = this.props.mapMargins.right;
+        const bottom = this.props.mapMargins.bottom;
         const style = {
             right: 'calc(1.5em + ' + right + 'px)',
             bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
@@ -73,7 +72,7 @@ class TaskButton extends React.Component {
 
 const selector = (state) => ({
     currentTask: state.task.id,
-    splitScreen: state.windows.splitScreen,
+    mapMargins: state.windows.mapMargins,
     theme: state.theme.current
 });
 
