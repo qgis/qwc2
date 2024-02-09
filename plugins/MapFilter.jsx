@@ -43,6 +43,14 @@ import './style/MapFilter.css';
  *     }
  * }
  * ```
+ * You can set the startup filter configuration by specifying a `f` URL-parameter with a JSON-serialized string as follows:
+ *
+ * ```
+ * f={"<filter_id>": {"<field_id>": <value>, ...}, ...}
+ * ```
+ * Whenever an startup filter value is specified, the filter is automatically enabled.
+ *
+ * *Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
  */
 class MapFilter extends React.Component {
     static propTypes = {
@@ -55,6 +63,7 @@ class MapFilter extends React.Component {
         setFilter: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
+        startupParams: PropTypes.object,
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -78,6 +87,19 @@ class MapFilter extends React.Component {
                     }), {})
                 }
             }), {});
+            if (!prevProps.theme && this.props.startupParams?.f) {
+                try {
+                    const startupConfig = JSON.parse(this.props.startupParams.f);
+                    Object.entries(startupConfig).forEach(([filterId, values]) => {
+                        filters[filterId].active = true;
+                        Object.entries(values).forEach(([fieldId, value]) => {
+                            filters[filterId].values[fieldId] = value;
+                        });
+                    });
+                } catch (e) {
+                    // Pass
+                }
+            }
             this.setState({filters: filters});
         }
         if (this.state.filters !== prevState.filters) {
@@ -221,7 +243,8 @@ export default connect((state) => ({
     currentTask: state.task.id,
     mapMargins: state.windows.mapMargins,
     theme: state.theme.current,
-    layers: state.layers.flat
+    layers: state.layers.flat,
+    startupParams: state.localConfig.startupParams
 }), {
     setFilter: setFilter,
     setCurrentTask: setCurrentTask
