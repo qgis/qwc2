@@ -311,6 +311,7 @@ for customized queries and templates for the result presentation.
 | initialRadius | `number` | The initial radius of the identify dialog in radius mode. | `50` |
 | initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'meters', 'feet', 'kilometers', 'miles'. | `'meters'` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
+| highlightAllResults | `bool` | Whether to highlight all results if no result is hovered | `true` |
 
 LayerCatalog<a name="layercatalog"></a>
 ----------------------------------------------------------------
@@ -478,6 +479,14 @@ predefinedFilters: {
     }
 }
 ```
+You can set the startup filter configuration by specifying a `f` URL-parameter with a JSON-serialized string as follows:
+
+```
+f={"<filter_id>": {"<field_id>": <value>, ...}, ...}
+```
+Whenever an startup filter value is specified, the filter is automatically enabled.
+
+*Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
