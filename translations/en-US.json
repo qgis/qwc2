@@ -258,6 +258,11 @@
       "usersize": "Select on map...",
       "wait": "Please wait..."
     },
+    "mapfilter": {
+      "timefilter": "Time",
+      "timefrom": "From",
+      "timeto": "To"
+    },
     "mapinfotooltip": {
       "elevation": "Elevation",
       "title": "Position"
@@ -497,7 +502,9 @@
       "displayfeatures": "Timeline with features",
       "displaylayers": "Timeline with layers",
       "displayminimal": "Timeline only",
+      "edit": "Edit",
       "endtime": "End",
+      "filterwarning": "Map filters are active",
       "future": "Future",
       "group": "Grouping attribute",
       "groupnone": "None",

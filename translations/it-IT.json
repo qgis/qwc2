@@ -258,6 +258,11 @@
       "usersize": "Seleziona sulla mappa...",
       "wait": "Attendere..."
     },
+    "mapfilter": {
+      "timefilter": "Temporale",
+      "timefrom": "Da",
+      "timeto": "A"
+    },
     "mapinfotooltip": {
       "elevation": "Altitudine",
       "title": "Posizione"
@@ -497,7 +502,9 @@
       "displayfeatures": "Linea temporale con oggetti",
       "displaylayers": "Linea temporale con livelli",
       "displayminimal": "Solo linea temporale",
+      "edit": "Modifica",
       "endtime": "Fine",
+      "filterwarning": "Sono attivi filtri sulla mappa",
       "future": "Futuro",
       "group": "Raggruppa per attributo",
       "groupnone": "Nessuno",

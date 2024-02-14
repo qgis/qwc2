@@ -258,6 +258,11 @@
       "usersize": "Selectionner sur la carte...",
       "wait": "Veuillez patienter..."
     },
+    "mapfilter": {
+      "timefilter": "Temporelle",
+      "timefrom": "De",
+      "timeto": "A"
+    },
     "mapinfotooltip": {
       "elevation": "Altitude",
       "title": "Position"
@@ -497,7 +502,9 @@
       "displayfeatures": "Chronologie avec objets",
       "displaylayers": "Chronologie avec couches",
       "displayminimal": "Chronologie uniquement",
+      "edit": "Modifier",
       "endtime": "Fin",
+      "filterwarning": "Filtres sont actifs sur la carte",
       "future": "Future",
       "group": "Attribut de regroupement",
       "groupnone": "Aucun",

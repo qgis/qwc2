@@ -258,6 +258,11 @@
       "usersize": "",
       "wait": ""
     },
+    "mapfilter": {
+      "timefilter": "",
+      "timefrom": "",
+      "timeto": ""
+    },
     "mapinfotooltip": {
       "elevation": "Altitudine",
       "title": "Poziție"
@@ -497,7 +502,9 @@
       "displayfeatures": "Interval de timp cu obiecte spațiale",
       "displaylayers": "Interval de timp cu straturi",
       "displayminimal": "Doar interval de timp",
+      "edit": "",
       "endtime": "Sfârșit",
+      "filterwarning": "",
       "future": "În viitor",
       "group": "Atribut pentru grupare",
       "groupnone": "Necompletat",

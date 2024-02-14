@@ -16,6 +16,7 @@ import utc from 'dayjs/plugin/utc';
 import {v1 as uuidv1} from 'uuid';
 import ol from 'openlayers';
 import isEqual from 'lodash.isequal';
+import isEmpty from 'lodash.isempty';
 import dateParser, { Format } from 'any-date-parser';
 import {setLayerDimensions, addLayerFeatures, refreshLayer, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
@@ -424,6 +425,11 @@ class TimeManager extends React.Component {
                         {this.state.settingsPopup ? options : null}
                     </div>
                 </div>
+                {!isEmpty((this.props.layers.find(layer => layer.role === LayerRole.THEME) || {}).filterParams) ? (
+                    <div className="time-manager-filter-warning">
+                        <Icon icon="warning" /> {LocaleUtils.tr("timemanager.filterwarning")} <button className="button" onClick={() => this.props.setCurrentTask("MapFilter")} type="button">{LocaleUtils.tr("timemanager.edit")}</button>
+                    </div>
+                ) : null}
                 <div className="time-manager-timeline">
                     <Timeline currentTimestamp={this.state.currentTimestamp}
                         dataEndTime={dayjs(this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59)}

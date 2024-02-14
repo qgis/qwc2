@@ -15,8 +15,10 @@ import {LayerRole, setFilter} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
+import DateTimeInput from '../components/widgets/DateTimeInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/MapFilter.css';
 
@@ -54,6 +56,7 @@ import './style/MapFilter.css';
  */
 class MapFilter extends React.Component {
     static propTypes = {
+        allowFilterByTime: PropTypes.bool,
         currentTask: PropTypes.string,
         layers: PropTypes.array,
         mapMargins: PropTypes.object,
@@ -67,11 +70,13 @@ class MapFilter extends React.Component {
         theme: PropTypes.object
     };
     static defaultProps = {
+        allowFilterByTime: true,
         position: 5,
         predefinedFilters: []
     };
     state = {
-        filters: {}
+        filters: {},
+        timeFilter: null
     };
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
@@ -100,7 +105,31 @@ class MapFilter extends React.Component {
                     // Pass
                 }
             }
+            if (this.props.layers !== prevProps.layers) {
+                const timeFilter = {};
+                this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
+                if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
+                    filters.__timefilter = {
+                        active: false,
+                        filter: timeFilter,
+                        values: {tstart: "", tend: ""},
+                        defaultValues: {tstart: '1800-01-01', tend: '9999-12-31'}
+                    };
+                }
+            }
             this.setState({filters: filters});
+        } else if (this.props.layers !== prevProps.layers) {
+            const timeFilter = {};
+            this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
+            if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
+                const newFilters = {...this.state.filters};
+                newFilters.__timefilter = {
+                    active: newFilters.__timefilter?.active ?? false,
+                    filter: timeFilter,
+                    values: newFilters.__timefilter?.values ?? {tstart: "", tend: ""},
+                    defaultValues: {tstart: '0000-01-01', tend: '9999-12-31'}
+                };
+            }
         }
         if (this.state.filters !== prevState.filters) {
             const layerExpressions = {};
@@ -108,7 +137,7 @@ class MapFilter extends React.Component {
             Object.values(this.state.filters).forEach(entry => {
                 if (entry.active) {
                     Object.entries(entry.filter).forEach(([layer, expression]) => {
-                        const replacedExpr = this.replaceExpressionVariables(expression, entry.values);
+                        const replacedExpr = this.replaceExpressionVariables(expression, entry.values, entry.defaultValues || {});
                         if (replacedExpr === null) {
                             console.warn("Invalid filter expression: " + JSON.stringify(expression));
                         } else if (layerExpressions[layer]) {
@@ -122,6 +151,20 @@ class MapFilter extends React.Component {
             this.props.setFilter(layerExpressions);
         }
     }
+    buildTimeFilter = (layer, filters) => {
+        if (layer.sublayers) {
+            layer.sublayers.forEach(sublayer => this.buildTimeFilter(sublayer, filters));
+        } else {
+            const timeDimension = (layer.dimensions || []).find(dimension => dimension.units === "ISO8601");
+            if (timeDimension) {
+                filters[layer.name] = [
+                    [[timeDimension.fieldName, '>=', "'$tstart$'"], 'or', [timeDimension.fieldName, 'IS', 'NULL']],
+                    'and',
+                    [[timeDimension.endFieldName, '<=', "'$tend$'"], 'or', [timeDimension.endFieldName, 'IS', "NULL"]]
+                ];
+            }
+        }
+    };
     render() {
         let button = null;
         if (this.props.position >= 0) {
@@ -162,6 +205,12 @@ class MapFilter extends React.Component {
         this.props.setCurrentTask(this.props.currentTask === "MapFilter" ? null : "MapFilter", null, mapClickAction);
     };
     renderBody = () => {
+        return [
+            ...this.renderPredefinedFilters(),
+            this.renderTimeFilter()
+        ];
+    };
+    renderPredefinedFilters = () => {
         return (this.props.theme.predefinedFilters || []).map(config => (
             <div className="map-filter-entry" key={config.id}>
                 <div className="map-filter-entry-title">
@@ -175,7 +224,7 @@ class MapFilter extends React.Component {
                         <tbody>
                             {config.fields.map(field => (
                                 <tr key={field.id}>
-                                    <td>{field.title || LocaleUtils.tr(field.titlemsgid)}</td>
+                                    <td>{field.title || LocaleUtils.tr(field.titlemsgid)}: </td>
                                     <td>
                                         <input
                                             disabled={!this.state.filters[config.id]?.active}
@@ -191,6 +240,36 @@ class MapFilter extends React.Component {
                 </div>
             </div>
         ));
+    };
+    renderTimeFilter = () => {
+        const timeFilter = this.state.filters.__timefilter;
+        if (!timeFilter) {
+            return null;
+        }
+        return (
+            <div className="map-filter-entry" key={"__timefilter"}>
+                <div className="map-filter-entry-title">
+                    <span>{LocaleUtils.tr("mapfilter.timefilter")}</span>
+                    <ToggleSwitch
+                        active={timeFilter.active}
+                        onChange={(active) => this.toggleFilter("__timefilter", active)} />
+                </div>
+                <div className="map-filter-entry-body">
+                    <table className="map-filter-entry-fields">
+                        <tbody>
+                            <tr>
+                                <td>{LocaleUtils.tr("mapfilter.timefrom")}: </td>
+                                <td><DateTimeInput onChange={value => this.updateFieldValue("__timefilter", "tstart", value)} value={timeFilter.values.tstart} /></td>
+                            </tr>
+                            <tr>
+                                <td>{LocaleUtils.tr("mapfilter.timeto")}: </td>
+                                <td><DateTimeInput onChange={value => this.updateFieldValue("__timefilter", "tend", value)} value={timeFilter.values.tend} /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
     };
     toggleFilter = (filterId, active) => {
         this.setState((state) => ({
@@ -217,7 +296,7 @@ class MapFilter extends React.Component {
             }
         }));
     };
-    replaceExpressionVariables = (expr, values) => {
+    replaceExpressionVariables = (expr, values, defaultValues) => {
         if (expr.length < 3 || (expr.length % 2) === 0 || typeof expr[1] !== 'string') {
             // Invalid expression: array must have at least three and odd number of entries,
             // mid entry must be a string (operator)
@@ -225,7 +304,7 @@ class MapFilter extends React.Component {
         }
         const op = expr[1].toLowerCase();
         if (typeof expr[0] === 'string' && typeof expr[2] === 'string') {
-            const right = Object.entries(values).reduce((res, [key, value]) => res.replace(`$${key}$`, value), expr[2]);
+            const right = Object.entries(values).reduce((res, [key, value]) => res.replace(`$${key}$`, (value || defaultValues[key]) ?? value), expr[2]);
             return [expr[0], op, right];
         } else {
             // Even indices must be arrays, odd and|or strings
@@ -234,7 +313,7 @@ class MapFilter extends React.Component {
             if (invalid) {
                 return null;
             }
-            return expr.map((entry, idx) => (idx % 2) === 0 ? this.replaceExpressionVariables(entry, values) : entry);
+            return expr.map((entry, idx) => (idx % 2) === 0 ? this.replaceExpressionVariables(entry, values, defaultValues) : entry);
         }
     };
 }

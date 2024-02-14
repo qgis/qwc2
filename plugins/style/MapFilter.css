@@ -33,6 +33,14 @@
     width: 100%;
 }
 
+#MapFilter table.map-filter-entry-fields td:first-child {
+    white-space: nowrap;
+}
+
+#MapFilter table.map-filter-entry-fields td:last-child {
+    width: 99%;
+}
+
 #MapFilter table.map-filter-entry-fields td:last-child > * {
     width: 100%;
 }

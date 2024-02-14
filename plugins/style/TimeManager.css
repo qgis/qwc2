@@ -74,3 +74,18 @@ div.time-manager-options td select {
 div.time-manager-timeline {
     flex: 1 1 auto;
 }
+
+div.time-manager-filter-warning {
+    padding: 0.25em 0.5em;
+    background-color: orange;
+    display: flex;
+    align-items: center;
+}
+
+div.time-manager-filter-warning > span.icon {
+    margin-right: 0.5em;
+}
+
+div.time-manager-filter-warning > button.button {
+    margin-left: 0.5em;
+}

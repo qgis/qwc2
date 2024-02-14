@@ -258,6 +258,11 @@
       "usersize": "Auf Karte auswählen...",
       "wait": "Bitte warten..."
     },
+    "mapfilter": {
+      "timefilter": "Zeit",
+      "timefrom": "Von",
+      "timeto": "Bis"
+    },
     "mapinfotooltip": {
       "elevation": "Höhe",
       "title": "Position"
@@ -497,7 +502,9 @@
       "displayfeatures": "Zeitleiste und Objekte",
       "displaylayers": "Zeitleiste und Ebenen",
       "displayminimal": "Nur Zeitleiste",
+      "edit": "Anpassen",
       "endtime": "Ende",
+      "filterwarning": "Kartenfilter sind aktiv",
       "future": "Zukunft",
       "group": "Gruppierungsattribut",
       "groupnone": "Keins",

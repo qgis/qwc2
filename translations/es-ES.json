@@ -258,6 +258,11 @@
       "usersize": "",
       "wait": ""
     },
+    "mapfilter": {
+      "timefilter": "",
+      "timefrom": "",
+      "timeto": ""
+    },
     "mapinfotooltip": {
       "elevation": "Elevación",
       "title": "Posición"
@@ -497,7 +502,9 @@
       "displayfeatures": "",
       "displaylayers": "",
       "displayminimal": "",
+      "edit": "",
       "endtime": "Final",
+      "filterwarning": "",
       "future": "Futuro",
       "group": "",
       "groupnone": "",
