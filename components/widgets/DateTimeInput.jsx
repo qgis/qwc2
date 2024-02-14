@@ -44,8 +44,10 @@ export default class DateTimeInput extends React.Component {
         if (time && time.length === 5) {
             time += ":00";
         }
-        if (date) {
+        if (date && time) {
             this.props.onChange(date + "T" + time);
+        } else if (date) {
+            this.props.onChange(date);
         } else {
             this.props.onChange("");
         }
