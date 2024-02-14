@@ -35,7 +35,7 @@ export default class DateTimeInput extends React.Component {
                     disabled={!parts[0]}
                     onChange={ev => this.valueChanged(parts[0], ev.target.value)}
                     readOnly={this.props.readOnly} required={this.props.required}
-                    role="input" step="1" style={this.props.style} type="time" value={parts[1]} />
+                    role="input" step="1" style={{...this.props.style, maxWidth: '8em'}} type="time" value={parts[1]} />
                 <input name={this.props.name} role="input" type="hidden" value={this.props.value} />
             </InputContainer>
         );
