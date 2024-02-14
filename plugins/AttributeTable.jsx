@@ -107,6 +107,8 @@ class AttributeTable extends React.Component {
         // Reload conditions when limited to extent
         if (this.props.active && this.state.limitToExtent && this.state.selectedLayer && (!prevState.limitToExtent || this.props.mapBbox !== prevProps.mapBbox)) {
             this.reload();
+        } else if (this.props.active && !this.state.limitToExtent && prevState.limitToExtent) {
+            this.reload();
         }
     }
     render() {
