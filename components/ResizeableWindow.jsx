@@ -281,15 +281,18 @@ class ResizeableWindow extends React.Component {
         }
     };
     onResizeStop = (ev, dir, ref, delta, position) => {
-        this.setState((state) => ({
-            geometry: {
-                ...state.geometry,
-                x: position.x,
-                y: position.y,
-                width: state.geometry.width + delta.width,
-                height: state.geometry.height + delta.height
-            }
-        }));
+        // Delay one event loop cycle else clientWidth / clientHeight may not yet be up-to-date
+        setTimeout(() => {
+            this.setState((state) => ({
+                geometry: {
+                    ...state.geometry,
+                    x: position.x,
+                    y: position.y,
+                    width: ref.clientWidth,
+                    height: ref.clientHeight
+                }
+            }));
+        }, 0);
     };
     toggleDock = () => {
         this.setState((state) => ({
