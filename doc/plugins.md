@@ -258,7 +258,7 @@ with containing a container element with `id=heightprofilecontainer`.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | height | `number` | The height of the height profile widget in pixels. | `150` |
-| heightProfilePrecision | `number` | The precision of displayed and exported values (0: no decimals, 0.1: 1 decimal position, etc). | `0` |
+| heightProfilePrecision | `number` | The precision of displayed and exported values (0: no decimals, 1: 1 decimal position, etc). | `0` |
 | samples | `number` | The number of elevation samples to query. | `500` |
 | templatePath | `string` | Template location for the height profile print functionality | `":/templates/heightprofileprint.html"` |
 
