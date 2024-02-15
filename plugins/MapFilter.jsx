@@ -18,7 +18,6 @@ import SideBar from '../components/SideBar';
 import DateTimeInput from '../components/widgets/DateTimeInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
-import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/MapFilter.css';
 
@@ -50,6 +49,9 @@ import './style/MapFilter.css';
  * ```
  * f={"<filter_id>": {"<field_id>": <value>, ...}, ...}
  * ```
+ *
+ * To control the temporal filter, the filter ID is `__timefilter`, and the field IDs are `tmin` and `tmax`, with values an ISO date or datetime string (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`).
+ *
  * Whenever an startup filter value is specified, the filter is automatically enabled.
  *
  * *Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
@@ -92,6 +94,18 @@ class MapFilter extends React.Component {
                     }), {})
                 }
             }), {});
+            if (this.props.layers !== prevProps.layers) {
+                const timeFilter = {};
+                this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
+                if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
+                    filters.__timefilter = {
+                        active: false,
+                        filter: timeFilter,
+                        values: {tstart: "", tend: ""},
+                        defaultValues: {tstart: '1800-01-01', tend: '9999-12-31'}
+                    };
+                }
+            }
             if (!prevProps.theme && this.props.startupParams?.f) {
                 try {
                     const startupConfig = JSON.parse(this.props.startupParams.f);
@@ -103,18 +117,6 @@ class MapFilter extends React.Component {
                     });
                 } catch (e) {
                     // Pass
-                }
-            }
-            if (this.props.layers !== prevProps.layers) {
-                const timeFilter = {};
-                this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
-                if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
-                    filters.__timefilter = {
-                        active: false,
-                        filter: timeFilter,
-                        values: {tstart: "", tend: ""},
-                        defaultValues: {tstart: '1800-01-01', tend: '9999-12-31'}
-                    };
                 }
             }
             this.setState({filters: filters});
