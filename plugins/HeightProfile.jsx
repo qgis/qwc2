@@ -181,7 +181,7 @@ class HeightProfile extends React.Component {
         changeMeasurementState: PropTypes.func,
         /** The height of the height profile widget in pixels. */
         height: PropTypes.number,
-        /** The precision of displayed and exported values (0: no decimals, 0.1: 1 decimal position, etc). */
+        /** The precision of displayed and exported values (0: no decimals, 1: 1 decimal position, etc). */
         heightProfilePrecision: PropTypes.number,
         measurement: PropTypes.object,
         mobile: PropTypes.bool,
