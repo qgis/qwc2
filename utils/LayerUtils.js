@@ -788,6 +788,8 @@ const LayerUtils = {
                 }
                 const identifier = String.fromCharCode(65 + (counterRef[0]++));
                 params.LAYERS.push("EXTERNAL_WMS:" + identifier);
+                params.STYLES.push("");
+                params.COLORS.push("");
                 params[identifier + ":url"] = layerUrl;
                 params[identifier + ":layers"] = layer.params.LAYERS;
                 params[identifier + ":styles"] = layer.params.STYLES;
