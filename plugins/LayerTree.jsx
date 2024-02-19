@@ -667,7 +667,7 @@ class LayerTree extends React.Component {
     printLegend = () => {
         let body = '<p id="legendcontainerbody">';
         const printLabel = LocaleUtils.tr("layertree.printlegend");
-        body += '<div id="print">' +
+        body += '<div id="print" style="margin-bottom: 1em">' +
                 '<style type="text/css">@media print{ #print { display: none; }}</style>' +
                 '<button onClick="(function(){window.print();})()">' + printLabel + '</button>' +
                 '</div>';
