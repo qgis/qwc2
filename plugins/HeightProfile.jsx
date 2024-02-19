@@ -96,6 +96,13 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
         this.externalWindow.addEventListener('beforeunload', this.props.onClose, false);
         const container = this.externalWindow.document.getElementById("heightprofilecontainer");
         if (container) {
+            const printBtn = this.externalWindow.document.createElement('div');
+            printBtn.id = "print";
+            printBtn.style.marginBottom = "1em";
+            printBtn.innerHTML = '<style type="text/css">@media print{ #print { display: none; }}</style>' +
+                '<button onClick="(function(){window.print();})()">' + LocaleUtils.tr("heightprofile.print") + '</button>';
+            container.appendChild(printBtn);
+
             this.imageEl = this.externalWindow.document.createElement('div');
             this.imageEl.id = 'map';
             container.appendChild(this.imageEl);
@@ -104,14 +111,8 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             this.portalEl.id = 'profile';
             container.appendChild(this.portalEl);
 
-            const printBtn = this.externalWindow.document.createElement('div');
-            printBtn.id = "print";
-            printBtn.innerHTML = '<style type="text/css">@media print{ #print { display: none; }}</style>' +
-                '<button onClick="(function(){window.print();})()">' + LocaleUtils.tr("heightprofile.print") + '</button>' +
-                '</div>';
-            container.appendChild(printBtn);
             this.setState({initialized: true});
-            this.externalWindow.document.body.style.overflow = 'hidden';
+            this.externalWindow.document.body.style.overflowX = 'hidden';
         } else {
             this.externalWindow.document.body.innerHTML = "Broken template. An element with id=heightprofilecontainer must exist.";
         }
