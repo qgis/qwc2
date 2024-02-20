@@ -533,7 +533,7 @@ def getTheme(config, configItem, result, resultItem):
         resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None)
 
         # set default theme
-        if "default" in configItem or not result["themes"]["defaultTheme"]:
+        if configItem.get("default", False) or not result["themes"]["defaultTheme"]:
             result["themes"]["defaultTheme"] = resultItem["id"]
 
         # use first CRS for thumbnail request which is not CRS:84
