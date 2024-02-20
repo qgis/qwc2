@@ -110,6 +110,10 @@ const MiscUtils = {
             return 'https:' + url.substr(5);
         }
         return url;
+    },
+    convertEmToPx(emsize) {
+        const defaultfontsize = getComputedStyle(document.documentElement).fontSize;
+        return emsize * parseFloat(defaultfontsize);
     }
 };
 

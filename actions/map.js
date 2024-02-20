@@ -22,6 +22,7 @@ export const CHANGE_ROTATION = 'CHANGE_ROTATION';
 export const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
 export const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
 export const SET_BOTTOMBAR_HEIGHT = 'SET_BOTTOMBAR_HEIGHT';
+export const SET_RIGHT_MARGIN = 'SET_RIGHT_MARGIN';
 export const SET_SNAPPING_CONFIG = 'SET_SNAPPING_CONFIG';
 
 export function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
@@ -119,6 +120,13 @@ export function setBottombarHeight(height) {
     return {
         type: SET_BOTTOMBAR_HEIGHT,
         height
+    };
+}
+
+export function setRightMargin(right) {
+    return {
+        type: SET_RIGHT_MARGIN,
+        right
     };
 }
 

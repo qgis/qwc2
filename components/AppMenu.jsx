@@ -13,6 +13,7 @@ import mousetrap from 'mousetrap';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import classnames from 'classnames';
+import {setRightMargin} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import InputContainer from '../components/InputContainer';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -37,6 +38,7 @@ class AppMenu extends React.Component {
         onMenuToggled: PropTypes.func,
         openExternalUrl: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        setRightMargin: PropTypes.func,
         showFilterField: PropTypes.bool,
         showOnStartup: PropTypes.bool
     };
@@ -280,7 +282,7 @@ class AppMenu extends React.Component {
                 <div className="appmenu-button-container" onMouseDown={this.toggleMenu} >
                     {this.props.buttonContents}
                 </div>
-                <div className="appmenu-menu-container">
+                <div className="appmenu-menu-container" ref={this.storeRigthMargin}>
                     <ul className="appmenu-menu">
                         {this.props.showFilterField ? (
                             <li className="appmenu-leaf">
@@ -307,6 +309,12 @@ class AppMenu extends React.Component {
             mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
         }
     };
+    storeRigthMargin = (el) => {
+        if (this.props.menuCompact && el?.clientWidth > 0) {
+            const rightmargin = el.clientWidth - MiscUtils.convertEmToPx(11.5);
+            this.props.setRightMargin(rightmargin);
+        }
+    };
     itemAllowed = (item) => {
         if (!ThemeUtils.themFlagsAllowed(this.props.currentTheme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
             return false;
@@ -328,5 +336,6 @@ export default connect((state) => ({
     currentTaskBlocked: state.task.blocked,
     currentTheme: state.theme.current || {}
 }), {
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    setRightMargin: setRightMargin
 })(AppMenu);
