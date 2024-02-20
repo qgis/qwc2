@@ -21,11 +21,6 @@ div.sidebar-left {
     left: 0;
 }
 
-.appmenu-compact div.sidebar-right {
-    right: 3.7em;
-    top: 3.7em;
-}
-
 div.sidebar-right:not(.sidebar-open) {
     transform: translateX(100%) translateX(8px);
 }

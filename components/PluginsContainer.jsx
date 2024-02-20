@@ -20,10 +20,6 @@ class PluginsContainer extends React.Component {
         pluginsAppConfig: PropTypes.object,
         pluginsConfig: PropTypes.object
     };
-    isAppMenuCompact = (pluginsConfig)=> {
-        const pluginTopBar = pluginsConfig.find((pluginConf) => pluginConf.name === "TopBar");
-        return pluginTopBar && pluginTopBar.cfg.appMenuCompact;
-    };
     renderPlugins = (pluginsConfig) => {
         return pluginsConfig.map((pluginConf, idx) => {
             const Plugin = this.props.plugins[pluginConf.name + "Plugin"];
@@ -39,9 +35,8 @@ class PluginsContainer extends React.Component {
     };
     render() {
         if (this.props.pluginsConfig) {
-            const menuCompactclassName = this.isAppMenuCompact(this.props.pluginsConfig[this.props.mode]) ? "appmenu-compact" : "";
             return (
-                <div className={menuCompactclassName} id="PluginsContainer">
+                <div id="PluginsContainer">
                     {this.renderPlugins(this.props.pluginsConfig[this.props.mode])}
                     <WindowManager />
                 </div>
