@@ -48,6 +48,7 @@ class ResizeableWindow extends React.Component {
         onGeometryChanged: PropTypes.func,
         raiseWindow: PropTypes.func,
         registerWindow: PropTypes.func,
+        rightMargin: PropTypes.number,
         scrollable: PropTypes.bool,
         setSplitScreen: PropTypes.func,
         splitScreenWhenDocked: PropTypes.bool,
@@ -169,7 +170,10 @@ class ResizeableWindow extends React.Component {
             "resizeable-window-body-scrollable": this.props.scrollable,
             "resizeable-window-body-nonscrollable": !this.props.scrollable
         });
-        const style = {display: this.props.visible ? 'initial' : 'none'};
+        const style = {
+            display: this.props.visible ? 'initial' : 'none',
+            right: 'calc(0.25em + ' + this.props.rightMargin + 'px)'
+        };
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
         const zIndex = this.props.baseZIndex + this.props.windowStacking.findIndex(item => item === this.id);
@@ -327,7 +331,8 @@ class ResizeableWindow extends React.Component {
 export default connect((state) => ({
     windowStacking: state.windows.stacking,
     topbarHeight: state.map.topbarHeight,
-    bottombarHeight: state.map.bottombarHeight
+    bottombarHeight: state.map.bottombarHeight,
+    rightMargin: state.map.rightMargin
 }), {
     raiseWindow: raiseWindow,
     registerWindow: registerWindow,

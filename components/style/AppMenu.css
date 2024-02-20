@@ -14,7 +14,7 @@ div.AppMenu.appmenu-visible {
     overflow: visible;
 }
 
-.appmenu-compact div.AppMenu.appmenu-visible {
+div.AppMenu.appmenu-visible.appmenu-compact {
     background: none;
 }
 

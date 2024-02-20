@@ -29,6 +29,11 @@ class ZoomButton extends React.Component {
         maxZoom: PropTypes.number,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
+<<<<<<< HEAD
+=======
+        rightMargin: PropTypes.number,
+        splitScreen: PropTypes.object,
+>>>>>>> 390fa289 (Use setRightMargin action)
         theme: PropTypes.object,
         /** Omit the button in themes matching one of these flags. */
         themeFlagBlacklist: PropTypes.arrayOf(PropTypes.string),
