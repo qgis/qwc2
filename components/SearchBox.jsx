@@ -20,10 +20,10 @@ import {SearchResultType} from '../actions/search';
 import {logAction} from '../actions/logging';
 import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
 import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
-import {changeSelectionState} from '../actions/selection';
 import {setCurrentTheme} from '../actions/theme';
 import {openExternalUrl, setCurrentTask} from '../actions/task';
 import {showNotification} from '../actions/windows';
+import MapSelection from './MapSelection';
 import Icon from './Icon';
 import InputContainer from './InputContainer';
 import Spinner from './Spinner';
@@ -47,7 +47,6 @@ class SearchBox extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         addThemeSublayer: PropTypes.func,
-        changeSelectionState: PropTypes.func,
         displaycrs: PropTypes.string,
         layers: PropTypes.array,
         localConfig: PropTypes.object,
@@ -67,7 +66,6 @@ class SearchBox extends React.Component {
             zoomToLayers: PropTypes.bool
         }),
         searchProviders: PropTypes.object,
-        selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         showNotification: PropTypes.func,
@@ -89,7 +87,9 @@ class SearchBox extends React.Component {
         activeLayerInfo: null,
         filterOptionsVisible: false,
         selectedProvider: "",
-        selectedFilterRegion: null
+        filterRegionName: "",
+        filterGeomType: null,
+        filterGeometry: null
     };
     constructor(props) {
         super(props);
@@ -192,7 +192,7 @@ class SearchBox extends React.Component {
         const searchRegions = ConfigUtils.getConfigProp("searchFilterRegions", this.props.theme);
         if (!isEmpty(searchRegions)) {
             searchRegionSelection = (
-                <ComboBox onChange={value => this.setFilterRegion(value, searchRegions)} value={this.state.selectedFilterRegion?.value || ""}>
+                <ComboBox onChange={value => this.setFilterRegion(value, searchRegions)} value={this.state.filterRegionName}>
                     <div value="">{LocaleUtils.tr("search.none")}</div>
                     {searchRegions.map((group, gidx) => ([
                         (<div data-group-header={gidx} disabled key={"group" + gidx}>{group.name}</div>),
@@ -219,7 +219,7 @@ class SearchBox extends React.Component {
                             <td>{LocaleUtils.tr("search.limittoarea")}:</td>
                             <td>
                                 <div className="searchbox-filter-options-geometry">
-                                    <ButtonBar active={this.props.selection.geomType} buttons={filterButtons} onClick={this.setGeometryFilter} />
+                                    <ButtonBar active={this.state.filterGeomType} buttons={filterButtons} onClick={this.setFilterGeomType} />
                                     {searchRegionSelection}
                                     <button className="button" onClick={this.clearFilter}>
                                         <Icon icon="clear" />&nbsp;{LocaleUtils.tr("search.clearfilter")}
@@ -227,10 +227,10 @@ class SearchBox extends React.Component {
                                 </div>
                             </td>
                         </tr>
-                        {this.props.selection.geomType === 'Circle' ? (
+                        {this.state.filterGeomType === 'Circle' ? (
                             <tr>
                                 <td>{LocaleUtils.tr("search.circleradius")}:</td>
-                                <td><NumberInput disabled={!this.props.selection.circle} min={1} onChange={this.setCircleRadius} type="text" value={this.props.selection.circle?.radius || 0}/> m</td>
+                                <td><NumberInput disabled={!this.state.filterGeometry} min={1} onChange={this.setCircleRadius} type="text" value={this.state.filterGeometry?.radius || 0}/> m</td>
                             </tr>
                         ) : null}
                     </tbody>
@@ -238,49 +238,31 @@ class SearchBox extends React.Component {
             </div>
         );
     };
-    setGeometryFilter = (geomType) => {
-        this.props.changeSelectionState({geomType: geomType, measure: geomType === 'Circle'});
-        this.setState({selectedFilterRegion: null});
-        this.props.removeLayer("searchfilter");
+    setFilterGeomType = (geomType) => {
+        this.setState({filterGeomType: geomType, filterRegionName: "", filterGeometry: null});
     };
     setFilterRegion = (value, searchRegions) => {
         if (value) {
             const parts = value.split(":");
             const item = searchRegions[parts[0]].items[parts[1]];
-            const coordinates = item.coordinates;
-            const layer = {
-                id: "searchfilter",
-                role: LayerRole.SELECTION
+            const geometry = {
+                type: "Polygon",
+                coordinates: [item.coordinates]
             };
-            const feature = {
-                type: "Feature",
-                geometry: {
-                    type: "Polygon",
-                    coordinates: [coordinates]
-                }
-            };
-            feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, item.crs, this.props.map.projection);
-            this.props.addLayerFeatures(layer, [feature], true);
-            this.setState({selectedFilterRegion: {value, coordinates: feature.geometry.coordinates[0]}});
+            const mapGeometry = VectorLayerUtils.reprojectGeometry(geometry, item.crs, this.props.map.projection);
+            this.setState({filterGeomType: null, filterRegionName: value, filterGeometry: mapGeometry});
         } else {
-            this.props.removeLayer("searchfilter");
-            this.setState({selectedFilterRegion: null});
+            this.setState({filterGeomType: null, filterRegionName: "", filterGeometry: null});
         }
-        this.props.changeSelectionState({geomType: null});
     };
     setCircleRadius = (value) => {
-        this.props.changeSelectionState({
-            ...this.props.selection,
-            circle: {
-                ...this.props.selection.circle,
-                radius: value
-            }
-        });
+        this.setState((state) => ({filterGeometry: {
+            ...state.filterGeometry,
+            radius: value
+        }}));
     };
     clearFilter = () => {
-        this.props.changeSelectionState({geomType: null});
-        this.setState({selectedFilterRegion: null});
-        this.props.removeLayer("searchfilter");
+        this.setState({filterGeomType: null, filterRegionName: "", filterGeometry: null});
     };
     renderRecentResults = () => {
         const recentSearches = this.state.recentSearches.filter(entry => entry.toLowerCase().includes(this.state.searchText.toLowerCase()));
@@ -524,36 +506,42 @@ class SearchBox extends React.Component {
         const filterButtonClasses = classnames({
             "button": true,
             "searchbox-filter-button": true,
-            "pressed": this.state.filterOptionsVisible || this.state.selectedProvider || this.props.selection.polygon || this.state.selectedFilterRegion
+            "pressed": this.state.filterOptionsVisible || this.state.selectedProvider || this.state.filterGeometry
         });
-        return (
-            <div className="SearchBox">
-                <InputContainer className="searchbox-field">
-                    <Icon icon="search" role="prefix" />
-                    <input onBlur={this.onBlur} onChange={ev => this.searchTextChanged(ev.target.value)}
-                        onFocus={this.onFocus} onKeyDown={this.onKeyDown}
-                        placeholder={placeholder} ref={el => { this.searchBox = el; }}
-                        role="input"
-                        type="text" value={this.state.searchText} />
-                    {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="remove" onClick={this.clear} role="suffix" />)}
-                </InputContainer>
-                {this.props.searchOptions.allowSearchFilters ? (
-                    <button className={filterButtonClasses} onClick={() => this.toggleFilterOptions()} title={LocaleUtils.tr("search.filter")}>
-                        <Icon icon="filter" />
-                        <Icon icon="chevron-down" />
-                    </button>
-                ) : null}
-                {this.renderSearchResults()}
-                {this.renderFilterOptions()}
-            </div>
-        );
+        return [
+            (
+                <div className="SearchBox" key="SearchBox">
+                    <InputContainer className="searchbox-field">
+                        <Icon icon="search" role="prefix" />
+                        <input onBlur={this.onBlur} onChange={ev => this.searchTextChanged(ev.target.value)}
+                            onFocus={this.onFocus} onKeyDown={this.onKeyDown}
+                            placeholder={placeholder} ref={el => { this.searchBox = el; }}
+                            role="input"
+                            type="text" value={this.state.searchText} />
+                        {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="remove" onClick={this.clear} role="suffix" />)}
+                    </InputContainer>
+                    {this.props.searchOptions.allowSearchFilters ? (
+                        <button className={filterButtonClasses} onClick={() => this.toggleFilterOptions(!this.state.filterOptionsVisible)} title={LocaleUtils.tr("search.filter")}>
+                            <Icon icon="filter" />
+                            <Icon icon="chevron-down" />
+                        </button>
+                    ) : null}
+                    {this.renderSearchResults()}
+                    {this.renderFilterOptions()}
+                </div>
+            ),
+            (
+                <MapSelection
+                    active={this.state.filterOptionsVisible && this.state.filterGeomType !== null}
+                    geomType={this.state.filterGeomType} geometry={this.state.filterGeometry}
+                    geometryChanged={(geom) => this.setState({filterGeometry: geom})}
+                    key="MapSelection" measure={this.state.filterGeomType === "Circle"}
+                />
+            )
+        ];
     }
-    toggleFilterOptions = (newState = null) => {
-        this.props.changeSelectionState({...this.props.selection, active: newState ?? !this.state.filterOptionsVisible});
-        this.setState((state) => {
-            newState = newState ?? !state.filterOptionsVisible;
-            return {filterOptionsVisible: newState};
-        });
+    toggleFilterOptions = (visible) => {
+        this.setState({filterOptionsVisible: visible});
     };
     searchTextChanged = (text, expandSections = false) => {
         if (this.props.layers.find(layer => layer.id === 'searchselection')) {
@@ -597,10 +585,8 @@ class SearchBox extends React.Component {
         if (this.searchBox) {
             this.searchBox.blur();
         }
-        this.setState({searchText: '', searchResults: {}, selectedProvider: '', selectedFilterRegion: null});
+        this.setState({searchText: '', searchResults: {}, selectedProvider: '', filterRegionName: "", filterGeometry: null});
         this.props.removeLayer('searchselection');
-        this.props.removeLayer('searchfilter');
-        this.props.changeSelectionState({geomType: null});
         UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
     };
     startSearch = (zoomToUniqueResult = false) => {
@@ -655,17 +641,13 @@ class SearchBox extends React.Component {
             });
         }
         // Additional provider searches
-        const filterFeature = this.props.selection.polygon ? {
-            type: "Feature",
-            geometry: {type: "Polygon", coordinates: [this.props.selection.polygon]}
-        } : null;
         const searchParams = {
             mapcrs: this.props.map.projection,
             displaycrs: this.props.displaycrs,
             lang: LocaleUtils.lang(),
             theme: this.props.theme,
-            filterPoly: this.props.selection.polygon,
-            filterBBox: filterFeature ? VectorLayerUtils.computeFeatureBBox(filterFeature) : null
+            filterPoly: this.state.filterGeometry?.coordinates?.[0],
+            filterBBox: this.state.filterGeometry ? VectorLayerUtils.computeFeatureBBox(this.state.filterGeometry) : null
         };
         Object.entries(availableProviders).forEach(([key, entry]) => {
             entry.onSearch(searchText, {...searchParams, cfgParams: entry.params}, (response) => {
@@ -676,10 +658,10 @@ class SearchBox extends React.Component {
         });
     };
     filterFulltextResults = (data) => {
-        const filterPolygon = this.state.selectedFilterRegion?.coordinates || this.props.selection.polygon;
-        if (!filterPolygon) {
+        if (!this.state.filterGeometry) {
             return data;
         }
+        const filterPolygon = this.state.filterGeometry.coordinates[0];
         data.results = data.results.filter(result => {
             if (!result.feature || !result.feature.bbox) {
                 return true;
@@ -694,10 +676,10 @@ class SearchBox extends React.Component {
         return data;
     };
     filterProviderResults = (results) => {
-        const filterPolygon = this.state.selectedFilterRegion?.coordinates || this.props.selection.polygon;
-        if (!filterPolygon) {
+        if (!this.state.filterGeometry) {
             return results;
         }
+        const filterPolygon = this.state.filterGeometry.coordinates[0];
         return results.map(group => {
             const newItems = group.items.filter(item => {
                 const resultType = item.type || SearchResultType.PLACE;
@@ -1024,7 +1006,6 @@ export default (searchProviders) => {
             addThemeSublayer: addThemeSublayer,
             addLayer: addLayer,
             addLayerFeatures: addLayerFeatures,
-            changeSelectionState: changeSelectionState,
             removeLayer: removeLayer,
             setCurrentTask: setCurrentTask,
             zoomToExtent: zoomToExtent,
