@@ -162,6 +162,7 @@
       "export": "",
       "height": "Høyde",
       "loading": "Beregner høydeprofil...",
+      "loadingimage": "",
       "print": "",
       "title": ""
     },

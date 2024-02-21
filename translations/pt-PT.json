@@ -162,6 +162,7 @@
       "export": "Exportar",
       "height": "Altura",
       "loading": "A calcular o perfil de altura...",
+      "loadingimage": "",
       "print": "Imprimir",
       "title": "Perfil de Altura"
     },

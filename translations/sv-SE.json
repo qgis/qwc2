@@ -162,6 +162,7 @@
       "export": "",
       "height": "Höjd",
       "loading": "Beräknar höjdprofil...",
+      "loadingimage": "",
       "print": "",
       "title": ""
     },

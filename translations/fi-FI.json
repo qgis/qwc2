@@ -162,6 +162,7 @@
       "export": "",
       "height": "Korkeus",
       "loading": "Korkeusprofiilin laskenta käynnissä...",
+      "loadingimage": "",
       "print": "",
       "title": ""
     },

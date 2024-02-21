@@ -162,6 +162,7 @@
       "export": "Export profile",
       "height": "Height",
       "loading": "Calculating height profile...",
+      "loadingimage": "Loading map image...",
       "print": "Print height profile",
       "title": "Height profile"
     },

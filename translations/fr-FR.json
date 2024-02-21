@@ -162,6 +162,7 @@
       "export": "Exporter le profil",
       "height": "Altitude",
       "loading": "Calcul du profil de hauteur...",
+      "loadingimage": "Chargement de l'image de la carte...",
       "print": "Imprimer le profil de hauteur",
       "title": "Profil de hauteur"
     },

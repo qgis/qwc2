@@ -162,6 +162,7 @@
       "export": "",
       "height": "Высота",
       "loading": "Расчет высоты профиля...",
+      "loadingimage": "",
       "print": "",
       "title": ""
     },
