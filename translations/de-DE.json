@@ -158,6 +158,7 @@
       "export": "Exportieren",
       "height": "Höhe",
       "loading": "Höhenprofil wird berechnet...",
+      "loadingimage": "Kartenbild wird geladen...",
       "print": "Höhenprofil drucken",
       "title": "Höhenprofil"
     },

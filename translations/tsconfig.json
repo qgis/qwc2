@@ -150,6 +150,7 @@
     "heightprofile.export",
     "heightprofile.height",
     "heightprofile.loading",
+    "heightprofile.loadingimage",
     "heightprofile.print",
     "heightprofile.title",
     "identify.clipboard",

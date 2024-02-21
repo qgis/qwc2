@@ -98,6 +98,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
         if (container) {
             this.imageEl = this.externalWindow.document.createElement('div');
             this.imageEl.id = 'map';
+            this.imageEl.innerHTML = LocaleUtils.tr("heightprofile.loadingimage");
             container.appendChild(this.imageEl);
 
             this.portalEl = this.externalWindow.document.createElement('div');
@@ -142,8 +143,23 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             csrf_token: MiscUtils.getCsrfToken(),
             ...exportParams
         };
-        const url = this.props.theme.url.split("?")[0] + "?" + Object.entries(imageParams).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
-        this.imageEl.innerHTML = `<img src="${url}" style="width: 100%" />`;
+        const baseUrl = this.props.theme.url.split("?")[0];
+        const query = Object.entries(imageParams).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+        const options = {
+            headers: {'content-type': 'application/x-www-form-urlencoded'},
+            responseType: "blob"
+        };
+        axios.post(baseUrl, query, options).then(response => {
+            const reader = new FileReader();
+            reader.readAsDataURL(response.data);
+            reader.onload = () => {
+                this.imageEl.innerHTML = `<img src="${reader.result}" style="width: 100%" />`;
+            };
+        }).catch(() => {
+            // Fall back to GET
+            const src = baseUrl + "?" + query;
+            this.imageEl.innerHTML = `<img src="${src}" style="width: 100%" />`;
+        });
     };
     windowResized = () => {
         if (this.chart) {

@@ -158,6 +158,7 @@
       "export": "Exportar",
       "height": "Alçada",
       "loading": "Càlculant el perfil...",
+      "loadingimage": "",
       "print": "",
       "title": ""
     },

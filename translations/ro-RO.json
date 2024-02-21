@@ -158,6 +158,7 @@
       "export": "Export profil",
       "height": "Înălțimea",
       "loading": "Se calculează profilul...",
+      "loadingimage": "",
       "print": "",
       "title": ""
     },
