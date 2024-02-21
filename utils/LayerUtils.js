@@ -169,7 +169,7 @@ const LayerUtils = {
             newParams = {
                 LAYERS: layers.join(","),
                 OPACITIES: layers.map((x, i) => Math.round((opacities[i] ?? "255") * opacityMult)).map(Math.round).join(","),
-                STYLES: layer.style ?? params.STYLES ?? "",
+                STYLES: layer.style ?? params.STYLES ?? layers.map(x => "").join(","),
                 ...layer.dimensionValues
             };
             queryLayers = layer.queryable && !layer.omitFromQueryLayers ? [layer.name] : [];
