@@ -78,11 +78,13 @@ class Portal extends React.Component {
         }
     }
     render() {
-        const style = {display: this.props.currentTask !== "Portal" ? 'none' : 'initial'};
+        if (this.props.currentTask !== "Portal") {
+            return null;
+        }
         const assetsPath = ConfigUtils.getAssetsPath();
         const preserveSettings = ConfigUtils.getConfigProp("preserveSettingsOnPortalThemeSwitch");
         return (
-            <div className="Portal" style={style}>
+            <div className="Portal">
                 <div className="portal-topbar">
                     <img className="portal-logo" src={assetsPath + "/img/" + this.props.logo} />
                     <span className="portal-topbar-text" dangerouslySetInnerHTML={{__html: this.props.topBarText}} />
