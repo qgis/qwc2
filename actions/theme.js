@@ -22,7 +22,6 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} from './layers';
-import {changeSelectionState} from './selection';
 import {configureMap} from './map';
 import {showNotification, NotificationType} from './windows';
 
@@ -129,9 +128,6 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
             type: SWITCHING_THEME,
             switching: true
         });
-
-        // Reset selection
-        dispatch(changeSelectionState({geomType: null}));
 
         // Get current background layer if it needs to be preserved
         if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
