@@ -74,6 +74,11 @@ class AppMenu extends React.Component {
         if (this.props.appMenuShortcut) {
             mousetrap.unbind(this.props.appMenuShortcut, this.toggleMenu);
         }
+        if (this.state.menuVisible) {
+            document.removeEventListener('click', this.checkCloseMenu);
+            document.removeEventListener('keydown', this.onKeyPress, true);
+            document.removeEventListener('mousemove', this.onMouseMove, true);
+        }
     }
     addKeyBindings = (items) => {
         items.forEach(item => {
