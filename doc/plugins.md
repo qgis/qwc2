@@ -308,10 +308,9 @@ for customized queries and templates for the result presentation.
 | exportGeometry | `bool` | Whether to include the geometry in exported features. Default: `true`. | `true` |
 | featureInfoReturnsLayerName | `bool` | Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. | `true` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
-| initialRadius | `number` | The initial radius of the identify dialog in radius mode. | `50` |
+| highlightAllResults | `bool` | Whether to highlight all results if no result is hovered | `true` |
 | initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'meters', 'feet', 'kilometers', 'miles'. | `'meters'` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
-| highlightAllResults | `bool` | Whether to highlight all results if no result is hovered | `true` |
 
 LayerCatalog<a name="layercatalog"></a>
 ----------------------------------------------------------------
@@ -484,12 +483,16 @@ You can set the startup filter configuration by specifying a `f` URL-parameter w
 ```
 f={"<filter_id>": {"<field_id>": <value>, ...}, ...}
 ```
+
+To control the temporal filter, the filter ID is `__timefilter`, and the field IDs are `tmin` and `tmax`, with values an ISO date or datetime string (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`).
+
 Whenever an startup filter value is specified, the filter is automatically enabled.
 
 *Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| allowFilterByTime | `bool` | Whether to display the temporal filter if temporal dimensions are found (default: true). | `true` |
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). Set to -1 to hide the button. | `5` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 
