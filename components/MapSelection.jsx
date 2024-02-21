@@ -62,6 +62,9 @@ class MapSelection extends React.Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
+        if (this.props.geomType !== prevProps.geomType) {
+            this.selectionLayer.getSource().clear();
+        }
         if ((this.props.active && !prevProps.active) || (this.props.active && this.props.geomType !== prevProps.geomType)) {
             this.addDrawInteraction();
         } else if (!this.props.active && prevProps.active) {
