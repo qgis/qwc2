@@ -14,7 +14,8 @@ import {
     REGISTER_WINDOW,
     UNREGISTER_WINDOW,
     RAISE_WINDOW,
-    SET_SPLIT_SCREEN
+    SET_SPLIT_SCREEN,
+    SET_MENU_MARGIN
 } from '../actions/windows';
 
 const defaultState = {
@@ -22,6 +23,9 @@ const defaultState = {
     splitScreen: {},
     mapMargins: {
         left: 0, top: 0, right: 0, bottom: 0
+    },
+    menuMargins: {
+        left: 0, right: 0
     },
     entries: {}
 };
@@ -95,9 +99,9 @@ export default function windows(state = defaultState, action) {
         }
         const splitWindows = Object.values(newSplitScreen);
         const mapMargins = {
-            right: splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0),
+            right: splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0) + action.menuMargins.right,
             bottom: splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0),
-            left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0),
+            left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0) + action.menuMargins.left,
             top: splitWindows.filter(entry => entry.side === 'top').reduce((res, e) => Math.max(e.size, res), 0)
         };
         return {
@@ -105,6 +109,19 @@ export default function windows(state = defaultState, action) {
             splitScreen: newSplitScreen,
             mapMargins: mapMargins
         };
+    }
+    case SET_MENU_MARGIN: {
+        const menuMargins =  {
+            right: action.right,
+            left: action.left
+        };
+        const mapMargins =  {
+            right: action.right,
+            bottom: 0,
+            left: action.left,
+            top: 0
+        };
+        return {...state, menuMargins: menuMargins, mapMargins: mapMargins};
     }
     default:
         return state;

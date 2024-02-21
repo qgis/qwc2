@@ -19,13 +19,11 @@ import './style/LoginUser.css';
  */
 class LoginUser extends React.Component {
     static propTypes = {
-        rightMargin: PropTypes.string,
-        splitScreen: PropTypes.object
+        mapMargins: PropTypes.object
     };
     render() {
         const username = ConfigUtils.getConfigProp("username");
-        const splitWindows = Object.values(this.props.splitScreen);
-        const right = splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0) + this.props.rightMargin;
+        const right = this.props.mapMargins.right;
         const style = {
             right: 'calc(0.25em + ' + right + 'px)'
         };
@@ -42,7 +40,6 @@ class LoginUser extends React.Component {
 }
 
 export default connect((state) => ({
-    rightMargin: state.map.rightMargin,
-    splitScreen: state.windows.splitScreen
+    mapMargins: state.windows.mapMargins
 }))(LoginUser);
 

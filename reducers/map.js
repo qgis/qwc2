@@ -9,7 +9,7 @@
 
 import {
     CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
-    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_TOPBAR_HEIGHT, SET_BOTTOMBAR_HEIGHT, SET_RIGHT_MARGIN, SET_SNAPPING_CONFIG
+    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_TOPBAR_HEIGHT, SET_BOTTOMBAR_HEIGHT, SET_SNAPPING_CONFIG
 } from '../actions/map';
 import isEmpty from 'lodash.isempty';
 import MapUtils from '../utils/MapUtils';
@@ -140,9 +140,6 @@ export default function map(state = defaultState, action) {
     }
     case SET_BOTTOMBAR_HEIGHT: {
         return {...state, bottombarHeight: action.height};
-    }
-    case SET_RIGHT_MARGIN: {
-        return {...state, rightMargin: action.right};
     }
     case SET_SNAPPING_CONFIG: {
         return {...state, snapping: {enabled: action.enabled, active: action.active}};

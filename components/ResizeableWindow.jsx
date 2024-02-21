@@ -41,6 +41,7 @@ class ResizeableWindow extends React.Component {
         maxHeight: PropTypes.number,
         maxWidth: PropTypes.number,
         maximizeable: PropTypes.bool,
+        menuMargins: PropTypes.object,
         minHeight: PropTypes.number,
         minWidth: PropTypes.number,
         minimizeable: PropTypes.bool,
@@ -48,7 +49,6 @@ class ResizeableWindow extends React.Component {
         onGeometryChanged: PropTypes.func,
         raiseWindow: PropTypes.func,
         registerWindow: PropTypes.func,
-        rightMargin: PropTypes.number,
         scrollable: PropTypes.bool,
         setSplitScreen: PropTypes.func,
         splitScreenWhenDocked: PropTypes.bool,
@@ -101,7 +101,7 @@ class ResizeableWindow extends React.Component {
         if (props.splitScreenWhenDocked && this.state.geometry.docked) {
             const dockSide = props.dockable === true ? "left" : props.dockable;
             const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
-            props.setSplitScreen(this.id, dockSide, dockSize);
+            props.setSplitScreen(this.id, dockSide, dockSize, this.props.menuMargins);
         }
     }
     computeInitialX = (x) => {
@@ -118,7 +118,7 @@ class ResizeableWindow extends React.Component {
     componentWillUnmount() {
         this.props.unregisterWindow(this.id);
         if (this.props.splitScreenWhenDocked) {
-            this.props.setSplitScreen(this.id, null);
+            this.props.setSplitScreen(this.id, null, null, this.props.menuMargins);
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -136,11 +136,11 @@ class ResizeableWindow extends React.Component {
                 (!this.props.visible && prevProps.visible) ||
                 (this.state.geometry.docked === false && prevState.geometry.docked !== false)
             ) {
-                this.props.setSplitScreen(this.id, null);
+                this.props.setSplitScreen(this.id, null, null, this.props.menuMargins);
             } else if (this.props.visible && this.state.geometry.docked) {
                 const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
                 const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
-                this.props.setSplitScreen(this.id, dockSide, dockSize);
+                this.props.setSplitScreen(this.id, dockSide, dockSize, this.props.menuMargins);
             }
         }
     }
@@ -172,7 +172,7 @@ class ResizeableWindow extends React.Component {
         });
         const style = {
             display: this.props.visible ? 'initial' : 'none',
-            right: 'calc(0.25em + ' + this.props.rightMargin + 'px)'
+            right: 'calc(0.25em + ' + this.props.menuMargins.right + 'px)'
         };
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
@@ -332,7 +332,7 @@ export default connect((state) => ({
     windowStacking: state.windows.stacking,
     topbarHeight: state.map.topbarHeight,
     bottombarHeight: state.map.bottombarHeight,
-    rightMargin: state.map.rightMargin
+    menuMargins: state.windows.menuMargins
 }), {
     raiseWindow: raiseWindow,
     registerWindow: registerWindow,

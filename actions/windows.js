@@ -17,6 +17,7 @@ export const CLOSE_ALL_WINDOWS = 'CLOSE_ALL_WINDOWS';
 export const REGISTER_WINDOW = 'REGISTER_WINDOW';
 export const UNREGISTER_WINDOW = 'UNREGISTER_WINDOW';
 export const RAISE_WINDOW = 'RAISE_WINDOW';
+export const SET_MENU_MARGIN = 'SET_MENU_MARGIN';
 export const SET_SPLIT_SCREEN = 'SET_SPLIT_SCREEN';
 
 export const NotificationType = {
@@ -78,11 +79,20 @@ export function raiseWindow(id) {
     };
 }
 
-export function setSplitScreen(windowId, side, size) {
+export function setSplitScreen(windowId, side, size, menuMargins) {
     return {
         type: SET_SPLIT_SCREEN,
         windowId: windowId,
         side: side,
-        size: size
+        size: size,
+        menuMargins: menuMargins
+    };
+}
+
+export function setMenuMargin(right, left) {
+    return {
+        type: SET_MENU_MARGIN,
+        right: right,
+        left: left
     };
 }

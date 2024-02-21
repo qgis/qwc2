@@ -13,7 +13,7 @@ import mousetrap from 'mousetrap';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import classnames from 'classnames';
-import {setRightMargin} from '../actions/map';
+import {setMenuMargin} from '../actions/windows';
 import {setCurrentTask} from '../actions/task';
 import InputContainer from '../components/InputContainer';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -38,7 +38,7 @@ class AppMenu extends React.Component {
         onMenuToggled: PropTypes.func,
         openExternalUrl: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        setRightMargin: PropTypes.func,
+        setMenuMargin: PropTypes.func,
         showFilterField: PropTypes.bool,
         showOnStartup: PropTypes.bool
     };
@@ -312,7 +312,7 @@ class AppMenu extends React.Component {
     storeRigthMargin = (el) => {
         if (this.props.menuCompact && el?.clientWidth > 0) {
             const rightmargin = el.clientWidth - MiscUtils.convertEmToPx(11.5);
-            this.props.setRightMargin(rightmargin);
+            this.props.setMenuMargin(rightmargin, 0);
         }
     };
     itemAllowed = (item) => {
@@ -337,5 +337,5 @@ export default connect((state) => ({
     currentTheme: state.theme.current || {}
 }), {
     setCurrentTask: setCurrentTask,
-    setRightMargin: setRightMargin
+    setMenuMargin: setMenuMargin
 })(AppMenu);
