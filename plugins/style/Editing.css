@@ -37,26 +37,3 @@
 #Editing select.editing-feature-select:disabled {
     cursor: not-allowed;
 }
-
-#Editing div.editing-drawpick-results {
-    border: 1px solid var(--border-color);
-    margin-top: -0.25em;
-    background-color: var(--list-bg-color);
-}
-
-#Editing div.editing-drawpick-results > div {
-    padding: 0.25em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: pointer;
-}
-
-#Editing div.editing-drawpick-results > div:nth-child(even) {
-    background-color: var(--list-item-bg-color-even);
-}
-
-#Editing div.editing-drawpick-results > div:hover {
-    background-color: var(--list-item-bg-color-hover);
-    color: var(--list-item-text-color-hover);
-}
