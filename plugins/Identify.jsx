@@ -71,6 +71,8 @@ class Identify extends React.Component {
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string
         }),
+        /** Whether to highlight all results if no result is hovered */
+        highlightAllResults: PropTypes.bool,
         iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius of the identify dialog in radius mode. */
         initialRadius: PropTypes.number,
@@ -85,9 +87,7 @@ class Identify extends React.Component {
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object,
-        setCurrentTask: PropTypes.func,
-        /** Whether to highlight all results if no result is hovered */
-        highlightAllResults: PropTypes.bool
+        setCurrentTask: PropTypes.func
     };
     static defaultProps = {
         enableExport: true,
@@ -404,11 +404,11 @@ class Identify extends React.Component {
                         displayResultTree={this.props.displayResultTree}
                         enableExport={this.props.enableExport}
                         exportGeometry={this.props.exportGeometry}
+                        highlightAllResults={this.props.highlightAllResults}
                         identifyResults={this.state.identifyResults}
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
-                        highlightAllResults={this.props.highlightAllResults}
                         role="body" />
                 );
             }
