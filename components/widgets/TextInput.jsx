@@ -120,7 +120,7 @@ class TextInput extends React.Component {
     onChange = (ev) => {
         const curValue = ev.target.innerHTML.replace(/<br\s*\/?>$/, '');
         this.setState({curValue: curValue, changed: true});
-        if (this.formEl.form) {
+        if (this.formEl?.form) {
             // Notify parent form picks of changed field
             // https://stackoverflow.com/a/46012210
             const nativeSet = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
@@ -199,7 +199,7 @@ class TextInput extends React.Component {
         if (this.state.changed) {
             const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
             this.props.onChange(valueWithLinks);
-            if (this.formEl.form) {
+            if (this.formEl?.form) {
                 // Notify parent form picks of changed field
                 // https://stackoverflow.com/a/46012210
                 const nativeSet = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
