@@ -67,7 +67,8 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
         this.imageEl = null;
     }
     state = {
-        initialized: false
+        initialized: false,
+        imageUrl: ''
     };
     componentDidMount() {
         let templatePath = this.props.templatePath;
@@ -81,7 +82,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
         window.addEventListener('beforeunload', this.closePrintWindow);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.layers !== prevProps.layers || this.props.map !== prevProps.map || (this.state.initialized && !prevState.initialized)) {
+        if (this.props.layers !== prevProps.layers || this.props.map.bbox !== prevProps.map.bbox || (this.state.initialized && !prevState.initialized)) {
             this.refreshImage();
         }
     }
@@ -91,7 +92,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
     }
     closePrintWindow = () => {
         this.externalWindow.close();
-    }
+    };
     setWindowContent = () => {
         this.externalWindow.addEventListener('beforeunload', this.props.onClose, false);
         const container = this.externalWindow.document.getElementById("heightprofilecontainer");
@@ -145,6 +146,11 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
         };
         const baseUrl = this.props.theme.url.split("?")[0];
         const query = Object.entries(imageParams).map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+        const src = baseUrl + "?" + query;
+        if (src === this.state.imageUrl) {
+            return;
+        }
+        this.setState({imageUrl: src});
         const options = {
             headers: {'content-type': 'application/x-www-form-urlencoded'},
             responseType: "blob"
@@ -157,7 +163,6 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             };
         }).catch(() => {
             // Fall back to GET
-            const src = baseUrl + "?" + query;
             this.imageEl.innerHTML = `<img src="${src}" style="width: 100%" />`;
         });
     };
