@@ -21,7 +21,10 @@ class PickFeature extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         clearLayer: PropTypes.func,
+        /** Optional: Function which accepts a GeoJSON feature and returns whether it should be accepted (true) or discarded (false) */
+        featureFilter: PropTypes.func,
         featurePicked: PropTypes.func,
+        /** Optional: Restrict pick to specified layer name */
         layer: PropTypes.string,
         layers: PropTypes.array,
         map: PropTypes.object
@@ -29,7 +32,8 @@ class PickFeature extends React.Component {
     static defaultState = {
         pickResults: null,
         clickPos: null,
-        highlightedFeature: null
+        highlightedFeature: null,
+        pendingQueries: 0
     };
     constructor(props) {
         super(props);
@@ -38,20 +42,41 @@ class PickFeature extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.map.click) {
             const clickPoint = this.queryPoint(prevProps);
-            const layer = this.props.layers.find((l) => l.role === LayerRole.THEME && LayerUtils.searchSubLayer(l, 'name', this.props.layer));
-            if (clickPoint && layer) {
+            let queryLayers = [];
+            if (this.props.layer) {
+                queryLayers = [this.props.layers.find((l) => l.role === LayerRole.THEME && LayerUtils.searchSubLayer(l, 'name', this.props.layer))].filter(Boolean);
+            } else {
+                queryLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+            }
+            if (clickPoint && !isEmpty(queryLayers)) {
                 const clickPos = this.props.map.click.pixel;
-                const request = IdentifyUtils.buildRequest(layer, this.props.layer, clickPoint, this.props.map);
-                IdentifyUtils.sendRequest(request, (response) => {
-                    const result = IdentifyUtils.parseResponse(response, layer, request.params.info_format, clickPoint, this.props.map.projection, false, this.props.layers);
-                    const entries = Object.entries(result);
-                    if (isEmpty(entries)) {
-                        return;
-                    } else if (entries.length === 1 && entries[0][1].length === 1) {
-                        this.props.featurePicked(entries[0][0], entries[0][1][0]);
-                    } else {
-                        this.setState({pickResults: result, clickPos: clickPos});
-                    }
+                this.setState({pickResults: {}, clickPos: clickPos, pendingQueries: queryLayers.length});
+                queryLayers.forEach(layer => {
+                    const request = IdentifyUtils.buildRequest(layer, this.props.layer || layer.queryLayers.join(","), clickPoint, this.props.map);
+                    IdentifyUtils.sendRequest(request, (response) => {
+                        const result = IdentifyUtils.parseResponse(response, layer, request.params.info_format, clickPoint, this.props.map.projection, false, this.props.layers);
+                        if (this.props.featureFilter) {
+                            Object.entries(result).forEach(([layername, features]) => {
+                                result[layername] = features.filter(this.props.featureFilter);
+                            });
+                        }
+                        this.setState((state) => {
+                            const newState = {
+                                pickResults: {
+                                    ...state.pickResults,
+                                    ...result
+                                },
+                                pendingQueries: state.pendingQueries - 1
+                            };
+                            if (newState.pendingQueries === 0) {
+                                const entries = Object.entries(newState.pickResults);
+                                if (entries.length === 1 && entries[0][1].length === 1) {
+                                    this.props.featurePicked(entries[0][0], entries[0][1][0]);
+                                }
+                            }
+                            return newState;
+                        });
+                    });
                 });
             }
         }
@@ -64,7 +89,7 @@ class PickFeature extends React.Component {
         return this.props.map.click.coordinate;
     };
     render() {
-        if (!this.state.pickResults) {
+        if (!this.state.pickResults || this.state.pendingQueries > 0) {
             return null;
         }
         return (
