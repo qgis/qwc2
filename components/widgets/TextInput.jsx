@@ -82,7 +82,7 @@ class TextInput extends React.Component {
             "text-input-readonly": this.props.readOnly || !this.state.curValue
         });
         return (
-            <div className="text-input-wrapper">
+            <div className="TextInput text-input-wrapper">
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"
