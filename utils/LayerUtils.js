@@ -746,9 +746,9 @@ const LayerUtils = {
         const qgisServerVersion = (ConfigUtils.getConfigProp("qgisServerVersion") || 3);
         if (qgisServerVersion >= 3) {
             if (layer.type === "wms") {
-                const names = layer.params.LAYERS.split(",");
-                const opacities = layer.params.OPACITIES.split(",");
-                const styles = (layer.params.STYLES || "").split(",");
+                const names = layer.params.LAYERS.split(",").reverse();
+                const opacities = layer.params.OPACITIES.split(",").reverse();
+                const styles = (layer.params.STYLES || "").split(",").reverse();
                 for (let idx = 0; idx < names.length; ++idx) {
                     const identifier = String.fromCharCode(65 + (counterRef[0]++));
                     params.LAYERS.push("EXTERNAL_WMS:" + identifier);
