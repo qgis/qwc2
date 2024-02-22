@@ -234,7 +234,7 @@ class Editing extends React.Component {
         ) : null];
     }
     actionClicked = (action, data) => {
-        this.setState({drawPick: false});
+        this.setState({drawPick: false, pickedFeatures: null});
         if (action === "AttribTable") {
             this.props.setCurrentTask("AttributeTable", null, null, {layer: this.state.selectedLayer});
         } else if (action === "Draw") {
