@@ -14,6 +14,7 @@ import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import MapUtils from './MapUtils';
 import {LayerRole} from '../actions/layers';
+import VectorLayerUtils from './VectorLayerUtils';
 
 const LayerUtils = {
     restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
@@ -202,6 +203,9 @@ const LayerUtils = {
                     }
                     return [...res, layername + ":" + filters.map(expr => Array.isArray(expr) ? LayerUtils.formatFilterExpr(expr) : "AND").join(" ")];
                 }, []).join(";");
+            }
+            if (layer.filterGeom) {
+                newParams.FILTER_GEOM = VectorLayerUtils.geoJSONGeomToWkt(layer.filterGeom);
             }
         }
 

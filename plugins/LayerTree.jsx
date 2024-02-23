@@ -324,7 +324,7 @@ class LayerTree extends React.Component {
                     {legendicon}
                     {title}
                     {sublayer.queryable && this.props.showQueryableIcon ? (queryableicon) : null}
-                    {sublayer.name in (layer.filterParams || {}) ? (<Icon icon="filter" />) : null}
+                    {sublayer.name in (layer.filterParams || {}) || layer.filterGeom ? (<Icon icon="filter" />) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}

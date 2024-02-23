@@ -321,7 +321,8 @@ export default function layers(state = defaultState, action) {
             if (layer.type === 'wms' && layer.serverType === 'qgis') {
                 const newLayer = {
                     ...layer,
-                    filterParams: action.filter
+                    filterParams: action.filter,
+                    filterGeom: action.filterGeom
                 };
                 Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer));
                 return newLayer;

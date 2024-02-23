@@ -13,9 +13,12 @@ import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import {LayerRole, setFilter} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
-import Icon from '../components/Icon';
-import SideBar from '../components/SideBar';
+import ButtonBar from '../components/widgets/ButtonBar';
 import DateTimeInput from '../components/widgets/DateTimeInput';
+import Icon from '../components/Icon';
+import MapSelection from '../components/MapSelection';
+import PickFeature from '../components/PickFeature';
+import SideBar from '../components/SideBar';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -58,6 +61,9 @@ import './style/MapFilter.css';
  */
 class MapFilter extends React.Component {
     static propTypes = {
+        /** Whether to allow filter by geometry. Requires the filter_geom plugin from qwc-qgis-server-plugins, and the filter will only be applied to postgis layers. */
+        allowFilterByGeom: PropTypes.bool,
+        /** Whether to display the temporal filter if temporal dimensions are found. */
         allowFilterByTime: PropTypes.bool,
         currentTask: PropTypes.string,
         layers: PropTypes.array,
@@ -78,7 +84,8 @@ class MapFilter extends React.Component {
     };
     state = {
         filters: {},
-        timeFilter: null
+        timeFilter: null,
+        geomFilter: {}
     };
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
@@ -119,7 +126,7 @@ class MapFilter extends React.Component {
                     // Pass
                 }
             }
-            this.setState({filters: filters});
+            this.setState({filters: filters, customFilters: [], geomFilter: {}});
         } else if (this.props.layers !== prevProps.layers) {
             const timeFilter = {};
             this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
@@ -133,7 +140,7 @@ class MapFilter extends React.Component {
                 };
             }
         }
-        if (this.state.filters !== prevState.filters) {
+        if (this.state.filters !== prevState.filters || this.state.geomFilter.geom !== prevState.geomFilter.geom) {
             const layerExpressions = {};
             // Recompute filter expressions
             Object.values(this.state.filters).forEach(entry => {
@@ -141,6 +148,7 @@ class MapFilter extends React.Component {
                     Object.entries(entry.filter).forEach(([layer, expression]) => {
                         const replacedExpr = this.replaceExpressionVariables(expression, entry.values, entry.defaultValues || {});
                         if (replacedExpr === null) {
+                            /* eslint-disable-next-line */
                             console.warn("Invalid filter expression: " + JSON.stringify(expression));
                         } else if (layerExpressions[layer]) {
                             layerExpressions[layer].push('and', replacedExpr);
@@ -150,7 +158,7 @@ class MapFilter extends React.Component {
                     });
                 }
             }, {});
-            this.props.setFilter(layerExpressions);
+            this.props.setFilter(layerExpressions, this.state.geomFilter.geom);
         }
     }
     buildTimeFilter = (layer, filters) => {
@@ -169,6 +177,7 @@ class MapFilter extends React.Component {
     };
     render() {
         let button = null;
+        const taskActive = this.props.currentTask === "MapFilter";
         if (this.props.position >= 0) {
             const right = this.props.mapMargins.right;
             const bottom = this.props.mapMargins.bottom;
@@ -176,15 +185,16 @@ class MapFilter extends React.Component {
                 right: 'calc(1.5em + ' + right + 'px)',
                 bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
             };
-            const haveFilter = !isEmpty(this.props.layers.find(layer => layer.role === LayerRole.THEME)?.filterParams);
+            const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
+            const filterActive = !isEmpty(themeLayer?.filterParams) || !!themeLayer?.filterGeom;
             const classes = classNames({
                 "map-button": true,
-                "map-button-active": this.props.currentTask === "MapFilter",
-                "map-button-engaged": haveFilter
+                "map-button-active": taskActive,
+                "map-button-engaged": filterActive
             });
             const title = LocaleUtils.tr("appmenu.items.MapFilter");
             button = (
-                <button className={classes} key="MapFilterButton" onClick={this.buttonClicked}
+                <button className={classes} key="MapFilterButton" onClick={this.filterMapButtonClicked}
                     style={style} title={title}>
                     <Icon icon="filter" />
                 </button>
@@ -193,30 +203,56 @@ class MapFilter extends React.Component {
         return [
             button,
             (
-                <SideBar icon="filter" id="MapFilter" key="MapFilterSidebar" onShow={this.onShow} side={this.props.side}
+                <SideBar icon="filter" id="MapFilter" key="MapFilterSidebar" onHide={this.onSidebarHide} side={this.props.side}
                     title="appmenu.items.MapFilter" width="20em">
                     {() => ({
                         body: this.renderBody()
                     })}
                 </SideBar>
-            )
+            ),
+            this.state.geomFilter.picking ? (
+                <PickFeature featureFilter={feature => feature?.geometry?.type === "Polygon"} featurePicked={this.filterGeomPicked} key="FeaturePicker" />
+            ) : null,
+            <MapSelection
+                active={taskActive && !!this.state.geomFilter?.geomType}
+                geomType={this.state.geomFilter?.geomType}
+                geometry={this.state.geomFilter?.geom}
+                geometryChanged={this.setFilterGeometry}
+                key="MapSelection" />
         ];
     }
-    buttonClicked = () => {
+    filterMapButtonClicked = () => {
         const mapClickAction = ConfigUtils.getPluginConfig("MapFilter").mapClickAction;
         this.props.setCurrentTask(this.props.currentTask === "MapFilter" ? null : "MapFilter", null, mapClickAction);
     };
+    onSidebarHide = () => {
+        this.setState(state => {
+            const newState = {...state};
+            if (!state.geomFilter.geom && state.geomFilter.geomType) {
+                newState.geomFilter.geomType = null;
+            }
+            if (state.geomFilter.picking) {
+                newState.geomFilter.picking = false;
+            }
+            return newState;
+        });
+    };
     renderBody = () => {
-        return [
-            ...this.renderPredefinedFilters(),
-            this.renderTimeFilter()
-        ];
+        if (this.state.filterEditor) {
+            return this.renderFilterEditor();
+        } else {
+            return [
+                ...this.renderPredefinedFilters(),
+                this.props.allowFilterByTime ? this.renderTimeFilter() : null,
+                this.props.allowFilterByGeom ? this.renderGeomFilter() : null
+            ];
+        }
     };
     renderPredefinedFilters = () => {
         return (this.props.theme.predefinedFilters || []).map(config => (
             <div className="map-filter-entry" key={config.id}>
-                <div className="map-filter-entry-title">
-                    <span>{config.title || LocaleUtils.tr(config.titlemsgid)}</span>
+                <div className="map-filter-entry-titlebar">
+                    <span className="map-filter-entry-title">{config.title || LocaleUtils.tr(config.titlemsgid)}</span>
                     <ToggleSwitch
                         active={this.state.filters[config.id]?.active}
                         onChange={(active) => this.toggleFilter(config.id, active)} />
@@ -250,8 +286,8 @@ class MapFilter extends React.Component {
         }
         return (
             <div className="map-filter-entry" key={"__timefilter"}>
-                <div className="map-filter-entry-title">
-                    <span>{LocaleUtils.tr("mapfilter.timefilter")}</span>
+                <div className="map-filter-entry-titlebar">
+                    <span className="map-filter-entry-title">{LocaleUtils.tr("mapfilter.timefilter")}</span>
                     <ToggleSwitch
                         active={timeFilter.active}
                         onChange={(active) => this.toggleFilter("__timefilter", active)} />
@@ -272,6 +308,38 @@ class MapFilter extends React.Component {
                 </div>
             </div>
         );
+    };
+    renderGeomFilter = () => {
+        const geomFilter = this.state.geomFilter;
+        const filterButtons = [
+            {key: "Polygon", tooltip: LocaleUtils.trmsg("redlining.polygon"), icon: "polygon", label: LocaleUtils.trmsg("redlining.polygon")},
+            {key: "Circle", tooltip: LocaleUtils.trmsg("redlining.circle"), icon: "circle", label: LocaleUtils.trmsg("redlining.circle")},
+            {key: "Pick", tooltip: LocaleUtils.trmsg("redlining.pick"), icon: "pick", label: LocaleUtils.trmsg("redlining.pick")}
+        ];
+        const active = geomFilter.picking ? "Pick" : geomFilter.geomType || "";
+        return (
+            <div className="map-filter-entry" key={"__geomfilter"}>
+                <div className="map-filter-entry-titlebar">
+                    <span className="map-filter-entry-title">{LocaleUtils.tr("mapfilter.geomfilter")}</span>
+                </div>
+                <div className="map-filter-entry-body">
+                    <ButtonBar active={active} buttons={filterButtons} onClick={this.triggerGeometryFilter} />
+                </div>
+            </div>
+        );
+    };
+    triggerGeometryFilter = (action) => {
+        if (action === 'Pick') {
+            this.setState((state) => ({geomFilter: {...state.geomFilter, geom: null, picking: !state.geomFilter.picking, geomType: null}}));
+        } else {
+            this.setState((state) => ({geomFilter: {...state.geomFilter, geom: null, picking: false, geomType: state.geomFilter.geomType === action ? null : action}}));
+        }
+    };
+    setFilterGeometry = (geom) => {
+        this.setState((state) => ({geomFilter: {...state.geomFilter, geom: geom}}));
+    };
+    filterGeomPicked = (layer, feature) => {
+        this.setState((state) => ({geomFilter: {...state.geomFilter, picking: false, geom: feature.geometry, geomType: feature.geometry.type}}));
     };
     toggleFilter = (filterId, active) => {
         this.setState((state) => ({

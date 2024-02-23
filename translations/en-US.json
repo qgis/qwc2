@@ -259,6 +259,7 @@
       "wait": "Please wait..."
     },
     "mapfilter": {
+      "geomfilter": "Geometry",
       "timefilter": "Time",
       "timefrom": "From",
       "timeto": "To"

@@ -196,9 +196,10 @@ export function setLayers(layers) {
     };
 }
 
-export function setFilter(filter) {
+export function setFilter(filter, filterGeom) {
     return {
         type: SET_FILTER,
-        filter
+        filter,
+        filterGeom
     };
 }

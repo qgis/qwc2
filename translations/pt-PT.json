@@ -259,6 +259,7 @@
       "wait": "Por favor, aguarde..."
     },
     "mapfilter": {
+      "geomfilter": "",
       "timefilter": "",
       "timefrom": "",
       "timeto": ""

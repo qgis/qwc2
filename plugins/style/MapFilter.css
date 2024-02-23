@@ -3,23 +3,24 @@
     border: 1px solid var(--border-color);
 }
 
-#MapFilter div.map-filter-entry-title {
+#MapFilter div.map-filter-entry-titlebar {
     padding: 0.25em;
     background-color: var(--titlebar-bg-color);
     color: var(--titlebar-text-color);
     font-weight: bold;
     display: flex;
     align-items: center;
+    height: 2em;
 }
 
-#MapFilter div.map-filter-entry-title > span {
+#MapFilter div.map-filter-entry-titlebar > .map-filter-entry-title {
     flex: 1 1 auto;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-#MapFilter div.map-filter-entry-title > div.ToggleSwitch {
+#MapFilter div.map-filter-entry-titlebar > div.ToggleSwitch {
     flex: 0 0 6em;
     height: 1.5em;
 }

@@ -259,6 +259,7 @@
       "wait": "Veuillez patienter..."
     },
     "mapfilter": {
+      "geomfilter": "Géométrique",
       "timefilter": "Temporelle",
       "timefrom": "De",
       "timeto": "A"

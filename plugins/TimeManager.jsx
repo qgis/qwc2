@@ -401,6 +401,8 @@ class TimeManager extends React.Component {
 
         const timeSpan = this.state.endTime !== null ? this.state.endTime.diff(this.state.startTime) : dayjs().diff(this.state.startTime);
         const Timeline = this.state.timelineMode === 'infinite' ? InfiniteTimeline : FixedTimeline;
+        const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
+        const filterActive = !isEmpty(themeLayer?.filterParams) || !!themeLayer?.filterGeom;
 
         return (
             <div className="time-manager-body" role="body">
@@ -425,7 +427,7 @@ class TimeManager extends React.Component {
                         {this.state.settingsPopup ? options : null}
                     </div>
                 </div>
-                {!isEmpty((this.props.layers.find(layer => layer.role === LayerRole.THEME) || {}).filterParams) ? (
+                {filterActive ? (
                     <div className="time-manager-filter-warning">
                         <Icon icon="warning" /> {LocaleUtils.tr("timemanager.filterwarning")} <button className="button" onClick={() => this.props.setCurrentTask("MapFilter")} type="button">{LocaleUtils.tr("timemanager.edit")}</button>
                     </div>

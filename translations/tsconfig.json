@@ -226,6 +226,7 @@
     "mapexport.submit",
     "mapexport.usersize",
     "mapexport.wait",
+    "mapfilter.geomfilter",
     "mapfilter.timefilter",
     "mapfilter.timefrom",
     "mapfilter.timeto",
