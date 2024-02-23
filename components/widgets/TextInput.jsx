@@ -15,6 +15,7 @@ import './style/TextInput.css';
 
 class TextInput extends React.Component {
     static propTypes = {
+        className: PropTypes.string,
         disabled: PropTypes.bool,
         multiline: PropTypes.bool,
         name: PropTypes.string,
@@ -82,7 +83,7 @@ class TextInput extends React.Component {
             "text-input-readonly": this.props.readOnly || !this.state.curValue
         });
         return (
-            <div className="TextInput text-input-wrapper">
+            <div className={"TextInput text-input-wrapper " + (this.props.className || "")}>
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"
