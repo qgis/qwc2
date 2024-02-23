@@ -113,6 +113,11 @@ export default {
             let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
             const oldParams = wmsToOpenlayersOptions(oldOptions);
             const newParams = wmsToOpenlayersOptions(newOptions);
+            Object.keys(oldParams).forEach(key => {
+                if (!(key in newParams)) {
+                    newParams[key] = undefined;
+                }
+            });
             if (!changed) {
                 changed = Object.keys(newParams).find(key => {
                     return newParams[key] !== oldParams[key];
