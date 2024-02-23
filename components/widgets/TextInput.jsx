@@ -210,17 +210,17 @@ class TextInput extends React.Component {
         }
     };
     startResize = (ev) => {
-        const input = ev.target.previousElementSibling;
-        if (!input) {
+        const container = ev.target.parentElement;
+        if (!container) {
             return;
         }
-        const startHeight = input.offsetHeight;
+        const startHeight = container.offsetHeight;
         if (this.initialHeight === null) {
             this.initialHeight = startHeight;
         }
         const startMouseY = ev.clientY;
         const resizeInput = (event) => {
-            input.style.height = Math.max(this.initialHeight, (startHeight + (event.clientY - startMouseY))) + 'px';
+            container.style.height = Math.max(this.initialHeight, (startHeight + (event.clientY - startMouseY))) + 'px';
         };
         document.body.style.userSelect = 'none';
         window.addEventListener("mousemove", resizeInput);

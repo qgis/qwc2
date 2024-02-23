@@ -24,6 +24,7 @@ pre.text-input {
     overflow: auto;
     cursor: text;
     text-align: left;
+    height: 100%;
 }
 
 pre.text-input[contenteditable="true"] a {
