@@ -127,7 +127,7 @@ class Editing extends React.Component {
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;
                     this.props.setEditContext('Editing', {feature: feature, changed: false, geomReadOnly: editPermissions.updatable === false});
-                }, layer.filterParams[this.state.selectedLayer]);
+                }, layer.filterParams?.[this.state.selectedLayer], layer.filterGeom);
             }
         }
         if (prevProps.editContext.changed !== this.props.editContext.changed) {

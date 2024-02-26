@@ -155,7 +155,7 @@ class FeatureForm extends React.Component {
                         pendingRequests: state.pendingRequests - 1
                     }));
                 }
-            }, layer.filterParams[sublayer.name]);
+            }, layer.filterParams?.[sublayer.name], layer.filterGeom);
         });
         this.setState({pendingRequests: pendingRequests, pickedFeatures: {}, selectedFeature: ""});
     };
@@ -206,7 +206,7 @@ class FeatureForm extends React.Component {
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="FeatureForm"
                     onClose={this.onWindowClose} title={LocaleUtils.trmsg("featureform.title")}
-                    >
+                >
                     {body}
                 </ResizeableWindow>
             );
