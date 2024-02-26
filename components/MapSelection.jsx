@@ -131,7 +131,7 @@ class MapSelection extends React.Component {
                 source: this.selectionLayer.getSource(),
                 condition: event => event.originalEvent.buttons === 1,
                 type: typeMap[this.props.geomType],
-                style: feature => FeatureStyles.default(feature, {circleRadius: 0}),
+                style: feature => FeatureStyles[this.props.styleName](feature, {...this.props.styleOptions, circleRadius: 0}),
                 geometryFunction: this.props.geomType === "Box" ? ol.interaction.createBox() : undefined
             });
 
