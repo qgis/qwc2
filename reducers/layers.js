@@ -87,6 +87,9 @@ export default function layers(state = defaultState, action) {
             if (layer.uuid === action.layerUuid) {
 
                 const {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, action.sublayerpath || []);
+                if (action.property === 'params') {
+                    newlayer[action.property] = action.newvalue;
+                }
                 newsublayer[action.property] = action.newvalue;
                 const recurseDirection = action.recurseDirection;
 

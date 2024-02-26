@@ -194,6 +194,7 @@ const LayerUtils = {
                 LAYERS: layerNames.join(","),
                 OPACITIES: opacities.map(Math.round).join(","),
                 STYLES: styles.join(","),
+                FILTER: params.FILTER ?? '',
                 ...layer.dimensionValues
             };
             if (layer.filterParams) {
