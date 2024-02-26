@@ -56,8 +56,9 @@ function buildErrMsg(err) {
  dpi: the map resolution
  callback: function(result), on success result is a collection of features, on failure, result is null
  filter: the filter expression as [["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...], or null
+ filterGeom: the filter geometry, as a GeoJSON gemetry, or null
 */
-function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback, filter = null) {
+function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback, filter = null, filterGeom = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + '/';
 
@@ -68,7 +69,8 @@ function getFeature(layerId, mapPos, mapCrs, mapScale, dpi, callback, filter = n
     const params = {
         bbox: bbox,
         crs: mapCrs,
-        filter: filter ? JSON.stringify(filter) : undefined
+        filter: filter ? JSON.stringify(filter) : undefined,
+        filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined
     };
     const headers = {
         "Accept-Language": LocaleUtils.lang()
@@ -113,14 +115,16 @@ function getFeatureById(layerId, featureId, mapCrs, callback) {
  callback: function(result), on success result is a collection of features, on failure, result is null
  bbox: the filter bounding box as [xmin, xmax, ymin, xmax], or null
  filter: the filter expression as [["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...], or null
+ filterGeom: the filter geometry, as a GeoJSON gemetry, or null
 */
-function getFeatures(layerId, mapCrs, callback, bbox = null, filter = null) {
+function getFeatures(layerId, mapCrs, callback, bbox = null, filter = null, filterGeom = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + '/';
     const params = {
         crs: mapCrs,
         bbox: bbox ? bbox.join(",") : undefined,
-        filter: filter ? JSON.stringify(filter) : undefined
+        filter: filter ? JSON.stringify(filter) : undefined,
+        filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined
     };
     const headers = {
         "Accept-Language": LocaleUtils.lang()
@@ -143,13 +147,15 @@ function getFeatures(layerId, mapCrs, callback, bbox = null, filter = null) {
  mapCrs: the map crs
  callback: function(result), on success result is a {"bbox": [xmin, ymin, xmax, ymax]} object, on failure, result is null
  filter: the filter expression as [["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...], or null
+ filterGeom: the filter geometry, as a GeoJSON gemetry, or null
 */
-function getExtent(layerId, mapCrs, callback, filter = null) {
+function getExtent(layerId, mapCrs, callback, filter = null, filterGeom = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + "/extent";
     const params = {
         crs: mapCrs,
-        filter: filter ? JSON.stringify(filter) : undefined
+        filter: filter ? JSON.stringify(filter) : undefined,
+        filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined
     };
     const headers = {
         "Accept-Language": LocaleUtils.lang()
