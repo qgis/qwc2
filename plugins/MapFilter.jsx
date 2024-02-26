@@ -229,7 +229,8 @@ class MapFilter extends React.Component {
                 geomType={this.state.geomFilter?.geomType}
                 geometry={this.state.geomFilter?.geom}
                 geometryChanged={this.setFilterGeometry}
-                key="MapSelection" />
+                key="MapSelection"
+                styleOptions={{strokeColor: [0, 0, 0], fillColor: [255, 255, 0, 0.25]}} />
         ];
     }
     filterMapButtonClicked = () => {
