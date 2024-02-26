@@ -373,7 +373,7 @@ class AttributeTable extends React.Component {
                     alert(LocaleUtils.tr("attribtable.loadfailed"));
                     this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
                 }
-            }, bbox, layer.filterParams[selectedLayer]);
+            }, bbox, layer.filterParams?.[selectedLayer], layer.filterGeom);
             return {...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer, limitToExtent: state.limitToExtent};
         });
     };
