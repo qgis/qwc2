@@ -74,6 +74,7 @@ class MapFilter extends React.Component {
         position: PropTypes.number,
         setCurrentTask: PropTypes.func,
         setFilter: PropTypes.func,
+        setPermalinkParameters: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         startupParams: PropTypes.object,
@@ -86,7 +87,6 @@ class MapFilter extends React.Component {
     };
     state = {
         filters: {},
-        timeFilter: null,
         geomFilter: {}
     };
     componentDidUpdate(prevProps, prevState) {
@@ -170,6 +170,13 @@ class MapFilter extends React.Component {
                 }
             }, {});
             this.props.setFilter(layerExpressions, this.state.geomFilter.geom);
+            const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
+                return {...res, [key]: value.values};
+            }, {});
+            if (this.state.geomFilter.geom) {
+                permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
+            }
+            this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
         }
     }
     buildTimeFilter = (layer, filters) => {
@@ -408,5 +415,6 @@ export default connect((state) => ({
     startupParams: state.localConfig.startupParams
 }), {
     setFilter: setFilter,
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    setPermalinkParameters: setPermalinkParameters
 })(MapFilter);

@@ -100,6 +100,7 @@ export function generatePermaLink(state, callback, user = false) {
             .map(entry => ({...entry.layer, pos: entry.pos}));
         permalinkState.layers = redliningLayers;
     }
+    permalinkState.permalinkParams = state.localConfig.permalinkParams;
     permalinkState.url = fullUrl;
     const route = user ? "userpermalink" : "createpermalink";
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState)
@@ -114,7 +115,7 @@ export function resolvePermaLink(initialParams, callback) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
             .then(response => {
                 const data = response.data;
-                callback({...initialParams, ...(data.query || {})}, data.state || {}, !!data.query);
+                callback({...initialParams, ...(data.query || {}), ...(data.state.permalinkParams || {})}, data.state || {}, !!data.query);
             })
             .catch(() => {
                 callback(initialParams, {}, false);
@@ -123,7 +124,7 @@ export function resolvePermaLink(initialParams, callback) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
             .then(response => {
                 const data = response.data;
-                callback({...initialParams, ...(data.query || {})}, (data.state || {}), !!data.query);
+                callback({...initialParams, ...(data.query || {}), ...(data.state.permalinkParams || {})}, (data.state || {}), !!data.query);
             })
             .catch(() => {
                 callback(initialParams, {}, false);
@@ -170,6 +171,7 @@ export function createBookmark(state, description, callback) {
             .map(entry => ({...entry.layer, pos: entry.pos}));
         bookmarkState.layers = redliningLayers;
     }
+    bookmarkState.permalinkParams = state.localConfig.permalinkParams;
     bookmarkState.url = UrlParams.getFullUrl();
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" +
         "?description=" + description, bookmarkState)
@@ -193,6 +195,7 @@ export function updateBookmark(state, bkey, description, callback) {
             .map(entry => ({...entry.layer, pos: entry.pos}));
         bookmarkState.layers = redliningLayers;
     }
+    bookmarkState.permalinkParams = state.localConfig.permalinkParams;
     bookmarkState.url = UrlParams.getFullUrl();
     axios.put(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey +
         "?description=" + description, bookmarkState)

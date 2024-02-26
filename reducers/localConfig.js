@@ -7,7 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS, SET_COLOR_SCHEME, SET_USER_INFO_FIELDS} from '../actions/localConfig';
+import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS, SET_COLOR_SCHEME, SET_USER_INFO_FIELDS, SET_PERMALINK_PARAMETERS} from '../actions/localConfig';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
@@ -15,6 +15,7 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 const defaultState = {
     ...ConfigUtils.getDefaults(),
     startupParams: {},
+    permalinkParams: {},
     colorScheme: 'default'
 };
 
@@ -50,6 +51,17 @@ export default function localConfig(state = defaultState, action) {
                 ...state.user_infos,
                 ...action.fields
             }
+        };
+    }
+    case SET_PERMALINK_PARAMETERS: {
+        return {
+            ...state,
+            permalinkParams: Object.entries({...state.permalinkParams, ...action.params}).reduce((res, [key, value]) => {
+                if (value !== undefined) {
+                    res[key] = value;
+                }
+                return res;
+            }, {})
         };
     }
     default:
