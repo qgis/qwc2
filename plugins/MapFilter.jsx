@@ -55,6 +55,8 @@ import './style/MapFilter.css';
  *
  * To control the temporal filter, the filter ID is `__timefilter`, and the field IDs are `tmin` and `tmax`, with values an ISO date or datetime string (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`).
  *
+ * To control the spatial filter, the syntax is `"__geomfilter": <GeoJSON polygon coodinates array>`.
+ *
  * Whenever an startup filter value is specified, the filter is automatically enabled.
  *
  * *Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
@@ -113,20 +115,29 @@ class MapFilter extends React.Component {
                     };
                 }
             }
+            let geomFilter = {};
             if (!prevProps.theme && this.props.startupParams?.f) {
                 try {
                     const startupConfig = JSON.parse(this.props.startupParams.f);
                     Object.entries(startupConfig).forEach(([filterId, values]) => {
-                        filters[filterId].active = true;
-                        Object.entries(values).forEach(([fieldId, value]) => {
-                            filters[filterId].values[fieldId] = value;
-                        });
+                        if (filterId in filters) {
+                            filters[filterId].active = true;
+                            Object.entries(values).forEach(([fieldId, value]) => {
+                                filters[filterId].values[fieldId] = value;
+                            });
+                        }
                     });
+                    if ("__geomfilter" in startupConfig) {
+                        geomFilter = {
+                            geomType: "Polygon",
+                            geom: {type: "Polygon", coordinates: startupConfig.__geomfilter}
+                        };
+                    }
                 } catch (e) {
                     // Pass
                 }
             }
-            this.setState({filters: filters, customFilters: [], geomFilter: {}});
+            this.setState({filters: filters, customFilters: [], geomFilter: geomFilter});
         } else if (this.props.layers !== prevProps.layers) {
             const timeFilter = {};
             this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));

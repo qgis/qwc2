@@ -486,6 +486,8 @@ f={"<filter_id>": {"<field_id>": <value>, ...}, ...}
 
 To control the temporal filter, the filter ID is `__timefilter`, and the field IDs are `tmin` and `tmax`, with values an ISO date or datetime string (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`).
 
+To control the spatial filter, the syntax is `"__geomfilter": <GeoJSON polygon coodinates array>`.
+
 Whenever an startup filter value is specified, the filter is automatically enabled.
 
 *Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
