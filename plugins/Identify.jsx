@@ -77,6 +77,7 @@ class Identify extends React.Component {
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.string,
         map: PropTypes.object,
+        /** Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. */
         params: PropTypes.object,
         removeLayer: PropTypes.func,
         removeMarker: PropTypes.func,
