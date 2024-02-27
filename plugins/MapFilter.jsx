@@ -62,7 +62,7 @@ import './style/MapFilter.css';
  *
  * To control the spatial filter, the syntax is `"__geomfilter": <GeoJSON polygon coodinates array>`.
  *
- * To specify custom filters, the syntax is `"__custom": [{"title": "<title>", "layer": "<layername>", "expr": <JSON filter expr>}, ...].
+ * To specify custom filters, the syntax is `"__custom": [{"title": "<title>", "layer": "<layername>", "expr": <JSON filter expr>}, ...]`.
  *
  * Whenever an startup filter value is specified, the filter is automatically enabled.
  *
