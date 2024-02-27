@@ -171,14 +171,16 @@ class AppMenu extends React.Component {
         if (!this.state.menuVisible && this.props.appMenuClearsTask) {
             this.props.setCurrentTask(null);
         }
-        if (this.state.menuVisible || this.props.keepMenuOpen) {
-            document.removeEventListener('click', this.checkCloseMenu);
-            document.removeEventListener('keydown', this.onKeyPress, true);
-            document.removeEventListener('mousemove', this.onMouseMove, true);
-        } else {
-            document.addEventListener('click', this.checkCloseMenu);
-            document.addEventListener('keydown', this.onKeyPress, true);
-            document.addEventListener('mousemove', this.onMouseMove, true);
+        if (!this.props.keepMenuOpen) {
+            if (!this.state.menuVisible) {
+                document.addEventListener('click', this.checkCloseMenu);
+                document.addEventListener('keydown', this.onKeyPress, true);
+                document.addEventListener('mousemove', this.onMouseMove, true);
+            } else {
+                document.removeEventListener('click', this.checkCloseMenu);
+                document.removeEventListener('keydown', this.onKeyPress, true);
+                document.removeEventListener('mousemove', this.onMouseMove, true);
+            }
         }
         this.props.onMenuToggled(!this.state.menuVisible);
         this.setState((state) => ({menuVisible: !state.menuVisible, submenusVisible: [], filter: ""}));
@@ -278,7 +280,7 @@ class AppMenu extends React.Component {
                 <div className="appmenu-button-container" onMouseDown={this.toggleMenu} >
                     {this.props.buttonContents}
                 </div>
-                <div className="appmenu-menu-container" ref={this.storeRigthMargin}>
+                <div className="appmenu-menu-container" ref={this.storeRightMargin}>
                     <ul className="appmenu-menu">
                         {this.props.showFilterField ? (
                             <li className="appmenu-leaf">
@@ -305,7 +307,7 @@ class AppMenu extends React.Component {
             mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
         }
     };
-    storeRigthMargin = (el) => {
+    storeRightMargin = (el) => {
         if (this.props.menuCompact && el?.clientWidth > 0) {
             const rightmargin = el.clientWidth - MiscUtils.convertEmToPx(11.5);
             this.props.setMenuMargin(rightmargin, 0);

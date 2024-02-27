@@ -99,9 +99,9 @@ export default function windows(state = defaultState, action) {
         }
         const splitWindows = Object.values(newSplitScreen);
         const mapMargins = {
-            right: splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0) + action.menuMargins.right,
+            right: splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0) + state.menuMargins.right,
             bottom: splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0),
-            left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0) + action.menuMargins.left,
+            left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0) + state.menuMargins.left,
             top: splitWindows.filter(entry => entry.side === 'top').reduce((res, e) => Math.max(e.size, res), 0)
         };
         return {
@@ -116,10 +116,10 @@ export default function windows(state = defaultState, action) {
             left: action.left
         };
         const mapMargins =  {
-            right: action.right,
-            bottom: 0,
-            left: action.left,
-            top: 0
+            right: state.mapMargins.right + action.right,
+            bottom: state.mapMargins.bottom,
+            left: state.mapMargins.left + action.left,
+            top: state.mapMargins.top
         };
         return {...state, menuMargins: menuMargins, mapMargins: mapMargins};
     }

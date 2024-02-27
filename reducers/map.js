@@ -27,7 +27,6 @@ const defaultState = {
     resolutions: [0],
     topbarHeight: 0,
     bottombarHeight: 0,
-    rightMargin: 0,
     click: null,
     snapping: {
         enabled: false,

@@ -79,13 +79,12 @@ export function raiseWindow(id) {
     };
 }
 
-export function setSplitScreen(windowId, side, size, menuMargins) {
+export function setSplitScreen(windowId, side, size) {
     return {
         type: SET_SPLIT_SCREEN,
         windowId: windowId,
         side: side,
-        size: size,
-        menuMargins: menuMargins
+        size: size
     };
 }
 
