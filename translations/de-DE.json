@@ -259,7 +259,12 @@
       "wait": "Bitte warten..."
     },
     "mapfilter": {
+      "addcustomfilter": "Benutzerdef. filter hinzufügen",
+      "cancel": "Abbrechen",
       "geomfilter": "Geometrie",
+      "invalidfilter": "Ungültiger Filterausdruck",
+      "save": "Speichern",
+      "selectlayer": "Ebene auswählen",
       "timefilter": "Zeit",
       "timefrom": "Von",
       "timeto": "Bis"

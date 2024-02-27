@@ -489,12 +489,15 @@ To control the temporal filter, the filter ID is `__timefilter`, and the field I
 
 To control the spatial filter, the syntax is `"__geomfilter": <GeoJSON polygon coodinates array>`.
 
+To specify custom filters, the syntax is `"__custom": [{"title": "<title>", "layer": "<layername>", "expr": <JSON filter expr>}, ...].
+
 Whenever an startup filter value is specified, the filter is automatically enabled.
 
 *Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| allowCustomFilters | `bool` | Whether to allow custom filters. | `undefined` |
 | allowFilterByGeom | `bool` | Whether to allow filter by geometry. Requires the filter_geom plugin from qwc-qgis-server-plugins, and the filter will only be applied to postgis layers. | `undefined` |
 | allowFilterByTime | `bool` | Whether to display the temporal filter if temporal dimensions are found. | `true` |
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). Set to -1 to hide the button. | `5` |

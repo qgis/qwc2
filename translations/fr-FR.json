@@ -259,7 +259,12 @@
       "wait": "Veuillez patienter..."
     },
     "mapfilter": {
+      "addcustomfilter": "Ajouter filtre personnalisé",
+      "cancel": "Annuler",
       "geomfilter": "Géométrique",
+      "invalidfilter": "Expression de filtre non valide",
+      "save": "Enregistrer",
+      "selectlayer": "Sélectionner couche",
       "timefilter": "Temporelle",
       "timefrom": "De",
       "timeto": "A"

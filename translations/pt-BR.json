@@ -259,7 +259,12 @@
       "wait": "Aguarde"
     },
     "mapfilter": {
+      "addcustomfilter": "",
+      "cancel": "",
       "geomfilter": "",
+      "invalidfilter": "",
+      "save": "",
+      "selectlayer": "",
       "timefilter": "",
       "timefrom": "",
       "timeto": ""

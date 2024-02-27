@@ -45,3 +45,40 @@
 #MapFilter table.map-filter-entry-fields td:last-child > * {
     width: 100%;
 }
+
+#MapFilter div.map-filter-add-custom {
+    padding: 0.25em;
+}
+
+#MapFilter div.map-filter-custom-entry-titlebar {
+    display: flex;
+}
+
+#MapFilter div.map-filter-custom-entry-titlebar > div.TextInput {
+    flex: 1 1 auto;
+}
+
+#MapFilter div.map-filter-custom-entry-titlebar > div.ToggleSwitch {
+    margin: 0 0.5em;
+}
+
+#MapFilter div.map-filter-add-custom > button {
+    width: 100%;
+}
+
+#MapFilter input.map-filter-custom-entry-expr {
+    min-width: 0;
+    width: 100%;
+}
+
+#MapFilter div.map-filter-editor-container {
+    padding: 0.25em;
+}
+
+#MapFilter div.map-filter-editor {
+    height: 5em;
+}
+
+#MapFilter div.map-filter-editor-invalid {
+    background-color: rgba(255, 127, 127);
+}

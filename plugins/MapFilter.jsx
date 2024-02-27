@@ -11,16 +11,21 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
+import {v1 as uuidv1} from 'uuid';
+import {setPermalinkParameters} from '../actions/localConfig';
 import {LayerRole, setFilter} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import ButtonBar from '../components/widgets/ButtonBar';
+import ComboBox from '../components/widgets/ComboBox';
 import DateTimeInput from '../components/widgets/DateTimeInput';
 import Icon from '../components/Icon';
 import MapSelection from '../components/MapSelection';
 import PickFeature from '../components/PickFeature';
 import SideBar from '../components/SideBar';
+import TextInput from '../components/widgets/TextInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/MapFilter.css';
 
@@ -57,12 +62,16 @@ import './style/MapFilter.css';
  *
  * To control the spatial filter, the syntax is `"__geomfilter": <GeoJSON polygon coodinates array>`.
  *
+ * To specify custom filters, the syntax is `"__custom": [{"title": "<title>", "layer": "<layername>", "expr": <JSON filter expr>}, ...].
+ *
  * Whenever an startup filter value is specified, the filter is automatically enabled.
  *
  * *Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
  */
 class MapFilter extends React.Component {
     static propTypes = {
+        /** Whether to allow custom filters. */
+        allowCustomFilters: PropTypes.bool,
         /** Whether to allow filter by geometry. Requires the filter_geom plugin from qwc-qgis-server-plugins, and the filter will only be applied to postgis layers. */
         allowFilterByGeom: PropTypes.bool,
         /** Whether to display the temporal filter if temporal dimensions are found. */
@@ -87,7 +96,9 @@ class MapFilter extends React.Component {
     };
     state = {
         filters: {},
-        geomFilter: {}
+        geomFilter: {},
+        customFilters: {},
+        filterEditor: null
     };
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
@@ -116,6 +127,7 @@ class MapFilter extends React.Component {
                 }
             }
             let geomFilter = {};
+            let customFilters = [];
             if (!prevProps.theme && this.props.startupParams?.f) {
                 try {
                     const startupConfig = JSON.parse(this.props.startupParams.f);
@@ -133,11 +145,16 @@ class MapFilter extends React.Component {
                             geom: {type: "Polygon", coordinates: startupConfig.__geomfilter}
                         };
                     }
+                    if ("__custom" in startupConfig) {
+                        customFilters = startupConfig.__custom.map(entry => ({
+                            title: entry.title, layer: entry.layer, expr: JSON.stringify(entry.expr), active: true
+                        }));
+                    }
                 } catch (e) {
                     // Pass
                 }
             }
-            this.setState({filters: filters, customFilters: [], geomFilter: geomFilter});
+            this.setState({filters: filters, customFilters: customFilters, geomFilter: geomFilter});
         } else if (this.props.layers !== prevProps.layers) {
             const timeFilter = {};
             this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
@@ -151,7 +168,7 @@ class MapFilter extends React.Component {
                 };
             }
         }
-        if (this.state.filters !== prevState.filters || this.state.geomFilter.geom !== prevState.geomFilter.geom) {
+        if (this.state.filters !== prevState.filters || this.state.customFilters !== prevState.customFilters || this.state.geomFilter.geom !== prevState.geomFilter.geom) {
             const layerExpressions = {};
             // Recompute filter expressions
             Object.values(this.state.filters).forEach(entry => {
@@ -169,6 +186,16 @@ class MapFilter extends React.Component {
                     });
                 }
             }, {});
+            Object.values(this.state.customFilters).forEach(entry => {
+                if (entry.active && entry.layer) {
+                    const expr = JSON.parse(entry.expr);
+                    if (layerExpressions[entry.layer]) {
+                        layerExpressions[entry.layer].push('and', expr);
+                    } else {
+                        layerExpressions[entry.layer] = [expr];
+                    }
+                }
+            });
             this.props.setFilter(layerExpressions, this.state.geomFilter.geom);
             const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
                 if (value.active) {
@@ -180,6 +207,9 @@ class MapFilter extends React.Component {
             if (this.state.geomFilter.geom) {
                 permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
             }
+            permalinkState.__custom = this.state.customFilters.map(entry => ({
+                title: entry.title, layer: entry.layer, expr: JSON.parse(entry.expr)
+            }));
             this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
         }
     }
@@ -267,9 +297,59 @@ class MapFilter extends React.Component {
             return [
                 ...this.renderPredefinedFilters(),
                 this.props.allowFilterByTime ? this.renderTimeFilter() : null,
-                this.props.allowFilterByGeom ? this.renderGeomFilter() : null
+                this.props.allowFilterByGeom ? this.renderGeomFilter() : null,
+                ...this.renderCustomFilters()
             ];
         }
+    };
+    renderFilterEditor = () => {
+        const commitButtons = [
+            {key: 'Save', icon: 'ok', label: LocaleUtils.trmsg("mapfilter.save"), extraClasses: "button-accept"},
+            {key: 'Cancel', icon: 'remove', label: LocaleUtils.trmsg("mapfilter.cancel"), extraClasses: "button-reject"}
+        ];
+        const sampleFilters = '["field", "=", "val"]\n' +
+                              '[["field", ">", "val1"], "and", ["field", "<", "val2"]]';
+        return (
+            <div className="map-filter-editor-container">
+                <TextInput
+                    className={"map-filter-editor " + (this.state.filterEditor.invalid ? "map-filter-editor-invalid" : "")} multiline
+                    onChange={value => this.setState(state => ({filterEditor: {...state.filterEditor, value, invalid: false}}))}
+                    placeholder={sampleFilters} value={this.state.filterEditor.value} />
+                {this.state.filterEditor.invalid ? (
+                    <div>
+                        <Icon icon="warning" /> <span>{LocaleUtils.tr("mapfilter.invalidfilter")}</span>
+                    </div>
+                ) : null}
+                <ButtonBar buttons={commitButtons} onClick={this.commitFilterEditor}/>
+            </div>
+        );
+    };
+    commitFilterEditor = (action) => {
+        if (action === 'Save') {
+            // Validate expression
+            const validateExpression = (values) => {
+                if (Array.isArray(values[0])) {
+                    // Even entries must be arrays, odd entries must be 'and' or 'or'
+                    return values.every((value, idx) => {
+                        return idx % 2 === 0 ? (Array.isArray(value) && validateExpression(value)) : ["and", "or"].includes(value.toLowerCase());
+                    }, true);
+                } else {
+                    return values.length === 3 && typeof values[0] === 'string' && typeof values[1] === 'string' && ['string', 'number'].includes(typeof values[2]);
+                }
+            };
+            let filterexpr = null;
+            try {
+                filterexpr = JSON.parse(this.state.filterEditor.value);
+            } catch (e) {
+                // Pass
+            }
+            if (!Array.isArray(filterexpr) || !validateExpression(filterexpr)) {
+                this.setState(state => ({filterEditor: {...state.filterEditor, invalid: true}}));
+                return;
+            }
+            this.updateCustomFilter(this.state.filterEditor.filterId, 'expr', this.state.filterEditor.value);
+        }
+        this.setState({filterEditor: null});
     };
     renderPredefinedFilters = () => {
         return (this.props.theme.predefinedFilters || []).map(config => (
@@ -331,6 +411,52 @@ class MapFilter extends React.Component {
             </div>
         );
     };
+    renderCustomFilters = () => {
+        if (!this.props.allowCustomFilters) {
+            return [];
+        }
+        const layerNames = this.props.layers.reduce((res, layer) => {
+            if (layer.role === LayerRole.THEME) {
+                return [...res, ...LayerUtils.getSublayerNames(layer)];
+            }
+            return res;
+        }, []);
+        const customFilters = Object.entries(this.state.customFilters).map(([key, entry]) => (
+            <div className="map-filter-entry" key={key}>
+                <div className="map-filter-entry-titlebar map-filter-custom-entry-titlebar">
+                    <TextInput  className="map-filter-entry-title" onChange={value => this.updateCustomFilter(key, 'title', value)} value={entry.title} />
+                    <ToggleSwitch
+                        active={entry.active}
+                        onChange={(active) => this.updateCustomFilter(key, 'active',  active)} />
+                    <Icon icon="trash" onClick={() => this.deleteCustomFilter(key)} />
+                </div>
+                <div className="map-filter-entry-body">
+                    <table className="map-filter-entry-fields">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <ComboBox onChange={value => this.updateCustomFilter(key, 'layer', value)} placeholder={LocaleUtils.tr("mapfilter.selectlayer")} value={entry.layer}>
+                                        {layerNames.map(layerName => (<div key={layerName} value={layerName}>{layerName}</div>))}
+                                    </ComboBox>
+                                </td>
+                                <td>
+                                    <input className="map-filter-custom-entry-expr" onChange={() => {}} onClick={() => this.setState({filterEditor: {filterId: key, value: entry.expr}})} readOnly value={entry.expr} />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        ));
+        return [
+            ...customFilters,
+            (
+                <div className="map-filter-add-custom" key="addcustomfilter">
+                    <button className="button" onClick={this.addCustomFilter} type="button">{LocaleUtils.tr("mapfilter.addcustomfilter")}</button>
+                </div>
+            )
+        ];
+    };
     renderGeomFilter = () => {
         const geomFilter = this.state.geomFilter;
         const filterButtons = [
@@ -387,6 +513,38 @@ class MapFilter extends React.Component {
                 }
             }
         }));
+    };
+    updateCustomFilter = (filterId, key, value) => {
+        this.setState((state) => ({
+            customFilters: {
+                ...state.customFilters,
+                [filterId]: {
+                    ...state.customFilters[filterId],
+                    [key]: value
+                }
+            }
+        }));
+    };
+    addCustomFilter = () => {
+        const key = uuidv1();
+        this.setState((state) => ({
+            customFilters: {
+                ...state.customFilters,
+                [key]: {
+                    active: false,
+                    title: '',
+                    layer: '',
+                    expr: ''
+                }
+            }
+        }));
+    };
+    deleteCustomFilter = (key) => {
+        this.setState((state) => {
+            const newCustomFilters = {...state.customFilters};
+            delete newCustomFilters[key];
+            return {customFilters: newCustomFilters};
+        });
     };
     replaceExpressionVariables = (expr, values, defaultValues) => {
         if (expr.length < 3 || (expr.length % 2) === 0 || typeof expr[1] !== 'string') {
