@@ -55,7 +55,7 @@ import './style/MapFilter.css';
  *
  * The data service filter expressions are of the form `["<name>", "<op>", <value>]`, you can also specify complex expressions concatenated with `and|or` as follows:
  *
- *  ```
+ * ```json
  * [["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]
  * ```
  *
