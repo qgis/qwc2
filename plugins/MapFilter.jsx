@@ -41,17 +41,24 @@ import './style/MapFilter.css';
  *     title: "<filter_title>",
  *     titlemsgid: "<filter_title_msgid>",
  *     filter: {
- *         "<layer>": <data_service_expression>
+ *         "<layer>": <data_service_filter_expression>
  *     },
  *     fields: {
  *         id: "<value_id>",
  *         title: "<value_title">,
- *         titlemsgid: "<value_title_msgid">",
+ *         titlemsgid: "<value_title_msgid>",
  *         defaultValue: <default_value>,
  *         inputConfig: {<input_field_opts>}
  *     }
  * }
  * ```
+ *
+ * The data service filter expressions are of the form `["<name>", "<op>", <value>]`, you can also specify complex expressions concatenated with `and|or` as follows:
+ *
+ *  ```
+ * [["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]
+ * ```
+ *
  * You can set the startup filter configuration by specifying a `f` URL-parameter with a JSON-serialized string as follows:
  *
  * ```
