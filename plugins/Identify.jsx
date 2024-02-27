@@ -233,8 +233,13 @@ class Identify extends React.Component {
         const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : this.state.identifyResults;
         const filter = VectorLayerUtils.geoJSONGeomToWkt(this.state.filterGeom);
         let pendingRequests = 0;
+        const params = {...this.props.params};
+        if (this.props.params.radius_feature_count) {
+            params.feature_count = this.props.params.radius_feature_count;
+            delete params.radius_feature_count;
+        }
         queryableLayers.forEach((layer) => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, this.props.params);
+            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
                 this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
