@@ -216,9 +216,15 @@ const LayerUtils = {
         };
     },
     formatFilterExpr(expr) {
-        if (expr.length === 3 && typeof expr[0] === "string" && typeof expr[2] === "string") {
+        if (expr.length === 3 && typeof expr[0] === "string") {
             const op = expr[1].toUpperCase();
-            return `"${expr[0]}" ${op} ${expr[2]}`;
+            if (typeof expr[2] === "number") {
+                return `"${expr[0]}" ${op} ${expr[2]}`;
+            } else if (expr[2] === null) {
+                return `"${expr[0]}" ${op} NULL`;
+            } else {
+                return `"${expr[0]}" ${op} '${expr[2]}'`;
+            }
         } else {
             return "( " + expr.map(entry => Array.isArray(entry) ? this.formatFilterExpr(entry) : entry.toUpperCase()).join(" ") + " )";
         }

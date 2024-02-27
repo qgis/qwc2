@@ -186,9 +186,9 @@ class MapFilter extends React.Component {
             const timeDimension = (layer.dimensions || []).find(dimension => dimension.units === "ISO8601");
             if (timeDimension) {
                 filters[layer.name] = [
-                    [[timeDimension.fieldName, '>=', "'$tstart$'"], 'or', [timeDimension.fieldName, 'IS', 'NULL']],
+                    [[timeDimension.fieldName, '>=', "$tstart$"], 'or', [timeDimension.fieldName, 'IS', null]],
                     'and',
-                    [[timeDimension.endFieldName, '<=', "'$tend$'"], 'or', [timeDimension.endFieldName, 'IS', "NULL"]]
+                    [[timeDimension.endFieldName, '<=', "$tend$"], 'or', [timeDimension.endFieldName, 'IS', null]]
                 ];
             }
         }
@@ -392,9 +392,13 @@ class MapFilter extends React.Component {
             return null;
         }
         const op = expr[1].toLowerCase();
-        if (typeof expr[0] === 'string' && typeof expr[2] === 'string') {
-            const right = Object.entries(values).reduce((res, [key, value]) => res.replace(`$${key}$`, (value || defaultValues[key]) ?? value), expr[2]);
-            return [expr[0], op, right];
+        if (typeof expr[0] === 'string') {
+            if (typeof expr[2] === 'string') {
+                const right = Object.entries(values).reduce((res, [key, value]) => res.replace(`$${key}$`, (value || defaultValues[key]) ?? value), expr[2]);
+                return [expr[0], op, right];
+            } else {
+                return [expr[0], op, expr[2]];
+            }
         } else {
             // Even indices must be arrays, odd and|or strings
             const isAndOr = (entry) => ["and", "or"].includes(String(entry).toLowerCase());
