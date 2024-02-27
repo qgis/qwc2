@@ -288,7 +288,6 @@ class MapFilter extends React.Component {
                                     <td>{field.title || LocaleUtils.tr(field.titlemsgid)}: </td>
                                     <td>
                                         <input
-                                            disabled={!this.state.filters[config.id]?.active}
                                             onChange={ev => this.updateFieldValue(config.id, field.id, ev.target.value)}
                                             type="text"
                                             value={this.state.filters[config.id].values[field.id]}
