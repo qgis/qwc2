@@ -171,7 +171,11 @@ class MapFilter extends React.Component {
             }, {});
             this.props.setFilter(layerExpressions, this.state.geomFilter.geom);
             const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
-                return {...res, [key]: value.values};
+                if (value.active) {
+                    return {...res, [key]: value.values};
+                } else {
+                    return res;
+                }
             }, {});
             if (this.state.geomFilter.geom) {
                 permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
