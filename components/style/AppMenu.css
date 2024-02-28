@@ -14,9 +14,6 @@ div.AppMenu.appmenu-visible {
     overflow: visible;
 }
 
-div.AppMenu.appmenu-visible.appmenu-compact {
-    background: none;
-}
 
 div.AppMenu .appmenu-label {
     font-weight: bold;
@@ -58,13 +55,13 @@ div.AppMenu div.appmenu-menu-container {
 }
 
 div.AppMenu.appmenu-compact div.appmenu-menu-container {
-    right: -11.5em;
+    right: -11.25em;
     width: 15em;
-    height: calc(100vh - 86px);
+    height: calc(100vh - 5.5em);
     transition: transform 0.25s, opacity 0.25s, right 0.5s;
     background: var(--app-menu-bg-color);
     box-shadow: 0px 0px 4px rgba(136, 136, 136, 0.5);
-    top: 3.7em;
+    top: 3.5em;
 }
 
 div.AppMenu.appmenu-compact div.appmenu-menu-container:hover {

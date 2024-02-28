@@ -23,9 +23,8 @@ class LoginUser extends React.Component {
     };
     render() {
         const username = ConfigUtils.getConfigProp("username");
-        const right = this.props.mapMargins.right;
         const style = {
-            right: 'calc(0.25em + ' + right + 'px)'
+            right: this.props.mapMargins.right
         };
         if (!username) {
             return null;

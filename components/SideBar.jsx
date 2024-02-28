@@ -81,12 +81,16 @@ class SideBar extends React.Component {
         const render = visible || this.state.render || this.props.renderWhenHidden;
         const style = {
             width: this.props.width,
-            right: visible ? 'calc(0.25em + ' + this.props.menuMargins.right + 'px)' : 0,
             minWidth: this.props.minWidth,
             zIndex: visible ? 5 : 4
         };
-
         const isLeftSide = this.props.side === "left";
+        if (isLeftSide) {
+            style.left = visible ? this.props.menuMargins.left : 0;
+        } else {
+            style.right = visible ? this.props.menuMargins.right : 0;
+        }
+
         const classes = classnames({
             "sidebar": true,
             "sidebar-open": visible,

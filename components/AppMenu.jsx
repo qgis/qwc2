@@ -68,7 +68,7 @@ class AppMenu extends React.Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.menuVisible && !prevState.menuVisible && this.filterfield) {
+        if (this.state.menuVisible && !prevState.menuVisible && this.filterfield && !this.props.menuCompact) {
             // Need to wait until slide in transition is over
             setTimeout(() => { this.filterfield.focus(); }, 400);
         }
@@ -188,6 +188,9 @@ class AppMenu extends React.Component {
             }
         }
         this.props.onMenuToggled(!this.state.menuVisible);
+        if (this.props.menuCompact) {
+            this.props.setMenuMargin(!this.state.menuVisible ? MiscUtils.convertEmToPx(3.75) : 0, 0);
+        }
         this.setState((state) => ({menuVisible: !state.menuVisible, submenusVisible: [], filter: ""}));
     };
     checkCloseMenu = (ev) => {
@@ -285,7 +288,7 @@ class AppMenu extends React.Component {
                 <div className="appmenu-button-container" onMouseDown={this.toggleMenu} >
                     {this.props.buttonContents}
                 </div>
-                <div className="appmenu-menu-container" ref={this.storeRightMargin}>
+                <div className="appmenu-menu-container">
                     <ul className="appmenu-menu">
                         {this.props.showFilterField ? (
                             <li className="appmenu-leaf">
@@ -310,12 +313,6 @@ class AppMenu extends React.Component {
         this.filterfield = el;
         if (this.props.appMenuShortcut) {
             mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
-        }
-    };
-    storeRightMargin = (el) => {
-        if (this.props.menuCompact && el?.clientWidth > 0) {
-            const rightmargin = el.clientWidth - MiscUtils.convertEmToPx(11.5);
-            this.props.setMenuMargin(rightmargin, 0);
         }
     };
     itemAllowed = (item) => {

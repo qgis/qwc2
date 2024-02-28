@@ -51,11 +51,11 @@
 }
 
 #TopBar div.AppMenu .appmenu-button {
-    margin-right: 1em;
-    width: 19em;
+    width: 20em;
     display: inline-block;
 }
 
+#TopBar div.AppMenu.appmenu-compact .appmenu-button,
 #TopBar.mobile div.AppMenu .appmenu-button,
 #TopBar.fullscreen div.AppMenu .appmenu-button {
     width: auto;

@@ -172,7 +172,8 @@ class ResizeableWindow extends React.Component {
         });
         const style = {
             display: this.props.visible ? 'initial' : 'none',
-            right: 'calc(0.25em + ' + this.props.menuMargins.right + 'px)'
+            left: this.props.menuMargins.left + 'px',
+            right: this.props.menuMargins.right + 'px'
         };
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;

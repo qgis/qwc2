@@ -24,11 +24,23 @@ const defaultState = {
     mapMargins: {
         left: 0, top: 0, right: 0, bottom: 0
     },
+    windowMargins: {
+        left: 0, top: 0, right: 0, bottom: 0
+    },
     menuMargins: {
         left: 0, right: 0
     },
     entries: {}
 };
+
+function computeMapMargins(windowMargins, menuMargins) {
+    return {
+        left: windowMargins.left + menuMargins.left,
+        top: windowMargins.top,
+        right: windowMargins.right + menuMargins.right,
+        bottom: windowMargins.bottom
+    }
+}
 
 export default function windows(state = defaultState, action) {
     switch (action.type) {
@@ -98,7 +110,7 @@ export default function windows(state = defaultState, action) {
             };
         }
         const splitWindows = Object.values(newSplitScreen);
-        const mapMargins = {
+        const windowMargins = {
             right: splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0) + state.menuMargins.right,
             bottom: splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0),
             left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0) + state.menuMargins.left,
@@ -107,7 +119,8 @@ export default function windows(state = defaultState, action) {
         return {
             ...state,
             splitScreen: newSplitScreen,
-            mapMargins: mapMargins
+            windowMargins: windowMargins,
+            mapMargins: computeMapMargins(windowMargins, state.menuMargins)
         };
     }
     case SET_MENU_MARGIN: {
@@ -115,13 +128,7 @@ export default function windows(state = defaultState, action) {
             right: action.right,
             left: action.left
         };
-        const mapMargins =  {
-            right: state.mapMargins.right + action.right,
-            bottom: state.mapMargins.bottom,
-            left: state.mapMargins.left + action.left,
-            top: state.mapMargins.top
-        };
-        return {...state, menuMargins: menuMargins, mapMargins: mapMargins};
+        return {...state, menuMargins: menuMargins, mapMargins: computeMapMargins(state.windowMargins, menuMargins)};
     }
     default:
         return state;
