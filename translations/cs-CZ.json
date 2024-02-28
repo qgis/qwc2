@@ -83,7 +83,8 @@
       "remove": "Smazat",
       "removefailed": "Mazání záložky selhalo",
       "savefailed": "Ukládání záložky selhalo",
-      "update": "Upravit"
+      "update": "Upravit",
+      "zoomToExtent": ""
     },
     "bottombar": {
       "mousepos_label": "Souřadnice",

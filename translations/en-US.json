@@ -83,7 +83,8 @@
       "remove": "Remove bookmark",
       "removefailed": "Failed to remove bookmark",
       "savefailed": "Failed to update bookmark",
-      "update": "Update bookmark"
+      "update": "Update bookmark",
+      "zoomToExtent": "Zoom to extent"
     },
     "bottombar": {
       "mousepos_label": "Coordinates",

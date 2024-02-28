@@ -83,7 +83,8 @@
       "remove": "Eliminar",
       "removefailed": "Error al eliminar el marcador",
       "savefailed": "Error al actualizar el marcador",
-      "update": "Actualizar marcador"
+      "update": "Actualizar marcador",
+      "zoomToExtent": ""
     },
     "bottombar": {
       "mousepos_label": "Coordenadas",

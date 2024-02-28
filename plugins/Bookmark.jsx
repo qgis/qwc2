@@ -13,15 +13,16 @@ import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import { zoomToPoint } from '../actions/map';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import {createBookmark, getUserBookmarks, removeBookmark, updateBookmark} from '../utils/PermaLinkUtils';
+import MapUtils from '../utils/MapUtils';
+import {createBookmark, getUserBookmarks, removeBookmark, resolveBookmark, updateBookmark} from '../utils/PermaLinkUtils';
 
 import './style/Bookmark.css';
-
 
 /**
  * Allows managing user bookmarks.
@@ -32,10 +33,13 @@ import './style/Bookmark.css';
  */
 class Bookmark extends React.Component {
     static propTypes = {
+        mapCrs: PropTypes.string,
+        mapScales: PropTypes.array,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         state: PropTypes.object,
-        task: PropTypes.string
+        task: PropTypes.string,
+        zoomToPoint: PropTypes.func
     };
     static defaultProps = {
         side: 'right'
@@ -52,6 +56,7 @@ class Bookmark extends React.Component {
     render() {
         const openTitle = LocaleUtils.tr("bookmark.open");
         const openTabTitle = LocaleUtils.tr("bookmark.openTab");
+        const zoomTitle = LocaleUtils.tr("bookmark.zoomToExtent");
         const username = ConfigUtils.getConfigProp("username");
         const placeholder = LocaleUtils.tr("bookmark.description");
         const addBookmarkTitle = LocaleUtils.tr("bookmark.add");
@@ -79,6 +84,9 @@ class Bookmark extends React.Component {
                                 </button>
                                 <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, true)} title={openTabTitle}>
                                     <Icon icon="open_link" />
+                                </button>
+                                <button className="button" disabled={!currentBookmark} onClick={() => this.zoomToBookmarkExtent(currentBookmark.key)} title={zoomTitle}>
+                                    <Icon icon="zoom" />
                                 </button>
                             </span>
                             <span className="bookmark-actions-spacer" />
@@ -120,6 +128,14 @@ class Bookmark extends React.Component {
         } else {
             location.href = url;
         }
+    };
+    zoomToBookmarkExtent = (bookmarkkey) => {
+        resolveBookmark(bookmarkkey, (params) => {
+            const scale = parseFloat(params.s);
+            const zoom = MapUtils.computeZoom(this.props.mapScales, scale);
+            const center = params.c.split(/[;,]/g).map(x => parseFloat(x));
+            this.props.zoomToPoint(center, zoom, this.props.mapCrs);
+        });
     };
     toggleCurrentBookmark = (bookmark) => {
         if (this.state.currentBookmark === bookmark.key) {
@@ -166,8 +182,12 @@ class Bookmark extends React.Component {
 }
 
 const selector = state => ({
+    mapCrs: state.map.projection,
+    mapScales: state.map.scales,
     task: state.task.id,
     state
 });
 
-export default connect(selector)(Bookmark);
+export default connect(selector, {
+    zoomToPoint: zoomToPoint
+})(Bookmark);

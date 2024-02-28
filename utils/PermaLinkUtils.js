@@ -135,6 +135,17 @@ export function resolvePermaLink(initialParams, callback) {
     }
 }
 
+export function resolveBookmark(bookmarkKey, callback) {
+    axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bookmarkKey)
+        .then(response => {
+            const data = response.data;
+            callback({...(data.query || {})}, (data.state || {}), !!data.query);
+        })
+        .catch(() => {
+            callback(bookmarkKey, {}, false);
+        });
+}
+
 export function getUserBookmarks(user, callback) {
     if (user) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/")

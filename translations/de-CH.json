@@ -83,7 +83,8 @@
       "remove": "Lesezeichen entfernen",
       "removefailed": "Lesezeichen konnte nicht entfernt werden",
       "savefailed": "Lesezeichen konnte nicht aktualisiert werden",
-      "update": "Lesezeichen aktualisieren"
+      "update": "Lesezeichen aktualisieren",
+      "zoomToExtent": ""
     },
     "bottombar": {
       "mousepos_label": "Koordinaten",
