@@ -430,7 +430,7 @@ class MapFilter extends React.Component {
         }
         const layerNames = this.props.layers.reduce((res, layer) => {
             if (layer.role === LayerRole.THEME) {
-                return [...res, ...LayerUtils.getSublayerNames(layer)];
+                return [...res, ...LayerUtils.getSublayerNames(layer, true, lyr => !!lyr.geometryType)];
             }
             return res;
         }, []);

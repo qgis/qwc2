@@ -540,9 +540,9 @@ const LayerUtils = {
             }
         }
     },
-    getSublayerNames(layer, toplevel = true) {
-        return [toplevel && layer.sublayers ? null : layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
-            return list.concat([...this.getSublayerNames(sublayer, false)]);
+    getSublayerNames(layer, toplevel = true, filter = null) {
+        return [(toplevel && layer.sublayers) || (filter && !filter(layer)) ? null : layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
+            return list.concat([...this.getSublayerNames(sublayer, false, filter)]);
         }, [])).filter(x => x);
     },
     mergeSubLayers(baselayer, addlayer) {
