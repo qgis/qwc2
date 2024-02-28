@@ -227,6 +227,7 @@
     "mapexport.usersize",
     "mapexport.wait",
     "mapfilter.addcustomfilter",
+    "mapfilter.brokenrendering",
     "mapfilter.cancel",
     "mapfilter.geomfilter",
     "mapfilter.invalidfilter",

@@ -260,6 +260,7 @@
     },
     "mapfilter": {
       "addcustomfilter": "Benutzerdef. filter hinzufügen",
+      "brokenrendering": "Die Kartendarstellung könnte aufgrund eines ungültigen Filterausdrucks fehlerhaft sein",
       "cancel": "Abbrechen",
       "geomfilter": "Geometrie",
       "invalidfilter": "Ungültiger Filterausdruck",

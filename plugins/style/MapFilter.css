@@ -29,6 +29,18 @@
     padding: 0.25em;
 }
 
+#MapFilter div.map-filter-invalid-warning {
+    background-color: orange;
+    display: flex;
+    align-items: center;
+    padding: 0.25em 0.5em;
+    margin: 0.25em;
+}
+
+#MapFilter div.map-filter-invalid-warning > div {
+    margin-left: 0.25em;
+}
+
 #MapFilter table.map-filter-entry-fields {
     border-collapse: collapse;
     width: 100%;
@@ -81,4 +93,9 @@
 
 #MapFilter div.map-filter-editor-invalid {
     background-color: rgba(255, 127, 127);
+}
+
+button.filter-map-button-error {
+    background-color: orange;
+
 }

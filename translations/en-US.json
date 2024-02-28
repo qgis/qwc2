@@ -260,6 +260,7 @@
     },
     "mapfilter": {
       "addcustomfilter": "Add custom filter",
+      "brokenrendering": "Map rendering may be broken due to an invalid filter expression",
       "cancel": "Cancel",
       "geomfilter": "Geometry",
       "invalidfilter": "Invalid filter expression",

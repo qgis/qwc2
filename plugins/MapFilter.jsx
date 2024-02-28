@@ -9,6 +9,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import axios from 'axios';
 import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import {v1 as uuidv1} from 'uuid';
@@ -105,7 +106,8 @@ class MapFilter extends React.Component {
         filters: {},
         geomFilter: {},
         customFilters: {},
-        filterEditor: null
+        filterEditor: null,
+        filterInvalid: false
     };
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
@@ -210,6 +212,27 @@ class MapFilter extends React.Component {
                 }
             });
             this.props.setFilter(layerExpressions, this.state.geomFilter.geom);
+            // Validate parameters with test request
+            const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
+            const wmsParams = LayerUtils.buildWMSLayerParams({...themeLayer, filterParams: layerExpressions, filterGeom: this.state.geomFilter.geom}).params;
+            const wmsLayers = wmsParams.LAYERS.split(",");
+            const reqParams = {
+                SERVICE: 'WMS',
+                REQUEST: 'GetMap',
+                VERSION: '1.3.0',
+                CRS: 'EPSG:4326',
+                WIDTH: 10,
+                HEIGHT: 10,
+                BBOX: "-0.5,-0.5,0.5,0.5",
+                FILTER: wmsParams.FILTER,
+                FILTER_GEOM: wmsParams.FILTER_GEOM,
+                LAYERS: Object.keys(layerExpressions).filter(layer => wmsLayers.includes(layer)).join(",")
+            };
+            axios.get(themeLayer.url, {params: reqParams}).then(() => {
+                this.setState({filterInvalid: false});
+            }).catch(() => {
+                this.setState({filterInvalid: true});
+            });
             const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
                 if (value.active) {
                     return {...res, [key]: value.values};
@@ -264,7 +287,8 @@ class MapFilter extends React.Component {
             const classes = classNames({
                 "map-button": true,
                 "map-button-active": taskActive,
-                "map-button-engaged": filterActive
+                "map-button-engaged": filterActive && !this.state.filterInvalid,
+                "filter-map-button-error": filterActive && this.state.filterInvalid
             });
             const title = LocaleUtils.tr("appmenu.items.MapFilter");
             button = (
@@ -317,12 +341,23 @@ class MapFilter extends React.Component {
             return this.renderFilterEditor();
         } else {
             return [
+                this.renderInvalidWarning(),
                 ...this.renderPredefinedFilters(),
                 this.props.allowFilterByTime ? this.renderTimeFilter() : null,
                 this.props.allowFilterByGeom ? this.renderGeomFilter() : null,
                 ...this.renderCustomFilters()
             ];
         }
+    };
+    renderInvalidWarning = () => {
+        if (this.state.filterInvalid) {
+            return (
+                <div className="map-filter-invalid-warning" key="InvalidFilterWarning">
+                    <Icon icon="warning" /> <div>{LocaleUtils.tr("mapfilter.brokenrendering")}</div>
+                </div>
+            );
+        }
+        return null;
     };
     renderFilterEditor = () => {
         const commitButtons = [

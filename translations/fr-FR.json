@@ -260,6 +260,7 @@
     },
     "mapfilter": {
       "addcustomfilter": "Ajouter filtre personnalisé",
+      "brokenrendering": "Le rendu de la carte peut être interrompu à cause d'une expression filtre invalide",
       "cancel": "Annuler",
       "geomfilter": "Géométrique",
       "invalidfilter": "Expression de filtre non valide",
