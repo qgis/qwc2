@@ -196,7 +196,12 @@ class MapFilter extends React.Component {
             }, {});
             Object.values(this.state.customFilters).forEach(entry => {
                 if (entry.active && entry.layer) {
-                    const expr = JSON.parse(entry.expr);
+                    let expr = '';
+                    try {
+                        expr = JSON.parse(entry.expr);
+                    } catch (e) {
+                        return;
+                    }
                     if (layerExpressions[entry.layer]) {
                         layerExpressions[entry.layer].push('and', expr);
                     } else {
