@@ -78,20 +78,5 @@
         "@types/react": "^18.2.45",
         "mkdirp": "^3.0.1",
         "object-path": "^0.11.8"
-    },
-    "babel": {
-        "plugins": [
-            "@babel/plugin-transform-class-properties",
-            "@babel/plugin-transform-object-rest-spread"
-        ],
-        "presets": [
-            [
-                "@babel/preset-env",
-                {
-                    "modules": false
-                }
-            ],
-            "@babel/preset-react"
-        ]
     }
 }
