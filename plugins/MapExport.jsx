@@ -94,6 +94,7 @@ class MapExport extends React.Component {
         exporting: false,
         availableFormats: [],
         selectedFormat: null,
+        selectedFormatConfiguration: '',
         scale: '',
         pageSize: null,
         dpi: 96
@@ -131,7 +132,12 @@ class MapExport extends React.Component {
         }
     }
     formatChanged = (ev) => {
-        this.setState({selectedFormat: ev.target.value});
+        const selectedFormat = ev.target.value;
+        const selectedFormatConfiguration = ((this.props.formatConfiguration?.[selectedFormat] || [])[0] || {}).name;
+        this.setState({
+            selectedFormat: selectedFormat,
+            selectedFormatConfiguration: selectedFormatConfiguration
+        });
     };
     dpiChanged = (ev) => {
         this.setState({dpi: parseInt(ev.target.value, 10)});
