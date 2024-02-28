@@ -134,7 +134,7 @@ class MapFilter extends React.Component {
                 }
             }
             let geomFilter = {};
-            let customFilters = [];
+            let customFilters = {};
             if (!prevProps.theme && this.props.startupParams?.f) {
                 try {
                     const startupConfig = JSON.parse(this.props.startupParams.f);
@@ -153,12 +153,13 @@ class MapFilter extends React.Component {
                         };
                     }
                     if ("__custom" in startupConfig) {
-                        customFilters = startupConfig.__custom.map(entry => ({
-                            title: entry.title, layer: entry.layer, expr: JSON.stringify(entry.expr), active: true
-                        }));
+                        customFilters = startupConfig.__custom.reduce((res, entry) => ({...res, [uuidv1()]: {
+                            title: entry.title || "", layer: entry.layer, expr: JSON.stringify(entry.expr), active: true
+                        }}), {});
                     }
                 } catch (e) {
-                    // Pass
+                    /* eslint-disable-next-line */
+                    console.log("Error while parsing startup filter")
                 }
             }
             this.setState({filters: filters, customFilters: customFilters, geomFilter: geomFilter});
@@ -214,7 +215,7 @@ class MapFilter extends React.Component {
             if (this.state.geomFilter.geom) {
                 permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
             }
-            permalinkState.__custom = this.state.customFilters.filter(entry => entry.active).map(entry => ({
+            permalinkState.__custom = Object.values(this.state.customFilters).filter(entry => entry.active).map(entry => ({
                 title: entry.title, layer: entry.layer, expr: JSON.parse(entry.expr)
             }));
             this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
