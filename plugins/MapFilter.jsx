@@ -220,9 +220,18 @@ class MapFilter extends React.Component {
             if (this.state.geomFilter.geom) {
                 permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
             }
-            permalinkState.__custom = Object.values(this.state.customFilters).filter(entry => entry.active).map(entry => ({
-                title: entry.title, layer: entry.layer, expr: JSON.parse(entry.expr)
-            }));
+            permalinkState.__custom = Object.values(this.state.customFilters).map(entry => {
+                if (!entry.active) {
+                    return null;
+                }
+                let expr = null;
+                try {
+                    expr = JSON.parse(entry.expr);
+                } catch (e) {
+                    return null;
+                }
+                return {title: entry.title, layer: entry.layer, expr: expr};
+            }).filter(Boolean);
             this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
         }
     }
