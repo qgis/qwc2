@@ -16,7 +16,6 @@ import isEmpty from 'lodash.isempty';
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import "./style/FeatureSearch.css";
