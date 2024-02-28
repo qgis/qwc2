@@ -69,7 +69,7 @@ class ThemeList extends React.Component {
         }
         const subtree = subdirs.map((subdir) => {
             const expanded = !this.props.collapsibleGroups || filter || this.state.expandedGroups.includes(subdir.id) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
-            if (isEmpty(subdir.items)) {
+            if (isEmpty(subdir.items && isEmpty(subdir.subdirs))) {
                 return null;
             }
             return (
