@@ -184,13 +184,11 @@ class FeatureSearch extends React.Component {
         Object.keys(provider.params.fields).forEach(fieldname => {
             values[fieldname] = form.elements[fieldname].value;
         });
-        const bbox = CoordinatesUtils.reprojectBbox(this.props.theme.bbox.bounds, this.props.theme.bbox.crs, this.props.theme.mapCrs);
         const params = {
             SERVICE: 'WMS',
             VERSION: this.props.theme.version,
             REQUEST: 'GetFeatureInfo',
             CRS: this.props.theme.mapCrs,
-            BBOX: bbox.join(","),
             WIDTH: 100,
             HEIGHT: 100,
             LAYERS: [],
