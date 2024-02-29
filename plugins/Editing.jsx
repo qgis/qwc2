@@ -7,15 +7,17 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
+import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
+
 import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
-import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
+import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
 import Icon from '../components/Icon';
 import PickFeature from '../components/PickFeature';
@@ -26,6 +28,7 @@ import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+
 import './style/Editing.css';
 
 
@@ -256,7 +259,7 @@ class Editing extends React.Component {
             "Multi" + feature.geometry.type === geomType ||
             (feature.geometry.type.replace(/^Multi/, "") === geomType && feature.geometry.coordinates.length === 1)
         );
-    }
+    };
     geomPicked = (layer, feature) => {
         const geomType = this.props.theme.editConfig[this.state.selectedLayer]?.geomType;
         let geometry = feature.geometry;

@@ -9,10 +9,12 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import OlLocate from '../../components/map/OlLocate';
+
+import PropTypes from 'prop-types';
+
 import {changeLocateState, changeLocatePosition, onLocateError} from '../../actions/locate';
+import OlLocate from '../../components/map/OlLocate';
 
 class LocateSupport extends React.Component {
     static propTypes = {

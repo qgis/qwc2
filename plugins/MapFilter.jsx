@@ -7,27 +7,30 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import axios from 'axios';
 import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
-import {setPermalinkParameters} from '../actions/localConfig';
+
 import {LayerRole, setFilter} from '../actions/layers';
+import {setPermalinkParameters} from '../actions/localConfig';
 import {setCurrentTask} from '../actions/task';
-import ButtonBar from '../components/widgets/ButtonBar';
-import ComboBox from '../components/widgets/ComboBox';
-import DateTimeInput from '../components/widgets/DateTimeInput';
 import Icon from '../components/Icon';
 import MapSelection from '../components/MapSelection';
 import PickFeature from '../components/PickFeature';
 import SideBar from '../components/SideBar';
+import ButtonBar from '../components/widgets/ButtonBar';
+import ComboBox from '../components/widgets/ComboBox';
+import DateTimeInput from '../components/widgets/DateTimeInput';
 import TextInput from '../components/widgets/TextInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/MapFilter.css';
 
 

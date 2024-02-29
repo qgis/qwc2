@@ -8,8 +8,9 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import ol from 'openlayers';
+import PropTypes from 'prop-types';
 
 export default class ScaleBarSupport extends React.Component {
     static propTypes = {

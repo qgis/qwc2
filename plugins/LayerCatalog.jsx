@@ -8,12 +8,15 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
+
 import axios from 'axios';
+import PropTypes from 'prop-types';
+
 import {setCurrentTask} from '../actions/task';
-import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
 import ResizeableWindow from '../components/ResizeableWindow';
+import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/LayerCatalog.css';
 
 

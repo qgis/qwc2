@@ -7,21 +7,22 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {LayerRole} from '../actions/layers';
-import LayerUtils from '../utils/LayerUtils';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
-import ServiceLayerUtils from '../utils/ServiceLayerUtils';
-import VectorLayerUtils from '../utils/VectorLayerUtils';
+
+import PropTypes from 'prop-types';
 
 import * as displayActions from '../actions/display';
+import {LayerRole} from '../actions/layers';
 import * as layerActions from '../actions/layers';
 import * as locateActions from '../actions/locate';
 import * as mapActions from '../actions/map';
 import * as taskActions from '../actions/task';
 import * as themeActions from '../actions/theme';
 import * as windowsActions from '../actions/windows';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LayerUtils from '../utils/LayerUtils';
+import ServiceLayerUtils from '../utils/ServiceLayerUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 
 /**

@@ -8,13 +8,15 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {LayerRole} from '../actions/layers';
-import OlMap from '../components/map/OlMap';
-import OlLayer from '../components/map/OlLayer';
 import Spinner from '../components/Spinner';
+import OlLayer from '../components/map/OlLayer';
+import OlMap from '../components/map/OlMap';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
@@ -37,7 +39,7 @@ class MapPlugin extends React.Component {
             panStepSize: PropTypes.number,
             panPageSize: PropTypes.number,
             constrainExtent: PropTypes.bool,
-            kineticPanParams: PropTypes.object,
+            kineticPanParams: PropTypes.object
         }),
         /** Whether to display the loading spinner when layers are loading. */
         showLoading: PropTypes.bool,

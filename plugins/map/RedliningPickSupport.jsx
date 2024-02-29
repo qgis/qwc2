@@ -7,10 +7,12 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
+import PropTypes from 'prop-types';
+
 import {changeRedliningPickState} from '../../actions/redliningPick';
 import FeatureStyles from "../../utils/FeatureStyles";
 

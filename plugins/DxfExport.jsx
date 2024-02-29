@@ -7,20 +7,23 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import axios from 'axios';
-import isEmpty from 'lodash.isempty';
-import formDataEntries from 'formdata-json';
 import FileSaver from 'file-saver';
+import formDataEntries from 'formdata-json';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import InputContainer from '../components/InputContainer';
-import TaskBar from '../components/TaskBar';
 import PrintFrame from '../components/PrintFrame';
+import TaskBar from '../components/TaskBar';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+
 import './style/DxfExport.css';
 
 

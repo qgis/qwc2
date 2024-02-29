@@ -7,11 +7,13 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import buffer from '@turf/buffer';
-import {v4 as uuidv4} from 'uuid';
 import NumericInput from 'react-numeric-input2';
+import {connect} from 'react-redux';
+
+import buffer from '@turf/buffer';
+import PropTypes from 'prop-types';
+import {v4 as uuidv4} from 'uuid';
+
 import {LayerRole, addLayer, addLayerFeatures} from '../../actions/layers';
 import VectorLayerPicker from '../../components/widgets/VectorLayerPicker';
 import LocaleUtils from '../../utils/LocaleUtils';

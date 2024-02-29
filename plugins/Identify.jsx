@@ -7,16 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {LayerRole, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import IdentifyViewer from '../components/IdentifyViewer';
 import MapSelection from '../components/MapSelection';
-import NumberInput from '../components/widgets/NumberInput';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
+import NumberInput from '../components/widgets/NumberInput';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';

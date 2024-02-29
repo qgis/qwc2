@@ -7,18 +7,21 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {createSelector} from 'reselect';
+
 import axios from 'axios';
+import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
+
 import {setCurrentTask} from '../actions/task';
+import Icon from '../components/Icon';
+import CopyButton from '../components/widgets/CopyButton';
+import displayCrsSelector from '../selectors/displaycrs';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import CopyButton from '../components/widgets/CopyButton';
-import Icon from '../components/Icon';
-import displayCrsSelector from '../selectors/displaycrs';
+
 import './style/MapInfoTooltip.css';
 
 
@@ -199,7 +202,7 @@ class MapInfoTooltip extends React.Component {
                             </tbody>
                         </table>
                         {routingButtons}
-                        {this.props.plugins.map((Plugin, idx) => (<Plugin key={idx} point={this.state.point} closePopup={this.clear} projection={this.props.map.projection} />))}
+                        {this.props.plugins.map((Plugin, idx) => (<Plugin closePopup={this.clear} key={idx} point={this.state.point} projection={this.props.map.projection} />))}
                     </div>
                 </div>
             </div>

@@ -8,33 +8,35 @@
 
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {createSelector} from 'reselect';
+
+import dateParser, { Format } from 'any-date-parser';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import {v1 as uuidv1} from 'uuid';
-import ol from 'openlayers';
-import isEqual from 'lodash.isequal';
 import isEmpty from 'lodash.isempty';
-import dateParser, { Format } from 'any-date-parser';
+import isEqual from 'lodash.isequal';
+import ol from 'openlayers';
+import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
+import {v1 as uuidv1} from 'uuid';
+
 import {setLayerDimensions, addLayerFeatures, refreshLayer, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import Icon from '../components/Icon';
-import TimelineFeaturesSlider from '../components/timeline/TimelineFeaturesSlider';
+import ResizeableWindow from '../components/ResizeableWindow';
 import FixedTimeline from '../components/timeline/FixedTimeline';
 import InfiniteTimeline from '../components/timeline/InfiniteTimeline';
+import TimelineFeaturesSlider from '../components/timeline/TimelineFeaturesSlider';
 import ButtonBar from '../components/widgets/ButtonBar';
 import NumberInput from '../components/widgets/NumberInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
-import ResizeableWindow from '../components/ResizeableWindow';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import './style/TimeManager.css';
-
 import markerIcon from '../utils/img/marker-icon.png';
+
+import './style/TimeManager.css';
 
 dayjs.extend(utc);
 

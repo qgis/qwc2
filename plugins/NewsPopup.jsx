@@ -7,9 +7,12 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
+
 import Icon from '../components/Icon';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/NewsPopup.css';
 
 

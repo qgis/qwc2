@@ -7,17 +7,20 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
-import LocaleUtils from '../utils/LocaleUtils';
-import MeasureUtils from '../utils/MeasureUtils';
+
 import {setSnappingConfig} from '../actions/map.js';
 import {changeMeasurementState} from '../actions/measurement.js';
-import displayCrsSelector from '../selectors/displaycrs';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
+import displayCrsSelector from '../selectors/displaycrs';
+import LocaleUtils from '../utils/LocaleUtils';
+import MeasureUtils from '../utils/MeasureUtils';
+
 import './style/Measure.css';
 
 

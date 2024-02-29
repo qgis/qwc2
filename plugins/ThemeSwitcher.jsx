@@ -7,15 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import Icon from '../components/Icon';
 import InputContainer from '../components/InputContainer';
 import SideBar from '../components/SideBar';
+import ThemeLayersListWindow from '../components/ThemeLayersListWindow';
 import ThemeList from '../components/ThemeList';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import ThemeLayersListWindow from '../components/ThemeLayersListWindow';
+
 import './style/ThemeSwitcher.css';
 
 

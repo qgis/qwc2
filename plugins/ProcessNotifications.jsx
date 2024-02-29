@@ -7,12 +7,15 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+
 import {clearProcess, ProcessStatus} from '../actions/processNotifications';
 import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
+
 import './style/ProcessNotifications.css';
 
 /**

@@ -7,8 +7,10 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import {setCurrentTask, openExternalUrl} from '../actions/task';
 import AppMenu from '../components/AppMenu';
 import Icon from '../components/Icon';
@@ -17,6 +19,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
+
 import './style/Portal.css';
 
 
