@@ -9,6 +9,7 @@
 
 import axios from 'axios';
 import {v1 as uuidv1} from 'uuid';
+
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
 import VectorLayerUtils from './VectorLayerUtils';

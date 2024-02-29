@@ -8,8 +8,9 @@
  */
 
 import axios from 'axios';
-import url from 'url';
 import isMobile from 'ismobilejs';
+import url from 'url';
+
 import StandardStore from '../stores/StandardStore';
 
 let defaultConfig = {

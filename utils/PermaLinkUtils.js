@@ -6,8 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import url from 'url';
 import axios from 'axios';
+import url from 'url';
+
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';

@@ -11,13 +11,14 @@ import themeReducer from '../reducers/theme';
 ReducerIndex.register("theme", themeReducer);
 
 import isEmpty from 'lodash.isempty';
+
 import {setIdentifyEnabled} from '../actions/identify';
 import {setCurrentTask} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import MapUtils from '../utils/MapUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';

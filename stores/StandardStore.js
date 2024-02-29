@@ -7,9 +7,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 import {configureStore} from '@reduxjs/toolkit';
+import merge from 'deepmerge';
 import {combineReducers} from 'redux';
 import {logger} from 'redux-logger';
-import merge from 'deepmerge';
+
 import {CHANGE_BROWSER_PROPERTIES} from '../actions/browser';
 import ReducerIndex from '../reducers/index';
 

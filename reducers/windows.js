@@ -39,7 +39,7 @@ function computeMapMargins(windowMargins, menuMargins) {
         top: windowMargins.top,
         right: windowMargins.right + menuMargins.right,
         bottom: windowMargins.bottom
-    }
+    };
 }
 
 export default function windows(state = defaultState, action) {

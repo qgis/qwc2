@@ -7,10 +7,11 @@
  */
 
 import ol from 'openlayers';
+
 import ConfigUtils from './ConfigUtils';
 import ResourceRegistry from './ResourceRegistry';
-import markerIcon from './img/marker-icon.png';
 import arrowhead from './img/arrowhead.svg';
+import markerIcon from './img/marker-icon.png';
 import measurehead from './img/measurehead.svg';
 
 const DEFAULT_FEATURE_STYLE = {

@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ReducerIndex from '../reducers/index';
 import identifyReducer from '../reducers/identify';
+import ReducerIndex from '../reducers/index';
 ReducerIndex.register("identify", identifyReducer);
 
 import ConfigUtils from '../utils/ConfigUtils';

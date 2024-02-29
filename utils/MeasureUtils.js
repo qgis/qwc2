@@ -8,6 +8,7 @@
  */
 
 import ol from 'openlayers';
+
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from "./CoordinatesUtils";
 import LocaleUtils from './LocaleUtils';

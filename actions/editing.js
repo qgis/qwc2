@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ReducerIndex from '../reducers/index';
 import editingReducer from '../reducers/editing';
+import ReducerIndex from '../reducers/index';
 ReducerIndex.register("editing", editingReducer);
 
 export const SET_EDIT_CONTEXT = 'SET_EDIT_CONTEXT';

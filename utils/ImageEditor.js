@@ -7,8 +7,10 @@
  */
 
 import Painterro from 'painterro';
-import LocaleUtils from '../utils/LocaleUtils';
+
 import StandardStore from '../stores/StandardStore';
+import LocaleUtils from '../utils/LocaleUtils';
+
 import '../components/style/ModalDialog.css';
 
 export function showImageEditor(imageData, imageDataCallback) {

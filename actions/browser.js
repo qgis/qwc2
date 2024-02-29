@@ -7,8 +7,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ReducerIndex from '../reducers/index';
 import browserReducer from '../reducers/browser';
+import ReducerIndex from '../reducers/index';
 ReducerIndex.register("browser", browserReducer);
 
 export const CHANGE_BROWSER_PROPERTIES = 'CHANGE_BROWSER_PROPERTIES';

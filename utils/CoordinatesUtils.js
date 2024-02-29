@@ -6,8 +6,8 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import Proj4js from 'proj4';
 import ol from 'openlayers';
+import Proj4js from 'proj4';
 
 const crsLabels = {
     "EPSG:4326": "WGS 84",

@@ -7,15 +7,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import isEmpty from 'lodash.isempty';
+
 import {
     CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
     PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_TOPBAR_HEIGHT, SET_BOTTOMBAR_HEIGHT, SET_SNAPPING_CONFIG
 } from '../actions/map';
-import isEmpty from 'lodash.isempty';
-import MapUtils from '../utils/MapUtils';
-import {UrlParams} from '../utils/PermaLinkUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import MapUtils from '../utils/MapUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
 
 const defaultState = {
     bbox: {bounds: [0, 0, 0, 0], rotation: 0},
