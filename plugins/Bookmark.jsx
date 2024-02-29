@@ -13,7 +13,7 @@ import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import { zoomToPoint } from '../actions/map';
+import { zoomToExtent, zoomToPoint } from '../actions/map';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
@@ -39,6 +39,7 @@ class Bookmark extends React.Component {
         side: PropTypes.string,
         state: PropTypes.object,
         task: PropTypes.string,
+        zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func
     };
     static defaultProps = {
@@ -131,10 +132,15 @@ class Bookmark extends React.Component {
     };
     zoomToBookmarkExtent = (bookmarkkey) => {
         resolveBookmark(bookmarkkey, (params) => {
-            const scale = parseFloat(params.s);
-            const zoom = MapUtils.computeZoom(this.props.mapScales, scale);
-            const center = params.c.split(/[;,]/g).map(x => parseFloat(x));
-            this.props.zoomToPoint(center, zoom, this.props.mapCrs);
+            if ('c' in params && 's' in params) {
+                const scale = parseFloat(params.s);
+                const zoom = MapUtils.computeZoom(this.props.mapScales, scale);
+                const center = params.c.split(/[;,]/g).map(x => parseFloat(x));
+                this.props.zoomToPoint(center, zoom, this.props.mapCrs);
+            } else if ('e' in params) {
+                const bounds = (params.e).split(',').map(n => parseFloat(n));
+                this.props.zoomToExtent(bounds, this.props.mapCrs);
+            }
         });
     };
     toggleCurrentBookmark = (bookmark) => {
@@ -189,5 +195,6 @@ const selector = state => ({
 });
 
 export default connect(selector, {
+    zoomToExtent: zoomToExtent,
     zoomToPoint: zoomToPoint
 })(Bookmark);
