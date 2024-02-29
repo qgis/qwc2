@@ -6,17 +6,19 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import ol from 'openlayers';
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import ol from 'openlayers';
+import PropTypes from 'prop-types';
+
 import {changeMapView, clickOnMap} from '../../actions/map';
 import {changeMousePositionState} from '../../actions/mousePosition';
 import {setCurrentTask} from '../../actions/task';
 import ConfigUtils from '../../utils/ConfigUtils';
+import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
-import CoordinatesUtils from '../../utils/CoordinatesUtils';
 
 ol.Map.prototype.setRequestsPaused = function(paused) {
     this.requestsPaused_ = paused;
@@ -249,7 +251,7 @@ class OlMap extends React.Component {
                 }
             });
             view.setZoom(this.props.zoom);
-            view.setCenter(this.props.center)
+            view.setCenter(this.props.center);
             this.map.render();
         }
 

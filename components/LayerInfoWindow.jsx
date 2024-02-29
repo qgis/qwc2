@@ -7,15 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import ResizeableWindow from '../components/ResizeableWindow';
-import {Image} from './widgets/Primitives';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
+import {Image} from './widgets/Primitives';
+
 import './style/LayerInfoWindow.css';
 
 class LayerInfoWindow extends React.Component {

@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ol from 'openlayers';
 import {applyStyle} from 'ol-mapbox-style';
+import ol from 'openlayers';
 
 export default {
     create: (options) => {

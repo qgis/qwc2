@@ -7,19 +7,22 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import {setActiveServiceInfo} from '../actions/serviceinfo';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+
 import './style/ServiceInfoWindow.css';
 
 class ServiceInfoWindow extends React.Component {
     static propTypes = {
+        layerInfoGeometry: PropTypes.object,
         service: PropTypes.object,
-        setActiveServiceInfo: PropTypes.func,
-        layerInfoGeometry: PropTypes.object
+        setActiveServiceInfo: PropTypes.func
     };
     renderLink(text, url) {
         if (url) {
@@ -48,8 +51,8 @@ class ServiceInfoWindow extends React.Component {
         }
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.layerInfoGeometry.initialHeight} initialWidth={this.props.layerInfoGeometry.initialWidth}
-                    initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY}
-                    initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
+                initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY}
+                initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
                 title={LocaleUtils.trmsg("serviceinfo.title")}>
                 <div className="service-info-window-body" role="body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>

@@ -7,10 +7,13 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import Icon from '../components/Icon';
 import ConfigUtils from '../utils/ConfigUtils';
+
 import './style/LoginUser.css';
 
 

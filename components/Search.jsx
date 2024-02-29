@@ -7,24 +7,23 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import axios from 'axios';
-import {createSelector} from 'reselect';
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import Icon from './Icon';
-import Spinner from './Spinner';
-import MessageBar from './MessageBar';
+import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
+
 import {LayerRole, addLayerFeatures, removeLayer, addLayer, addThemeSublayer, changeLayerProperty} from '../actions/layers';
 import {zoomToPoint, zoomToExtent} from '../actions/map';
 import {changeSearch, startSearch, searchMore, setCurrentSearchResult, SearchResultType} from '../actions/search';
 import {setCurrentTask} from '../actions/task';
 import {setCurrentTheme} from '../actions/theme';
 import {showNotification} from '../actions/windows';
-import searchProvidersSelector from '../selectors/searchproviders';
 import displayCrsSelector from '../selectors/displaycrs';
+import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -33,6 +32,10 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+import Icon from './Icon';
+import MessageBar from './MessageBar';
+import Spinner from './Spinner';
+
 import './style/Search.css';
 
 class Search extends React.Component {

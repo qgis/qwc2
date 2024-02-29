@@ -10,8 +10,8 @@ import ReducerIndex from '../reducers/index';
 import searchReducer from '../reducers/search';
 ReducerIndex.register("search", searchReducer);
 
-import {v1 as uuidv1} from 'uuid';
 import axios from 'axios';
+import {v1 as uuidv1} from 'uuid';
 
 export const SEARCH_CHANGE = 'SEARCH_CHANGE';
 export const SEARCH_SET_REQUEST = 'SEARCH_SET_REQUEST';

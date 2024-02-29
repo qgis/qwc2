@@ -7,10 +7,13 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/Icon.css';
 
 export default class Icon extends React.Component {

@@ -7,6 +7,7 @@
  */
 
 import {createSelector} from 'reselect';
+
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';

@@ -7,15 +7,17 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 import NumericInput from 'react-numeric-input2';
-import Mousetrap from 'mousetrap';
+import {connect} from 'react-redux';
+
 import FileSaver from 'file-saver';
+import Mousetrap from 'mousetrap';
 import ol from 'openlayers';
-import {changeRedliningState} from '../actions/redlining';
+import PropTypes from 'prop-types';
+
 import {LayerRole, addLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
+import {changeRedliningState} from '../actions/redlining';
 import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
@@ -23,10 +25,11 @@ import ColorButton from '../components/widgets/ColorButton';
 import ComboBox from '../components/widgets/ComboBox';
 import MenuButton from '../components/widgets/MenuButton';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
+import {END_MARKERS} from '../utils/FeatureStyles';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import {END_MARKERS} from '../utils/FeatureStyles';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+
 import './style/Redlining.css';
 
 

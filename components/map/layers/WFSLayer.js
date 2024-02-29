@@ -8,6 +8,7 @@
 
 import ol from 'openlayers';
 import url from 'url';
+
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import FeatureStyles from '../../../utils/FeatureStyles';
 

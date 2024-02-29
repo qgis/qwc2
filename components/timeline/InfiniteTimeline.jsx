@@ -7,12 +7,15 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import dayjs from 'dayjs';
+import PropTypes from 'prop-types';
+
+import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import ButtonBar from '../widgets/ButtonBar';
 import NumberInput from '../widgets/NumberInput';
-import LocaleUtils from '../../utils/LocaleUtils';
+
 import './style/InfiniteTimeline.css';
 
 

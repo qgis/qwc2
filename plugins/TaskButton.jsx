@@ -7,14 +7,17 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from "../utils/LocaleUtils";
 import ThemeUtils from '../utils/ThemeUtils';
+
 import './style/BackgroundSwitcher.css';
 
 /**

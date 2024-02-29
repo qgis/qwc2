@@ -7,13 +7,16 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import PopupMenu from './PopupMenu';
+
 import './style/PickFeature.css';
 
 

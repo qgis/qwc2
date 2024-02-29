@@ -7,10 +7,12 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash.isempty';
+
 import FileSaver from 'file-saver';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {getFeatureTemplate} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
@@ -19,16 +21,17 @@ import EditComboField, {KeyValCache} from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
-import NavBar from '../components/widgets/NavBar';
 import Spinner from '../components/Spinner';
+import NavBar from '../components/widgets/NavBar';
 import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
-import EditingInterface from '../utils/EditingInterface';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+
 import './style/AttributeTable.css';
 
 /**

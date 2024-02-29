@@ -7,11 +7,14 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/MapCopyright.css';
 
 
@@ -26,7 +29,7 @@ class MapCopyright extends React.Component {
         /** Whether to prepend the layer name to the attribution string. */
         prefixCopyrightsWithLayerNames: PropTypes.bool,
         /** Whether to only display the attribution of the theme, omitting external layers. */
-        showThemeCopyrightOnly: PropTypes.bool,
+        showThemeCopyrightOnly: PropTypes.bool
     };
     state = {
         currentCopyrights: {}

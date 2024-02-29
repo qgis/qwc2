@@ -7,8 +7,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import WindowManager from './WindowManager';
 
 import './style/PluginsContainer.css';

@@ -7,9 +7,11 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
 import url from 'url';
+
 import ConfigUtils from '../utils/ConfigUtils';
 
 

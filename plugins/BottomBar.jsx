@@ -7,12 +7,14 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {createSelector} from 'reselect';
+
 import pickBy from 'lodash.pickby';
-import {changeMousePositionState} from '../actions/mousePosition';
+import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
+
 import {changeZoomLevel, setBottombarHeight} from '../actions/map';
+import {changeMousePositionState} from '../actions/mousePosition';
 import {openExternalUrl} from '../actions/task';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
 import InputContainer from '../components/InputContainer';
@@ -20,6 +22,7 @@ import displayCrsSelector from '../selectors/displaycrs';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+
 import './style/BottomBar.css';
 
 

@@ -7,17 +7,20 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+import MapUtils from 'qwc2/utils/MapUtils';
+import ResourceRegistry from 'qwc2/utils/ResourceRegistry';
+
 import {addLayer, addLayerFeatures, changeLayerProperty, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/Spinner';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/Cyclomedia.css';
-import MapUtils from 'qwc2/utils/MapUtils';
-import ResourceRegistry from 'qwc2/utils/ResourceRegistry';
 
 
 const Status = {LOGIN: 0, INITIALIZING: 1, INITIALIZED: 2, ERROR: 3, LOADPOS: 4, HAVEPOS: 5};
@@ -194,7 +197,7 @@ class Cyclomedia extends React.Component {
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.trmsg("cyclomedia.title")}
-                >
+            >
                 <div className="cyclomedia-body" role="body">
                     {this.props.mapScale > this.props.maxMapScale && this.state.status > Status.LOGIN ? (
                         <div className="cyclomedia-scale-hint">

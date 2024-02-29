@@ -7,18 +7,20 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
+import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
+
 import {LayerRole} from '../../actions/layers';
 import {setSnappingConfig} from '../../actions/map';
 import Icon from '../../components/Icon';
 import Spinner from '../../components/Spinner';
+import IdentifyUtils from '../../utils/IdentifyUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
-import IdentifyUtils from '../../utils/IdentifyUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import SnapInteraction from './SnapInteraction';
 

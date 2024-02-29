@@ -7,15 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import sortBy from 'lodash.sortby';
+import PropTypes from 'prop-types';
+
 import {LayerRole, changeLayerProperty} from '../actions/layers';
 import Icon from '../components/Icon';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/BackgroundSwitcher.css';
 
 

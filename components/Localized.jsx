@@ -7,10 +7,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
+import {IntlProvider} from 'react-intl';
 import {connect} from 'react-redux';
 
-import {IntlProvider} from 'react-intl';
+import PropTypes from 'prop-types';
 
 class Localized extends React.Component {
     static propTypes = {

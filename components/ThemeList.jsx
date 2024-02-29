@@ -7,20 +7,23 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import axios from 'axios';
-import isEmpty from 'lodash.isempty';
 import {remove as removeDiacritics} from 'diacritics';
-import Icon from './Icon';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
+import {setActiveLayerInfo} from '../actions/layerinfo';
+import {LayerRole, addLayer} from '../actions/layers';
+import {setUserInfoFields} from '../actions/localConfig';
+import {setCurrentTask} from '../actions/task';
+import {setCurrentTheme, setThemeLayersList} from '../actions/theme';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
-import {LayerRole, addLayer} from '../actions/layers';
-import {setCurrentTheme, setThemeLayersList} from '../actions/theme';
-import {setCurrentTask} from '../actions/task';
-import {setActiveLayerInfo} from '../actions/layerinfo';
-import {setUserInfoFields} from '../actions/localConfig';
+import Icon from './Icon';
+
 import './style/ThemeList.css';
 
 class ThemeList extends React.Component {

@@ -7,9 +7,11 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import ol from 'openlayers';
+import PropTypes from 'prop-types';
+
 import {setEditContext} from '../../actions/editing';
 import FeatureStyles from "../../utils/FeatureStyles";
 

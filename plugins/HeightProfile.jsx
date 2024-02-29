@@ -7,12 +7,11 @@
  */
 
 import React from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import ReactDOM from 'react-dom';
-import isEmpty from 'lodash.isempty';
 import {Line} from "react-chartjs-2";
+import ReactDOM from 'react-dom';
+import {connect} from 'react-redux';
+
+import axios from 'axios';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -25,6 +24,9 @@ import {
     BubbleController
 } from 'chart.js';
 import FileSaver from 'file-saver';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
 import ResizeableWindow from '../components/ResizeableWindow';

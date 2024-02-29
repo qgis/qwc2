@@ -655,15 +655,15 @@ function genThemes(themesConfig) {
 }
 
 lookup(os.hostname(), { hints: dns.ADDRCONFIG })
-  .then((result) => lookupService(result.address, 0))
-  .then((result) => {
-    hostFqdn = "http://" + result.hostname;
-    console.log("Reading " + themesConfigPath);
+    .then((result) => lookupService(result.address, 0))
+    .then((result) => {
+        hostFqdn = "http://" + result.hostname;
+        console.log("Reading " + themesConfigPath);
 
-    genThemes(themesConfigPath);
-  })
-  .catch((error) => {
-    process.nextTick(() => {
-      throw error;
+        genThemes(themesConfigPath);
+    })
+    .catch((error) => {
+        process.nextTick(() => {
+            throw error;
+        });
     });
-  });

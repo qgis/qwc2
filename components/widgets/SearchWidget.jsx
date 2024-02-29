@@ -8,13 +8,16 @@
 
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import axios from 'axios';
-import {v1 as uuidv1} from 'uuid';
 import isEmpty from 'lodash.isempty';
-import Spinner from '../Spinner';
+import PropTypes from 'prop-types';
+import {v1 as uuidv1} from 'uuid';
+
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import Spinner from '../Spinner';
+
 import './style/SearchWidget.css';
 
 export default class SearchWidget extends React.Component {

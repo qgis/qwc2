@@ -8,16 +8,19 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
+
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
 import url from 'url';
+
 import {setColorScheme, setUserInfoFields} from '../actions/localConfig';
 import SideBar from '../components/SideBar';
 import ConfigUtils from '../utils/ConfigUtils';
-import {getUserBookmarks} from '../utils/PermaLinkUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import {getUserBookmarks} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
+
 import './style/Settings.css';
 
 

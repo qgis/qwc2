@@ -7,12 +7,15 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import LocaleUtils from '../utils/LocaleUtils';
+
+import PropTypes from 'prop-types';
+
 import {zoomToExtent} from '../actions/map';
 import Icon from '../components/Icon';
+import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
+
 import './style/Buttons.css';
 
 

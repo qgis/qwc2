@@ -7,9 +7,12 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import Icon from '../Icon';
+
 import LocaleUtils from '../../utils/LocaleUtils';
+import Icon from '../Icon';
+
 import './style/FileSelector.css';
 
 export default class FileSelector extends React.Component {
@@ -60,7 +63,7 @@ export default class FileSelector extends React.Component {
                 <button className="button">
                     <Icon icon="folder-open" />
                 </button>
-                <input accept={this.props.accept} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" multiple={this.props.multiple} />
+                <input accept={this.props.accept} multiple={this.props.multiple} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />
             </div>
         );
     }

@@ -7,11 +7,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import axios from 'axios';
 import ol from 'openlayers';
 import url from 'url';
-import axios from 'axios';
-import CoordinatesUtils from '../../../utils/CoordinatesUtils';
+
 import ConfigUtils from '../../../utils/ConfigUtils';
+import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import MiscUtils from '../../../utils/MiscUtils';
 
 

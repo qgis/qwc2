@@ -15,9 +15,9 @@ import mvtLayer from './MVTLayer';
 import osmLayer from './OSMLayer';
 import overlayLayer from './OverlayLayer';
 import vectorLayer from './VectorLayer';
+import wfsLayer from './WFSLayer';
 import wmsLayer from './WMSLayer';
 import wmtsLayer from './WMTSLayer';
-import wfsLayer from './WFSLayer';
 import xyzLayer from './XYZLayer';
 
 export default {

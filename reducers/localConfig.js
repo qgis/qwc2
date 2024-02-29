@@ -8,7 +8,6 @@
  */
 
 import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS, SET_COLOR_SCHEME, SET_USER_INFO_FIELDS, SET_PERMALINK_PARAMETERS} from '../actions/localConfig';
-
 import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 

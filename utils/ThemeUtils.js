@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import url from 'url';
 import {v4 as uuidv4} from 'uuid';
-import {remove as removeDiacritics} from 'diacritics';
 
-import {SearchResultType} from '../actions/search';
 import {LayerRole} from '../actions/layers';
+import {SearchResultType} from '../actions/search';
 import {NotificationType, showNotification} from '../actions/windows';
 import ConfigUtils from './ConfigUtils';
 import LayerUtils from './LayerUtils';

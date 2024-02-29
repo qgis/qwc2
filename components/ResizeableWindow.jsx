@@ -7,15 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import {connect} from 'react-redux';
 import {Rnd} from 'react-rnd';
+
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
+
 import {raiseWindow, registerWindow, unregisterWindow, setSplitScreen} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
+
 import './style/ResizeableWindow.css';
 
 const WINDOW_GEOMETRIES = {};

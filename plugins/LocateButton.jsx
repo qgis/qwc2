@@ -8,14 +8,17 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import classnames from 'classnames';
-import LocaleUtils from '../utils/LocaleUtils';
+import PropTypes from 'prop-types';
+
 import {changeLocateState} from '../actions/locate';
 import Icon from '../components/Icon';
 import Spinner from '../components/Spinner';
+import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
+
 import './style/Buttons.css';
 
 

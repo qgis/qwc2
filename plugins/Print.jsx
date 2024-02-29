@@ -7,12 +7,14 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import axios from 'axios';
-import isEmpty from 'lodash.isempty';
 import FileSaver from 'file-saver';
 import formDataEntries from 'formdata-json';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
 import {changeRotation, panTo} from '../actions/map';
 import Icon from '../components/Icon';
@@ -29,6 +31,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+
 import './style/Print.css';
 
 

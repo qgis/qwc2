@@ -7,13 +7,16 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import {setEditContext, getFeatureTemplate} from '../actions/editing';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
-import AttributeForm from './AttributeForm';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import AttributeForm from './AttributeForm';
+
 import './style/LinkFeatureForm.css';
 
 class LinkFeatureForm extends React.Component {

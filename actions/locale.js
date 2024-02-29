@@ -11,11 +11,12 @@ import ReducerIndex from '../reducers/index';
 import localeReducer from '../reducers/locale';
 ReducerIndex.register("locale", localeReducer);
 
-import axios from 'axios';
 import {getLanguageCountries} from '@ladjs/country-language';
+import axios from 'axios';
+import deepmerge from 'deepmerge';
+
 import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
-import deepmerge from 'deepmerge';
 
 export const CHANGE_LOCALE = 'CHANGE_LOCALE';
 

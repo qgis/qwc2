@@ -7,39 +7,42 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {createSelector} from 'reselect';
-import isEmpty from 'lodash.isempty';
+
 import axios from 'axios';
-import {v1 as uuidv1} from 'uuid';
 import classnames from 'classnames';
-import polygonIntersectTest from 'polygon-intersect-test';
+import isEmpty from 'lodash.isempty';
 import pointInPolygon from 'point-in-polygon';
-import {SearchResultType} from '../actions/search';
+import polygonIntersectTest from 'polygon-intersect-test';
+import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
+import {v1 as uuidv1} from 'uuid';
+
+import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
 import {logAction} from '../actions/logging';
 import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
-import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
-import {setCurrentTheme} from '../actions/theme';
+import {SearchResultType} from '../actions/search';
 import {openExternalUrl, setCurrentTask} from '../actions/task';
+import {setCurrentTheme} from '../actions/theme';
 import {showNotification} from '../actions/windows';
-import MapSelection from './MapSelection';
+import displayCrsSelector from '../selectors/displaycrs';
+import searchProvidersSelector from '../selectors/searchproviders';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import InputContainer from './InputContainer';
+import MapSelection from './MapSelection';
 import Spinner from './Spinner';
 import ButtonBar from './widgets/ButtonBar';
 import ComboBox from './widgets/ComboBox';
 import NumberInput from './widgets/NumberInput';
-import displayCrsSelector from '../selectors/displaycrs';
-import searchProvidersSelector from '../selectors/searchproviders';
-import ConfigUtils from '../utils/ConfigUtils';
-import LayerUtils from '../utils/LayerUtils';
-import LocaleUtils from '../utils/LocaleUtils';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
-import VectorLayerUtils from '../utils/VectorLayerUtils';
-import MapUtils from '../utils/MapUtils';
-import MiscUtils from '../utils/MiscUtils';
-import {UrlParams} from '../utils/PermaLinkUtils';
+
 import './style/SearchBox.css';
 
 class SearchBox extends React.Component {

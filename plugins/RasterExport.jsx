@@ -6,13 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import axios from 'axios';
 import FileSaver from 'file-saver';
-import isEmpty from 'lodash.isempty';
 import formDataEntries from 'formdata-json';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
@@ -27,6 +29,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+
 import './style/RasterExport.css';
 
 

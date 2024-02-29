@@ -8,12 +8,13 @@
 
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
-import {v4 as uuidv4} from 'uuid';
 import url from 'url';
+import {v4 as uuidv4} from 'uuid';
+
+import {LayerRole} from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import MapUtils from './MapUtils';
-import {LayerRole} from '../actions/layers';
 import VectorLayerUtils from './VectorLayerUtils';
 
 const LayerUtils = {
@@ -774,7 +775,7 @@ const LayerUtils = {
                 LAYER: layername,
                 STYLES: style,
                 FILTER: layer.params.FILTER ?? ''
-            }
+            };
             delete urlParts.search;
             return url.format(urlParts);
         }

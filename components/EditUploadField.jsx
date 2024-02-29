@@ -7,15 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import mime from 'mime-to-extensions';
-import Icon from './Icon';
+import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
+
+import ConfigUtils from '../utils/ConfigUtils';
+import {showImageEditor} from '../utils/ImageEditor';
+import LocaleUtils from '../utils/LocaleUtils';
+import Icon from './Icon';
 import ModalDialog from './ModalDialog';
 import ButtonBar from './widgets/ButtonBar';
-import ConfigUtils from '../utils/ConfigUtils';
-import LocaleUtils from '../utils/LocaleUtils';
-import {showImageEditor} from '../utils/ImageEditor';
+
 import './style/EditUploadField.css';
 
 

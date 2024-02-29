@@ -9,13 +9,15 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
+
+import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
-import ol from 'openlayers';
+
 import {changeMeasurementState} from '../../actions/measurement';
 import displayCrsSelector from '../../selectors/displaycrs';
-import MeasureUtils from '../../utils/MeasureUtils';
 import FeatureStyles from '../../utils/FeatureStyles';
+import MeasureUtils from '../../utils/MeasureUtils';
 
 
 class MeasurementSupport extends React.Component {

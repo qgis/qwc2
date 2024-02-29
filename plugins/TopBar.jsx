@@ -7,9 +7,11 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import {connect} from 'react-redux';
+
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+
 import {toggleFullscreen} from '../actions/display';
 import {setTopbarHeight} from '../actions/map';
 import {openExternalUrl} from '../actions/task';
@@ -18,6 +20,7 @@ import Icon from '../components/Icon';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/TopBar.css';
 
 

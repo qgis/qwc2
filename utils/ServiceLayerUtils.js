@@ -6,18 +6,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ol from 'openlayers';
 import axios from 'axios';
 import deepmerge from 'deepmerge';
-import isEmpty from 'lodash.isempty';
 import {XMLParser} from 'fast-xml-parser';
+import isEmpty from 'lodash.isempty';
+import ol from 'openlayers';
 import randomColor from 'randomcolor';
 import url from 'url';
+
+import {LayerRole} from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
 import MiscUtils from './MiscUtils';
-import {LayerRole} from '../actions/layers';
 
 function strcmp(a, b) {
     const al = a.toLowerCase();

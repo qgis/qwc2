@@ -24,6 +24,7 @@ module.exports = {
     },
   },
   "plugins": [
+    "perfectionist",                 // https://github.com/azat-io/eslint-plugin-perfectionist
     "react"                          // https://github.com/yannickcr/eslint-plugin-react
   ],
   "extends": [
@@ -175,7 +176,37 @@ module.exports = {
     "react/sort-prop-types": 2,      // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/sort-prop-types.md
     "react/no-did-mount-set-state": [2, "disallow-in-func"], // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-did-mount-set-state.md
     "react/self-closing-comp": 2,    // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/self-closing-comp.md
-    "react/jsx-wrap-multilines": 2,   // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md
-    "react/no-access-state-in-setstate": "error"
+    "react/jsx-wrap-multilines": 2,  // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-wrap-multilines.md
+    "react/no-access-state-in-setstate": "error",
+
+/**
+ * Perfectionist                     // https://github.com/azat-io/eslint-plugin-perfectionist
+ */
+    "perfectionist/sort-imports": [  // https://eslint-plugin-perfectionist.azat.io/rules/sort-imports
+        "error",
+        {
+            "type": "natural",
+            "order": "asc",
+            "groups": [
+                "type",
+                "react",
+                ["builtin", "external"],
+                "internal-type",
+                "internal",
+                ["parent-type", "sibling-type", "index-type"],
+                ["parent", "sibling", "index"],
+                "side-effect",
+                "style",
+                "object",
+                "unknown"
+            ],
+            "custom-groups": {
+                "value": {
+                  "react": ["react", "react-*"]
+                }
+            },
+            "newlines-between": "always"
+        }
+    ]
   }
 }

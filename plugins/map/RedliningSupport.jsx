@@ -7,17 +7,19 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {createSelector} from 'reselect';
-import {v4 as uuidv4} from 'uuid';
-import ol from 'openlayers';
+
 import polySelfIntersections from 'geojson-polygon-self-intersections';
 import isEmpty from 'lodash.isempty';
-import {changeRedliningState} from '../../actions/redlining';
+import ol from 'openlayers';
+import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
+import {v4 as uuidv4} from 'uuid';
+
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
-import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
+import {changeRedliningState} from '../../actions/redlining';
 import NumericInputWindow from '../../components/NumericInputWindow';
+import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
 import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';

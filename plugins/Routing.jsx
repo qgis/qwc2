@@ -7,22 +7,24 @@
  */
 
 import React from 'react';
+import NumericInput from 'react-numeric-input2';
 import {connect} from 'react-redux';
+import Sortable from 'react-sortablejs';
+
+import FileSaver from 'file-saver';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
-import FileSaver from 'file-saver';
-import NumericInput from 'react-numeric-input2';
-import Sortable from 'react-sortablejs';
+
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import InputContainer from '../components/InputContainer';
+import ResizeableWindow from '../components/ResizeableWindow';
+import Spinner from '../components/Spinner';
 import ButtonBar from '../components/widgets/ButtonBar';
 import DateTimeInput from '../components/widgets/DateTimeInput';
 import SearchWidget from '../components/widgets/SearchWidget';
-import Spinner from '../components/Spinner';
-import ResizeableWindow from '../components/ResizeableWindow';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import displayCrsSelector from '../selectors/displaycrs';
@@ -31,8 +33,9 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import RoutingInterface from '../utils/RoutingInterface';
-import './style/Routing.css';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+
+import './style/Routing.css';
 
 
 /**

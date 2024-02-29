@@ -8,10 +8,8 @@
  */
 
 import isEmpty from 'lodash.isempty';
-import {UrlParams} from '../utils/PermaLinkUtils';
-import LayerUtils from '../utils/LayerUtils';
-import VectorLayerUtils from '../utils/VectorLayerUtils';
 import {v4 as uuidv4} from 'uuid';
+
 import {
     LayerRole,
     SET_LAYER_LOADING,
@@ -32,6 +30,9 @@ import {
     SET_LAYERS,
     SET_FILTER
 } from '../actions/layers';
+import LayerUtils from '../utils/LayerUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 
 function propagateLayerProperty(newlayer, property, value, path = null) {

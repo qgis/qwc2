@@ -76,6 +76,7 @@
         "@babel/preset-react": "^7.23.3",
         "@furkot/webfonts-generator": "^2.0.0",
         "@types/react": "^18.2.45",
+        "eslint-plugin-perfectionist": "^2.5.0",
         "mkdirp": "^3.0.1",
         "object-path": "^0.11.8"
     }

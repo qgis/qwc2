@@ -6,14 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {v1 as uuidv1} from 'uuid';
-import ol from 'openlayers';
-import isEmpty from 'lodash.isempty';
 import geojsonBbox from 'geojson-bounding-box';
-import svgpath from 'svgpath';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
-import ConfigUtils from '../utils/ConfigUtils';
+import isEmpty from 'lodash.isempty';
 import {getDefaultImageStyle} from 'ol/format/KML';
+import ol from 'openlayers';
+import svgpath from 'svgpath';
+import {v1 as uuidv1} from 'uuid';
+
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {END_MARKERS, computeFeatureStyle} from '../utils/FeatureStyles';
 
 

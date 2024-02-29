@@ -6,15 +6,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import isEmpty from 'lodash.isempty';
+import axios from 'axios';
 import geojsonBbox from 'geojson-bounding-box';
+import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import url from 'url';
-import axios from 'axios';
 import {v1 as uuidv1} from 'uuid';
+
 import {LayerRole} from '../actions/layers';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';

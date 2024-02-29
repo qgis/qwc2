@@ -7,16 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import classnames from 'classnames';
-import isEmpty from 'lodash.isempty';
 import Sortable from 'react-sortablejs';
+
+import classnames from 'classnames';
 import FileSaver from 'file-saver';
-import {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} from '../actions/layers';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {setActiveLayerInfo} from '../actions/layerinfo';
-import {setActiveServiceInfo} from '../actions/serviceinfo';
+import {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} from '../actions/layers';
 import {toggleMapTips, zoomToExtent} from '../actions/map';
+import {setActiveServiceInfo} from '../actions/serviceinfo';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
 import LayerInfoWindow from '../components/LayerInfoWindow';
@@ -30,6 +32,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+
 import './style/LayerTree.css';
 
 

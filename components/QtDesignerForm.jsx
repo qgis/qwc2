@@ -8,21 +8,23 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
+
 import axios from 'axios';
-import xml2js from 'xml2js';
-import {v1 as uuidv1} from 'uuid';
 import isEmpty from 'lodash.isempty';
-import ButtonBar from './widgets/ButtonBar';
-import DateTimeInput from './widgets/DateTimeInput';
-import TextInput from './widgets/TextInput';
-import EditComboField, {KeyValCache} from './EditComboField';
-import EditUploadField from './EditUploadField';
-import Spinner from './Spinner';
+import PropTypes from 'prop-types';
+import {v1 as uuidv1} from 'uuid';
+import xml2js from 'xml2js';
+
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import EditComboField, {KeyValCache} from './EditComboField';
+import EditUploadField from './EditUploadField';
 import Icon from './Icon';
+import Spinner from './Spinner';
+import ButtonBar from './widgets/ButtonBar';
+import DateTimeInput from './widgets/DateTimeInput';
+import TextInput from './widgets/TextInput';
 
 import './style/QtDesignerForm.css';
 

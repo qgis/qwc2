@@ -8,15 +8,18 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
+
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
 import {Image} from '../components/widgets/Primitives';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+
 import './style/MapLegend.css';
-import isEmpty from 'lodash.isempty';
 
 /**
  * Displays the map legend in a floating dialog.

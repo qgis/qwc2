@@ -8,17 +8,20 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
+
 import PropTypes from 'prop-types';
 import url from 'url';
+
 import {addMarker, removeMarker} from '../actions/layers';
-import ShareSocials from '../components/share/ShareSocials';
-import ShareQRCode from '../components/share/ShareQRCode';
-import ShareLink from '../components/share/ShareLink';
 import SideBar from '../components/SideBar';
+import ShareLink from '../components/share/ShareLink';
+import ShareQRCode from '../components/share/ShareQRCode';
+import ShareSocials from '../components/share/ShareSocials';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
-import LocaleUtils from '../utils/LocaleUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import {generatePermaLink} from '../utils/PermaLinkUtils';
+
 import './style/Share.css';
 
 

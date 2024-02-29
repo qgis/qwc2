@@ -7,8 +7,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CHANGE_LOCALE} from '../actions/locale';
 import {flatten} from 'flat';
+
+import {CHANGE_LOCALE} from '../actions/locale';
 
 const defaultState = {
     messages: {},

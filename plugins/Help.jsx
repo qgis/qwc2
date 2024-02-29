@@ -7,9 +7,11 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import axios from 'axios';
+import PropTypes from 'prop-types';
+
 import SideBar from '../components/SideBar';
 
 

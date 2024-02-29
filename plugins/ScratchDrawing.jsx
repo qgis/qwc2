@@ -7,13 +7,15 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import Mousetrap from 'mousetrap';
+import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
-import {changeRedliningState} from '../actions/redlining';
+
 import {LayerRole, addLayerFeatures, removeLayer, clearLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
+import {changeRedliningState} from '../actions/redlining';
 import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
 import LocaleUtils from '../utils/LocaleUtils';

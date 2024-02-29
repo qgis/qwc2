@@ -7,9 +7,12 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import Icon from './Icon';
+
 import './style/MessageBar.css';
 
 class MessageBar extends React.Component {

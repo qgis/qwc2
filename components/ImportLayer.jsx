@@ -7,25 +7,28 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash.isempty';
+
 import axios from 'axios';
-import url from 'url';
-import Proj4js from 'proj4';
+import isEmpty from 'lodash.isempty';
 import {WorkerMessageHandler} from "pdfjs-dist/build/pdf.worker";
-import LayerCatalogWidget from './widgets/LayerCatalogWidget';
-import Spinner from './Spinner';
-import EditableSelect from '../components/widgets/EditableSelect';
+import Proj4js from 'proj4';
+import PropTypes from 'prop-types';
+import url from 'url';
+
 import {addLayer, addLayerFeatures} from '../actions/layers';
-import FileSelector from './widgets/FileSelector';
+import EditableSelect from '../components/widgets/EditableSelect';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+import Spinner from './Spinner';
+import FileSelector from './widgets/FileSelector';
+import LayerCatalogWidget from './widgets/LayerCatalogWidget';
+
 import './style/ImportLayer.css';
-import MiscUtils from '../utils/MiscUtils';
 
 
 class ImportLayer extends React.Component {

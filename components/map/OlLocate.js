@@ -7,8 +7,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 import ol from 'openlayers';
+
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
+
 import './OlLocate.css';
 
 const createPopup = function() {

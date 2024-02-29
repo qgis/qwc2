@@ -8,16 +8,19 @@
 
 import React from 'react';
 import {connect} from 'react-redux';
+
 import classnames from 'classnames';
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import LocaleUtils from '../utils/LocaleUtils';
-import ConfigUtils from '../utils/ConfigUtils';
+
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
+import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import {createBookmark, getUserBookmarks, removeBookmark, updateBookmark} from '../utils/PermaLinkUtils';
+
 import './style/Bookmark.css';
-import isEmpty from 'lodash.isempty';
 
 
 /**

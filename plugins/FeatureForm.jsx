@@ -7,9 +7,11 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
@@ -20,6 +22,7 @@ import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+
 import './style/FeatureForm.css';
 
 

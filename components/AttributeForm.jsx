@@ -7,20 +7,23 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash.isempty';
+
 import clone from 'clone';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
+
 import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
-import {setCurrentTaskBlocked} from '../actions/task';
 import {LayerRole, refreshLayer} from '../actions/layers';
+import {setCurrentTaskBlocked} from '../actions/task';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import AutoEditForm from './AutoEditForm';
 import LinkFeatureForm from './LinkFeatureForm';
 import QtDesignerForm from './QtDesignerForm';
 import ButtonBar from './widgets/ButtonBar';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
-import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/AttributeForm.css';
 
 class AttributeForm extends React.Component {
@@ -321,7 +324,7 @@ class AttributeForm extends React.Component {
             }
         }
     };
-    checkValidity = (form, changed=false) => {
+    checkValidity = (form, changed = false) => {
         if (form) {
             this.setState({formValid: form.checkValidity()});
             if (changed) {

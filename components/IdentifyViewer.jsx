@@ -6,16 +6,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash.isempty';
+
+import clone from 'clone';
 import FileSaver from 'file-saver';
 import htmlReactParser, {domToReact} from 'html-react-parser';
-import clone from 'clone';
-import omit from 'lodash.omit';
 import JSZip from 'jszip';
-import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
+import isEmpty from 'lodash.isempty';
+import omit from 'lodash.omit';
+import PropTypes from 'prop-types';
+
 import {setActiveLayerInfo} from '../actions/layerinfo';
+import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {openExternalUrl} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -25,6 +27,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
+
 import './style/IdentifyViewer.css';
 
 
@@ -159,19 +162,19 @@ class IdentifyViewer extends React.Component {
         displayResultTree: PropTypes.bool,
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         exportGeometry: PropTypes.bool,
+        highlightAllResults: PropTypes.bool,
         identifyResults: PropTypes.object,
         iframeDialogsInitiallyDocked: PropTypes.bool,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         mapcrs: PropTypes.string,
+        openExternalUrl: PropTypes.func,
         removeLayer: PropTypes.func,
         replaceImageUrls: PropTypes.bool,
         setActiveLayerInfo: PropTypes.func,
-        openExternalUrl: PropTypes.func,
         showLayerTitles: PropTypes.bool,
         theme: PropTypes.object,
-        zoomToExtent: PropTypes.func,
-        highlightAllResults: PropTypes.bool
+        zoomToExtent: PropTypes.func
     };
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',

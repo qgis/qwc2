@@ -8,6 +8,7 @@
  */
 
 import ol from 'openlayers';
+
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 
 function getWMSURLs(urls) {
