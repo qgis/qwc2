@@ -136,10 +136,10 @@ class Bookmark extends React.Component {
                 const scale = parseFloat(params.s);
                 const zoom = MapUtils.computeZoom(this.props.mapScales, scale);
                 const center = params.c.split(/[;,]/g).map(x => parseFloat(x));
-                this.props.zoomToPoint(center, zoom, this.props.mapCrs);
+                this.props.zoomToPoint(center, zoom, params.crs ?? this.props.mapCrs);
             } else if ('e' in params) {
                 const bounds = (params.e).split(',').map(n => parseFloat(n));
-                this.props.zoomToExtent(bounds, this.props.mapCrs);
+                this.props.zoomToExtent(bounds, params.crs ?? this.props.mapCrs);
             }
         });
     };
