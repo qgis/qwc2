@@ -59,7 +59,7 @@ class MapTip extends React.Component {
         maptips: [],
         pos: null
     };
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.map !== prevProps.map || this.props.theme !== prevProps.theme) {
             this.clearMaptip();
         }

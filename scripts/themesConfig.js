@@ -52,6 +52,7 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
         }
     }
 
+    /* eslint-disable-next-line */
     console.error("Using WMS GetMap to generate thumbnail for " + configItem.url);
 
     // WMS GetMap request
@@ -105,6 +106,7 @@ function getThumbnail(configItem, resultItem, layers, crs, extent, resolve, prox
         // finish task
         resolve(true);
     }).catch((error) => {
+        /* eslint-disable-next-line */
         console.error("ERROR generating thumbnail for WMS " + configItem.url + ":\n", error);
         resultItem.thumbnail = "img/mapthumbs/default.jpg";
         // finish task
@@ -300,6 +302,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                 }
             );
 
+            /* eslint-disable-next-line */
             console.log("Parsing WMS GetProjectSettings of " + configItem.url);
 
             const topLayer = capabilities.Capability.Layer;
@@ -401,6 +404,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                             printTemplate.atlasCoverageLayer = atlasLayer;
                             printTemplate.atlas_pk = pk;
                         } catch (e) {
+                            /* eslint-disable-next-line */
                             console.warn("Failed to determine primary key for atlas layer " + atlasLayer);
                         }
                     }
@@ -540,6 +544,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             // get thumbnail asynchronously
             getThumbnail(configItem, resultItem, visibleLayers, crs, extent, resolve, proxy);
         }).catch((error) => {
+            /* eslint-disable-next-line */
             console.error("ERROR reading WMS GetProjectSettings of " + configItem.url + ":\n", error);
             resultItem.error = "Could not read GetProjectSettings";
             resultItem.title = "Error";
@@ -639,14 +644,17 @@ function genThemes(themesConfig) {
         // write config file
         fs.writeFile(process.cwd() + '/static/themes.json', JSON.stringify(result, null, 2), (error) => {
             if (error) {
+                /* eslint-disable-next-line */
                 console.error("ERROR:", error);
                 process.exit(1);
             } else {
+                /* eslint-disable-next-line */
                 console.log("\nCreated themes.json\n\n");
             }
         });
 
     }).catch((error) => {
+        /* eslint-disable-next-line */
         console.error("ERROR:", error);
         process.exit(1);
     });
@@ -658,6 +666,7 @@ lookup(os.hostname(), { hints: dns.ADDRCONFIG })
     .then((result) => lookupService(result.address, 0))
     .then((result) => {
         hostFqdn = "http://" + result.hostname;
+        /* eslint-disable-next-line */
         console.log("Reading " + themesConfigPath);
 
         genThemes(themesConfigPath);

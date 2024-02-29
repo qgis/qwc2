@@ -14,7 +14,6 @@ import isEmpty from 'lodash.isempty';
 import {WorkerMessageHandler} from "pdfjs-dist/build/pdf.worker";
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
-import url from 'url';
 
 import {addLayer, addLayerFeatures} from '../actions/layers';
 import EditableSelect from '../components/widgets/EditableSelect';

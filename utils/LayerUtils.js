@@ -171,7 +171,7 @@ const LayerUtils = {
             newParams = {
                 LAYERS: layers.join(","),
                 OPACITIES: layers.map((x, i) => Math.round((opacities[i] ?? "255") * opacityMult)).map(Math.round).join(","),
-                STYLES: layer.style ?? params.STYLES ?? layers.map(x => "").join(","),
+                STYLES: layer.style ?? params.STYLES ?? layers.map(() => "").join(","),
                 ...layer.dimensionValues
             };
             queryLayers = layer.queryable && !layer.omitFromQueryLayers ? [layer.name] : [];
@@ -717,6 +717,7 @@ const LayerUtils = {
             if (externalLayer.tileGridName) {
                 externalLayer.tileGridConfig = (ConfigUtils.getConfigProp("mvtTileGrids") || {})[externalLayer.tileGridName];
                 if (!externalLayer.tileGridConfig) {
+                    /* eslint-disable-next-line */
                     console.warn("Tile grid config not found: " + externalLayer.tileGridName);
                 }
             }

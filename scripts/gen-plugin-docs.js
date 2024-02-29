@@ -69,4 +69,5 @@ pluginData.forEach(plugin => {
 });
 
 fs.writeFileSync('./qwc2/doc/plugins.md', output);
+/* eslint-disable-next-line */
 console.log("Plugin documentation written to doc/src/plugins.md!");

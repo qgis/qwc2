@@ -92,6 +92,7 @@ const workspaces = readJSON('/package.json').workspaces || [];
 // Generate workspace translations
 let collectedMsgIds = new Set();
 for (const workspace of workspaces) {
+    /* eslint-disable-next-line */
     console.log("Generating translations for " + workspace);
     const newMsgIds = updateTsConfig(process.cwd() + '/' + workspace, '/' + workspace + '/translations/tsconfig.json');
     collectedMsgIds = new Set([...collectedMsgIds, ...newMsgIds]);
@@ -110,8 +111,10 @@ for (const workspace of workspaces) {
         // Write updated translations file
         try {
             fs.writeFileSync(process.cwd() + '/' + workspace + '/translations/' + lang + ".json", JSON.stringify(data, null, 2) + "\n");
+            /* eslint-disable-next-line */
             console.log('Wrote ' + workspace + '/translations/' + lang + '.json');
         } catch (e) {
+            /* eslint-disable-next-line */
             console.error('Failed to write ' + workspace + '/translations/' + lang + '.json: ' + e);
         }
     }
@@ -147,8 +150,10 @@ for (const lang of config.languages || []) {
     // Write output
     try {
         fs.writeFileSync(process.cwd() + '/static/translations/' + lang + '.json', JSON.stringify(data, null, 2) + "\n");
+        /* eslint-disable-next-line */
         console.log('Wrote static/translations/' + lang + '.json');
     } catch (e) {
+        /* eslint-disable-next-line */
         console.error('Failed to write static/translations/' + lang + '.json: ' + e);
     }
 }
