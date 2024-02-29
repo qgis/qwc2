@@ -83,7 +83,8 @@
       "remove": "Elimină semn de carte",
       "removefailed": "Semnul de carte nu a putut fi șters",
       "savefailed": "Semnul de carte nu a putut fi salvat",
-      "update": "Actualizează semnul de carte"
+      "update": "Actualizează semnul de carte",
+      "zoomToExtent": ""
     },
     "bottombar": {
       "mousepos_label": "Coordonate",

@@ -83,7 +83,8 @@
       "remove": "Rimuovi segnalibro",
       "removefailed": "Impossibile rimuovere il segnalibro",
       "savefailed": "Impossibile aggiornare il segnalibro",
-      "update": "Aggiorna segnalibro"
+      "update": "Aggiorna segnalibro",
+      "zoomToExtent": ""
     },
     "bottombar": {
       "mousepos_label": "Coordinate",

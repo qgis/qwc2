@@ -83,7 +83,8 @@
       "remove": "Supprimer le marque-page",
       "removefailed": "Echec de suppression du marque-page",
       "savefailed": "Echec d'enregistrement du marque-page",
-      "update": "Sauvegarder le marque-page"
+      "update": "Sauvegarder le marque-page",
+      "zoomToExtent": "Zommer sur l'étendue"
     },
     "bottombar": {
       "mousepos_label": "Coordonnées",

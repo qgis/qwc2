@@ -83,7 +83,8 @@
       "remove": "Poista kirjanmerkki",
       "removefailed": "",
       "savefailed": "",
-      "update": "Päivitä kirjanmerkki"
+      "update": "Päivitä kirjanmerkki",
+      "zoomToExtent": ""
     },
     "bottombar": {
       "mousepos_label": "Koordinaatit",

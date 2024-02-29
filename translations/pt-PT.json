@@ -83,7 +83,8 @@
       "remove": "Remover",
       "removefailed": "Falha ao Remover",
       "savefailed": "Falha ao Guardar",
-      "update": "Atualizar"
+      "update": "Atualizar",
+      "zoomToExtent": ""
     },
     "bottombar": {
       "mousepos_label": "Coordenadas",

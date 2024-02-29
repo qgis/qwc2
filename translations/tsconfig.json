@@ -95,6 +95,7 @@
     "bookmark.removefailed",
     "bookmark.savefailed",
     "bookmark.update",
+    "bookmark.zoomToExtent",
     "bottombar.mousepos_label",
     "bottombar.scale_label",
     "bottombar.terms_label",
