@@ -7,13 +7,16 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Swipeable} from './Swipeable';
-import Icon from './Icon';
+
+import classnames from 'classnames';
+import PropTypes from 'prop-types';
+
 import {setCurrentTask} from '../actions/task';
 import LocaleUtils from '../utils/LocaleUtils';
-import classnames from 'classnames';
+import Icon from './Icon';
+import {Swipeable} from './Swipeable';
+
 import './style/SideBar.css';
 
 class SideBar extends React.Component {

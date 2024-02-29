@@ -7,12 +7,15 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import classnames from 'classnames';
-import MenuButton from './MenuButton';
-import Icon from '../Icon';
+import PropTypes from 'prop-types';
+
 import LocaleUtils from '../../utils/LocaleUtils';
+import Icon from '../Icon';
+import MenuButton from './MenuButton';
+
 import './style/ButtonBar.css';
 
 const ButtonPropShape = PropTypes.shape({

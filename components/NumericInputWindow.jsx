@@ -7,18 +7,21 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
+
 import {addLayerFeatures, LayerRole, removeLayer} from '../actions/layers';
-import ResizeableWindow from './ResizeableWindow';
 import displayCrsSelector from '../selectors/displaycrs';
-import LocaleUtils from '../utils/LocaleUtils';
-import './style/NumericInputWindow.css';
-import Icon from './Icon';
-import TextInput from './widgets/TextInput';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+import Icon from './Icon';
+import ResizeableWindow from './ResizeableWindow';
+import TextInput from './widgets/TextInput';
+
+import './style/NumericInputWindow.css';
 
 
 class NumericInputWindow extends React.Component {

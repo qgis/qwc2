@@ -7,8 +7,10 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
+
 import './style/SuggestionInput.css';
 
 

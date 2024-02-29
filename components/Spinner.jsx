@@ -6,6 +6,7 @@
  */
 
 import React from 'react';
+
 import './style/Spinner.css';
 
 export default class Spinner extends React.Component {

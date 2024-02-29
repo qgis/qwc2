@@ -1,14 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import isEmpty from 'lodash.isempty';
+
 import {remove as removeDiacritics} from 'diacritics';
+import isEmpty from 'lodash.isempty';
+import PropTypes from 'prop-types';
+
 import {addLayer} from '../../actions/layers';
-import InputContainer from '../InputContainer';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
 import Icon from '../Icon';
+import InputContainer from '../InputContainer';
+
 import './style/LayerCatalogWidget.css';
 
 class LayerCatalogWidget extends React.PureComponent {

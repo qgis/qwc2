@@ -7,8 +7,10 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
+
 import './style/InputContainer.css';
 
 export default class InputContainer extends React.Component {

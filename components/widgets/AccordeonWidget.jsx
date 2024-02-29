@@ -7,9 +7,12 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import Icon from '../Icon';
+
 import LocaleUtils from '../../utils/LocaleUtils';
+import Icon from '../Icon';
+
 import './style/AccordeonWidget.css';
 
 export default class AccordeonWidget extends React.Component {

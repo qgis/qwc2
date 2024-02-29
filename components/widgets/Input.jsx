@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
 class Input extends React.Component {

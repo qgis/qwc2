@@ -7,10 +7,13 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
 import {toggleFullscreen} from '../actions/display';
 import LocaleUtils from '../utils/LocaleUtils';
+
 import './style/FullscreenSwitcher.css';
 
 class FullscreenSwitcher extends React.Component {

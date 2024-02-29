@@ -7,15 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import dayjs from 'dayjs';
+import PropTypes from 'prop-types';
 import randomcolor from 'randomcolor';
+
 import {addLayerFeatures, removeLayer, LayerRole} from '../../actions/layers';
-import Spinner from '../Spinner';
-import Input from '../widgets/Input';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import Spinner from '../Spinner';
+import Input from '../widgets/Input';
+
 import './style/TimelineFeaturesSlider.css';
 
 

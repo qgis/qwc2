@@ -7,15 +7,18 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import Icon from './Icon';
 import {connect} from 'react-redux';
-import ResizeableWindow from './ResizeableWindow';
+
+import PropTypes from 'prop-types';
+
 import {LayerRole, addLayer} from '../actions/layers';
-import {setThemeLayersList} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
+import {setThemeLayersList} from '../actions/theme';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
+import Icon from './Icon';
+import ResizeableWindow from './ResizeableWindow';
+
 import './style/ThemeLayersListWindow.css';
 
 class ThemeLayersListWindow extends React.Component {

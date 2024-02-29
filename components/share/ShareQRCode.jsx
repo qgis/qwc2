@@ -8,10 +8,12 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
 import {QRCodeCanvas} from 'qrcode.react';
-import CopyButton from '../widgets/CopyButton';
+
 import LocaleUtils from '../../utils/LocaleUtils';
+import CopyButton from '../widgets/CopyButton';
 
 export default class ShareQRCode extends React.Component {
     static propTypes = {

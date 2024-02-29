@@ -7,11 +7,13 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
+import {closeWindow, closeAllWindows, NotificationType} from '../actions/windows';
 import Icon from './Icon';
 import ResizeableWindow from './ResizeableWindow';
-import {closeWindow, closeAllWindows, NotificationType} from '../actions/windows';
 
 import './style/WindowManager.css';
 

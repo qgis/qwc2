@@ -7,10 +7,13 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+
 import './style/TextInput.css';
 
 class TextInput extends React.Component {

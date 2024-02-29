@@ -7,27 +7,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Provider, connect} from 'react-redux';
 
 import axios from 'axios';
-import Proj4js from 'proj4';
-import {register as olProj4Register} from 'ol/proj/proj4';
 import deepmerge from 'deepmerge';
-
-import Localized from './Localized';
-import StandardStore from '../stores/StandardStore';
-import PluginsContainer from './PluginsContainer';
+import {register as olProj4Register} from 'ol/proj/proj4';
+import Proj4js from 'proj4';
+import PropTypes from 'prop-types';
 
 import {changeBrowserProperties} from '../actions/browser';
-import {loadLocale} from '../actions/locale';
-import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {addLayer} from '../actions/layers';
+import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
+import {loadLocale} from '../actions/locale';
 import {changeSearch} from '../actions/search';
-import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
+import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import {NotificationType, showNotification} from '../actions/windows';
-
+import StandardStore from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -35,9 +31,11 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
+import Localized from './Localized';
+import PluginsContainer from './PluginsContainer';
 
-import './style/DefaultColorScheme.css';
 import './style/App.css';
+import './style/DefaultColorScheme.css';
 
 
 const CSRF_TOKEN = MiscUtils.getCsrfToken();

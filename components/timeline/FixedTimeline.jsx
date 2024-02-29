@@ -7,12 +7,15 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import dayjs from 'dayjs';
+import PropTypes from 'prop-types';
+
+import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import ButtonBar from '../widgets/ButtonBar';
 import Input from '../widgets/Input';
-import LocaleUtils from '../../utils/LocaleUtils';
+
 import './style/FixedTimeline.css';
 
 export default class FixedTimeline extends React.Component {

@@ -7,12 +7,15 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import omit from 'lodash.omit';
 import NumericInput from 'react-numeric-input2';
+
+import omit from 'lodash.omit';
+import PropTypes from 'prop-types';
+
 import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
 import ToggleSwitch from './widgets/ToggleSwitch';
+
 import './style/AutoEditForm.css';
 
 export default class AutoEditForm extends React.Component {

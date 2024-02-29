@@ -7,9 +7,12 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import isEqual from 'lodash.isequal';
+import PropTypes from 'prop-types';
+
 import MapUtils from '../utils/MapUtils';
+
 import './style/PrintFrame.css';
 
 export default class PrintFrame extends React.Component {

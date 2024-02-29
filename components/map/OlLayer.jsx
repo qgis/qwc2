@@ -8,13 +8,15 @@
  */
 import React from 'react';
 import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
+
 import ol from 'openlayers';
+import PropTypes from 'prop-types';
+
 import {setLayerLoading} from '../../actions/layers';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import MapUtils from '../../utils/MapUtils';
 import Signal from '../../utils/Signal';
 import LayerRegistry from './layers/index';
-import MapUtils from '../../utils/MapUtils';
 
 export const OlLayerAdded = new Signal();
 export const OlLayerUpdated = new Signal();

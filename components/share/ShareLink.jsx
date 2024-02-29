@@ -7,9 +7,12 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import CopyButton from '../widgets/CopyButton';
+
 import LocaleUtils from '../../utils/LocaleUtils';
+import CopyButton from '../widgets/CopyButton';
+
 import './style/ShareLink.css';
 
 export default class ShareLink extends React.Component {

@@ -7,22 +7,25 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import mousetrap from 'mousetrap';
+
+import classnames from 'classnames';
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
-import classnames from 'classnames';
-import {setMenuMargin} from '../actions/windows';
+import isEqual from 'lodash.isequal';
+import mousetrap from 'mousetrap';
+import PropTypes from 'prop-types';
+
 import {setCurrentTask} from '../actions/task';
+import {setMenuMargin} from '../actions/windows';
 import InputContainer from '../components/InputContainer';
-import LocaleUtils from '../utils/LocaleUtils';
 import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import Icon from './Icon';
+
 import './style/AppMenu.css';
-import isEqual from 'lodash.isequal';
 
 
 class AppMenu extends React.Component {

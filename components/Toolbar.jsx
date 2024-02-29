@@ -7,13 +7,16 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+
 import Mousetrap from 'mousetrap';
-import LocaleUtils from '../utils/LocaleUtils';
+import PropTypes from 'prop-types';
+
 import {setCurrentTask} from '../actions/task';
-import Icon from './Icon';
 import ConfigUtils from '../utils/ConfigUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import Icon from './Icon';
+
 import './style/Toolbar.css';
 
 class Toolbar extends React.Component {

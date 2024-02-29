@@ -8,6 +8,7 @@
  */
 
 import ol from 'openlayers';
+
 import FeatureStyles from '../../../utils/FeatureStyles';
 
 export default {

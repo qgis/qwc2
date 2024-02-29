@@ -8,7 +8,6 @@
 */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
     FacebookShareButton,
     LinkedinShareButton,
@@ -22,7 +21,11 @@ import {
     WhatsappIcon,
     EmailIcon
 } from 'react-share';
+
+import PropTypes from 'prop-types';
+
 import LocaleUtils from '../../utils/LocaleUtils';
+
 import './style/ShareSocials.css';
 
 

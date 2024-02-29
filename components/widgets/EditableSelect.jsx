@@ -7,10 +7,12 @@
  */
 
 import React from 'react';
+
 import PropTypes from 'prop-types';
+
+import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
 import InputContainer from '../InputContainer';
-import MiscUtils from '../../utils/MiscUtils';
 
 import './style/EditableSelect.css';
 
