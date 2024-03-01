@@ -103,6 +103,7 @@ class MapSelection extends React.Component {
     }
     componentWillUnmount() {
         this.map.removeLayer(this.selectionLayer);
+        this.removeDrawInteraction();
     }
     addDrawInteraction = () => {
         // cleanup old interaction
@@ -111,8 +112,7 @@ class MapSelection extends React.Component {
         }
         if (this.props.geomType === "DragBox") {
             this.drawInteraction = new ol.interaction.DragBox({
-                className: 'selection-drag-box',
-                condition: ol.events.condition.shiftKeyOnly
+                className: 'selection-drag-box'
             });
 
             this.drawInteraction.on('boxend', () => {
