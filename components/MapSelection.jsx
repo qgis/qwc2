@@ -21,6 +21,7 @@ class MapSelection extends React.Component {
     static propTypes = {
         /* Whether the selection tool is active */
         active: PropTypes.bool,
+        currentTask: PropTypes.string,
         /* Optional, a css-cursor to use when drawing */
         cursor: PropTypes.string,
         /* The selection geometry type (Point, LineString, Polygon, Circle, DragBox, Box) */
@@ -103,6 +104,7 @@ class MapSelection extends React.Component {
     }
     componentWillUnmount() {
         this.map.removeLayer(this.selectionLayer);
+        this.removeDrawInteraction();
     }
     addDrawInteraction = () => {
         // cleanup old interaction
@@ -112,7 +114,9 @@ class MapSelection extends React.Component {
         if (this.props.geomType === "DragBox") {
             this.drawInteraction = new ol.interaction.DragBox({
                 className: 'selection-drag-box',
-                condition: ol.events.condition.shiftKeyOnly
+                condition: () => {
+                    return ["ZoomIn", "ZoomOut"].includes(this.props.currentTask) || ol.events.condition.shiftKeyOnly;
+                }
             });
 
             this.drawInteraction.on('boxend', () => {
@@ -208,6 +212,7 @@ class MapSelection extends React.Component {
 }
 
 export default connect((state) => ({
+    currentTask: state.task.id,
     projection: state.map.projection
 }), {
 })(MapSelection);
