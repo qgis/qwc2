@@ -26,6 +26,16 @@ button.map-button-active {
     color: var(--map-button-active-text-color);
 }
 
+button.map-button-disabled {
+    opacity: 0.7;
+    cursor: default;
+}
+
+button.map-button-disabled:hover {
+    background-color: var(--map-button-bg-color);
+    color: var(--map-button-text-color);
+}
+
 button.map-button.locate-button-PERMISSION_DENIED {
     opacity: 0.7;
     cursor: default;
