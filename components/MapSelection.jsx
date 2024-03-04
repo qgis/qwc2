@@ -113,10 +113,7 @@ class MapSelection extends React.Component {
         }
         if (this.props.geomType === "DragBox") {
             this.drawInteraction = new ol.interaction.DragBox({
-                className: 'selection-drag-box',
-                condition: () => {
-                    return ["ZoomIn", "ZoomOut"].includes(this.props.currentTask) || ol.events.condition.shiftKeyOnly;
-                }
+                className: 'selection-drag-box'
             });
 
             this.drawInteraction.on('boxend', () => {
