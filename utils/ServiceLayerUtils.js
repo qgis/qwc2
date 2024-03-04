@@ -393,7 +393,9 @@ const ServiceLayerUtils = {
                 } else {
                     ServiceLayerUtils.getCapabilities(serviceUrl, {SERVICE: 'WMS', REQUEST: 'GetCapabilities'}).then(resolve);
                 }
-            }).catch(reject);
+            }).catch(e => {
+                ServiceLayerUtils.getCapabilities(serviceUrl, {SERVICE: 'WMS', REQUEST: 'GetCapabilities'}).then(resolve).catch(reject);
+            });
         });
     },
     getWFSCapabilies(serviceUrl) {
