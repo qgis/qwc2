@@ -68,20 +68,14 @@ class ZoomButton extends React.Component {
         if (this.props.currentTask !== null && this.props.currentTask === this.state.task && this.state.disabled) {
             this.props.setCurrentTask(null);
         }
-        if (this.props.currentTask === this.state.task && prevProps !== this.props) {
-            const point = this.clickPoint(prevProps);
+        if (this.props.currentTask === this.state.task && this.props.click !== prevProps.click) {
+            const point = this.props.click.coordinate;
             if (point) {
                 const zoom = Math.max(0, this.props.currentZoom + this.props.direction);
                 this.props.zoomToPoint(point, zoom, this.mapCrs);
             }
         }
     }
-    clickPoint = (prevProps) => {
-        if (this.props.click === prevProps.click) {
-            return null;
-        }
-        return this.props.click.coordinate;
-    };
     render() {
         if (!ThemeUtils.themFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
             return null;
