@@ -21,7 +21,6 @@ class MapSelection extends React.Component {
     static propTypes = {
         /* Whether the selection tool is active */
         active: PropTypes.bool,
-        currentTask: PropTypes.string,
         /* Optional, a css-cursor to use when drawing */
         cursor: PropTypes.string,
         /* The selection geometry type (Point, LineString, Polygon, Circle, DragBox, Box) */
@@ -209,7 +208,6 @@ class MapSelection extends React.Component {
 }
 
 export default connect((state) => ({
-    currentTask: state.task.id,
     projection: state.map.projection
 }), {
 })(MapSelection);
