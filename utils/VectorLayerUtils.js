@@ -10,6 +10,7 @@ import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
 import {getDefaultImageStyle} from 'ol/format/KML';
 import ol from 'openlayers';
+import simplepolygon from 'simplepolygon';
 import svgpath from 'svgpath';
 import {v1 as uuidv1} from 'uuid';
 
@@ -42,7 +43,10 @@ const VectorLayerUtils = {
             if (layer.type !== 'vector' || (layer.features || []).length === 0 || layer.visibility === false || layer.skipPrint === true) {
                 continue;
             }
-            for (const feature of layer.features) {
+            const features = layer.features.map(feature =>
+                feature.geometry.type === "Polygon" ? simplepolygon(feature).features.map(f => ({...feature, geometry: f.geometry})) : feature
+            ).flat();
+            for (const feature of features) {
                 if (!VectorLayerUtils.validateGeometry(feature.geometry)) {
                     continue;
                 }

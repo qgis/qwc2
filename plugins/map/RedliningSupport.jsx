@@ -9,8 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import polySelfIntersections from 'geojson-polygon-self-intersections';
-import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
@@ -541,7 +539,7 @@ class RedliningSupport extends React.Component {
         if (
             (feature.shape === "Text" && !feature.properties.label) ||
             (feature.shape === "Circle" && feature.circleParams.radius === 0) ||
-            (feature.geometry?.type === "Polygon" && (!isEmpty(polySelfIntersections(feature).geometry.coordinates) || this.currentFeature.getGeometry().getArea() === 0))
+            (feature.geometry?.type === "Polygon" && this.currentFeature.getGeometry().getArea() === 0)
         ) {
             if (!newFeature) {
                 this.props.removeLayerFeatures(this.props.redlining.layer, [feature.id]);
