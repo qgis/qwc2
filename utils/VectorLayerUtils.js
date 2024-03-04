@@ -11,6 +11,7 @@ import ol from 'openlayers';
 import isEmpty from 'lodash.isempty';
 import geojsonBbox from 'geojson-bounding-box';
 import svgpath from 'svgpath';
+import simplepolygon from 'simplepolygon';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import ConfigUtils from '../utils/ConfigUtils';
 import {getDefaultImageStyle} from 'ol/format/KML';
@@ -41,7 +42,10 @@ const VectorLayerUtils = {
             if (layer.type !== 'vector' || (layer.features || []).length === 0 || layer.visibility === false || layer.skipPrint === true) {
                 continue;
             }
-            for (const feature of layer.features) {
+            const features = layer.features.map(feature =>
+                feature.geometry.type === "Polygon" ? simplepolygon(feature).features.map(f => ({...feature, geometry: f.geometry})) : feature
+            ).flat();
+            for (const feature of features) {
                 if (!VectorLayerUtils.validateGeometry(feature.geometry)) {
                     continue;
                 }
