@@ -49,6 +49,7 @@ class AttributeTable extends React.Component {
         active: PropTypes.bool,
         /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
+        filter: PropTypes.object,
         iface: PropTypes.object,
         layers: PropTypes.array,
         mapBbox: PropTypes.object,
@@ -365,7 +366,6 @@ class AttributeTable extends React.Component {
         this.setState((state) => {
             const selectedLayer = layerName || state.selectedLayer;
             KeyValCache.clear();
-            const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
             const bbox = this.state.limitToExtent ? this.props.mapBbox.bounds : null;
             this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
                 if (result) {
@@ -376,7 +376,7 @@ class AttributeTable extends React.Component {
                     alert(LocaleUtils.tr("attribtable.loadfailed"));
                     this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
                 }
-            }, bbox, layer.filterParams?.[selectedLayer], layer.filterGeom);
+            }, bbox, this.props.filter.filterParams?.[selectedLayer], this.props.filter.filterGeom);
             return {...AttributeTable.defaultState, loading: true, selectedLayer: selectedLayer, limitToExtent: state.limitToExtent};
         });
     };
@@ -715,6 +715,7 @@ export default (iface = EditingInterface) => {
         active: state.task.id === "AttributeTable",
         iface: iface,
         layers: state.layers.flat,
+        filter: state.layers.filter,
         mapBbox: state.map.bbox,
         mapCrs: state.map.projection,
         mapScales: state.map.scales,

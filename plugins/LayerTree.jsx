@@ -66,6 +66,7 @@ class LayerTree extends React.Component {
         /** Additional parameters to pass to the GetLegendGraphics request- */
         extraLegendParameters: PropTypes.string,
         fallbackDrag: PropTypes.bool,
+        filter: PropTypes.object,
         /** Whether to display a flat layer tree, omitting any groups. */
         flattenGroups: PropTypes.bool,
         /** Whether to display unchecked layers gray in the layertree. */
@@ -330,7 +331,7 @@ class LayerTree extends React.Component {
                     {legendicon}
                     {title}
                     {sublayer.queryable && this.props.showQueryableIcon ? (queryableicon) : null}
-                    {sublayer.name in (layer.filterParams || {}) || layer.filterGeom ? (<Icon icon="filter" />) : null}
+                    {sublayer.name in (this.props.filter.filterParams || {}) || this.props.filter.filterGeom ? (<Icon icon="filter" />) : null}
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
@@ -754,6 +755,7 @@ const selector = (state) => ({
     ie: state.browser.ie,
     fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
     layers: state.layers.flat,
+    filter: state.layers.filter,
     loadingLayers: state.layers.loading,
     map: state.map,
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),

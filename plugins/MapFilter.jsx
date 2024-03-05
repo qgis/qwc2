@@ -88,6 +88,7 @@ class MapFilter extends React.Component {
         /** Whether to display the temporal filter if temporal dimensions are found. */
         allowFilterByTime: PropTypes.bool,
         currentTask: PropTypes.string,
+        filter: PropTypes.object,
         layers: PropTypes.array,
         mapMargins: PropTypes.object,
         /** The position slot index of the map button, from the bottom (0: bottom slot). Set to -1 to hide the button. */
@@ -217,7 +218,7 @@ class MapFilter extends React.Component {
             this.props.setFilter(layerExpressions, this.state.geomFilter.geom);
             // Validate parameters with test request
             const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-            const wmsParams = LayerUtils.buildWMSLayerParams({...themeLayer, filterParams: layerExpressions, filterGeom: this.state.geomFilter.geom}).params;
+            const wmsParams = LayerUtils.buildWMSLayerParams(themeLayer, {filterParams: layerExpressions, filterGeom: this.state.geomFilter.geom}).params;
             const wmsLayers = wmsParams.LAYERS.split(",");
             const reqParams = {
                 SERVICE: 'WMS',
@@ -261,6 +262,31 @@ class MapFilter extends React.Component {
             this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
         }
     }
+    initializeFilters = (prevFilters) => {
+        const predefinedFilters = this.props.layers.map(layer => layer.predefinedFilters || []).flat();
+        const filters = predefinedFilters.reduce((res, filterConfig) => ({
+            ...res,
+            [filterConfig.id]: prevFilters?.[filterConfig.id] ?? {
+                active: false,
+                filter: filterConfig.filter,
+                values: filterConfig.fields.reduce((values, valueConfig) => ({
+                    ...values,
+                    [valueConfig.id]: valueConfig.defaultValue
+                }), {})
+            }
+        }), {});
+        const timeFilter = {};
+        this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
+        if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
+            filters.__timefilter = {
+                active: prevFilters.__timefilter?.active ?? false,
+                filter: timeFilter,
+                values: prevFilters.__timefilter?.values ?? {tstart: "", tend: ""},
+                defaultValues: {tstart: '1800-01-01', tend: '9999-12-31'}
+            };
+        }
+        return filters;
+    };
     buildTimeFilter = (layer, filters) => {
         if (layer.sublayers) {
             layer.sublayers.forEach(sublayer => this.buildTimeFilter(sublayer, filters));
@@ -285,8 +311,7 @@ class MapFilter extends React.Component {
                 right: 'calc(1.5em + ' + right + 'px)',
                 bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
             };
-            const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-            const filterActive = !isEmpty(themeLayer?.filterParams) || !!themeLayer?.filterGeom;
+            const filterActive = !isEmpty(this.props.filter.filterParams) || !!this.props.filter.filterGeom;
             const classes = classNames({
                 "map-button": true,
                 "map-button-active": taskActive,
@@ -637,6 +662,7 @@ export default connect((state) => ({
     mapMargins: state.windows.mapMargins,
     theme: state.theme.current,
     layers: state.layers.flat,
+    filter: state.layers.filter,
     startupParams: state.localConfig.startupParams
 }), {
     setFilter: setFilter,

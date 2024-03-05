@@ -114,6 +114,7 @@ class TimeManager extends React.Component {
         defaultTimelineDisplay: PropTypes.string,
         /** The default timeline mode. One of `fixed`, `infinite`. */
         defaultTimelineMode: PropTypes.string,
+        filter: PropTypes.object,
         /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -403,8 +404,7 @@ class TimeManager extends React.Component {
 
         const timeSpan = this.state.endTime !== null ? this.state.endTime.diff(this.state.startTime) : dayjs().diff(this.state.startTime);
         const Timeline = this.state.timelineMode === 'infinite' ? InfiniteTimeline : FixedTimeline;
-        const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-        const filterActive = !isEmpty(themeLayer?.filterParams) || !!themeLayer?.filterGeom;
+        const filterActive = !isEmpty(this.props.filter.filterParams) || !!this.props.filter.filterGeom;
 
         return (
             <div className="time-manager-body" role="body">
@@ -745,6 +745,7 @@ const selector = createSelector([state => state, layerVisiblitiesSelector], (sta
     return {
         active: state.task.id === "TimeManager",
         layers: state.layers.flat,
+        filter: state.layers.filter,
         layerVisibilities: layerVisibilities,
         map: state.map,
         theme: state.theme.current

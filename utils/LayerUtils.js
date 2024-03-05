@@ -153,7 +153,7 @@ const LayerUtils = {
             }
         }
     },
-    buildWMSLayerParams(layer) {
+    buildWMSLayerParams(layer, filter = {}) {
         const params = layer.params || {};
         let newParams = {};
         let queryLayers = [];
@@ -197,16 +197,16 @@ const LayerUtils = {
                 STYLES: styles.join(","),
                 ...layer.dimensionValues
             };
-            if (layer.filterParams) {
-                newParams.FILTER = Object.entries(layer.filterParams).reduce((res, [layername, filters]) => {
+            if (filter.filterParams) {
+                newParams.FILTER = Object.entries(filter.filterParams).reduce((res, [layername, filters]) => {
                     if (!layerNames.includes(layername)) {
                         return res;
                     }
                     return [...res, layername + ":" + filters.map(expr => Array.isArray(expr) ? LayerUtils.formatFilterExpr(expr) : "AND").join(" ")];
                 }, []).join(";");
             }
-            if (layer.filterGeom) {
-                newParams.FILTER_GEOM = VectorLayerUtils.geoJSONGeomToWkt(layer.filterGeom);
+            if (filter.filterGeom) {
+                newParams.FILTER_GEOM = VectorLayerUtils.geoJSONGeomToWkt(filter.filterGeom);
             }
         }
 
@@ -342,18 +342,11 @@ const LayerUtils = {
         exploded = exploded.filter(entry => entry.layer.uuid !== layer.uuid || !LayerUtils.pathEqualOrBelow(sublayerpath, entry.path));
         // Re-assemble layers
         const newlayers = LayerUtils.implodeLayers(exploded);
-        for (const lyr of newlayers) {
-            if (lyr.type === "wms") {
-                Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr));
-            }
-        }
         // Ensure theme layer is never removed
         if (!newlayers.find(lyr => lyr.role === LayerRole.THEME)) {
             const oldThemeLayer = layers.find(lyr => lyr.role === LayerRole.THEME);
             if (oldThemeLayer) {
-                const newThemeLayer = {...oldThemeLayer, sublayers: []};
-                Object.assign(newThemeLayer, LayerUtils.buildWMSLayerParams(newThemeLayer));
-                newlayers.push(newThemeLayer);
+                newlayers.push({...oldThemeLayer, sublayers: []});
             }
         }
         // Re-add background layers
@@ -373,16 +366,9 @@ const LayerUtils = {
             // Add separator
             exploded.splice(pos, 0, LayerUtils.createSeparatorLayer(title)[0]);
         }
-        // Re-assemble layers
-        const newlayers = LayerUtils.implodeLayers(exploded);
-        for (const layer of newlayers) {
-            if (layer.type === "wms") {
-                Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
-            }
-        }
-        // Re-add background layers
+        // Re-assemble layers, re-add background layers
         return [
-            ...newlayers,
+            ...LayerUtils.implodeLayers(exploded),
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
@@ -512,7 +498,6 @@ const LayerUtils = {
         }
         for (const layer of newlayers) {
             if (layer.type === "wms") {
-                Object.assign(layer, LayerUtils.buildWMSLayerParams(layer));
                 Object.assign(layer, LayerUtils.recomputeLayerBBox(layer));
             }
         }

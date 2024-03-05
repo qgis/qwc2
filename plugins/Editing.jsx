@@ -50,6 +50,7 @@ class Editing extends React.Component {
         currentEditContext: PropTypes.string,
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
+        filter: PropTypes.object,
         iface: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -124,13 +125,12 @@ class Editing extends React.Component {
                 const editConfig = this.props.theme.editConfig[this.state.selectedLayer];
                 const editPermissions = editConfig.permissions || {};
                 const editDataset = editConfig.editDataset;
-                const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
                 this.props.iface.getFeature(editDataset, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;
                     this.props.setEditContext('Editing', {feature: feature, changed: false, geomReadOnly: editPermissions.updatable === false});
-                }, layer.filterParams?.[this.state.selectedLayer], layer.filterGeom);
+                }, this.props.filter.filterParams?.[this.state.selectedLayer], this.props.filter.filterGeom);
             }
         }
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -342,6 +342,7 @@ export default (iface = EditingInterface) => {
         enabled: state.task.id === 'Editing',
         theme: state.theme.current,
         layers: state.layers.flat,
+        filter: state.layers.filter,
         map: state.map,
         iface: iface,
         editContext: state.editing.contexts.Editing || {},
