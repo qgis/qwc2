@@ -492,7 +492,7 @@ You can set the startup filter configuration by specifying a `f` URL-parameter w
 f={"<filter_id>": {"<field_id>": <value>, ...}, ...}
 ```
 
-To control the temporal filter, the filter ID is `__timefilter`, and the field IDs are `tmin` and `tmax`, with values an ISO date or datetime string (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`).
+To control the temporal filter, the filter ID is `__timefilter`, and the field IDs are `tstart` and `tend`, with values an ISO date or datetime string (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`).
 
 To control the spatial filter, the syntax is `"__geomfilter": <GeoJSON polygon coodinates array>`.
 
