@@ -35,7 +35,7 @@ import './style/MapFilter.css';
 
 
 /**
- * Allows exporting a selected portion of the map to a variety of formats.
+ * Allows filtering the map content via QGIS Server WMS FILTER.
  *
  * You can set predefined filter expressions for a theme item as follows:
  *
