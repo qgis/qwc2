@@ -116,29 +116,8 @@ class MapFilter extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             // Initialize filter state
-            const filters = (this.props.theme.predefinedFilters || []).reduce((res, filterConfig) => ({
-                ...res,
-                [filterConfig.id]: {
-                    active: false,
-                    filter: filterConfig.filter,
-                    values: filterConfig.fields.reduce((values, valueConfig) => ({
-                        ...values,
-                        [valueConfig.id]: valueConfig.defaultValue
-                    }), {})
-                }
-            }), {});
-            if (this.props.layers !== prevProps.layers) {
-                const timeFilter = {};
-                this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
-                if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
-                    filters.__timefilter = {
-                        active: false,
-                        filter: timeFilter,
-                        values: {tstart: "", tend: ""},
-                        defaultValues: {tstart: '1800-01-01', tend: '9999-12-31'}
-                    };
-                }
-            }
+            const filters = this.initializeFilters({});
+
             let geomFilter = {};
             let customFilters = {};
             if (!prevProps.theme && this.props.startupParams?.f) {
@@ -168,19 +147,9 @@ class MapFilter extends React.Component {
                     console.log("Error while parsing startup filter")
                 }
             }
-            this.setState({filters: filters, customFilters: customFilters, geomFilter: geomFilter});
-        } else if (this.props.layers !== prevProps.layers) {
-            const timeFilter = {};
-            this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
-            if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
-                const newFilters = {...this.state.filters};
-                newFilters.__timefilter = {
-                    active: newFilters.__timefilter?.active ?? false,
-                    filter: timeFilter,
-                    values: newFilters.__timefilter?.values ?? {tstart: "", tend: ""},
-                    defaultValues: {tstart: '0000-01-01', tend: '9999-12-31'}
-                };
-            }
+            this.setState({filters, geomFilter, customFilters});
+        } else if (this.props.layers !== prevProps.layers && this.props.filter === prevProps.filter) {
+            this.setState(state => ({filters: this.initializeFilters(state.filters)}));
         }
         if (this.state.filters !== prevState.filters || this.state.customFilters !== prevState.customFilters || this.state.geomFilter.geom !== prevState.geomFilter.geom) {
             const layerExpressions = {};
@@ -437,7 +406,8 @@ class MapFilter extends React.Component {
         this.setState({filterEditor: null});
     };
     renderPredefinedFilters = () => {
-        return (this.props.theme.predefinedFilters || []).map(config => (
+        const predefinedFilters = this.props.layers.map(layer => layer.predefinedFilters || []).flat();
+        return predefinedFilters.map(config => (
             <div className="map-filter-entry" key={config.id}>
                 <div className="map-filter-entry-titlebar">
                     <span className="map-filter-entry-title">{config.title || LocaleUtils.tr(config.titlemsgid)}</span>
