@@ -131,6 +131,7 @@ const ThemeUtils = {
             printUrl: ThemeUtils.inheritBaseUrlParams(theme.printUrl, theme.url, baseParams),
             featureInfoUrl: ThemeUtils.inheritBaseUrlParams(theme.featureInfoUrl, theme.url, baseParams),
             infoFormats: theme.infoFormats,
+            layerTreeHiddenSublayers: theme.layerTreeHiddenSublayers,
             externalLayerMap: {
                 ...theme.externalLayerMap,
                 ...(theme.externalLayers || []).reduce((res, cur) => {

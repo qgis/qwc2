@@ -477,6 +477,8 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["minSearchScaleDenom"] = configItem["minSearchScale"]
         if "themeInfoLinks" in configItem:
             resultItem["themeInfoLinks"] = configItem["themeInfoLinks"]
+        if "layerTreeHiddenSublayers" in configItem:
+            resultItem["layerTreeHiddenSublayers"] = configItem["layerTreeHiddenSublayers"]
         resultItem["searchProviders"] = configItem["searchProviders"] if "searchProviders" in configItem else []
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]

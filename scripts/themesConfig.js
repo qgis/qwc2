@@ -528,6 +528,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.themeInfoLinks) {
                 resultItem.themeInfoLinks = configItem.themeInfoLinks;
             }
+            if (configItem.layerTreeHiddenSublayers) {
+                resultItem.layerTreeHiddenSublayers = configItem.layerTreeHiddenSublayers;
+            }
 
             resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes;
             resultItem.config = configItem.config;

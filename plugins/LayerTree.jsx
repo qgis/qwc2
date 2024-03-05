@@ -259,6 +259,9 @@ class LayerTree extends React.Component {
         if (this.state.filtervisiblelayers && !sublayer.visibility) {
             return null;
         }
+        if (Array.isArray(layer.layerTreeHiddenSublayers) && layer.layerTreeHiddenSublayers.includes(sublayer.name)) {
+            return null;
+        }
         const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
