@@ -800,6 +800,7 @@ Two specific plugins exist: ZoomInPlugin and ZoomOutPlugin, which are instances 
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| enableZoomByBoxSelection | `bool` | Enable zoom in or out by box selection. | `undefined` |
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `undefined` |
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
