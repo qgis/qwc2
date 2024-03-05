@@ -268,11 +268,18 @@ class TimeManager extends React.Component {
                 }
             });
             timeData.values = [...timeData.values].sort().map(d => dayjs.utc(d));
-            const enddate = timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null;
+            let startdate = timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null;
+            let enddate = timeData.values.length > 0 ? timeData.values[timeData.values.length - 1].hour(23).minute(59).second(59) : null;
+            if (startdate && this.props.filter.timeRange && dayjs(this.props.filter.timeRange.tstart) > startdate) {
+                startdate = dayjs(this.props.filter.timeRange.tstart);
+            }
+            if (enddate && this.props.filter.timeRange && dayjs(this.props.filter.timeRange.tend) < enddate) {
+                enddate = dayjs(this.props.filter.timeRange.tend);
+            }
             this.setState((state) => ({
                 timeData: timeData,
                 currentTimestamp: state.currentTimestamp ?? +timeData.values[0],
-                startTime: timeData.values.length > 0 ? timeData.values[0].hour(0).minute(0).second(0) : null,
+                startTime: startdate,
                 endTime: enddate && enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
             }));
             this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
@@ -284,6 +291,22 @@ class TimeManager extends React.Component {
             if (this.state.visible && this.props.map.bbox !== prevProps.map.bbox) {
                 this.updateTimeFeatures(this.state.timeData);
             }
+        }
+        if (this.props.filter.timeRange !== prevProps.filter.timeRange) {
+            this.setState((state) => {
+                let startdate = state.timeData.values.length > 0 ? state.timeData.values[0].hour(0).minute(0).second(0) : null;
+                let enddate = state.timeData.values.length > 0 ? state.timeData.values[state.timeData.values.length - 1].hour(23).minute(59).second(59) : null;
+                if (startdate && this.props.filter.timeRange && dayjs(this.props.filter.timeRange.tstart) > startdate) {
+                    startdate = dayjs(this.props.filter.timeRange.tstart);
+                }
+                if (enddate && this.props.filter.timeRange && dayjs(this.props.filter.timeRange.tend) < enddate) {
+                    enddate = dayjs(this.props.filter.timeRange.tend);
+                }
+                return {
+                    startTime: startdate,
+                    endTime: enddate && enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
+                };
+            });
         }
 
         if (this.state.animationActive && this.state.animationInterval !== prevState.animationInterval) {
@@ -406,6 +429,15 @@ class TimeManager extends React.Component {
         const Timeline = this.state.timelineMode === 'infinite' ? InfiniteTimeline : FixedTimeline;
         const filterActive = !isEmpty(this.props.filter.filterParams) || !!this.props.filter.filterGeom;
 
+        let startdate = this.state.timeData.values.length > 0 ? this.state.timeData.values[0].hour(0).minute(0).second(0) : null;
+        let enddate = this.state.timeData.values.length > 0 ? this.state.timeData.values[this.state.timeData.values.length - 1].hour(23).minute(59).second(59) : null;
+        if (startdate && this.props.filter.timeRange && dayjs(this.props.filter.timeRange.tstart) > startdate) {
+            startdate = dayjs(this.props.filter.timeRange.tstart);
+        }
+        if (enddate && this.props.filter.timeRange && dayjs(this.props.filter.timeRange.tend) < enddate) {
+            enddate = dayjs(this.props.filter.timeRange.tend);
+        }
+
         return (
             <div className="time-manager-body" role="body">
                 <div className="time-manager-toolbar">
@@ -436,8 +468,8 @@ class TimeManager extends React.Component {
                 ) : null}
                 <div className="time-manager-timeline">
                     <Timeline currentTimestamp={this.state.currentTimestamp}
-                        dataEndTime={dayjs(this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59)}
-                        dataStartTime={dayjs(this.state.timeData.values[0]).hour(0).minute(0).second(0)}
+                        dataEndTime={enddate}
+                        dataStartTime={startdate}
                         dateFormat={this.props.dateFormat}
                         dialogWidth={this.state.dialogWidth}
                         endTime={this.state.endTime}
@@ -584,7 +616,10 @@ class TimeManager extends React.Component {
         });
     };
     setStartTime = (value) => {
-        const date = (value ? dayjs.utc(value) : this.state.timeData.values[0]).hour(0).minute(0).second(0);
+        let date = (value ? dayjs.utc(value) : this.state.timeData.values[0]).hour(0).minute(0).second(0);
+        if (this.props.filter.timeRange && this.props.filter.timeRange.tstart > date) {
+            date = this.props.filter.timeRange.tstart;
+        }
         if (date < this.state.endTime) {
             this.setState({startTime: date});
         }
@@ -593,7 +628,10 @@ class TimeManager extends React.Component {
         }
     };
     setEndTime = (value) => {
-        const date = (value ? dayjs.utc(value) : this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59);
+        let date = (value ? dayjs.utc(value) : this.state.timeData.values[this.state.timeData.values.length - 1]).hour(23).minute(59).second(59);
+        if (this.props.filter.timeRange && this.props.filter.timeRange.tend < date) {
+            date = this.props.filter.timeRange.tstart;
+        }
         if (date > this.state.startTime) {
             this.setState({endTime: date});
             if (dayjs(this.state.currentTimestamp) > date) {

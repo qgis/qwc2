@@ -57,7 +57,8 @@ const defaultState = {
     swipe: null,
     filter: {
         filterParams: null,
-        filterGeom: null
+        filterGeom: null,
+        timeRange: null
     }
 };
 
@@ -345,7 +346,8 @@ export default function layers(state = defaultState, action) {
     case SET_FILTER: {
         const filter = {
             filterParams: action.filter,
-            filterGeom: action.filterGeom
+            filterGeom: action.filterGeom,
+            timeRange: action.timeRange
         };
         const newLayers = state.flat.map(layer => {
             if (layer.type === "wms") {

@@ -196,10 +196,11 @@ export function setLayers(layers) {
     };
 }
 
-export function setFilter(filter, filterGeom) {
+export function setFilter(filter, filterGeom, timeRange) {
     return {
         type: SET_FILTER,
         filter,
-        filterGeom
+        filterGeom,
+        timeRange
     };
 }

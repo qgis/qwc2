@@ -184,7 +184,11 @@ class MapFilter extends React.Component {
                     }
                 }
             });
-            this.props.setFilter(layerExpressions, this.state.geomFilter.geom);
+            const timeRange = this.state.filters.__timefilter?.active ? {
+                tstart: this.state.filters.__timefilter.values.tstart,
+                tend: this.state.filters.__timefilter.values.tend
+            } : null;
+            this.props.setFilter(layerExpressions, this.state.geomFilter.geom, timeRange);
             // Validate parameters with test request
             const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
             const wmsParams = LayerUtils.buildWMSLayerParams(themeLayer, {filterParams: layerExpressions, filterGeom: this.state.geomFilter.geom}).params;
