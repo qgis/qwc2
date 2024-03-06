@@ -113,6 +113,10 @@ class MapFilter extends React.Component {
         filterEditor: null,
         filterInvalid: false
     };
+    constructor(props) {
+        super(props);
+        this.applyFilterTimeout = null;
+    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             // Initialize filter state
@@ -152,90 +156,13 @@ class MapFilter extends React.Component {
             this.setState(state => ({filters: this.initializeFilters(state.filters)}));
         }
         if (this.state.filters !== prevState.filters || this.state.customFilters !== prevState.customFilters || this.state.geomFilter.geom !== prevState.geomFilter.geom) {
-            const layerExpressions = {};
-            // Recompute filter expressions
-            Object.values(this.state.filters).forEach(entry => {
-                if (entry.active) {
-                    Object.entries(entry.filter).forEach(([layer, expression]) => {
-                        const replacedExpr = this.replaceExpressionVariables(expression, entry.values, entry.defaultValues || {});
-                        if (replacedExpr === null) {
-                            /* eslint-disable-next-line */
-                            console.warn("Invalid filter expression: " + JSON.stringify(expression));
-                        } else if (layerExpressions[layer]) {
-                            layerExpressions[layer].push('and', replacedExpr);
-                        } else {
-                            layerExpressions[layer] = [replacedExpr];
-                        }
-                    });
-                }
-            }, {});
-            Object.values(this.state.customFilters).forEach(entry => {
-                if (entry.active && entry.layer) {
-                    let expr = '';
-                    try {
-                        expr = JSON.parse(entry.expr);
-                    } catch (e) {
-                        return;
-                    }
-                    if (layerExpressions[entry.layer]) {
-                        layerExpressions[entry.layer].push('and', expr);
-                    } else {
-                        layerExpressions[entry.layer] = [expr];
-                    }
-                }
-            });
-            const timeRange = this.state.filters.__timefilter?.active ? {
-                tstart: this.state.filters.__timefilter.values.tstart,
-                tend: this.state.filters.__timefilter.values.tend
-            } : null;
-            this.props.setFilter(layerExpressions, this.state.geomFilter.geom, timeRange);
-            // Validate parameters with test request
-            const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-            const wmsParams = LayerUtils.buildWMSLayerParams(themeLayer, {filterParams: layerExpressions, filterGeom: this.state.geomFilter.geom}).params;
-            const wmsLayers = wmsParams.LAYERS.split(",");
-            const reqParams = {
-                SERVICE: 'WMS',
-                REQUEST: 'GetMap',
-                VERSION: '1.3.0',
-                CRS: 'EPSG:4326',
-                WIDTH: 10,
-                HEIGHT: 10,
-                BBOX: "-0.5,-0.5,0.5,0.5",
-                FILTER: wmsParams.FILTER,
-                FILTER_GEOM: wmsParams.FILTER_GEOM,
-                LAYERS: Object.keys(layerExpressions).filter(layer => wmsLayers.includes(layer)).join(",")
-            };
-            axios.get(themeLayer.url, {params: reqParams}).then(() => {
-                this.setState({filterInvalid: false});
-            }).catch(() => {
-                this.setState({filterInvalid: true});
-            });
-            const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
-                if (value.active) {
-                    return {...res, [key]: value.values};
-                } else {
-                    return res;
-                }
-            }, {});
-            if (this.state.geomFilter.geom) {
-                permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
-            }
-            permalinkState.__custom = Object.values(this.state.customFilters).map(entry => {
-                if (!entry.active) {
-                    return null;
-                }
-                let expr = null;
-                try {
-                    expr = JSON.parse(entry.expr);
-                } catch (e) {
-                    return null;
-                }
-                return {title: entry.title, layer: entry.layer, expr: expr};
-            }).filter(Boolean);
-            this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
+            clearTimeout(this.applyFilterTimeout);
+            this.applyFilterTimeout = setTimeout(this.applyFilter, 500);
         }
     }
     initializeFilters = (prevFilters) => {
+        clearTimeout(this.applyFilterTimeout);
+        this.applyFilterTimeout = null;
         const predefinedFilters = this.props.layers.map(layer => layer.predefinedFilters || []).flat();
         const filters = predefinedFilters.reduce((res, filterConfig) => ({
             ...res,
@@ -259,6 +186,90 @@ class MapFilter extends React.Component {
             };
         }
         return filters;
+    };
+    applyFilter = () => {
+        this.applyFilterTimeout = null;
+        const layerExpressions = {};
+        // Recompute filter expressions
+        Object.values(this.state.filters).forEach(entry => {
+            if (entry.active) {
+                Object.entries(entry.filter).forEach(([layer, expression]) => {
+                    const replacedExpr = this.replaceExpressionVariables(expression, entry.values, entry.defaultValues || {});
+                    if (replacedExpr === null) {
+                        /* eslint-disable-next-line */
+                        console.warn("Invalid filter expression: " + JSON.stringify(expression));
+                    } else if (layerExpressions[layer]) {
+                        layerExpressions[layer].push('and', replacedExpr);
+                    } else {
+                        layerExpressions[layer] = [replacedExpr];
+                    }
+                });
+            }
+        }, {});
+        Object.values(this.state.customFilters).forEach(entry => {
+            if (entry.active && entry.layer) {
+                let expr = '';
+                try {
+                    expr = JSON.parse(entry.expr);
+                } catch (e) {
+                    return;
+                }
+                if (layerExpressions[entry.layer]) {
+                    layerExpressions[entry.layer].push('and', expr);
+                } else {
+                    layerExpressions[entry.layer] = [expr];
+                }
+            }
+        });
+        const timeRange = this.state.filters.__timefilter?.active ? {
+            tstart: this.state.filters.__timefilter.values.tstart,
+            tend: this.state.filters.__timefilter.values.tend
+        } : null;
+        this.props.setFilter(layerExpressions, this.state.geomFilter.geom, timeRange);
+        // Validate parameters with test request
+        const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
+        const wmsParams = LayerUtils.buildWMSLayerParams(themeLayer, {filterParams: layerExpressions, filterGeom: this.state.geomFilter.geom}).params;
+        const wmsLayers = wmsParams.LAYERS.split(",");
+        const reqParams = {
+            SERVICE: 'WMS',
+            REQUEST: 'GetMap',
+            VERSION: '1.3.0',
+            CRS: 'EPSG:4326',
+            WIDTH: 10,
+            HEIGHT: 10,
+            BBOX: "-0.5,-0.5,0.5,0.5",
+            FILTER: wmsParams.FILTER,
+            FILTER_GEOM: wmsParams.FILTER_GEOM,
+            LAYERS: Object.keys(layerExpressions).filter(layer => wmsLayers.includes(layer)).join(",")
+        };
+        axios.get(themeLayer.url, {params: reqParams}).then(() => {
+            this.setState({filterInvalid: false});
+        }).catch(() => {
+            this.setState({filterInvalid: true});
+        });
+        const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
+            if (value.active) {
+                return {...res, [key]: value.values};
+            } else {
+                return res;
+            }
+        }, {});
+        if (this.state.geomFilter.geom) {
+            permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
+        }
+        permalinkState.__custom = Object.values(this.state.customFilters).map(entry => {
+            if (!entry.active) {
+                return null;
+            }
+            let expr = null;
+            try {
+                expr = JSON.parse(entry.expr);
+            } catch (e) {
+                return null;
+            }
+            return {title: entry.title, layer: entry.layer, expr: expr};
+        }).filter(Boolean);
+        this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
     };
     buildTimeFilter = (layer, filters) => {
         if (layer.sublayers) {
