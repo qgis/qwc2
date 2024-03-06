@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
+import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
@@ -120,7 +121,8 @@ class MapFilter extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             // Initialize filter state
-            const filters = this.initializeFilters({});
+            const predefinedFilters = this.collectPredefinedFilters(this.props.layers);
+            const filters = this.initializeFilters(predefinedFilters, {});
 
             let geomFilter = {};
             let customFilters = {};
@@ -152,19 +154,28 @@ class MapFilter extends React.Component {
                 }
             }
             this.setState({filters, geomFilter, customFilters});
-        } else if (this.props.layers !== prevProps.layers && this.props.filter === prevProps.filter) {
-            this.setState(state => ({filters: this.initializeFilters(state.filters)}));
+        } else if (this.props.layers !== prevProps.layers) {
+            const predefinedFilters = this.collectPredefinedFilters(this.props.layers);
+            const prevPredefinedFilters = this.collectPredefinedFilters(prevProps.layers);
+            if (!isEqual(Object.keys(predefinedFilters).sort(), Object.keys(prevPredefinedFilters).sort())) {
+                this.setState(state => ({filters: this.initializeFilters(predefinedFilters, state.filters)}));
+            }
         }
         if (this.state.filters !== prevState.filters || this.state.customFilters !== prevState.customFilters || this.state.geomFilter.geom !== prevState.geomFilter.geom) {
             clearTimeout(this.applyFilterTimeout);
             this.applyFilterTimeout = setTimeout(this.applyFilter, 500);
         }
     }
-    initializeFilters = (prevFilters) => {
+    collectPredefinedFilters = (layers) => {
+        return layers.reduce((res, layer) => (
+            {...res, ...(layer.predefinedFilters || []).reduce((res2, config) => ({...res2, [config.id]: config}), {})}
+        ), {});
+    };
+    initializeFilters = (predefinedFilters, prevFilters) => {
         clearTimeout(this.applyFilterTimeout);
         this.applyFilterTimeout = null;
-        const predefinedFilters = this.props.layers.map(layer => layer.predefinedFilters || []).flat();
-        const filters = predefinedFilters.reduce((res, filterConfig) => ({
+
+        const filters = Object.values(predefinedFilters).reduce((res, filterConfig) => ({
             ...res,
             [filterConfig.id]: prevFilters?.[filterConfig.id] ?? {
                 active: false,
@@ -421,8 +432,8 @@ class MapFilter extends React.Component {
         this.setState({filterEditor: null});
     };
     renderPredefinedFilters = () => {
-        const predefinedFilters = this.props.layers.map(layer => layer.predefinedFilters || []).flat();
-        return predefinedFilters.map(config => (
+        const predefinedFilters = this.collectPredefinedFilters(this.props.layers);
+        return Object.values(predefinedFilters).map(config => (
             <div className="map-filter-entry" key={config.id}>
                 <div className="map-filter-entry-titlebar">
                     <span className="map-filter-entry-title">{config.title || LocaleUtils.tr(config.titlemsgid)}</span>
