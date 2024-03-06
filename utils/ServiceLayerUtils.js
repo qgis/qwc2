@@ -451,7 +451,7 @@ const ServiceLayerUtils = {
     },
     mergeCalledServiceUrlQuery(capabilityUrl, calledServiceUrlParts) {
         if (ConfigUtils.getConfigProp("trustWmsCapabilityURLs")) {
-            return url.format(calledServiceUrlParts);
+            return url.format(capabilityUrl);
         }
         try {
             const urlParts = url.parse(capabilityUrl, true);
@@ -461,7 +461,7 @@ const ServiceLayerUtils = {
             delete urlParts.search;
             return url.format(urlParts);
         } catch (e) {
-            return url.format(calledServiceUrlParts);
+            return url.format(capabilityUrl);
         }
     }
 };
