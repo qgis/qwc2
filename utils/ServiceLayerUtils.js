@@ -31,10 +31,6 @@ function strcmp(a, b) {
     return 0;
 }
 
-function array(obj) {
-    return Array.isArray(obj) ? obj : [obj];
-}
-
 const ServiceLayerUtils = {
     getWMTSLayers(capabilities, capabilitiesUrl, mapCrs) {
         if (!capabilities?.contents) {
@@ -253,7 +249,7 @@ const ServiceLayerUtils = {
         const version = capabilities.version;
         let formats = null;
         try {
-            serviceUrl = ServiceLayerUtils.getDCPTypes(array(capabilities.Capability.Request.GetFeature.DCPType)).HTTP.Get.onlineResource;
+            serviceUrl = ServiceLayerUtils.getDCPTypes(MiscUtils.ensureArray(capabilities.Capability.Request.GetFeature.DCPType)).HTTP.Get.onlineResource;
             serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
             formats = Object.keys(capabilities.Capability.Request.GetFeature.ResultFormat);
             if (typeof(formats) === 'string') {
@@ -265,7 +261,7 @@ const ServiceLayerUtils = {
         }
 
         const layers = [];
-        for (const featureType of array(capabilities.FeatureTypeList.FeatureType)) {
+        for (const featureType of MiscUtils.ensureArray(capabilities.FeatureTypeList.FeatureType)) {
             let name;
             let bbox;
             try {
@@ -302,17 +298,17 @@ const ServiceLayerUtils = {
         const version = capabilities.version;
         let formats = null;
         try {
-            const getFeatureOp = array(capabilities.OperationsMetadata.Operation).find(el => el.name === "GetFeature");
-            serviceUrl = ServiceLayerUtils.getDCPTypes(array(getFeatureOp.DCP)).HTTP.Get.href;
+            const getFeatureOp = MiscUtils.ensureArray(capabilities.OperationsMetadata.Operation).find(el => el.name === "GetFeature");
+            serviceUrl = ServiceLayerUtils.getDCPTypes(MiscUtils.ensureArray(getFeatureOp.DCP)).HTTP.Get.href;
             serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
-            const outputFormat = array(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
+            const outputFormat = MiscUtils.ensureArray(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
             formats = MiscUtils.ensureArray(outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value);
         } catch (e) {
             return [];
         }
 
         const layers = [];
-        for (const featureType of array(capabilities.FeatureTypeList.FeatureType)) {
+        for (const featureType of MiscUtils.ensureArray(capabilities.FeatureTypeList.FeatureType)) {
             let name;
             let bbox;
             try {
