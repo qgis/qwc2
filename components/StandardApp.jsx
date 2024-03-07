@@ -64,7 +64,8 @@ class AppInitComponent extends React.Component {
         setCurrentTheme: PropTypes.func,
         setStartupParameters: PropTypes.func,
         showNotification: PropTypes.func,
-        themesLoaded: PropTypes.func
+        themesLoaded: PropTypes.func,
+        userInfos: PropTypes.object
     };
     constructor(props) {
         super(props);
@@ -100,7 +101,6 @@ class AppInitComponent extends React.Component {
                 if (!success) {
                     this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingpermalink"), NotificationType.WARN, true);
                 }
-                this.props.setStartupParameters({...params});
                 let theme = ThemeUtils.getThemeById(themes,  params.t);
                 if (!theme || theme.restricted) {
                     if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
@@ -110,8 +110,11 @@ class AppInitComponent extends React.Component {
                         this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
                         params.l = undefined;
                     }
-                    theme = ThemeUtils.getThemeById(themes, themes.defaultTheme);
+                    const defaultTheme = Object.fromEntries(this.props.userInfos?.default_url_params.split("&").map(x => x.split("="))).t || themes.defaultTheme;
+                    theme = ThemeUtils.getThemeById(themes, defaultTheme);
+                    params.t = defaultTheme;
                 }
+                this.props.setStartupParameters({...params});
                 const layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
                     layerParams.reverse();
@@ -168,6 +171,7 @@ class AppInitComponent extends React.Component {
 const AppInit = connect(state => ({
     mapSize: state.map.size,
     layers: state.layers.flat,
+    userInfos: state.localConfig.user_infos,
     currentTask: state.task.id
 }), {
     themesLoaded: themesLoaded,
