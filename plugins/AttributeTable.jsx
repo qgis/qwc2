@@ -59,6 +59,8 @@ class AttributeTable extends React.Component {
         setCurrentTaskBlocked: PropTypes.func,
         /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
         showEditFormButton: PropTypes.bool,
+        /** Whether to show the "Limit to extent" checkbox */
+        showLimitToExtent: PropTypes.bool,
         taskData: PropTypes.object,
         theme: PropTypes.object,
         /** The zoom level for zooming to point features. */
@@ -245,9 +247,11 @@ class AttributeTable extends React.Component {
                         <input disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterVal", ev.target.value, true)} type="text" value={this.state.filterVal} />
                         <button className="button" disabled={this.state.changedFeatureIdx !== null} onClick={() => this.updateFilter("filterVal", "")} value={this.state.filterValue}><Icon icon="clear" /></button>
                     </div>
-                    <div>
-                        <label><input checked={this.state.limitToExtent} onChange={(ev) => this.setState({limitToExtent: ev.target.checked})} type="checkbox" /> {LocaleUtils.tr("attribtable.limittoextent")}</label>
-                    </div>
+                    {this.props.showLimitToExtent ? (
+                        <div>
+                            <label><input checked={this.state.limitToExtent} onChange={(ev) => this.setState({limitToExtent: ev.target.checked})} type="checkbox" /> {LocaleUtils.tr("attribtable.limittoextent")}</label>
+                        </div>
+                    ) : null}
                 </div>
             );
         }
