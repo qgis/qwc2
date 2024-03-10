@@ -110,7 +110,7 @@ class AppInitComponent extends React.Component {
                         this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
                         params.l = undefined;
                     }
-                    const defaultTheme = Object.fromEntries(this.props.userInfos?.default_url_params.split("&").map(x => x.split("="))).t || themes.defaultTheme;
+                    const defaultTheme = Object.fromEntries((this.props.userInfos?.default_url_params || "").split("&").map(x => x.split("="))).t || themes.defaultTheme;
                     theme = ThemeUtils.getThemeById(themes, defaultTheme);
                     params.t = defaultTheme;
                 }
