@@ -31,8 +31,9 @@ class PluginsContainer extends React.Component {
                 console.warn("Non-existing plugin: " + pluginConf.name);
                 return null;
             }
-            const themePluginConfig = this.props.theme?.config?.[this.props.mode]?.plugins ?? this.props.theme?.config?.plugins;
-            const cfg = {...(pluginConf.cfg || {}), ...(themePluginConfig?.[pluginConf.name] || {})};
+            const themeDevicePluginConfig = this.props.theme?.config?.[this.props.mode]?.plugins?.[pluginConf.name] || {};
+            const themePluginConfig = this.props.theme?.config?.plugins?.[pluginConf.name] || {};
+            const cfg = {...(pluginConf.cfg || {}), ...themePluginConfig, ...themeDevicePluginConfig};
             const appCfg = this.props.pluginsAppConfig[pluginConf.name + "Plugin"] || {};
             return (<Plugin key={pluginConf.name + idx} {...cfg} {...appCfg} />);
         });
