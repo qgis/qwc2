@@ -748,6 +748,8 @@ Theme switcher panel.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | collapsibleGroups | `bool` | Whether to allow collapsing theme groups. | `undefined` |
+| hideAddThemeButton | `bool` | Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
+| hideAddThemeLayersButton | `bool` | Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
 | showDefaultThemeSelector | `bool` | Whether to show an icon to select the default theme/bookmark (of a logged in user). | `true` |
 | showLayerAfterChangeTheme | `bool` | Whether to show the LayerTree by default after switching the theme. | `false` |
 | showThemeFilter | `bool` | Wether to show the theme filter field in the top bar. * | `true` |

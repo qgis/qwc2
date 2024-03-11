@@ -30,6 +30,7 @@ class ThemeList extends React.Component {
     static propTypes = {
         activeTheme: PropTypes.object,
         addLayer: PropTypes.func,
+        allowAddingOtherThemeLayers: PropTypes.bool,
         allowAddingOtherThemes: PropTypes.bool,
         changeTheme: PropTypes.func,
         collapsibleGroups: PropTypes.bool,
@@ -151,7 +152,7 @@ class ThemeList extends React.Component {
                             </div>
                             {!item.restricted ? (
                                 <div className="theme-item-icons">
-                                    {this.props.allowAddingOtherThemes ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
+                                    {this.props.allowAddingOtherThemeLayers ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
                                     {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
                                     <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
                                     {this.props.showDefaultThemeSelector && username  ? (<Icon className={ (this.extractThemeId(this.props.defaultUrlParams) === item.id ? "icon-active" : "")} icon="new" onClick={ev => this.changeDefaultUrlParams(ev, item.id)} title={changeDefaultUrlTitle} />) : null }

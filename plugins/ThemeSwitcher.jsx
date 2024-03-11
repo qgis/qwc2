@@ -31,6 +31,10 @@ class ThemeSwitcher extends React.Component {
         /** Whether to allow collapsing theme groups. */
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.object,
+        /** Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. */
+        hideAddThemeButton: PropTypes.bool,
+        /** Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. */
+        hideAddThemeLayersButton: PropTypes.bool,
         /** Whether to show an icon to select the default theme/bookmark (of a logged in user). */
         showDefaultThemeSelector: PropTypes.bool,
         /** Whether to show the LayerTree by default after switching the theme. */
@@ -60,6 +64,8 @@ class ThemeSwitcher extends React.Component {
     };
     render() {
         const allowAddingOtherThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.activeTheme) ===  true;
+        const showAddThemeButton = allowAddingOtherThemes && !this.props.hideAddThemeButton;
+        const showAddThemeLayersButton = allowAddingOtherThemes && !this.props.hideAddThemeLayersButton;
         const themeFilter = this.props.showThemeFilter ? (
             <InputContainer className="theme-switcher-filter">
                 <input onChange={ev => this.setState({filter: ev.target.value})}
@@ -78,7 +84,8 @@ class ThemeSwitcher extends React.Component {
                         body: (
                             <ThemeList
                                 activeTheme={this.props.activeTheme}
-                                allowAddingOtherThemes={allowAddingOtherThemes}
+                                allowAddingOtherThemeLayers={showAddThemeLayersButton}
+                                allowAddingOtherThemes={showAddThemeButton}
                                 collapsibleGroups={this.props.collapsibleGroups}
                                 filter={this.state.filter}
                                 showDefaultThemeSelector={this.props.showDefaultThemeSelector}
