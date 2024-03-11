@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const reactDocs = require("react-docgen");
 
-const qwcPluginDir = './qwc2/plugins';
+const qwcPluginDir = __dirname + '/../plugins';
 let pluginData = [];
 
 fs.readdirSync(qwcPluginDir).forEach(entry => {
@@ -68,6 +68,6 @@ pluginData.forEach(plugin => {
     output += "\n";
 });
 
-fs.writeFileSync('./qwc2/doc/plugins.md', output);
+fs.writeFileSync(__dirname + '/../doc/plugins.md', output);
 /* eslint-disable-next-line */
 console.log("Plugin documentation written to doc/src/plugins.md!");
