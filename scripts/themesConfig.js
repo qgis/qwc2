@@ -208,7 +208,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         }
         if (layer.Style) {
             layerEntry.styles = toArray(layer.Style).reduce((res, entry) => ({...res, [entry.Name]: entry.Title}), {});
-            layerEntry.style = layerEntry.styles.default ? 'default' : (Object.keys(layerEntry)[0] ?? '');
+            layerEntry.style = layerEntry.styles.default ? 'default' : (Object.keys(layerEntry.styles)[0] ?? '');
         }
         if (layer.MinScaleDenominator !== undefined) {
             layerEntry.minScale = Math.round(parseFloat(layer.MinScaleDenominator));
