@@ -21,9 +21,9 @@ import * as themeActions from '../actions/theme';
 import * as windowsActions from '../actions/windows';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
+import * as PermaLinkUtils from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-
 
 /**
  * Exposes an API for interacting with QWC2 via `window.qwc2`.
@@ -93,6 +93,7 @@ class API extends React.Component {
         window.qwc2.drawGeometry = this.drawGeometry;
         window.qwc2.getState = this.getState;
         window.qwc2.CoordinatesUtils = CoordinatesUtils;
+        window.qwc2.PermaLinkUtils = PermaLinkUtils;
         window.qwc2.VectorLayerUtils = VectorLayerUtils;
     }
     static propTypes = {
