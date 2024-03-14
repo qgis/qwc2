@@ -95,9 +95,22 @@ class RedliningBufferSupport extends React.Component {
         this.setState({bufferUnit: ev.target.value});
     };
     computeBuffer = () => {
-        const feature = this.props.redlining.selectedFeature;
+        let feature = this.props.redlining.selectedFeature;
         if (!feature || !feature.geometry || !this.state.bufferLayer) {
             return;
+        }
+        if (feature.circleParams) {
+            const {center, radius} = feature.circleParams;
+            const deg2rad = Math.PI / 180;
+            feature = {
+                ...feature,
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [
+                        Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))
+                    ]
+                }
+            };
         }
         const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
         const wgsFeature = {...feature, geometry: wgsGeometry};
