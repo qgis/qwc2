@@ -243,7 +243,7 @@ FeatureSearch<a name="featuresearch"></a>
 ----------------------------------------------------------------
 Displays a dialog with a search form for configured QGIS feature searches with one or more input fields.
 
-See [../../topics/Search/#configuring-the-qgis-feature-search](Configuring the QGIS feature search).
+See [Configuring the QGIS feature search](../../topics/Search/#configuring-the-qgis-feature-search).
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
@@ -463,7 +463,7 @@ MapFilter<a name="mapfilter"></a>
 ----------------------------------------------------------------
 Allows filtering the map content via QGIS Server WMS FILTER.
 
-See [../../topics/MapFilter](Map filtering).
+See [Map filtering](../../topics/MapFilter).
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|

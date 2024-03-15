@@ -38,7 +38,7 @@ import './style/MapFilter.css';
 /**
  * Allows filtering the map content via QGIS Server WMS FILTER.
  *
- * See [../../topics/MapFilter](Map filtering).
+ * See [Map filtering](../../topics/MapFilter).
  */
 class MapFilter extends React.Component {
     static propTypes = {
