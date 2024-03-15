@@ -448,11 +448,27 @@ class MapFilter extends React.Component {
                                 <tr key={field.id}>
                                     <td>{field.title || LocaleUtils.tr(field.titlemsgid)}: </td>
                                     <td>
-                                        <input
-                                            onChange={ev => this.updateFieldValue(config.id, field.id, ev.target.value)}
-                                            type="text"
-                                            value={this.state.filters[config.id].values[field.id]}
-                                            {...field.inputConfig} />
+                                        {
+                                            field.inputConfig.type === 'select' ? (
+                                                <select
+                                                    onChange={ev => this.updateFieldValue(config.id, field.id, ev.target.value)}
+                                                    value={this.state.filters[config.id].values[field.id]}
+                                                >
+                                                    {!field.defaultValue ? (
+                                                        <option value="">{LocaleUtils.tr("mapfilter.select")}</option>
+                                                    ) : null}
+                                                    {field.inputConfig.options.map(entry => (
+                                                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
+                                                    ))}
+                                                </select>
+                                            ) : (
+                                                <input
+                                                    onChange={ev => this.updateFieldValue(config.id, field.id, ev.target.value)}
+                                                    type="text"
+                                                    value={this.state.filters[config.id].values[field.id]}
+                                                    {...field.inputConfig} />
+                                            )
+                                        }
                                     </td>
                                 </tr>
                             ))}
