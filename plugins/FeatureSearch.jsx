@@ -148,7 +148,7 @@ class FeatureSearch extends React.Component {
             return (
                 <select name={fieldname}>
                     {fieldcfg.options.map(entry => (
-                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? entry}</option>
+                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
                     ))}
                 </select>
             );
