@@ -463,47 +463,7 @@ MapFilter<a name="mapfilter"></a>
 ----------------------------------------------------------------
 Allows filtering the map content via QGIS Server WMS FILTER.
 
-You can set predefined filter expressions for a theme item as follows:
-
-```json
-predefinedFilters: {
-    id: "<filter_id>",
-    title: "<filter_title>",
-    titlemsgid: "<filter_title_msgid>",
-    filter: {
-        "<layer>": <data_service_filter_expression>
-    },
-    fields: {
-        id: "<value_id>",
-        title: "<value_title">,
-        titlemsgid: "<value_title_msgid>",
-        defaultValue: <default_value>,
-        inputConfig: {<input_field_opts>}
-    }
-}
-```
-
-The data service filter expressions are of the form `["<name>", "<op>", <value>]`, you can also specify complex expressions concatenated with `and|or` as follows:
-
-```json
-[["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]
-```
-
-You can set the startup filter configuration by specifying a `f` URL-parameter with a JSON-serialized string as follows:
-
-```
-f={"<filter_id>": {"<field_id>": <value>, ...}, ...}
-```
-
-To control the temporal filter, the filter ID is `__timefilter`, and the field IDs are `tstart` and `tend`, with values an ISO date or datetime string (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS`).
-
-To control the spatial filter, the syntax is `"__geomfilter": <GeoJSON polygon coodinates array>`.
-
-To specify custom filters, the syntax is `"__custom": [{"title": "<title>", "layer": "<layername>", "expr": <JSON filter expr>}, ...]`.
-
-Whenever an startup filter value is specified, the filter is automatically enabled.
-
-*Note*: When specifying `f`, you should also specify `t` as the startup filter configuraiton needs to match the filters of the desired theme.
+See [../../topics/MapFilter](Map filtering).
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
