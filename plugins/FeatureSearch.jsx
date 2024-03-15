@@ -26,6 +26,8 @@ import "./style/FeatureSearch.css";
 
 /**
  * Displays a dialog with a search form for configured QGIS feature searches with one or more input fields.
+ *
+ * See [../../topics/Search/#configuring-the-qgis-feature-search](Configuring the QGIS feature search).
  */
 class FeatureSearch extends React.Component {
     static propTypes = {
