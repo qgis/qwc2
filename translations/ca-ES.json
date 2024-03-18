@@ -18,6 +18,7 @@
         "Editing": "Edició",
         "FeatureForm": "Formulari d'element",
         "FeatureSearch": "",
+        "GeometryDigitizer": "",
         "Help": "Ajuda",
         "IdentifyPoint": "Identificar punt",
         "IdentifyRegion": "Identificar zona",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "fitxers",
       "placeholder": "Selecciona arxiu..."
+    },
+    "geomdigitizer": {
+      "applink": "",
+      "bufferlayername": "",
+      "chooselink": "",
+      "clear": "",
+      "identifypick": "",
+      "identifypickregion": "",
+      "layername": "",
+      "line_buffer": "",
+      "point_buffer": "",
+      "selfinter": "",
+      "send": "",
+      "wait": ""
     },
     "heightprofile": {
       "asl": "a.s.l.",

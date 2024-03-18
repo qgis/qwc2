@@ -18,6 +18,7 @@
         "Editing": "Edycja",
         "FeatureForm": "",
         "FeatureSearch": "",
+        "GeometryDigitizer": "",
         "Help": "Pomoc",
         "IdentifyPoint": "",
         "IdentifyRegion": "Identifikuj Obszar",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "",
       "placeholder": "Wybierz plik..."
+    },
+    "geomdigitizer": {
+      "applink": "",
+      "bufferlayername": "",
+      "chooselink": "",
+      "clear": "",
+      "identifypick": "",
+      "identifypickregion": "",
+      "layername": "",
+      "line_buffer": "",
+      "point_buffer": "",
+      "selfinter": "",
+      "send": "",
+      "wait": ""
     },
     "heightprofile": {
       "asl": "a.s.l.",

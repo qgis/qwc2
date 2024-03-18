@@ -18,6 +18,7 @@
         "Editing": "Editare",
         "FeatureForm": "Editare atribute",
         "FeatureSearch": "",
+        "GeometryDigitizer": "",
         "Help": "Ajutor",
         "IdentifyPoint": "Interogare punct",
         "IdentifyRegion": "Interogare regiune",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "fișiere",
       "placeholder": "Selectează fișierul..."
+    },
+    "geomdigitizer": {
+      "applink": "",
+      "bufferlayername": "",
+      "chooselink": "",
+      "clear": "",
+      "identifypick": "",
+      "identifypickregion": "",
+      "layername": "",
+      "line_buffer": "",
+      "point_buffer": "",
+      "selfinter": "",
+      "send": "",
+      "wait": ""
     },
     "heightprofile": {
       "asl": "dM",

@@ -18,6 +18,7 @@
         "Editing": "Redigera",
         "FeatureForm": "",
         "FeatureSearch": "",
+        "GeometryDigitizer": "",
         "Help": "Hjälp",
         "IdentifyPoint": "",
         "IdentifyRegion": "Identifiera med område",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "",
       "placeholder": "Välj fil..."
+    },
+    "geomdigitizer": {
+      "applink": "",
+      "bufferlayername": "",
+      "chooselink": "",
+      "clear": "",
+      "identifypick": "",
+      "identifypickregion": "",
+      "layername": "",
+      "line_buffer": "",
+      "point_buffer": "",
+      "selfinter": "",
+      "send": "",
+      "wait": ""
     },
     "heightprofile": {
       "asl": "m.ö.h.",

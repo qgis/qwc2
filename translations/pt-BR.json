@@ -18,6 +18,7 @@
         "Editing": "Edição",
         "FeatureForm": "Atributos da feição",
         "FeatureSearch": "Procurar feição",
+        "GeometryDigitizer": "",
         "Help": "Ajuda",
         "IdentifyPoint": "Identificar ponto",
         "IdentifyRegion": "Identificar região",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "Arquivos",
       "placeholder": "Selecione pasta"
+    },
+    "geomdigitizer": {
+      "applink": "",
+      "bufferlayername": "",
+      "chooselink": "",
+      "clear": "",
+      "identifypick": "",
+      "identifypickregion": "",
+      "layername": "",
+      "line_buffer": "",
+      "point_buffer": "",
+      "selfinter": "",
+      "send": "",
+      "wait": ""
     },
     "heightprofile": {
       "asl": "a.s.l.",

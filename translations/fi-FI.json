@@ -18,6 +18,7 @@
         "Editing": "Editointi",
         "FeatureForm": "",
         "FeatureSearch": "",
+        "GeometryDigitizer": "",
         "Help": "Apua",
         "IdentifyPoint": "",
         "IdentifyRegion": "Tunnista alue",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "",
       "placeholder": "Valitse tiedosto..."
+    },
+    "geomdigitizer": {
+      "applink": "",
+      "bufferlayername": "",
+      "chooselink": "",
+      "clear": "",
+      "identifypick": "",
+      "identifypickregion": "",
+      "layername": "",
+      "line_buffer": "",
+      "point_buffer": "",
+      "selfinter": "",
+      "send": "",
+      "wait": ""
     },
     "heightprofile": {
       "asl": "a.s.l.",

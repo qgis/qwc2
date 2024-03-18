@@ -18,6 +18,7 @@
         "Editing": "Editing",
         "FeatureForm": "Feature Form",
         "FeatureSearch": "Feature Search",
+        "GeometryDigitizer": "Geometry digitizer",
         "Help": "Help",
         "IdentifyPoint": "Identify Point",
         "IdentifyRegion": "Identify Region",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "files",
       "placeholder": "Select file..."
+    },
+    "geomdigitizer": {
+      "applink": "Application",
+      "bufferlayername": "Digitization buffer",
+      "chooselink": "Choose...",
+      "clear": "Clear layer",
+      "identifypick": "Pick feature",
+      "identifypickregion": "Pick features in region",
+      "layername": "Digitization",
+      "line_buffer": "Line (to buffer)",
+      "point_buffer": "Point (to buffer)",
+      "selfinter": "One or more polygons contain self-intersections",
+      "send": "Send",
+      "wait": "Loading..."
     },
     "heightprofile": {
       "asl": "a.s.l.",

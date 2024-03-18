@@ -18,6 +18,7 @@
         "Editing": "Strumenti di modifica",
         "FeatureForm": "Formulario oggetto",
         "FeatureSearch": "Ricerca oggetto",
+        "GeometryDigitizer": "Digitalizzazione geometrie",
         "Help": "Aiuto",
         "IdentifyPoint": "Identifica punto",
         "IdentifyRegion": "Identifica in un poligono",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "File",
       "placeholder": "Seleziona file..."
+    },
+    "geomdigitizer": {
+      "applink": "Applicativo",
+      "bufferlayername": "Buffer",
+      "chooselink": "Seleziona",
+      "clear": "Cancella livello",
+      "identifypick": "Seleziona oggetto",
+      "identifypickregion": "Seleziona oggetto in area",
+      "layername": "Digitalizzazione",
+      "line_buffer": "Linea (da bufferizzare)",
+      "point_buffer": "Punto (da bufferizzare)",
+      "selfinter": "Uno o più poligoni contengono autointersecazioni",
+      "send": "Invia",
+      "wait": "Caricamento..."
     },
     "heightprofile": {
       "asl": "s.l.m.",

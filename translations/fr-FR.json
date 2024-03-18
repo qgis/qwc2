@@ -18,6 +18,7 @@
         "Editing": "Editer",
         "FeatureForm": "Formulaire d'objet",
         "FeatureSearch": "Recherche objet",
+        "GeometryDigitizer": "Digitalisation des géométries",
         "Help": "Aide",
         "IdentifyPoint": "Interroger point",
         "IdentifyRegion": "Interroger la région",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "Fichiers",
       "placeholder": "Choisir un fichier..."
+    },
+    "geomdigitizer": {
+      "applink": "Application",
+      "bufferlayername": "Tampon",
+      "chooselink": "Choisir...",
+      "clear": "Effacer la couche",
+      "identifypick": "Choisir un objet",
+      "identifypickregion": "Sélectionner des objets dans la région",
+      "layername": "Digitalisation",
+      "line_buffer": "Ligne (sera tamponnée)",
+      "point_buffer": "Point (sera tamponnée)",
+      "selfinter": "Un ou plusieurs polygones contiennent des auto-intersections",
+      "send": "Envoyer",
+      "wait": "Chargement..."
     },
     "heightprofile": {
       "asl": "s/mer",

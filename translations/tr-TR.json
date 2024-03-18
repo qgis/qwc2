@@ -18,6 +18,7 @@
         "Editing": "Düzenleme",
         "FeatureForm": "",
         "FeatureSearch": "",
+        "GeometryDigitizer": "",
         "Help": "Yardım",
         "IdentifyPoint": "",
         "IdentifyRegion": "Bölgeden Bilgi Al",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "",
       "placeholder": "Dosya seç..."
+    },
+    "geomdigitizer": {
+      "applink": "",
+      "bufferlayername": "",
+      "chooselink": "",
+      "clear": "",
+      "identifypick": "",
+      "identifypickregion": "",
+      "layername": "",
+      "line_buffer": "",
+      "point_buffer": "",
+      "selfinter": "",
+      "send": "",
+      "wait": ""
     },
     "heightprofile": {
       "asl": "a.s.l.",

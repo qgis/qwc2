@@ -18,6 +18,7 @@
         "Editing": "Editieren",
         "FeatureForm": "Objektformular",
         "FeatureSearch": "Objektsuche",
+        "GeometryDigitizer": "Geometriedigitalisierung",
         "Help": "Hilfe",
         "IdentifyPoint": "Punkt abfragen",
         "IdentifyRegion": "Region abfragen",
@@ -153,6 +154,20 @@
     "fileselector": {
       "files": "Dateien",
       "placeholder": "Datei auswählen"
+    },
+    "geomdigitizer": {
+      "applink": "Anwendung",
+      "bufferlayername": "Digitalisierung Puffer",
+      "chooselink": "Auswählen",
+      "clear": "Digitalisierungsebene zurücksetzen",
+      "identifypick": "Objekt auswählen",
+      "identifypickregion": "Region auswählen...",
+      "layername": "Digitalisierung",
+      "line_buffer": "Linie (zu puffern)",
+      "point_buffer": "Punkt (zu puffern)",
+      "selfinter": "Eins oder mehrere Polygone sind selbst schneidend",
+      "send": "Senden",
+      "wait": "Laden..."
     },
     "heightprofile": {
       "asl": "ü. NHN",
