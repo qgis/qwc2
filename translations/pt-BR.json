@@ -309,6 +309,9 @@
       "width": "Largura",
       "windowtitle": "Título da janela"
     },
+    "pickfeature": {
+      "querying": ""
+    },
     "portal": {
       "filter": "",
       "menulabel": ""

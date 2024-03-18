@@ -8,6 +8,18 @@ div.PickFeatureMenu > div {
     padding: 0.25em 0.5em;
 }
 
-div.PickFeatureMenu > div:hover {
+div.PickFeatureMenu > div:hover:not(.pick-feature-menu-querying) {
     background-color: var(--list-item-bg-color-hover);
+}
+
+div.pick-feature-menu-querying {
+    display: flex;
+    align-items: center;
+}
+
+div.pick-feature-menu-querying > div.spinner {
+    width: 1em;
+    height: 1em;
+    flex: 0 0 auto;
+    margin-right: 0.5em;
 }

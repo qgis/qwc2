@@ -309,6 +309,9 @@
       "width": "Largeur",
       "windowtitle": "Entrée numérique"
     },
+    "pickfeature": {
+      "querying": "Interrogation"
+    },
     "portal": {
       "filter": "Filtrer les thèmes...",
       "menulabel": "Menu"

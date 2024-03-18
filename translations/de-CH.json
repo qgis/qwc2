@@ -309,6 +309,9 @@
       "width": "Breite",
       "windowtitle": "Numerische Eingabe"
     },
+    "pickfeature": {
+      "querying": "Abfragen..."
+    },
     "portal": {
       "filter": "Themen filtern...",
       "menulabel": "Menu"

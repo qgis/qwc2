@@ -15,7 +15,12 @@ import PropTypes from 'prop-types';
 import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
+import MapSelection from './MapSelection';
 import PopupMenu from './PopupMenu';
+import Spinner from './Spinner';
 
 import './style/PickFeature.css';
 
@@ -30,9 +35,15 @@ class PickFeature extends React.Component {
         /** Optional: Restrict pick to specified layer name */
         layer: PropTypes.string,
         layers: PropTypes.array,
-        map: PropTypes.object
+        map: PropTypes.object,
+        /** Pick geometry type: Point, Polygon, ... (default: Point) */
+        pickGeomType: PropTypes.string
+    };
+    static defaultProps = {
+        pickGeomType: 'Point'
     };
     static defaultState = {
+        pickGeom: null,
         pickResults: null,
         clickPos: null,
         highlightedFeature: null,
@@ -42,77 +53,109 @@ class PickFeature extends React.Component {
         super(props);
         this.state = PickFeature.defaultState;
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.map.click) {
-            const clickPoint = this.queryPoint(prevProps);
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.pickGeom && this.state.pickGeom !== prevState.pickGeom) {
             let queryLayers = [];
             if (this.props.layer) {
                 queryLayers = [this.props.layers.find((l) => l.role === LayerRole.THEME && LayerUtils.searchSubLayer(l, 'name', this.props.layer))].filter(Boolean);
             } else {
                 queryLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             }
-            if (clickPoint && !isEmpty(queryLayers)) {
-                const clickPos = this.props.map.click.pixel;
-                this.setState({pickResults: {}, clickPos: clickPos, pendingQueries: queryLayers.length});
-                queryLayers.forEach(layer => {
-                    const request = IdentifyUtils.buildRequest(layer, this.props.layer || layer.queryLayers.join(","), clickPoint, this.props.map);
-                    IdentifyUtils.sendRequest(request, (response) => {
-                        const result = IdentifyUtils.parseResponse(response, layer, request.params.info_format, clickPoint, this.props.map.projection, false, this.props.layers);
-                        if (this.props.featureFilter) {
-                            Object.entries(result).forEach(([layername, features]) => {
-                                result[layername] = features.filter(this.props.featureFilter);
-                            });
+            if (!isEmpty(queryLayers)) {
+                this.setState(state => {
+                    const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
+                    const coordinates = this.props.pickGeomType === "Point" ? [[state.pickGeom.coordinates]] : state.pickGeom.coordinates;
+                    let maxX = coordinates[0][0][0];
+                    let maxY = coordinates[0][0][1];
+                    for (let i = 1; i < coordinates[0].length; ++i) {
+                        if (coordinates[0][i][0] > maxX) {
+                            maxX = coordinates[0][i][0];
+                            maxY = coordinates[0][i][1];
                         }
-                        this.setState((state) => {
-                            const newState = {
-                                pickResults: {
-                                    ...state.pickResults,
-                                    ...result
-                                },
-                                pendingQueries: state.pendingQueries - 1
-                            };
-                            if (newState.pendingQueries === 0) {
-                                const entries = Object.entries(newState.pickResults);
-                                if (entries.length === 1 && entries[0][1].length === 1) {
-                                    this.props.featurePicked(entries[0][0], entries[0][1][0]);
-                                }
+                    }
+                    const clickPos = getPixelFromCoordinate([maxX, maxY]);
+                    queryLayers.forEach(layer => {
+                        let request = null;
+                        if (this.props.pickGeomType === 'Point') {
+                            request = IdentifyUtils.buildRequest(layer, this.props.layer || layer.queryLayers.join(","), state.pickGeom.coordinates, this.props.map);
+                        } else if (this.props.pickGeomType === 'Polygon') {
+                            const filter = VectorLayerUtils.geoJSONGeomToWkt(this.state.pickGeom);
+                            request = IdentifyUtils.buildFilterRequest(layer, this.props.layer || layer.queryLayers.join(","), filter, this.props.map);
+                        } else {
+                            return;
+                        }
+                        IdentifyUtils.sendRequest(request, (response) => {
+                            const result = IdentifyUtils.parseResponse(response, layer, request.params.info_format, clickPos, this.props.map.projection, false, this.props.layers);
+                            if (this.props.featureFilter) {
+                                Object.entries(result).forEach(([layername, features]) => {
+                                    result[layername] = features.filter(this.props.featureFilter);
+                                });
                             }
-                            return newState;
+                            this.setState((state2) => {
+                                const newState = {
+                                    pickResults: {
+                                        ...state2.pickResults,
+                                        ...result
+                                    },
+                                    pendingQueries: state2.pendingQueries - 1
+                                };
+                                if (newState.pendingQueries === 0) {
+                                    const entries = Object.entries(newState.pickResults);
+                                    if (entries.length === 1 && entries[0][1].length === 1) {
+                                        this.props.featurePicked(entries[0][0], entries[0][1][0]);
+                                        newState.pickResults = null;
+                                        newState.pickGeom = null;
+                                    } else if (entries.length === 0) {
+                                        newState.pickResults = null;
+                                        newState.pickGeom = null;
+                                    }
+                                }
+                                return newState;
+                            });
                         });
                     });
+                    return {pickResults: {}, clickPos: clickPos, pendingQueries: queryLayers.length};
                 });
             }
         }
     }
-
-    queryPoint = (prevProps) => {
-        if (this.props.map.click.button !== 0 || this.props.map.click === prevProps.map.click) {
-            return null;
-        }
-        return this.props.map.click.coordinate;
-    };
     render() {
-        if (!this.state.pickResults || this.state.pendingQueries > 0) {
-            return null;
+        let resultsMenu = null;
+        if (this.state.pickResults) {
+            resultsMenu = (
+                <PopupMenu
+                    className="PickFeatureMenu"
+                    key="PickResultMenu"
+                    onClose={this.onClose}
+                    x={this.state.clickPos[0]} y={this.state.clickPos[1]}
+                >
+                    {this.state.pendingQueries === 0 ? (
+                        Object.entries(this.state.pickResults).map(([key, features]) => features.map(feature => (
+                            <div
+                                key={key + ":" + feature.id}
+                                onClickCapture={() => this.props.featurePicked(key, feature)}
+                                onMouseOut={() => this.clearHighlight(key, feature)}
+                                onMouseOver={() => this.highlightFeature(key, feature)}
+                            >
+                                {feature.displayname}
+                            </div>
+                        )))
+                    ) : (
+                        <div className="pick-feature-menu-querying"><Spinner />{LocaleUtils.tr("pickfeature.querying")}</div>
+                    )}
+                </PopupMenu>
+            );
         }
-        return (
-            <PopupMenu
-                className="PickFeatureMenu"
-                onClose={this.onClose}
-                x={this.state.clickPos[0]} y={this.state.clickPos[1]}
-            >
-                {Object.entries(this.state.pickResults).map(([key, features]) => features.map(feature => (
-                    <div
-                        key={key + ":" + feature.id}
-                        onClickCapture={() => this.props.featurePicked(key, feature)}
-                        onMouseOut={() => this.clearHighlight(key, feature)}
-                        onMouseOver={() => this.highlightFeature(key, feature)}
-                    >
-                        {feature.displayname}
-                    </div>
-                )))}
-            </PopupMenu>
-        );
+        return [resultsMenu, (
+            <MapSelection
+                active
+                geomType={this.props.pickGeomType}
+                geometry={this.state.pickGeom}
+                geometryChanged={geom => this.setState({pickGeom: geom})}
+                key="MapSelection"
+                styleOptions={{circleRadius: 5, strokeColor: [0, 0, 0], fillColor: [255, 255, 0, 0.25]}}
+            />
+        )];
     }
     highlightFeature = (key, feature) => {
         const layer = {

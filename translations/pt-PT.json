@@ -309,6 +309,9 @@
       "width": "Largura",
       "windowtitle": "Entrada Numérica"
     },
+    "pickfeature": {
+      "querying": ""
+    },
     "portal": {
       "filter": "",
       "menulabel": ""

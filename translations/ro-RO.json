@@ -309,6 +309,9 @@
       "width": "Lățimea",
       "windowtitle": "Valori numerice"
     },
+    "pickfeature": {
+      "querying": ""
+    },
     "portal": {
       "filter": "",
       "menulabel": ""

@@ -309,6 +309,9 @@
       "width": "Larghezza",
       "windowtitle": "Formulario numerico"
     },
+    "pickfeature": {
+      "querying": "Query..."
+    },
     "portal": {
       "filter": "Filtra temi...",
       "menulabel": "Menu"

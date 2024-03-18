@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 export default class PopupMenu extends React.Component {
     static propTypes = {
-        children: PropTypes.array,
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
         onClose: PropTypes.func,
         width: PropTypes.number,
