@@ -397,7 +397,7 @@ class Identify extends React.Component {
             <MapSelection
                 active geomType={this.state.mode === "Radius" ? "Circle" : "Polygon"}
                 geometry={this.state.filterGeom}
-                geometryChanged={geom => this.setState({filterGeom: geom})} key="MalSelection"
+                geometryChanged={geom => this.setState({filterGeom: geom})} key="MapSelection"
                 measure={this.state.mode === "Radius"}
             />
         ) : null];
