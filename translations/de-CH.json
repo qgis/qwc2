@@ -84,7 +84,7 @@
       "removefailed": "Lesezeichen konnte nicht entfernt werden",
       "savefailed": "Lesezeichen konnte nicht aktualisiert werden",
       "update": "Lesezeichen aktualisieren",
-      "zoomToExtent": ""
+      "zoomToExtent": "Auf Ausschnitt zoomen"
     },
     "bottombar": {
       "mousepos_label": "Koordinaten",
@@ -266,6 +266,7 @@
       "geomfilter": "Geometrie",
       "invalidfilter": "Ungültiger Filterausdruck",
       "save": "Speichern",
+      "select": "Auswählen...",
       "selectlayer": "Ebene auswählen",
       "timefilter": "Zeit",
       "timefrom": "Von",

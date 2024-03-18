@@ -266,6 +266,7 @@
       "geomfilter": "Géométrique",
       "invalidfilter": "Expression de filtre non valide",
       "save": "Enregistrer",
+      "select": "Sélectionner...",
       "selectlayer": "Sélectionner couche",
       "timefilter": "Temporelle",
       "timefrom": "De",

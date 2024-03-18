@@ -266,6 +266,7 @@
       "geomfilter": "Geometry",
       "invalidfilter": "Invalid filter expression",
       "save": "Save",
+      "select": "Select...",
       "selectlayer": "Select layer",
       "timefilter": "Time",
       "timefrom": "From",
@@ -308,6 +309,9 @@
       "side": "Side",
       "width": "Width",
       "windowtitle": "Numeric input"
+    },
+    "pickfeature": {
+      "querying": "Querying..."
     },
     "portal": {
       "filter": "Filter themes...",

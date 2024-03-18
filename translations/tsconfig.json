@@ -233,6 +233,7 @@
     "mapfilter.geomfilter",
     "mapfilter.invalidfilter",
     "mapfilter.save",
+    "mapfilter.select",
     "mapfilter.selectlayer",
     "mapfilter.timefilter",
     "mapfilter.timefrom",

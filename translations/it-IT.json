@@ -84,7 +84,7 @@
       "removefailed": "Impossibile rimuovere il segnalibro",
       "savefailed": "Impossibile aggiornare il segnalibro",
       "update": "Aggiorna segnalibro",
-      "zoomToExtent": ""
+      "zoomToExtent": "Zoomare sull'estensione"
     },
     "bottombar": {
       "mousepos_label": "Coordinate",
@@ -266,6 +266,7 @@
       "geomfilter": "Geometrico",
       "invalidfilter": "Espressione filtro non valida",
       "save": "Salva",
+      "select": "Seleziona...",
       "selectlayer": "Seleziona livello",
       "timefilter": "Temporale",
       "timefrom": "Da",
