@@ -57,10 +57,10 @@ class SnappingSupport extends React.Component {
         props.map.getInteractions().on('remove', this.handleInteractionRemoved);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.mapObj.bbox !== prevProps.mapObj.bbox || this.props.theme !== prevProps.theme) {
+        if (this.state.drawing && (this.props.mapObj.bbox !== prevProps.mapObj.bbox || this.props.theme !== prevProps.theme)) {
             this.setState({invalid: true});
             this.refreshFeatureCache(true);
-        } else if (this.props.layers !== prevProps.layers && this.state.havesnaplayers) {
+        } else if (this.state.drawing && this.props.layers !== prevProps.layers) {
             const layersChanged = this.props.layers.find(layer => {
                 if (layer.role === LayerRole.THEME) {
                     const prev = prevProps.layers.find(prevLayer => layer.uuid === prevLayer.uuid);
@@ -185,7 +185,7 @@ class SnappingSupport extends React.Component {
         this.setState({drawing: added});
     };
     refreshFeatureCache = (force) => {
-        if (!this.state.invalid && !force) {
+        if (!this.state.invalid && !force || !this.state.drawing) {
             return;
         }
         this.source.clear();
