@@ -34,6 +34,7 @@ import Spinner from '../components/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -144,7 +145,8 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             ]
         };
         const mapCrs = this.props.map.projection;
-        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, mapCrs, true, false);
+        const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
+        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, scale, mapCrs, true, false);
         const highlightParams = VectorLayerUtils.createPrintHighlighParams([layer], mapCrs);
         const imageParams = {
             SERVICE: 'WMS',
