@@ -18,7 +18,7 @@ export default class ShareQRCode extends React.Component {
         shareUrl: PropTypes.string
     };
     render() {
-        const canCopy = navigator.clipboard.write !== undefined;
+        const canCopy = navigator.clipboard?.write !== undefined;
         return (
             <div className="qr-code">
                 <h4>
