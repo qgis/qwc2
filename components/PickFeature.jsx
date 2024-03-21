@@ -109,7 +109,7 @@ class PickFeature extends React.Component {
                                         this.props.featurePicked(entries[0][0], entries[0][1][0]);
                                         newState.pickResults = null;
                                         newState.pickGeom = null;
-                                    } else if (entries.length === 0) {
+                                    } else if (entries.reduce((sum, entry) => sum + entry[1].length, 0) === 0) {
                                         newState.pickResults = null;
                                         newState.pickGeom = null;
                                     }
