@@ -59,11 +59,11 @@ class ServiceInfoWindow extends React.Component {
                                 {this.renderRow(LocaleUtils.trmsg("serviceinfo.abstract"), this.props.service.abstract, true)}
                                 {this.renderRow(LocaleUtils.trmsg("serviceinfo.keywords"), this.props.service.keywords)}
                                 {this.renderRow(LocaleUtils.trmsg("serviceinfo.onlineResource"), this.renderLink(this.props.service.onlineResource, this.props.service.onlineResource))}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPerson"), this.props.service.contact.person)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactOrganization"), this.props.service.contact.organization)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPosition"), this.props.service.contact.position)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPhone"), this.props.service.contact.phone)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactEmail"), this.props.service.contact.email)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPerson"), this.props.service.contact?.person)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactOrganization"), this.props.service.contact?.organization)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPosition"), this.props.service.contact?.position)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPhone"), this.props.service.contact?.phone)}
+                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactEmail"), this.props.service.contact?.email)}
                             </tbody>
                         </table>
                     </div>
