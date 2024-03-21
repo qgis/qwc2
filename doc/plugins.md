@@ -12,6 +12,7 @@ Plugin reference
 * [Editing](#editing)
 * [FeatureForm](#featureform)
 * [FeatureSearch](#featuresearch)
+* [GeometryDigitizer](#geometrydigitizer)
 * [HeightProfile](#heightprofile)
 * [Help](#help)
 * [HomeButton](#homebutton)
@@ -248,6 +249,15 @@ See [Configuring the QGIS feature search](../../topics/Search/#configuring-the-q
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
+
+GeometryDigitizer<a name="geometrydigitizer"></a>
+----------------------------------------------------------------
+Allows digitizing geometries to send to configured applications.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| styleActive | `{`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`}` | The style of active geometries (i.e. supported by the selected application) | `undefined` |
+| styleInactive | `{`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`}` | The style of inactive (i.e. not supported by the selected application) | `undefined` |
 
 HeightProfile<a name="heightprofile"></a>
 ----------------------------------------------------------------

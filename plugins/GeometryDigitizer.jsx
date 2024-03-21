@@ -32,6 +32,9 @@ import './style/GeometryDigitizer.css';
 import './style/Redlining.css';
 
 
+/**
+ * Allows digitizing geometries to send to configured applications.
+ */
 class GeometryDigitizer extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
@@ -47,8 +50,28 @@ class GeometryDigitizer extends React.Component {
         removeLayer: PropTypes.func,
         removeLayerFeatures: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        styleActive: PropTypes.object,
-        styleInactive: PropTypes.object,
+        /** The style of active geometries (i.e. supported by the selected application) */
+        styleActive: PropTypes.shape({
+            /* Stroke color rgba array, i.e. [255, 0, 0, 0.5] */
+            strokeColor: PropTypes.array,
+            /* Stroke width */
+            strokeWidth: PropTypes.number,
+            /* Stroke dash/gap pattern array. Empty for solid line. */
+            strokeDash: PropTypes.array,
+            /* Fill color rgba array, i.e. [255, 0, 0, 0.33] */
+            fillColor: PropTypes.array
+        }),
+        /** The style of inactive (i.e. not supported by the selected application) */
+        styleInactive: PropTypes.shape({
+            /* Stroke color rgba array, i.e. [255, 0, 0, 0.5] */
+            strokeColor: PropTypes.array,
+            /* Stroke width */
+            strokeWidth: PropTypes.number,
+            /* Stroke dash/gap pattern array. Empty for solid line. */
+            strokeDash: PropTypes.array,
+            /* Fill color rgba array, i.e. [255, 0, 0, 0.33] */
+            fillColor: PropTypes.array
+        }),
         theme: PropTypes.object,
         themes: PropTypes.object
     };
