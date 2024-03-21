@@ -90,6 +90,10 @@ class PickFeature extends React.Component {
                                 Object.entries(result).forEach(([layername, features]) => {
                                     result[layername] = features.filter(this.props.featureFilter);
                                 });
+                            } else {
+                                Object.entries(result).forEach(([layername, features]) => {
+                                    result[layername] = features.filter(feature => !!feature.geometry);
+                                });
                             }
                             this.setState((state2) => {
                                 const newState = {
