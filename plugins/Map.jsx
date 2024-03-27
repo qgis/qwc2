@@ -30,7 +30,6 @@ class MapPlugin extends React.Component {
         layers: PropTypes.array,
         loadingLayers: PropTypes.array,
         map: PropTypes.object,
-        mapMargins: PropTypes.object,
         /** Zoom duration in ms, rotation in degrees, panStepSize and panPageSize as fraction of map width/height. */
         mapOptions: PropTypes.shape({
             zoomDuration: PropTypes.number,
@@ -222,9 +221,8 @@ class MapPlugin extends React.Component {
     render() {
         let loadingIndicator = null;
         if (this.props.showLoading && !isEmpty(this.props.loadingLayers)) {
-            const left = `calc(${this.props.mapMargins.left}px + 0.25em`;
             loadingIndicator = (
-                <span className="map-loading-indicator" key="map-loading" ref={el => { this.loadingEl = el; }} style={{left}}>
+                <span className="map-loading-indicator" key="map-loading" ref={el => { this.loadingEl = el; }}>
                     <Spinner className="spinner" />
                     {LocaleUtils.tr("map.loading")}
                 </span>
@@ -249,7 +247,6 @@ export default (tools) => {
         map: state.map,
         layers: state.layers.flat,
         loadingLayers: state.layers.loading,
-        mapMargins: state.windows.mapMargins,
         swipe: state.layers.swipe,
         theme: state.theme.current,
         tools
