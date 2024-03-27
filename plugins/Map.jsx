@@ -41,6 +41,7 @@ class MapPlugin extends React.Component {
         }),
         /** Whether to display the loading spinner when layers are loading. */
         showLoading: PropTypes.bool,
+        splitScreen: PropTypes.object,
         swipe: PropTypes.number,
         /** A list of layer geometry types to ignore when determining the top-most layer to compare. */
         swipeGeometryTypeBlacklist: PropTypes.arrayOf(PropTypes.string),
@@ -221,8 +222,11 @@ class MapPlugin extends React.Component {
     render() {
         let loadingIndicator = null;
         if (this.props.showLoading && !isEmpty(this.props.loadingLayers)) {
+            const splitWindows = Object.values(this.props.splitScreen);
+            const left = splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0);
+            const style = {left: `calc(${left}px + 0.25em)`};
             loadingIndicator = (
-                <span className="map-loading-indicator" key="map-loading" ref={el => { this.loadingEl = el; }}>
+                <span className="map-loading-indicator" key="map-loading" ref={el => { this.loadingEl = el; }} style={style}>
                     <Spinner className="spinner" />
                     {LocaleUtils.tr("map.loading")}
                 </span>
@@ -247,6 +251,7 @@ export default (tools) => {
         map: state.map,
         layers: state.layers.flat,
         loadingLayers: state.layers.loading,
+        splitScreen: state.windows.splitScreen,
         swipe: state.layers.swipe,
         theme: state.theme.current,
         tools
