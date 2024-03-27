@@ -74,7 +74,7 @@ class Cyclomedia extends React.Component {
             initiallyDocked: false,
             side: 'left'
         },
-        maxMapScale: 10000,
+        maxMapScale: 5000,
         projection: 'EPSG:3857'
     };
     state = {
@@ -210,8 +210,9 @@ class Cyclomedia extends React.Component {
         );
     }
     setIframeRef = (iframe) => {
-        if (iframe) {
+        if (iframe && iframe !== this.iframe) {
             this.iframe = iframe;
+            clearInterval(this.iframePollIntervall);
             this.iframePollIntervall = setInterval(() => this.setupIframe(iframe), 500);
         }
     };
@@ -434,27 +435,11 @@ class Cyclomedia extends React.Component {
             type: 'wfs',
             loader: (vectorSource, extent, resolution, projection, success, failure) => {
                 const bbox = CoordinatesUtils.reprojectBbox(extent, projection.getCode(), this.props.projection);
-                const postData = `
-                    <wfs:GetFeature service="WFS" version="1.1.0" resultType="results" outputFormat="text/xml; subtype=gml/3.1.1" xmlns:wfs="http://www.opengis.net/wfs">
-                        <wfs:Query typeName="atlas:Recording" srsName="${this.props.projection}" xmlns:atlas="http://www.cyclomedia.com/atlas">
-                            <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-                                <ogc:And>
-                                    <ogc:BBOX>
-                                        <gml:Envelope srsName="${this.props.projection}" xmlns:gml="http://www.opengis.net/gml">
-                                        <gml:lowerCorner>${bbox[0]} ${bbox[1]}</gml:lowerCorner>
-                                        <gml:upperCorner>${bbox[2]} ${bbox[3]}</gml:upperCorner>
-                                        </gml:Envelope>
-                                    </ogc:BBOX>
-                                    <ogc:PropertyIsNull>
-                                        <ogc:PropertyName>expiredAt</ogc:PropertyName>
-                                    </ogc:PropertyIsNull>
-                                </ogc:And>
-                            </ogc:Filter>
-                        </wfs:Query>
-                    </wfs:GetFeature>
-                `;
+                const bboxstr = bbox.join(",");
+
+                const reqUrl = `https://atlasapi.cyclomedia.com/api/recording/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=atlas:Recording&srsname=${this.props.projection}&bbox=${bboxstr}&maxFeatures=10000000`;
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'https://atlasapi.cyclomedia.com/api/Recordings/wfs');
+                xhr.open('GET', reqUrl);
                 xhr.setRequestHeader("Authorization", "Basic " + btoa(this.state.username + ":" + this.state.password));
                 const onError = function() {
                     vectorSource.removeLoadedExtent(extent);
@@ -475,7 +460,7 @@ class Cyclomedia extends React.Component {
                         onError();
                     }
                 };
-                xhr.send(postData);
+                xhr.send();
             },
             name: 'atlas:Recording',
             version: '1.1.0',
