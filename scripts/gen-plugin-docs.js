@@ -12,6 +12,13 @@ fs.readdirSync(qwcPluginDir).forEach(entry => {
         pluginData.push(reactDocs.parse(contents, reactDocs.resolver.findAllComponentDefinitions));
     }
 });
+fs.readdirSync(qwcPluginDir + "/map").forEach(entry => {
+    if (entry.endsWith(".jsx")) {
+        const file = path.resolve(qwcPluginDir, "map", entry);
+        const contents = fs.readFileSync(file);
+        pluginData.push(reactDocs.parse(contents, reactDocs.resolver.findAllComponentDefinitions));
+    }
+});
 pluginData = pluginData.flat();
 
 function parsePropType(type) {

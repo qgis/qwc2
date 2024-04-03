@@ -34,6 +34,9 @@ const GeomTypeConfig = {
     Square: {drawInteraction: (opts) => new ol.interaction.DrawRegular({...opts, sides: 4, squareCondition: () => true }), editTool: 'Transform', regular: true}
 };
 
+/**
+ * Redlining support for the map component.
+ */
 class RedliningSupport extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,

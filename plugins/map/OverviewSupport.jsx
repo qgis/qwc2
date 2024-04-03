@@ -18,11 +18,14 @@ import OlLayer from '../../components/map/OlLayer';
 
 import './style/OverviewSupport.css';
 
+/**
+ * Overview map support for the map component.
+ */
 class OverviewMap extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
-        // See https://openlayers.org/en/latest/apidoc/ol.control.OverviewMap.html
+        /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options. */
         options: PropTypes.object,
         projection: PropTypes.string,
         theme: PropTypes.object

@@ -16,6 +16,9 @@ import PropTypes from 'prop-types';
 import {changeLocateState, changeLocatePosition, onLocateError} from '../../actions/locate';
 import OlLocate from '../../components/map/OlLocate';
 
+/**
+ * GPS locate support for the map component.
+ */
 class LocateSupport extends React.Component {
     static propTypes = {
         changeLocatePosition: PropTypes.func,

@@ -27,6 +27,9 @@ import SnapInteraction from './SnapInteraction';
 import './style/SnappingSupport.css';
 
 
+/**
+ * Snapping support for the map component.
+ */
 class SnappingSupport extends React.Component {
     static propTypes = {
         layers: PropTypes.array,

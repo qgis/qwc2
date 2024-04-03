@@ -15,6 +15,9 @@ import PropTypes from 'prop-types';
 import {setEditContext} from '../../actions/editing';
 import FeatureStyles from "../../utils/FeatureStyles";
 
+/**
+ * Editing support for the map component.
+ */
 class EditingSupport extends React.Component {
     static propTypes = {
         editContext: PropTypes.object,

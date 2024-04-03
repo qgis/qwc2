@@ -12,10 +12,14 @@ import React from 'react';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
+
+/**
+ * Scalebar support for the map component.
+ */
 export default class ScaleBarSupport extends React.Component {
     static propTypes = {
         map: PropTypes.object,
-        // See https://openlayers.org/en/latest/apidoc/ol.control.ScaleLine.html
+        /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) */
         options: PropTypes.object
     };
     static defaultOpt = {

@@ -19,7 +19,9 @@ import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MeasureUtils from '../../utils/MeasureUtils';
 
-
+/**
+ * Measurement support for the map component.
+ */
 class MeasurementSupport extends React.Component {
     static propTypes = {
         changeMeasurementState: PropTypes.func,
@@ -27,8 +29,10 @@ class MeasurementSupport extends React.Component {
         map: PropTypes.object,
         mapCrs: PropTypes.string,
         measurement: PropTypes.object,
-        // See defaultOpts below
-        options: PropTypes.object,
+        /** Options */
+        options: PropTypes.shape({
+            geodesic: PropTypes.bool
+        }),
         projection: PropTypes.string
     };
     static defaultOpts = {
