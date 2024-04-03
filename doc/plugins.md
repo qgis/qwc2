@@ -764,6 +764,7 @@ Top bar, containing the logo, searchbar, task buttons and app menu.
 | appMenuClearsTask | `bool` | Whether opening the app menu clears the active task. | `undefined` |
 | appMenuCompact | `bool` | Whether show an appMenu compact (menu visible on icons hover) - Only available for desktop client. | `undefined` |
 | appMenuFilterField | `bool` | Whether to display the filter field in the app menu. | `undefined` |
+| appMenuHidden | `bool` | Whether to hide the app menu (useful primarely as a theme specific setting). | `undefined` |
 | appMenuShortcut | `string` | The shortcut for tiggering the app menu, i.e. alt+shift+m. | `undefined` |
 | appMenuVisibleOnStartup | `bool` | Whether to open the app menu on application startup. | `undefined` |
 | logoFormat | `string` | The logo file format. | `"svg"` |

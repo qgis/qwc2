@@ -35,6 +35,8 @@ class TopBar extends React.Component {
         appMenuCompact: PropTypes.bool,
         /** Whether to display the filter field in the app menu. */
         appMenuFilterField: PropTypes.bool,
+        /** Whether to hide the app menu (useful primarely as a theme specific setting). */
+        appMenuHidden: PropTypes.bool,
         /** The shortcut for tiggering the app menu, i.e. alt+shift+m. */
         appMenuShortcut: PropTypes.string,
         /** Whether to open the app menu on application startup. */
@@ -156,7 +158,7 @@ class TopBar extends React.Component {
                                 toolbarItemsShortcutPrefix={this.props.toolbarItemsShortcutPrefix} />
                         ) : null}
                     </div>
-                    {this.props.components.AppMenu ? (
+                    {this.props.components.AppMenu && !this.props.appMenuHidden ? (
                         <this.props.components.AppMenu
                             appMenuClearsTask={this.props.appMenuClearsTask}
                             appMenuShortcut={this.props.appMenuShortcut}
