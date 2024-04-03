@@ -18,6 +18,9 @@ class NumberInput extends React.Component {
         min: PropTypes.number,
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
+        readOnly: PropTypes.bool,
+        required: PropTypes.bool,
+        style: PropTypes.object,
         value: PropTypes.number
     };
     state = {
@@ -41,7 +44,8 @@ class NumberInput extends React.Component {
             <input disabled={this.props.disabled} max={this.props.max}
                 min={this.props.min} onBlur={this.onBlur} onChange={this.onChange}
                 onFocus={this.onFocus} onKeyDown={this.onKeyDown}
-                placeholder={this.props.placeholder} step={step}
+                placeholder={this.props.placeholder} readOnly={this.props.readOnly}
+                required={this.props.required} step={step} style={this.props.style}
                 type="number" value={this.state.curValue} />
         );
     }
