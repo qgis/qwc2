@@ -243,11 +243,14 @@ class Editing extends React.Component {
         } else if (action === "Draw") {
             const editConfig = this.props.theme.editConfig;
             const curConfig = editConfig[this.state.selectedLayer];
-            const feature = getFeatureTemplate(curConfig, {
+            const featureSkel = {
                 type: "Feature",
                 properties: {}
+            };
+            const mapPrefix = (curConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+            getFeatureTemplate(curConfig, featureSkel, this.props.iface, mapPrefix, this.props.map.projection, feature => {
+                this.props.setEditContext('Editing', {...data, feature: feature});
             });
-            this.props.setEditContext('Editing', {...data, feature: feature});
         } else {
             this.props.setEditContext('Editing', {...data});
         }

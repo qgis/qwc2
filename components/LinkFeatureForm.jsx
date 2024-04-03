@@ -54,12 +54,15 @@ class LinkFeatureForm extends React.Component {
                 });
             }
         } else if (this.props.action === 'Create') {
-            const featureTemplate = getFeatureTemplate(this.props.editConfig, {
+            const featureSkel = {
                 type: "Feature",
                 properties: {},
                 ...this.props.feature
+            };
+            const mapPrefix = (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+            getFeatureTemplate(this.props.editConfig, featureSkel, this.props.iface, mapPrefix, this.props.map.projection, feature => {
+                this.props.setEditContext(this.props.editContextId, {action: 'Draw', geomType: this.props.editConfig.geomType, feature: feature});
             });
-            this.props.setEditContext(this.props.editContextId, {action: 'Draw', geomType: this.props.editConfig.geomType, feature: featureTemplate});
         } else if (this.props.action === 'Pick') {
             this.props.setEditContext(this.props.editContextId, {action: null});
         }

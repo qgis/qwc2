@@ -9,40 +9,44 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
+import { v5 as uuidv5 } from 'uuid';
 
 import LocaleUtils from '../utils/LocaleUtils';
 
+const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
 
 export class KeyValCache {
     static store = {};
     static requests = {};
-    static get = (editIface, keyvalrel, callback) => {
-        if (keyvalrel in this.store) {
-            callback(this.store[keyvalrel]);
-        } else if (keyvalrel in this.requests) {
-            this.requests[keyvalrel].push(callback);
+    static get = (editIface, keyvalrel, filterExpr, callback) => {
+        const key = keyvalrel +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
+        if (key in this.store) {
+            callback(this.store[key]);
+        } else if (key in this.requests) {
+            this.requests[key].push(callback);
         } else {
-            this.requests[keyvalrel] = [callback];
+            this.requests[key] = [callback];
             editIface.getKeyValues(keyvalrel, (result) => {
-                if (keyvalrel in this.requests) {
+                if (key in this.requests) {
                     const dataSet = keyvalrel.split(":")[0];
                     if (result.keyvalues && result.keyvalues[dataSet]) {
                         const values = result.keyvalues[dataSet].map(entry => ({
                             value: entry.key, label: entry.value
                         }));
-                        this.store[keyvalrel] = values;
+                        this.store[key] = values;
                     } else {
-                        this.store[keyvalrel] = [];
+                        this.store[key] = [];
                     }
-                    this.requests[keyvalrel].forEach(cb => cb(this.store[keyvalrel]));
-                    delete this.requests[keyvalrel];
+                    this.requests[key].forEach(cb => cb(this.store[key]));
+                    delete this.requests[key];
                 }
-            });
+            }, filterExpr ? [filterExpr] : null);
         }
     };
-    static getSync = (keyvalrel) => {
-        if (keyvalrel in this.store) {
-            return this.store[keyvalrel];
+    static getSync = (keyvalrel, filterExpr) => {
+        const key = keyvalrel +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
+        if (key in this.store) {
+            return this.store[key];
         } else {
             return [];
         }
@@ -58,6 +62,7 @@ export default class EditComboField extends React.Component {
     static propTypes = {
         editIface: PropTypes.object,
         fieldId: PropTypes.string,
+        filterExpr: PropTypes.array,
         keyvalrel: PropTypes.string,
         name: PropTypes.string,
         placeholder: PropTypes.string,
@@ -77,7 +82,15 @@ export default class EditComboField extends React.Component {
             // eslint-disable-next-line
             this.setState({values: this.props.values, showPlaceholder: !this.hasEmptyValue(this.props.values)});
         } else if (this.props.keyvalrel) {
-            KeyValCache.get(this.props.editIface, this.props.keyvalrel, (values) => {
+            KeyValCache.get(this.props.editIface, this.props.keyvalrel, this.props.filterExpr ?? null, (values) => {
+                // eslint-disable-next-line
+                this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
+            });
+        }
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.keyvalrel && this.props.filterExpr !== prevProps.filterExpr) {
+            KeyValCache.get(this.props.editIface, this.props.keyvalrel, this.props.filterExpr ?? null, (values) => {
                 // eslint-disable-next-line
                 this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
             });
@@ -98,7 +111,7 @@ export default class EditComboField extends React.Component {
     render() {
         return (
             <select disabled={this.props.readOnly} name={this.props.name}
-                onChange={ev => this.props.updateField(this.props.fieldId, ev.target.value)}
+                onChange={ev => this.props.updateField(this.props.fieldId, ev.target.selectedIndex === 0 && this.state.showPlaceholder ? null : ev.target.value)}
                 required={this.props.required} style={this.props.style} value={String(this.props.value)}
             >
                 {this.state.showPlaceholder ? (

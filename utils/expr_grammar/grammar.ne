@@ -1,0 +1,95 @@
+@builtin "string.ne"
+
+@{%
+if (typeof window === 'undefined') {
+    window = global;
+}
+function asFilter(d) {
+    return window.qwc2ExpressionParserContext.asFilter && ["string", "object"].includes(typeof(d[0]));
+}
+%}
+
+main -> _ P0 _                     {% function(d) {return d[1]; } %}
+
+# Priority-0 operators (OR)
+P0 -> P0 _ "OR"i _ P1              {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] || d[4]); } %}
+    | P1                           {% id %}
+
+# Priority-1 operators (AND)
+P1 -> P1 _ "AND"i _ P2             {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] && d[4]); } %}
+    | P2                           {% id %}
+
+# Priority-2 operators (comparison operators)
+P2 -> P2 _ "<" _ P3                {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] < d[4]); } %}
+    | P2 _ ">" _ P3                {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] > d[4]); } %}
+    | P2 _ ">=" _ P3               {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] >= d[4]); } %}
+    | P2 _ "<=" _ P3               {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] <= d[4]); } %}
+    | P2 _ "=" _ P3                {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] == d[4]); } %}
+    | P2 _ "<>" _ P3               {% function(d) { return asFilter(d) ? [d[0], "!=", d[4]] : (d[0] != d[4]); } %}
+    | P3                           {% id %}
+
+# Priority-3 operators (addition, subtraction)
+P3 -> P3 _ "+" _ P4                {% function(d) { return d[0] + d[4]; } %}
+    | P3 _ "-" _ P4                {% function(d) { return d[0] - d[4]; } %}
+    | P4                           {% id %}
+
+# Priority-4 operators (multiplication, division)
+P4 -> P4 _ "*" _ P5                {% function(d) { return d[0] * d[4]; } %}
+    | P4 _ "/" _ P5                {% function(d) { return d[0] / d[4]; } %}
+    | P5                           {% id %}
+
+# Priority-5 operators (exponent, IS, IS NOT)
+P5 -> P6 _ "^" _ P5                {% function(d) { return Math.pow(d[0], d[4]); } %}
+    | P5 __ "IS"i __ P6            {% function(d) { return d[0] === d[4]; } %}
+    | P5 __ "IS"i __ "NOT"i __ P6  {% function(d) { return d[0] !== d[6]; } %}
+    | P6                           {% id %}
+
+# Priority-6 operators (parenthesis, number, unary operators)
+P6 -> "-" _ P6                     {% function(d) { return -d[2]; } %}
+    | "+" _ P6                     {% function(d) { return d[2]; } %}
+    | "(" _ P0 _ ")"               {% function(d) { return d[2]; } %}
+    | N                            {% id %}
+
+# A number or a function of a number
+N -> float                         {% id %}
+    | sqstring                     {% id %}
+    | dqstring                     {% function(d) { return asFilter(d) ? d[0] : window.qwc2ExpressionParserContext.feature.properties?.[d[0]] ?? null; } %}
+    | "now" _ "(" _ ")"            {% function(d) { return (new Date()).toISOString(); } %}
+    | "sin" _ "(" _ P0 _ ")"       {% function(d) { return Math.sin(d[4]); } %}
+    | "cos" _ "(" _ P0 _ ")"       {% function(d) { return Math.cos(d[4]); } %}
+    | "tan" _ "(" _ P0 _ ")"       {% function(d) { return Math.tan(d[4]); } %}
+    | "asin" _ "(" _ P0 _ ")"      {% function(d) { return Math.asin(d[4]); } %}
+    | "acos" _ "(" _ P0 _ ")"      {% function(d) { return Math.acos(d[4]); } %}
+    | "atan" _ "(" _ P0 _ ")"      {% function(d) { return Math.atan(d[4]); } %}
+    | "sqrt" _ "(" _ P0 _ ")"      {% function(d) { return Math.sqrt(d[4]); } %}
+    | "ln" _ "(" _ P0 _ ")"        {% function(d) { return Math.log(d[4]); }  %}
+    | "atan2" _ "(" _ P0 _ "," _ P0 _ ")"                  {% function(d) { return Math.atan2(d[4], d[8]); } %}
+    | "pow" _ "(" _ P0 _ "," _ P0 _ ")"                    {% function(d) { return Math.pow(d[4], d[8]); } %}
+    | "if" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")"          {% function(d) { return d[4] ? d[8] : d[12]; } %}
+    | "nullif" _ "(" _ P0 _ "," _ P0 _ ")"                 {% function(d) { return d[4] === d[8] ? null : d[4]; } %}
+    | "coalesce" _ "(" _ var_args _ ")"                    {% function(d) { return d[4].find(x => x !== null) ?? null; } %}
+    | "attribute" _ "(" _ P0 _ ")"                         {% function(d) { return window.qwc2ExpressionParserContext.feature.properties?.[d[4]] ?? null; } %}
+    | "current_value" _ "(" _ P0 _ ")"                     {% function(d) { return window.qwc2ExpressionParserContext.feature.properties?.[d[4]] ?? null; } %}
+    | "attribute" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return d[4]?.properties?.[d[8]] ?? null; } %}
+    | "get_feature" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")" {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], d[8], d[12]); } %}
+    | "get_feature_by_id" _ "(" _ P0 _ "," _ P0 _ ")"      {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], "id", d[8]); } %}
+    | "PI"i                        {% function(d) { return Math.PI; } %}
+    | "E"i                         {% function(d) { return Math.E; } %}
+    | "NULL"i                      {% function(d) { return null; } %}
+    | "FALSE"i                     {% function(d) { return false; } %}
+    | "TRUE"i                      {% function(d) { return true; } %}
+
+var_args -> P0 {% function(d) {return [d[0]];} %}
+var_args -> var_args _ "," _ P0    {% function(d) { return [...d[0], d[4]]; } %}
+
+# I use `float` to basically mean a number with a decimal point in it
+float ->
+      int "." int                  {% function(d) { return parseFloat(d[0] + d[1] + d[2])} %}
+    | int                          {% function(d) { return parseInt(d[0])} %}
+
+int -> [0-9]:+                     {% function(d) { return d[0].join(""); } %}
+
+# Whitespace. The important thing here is that the postprocessor
+# is a null-returning function. This is a memory efficiency trick.
+_ -> [\s]:*                        {% function(d) { return null; } %}
+__ -> [\s]:+                       {% function(d) { return null; } %}

@@ -8,6 +8,7 @@
 
 import editingReducer from '../reducers/editing';
 import ReducerIndex from '../reducers/index';
+import {ExpressionFeatureCache, parseExpressionsAsync} from '../utils/ExpressionParser';
 ReducerIndex.register("editing", editingReducer);
 
 export const SET_EDIT_CONTEXT = 'SET_EDIT_CONTEXT';
@@ -35,39 +36,25 @@ export function setFeatureTemplateFactory(dataset, factory) {
     FeatureTemplateFactories[dataset] = factory;
 }
 
-function evaluateDefaultValue(field) {
-    if (field.defaultValue.startsWith("expr:")) {
-        const expr = field.defaultValue.slice(5);
-        if (expr === "now()") {
-            if (field.type === "date") {
-                return (new Date()).toISOString().split("T")[0];
-            } else {
-                return (new Date()).toISOString();
-            }
-        } else if (expr === "true") {
-            return true;
-        } else if (expr === "false") {
-            return false;
-        }
-        return "";
-    } else {
-        return field.defaultValue;
-    }
-}
-
-export function getFeatureTemplate(editConfig, feature) {
+export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, mapCrs, callback) {
     if (editConfig.editDataset in FeatureTemplateFactories) {
         feature = FeatureTemplateFactories[editConfig.editDataset](feature);
     }
     // Apply default values
-    editConfig.fields.forEach(field => {
+    const defaultFieldExpressions = editConfig.fields.reduce((res, field) => {
         if (field.defaultValue) {
-            feature.properties = {
-                ...feature.properties,
-                [field.id]: evaluateDefaultValue(field)
-            };
+            return {...res, [field.id]: field.defaultValue.replace(/^expr:/, '')};
         }
+        return res;
+    }, {});
+    ExpressionFeatureCache.clear();
+    parseExpressionsAsync(defaultFieldExpressions, feature, editIface, mapPrefix, mapCrs).then(result => {
+        // Adjust values based on field type
+        editConfig.fields.forEach(field => {
+            if (field.id in result && field.type === "date") {
+                result[field.id] = result[field.id].split("T")[0];
+            }
+        });
+        callback({...feature, properties: {...feature.properties, ...result}});
     });
-
-    return feature;
 }

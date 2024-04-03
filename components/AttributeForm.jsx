@@ -131,8 +131,8 @@ class AttributeForm extends React.Component {
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset}
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
                             fields={this.fieldsMap(this.props.editConfig.fields)} form={this.props.editConfig.form} iface={this.props.iface}
-                            mapPrefix={this.editMapPrefix()} readOnly={readOnly} removeRelationRecord={this.removeRelationRecord}
-                            reorderRelationRecord={this.reorderRelationRecord} report={this.props.report}
+                            mapCrs={this.props.map.projection} mapPrefix={this.editMapPrefix()} readOnly={readOnly}
+                            removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord} report={this.props.report}
                             setFormBusy={this.setFormBusy} setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
@@ -315,11 +315,14 @@ class AttributeForm extends React.Component {
                         }
                     });
                 } else {
-                    const feature = getFeatureTemplate(this.props.editConfig, {
+                    const featureSkel = {
                         type: "Feature",
                         properties: {}
+                    };
+                    const mapPrefix = (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+                    getFeatureTemplate(this.props.editConfig, featureSkel, this.props.iface, mapPrefix, this.props.map.projection, feature => {
+                        this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
                     });
-                    this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
                 }
             }
         }

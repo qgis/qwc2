@@ -27,6 +27,7 @@ import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import EditingInterface from '../utils/EditingInterface';
+import {ExpressionFeatureCache, parseExpression} from '../utils/ExpressionParser';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -202,7 +203,7 @@ class AttributeTable extends React.Component {
                                     <td>{feature.id}</td>
                                     {fields.map(field => (
                                         <td key={field.id}>
-                                            {this.renderField(field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
+                                            {this.renderField(currentEditConfig, field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
                                         </td>
                                     ))}
                                 </tr>
@@ -370,6 +371,7 @@ class AttributeTable extends React.Component {
         this.setState((state) => {
             const selectedLayer = layerName || state.selectedLayer;
             KeyValCache.clear();
+            ExpressionFeatureCache.clear();
             const bbox = this.state.limitToExtent ? this.props.mapBbox.bounds : null;
             this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
                 if (result) {
@@ -400,7 +402,7 @@ class AttributeTable extends React.Component {
         }
         return layerId;
     };
-    renderField = (field, featureidx, filteredIndex, fielddisabled) => {
+    renderField = (currentEditConfig, field, featureidx, filteredIndex, fielddisabled) => {
         const feature = this.state.features[featureidx];
         let value = feature.properties[field.id];
         if (value === undefined || value === null) {
@@ -413,9 +415,14 @@ class AttributeTable extends React.Component {
         if (field.type === "boolean" || field.type === "bool") {
             input = (<input name={field.id} {...constraints} checked={value} disabled={disabled} onChange={ev => updateField(field.id, ev.target.checked)} type="checkbox" />);
         } else if (constraints.values || constraints.keyvalrel) {
+            let filterExpr = null;
+            if (field.filterExpression) {
+                const mapPrefix = (currentEditConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+                filterExpr = parseExpression(field.filterExpression, feature, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+            }
             input = (
                 <EditComboField
-                    editIface={this.props.iface} fieldId={field.id} keyvalrel={constraints.keyvalrel}
+                    editIface={this.props.iface} fieldId={field.id} filterExpr={filterExpr} keyvalrel={constraints.keyvalrel}
                     name={field.id} readOnly={constraints.readOnly || disabled} required={constraints.required}
                     updateField={updateField} value={value} values={constraints.values} />
             );
@@ -463,7 +470,7 @@ class AttributeTable extends React.Component {
             alert(LocaleUtils.tr("attribtable.geomnoadd"));
             return;
         }
-        const feature = getFeatureTemplate(currentEditConfig, {
+        const featureSkel = {
             type: "Feature",
             geometry: null,
             properties: currentEditConfig.fields.reduce((res, field) => {
@@ -472,16 +479,19 @@ class AttributeTable extends React.Component {
                 }
                 return res;
             }, {})
+        };
+        const mapPrefix = (currentEditConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+        getFeatureTemplate(currentEditConfig, featureSkel, this.props.iface, mapPrefix, this.props.mapCrs, feature => {
+            this.setState((state) => ({
+                features: [...state.features, feature],
+                filteredSortedFeatures: [...state.filteredSortedFeatures, {...feature, originalIndex: state.features.length}],
+                filterVal: "",
+                currentPage: Math.floor(state.features.length / state.pageSize),
+                changedFeatureIdx: state.filteredSortedFeatures.length,
+                newFeature: true
+            }));
+            this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
         });
-        this.setState((state) => ({
-            features: [...state.features, feature],
-            filteredSortedFeatures: [...state.filteredSortedFeatures, {...feature, originalIndex: state.features.length}],
-            filterVal: "",
-            currentPage: Math.floor(state.features.length / state.pageSize),
-            changedFeatureIdx: state.filteredSortedFeatures.length,
-            newFeature: true
-        }));
-        this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
     };
     deleteSelectedFeatured = () => {
         this.setState((state) => {

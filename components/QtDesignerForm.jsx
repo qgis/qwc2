@@ -16,6 +16,7 @@ import {v1 as uuidv1} from 'uuid';
 import xml2js from 'xml2js';
 
 import ConfigUtils from '../utils/ConfigUtils';
+import {parseExpression, ExpressionFeatureCache} from '../utils/ExpressionParser';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import EditComboField, {KeyValCache} from './EditComboField';
@@ -24,6 +25,7 @@ import Icon from './Icon';
 import Spinner from './Spinner';
 import ButtonBar from './widgets/ButtonBar';
 import DateTimeInput from './widgets/DateTimeInput';
+import NumberInput from './widgets/NumberInput';
 import TextInput from './widgets/TextInput';
 
 import './style/QtDesignerForm.css';
@@ -59,6 +61,7 @@ class QtDesignerForm extends React.Component {
         form: PropTypes.string,
         iface: PropTypes.object,
         locale: PropTypes.string,
+        mapCrs: PropTypes.string,
         mapPrefix: PropTypes.string,
         readOnly: PropTypes.bool,
         removeRelationRecord: PropTypes.func,
@@ -76,6 +79,9 @@ class QtDesignerForm extends React.Component {
         loading: false,
         loadingReqId: null,
         relationAddPressed: null
+    };
+    state = {
+        reevaluate: 0
     };
     constructor(props) {
         super(props);
@@ -114,6 +120,7 @@ class QtDesignerForm extends React.Component {
     }
     componentWillUnmount() {
         KeyValCache.clear();
+        ExpressionFeatureCache.clear();
     }
     render() {
         if (this.state.loading) {
@@ -255,7 +262,7 @@ class QtDesignerForm extends React.Component {
             return null;
         }
         const attr = widget.attribute || {};
-        const fieldConstraints = (this.props.fields[widget.name] || {}).constraints || {};
+        const fieldConstraints = this.props.fields[widget.name]?.constraints || {};
         const inputConstraints = {};
         inputConstraints.readOnly = this.props.readOnly || prop.readOnly === "true" || prop.enabled === "false" || fieldConstraints.readOnly === true || disabled;
         inputConstraints.required = !inputConstraints.readOnly && (prop.required === "true" || fieldConstraints.required === true);
@@ -295,7 +302,7 @@ class QtDesignerForm extends React.Component {
                 return (<div style={fontStyle}>{text}</div>);
             }
         } else if (widget.class === "Line") {
-            const linetype = (widget.property || {}).orientation === "Qt::Vertical" ? "vline" : "hline";
+            const linetype = widget.property?.orientation === "Qt::Vertical" ? "vline" : "hline";
             return (<div className={"qt-designer-form-" + linetype} />);
         } else if (widget.class === "QFrame") {
             return (
@@ -306,6 +313,12 @@ class QtDesignerForm extends React.Component {
                 </div>
             );
         } else if (widget.class === "QGroupBox") {
+            if (widget.property.visibilityExpression) {
+                const exprResult = parseExpression(widget.property.visibilityExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                if (exprResult === false || exprResult === 0) {
+                    return null;
+                }
+            }
             return (
                 <div className="qt-designer-form-container">
                     <div className="qt-designer-form-frame-title" style={fontStyle}>{prop.title}</div>
@@ -382,13 +395,17 @@ class QtDesignerForm extends React.Component {
                 // kvrel__reltablename__attrname__datatable__keyfield__valuefield
                 const count = parts.length;
                 const attrname = parts.slice(1, count - 3).join("__");
-                const comboFieldConstraints = (this.props.fields[attrname] || {}).constraints || {};
+                const comboFieldConstraints = this.props.fields[attrname]?.constraints || {};
                 value = (feature.properties || [])[attrname] ?? "";
                 const fieldId = parts.slice(1, count - 3).join("__");
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
+                let filterExpr = null;
+                if (this.props.fields[attrname]?.filterExpression) {
+                    filterExpr = parseExpression(this.props.fields[attrname].filterExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                }
                 return (
                     <EditComboField
-                        editIface={this.props.iface} fieldId={fieldId} key={fieldId} keyvalrel={keyvalrel}
+                        editIface={this.props.iface} fieldId={fieldId} filterExpr={filterExpr} key={fieldId} keyvalrel={keyvalrel}
                         name={nametransform(attrname)} placeholder={inputConstraints.placeholder}
                         readOnly={inputConstraints.readOnly || comboFieldConstraints.readOnly}
                         required={inputConstraints.required || comboFieldConstraints.required}
