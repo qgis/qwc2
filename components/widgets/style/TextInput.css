@@ -1,5 +1,8 @@
 div.text-input-wrapper {
     position: relative;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
 }
 
 textarea.text-input-form-el {
@@ -18,9 +21,6 @@ pre.text-input {
     font-size: 14px;
     margin: 0;
     padding: 0.25em;
-    border: 1px solid var(--border-color);
-    background-color: var(--input-bg-color);
-    color: var(--text-color);
     overflow: auto;
     cursor: text;
     text-align: left;
@@ -36,7 +36,7 @@ pre.text-input-disabled {
     background-color: var(--input-bg-color-disabled);
 }
 
-pre.div.text-input-readonly {
+pre.text-input-readonly {
     color: var(--text-color-disabled);
 }
 
