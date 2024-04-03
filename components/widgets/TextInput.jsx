@@ -202,7 +202,7 @@ class TextInput extends React.Component {
     commit = () => {
         if (this.state.changed) {
             const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
-            this.props.onChange(valueWithLinks);
+            this.props.onChange(valueWithLinks.replace(/\n$/, ''));
             if (this.formEl?.form) {
                 // Notify parent form picks of changed field
                 // https://stackoverflow.com/a/46012210
