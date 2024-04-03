@@ -28,6 +28,7 @@ function wmsToOpenlayersOptions(options) {
         CRS: options.projection,
         TILED: String(urlParams.TILED ?? options.tiled ?? false).toLowerCase() === "true",
         VERSION: options.version,
+        DPI: options.serverType === 'qgis' ? (options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 96) : undefined,
         ...options.params
     };
 }
