@@ -817,7 +817,7 @@ Overview map support for the map component.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options. | `undefined` |
+| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.<br /> Aditionally, you can specify `layer: {type: "<wms|wmts>", ...}` to specify a custom overview layer. | `undefined` |
 
 RedliningSupport<a name="redliningsupport"></a>
 ----------------------------------------------------------------

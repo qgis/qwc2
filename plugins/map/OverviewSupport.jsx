@@ -25,10 +25,13 @@ class OverviewMap extends React.Component {
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
-        /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options. */
+        /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.
+         *  Aditionally, you can specify `layer: {type: "<wms|wmts>", ...}` to specify a custom overview layer.
+         */
         options: PropTypes.object,
         projection: PropTypes.string,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        themes: PropTypes.object
     };
     constructor(props) {
         super(props);
@@ -40,6 +43,7 @@ class OverviewMap extends React.Component {
             collapsible: true,
             ...props.options
         };
+        delete opt.layer;
         this.overview = new ol.control.OverviewMap(opt);
         this.overview.getOverviewMap().set('id', 'overview');
     }
@@ -56,7 +60,15 @@ class OverviewMap extends React.Component {
     render() {
         const overviewMap = (((this.props.theme || {}).backgroundLayers || []).find(entry => entry.overview) || {}).name;
         let layer = null;
-        if (overviewMap) {
+        if (this.props.options.layer) {
+            layer = {
+                ...this.props.options.layer,
+                visibility: true
+            };
+            if (layer.type === 'wms') {
+                layer.version = layer.params.VERSION || layer.version || this.props.themes?.defaultWMSVersion || "1.3.0";
+            }
+        } else if (overviewMap) {
             layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.name === overviewMap);
             if (layer) {
                 layer = {...layer, visibility: true};
@@ -75,6 +87,7 @@ class OverviewMap extends React.Component {
 
 export default connect((state) => ({
     theme: state.theme.current,
+    themes: state.theme.themes,
     layers: state.layers.flat,
     projection: state.map.projection
 }), {})(OverviewMap);
