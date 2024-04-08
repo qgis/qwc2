@@ -182,7 +182,7 @@ Cyclomedia integration for QWC2.
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | loginRedirectUri | `string` | The relative path to the redirect login handling of oauth. | `undefined` |
 | logoutRedirectUri | `string` | The relative path to the redirect logout handling of oauth. | `undefined` |
-| maxMapScale | `number` | The maximum map scale above which the recordings WFS won't be displayed. | `10000` |
+| maxMapScale | `number` | The maximum map scale above which the recordings WFS won't be displayed. | `5000` |
 | projection | `string` | The projection to use for Cyclomedia. | `'EPSG:3857'` |
 
 DxfExport<a name="dxfexport"></a>
