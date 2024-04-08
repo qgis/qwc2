@@ -67,7 +67,7 @@ class Cyclomedia extends React.Component {
         theme: PropTypes.object
     };
     static defaultProps = {
-        cyclomediaVersion: '23.6',
+        cyclomediaVersion: '24.1',
         displayMeasurements: true,
         geometry: {
             initialWidth: 480,
@@ -437,10 +437,10 @@ class Cyclomedia extends React.Component {
             id: 'cyclomedia-recordings',
             type: 'wfs',
             loader: (vectorSource, extent, resolution, projection, success, failure) => {
-                const bbox = CoordinatesUtils.reprojectBbox(extent, projection.getCode(), this.props.projection);
+                const bbox = CoordinatesUtils.reprojectBbox(extent, projection.getCode(), this.props.mapCrs);
                 const bboxstr = bbox.join(",");
 
-                const reqUrl = `https://atlasapi.cyclomedia.com/api/recording/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=atlas:Recording&srsname=${this.props.projection}&bbox=${bboxstr}&maxFeatures=10000000`;
+                const reqUrl = `https://atlasapi.cyclomedia.com/api/recording/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=atlas:Recording&srsname=${this.props.mapCrs}&bbox=${bboxstr}&maxFeatures=10000000`;
                 const xhr = new XMLHttpRequest();
                 xhr.open('GET', reqUrl);
                 xhr.setRequestHeader("Authorization", "Basic " + btoa(this.state.username + ":" + this.state.password));
@@ -453,7 +453,7 @@ class Cyclomedia extends React.Component {
                     if (xhr.status === 200) {
                         const features = vectorSource.getFormat().readFeatures(xhr.responseText,
                             {
-                                dataProjection: this.props.projection,
+                                dataProjection: this.props.mapCrs,
                                 featureProjection: projection.getCode()
                             }
                         );
@@ -467,7 +467,7 @@ class Cyclomedia extends React.Component {
             },
             name: 'atlas:Recording',
             version: '1.1.0',
-            projection: this.props.projection,
+            projection: this.props.mapCrs,
             formats: ['text/xml; subtype=gml/3.1.1'],
             invertAxisOrientation: true,
             role: LayerRole.SELECTION,
