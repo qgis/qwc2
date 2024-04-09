@@ -17,6 +17,7 @@ import './style/PluginsContainer.css';
 
 class PluginsContainer extends React.Component {
     static propTypes = {
+        customPlugins: PropTypes.array,
         mode: PropTypes.string,
         plugins: PropTypes.object,
         pluginsAppConfig: PropTypes.object,
@@ -24,8 +25,12 @@ class PluginsContainer extends React.Component {
         theme: PropTypes.object
     };
     renderPlugins = (pluginsConfig) => {
+        const allPlugins = {
+            ...this.props.plugins,
+            ...(window.qwc2?.customPlugins ?? {})
+        };
         return pluginsConfig.map((pluginConf, idx) => {
-            const Plugin = this.props.plugins[pluginConf.name + "Plugin"];
+            const Plugin = allPlugins[pluginConf.name + "Plugin"];
             if (!Plugin) {
                 // eslint-disable-next-line
                 console.warn("Non-existing plugin: " + pluginConf.name);
@@ -52,6 +57,7 @@ class PluginsContainer extends React.Component {
 }
 
 export default connect((state) => ({
+    customPlugins: state.localConfig.customPlugins,
     pluginsConfig: state.localConfig.plugins,
     mode: state.browser.mobile ? 'mobile' : 'desktop',
     theme: state.theme.current

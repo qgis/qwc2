@@ -9,16 +9,76 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import * as displayActions from '../actions/display';
 import {LayerRole} from '../actions/layers';
 import * as layerActions from '../actions/layers';
+import {registerCustomPlugin, unregisterCustomPlugin} from '../actions/localConfig';
 import * as locateActions from '../actions/locate';
 import * as mapActions from '../actions/map';
 import * as taskActions from '../actions/task';
 import * as themeActions from '../actions/theme';
 import * as windowsActions from '../actions/windows';
+import AppMenu from '../components/AppMenu.jsx';
+import AttributeForm from '../components/AttributeForm.jsx';
+import AutoEditForm from '../components/AutoEditForm.jsx';
+import CoordinateDisplayer from '../components/CoordinateDisplayer.jsx';
+import EditComboField from '../components/EditComboField.jsx';
+import EditUploadField from '../components/EditUploadField.jsx';
+import FullscreenSwitcher from '../components/FullscreenSwitcher.jsx';
+import Icon from '../components/Icon.jsx';
+import IdentifyViewer from '../components/IdentifyViewer.jsx';
+import ImportLayer from '../components/ImportLayer.jsx';
+import InputContainer from '../components/InputContainer.jsx';
+import LayerInfoWindow from '../components/LayerInfoWindow.jsx';
+import LinkFeatureForm from '../components/LinkFeatureForm.jsx';
+import MapSelection from '../components/MapSelection.jsx';
+import MessageBar from '../components/MessageBar.jsx';
+import ModalDialog from '../components/ModalDialog.jsx';
+import NumericInputWindow from '../components/NumericInputWindow.jsx';
+import PickFeature from '../components/PickFeature.jsx';
+import PluginsContainer from '../components/PluginsContainer.jsx';
+import PopupMenu from '../components/PopupMenu.jsx';
+import PrintFrame from '../components/PrintFrame.jsx';
+import QtDesignerForm from '../components/QtDesignerForm.jsx';
+import ResizeableWindow from '../components/ResizeableWindow.jsx';
+import Search from '../components/Search.jsx';
+import SearchBox from '../components/SearchBox.jsx';
+import ServiceInfoWindow from '../components/ServiceInfoWindow.jsx';
+import SideBar from '../components/SideBar.jsx';
+import Spinner from '../components/Spinner.jsx';
+import {Swipeable} from '../components/Swipeable.jsx';
+import TaskBar from '../components/TaskBar.jsx';
+import ThemeLayersListWindow from '../components/ThemeLayersListWindow.jsx';
+import ThemeList from '../components/ThemeList.jsx';
+import Toolbar from '../components/Toolbar.jsx';
+import ShareLink from '../components/share/ShareLink.jsx';
+import ShareQRCode from '../components/share/ShareQRCode.jsx';
+import ShareSocials from '../components/share/ShareSocials.jsx';
+import FixedTimeline from '../components/timeline/FixedTimeline.jsx';
+import InfiniteTimeline from '../components/timeline/InfiniteTimeline.jsx';
+import TimelineFeaturesSlider from '../components/timeline/TimelineFeaturesSlider.jsx';
+import AccordeonWidget from '../components/widgets/AccordeonWidget.jsx';
+import ButtonBar from '../components/widgets/ButtonBar.jsx';
+import ColorButton from '../components/widgets/ColorButton.jsx';
+import ComboBox from '../components/widgets/ComboBox.jsx';
+import CopyButton from '../components/widgets/CopyButton.jsx';
+import DateTimeInput from '../components/widgets/DateTimeInput.jsx';
+import EditableSelect from '../components/widgets/EditableSelect.jsx';
+import FileSelector from '../components/widgets/FileSelector.jsx';
+import Input from '../components/widgets/Input.jsx';
+import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget.jsx';
+import MenuButton from '../components/widgets/MenuButton.jsx';
+import NavBar from '../components/widgets/NavBar.jsx';
+import NumberInput from '../components/widgets/NumberInput.jsx';
+import {Image} from '../components/widgets/Primitives.jsx';
+import SearchWidget from '../components/widgets/SearchWidget.jsx';
+import SuggestionInput from '../components/widgets/SuggestionInput.jsx';
+import TextInput from '../components/widgets/TextInput.jsx';
+import ToggleSwitch from '../components/widgets/ToggleSwitch.jsx';
+import VectorLayerPicker from '../components/widgets/VectorLayerPicker.jsx';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import * as PermaLinkUtils from '../utils/PermaLinkUtils';
@@ -82,12 +142,15 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 class API extends React.Component {
     componentDidMount() {
         window.qwc2 = {};
+        window.qwc2.customPlugins = {};
         // Auto-binded functions
         for (const prop of Object.keys(this.props)) {
             window.qwc2[prop] = this.props[prop];
         }
         // Additional exports
         window.qwc2.LayerRole = LayerRole;
+        window.qwc2.addPlugin = this.addPlugin;
+        window.qwc2.removePlugin = this.removePlugin;
         window.qwc2.addExternalLayer = this.addExternalLayer;
         window.qwc2.drawScratch = this.drawScratch;
         window.qwc2.drawGeometry = this.drawGeometry;
@@ -95,16 +158,94 @@ class API extends React.Component {
         window.qwc2.CoordinatesUtils = CoordinatesUtils;
         window.qwc2.PermaLinkUtils = PermaLinkUtils;
         window.qwc2.VectorLayerUtils = VectorLayerUtils;
+
+        window.qwc2.libs = {};
+        window.qwc2.libs.axios = axios;
+        window.qwc2.libs.React = React;
+        window.qwc2.libs.PropTypes = PropTypes;
+        window.qwc2.libs.connect = connect;
+
+        window.qwc2.components = {};
+        window.qwc2.components.AppMenu = AppMenu;
+        window.qwc2.components.AttributeForm = AttributeForm;
+        window.qwc2.components.AutoEditForm = AutoEditForm;
+        window.qwc2.components.CoordinateDisplayer = CoordinateDisplayer;
+        window.qwc2.components.EditComboField = EditComboField;
+        window.qwc2.components.EditUploadField = EditUploadField;
+        window.qwc2.components.FullscreenSwitcher = FullscreenSwitcher;
+        window.qwc2.components.Icon = Icon;
+        window.qwc2.components.IdentifyViewer = IdentifyViewer;
+        window.qwc2.components.ImportLayer = ImportLayer;
+        window.qwc2.components.InputContainer = InputContainer;
+        window.qwc2.components.LayerInfoWindow = LayerInfoWindow;
+        window.qwc2.components.LinkFeatureForm = LinkFeatureForm;
+        window.qwc2.components.MapSelection = MapSelection;
+        window.qwc2.components.MessageBar = MessageBar;
+        window.qwc2.components.ModalDialog = ModalDialog;
+        window.qwc2.components.NumericInputWindow = NumericInputWindow;
+        window.qwc2.components.PickFeature = PickFeature;
+        window.qwc2.components.PluginsContainer = PluginsContainer;
+        window.qwc2.components.PopupMenu = PopupMenu;
+        window.qwc2.components.PrintFrame = PrintFrame;
+        window.qwc2.components.QtDesignerForm = QtDesignerForm;
+        window.qwc2.components.ResizeableWindow = ResizeableWindow;
+        window.qwc2.components.SearchBox = SearchBox;
+        window.qwc2.components.Search = Search;
+        window.qwc2.components.ServiceInfoWindow = ServiceInfoWindow;
+        window.qwc2.components.ShareLink = ShareLink;
+        window.qwc2.components.ShareQRCode = ShareQRCode;
+        window.qwc2.components.ShareSocials = ShareSocials;
+        window.qwc2.components.SideBar = SideBar;
+        window.qwc2.components.Spinner = Spinner;
+        window.qwc2.components.Swipeable = Swipeable;
+        window.qwc2.components.TaskBar = TaskBar;
+        window.qwc2.components.ThemeLayersListWindow = ThemeLayersListWindow;
+        window.qwc2.components.ThemeList = ThemeList;
+        window.qwc2.components.FixedTimeline = FixedTimeline;
+        window.qwc2.components.InfiniteTimeline = InfiniteTimeline;
+        window.qwc2.components.TimelineFeaturesSlider = TimelineFeaturesSlider;
+        window.qwc2.components.Toolbar = Toolbar;
+        window.qwc2.components.AccordeonWidget = AccordeonWidget;
+        window.qwc2.components.ButtonBar = ButtonBar;
+        window.qwc2.components.ColorButton = ColorButton;
+        window.qwc2.components.ComboBox = ComboBox;
+        window.qwc2.components.CopyButton = CopyButton;
+        window.qwc2.components.DateTimeInput = DateTimeInput;
+        window.qwc2.components.EditableSelect = EditableSelect;
+        window.qwc2.components.FileSelector = FileSelector;
+        window.qwc2.components.Input = Input;
+        window.qwc2.components.LayerCatalogWidget = LayerCatalogWidget;
+        window.qwc2.components.MenuButton = MenuButton;
+        window.qwc2.components.NavBar = NavBar;
+        window.qwc2.components.NumberInput = NumberInput;
+        window.qwc2.components.Image = Image;
+        window.qwc2.components.SearchWidget = SearchWidget;
+        window.qwc2.components.SuggestionInput = SuggestionInput;
+        window.qwc2.components.TextInput = TextInput;
+        window.qwc2.components.ToggleSwitch = ToggleSwitch;
+        window.qwc2.components.VectorLayerPicker = VectorLayerPicker;
+
+        window.dispatchEvent(new Event("QWC2ApiReady"));
     }
     static propTypes = {
         addLayer: PropTypes.func,
         mapCrs: PropTypes.string,
+        registerCustomPlugin: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        state: PropTypes.object
+        state: PropTypes.object,
+        unregisterCustomPlugin: PropTypes.func
     };
     render() {
         return null;
     }
+    addPlugin = (name, plugin) => {
+        window.qwc2.customPlugins[name] = plugin;
+        this.props.registerCustomPlugin(name);
+    };
+    removePlugin = (name) => {
+        this.props.unregisterCustomPlugin(name);
+        delete window.qwc2.customPlugins[name];
+    };
     addExternalLayer = (resource, beforeLayerName = null, sublayers = true) => {
         const params = LayerUtils.splitLayerUrlParam(resource);
         ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
@@ -151,6 +292,8 @@ export default connect(state => ({
     mapCrs: state.map.projection,
     state: state
 }), {
+    registerCustomPlugin: registerCustomPlugin,
+    unregisterCustomPlugin: unregisterCustomPlugin,
     ...extractFunctions(displayActions),
     ...extractFunctions(layerActions),
     ...extractFunctions(locateActions),

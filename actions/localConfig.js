@@ -15,6 +15,8 @@ export const SET_STARTUP_PARAMETERS = 'SET_STARTUP_PARAMETERS';
 export const SET_COLOR_SCHEME = 'SET_COLOR_SCHEME';
 export const SET_USER_INFO_FIELDS = 'SET_USER_INFO_FIELDS';
 export const SET_PERMALINK_PARAMETERS = 'SET_PERMALINK_PARAMETERS';
+export const REGISTER_CUSTOM_PLUGIN = 'REGISTER_CUSTOM_PLUGIN';
+export const UNREGISTER_CUSTOM_PLUGIN = 'UNREGISTER_CUSTOM_PLUGIN';
 
 export function localConfigLoaded(config) {
     return {
@@ -49,5 +51,19 @@ export function setPermalinkParameters(params) {
     return {
         type: SET_PERMALINK_PARAMETERS,
         params
+    };
+}
+
+export function registerCustomPlugin(name) {
+    return {
+        type: REGISTER_CUSTOM_PLUGIN,
+        name
+    };
+}
+
+export function unregisterCustomPlugin(name) {
+    return {
+        type: UNREGISTER_CUSTOM_PLUGIN,
+        name
     };
 }

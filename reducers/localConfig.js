@@ -7,12 +7,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS, SET_COLOR_SCHEME, SET_USER_INFO_FIELDS, SET_PERMALINK_PARAMETERS} from '../actions/localConfig';
+import {
+    LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS,
+    SET_COLOR_SCHEME, SET_USER_INFO_FIELDS,
+    SET_PERMALINK_PARAMETERS,
+    REGISTER_CUSTOM_PLUGIN,
+    UNREGISTER_CUSTOM_PLUGIN
+} from '../actions/localConfig';
 import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
 const defaultState = {
     ...ConfigUtils.getDefaults(),
+    customPlugins: [],
     startupParams: {},
     permalinkParams: {},
     colorScheme: 'default'
@@ -61,6 +68,18 @@ export default function localConfig(state = defaultState, action) {
                 }
                 return res;
             }, {})
+        };
+    }
+    case REGISTER_CUSTOM_PLUGIN: {
+        return {
+            ...state,
+            customPlugins: [...state.customPlugins, ...action.name]
+        };
+    }
+    case UNREGISTER_CUSTOM_PLUGIN: {
+        return {
+            ...state,
+            customPlugins: state.customPlugins.filter(el => el !== action.name)
         };
     }
     default:
