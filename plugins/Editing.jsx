@@ -249,7 +249,7 @@ class Editing extends React.Component {
             };
             const mapPrefix = (curConfig.editDataset.match(/^[^.]+\./) || [""])[0];
             getFeatureTemplate(curConfig, featureSkel, this.props.iface, mapPrefix, this.props.map.projection, feature => {
-                this.props.setEditContext('Editing', {...data, feature: feature});
+                this.props.setEditContext('Editing', {...data, feature: feature, geomReadOnly: false});
             });
         } else {
             this.props.setEditContext('Editing', {...data});

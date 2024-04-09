@@ -17,14 +17,14 @@ const nonZeroZCoordinate = (coordinates) => {
     return coordinates.find(entry => Array.isArray(entry[0]) ? nonZeroZCoordinate(entry) : entry.length >= 3 && entry[2] !== 0);
 };
 
-const checkGeomReadOnly = (oldState, newFeature) => {
+const checkGeomReadOnly = (oldState, newFeature, fallback) => {
     // Only recompute if feature id in state changes
     if (!newFeature) {
         return false;
-    } else if (newFeature.id !== ((oldState || {}).feature || {}).id) {
+    } else if (newFeature.id !== oldState?.feature?.id) {
         return nonZeroZCoordinate([newFeature.geometry?.coordinates || []]) !== undefined;
     }
-    return (oldState || {}).geomReadOnly || false;
+    return fallback ?? oldState?.geomReadOnly ?? false;
 };
 
 export default function editing(state = defaultState, action) {
@@ -40,7 +40,7 @@ export default function editing(state = defaultState, action) {
                     changed: false,
                     ...state.contexts[action.contextId],
                     ...action.editContext,
-                    geomReadOnly: action.editContext.geomReadOnly === true || checkGeomReadOnly(state.contexts[action.contextId], action.editContext.feature),
+                    geomReadOnly: action.editContext.geomReadOnly || checkGeomReadOnly(state.contexts[action.contextId], action.editContext.feature, action.editContext.geomReadOnly),
                     id: action.contextId
                 }
             },
