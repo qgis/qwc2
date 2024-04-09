@@ -199,7 +199,7 @@ class FeatureForm extends React.Component {
                             </div>
                         ) : null}
                         {this.props.editContext.feature ? (
-                            <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} readOnly={editPermissions.updatable === false} />
+                            <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} />
                         ) : null}
                     </div>
                 );
