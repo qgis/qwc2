@@ -88,7 +88,7 @@ class AttributeForm extends React.Component {
 
         const curConfig = this.props.editConfig;
         const editPermissions = curConfig.permissions || {};
-        const readOnly = this.props.readOnly || editPermissions.updatable === false;
+        const readOnly = this.props.readOnly || (editPermissions.updatable === false && this.props.editContext.action === 'Pick');
 
         let deleteBar = null;
         if (this.props.editContext.action === 'Pick' && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false && !this.props.readOnly) {
@@ -120,7 +120,7 @@ class AttributeForm extends React.Component {
         }
         return (
             <div className="AttributeForm">
-                {this.props.editContext.geomReadOnly && !this.props.readOnly ? (
+                {this.props.editContext.geomReadOnly && !readOnly ? (
                     <div className="attrib-form-geom-readonly">{LocaleUtils.tr("editing.geomreadonly")}</div>
                 ) : null}
                 <form action="" onChange={ev => this.checkValidity(ev.currentTarget, true)} onSubmit={this.onSubmit} ref={this.checkValidity}>
