@@ -39,7 +39,7 @@ class MapLegend extends React.Component {
         bboxDependentLegend: PropTypes.bool,
         /** Extra parameters to add to the GetLegendGraphics request. */
         extraLegendParameters: PropTypes.string,
-        /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
+        /** Default window geometry with size, position and docking status. A locked window is not closeable and not resizeable. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
@@ -49,6 +49,8 @@ class MapLegend extends React.Component {
             side: PropTypes.string
         }),
         layers: PropTypes.array,
+        /** Whether the legend window is locked (always visible, not moveable or closeable). Set position and size via `geometry`. */
+        lockedWindow: PropTypes.bool,
         map: PropTypes.object,
         /** Whether to only include enabled layers in the legend by default. */
         onlyVisibleLegend: PropTypes.bool,
@@ -91,7 +93,7 @@ class MapLegend extends React.Component {
         }
     }
     render() {
-        if (!this.state.visible) {
+        if (!this.state.visible && !this.props.lockedWindow) {
             return null;
         }
         const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
@@ -102,11 +104,11 @@ class MapLegend extends React.Component {
         ];
 
         return (
-            <ResizeableWindow dockable={this.props.geometry.side} extraControls={extraControls} icon="list-alt"
-                initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+            <ResizeableWindow dockable={this.props.lockedWindow ? false : this.props.geometry.side} extraControls={extraControls}
+                icon="list-alt" initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked}
-                onClose={this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")}
+                initiallyDocked={this.props.geometry.initiallyDocked} maximizeable={false}
+                onClose={this.props.lockedWindow ? null : this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")}
             >
                 <div className="map-legend" role="body">
                     {this.props.layers.map(layer => {
