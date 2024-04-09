@@ -277,7 +277,7 @@ class Editing extends React.Component {
                 type: "Feature",
                 properties: {}
             });
-            this.props.setEditContext('Editing', {...data, feature: feature});
+            this.props.setEditContext('Editing', {...data, feature: feature, geomReadOnly: false});
         } else {
             this.props.setEditContext('Editing', {...data});
         }
