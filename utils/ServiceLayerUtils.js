@@ -355,7 +355,9 @@ const ServiceLayerUtils = {
             };
             delete urlParts.search;
         }
-        urlParts.protocol = location.protocol;
+        if (urlParts.protocol === "http" && location.protocol === "https") {
+            urlParts.protocol = "https";
+        }
         const requestUrl = url.format(urlParts);
         return new Promise((resolve, reject) => {
             axios.get(requestUrl).then(response => {
