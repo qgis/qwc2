@@ -38,17 +38,13 @@ function wmsImageLoadFunction(image, src) {
     if (src.length > maxUrlLength) {
         // Switch to POST if url is too long
         const urlParts = src.split("?");
-        const urlObj = new URL(src);
-        if (location.origin === urlObj.origin) {
+        if (location.origin === (new URL(urlParts)).origin) {
             urlParts[1] += "&csrf_token=" + MiscUtils.getCsrfToken();
         }
         const options = {
             headers: {'content-type': 'application/x-www-form-urlencoded'},
             responseType: "blob"
         };
-        if (urlObj.username) {
-            options.headers.Authorization = 'Basic ' + btoa(urlObj.username + ':' + urlObj.password);
-        }
         axios.post(urlParts[0], urlParts[1], options).then(response => {
             const reader = new FileReader();
             reader.readAsDataURL(response.data);
