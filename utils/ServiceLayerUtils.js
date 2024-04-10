@@ -153,14 +153,26 @@ const ServiceLayerUtils = {
         }
         const version = capabilities.version;
         const supportedCrs = MiscUtils.ensureArray(topLayer.crs);
+        let topLayerExtent = null;
+        if (topLayer.EX_GeographicBoundingBox) {
+            topLayerExtent = {
+                crs: "EPSG:4326",
+                bounds: [
+                    parseFloat(topLayer.EX_GeographicBoundingBox.westBoundLongitude),
+                    parseFloat(topLayer.EX_GeographicBoundingBox.southBoundLatitude),
+                    parseFloat(topLayer.EX_GeographicBoundingBox.eastBoundLongitude),
+                    parseFloat(topLayer.EX_GeographicBoundingBox.northBoundLatitude)
+                ]
+            };
+        }
         if (!topLayer.Layer || asGroup) {
-            return [this.getWMSLayerParams(topLayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams)].filter(entry => entry);
+            return [this.getWMSLayerParams(topLayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, topLayerExtent)].filter(entry => entry);
         } else {
-            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams)).filter(entry => entry);
+            const entries = topLayer.Layer.map(layer => this.getWMSLayerParams(layer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, topLayerExtent)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, groupbbox = null) {
+    getWMSLayerParams(layer, parentCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, topLayerExtent, groupbbox = null) {
         let supportedCrs = MiscUtils.ensureArray(layer.CRS);
         if (isEmpty(supportedCrs)) {
             supportedCrs = [...(parentCrs || [])];
@@ -170,12 +182,14 @@ const ServiceLayerUtils = {
         let sublayers = [];
         const sublayerbounds = {};
         if (!isEmpty(layer.Layer)) {
-            sublayers = MiscUtils.ensureArray(layer.Layer).map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, sublayerbounds)).filter(entry => entry);
+            sublayers = MiscUtils.ensureArray(layer.Layer).map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, topLayerExtent, sublayerbounds)).filter(entry => entry);
         }
         let bbox = null;
         if (isEmpty(layer.BoundingBox)) {
             if (!isEmpty(sublayerbounds)) {
                 bbox = sublayerbounds;
+            } else if (topLayerExtent) {
+                bbox = topLayerExtent;
             }
         } else {
             const boundingBox = MiscUtils.ensureArray(layer.BoundingBox)[0];
