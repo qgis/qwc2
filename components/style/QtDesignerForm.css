@@ -6,7 +6,8 @@ div.qt-designer-form textarea {
     height: 100%;
 }
 
-div.qt-designer-form div.TextInput {
+div.qt-designer-form div.TextInput,
+div.qt-designer-form div.TextInput > pre {
     min-height: 2em;
 }
 
