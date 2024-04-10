@@ -14,6 +14,7 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import * as displayActions from '../actions/display';
+import * as editingActions from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import * as layerActions from '../actions/layers';
 import {registerCustomPlugin, unregisterCustomPlugin} from '../actions/localConfig';
@@ -81,6 +82,7 @@ import TextInput from '../components/widgets/TextInput.jsx';
 import ToggleSwitch from '../components/widgets/ToggleSwitch.jsx';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker.jsx';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import EditingInterface from '../utils/EditingInterface.js';
 import LayerUtils from '../utils/LayerUtils';
 import * as PermaLinkUtils from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
@@ -157,6 +159,7 @@ class API extends React.Component {
         window.qwc2.drawGeometry = this.drawGeometry;
         window.qwc2.getState = this.getState;
         window.qwc2.CoordinatesUtils = CoordinatesUtils;
+        window.qwc2.EditingInterface = EditingInterface;
         window.qwc2.PermaLinkUtils = PermaLinkUtils;
         window.qwc2.VectorLayerUtils = VectorLayerUtils;
 
@@ -297,6 +300,7 @@ export default connect(state => ({
     registerCustomPlugin: registerCustomPlugin,
     unregisterCustomPlugin: unregisterCustomPlugin,
     ...extractFunctions(displayActions),
+    ...extractFunctions(editingActions),
     ...extractFunctions(layerActions),
     ...extractFunctions(locateActions),
     ...extractFunctions(mapActions),
