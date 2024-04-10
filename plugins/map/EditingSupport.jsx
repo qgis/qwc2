@@ -30,26 +30,6 @@ class EditingSupport extends React.Component {
         this.interaction = null;
         this.layer = null;
         this.currentFeature = null;
-        const geometryFunction = (feature) => {
-            if (feature.getGeometry().getType() === "Point") {
-                return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
-            } else if (feature.getGeometry().getType() === "LineString") {
-                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
-            } else if (feature.getGeometry().getType() === "Polygon") {
-                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-            } else if (feature.getGeometry().getType() === "MultiPoint") {
-                return feature.getGeometry();
-            } else if (feature.getGeometry().getType() === "MultiLineString") {
-                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-            } else if (feature.getGeometry().getType() === "MultiPolygon") {
-                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0][0]);
-            }
-            return feature.getGeometry();
-        };
-        this.editStyle = [
-            FeatureStyles.interaction(),
-            FeatureStyles.interactionVertex({geometryFunction})
-        ];
     }
     componentDidUpdate(prevProps) {
         if (this.props.editContext === prevProps.editContext) {
@@ -75,12 +55,34 @@ class EditingSupport extends React.Component {
     render() {
         return null;
     }
+    editStyle = () => {
+        const geometryFunction = (feature) => {
+            if (feature.getGeometry().getType() === "Point") {
+                return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
+            } else if (feature.getGeometry().getType() === "LineString") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
+            } else if (feature.getGeometry().getType() === "Polygon") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
+            } else if (feature.getGeometry().getType() === "MultiPoint") {
+                return feature.getGeometry();
+            } else if (feature.getGeometry().getType() === "MultiLineString") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
+            } else if (feature.getGeometry().getType() === "MultiPolygon") {
+                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0][0]);
+            }
+            return feature.getGeometry();
+        };
+        return [
+            FeatureStyles.interaction(this.props.editContext.geometryStyle),
+            FeatureStyles.interactionVertex({geometryFunction, ...this.props.editContext.vertexStyle})
+        ];
+    };
     createLayer = () => {
         const source = new ol.source.Vector();
         this.layer = new ol.layer.Vector({
             source: source,
             zIndex: 1000000,
-            style: this.editStyle
+            style: this.editStyle()
         });
         this.props.map.addLayer(this.layer);
     };
@@ -92,7 +94,7 @@ class EditingSupport extends React.Component {
             type: this.props.editContext.geomType.replace(/Z$/, ''),
             source: this.layer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
-            style: this.editStyle
+            style: this.editStyle()
         });
         drawInteraction.on('drawstart', (evt) => {
             this.currentFeature = evt.feature;
