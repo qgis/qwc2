@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
+import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import * as displayActions from '../actions/display';
@@ -164,6 +165,7 @@ class API extends React.Component {
         window.qwc2.libs.React = React;
         window.qwc2.libs.PropTypes = PropTypes;
         window.qwc2.libs.connect = connect;
+        window.qwc2.libs.ol = ol;
 
         window.qwc2.components = {};
         window.qwc2.components.AppMenu = AppMenu;
