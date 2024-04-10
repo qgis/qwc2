@@ -546,6 +546,7 @@ See https://docs.qgis.org/3.28/en/docs/server_manual/services/wms.html#wms-getle
 | addGroupTitles | `bool` | Whether to add group titles to the legend. | `false` |
 | addLayerTitles | `bool` | Whether to add layer titles to the legend. Note that often the legend image itself already contains the layer title. | `false` |
 | bboxDependentLegend | `bool` | Whether to display a BBOX-dependent legend by default. | `false` |
+| excludeLayers | `array` | List of layernames to exclude from the legend. | `[]` |
 | extraLegendParameters | `string` | Extra parameters to add to the GetLegendGraphics request. | `undefined` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. A locked window is not closeable and not resizeable. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | lockedWindow | `bool` | Whether the legend window is locked (always visible, not moveable or closeable). Set position and size via `geometry`. | `undefined` |

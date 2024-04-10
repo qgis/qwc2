@@ -37,6 +37,8 @@ class MapLegend extends React.Component {
         addLayerTitles: PropTypes.bool,
         /** Whether to display a BBOX-dependent legend by default. */
         bboxDependentLegend: PropTypes.bool,
+        /** List of layernames to exclude from the legend. */
+        excludeLayers: PropTypes.array,
         /** Extra parameters to add to the GetLegendGraphics request. */
         extraLegendParameters: PropTypes.string,
         /** Default window geometry with size, position and docking status. A locked window is not closeable and not resizeable. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
@@ -62,6 +64,7 @@ class MapLegend extends React.Component {
         addGroupTitles: false,
         addLayerTitles: false,
         bboxDependentLegend: false,
+        excludeLayers: [],
         onlyVisibleLegend: false,
         scaleDependentLegend: false,
         geometry: {
@@ -136,7 +139,9 @@ class MapLegend extends React.Component {
     };
     printLayerLegend = (layer, sublayer, mapScale) => {
         const isCategorized = (sublayer.sublayers || []).find(entry => entry.category_sublayer === true);
-        if (sublayer.sublayers && !isCategorized && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
+        if (this.props.excludeLayers.includes(sublayer.name)) {
+            return null;
+        } else if (sublayer.sublayers && !isCategorized && (!this.state.onlyVisibleLegend || sublayer.visibility)) {
             if (this.props.addGroupTitles) {
                 const children = sublayer.sublayers.map(subsublayer => this.printLayerLegend(layer, subsublayer, mapScale)).filter(x => x);
                 if (isEmpty(children)) {
