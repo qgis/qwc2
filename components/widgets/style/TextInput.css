@@ -36,6 +36,10 @@ pre.text-input-disabled {
     background-color: var(--input-bg-color-disabled);
 }
 
+pre.text-input-invalid {
+    background-color: #FFAAAA;
+}
+
 pre.text-input-readonly {
     color: var(--text-color-disabled);
 }

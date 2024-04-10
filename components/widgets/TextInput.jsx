@@ -83,7 +83,8 @@ class TextInput extends React.Component {
         const className = classNames({
             "text-input": true,
             "text-input-disabled": this.props.disabled,
-            "text-input-readonly": this.props.readOnly || !this.state.curValue
+            "text-input-readonly": this.props.readOnly || !this.state.curValue,
+            "text-input-invalid": this.props.required && !this.state.curValue
         });
         return (
             <div className={"TextInput text-input-wrapper " + (this.props.className || "")}>
@@ -122,7 +123,7 @@ class TextInput extends React.Component {
         );
     }
     onChange = (ev) => {
-        const curValue = ev.target.innerText.replace(/<br\s*\/?>$/, '');
+        const curValue = ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, '');
         this.setState({curValue: curValue, changed: true});
         if (this.formEl?.form) {
             // Notify parent form picks of changed field
@@ -202,7 +203,7 @@ class TextInput extends React.Component {
     commit = () => {
         if (this.state.changed) {
             const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
-            this.props.onChange(valueWithLinks.replace(/\n$/, ''));
+            this.props.onChange(valueWithLinks);
             if (this.formEl?.form) {
                 // Notify parent form picks of changed field
                 // https://stackoverflow.com/a/46012210
