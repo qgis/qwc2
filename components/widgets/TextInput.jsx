@@ -40,7 +40,6 @@ class TextInput extends React.Component {
         this.focusEnterClick = false;
         this.initialHeight = null;
         this.input = null;
-        this.formEl = null;
         this.tooltipEl = null;
         this.tooltipTimeout = null;
     }
@@ -89,9 +88,8 @@ class TextInput extends React.Component {
                         className="text-input-form-el"
                         name={this.props.name}
                         onChange={() => {}}
-                        ref={el => {this.formEl = el; }}
                         required={this.props.required}
-                        value={this.props.value} />
+                        value={this.state.curValue} />
                 ) : null}
                 <pre
                     className={className}
@@ -121,13 +119,6 @@ class TextInput extends React.Component {
     onChange = (ev) => {
         const curValue = ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, '');
         this.setState({curValue: curValue, changed: true});
-        if (this.formEl.form) {
-            // Notify parent form picks of changed field
-            // https://stackoverflow.com/a/46012210
-            const nativeSet = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-            nativeSet.call(this.formEl, curValue);
-            this.formEl.dispatchEvent(new Event('input', { bubbles: true }));
-        }
     };
     onBlur = () => {
         if (!this.skipNextCommitOnBlur) {
@@ -200,13 +191,6 @@ class TextInput extends React.Component {
         if (this.state.changed) {
             const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
             this.props.onChange(valueWithLinks);
-            if (this.formEl?.form) {
-                // Notify parent form picks of changed field
-                // https://stackoverflow.com/a/46012210
-                const nativeSet = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-                nativeSet.call(this.formEl, this.state.curValue);
-                this.formEl.dispatchEvent(new Event('input', { bubbles: true }));
-            }
         }
     };
     startResize = (ev) => {
