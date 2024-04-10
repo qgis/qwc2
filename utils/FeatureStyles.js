@@ -14,6 +14,10 @@ import arrowhead from './img/arrowhead.svg';
 import markerIcon from './img/marker-icon.png';
 import measurehead from './img/measurehead.svg';
 
+ResourceRegistry.addResource('arrowhead', arrowhead);
+ResourceRegistry.addResource('measurehead', measurehead);
+ResourceRegistry.addResource('marker', markerIcon);
+
 const DEFAULT_FEATURE_STYLE = {
     strokeColor: [0, 0, 255, 1],
     strokeWidth: 1,
@@ -227,7 +231,13 @@ export default {
             vertexStroke = opts.snapVertexStrokeColor;
         }
         return new ol.style.Style({
-            image: new ol.style.RegularShape({
+            image: options.img ? new ol.style.Icon({
+                src: ResourceRegistry.getResource(options.img),
+                rotation: options.rotation,
+                anchor: [0.5, 1],
+                imgSize: options.size,
+                rotateWithView: true
+            }) : new ol.style.RegularShape({
                 fill: new ol.style.Fill({ color: vertexFill }),
                 stroke: new ol.style.Stroke({ color: vertexStroke, width: strokeWidth }),
                 points: 4,
@@ -271,7 +281,7 @@ export default {
     image: (feature, options) => {
         return new ol.style.Style({
             image: new ol.style.Icon({
-                img: ResourceRegistry.getResource(options.img),
+                src: ResourceRegistry.getResource(options.img),
                 rotation: options.rotation,
                 anchor: [0.5, 1],
                 imgSize: options.size,

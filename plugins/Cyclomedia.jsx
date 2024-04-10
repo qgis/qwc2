@@ -272,7 +272,7 @@ class Cyclomedia extends React.Component {
         coordinates.slice(1).forEach(coo => context.lineTo(coo[0], coo[1]));
         context.closePath();
         context.fill();
-        ResourceRegistry.addResource("cyclomedia-cone", context.canvas);
+        ResourceRegistry.addResource("cyclomedia-cone", context.canvas.toDataURL());
         const feature = {
             geometry: {
                 type: 'Point',
