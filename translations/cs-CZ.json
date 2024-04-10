@@ -93,6 +93,10 @@
       "terms_label": "Podmínky použití",
       "viewertitle_label": ""
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Zkopírovat do schránky",
       "copied": "Zkopírováno",

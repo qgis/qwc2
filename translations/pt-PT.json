@@ -93,6 +93,10 @@
       "terms_label": "Termos de Uso",
       "viewertitle_label": "Visualizador"
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Clique para Copiar",
       "copied": "Copiado",

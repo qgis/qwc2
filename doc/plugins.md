@@ -7,6 +7,7 @@ Plugin reference
 * [BackgroundSwitcher](#backgroundswitcher)
 * [Bookmark](#bookmark)
 * [BottomBar](#bottombar)
+* [CookiePopup](#cookiepopup)
 * [Cyclomedia](#cyclomedia)
 * [DxfExport](#dxfexport)
 * [Editing](#editing)
@@ -179,6 +180,14 @@ Bottom bar, displaying mouse coordinate, scale, etc.
 | viewertitleUrl | `string` | The URL of the viewer title label anchor. | `undefined` |
 | viewertitleUrlIcon | `string` | Icon of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. | `undefined` |
 | viewertitleUrlTarget | `string` | The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. | `undefined` |
+
+CookiePopup<a name="cookiepopup"></a>
+----------------------------------------------------------------
+A simple popup to notify that cookies are used.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+|
 
 Cyclomedia<a name="cyclomedia"></a>
 ----------------------------------------------------------------

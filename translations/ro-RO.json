@@ -93,6 +93,10 @@
       "terms_label": "Termeni de utilizare",
       "viewertitle_label": "Despre"
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Click pt. copiere",
       "copied": "Copiat",

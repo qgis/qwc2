@@ -93,6 +93,10 @@
       "terms_label": "Vilkår",
       "viewertitle_label": ""
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Klikk for å kopiere",
       "copied": "Kopiert",

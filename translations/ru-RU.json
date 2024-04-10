@@ -93,6 +93,10 @@
       "terms_label": "Условия использования",
       "viewertitle_label": "Домашняя страница"
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Копировать",
       "copied": "Скопировано",

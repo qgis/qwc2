@@ -93,6 +93,10 @@
       "terms_label": "Villkor",
       "viewertitle_label": ""
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Klicka för att kopiera",
       "copied": "Kopierade",

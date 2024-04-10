@@ -101,6 +101,8 @@
     "bottombar.scale_label",
     "bottombar.terms_label",
     "bottombar.viewertitle_label",
+    "cookiepopup.accept",
+    "cookiepopup.message",
     "copybtn.click_to_copy",
     "copybtn.copied",
     "copybtn.copyfailed",

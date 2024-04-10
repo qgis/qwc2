@@ -93,6 +93,10 @@
       "terms_label": "Warunki korzystania",
       "viewertitle_label": ""
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Kliknij, aby skopiować",
       "copied": "Skopiowano",

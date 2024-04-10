@@ -93,6 +93,10 @@
       "terms_label": "Kullanım Şartları",
       "viewertitle_label": ""
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Kopyalamak için tıkla",
       "copied": "Kopyalandı",

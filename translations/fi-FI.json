@@ -93,6 +93,10 @@
       "terms_label": "Käyttöehdot",
       "viewertitle_label": ""
     },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Kopioi napsauttamalla",
       "copied": "Kopioitu",
