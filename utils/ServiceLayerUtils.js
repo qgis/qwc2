@@ -179,9 +179,7 @@ const ServiceLayerUtils = {
         }
         let bbox = null;
         if (isEmpty(layer.BoundingBox)) {
-            if (isEmpty(sublayerbounds)) {
-                return null;
-            } else {
+            if (!isEmpty(sublayerbounds)) {
                 bbox = sublayerbounds;
             }
         } else {
