@@ -126,7 +126,7 @@ class AttributeForm extends React.Component {
                 {this.props.editContext.geomReadOnly && !readOnly ? (
                     <div className="attrib-form-geom-readonly">{LocaleUtils.tr("editing.geomreadonly")}</div>
                 ) : null}
-                <form action="" onChange={ev => this.checkValidity(ev.currentTarget, true)} onSubmit={this.onSubmit} ref={this.checkValidity}>
+                <form action="" onChange={ev => this.formChanged(ev.currentTarget)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
                     {this.props.editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset}
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
@@ -327,12 +327,18 @@ class AttributeForm extends React.Component {
             }
         }
     };
-    checkValidity = (form, changed = false) => {
+    setupChangedObserver = (form) => {
+        if (form) {
+            form.observer = new MutationObserver(() => {
+                this.setState({formValid: form.checkValidity()});
+            });
+            form.observer.observe(form, {subtree: true, childList: true});
+        }
+    };
+    formChanged = (form) => {
         if (form) {
             this.setState({formValid: form.checkValidity()});
-            if (changed) {
-                this.props.setEditContext(this.props.editContext.id, {changed: true});
-            }
+            this.props.setEditContext(this.props.editContext.id, {changed: true});
         }
     };
     onSubmit = (ev) => {
