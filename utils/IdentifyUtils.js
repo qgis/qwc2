@@ -69,6 +69,7 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
             styles: queryStyles,
             srs: projection,
             crs: projection,
+            format: layer.format ?? 'image/png',
             info_format: format,
             with_geometry: true,
             with_maptip: false,
