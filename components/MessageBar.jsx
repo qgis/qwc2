@@ -23,9 +23,6 @@ class MessageBar extends React.Component {
         onHide: PropTypes.func,
         task: PropTypes.string
     };
-    static defaultProps = {
-        onHide: () => {}
-    };
     componentDidUpdate(prevProps) {
         if (this.props.task !== prevProps.task && this.props.hideOnTaskChange) {
             this.props.onHide();
@@ -42,9 +39,11 @@ class MessageBar extends React.Component {
                     <div className="body">
                         {contents ? contents.body || null : this.renderRole("body")}
                     </div>
-                    <span className="closewrapper">
-                        <Icon className="close" icon="remove" onClick={this.props.onHide} size="large"/>
-                    </span>
+                    {this.props.onHide ? (
+                        <span className="closewrapper">
+                            <Icon className="close" icon="remove" onClick={this.props.onHide} size="large"/>
+                        </span>
+                    ) : null}
                 </div>
                 {contents ? contents.extra || null : this.renderRole("extra")}
             </div>
