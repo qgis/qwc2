@@ -22,8 +22,13 @@ export default {
 
             "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
 
+            "text/xml; subtype=gml/3.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+            "text/xml; subtype=gml/3.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+            "text/xml; subtype=gml/3.1.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
             "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
             "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+            "text/xml; subtype=gml/3.2.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+            "text/xml; subtype=gml/3.2.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
             "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
 
             "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
