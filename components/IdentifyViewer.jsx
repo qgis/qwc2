@@ -627,6 +627,9 @@ class IdentifyViewer extends React.Component {
         }
     };
     attribValue = (text, attrName, layer, result) => {
+        if (typeof text === 'object') {
+            text = JSON.stringify(text);
+        }
         if (this.props.replaceImageUrls && /^https?:\/\/.*\.(jpg|jpeg|png|bmp)$/i.exec(text)) {
             return (<a href={text} rel="noreferrer" target="_blank"><img src={text} /></a>);
         }
