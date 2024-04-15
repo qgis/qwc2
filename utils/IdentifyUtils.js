@@ -32,6 +32,20 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
         format = 'application/geo+json';
     } else if (infoFormats.includes('application/json')) {
         format = 'application/json';
+    } else if (infoFormats.includes('text/xml;subtype=gml/3.2.1')) {
+        format = 'text/xml;subtype=gml/3.2.1';
+    } else if (infoFormats.includes('text/xml;subtype=gml/3.2.0')) {
+        format = 'text/xml;subtype=gml/3.2.0';
+    } else if (infoFormats.includes('text/xml;subtype=gml/3.2')) {
+        format = 'text/xml;subtype=gml/3.2';
+    } else if (infoFormats.includes('text/xml;subtype=gml/3.1.1')) {
+        format = 'text/xml;subtype=gml/3.1.1';
+    } else if (infoFormats.includes('text/xml;subtype=gml/3.1.0')) {
+        format = 'text/xml;subtype=gml/3.1.0';
+    } else if (infoFormats.includes('text/xml;subtype=gml/3.1')) {
+        format = 'text/xml;subtype=gml/3.1';
+    } else if (infoFormats.includes('text/xml;subtype=gml/3.0')) {
+        format = 'text/xml;subtype=gml/3.0';
     } else if (infoFormats.includes('text/html')) {
         format = 'text/html';
     } else if (infoFormats.includes('application/vnd.ogc.gml')) {
@@ -169,6 +183,10 @@ const IdentifyUtils = {
             results = IdentifyUtils.parseXmlResponse(response, projection, posstr, featureInfoReturnsLayerName, layers);
         } else if (format === "application/vnd.ogc.gml") {
             results = IdentifyUtils.parseGmlResponse(response, projection, posstr, layer);
+        } else if (format.startsWith("text/xml;subtype=gml/3.1") || format.startsWith("text/xml;subtype=gml/3.0")) {
+            results = IdentifyUtils.parseGml3Response(response, projection, posstr, layer);
+        } else if (format.startsWith("text/xml;subtype=gml/3.2")) {
+            results = IdentifyUtils.parseGml32Response(response, projection, posstr, layer);
         } else if (format === "text/plain") {
             results[layer.name] = [{type: "text", text: response, id: posstr, layername: layer.name, layertitle: layer.title}];
         } else if (format === "text/html") {
@@ -183,6 +201,7 @@ const IdentifyUtils = {
                 }
                 item.clickPos = clickPoint;
                 item.displayname = IdentifyUtils.determineDisplayName(layer, layername, item);
+                item.layertitle = item.layertitle ?? layername;
             }
         }
         return results;
@@ -338,6 +357,20 @@ const IdentifyUtils = {
             result[layer.name] = [{type: "text", text: response, id: posstr}];
         }
         return result;
+    },
+    parseGml3Response(response, geometrycrs, posstr, layer) {
+        const fmtGml3 = new ol.format.GML3();
+        const fmtGeoJson =  new ol.format.GeoJSON();
+        return {
+            [layer.name]: fmtGeoJson.writeFeaturesObject(fmtGml3.readFeatures(response))?.features ?? []
+        };
+    },
+    parseGml32Response(response, geometrycrs, posstr, layer) {
+        const fmtGml32 = new ol.format.GML32();
+        const fmtGeoJson =  new ol.format.GeoJSON();
+        return {
+            [layer.name]: fmtGeoJson.writeFeaturesObject(fmtGml32.readFeatures(response))?.features ?? []
+        };
     }
 };
 
