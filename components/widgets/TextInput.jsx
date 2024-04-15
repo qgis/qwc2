@@ -89,6 +89,7 @@ class TextInput extends React.Component {
                         name={this.props.name}
                         onChange={() => {}}
                         required={this.props.required}
+                        tabIndex="-1"
                         value={this.state.curValue} />
                 ) : null}
                 <pre
