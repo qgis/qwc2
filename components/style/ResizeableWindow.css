@@ -99,6 +99,17 @@ div.resizeable-window-titlebar {
     flex: 0 0 auto;
 }
 
+div.resizeable-window-titlebar > div.spinner {
+    flex: 0 0 auto;
+    margin-right: 0.25em;
+    width: 1.5em;
+    height: 1.5em;
+}
+
+div.resizeable-window-titlebar > div.spinner > div {
+    background-color: var(--titlebar-text-color);
+}
+
 span.resizeable-window-titlebar-icon {
     flex: 0 0 auto;
     margin-right: 0.25em;

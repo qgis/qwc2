@@ -18,6 +18,7 @@ import {raiseWindow, registerWindow, unregisterWindow, setSplitScreen} from '../
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
+import Spinner from './Spinner';
 
 import './style/ResizeableWindow.css';
 
@@ -26,6 +27,7 @@ const WINDOW_GEOMETRIES = {};
 class ResizeableWindow extends React.Component {
     static propTypes = {
         baseZIndex: PropTypes.number,
+        busyIcon: PropTypes.bool,
         bottombarHeight: PropTypes.number,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
@@ -188,7 +190,7 @@ class ResizeableWindow extends React.Component {
 
         const content = [
             (<div className="resizeable-window-titlebar" key="titlebar" onDoubleClick={this.toggleMaximize} ref={el => { this.titlebar = el; }}>
-                {icon}
+                {this.props.busyIcon ? (<Spinner />) : icon}
                 <span className="resizeable-window-titlebar-title">
                     {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
                 </span>

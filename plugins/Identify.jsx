@@ -377,7 +377,7 @@ class Identify extends React.Component {
                 );
             }
             resultWindow = (
-                <ResizeableWindow dockable={this.props.geometry.side} icon="info-sign"
+                <ResizeableWindow busyIcon={this.state.pendingRequests > 0} dockable={this.props.geometry.side} icon="info-sign"
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="IdentifyWindow"
