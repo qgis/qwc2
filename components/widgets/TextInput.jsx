@@ -101,7 +101,6 @@ class TextInput extends React.Component {
                     contentEditable={!this.props.disabled && !this.props.readOnly}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
-                    onClick={this.onClick}
                     onInput={this.onChange}
                     onKeyDown={this.onKeyDown}
                     onMouseDown={this.onMouseDown}
@@ -130,13 +129,11 @@ class TextInput extends React.Component {
             this.commit();
         }
     };
-    onClick = (ev) => {
-        if (ev.ctrlKey && this.focusEnterClick && ev.target.nodeName === 'A' && ev.target.href) {
-            window.open(ev.target.href, "_blank");
+    onMouseDown = (ev) => {
+        const el = document.elementFromPoint(ev.clientX, ev.clientY);
+        if (el?.nodeName === 'A' && ev.ctrlKey) {
+            window.open(el.href, el.target);
         }
-    };
-    onMouseDown = () => {
-        this.focusEnterClick = document.activeElement !== this.input;
     };
     onMouseMove = (ev) => {
         const isTouch = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
@@ -172,13 +169,7 @@ class TextInput extends React.Component {
         }
     };
     onKeyDown = (ev) => {
-        if (ev.keyCode === 17) { // Ctrl
-            const prevValue = this.input.contentEditable;
-            this.input.contentEditable = false;
-            window.addEventListener("keyup", () => {
-                this.input.contentEditable = prevValue;
-            }, {once: true});
-        } else if (ev.keyCode === 13 && !this.props.multiline) { // Enter
+        if (ev.keyCode === 13 && !this.props.multiline) { // Enter
             ev.preventDefault();
             this.commit();
         } else if (ev.keyCode === 27) { // Esc
