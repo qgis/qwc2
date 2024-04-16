@@ -101,3 +101,33 @@ export function parseExpressionsAsync(expressions, feature, editIface, mapPrefix
         }
     });
 }
+
+
+const FeatureTemplateFactories = {};
+
+export function setFeatureTemplateFactory(dataset, factory) {
+    FeatureTemplateFactories[dataset] = factory;
+}
+
+export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, mapCrs, callback) {
+    if (editConfig.editDataset in FeatureTemplateFactories) {
+        feature = FeatureTemplateFactories[editConfig.editDataset](feature);
+    }
+    // Apply default values
+    const defaultFieldExpressions = editConfig.fields.reduce((res, field) => {
+        if (field.defaultValue) {
+            return {...res, [field.id]: field.defaultValue.replace(/^expr:/, '')};
+        }
+        return res;
+    }, {});
+    ExpressionFeatureCache.clear();
+    parseExpressionsAsync(defaultFieldExpressions, feature, editIface, mapPrefix, mapCrs).then(result => {
+        // Adjust values based on field type
+        editConfig.fields.forEach(field => {
+            if (field.id in result && field.type === "date") {
+                result[field.id] = result[field.id].split("T")[0];
+            }
+        });
+        callback({...feature, properties: {...feature.properties, ...result}});
+    });
+}

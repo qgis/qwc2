@@ -16,7 +16,7 @@ import {v1 as uuidv1} from 'uuid';
 import xml2js from 'xml2js';
 
 import ConfigUtils from '../utils/ConfigUtils';
-import {parseExpression, ExpressionFeatureCache} from '../utils/ExpressionParser';
+import {parseExpression, ExpressionFeatureCache} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import EditComboField, {KeyValCache} from './EditComboField';
@@ -25,7 +25,6 @@ import Icon from './Icon';
 import Spinner from './Spinner';
 import ButtonBar from './widgets/ButtonBar';
 import DateTimeInput from './widgets/DateTimeInput';
-import NumberInput from './widgets/NumberInput';
 import TextInput from './widgets/TextInput';
 
 import './style/QtDesignerForm.css';

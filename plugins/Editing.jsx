@@ -14,7 +14,7 @@ import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
-import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
+import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
@@ -25,6 +25,7 @@ import SideBar from '../components/SideBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import EditingInterface from '../utils/EditingInterface';
+import {getFeatureTemplate} from '../utils/EditingUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';

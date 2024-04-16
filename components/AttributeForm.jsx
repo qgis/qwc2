@@ -14,10 +14,11 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
-import {setEditContext, clearEditContext, getFeatureTemplate} from '../actions/editing';
+import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole, refreshLayer} from '../actions/layers';
 import {setCurrentTaskBlocked} from '../actions/task';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {getFeatureTemplate} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import AutoEditForm from './AutoEditForm';
 import LinkFeatureForm from './LinkFeatureForm';
