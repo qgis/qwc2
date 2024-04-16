@@ -28,12 +28,13 @@ export function processStarted(id, name) {
     };
 }
 
-export function processFinished(id, success, message = "") {
+export function processFinished(id, success, message = "", timeout = true) {
     return {
         type: PROCESS_FINISHED,
         id,
         success,
-        message
+        message,
+        timeout
     };
 }
 
