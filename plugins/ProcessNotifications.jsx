@@ -47,15 +47,19 @@ class ProcessNotifications extends React.Component {
         if (process.status === ProcessStatus.BUSY) {
             icon = (<Spinner />);
         } else if (process.status === ProcessStatus.SUCCESS) {
-            setTimeout(() => {
-                this.props.clearProcess(process.id);
-            }, 7000);
+            if (process.timeout !== false) {
+                setTimeout(() => {
+                    this.props.clearProcess(process.id);
+                }, typeof process.timeout === 'number' ? process.timeout : 7000);
+            }
             icon = (<Icon icon="ok" />);
             close = true;
         } else if (process.status === ProcessStatus.FAILURE) {
-            setTimeout(() => {
-                this.props.clearProcess(process.id);
-            }, 12000);
+            if (process.timeout !== false) {
+                setTimeout(() => {
+                    this.props.clearProcess(process.id);
+                }, typeof process.timeout === 'number' ? process.timeout : 12000);
+            }
             icon = (<Icon icon="warning" />);
             close = true;
         }

@@ -40,7 +40,8 @@ export default function processNotifications(state = defaultState, action) {
                 [action.id]: {
                     ...state.processes[action.id],
                     status: action.success ? ProcessStatus.SUCCESS : ProcessStatus.FAILURE,
-                    message: action.message
+                    message: action.message,
+                    timeout: action.timeout
                 }
             }
         };
