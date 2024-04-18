@@ -19,6 +19,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
 export const CHANGE_LOCALE = 'CHANGE_LOCALE';
+export const ADD_TRANSLATIONS = 'ADD_TRANSLATIONS';
 
 export function loadLocale(defaultLangData, defaultLang = "") {
     return dispatch => {
@@ -100,5 +101,12 @@ export function loadLocale(defaultLangData, defaultLang = "") {
                 });
             });
         });
+    };
+}
+
+export function addTranslations(translations) {
+    return {
+        type: ADD_TRANSLATIONS,
+        translations
     };
 }

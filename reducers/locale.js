@@ -9,7 +9,7 @@
 
 import {flatten} from 'flat';
 
-import {CHANGE_LOCALE} from '../actions/locale';
+import {CHANGE_LOCALE, ADD_TRANSLATIONS} from '../actions/locale';
 
 const defaultState = {
     messages: {},
@@ -24,6 +24,12 @@ export default function locale(state = defaultState, action) {
             messages: flatten(action.messages),
             fallbackMessages: flatten(action.fallbackMessages),
             current: action.locale
+        };
+    }
+    case ADD_TRANSLATIONS: {
+        return {
+            ...state,
+            messages: {...state.messages, ...flatten(action.translations[state.current] || {})}
         };
     }
     default:
