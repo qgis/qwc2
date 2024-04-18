@@ -12,12 +12,14 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
+import * as uuid from 'uuid';
 
 import * as displayActions from '../actions/display';
 import * as editingActions from '../actions/editing';
 import {LayerRole} from '../actions/layers';
 import * as layerActions from '../actions/layers';
 import {registerCustomPlugin, unregisterCustomPlugin} from '../actions/localConfig';
+import * as localeActions from '../actions/locale';
 import * as locateActions from '../actions/locate';
 import * as mapActions from '../actions/map';
 import * as taskActions from '../actions/task';
@@ -81,10 +83,13 @@ import SuggestionInput from '../components/widgets/SuggestionInput';
 import TextInput from '../components/widgets/TextInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
+import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import EditingInterface from '../utils/EditingInterface';
 import * as EditingUtils from '../utils/EditingUtils';
 import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import * as PermaLinkUtils from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -92,9 +97,28 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 /**
  * Exposes an API for interacting with QWC2 via `window.qwc2`.
  *
+ * You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
+ *
+ * For example:
+ *
+ * ```
+ * window.addEventListener("QWC2ApiReady", () => {
+ *      const {React} = window.qwc2.libs;
+ *
+ *      class MyPlugin extends React.Component {
+ *          render() {
+ *              return React.createElement("div", {}, "Hello World");
+ *          }
+ *      }
+ *
+ *      window.qwc2.addPlugin("MyPlugin", MyPlugin);
+ * });
+ * ```
+ *
  * All following action functions are available:
  *
  * - [display](https://github.com/qgis/qwc2/blob/master/actions/display.js)
+ * - [editing](https://github.com/qgis/qwc2/blob/master/actions/editing.js)
  * - [layers](https://github.com/qgis/qwc2/blob/master/actions/layers.js)
  * - [locate](https://github.com/qgis/qwc2/blob/master/actions/locate.js)
  * - [map](https://github.com/qgis/qwc2/blob/master/actions/map.js)
@@ -104,44 +128,9 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  *
  * I.e. `setCurrentTask` is available via `window.qwc2.setCurrentTask`.
  *
- * Additionally, the following functions are available:
+ * Some of the core libraries (React, axios, ol, ...) are accessible via `window.qwc2.libs`.
  *
- * ---
- *
- * `window.qwc2.addExternalLayer(resource, beforeLayerName = null)`
- *
- * Convenience method for adding an external layer.
- *
- *   * `resource`: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
- *   * `beforeLayerName`: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
- *
- * ---
- *
- * `window.qwc2.drawScratch(geomType, message, drawMultiple, callback, style = null)`
- *
- *  Deprecated, use `window.qwc2.drawGeometry` instead.
- *
- * ---
- *
- * `window.qwc2.drawGeometry(geomType, message, callback, options)`
- *
- *  Draw geometries, and return these as GeoJSON to the calling application.
- *
- *   * `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
- *   * `message`: A descriptive string to display in the tool taskbar.
- *   * `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
- *   * `options`: Optional configuration:
- *         `drawMultiple`: Whether to allow drawing multiple geometries (default: `false`).
- *         `style`: A custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
- *         `initialFeatures`: Array of initial geometries.
- *         `snapping`: Whether snapping is available while drawing (default: `false`).
- *         `snappingActive`: Whether snapping is initially active (default: `false`)
- *
- * ---
- *
- * `window.qwc2.getState()`
- *
- * Return the current application state.
+ * In addition, the following methods are available on `window.qwc2`:
  */
 class API extends React.Component {
     componentDidMount() {
@@ -166,9 +155,12 @@ class API extends React.Component {
         window.qwc2.drawScratch = this.drawScratch;
         window.qwc2.drawGeometry = this.drawGeometry;
         window.qwc2.getState = this.getState;
+        window.qwc2.ConfigUtils = ConfigUtils;
         window.qwc2.CoordinatesUtils = CoordinatesUtils;
         window.qwc2.EditingInterface = EditingInterface;
         window.qwc2.EditingUtils = EditingUtils;
+        window.qwc2.LocaleUtils = LocaleUtils;
+        window.qwc2.MapUtils = MapUtils;
         window.qwc2.PermaLinkUtils = PermaLinkUtils;
         window.qwc2.VectorLayerUtils = VectorLayerUtils;
 
@@ -178,6 +170,7 @@ class API extends React.Component {
         window.qwc2.libs.PropTypes = PropTypes;
         window.qwc2.libs.connect = connect;
         window.qwc2.libs.ol = ol;
+        window.qwc2.libs.uuid = uuid;
 
         window.qwc2.components = {};
         window.qwc2.components.AppMenu = AppMenu;
@@ -252,27 +245,86 @@ class API extends React.Component {
     render() {
         return null;
     }
+    /**
+     * Add custom plugin
+     *
+     * * `name`: An identifier
+     * * `plugin`: The plugin component class
+     * * `translations`: The plugin translation messages: `{"<lang>": {<messages>}, ...}`
+     */
     addPlugin = (name, plugin, translations = {}) => {
         window.qwc2.__customPlugins[name] = plugin;
         window.qwc2.addTranslations(translations);
         this.props.registerCustomPlugin(name);
     };
+    /**
+     * Remove custom plugin
+     *
+     * * `name`: The identifier
+     */
     removePlugin = (name) => {
         this.props.unregisterCustomPlugin(name);
         delete window.qwc2.__customPlugins[name];
     };
+    /**
+     * Add custom attribute calculator
+     * (i.e. computed attributes which are added to GetFeatureInfo responses).
+     *
+     * * `name`: An identifier
+     * * `calcFunc`: The calculator function with signature `function(layer, feature)`
+     *
+     * The `calcFunc` should return either a two-enty `[name, value]` pair or a one-value `[value]` array.
+     */
     addIdentifyAttributeCalculator = (name, calcFunc) => {
         window.qwc2.__attributeCalculators[name] = calcFunc;
     };
+    /**
+     * Remove custom identify attribute calculator
+     *
+     * * `name`: The identifier
+     */
     removeIdentifyAttributeCalculator = (name) => {
         delete window.qwc2.__attributeCalculators[name];
     };
+    /**
+     * Add custom identify exporter
+     *
+     * * `name`: An identifier
+     * * `exporterFunc`: The exporter configuration
+     *
+     * The exporter configuration is an object of the shape
+     *
+     * ```
+     * {
+     *    id: "<id>",
+     *    title: "<title>",
+     *    allowClipboard: <true|false>,
+     *    export: (features, callback) => {
+     *      callback({
+     *        data: <blob>, type: "<mimeType>", filename: "<filename>"
+     *      });
+     *    }
+     *  }
+     * ```
+     */
     addIdentifyExporter = (name, exporterConfig) => {
         window.qwc2.__identifyExportes[name] = exporterConfig;
     };
+    /**
+     * Remove identify exporter
+     *
+     * * `name`: The identifier
+     */
     removeIdentifyExporter = (name) => {
         delete window.qwc2.__identifyExportes[name];
     };
+    /*
+     * Convenience method for adding an external layer.
+     *
+     * * `resource`: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
+     * * `beforeLayerName`: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
+     * * `sublayers`: Whether to import the sublayer structure (`true`) or just a flat layer (`false`).
+     */
     addExternalLayer = (resource, beforeLayerName = null, sublayers = true) => {
         const params = LayerUtils.splitLayerUrlParam(resource);
         ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
@@ -284,11 +336,27 @@ class API extends React.Component {
             }
         });
     };
+    /**
+     * Deprecated, use `window.qwc2.drawGeometry` instead.
+     */
     drawScratch = (geomType, message, drawMultiple, callback, style = null) => {
         /* eslint-disable-next-line */
         console.warn("window.qwc2.drawScratch is deprecated, use window.qwc2.drawGeometry instead");
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
     };
+    /**
+     *  Draw geometries, and return these as GeoJSON to the calling application.
+     *
+     * * `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
+     * * `message`: A descriptive string to display in the tool taskbar.
+     * * `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
+     * * `options`: Optional configuration:
+     *   * `drawMultiple`: Whether to allow drawing multiple geometries (default: `false`).
+     *   * `style`: A custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
+     *   * `initialFeatures`: Array of initial geometries.
+     *   * `snapping`: Whether snapping is available while drawing (default: `false`).
+     *   * `snappingActive`: Whether snapping is initially active (default: `false`)
+     */
     drawGeometry = (geomType, message, callback, options = {}) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {
             callback: callback,
@@ -301,6 +369,9 @@ class API extends React.Component {
             initialFeatures: options.initialFeatures
         });
     };
+    /**
+     * Return the current application state.
+     */
     getState = () => {
         return this.props.state;
     };
@@ -324,6 +395,7 @@ export default connect(state => ({
     ...extractFunctions(displayActions),
     ...extractFunctions(editingActions),
     ...extractFunctions(layerActions),
+    ...extractFunctions(localeActions),
     ...extractFunctions(locateActions),
     ...extractFunctions(mapActions),
     ...extractFunctions(taskActions),

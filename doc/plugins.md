@@ -47,22 +47,34 @@ Plugin reference
 * [TimeManager](#timemanager)
 * [TopBar](#topbar)
 * [ZoomButton](#zoombutton)
-* [EditingSupport](#editingsupport)
-* [LocateSupport](#locatesupport)
-* [MeasurementSupport](#measurementsupport)
-* [OverviewMap](#overviewmap)
-* [RedliningSupport](#redliningsupport)
-* [ScaleBarSupport](#scalebarsupport)
-* [SnappingSupport](#snappingsupport)
 
 ---
 API<a name="api"></a>
 ----------------------------------------------------------------
 Exposes an API for interacting with QWC2 via `window.qwc2`.
 
+You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
+
+For example:
+
+```
+window.addEventListener("QWC2ApiReady", () => {
+     const {React} = window.qwc2.libs;
+
+     class MyPlugin extends React.Component {
+         render() {
+             return React.createElement("div", {}, "Hello World");
+         }
+     }
+
+     window.qwc2.addPlugin("MyPlugin", MyPlugin);
+});
+```
+
 All following action functions are available:
 
 - [display](https://github.com/qgis/qwc2/blob/master/actions/display.js)
+- [editing](https://github.com/qgis/qwc2/blob/master/actions/editing.js)
 - [layers](https://github.com/qgis/qwc2/blob/master/actions/layers.js)
 - [locate](https://github.com/qgis/qwc2/blob/master/actions/locate.js)
 - [map](https://github.com/qgis/qwc2/blob/master/actions/map.js)
@@ -72,48 +84,89 @@ All following action functions are available:
 
 I.e. `setCurrentTask` is available via `window.qwc2.setCurrentTask`.
 
-Additionally, the following functions are available:
+Some of the core libraries (React, axios, ol, ...) are accessible via `window.qwc2.libs`.
 
----
+In addition, the following methods are available on `window.qwc2`:
 
-`window.qwc2.addExternalLayer(resource, beforeLayerName = null)`
+**addPlugin(name,plugin,translations)**
 
-Convenience method for adding an external layer.
+Add custom plugin
 
-  * `resource`: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
-  * `beforeLayerName`: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
+* `name`: An identifier
+* `plugin`: The plugin component class
+* `translations`: The plugin translation messages: `{"<lang>": {<messages>}, ...}`
 
----
+**removePlugin(name)**
 
-`window.qwc2.drawScratch(geomType, message, drawMultiple, callback, style = null)`
+Remove custom plugin
 
- Deprecated, use `window.qwc2.drawGeometry` instead.
+* `name`: The identifier
 
----
+**addIdentifyAttributeCalculator(name,calcFunc)**
 
-`window.qwc2.drawGeometry(geomType, message, callback, options)`
+Add custom attribute calculator
+(i.e. computed attributes which are added to GetFeatureInfo responses).
 
- Draw geometries, and return these as GeoJSON to the calling application.
+* `name`: An identifier
+* `calcFunc`: The calculator function with signature `function(layer, feature)`
 
-  * `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
-  * `message`: A descriptive string to display in the tool taskbar.
-  * `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
-  * `options`: Optional configuration:
-        `drawMultiple`: Whether to allow drawing multiple geometries (default: `false`).
-        `style`: A custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
-        `initialFeatures`: Array of initial geometries.
-        `snapping`: Whether snapping is available while drawing (default: `false`).
-        `snappingActive`: Whether snapping is initially active (default: `false`)
+The `calcFunc` should return either a two-enty `[name, value]` pair or a one-value `[value]` array.
 
----
+**removeIdentifyAttributeCalculator(name)**
 
-`window.qwc2.getState()`
+Remove custom identify attribute calculator
+
+* `name`: The identifier
+
+**addIdentifyExporter(name,exporterConfig)**
+
+Add custom identify exporter
+
+* `name`: An identifier
+* `exporterFunc`: The exporter configuration
+
+The exporter configuration is an object of the shape
+
+```
+{
+   id: "<id>",
+   title: "<title>",
+   allowClipboard: <true|false>,
+   export: (features, callback) => {
+     callback({
+       data: <blob>, type: "<mimeType>", filename: "<filename>"
+     });
+   }
+ }
+```
+
+**removeIdentifyExporter(name)**
+
+Remove identify exporter
+
+* `name`: The identifier
+
+**drawScratch(geomType,message,drawMultiple,callback,style)**
+
+Deprecated, use `window.qwc2.drawGeometry` instead.
+
+**drawGeometry(geomType,message,callback,options)**
+
+Draw geometries, and return these as GeoJSON to the calling application.
+
+* `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
+* `message`: A descriptive string to display in the tool taskbar.
+* `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
+* `options`: Optional configuration:
+  * `drawMultiple`: Whether to allow drawing multiple geometries (default: `false`).
+  * `style`: A custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
+  * `initialFeatures`: Array of initial geometries.
+  * `snapping`: Whether snapping is available while drawing (default: `false`).
+  * `snappingActive`: Whether snapping is initially active (default: `false`)
+
+**getState()**
 
 Return the current application state.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
 
 AttributeTable<a name="attributetable"></a>
 ----------------------------------------------------------------
@@ -184,10 +237,6 @@ Bottom bar, displaying mouse coordinate, scale, etc.
 CookiePopup<a name="cookiepopup"></a>
 ----------------------------------------------------------------
 A simple popup to notify that cookies are used.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
 
 Cyclomedia<a name="cyclomedia"></a>
 ----------------------------------------------------------------
@@ -434,10 +483,6 @@ LoginUser<a name="loginuser"></a>
 ----------------------------------------------------------------
 Displays the currently logged in user.
 
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
-
 MapPlugin<a name="mapplugin"></a>
 ----------------------------------------------------------------
 The main map component.
@@ -455,10 +500,6 @@ MapComparePlugin<a name="mapcompareplugin"></a>
 Allows comparing the top layer with the rest of the map.
 
 Activated through a checkbox in the LayerTree.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
 
 MapCopyright<a name="mapcopyright"></a>
 ----------------------------------------------------------------
@@ -626,10 +667,6 @@ Adds support for displaying notifications of background processes.
 
 Only useful for third-party plugins which use this functionality.
 
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
-
 RasterExport<a name="rasterexport"></a>
 ----------------------------------------------------------------
 Allows exporting a selected portion of the map to an image ("screenshot").
@@ -677,10 +714,6 @@ Task which which can be invoked by other tools to draw a geometry and pass it to
 Only useful for third-party code, i.e. over the JavaScript API.
 
 Invoke as `setCurrentTask("ScratchDrawing", null, null, {callback: <function(features, crs)>});`
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
 
 Settings<a name="settings"></a>
 ----------------------------------------------------------------
@@ -798,60 +831,4 @@ Two specific plugins exist: ZoomInPlugin and ZoomOutPlugin, which are instances 
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `undefined` |
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
-
-EditingSupport<a name="editingsupport"></a>
-----------------------------------------------------------------
-Editing support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
-
-LocateSupport<a name="locatesupport"></a>
-----------------------------------------------------------------
-GPS locate support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
-
-MeasurementSupport<a name="measurementsupport"></a>
-----------------------------------------------------------------
-Measurement support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| options | `{`<br />`  geodesic: bool,`<br />`}` | Options | `undefined` |
-
-OverviewMap<a name="overviewmap"></a>
-----------------------------------------------------------------
-Overview map support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.<br /> Aditionally, you can specify `layer: {type: "<wms|wmts>", ...}` to specify a custom overview layer. | `undefined` |
-
-RedliningSupport<a name="redliningsupport"></a>
-----------------------------------------------------------------
-Redlining support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
-
-ScaleBarSupport<a name="scalebarsupport"></a>
-----------------------------------------------------------------
-Scalebar support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) | `undefined` |
-
-SnappingSupport<a name="snappingsupport"></a>
-----------------------------------------------------------------
-Snapping support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-|
 

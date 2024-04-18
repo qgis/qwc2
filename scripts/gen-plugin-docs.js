@@ -12,13 +12,6 @@ fs.readdirSync(qwcPluginDir).forEach(entry => {
         pluginData.push(reactDocs.parse(contents, reactDocs.resolver.findAllComponentDefinitions));
     }
 });
-fs.readdirSync(qwcPluginDir + "/map").forEach(entry => {
-    if (entry.endsWith(".jsx")) {
-        const file = path.resolve(qwcPluginDir, "map", entry);
-        const contents = fs.readFileSync(file);
-        pluginData.push(reactDocs.parse(contents, reactDocs.resolver.findAllComponentDefinitions));
-    }
-});
 pluginData = pluginData.flat();
 
 function parsePropType(type) {
@@ -55,24 +48,31 @@ pluginData.forEach(plugin => {
     }
     output += `${plugin.displayName}<a name="${plugin.displayName.toLowerCase()}"></a>\n`;
     output += "----------------------------------------------------------------\n";
-    output += plugin.description + "\n";
-    output += "\n";
-    output += "| Property | Type | Description | Default value |\n";
-    output += "|----------|------|-------------|---------------|\n";
-    let documentedProps = 0;
-    Object.entries(plugin.props || {}).forEach(([name, prop]) => {
-        if (!prop.description) {
-            return;
-        }
-        ++documentedProps;
-        const defaultValue = prop.defaultValue ? prop.defaultValue.value.split("\n").map(x => '`' + x.replace(' ', ' ') + '`').join("<br />") : "`undefined`";
-        const type = "`" + parsePropType(prop.type).replaceAll(' ', ' ').replaceAll("\n", "`<br />`") + "`";
-        output += `| ${name} | ${type} | ${prop.description.replaceAll("\n", "<br />")} | ${defaultValue} |\n`;
-    });
-    if (documentedProps === 0) {
-        output += "|\n";
+    output += plugin.description + "\n\n";
+
+    const props = Object.entries(plugin.props || {}).filter(entry => entry[1].description);
+    if (props.length > 0) {
+        output += "| Property | Type | Description | Default value |\n";
+        output += "|----------|------|-------------|---------------|\n";
+        props.forEach(([name, prop]) => {
+            if (!prop.description) {
+                return;
+            }
+            const defaultValue = prop.defaultValue ? prop.defaultValue.value.split("\n").map(x => '`' + x.replace(' ', ' ') + '`').join("<br />") : "`undefined`";
+            const type = "`" + parsePropType(prop.type).replaceAll(' ', ' ').replaceAll("\n", "`<br />`") + "`";
+            output += `| ${name} | ${type} | ${prop.description.replaceAll("\n", "<br />")} | ${defaultValue} |\n`;
+        })
+        output += "\n";
     }
-    output += "\n";
+
+    plugin.methods.forEach(method => {
+        if (method.docblock) {
+            const params = method.params.map(param => param.name).join(",");
+            output += `**${method.name}(${params})**\n\n`;
+            output += (method.docblock || "") + "\n";
+            output += "\n";
+        }
+    });;
 });
 
 fs.writeFileSync(__dirname + '/../doc/plugins.md', output);
