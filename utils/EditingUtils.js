@@ -56,6 +56,7 @@ export function parseExpression(expr, feature, editIface, mapPrefix, mapCrs, ree
         parser.feed(expr.replace(/\n/, ' '));
         result = parser.results[0];
     } catch (e) {
+        /* eslint-disable-next-line */
         console.warn("Failed to evaluate expression " + expr.replace(/\n/, ' '));
     }
     delete window.qwc2ExpressionParserContext;
@@ -88,6 +89,7 @@ export function parseExpressionsAsync(expressions, feature, editIface, mapPrefix
                 parser.feed(expr.replace(/\n/, ' '));
                 return {...res, [key]: parser.results[0]};
             } catch (e) {
+                /* eslint-disable-next-line */
                 console.warn("Failed to evaluate expression " + expr.replace(/\n/, ' '));
                 return res;
             }
