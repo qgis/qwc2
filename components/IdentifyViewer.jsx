@@ -314,7 +314,7 @@ class IdentifyViewer extends React.Component {
         this.export({[layer]: [result]});
     };
     export = (json, clipboard = false) => {
-        const exporter = [...BuiltinExporters, ...this.props.customExporters].find(entry => entry.id === this.state.exportFormat);
+        const exporter = this.getExporters().find(entry => entry.id === this.state.exportFormat);
         if (exporter) {
             if (!this.props.exportGeometry) {
                 json = Object.entries(json).reduce((res, [layerId, features]) => (
@@ -422,9 +422,7 @@ class IdentifyViewer extends React.Component {
                     );
                 });
             }
-            if (this.props.attributeCalculator) {
-                rows = rows.concat(this.props.attributeCalculator(layer, result));
-            }
+            rows.push(...this.computeExtraAttributes(layer, result));
             if (featureReportTemplate) {
                 rows = rows.concat(
                     <tr key="__featurereport">
@@ -450,7 +448,7 @@ class IdentifyViewer extends React.Component {
             extraattribs = (
                 <div className="identify-result-box">
                     <table className="attribute-list"><tbody>
-                        {this.props.attributeCalculator ? this.props.attributeCalculator(layer, result) : null}
+                        {this.computeExtraAttributes(layer, result)}
                         {featureReportTemplate ? (
                             <tr>
                                 <td className={"identify-attr-title " + this.props.longAttributesDisplay}>
@@ -528,7 +526,8 @@ class IdentifyViewer extends React.Component {
             );
         }
         // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
-        const clipboardExportDisabled = ([...BuiltinExporters, ...this.props.customExporters].find(entry => entry.id === this.state.exportFormat) || {}).allowClipboard !== true;
+        const exporters = this.getExporters();
+        const clipboardExportDisabled = exporters.find(entry => entry.id === this.state.exportFormat)?.allowClipboard !== true;
         return (
             <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } }>
                 {body}
@@ -537,12 +536,7 @@ class IdentifyViewer extends React.Component {
                         <span className="identify-buttonbox-spacer" />
                         <span>{LocaleUtils.tr("identify.exportformat")}&nbsp;</span>
                         <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
-                            {Object.values(BuiltinExporters).filter(entry => {
-                                return !Array.isArray(this.props.enableExport) || this.props.enableExport.includes(entry.id);
-                            }).map(entry => (
-                                <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
-                            ))}
-                            {Object.values(this.props.customExporters).filter(entry => {
+                            {exporters.filter(entry => {
                                 return !Array.isArray(this.props.enableExport) || this.props.enableExport.includes(entry.id);
                             }).map(entry => (
                                 <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
@@ -555,6 +549,37 @@ class IdentifyViewer extends React.Component {
             </div>
         );
     }
+    computeExtraAttributes = (layer, result) => {
+        const rows = [];
+        Object.values(window.qwc2.__attributeCalculators || {}).forEach((calc, idx) => {
+            const row = calc(layer, result);
+            if (row.length === 2) {
+                rows.push((
+                    <tr key={"custom-attr-" + idx}>
+                        <td className="identify-attr-title"><i>{row[0]}</i></td>
+                        <td className="identify-attr-value">{row[1]}</td>
+                    </tr>
+                ));
+            } else if (row.length === 1) {
+                rows.push((
+                    <tr key={"custom-attr-" + idx}>
+                        <td colSpan="2">{row[0]}</td>
+                    </tr>
+                ));
+            }
+        });
+        if (this.props.attributeCalculator) {
+            rows.push(...this.props.attributeCalculator(layer, result));
+        }
+        return rows;
+    };
+    getExporters = () => {
+        return [
+            ...BuiltinExporters,
+            ...this.props.customExporters,
+            ...Object.values(window.qwc2.__identifyExportes || [])
+        ];
+    };
     setIframeContent = (iframe, html) => {
         if (iframe.getAttribute("identify-content-set")) {
             return;

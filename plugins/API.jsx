@@ -145,8 +145,11 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  */
 class API extends React.Component {
     componentDidMount() {
-        window.qwc2 = {};
-        window.qwc2.customPlugins = {};
+        window.qwc2 = {
+            __customPlugins: {},
+            __attributeCalculators: {},
+            __identifyExportes: {}
+        };
         // Auto-binded functions
         for (const prop of Object.keys(this.props)) {
             window.qwc2[prop] = this.props[prop];
@@ -155,6 +158,10 @@ class API extends React.Component {
         window.qwc2.LayerRole = LayerRole;
         window.qwc2.addPlugin = this.addPlugin;
         window.qwc2.removePlugin = this.removePlugin;
+        window.qwc2.addIdentifyAttributeCalculator = this.addIdentifyAttributeCalculator;
+        window.qwc2.removeIdentifyAttributeCalculator = this.removeIdentifyAttributeCalculator;
+        window.qwc2.addIdentifyExporter = this.addIdentifyExporter;
+        window.qwc2.removeIdentifyExporter = this.removeIdentifyExporter;
         window.qwc2.addExternalLayer = this.addExternalLayer;
         window.qwc2.drawScratch = this.drawScratch;
         window.qwc2.drawGeometry = this.drawGeometry;
@@ -251,7 +258,19 @@ class API extends React.Component {
     };
     removePlugin = (name) => {
         this.props.unregisterCustomPlugin(name);
-        delete window.qwc2.customPlugins[name];
+        delete window.qwc2.__customPlugins[name];
+    };
+    addIdentifyAttributeCalculator = (name, calcFunc) => {
+        window.qwc2.__attributeCalculators[name] = calcFunc;
+    };
+    removeIdentifyAttributeCalculator = (name) => {
+        delete window.qwc2.__attributeCalculators[name];
+    };
+    addIdentifyExporter = (name, exporterConfig) => {
+        window.qwc2.__identifyExportes[name] = exporterConfig;
+    };
+    removeIdentifyExporter = (name) => {
+        delete window.qwc2.__identifyExportes[name];
     };
     addExternalLayer = (resource, beforeLayerName = null, sublayers = true) => {
         const params = LayerUtils.splitLayerUrlParam(resource);

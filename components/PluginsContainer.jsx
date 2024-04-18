@@ -27,7 +27,7 @@ class PluginsContainer extends React.Component {
     renderPlugins = (pluginsConfig) => {
         const allPlugins = {
             ...this.props.plugins,
-            ...(window.qwc2?.customPlugins ?? {})
+            ...(window.qwc2?.__customPlugins ?? {})
         };
         return pluginsConfig.map((pluginConf, idx) => {
             const Plugin = allPlugins[pluginConf.name + "Plugin"];
