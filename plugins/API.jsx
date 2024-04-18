@@ -252,8 +252,9 @@ class API extends React.Component {
     render() {
         return null;
     }
-    addPlugin = (name, plugin) => {
-        window.qwc2.customPlugins[name] = plugin;
+    addPlugin = (name, plugin, translations = {}) => {
+        window.qwc2.__customPlugins[name] = plugin;
+        window.qwc2.addTranslations(translations);
         this.props.registerCustomPlugin(name);
     };
     removePlugin = (name) => {
