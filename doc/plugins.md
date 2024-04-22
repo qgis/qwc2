@@ -544,6 +544,7 @@ See [Map filtering](../../topics/MapFilter).
 | allowCustomFilters | `bool` | Whether to allow custom filters. | `undefined` |
 | allowFilterByGeom | `bool` | Whether to allow filter by geometry. Requires the filter_geom plugin from qwc-qgis-server-plugins, and the filter will only be applied to postgis layers. | `undefined` |
 | allowFilterByTime | `bool` | Whether to display the temporal filter if temporal dimensions are found. | `true` |
+| highlightStyle | `{`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`}` | The style used for highlighting filter geometries. | `{`<br />`    strokeColor: [0, 0, 0],`<br />`    fillColor: [255, 255, 0, 0.25]`<br />`}` |
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). Set to -1 to hide the button. | `5` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 

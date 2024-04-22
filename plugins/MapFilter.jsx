@@ -50,6 +50,17 @@ class MapFilter extends React.Component {
         allowFilterByTime: PropTypes.bool,
         currentTask: PropTypes.string,
         filter: PropTypes.object,
+        /** The style used for highlighting filter geometries. */
+        highlightStyle: PropTypes.shape({
+            /* Stroke color rgba array, i.e. [255, 0, 0, 0.5] */
+            strokeColor: PropTypes.array,
+            /* Stroke width */
+            strokeWidth: PropTypes.number,
+            /* Stroke dash/gap pattern array. Empty for solid line. */
+            strokeDash: PropTypes.array,
+            /* Fill color rgba array, i.e. [255, 0, 0, 0.33] */
+            fillColor: PropTypes.array
+        }),
         layers: PropTypes.array,
         mapMargins: PropTypes.object,
         /** The position slot index of the map button, from the bottom (0: bottom slot). Set to -1 to hide the button. */
@@ -65,7 +76,11 @@ class MapFilter extends React.Component {
     static defaultProps = {
         allowFilterByTime: true,
         position: 5,
-        predefinedFilters: []
+        predefinedFilters: [],
+        highlightStyle: {
+            strokeColor: [0, 0, 0],
+            fillColor: [255, 255, 0, 0.25]
+        }
     };
     state = {
         filters: {},
@@ -293,7 +308,7 @@ class MapFilter extends React.Component {
                 </SideBar>
             ),
             this.state.geomFilter.picking ? (
-                <PickFeature featureFilter={feature => feature?.geometry?.type === "Polygon"} featurePicked={this.filterGeomPicked} key="FeaturePicker" />
+                <PickFeature featureFilter={feature => feature?.geometry?.type === "Polygon"} featurePicked={this.filterGeomPicked} highlightStyle={this.props.highlightStyle} key="FeaturePicker" />
             ) : null,
             <MapSelection
                 active={taskActive && !!selGeomType}
@@ -301,7 +316,7 @@ class MapFilter extends React.Component {
                 geometry={this.state.geomFilter?.geom}
                 geometryChanged={this.setFilterGeometry}
                 key="MapSelection"
-                styleOptions={{strokeColor: [0, 0, 0], fillColor: [255, 255, 0, 0.25]}} />
+                styleOptions={this.props.highlightStyle} />
         ];
     }
     filterMapButtonClicked = () => {

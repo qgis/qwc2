@@ -32,6 +32,17 @@ class PickFeature extends React.Component {
         /** Optional: Function which accepts a GeoJSON feature and returns whether it should be accepted (true) or discarded (false) */
         featureFilter: PropTypes.func,
         featurePicked: PropTypes.func,
+        /** The style used for highlighting filter geometries. */
+        highlightStyle: PropTypes.shape({
+            /* Stroke color rgba array, i.e. [255, 0, 0, 0.5] */
+            strokeColor: PropTypes.array,
+            /* Stroke width */
+            strokeWidth: PropTypes.number,
+            /* Stroke dash/gap pattern array. Empty for solid line. */
+            strokeDash: PropTypes.array,
+            /* Fill color rgba array, i.e. [255, 0, 0, 0.33] */
+            fillColor: PropTypes.array
+        }),
         /** Optional: Restrict pick to specified layer name */
         layer: PropTypes.string,
         layers: PropTypes.array,
@@ -40,7 +51,11 @@ class PickFeature extends React.Component {
         pickGeomType: PropTypes.string
     };
     static defaultProps = {
-        pickGeomType: 'Point'
+        pickGeomType: 'Point',
+        highlightStyle: {
+            strokeColor: [0, 0, 0],
+            fillColor: [255, 255, 0, 0.25]
+        }
     };
     static defaultState = {
         pickGeom: null,
@@ -157,7 +172,7 @@ class PickFeature extends React.Component {
                 geometry={this.state.pickGeom}
                 geometryChanged={geom => this.setState({pickGeom: geom})}
                 key="MapSelection"
-                styleOptions={{circleRadius: 5, strokeColor: [0, 0, 0], fillColor: [255, 255, 0, 0.25]}}
+                styleOptions={this.props.highlightStyle}
             />
         )];
     }
