@@ -48,15 +48,19 @@ class OverviewMap extends React.Component {
             ...props.options
         };
         delete opt.layer;
-        const overviewView = new ol.View({
-            projection: props.map.getView().getProjection(),
-            ...(opt.viewOptions || {})
-        });
-        opt.view = overviewView;
         delete opt.viewOptions;
 
         this.overview = new ol.control.OverviewMap(opt);
         this.overview.getOverviewMap().set('id', 'overview');
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.projection !== prevProps.projection) {
+            const overviewView = new ol.View({
+                projection: this.props.projection,
+                ...(this.props.options.viewOptions || {})
+            });
+            this.overview.getOverviewMap().setView(overviewView);
+        }
     }
     componentDidMount() {
         this.overviewContainer = document.createElement("div");
@@ -64,6 +68,11 @@ class OverviewMap extends React.Component {
         document.getElementById("PluginsContainer").appendChild(this.overviewContainer);
         this.overview.setTarget(this.props.map.get('id') + "-overview");
         this.props.map.addControl(this.overview);
+        const overviewView = new ol.View({
+            projection: this.props.projection,
+            ...(this.props.options.viewOptions || {})
+        });
+        this.overview.getOverviewMap().setView(overviewView);
     }
     componentWillUnmount = () => {
         document.getElementById("PluginsContainer").removeChild(this.overviewContainer);
