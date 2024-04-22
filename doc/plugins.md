@@ -47,6 +47,13 @@ Plugin reference
 * [TimeManager](#timemanager)
 * [TopBar](#topbar)
 * [ZoomButton](#zoombutton)
+* [EditingSupport](#editingsupport)
+* [LocateSupport](#locatesupport)
+* [MeasurementSupport](#measurementsupport)
+* [OverviewMap](#overviewmap)
+* [RedliningSupport](#redliningsupport)
+* [ScaleBarSupport](#scalebarsupport)
+* [SnappingSupport](#snappingsupport)
 
 ---
 API<a name="api"></a>
@@ -831,4 +838,44 @@ Two specific plugins exist: ZoomInPlugin and ZoomOutPlugin, which are instances 
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `undefined` |
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
+
+EditingSupport<a name="editingsupport"></a>
+----------------------------------------------------------------
+Editing support for the map component.
+
+LocateSupport<a name="locatesupport"></a>
+----------------------------------------------------------------
+GPS locate support for the map component.
+
+MeasurementSupport<a name="measurementsupport"></a>
+----------------------------------------------------------------
+Measurement support for the map component.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| options | `{`<br />`  geodesic: bool,`<br />`}` | Options | `undefined` |
+
+OverviewMap<a name="overviewmap"></a>
+----------------------------------------------------------------
+Overview map support for the map component.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.<br /> Aditionally, you can specify `layer: {type: "<wms|wmts>", ...}` to specify a custom overview layer. | `undefined` |
+
+RedliningSupport<a name="redliningsupport"></a>
+----------------------------------------------------------------
+Redlining support for the map component.
+
+ScaleBarSupport<a name="scalebarsupport"></a>
+----------------------------------------------------------------
+Scalebar support for the map component.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) | `undefined` |
+
+SnappingSupport<a name="snappingsupport"></a>
+----------------------------------------------------------------
+Snapping support for the map component.
 
