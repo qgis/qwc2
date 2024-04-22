@@ -27,7 +27,7 @@ class OverviewMap extends React.Component {
         map: PropTypes.object,
         /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.
          *  Additionally, you can specify:
-         *  - `layer`: Specify a custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).
+         *  - `layer`: Custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).
          *  - `viewOptions`: Options for the OverviewMap View, see [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_View.html).
          */
         options: PropTypes.object,
