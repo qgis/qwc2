@@ -26,12 +26,16 @@ class OverviewMap extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object,
         /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.
-         *  Aditionally, you can specify `layer: {type: "<wms|wmts>", ...}` to specify a custom overview layer.
+         *  Additionally, you can specify:
+         *  - `layer: {type: "<wms|wmts>", ...}` to specify a custom overview layer.
+         *  - `viewOptions : Options for the OverviewMap View, see [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_View.html).
          */
         options: PropTypes.object,
         projection: PropTypes.string,
         theme: PropTypes.object,
-        themes: PropTypes.object
+        themes: PropTypes.object,
+        /** Options to customize the */
+        viewOptions: PropTypes.object
     };
     constructor(props) {
         super(props);
@@ -44,6 +48,13 @@ class OverviewMap extends React.Component {
             ...props.options
         };
         delete opt.layer;
+        const overviewView = new ol.View({
+            projection: props.map.getView().getProjection(),
+            ...(opt.viewOptions || {})
+        });
+        opt.view = overviewView;
+        delete opt.viewOptions;
+
         this.overview = new ol.control.OverviewMap(opt);
         this.overview.getOverviewMap().set('id', 'overview');
     }
