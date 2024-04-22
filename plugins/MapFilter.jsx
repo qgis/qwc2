@@ -281,6 +281,7 @@ class MapFilter extends React.Component {
                 </button>
             );
         }
+        const selGeomType = this.state.geomFilter?.picking ? null : this.state.geomFilter?.geomType;
         return [
             button,
             (
@@ -295,8 +296,8 @@ class MapFilter extends React.Component {
                 <PickFeature featureFilter={feature => feature?.geometry?.type === "Polygon"} featurePicked={this.filterGeomPicked} key="FeaturePicker" />
             ) : null,
             <MapSelection
-                active={taskActive && !!this.state.geomFilter?.geomType}
-                geomType={this.state.geomFilter?.geomType}
+                active={taskActive && !!selGeomType}
+                geomType={selGeomType}
                 geometry={this.state.geomFilter?.geom}
                 geometryChanged={this.setFilterGeometry}
                 key="MapSelection"
@@ -544,7 +545,7 @@ class MapFilter extends React.Component {
         this.setState((state) => ({geomFilter: {...state.geomFilter, geom: geom}}));
     };
     filterGeomPicked = (layer, feature) => {
-        this.setState((state) => ({geomFilter: {...state.geomFilter, picking: false, geom: feature.geometry, geomType: feature.geometry.type}}));
+        this.setState((state) => ({geomFilter: {...state.geomFilter, geom: feature.geometry, geomType: feature.geometry.type}}));
     };
     toggleFilter = (filterId, active) => {
         this.setState((state) => ({
