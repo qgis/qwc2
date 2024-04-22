@@ -134,14 +134,14 @@ class PickFeature extends React.Component {
                     x={this.state.clickPos[0]} y={this.state.clickPos[1]}
                 >
                     {this.state.pendingQueries === 0 ? (
-                        Object.entries(this.state.pickResults).map(([key, features]) => features.map(feature => (
+                        Object.entries(this.state.pickResults).map(([layername, features]) => features.map(feature => (
                             <div
-                                key={key + ":" + feature.id}
-                                onClickCapture={() => this.props.featurePicked(key, feature)}
-                                onMouseOut={() => this.clearHighlight(key, feature)}
-                                onMouseOver={() => this.highlightFeature(key, feature)}
+                                key={layername + ":" + feature.id}
+                                onClickCapture={() => this.props.featurePicked(layername, feature)}
+                                onMouseOut={() => this.clearHighlight(layername, feature)}
+                                onMouseOver={() => this.highlightFeature(layername, feature)}
                             >
-                                {feature.displayname}
+                                {layername + ": " + feature.displayname}
                             </div>
                         )))
                     ) : (
