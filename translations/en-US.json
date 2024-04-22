@@ -283,6 +283,7 @@
       "brokenrendering": "Map rendering may be broken due to an invalid filter expression",
       "cancel": "Cancel",
       "geomfilter": "Geometry",
+      "hidefiltergeom": "Hide filter geometry",
       "invalidfilter": "Invalid filter expression",
       "save": "Save",
       "select": "Select...",

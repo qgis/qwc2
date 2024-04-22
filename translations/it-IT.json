@@ -283,6 +283,7 @@
       "brokenrendering": "Il rendering della mappa potrebbe essere interrotto a causa di un'espressione filtro invalida",
       "cancel": "Annulla",
       "geomfilter": "Geometrico",
+      "hidefiltergeom": "Nascondi geometria filtro",
       "invalidfilter": "Espressione filtro non valida",
       "save": "Salva",
       "select": "Seleziona...",

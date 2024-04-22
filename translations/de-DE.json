@@ -283,6 +283,7 @@
       "brokenrendering": "Die Kartendarstellung könnte aufgrund eines ungültigen Filterausdrucks fehlerhaft sein",
       "cancel": "Abbrechen",
       "geomfilter": "Geometrie",
+      "hidefiltergeom": "",
       "invalidfilter": "Ungültiger Filterausdruck",
       "save": "Speichern",
       "select": "Auswählen...",

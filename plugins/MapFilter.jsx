@@ -315,6 +315,7 @@ class MapFilter extends React.Component {
                 geomType={selGeomType}
                 geometry={this.state.geomFilter?.geom}
                 geometryChanged={this.setFilterGeometry}
+                hideGeometry={this.state.geomFilter?.hideFilterGeom}
                 key="MapSelection"
                 styleOptions={this.props.highlightStyle} />
         ];
@@ -545,6 +546,9 @@ class MapFilter extends React.Component {
                 </div>
                 <div className="map-filter-entry-body">
                     <ButtonBar active={active} buttons={filterButtons} onClick={this.triggerGeometryFilter} />
+                    <div>
+                        <label><input checked={!!geomFilter.hideFilterGeom} onChange={this.toggleHideFilterGeom} type="checkbox" /> {LocaleUtils.tr("mapfilter.hidefiltergeom")}</label>
+                    </div>
                 </div>
             </div>
         );
@@ -561,6 +565,9 @@ class MapFilter extends React.Component {
     };
     filterGeomPicked = (layer, feature) => {
         this.setState((state) => ({geomFilter: {...state.geomFilter, geom: feature.geometry, geomType: feature.geometry.type}}));
+    };
+    toggleHideFilterGeom = (ev) => {
+        this.setState((state) => ({geomFilter: {...state.geomFilter, hideFilterGeom: ev.target.checked}}));
     };
     toggleFilter = (filterId, active) => {
         this.setState((state) => ({

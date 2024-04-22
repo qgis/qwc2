@@ -19,22 +19,24 @@ import MeasureUtils from '../utils/MeasureUtils';
 
 class MapSelection extends React.Component {
     static propTypes = {
-        /* Whether the selection tool is active */
+        /** Whether the selection tool is active */
         active: PropTypes.bool,
-        /* Optional, a css-cursor to use when drawing */
+        /** Optional, a css-cursor to use when drawing */
         cursor: PropTypes.string,
-        /* The selection geometry type (Point, LineString, Polygon, Circle, DragBox, Box) */
+        /** The selection geometry type (Point, LineString, Polygon, Circle, DragBox, Box) */
         geomType: PropTypes.string,
-        /* Initial geometry or geometry to update. */
+        /** Initial geometry or geometry to update. */
         geometry: PropTypes.object,
-        /* The callback which is invoked with a drawn geometry. */
+        /** The callback which is invoked with a drawn geometry. */
         geometryChanged: PropTypes.func,
-        /* Whether to show measurements while drawing. */
+        /** Whether to hide the current selection (except while drawing). */
+        hideGeometry: PropTypes.bool,
+        /** Whether to show measurements while drawing. */
         measure: PropTypes.bool,
         projection: PropTypes.string,
-        /* Optional: the selection feature style name. */
+        /** Optional: the selection feature style name. */
         styleName: PropTypes.string,
-        /* Optional: the selection feature style options. */
+        /** Optional: the selection feature style options. */
         styleOptions: PropTypes.object
     };
     static defaultProps = {
@@ -64,6 +66,9 @@ class MapSelection extends React.Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
+        if (this.props.hideGeometry !== prevProps.hideGeometry) {
+            this.selectionLayer.setVisible(!this.props.hideGeometry);
+        }
         if (this.props.geomType !== prevProps.geomType) {
             this.selectionLayer.getSource().clear();
         }

@@ -246,6 +246,7 @@
     "mapfilter.brokenrendering",
     "mapfilter.cancel",
     "mapfilter.geomfilter",
+    "mapfilter.hidefiltergeom",
     "mapfilter.invalidfilter",
     "mapfilter.save",
     "mapfilter.select",
