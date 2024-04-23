@@ -218,10 +218,10 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                             return [...res, layerConfig];
                         }
                     }, []);
-                }
-                const diff = Object.keys(missingThemeLayers).filter(entry => !(entry in newLayerNames));
-                if (!isEmpty(diff)) {
-                    dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
+                    const diff = Object.keys(missingThemeLayers).filter(entry => !(entry in newLayerNames));
+                    if (!isEmpty(diff)) {
+                        dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
+                    }
                 }
                 finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
             });
