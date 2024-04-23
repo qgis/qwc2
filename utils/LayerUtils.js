@@ -520,7 +520,7 @@ const LayerUtils = {
     },
     mergeSubLayers(baselayer, addlayer) {
         addlayer = {...baselayer, sublayers: addlayer.sublayers};
-        addlayer.externalLayerMap = addlayer.externalLayerMap || {};
+        addlayer.externalLayerMap = {...addlayer.externalLayerMap};
         LayerUtils.extractExternalLayersFromSublayers(addlayer, addlayer);
         LayerUtils.addUUIDs(addlayer);
         if (isEmpty(addlayer.sublayers)) {
