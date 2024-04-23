@@ -31,6 +31,7 @@ import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/MapFilter.css';
 
@@ -224,7 +225,8 @@ class MapFilter extends React.Component {
             WIDTH: 10,
             HEIGHT: 10,
             BBOX: "-0.5,-0.5,0.5,0.5",
-            LAYERS: Object.keys(layerExpressions).filter(layer => wmsLayers.includes(layer)).join(",")
+            LAYERS: Object.keys(layerExpressions).filter(layer => wmsLayers.includes(layer)).join(","),
+            csrf_token: MiscUtils.getCsrfToken()
         };
         if (wmsParams.FILTER) {
             reqParams.FILTER = wmsParams.FILTER;
