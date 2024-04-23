@@ -35,7 +35,10 @@ import OlFormatWMSCapabilities from 'ol/format/WMSCapabilities';
 import OlFormatWMTSCapabilities from 'ol/format/WMTSCapabilities';
 import OlGeomCircle from 'ol/geom/Circle';
 import OlGeomGeometryCollection from 'ol/geom/GeometryCollection';
+import OlGeomLineString from 'ol/geom/LineString';
+import OlGeomMultiLineString from 'ol/geom/MultiLineString';
 import OlGeomMultiPoint from 'ol/geom/MultiPoint';
+import OlGeomMultiPolygon from 'ol/geom/MultiPolygon';
 import OlGeomPoint from 'ol/geom/Point';
 import OlGeomPolygon from 'ol/geom/Polygon';
 import {fromCircle as olPolygonFromCircle} from 'ol/geom/Polygon';
@@ -118,7 +121,10 @@ export default {
     geom: {
         Circle: OlGeomCircle,
         GeometryCollection: OlGeomGeometryCollection,
+        LineString: OlGeomLineString,
+        MultiLineString: OlGeomMultiLineString,
         MultiPoint: OlGeomMultiPoint,
+        MultiPolygon: OlGeomMultiPolygon,
         Point: OlGeomPoint,
         Polygon: OlGeomPolygon,
         polygonFromCircle: olPolygonFromCircle

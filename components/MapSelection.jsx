@@ -93,14 +93,20 @@ class MapSelection extends React.Component {
                 }
                 if (this.props.geometry.type === "Point") {
                     feature.setGeometry(new ol.geom.Point(this.props.geometry.coordinates));
+                } else if (this.props.geometry.type === "MultiPoint") {
+                    feature.setGeometry(new ol.geom.Multi(this.props.geometry.coordinates));
                 } else if (this.props.geometry.type === "LineString") {
                     feature.setGeometry(new ol.geom.LineString(this.props.geometry.coordinates));
+                } else if (this.props.geometry.type === "MultiLineString") {
+                    feature.setGeometry(new ol.geom.MultiLineString(this.props.geometry.coordinates));
                 } else if (this.props.geometry.type === "Polygon") {
                     if (this.props.geometry.center && this.props.geometry.radius) {
                         feature.setGeometry(new ol.geom.Circle(this.props.geometry.center, this.props.geometry.radius));
                     } else {
                         feature.setGeometry(new ol.geom.Polygon(this.props.geometry.coordinates));
                     }
+                } else if (this.props.geometry.type === "MultiPolygon") {
+                    feature.setGeometry(new ol.geom.MultiPolygon(this.props.geometry.coordinates));
                 }
                 this.setState({geometry: this.props.geometry});
             }
@@ -171,13 +177,7 @@ class MapSelection extends React.Component {
         }
         const coords = this.props.geomType === 'Circle' ? null : geometry.getCoordinates();
 
-        if (this.props.geomType === "Point") {
-            this.setState({geometry: {type: "Point", coordinates: coords}});
-        } else if (this.props.geomType === "LineString") {
-            this.setState({geometry: {type: "LineString", coordinates: coords}});
-        } else if (this.props.geomType === "Polygon") {
-            this.setState({geometry: {type: "Polygon", coordinates: coords}});
-        } else if (this.props.geomType === "Circle") {
+        if (this.props.geomType === "Circle") {
             // Also store poligonized circle
             const center = geometry.getCenter();
             const radius = geometry.getRadius();
@@ -192,6 +192,8 @@ class MapSelection extends React.Component {
                 Math.max(coords[0][0][1], coords[0][2][1])
             ]];
             this.setState({geometry: {type: "Polygon", coordinates: boxcoords}});
+        } else {
+            this.setState({geometry: {type: this.props.geomType, coordinates: coords}});
         }
     };
     updateMeasurements = (feature) => {
