@@ -224,11 +224,19 @@ class MapFilter extends React.Component {
             WIDTH: 10,
             HEIGHT: 10,
             BBOX: "-0.5,-0.5,0.5,0.5",
-            FILTER: wmsParams.FILTER,
-            FILTER_GEOM: wmsParams.FILTER_GEOM,
             LAYERS: Object.keys(layerExpressions).filter(layer => wmsLayers.includes(layer)).join(",")
         };
-        axios.get(themeLayer.url, {params: reqParams}).then(() => {
+        if (wmsParams.FILTER) {
+            reqParams.FILTER = wmsParams.FILTER;
+        }
+        if (wmsParams.FILTER_GEOM) {
+            reqParams.FILTER_GEOM = wmsParams.FILTER_GEOM;
+        }
+        const options = {
+            headers: {'content-type': 'application/x-www-form-urlencoded'},
+            responseType: "blob"
+        };
+        axios.post(themeLayer.url, new URLSearchParams(reqParams).toString(), options).then(() => {
             this.setState({filterInvalid: false});
         }).catch(() => {
             this.setState({filterInvalid: true});
