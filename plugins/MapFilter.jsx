@@ -318,7 +318,7 @@ class MapFilter extends React.Component {
                 </SideBar>
             ),
             this.state.geomFilter.picking ? (
-                <PickFeature featureFilter={feature => feature?.geometry?.type === "Polygon"} featurePicked={this.filterGeomPicked} highlightStyle={this.props.highlightStyle} key="FeaturePicker" />
+                <PickFeature featureFilter={feature => (feature?.geometry?.type || "").endsWith("Polygon")} featurePicked={this.filterGeomPicked} highlightStyle={this.props.highlightStyle} key="FeaturePicker" />
             ) : null,
             <MapSelection
                 active={taskActive && !!selGeomType}
