@@ -612,10 +612,10 @@ class Print extends React.Component {
                 FileSaver.saveAs(file, this.props.theme.name + '.' + ext);
             }
         }).catch(e => {
-            this.setState({printing: false});
+            this.setState({printing: false, outputLoaded: true, printOutputVisible: false});
             if (e.response) {
                 /* eslint-disable-next-line */
-                console.log(new TextDecoder().decode(e.response.data));
+                console.warn(new TextDecoder().decode(e.response.data));
             }
             /* eslint-disable-next-line */
             alert('Print failed');
