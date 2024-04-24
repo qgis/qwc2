@@ -137,6 +137,10 @@ class MapSelection extends React.Component {
                 Circle: "Circle",
                 Box: "Circle"
             };
+            if (!typeMap[this.props.geomType]) {
+                // Unknown geom type
+                return;
+            }
 
             // create an interaction to draw with
             this.drawInteraction = new ol.interaction.Draw({
