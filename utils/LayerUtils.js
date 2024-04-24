@@ -840,7 +840,8 @@ const LayerUtils = {
             OPACITIES: [],
             STYLES: [],
             COLORS: [],
-            FILTER: ''
+            FILTER: '',
+            FILTER_GEOM: ''
         };
         const counterRef = [0];
 
@@ -851,6 +852,7 @@ const LayerUtils = {
                 params.STYLES.push(layer.params.STYLES);
                 params.COLORS.push(layer.params.LAYERS.split(",").map(() => "").join(","));
                 params.FILTER = layer.params.FILTER ?? '';
+                params.FILTER_GEOM = layer.params.FILTER_GEOM ?? '';
             } else if (printExternalLayers && layer.role === LayerRole.USERLAYER && layer.visibility !== false && LayerUtils.layerScaleInRange(layer, printScale)) {
                 LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
             }

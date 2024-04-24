@@ -385,6 +385,7 @@ class Print extends React.Component {
                         <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printParams.LAYERS} />
                         <input name={mapName + ":STYLES"} readOnly type={formvisibility} value={printParams.STYLES} />
                         <input name={mapName + ":FILTER"} readOnly type={formvisibility} value={printParams.FILTER} />
+                        <input name={mapName + ":FILTER_GEOM"} readOnly type={formvisibility} value={printParams.FILTER_GEOM} />
                         <input name={mapName + ":HIGHLIGHT_GEOM"} readOnly type={formvisibility} value={highlightParams.geoms.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_SYMBOL"} readOnly type={formvisibility} value={highlightParams.styles.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELSTRING"} readOnly type={formvisibility} value={highlightParams.labels.join(";")} />
@@ -616,10 +617,10 @@ class Print extends React.Component {
                 FileSaver.saveAs(file, this.props.theme.name + '.' + ext);
             }
         }).catch(e => {
-            this.setState({printing: false});
+            this.setState({printing: false, outputLoaded: true, printOutputVisible: false});
             if (e.response) {
                 /* eslint-disable-next-line */
-                console.log(new TextDecoder().decode(e.response.data));
+                console.warn(new TextDecoder().decode(e.response.data));
             }
             /* eslint-disable-next-line */
             alert('Print failed');
