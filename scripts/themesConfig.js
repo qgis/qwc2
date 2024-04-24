@@ -8,7 +8,7 @@
 
 const urlUtil = require('url');
 const axios = require('axios');
-const xml2js = require('xml2js');
+const XMLParser = require('fast-xml-parser').XMLParser;
 const fs = require('fs');
 const path = require('path');
 const objectPath = require('object-path');
@@ -127,7 +127,7 @@ function getEditConfig(editConfig) {
     return null;
 }
 // convert non-array object to array containing the object
-// used to restore arrays lost by 'explicitArray: false' xml2js option
+// used to restore arrays lost by xml -> json conversion
 function toArray(obj) {
     if (obj !== undefined) {
         return Array.isArray(obj) ? obj : [obj];
@@ -153,25 +153,25 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         title: layer.Title
     };
     if (layer.Layer === undefined) {
-        if (!layer.$ || layer.$.geometryType === "WKBNoGeometry" || layer.$.geometryType === "NoGeometry") {
+        if (layer.$_geometryType === "WKBNoGeometry" || layer.$_geometryType === "NoGeometry") {
             // skip layers without geometry
             return;
         }
 
         // layer
-        layerEntry.geometryType = layer.$.geometryType;
-        if (layer.$.visibilityChecked !== undefined) {
-            layerEntry.visibility = layer.$.visibilityChecked === '1';
+        layerEntry.geometryType = layer.$_geometryType;
+        if (layer.$_visibilityChecked !== undefined) {
+            layerEntry.visibility = layer.$_visibilityChecked === '1';
         } else {
-            layerEntry.visibility = layer.$.visible === '1';
+            layerEntry.visibility = layer.$_visible === '1';
         }
         if (layerEntry.visibility) {
             // collect visible layers
             visibleLayers.push(layer.Name);
         }
-        layerEntry.queryable = layer.$.queryable === '1';
+        layerEntry.queryable = layer.$_queryable === '1';
         if (layerEntry.queryable) {
-            layerEntry.displayField = layer.$.displayField;
+            layerEntry.displayField = layer.$_displayField;
         }
         if (layer.Attribution) {
             layerEntry.attribution = {
@@ -183,19 +183,19 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             layerEntry.abstract = layer.Abstract;
         }
         if (layer.DataURL && layer.DataURL.OnlineResource) {
-            layerEntry.dataUrl = layer.DataURL.OnlineResource.$['xlink:href'];
+            layerEntry.dataUrl = layer.DataURL.OnlineResource.$_href;
             if (layerEntry.dataUrl.startsWith("wms:")) {
                 externalLayers.push({internalLayer: layer.Name, name: layerEntry.dataUrl});
                 layerEntry.dataUrl = "";
             }
         }
         if (layer.MetadataURL && layer.MetadataURL.OnlineResource) {
-            layerEntry.metadataUrl = layer.MetadataURL.OnlineResource.$['xlink:href'];
+            layerEntry.metadataUrl = layer.MetadataURL.OnlineResource.$_href;
         }
-        if (layer.$.transparency) {
-            layerEntry.opacity = 255 - Math.floor(parseFloat(layer.$.transparency) * 255);
-        } else if (layer.$.opacity) {
-            layerEntry.opacity = Math.round(parseFloat(layer.$.opacity) * 255);
+        if (layer.$_transparency) {
+            layerEntry.opacity = 255 - Math.floor(parseFloat(layer.$_transparency) * 255);
+        } else if (layer.$_opacity) {
+            layerEntry.opacity = Math.round(parseFloat(layer.$_opacity) * 255);
         } else {
             layerEntry.opacity = 255;
         }
@@ -233,25 +233,25 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         layerEntry.dimensions = [];
         toArray(layer.Dimension).forEach(dim => {
             layerEntry.dimensions.push({
-                units: dim.$.units,
-                name: dim.$.name,
-                multiple: dim.$.multipleValues === "1",
+                units: dim.$_units,
+                name: dim.$_name,
+                multiple: dim.$_multipleValues === "1",
                 value: dim._,
-                fieldName: dim.$.fieldName,
-                endFieldName: dim.$.endFieldName
+                fieldName: dim.$_fieldName,
+                endFieldName: dim.$_endFieldName
             });
         });
 
     } else {
         // group
-        layerEntry.mutuallyExclusive = (layer.$ || {}).mutuallyExclusive === '1';
-        if (layer.$.visibilityChecked !== undefined) {
-            layerEntry.visibility = layer.$.visibilityChecked === '1';
+        layerEntry.mutuallyExclusive = layer.$_mutuallyExclusive === '1';
+        if (layer.$_visibilityChecked !== undefined) {
+            layerEntry.visibility = layer.$_visibilityChecked === '1';
         } else {
-            layerEntry.visibility = layer.$.visible === '1';
+            layerEntry.visibility = layer.$_visible === '1';
         }
         layerEntry.sublayers = [];
-        if ((layer.$ || {}).expanded === '0' || (collapseBelowLevel >= 0 && level >= collapseBelowLevel)) {
+        if (layer.$_expanded === '0' || (collapseBelowLevel >= 0 && level >= collapseBelowLevel)) {
             layerEntry.expanded = false;
         } else {
             layerEntry.expanded = true;
@@ -286,21 +286,18 @@ function getTheme(config, configItem, result, resultItem, proxy) {
     return new Promise((resolve, reject) => {
         axios.get(getCapabilitiesUrl, {proxy: proxy, auth: configItem.wmsBasicAuth}).then((response) => {
             // parse capabilities
-            let capabilities;
-            xml2js.parseString(
-                response.data, {
-                    tagNameProcessors: [xml2js.processors.stripPrefix],
-                    explicitArray: false
-                },
-                (ignore, parseResult) => {
-                    if (parseResult === undefined || parseResult.WMS_Capabilities === undefined) {
-                        // show response data on parse error
-                        throw new Error(response.data);
-                    } else {
-                        capabilities = parseResult.WMS_Capabilities;
-                    }
-                }
-            );
+            const parseOptions = {
+                removeNSPrefix: true,
+                isArray: () => false,
+                ignoreAttributes: false,
+                attributeNamePrefix: "$_",
+                textNodeName: "_"
+            };
+            const capabilities = (new XMLParser(parseOptions)).parse(response.data)?.WMS_Capabilities;
+            if (capabilities === undefined) {
+                // show response data on parse error
+                throw new Error(response.data);
+            }
 
             /* eslint-disable-next-line */
             console.log("Parsing WMS GetProjectSettings of " + configItem.url);
@@ -326,12 +323,12 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             const crs = toArray(topLayer.CRS).filter(item => item !== 'CRS:84')[0];
             let extent = [];
             for (const bbox of toArray(topLayer.BoundingBox)) {
-                if (bbox.$.CRS === crs) {
+                if (bbox.$_CRS === crs) {
                     extent = [
-                        parseFloat(bbox.$.minx),
-                        parseFloat(bbox.$.miny),
-                        parseFloat(bbox.$.maxx),
-                        parseFloat(bbox.$.maxy)
+                        parseFloat(bbox.$_minx),
+                        parseFloat(bbox.$_miny),
+                        parseFloat(bbox.$_maxx),
+                        parseFloat(bbox.$_maxy)
                     ];
                     break;
                 }
@@ -369,11 +366,11 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                 const composerTemplateMap = {};
                 for (const composerTemplate of templates) {
                     if (composerTemplate.ComposerMap !== undefined) {
-                        composerTemplateMap[composerTemplate.$.name] = composerTemplate;
+                        composerTemplateMap[composerTemplate.$_name] = composerTemplate;
                     }
                 }
                 Object.values(composerTemplateMap).forEach(composerTemplate => {
-                    const templateName = composerTemplate.$.name;
+                    const templateName = composerTemplate.$_name;
                     if (templateName.endsWith("_legend") && templateName.slice(0, -7) in composerTemplateMap) {
                         return;
                     }
@@ -382,9 +379,9 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                     const printTemplate = {
                         name: templateName,
                         map: {
-                            name: composerMap.$.name,
-                            width: parseFloat(composerMap.$.width),
-                            height: parseFloat(composerMap.$.height)
+                            name: composerMap.$_name,
+                            width: parseFloat(composerMap.$_width),
+                            height: parseFloat(composerMap.$_height)
                         }
                     };
                     if (printTemplate.name + "_legend" in composerTemplateMap) {
@@ -392,12 +389,12 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                     }
                     if (composerTemplate.ComposerLabel !== undefined) {
                         printTemplate.labels = toArray(composerTemplate.ComposerLabel).map((entry) => {
-                            return entry.$.name;
+                            return entry.$_name;
                         }).filter(label => !(configItem.printLabelBlacklist || []).includes(label));
                     }
                     printTemplate.default = configItem.defaultPrintLayout === printTemplate.name;
-                    if (composerTemplate.$.atlasEnabled === '1') {
-                        const atlasLayer = composerTemplate.$.atlasCoverageLayer;
+                    if (composerTemplate.$_atlasEnabled === '1') {
+                        const atlasLayer = composerTemplate.$_atlasCoverageLayer;
                         try {
                             const layers = flatLayers(capabilities.Capability.Layer);
                             const pk = layers.find(l => l.Name === atlasLayer).PrimaryKey.PrimaryKeyAttribute;
@@ -428,7 +425,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             // service info
             resultItem.abstract = capabilities.Service.Abstract || "";
             resultItem.keywords = keywords.join(', ');
-            resultItem.onlineResource = capabilities.Service.OnlineResource.$['xlink:href'];
+            resultItem.onlineResource = capabilities.Service.OnlineResource.$_href;
             resultItem.contact = {
                 person: objectPath.get(capabilities, "Service.ContactInformation.ContactPersonPrimary.ContactPerson", ""),
                 organization: objectPath.get(capabilities, "Service.ContactInformation.ContactPersonPrimary.ContactOrganization", ""),
@@ -487,17 +484,17 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.legendUrl) {
                 resultItem.legendUrl = configItem.legendUrl;
             } else {
-                resultItem.legendUrl = capabilities.Capability.Request.GetLegendGraphic.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?" + (configItem.extraLegendParameters ? configItem.extraLegendParameters : '');
+                resultItem.legendUrl = capabilities.Capability.Request.GetLegendGraphic.DCPType.HTTP.Get.OnlineResource.$_href.replace(/\?$/, "") + "?" + (configItem.extraLegendParameters ? configItem.extraLegendParameters : '');
             }
             if (configItem.featureInfoUrl) {
                 resultItem.featureInfoUrl = configItem.featureInfoUrl;
             } else {
-                resultItem.featureInfoUrl = capabilities.Capability.Request.GetFeatureInfo.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?";
+                resultItem.featureInfoUrl = capabilities.Capability.Request.GetFeatureInfo.DCPType.HTTP.Get.OnlineResource.$_href.replace(/\?$/, "") + "?";
             }
             if (configItem.printUrl) {
                 resultItem.printUrl = configItem.printUrl;
             } else {
-                resultItem.printUrl = capabilities.Capability.Request.GetPrint.DCPType.HTTP.Get.OnlineResource.$['xlink:href'].replace(/\?$/, "") + "?";
+                resultItem.printUrl = capabilities.Capability.Request.GetPrint.DCPType.HTTP.Get.OnlineResource.$_href.replace(/\?$/, "") + "?";
             }
             if (configItem.printLabelForSearchResult) {
                 resultItem.printLabelForSearchResult = configItem.printLabelForSearchResult;

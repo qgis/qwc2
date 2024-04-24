@@ -10,10 +10,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
+import {XMLParser} from 'fast-xml-parser';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
-import xml2js from 'xml2js';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import {parseExpression, ExpressionFeatureCache} from '../utils/EditingUtils';
@@ -623,41 +623,41 @@ class QtDesignerForm extends React.Component {
         return (constr.year + "-" + ("0" + constr.month).slice(-2) + "-" + ("0" + constr.day).slice(-2));
     };
     parseForm = (data) => {
-        const options = {
-            explicitArray: false,
-            mergeAttrs: true
-        };
         const loadingReqId = uuidv1();
         this.setState({loading: true, loadingReqId: loadingReqId});
-        xml2js.parseString(data, options, (err, json) => {
-            const relationTables = {};
-            const externalFields = {};
-            const widgets = {};
-            const fields = {};
-            const buttons = {};
-            const nrels = {};
-            const counters = {
-                widget: 0,
-                layout: 0
-            };
-            this.reformatWidget(json.ui.widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
-            // console.log(root);
-            json.externalFields = externalFields;
-            json.widgets = widgets;
-            json.fields = fields;
-            json.buttons = buttons;
-            json.nrels = nrels;
-            if (FormPreprocessors[this.props.editLayerId]) {
-                FormPreprocessors[this.props.editLayerId](json, this.props.feature, (formData) => {
-                    if (this.state.loadingReqId === loadingReqId) {
-                        this.setState({formData: formData, loading: false, loadingReqId: null});
-                    }
-                });
-            } else {
-                this.setState({formData: json, loading: false, loadingReqId: null});
-            }
-            this.props.setRelationTables(relationTables);
-        });
+        const parserOpts = {
+            isArray: () => false,
+            ignoreAttributes: false,
+            attributeNamePrefix: ""
+        };
+        const json = (new XMLParser(parserOpts)).parse(data);
+        const relationTables = {};
+        const externalFields = {};
+        const widgets = {};
+        const fields = {};
+        const buttons = {};
+        const nrels = {};
+        const counters = {
+            widget: 0,
+            layout: 0
+        };
+        this.reformatWidget(json.ui.widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
+        // console.log(json);
+        json.externalFields = externalFields;
+        json.widgets = widgets;
+        json.fields = fields;
+        json.buttons = buttons;
+        json.nrels = nrels;
+        if (FormPreprocessors[this.props.editLayerId]) {
+            FormPreprocessors[this.props.editLayerId](json, this.props.feature, (formData) => {
+                if (this.state.loadingReqId === loadingReqId) {
+                    this.setState({formData: formData, loading: false, loadingReqId: null});
+                }
+            });
+        } else {
+            this.setState({formData: json, loading: false, loadingReqId: null});
+        }
+        this.props.setRelationTables(relationTables);
     };
     reformatWidget = (widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters) => {
         if (widget.property) {
