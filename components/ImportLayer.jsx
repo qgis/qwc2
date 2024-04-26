@@ -9,6 +9,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import {_BrowserFileSystem as BrowserFileSystem, load} from '@loaders.gl/core';
+import {ShapefileLoader} from '@loaders.gl/shapefile';
+import {ZipLoader} from '@loaders.gl/zip';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import {WorkerMessageHandler} from "pdfjs-dist/build/pdf.worker";
@@ -51,7 +54,7 @@ class ImportLayer extends React.Component {
         const urlPresets = ConfigUtils.getConfigProp("importLayerUrlPresets", this.props.theme) || [];
         if (this.state.type === "Local") {
             return (
-                <FileSelector accept=".kml,.json,.geojson,.pdf" file={this.state.file} onFileSelected={this.onFileSelected} />
+                <FileSelector accept=".kml,.json,.geojson,.pdf,.zip" file={this.state.file} onFileSelected={this.onFileSelected} />
             );
         } else {
             return (
@@ -230,6 +233,8 @@ class ImportLayer extends React.Component {
         const file = this.state.file;
         if (file.name.toLowerCase().endsWith(".pdf")) {
             this.addGeoPDFLayer(file);
+        } else if (file.name.toLowerCase().endsWith(".zip")) {
+            this.addSHPLayer(file);
         } else {
             const reader = new FileReader();
             reader.onload = (ev) => {
@@ -367,6 +372,50 @@ class ImportLayer extends React.Component {
             });
         };
         reader.readAsDataURL(file);
+    };
+    addSHPLayer = async(file) => {
+        // Import SHP layer from ZIP. Zip must contain all the required files : shp, dbf, shx, prj, cpg
+        if (file.type === "application/zip") {
+            const fileMap = await load(file, ZipLoader);
+            const EXTENSIONS = ['shp', 'shx', 'dbf', 'cpg', 'prj'];
+            const files = {};
+            // Iterate through all the files in ZIP to get a list of (SHP + sidecar files) by filename
+            for (const fileName in fileMap) {
+                if (Object.hasOwn(fileMap, fileName)) {
+                    const name = fileName.split('.')[0];
+                    const ext = fileName.split('.').pop();
+                    const fileList = files[name] || [];
+                    if (EXTENSIONS.includes(ext)) {
+                        // Create Blob and File from arrayBuffer loaded by ZipLoader
+                        const blob = new Blob([fileMap[fileName]]);
+                        fileList.push(new File([blob], fileName));
+                    }
+                    files[name] = fileList;
+                }
+            }
+            // Load each SHP with sidecar files as GeoJSON features
+            for (const f in files) {
+                if (Object.hasOwn(files, f)) {
+                    const list = files[f];
+                    const fileSystem = new BrowserFileSystem(list);
+                    const fetch = fileSystem.fetch.bind(fileSystem.fetch);
+                    const filename = `${f}.shp`;
+                    // Load SHP and reproject to mapCrs
+                    const data = await load(filename, ShapefileLoader, {
+                        fetch,
+                        shapefile: {shape: 'geojson-table'},
+                        gis: {format: 'geojson', reproject: true, _targetCrs: this.props.mapCrs}
+                    });
+                    data.crs = {
+                        type: "name",
+                        properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
+                    };
+                    // Add data as GeoJSON layer
+                    this.addGeoJSONLayer(f, data);
+                }
+            }
+            this.setState({file: null, addingLayer: false});
+        }
     };
 }
 
