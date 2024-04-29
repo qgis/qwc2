@@ -412,7 +412,7 @@ const VectorLayerUtils = {
             }
             const feature = geojsonFormat.writeFeatureObject(olFeature);
             Object.assign(feature, {
-                styleName: styleOptions.iconSrc ? 'marker' : 'default',
+                styleName: styleOptions.iconSrc && feature.geometry?.type === "Point" ? 'marker' : 'default',
                 styleOptions: styleOptions,
                 id: uuidv1(),
                 crs: "EPSG:4326",
