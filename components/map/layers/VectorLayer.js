@@ -31,9 +31,15 @@ export default {
                 const featureStyleOptions = {...options.styleOptions, ...feature.styleOptions};
                 f.set('styleName', featureStyleName);
                 f.set('styleOptions', featureStyleOptions);
-                f.set('circleParams', feature.circleParams);
-                f.set('shape', feature.shape);
-                f.set('measurements', feature.measurements);
+                if (feature.circleParams) {
+                    f.set('circleParams', feature.circleParams);
+                }
+                if (feature.shape) {
+                    f.set('shape', feature.shape);
+                }
+                if (feature.measurements) {
+                    f.set('measurements', feature.measurements);
+                }
                 if (featureStyleName) {
                     f.setStyle(FeatureStyles[featureStyleName](f, featureStyleOptions));
                 }
