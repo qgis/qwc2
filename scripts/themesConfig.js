@@ -176,7 +176,7 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
         if (layer.Attribution) {
             layerEntry.attribution = {
                 Title: layer.Attribution.Title,
-                OnlineResource: layer.Attribution.OnlineResource ? layer.Attribution.OnlineResource.$["xlink:href"] : ""
+                OnlineResource: layer.Attribution.OnlineResource ? layer.Attribution.OnlineResource.$_href : ""
             };
         }
         if (layer.Abstract) {

@@ -7,6 +7,9 @@
     "repository": "git@github.com:qgis/qwc2.git",
     "dependencies": {
         "@ladjs/country-language": "^1.0.3",
+        "@loaders.gl/core": "^4.2.0",
+        "@loaders.gl/shapefile": "^4.2.0",
+        "@loaders.gl/zip": "^4.2.0",
         "@reduxjs/toolkit": "^2.0.1",
         "@turf/buffer": "^6.5.0",
         "@turf/helpers": "^6.5.0",

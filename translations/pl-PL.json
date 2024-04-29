@@ -210,6 +210,7 @@
       "nofeatures": "Elementy nie mogły zostać zaimportowane",
       "noresults": "Brak wyników lub błędny adres URL",
       "notgeopdf": "",
+      "supportedformats": "",
       "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "Podaj URL do WMS, WFS, WMTS..."

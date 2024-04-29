@@ -210,6 +210,7 @@
       "nofeatures": "Nem sikerült az importálás.",
       "noresults": "",
       "notgeopdf": "",
+      "supportedformats": "",
       "unknownproj": "",
       "url": "",
       "urlplaceholder": "URL a WMS, WMTS, WFS adatokhoz..."

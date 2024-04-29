@@ -210,6 +210,7 @@
       "nofeatures": "Non è stato importato nessun oggetto ",
       "noresults": "Nessun risultato o URL non valido",
       "notgeopdf": "Il file selezionato non sembra essere un GeoPDF.",
+      "supportedformats": "",
       "unknownproj": "Il GeoPDF selezionato utilizza una proiezione sconosciuta: {0}",
       "url": "URL",
       "urlplaceholder": "Indirizzo WMS, WMTS, WFS..."

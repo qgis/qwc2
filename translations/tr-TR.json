@@ -210,6 +210,7 @@
       "nofeatures": "Herhangi bir obje içeriye aktarılamadı.",
       "noresults": "Sonuç yok ya da geçersiz URL",
       "notgeopdf": "",
+      "supportedformats": "",
       "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "WMS, WMTS, WFS Adresini giriniz..."
