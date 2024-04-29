@@ -23,7 +23,8 @@ export default class FileSelector extends React.Component {
         onFileSelected: PropTypes.func,
         onFilesSelected: PropTypes.func,
         overrideText: PropTypes.string,
-        showAllFilenames: PropTypes.bool
+        showAllFilenames: PropTypes.bool,
+        title: PropTypes.string
     };
     static defaultProps = {
         multiple: false,
@@ -59,8 +60,8 @@ export default class FileSelector extends React.Component {
         const placeholder = LocaleUtils.tr("fileselector.placeholder");
         return (
             <div className="FileSelector" onClick={this.triggerFileOpen}>
-                <input placeholder={placeholder} readOnly type="text" value={value} />
-                <button className="button">
+                <input placeholder={placeholder} readOnly title={this.props.title} type="text" value={value} />
+                <button className="button" title={this.props.title}>
                     <Icon icon="folder-open" />
                 </button>
                 <input accept={this.props.accept} multiple={this.props.multiple} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />

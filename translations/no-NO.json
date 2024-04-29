@@ -210,6 +210,7 @@
       "nofeatures": "Ingen objekt kunne importeres",
       "noresults": "Ingen svar eller ugyldig URL",
       "notgeopdf": "",
+      "supportedformats": "",
       "unknownproj": "",
       "url": "URL",
       "urlplaceholder": "Skriv inn URL til WMS, WMTS, WFS..."

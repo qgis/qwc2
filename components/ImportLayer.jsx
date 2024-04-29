@@ -54,7 +54,10 @@ class ImportLayer extends React.Component {
         const urlPresets = ConfigUtils.getConfigProp("importLayerUrlPresets", this.props.theme) || [];
         if (this.state.type === "Local") {
             return (
-                <FileSelector accept=".kml,.json,.geojson,.pdf,.zip" file={this.state.file} onFileSelected={this.onFileSelected} />
+                <FileSelector
+                    accept=".kml,.json,.geojson,.pdf,.zip" file={this.state.file}
+                    onFileSelected={this.onFileSelected}
+                    title={LocaleUtils.tr("importlayer.supportedformats")} />
             );
         } else {
             return (
