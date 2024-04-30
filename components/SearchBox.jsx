@@ -372,7 +372,7 @@ class SearchBox extends React.Component {
                     <div className="searchbox-results-section-body">
                         {features.map((entry, idx) => (
                             <div className="searchbox-result" key={"p" + idx} onClick={() => { this.selectFeatureResult(entry.feature); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
-                                <img onError={ev => { ev.target.src = iconPath + "feature.svg";}} src={iconPath + entry.feature.dataproduct_id + ".svg"} />
+                                <img onError={this.loadFallbackPlacesImage} src={iconPath + entry.feature.dataproduct_id + ".svg"} />
                                 <span className="searchbox-result-label">{entry.feature.display}</span>
                             </div>
                         ))}
@@ -385,6 +385,12 @@ class SearchBox extends React.Component {
                 ) : null}
             </div>
         );
+    };
+    loadFallbackPlacesImage = (ev) => {
+        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
+        if (!ev.target.src.endsWith(iconPath + "feature.svg")) {
+            ev.target.src = iconPath + "feature.svg";
+        }
     };
     renderLayers = (searchResults) => {
         const layers = (searchResults.results || []).filter(result => result.dataproduct);
