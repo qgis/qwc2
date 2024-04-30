@@ -120,7 +120,7 @@ const ServiceLayerUtils = {
         const extwmsparams = {};
         calledUrlParts.query = Object.keys(calledUrlParts.query).filter(key => {
             // Extract extwms params
-            if ( key.startsWith("extwms.") ) {
+            if ( key.toUpperCase().startsWith("EXTWMS.") ) {
                 extwmsparams[key.substring(7)] = calledUrlParts.query[key];
                 return false;
             }
