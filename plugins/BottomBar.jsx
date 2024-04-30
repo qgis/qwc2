@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import pickBy from 'lodash.pickby';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 
@@ -105,12 +104,10 @@ class BottomBar extends React.Component {
                 </span>
             );
         }
-        const additionalMouseCrs = this.props.additionalMouseCrs || [];
-        const availableCRS = pickBy(CoordinatesUtils.getAvailableCRS(), (key, code) => {
-            return code === "EPSG:4326" ||
-                   code === this.props.map.projection ||
-                   additionalMouseCrs.indexOf(code) !== -1;
-        });
+        const enabledMouseCrs = [...this.props.additionalMouseCrs || [], this.props.map.projection, "EPSG:4326"];
+        const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, val]) => {
+            return enabledMouseCrs.includes(key);
+        }));
         let coordinates = null;
         if (this.props.displayCoordinates) {
             coordinates = (

@@ -7,7 +7,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
-import {IntlProvider} from 'react-intl';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -18,23 +17,9 @@ class Localized extends React.Component {
         locale: PropTypes.string,
         messages: PropTypes.object
     };
-    static childContextTypes = {
-        locale: PropTypes.string,
-        messages: PropTypes.object
-    };
-    getChildContext = () => {
-        return {
-            locale: this.props.locale,
-            messages: this.props.messages
-        };
-    };
     render() {
         if (this.props.messages && this.props.locale) {
-            return (
-                <IntlProvider key={this.props.locale} locale={this.props.locale} messages={this.props.messages}>
-                    {this.props.children}
-                </IntlProvider>
-            );
+            return this.props.children;
         }
         return null;
     }

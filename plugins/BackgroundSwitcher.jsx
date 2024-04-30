@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
-import sortBy from 'lodash.sortby';
 import PropTypes from 'prop-types';
 
 import {LayerRole, changeLayerProperty} from '../actions/layers';
@@ -46,7 +45,7 @@ class BackgroundSwitcher extends React.Component {
             "map-button": true,
             "map-button-active": this.state.visible
         });
-        let backgroundLayers = this.props.layers.filter(layer => layer.role === LayerRole.BACKGROUND).slice(0).reverse();
+        const backgroundLayers = this.props.layers.filter(layer => layer.role === LayerRole.BACKGROUND).slice(0).reverse();
         // Re-sort layers, ensuring grouped layers are grouped together
         let idx = 0;
         const indices = backgroundLayers.reduce((res, l) => {
@@ -56,7 +55,7 @@ class BackgroundSwitcher extends React.Component {
             }
             return res;
         }, {});
-        backgroundLayers = sortBy(backgroundLayers, entry => indices[entry.group || entry.name]);
+        backgroundLayers.sort((a, b) => indices[a.group || a.name] - indices[b.group || b.name]);
         const entries = backgroundLayers.reduce((res, layer) => {
             if (!isEmpty(res) && layer.group && layer.group === res[res.length - 1].group) {
                 res[res.length - 1].layers.push(layer);
