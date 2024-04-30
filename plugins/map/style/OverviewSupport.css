@@ -19,6 +19,7 @@ div.overview-map > button {
     background-color: var(--map-button-bg-color)!important;
     border: 0!important;
     outline: 0;
+    z-index: 101;
 }
 
 div.overview-map > div.ol-overviewmap-map {
