@@ -23,6 +23,7 @@ import './style/OverviewSupport.css';
  */
 class OverviewMap extends React.Component {
     static propTypes = {
+        center: PropTypes.array,
         layers: PropTypes.array,
         map: PropTypes.object,
         /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.
@@ -33,7 +34,12 @@ class OverviewMap extends React.Component {
         options: PropTypes.object,
         projection: PropTypes.string,
         theme: PropTypes.object,
-        themes: PropTypes.object
+        themes: PropTypes.object,
+        zoom: PropTypes.number
+    };
+    state = {
+        overviewView: null,
+        overviewLayer: null
     };
     constructor(props) {
         super(props);
@@ -52,12 +58,36 @@ class OverviewMap extends React.Component {
         this.overview.getOverviewMap().set('id', 'overview');
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.projection !== prevProps.projection) {
+        if (this.props.theme !== prevProps.theme) {
             const overviewView = new ol.View({
                 projection: this.props.projection,
                 ...(this.props.options.viewOptions || {})
             });
             this.overview.getOverviewMap().setView(overviewView);
+            overviewView.setZoom(this.props.zoom * 0.8);
+            overviewView.setCenter(this.props.center);
+
+            this.setState({overviewView: overviewView, overviewLayer: null});
+        } else if (this.props.layers !== prevProps.layers || this.state.overviewView !== prevState.overviewView) {
+            const overviewLayerName = (this.props.theme?.backgroundLayers || []).find(entry => entry.overview)?.name;
+            let overviewLayer = null;
+            if (this.props.options.layer) {
+                overviewLayer = {
+                    ...this.props.options.layer,
+                    visibility: true
+                };
+                if (overviewLayer.type === 'wms') {
+                    overviewLayer.version = overviewLayer.params.VERSION || overviewLayer.version || this.props.themes?.defaultWMSVersion || "1.3.0";
+                }
+            } else if (overviewLayerName) {
+                overviewLayer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.name === overviewLayerName);
+                if (overviewLayer) {
+                    overviewLayer = {...overviewLayer, visibility: true};
+                }
+            } else {
+                overviewLayer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
+            }
+            this.setState({overviewLayer: overviewLayer});
         }
     }
     componentDidMount() {
@@ -66,37 +96,15 @@ class OverviewMap extends React.Component {
         document.getElementById("PluginsContainer").appendChild(this.overviewContainer);
         this.overview.setTarget(this.props.map.get('id') + "-overview");
         this.props.map.addControl(this.overview);
-        const overviewView = new ol.View({
-            projection: this.props.projection,
-            ...(this.props.options.viewOptions || {})
-        });
-        this.overview.getOverviewMap().setView(overviewView);
+        this.componentDidUpdate(this.props, {});
     }
     componentWillUnmount = () => {
         document.getElementById("PluginsContainer").removeChild(this.overviewContainer);
     };
     render() {
-        const overviewMap = (((this.props.theme || {}).backgroundLayers || []).find(entry => entry.overview) || {}).name;
-        let layer = null;
-        if (this.props.options.layer) {
-            layer = {
-                ...this.props.options.layer,
-                visibility: true
-            };
-            if (layer.type === 'wms') {
-                layer.version = layer.params.VERSION || layer.version || this.props.themes?.defaultWMSVersion || "1.3.0";
-            }
-        } else if (overviewMap) {
-            layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.name === overviewMap);
-            if (layer) {
-                layer = {...layer, visibility: true};
-            }
-        } else {
-            layer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
-        }
-        if (layer) {
+        if (this.state.overviewLayer) {
             return (
-                <OlLayer key={layer.uuid} map={this.overview.getOverviewMap()} options={layer} projection={this.props.projection} />
+                <OlLayer key={this.state.overviewLayer.uuid} map={this.overview.getOverviewMap()} options={this.state.overviewLayer} projection={this.props.projection} />
             );
         }
         return null;
@@ -107,5 +115,7 @@ export default connect((state) => ({
     theme: state.theme.current,
     themes: state.theme.themes,
     layers: state.layers.flat,
-    projection: state.map.projection
+    projection: state.map.projection,
+    center: state.map.center,
+    zoom: state.map.zoom
 }), {})(OverviewMap);
