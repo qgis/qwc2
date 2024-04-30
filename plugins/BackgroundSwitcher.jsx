@@ -77,13 +77,17 @@ class BackgroundSwitcher extends React.Component {
                 right: 'calc(1.5em + ' + right + 'px)',
                 bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
             };
+            const bgswitcherStyle = {
+                right: 'calc(5em + ' + right + 'px)',
+                bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
+            };
             return (
                 <div>
                     <button className={classes} onClick={this.buttonClicked}
                         style={style} title={tooltip}>
                         <Icon icon="bglayer" title={tooltip} />
                     </button>
-                    <div className={this.state.visible ? 'bgswitcher-active' : ''} id="BackgroundSwitcher">
+                    <div className={this.state.visible ? 'bgswitcher-active' : ''} id="BackgroundSwitcher" style={bgswitcherStyle}>
                         {this.renderLayerItem(null, backgroundLayers.filter(layer => layer.visibility === true).length === 0)}
                         {entries.map(entry => entry.group ? this.renderGroupItem(entry) : this.renderLayerItem(entry, entry.visibility === true))}
                     </div>
