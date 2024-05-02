@@ -218,7 +218,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                             return [...res, layerConfig];
                         }
                     }, []);
-                    const diff = Object.keys(missingThemeLayers).filter(entry => !(entry in newLayerNames));
+                    const diff = Object.keys(missingThemeLayers).filter(entry => isEmpty(newLayerNames[entry]));
                     if (!isEmpty(diff)) {
                         dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
                     }
