@@ -123,7 +123,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
     return (dispatch, getState) => {
         const mapCrs = theme.mapCrs || themes.defaultMapCrs || "EPSG:3857";
         if (!(mapCrs in CoordinatesUtils.getAvailableCRS())) {
-            dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missingprojection", theme.title, mapCrs), NotificationType.WARN, true));
+            dispatch(showNotification("missingprojection", LocaleUtils.tr("app.missingprojection", theme.title, mapCrs), NotificationType.WARN, true));
             return;
         }
         const initialTheme = !getState().theme.current;
@@ -228,7 +228,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
             });
         } else {
             if (!isEmpty(missingThemeLayers)) {
-                dispatch(showNotification("missinglayer", LocaleUtils.tr("app.missinglayers", Object.keys(missingThemeLayers).join(", ")), NotificationType.WARN, true));
+                dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", Object.keys(missingThemeLayers).join(", ")), NotificationType.WARN, true));
             }
             finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
         }
