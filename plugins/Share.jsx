@@ -18,6 +18,7 @@ import ShareLink from '../components/share/ShareLink';
 import ShareQRCode from '../components/share/ShareQRCode';
 import ShareSocials from '../components/share/ShareSocials';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
+import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import {generatePermaLink} from '../utils/PermaLinkUtils';
@@ -87,10 +88,12 @@ class Share extends React.Component {
         const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={shareUrl}/> : null;
         return (
             <div>
-                <div className="share-option-pin">
-                    <span>{LocaleUtils.tr("share.showpin")}</span>
-                    <ToggleSwitch active={this.state.pin} onChange={active => this.setState({pin: active})} />
-                </div>
+                {ConfigUtils.havePlugin("StartupMarker") ? (
+                    <div className="share-option-pin">
+                        <span>{LocaleUtils.tr("share.showpin")}</span>
+                        <ToggleSwitch active={this.state.pin} onChange={active => this.setState({pin: active})} />
+                    </div>
+                ) : null}
                 {!this.state.location ? (
                     <div className="share-reload-overlay">
                         <button className="button" onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</button>
