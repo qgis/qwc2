@@ -469,7 +469,7 @@ class QtDesignerForm extends React.Component {
                             ];
                             return (
                                 <div className="qt-designer-form-featurelink-buttons">
-                                    <ButtonBar buttons={featurebuttons} onClick={() => this.props.editRelationRecord('Edit', reltable, reldataset, index, displayField)} />
+                                    <ButtonBar buttons={featurebuttons} forceLabel onClick={() => this.props.editRelationRecord('Edit', reltable, reldataset, index, displayField)} />
                                 </div>
                             );
                         } else {
@@ -477,7 +477,7 @@ class QtDesignerForm extends React.Component {
                                 {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
                                 {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
                             ];
-                            return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index, displayField)} />);
+                            return (<ButtonBar buttons={featurebuttons} forceLabel onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index, displayField)} />);
                         }
                     } else {
                         if (value !== null) {

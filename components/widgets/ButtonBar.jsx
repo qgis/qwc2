@@ -31,6 +31,7 @@ class ButtonBar extends React.Component {
         active: PropTypes.string,
         buttons: PropTypes.arrayOf(PropTypes.oneOfType([ButtonPropShape, PropTypes.arrayOf(ButtonPropShape)])),
         disabled: PropTypes.bool,
+        forceLabel: PropTypes.bool,
         mobile: PropTypes.bool,
         onClick: PropTypes.func,
         tooltipPos: PropTypes.string
@@ -49,7 +50,7 @@ class ButtonBar extends React.Component {
                                 {entry.map(comboentry => (
                                     <div className="buttonbar-combo-entry" key={comboentry.key} onClick={() => this.props.onClick(comboentry.key, comboentry.data)} value={comboentry.key}>
                                         {comboentry.icon ? (<Icon icon={comboentry.icon} />) : null}
-                                        {comboentry.label && (!this.props.mobile || !comboentry.icon) ? (
+                                        {comboentry.label && (!this.props.mobile || !comboentry.icon || this.props.forceLabel) ? (
                                             <span className="buttonbar-combo-entry-label">{LocaleUtils.tr(comboentry.label)}</span>
                                         ) : null}
                                         {comboentry.tooltip ? (
