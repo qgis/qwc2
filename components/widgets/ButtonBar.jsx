@@ -76,7 +76,7 @@ class ButtonBar extends React.Component {
                                     type={entry.type || "button"}
                                 >
                                     {entry.icon ? (<Icon icon={entry.icon} />) : null}
-                                    {entry.label && (!this.props.mobile || !entry.icon) ? (<span>{LocaleUtils.tr(entry.label)}</span>) : null}
+                                    {entry.label && (!this.props.mobile || !entry.icon || this.props.forceLabel) ? (<span>{LocaleUtils.tr(entry.label)}</span>) : null}
                                 </button>
                                 {entry.tooltip ? (
                                     <span className={"buttonbar-button-tooltip " + ("buttonbar-button-tooltip-" + this.props.tooltipPos)}>
