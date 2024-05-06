@@ -551,7 +551,7 @@ class IdentifyViewer extends React.Component {
     }
     computeExtraAttributes = (layer, result) => {
         const rows = [];
-        Object.values(window.qwc2.__attributeCalculators || {}).forEach((calc, idx) => {
+        Object.values(window.qwc2?.__attributeCalculators || {}).forEach((calc, idx) => {
             const row = calc(layer, result);
             if (row.length === 2) {
                 rows.push((
@@ -577,7 +577,7 @@ class IdentifyViewer extends React.Component {
         return [
             ...BuiltinExporters,
             ...this.props.customExporters,
-            ...Object.values(window.qwc2.__identifyExportes || [])
+            ...Object.values(window.qwc2?.__identifyExportes || [])
         ];
     };
     setIframeContent = (iframe, html) => {
