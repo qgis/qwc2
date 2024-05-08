@@ -199,19 +199,21 @@ class AttributeForm extends React.Component {
     addRelationRecord = (table) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         const editConfig = this.props.theme.editConfig[table.split('.').slice(-1)];
-        const newRelFeature = getFeatureTemplate(editConfig, {
+        const mapPrefix = (editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+        getFeatureTemplate(editConfig, {
             type: "Feature",
             properties: {}
+        }, this.props.iface, mapPrefix, this.props.map.projection, newRelFeature => {
+            newRelFeature.__status__ = "empty";
+            // If feature id is known, i.e. not when drawing new feature, set foreign key
+            if (this.props.editContext.action !== "Draw") {
+                newRelFeature.properties[this.state.relationTables[table].fk] = this.props.editContext.feature.id;
+            }
+            newRelationValues[table] = {...newRelationValues[table]};
+            newRelationValues[table].features = newRelationValues[table].features.concat([newRelFeature]);
+            const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
+            this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
         });
-        newRelFeature.__status__ = "empty";
-        // If feature id is known, i.e. not when drawing new feature, set foreign key
-        if (this.props.editContext.action !== "Draw") {
-            newRelFeature.properties[this.state.relationTables[table].fk] = this.props.editContext.feature.id;
-        }
-        newRelationValues[table] = {...newRelationValues[table]};
-        newRelationValues[table].features = newRelationValues[table].features.concat([newRelFeature]);
-        const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
-        this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     };
     reorderRelationRecord = (table, idx, dir) => {
         const nFeatures = this.props.editContext.feature.relationValues[table].features.length;
