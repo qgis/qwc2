@@ -395,7 +395,7 @@ class QtDesignerForm extends React.Component {
             } else {
                 const values = MiscUtils.ensureArray(widget.item || []).map((item) => ({
                     label: item.property.text,
-                    value: item.property.value || item.property.text
+                    value: item.property.value ?? item.property.text
                 }));
                 return (
                     <EditComboField
