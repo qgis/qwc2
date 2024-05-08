@@ -97,6 +97,7 @@ class TextInput extends React.Component {
                     contentEditable={!this.props.disabled && !this.props.readOnly}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
+                    onFocus={this.onFocus}
                     onInput={this.onChange}
                     onKeyDown={this.onKeyDown}
                     onMouseDown={this.onMouseDown}
@@ -124,6 +125,21 @@ class TextInput extends React.Component {
         if (!this.skipNextCommitOnBlur) {
             this.commit();
         }
+    };
+    onFocus = (ev) => {
+        window.setTimeout(function() {
+            if (window.getSelection && document.createRange) {
+                const range = document.createRange();
+                range.selectNodeContents(ev.target);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else if (document.body.createTextRange) {
+                const range = document.body.createTextRange();
+                range.moveToElementText(ev.target);
+                range.select();
+            }
+        }, 1);
     };
     onMouseDown = (ev) => {
         const el = document.elementFromPoint(ev.clientX, ev.clientY);
