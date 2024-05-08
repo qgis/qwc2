@@ -33,7 +33,7 @@ function strcmp(a, b) {
 
 const ServiceLayerUtils = {
     getWMTSLayers(capabilities, capabilitiesUrl, mapCrs) {
-        if (!capabilities?.contents) {
+        if (!capabilities?.Contents) {
             return [];
         }
         const tileMatrices = capabilities.Contents.TileMatrixSet.reduce((res, entry) => {
