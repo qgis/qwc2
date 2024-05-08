@@ -484,10 +484,11 @@ class QtDesignerForm extends React.Component {
                                 </div>
                             );
                         } else {
-                            const featurebuttons = [
-                                {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
-                                {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
-                            ];
+                            const featurebuttons = [];
+                            if (feature.geometry !== null) {
+                                featurebuttons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")});
+                            }
+                            featurebuttons.push({key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")});
                             return (<ButtonBar buttons={featurebuttons} forceLabel onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index, displayField)} />);
                         }
                     } else {

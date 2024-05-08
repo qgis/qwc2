@@ -205,6 +205,9 @@ class AttributeForm extends React.Component {
             properties: {}
         }, this.props.iface, mapPrefix, this.props.map.projection, newRelFeature => {
             newRelFeature.__status__ = "empty";
+            if (editConfig.geomType === null) {
+                newRelFeature.geometry = null;
+            }
             // If feature id is known, i.e. not when drawing new feature, set foreign key
             if (this.props.editContext.action !== "Draw") {
                 newRelFeature.properties[this.state.relationTables[table].fk] = this.props.editContext.feature.id;
