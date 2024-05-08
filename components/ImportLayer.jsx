@@ -213,7 +213,7 @@ class ImportLayer extends React.Component {
 
         // Attempt to load as WFS
         ++pendingRequests;
-        ServiceLayerUtils.getWFSCapabilies(reqUrl).then(({capabilities, requestUrl}) => {
+        ServiceLayerUtils.getWFSCapabilities(reqUrl).then(({capabilities, requestUrl}) => {
             const result = ServiceLayerUtils.getWFSLayers(capabilities, requestUrl, this.props.mapCrs);
             this.setState((state) => ({
                 pendingRequests: state.pendingRequests - 1,

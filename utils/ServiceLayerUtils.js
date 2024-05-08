@@ -408,7 +408,7 @@ const ServiceLayerUtils = {
             });
         });
     },
-    getWFSCapabilies(serviceUrl) {
+    getWFSCapabilities(serviceUrl) {
         return new Promise((resolve, reject) => {
             ServiceLayerUtils.getCapabilities(serviceUrl, {SERVICE: 'WFS', REQUEST: 'GetCapabilities'}).then(resolve).catch(reject);
         });
