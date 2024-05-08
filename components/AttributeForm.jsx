@@ -30,6 +30,7 @@ class AttributeForm extends React.Component {
         deleteMsgId: PropTypes.string,
         editConfig: PropTypes.object,
         editContext: PropTypes.object,
+        hideDelete: PropTypes.bool,
         iface: PropTypes.object,
         map: PropTypes.object,
         onCommit: PropTypes.func,
@@ -91,7 +92,7 @@ class AttributeForm extends React.Component {
         const readOnly = this.props.readOnly || (editPermissions.updatable === false && this.props.editContext.action === 'Pick');
 
         let deleteBar = null;
-        if (this.props.editContext.action === 'Pick' && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false && !this.props.readOnly) {
+        if (!this.props.hideDelete && this.props.editContext.action === 'Pick' && this.props.editContext.feature && !this.props.editContext.changed && editPermissions.deletable !== false && !this.props.readOnly) {
             // Delete button bar will appear by default if no permissions are defined in editConfig or when deletable permission is set
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
@@ -266,7 +267,7 @@ class AttributeForm extends React.Component {
     editRelationRecord = (action, layer, dataset, idx, displayField) => {
         const editConfig = (this.props.theme.editConfig || {})[layer];
         const feature = this.props.editContext.feature.relationValues[dataset].features[idx];
-        this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord, displayField: displayField}});
+        this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord, displayField: displayField, hideDelete: true}});
     };
     finishEditRelationRecord = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
