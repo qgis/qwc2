@@ -68,7 +68,8 @@ export default {
                 if (options.version >= "1.1.0") {
                     // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
                     // Invert WGS axis orentation
-                    const requestExtent = options.projection === 'EPSG:4326' ? [extent[1], extent[0], extent[3], extent[2]] : extent;
+                    const axisOrientation = CoordinatesUtils.getAxisOrder(options.projection);
+                    const requestExtent = axisOrientation === 'neu' ? [extent[1], extent[0], extent[3], extent[2]] : extent;
                     bbox = requestExtent.join(',') + "," + CoordinatesUtils.toOgcUrnCrs(options.projection);
                     srsName = CoordinatesUtils.toOgcUrnCrs(options.projection);
                 }
