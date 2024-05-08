@@ -278,7 +278,7 @@ const LayerUtils = {
             if (styles[idx]) {
                 param += "{" + styles[idx] + "}";
             }
-            if (visibilities[idx] === 0) {
+            if (visibilities[idx] === 0 || visibilities[idx] === false) {
                 param += '!';
             } else if (visibilities[idx] === 0.5) {
                 param += '~';
