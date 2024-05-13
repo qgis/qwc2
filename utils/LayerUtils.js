@@ -626,6 +626,11 @@ const LayerUtils = {
         });
         return queryable / layer.sublayers.length;
     },
+    hasQueryableSublayers(layer) {
+        return layer.sublayers.find(sublayer => {
+            return sublayer.sulayers ? LayerUtils.hasQueryableSublayers(sublayer) : sublayer.queryable;
+        });
+    },
     cloneLayer(layer, sublayerpath) {
         const newlayer = {...layer};
         let cur = newlayer;
