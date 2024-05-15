@@ -215,34 +215,36 @@ class MapFilter extends React.Component {
         this.props.setFilter(layerExpressions, this.state.geomFilter.geom, timeRange);
         // Validate parameters with test request
         const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-        const wmsParams = LayerUtils.buildWMSLayerParams(themeLayer, {filterParams: layerExpressions, filterGeom: this.state.geomFilter.geom}).params;
-        const wmsLayers = wmsParams.LAYERS.split(",");
-        const reqParams = {
-            SERVICE: 'WMS',
-            REQUEST: 'GetMap',
-            VERSION: '1.3.0',
-            CRS: 'EPSG:4326',
-            WIDTH: 10,
-            HEIGHT: 10,
-            BBOX: "-0.5,-0.5,0.5,0.5",
-            LAYERS: Object.keys(layerExpressions).filter(layer => wmsLayers.includes(layer)).join(","),
-            csrf_token: MiscUtils.getCsrfToken()
-        };
-        if (wmsParams.FILTER) {
-            reqParams.FILTER = wmsParams.FILTER;
+        if (themeLayer) {
+            const wmsParams = LayerUtils.buildWMSLayerParams(themeLayer, {filterParams: layerExpressions, filterGeom: this.state.geomFilter.geom}).params;
+            const wmsLayers = wmsParams.LAYERS.split(",");
+            const reqParams = {
+                SERVICE: 'WMS',
+                REQUEST: 'GetMap',
+                VERSION: '1.3.0',
+                CRS: 'EPSG:4326',
+                WIDTH: 10,
+                HEIGHT: 10,
+                BBOX: "-0.5,-0.5,0.5,0.5",
+                LAYERS: Object.keys(layerExpressions).filter(layer => wmsLayers.includes(layer)).join(","),
+                csrf_token: MiscUtils.getCsrfToken()
+            };
+            if (wmsParams.FILTER) {
+                reqParams.FILTER = wmsParams.FILTER;
+            }
+            if (wmsParams.FILTER_GEOM) {
+                reqParams.FILTER_GEOM = wmsParams.FILTER_GEOM;
+            }
+            const options = {
+                headers: {'content-type': 'application/x-www-form-urlencoded'},
+                responseType: "blob"
+            };
+            axios.post(themeLayer.url, new URLSearchParams(reqParams).toString(), options).then(() => {
+                this.setState({filterInvalid: false});
+            }).catch(() => {
+                this.setState({filterInvalid: true});
+            });
         }
-        if (wmsParams.FILTER_GEOM) {
-            reqParams.FILTER_GEOM = wmsParams.FILTER_GEOM;
-        }
-        const options = {
-            headers: {'content-type': 'application/x-www-form-urlencoded'},
-            responseType: "blob"
-        };
-        axios.post(themeLayer.url, new URLSearchParams(reqParams).toString(), options).then(() => {
-            this.setState({filterInvalid: false});
-        }).catch(() => {
-            this.setState({filterInvalid: true});
-        });
         const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
             if (value.active) {
                 return {...res, [key]: value.values};
