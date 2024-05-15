@@ -278,11 +278,10 @@ class TimeManager extends React.Component {
             }
             this.setState((state) => ({
                 timeData: timeData,
-                currentTimestamp: state.currentTimestamp ?? +timeData.values[0],
+                currentTimestamp: state.currentTimestamp ?? (timeData.values.length > 0 ? +timeData.values[0] : null),
                 startTime: startdate,
                 endTime: enddate && enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
             }));
-            this.updateLayerTimeDimensions(timeData, this.state.currentTimestamp);
             this.updateTimeFeatures(timeData);
         } else {
             if (this.state.currentTimestamp !== prevState.currentTimestamp || this.state.timeEnabled !== prevState.timeEnabled) {
