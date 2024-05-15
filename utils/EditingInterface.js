@@ -168,7 +168,11 @@ function getExtent(layerId, mapCrs, callback, filter = null, filterGeom = null) 
 
 /*
  layerId: The edit layer id
- featureData: a FormData instance, with a 'feature' entry containing the GeoJSON serialized feature and optionally one or more 'file:' prefixed file upload entries
+ featureData: a FormData instance, with:
+  - A 'feature' entry containing the GeoJSON serialized feature
+  - Zero or more 'file:' prefixed file upload entries
+  - Zero or more 'relfile:' prefixed file upload entries
+  - Optionally a 'g-recaptcha-response' entry with the captcha response
  callback: function(success, result), if success = true, result is the committed GeoJSON feature, if success = false, result is an error message
 */
 function addFeatureMultipart(layerId, featureData, callback) {
@@ -187,7 +191,11 @@ function addFeatureMultipart(layerId, featureData, callback) {
 /*
  layerId: The edit layer id
  featureId: The id of the feature to edit
- featureData: a FormData instance, with a 'feature' entry containing the GeoJSON serialized feature and optionally one or more 'file:' prefixed file upload entries
+ featureData: a FormData instance, with:
+  - A 'feature' entry containing the GeoJSON serialized feature
+  - Zero or more 'file:' prefixed file upload entries
+  - Zero or more 'relfile:' prefixed file upload entries
+  - Optionally a 'g-recaptcha-response' entry with the captcha response
  callback: function(success, result), if success = true, result is the committed GeoJSON feature, if success = false, result is an error message
 */
 function editFeatureMultipart(layerId, featureId, featureData, callback) {
@@ -207,14 +215,20 @@ function editFeatureMultipart(layerId, featureId, featureData, callback) {
  layerId: The edit layer id
  featureId: The id of the feature to delete
  callback: function(success, result), if success = true, result is null, if success = false, result is an error message
+ recaptchaResponse: Optional, captcha challenge response
 */
-function deleteFeature(layerId, featureId, callback) {
+function deleteFeature(layerId, featureId, callback, recaptchaResponse = null) {
     const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
     const req = SERVICE_URL + layerId + '/' + featureId;
     const headers = {
         "Accept-Language": LocaleUtils.lang()
     };
-    axios.delete(req, {headers}).then(() => {
+    const data = {};
+    if (recaptchaResponse) {
+        data['g-recaptcha-response'] = recaptchaResponse;
+    }
+
+    axios.delete(req, {headers, data}).then(() => {
         callback(true, featureId);
     }).catch(err => callback(false, buildErrMsg(err)));
 }
@@ -232,21 +246,6 @@ function getRelations(layerId, featureId, tables, mapCrs, callback) {
     axios.get(req, {headers, params}).then(response => {
         callback(response.data);
     }).catch(() => callback({}));
-}
-
-function writeRelations(layerId, featureId, relationData, mapCrs, callback) {
-    const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId + '/' + featureId + "/relations";
-    const params = {
-        crs: mapCrs
-    };
-    const headers = {
-        "Content-Type": "multipart/form-data",
-        "Accept-Language": LocaleUtils.lang()
-    };
-    axios.post(req, relationData, {headers, params}).then(response => {
-        callback(response.data);
-    }).catch(err => callback(false, buildErrMsg(err)));
 }
 
 /*
@@ -276,7 +275,6 @@ export default {
     addFeatureMultipart,
     editFeatureMultipart,
     deleteFeature,
-    writeRelations,
     getRelations,
     getKeyValues
 };

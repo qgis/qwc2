@@ -19,6 +19,7 @@ import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import EditComboField, {KeyValCache} from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
+import ReCaptchaWidget from '../components/ReCaptchaWidget';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/Spinner';
 import NavBar from '../components/widgets/NavBar';
@@ -90,7 +91,8 @@ class AttributeTable extends React.Component {
         deleteTask: null,
         newFeature: false,
         confirmDelete: false,
-        limitToExtent: false
+        limitToExtent: false,
+        captchaResponse: ''
     };
     constructor(props) {
         super(props);
@@ -121,6 +123,9 @@ class AttributeTable extends React.Component {
         if (!this.props.active) {
             return null;
         }
+
+        const captchaRequired = ConfigUtils.getConfigProp("editServiceCaptchaSiteKey") && !ConfigUtils.getConfigProp("username");
+        const captchaPending = captchaRequired && !this.state.captchaResponse;
 
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
@@ -267,6 +272,10 @@ class AttributeTable extends React.Component {
                 <Icon icon="trash" />
             </button>
         ) : null;
+        let captchaBar = null;
+        if (captchaRequired && (this.state.changedFeatureIdx !== null || this.state.confirmDelete)) {
+            captchaBar = (<div><ReCaptchaWidget onChange={value => this.setState({captchaResponse: value})} sitekey={ConfigUtils.getConfigProp("editServiceCaptchaSiteKey")} /></div>);
+        }
 
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}>
@@ -301,19 +310,19 @@ class AttributeTable extends React.Component {
                             </button>
                         ) : null}
                         {this.state.confirmDelete ? (
-                            <button className="button button-accept" onClick={this.deleteSelectedFeatured}>
+                            <button className="button button-accept" disabled={captchaPending} onClick={this.deleteSelectedFeatured}>
                                 <Icon icon="ok" />
                                 <span>{LocaleUtils.tr("attribtable.delete")}</span>
                             </button>
                         ) : deleteButton}
                         {this.state.confirmDelete ? (
-                            <button className="button button-reject" onClick={() => this.setState({confirmDelete: false})}>
+                            <button className="button button-reject" onClick={() => this.setState({confirmDelete: false, captchaResponse: null})}>
                                 <Icon icon="remove" />
                                 <span>{LocaleUtils.tr("attribtable.nodelete")}</span>
                             </button>
                         ) : null}
                         {this.state.changedFeatureIdx !== null ? (
-                            <button className="button button-accept" onClick={this.commit}>
+                            <button className="button button-accept" disabled={captchaPending} onClick={this.commit}>
                                 <Icon icon="ok" />
                                 <span>{LocaleUtils.tr("attribtable.commit")}</span>
                             </button>
@@ -328,6 +337,7 @@ class AttributeTable extends React.Component {
                             <Icon icon="export" />
                         </button>
                     </div>
+                    {captchaBar}
                     <div className="attribtable-contents" ref={el => {this.attribTableContents = el;}}>
                         {table}
                     </div>
@@ -520,7 +530,7 @@ class AttributeTable extends React.Component {
                         }
                         return newState;
                     });
-                });
+                }, state.captchaResponse);
             });
             return {deleteTask: {
                 pending: features.map(feature => feature.id),
@@ -554,6 +564,10 @@ class AttributeTable extends React.Component {
         const featureData = new FormData();
         featureData.set('feature', JSON.stringify(feature));
         Object.entries(this.changedFiles).forEach(([key, value]) => featureData.set('file:' + key, value));
+
+        if (this.state.captchaResponse) {
+            featureData.set('g-recaptcha-response', this.state.captchaResponse);
+        }
 
         if (this.state.newFeature) {
             this.props.iface.addFeatureMultipart(

@@ -17,12 +17,14 @@ import {v1 as uuidv1} from 'uuid';
 import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole, refreshLayer} from '../actions/layers';
 import {setCurrentTaskBlocked} from '../actions/task';
+import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {getFeatureTemplate} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import AutoEditForm from './AutoEditForm';
 import LinkFeatureForm from './LinkFeatureForm';
 import QtDesignerForm from './QtDesignerForm';
+import ReCaptchaWidget from './ReCaptchaWidget';
 import ButtonBar from './widgets/ButtonBar';
 
 import './style/AttributeForm.css';
@@ -57,7 +59,8 @@ class AttributeForm extends React.Component {
         deleteClicked: false,
         childEdit: null,
         relationTables: {},
-        formValid: true
+        formValid: true,
+        captchaResponse: null
     };
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -82,10 +85,13 @@ class AttributeForm extends React.Component {
         return this.props.editConfig || layerId;
     };
     render = () => {
+        const captchaRequired = ConfigUtils.getConfigProp("editServiceCaptchaSiteKey") && !ConfigUtils.getConfigProp("username");
+        const captchaPending = captchaRequired && !this.state.captchaResponse;
+
         let commitBar = null;
         if (this.props.editContext.changed) {
             const commitButtons = [
-                {key: 'Commit', icon: this.state.formValid ? 'ok' : 'warning', label: this.state.formValid ? LocaleUtils.trmsg("editing.commit") : LocaleUtils.trmsg("editing.invalidform"), extraClasses: this.state.formValid ? "button-accept" : "button-warning", type: "submit", disabled: !this.state.formValid},
+                {key: 'Commit', icon: this.state.formValid ? 'ok' : 'warning', label: this.state.formValid ? LocaleUtils.trmsg("editing.commit") : LocaleUtils.trmsg("editing.invalidform"), extraClasses: this.state.formValid ? "button-accept" : "button-warning", type: "submit", disabled: !this.state.formValid || captchaPending},
                 {key: 'Discard', icon: 'remove', label: LocaleUtils.trmsg("editing.discard"), extraClasses: "button-reject"}
             ];
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
@@ -105,7 +111,7 @@ class AttributeForm extends React.Component {
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteClicked} />);
             } else {
                 const deleteButtons = [
-                    {key: 'Yes', icon: 'ok', label: LocaleUtils.trmsg("editing.reallydelete"), extraClasses: "button-accept"},
+                    {key: 'Yes', icon: 'ok', label: LocaleUtils.trmsg("editing.reallydelete"), extraClasses: "button-accept", disabled: captchaPending},
                     {key: 'No', icon: 'remove', label: LocaleUtils.trmsg("editing.canceldelete"), extraClasses: "button-reject"}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteFeature} />);
@@ -122,6 +128,10 @@ class AttributeForm extends React.Component {
                     <LinkFeatureForm {...this.state.childEdit} finished={this.state.childEdit.finishCallback} iface={this.props.iface} pickFilter={this.props.childPickFilter} readOnly={this.props.readOnly} />
                 </div>
             );
+        }
+        let captchaButton = null;
+        if (captchaRequired && (this.props.editContext.changed || this.state.deleteClicked)) {
+            captchaButton = (<ReCaptchaWidget onChange={value => this.setState({captchaResponse: value})} sitekey={ConfigUtils.getConfigProp("editServiceCaptchaSiteKey")} />);
         }
         return (
             <div className="AttributeForm">
@@ -143,6 +153,7 @@ class AttributeForm extends React.Component {
                             readOnly={readOnly} touchFriendly={this.props.touchFriendly} updateField={this.updateField}
                             values={this.props.editContext.feature.properties} />
                     )}
+                    {captchaButton}
                     {commitBar}
                 </form>
                 {deleteBar}
@@ -179,8 +190,8 @@ class AttributeForm extends React.Component {
                         return name + ":" + entry.fk;
                     }
                 }).join(",");
-                this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
-                    const newFeature = {...feature, relationValues: response.relationvalues};
+                this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (relationValues => {
+                    const newFeature = {...feature, relationValues: relationValues};
                     callback(newFeature);
                 }));
             } else {
@@ -374,7 +385,7 @@ class AttributeForm extends React.Component {
         const featureUploads = {};
 
         // Collect all values from form fields
-        const fieldnames = Array.from(ev.target.elements).map(element => element.name).filter(x => x);
+        const fieldnames = Array.from(ev.target.elements).map(element => element.name).filter(x => x && x !== "g-recaptcha-response");
         fieldnames.forEach(name => {
             const fieldConfig = (curConfig.fields || []).find(field => field.id === name) || {};
             const element = ev.target.elements.namedItem(name);
@@ -440,79 +451,65 @@ class AttributeForm extends React.Component {
                 }
             }
         });
+
+        // Set relation values CRS and sort index if necessary
+        Object.keys(relationValues).forEach(relTable => {
+            relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map((relFeature, idx) => {
+                const newRelFeature = {
+                    ...relFeature,
+                    crs: {
+                        type: "name",
+                        properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
+                    }
+                };
+                const sortcol = this.state.relationTables[relTable].sortcol;
+                const noreorder = this.state.relationTables[relTable].noreorder;
+                if (sortcol && !noreorder) {
+                    newRelFeature.__status__ = feature.__status__ || (newRelFeature.properties[sortcol] !== idx ? "changed" : "");
+                    newRelFeature.properties[sortcol] = idx;
+                }
+                return newRelFeature;
+            });
+        });
+
+        feature.relationValues = relationValues;
+
         const featureData = new FormData();
         featureData.set('feature', JSON.stringify(feature));
         Object.entries(featureUploads).forEach(([key, value]) => featureData.set('file:' + key, value));
+        Object.entries(relationUploads).forEach(([key, value]) => featureData.set('relfile:' + mapPrefix + key, value));
+
+        if (this.state.captchaResponse) {
+            featureData.set('g-recaptcha-response', this.state.captchaResponse);
+        }
 
         if (this.props.editContext.action === "Draw") {
             if (this.props.iface.addFeatureMultipart) {
-                this.props.iface.addFeatureMultipart(this.props.editConfig.editDataset, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.addFeatureMultipart(this.props.editConfig.editDataset, featureData, (success, result) => this.featureCommited(success, result));
             } else {
-                this.props.iface.addFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.addFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
             }
         } else if (this.props.editContext.action === "Pick") {
             if (this.props.iface.editFeatureMultipart) {
-                this.props.iface.editFeatureMultipart(this.props.editConfig.editDataset, feature.id, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.editFeatureMultipart(this.props.editConfig.editDataset, feature.id, featureData, (success, result) => this.featureCommited(success, result));
             } else {
-                this.props.iface.editFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.editFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
             }
         }
     };
-    featureCommited = (success, result, relationValues, relationUploads) => {
+    featureCommited = (success, result) => {
         if (!success) {
             this.commitFinished(false, result);
             return;
         }
-        let newFeature = result;
-        // Commit relations
-        if (!isEmpty(relationValues)) {
-
-            // Set CRS and foreign key, set sort index if necessary
-            Object.keys(relationValues).forEach(relTable => {
-                relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map((relFeature, idx) => {
-                    const fk = this.state.relationTables[relTable].fk;
-                    const feature = {
-                        ...relFeature,
-                        type: "Feature",
-                        properties: {
-                            ...relFeature.properties,
-                            [fk]: newFeature.id
-                        },
-                        __status__: relFeature.__status__ || (relFeature.properties[fk] !== newFeature.id ? "changed" : ""),
-                        crs: {
-                            type: "name",
-                            properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
-                        }
-                    };
-                    const sortcol = this.state.relationTables[relTable].sortcol;
-                    const noreorder = this.state.relationTables[relTable].noreorder;
-                    if (sortcol && !noreorder) {
-                        feature.__status__ = feature.__status__ || (feature.properties[sortcol] !== idx ? "changed" : "");
-                        feature.properties[sortcol] = idx;
-                    }
-                    return feature;
-                });
-            });
-
-            const mapPrefix = this.editMapPrefix();
-            const relationData = new FormData();
-            relationData.set('values', JSON.stringify(relationValues));
-            Object.entries(relationUploads).forEach(([key, value]) => relationData.set(mapPrefix + key, value));
-
-            this.props.iface.writeRelations(this.props.editConfig.editDataset, newFeature.id, relationData, this.props.map.projection, (relResult, errorMsg) => {
-                if (relResult === false) {
-                    this.commitFinished(false, errorMsg);
-                } else if (relResult.success !== true) {
-                    // Relation values commit failed, switch to pick to avoid adding feature again on next attempt
-                    this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
-                    newFeature = {...newFeature, relationValues: relResult.relationvalues};
-                    this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: newFeature, changed: true});
-                } else {
-                    this.commitFinished(true, newFeature);
-                }
-            });
+        // Check for relation records which failed to commit
+        const relationValueErrors = Object.values(result.relationValues || {}).find(entry => entry.error) !== undefined;
+        if (relationValueErrors) {
+            // Relation values commit failed, switch to pick to avoid adding feature again on next attempt
+            this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
+            this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: result, changed: true});
         } else {
-            this.commitFinished(true, newFeature);
+            this.commitFinished(true, result);
         }
     };
     deleteClicked = () => {
@@ -522,7 +519,13 @@ class AttributeForm extends React.Component {
     deleteFeature = (action) => {
         if (action === 'Yes') {
             this.setState({busy: true});
-            this.props.iface.deleteFeature(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.deleteFinished);
+
+            let recaptchaResponse = null;
+            if (this.state.captchaResponse) {
+                recaptchaResponse = this.state.captchaResponse;
+            }
+
+            this.props.iface.deleteFeature(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.deleteFinished, recaptchaResponse);
         } else {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
