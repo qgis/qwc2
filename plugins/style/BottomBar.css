@@ -49,3 +49,9 @@
 #BottomBar span.bottombar-spacer {
     flex: 1 1 auto;
 }
+
+#BottomBar span.bottombar-links > a:not(:first-child) {
+    border-left: 1px solid var(--panel-text-color);
+    margin-left: 0.5em;
+    padding-left: 0.5em;
+}

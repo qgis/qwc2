@@ -31,6 +31,14 @@ import './style/BottomBar.css';
 class BottomBar extends React.Component {
     static propTypes = {
         additionalMouseCrs: PropTypes.array,
+        /** Additional bottombar links */
+        additionalBottomBarLinks: PropTypes.arrayOf(PropTypes.shape({
+            label: PropTypes.string,
+            labelMsgId: PropTypes.string,
+            url: PropTypes.string,
+            urlTarget: PropTypes.string,
+            icon: PropTypes.string
+        })),
         changeMousePositionState: PropTypes.func,
         changeZoomLevel: PropTypes.func,
         /** Whether to display the coordinates in the bottom bar. */
@@ -78,31 +86,24 @@ class BottomBar extends React.Component {
             return null;
         }
 
-        let viewertitleLink;
+        const bottomLinks = (this.props.additionalBottomBarLinks || []).map(entry => (
+            <a href={entry.url} key={entry.labelMsgId ?? entry.label} onClick={(ev) => this.openUrl(ev, entry.url, entry.urlTarget, entry.labelMsgId ? LocaleUtils.tr(entry.labelMsgId) : entry.label, entry.icon)}>
+                <span className="extra_label">{entry.labelMsgId ? LocaleUtils.tr(entry.labelMsgId) : entry.label}</span>
+            </a>
+        ))
         if (this.props.viewertitleUrl) {
-            viewertitleLink = (
-                <a href={this.props.viewertitleUrl} onClick={(ev) => this.openUrl(ev, this.props.viewertitleUrl, this.props.viewertitleUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"), this.props.viewertitleUrlIcon)}>
+            bottomLinks.push((
+                <a href={this.props.viewertitleUrl} key="viewertitle" onClick={(ev) => this.openUrl(ev, this.props.viewertitleUrl, this.props.viewertitleUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"), this.props.viewertitleUrlIcon)}>
                     <span className="viewertitle_label">{LocaleUtils.tr("bottombar.viewertitle_label")}</span>
                 </a>
-            );
+            ));
         }
-        let termsLink;
         if (this.props.termsUrl) {
-            termsLink = (
-                <a href={this.props.termsUrl} onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.terms_label"), this.props.termsUrlIcon)}>
+            bottomLinks.push((
+                <a href={this.props.termsUrl} key="terms" onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.terms_label"), this.props.termsUrlIcon)}>
                     <span className="terms_label">{LocaleUtils.tr("bottombar.terms_label")}</span>
                 </a>
-            );
-        }
-        let bottomLinks;
-        if (viewertitleLink || termsLink) {
-            bottomLinks = (
-                <span className="bottombar-links">
-                    {viewertitleLink}
-                    {viewertitleLink && termsLink ? (<span dangerouslySetInnerHTML={{__html: "&nbsp;|&nbsp;"}} />) : null}
-                    {termsLink}
-                </span>
-            );
+            ));
         }
         const enabledMouseCrs = [...this.props.additionalMouseCrs || [], this.props.map.projection, "EPSG:4326"];
         const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, val]) => {
@@ -150,7 +151,9 @@ class BottomBar extends React.Component {
                 {coordinates}
                 {scales}
                 <span className="bottombar-spacer" />
-                {bottomLinks}
+                <span className="bottombar-links">
+                    {bottomLinks}
+                </span>
             </div>
         );
     }
