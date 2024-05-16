@@ -1,7 +1,7 @@
 div.process-notifications {
     position: fixed;
     right: 0;
-    top: 3.5em;
+    top: var(--topbar-height);
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     width: 20em;
     z-index: 1000;
