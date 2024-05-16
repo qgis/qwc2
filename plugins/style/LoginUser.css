@@ -1,7 +1,7 @@
 div.login-user {
     position: fixed;
     right: 0.25em;
-    top: 3.75em;
+    top: var(--topbar-height);
     color: var(--panel-text-color);
     background-color: var(--panel-bg-color);
     box-shadow: 0 0 4px rgba(136, 136, 136, 0.5);

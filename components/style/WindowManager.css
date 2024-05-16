@@ -5,7 +5,8 @@ iframe.windows-iframe-dialog-body {
 }
 
 div.dock-window iframe.windows-iframe-dialog-body {
-    height: calc(100vh - 5.75em);
+    height: calc(100vh - var(--topbar-height) - var(--bottombar-height));
+    height: calc(var(--vh, 1vh) * 100 - var(--topbar-height) - var(--bottombar-height));
 }
 
 div.windows-notification-container {
