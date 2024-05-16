@@ -248,7 +248,7 @@ const LayerUtils = {
         const visibilities = [];
         const queryable = [];
         for (const layer of layers) {
-            if (layer.role === LayerRole.THEME) {
+            if (layer.role === LayerRole.THEME && !isEmpty(layer.sublayers)) {
                 LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, styles, queryable, visibilities, layer.visibility);
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
                 const sublayernames = [];
