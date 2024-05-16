@@ -74,7 +74,7 @@ class BackgroundSwitcher extends React.Component {
             const bottom = this.props.mapMargins.bottom;
             const style = {
                 right: 'calc(1.5em + ' + right + 'px)',
-                bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
+                bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
             };
             const bgswitcherStyle = {
                 right: 'calc(5em + ' + right + 'px)',

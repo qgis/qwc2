@@ -82,7 +82,7 @@ class ZoomButton extends React.Component {
         const bottom = this.props.mapMargins.bottom;
         const style = {
             right: 'calc(1.5em + ' + right + 'px)',
-            bottom: 'calc(' + bottom + 'px  + ' + (5 + 4 * position) + 'em)'
+            bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * position) + 'em)'
         };
         const tooltip = this.props.direction > 0 ? LocaleUtils.tr("tooltip.zoomin") : LocaleUtils.tr("tooltip.zoomout");
         const classes = classnames({
