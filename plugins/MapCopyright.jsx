@@ -56,7 +56,7 @@ class MapCopyright extends React.Component {
         const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
         const style = {
             right: 'calc(0.25em + ' + right + 'px)',
-            bottom: 'calc(3.4em + ' + bottom + 'px)'
+            bottom: 'calc(var(--bottombar-height) + 0.25em + ' + bottom + 'px)'
         };
         return (
             <div id="MapCopyright" style={style}>

@@ -73,7 +73,7 @@ class BackgroundSwitcher extends React.Component {
             const bottom = splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0);
             const style = {
                 right: 'calc(1.5em + ' + right + 'px)',
-                bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
+                bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
             };
             return (
                 <div>
