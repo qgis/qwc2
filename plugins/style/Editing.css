@@ -1,8 +1,9 @@
 #Editing div.editing-body {
     padding: 0.25em;
     position: relative;
-    max-height: calc(100vh - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
-    max-height: calc(var(--vh, 1vh) * 100 - 8.25em); /* viewport - topbar - bottombar - sidebar_titlebar*/
+    /* titlebar: 2.5em */
+    max-height: calc(100vh - 2.5em - var(--topbar-height) - var(--bottombar-height)); /* viewport - sidebar_titlebar - topbar - bottombar*/
+    max-height: calc(var(--vh, 1vh) * 100 - 2.5em - var(--topbar-height) - var(--bottombar-height)); /* viewport - sidebar_titlebar - topbar - bottombar*/
     display: flex;
     flex-direction: column;
     height: 100%;

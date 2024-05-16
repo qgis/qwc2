@@ -135,8 +135,8 @@
     top: 100%;
     position: absolute;
     background-color: var(--list-bg-color);
-    max-height: calc(100vh - 4em);
-    max-height: calc(var(--vh, 1vh) * 100 - 4em);
+    max-height: calc(100vh - var(--topbar-height) - var(--bottombar-height));
+    max-height: calc(var(--vh, 1vh) * 100 - var(--topbar-height) - var(--bottombar-height));
     width: 100%;
     overflow-x: hidden;
     overflow-y: auto;

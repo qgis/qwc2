@@ -109,6 +109,7 @@ export function toggleMapTips(active) {
 }
 
 export function setTopbarHeight(height) {
+    document.querySelector(':root').style.setProperty('--topbar-height', height + 'px');
     return {
         type: SET_TOPBAR_HEIGHT,
         height
@@ -116,6 +117,7 @@ export function setTopbarHeight(height) {
 }
 
 export function setBottombarHeight(height) {
+    document.querySelector(':root').style.setProperty('--bottombar-height', height + 'px');
     return {
         type: SET_BOTTOMBAR_HEIGHT,
         height
