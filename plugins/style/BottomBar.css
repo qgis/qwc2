@@ -36,7 +36,9 @@
 #BottomBar span.bottombar-scale-combo-prefix {
     text-align: right;
     width: 2em;
+    color: var(--text-color);
 }
+
 #BottomBar div.bottombar-scale-combo > input {
     position: absolute;
     top: 0;
