@@ -558,6 +558,7 @@ class RedliningSupport extends React.Component {
                 Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))
             ];
         }
+        feature.crs = this.props.mapCrs;
         const layer = {
             id: this.props.redlining.layer,
             title: this.props.redlining.layerTitle,
