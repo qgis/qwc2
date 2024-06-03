@@ -503,7 +503,7 @@ class AttributeForm extends React.Component {
             return;
         }
         // Check for relation records which failed to commit
-        const relationValueErrors = Object.values(result.relationValues || {}).find(entry => entry.error) !== undefined;
+        const relationValueErrors = Object.values(result.relationValues || []).find(entry => (entry.features || []).find(f => f.error)) !== undefined;
         if (relationValueErrors) {
             // Relation values commit failed, switch to pick to avoid adding feature again on next attempt
             this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
