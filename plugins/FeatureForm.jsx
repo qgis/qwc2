@@ -138,22 +138,32 @@ class FeatureForm extends React.Component {
             if (layer && sublayer && !LayerUtils.sublayerVisible(layer, path)) {
                 return;
             }
+            const layerOrder = layer.params.LAYERS.split(",");
             ++pendingRequests;
             const editDataset = editConfig.editDataset || layerId;
             const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
             this.props.iface.getFeature(editDataset, pos, this.props.map.projection, scale, 96, (featureCollection) => {
                 if (featureCollection && !isEmpty(featureCollection.features)) {
-                    this.setState((state) => ({
-                        pickedFeatures: {
+                    this.setState((state) => {
+                        const newPickedFeatures = Object.fromEntries(Object.entries({
                             ...state.pickedFeatures,
                             ...featureCollection.features.reduce((res, feature) => ({
                                 ...res,
                                 [layerId + "::" + feature.id]: feature
                             }), {})
-                        },
-                        pendingRequests: state.pendingRequests - 1,
-                        selectedFeature: state.selectedFeature || (layerId + "::" + featureCollection.features[0].id)
-                    }));
+                        }).sort((a, b) => {
+                            const partsA = a[0].split("::");
+                            const partsB = b[0].split("::");
+                            const diff = layerOrder.indexOf(partsB[0]) - layerOrder.indexOf(partsA[0]);
+                            return diff === 0 ? partsA[1].localeCompare(partsB[1]) : diff;
+                        }));
+                        const selectedFeature = state.pendingRequests <= 1 && !state.selectedFeature ? Object.keys(newPickedFeatures)[0] : null;
+                        return {
+                            pickedFeatures: newPickedFeatures,
+                            pendingRequests: state.pendingRequests - 1,
+                            selectedFeature: selectedFeature
+                        };
+                    });
                 } else {
                     this.setState((state) => ({
                         pendingRequests: state.pendingRequests - 1
@@ -179,7 +189,6 @@ class FeatureForm extends React.Component {
                 const featureText = LocaleUtils.tr("featureform.feature");
                 const curLayerId = this.state.selectedFeature.split("::")[0];
                 const curConfig = this.props.theme.editConfig[curLayerId];
-                const editPermissions = curConfig.permissions || {};
                 body = (
                     <div className="feature-query-body" role="body">
                         {Object.keys(this.state.pickedFeatures).length > 1 ? (
