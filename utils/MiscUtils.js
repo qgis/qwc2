@@ -21,6 +21,7 @@ const MiscUtils = {
                 null,
                 // Original String: (\s|^)((http(s)?|(s)?ftp):\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=\u00C0-\u00FF\u0370-\u03FF]*)
                 // Escaped with https://www.freeformatter.com/json-escape.html
+                // eslint-disable-next-line
                 "(\\s|^)((http(s)?|(s)?ftp):\\\/\\\/.)?(www\\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_+.~#?&\/\/=\\u00C0-\\u00FF\\u0370-\\u03FF]*)"
             ),
             "g"

@@ -8,7 +8,6 @@
 
 import editingReducer from '../reducers/editing';
 import ReducerIndex from '../reducers/index';
-import {ExpressionFeatureCache, parseExpressionsAsync} from '../utils/EditingUtils';
 ReducerIndex.register("editing", editingReducer);
 
 export const SET_EDIT_CONTEXT = 'SET_EDIT_CONTEXT';

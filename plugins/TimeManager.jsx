@@ -55,6 +55,7 @@ const DateUnitLabels = {
 const qgisDateFormat = new Format({
     //        $dateExpr           $hour        $minute         $second             $millisecond                 $zone                 $offset
     matcher: /^(.*?)[\s,-]*([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d|60)(?:[.,](\d{9}|\d{6}|\d{1,3}))?)?[\s,-]*\(?(UTC)?[\s,-]*([+-]0\d?:?(?:[0-5]\d)?)?[\s,-]*\)?$/i,
+    // eslint-disable-next-line
     handler: function([match, dateExpr, hour, minute, second, millisecond, zone, offset]) {
         let result = {};
         if (dateExpr) {

@@ -68,7 +68,7 @@ pluginData.forEach(plugin => {
             const defaultValue = prop.defaultValue ? prop.defaultValue.value.split("\n").map(x => '`' + x.replace(' ', ' ') + '`').join("<br />") : "`undefined`";
             const type = "`" + parsePropType(prop.type).replaceAll(' ', ' ').replaceAll("\n", "`<br />`") + "`";
             output += `| ${name} | ${type} | ${prop.description.replaceAll("\n", "<br />")} | ${defaultValue} |\n`;
-        })
+        });
         output += "\n";
     }
 
@@ -79,7 +79,7 @@ pluginData.forEach(plugin => {
             output += (method.docblock || "") + "\n";
             output += "\n";
         }
-    });;
+    });
 });
 
 fs.writeFileSync(__dirname + '/../doc/plugins.md', output);

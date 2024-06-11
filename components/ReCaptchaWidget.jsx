@@ -16,7 +16,7 @@ export default class ReCaptchaWidget extends React.Component {
     }
     render() {
         return (
-            <ReCAPTCHA hl={LocaleUtils.lang()} isolated 
+            <ReCAPTCHA hl={LocaleUtils.lang()} isolated
                 onChange={value => this.props.onChange(value)}
                 onErrored={() => this.props.onChange(null)}
                 onExpired={() => this.props.onChange(null)}

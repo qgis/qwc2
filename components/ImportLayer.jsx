@@ -337,6 +337,7 @@ class ImportLayer extends React.Component {
                     viewport[0] * (1 - lpts[idx][0]) + viewport[2] * lpts[idx][0],
                     viewport[1] * (1 - lpts[idx][1]) + viewport[3] * lpts[idx][1]
                 ],
+                // eslint-disable-next-line
                 coo: Proj4js(geogCs, this.props.mapCrs, gpts[idx])
             });
             const bl = computeCorner(idxBL);

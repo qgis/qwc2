@@ -26,6 +26,7 @@ const uniqueIcons = new Set();
 icons = icons.filter(icon => {
     const iconName = path.basename(icon);
     if (uniqueIcons.has(iconName)) {
+        // eslint-disable-next-line
         console.log("* " + icon + " was overriden");
         return false;
     }
@@ -47,8 +48,10 @@ webfontsGenerator({
     fontHeight: 1000
 }, (error) => {
     if (error) {
+        // eslint-disable-next-line
         console.log('Fail!', error);
     } else {
+        // eslint-disable-next-line
         console.log('Done!');
     }
 });
