@@ -165,6 +165,7 @@ class SearchBox extends React.Component {
         }
         // Select single search result
         if (this.state.pendingSearches.length === 0 && prevState.pendingSearches.length > 0 && this.state.searchResults.zoomToUniqueResult) {
+            // eslint-disable-next-line no-unused-vars
             const uniqueResults = Object.entries(this.state.searchResults).filter(([key, value]) => value.tot_result_count === 1);
             // If a single result is returned, select it immediately if it is a feature or provider result
             if (uniqueResults.length === 1) {

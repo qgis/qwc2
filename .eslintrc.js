@@ -41,8 +41,9 @@ module.exports = {
             version: "detect"
         }
     },
+    ignorePatterns: ["utils/expr_grammar/"],
     globals: {
-    /* MOCHA */
+        /* MOCHA */
         describe: false,
         it: false,
         before: false,

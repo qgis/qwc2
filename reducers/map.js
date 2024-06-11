@@ -43,6 +43,7 @@ export default function map(state = defaultState, action) {
 
     switch (action.type) {
     case CHANGE_MAP_VIEW: {
+        // eslint-disable-next-line
         const {type, ...params} = action;
         const newState = {...state, ...params};
 

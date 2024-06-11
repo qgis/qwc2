@@ -27,8 +27,8 @@ const WINDOW_GEOMETRIES = {};
 class ResizeableWindow extends React.Component {
     static propTypes = {
         baseZIndex: PropTypes.number,
-        busyIcon: PropTypes.bool,
         bottombarHeight: PropTypes.number,
+        busyIcon: PropTypes.bool,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         extraControls: PropTypes.arrayOf(PropTypes.shape({

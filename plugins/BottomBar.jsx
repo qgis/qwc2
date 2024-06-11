@@ -30,7 +30,6 @@ import './style/BottomBar.css';
  */
 class BottomBar extends React.Component {
     static propTypes = {
-        additionalMouseCrs: PropTypes.array,
         /** Additional bottombar links */
         additionalBottomBarLinks: PropTypes.arrayOf(PropTypes.shape({
             label: PropTypes.string,
@@ -39,6 +38,7 @@ class BottomBar extends React.Component {
             urlTarget: PropTypes.string,
             icon: PropTypes.string
         })),
+        additionalMouseCrs: PropTypes.array,
         changeMousePositionState: PropTypes.func,
         changeZoomLevel: PropTypes.func,
         /** Whether to display the coordinates in the bottom bar. */
@@ -90,7 +90,7 @@ class BottomBar extends React.Component {
             <a href={entry.url} key={entry.labelMsgId ?? entry.label} onClick={(ev) => this.openUrl(ev, entry.url, entry.urlTarget, entry.labelMsgId ? LocaleUtils.tr(entry.labelMsgId) : entry.label, entry.icon)}>
                 <span className="extra_label">{entry.labelMsgId ? LocaleUtils.tr(entry.labelMsgId) : entry.label}</span>
             </a>
-        ))
+        ));
         if (this.props.viewertitleUrl) {
             bottomLinks.push((
                 <a href={this.props.viewertitleUrl} key="viewertitle" onClick={(ev) => this.openUrl(ev, this.props.viewertitleUrl, this.props.viewertitleUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"), this.props.viewertitleUrlIcon)}>
@@ -106,7 +106,8 @@ class BottomBar extends React.Component {
             ));
         }
         const enabledMouseCrs = [...this.props.additionalMouseCrs || [], this.props.map.projection, "EPSG:4326"];
-        const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, val]) => {
+        // eslint-disable-next-line no-unused-vars
+        const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, value]) => {
             return enabledMouseCrs.includes(key);
         }));
         let coordinates = null;
