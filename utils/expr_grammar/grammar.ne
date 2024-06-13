@@ -73,14 +73,18 @@ N -> float                         {% id %}
     | "attribute" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return d[4]?.properties?.[d[8]] ?? null; } %}
     | "get_feature" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")" {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], d[8], d[12]); } %}
     | "get_feature_by_id" _ "(" _ P0 _ "," _ P0 _ ")"      {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], "id", d[8]); } %}
+    | "CASE" _ when_args _ "ELSE" _ P0 _ "END"             {% function(d) { return d[2] !== undefined ? d[2] : d[6]; } %}
     | "PI"i                        {% function(d) { return Math.PI; } %}
     | "E"i                         {% function(d) { return Math.E; } %}
     | "NULL"i                      {% function(d) { return null; } %}
     | "FALSE"i                     {% function(d) { return false; } %}
     | "TRUE"i                      {% function(d) { return true; } %}
 
-var_args -> P0 {% function(d) {return [d[0]];} %}
+var_args -> P0                     {% function(d) { return [d[0]]; } %}
 var_args -> var_args _ "," _ P0    {% function(d) { return [...d[0], d[4]]; } %}
+
+when_args -> "WHEN" _ P0 _ "THEN" _ P0             {% function(d) { return d[2] ? d[6] : undefined; } %}
+when_args -> when_args _ "WHEN" _ P0 _ "THEN" _ P0 {% function(d) { return d[0] !== undefined ? d[0] : (d[4] ? d[8] : undefined); } %}
 
 # I use `float` to basically mean a number with a decimal point in it
 float ->
