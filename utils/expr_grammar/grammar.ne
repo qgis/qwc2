@@ -65,15 +65,16 @@ N -> float                         {% id %}
     | "ln" _ "(" _ P0 _ ")"        {% function(d) { return Math.log(d[4]); }  %}
     | "atan2" _ "(" _ P0 _ "," _ P0 _ ")"                  {% function(d) { return Math.atan2(d[4], d[8]); } %}
     | "pow" _ "(" _ P0 _ "," _ P0 _ ")"                    {% function(d) { return Math.pow(d[4], d[8]); } %}
+    | "CASE" _ when_args _ "ELSE" _ P0 _ "END"             {% function(d) { return d[2] !== undefined ? d[2] : d[6]; } %}
+    | "coalesce" _ "(" _ var_args _ ")"                    {% function(d) { return d[4].find(x => x !== null) ?? null; } %}
     | "if" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")"          {% function(d) { return d[4] ? d[8] : d[12]; } %}
     | "nullif" _ "(" _ P0 _ "," _ P0 _ ")"                 {% function(d) { return d[4] === d[8] ? null : d[4]; } %}
-    | "coalesce" _ "(" _ var_args _ ")"                    {% function(d) { return d[4].find(x => x !== null) ?? null; } %}
+    | "regexp_match" _ "(" _ P0 _ "," _ P0 _ ")"           {% function(d) { return d[4].search(new RegExp(d[8])) + 1; } %}
     | "attribute" _ "(" _ P0 _ ")"                         {% function(d) { return window.qwc2ExpressionParserContext.feature.properties?.[d[4]] ?? null; } %}
     | "current_value" _ "(" _ P0 _ ")"                     {% function(d) { return window.qwc2ExpressionParserContext.feature.properties?.[d[4]] ?? null; } %}
     | "attribute" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return d[4]?.properties?.[d[8]] ?? null; } %}
     | "get_feature" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")" {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], d[8], d[12]); } %}
     | "get_feature_by_id" _ "(" _ P0 _ "," _ P0 _ ")"      {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], "id", d[8]); } %}
-    | "CASE" _ when_args _ "ELSE" _ P0 _ "END"             {% function(d) { return d[2] !== undefined ? d[2] : d[6]; } %}
     | "PI"i                        {% function(d) { return Math.PI; } %}
     | "E"i                         {% function(d) { return Math.E; } %}
     | "NULL"i                      {% function(d) { return null; } %}
