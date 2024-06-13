@@ -19,7 +19,7 @@ import {LayerRole, refreshLayer} from '../actions/layers';
 import {setCurrentTaskBlocked} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import {getFeatureTemplate} from '../utils/EditingUtils';
+import {getFeatureTemplate, parseExpressionsAsync} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import AutoEditForm from './AutoEditForm';
 import LinkFeatureForm from './LinkFeatureForm';
@@ -138,7 +138,7 @@ class AttributeForm extends React.Component {
                 {this.props.editContext.geomReadOnly && !readOnly ? (
                     <div className="attrib-form-geom-readonly">{LocaleUtils.tr("editing.geomreadonly")}</div>
                 ) : null}
-                <form action="" onChange={ev => this.formChanged(ev.currentTarget)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
+                <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
                     {this.props.editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset}
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
@@ -353,7 +353,11 @@ class AttributeForm extends React.Component {
             form.observer.observe(form, {subtree: true, childList: true});
         }
     };
-    formChanged = (form) => {
+    formChanged = (ev) => {
+        const form = ev.currentTarget;
+        if (ev.target?.setCustomValidity) {
+            ev.target.setCustomValidity("");
+        }
         if (form) {
             this.setState({formValid: form.checkValidity()});
             this.props.setEditContext(this.props.editContext.id, {changed: true});
@@ -361,6 +365,36 @@ class AttributeForm extends React.Component {
     };
     onSubmit = (ev) => {
         ev.preventDefault();
+        const form = ev.target;
+
+        // Constraint validation
+        const constraintExpressions = this.props.editConfig.fields.reduce((res, cur) => {
+            if (cur.constraints?.expression) {
+                return {
+                    ...res,
+                    [cur.id]: cur.constraints?.expression
+                };
+            }
+            return res;
+        }, {});
+        parseExpressionsAsync(constraintExpressions, this.props.editContext.feature, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
+            let valid = true;
+            Object.entries(result).forEach(([key, value]) => {
+                if (value === false) {
+                    valid &= (value === true);
+                    const element = form.elements.namedItem(key);
+                    element.setCustomValidity(this.props.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation"));
+                }
+            });
+            if (!valid) {
+                this.setState({formValid: false});
+            } else {
+                this.doSubmit(form);
+            }
+        });
+    };
+    doSubmit = (form) => {
+
         this.setState({busy: true});
 
         let feature = this.props.editContext.feature;
@@ -385,10 +419,10 @@ class AttributeForm extends React.Component {
         const featureUploads = {};
 
         // Collect all values from form fields
-        const fieldnames = Array.from(ev.target.elements).map(element => element.name).filter(x => x && x !== "g-recaptcha-response");
+        const fieldnames = Array.from(form.elements).map(element => element.name).filter(x => x && x !== "g-recaptcha-response");
         fieldnames.forEach(name => {
             const fieldConfig = (curConfig.fields || []).find(field => field.id === name) || {};
-            const element = ev.target.elements.namedItem(name);
+            const element = form.elements.namedItem(name);
             if (element) {
                 const parts = name.split("__");
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
