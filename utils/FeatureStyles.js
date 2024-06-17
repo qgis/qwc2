@@ -69,8 +69,8 @@ export const END_MARKERS = {
     LINE: {src: measurehead, anchor: [0.05, 0.5], baserotation: 0}
 };
 
-export function computeFeatureStyle(feature) {
-    return {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...feature.styleOptions};
+export function computeFeatureStyle(layer, feature) {
+    return {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...layer.styleOptions, ...feature.styleOptions};
 }
 
 const defaultStyle = (feature, options) => {

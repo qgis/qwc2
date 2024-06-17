@@ -50,7 +50,7 @@ const VectorLayerUtils = {
                 if (!VectorLayerUtils.validateGeometry(feature.geometry)) {
                     continue;
                 }
-                const styleOptions = computeFeatureStyle(feature);
+                const styleOptions = computeFeatureStyle(layer, feature);
 
                 const properties = feature.properties || {};
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
