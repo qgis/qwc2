@@ -123,6 +123,7 @@
       "clearpicture": "",
       "commit": "Skicka",
       "commitfailed": "",
+      "contraintviolation": "",
       "create": "",
       "delete": "Radera",
       "discard": "Förkasta",

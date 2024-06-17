@@ -122,6 +122,7 @@
     "editing.clearpicture",
     "editing.commit",
     "editing.commitfailed",
+    "editing.contraintviolation",
     "editing.create",
     "editing.delete",
     "editing.discard",

@@ -123,6 +123,7 @@
       "clearpicture": "",
       "commit": "Potvrdit",
       "commitfailed": "",
+      "contraintviolation": "",
       "create": "Vytvořit",
       "delete": "Odstranit",
       "discard": "Vyřadit",

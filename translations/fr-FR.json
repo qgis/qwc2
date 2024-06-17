@@ -123,6 +123,7 @@
       "clearpicture": "Réinitialiser",
       "commit": "Appliquer",
       "commitfailed": "Échec de l'enregistrement",
+      "contraintviolation": "",
       "create": "Créer",
       "delete": "Supprimer",
       "discard": "Rejeter",

@@ -123,6 +123,7 @@
       "clearpicture": "Limpiar",
       "commit": "Confirmar",
       "commitfailed": "Fallo al guardar cambios",
+      "contraintviolation": "",
       "create": "Crear",
       "delete": "Borrar",
       "discard": "Descartar",

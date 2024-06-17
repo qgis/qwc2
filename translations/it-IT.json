@@ -123,6 +123,7 @@
       "clearpicture": "Cancella",
       "commit": "Salva",
       "commitfailed": "Impossibile salvare",
+      "contraintviolation": "",
       "create": "Crea",
       "delete": "Elimina",
       "discard": "Annulla",

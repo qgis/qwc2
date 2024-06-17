@@ -123,6 +123,7 @@
       "clearpicture": "",
       "commit": "Zatwierdź",
       "commitfailed": "",
+      "contraintviolation": "",
       "create": "",
       "delete": "Usuń",
       "discard": "Odrzuć",

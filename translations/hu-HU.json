@@ -123,6 +123,7 @@
       "clearpicture": "",
       "commit": "Jóváhagyás",
       "commitfailed": "",
+      "contraintviolation": "",
       "create": "",
       "delete": "Törlés",
       "discard": "Elvetés",

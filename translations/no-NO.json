@@ -123,6 +123,7 @@
       "clearpicture": "",
       "commit": "Bekreft",
       "commitfailed": "",
+      "contraintviolation": "",
       "create": "",
       "delete": "Slett",
       "discard": "Forkast",

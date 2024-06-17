@@ -123,6 +123,7 @@
       "clearpicture": "Temizle",
       "commit": "Onayla",
       "commitfailed": "Kayıt başarısız",
+      "contraintviolation": "",
       "create": "Yeni oluştur",
       "delete": "Sil",
       "discard": "İptal",

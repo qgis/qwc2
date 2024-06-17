@@ -123,6 +123,7 @@
       "clearpicture": "Elimină imaginea",
       "commit": "Salvează",
       "commitfailed": "Salvarea a eșuat",
+      "contraintviolation": "",
       "create": "Creare",
       "delete": "Ștergere",
       "discard": "Renunță",

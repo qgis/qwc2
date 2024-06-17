@@ -123,6 +123,7 @@
       "clearpicture": "Limpar imagem",
       "commit": "Commit",
       "commitfailed": "Falha de confirmação",
+      "contraintviolation": "",
       "create": "Criar",
       "delete": "Excluir",
       "discard": "Descartar",
