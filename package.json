@@ -73,6 +73,7 @@
         "@babel/preset-env": "^7.24.5",
         "@babel/preset-react": "^7.24.1",
         "@furkot/webfonts-generator": "^2.0.2",
+        "@microsoft/eslint-formatter-sarif": "^3.1.0",
         "@testing-library/dom": "^10.1.0",
         "@testing-library/jest-dom": "^6.4.6",
         "@testing-library/react": "^16.0.0",
