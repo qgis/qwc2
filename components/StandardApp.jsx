@@ -130,7 +130,8 @@ class AppInitComponent extends React.Component {
                             initialView = {
                                 center: coords,
                                 zoom: zoom,
-                                crs: params.crs || theme.mapCrs};
+                                crs: params.crs || theme.mapCrs
+                            };
                         }
                     } else if (params.e) {
                         const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x));
@@ -223,6 +224,10 @@ export default class StandardApp extends React.Component {
         );
     }
     setupTouchEvents = (el) => {
+        if (el === null) {
+            // Do nothing when unmounting
+            return;
+        }
         el.addEventListener('touchstart', ev => {
             this.touchY = ev.targetTouches[0].clientY;
         }, { passive: false });
