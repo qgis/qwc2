@@ -73,7 +73,7 @@ const VectorLayerUtils = {
                         };
                         params.styles.push(VectorLayerUtils.createSld(segment.type, feature.styleName, styleOptions, layer.opacity, dpi, scaleFactor));
                         params.labels.push(properties.segment_labels[i] || " ");
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(segment, printCrs === "EPSG:4326" ? 4 : 2));
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(segment));
                         params.labelFillColors.push(styleOptions.textFill);
                         params.labelOutlineColors.push(styleOptions.textStroke);
                         params.labelOutlineSizes.push(scaleFactor);
