@@ -62,6 +62,7 @@ class SearchBox extends React.Component {
             minScaleDenom: PropTypes.number,
             resultLimit: PropTypes.number,
             sectionsDefaultCollapsed: PropTypes.bool,
+            showLayerResultsBeforePlaces: PropTypes.bool,
             zoomToLayers: PropTypes.bool
         }),
         searchProviders: PropTypes.object,
@@ -467,10 +468,16 @@ class SearchBox extends React.Component {
         let children = [
             this.renderRecentResults(),
             this.renderFilters(fulltextResults),
-            this.renderProviderResults(),
-            this.renderPlaces(fulltextResults),
-            this.renderLayers(fulltextResults)
-        ].filter(element => element);
+            this.renderProviderResults()
+        ];
+        if (this.props.searchOptions.showLayerResultsBeforePlaces) {
+            children.push(this.renderLayers(fulltextResults));
+            children.push(this.renderPlaces(fulltextResults));
+        } else {
+            children.push(this.renderPlaces(fulltextResults));
+            children.push(this.renderLayers(fulltextResults));
+        }
+        children = children.filter(element => element);
         if (isEmpty(children)) {
             if (isEmpty(this.state.pendingSearches) && this.state.searchResults.query_text) {
                 children = (
