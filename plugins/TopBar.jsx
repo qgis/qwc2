@@ -77,8 +77,10 @@ class TopBar extends React.Component {
             resultLimit: PropTypes.number,
             /** Whether to collapse search sections by default (SearchBox only). */
             sectionsDefaultCollapsed: PropTypes.bool,
-            /** Whether to show the layer tree after selectinga theme result. */
+            /** Whether to show the layer tree after selecting a theme result. */
             showLayerAfterChangeTheme: PropTypes.bool,
+            /** Whether to show layer results before pkaces in the result menu (SearchBpx only). */
+            showLayerResultsBeforePlaces: PropTypes.bool,
             /** Whether to show provider selection menu (Search only). */
             showProviderSelection: PropTypes.bool,
             /** Whether to list the names of active providers as search field placeholder (Search only). */
