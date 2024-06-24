@@ -200,7 +200,7 @@ class FeatureSearch extends React.Component {
         };
         Object.keys(filter).forEach(layer => {
             Object.entries(values).forEach(([key, value]) => {
-                filter[layer] = filter[layer].replace(`$${key}$`, value.replace("'", "\\'"));
+                filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
             });
             params.LAYERS.push(layer);
             params.FILTER.push(layer + ":" + filter[layer]);
