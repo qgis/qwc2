@@ -611,13 +611,13 @@ class AttributeTable extends React.Component {
             } else if (state.filterOp === "=") {
                 test = (x) => (String(x).toLowerCase() === filterVal);
             } else if (state.filterOp === ">") {
-                test = (x) => (String(x).toLowerCase() > filterVal);
+                test = (x) => (Number(x) > Number(filterVal));
             } else if (state.filterOp === ">=") {
-                test = (x) => (String(x).toLowerCase() >= filterVal);
+                test = (x) => (Number(x) >= Number(filterVal));
             } else if (state.filterOp === "<=") {
-                test = (x) => (String(x).toLowerCase() <= filterVal);
+                test = (x) => (Number(x) <= Number(filterVal));
             } else if (state.filterOp === "<") {
-                test = (x) => (String(x).toLowerCase() < filterVal);
+                test = (x) => (Number(x) < Number(filterVal));
             }
             // Build value relation lookup
             const editConfig = this.props.theme.editConfig || {};
