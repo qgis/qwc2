@@ -282,7 +282,7 @@ class Redlining extends React.Component {
                         </ComboBox>
                     </span>
                 ) : null}
-                {this.props.redlining.geomType !== 'Text' ? (
+                {this.props.redlining.geomType !== 'Text' && this.props.allowGeometryLabels ? (
                     <button
                         className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
                         onClick={() => this.updateRedliningState({measurements: !this.props.redlining.measurements, style: {...this.props.redlining.style, text: ''}})}
