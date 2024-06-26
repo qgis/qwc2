@@ -145,6 +145,7 @@ const VectorLayerUtils = {
     },
     createSld(geometrytype, styleName, styleOptions, layerOpacity, dpi = 96, scaleFactor = 1.0) {
         let opts = {};
+        const dpiScale = dpi / 96 * scaleFactor;
         // Special cases
         if (styleName === 'text') {
             // Make geometry transparent
@@ -155,15 +156,14 @@ const VectorLayerUtils = {
         } else if (styleName === 'marker') {
             opts = {
                 strokeColor: [0, 0, 255, 1],
-                strokeWidth: 4,
+                strokeWidth: 1 * dpiScale,
                 fillColor: [255, 255, 255, 1],
-                circleRadius: 6
+                circleRadius: 2 * dpiScale
             };
         } else {
             // Default style
             opts = styleOptions;
         }
-        const dpiScale = dpi / 96 * scaleFactor;
 
         const ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
         const opacity =  (rgb) => {
