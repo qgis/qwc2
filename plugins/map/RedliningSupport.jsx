@@ -558,6 +558,19 @@ class RedliningSupport extends React.Component {
                 Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))
             ];
         }
+        if (feature.geometry.type === "LineString" || feature.geometry.type === "Polygon") {
+            const removeDuplicates = (coordinates) => {
+                if (Array.isArray(coordinates[0][0])) {
+                    return coordinates.map(removeDuplicates);
+                } else {
+                    return coordinates.filter((item, pos, arr) => {
+                        return pos === 0 || item[0] !== arr[pos - 1][0] || item[1] !== arr[pos - 1][1];
+                    });
+                }
+            };
+            feature.geometry.coordinates = removeDuplicates(feature.geometry.coordinates);
+        }
+
         feature.crs = this.props.mapCrs;
         const layer = {
             id: this.props.redlining.layer,
