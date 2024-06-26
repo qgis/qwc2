@@ -248,6 +248,10 @@ class AttributeTable extends React.Component {
                         <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterOp", ev.target.value)} value={this.state.filterOp}>
                             <option value="~">~</option>
                             <option value="=">=</option>
+                            <option value=">">&gt;</option>
+                            <option value=">=">&gt;=</option>
+                            <option value="<=">&lt;=</option>
+                            <option value="<">&lt;</option>
                         </select>
                         <input disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterVal", ev.target.value, true)} type="text" value={this.state.filterVal} />
                         <button className="button" disabled={this.state.changedFeatureIdx !== null} onClick={() => this.updateFilter("filterVal", "")} value={this.state.filterValue}><Icon icon="clear" /></button>
@@ -652,6 +656,14 @@ class AttributeTable extends React.Component {
                 test = (x) => (String(x).toLowerCase().includes(filterVal));
             } else if (state.filterOp === "=") {
                 test = (x) => (String(x).toLowerCase() === filterVal);
+            } else if (state.filterOp === ">") {
+                test = (x) => (String(x).toLowerCase() > filterVal);
+            } else if (state.filterOp === ">=") {
+                test = (x) => (String(x).toLowerCase() >= filterVal);
+            } else if (state.filterOp === "<=") {
+                test = (x) => (String(x).toLowerCase() <= filterVal);
+            } else if (state.filterOp === "<") {
+                test = (x) => (String(x).toLowerCase() < filterVal);
             }
             // Build value relation lookup
             const editConfig = this.props.theme.editConfig || {};
