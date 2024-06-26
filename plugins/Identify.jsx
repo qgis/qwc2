@@ -116,7 +116,9 @@ class Identify extends React.Component {
     };
     componentDidUpdate(prevProps) {
         if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
-            this.clearResults();
+            if (this.props.clearResultsOnClose) {
+                this.clearResults();
+            }
         }
         if (this.props.currentIdentifyTool === "Identify" || this.props.currentTask === "Identify") {
             if (this.state.mode === "Point") {
