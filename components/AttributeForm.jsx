@@ -62,6 +62,10 @@ class AttributeForm extends React.Component {
         formValid: true,
         captchaResponse: null
     };
+    constructor(props) {
+        super(props);
+        this.form = null;
+    }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
             this.props.setCurrentTaskBlocked(this.props.editContext.changed === true, LocaleUtils.tr("editing.unsavedchanged"));
@@ -79,6 +83,8 @@ class AttributeForm extends React.Component {
             this.loadRelationValues(this.props.editContext.feature, (newFeature) => {
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
             });
+            // Re-validate feature field constraints
+            this.validateFieldConstraints(this.props.editContext.feature);
         }
     }
     editLayerId = (layerId) => {
@@ -173,6 +179,7 @@ class AttributeForm extends React.Component {
         const newProperties = {...this.props.editContext.feature.properties, [key]: value};
         const newFeature = {...this.props.editContext.feature, properties: newProperties};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
+        this.validateFieldConstraints(newFeature);
     };
     editMapPrefix = () => {
         return (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
@@ -328,6 +335,8 @@ class AttributeForm extends React.Component {
                             this.loadRelationValues(feature, (newFeature) => {
                                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: false});
                             });
+                            // Re-validate feature field constraints
+                            this.validateFieldConstraints(feature);
                         } else {
                             this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
                         }
@@ -346,6 +355,7 @@ class AttributeForm extends React.Component {
         }
     };
     setupChangedObserver = (form) => {
+        this.form = form;
         if (form) {
             form.observer = new MutationObserver(() => {
                 this.setState({formValid: form.checkValidity()});
@@ -363,11 +373,7 @@ class AttributeForm extends React.Component {
             this.props.setEditContext(this.props.editContext.id, {changed: true});
         }
     };
-    onSubmit = (ev) => {
-        ev.preventDefault();
-        const form = ev.target;
-
-        // Constraint validation
+    validateFieldConstraints = (feature, validCallback = null) => {
         const constraintExpressions = this.props.editConfig.fields.reduce((res, cur) => {
             if (cur.constraints?.expression) {
                 return {
@@ -377,23 +383,29 @@ class AttributeForm extends React.Component {
             }
             return res;
         }, {});
-        parseExpressionsAsync(constraintExpressions, this.props.editContext.feature, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
+        parseExpressionsAsync(constraintExpressions, feature, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
             let valid = true;
             Object.entries(result).forEach(([key, value]) => {
                 if (value === false) {
                     valid &= (value === true);
-                    const element = form.elements.namedItem(key);
+                    const element = this.form.elements.namedItem(key);
                     element.setCustomValidity(this.props.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation"));
                 }
             });
             if (!valid) {
                 this.setState({formValid: false});
             } else {
-                this.doSubmit(form);
+                if (validCallback) {
+                    validCallback();
+                }
             }
         });
     };
-    doSubmit = (form) => {
+    onSubmit = (ev) => {
+        ev.preventDefault();
+        this.validateFieldConstraints(this.props.editContext.feature, this.doSubmit);
+    };
+    doSubmit = () => {
 
         this.setState({busy: true});
 
@@ -419,10 +431,10 @@ class AttributeForm extends React.Component {
         const featureUploads = {};
 
         // Collect all values from form fields
-        const fieldnames = Array.from(form.elements).map(element => element.name).filter(x => x && x !== "g-recaptcha-response");
+        const fieldnames = Array.from(this.form.elements).map(element => element.name).filter(x => x && x !== "g-recaptcha-response");
         fieldnames.forEach(name => {
             const fieldConfig = (curConfig.fields || []).find(field => field.id === name) || {};
-            const element = form.elements.namedItem(name);
+            const element = this.form.elements.namedItem(name);
             if (element) {
                 const parts = name.split("__");
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
@@ -576,6 +588,8 @@ class AttributeForm extends React.Component {
                     this.loadRelationValues(result, (newFeature) => {
                         this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: newFeature, changed: false});
                     });
+                    // Re-validate feature field constraints
+                    this.validateFieldConstraints(result);
                 } else {
                     this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: result, changed: false});
                 }
