@@ -72,9 +72,10 @@ export default class PrintFrame extends React.Component {
                 width: Math.abs(pixp2[0] - pixp1[0]),
                 height: Math.abs(pixp2[1] - pixp1[1])
             };
-            this.setState(newState);
+            this.setState(newState, this.notifyBBox);
+        } else {
+            this.notifyBBox();
         }
-        this.endSelection();
     };
     startSelection = (ev) => {
         if (ev.button === 1) {
@@ -111,21 +112,24 @@ export default class PrintFrame extends React.Component {
     endSelection = () => {
         if (this.state.moving) {
             this.setState({moving: false});
-            const getCoordinateFromPixel = MapUtils.getHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK);
-            const p1 = getCoordinateFromPixel([this.state.x, this.state.y]);
-            const p2 = getCoordinateFromPixel([this.state.x + this.state.width, this.state.y + this.state.height]);
-            const bbox = [
-                Math.min(p1[0], p2[0]),
-                Math.min(p1[1], p2[1]),
-                Math.max(p1[0], p2[0]),
-                Math.max(p1[1], p2[1])
-            ];
-            if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
-                const dpiScale = this.props.dpi / 96;
-                this.props.bboxSelected(bbox, this.props.map.projection, [this.state.width * dpiScale, this.state.height * dpiScale]);
-            } else {
-                this.props.bboxSelected(null, this.props.map.projection, [0, 0]);
-            }
+            this.notifyBBox();
+        }
+    };
+    notifyBBox = () => {
+        const getCoordinateFromPixel = MapUtils.getHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK);
+        const p1 = getCoordinateFromPixel([this.state.x, this.state.y]);
+        const p2 = getCoordinateFromPixel([this.state.x + this.state.width, this.state.y + this.state.height]);
+        const bbox = [
+            Math.min(p1[0], p2[0]),
+            Math.min(p1[1], p2[1]),
+            Math.max(p1[0], p2[0]),
+            Math.max(p1[1], p2[1])
+        ];
+        if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
+            const dpiScale = this.props.dpi / 96;
+            this.props.bboxSelected(bbox, this.props.map.projection, [this.state.width * dpiScale, this.state.height * dpiScale]);
+        } else {
+            this.props.bboxSelected(null, this.props.map.projection, [0, 0]);
         }
     };
     render() {
