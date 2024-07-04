@@ -76,7 +76,9 @@ class Bookmark extends React.Component {
                     <div className="bookmark-body" role="body">
                         <h4>{LocaleUtils.tr("bookmark.manage")}</h4>
                         <div className="bookmark-create">
-                            <input onChange={ev => this.setState({description: ev.target.value})} placeholder={placeholder} type="text" value={this.state.description} />
+                            <input onChange={ev => this.setState({description: ev.target.value})}
+                                   onKeyDown={ev => {if (ev.key === "Enter" && this.state.description !== "") { this.addBookmark(); }}}
+                                   placeholder={placeholder} type="text"  value={this.state.description} />
                         </div>
                         <div className="bookmark-actions">
                             <span className="bookmark-actions-buttonbox">
