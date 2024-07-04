@@ -77,7 +77,7 @@ class MapExport extends React.Component {
         theme: PropTypes.object
     };
     static defaultProps = {
-        defaultScaleFactor: 0.5,
+        defaultScaleFactor: 1,
         exportExternalLayers: true,
         side: 'right',
         pageSizes: [
