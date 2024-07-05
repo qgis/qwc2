@@ -43,9 +43,7 @@ const VectorLayerUtils = {
             if (layer.type !== 'vector' || (layer.features || []).length === 0 || layer.visibility === false || layer.skipPrint === true) {
                 continue;
             }
-            const features = layer.features.map(feature =>
-                feature.geometry.type === "Polygon" ? simplepolygon(feature).features.map(f => ({...feature, geometry: f.geometry})) : feature
-            ).flat();
+            const features = layer.features.map(VectorLayerUtils.simplifyFeature).flat();
             for (const feature of features) {
                 if (!VectorLayerUtils.validateGeometry(feature.geometry)) {
                     continue;
@@ -115,6 +113,26 @@ const VectorLayerUtils = {
             }
         }
         return params;
+    },
+    simplifyFeature(feature) {
+        if (feature.geometry.type === "MultiPolygon") {
+            return feature.geometry.coodinates.map(part => {
+                return VectorLayerUtils.simplifyFeature({
+                    ...feature,
+                    geometry: {type: "Polygon", coordinates: part}
+                });
+            });
+        } else if (feature.geometry.type === "Polygon") {
+            return simplepolygon(feature).features.map((feat, idx, features) => {
+                if (feat.properties.parent >= 0) {
+                    features[feat.properties.parent].geometry.coordinates.push(feat.geometry.coordinates[0]);
+                    return null;
+                }
+                return feat;
+            }).filter(x => x).map(feat => ({...feature, geometry: feat.geometry}));
+        } else {
+            return feature;
+        }
     },
     validateGeometry(geometry) {
         if (!geometry) {
