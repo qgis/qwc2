@@ -1,33 +1,42 @@
 div.portal-topbar {
-    background-color: var(--titlebar-bg-color);
+    background-color: lightgray;
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
-    height: 3.5em;
+    height: 4em;
     z-index: 201;
     display: flex;
     align-items: center;
 }
 
 span.portal-topbar-text {
-    color: var(--titlebar-text-color);
+    color: #595959;
     padding: 0 1.5em 0 0.5em;
     font-weight: bold;
+    margin-left: 1.5em;
 }
 
 img.portal-logo {
     width: auto;
     height: 3.5em;
     flex: 0 0 auto;
+    margin-left: 1em;
 }
 
 input.portal-search-field {
-    flex: 1 0 auto;
     height: 2em;
-    max-width: 70ch;
-    background-color: var(--input-bg-color);
-    border: 1px solid var(--border-color);
+    background-color: white;
+    border: 1px solid #bbb;
+    display: none;
+}
+
+@media screen and (min-width: 426px) {
+    input.portal-search-field {
+        display: block;
+        max-width: 70ch;
+        flex: 1 1 auto;
+    }
 }
 
 span.portal-topbar-spacer {
@@ -40,35 +49,34 @@ div.portal-topbar div.AppMenu {
 }
 
 div.portal-topbar div.AppMenu div.appmenu-menu-container {
-    height: calc(100vh - 5.75em);
-    background-color: var(--app-menu-bg-color);
+    height: calc(100vh - 6.75em);
+    background-color: white;
 }
 
 div.portal-topbar div.AppMenu ul.appmenu-menu li:last-child {
-    border-bottom: 1px solid var(--app-menu-text-color);
+    border-bottom: 1px solid #595959;
 }
 
 span.portal-menu-button {
     margin-right: 1em;
-    width: 19em;
     display: inline-block;
 }
 
 span.portal-menu-label {
     font-weight: bold;
-    color: var(--titlebar-text-color);
+    color: #595959;
+    display: none;
 }
 
 .portal-menu-icon {
-    color: var(--titlebar-text-color);
+    color: #595959;
     padding: 0.25em;
     margin: 0 1em;
-    border: 2px solid var(--titlebar-text-color);
+    border: 2px solid #595959;
 }
 
-
 div.portal-body {
-    background-color: var(--container-bg-color);
+    background-color: white;
     position: fixed;
     left: 0;
     right: 0;
@@ -86,11 +94,12 @@ div.portal-body-menuvisible div.ThemeList {
 
 div.portal-body div.ThemeList {
     flex: 1 1 auto;
+    margin: 2em 0 2em 2em;
 }
 
 div.portal-bottombar {
-    background-color: var(--titlebar-bg-color);
-    color: var(--titlebar-text-color);
+    background-color: lightgray;
+    color: #000000;
     position: fixed;
     left: 0;
     right: 0;
@@ -105,6 +114,7 @@ div.portal-bottombar {
 div.portal-bottombar-user {
     flex: 0 0 auto;
     padding: 0 0.5em;
+    margin-left: 1em;
 }
 
 div.portal-bottombar-user > span.icon {
@@ -120,10 +130,11 @@ div.portal-bottombar-links {
 }
 
 div.portal-bottombar-links > a {
-    color: var(--titlebar-text-color);
+    color: #595959;
     padding: 0 0.5em;
+    margin-right: 1em;
 }
 
 div.portal-bottombar-links > a:not(:last-child) {
-    border-right: 1px solid var(--titlebar-text-color);
+    border-right: 1px solid #595959;
 }
