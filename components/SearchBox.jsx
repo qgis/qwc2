@@ -565,7 +565,9 @@ class SearchBox extends React.Component {
         if (isEmpty(this.state.searchResults) && this.props.theme) {
             this.startSearch();
         }
-        this.toggleFilterOptions(false);
+        if (this.props.searchOptions.allowSearchFilters) {
+            this.toggleFilterOptions(false);
+        }
     };
     onBlur = () => {
         if (this.preventBlur && this.searchBox) {
