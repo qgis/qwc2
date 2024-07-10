@@ -118,7 +118,7 @@ const VectorLayerUtils = {
         if (!feature.geometry) {
             return feature;
         } else if (feature.geometry.type === "MultiPolygon") {
-            return feature.geometry.coodinates.map(part => {
+            return feature.geometry.coordinates.map(part => {
                 return VectorLayerUtils.simplifyFeature({
                     ...feature,
                     geometry: {type: "Polygon", coordinates: part}
