@@ -115,7 +115,9 @@ const VectorLayerUtils = {
         return params;
     },
     simplifyFeature(feature) {
-        if (feature.geometry.type === "MultiPolygon") {
+        if (!feature.geometry) {
+            return feature;
+        } else if (feature.geometry.type === "MultiPolygon") {
             return feature.geometry.coodinates.map(part => {
                 return VectorLayerUtils.simplifyFeature({
                     ...feature,
