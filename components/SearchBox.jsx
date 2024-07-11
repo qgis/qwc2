@@ -67,6 +67,7 @@ class SearchBox extends React.Component {
             sectionsDefaultCollapsed: PropTypes.bool,
             showLayerAfterChangeTheme: PropTypes.bool,
             showLayerResultsBeforePlaces: PropTypes.bool,
+            showResultInSearchText: PropTypes.bool,
             zoomToLayers: PropTypes.bool
         }),
         searchProviders: PropTypes.object,
@@ -762,10 +763,10 @@ class SearchBox extends React.Component {
                 tot_result_count: 1
             }
         };
-        this.setState({
-            searchText: text,
+        this.setState(state => ({
+            searchText: this.props.searchOptions.showResultInSearchText !== false ? text : state.searchText,
             searchResults: results
-        });
+        }));
     };
     selectProviderResult = (group, result, provider, zoom = true) => {
         this.setProviderResult(result.text.replace(/<\/?\w+\s*\/?>/g, ''), provider, group, result);
@@ -904,7 +905,7 @@ class SearchBox extends React.Component {
                 }
             };
             return {
-                searchText: text,
+                searchText: this.props.searchOptions.showResultInSearchText !== false ? text : state.searchText,
                 searchResults: results
             };
         });
@@ -966,10 +967,10 @@ class SearchBox extends React.Component {
                 results: [{dataproduct: result}]
             }
         };
-        this.setState({
-            searchText: text,
+        this.setState(state => ({
+            searchText: this.props.searchOptions.showResultInSearchText !== false ? text : state.searchText,
             searchResults: results
-        });
+        }));
     };
     selectLayerResult = (result, info = false) => {
         if (!info) {
