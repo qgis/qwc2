@@ -338,6 +338,9 @@ class QtDesignerForm extends React.Component {
                 </div>
             );
         } else if (widget.class === "QTextEdit" || widget.class === "QTextBrowser" || widget.class === "QPlainTextEdit") {
+            if ((feature.properties || {})[widget.name] === null) {
+                value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
+            }
             if (this.props.report) {
                 return (<div className="qt-designer-form-textarea">{value}</div>);
             } else {
@@ -356,6 +359,8 @@ class QtDesignerForm extends React.Component {
             } else {
                 if (fieldConstraints.prec !== undefined && typeof value === 'number') {
                     value = value.toFixed(fieldConstraints.prec);
+                } else if ((feature.properties || {})[widget.name] === null) {
+                    value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
                 }
                 if (this.props.report) {
                     return (<div style={fontStyle}>{value || inputConstraints.placeholder}</div>);
