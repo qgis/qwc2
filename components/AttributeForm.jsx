@@ -423,6 +423,7 @@ class AttributeForm extends React.Component {
 
         const curConfig = this.props.editConfig;
         const mapPrefix = this.editMapPrefix();
+        const textNullValue = ConfigUtils.getConfigProp("editTextNullValue");
 
         // Keep relation values separate
         const relationValues = clone(feature.relationValues || {});
@@ -448,8 +449,13 @@ class AttributeForm extends React.Component {
                     const field = parts.slice(1, parts.length - 1).join("__");
 
                     const nrelFieldConfig = (this.props.theme.editConfig[tablename].fields || []).find(f => f.id === field) || {};
-                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(nrelFieldConfig.type)) && element.value === "") {
+                    const nrelFieldDataType = nrelFieldConfig.data_type ?? fieldConfig.type;
+                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(nrelFieldDataType)) && element.value === "") {
                         // Set empty value to null instead of empty string
+                        value = null;
+                    }
+                    if (nrelFieldDataType === "text" && textNullValue !== undefined && element.value === textNullValue) {
+                        // Convert text NULL to null
                         value = null;
                     }
 
@@ -477,6 +483,10 @@ class AttributeForm extends React.Component {
                     const dataType = fieldConfig.data_type ?? fieldConfig.type;
                     if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(dataType)) && element.value === "") {
                         // Set empty value to null instead of empty string
+                        value = null;
+                    }
+                    if (dataType === "text" && textNullValue !== undefined && element.value === textNullValue) {
+                        // Convert text NULL to null
                         value = null;
                     }
                     if (!(name in feature.properties)) {

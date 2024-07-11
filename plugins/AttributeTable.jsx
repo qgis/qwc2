@@ -457,10 +457,16 @@ class AttributeTable extends React.Component {
         } else if (field.type === "file") {
             return (<EditUploadField constraints={constraints} dataset={this.editLayerId(this.state.selectedLayer)} disabled={disabled} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
+            const updateTextField = (val) => {
+                const textNullValue = ConfigUtils.getConfigProp("editTextNullValue");
+                return updateField(field.id, textNullValue !== undefined && val === textNullValue ? null : val);
+            };
+            if (feature.properties[field.id] === null) {
+                value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
+            }
             input = (
                 <TextInput disabled={disabled} multiline={constraints.multiline} name={field.id}
-                    onChange={(val) => updateField(field.id, val)}
-                    required={constraints.required} value={value} />
+                    onChange={updateTextField} required={constraints.required} value={value} />
             );
         } else {
             input = (
