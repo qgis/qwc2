@@ -20,9 +20,10 @@ import NumericInputWindow from '../../components/NumericInputWindow';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
 import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
+import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
-import LocaleUtils from '../../utils/LocaleUtils';
+
 
 const GeomTypeConfig = {
     Text: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
