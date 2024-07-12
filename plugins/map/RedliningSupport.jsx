@@ -22,6 +22,7 @@ import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
+import LocaleUtils from '../../utils/LocaleUtils';
 
 const GeomTypeConfig = {
     Text: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
@@ -574,7 +575,7 @@ class RedliningSupport extends React.Component {
         feature.crs = this.props.mapCrs;
         const layer = {
             id: this.props.redlining.layer,
-            title: this.props.redlining.layerTitle,
+            title: LocaleUtils.tr(this.props.redlining.layerTitle),
             role: LayerRole.USERLAYER,
             queryable: false
         };

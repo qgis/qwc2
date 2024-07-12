@@ -18,7 +18,7 @@ const defaultState = {
         text: ""
     },
     layer: 'redlining',
-    layerTitle: 'Redlining',
+    layerTitle: 'redlining.drawlayer',
     selectedFeature: null,
     drawMultiple: true,
     measurements: false,

@@ -380,6 +380,7 @@
       "circle": "Cerchio",
       "delete": "Elimina",
       "draw": "Disegna",
+      "drawlayer": "",
       "edit": "Modifica",
       "ellipse": "Ellisse",
       "freehand": "Mano libera",

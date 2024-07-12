@@ -380,6 +380,7 @@
       "circle": "Kreis",
       "delete": "Löschen",
       "draw": "Zeichnen",
+      "drawlayer": "",
       "edit": "Bearbeiten",
       "ellipse": "Ellipse",
       "freehand": "Freihand",

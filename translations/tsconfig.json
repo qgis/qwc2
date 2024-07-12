@@ -317,6 +317,7 @@
     "redlining.circle",
     "redlining.delete",
     "redlining.draw",
+    "redlining.drawlayer",
     "redlining.edit",
     "redlining.ellipse",
     "redlining.freehand",
