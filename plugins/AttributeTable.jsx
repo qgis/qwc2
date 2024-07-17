@@ -461,7 +461,7 @@ class AttributeTable extends React.Component {
                 const textNullValue = ConfigUtils.getConfigProp("editTextNullValue");
                 return updateField(field.id, textNullValue !== undefined && val === textNullValue ? null : val);
             };
-            if (feature.properties[field.id] === null) {
+            if ((feature.properties[field.id] ?? null) === null) {
                 value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
             }
             input = (
