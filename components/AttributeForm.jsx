@@ -20,6 +20,7 @@ import LinkFeatureForm from './LinkFeatureForm';
 import QtDesignerForm from './QtDesignerForm';
 import ButtonBar from './widgets/ButtonBar';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import './style/AttributeForm.css';
 
