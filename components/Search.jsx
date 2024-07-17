@@ -537,7 +537,7 @@ class Search extends React.Component {
             const text = LocaleUtils.tr("search.existinglayer") + ": " + existingLayerName;
             this.props.showNotification("existinglayer", text);
         } else {
-            this.props.addLayer(layer);
+            this.props.addLayer({...layer, role: LayerRole.USERLAYER});
         }
         if (this.props.searchOptions.zoomToLayers && layer.bbox) {
             this.props.zoomToExtent(layer.bbox.bounds, layer.bbox.crs);
