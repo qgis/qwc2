@@ -56,7 +56,8 @@ class MapTip extends React.Component {
     };
     state = {
         reqId: null,
-        maptips: [],
+        maptips: {},
+        maptipsOrder: [],
         pos: null
     };
     componentDidUpdate(prevProps) {
@@ -82,7 +83,7 @@ class MapTip extends React.Component {
         this.timeoutId = null;
         if (this.state.pos) {
             this.props.removeLayer('maptipselection');
-            this.setState({maptips: [], pos: null, reqId: null});
+            this.setState({maptips: {}, maptipsOrder: [], pos: null, reqId: null});
         }
     };
     queryMapTip = (pos) => {
@@ -96,44 +97,49 @@ class MapTip extends React.Component {
             with_maptip: true,
             with_htmlcontent: false
         };
-        const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
-        let queryLayers = this.props.layers.reduce((accum, l) => {
-            return l.role === LayerRole.THEME ? accum.concat(l.queryLayers) : accum;
-        }, []).join(",");
-        if (!layer || !queryLayers) {
-            return;
-        }
-        if (!ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) && layer.drawingOrder) {
-            queryLayers = layer.drawingOrder.slice(0).reverse().filter(entry => layer.queryLayers.includes(entry)).join(",");
-        }
         const reqId = uuidv1();
         this.setState({reqId: reqId});
-
-        const request = IdentifyUtils.buildRequest(layer, queryLayers, this.props.mousepos.coordinate, this.props.map, options);
-        IdentifyUtils.sendRequest(request, (response) => {
-            if (this.state.reqId === reqId) {
-                const mapTips = [];
-                const features = [];
-                if (response) {
-                    const result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
-                    for (const layerName of request.params.layers.split(",")) {
-                        for (const feature of result[layerName] || []) {
-                            if (feature.properties.maptip) {
-                                features.push(feature);
-                                mapTips.push(feature.properties.maptip);
+        this.props.layers.forEach(layer => {
+            if (
+                !(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) ||
+                !(layer.infoFormats || []).includes("text/xml") || isEmpty(layer.queryLayers)
+            ) {
+                return;
+            }
+            let queryLayers = layer.queryLayers;
+            if (!isEmpty(layer.drawingOrder)) {
+                queryLayers = layer.drawingOrder.slice(0).reverse().filter(entry => layer.queryLayers.includes(entry));
+            }
+            const request = IdentifyUtils.buildRequest(layer, queryLayers.join(","), this.props.mousepos.coordinate, this.props.map, options);
+            IdentifyUtils.sendRequest(request, (response) => {
+                if (this.state.reqId === reqId) {
+                    const mapTips = {};
+                    const features = [];
+                    if (response) {
+                        const result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                        for (const layerName of request.params.layers.split(",")) {
+                            for (const feature of result[layerName] || []) {
+                                if (feature.properties.maptip) {
+                                    features.push(feature);
+                                    mapTips[layer.name + ":" + layerName] = feature.properties.maptip;
+                                }
                             }
                         }
                     }
+                    if (this.props.showFeatureSelection && !isEmpty(features)) {
+                        const sellayer = {
+                            id: "maptipselection",
+                            role: LayerRole.SELECTION
+                        };
+                        this.props.addLayerFeatures(sellayer, features, true);
+                    }
+                    this.setState((state) => ({
+                        pos: pos,
+                        maptips: {...state.maptips, ...mapTips},
+                        maptipsOrder: [...state.maptipsOrder, ...queryLayers.map(l => layer.name + ":" + l)]
+                    }));
                 }
-                if (this.props.showFeatureSelection && !isEmpty(features)) {
-                    const sellayer = {
-                        id: "maptipselection",
-                        role: LayerRole.SELECTION
-                    };
-                    this.props.addLayerFeatures(sellayer, features, true);
-                }
-                this.setState({pos: pos, maptips: mapTips, reqId: null});
-            }
+            });
         });
     };
     render() {
@@ -156,11 +162,11 @@ class MapTip extends React.Component {
                     id="MapTip" key="MapTip"
                     ref={this.positionMapTip}
                     style={style}>
-                    {this.state.maptips.map((maptip, idx) => (
-                        <div key={"tip" + idx}>
-                            {this.parsedContent(maptip)}
+                    {this.state.maptipsOrder.map(key => this.state.maptips[key] ? (
+                        <div key={key}>
+                            {this.parsedContent(this.state.maptips[key])}
                         </div>
-                    ))}
+                    ) : null)}
                 </div>
             )];
         }
