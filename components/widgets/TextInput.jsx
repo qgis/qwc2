@@ -18,6 +18,7 @@ import './style/TextInput.css';
 
 class TextInput extends React.Component {
     static propTypes = {
+        addLinkAnchors: PropTypes.bool,
         className: PropTypes.string,
         disabled: PropTypes.bool,
         multiline: PropTypes.bool,
@@ -201,8 +202,12 @@ class TextInput extends React.Component {
     };
     commit = () => {
         if (this.state.changed) {
-            const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
-            this.props.onChange(valueWithLinks);
+            if (this.props.addLinkAnchors) {
+                const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
+                this.props.onChange(valueWithLinks);
+            } else {
+                this.props.onChange(this.state.curValue);
+            }
         }
     };
     startResize = (ev) => {
