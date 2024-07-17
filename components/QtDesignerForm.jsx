@@ -344,7 +344,8 @@ class QtDesignerForm extends React.Component {
             if (this.props.report) {
                 return (<div className="qt-designer-form-textarea">{value}</div>);
             } else {
-                return (<TextInput multiline name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
+                const addLinkAnchors = ConfigUtils.getConfigProp("editingAddLinkAnchors") !== false;
+                return (<TextInput addLinkAnchors={addLinkAnchors} multiline name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
             }
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
@@ -365,7 +366,8 @@ class QtDesignerForm extends React.Component {
                 if (this.props.report) {
                     return (<div style={fontStyle}>{value || inputConstraints.placeholder}</div>);
                 } else {
-                    return (<TextInput name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
+                    const addLinkAnchors = ConfigUtils.getConfigProp("editingAddLinkAnchors") !== false;
+                    return (<TextInput addLinkAnchors={addLinkAnchors} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
                 }
             }
         } else if (widget.class === "QCheckBox" || widget.class === "QRadioButton") {

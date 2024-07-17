@@ -425,8 +425,9 @@ class AttributeTable extends React.Component {
             if ((feature.properties[field.id] ?? null) === null) {
                 value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
             }
+            const addLinkAnchors = ConfigUtils.getConfigProp("editingAddLinkAnchors") !== false;
             input = (
-                <TextInput disabled={disabled} multiline={constraints.multiline} name={field.id}
+                <TextInput addLinkAnchors={addLinkAnchors} disabled={disabled} multiline={constraints.multiline} name={field.id}
                     onChange={updateTextField} required={constraints.required} value={value} />
             );
         } else {
