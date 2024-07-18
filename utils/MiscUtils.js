@@ -94,7 +94,7 @@ const MiscUtils = {
         return [el];
     },
     capitalizeFirst(text) {
-        return text.slice(0, 1).toUpperCase() + text.slice(1).toLowerCase();
+        return text.slice(0, 1).toUpperCase() + text.slice(1);
     },
     isBrightColor(hex) {
         const color = +("0x" + hex.slice(1).replace(hex.length < 5 && /./g, '$&$&'));
