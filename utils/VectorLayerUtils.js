@@ -43,7 +43,12 @@ const VectorLayerUtils = {
             if (layer.type !== 'vector' || (layer.features || []).length === 0 || layer.visibility === false || layer.skipPrint === true) {
                 continue;
             }
-            const features = layer.features.map(VectorLayerUtils.simplifyFeature).flat();
+            const features = layer.features.map(feature => {
+                if (feature.geometry?.coordinates) {
+                    feature = {...feature, geometry: {...feature.geometry, coordinates: VectorLayerUtils.removeDuplicateNodes(feature.geometry.coordinates)}};
+                }
+                return VectorLayerUtils.simplifyFeature(feature);
+            }).flat();
             for (const feature of features) {
                 if (!VectorLayerUtils.validateGeometry(feature.geometry)) {
                     continue;
@@ -114,6 +119,15 @@ const VectorLayerUtils = {
         }
         return params;
     },
+    removeDuplicateNodes(coordinates) {
+        if (Array.isArray(coordinates[0][0])) {
+            return coordinates.map(VectorLayerUtils.removeDuplicateNodes);
+        } else {
+            return coordinates.filter((item, pos, arr) => {
+                return pos === 0 || item[0] !== arr[pos - 1][0] || item[1] !== arr[pos - 1][1];
+            });
+        }
+    },
     simplifyFeature(feature) {
         if (!feature.geometry) {
             return feature;
@@ -143,16 +157,6 @@ const VectorLayerUtils = {
         if (geometry.type === "Point") {
             return !isEmpty(geometry.coordinates);
         }
-        const removeDuplicates = (coordinates) => {
-            if (Array.isArray(coordinates[0][0])) {
-                return coordinates.map(removeDuplicates);
-            } else {
-                return coordinates.filter((item, pos, arr) => {
-                    return pos === 0 || item[0] !== arr[pos - 1][0] || item[1] !== arr[pos - 1][1];
-                });
-            }
-        };
-        const cleanCoordinates = removeDuplicates(geometry.coordinates);
         const minLength = geometry.type.endsWith("LineString") ? 2 : 3;
         const isDegenerate = (coordinates) => {
             if (Array.isArray(coordinates[0][0])) {
@@ -161,7 +165,7 @@ const VectorLayerUtils = {
                 return coordinates.length < minLength;
             }
         };
-        return !isDegenerate(cleanCoordinates);
+        return !isDegenerate(geometry.coordinates);
     },
     createSld(geometrytype, styleName, styleOptions, layerOpacity, dpi = 96, scaleFactor = 1.0) {
         let opts = {};
