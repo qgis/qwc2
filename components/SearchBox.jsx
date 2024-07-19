@@ -747,17 +747,19 @@ class SearchBox extends React.Component {
         }
     };
     setProviderResult = (text, provider, group, result) => {
-        const results = {
-            query_text: text,
-            [provider]: {
-                results: [{...group, items: [result]}],
-                tot_result_count: 1
-            }
-        };
-        this.setState(state => ({
-            searchText: this.props.searchOptions.showResultInSearchText !== false ? text : state.searchText,
-            searchResults: results
-        }));
+        if (this.props.searchOptions.showResultInSearchText !== false) {
+            const results = {
+                query_text: text,
+                [provider]: {
+                    results: [{...group, items: [result]}],
+                    tot_result_count: 1
+                }
+            };
+            this.setState({
+                searchText: text,
+                searchResults: results
+            });
+        }
     };
     selectProviderResult = (group, result, provider, zoom = true) => {
         this.setProviderResult(result.text.replace(/<\/?\w+\s*\/?>/g, ''), provider, group, result);
@@ -877,23 +879,25 @@ class SearchBox extends React.Component {
         };
     };
     setFeatureResult = (text, result) => {
-        this.setState(state => {
-            const results = {
-                query_text: text,
-                __fulltext: {
-                    result_counts: [{
-                        ...state.searchResults.__fulltext.result_counts.find(entry => entry.dataproduct_id === result.dataproduct_id),
-                        count: 1
-                    }],
-                    tot_result_count: 1,
-                    results: [{feature: result}]
-                }
-            };
-            return {
-                searchText: this.props.searchOptions.showResultInSearchText !== false ? text : state.searchText,
-                searchResults: results
-            };
-        });
+        if (this.props.searchOptions.showResultInSearchText !== false) {
+            this.setState(state => {
+                const results = {
+                    query_text: text,
+                    __fulltext: {
+                        result_counts: [{
+                            ...state.searchResults.__fulltext.result_counts.find(entry => entry.dataproduct_id === result.dataproduct_id),
+                            count: 1
+                        }],
+                        tot_result_count: 1,
+                        results: [{feature: result}]
+                    }
+                };
+                return {
+                    searchText: text,
+                    searchResults: results
+                };
+            });
+        }
     };
     selectFeatureResult = (result) => {
         this.setFeatureResult(result.display, result);
@@ -944,18 +948,20 @@ class SearchBox extends React.Component {
         this.props.addLayerFeatures(layer, data.features, true);
     };
     setLayerResult = (text, result) => {
-        const results = {
-            query_text: text,
-            __fulltext: {
-                result_counts: [],
-                tot_result_count: 0,
-                results: [{dataproduct: result}]
-            }
-        };
-        this.setState(state => ({
-            searchText: this.props.searchOptions.showResultInSearchText !== false ? text : state.searchText,
-            searchResults: results
-        }));
+        if (this.props.searchOptions.showResultInSearchText !== false) {
+            const results = {
+                query_text: text,
+                __fulltext: {
+                    result_counts: [],
+                    tot_result_count: 0,
+                    results: [{dataproduct: result}]
+                }
+            };
+            this.setState({
+                searchText: text,
+                searchResults: results
+            });
+        }
     };
     selectLayerResult = (result, info = false) => {
         if (!info) {
