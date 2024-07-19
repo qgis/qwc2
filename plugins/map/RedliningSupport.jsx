@@ -22,6 +22,7 @@ import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
+import VectorLayerUtils from '../../utils/VectorLayerUtils';
 
 const GeomTypeConfig = {
     Text: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
@@ -559,16 +560,7 @@ class RedliningSupport extends React.Component {
             ];
         }
         if (feature.geometry.type === "LineString" || feature.geometry.type === "Polygon") {
-            const removeDuplicates = (coordinates) => {
-                if (Array.isArray(coordinates[0][0])) {
-                    return coordinates.map(removeDuplicates);
-                } else {
-                    return coordinates.filter((item, pos, arr) => {
-                        return pos === 0 || item[0] !== arr[pos - 1][0] || item[1] !== arr[pos - 1][1];
-                    });
-                }
-            };
-            feature.geometry.coordinates = removeDuplicates(feature.geometry.coordinates);
+            feature.geometry.coordinates = VectorLayerUtils.removeDuplicateNodes(feature.geometry.coordinates);
         }
 
         feature.crs = this.props.mapCrs;
