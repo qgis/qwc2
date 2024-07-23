@@ -122,10 +122,12 @@ const VectorLayerUtils = {
     removeDuplicateNodes(coordinates) {
         if (Array.isArray(coordinates[0][0])) {
             return coordinates.map(VectorLayerUtils.removeDuplicateNodes);
-        } else {
+        } else if (Array.isArray(coordinates[0])) {
             return coordinates.filter((item, pos, arr) => {
                 return pos === 0 || item[0] !== arr[pos - 1][0] || item[1] !== arr[pos - 1][1];
             });
+        } else {
+            return coordinates;
         }
     },
     simplifyFeature(feature) {
