@@ -23,6 +23,7 @@ import {changeBrowserProperties} from '../actions/browser';
 import {loadLocale} from '../actions/locale';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {addLayer} from '../actions/layers';
+import {setBottombarHeight, setTopbarHeight} from '../actions/map';
 import {changeSearch} from '../actions/search';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import {setCurrentTask} from '../actions/task';
@@ -61,10 +62,12 @@ class AppInitComponent extends React.Component {
         changeSearch: PropTypes.func,
         initialParams: PropTypes.object,
         mapSize: PropTypes.object,
+        setBottombarHeight: PropTypes.func,
         setColorScheme: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         setStartupParameters: PropTypes.func,
+        setTopbarHeight: PropTypes.func,
         showNotification: PropTypes.func,
         themesLoaded: PropTypes.func
     };
@@ -88,6 +91,10 @@ class AppInitComponent extends React.Component {
         const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
         const colorScheme = this.props.initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
         this.props.setColorScheme(colorScheme);
+
+        // Set initial bottom/topbar height to zero, the components will set the proper height when initialized
+        this.props.setTopbarHeight(0);
+        this.props.setBottombarHeight(0);
 
         // Load themes.json
         axios.get("themes.json").then(response => {
@@ -179,7 +186,9 @@ const AppInit = connect(state => ({
     setCurrentTheme: setCurrentTheme,
     setStartupParameters: setStartupParameters,
     addLayer: addLayer,
-    showNotification: showNotification
+    showNotification: showNotification,
+    setTopbarHeight: setTopbarHeight,
+    setBottombarHeight: setBottombarHeight
 })(AppInitComponent);
 
 
