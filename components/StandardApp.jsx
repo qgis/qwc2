@@ -74,6 +74,10 @@ class AppInitComponent extends React.Component {
     constructor(props) {
         super(props);
         this.initialized = false;
+
+        // Set initial bottom/topbar height to zero, the components will set the proper height when initialized
+        props.setTopbarHeight(0);
+        props.setBottombarHeight(0);
     }
     componentDidMount() {
         this.componentDidUpdate();
@@ -91,10 +95,6 @@ class AppInitComponent extends React.Component {
         const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
         const colorScheme = this.props.initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
         this.props.setColorScheme(colorScheme);
-
-        // Set initial bottom/topbar height to zero, the components will set the proper height when initialized
-        this.props.setTopbarHeight(0);
-        this.props.setBottombarHeight(0);
 
         // Load themes.json
         axios.get("themes.json").then(response => {
