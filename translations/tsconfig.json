@@ -322,6 +322,7 @@
     "redlining.freehand",
     "redlining.label",
     "redlining.layer",
+    "redlining.layertitle",
     "redlining.line",
     "redlining.markers",
     "redlining.measurements",
