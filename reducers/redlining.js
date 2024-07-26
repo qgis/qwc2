@@ -17,8 +17,8 @@ const defaultState = {
         fillColor: [255, 255, 255, 1],
         text: ""
     },
-    layer: 'redlining',
-    layerTitle: 'Redlining',
+    layer: null,
+    layerTitle: null,
     selectedFeature: null,
     drawMultiple: true,
     measurements: false,

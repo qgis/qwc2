@@ -78,7 +78,7 @@ class Redlining extends React.Component {
             if (vectorLayers.length >= 1) {
                 this.props.changeRedliningState({layer: vectorLayers[0].id, layerTitle: vectorLayers[0].title});
             } else if (this.props.redlining.layer !== 'redlining') {
-                this.props.changeRedliningState({layer: 'redlining', layerTitle: 'Redlining'});
+                this.props.changeRedliningState({layer: 'redlining', layerTitle: LocaleUtils.tr('redlining.layertitle')});
             }
         }
     }
@@ -152,7 +152,7 @@ class Redlining extends React.Component {
         let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
         // Ensure list always contains at least a "Redlining" layer
         if (vectorLayers.length === 0) {
-            vectorLayers = [{id: 'redlining', title: 'Redlining'}, ...vectorLayers];
+            vectorLayers = [{id: 'redlining', title: LocaleUtils.tr('redlining.layertitle')}, ...vectorLayers];
         }
         const haveLayer = this.props.layers.find(l => l.id === this.props.redlining.layer) !== undefined;
 
