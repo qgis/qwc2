@@ -89,6 +89,8 @@ class LayerTree extends React.Component {
         mapScale: PropTypes.number,
         mapTipsEnabled: PropTypes.bool,
         mobile: PropTypes.bool,
+        /** Whether to only display layer groups but not individual layers in layertree. */
+        onlyGroups: PropTypes.bool,
         removeLayer: PropTypes.func,
         reorderLayer: PropTypes.func,
         /** Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
@@ -136,6 +138,7 @@ class LayerTree extends React.Component {
         },
         bboxDependentLegend: false,
         flattenGroups: false,
+        onlyGroups: false,
         width: "25em",
         enableLegendPrint: true,
         enableVisibleFilter: true,
@@ -223,6 +226,8 @@ class LayerTree extends React.Component {
             checkboxstate = 'radio_' + checkboxstate;
         }
         const expanderstate = group.expanded ? 'tree_minus' : 'tree_plus';
+        const onlyGroups = ConfigUtils.getConfigProp("showOnlyLayerGroups", this.props.theme) || this.props.onlyGroups;
+        const showExpander = !onlyGroups || (group.sublayers || []).some((sublayer) => sublayer.sublayers);
         const itemclasses = {
             "layertree-item": true,
             "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !visibility)
@@ -241,7 +246,7 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={group.uuid}>
                 <div className={classnames(itemclasses)}>
-                    <Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />
+                    {showExpander ? (<Icon className="layertree-item-expander" icon={expanderstate} onClick={() => this.groupExpandedToggled(layer, path, group.expanded)} />) : (<span className="layertree-item-expander" />)}
                     <Icon className="layertree-item-checkbox" icon={checkboxstate} onClick={() => this.itemVisibilityToggled(layer, path, visibility)} />
                     <span className="layertree-item-title" title={group.title}>{group.title}</span>
                     {LayerUtils.hasQueryableSublayers(group) && this.props.allowSelectIdentifyableLayers ? (<Icon className={"layertree-item-identifyable " + identifyableClassName}  icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, omitqueryable)} />) : null}
@@ -257,6 +262,10 @@ class LayerTree extends React.Component {
         );
     };
     renderLayer = (layer, sublayer, path, enabled = true, inMutuallyExclusiveGroup = false, skipExpanderPlaceholder = false) => {
+        const onlyGroups = ConfigUtils.getConfigProp("showOnlyLayerGroups", this.props.theme) || this.props.onlyGroups;
+        if (onlyGroups) {
+            return null;
+        }
         if (this.state.filtervisiblelayers && !sublayer.visibility) {
             return null;
         }
