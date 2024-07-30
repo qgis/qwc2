@@ -216,12 +216,16 @@ const ServiceLayerUtils = {
         }
         const styles = MiscUtils.ensureArray(layer.Style).reduce((res, entry) => ({...res, [entry.Name]: entry.Title}), {});
         const style = styles.default ? 'default' : (Object.keys(styles)[0] ?? '');
+        const attribution = {
+            Title: layer.Attribution?.Title,
+            OnlineResource: layer.Attribution?.OnlineResource?.href
+        };
         return {
             type: "wms",
             name: layer.Name,
             title: layer.Title,
             abstract: layer.Abstract,
-            attribution: layer.Attribution,
+            attribution: attribution,
             url: getMapUrl,
             featureInfoUrl: featureInfoUrl,
             legendUrl: legendUrl,
