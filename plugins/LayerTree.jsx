@@ -709,7 +709,11 @@ class LayerTree extends React.Component {
     exportRedliningLayer = (layer) => {
         const data = JSON.stringify({
             type: "FeatureCollection",
-            features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.map.projection, 'EPSG:4326')}))
+            features: layer.features.map(feature => {
+                const newFeature = {...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')};
+                delete newFeature.crs;
+                return newFeature;
+            })
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     };
