@@ -263,6 +263,13 @@ class ImportLayer extends React.Component {
         this.addGeoJSONLayer(filename, {features: VectorLayerUtils.kmlToGeoJSON(data)});
     };
     addGeoJSONLayer = (filename, data) => {
+        if (!data.features && data.type === "Feature") {
+            data = {
+                type: "FeatureCollection",
+                features: [data],
+                crs: data.crs
+            };
+        }
         if (!isEmpty(data.features)) {
             let defaultCrs = "EPSG:4326";
             if (data.crs && data.crs.properties && data.crs.properties.name) {
