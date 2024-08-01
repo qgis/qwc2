@@ -96,14 +96,14 @@ const VectorLayerUtils = {
                                 [x - 0.01, y - 0.01]
                             ]]
                         };
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry));
                         params.labelFillColors.push(ensureHex(styleOptions.fillColor));
                         params.labelOultineColors.push(ensureHex(styleOptions.strokeColor));
                         params.labelOutlineSizes.push(scaleFactor * styleOptions.strokeWidth * 0.5);
                         params.labelSizes.push(Math.round(10 * styleOptions.strokeWidth * scaleFactor));
                         params.labelDist.push("5");
                     } else {
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry));
                         params.labelFillColors.push(styleOptions.textFill);
                         params.labelOultineColors.push(styleOptions.textStroke);
                         params.labelOutlineSizes.push(scaleFactor);
@@ -279,7 +279,7 @@ const VectorLayerUtils = {
         };
 
         params.styles.push(VectorLayerUtils.createSld(geometry.type, "default", styleOptions, layer.opacity, dpi, scaleFactor));
-        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry, printCrs === "EPSG:4326" ? 4 : 2));
+        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry));
         params.labels.push(" ");
         params.labelFillColors.push("#FFF");
         params.labelOultineColors.push("#FFF");
@@ -348,7 +348,10 @@ const VectorLayerUtils = {
             return null;
         }
     },
-    geoJSONGeomToWkt(gj, precision = 4) {
+    geoJSONGeomToWkt(gj, precision = undefined) {
+        if (precision === undefined) {
+            precision = ConfigUtils.getConfigProp("wmsWktPrecision", null, 4);
+        }
         if (gj.type === 'Feature') {
             gj = gj.geometry;
         }
