@@ -205,7 +205,11 @@ class Redlining extends React.Component {
             }
             const geojson = JSON.stringify({
                 type: "FeatureCollection",
-                features: layer.features.map(feature => ({...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')}))
+                features: layer.features.map(feature => {
+                    const newFeature = {...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')};
+                    delete newFeature.crs;
+                    return newFeature;
+                })
             }, null, ' ');
             FileSaver.saveAs(new Blob([geojson], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
         } else if (type === "kml") {
