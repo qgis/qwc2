@@ -190,7 +190,7 @@ class Identify extends React.Component {
             return null;
         }
         const searchMarker = (this.props.click.features || []).find(feature => feature.id === 'searchmarker');
-        if (searchMarker) {
+        if (searchMarker && searchMarker.geometry.type === "Point") {
             return searchMarker.geometry.coordinates;
         }
         return this.props.click.coordinate;
