@@ -1,0 +1,20 @@
+{
+    "collectCoverageFrom": [
+        "./**/*.{js,jsx}"
+    ],
+    "coverageDirectory": "coverage",
+    "moduleNameMapper": {
+        "^openlayers$": "<rootDir>/libs/openlayers.js",
+        "\\.(css|less|svg|png)$": "<rootDir>/tests/mocks/AssetMock.js"
+    },
+    "setupFilesAfterEnv": [
+        "<rootDir>/tests/jest.setup.js"
+    ],
+    "testEnvironment": "jsdom",
+    "testMatch": [
+        "<rootDir>/tests/**/*.test.(js|jsx|ts|tsx)"
+    ],
+    "transformIgnorePatterns": [
+        "node_modules/(?!(color-name|color-parse|color-rgba|color-space|flat|ol|ol-ext)/)"
+    ]
+}

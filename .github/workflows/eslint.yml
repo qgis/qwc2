@@ -31,15 +31,12 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install ESLint
-        run: |
-          npm install eslint@8.56.0
-          npm install @microsoft/eslint-formatter-sarif@3.0.0
-          npm install eslint-plugin-react@7.33.2
+        run: yarn install
 
       - name: Run ESLint
-        run: npx eslint .
-          --config .eslintrc.js
-          --ext .js,.jsx,.ts,.tsx
+        env:
+          SARIF_ESLINT_IGNORE_SUPPRESSED: true
+        run: yarn lint
           --format @microsoft/eslint-formatter-sarif
           --output-file eslint-results.sarif
         continue-on-error: true
