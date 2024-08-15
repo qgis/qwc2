@@ -150,17 +150,19 @@ class SearchBox extends React.Component {
         // Compute search filter
         if (this.props.theme !== prevProps.theme || this.props.layers !== prevProps.layers) {
             let searchFilter = [];
-            // default filter from themes.json
-            if (this.props.theme && this.props.theme.searchProviders) {
-                const provider = this.props.theme.searchProviders.find(entry => entry.provider === "solr");
-                if (provider) {
-                    searchFilter = provider.default;
-                }
-            }
-            // searchterms of active layers
-            for (const entry of LayerUtils.explodeLayers(this.props.layers)) {
-                if (entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true) {
-                    searchFilter = searchFilter.concat(entry.sublayer.searchterms || []);
+            const fulltextProvider = (this.props.theme?.searchProviders || []).find(entry => entry.provider === "solr");
+            if (fulltextProvider) {
+                searchFilter = [...fulltextProvider.default || []];
+                const layerFacets = fulltextProvider.layers || {};
+                // searchterms of active layers
+                const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
+                for (const entry of LayerUtils.explodeLayers(this.props.layers)) {
+                    if (entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true && LayerUtils.layerScaleInRange(entry.sublayer, mapScale)) {
+                        searchFilter = searchFilter.concat(entry.sublayer.searchterms || []);
+                        if (entry.sublayer.name in layerFacets) {
+                            searchFilter.push(layerFacets[entry.sublayer.name]);
+                        }
+                    }
                 }
             }
             this.setState({searchFilter: [...new Set(searchFilter)].join(",")});
