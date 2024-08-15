@@ -460,7 +460,7 @@
       "searchall": "Buscar llocs o agregar mapes...",
       "searchinprogress": "Cercant...",
       "searchreset": "Reset",
-      "solr": "",
+      "fulltext": "",
       "themelayers": "",
       "themes": "Temes"
     },

@@ -460,7 +460,7 @@
       "searchall": "Rechercher un lieu ou ajouter une carte...",
       "searchinprogress": "Recherche en cours",
       "searchreset": "Réinitialiser la recherche",
-      "solr": "Recherche en plein texte",
+      "fulltext": "Recherche en plein texte",
       "themelayers": "Couches de thèmes",
       "themes": "Cartes"
     },

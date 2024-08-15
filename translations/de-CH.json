@@ -460,7 +460,7 @@
       "searchall": "Ort suchen oder Karte hinzufügen...",
       "searchinprogress": "Suche läuft",
       "searchreset": "Suche zurücksetzen",
-      "solr": "Volltextsuche",
+      "fulltext": "Volltextsuche",
       "themelayers": "Themenebenen",
       "themes": "Themen"
     },

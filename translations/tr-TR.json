@@ -460,7 +460,7 @@
       "searchall": "Bir yer ara ya da harita ekle...",
       "searchinprogress": "Arama yapılıyor",
       "searchreset": "Aramayı sıfırla",
-      "solr": "Tam metin araması",
+      "fulltext": "Tam metin araması",
       "themelayers": "Tema katmanları",
       "themes": "Temalar"
     },

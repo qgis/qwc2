@@ -188,7 +188,7 @@ class SearchBox extends React.Component {
         const providerSelection = (
             <ComboBox onChange={value => this.setState({selectedProvider: value})} value={this.state.selectedProvider}>
                 <div value="">{LocaleUtils.tr("search.all")}</div>
-                {haveFulltext ? (<option value="__fulltext">{LocaleUtils.tr("search.solr")}</option>) : null}
+                {haveFulltext ? (<option value="__fulltext">{LocaleUtils.tr("search.fulltext")}</option>) : null}
                 {Object.entries(this.props.searchProviders).map(([key, prov]) => (
                     <div key={key} value={key}>{prov?.params?.title || (prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label)}</div>
                 ))}
