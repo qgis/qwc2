@@ -39,7 +39,7 @@ class ThemeSwitcher extends React.Component {
         showDefaultThemeSelector: PropTypes.bool,
         /** Whether to show the LayerTree by default after switching the theme. */
         showLayerAfterChangeTheme: PropTypes.bool,
-        /** Wether to show the theme filter field in the top bar. **/
+        /** Wether to show the theme filter field in the top bar. */
         showThemeFilter: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
