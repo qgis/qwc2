@@ -150,7 +150,7 @@ class SearchBox extends React.Component {
         // Compute search filter
         if (this.props.theme !== prevProps.theme || this.props.layers !== prevProps.layers) {
             let searchFilter = [];
-            const fulltextProvider = (this.props.theme?.searchProviders || []).find(entry => entry.provider === "solr");
+            const fulltextProvider = (this.props.theme?.searchProviders || []).find(entry => entry.provider === "solr" || entry.provider === "fulltext");
             if (fulltextProvider) {
                 searchFilter = [...fulltextProvider.default || []];
                 const layerFacets = fulltextProvider.layers || {};
@@ -186,7 +186,7 @@ class SearchBox extends React.Component {
         if (!this.state.filterOptionsVisible) {
             return null;
         }
-        const haveFulltext = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr");
+        const haveFulltext = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr" || entry.provider === "fulltext");
         const providerSelection = (
             <ComboBox onChange={value => this.setState({selectedProvider: value})} value={this.state.selectedProvider}>
                 <div value="">{LocaleUtils.tr("search.all")}</div>
@@ -613,7 +613,7 @@ class SearchBox extends React.Component {
     };
     startSearch = (zoomToUniqueResult = false) => {
         let availableProviders = this.props.searchProviders;
-        let fulltextSearchEnabled = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr");
+        let fulltextSearchEnabled = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr" || entry.provider === "fulltext");
         if (this.state.selectedProvider) {
             if (this.state.selectedProvider === "__fulltext") {
                 fulltextSearchEnabled = true;
