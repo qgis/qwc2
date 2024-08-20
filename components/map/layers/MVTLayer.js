@@ -6,31 +6,42 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import axios from 'axios';
 import {applyStyle} from 'ol-mapbox-style';
 import ol from 'openlayers';
 
 export default {
     create: (options) => {
-        const layer = new ol.layer.VectorTile({
-            minResolution: options.minResolution,
-            maxResolution: options.maxResolution,
-            declutter: options.declutter,
-            source: new ol.source.VectorTile({
-                projection: options.projection,
-                format: new ol.format.MVT({}),
-                url: options.url,
-                tileGrid: options.tileGridConfig ? new ol.tilegrid.TileGrid({...options.tileGridConfig}) : undefined,
-                ...(options.sourceConfig || {})
-            }),
-            ...(options.layerConfig || {})
-        });
+        const createLayer = () => {
+            return new ol.layer.VectorTile({
+                minResolution: options.minResolution,
+                maxResolution: options.maxResolution,
+                declutter: options.declutter,
+                source: new ol.source.VectorTile({
+                    projection: options.projection,
+                    format: new ol.format.MVT({}),
+                    url: options.url,
+                    tileGrid: options.tileGridConfig ? new ol.tilegrid.TileGrid({...options.tileGridConfig}) : undefined,
+                    ...(options.sourceConfig || {})
+                }),
+                ...(options.layerConfig || {})
+            });
+        };
+        const group = new ol.layer.Group();
         if (options.style) {
-            fetch(options.style).then(function(response) {
-                response.json().then(function(glStyle) {
-                    applyStyle(layer, glStyle, Object.keys(glStyle.sources)[0]);
+            axios.get(options.style).then(response => {
+                const glStyle = response.data;
+                Object.keys(glStyle.sources).forEach(styleSource => {
+                    const layer = createLayer();
+                    layer.setId
+                    applyStyle(layer, glStyle, styleSource).then(() => {
+                        group.getLayers().push(layer);
+                    });
                 });
             });
+        } else {
+            group.getLayers().push(createLayer());
         }
-        return layer;
+        return group;
     }
 };
