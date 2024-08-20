@@ -450,6 +450,7 @@
       "enablelayer": "Zapnout vrstvu",
       "existinglayer": "Vrstva v mapě již existuje",
       "filter": "",
+      "fulltext": "",
       "invisiblelayer": "Výsledek je ve vrstvě, která se nezobrazuje.",
       "limittoarea": "",
       "more": "Více...",
@@ -460,7 +461,6 @@
       "searchall": "Najít místo nebo přidat mapu...",
       "searchinprogress": "Hledání...",
       "searchreset": "Smazat hledání",
-      "fulltext": "",
       "themelayers": "",
       "themes": "Témata"
     },

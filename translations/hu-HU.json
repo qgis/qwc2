@@ -450,6 +450,7 @@
       "enablelayer": "",
       "existinglayer": "",
       "filter": "",
+      "fulltext": "",
       "invisiblelayer": "",
       "limittoarea": "",
       "more": "Több...",
@@ -460,7 +461,6 @@
       "searchall": "",
       "searchinprogress": "",
       "searchreset": "",
-      "fulltext": "",
       "themelayers": "",
       "themes": ""
     },

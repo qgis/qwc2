@@ -450,6 +450,7 @@
       "enablelayer": "Activer la couche",
       "existinglayer": "La couche existe déjà dans la carte",
       "filter": "Filtre",
+      "fulltext": "Recherche en plein texte",
       "invisiblelayer": "Le résultat est sur une couche désactivée",
       "limittoarea": "Limiter à la région",
       "more": "Plus...",
@@ -460,7 +461,6 @@
       "searchall": "Rechercher un lieu ou ajouter une carte...",
       "searchinprogress": "Recherche en cours",
       "searchreset": "Réinitialiser la recherche",
-      "fulltext": "Recherche en plein texte",
       "themelayers": "Couches de thèmes",
       "themes": "Cartes"
     },

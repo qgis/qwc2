@@ -450,6 +450,7 @@
       "enablelayer": "Aktiver lag",
       "existinglayer": "Laget finnes allerede på kartet",
       "filter": "",
+      "fulltext": "",
       "invisiblelayer": "Resultatet finnes på et lag som er usynlig",
       "limittoarea": "",
       "more": "Flere resultater",
@@ -460,7 +461,6 @@
       "searchall": "Søk etter steder eller legg til kart",
       "searchinprogress": "",
       "searchreset": "",
-      "fulltext": "",
       "themelayers": "",
       "themes": "Tema"
     },

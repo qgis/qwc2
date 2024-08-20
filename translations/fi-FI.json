@@ -450,6 +450,7 @@
       "enablelayer": "Aktivoi taso",
       "existinglayer": "Taso on jo lisätty karttaan",
       "filter": "",
+      "fulltext": "",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "limittoarea": "",
       "more": "Lisää...",
@@ -460,7 +461,6 @@
       "searchall": "Etsi kohteita tai lisää kartta...",
       "searchinprogress": "",
       "searchreset": "",
-      "fulltext": "",
       "themelayers": "",
       "themes": "Teemat"
     },

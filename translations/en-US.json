@@ -450,6 +450,7 @@
       "enablelayer": "Enable layer",
       "existinglayer": "The layer already exists in the map",
       "filter": "Filter",
+      "fulltext": "Fulltext search",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "limittoarea": "Limit to area",
       "more": "More...",
@@ -460,7 +461,6 @@
       "searchall": "Search places or add maps...",
       "searchinprogress": "Search in progress",
       "searchreset": "Reset search",
-      "fulltext": "Fulltext search",
       "themelayers": "Theme layers",
       "themes": "Themes"
     },

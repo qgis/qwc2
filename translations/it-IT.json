@@ -450,6 +450,7 @@
       "enablelayer": "Attivare il livello",
       "existinglayer": "Il livello esiste già nella mappa",
       "filter": "Filtro",
+      "fulltext": "Full text",
       "invisiblelayer": "Il risultato si trova su un livello che non è visibile.",
       "limittoarea": "Limita a area",
       "more": "Altri risultati",
@@ -460,7 +461,6 @@
       "searchall": "Cerca località o aggiungi cartine...",
       "searchinprogress": "Ricerca in corso...",
       "searchreset": "Resetta ricerca",
-      "fulltext": "Full text",
       "themelayers": "Livelli di temi",
       "themes": "Temi"
     },

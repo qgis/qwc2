@@ -450,6 +450,7 @@
       "enablelayer": "Activare strat",
       "existinglayer": "Stratul există deja în hartă",
       "filter": "",
+      "fulltext": "",
       "invisiblelayer": "Rezultatul este într-un strat invizibil",
       "limittoarea": "",
       "more": "Mai multe...",
@@ -460,7 +461,6 @@
       "searchall": "Caută sau adaugă în hartă...",
       "searchinprogress": "Căutare în progres",
       "searchreset": "Resetează căutarea",
-      "fulltext": "",
       "themelayers": "",
       "themes": "Hărți tematice"
     },
