@@ -284,7 +284,7 @@ class AppMenu extends React.Component {
             "appmenu-visible": visible,
             "appmenu-compact": this.props.menuCompact
         });
-        const filter = removeDiacritics(this.state.filter.toLowerCase());
+        const filter = new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
         return (
             <div className={"AppMenu " + className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
             >
