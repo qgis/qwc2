@@ -272,7 +272,7 @@ class AppMenu extends React.Component {
         } else if (this.state.menuVisible) {
             className = "appmenu-visible";
         }
-        const filter = new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
+        const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
             <div className={"AppMenu " + className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
             >
