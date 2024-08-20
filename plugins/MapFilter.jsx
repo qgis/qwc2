@@ -454,7 +454,7 @@ class MapFilter extends React.Component {
                                                 <input
                                                     onChange={ev => this.updateFieldValue(config.id, field.id, ev.target.value)}
                                                     type="text"
-                                                    value={this.state.filters[config.id].values[field.id]}
+                                                    value={this.state.filters[config.id].values[field.id] || ""}
                                                     {...field.inputConfig} />
                                             )
                                         }
