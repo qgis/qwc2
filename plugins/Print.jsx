@@ -99,7 +99,9 @@ class Print extends React.Component {
         geoPdf: false,
         availableFormats: [],
         selectedFormat: "",
-        printOutputData: undefined
+        printOutputData: undefined,
+        pdfData: null,
+        pdfDataUrl: null
     };
     constructor(props) {
         super(props);
@@ -483,9 +485,15 @@ class Print extends React.Component {
         return printFrame;
     };
     renderPrintOutputWindow = () => {
+        const extraControls = [{
+            icon: 'save',
+            msgid: LocaleUtils.trmsg('print.save'),
+            callback: this.savePrintOutput
+        }];
         return (
-            <ResizeableWindow icon="print" initialHeight={0.75 * window.innerHeight} initialWidth={0.5 * window.innerWidth}
-                key="PrintOutputWindow" onClose={() => this.setState({printOutputVisible: false, outputLoaded: false})}
+            <ResizeableWindow extraControls={extraControls} icon="print" initialHeight={0.75 * window.innerHeight}
+                initialWidth={0.5 * window.innerWidth} key="PrintOutputWindow"
+                onClose={() => this.setState({printOutputVisible: false, outputLoaded: false, pdfData: null, pdfDataUrl: null})}
                 title={LocaleUtils.trmsg("print.output")} visible={this.state.printOutputVisible}
             >
                 <div className="print-output-window-body" role="body">
@@ -494,10 +502,13 @@ class Print extends React.Component {
                             <Spinner /> {LocaleUtils.tr("print.wait")}
                         </span>
                     ) : null}
-                    <iframe name="print-output-window" onLoad={() => this.setState({outputLoaded: true})} src={this.state.pdfData}/>
+                    <iframe name="print-output-window" onLoad={() => this.setState({outputLoaded: true})} src={this.state.pdfDataUrl}/>
                 </div>
             </ResizeableWindow>
         );
+    };
+    savePrintOutput = () => {
+        FileSaver.saveAs(this.state.pdfData, this.props.theme.name + '.pdf');
     };
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
@@ -611,7 +622,7 @@ class Print extends React.Component {
             const file = new Blob([response.data], { type: contentType });
             if (this.props.inlinePrintOutput) {
                 const fileURL = URL.createObjectURL(file);
-                this.setState({ pdfData: fileURL, outputLoaded: true });
+                this.setState({ pdfData: file, pdfDataUrl: fileURL, outputLoaded: true });
             } else {
                 const ext = this.state.selectedFormat.split(";")[0].split("/").pop();
                 FileSaver.saveAs(file, this.props.theme.name + '.' + ext);

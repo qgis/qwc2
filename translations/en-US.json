@@ -353,6 +353,7 @@
       "pickatlasfeature": "Pick in layer {0}...",
       "resolution": "Resolution",
       "rotation": "Rotation",
+      "save": "Save",
       "scale": "Scale",
       "submit": "Print",
       "wait": "Please wait..."

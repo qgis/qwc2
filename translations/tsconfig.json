@@ -296,6 +296,7 @@
     "print.pickatlasfeature",
     "print.resolution",
     "print.rotation",
+    "print.save",
     "print.scale",
     "print.submit",
     "print.wait",
