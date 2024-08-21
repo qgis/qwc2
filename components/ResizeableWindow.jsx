@@ -204,7 +204,7 @@ class ResizeableWindow extends React.Component {
                         return (
                             <Icon
                                 className={iconClasses} icon={entry.icon} key={entry.icon}
-                                onClick={entry.callback} titlemsgid={entry.msgid ? LocaleUtils.trmsg(entry.msgid) : ""} />
+                                onClick={entry.callback} titlemsgid={entry.msgid} />
                         );
                     })}
                 </span>
