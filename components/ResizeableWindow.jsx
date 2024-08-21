@@ -194,20 +194,18 @@ class ResizeableWindow extends React.Component {
                 <span className="resizeable-window-titlebar-title">
                     {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
                 </span>
-                <span className="resizeable-window-titlebar-extra-controls">
-                    {(this.props.extraControls || []).map(entry => {
-                        const iconClasses = classnames({
-                            "resizeable-window-nodrag": true,
-                            "resizeable-window-titlebar-extra-control": true,
-                            "resizeable-window-titlebar-extra-control-active": entry.active
-                        });
-                        return (
-                            <Icon
-                                className={iconClasses} icon={entry.icon} key={entry.icon}
-                                onClick={entry.callback} titlemsgid={entry.msgid} />
-                        );
-                    })}
-                </span>
+                {(this.props.extraControls || []).map(entry => {
+                    const iconClasses = classnames({
+                        "resizeable-window-nodrag": true,
+                        "resizeable-window-titlebar-extra-control": true,
+                        "resizeable-window-titlebar-extra-control-active": entry.active
+                    });
+                    return (
+                        <Icon
+                            className={iconClasses} icon={entry.icon} key={entry.icon}
+                            onClick={entry.callback} titlemsgid={entry.msgid} />
+                    );
+                })}
                 {!maximized && dockable ? (
                     <Icon
                         className="resizeable-window-nodrag resizeable-window-titlebar-control" icon={dockIcon}
