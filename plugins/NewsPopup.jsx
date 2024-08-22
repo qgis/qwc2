@@ -58,7 +58,7 @@ export default class NewsPopup extends React.Component {
     }
     closeDialog = () => {
         if (this.state.dontShowAgain) {
-            const days = 14;
+            const days = 365;
             const d = new Date();
             d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
             document.cookie = "newsrev=" + this.props.newsRev + "; SameSite=Lax; expires=" + d.toUTCString();
