@@ -154,7 +154,7 @@ class RasterExport extends React.Component {
                 <input min="1" onChange={ev => this.setState({scale: ev.target.value})} role="input" type="number" value={this.state.scale} />
             );
         }
-        const filename = this.props.theme.name + "." + this.state.selectedFormat.split(";")[0].split("/").pop();
+        const filename = this.props.theme.name.split("/").pop() + "." + this.state.selectedFormat.split(";")[0].split("/").pop();
         const action = this.props.theme.url;
         const exportExternalLayers = this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
 

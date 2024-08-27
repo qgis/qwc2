@@ -70,7 +70,7 @@ class DxfExport extends React.Component {
         const formatOptions = this.props.formatOptions
             ? <input name="FORMAT_OPTIONS" readOnly type="hidden" value={this.props.formatOptions} />
             : null;
-        const basename = this.props.serviceUrl ? this.props.serviceUrl.replace(/\/$/, '').replace(/^.*\//, '') : this.props.theme.name;
+        const basename = this.props.serviceUrl ? this.props.serviceUrl.replace(/\/$/, '').replace(/^.*\//, '') : this.props.theme.name.split("/").pop();
 
         const dimensionValues = this.props.layers.reduce((res, layer) => {
             if (layer.role === LayerRole.THEME) {
