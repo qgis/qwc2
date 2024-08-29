@@ -80,10 +80,7 @@ class MapExport extends React.Component {
         defaultScaleFactor: 1,
         exportExternalLayers: true,
         side: 'right',
-        pageSizes: [
-            {name: '15 x 15 cm', width: 150, height: 150},
-            {name: '30 x 30 cm', width: 300, height: 300}
-        ]
+        pageSizes: []
     };
     constructor(props) {
         super(props);
@@ -213,7 +210,7 @@ class MapExport extends React.Component {
                                     </td>
                                 </tr>
                             ) : null}
-                            {this.props.pageSizes ? (
+                            {!isEmpty(this.props.pageSizes) ? (
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.size")}</td>
                                     <td>
