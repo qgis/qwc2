@@ -157,7 +157,7 @@ class FeatureForm extends React.Component {
                             const diff = layerOrder.indexOf(partsB[0]) - layerOrder.indexOf(partsA[0]);
                             return diff === 0 ? partsA[1].localeCompare(partsB[1]) : diff;
                         }));
-                        const selectedFeature = state.pendingRequests <= 1 && !state.selectedFeature ? Object.keys(newPickedFeatures)[0] : null;
+                        const selectedFeature = state.pendingRequests <= 1 && !state.selectedFeature ? Object.keys(newPickedFeatures)[0] : "";
                         return {
                             pickedFeatures: newPickedFeatures,
                             pendingRequests: state.pendingRequests - 1,
