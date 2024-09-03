@@ -40,6 +40,8 @@ export default (searchProviders) => createSelector(
                 providerKeys.add(key);
                 availableProviders[key] = {
                     ...provider,
+                    label: entry.label ?? provider.label,
+                    labelmsgid: entry.labelmsgid ?? provider.labelmsgid,
                     params: entry.params
                 };
             }
