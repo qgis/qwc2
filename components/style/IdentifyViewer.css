@@ -208,6 +208,18 @@ div.identify-body div.identify-buttonbox {
     align-items: center;
 }
 
+div.identify-body table.identify-attr-subtable {
+    width: 100%;
+}
+
+div.identify-body table.identify-attr-subtable > tbody > tr:nth-child(even) {
+    background-color: #F0F0F0;
+}
+
+div.identify-body td.identify-attr-spacer {
+    height: 8px;
+}
+
 span.identify-buttonbox-spacer {
     flex: 1 1 auto;
 }
