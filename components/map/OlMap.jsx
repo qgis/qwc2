@@ -290,9 +290,12 @@ class OlMap extends React.Component {
         const features = [];
         const format = new ol.format.GeoJSON();
         this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
-            const featureObj = format.writeFeatureObject(feature);
-            featureObj.layerId = layer ? layer.get('id') : null;
-            features.push(featureObj);
+            // Picked vector tile features cause an exception when passed to format.writeFeatureObject
+            try {
+                const featureObj = format.writeFeatureObject(feature);
+                featureObj.layerId = layer ? layer.get('id') : null;
+                features.push(featureObj);
+            } catch (e) {}
         });
         const data = {
             ts: +new Date(),
