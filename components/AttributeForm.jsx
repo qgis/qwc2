@@ -475,8 +475,9 @@ class AttributeForm extends React.Component {
                         relationUploads[name] = element.files[0];
                         relationValues[datasetname].features[index].properties[field] = "";
                     } else if (element.type === "hidden" && element.value.startsWith("data:")) {
-                        const type = element.value.match(/image\/\w+/);
-                        relationUploads[name] = new File([this.dataUriToBlob(element.value)], uuidv1() + ".jpg", {type: type});
+                        const type = element.value.match(/image\/\w+/)[0];
+                        const ext = type.split("/")[1];
+                        relationUploads[name] = new File([this.dataUriToBlob(element.value)], uuidv1() + "." + ext, {type: type});
                         relationValues[datasetname].features[index].properties[field] = "";
                     }
                 } else {
