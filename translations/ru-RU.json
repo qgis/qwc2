@@ -33,6 +33,7 @@
         "Portal": "",
         "Print": "Печать",
         "RasterExport": "Экспорт в растровый Формат бумаги",
+        "Reports": "",
         "MapExport": "экспортировать карту",
         "Redlining": "Обводка",
         "Routing": "",
@@ -404,6 +405,13 @@
       "text": "Текст",
       "transform": "",
       "width": "Ширина"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "",

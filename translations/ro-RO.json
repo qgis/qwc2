@@ -33,6 +33,7 @@
         "Portal": "",
         "Print": "Tipărire",
         "RasterExport": "Export Raster",
+        "Reports": "",
         "MapExport": "",
         "Redlining": "Evidențiere",
         "Routing": "Traseu",
@@ -404,6 +405,13 @@
       "text": "Text",
       "transform": "Transformare",
       "width": "Lățime"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "Adaugă punct",

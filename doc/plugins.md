@@ -37,6 +37,7 @@ Plugin reference
 * [ProcessNotifications](#processnotifications)
 * [RasterExport](#rasterexport)
 * [Redlining](#redlining)
+* [Reports](#reports)
 * [Routing](#routing)
 * [ScratchDrawing](#scratchdrawing)
 * [Settings](#settings)
@@ -702,6 +703,20 @@ Allows drawing figures and text labels on the map.
 | allowGeometryLabels | `bool` | Whether to allow labeling geometric figures. | `true` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
+
+Reports<a name="reports"></a>
+----------------------------------------------------------------
+Allow generating reports for selected features.
+
+This plugin displays all available reports for the current theme,
+allows selecting one or more or all features of the layer, and finally generating
+an aggregated report for all selected features.
+
+Requires `documentServiceUrl` in `config.json` to point to a `qwc-document-service`.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 
 Routing<a name="routing"></a>
 ----------------------------------------------------------------

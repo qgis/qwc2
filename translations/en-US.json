@@ -33,6 +33,7 @@
         "Portal": "Portal",
         "Print": "Print",
         "RasterExport": "Raster Export",
+        "Reports": "Reports",
         "MapExport": "Export map",
         "Redlining": "Redlining",
         "Routing": "Routing",
@@ -404,6 +405,13 @@
       "text": "Text",
       "transform": "Transform",
       "width": "Width"
+    },
+    "reports": {
+      "all": "All",
+      "download": "Download",
+      "pick": "Pick",
+      "region": "Select region",
+      "selectlayer": "Select report layer..."
     },
     "routing": {
       "add": "Add point",

@@ -33,6 +33,7 @@
         "Portal": "Portale",
         "Print": "Stampa",
         "RasterExport": "Esporta su immagine",
+        "Reports": "Rapporti",
         "MapExport": "Esporta mappa",
         "Redlining": "Strumenti di disegno",
         "Routing": "Routing",
@@ -404,6 +405,13 @@
       "text": "Testo",
       "transform": "Transforma",
       "width": "Larghezza"
+    },
+    "reports": {
+      "all": "Tutti",
+      "download": "Scarica",
+      "pick": "Seleziona",
+      "region": "Seleziona area",
+      "selectlayer": "Seleziona livello del rapporto..."
     },
     "routing": {
       "add": "Aggiungi",

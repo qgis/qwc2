@@ -33,6 +33,7 @@
         "Portal": "Portal",
         "Print": "Yazdır",
         "RasterExport": "Resim Olarak Kaydet",
+        "Reports": "",
         "MapExport": "Dışarıya ver",
         "Redlining": "Serbest Çizim",
         "Routing": "Navigasyon",
@@ -404,6 +405,13 @@
       "text": "Metin",
       "transform": "Dönüşüm",
       "width": "Genişlik"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "Nokta ekle",

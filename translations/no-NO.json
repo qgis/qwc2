@@ -33,6 +33,7 @@
         "Portal": "",
         "Print": "Skriv ut",
         "RasterExport": "Eksporter Raster",
+        "Reports": "",
         "MapExport": "Eksport kart",
         "Redlining": "Redlining",
         "Routing": "",
@@ -404,6 +405,13 @@
       "text": "Tekst",
       "transform": "",
       "width": "Bredde"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "",

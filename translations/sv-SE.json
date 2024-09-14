@@ -33,6 +33,7 @@
         "Portal": "",
         "Print": "Skriv ut",
         "RasterExport": "Raster Export",
+        "Reports": "",
         "MapExport": "Exportera karta",
         "Redlining": "Rita",
         "Routing": "",
@@ -404,6 +405,13 @@
       "text": "Text",
       "transform": "",
       "width": "Bredd"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "",

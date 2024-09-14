@@ -33,6 +33,7 @@
         "Portal": "",
         "Print": "Nyomtatás",
         "RasterExport": "Kép exportálása",
+        "Reports": "",
         "MapExport": "Export térkép",
         "Redlining": "Vázlat",
         "Routing": "",
@@ -404,6 +405,13 @@
       "text": "Szöveg",
       "transform": "",
       "width": "Szélesség"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "",

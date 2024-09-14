@@ -33,6 +33,7 @@
         "Portal": "",
         "Print": "Tulosta",
         "RasterExport": "Rasterin vienti",
+        "Reports": "",
         "MapExport": "Vienti kartta",
         "Redlining": "Omat merkinnät",
         "Routing": "",
@@ -404,6 +405,13 @@
       "text": "Teksti",
       "transform": "",
       "width": "Leveys"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "",

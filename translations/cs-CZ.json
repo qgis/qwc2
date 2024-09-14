@@ -33,6 +33,7 @@
         "Portal": "",
         "Print": "Tisk",
         "RasterExport": "Export rastru",
+        "Reports": "",
         "MapExport": "Export mapu",
         "Redlining": "Připomínkování",
         "Routing": "Trasy",
@@ -404,6 +405,13 @@
       "text": "Text",
       "transform": "",
       "width": "Šířka"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "",
