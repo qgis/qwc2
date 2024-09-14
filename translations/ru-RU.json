@@ -187,7 +187,9 @@
       "title": ""
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "",
+      "download": "",
       "export": "Экспорт",
       "exportformat": "",
       "featureReport": "Отчёт об объекте",
@@ -195,6 +197,8 @@
       "noattributes": "Аттрибуты отсутствуют",
       "noresults": "Для выбранной точки нет доступной информации",
       "querying": "Выполняется запрос...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Информация об объекте"
     },
     "imageeditor": {

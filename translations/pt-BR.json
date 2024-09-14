@@ -187,7 +187,9 @@
       "title": "Título"
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "",
+      "download": "",
       "export": "Exportação",
       "exportformat": "Formato de exportação",
       "featureReport": "Relatório de recurso",
@@ -195,6 +197,8 @@
       "noattributes": "Sem atributos",
       "noresults": "Nenhuma informação disponível para o ponto selecionado",
       "querying": "Consultando...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Informação do recurso"
     },
     "imageeditor": {

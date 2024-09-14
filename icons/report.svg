@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   fill="#000000"
+   version="1.1"
+   id="Capa_1"
+   viewBox="0 0 24 24"
+   xml:space="preserve"
+   sodipodi:docname="report.svg"
+   width="24"
+   height="24"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs3" /><sodipodi:namedview
+   id="namedview3"
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1.0"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   showgrid="true"
+   inkscape:zoom="22.758063"
+   inkscape:cx="6.2834872"
+   inkscape:cy="3.5372078"
+   inkscape:window-width="1600"
+   inkscape:window-height="842"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="g4"><inkscape:grid
+     id="grid3"
+     units="px"
+     originx="0"
+     originy="0"
+     spacingx="0.99999999"
+     spacingy="0.99999999"
+     empcolor="#0099e5"
+     empopacity="0.30196078"
+     color="#0099e5"
+     opacity="0.14901961"
+     empspacing="5"
+     dotted="false"
+     gridanglex="30"
+     gridanglez="30"
+     visible="true" /></sodipodi:namedview>
+<g
+   id="g3">
+	
+	
+	
+	
+	<g
+   id="g4"
+   transform="matrix(0.11578947,0,0,0.11578947,0.72795299,1.0000003)"><path
+     d="M 123.25859,-2.5909092e-6 19.699,0 20.000025,190 H 175 l 0.0768,-138.181819 z M 149.16768,43.181817 H 131.89496 V 25.909089 Z M 36.894953,172.72728 V 17.272725 h 77.727277 v 34.545456 c 0,4.142 4.49372,8.690989 8.63636,8.636364 L 157.72985,60 l 0.0742,112.72728 z"
+     id="path1"
+     sodipodi:nodetypes="cccccccccccccssccc"
+     style="stroke-width:1" /><rect
+     x="54.167679"
+     y="146.81818"
+     width="86.36364"
+     height="8.6363716"
+     id="rect1" /><rect
+     x="54.167679"
+     y="51.81818"
+     width="51.818184"
+     height="8.636363"
+     id="rect2" /><polygon
+     points="88.623,105.748 105.371,122.495 133.861,94.005 133.861,99.535 143.861,99.535 143.861,76.935 121.248,76.935 121.248,86.935 126.79,86.935 105.371,108.353 88.623,91.605 51.597,128.634 58.667,135.706 "
+     id="polygon2"
+     transform="translate(-0.3795,2.6038588)" /><rect
+     x="54.167679"
+     y="34.545452"
+     width="51.818184"
+     height="8.6363649"
+     id="rect3" /></g>
+</g>
+</svg>

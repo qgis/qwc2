@@ -187,7 +187,9 @@
       "title": ""
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "",
+      "download": "",
       "export": "Exportálás",
       "exportformat": "",
       "featureReport": "Lekérdezés eredménye",
@@ -195,6 +197,8 @@
       "noattributes": "",
       "noresults": "Nincs információ a kiválasztott pontról",
       "querying": "Lekérdezés...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Lekérdezés információ"
     },
     "imageeditor": {

@@ -187,7 +187,9 @@
       "title": ""
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "Zkopírovat do schránky",
+      "download": "",
       "export": "Exportovat",
       "exportformat": "Formát exportu",
       "featureReport": "Report prvku",
@@ -195,6 +197,8 @@
       "noattributes": "Bez atributů",
       "noresults": "V tomto bodu nejsou k dispozici informace o žádném prvku",
       "querying": "Dotazování...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Informace o prvku"
     },
     "imageeditor": {

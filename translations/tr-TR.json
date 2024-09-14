@@ -187,7 +187,9 @@
       "title": "Yükseklik profili"
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "Panoya kopyala",
+      "download": "",
       "export": "Dışarıya aktar",
       "exportformat": "Dışarı aktarma formatı:",
       "featureReport": "Obje raporu",
@@ -195,6 +197,8 @@
       "noattributes": "Öznitelik yok",
       "noresults": "Seçilen nokta için geçerli bilgi yok",
       "querying": "Sorgulanıyor...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Obje Bilgisi"
     },
     "imageeditor": {

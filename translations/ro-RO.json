@@ -187,7 +187,9 @@
       "title": ""
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "Copiere în clipboard",
+      "download": "",
       "export": "Export",
       "exportformat": "Formatul de export:",
       "featureReport": "Raport obiect spațial",
@@ -195,6 +197,8 @@
       "noattributes": "Fără atribute",
       "noresults": "Nu există informații în punctul selectat",
       "querying": "Interogare...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Informații obiect spațial"
     },
     "imageeditor": {

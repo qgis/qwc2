@@ -187,7 +187,9 @@
       "title": ""
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "",
+      "download": "",
       "export": "Exportar",
       "exportformat": "Exportar formato",
       "featureReport": "Informe del elemento",
@@ -195,6 +197,8 @@
       "noattributes": "Sin atributos",
       "noresults": "Sin información disponible sobre el punto seleccionado",
       "querying": "Consultando...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Información del elemento"
     },
     "imageeditor": {

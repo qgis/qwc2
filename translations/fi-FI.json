@@ -187,7 +187,9 @@
       "title": ""
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "",
+      "download": "",
       "export": "Vienti",
       "exportformat": "Viennin formaatti:",
       "featureReport": "Ominaisuustietoraportti",
@@ -195,6 +197,8 @@
       "noattributes": "Attribuutteja ei löytynyt",
       "noresults": "Valitulla pisteellä ei ole informaatiota",
       "querying": "Kysely käynnissä...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Ominaisuustiedot"
     },
     "imageeditor": {

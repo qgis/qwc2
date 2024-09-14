@@ -187,7 +187,9 @@
       "title": "Höhenprofil"
     },
     "identify": {
+      "aggregatedreport": "Aggregierter Bericht",
       "clipboard": "Nach Zwischenablage kopieren",
+      "download": "Herunterladen",
       "export": "Exportieren",
       "exportformat": "Exportformat",
       "featureReport": "Objektblatt",
@@ -195,6 +197,8 @@
       "noattributes": "Keine Attribute",
       "noresults": "Keine Resultate an der ausgewählten Position",
       "querying": "Objekte werden abgefragt...",
+      "reportfail": "Bericht konnt nicht erstellt werden",
+      "selectlayer": "Ebene auswählen",
       "title": "Objektinformationen"
     },
     "imageeditor": {

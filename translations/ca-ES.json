@@ -187,7 +187,9 @@
       "title": ""
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "Copiar al porta-retalls",
+      "download": "",
       "export": "Exportar",
       "exportformat": "Exportar format",
       "featureReport": "Informe d'element",
@@ -195,6 +197,8 @@
       "noattributes": "Sense atributs",
       "noresults": "Sense informació disponible sobre el punt seleccionat",
       "querying": "Consultant...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Informació del element"
     },
     "imageeditor": {

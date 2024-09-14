@@ -187,7 +187,9 @@
       "title": "Perfil de Altura"
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "Área de Transferência",
+      "download": "",
       "export": "Exportar",
       "exportformat": "Formato de Exportação",
       "featureReport": "Relatório de Recurso",
@@ -195,6 +197,8 @@
       "noattributes": "Sem Atributos",
       "noresults": "Nenhuma informação disponível para o ponto selecionado",
       "querying": "A consultar...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Informações do Recurso"
     },
     "imageeditor": {

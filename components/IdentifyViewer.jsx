@@ -8,6 +8,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import axios from 'axios';
 import clone from 'clone';
 import FileSaver from 'file-saver';
 import htmlReactParser, {domToReact} from 'html-react-parser';
@@ -20,6 +21,7 @@ import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {openExternalUrl} from '../actions/task';
+import Spinner from './Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -191,7 +193,9 @@ class IdentifyViewer extends React.Component {
         resultTree: {},
         currentResult: null,
         currentLayer: null,
-        exportFormat: 'geojson'
+        exportFormat: 'geojson',
+        selectedAggregatedReport: null,
+        generatingReport: false
     };
     constructor(props) {
         super(props);
@@ -365,7 +369,7 @@ class IdentifyViewer extends React.Component {
             </div>
         );
     };
-    renderResultAttributes = (layer, result, resultClass) => {
+    renderResultAttributes = (layer, result, resultClass, reportFeatures) => {
         if (!result) {
             return null;
         }
@@ -374,6 +378,12 @@ class IdentifyViewer extends React.Component {
         let featureReportTemplate = null;
         if (ConfigUtils.getConfigProp("featureReportService")) {
             featureReportTemplate = result.featurereport || this.findFeatureReportTemplate(layer);
+        }
+        if (featureReportTemplate) {
+            reportFeatures[layer] = [
+                ...(reportFeatures[layer] || []),
+                result
+            ];
         }
         let inlineExtaAttribs = false;
         if (result.type === "text") {
@@ -481,7 +491,7 @@ class IdentifyViewer extends React.Component {
                     )}
                     <span>{(this.props.showLayerTitles ? (result.layertitle + ": ") : "") + result.displayname}</span>
                     {zoomToFeatureButton}
-                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer, result)} />
+                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(result)} />
                 </div>
                 {this.props.collapsible && !expanded ? null : (
                     <div className="identify-result-container">
@@ -495,9 +505,10 @@ class IdentifyViewer extends React.Component {
     render() {
         const tree = this.props.displayResultTree;
         let body = null;
+        const reportFeatures = {};
         if (tree) {
             const contents = Object.keys(this.state.resultTree).map(layer => this.renderLayer(layer));
-            const attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-tree-frame');
+            const attributes = this.renderResultAttributes(this.state.currentLayer, this.state.currentResult, 'identify-result-tree-frame', reportFeatures);
             const resultsContainerStyle = {
                 maxHeight: attributes ? '10em' : 'initial'
             };
@@ -517,7 +528,7 @@ class IdentifyViewer extends React.Component {
                                     onMouseEnter={() => this.setState({currentResult: result, currentLayer: layer})}
                                     onMouseLeave={() => this.setState({currentResult: null, currentLayer: null})}
                                 >
-                                    {this.renderResultAttributes(layer, result, resultClass)}
+                                    {this.renderResultAttributes(layer, result, resultClass, reportFeatures)}
                                 </div>
                             );
                         });
@@ -542,8 +553,37 @@ class IdentifyViewer extends React.Component {
                                 <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                             ))}
                         </select>
-                        <button className="button" onClick={() => this.exportResults()}><Icon icon="export" /> {LocaleUtils.tr("identify.export")}</button>
-                        <button className="button" disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}><Icon icon="copy" /></button>
+                        <button className="button" onClick={() => this.exportResults()}>
+                            <Icon icon="export" /><span>{LocaleUtils.tr("identify.export")}</span>
+                        </button>
+                        <button className="button" disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}>
+                            <Icon icon="copy" />
+                        </button>
+                    </div>
+                ) : null}
+                {Object.values(reportFeatures).find(entry => entry.length > 1) !== undefined ? (
+                    <div className="identify-buttonbox">
+                        <span className="identify-buttonbox-spacer" />
+                        <span>{LocaleUtils.tr("identify.aggregatedreport")}&nbsp;</span>
+                        <select className="combo identify-export-format" onChange={ev => this.setState({selectedAggregatedReport: ev.target.value})} value={this.state.selectedAggregatedReport || ""}>
+                            <option value='' disabled>{LocaleUtils.tr("identify.selectlayer")}</option>
+                            {Object.entries(reportFeatures).map(([layername, results]) => {
+                                if (results.length > 1) {
+                                    return (
+                                        <option key={layername} value={layername}>{results[0].layertitle}</option>
+                                    );
+                                    }
+                                return null;
+                            })}
+                        </select>
+                        <button
+                            disabled={!this.state.selectedAggregatedReport || this.state.generatingReport}
+                            className="button"
+                            onClick={() => this.downloadAggregatedReport(this.state.selectedAggregatedReport, reportFeatures[this.state.selectedAggregatedReport])}
+                        >
+                            {this.state.generatingReport ? (<Spinner />) : (<Icon icon="report" />)}
+                            <span>{LocaleUtils.tr("identify.download")}</span>
+                        </button>
                     </div>
                 ) : null}
             </div>
@@ -613,16 +653,16 @@ class IdentifyViewer extends React.Component {
                 reports = {...reports, ...this.collectFeatureReportTemplates(sublayer)};
             }
         } else if (entry.featureReport) {
-            reports[entry.title] = entry.featureReport;
+            reports[entry.name] = entry.featureReport;
         }
         return reports;
     };
     findFeatureReportTemplate = (layer) => {
-        const themeLayer = this.props.layers.find(l => l.role === LayerRole.THEME);
-        if (!themeLayer) {
-            return null;
-        }
-        return this.collectFeatureReportTemplates(themeLayer)[layer] || null;
+        let reports = {};
+        this.props.layers.filter(l => l.role === LayerRole.THEME).forEach(themeLayer => {
+            reports = {...reports, ...this.collectFeatureReportTemplates(themeLayer)};
+        });
+        return reports[layer] || null;
     };
     getFeatureReportUrl = (template, result) => {
         const serviceUrl = ConfigUtils.getConfigProp("featureReportService").replace(/\/$/, "");
@@ -634,7 +674,26 @@ class IdentifyViewer extends React.Component {
         };
         return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
     };
-    showLayerInfo = (featureInfoLayerId, result) => {
+    downloadAggregatedReport = (layername, results) => {
+        const serviceUrl = ConfigUtils.getConfigProp("featureReportService").replace(/\/$/, "");
+        const params = {
+            feature: results.map(result => result.id).join(","),
+            x: results[0].clickPos[0],
+            y: results[0].clickPos[1],
+            crs: this.props.mapcrs
+        };
+        this.setState({generatingReport: true});
+        const template = results[0].featurereport || this.findFeatureReportTemplate(layername);
+        const url = serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
+        axios.get(url, {responseType: "arraybuffer"}).then(response => {
+            FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), layername + ".pdf");
+            this.setState({generatingReport: false});
+        }).catch(e => {
+            alert(LocaleUtils.tr("identify.reportfail"));
+            this.setState({generatingReport: false});
+        });
+    }
+    showLayerInfo = (result) => {
         let match = null;
         // Search matching layer by technical name
         for (const name of [result.layername, result.layerinfo]) {

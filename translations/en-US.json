@@ -187,7 +187,9 @@
       "title": "Height profile"
     },
     "identify": {
+      "aggregatedreport": "Aggregated report:",
       "clipboard": "Copy to clipboard",
+      "download": "Download",
       "export": "Export",
       "exportformat": "Export format:",
       "featureReport": "Feature report",
@@ -195,6 +197,8 @@
       "noattributes": "No attributes",
       "noresults": "No information available for the selected point",
       "querying": "Querying...",
+      "reportfail": "Failed to generate report",
+      "selectlayer": "Select layer...",
       "title": "Feature Info"
     },
     "imageeditor": {

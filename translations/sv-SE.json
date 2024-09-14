@@ -187,7 +187,9 @@
       "title": ""
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "",
+      "download": "",
       "export": "Exportera",
       "exportformat": "",
       "featureReport": "Objektrapport",
@@ -195,6 +197,8 @@
       "noattributes": "Inga attribut",
       "noresults": "Ingen information för vald punkt",
       "querying": "Frågar...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Objektinformation"
     },
     "imageeditor": {
