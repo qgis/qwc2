@@ -59,6 +59,7 @@ class MapSelection extends React.Component {
         });
 
         this.map.addLayer(this.selectionLayer);
+        this.selectionLayer.setVisible(!this.props.hideGeometry);
     }
     componentDidMount() {
         if (this.props.active) {
