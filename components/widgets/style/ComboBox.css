@@ -6,20 +6,33 @@ div.combobox {
     -webkit-user-select: none;
     border: 1px solid var(--border-color);
     background-color: var(--list-bg-color);
+    height: 2em;
 }
 
 div.combobox-button {
     flex: 1 1 auto;
     display: flex;
     align-items: center;
-    padding: 0.25em 0.125em;
     height: 100%;
+    position: relative;
 }
 
 span.combobox-button-content {
     padding: 0 0.25em;
     flex: 1 1 auto;
     white-space: nowrap;
+    line-height: 2em;
+}
+
+input.combobox-button-filter {
+    position: absolute;
+    z-index: 1;
+    border: none!important;
+    background-color: transparent!important;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 
 div.combobox-button > span.icon {

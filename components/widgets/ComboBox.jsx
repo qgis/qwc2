@@ -10,6 +10,7 @@ import React from 'react';
 
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import {remove as removeDiacritics} from 'diacritics';
 
 import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
@@ -21,6 +22,7 @@ export default class ComboBox extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.array]),
         className: PropTypes.string,
+        filterable: PropTypes.bool,
         menuClassName: PropTypes.string,
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
@@ -29,7 +31,8 @@ export default class ComboBox extends React.Component {
     };
     state = {
         popup: false,
-        expanded: []
+        expanded: [],
+        filter: ''
     };
     static defaultProps = {
         readOnly: false,
@@ -44,14 +47,22 @@ export default class ComboBox extends React.Component {
         const rect = this.el ? this.el.getBoundingClientRect() : null;
         let activeOption = children.filter((child) => child.props.value === this.props.value);
         if (activeOption.length === 0) {
-            activeOption = (<span>{this.props.placeholder}</span>);
+            if (!this.state.filter) {
+                activeOption = (<span>{this.props.placeholder}</span>);
+            } else {
+                activeOption = (<span>&nbsp;</span>);
+            }
         }
+        const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
             <div className={"combobox " + (this.props.className || "")} ref={el => { this.el = el; }}>
                 <div className="combobox-button" onClick={this.props.readOnly ? null : () => this.setState({popup: true})}>
                     <span className="combobox-button-content">
                         {activeOption}
                     </span>
+                    {this.props.filterable && !this.props.readOnly ? (
+                            <input className="combobox-button-filter" onChange={this.filterChanged} type="text" value={this.state.filter} />
+                    ) : null}
                     {this.props.readOnly ? null : (<Icon icon="chevron-down" />)}
                 </div>
                 {this.el && this.state.popup ? (
@@ -64,6 +75,9 @@ export default class ComboBox extends React.Component {
                                 "combobox-menu-entry-group-header": child.props["data-group-header"] !== undefined
                             });
                             if (child.props["data-group"] !== undefined && !this.state.expanded.includes(child.props["data-group"])) {
+                                return null;
+                            }
+                            if(filter && !removeDiacritics(child.props.title).match(filter)) {
                                 return null;
                             }
                             const expanderIcon = this.state.expanded.includes(child.props["data-group-header"]) ? "collapse" : "expand";
@@ -81,7 +95,12 @@ export default class ComboBox extends React.Component {
             </div>
         );
     }
+    filterChanged = (ev) => {
+        this.setState({filter: ev.target.value});
+        this.props.onChange('');
+    }
     onChildClicked = (ev, child) => {
+        this.setState({filter: ''});
         if (child.props["data-group-header"] !== undefined) {
             MiscUtils.killEvent(ev);
             this.setState((state) => {
