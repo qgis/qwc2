@@ -35,7 +35,6 @@ div.qt-designer-layout-grid {
 div.qt-designer-layout-grid > div {
     display: flex;
     align-items: center;
-    min-width: 0;
 }
 
 div.qt-designer-layout-grid > div > *:not(.qt-designer-form-vline) {
