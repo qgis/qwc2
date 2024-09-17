@@ -1,11 +1,28 @@
 @builtin "string.ne"
 
 @{%
+
 if (typeof window === 'undefined') {
     window = global;
 }
 function asFilter(d) {
     return window.qwc2ExpressionParserContext.asFilter && ["string", "object"].includes(typeof(d[0]));
+}
+function generateUUID() {
+    let d = new Date().getTime();
+    let d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;
+    const result = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        let r = Math.random() * 16;
+        if(d > 0){
+            r = (d + r)%16 | 0;
+            d = Math.floor(d/16);
+        } else {
+            r = (d2 + r)%16 | 0;
+            d2 = Math.floor(d2/16);
+        }
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+    return '{' + result + '}';
 }
 %}
 
@@ -54,6 +71,7 @@ P6 -> "-" _ P6                     {% function(d) { return -d[2]; } %}
 N -> float                         {% id %}
     | sqstring                     {% id %}
     | dqstring                     {% function(d) { return asFilter(d) ? d[0] : window.qwc2ExpressionParserContext.feature.properties?.[d[0]] ?? null; } %}
+    | "uuid" _ "(" _ ")"           {% function(d) { return generateUUID(); } %}
     | "now" _ "(" _ ")"            {% function(d) { return (new Date()).toISOString(); } %}
     | "sin" _ "(" _ P0 _ ")"       {% function(d) { return Math.sin(d[4]); } %}
     | "cos" _ "(" _ P0 _ ")"       {% function(d) { return Math.cos(d[4]); } %}
