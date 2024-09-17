@@ -35,7 +35,7 @@ export default class NewsPopup extends React.Component {
     };
     constructor(props) {
         super(props);
-        this.state.showPopup = !document.cookie.split(';').some((item) => item.includes('newsrev=' + props.newsRev));
+        this.state.showPopup = props.newsRev !== null && !document.cookie.split(';').some((item) => item.includes('newsrev=' + props.newsRev));
     }
     render() {
         if (!this.state.showPopup || !this.props.newsDocument) {
