@@ -508,7 +508,7 @@ class Print extends React.Component {
         );
     };
     savePrintOutput = () => {
-        FileSaver.saveAs(this.state.pdfData, this.props.theme.name + '.pdf');
+        FileSaver.saveAs(this.state.pdfData, this.props.theme.id + '.pdf');
     };
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
@@ -625,7 +625,7 @@ class Print extends React.Component {
                 this.setState({ pdfData: file, pdfDataUrl: fileURL, outputLoaded: true });
             } else {
                 const ext = this.state.selectedFormat.split(";")[0].split("/").pop();
-                FileSaver.saveAs(file, this.props.theme.name + '.' + ext);
+                FileSaver.saveAs(file, this.props.theme.id + '.' + ext);
             }
         }).catch(e => {
             this.setState({printing: false, outputLoaded: true, printOutputVisible: false});
