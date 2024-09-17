@@ -104,7 +104,7 @@ class Reports extends React.Component {
                 <div>
                     <button
                         className="button reports-download-button"
-                        disabled={isEmpty(this.state.reportFeatures) && this.state.featureSelectionMode !== "All"}
+                        disabled={this.state.generatingReport || (isEmpty(this.state.reportFeatures) && this.state.featureSelectionMode !== "All")}
                         onClick={this.downloadReport} type="button"
                     >
                         {this.state.generatingReport ? (<Spinner />) : (<Icon icon="report" />)}
