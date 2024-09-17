@@ -170,7 +170,7 @@ class MapExport extends React.Component {
                 <input min="1" onChange={ev => this.setState({scale: ev.target.value})} role="input" type="number" value={this.state.scale} />
             );
         }
-        const filename = this.props.theme.name.split("/").pop() + "." + this.state.selectedFormat.split(";")[0].split("/").pop();
+        const filename = this.props.theme.id.split("/").pop() + "." + this.state.selectedFormat.split(";")[0].split("/").pop();
         const action = this.props.theme.url;
         const exportExternalLayers = this.state.selectedFormat !== "application/dxf" && this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
 
@@ -412,7 +412,7 @@ class MapExport extends React.Component {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
             const ext = this.state.selectedFormat.split(";")[0].split("/").pop();
-            FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.name + '.' + ext);
+            FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.id + '.' + ext);
         }).catch(e => {
             this.setState({exporting: false});
             if (e.response) {
