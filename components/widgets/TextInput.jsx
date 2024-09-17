@@ -80,14 +80,19 @@ class TextInput extends React.Component {
         }
     };
     render() {
-        const className = classNames({
+        const wrapperClassName = classNames({
+            "TextInput": true,
+            "text-input-wrapper": true,
+            "text-input-wrapper-multiline": this.props.multiline
+        });
+        const preClassName = classNames({
             "text-input": true,
             "text-input-disabled": this.props.disabled,
             "text-input-readonly": this.props.readOnly || !this.state.curValue,
             "text-input-invalid": this.props.required && !this.state.curValue
         });
         return (
-            <div className={"TextInput text-input-wrapper " + (this.props.className || "")}>
+            <div className={wrapperClassName + " " + (this.props.className || "")}>
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"
@@ -98,7 +103,7 @@ class TextInput extends React.Component {
                         value={this.state.curValue} />
                 ) : null}
                 <pre
-                    className={className}
+                    className={preClassName}
                     contentEditable={!this.props.disabled && !this.props.readOnly}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
