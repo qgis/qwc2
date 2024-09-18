@@ -217,7 +217,8 @@ div.identify-body table.identify-attr-subtable > tbody > tr:nth-child(even) {
 }
 
 div.identify-body td.identify-attr-spacer {
-    height: 8px;
+    height: 2px;
+    background-color: var(--list-section-bg-color);
 }
 
 span.identify-buttonbox-spacer {
