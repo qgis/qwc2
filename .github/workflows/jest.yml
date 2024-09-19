@@ -1,0 +1,24 @@
+name: Jest
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "master" ]
+  schedule:
+    - cron: '29 3 * * 5'
+
+jobs:
+  eslint:
+    name: Run jest tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Jest
+        run: yarn install
+
+      - name: Run Jest
+        run: yarn test

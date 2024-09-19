@@ -2,7 +2,7 @@ module.exports = {
     parser: "@babel/eslint-parser",  // https://github.com/babel/babel/tree/main/eslint/babel-eslint-parser
     parserOptions: {
         babelOptions: {
-            configFile: "./.babelrc.json"
+            configFile: "./babel.config.json"
         },
         ecmaFeatures: {
             arrowFunctions: true,
@@ -25,7 +25,10 @@ module.exports = {
     },
     plugins: [
         "perfectionist",                 // https://github.com/azat-io/eslint-plugin-perfectionist
-        "react"                          // https://github.com/yannickcr/eslint-plugin-react
+        "react",                         // https://github.com/yannickcr/eslint-plugin-react
+        "jest",                          // https://github.com/jest-community/eslint-plugin-jest
+        "jest-dom",                      // https://github.com/testing-library/eslint-plugin-jest-dom
+        "testing-library"                // https://github.com/testing-library/eslint-plugin-testing-library
     ],
     extends: [
         "eslint:recommended",
@@ -36,6 +39,12 @@ module.exports = {
         browser: true,                 // browser global variables
         node: true                     // Node.js global variables and Node.js-specific rules
     },
+    overrides: [
+        {
+            files: ["tests/**/*"],
+            env: { jest: true }
+        }
+    ],
     settings: {
         react: {
             version: "detect"
