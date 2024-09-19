@@ -226,8 +226,7 @@ class LayerTree extends React.Component {
             checkboxstate = 'radio_' + checkboxstate;
         }
         const expanderstate = group.expanded ? 'tree_minus' : 'tree_plus';
-        const onlyGroups = ConfigUtils.getConfigProp("showOnlyLayerGroups", this.props.theme) || this.props.onlyGroups;
-        const showExpander = !onlyGroups || (group.sublayers || []).some((sublayer) => sublayer.sublayers);
+        const showExpander = !this.props.onlyGroups || (group.sublayers || []).some((sublayer) => sublayer.sublayers);
         const itemclasses = {
             "layertree-item": true,
             "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !visibility)
@@ -262,8 +261,7 @@ class LayerTree extends React.Component {
         );
     };
     renderLayer = (layer, sublayer, path, enabled = true, inMutuallyExclusiveGroup = false, skipExpanderPlaceholder = false) => {
-        const onlyGroups = ConfigUtils.getConfigProp("showOnlyLayerGroups", this.props.theme) || this.props.onlyGroups;
-        if (onlyGroups) {
+        if (this.props.onlyGroups) {
             return null;
         }
         if (this.state.filtervisiblelayers && !sublayer.visibility) {
