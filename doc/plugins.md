@@ -469,6 +469,7 @@ with containing a container element with id=legendcontainer.
 | groupTogglesSublayers | `bool` | Whether toggling a group also toggles all sublayers. | `false` |
 | infoInSettings | `bool` | Whether to display the layer info button inside the layer settings menu rather than next to the layer title. | `true` |
 | layerInfoGeometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default layer info window geometry with size, position and docking status. | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 480,`<br />`    initialX: null,`<br />`    initialY: null,`<br />`    initiallyDocked: false`<br />`}` |
+| onlyGroups | `bool` | Whether to only display layer groups but not individual layers in layertree. | `false` |
 | scaleDependentLegend | `{bool, string}` | Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
 | showLegendIcons | `bool` | Whether to display legend icons. | `true` |
 | showQueryableIcon | `bool` | Whether to display the queryable icon to indicate that a layer is identifyable. | `true` |
