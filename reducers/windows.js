@@ -38,7 +38,8 @@ function computeMapMargins(windowMargins, menuMargins) {
         left: windowMargins.left + menuMargins.left,
         top: windowMargins.top,
         right: windowMargins.right + menuMargins.right,
-        bottom: windowMargins.bottom
+        bottom: windowMargins.bottom,
+        splitTopAndBottomBar: windowMargins.splitTopAndBottomBar
     };
 }
 
@@ -106,7 +107,8 @@ export default function windows(state = defaultState, action) {
         } else {
             newSplitScreen[action.windowId] = {
                 side: action.side,
-                size: action.size
+                size: action.size,
+                splitTopAndBottomBar: action.splitTopAndBottomBar
             };
         }
         const splitWindows = Object.values(newSplitScreen);
@@ -114,13 +116,15 @@ export default function windows(state = defaultState, action) {
             right: splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0),
             bottom: splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0),
             left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0),
-            top: splitWindows.filter(entry => entry.side === 'top').reduce((res, e) => Math.max(e.size, res), 0)
+            top: splitWindows.filter(entry => entry.side === 'top').reduce((res, e) => Math.max(e.size, res), 0),
+            splitTopAndBottomBar: splitWindows.find(x => x.splitTopAndBottomBar === true)
         };
         return {
             ...state,
             splitScreen: newSplitScreen,
             windowMargins: windowMargins,
-            mapMargins: computeMapMargins(windowMargins, state.menuMargins)
+            mapMargins: computeMapMargins(windowMargins, state.menuMargins),
+
         };
     }
     case SET_MENU_MARGIN: {

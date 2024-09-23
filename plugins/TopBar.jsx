@@ -49,6 +49,7 @@ class TopBar extends React.Component {
         logoSrc: PropTypes.string,
         /** The hyperlink to open when the logo is clicked. */
         logoUrl: PropTypes.string,
+        mapMargins: PropTypes.object,
         /** The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         menuItems: PropTypes.array,
         mobile: PropTypes.bool,
@@ -147,11 +148,15 @@ class TopBar extends React.Component {
         const keepMenuOpen = menuCompact;
         // Menu should be visible on startup when appMenu is in compact mode (Visible on Hover)
         const showOnStartup = this.props.appMenuVisibleOnStartup || menuCompact;
+        const style = this.props.mapMargins.splitTopAndBottomBar ? {
+            marginLeft: this.props.mapMargins.left + 'px',
+            marginRight: this.props.mapMargins.right + 'px'
+        } : {};
         return (
             <Swipeable
                 onSwipedDown={() => this.props.toggleFullscreen(false)}
                 onSwipedUp={() => this.props.toggleFullscreen(true)}>
-                <div className={classes} id="TopBar" ref={this.storeHeight}>
+                <div className={classes} id="TopBar" ref={this.storeHeight} style={style}>
                     {logoEl}
                     <div className="center-span">
                         {this.props.components.Search ? (
@@ -200,7 +205,8 @@ export default (components) => {
     return connect((state) => ({
         mobile: state.browser.mobile,
         fullscreen: state.display.fullscreen,
-        components: components
+        components: components,
+        mapMargins: state.windows.mapMargins
     }), {
         toggleFullscreen: toggleFullscreen,
         restoreDefaultTheme: restoreDefaultTheme,

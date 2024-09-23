@@ -62,6 +62,7 @@ class ResizeableWindow extends React.Component {
         scrollable: PropTypes.bool,
         setSplitScreen: PropTypes.func,
         splitScreenWhenDocked: PropTypes.bool,
+        splitTopAndBottomBar: PropTypes.bool,
         title: PropTypes.string,
         titlelabel: PropTypes.string,
         topbarHeight: PropTypes.number,
@@ -114,7 +115,7 @@ class ResizeableWindow extends React.Component {
         if (props.splitScreenWhenDocked && this.state.geometry.docked) {
             const dockSide = props.dockable === true ? "left" : props.dockable;
             const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
-            props.setSplitScreen(this.id, dockSide, dockSize);
+            props.setSplitScreen(this.id, dockSide, dockSize, props.splitTopAndBottomBar);
         }
         this.portalNode = props.usePortal ? portals.createHtmlPortalNode() : null;
     }
@@ -132,7 +133,7 @@ class ResizeableWindow extends React.Component {
     componentWillUnmount() {
         this.props.unregisterWindow(this.id);
         if (this.props.splitScreenWhenDocked) {
-            this.props.setSplitScreen(this.id, null, null);
+            this.props.setSplitScreen(this.id, null, null, false);
         }
         if (this.state.externalWindow) {
             this.state.externalWindow.close();
@@ -156,11 +157,11 @@ class ResizeableWindow extends React.Component {
                 (this.state.geometry.docked === false && prevState.geometry.docked !== false) ||
                 this.state.externalWindow && !prevState.externalWindow
             ) {
-                this.props.setSplitScreen(this.id, null, null);
+                this.props.setSplitScreen(this.id, null, null, false);
             } else if (this.props.visible && this.state.geometry.docked && !this.state.externalWindow) {
                 const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
                 const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
-                this.props.setSplitScreen(this.id, dockSide, dockSize);
+                this.props.setSplitScreen(this.id, dockSide, dockSize, this.props.splitTopAndBottomBar);
             }
         }
     }
@@ -260,7 +261,7 @@ class ResizeableWindow extends React.Component {
             right: this.props.menuMargins.right + 'px',
             top: splitTopAndBottomBar ? 0 : this.props.topbarHeight + 'px',
             bottom: splitTopAndBottomBar ? 0 : this.props.bottombarHeight + 'px',
-            zIndex: splitTopAndBottomBar ? 110 : 0
+            zIndex: splitTopAndBottomBar ? 110 : this.props.baseZIndex + this.props.windowStacking.findIndex(item => item === this.id)
         };
 
         const windowclasses = classnames({
@@ -294,7 +295,6 @@ class ResizeableWindow extends React.Component {
                 bottom: (dockSide !== "bottom" && !this.props.splitScreenWhenDocked) || (this.props.splitScreenWhenDocked && dockSide === "top")
             };
         }
-        const zIndex = this.props.baseZIndex + this.props.windowStacking.findIndex(item => item === this.id);
         return (
             <div className="resizeable-window-container" key="InternalWindow" style={containerStyle}>
                 <Rnd bounds="parent"
@@ -306,7 +306,7 @@ class ResizeableWindow extends React.Component {
                     onDragStop={this.onDragStop}
                     onMouseDown={() => this.props.raiseWindow(this.id)}
                     onResizeStop={this.onResizeStop}
-                    ref={this.initRnd} style={{zIndex: zIndex}}
+                    ref={this.initRnd}
                 >
                     <div className="resizeable-window-contents">
                         {this.renderTitleBar()}

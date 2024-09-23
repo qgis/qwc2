@@ -1,9 +1,5 @@
 div.resizeable-window-container {
     position: absolute;
-    left: 0;
-    top: var(--topbar-height);
-    bottom: var(--bottombar-height);
-    right: 0;
     pointer-events: none;
 }
 

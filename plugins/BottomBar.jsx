@@ -47,6 +47,7 @@ class BottomBar extends React.Component {
         displayScales: PropTypes.bool,
         displaycrs: PropTypes.string,
         fullscreen: PropTypes.bool,
+        mapMargins: PropTypes.object,
         map: PropTypes.object,
         openExternalUrl: PropTypes.func,
         setBottombarHeight: PropTypes.func,
@@ -145,9 +146,13 @@ class BottomBar extends React.Component {
                 </div>
             );
         }
+        const style = this.props.mapMargins.splitTopAndBottomBar ? {
+            marginLeft: this.props.mapMargins.left + 'px',
+            marginRight: this.props.mapMargins.right + 'px'
+        } : {};
 
         return (
-            <div id="BottomBar" ref={this.storeHeight}>
+            <div id="BottomBar" ref={this.storeHeight}  style={style}>
                 <span className="bottombar-spacer" />
                 {coordinates}
                 {scales}
@@ -186,6 +191,7 @@ const selector = createSelector([state => state, displayCrsSelector], (state, di
         displaycrs: displaycrs,
         map: state.map,
         fullscreen: state.display && state.display.fullscreen,
+        mapMargins: state.windows.mapMargins,
         additionalMouseCrs: state.theme.current ? state.theme.current.additionalMouseCrs : []
     };
 });
