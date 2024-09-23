@@ -606,7 +606,9 @@
     },
     "window": {
       "close": "Chiudi",
+      "detach": "Staccare",
       "dock": "Aggancia",
+      "embed": "Incorporare",
       "maximize": "Massimizza",
       "minimize": "Minimizza",
       "undock": "Sgancia",

@@ -1,6 +1,6 @@
 {
     "name": "qwc2",
-    "version": "2024.09.17-master",
+    "version": "2024.09.24-master",
     "description": "QGIS Web Client 2 core",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
@@ -53,6 +53,7 @@
         "react-google-recaptcha": "^3.1.0",
         "react-numeric-input2": "^3.1.0",
         "react-redux": "^9.1.1",
+        "react-reverse-portal": "^2.1.2",
         "react-rnd": "^10.4.10",
         "react-share": "^5.1.0",
         "react-sortablejs": "^1.5.1",

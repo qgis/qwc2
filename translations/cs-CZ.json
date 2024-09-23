@@ -606,7 +606,9 @@
     },
     "window": {
       "close": "Zavřít",
+      "detach": "",
       "dock": "Přichytit",
+      "embed": "",
       "maximize": "Maximalizovat",
       "minimize": "Minimalizovat",
       "undock": "Zrušit přichycení",

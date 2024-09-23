@@ -606,7 +606,9 @@
     },
     "window": {
       "close": "Sulje",
+      "detach": "",
       "dock": "Kiinnitä",
+      "embed": "",
       "maximize": "",
       "minimize": "",
       "undock": "Irrota",

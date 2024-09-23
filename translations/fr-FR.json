@@ -606,7 +606,9 @@
     },
     "window": {
       "close": "Fermer",
+      "detach": "Détacher",
       "dock": "Attacher",
+      "embed": "Incorporer",
       "maximize": "Agrandir",
       "minimize": "Minimiser",
       "undock": "Détacher",

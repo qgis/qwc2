@@ -606,7 +606,9 @@
     },
     "window": {
       "close": "Lukk",
+      "detach": "",
       "dock": "Fest",
+      "embed": "",
       "maximize": "",
       "minimize": "",
       "undock": "Utløs",

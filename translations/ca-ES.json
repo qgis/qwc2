@@ -606,7 +606,9 @@
     },
     "window": {
       "close": "Tancar",
+      "detach": "",
       "dock": "Acoblar",
+      "embed": "",
       "maximize": "Maximitzar",
       "minimize": "Minimitzar",
       "undock": "Desacoblar",

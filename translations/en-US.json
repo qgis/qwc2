@@ -606,7 +606,9 @@
     },
     "window": {
       "close": "Close",
+      "detach": "Detach",
       "dock": "Dock",
+      "embed": "Embed",
       "maximize": "Maximize",
       "minimize": "Minimize",
       "undock": "Undock",

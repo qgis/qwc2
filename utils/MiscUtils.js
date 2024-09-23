@@ -115,6 +115,33 @@ const MiscUtils = {
     convertEmToPx(emsize) {
         const defaultfontsize = getComputedStyle(document.documentElement).fontSize;
         return emsize * parseFloat(defaultfontsize);
+    },
+    getFaviconFromIcon(icon, size) {
+        let glyph = null;
+        for (const sheet of document.styleSheets) {
+            for (const rule of sheet.cssRules) {
+                if (rule.selectorText === `.icon-${icon}::before`) {
+                    glyph = rule.style.content.replace(/["']/g, '');
+                    break;
+                }
+            }
+        }
+        if (glyph === null) {
+            return null;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+
+        const ctx = canvas.getContext('2d');
+        ctx.font = `${size - 5}px qwc2-icons`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#FFF'; // You can change this color if needed
+        ctx.fillText(glyph, size / 2, size / 2);
+
+        return canvas.toDataURL('image/png');
     }
 };
 

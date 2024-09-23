@@ -606,7 +606,9 @@
     },
     "window": {
       "close": "Kapat",
+      "detach": "",
       "dock": "Sabitle",
+      "embed": "",
       "maximize": "Maksimize",
       "minimize": "Minimize",
       "undock": "Çöz",
