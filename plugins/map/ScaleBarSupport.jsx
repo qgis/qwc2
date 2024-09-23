@@ -8,17 +8,21 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
+
+import './style/ScaleBarSupport.css';
 
 
 /**
  * Scalebar support for the map component.
  */
-export default class ScaleBarSupport extends React.Component {
+class ScaleBarSupport extends React.Component {
     static propTypes = {
         map: PropTypes.object,
+        mapMargins: PropTypes.object,
         /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) */
         options: PropTypes.object
     };
@@ -28,22 +32,32 @@ export default class ScaleBarSupport extends React.Component {
     };
     constructor(props) {
         super(props);
-        this.scalebar = new ol.control.ScaleLine({
-            ...ScaleBarSupport.defaultOpt,
-            ...props.options
-        });
-    }
-    componentDidMount() {
-        this.scalebarContainer = document.createElement("div");
-        this.scalebarContainer.id = this.props.map.get('id') + "-scalebar";
-        document.getElementById("PluginsContainer").appendChild(this.scalebarContainer);
-        this.scalebar.setTarget(this.props.map.get('id') + "-scalebar");
-        this.props.map.addControl(this.scalebar);
+        this.scalebar = null;
     }
     componentWillUnmount = () => {
+        if (this.scalebar) {
+            this.props.map.removeControl(this.scalebar);
+        }
         document.getElementById("PluginsContainer").removeChild(this.scalebarContainer);
     };
+    initScaleBar = (el) => {
+        this.scalebar = new ol.control.ScaleLine({
+            target: el,
+            ...ScaleBarSupport.defaultOpt,
+            ...this.props.options
+        });
+        this.props.map.addControl(this.scalebar);
+    };
     render() {
-        return null;
+        const style = this.props.mapMargins.splitTopAndBottomBar ? {
+            marginLeft: this.props.mapMargins.left + 'px'
+        } : {};
+        return (
+            <div id="ScaleBar" ref={this.initScaleBar} style={style} />
+        );
     }
 }
+
+export default connect((state) => ({
+    mapMargins: state.windows.mapMargins
+}))(ScaleBarSupport);

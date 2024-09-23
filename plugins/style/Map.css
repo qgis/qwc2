@@ -2,19 +2,6 @@ div#map {
     position: absolute;
 }
 
-/** Move and re-style scalebar */
-div.ol-scale-line {
-    z-index: 101;
-    bottom: 3px;
-    left: 3px;
-    background-color: transparent;
-}
-
-div.ol-scale-line > div.ol-scale-line-inner {
-    color: var(--panel-text-color);
-    border-color: var(--panel-text-color);
-}
-
 /* Move and re-style rotation reset button */
 div.ol-rotate {
     padding: 0;
