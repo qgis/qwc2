@@ -42,6 +42,8 @@ jobs:
           --ext .js,.jsx,.ts,.tsx
           --format @microsoft/eslint-formatter-sarif
           --output-file eslint-results.sarif
+        env:
+          SARIF_ESLINT_IGNORE_SUPPRESSED: true
         continue-on-error: true
 
       - name: Upload analysis results to GitHub
