@@ -33,7 +33,6 @@ export default {
                 const glStyle = response.data;
                 Object.keys(glStyle.sources).forEach(styleSource => {
                     const layer = createLayer();
-                    layer.setId
                     applyStyle(layer, glStyle, styleSource).then(() => {
                         group.getLayers().push(layer);
                     });

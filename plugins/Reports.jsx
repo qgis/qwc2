@@ -6,21 +6,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import React from 'react';
+import {connect} from 'react-redux';
+
 import axios from 'axios';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import React from 'react';
-import {connect} from 'react-redux';
 
 import {LayerRole, addLayerFeatures, clearLayer, changeLayerProperty} from '../actions/layers';
-import ButtonBar from '../components/widgets/ButtonBar';
-import ComboBox from '../components/widgets/ComboBox';
 import Icon from '../components/Icon';
 import MapSelection from '../components/MapSelection';
 import PickFeature from '../components/PickFeature';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/Spinner';
+import ButtonBar from '../components/widgets/ButtonBar';
+import ComboBox from '../components/widgets/ComboBox';
 import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -32,7 +33,7 @@ import './style/Reports.css';
 
 /**
  * Allow generating reports for selected features.
- * 
+ *
  * This plugin displays all available reports for the current theme,
  * allows selecting one or more or all features of the layer, and finally generating
  * an aggregated report for all selected features.
@@ -85,13 +86,13 @@ class Reports extends React.Component {
             <div className="reports-body">
                 <div>
                     <ComboBox
-                        className="reports-filter-combo" filterable 
+                        className="reports-filter-combo" filterable
                         onChange={this.setReportLayer}
                         placeholder={LocaleUtils.tr("reports.selectlayer")}
                         value={this.state.selectedReportLayer}
                     >
                         {Object.entries(this.state.reports).map(([layername, entry]) => (
-                            <div key={layername} value={layername} title={entry.title}>{entry.title}</div>
+                            <div key={layername} title={entry.title} value={layername}>{entry.title}</div>
                         ))}
                     </ComboBox>
                 </div>
@@ -156,10 +157,10 @@ class Reports extends React.Component {
     setReportLayer = (layer) => {
         this.setLayerVisibility(layer, true);
         this.setState({selectedReportLayer: layer, reportFeatures: []});
-    }
+    };
     setPickMode = (mode) => {
         this.setState({featureSelectionMode: mode, reportFeatures: [], featureSelectionPolygon: null});
-    }
+    };
     collectFeatureReportTemplates = (entry) => {
         let reports = {};
         if (entry.sublayers) {
@@ -170,7 +171,7 @@ class Reports extends React.Component {
             reports[entry.name] = {
                 title: entry.title,
                 template: entry.featureReport
-            }
+            };
         }
         return reports;
     };
@@ -178,13 +179,13 @@ class Reports extends React.Component {
         let reports = {};
         this.props.layers.filter(l => l.role === LayerRole.THEME).forEach(themeLayer => {
             reports = {...reports, ...this.collectFeatureReportTemplates(themeLayer)};
-        })
+        });
         this.setState({reports, featureSelectionMode: 'Pick'});
     };
     onHide = () => {
         this.props.clearLayer("report-pick-selection");
         this.setState({...Reports.defaultState});
-    }
+    };
     selectReportFeature = (layer, feature) => {
         if (!feature) {
             return;
@@ -216,15 +217,15 @@ class Reports extends React.Component {
 
         const filter = VectorLayerUtils.geoJSONGeomToWkt(geom);
         const params = {feature_count: 100};
-        const layer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
+        const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
         const request = IdentifyUtils.buildFilterRequest(layer, this.state.selectedReportLayer, filter, this.props.map, params);
         IdentifyUtils.sendRequest(request, (response) => {
             if (response) {
                 const result = IdentifyUtils.parseResponse(response, layer, request.params.info_format, center, this.props.map.projection);
-                this.setState({reportFeatures: result[this.state.selectedReportLayer]});
+                this.setState((state) => ({reportFeatures: result[state.selectedReportLayer]}));
             }
         });
-    }
+    };
     downloadReport = () => {
         const serviceUrl = ConfigUtils.getConfigProp("featureReportService").replace(/\/$/, "");
         let featureIds = '';
@@ -243,11 +244,12 @@ class Reports extends React.Component {
         axios.get(url, {responseType: "arraybuffer"}).then(response => {
             FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), this.state.selectedReportLayer + ".pdf");
             this.setState({generatingReport: false});
-        }).catch(e => {
+        }).catch(() => {
+            /* eslint-disable-next-line */
             alert(LocaleUtils.tr("identify.reportfail"));
             this.setState({generatingReport: false});
         });
-    }
+    };
 }
 
 export default connect(state => ({

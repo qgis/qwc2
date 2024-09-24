@@ -16,7 +16,6 @@ import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {openExternalUrl} from '../actions/task';
-import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 
 import './style/MapTip.css';

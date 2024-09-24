@@ -295,7 +295,9 @@ class OlMap extends React.Component {
                 const featureObj = format.writeFeatureObject(feature);
                 featureObj.layerId = layer ? layer.get('id') : null;
                 features.push(featureObj);
-            } catch (e) {}
+            } catch (e) {
+                /* pass */
+            }
         });
         const data = {
             ts: +new Date(),

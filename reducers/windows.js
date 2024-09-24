@@ -123,8 +123,7 @@ export default function windows(state = defaultState, action) {
             ...state,
             splitScreen: newSplitScreen,
             windowMargins: windowMargins,
-            mapMargins: computeMapMargins(windowMargins, state.menuMargins),
-
+            mapMargins: computeMapMargins(windowMargins, state.menuMargins)
         };
     }
     case SET_MENU_MARGIN: {

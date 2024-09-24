@@ -752,7 +752,7 @@ class LayerTree extends React.Component {
         const data = JSON.stringify({
             type: "FeatureCollection",
             features: layer.features.map(feature => {
-                const newFeature = {...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')};
+                const newFeature = {...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.map.projection, 'EPSG:4326')};
                 delete newFeature.crs;
                 return newFeature;
             })

@@ -47,8 +47,8 @@ class BottomBar extends React.Component {
         displayScales: PropTypes.bool,
         displaycrs: PropTypes.string,
         fullscreen: PropTypes.bool,
-        mapMargins: PropTypes.object,
         map: PropTypes.object,
+        mapMargins: PropTypes.object,
         openExternalUrl: PropTypes.func,
         setBottombarHeight: PropTypes.func,
         /** The URL of the terms label anchor. */

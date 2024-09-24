@@ -9,8 +9,8 @@
 import React from 'react';
 
 import classnames from 'classnames';
-import PropTypes from 'prop-types';
 import {remove as removeDiacritics} from 'diacritics';
+import PropTypes from 'prop-types';
 
 import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
@@ -61,7 +61,7 @@ export default class ComboBox extends React.Component {
                         {activeOption}
                     </span>
                     {this.props.filterable && !this.props.readOnly ? (
-                            <input className="combobox-button-filter" onChange={this.filterChanged} type="text" value={this.state.filter} />
+                        <input className="combobox-button-filter" onChange={this.filterChanged} type="text" value={this.state.filter} />
                     ) : null}
                     {this.props.readOnly ? null : (<Icon icon="chevron-down" />)}
                 </div>
@@ -77,7 +77,7 @@ export default class ComboBox extends React.Component {
                             if (child.props["data-group"] !== undefined && !this.state.expanded.includes(child.props["data-group"])) {
                                 return null;
                             }
-                            if(filter && !removeDiacritics(child.props.title).match(filter)) {
+                            if (filter && !removeDiacritics(child.props.title).match(filter)) {
                                 return null;
                             }
                             const expanderIcon = this.state.expanded.includes(child.props["data-group-header"]) ? "collapse" : "expand";
@@ -98,7 +98,7 @@ export default class ComboBox extends React.Component {
     filterChanged = (ev) => {
         this.setState({filter: ev.target.value});
         this.props.onChange('');
-    }
+    };
     onChildClicked = (ev, child) => {
         this.setState({filter: ''});
         if (child.props["data-group-header"] !== undefined) {
