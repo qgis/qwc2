@@ -163,6 +163,7 @@ img.layertree-item-legend-tooltip {
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 0 1 auto;
+    cursor: pointer;
 }
 
 #LayerTree div.layertree-item-noresults {
