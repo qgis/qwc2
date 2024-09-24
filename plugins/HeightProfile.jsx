@@ -322,7 +322,13 @@ class HeightProfile extends React.Component {
             {icon: 'print', active: this.state.printdialog, callback: () => this.setState(state => ({printdialog: !state.printdialog})), msgid: LocaleUtils.trmsg("heightprofile.print")}
         ];
         return [(
-            <ResizeableWindow dockable="bottom" extraControls={extraControls} icon="line" initialHeight={this.props.height} initialWidth={600} initiallyDocked key="ProfileDialog" onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("heightprofile.title")}>
+            <ResizeableWindow
+                dockable="bottom" extraControls={extraControls} icon="line"
+                initialHeight={this.props.height} initialWidth={600} initiallyDocked
+                key="ProfileDialog" onClose={this.onClose} onExternalWindowResized={this.resizeChart}
+                splitScreenWhenDocked
+                title={LocaleUtils.tr("heightprofile.title")} usePortal={false}
+            >
                 {this.state.isloading ? (
                     <div className="height-profile-loading-indicator" role="body">
                         <Spinner className="spinner" /> {LocaleUtils.tr("heightprofile.loading")}
@@ -441,6 +447,11 @@ class HeightProfile extends React.Component {
                 <Line data={data} options={options} ref={saveRef} />
             </div>
         );
+    };
+    resizeChart = () => {
+        if (this.chart) {
+            this.chart.resize();
+        }
     };
     updateMarker = (x) => {
         const segmentLengths = this.props.measurement.segment_lengths;
