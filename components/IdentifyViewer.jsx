@@ -21,7 +21,6 @@ import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {openExternalUrl} from '../actions/task';
-import Spinner from './Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -29,6 +28,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
+import Spinner from './Spinner';
 
 import './style/IdentifyViewer.css';
 
@@ -566,19 +566,19 @@ class IdentifyViewer extends React.Component {
                         <span className="identify-buttonbox-spacer" />
                         <span>{LocaleUtils.tr("identify.aggregatedreport")}&nbsp;</span>
                         <select className="combo identify-export-format" onChange={ev => this.setState({selectedAggregatedReport: ev.target.value})} value={this.state.selectedAggregatedReport || ""}>
-                            <option value='' disabled>{LocaleUtils.tr("identify.selectlayer")}</option>
+                            <option disabled value=''>{LocaleUtils.tr("identify.selectlayer")}</option>
                             {Object.entries(reportFeatures).map(([layername, results]) => {
                                 if (results.length > 1) {
                                     return (
                                         <option key={layername} value={layername}>{results[0].layertitle}</option>
                                     );
-                                    }
+                                }
                                 return null;
                             })}
                         </select>
                         <button
-                            disabled={!this.state.selectedAggregatedReport || this.state.generatingReport}
                             className="button"
+                            disabled={!this.state.selectedAggregatedReport || this.state.generatingReport}
                             onClick={() => this.downloadAggregatedReport(this.state.selectedAggregatedReport, reportFeatures[this.state.selectedAggregatedReport])}
                         >
                             {this.state.generatingReport ? (<Spinner />) : (<Icon icon="report" />)}
@@ -688,11 +688,12 @@ class IdentifyViewer extends React.Component {
         axios.get(url, {responseType: "arraybuffer"}).then(response => {
             FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), layername + ".pdf");
             this.setState({generatingReport: false});
-        }).catch(e => {
+        }).catch(() => {
+            /* eslint-disable-next-line */
             alert(LocaleUtils.tr("identify.reportfail"));
             this.setState({generatingReport: false});
         });
-    }
+    };
     showLayerInfo = (result) => {
         let match = null;
         // Search matching layer by technical name
