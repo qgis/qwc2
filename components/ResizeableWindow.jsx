@@ -170,6 +170,9 @@ class ResizeableWindow extends React.Component {
         return React.Children.toArray(this.props.children).find((child) => child.props.role === role);
     };
     onClose = (ev) => {
+        if (this.state.externalWindow) {
+            this.state.externalWindow.removeEventListener('beforeunload', this.props.onClose);
+        }
         this.props.onClose();
         ev.stopPropagation();
     };
@@ -428,7 +431,7 @@ class ResizeableWindow extends React.Component {
                 return;
             }
             clearInterval(loadInterval);
-            externalWindow.addEventListener('beforeunload', this.props.onClose, false);
+            externalWindow.addEventListener('beforeunload', this.props.onClose, {capture: false, once: true});
             const titleEl = externalWindow.document.createElement('title');
             titleEl.appendChild(externalWindow.document.createTextNode(title));
             externalWindow.document.head.appendChild(titleEl);
