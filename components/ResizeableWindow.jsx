@@ -155,10 +155,11 @@ class ResizeableWindow extends React.Component {
             if (
                 (!this.props.visible && prevProps.visible) ||
                 (this.state.geometry.docked === false && prevState.geometry.docked !== false) ||
-                this.state.externalWindow && !prevState.externalWindow
+                (this.state.geometry.maximized === true && prevState.geometry.maximized !== true) ||
+                (this.state.externalWindow && !prevState.externalWindow)
             ) {
                 this.props.setSplitScreen(this.id, null, null, false);
-            } else if (this.props.visible && this.state.geometry.docked && !this.state.externalWindow) {
+            } else if (this.props.visible && this.state.geometry.docked && !this.state.externalWindow && !this.state.geometry.maximized) {
                 const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
                 const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
                 this.props.setSplitScreen(this.id, dockSide, dockSize, this.props.splitTopAndBottomBar);
