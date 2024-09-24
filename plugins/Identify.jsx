@@ -86,7 +86,8 @@ class Identify extends React.Component {
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        theme: PropTypes.object
     };
     static defaultProps = {
         enableExport: true,
@@ -118,7 +119,9 @@ class Identify extends React.Component {
         filterGeom: null
     };
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
+        if (this.props.theme !== prevProps.theme) {
+            this.clearResults();
+        } else if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
             if (this.props.clearResultsOnClose) {
                 this.clearResults();
             }
@@ -412,7 +415,8 @@ const selector = (state) => ({
     currentIdentifyTool: state.identify.tool,
     layers: state.layers.flat,
     map: state.map,
-    selection: state.selection
+    selection: state.selection,
+    theme: state.theme.current
 });
 
 export default connect(selector, {
