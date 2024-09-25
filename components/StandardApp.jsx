@@ -129,18 +129,30 @@ class AppInitComponent extends React.Component {
                 let initialView = null;
                 if (theme) {
                     if (params.c && params.s !== undefined) {
-                        const coords = params.c.split(/[;,]/g).map(x => parseFloat(x));
+                        const coords = params.c.split(/[;,]/g).map(x => parseFloat(x) || 0);
                         const scales = theme.scales || themes.defaultScales;
                         const zoom = MapUtils.computeZoom(scales, params.s);
                         if (coords.length === 2) {
-                            initialView = {
-                                center: coords,
-                                zoom: zoom,
-                                crs: params.crs || theme.mapCrs};
+                            const p = CoordinatesUtils.reproject(coords, params.crs || theme.mapCrs, theme.bbox.crs);
+                            const bounds = theme.bbox.bounds;
+                            // Only accept c if it is within the theme bounds
+                            if (bounds[0] <= p[0] && p[0] <= bounds[2] && bounds[1] <= p[1] && p[1] <= bounds[3]) {
+                                initialView = {
+                                    center: coords,
+                                    zoom: zoom,
+                                    crs: params.crs || theme.mapCrs
+                                };
+                            } else {
+                                initialView = {
+                                    center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
+                                    zoom: zoom,
+                                    crs: theme.bbox.crs
+                                };
+                            }
                         }
                     } else if (params.e) {
-                        const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x));
-                        if (bounds.length === 4) {
+                        const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x) || 0);
+                        if (CoordinatesUtils.isValidExtent(bounds)) {
                             initialView = {
                                 bounds: bounds,
                                 crs: params.crs || theme.mapCrs
