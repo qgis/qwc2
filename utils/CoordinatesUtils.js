@@ -105,9 +105,10 @@ const CoordinatesUtils = {
      * @return {bool}
      */
     isValidExtent(extent) {
-        return !(
+        return extent.length == 4 && !(
             extent.indexOf(Infinity) !== -1 || extent.indexOf(-Infinity) !== -1 ||
-            extent[1] >= extent[2] || extent[1] >= extent[3]
+            extent.indexOf(NaN) !== -1 ||
+            extent[0] >= extent[2] || extent[1] >= extent[3]
         );
     },
     fromOgcUrnCrs(crsStr) {
