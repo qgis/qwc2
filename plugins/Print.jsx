@@ -190,7 +190,7 @@ class Print extends React.Component {
         }
         let rotation = "";
         if (!this.state.rotationNull) {
-            rotation = this.props.map.bbox ? Math.round(this.props.map.bbox.rotation / Math.PI * 180) : 0;
+            rotation = this.props.map.bbox ? Math.round((this.props.map.bbox.rotation / Math.PI * 180) * 10) / 10 : 0;
         }
         let scaleChooser = (<input min="1" name={mapName + ":scale"} onChange={this.changeScale} role="input" type="number" value={this.state.scale || ""}/>);
 
@@ -332,7 +332,7 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.rotation")}</td>
                                 <td>
-                                    <input name={mapName + ":rotation"} onChange={this.changeRotation} type="number" value={rotation}/>
+                                    <input name={mapName + ":rotation"} onChange={this.changeRotation} type="number" step="0.1" value={rotation}/>
                                 </td>
                             </tr>
                         ) : null}
