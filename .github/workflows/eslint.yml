@@ -32,9 +32,9 @@ jobs:
 
       - name: Install ESLint
         run: |
-          npm install $(grep '"eslint"' package.json | sed 's|[ ":,]||g' | sed 's|\^|@|g')
-          npm install $(grep '"@microsoft/eslint-formatter-sarif"' package.json | sed 's|[ ":,]||g' | sed 's|\^|@|g')
-          npm install $(grep '"eslint-plugin-react"' package.json | sed 's|[ ":,]||g' | sed 's|\^|@|g')
+          npm install --force $(grep '"eslint"' package.json | sed 's|[ ":,]||g' | sed 's|\^|@|g')
+          npm install --force $(grep '"@microsoft/eslint-formatter-sarif"' package.json | sed 's|[ ":,]||g' | sed 's|\^|@|g')
+          npm install --force $(grep '"eslint-plugin-react"' package.json | sed 's|[ ":,]||g' | sed 's|\^|@|g')
 
       - name: Run ESLint
         run: npx eslint .
