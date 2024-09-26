@@ -55,8 +55,8 @@ class Map3D extends React.Component {
     };
     static defaultProps = {
         geometry: {
-            initialWidth: 480,
-            initialHeight: 640,
+            initialWidth: 600,
+            initialHeight: 800,
             initialX: 0,
             initialY: 0,
             initiallyDocked: true
