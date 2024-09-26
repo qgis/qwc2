@@ -54,7 +54,9 @@ div.map3d-bottombar-position {
     flex: 0 0 15em;
     text-align: center;
     height: 2em;
+    cursor: text;
 }
+
 div.map3d-bottombar-projection {
     border-color: var(--border-color);
     border-style: solid;
