@@ -24,17 +24,19 @@ import './style/BackgroundSwitcher.css';
 /**
  * Map button for switching the background layer.
  */
-class BackgroundSwitcher extends React.Component {
+export class BackgroundSwitcher extends React.Component {
     static propTypes = {
-        changeLayerProperty: PropTypes.func,
+        bottombarHeight: PropTypes.number,
+        changeLayerVisibility: PropTypes.func,
         layers: PropTypes.array,
         mapMargins: PropTypes.object,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
-        position: PropTypes.number,
-        toggleBackgroundswitcher: PropTypes.func
+        position: PropTypes.number
     };
     static defaultProps = {
-        position: 0
+        bottombarHeight: 0,
+        position: 0,
+        mapMargins: {left: 0, right: 0, top: 0, bottom: 0}
     };
     state = {
         visible: false
@@ -45,7 +47,7 @@ class BackgroundSwitcher extends React.Component {
             "map-button": true,
             "map-button-active": this.state.visible
         });
-        const backgroundLayers = this.props.layers.filter(layer => layer.role === LayerRole.BACKGROUND).slice(0).reverse();
+        const backgroundLayers = this.props.layers.slice(0).reverse();
         // Re-sort layers, ensuring grouped layers are grouped together
         let idx = 0;
         const indices = backgroundLayers.reduce((res, l) => {
@@ -71,14 +73,14 @@ class BackgroundSwitcher extends React.Component {
         }, []);
         if (entries.length > 0) {
             const right = this.props.mapMargins.right;
-            const bottom = this.props.mapMargins.bottom;
+            const bottom = this.props.mapMargins.bottom + this.props.bottombarHeight;
             const style = {
                 right: 'calc(1.5em + ' + right + 'px)',
-                bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
+                bottom: 'calc(' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
             };
             const bgswitcherStyle = {
                 right: 'calc(5em + ' + right + 'px)',
-                bottom: 'calc(' + bottom + 'px + ' + (5 + 4 * this.props.position) + 'em)'
+                bottom: 'calc(' + bottom + 'px + ' + (1.5 + 4 * this.props.position) + 'em)'
             };
             return (
                 <div>
@@ -159,11 +161,11 @@ class BackgroundSwitcher extends React.Component {
     };
     backgroundLayerClicked = (layer) => {
         if (layer) {
-            this.props.changeLayerProperty(layer.uuid, "visibility", true);
+            this.props.changeLayerVisibility(layer, true);
         } else {
-            const visible = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
+            const visible = this.props.layers.find(l => l.visibility);
             if (visible) {
-                this.props.changeLayerProperty(visible.uuid, "visibility", false);
+                this.props.changeLayerVisibility(visible, false);
             }
         }
         this.setState({visible: false});
@@ -171,10 +173,13 @@ class BackgroundSwitcher extends React.Component {
 }
 
 const selector = (state) => ({
-    layers: state.layers.flat,
+    bottombarHeight: state.map.bottombarHeight,
+    layers: state.layers.flat.filter(layer => layer.role === LayerRole.BACKGROUND),
     mapMargins: state.windows.mapMargins
 });
 
 export default connect(selector, {
-    changeLayerProperty: changeLayerProperty
+    changeLayerVisibility: (layer, visibility) => {
+        return changeLayerProperty(layer.uuid, "visibility", visibility);
+    }
 })(BackgroundSwitcher);
