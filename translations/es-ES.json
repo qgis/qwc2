@@ -26,6 +26,7 @@
         "LayerTree": "Capas & Leyenda",
         "Login": "Inicio de sesión",
         "Logout": "Cierre de sesión",
+        "Map3D": "",
         "MapLegend": "Leyenda",
         "Measure": "Medida",
         "MeasureLineString": "Medir una línea",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Cargando...",
       "resetrotation": "Reiniciar rotación"
+    },
+    "map3d": {
+      "title": ""
     },
     "mapexport": {
       "configuration": "",

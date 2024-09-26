@@ -26,6 +26,7 @@
         "LayerTree": "Fóliák és jelmagyarázat",
         "Login": "",
         "Logout": "",
+        "Map3D": "",
         "MapLegend": "",
         "Measure": "Mérés",
         "MeasureLineString": "Mérési vonal",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Betöltés...",
       "resetrotation": ""
+    },
+    "map3d": {
+      "title": ""
     },
     "mapexport": {
       "configuration": "",

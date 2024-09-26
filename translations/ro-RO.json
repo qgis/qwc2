@@ -26,6 +26,7 @@
         "LayerTree": "Straturi & Legendă",
         "Login": "Conectează-te",
         "Logout": "Deconectează-te",
+        "Map3D": "",
         "MapLegend": "Legenda",
         "Measure": "Măsoară",
         "MeasureLineString": "Măsoară o linie",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Se încarcă...",
       "resetrotation": "Resetează rotația"
+    },
+    "map3d": {
+      "title": ""
     },
     "mapexport": {
       "configuration": "",

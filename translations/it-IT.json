@@ -26,6 +26,7 @@
         "LayerTree": "Livelli",
         "Login": "Accedi",
         "Logout": "Disconnetti",
+        "Map3D": "Visuale 3D",
         "MapLegend": "Legenda",
         "Measure": "Misura",
         "MeasureLineString": "Misura una linea",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "In caricamento...",
       "resetrotation": "Resetta orientamento"
+    },
+    "map3d": {
+      "title": "Visuale 3D"
     },
     "mapexport": {
       "configuration": "Configurazione",

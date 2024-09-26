@@ -7,6 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import TiledImageSource from '@giro3d/giro3d/sources/TiledImageSource.js';
 import ol from 'openlayers';
 
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
@@ -66,5 +67,13 @@ export default {
         if (newOptions.rev !== oldOptions.rev) {
             layer.setSource(createWMTSSource(newOptions));
         }
+    },
+    create3d: (options, projection) => {
+        return new TiledImageSource({
+            source: createWMTSSource({...options, projection})
+        });
+    },
+    update3d: (layer, newOptions, oldOptions) => {
+        // pass
     }
 };

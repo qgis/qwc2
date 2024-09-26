@@ -1,0 +1,65 @@
+div.map3d-bottombar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3em;
+    z-index: 100;
+    color: var(--panel-text-color);
+    background-color: var(--panel-bg-color);
+    box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
+    backdrop-filter: blur(3px);
+    font-size: 75%;
+    display: flex;
+    align-items: center;
+}
+
+div.map3d-bottombar-progress {
+    margin: 0.25em;
+    position: relative;
+    flex: 0 0 10em;
+    height: 2em;
+    border: 1px solid var(--border-color);
+    background-color: var(--border-color);
+}
+
+div.map3d-bottombar-spacer {
+    flex: 1 1 auto;
+}
+
+div.map3d-bottombar-progressbar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    background-color: var(--color-active);
+}
+
+div.map3d-bottombar-progress-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    line-height: 2em;
+    text-align: center;
+    color: white;
+}
+
+div.map3d-bottombar-position {
+    margin-left: 0.5em;
+    border: 1px solid var(--border-color);
+    padding: 0.25em;
+    background-color: var(--input-bg-color);
+    flex: 0 0 15em;
+    text-align: center;
+    height: 2em;
+}
+div.map3d-bottombar-projection {
+    border-color: var(--border-color);
+    border-style: solid;
+    border-width: 1px 1px 1px 0;
+    background-color: var(--input-bg-color);
+    padding: 0.25em 0.5em;
+    height: 2em;
+}

@@ -26,6 +26,7 @@
         "LayerTree": "Árvore de Camadas",
         "Login": "Iniciar Sessão",
         "Logout": "Terminar Sessão",
+        "Map3D": "",
         "MapLegend": "Legenda do Mapa",
         "Measure": "Medir",
         "MeasureLineString": "Medir Linha",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "A carregar...",
       "resetrotation": "Redefinir Rotação"
+    },
+    "map3d": {
+      "title": ""
     },
     "mapexport": {
       "configuration": "Configuração",

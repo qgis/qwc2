@@ -26,6 +26,7 @@
         "LayerTree": "Couches",
         "Login": "Connexion",
         "Logout": "Déconnexion",
+        "Map3D": "Vue 3D",
         "MapLegend": "Légende",
         "Measure": "Mesurer",
         "MeasureLineString": "Mesurer une ligne",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Chargement de la carte...",
       "resetrotation": "Réinitialiser la rotation"
+    },
+    "map3d": {
+      "title": "Vue 3D"
     },
     "mapexport": {
       "configuration": "Configuration",

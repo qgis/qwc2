@@ -26,6 +26,7 @@
         "LayerTree": "Karttatasot ja selite",
         "Login": "Kirjaudu",
         "Logout": "Kirjaudu ulos",
+        "Map3D": "",
         "MapLegend": "",
         "Measure": "Mittaa",
         "MeasureLineString": "Mittaa viiva",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Lataa...",
       "resetrotation": ""
+    },
+    "map3d": {
+      "title": ""
     },
     "mapexport": {
       "configuration": "",

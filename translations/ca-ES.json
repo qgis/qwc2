@@ -26,6 +26,7 @@
         "LayerTree": "Capes i Llegenda",
         "Login": "Inicio de sessió",
         "Logout": "Tancament de sessió",
+        "Map3D": "",
         "MapLegend": "Llegenda",
         "Measure": "Mesurar",
         "MeasureLineString": "Mesurar una línia",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Carregant...",
       "resetrotation": "Reiniciar rotació"
+    },
+    "map3d": {
+      "title": ""
     },
     "mapexport": {
       "configuration": "",

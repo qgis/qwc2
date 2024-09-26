@@ -26,6 +26,7 @@
         "LayerTree": "Ebenen und Legende",
         "Login": "Anmelden",
         "Logout": "Abmelden",
+        "Map3D": "3D Ansicht",
         "MapLegend": "Legende",
         "Measure": "Messen",
         "MeasureLineString": "Messen Linie",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Karte wird geladen...",
       "resetrotation": "Drehung zurücksetzen"
+    },
+    "map3d": {
+      "title": "3D Ansicht"
     },
     "mapexport": {
       "configuration": "Konfiguration",

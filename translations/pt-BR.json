@@ -26,6 +26,7 @@
         "LayerTree": "Camadas & Legendas",
         "Login": "Inicio da sessão",
         "Logout": "Fim da sessão",
+        "Map3D": "",
         "MapLegend": "Legenda do mapa",
         "Measure": "Medir",
         "MeasureLineString": "Medir uma linha",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Carregar...",
       "resetrotation": "Redefinir rotação"
+    },
+    "map3d": {
+      "title": ""
     },
     "mapexport": {
       "configuration": "Configuração",

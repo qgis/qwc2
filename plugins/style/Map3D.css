@@ -1,0 +1,33 @@
+div.map3d-body {
+    margin: -0.25em;
+    height: calc(100% + 0.5em);
+}
+
+div.map3d-titlebar {
+    flex: 0 0 3.25em;
+    display: flex;
+    align-items: center;
+}
+
+div.map3d-titlebar > span:first-child {
+    flex: 1 1 auto;
+    padding: 0 0.5em;
+    font-weight: bold;
+    font-size: 150%;
+}
+
+div.map3d-titlebar > span.icon-remove {
+    font-size: 150%;
+    margin: 0 0.5em;
+}
+
+div#map3dinspector {
+    position: fixed;
+    z-index: 5;
+    right: 0;
+    top: 3.5em;
+}
+
+div#map3dinspector input {
+    color: black!important;
+}

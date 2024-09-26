@@ -26,6 +26,7 @@
         "LayerTree": "Layers & Legend",
         "Login": "Login",
         "Logout": "Logout",
+        "Map3D": "3D View",
         "MapLegend": "Legend",
         "Measure": "Measure",
         "MeasureLineString": "Measure a line",
@@ -274,6 +275,9 @@
     "map": {
       "loading": "Loading...",
       "resetrotation": "Reset rotation"
+    },
+    "map3d": {
+      "title": "3D View"
     },
     "mapexport": {
       "configuration": "Configuration",
