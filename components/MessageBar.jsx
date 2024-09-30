@@ -20,6 +20,8 @@ class MessageBar extends React.Component {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
         hideOnTaskChange: PropTypes.bool,
+        mapMargins: PropTypes.object,
+        menuMargins: PropTypes.object,
         onHide: PropTypes.func,
         task: PropTypes.string
     };
@@ -33,17 +35,23 @@ class MessageBar extends React.Component {
     };
     render() {
         const contents = (typeof this.props.children === "function") ? this.props.children() : null;
+        const containerStyle = {
+            left: (this.props.menuMargins.left + this.props.mapMargins.left) +  'px',
+            right: (this.props.menuMargins.right + this.props.mapMargins.right) + 'px'
+        };
         return (
             <div>
-                <div className={"messagebar " + (this.props.className || "")}>
-                    <div className="body">
-                        {contents ? contents.body || null : this.renderRole("body")}
+                <div className="messagebar-container" style={containerStyle}>
+                    <div className={"messagebar " + (this.props.className || "")}>
+                        <div className="body">
+                            {contents ? contents.body || null : this.renderRole("body")}
+                        </div>
+                        {this.props.onHide ? (
+                            <span className="closewrapper">
+                                <Icon className="close" icon="remove" onClick={this.props.onHide} size="large"/>
+                            </span>
+                        ) : null}
                     </div>
-                    {this.props.onHide ? (
-                        <span className="closewrapper">
-                            <Icon className="close" icon="remove" onClick={this.props.onHide} size="large"/>
-                        </span>
-                    ) : null}
                 </div>
                 {contents ? contents.extra || null : this.renderRole("extra")}
             </div>
@@ -52,7 +60,9 @@ class MessageBar extends React.Component {
 }
 
 const selector = (state) => ({
-    task: state.task.id
+    task: state.task.id,
+    mapMargins: state.windows.mapMargins,
+    menuMargins: state.windows.menuMargins
 });
 
 export default connect(selector, {})(MessageBar);
