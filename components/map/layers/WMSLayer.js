@@ -7,6 +7,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
+import TiledImageSource from '@giro3d/giro3d/sources/TiledImageSource.js';
 import axios from 'axios';
 import ol from 'openlayers';
 import url from 'url';
@@ -15,23 +17,6 @@ import ConfigUtils from '../../../utils/ConfigUtils';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import MiscUtils from '../../../utils/MiscUtils';
 
-
-function wmsToOpenlayersOptions(options) {
-    const urlParams = Object.entries(url.parse(options.url, true).query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
-    return {
-        ...urlParams,
-        LAYERS: options.name,
-        STYLES: options.style || "",
-        FORMAT: options.format || 'image/png',
-        TRANSPARENT: options.transparent !== undefined ? options.transparent : true,
-        SRS: options.projection,
-        CRS: options.projection,
-        TILED: String(urlParams.TILED ?? options.tiled ?? false).toLowerCase() === "true",
-        VERSION: options.version,
-        DPI: options.serverType === 'qgis' ? (options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 96) : undefined,
-        ...options.params
-    };
-}
 
 function wmsImageLoadFunction(image, src) {
     const maxUrlLength = ConfigUtils.getConfigProp("wmsMaxGetUrlLength", null, 2048);
@@ -58,6 +43,23 @@ function wmsImageLoadFunction(image, src) {
     } else {
         image.src = src;
     }
+}
+
+function wmsToOpenlayersOptions(options) {
+    const urlParams = Object.entries(url.parse(options.url, true).query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
+    return {
+        ...urlParams,
+        LAYERS: options.name,
+        STYLES: options.style || "",
+        FORMAT: options.format || 'image/png',
+        TRANSPARENT: options.transparent !== undefined ? options.transparent : true,
+        SRS: options.projection,
+        CRS: options.projection,
+        TILED: String(urlParams.TILED ?? options.tiled ?? false).toLowerCase() === "true",
+        VERSION: options.version,
+        DPI: options.serverType === 'qgis' ? (options.dpi || ConfigUtils.getConfigProp("wmsDpi") || 96) : undefined,
+        ...options.params
+    };
 }
 
 export default {
@@ -111,7 +113,7 @@ export default {
         }
     },
     update: (layer, newOptions, oldOptions) => {
-        if (oldOptions && layer && layer.getSource() && layer.getSource().updateParams) {
+        if (oldOptions && layer?.getSource()?.updateParams) {
             let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
             const oldParams = wmsToOpenlayersOptions(oldOptions);
             const newParams = wmsToOpenlayersOptions(newOptions);
@@ -140,6 +142,54 @@ export default {
                     layer.getSource().changed();
                     layer.set("updateTimeout", null);
                 }, 500));
+            }
+        }
+    },
+    create3d: (options, projection) => {
+        const queryParameters = {...wmsToOpenlayersOptions(options), __t: +new Date()};
+        return new ColorLayer({
+            name: options.name,
+            source: new TiledImageSource({
+                source: new ol.source.TileWMS({
+                    url: options.url.split("?")[0],
+                    params: queryParameters,
+                    version: options.version,
+                    projection: projection,
+                    tileLoadFunction: (imageTile, src) => wmsImageLoadFunction(imageTile.getImage(), src)
+                })
+            })
+        });
+    },
+    update3d: (layer, newOptions, oldOptions, projection) => {
+        if (oldOptions && layer?.source?.source?.updateParams) {
+            let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
+            const oldParams = wmsToOpenlayersOptions(oldOptions);
+            const newParams = wmsToOpenlayersOptions(newOptions);
+            Object.keys(oldParams).forEach(key => {
+                if (!(key in newParams)) {
+                    newParams[key] = undefined;
+                }
+            });
+            if (!changed) {
+                changed = Object.keys(newParams).find(key => {
+                    return newParams[key] !== oldParams[key];
+                }) !== undefined;
+            }
+            changed |= newOptions.visibility !== oldOptions.visibility;
+            if (changed) {
+                const queryParameters = {...newParams,  __t: +new Date()};
+                if (layer.__updateTimeout) {
+                    clearTimeout(layer.__updateTimeout);
+                }
+                if (!newOptions.visibility || !queryParameters.LAYERS) {
+                    layer.visible = false;
+                }
+                layer.__updateTimeout = setTimeout(() => {
+                    layer.visible = queryParameters.LAYERS && newOptions.visibility;
+                    layer.source.source.updateParams(queryParameters);
+                    layer.source.update();
+                    layer.__updateTimeout = null;
+                }, 500);
             }
         }
     }

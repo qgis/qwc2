@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import Instance from '@giro3d/giro3d/core/Instance.js';
 import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
-import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
@@ -20,6 +19,7 @@ import PropTypes from 'prop-types';
 import {Vector2, Raycaster} from 'three';
 import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
 
+import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
@@ -64,6 +64,7 @@ class Map3D extends React.Component {
     };
     state = {
         enabled: false,
+        layers: {},
         baselayer: null,
         cursorPosition: null
     };
@@ -85,6 +86,8 @@ class Map3D extends React.Component {
             if (this.props.theme !== prevProps.theme) {
                 this.disposeInstance();
                 this.setupInstance();
+            } else if (this.props.layers !== prevProps.layers) {
+                this.sync2dLayers(this.state.layers);
             }
         }
     }
@@ -190,6 +193,10 @@ class Map3D extends React.Component {
             const visibleBaseLayer = this.props.themes.backgroundLayers.find(l => l.name === visibleBaseLayerName);
             this.setBaseLayer(visibleBaseLayer, true);
         }
+
+        // Setup other layers
+        this.sync2dLayers({});
+
         // this.inspector = Inspector.attach("map3dinspector", this.instance);
     };
     disposeInstance = () => {
@@ -220,8 +227,55 @@ class Map3D extends React.Component {
         if (!layerCreator || !layerCreator.create3d) {
             return;
         }
-        const source = layerCreator.create3d(layer, this.props.projection);
-        this.map.addLayer(new ColorLayer({name: "baselayer", source: source}));
+        const layer3d = layerCreator.create3d({...layer, name: "baselayer"}, this.props.projection);
+        this.map.addLayer(layer3d);
+        this.map.insertLayerAfter(layer3d, null);
+    };
+    sync2dLayers = (oldLayers) => {
+        this.setState((state) => {
+            const newLayers = {...state.layers};
+            const layers = [...this.props.layers].reverse();
+            layers.forEach((layer) => {
+                if (layer.role !== LayerRole.THEME && layer.role !== LayerRole.USERLAYER) {
+                    return;
+                }
+                const layerCreator = LayerRegistry[layer.type];
+                if (!layerCreator || !layerCreator.create3d) {
+                    return;
+                }
+                if (layer.name in oldLayers) {
+                    layerCreator.update3d(oldLayers[layer.name].layer.source, layer, oldLayers[layer.name].options, this.props.projection);
+                    newLayers[layer.name] = {
+                        ...newLayers[layer.name],
+                        options: layer
+                    };
+                } else {
+                    const layer3d = layerCreator.create3d(layer, this.props.projection);
+                    this.map.addLayer(layer3d);
+                    newLayers[layer.name] = {
+                        layer: layer3d,
+                        options: layer
+                    };
+                }
+                newLayers[layer.name].layer.visible = layer.visibility;
+                newLayers[layer.name].layer.opacity = layer.opacity / 255;
+            });
+            Object.keys(oldLayers).forEach(name => {
+                if (!(name in newLayers)) {
+                    this.map.removeLayer(oldLayers[name].layer);
+                }
+            });
+            // Reorder layers
+            let prevLayer = this.map.getLayers(l => l.name === "baselayer")[0] ?? null;
+            layers.forEach(layer => {
+                if (newLayers[layer.name]) {
+                    this.map.insertLayerAfter(newLayers[layer.name].layer, prevLayer);
+                    prevLayer = newLayers[layer.name].layer;
+                }
+            });
+
+            return {layers: newLayers};
+        });
     };
     getScenePosition = (ev) => {
         const rect = ev.currentTarget.getBoundingClientRect();
