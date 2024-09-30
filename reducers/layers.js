@@ -300,12 +300,15 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: [], swipe: null};
     }
     case REORDER_LAYER: {
-        const newLayers = LayerUtils.reorderLayer(state.flat, action.layer, action.sublayerpath, action.direction, action.preventSplittingGroups);
-        for (const lyr of newLayers) {
-            if (lyr.type === "wms") {
-                Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr, state.filter));
+        const newLayers = LayerUtils.reorderLayer(
+            state.flat, action.layer, action.sublayerpath, action.direction, action.preventSplittingGroups
+        ).map(layer => {
+            if (layer.type === "wms") {
+                return {...layer, ...LayerUtils.buildWMSLayerParams(layer, state.filter)};
+            } else {
+                return layer;
             }
-        }
+        });
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers};
     }
