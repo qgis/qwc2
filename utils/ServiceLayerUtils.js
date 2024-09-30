@@ -111,10 +111,10 @@ const ServiceLayerUtils = {
         return layers;
     },
     getWMSLayers(capabilities, calledServiceUrl, asGroup = false) {
-        if (!capabilities?.WMS_Capabilities) {
+        if (!capabilities?.WMS_Capabilities && !capabilities?.WMT_MS_Capabilities) {
             return [];
         }
-        capabilities = capabilities.WMS_Capabilities;
+        capabilities = capabilities.WMS_Capabilities ?? capabilities.WMT_MS_Capabilities;
 
         const calledUrlParts = url.parse(calledServiceUrl, true);
         const extwmsparams = {};
@@ -194,14 +194,14 @@ const ServiceLayerUtils = {
         } else {
             const boundingBox = MiscUtils.ensureArray(layer.BoundingBox)[0];
             bbox = {
-                crs: boundingBox.CRS,
+                crs: boundingBox.CRS ?? boundingBox.SRS,
                 bounds: [boundingBox.minx, boundingBox.miny, boundingBox.maxx, boundingBox.maxy].map(Number)
             };
         }
         if (groupbbox !== null) {
             if (isEmpty(groupbbox)) {
                 Object.assign(groupbbox, bbox);
-            } else if (bbox.crs === groupbbox.crs) {
+            } else if (bbox && bbox.crs === groupbbox.crs) {
                 groupbbox.bounds[0] = Math.min(bbox.bounds[0], groupbbox.bounds[0]);
                 groupbbox.bounds[1] = Math.min(bbox.bounds[1], groupbbox.bounds[1]);
                 groupbbox.bounds[2] = Math.max(bbox.bounds[2], groupbbox.bounds[2]);
