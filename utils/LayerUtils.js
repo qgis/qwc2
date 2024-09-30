@@ -750,6 +750,10 @@ const LayerUtils = {
                 return externalLayer.legendUrl || "";
             }
             const urlParts = url.parse(externalLayer.legendUrl, true);
+            urlParts.query = Object.keys(urlParts.query).filter(key => {
+                // Filter service, request, version
+                return !["service", "request", "version"].includes(key.toLowerCase());
+            }).reduce((res, key) => ({...res, [key]: urlParts.query[key]}), {});
             urlParts.query = {
                 VERSION: layer.version,
                 ...urlParts.query,
@@ -762,6 +766,10 @@ const LayerUtils = {
             const layername = layer === sublayer ? layer.params.LAYERS.split(",").reverse().join(",") : sublayer.name;
             const style = layer === sublayer ? layer.params.STYLES.split(",").reverse().join(",") : sublayer.style;
             const urlParts = url.parse(layer.legendUrl, true);
+            urlParts.query = Object.keys(urlParts.query).filter(key => {
+                // Filter service, request, version
+                return !["service", "request", "version"].includes(key.toLowerCase());
+            }).reduce((res, key) => ({...res, [key]: urlParts.query[key]}), {});
             urlParts.query = {
                 VERSION: layer.version,
                 ...urlParts.query,
