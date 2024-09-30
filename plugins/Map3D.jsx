@@ -156,6 +156,7 @@ class Map3D extends React.Component {
 
         // Setup controls
         const controls = new MapControls(this.instance.view.camera, this.instance.domElement);
+        controls.zoomToCursor = true;
         controls.enableDamping = true;
         controls.dampingFactor = 0.2;
         controls.maxPolarAngle = Math.PI * 0.5;
