@@ -719,11 +719,13 @@ const LayerUtils = {
         if (layer.type !== "wms") {
             return layer.legendUrl || "";
         }
+
         const requestParams = {
             SERVICE: "WMS",
             REQUEST: "GetLegendGraphic",
             FORMAT: "image/png",
             CRS: map.projection,
+            SRS: map.projection,
             SLD_VERSION: "1.1.0"
         };
         if (extraLegendParameters) {
