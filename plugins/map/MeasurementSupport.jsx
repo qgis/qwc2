@@ -29,14 +29,7 @@ class MeasurementSupport extends React.Component {
         map: PropTypes.object,
         mapCrs: PropTypes.string,
         measurement: PropTypes.object,
-        /** Options */
-        options: PropTypes.shape({
-            geodesic: PropTypes.bool
-        }),
         projection: PropTypes.string
-    };
-    static defaultOpts = {
-        geodesic: true
     };
     constructor(props) {
         super(props);

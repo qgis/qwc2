@@ -869,10 +869,6 @@ MeasurementSupport<a name="measurementsupport"></a>
 ----------------------------------------------------------------
 Measurement support for the map component.
 
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| options | `{`<br />`  geodesic: bool,`<br />`}` | Options | `undefined` |
-
 OverviewMap<a name="overviewmap"></a>
 ----------------------------------------------------------------
 Overview map support for the map component.
