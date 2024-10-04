@@ -60,8 +60,6 @@ class Routing extends React.Component {
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string
         }),
-        /** Automatic zoom to the extent of the location. */
-        zoomAuto: PropTypes.bool,
         layers: PropTypes.array,
         locatePos: PropTypes.array,
         mapcrs: PropTypes.string,
@@ -72,7 +70,10 @@ class Routing extends React.Component {
         showPinLabels: PropTypes.bool,
         task: PropTypes.object,
         theme: PropTypes.object,
+        /** Automatically zoom to the extent of the route */
+        zoomAuto: PropTypes.bool,
         zoomToExtent: PropTypes.func
+        
     };
     static defaultProps = {
         enabledModes: ["auto", "heavyvehicle", "transit", "bicycle", "pedestrian"],
@@ -85,8 +86,8 @@ class Routing extends React.Component {
             initiallyDocked: true,
             side: 'left'
         },
+        showPinLabels: true,
         zoomAuto: true,
-        showPinLabels: true
     };
     state = {
         visible: false,
