@@ -73,7 +73,6 @@ class Routing extends React.Component {
         /** Automatically zoom to the extent of the route */
         zoomAuto: PropTypes.bool,
         zoomToExtent: PropTypes.func
-        
     };
     static defaultProps = {
         enabledModes: ["auto", "heavyvehicle", "transit", "bicycle", "pedestrian"],
