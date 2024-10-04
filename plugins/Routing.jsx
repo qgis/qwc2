@@ -87,7 +87,7 @@ class Routing extends React.Component {
             side: 'left'
         },
         showPinLabels: true,
-        zoomAuto: true,
+        zoomAuto: true
     };
     state = {
         visible: false,
