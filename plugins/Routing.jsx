@@ -60,6 +60,8 @@ class Routing extends React.Component {
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string
         }),
+        /** Automatic zoom to the extent of the location. */
+        zoomAuto: PropTypes.bool,
         layers: PropTypes.array,
         locatePos: PropTypes.array,
         mapcrs: PropTypes.string,
@@ -83,6 +85,7 @@ class Routing extends React.Component {
             initiallyDocked: true,
             side: 'left'
         },
+        zoomAuto: true,
         showPinLabels: true
     };
     state = {
@@ -766,7 +769,9 @@ class Routing extends React.Component {
                 });
                 this.updateRouteConfig({points: reorderedPoints, result: {success, data: result}, busy: false}, false);
 
-                this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -1);
+                if (this.props.zoomAuto) {
+                    this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
+                  }
             } else {
                 this.updateRouteConfig({result: {success, data: result}, busy: false}, false);
             }
@@ -807,7 +812,9 @@ class Routing extends React.Component {
                     }
                 }));
                 this.props.addLayerFeatures(layer, features, true);
-                this.props.zoomToExtent(result.bounds, "EPSG:4326", -0.5);
+                if (this.props.zoomAuto) {
+                    this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
+                  }
             }
             this.updateIsoConfig({result: {success, data: result}, busy: false}, false);
         });
