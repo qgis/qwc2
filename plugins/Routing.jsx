@@ -770,7 +770,7 @@ class Routing extends React.Component {
                 this.updateRouteConfig({points: reorderedPoints, result: {success, data: result}, busy: false}, false);
 
                 if (this.props.zoomAuto) {
-                    this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
+                    this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -1);
                   }
             } else {
                 this.updateRouteConfig({result: {success, data: result}, busy: false}, false);
