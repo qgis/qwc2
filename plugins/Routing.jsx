@@ -813,7 +813,7 @@ class Routing extends React.Component {
                 }));
                 this.props.addLayerFeatures(layer, features, true);
                 if (this.props.zoomAuto) {
-                    this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -0.5);
+                    this.props.zoomToExtent(result.bounds, "EPSG:4326", -0.5);
                   }
             }
             this.updateIsoConfig({result: {success, data: result}, busy: false}, false);
