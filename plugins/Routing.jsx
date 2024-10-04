@@ -70,6 +70,8 @@ class Routing extends React.Component {
         showPinLabels: PropTypes.bool,
         task: PropTypes.object,
         theme: PropTypes.object,
+        /** Automatically zoom to the extent of the route */
+        zoomAuto: PropTypes.bool,
         zoomToExtent: PropTypes.func
     };
     static defaultProps = {
@@ -83,7 +85,8 @@ class Routing extends React.Component {
             initiallyDocked: true,
             side: 'left'
         },
-        showPinLabels: true
+        showPinLabels: true,
+        zoomAuto: true
     };
     state = {
         visible: false,
@@ -766,7 +769,9 @@ class Routing extends React.Component {
                 });
                 this.updateRouteConfig({points: reorderedPoints, result: {success, data: result}, busy: false}, false);
 
-                this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -1);
+                if (this.props.zoomAuto) {
+                    this.props.zoomToExtent(result.summary.bounds, "EPSG:4326", -1);
+                }
             } else {
                 this.updateRouteConfig({result: {success, data: result}, busy: false}, false);
             }
@@ -807,7 +812,9 @@ class Routing extends React.Component {
                     }
                 }));
                 this.props.addLayerFeatures(layer, features, true);
-                this.props.zoomToExtent(result.bounds, "EPSG:4326", -0.5);
+                if (this.props.zoomAuto) {
+                    this.props.zoomToExtent(result.bounds, "EPSG:4326", -0.5);
+                }
             }
             this.updateIsoConfig({result: {success, data: result}, busy: false}, false);
         });
