@@ -21,6 +21,7 @@ import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
 
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
+import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
 import BottomBar from '../components/map3d/BottomBar';
@@ -28,6 +29,7 @@ import {BackgroundSwitcher} from '../plugins/BackgroundSwitcher';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/Map3D.css';
 
@@ -105,7 +107,7 @@ class Map3D extends React.Component {
         });
         const extraControls = [{
             icon: "sync",
-            callback: this.sync2dView,
+            callback: () => this.setViewToExtent(this.props.mapBbox.bounds),
             msgid: LocaleUtils.trmsg("map3d.syncview")
         }];
         return [(
@@ -126,6 +128,17 @@ class Map3D extends React.Component {
                 <div className="map3d-body" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
                     <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={baseLayers} />
                     <BottomBar cursorPosition={this.state.cursorPosition} instance={this.instance} projection={this.props.projection} />
+                    <div className="map3d-nav-pan">
+                        <span />
+                        <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
+                        <span />
+                        <Icon icon="chevron-left" onMouseDown={(ev) => this.pan(ev, 1, 0)} />
+                        <Icon icon="home" onClick={() => this.home()} />
+                        <Icon icon="chevron-right" onMouseDown={(ev) => this.pan(ev, -1, 0)} />
+                        <span />
+                        <Icon icon="chevron-down" onMouseDown={(ev) => this.pan(ev, 0, -1)} />
+                        <span />
+                    </div>
                 </div>
             </ResizeableWindow>
         ), (
@@ -206,7 +219,7 @@ class Map3D extends React.Component {
         // Sync 2d layers
         this.sync2dLayers({});
 
-        this.sync2dView();
+        this.setViewToExtent(this.props.mapBbox.bounds);
 
         // this.inspector = Inspector.attach("map3dinspector", this.instance);
     };
@@ -288,8 +301,7 @@ class Map3D extends React.Component {
             return {layers: newLayers};
         });
     };
-    sync2dView = () => {
-        const bounds = this.props.mapBbox.bounds;
+    setViewToExtent = (bounds) => {
         const center = {
             x: 0.5 * (bounds[0] + bounds[2]),
             y: 0.5 * (bounds[1] + bounds[3])
@@ -315,7 +327,7 @@ class Map3D extends React.Component {
             if (!this.instance || this.animationInterrupted) {
                 return;
             }
-            const duration = 3;
+            const duration = 2;
             const elapsed = new Date() / 1000 - startTime;
             const x = elapsed / duration;
             const k =  0.5 * (1 - Math.cos(x * Math.PI));
@@ -340,6 +352,34 @@ class Map3D extends React.Component {
             }
         };
         requestAnimationFrame(animate);
+    };
+    home = () => {
+        const bounds = CoordinatesUtils.reprojectBbox(this.props.theme.bbox.bounds, this.props.theme.bbox.crs, this.props.projection);
+        this.setViewToExtent(bounds);
+    };
+    pan = (ev, dx, dy) => {
+        MiscUtils.killEvent(ev);
+        // Pan faster the heigher one is above the terrain
+        const d = (100 + (this.instance.view.camera.position.z - this.instance.view.controls.target.z) / 250);
+        const delta = new Vector2(dx, dy).multiplyScalar(d);
+        this.animationInterrupted = false;
+        let lastTimestamp = new Date() / 1000;
+        const animate = () => {
+            if (this.animationInterrupted) {
+                return;
+            }
+            // Pan <delta> distance per second
+            const timestamp = new Date() / 1000;
+            const k = timestamp - lastTimestamp;
+            lastTimestamp = timestamp;
+            this.instance.view.controls._pan(delta.x * k, delta.y * k);
+            this.instance.view.controls.update();
+            requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+        window.addEventListener("mouseup", () => {
+            this.animationInterrupted = true;
+        }, {once: true});
     };
     stopAnimations = () => {
         this.animationInterrupted = true;

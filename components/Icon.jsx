@@ -21,6 +21,8 @@ export default class Icon extends React.Component {
         className: PropTypes.string,
         icon: PropTypes.string,
         onClick: PropTypes.func,
+        onMouseDown: PropTypes.func,
+        onMouseUp: PropTypes.func,
         size: PropTypes.string,
         title: PropTypes.string,
         titlemsgid: PropTypes.string
@@ -35,7 +37,7 @@ export default class Icon extends React.Component {
             ["icon-" + this.props.icon]: true,
             ["icon_" + this.props.size]: !!this.props.size,
             [this.props.className]: !!this.props.className,
-            icon_clickable: !!this.props.onClick
+            icon_clickable: !!this.props.onClick || !!this.props.onMouseDown
         });
         let title = this.props.title;
         if (this.props.titlemsgid) {
@@ -45,11 +47,17 @@ export default class Icon extends React.Component {
             const assetsPath = ConfigUtils.getAssetsPath();
             const src = assetsPath + this.props.icon.substr(1);
             return (
-                <img alt={title} className={classes} onClick={this.props.onClick} src={src} title={title || undefined} />
+                <img alt={title} className={classes} onClick={this.props.onClick}
+                    onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
+                    src={src} title={title || undefined}
+                />
             );
         } else {
             return (
-                <span className={classes} onClick={this.props.onClick} title={title || undefined} />
+                <span className={classes} onClick={this.props.onClick}
+                    onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
+                    title={title || undefined}
+                />
             );
         }
     }
