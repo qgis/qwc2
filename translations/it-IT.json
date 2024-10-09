@@ -276,6 +276,7 @@
       "resetrotation": "Resetta orientamento"
     },
     "map3d": {
+      "syncview": "Sincronizza visuale",
       "title": "Visuale 3D"
     },
     "mapexport": {

@@ -276,6 +276,7 @@
       "resetrotation": "Dönüklüğü sıfırla"
     },
     "map3d": {
+      "syncview": "",
       "title": ""
     },
     "mapexport": {

@@ -16,7 +16,7 @@ import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import PropTypes from 'prop-types';
-import {Vector2, Raycaster} from 'three';
+import {Vector2, Vector3, Raycaster} from 'three';
 import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
 
 import {LayerRole} from '../actions/layers';
@@ -48,6 +48,7 @@ class Map3D extends React.Component {
             initiallyDocked: PropTypes.bool
         }),
         layers: PropTypes.array,
+        mapBbox: PropTypes.object,
         projection: PropTypes.string,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
@@ -74,6 +75,7 @@ class Map3D extends React.Component {
         this.inspector = null;
         this.instance = null;
         this.map = null;
+        this.animationInterrupted = false;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -101,8 +103,14 @@ class Map3D extends React.Component {
                 visibility: e.name === this.state.baselayer
             };
         });
+        const extraControls = [{
+            icon: "sync",
+            callback: this.sync2dView,
+            msgid: LocaleUtils.trmsg("map3d.syncview")
+        }];
         return [(
-            <ResizeableWindow icon="map3d"
+            <ResizeableWindow
+                extraControls={extraControls} icon="map3d"
                 initialHeight={this.props.geometry.initialHeight}
                 initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX}
@@ -115,7 +123,7 @@ class Map3D extends React.Component {
                 splitTopAndBottomBar
                 title={LocaleUtils.trmsg("map3d.title")}
             >
-                <div className="map3d-body" onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
+                <div className="map3d-body" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
                     <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={baseLayers} />
                     <BottomBar cursorPosition={this.state.cursorPosition} instance={this.instance} projection={this.props.projection} />
                 </div>
@@ -195,8 +203,10 @@ class Map3D extends React.Component {
             this.setBaseLayer(visibleBaseLayer, true);
         }
 
-        // Setup other layers
+        // Sync 2d layers
         this.sync2dLayers({});
+
+        this.sync2dView();
 
         // this.inspector = Inspector.attach("map3dinspector", this.instance);
     };
@@ -278,6 +288,62 @@ class Map3D extends React.Component {
             return {layers: newLayers};
         });
     };
+    sync2dView = () => {
+        const bounds = this.props.mapBbox.bounds;
+        const center = {
+            x: 0.5 * (bounds[0] + bounds[2]),
+            y: 0.5 * (bounds[1] + bounds[3])
+        };
+        const elevationResult = this.map.getElevation({coordinates: new Coordinates(this.props.projection, center.x, center.y)});
+        elevationResult.samples.sort((a, b) => a.resolution > b.resolution);
+        center.z = elevationResult.samples[0]?.elevation || 0;
+
+        // Camera height to width bbox width
+        const fov = 35 / 180 * Math.PI;
+        const cameraHeight = (bounds[2] - bounds[0]) / (2 * Math.tan(fov / 2));
+
+        // Animate from old to new position/target
+        const oldPosition = this.instance.view.camera.position.clone();
+        const oldTarget = this.instance.view.controls.target.clone();
+        const oldYaw = this.instance.view.controls.getAzimuthalAngle();
+        const newPosition = new Vector3(center.x, center.y, center.z + cameraHeight);
+        const newTarget = new Vector3(center.x, center.y, center.z);
+        const startTime = new Date() / 1000;
+
+        this.animationInterrupted = false;
+        const animate = () => {
+            if (!this.instance || this.animationInterrupted) {
+                return;
+            }
+            const duration = 3;
+            const elapsed = new Date() / 1000 - startTime;
+            const x = elapsed / duration;
+            const k =  0.5 * (1 - Math.cos(x * Math.PI));
+
+            const currentPosition = new Vector3().lerpVectors(oldPosition, newPosition, k);
+            const currentTarget = new Vector3().lerpVectors(oldTarget, newTarget, k);
+            currentPosition.x -= currentTarget.x;
+            currentPosition.y -= currentTarget.y;
+            currentPosition.applyAxisAngle(new Vector3(0, 0, 1), -oldYaw * k);
+            currentPosition.x += currentTarget.x;
+            currentPosition.y += currentTarget.y;
+            this.instance.view.camera.position.copy(currentPosition);
+            this.instance.view.controls.target.copy(currentTarget);
+            this.instance.view.controls.update();
+
+            if (elapsed < duration) {
+                requestAnimationFrame(animate);
+            } else {
+                this.instance.view.camera.position.copy(newPosition);
+                this.instance.view.controls.target.copy(newTarget);
+                this.instance.view.controls.update();
+            }
+        };
+        requestAnimationFrame(animate);
+    };
+    stopAnimations = () => {
+        this.animationInterrupted = true;
+    };
     getScenePosition = (ev) => {
         const rect = ev.currentTarget.getBoundingClientRect();
         const x = ev.clientX - rect.left;
@@ -323,6 +389,7 @@ class Map3D extends React.Component {
 
 export default connect((state) => ({
     enabled: state.task.id === 'Map3D',
+    mapBbox: state.map.bbox,
     projection: state.map.projection,
     bbox: (state.theme.current || {}).initialBbox,
     layers: state.layers.flat,

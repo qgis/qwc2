@@ -276,6 +276,7 @@
       "resetrotation": "Réinitialiser la rotation"
     },
     "map3d": {
+      "syncview": "Synchroniser la vue",
       "title": "Vue 3D"
     },
     "mapexport": {

@@ -276,6 +276,7 @@
       "resetrotation": "Obnovit orientaci mapy"
     },
     "map3d": {
+      "syncview": "",
       "title": ""
     },
     "mapexport": {

@@ -276,6 +276,7 @@
       "resetrotation": "Reiniciar rotació"
     },
     "map3d": {
+      "syncview": "",
       "title": ""
     },
     "mapexport": {

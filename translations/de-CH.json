@@ -276,6 +276,7 @@
       "resetrotation": "Drehung zurücksetzen"
     },
     "map3d": {
+      "syncview": "Ansicht synchronisieren",
       "title": "3D Ansicht"
     },
     "mapexport": {

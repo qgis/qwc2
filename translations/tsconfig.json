@@ -241,6 +241,7 @@
     "locate.statustooltip.PERMISSION_DENIED",
     "map.loading",
     "map.resetrotation",
+    "map3d.syncview",
     "map3d.title",
     "mapexport.configuration",
     "mapexport.format",

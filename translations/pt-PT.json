@@ -276,6 +276,7 @@
       "resetrotation": "Redefinir Rotação"
     },
     "map3d": {
+      "syncview": "",
       "title": ""
     },
     "mapexport": {

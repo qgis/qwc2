@@ -276,6 +276,7 @@
       "resetrotation": "Resetează rotația"
     },
     "map3d": {
+      "syncview": "",
       "title": ""
     },
     "mapexport": {
