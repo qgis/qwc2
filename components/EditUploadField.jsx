@@ -41,7 +41,8 @@ export default class EditUploadField extends React.Component {
     };
     state = {
         camera: false,
-        imageData: null
+        imageData: null,
+        imageFilename: null
     };
     constructor(props) {
         super(props);
@@ -75,7 +76,7 @@ export default class EditUploadField extends React.Component {
                 return (
                     <span className="edit-upload-field-image">
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
-                        {this.state.imageData ? (<input name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
+                        {this.state.imageData ? (<input data-filename={this.state.imageFilename} name={this.props.name} type="hidden" value={this.state.imageData} />) : null}
                         {!this.props.report ? (<ButtonBar buttons={imagebuttons} onClick={this.imageButtonClicked} tooltipPos="top" />) : null}
                     </span>
                 );
@@ -86,7 +87,7 @@ export default class EditUploadField extends React.Component {
                         {fileValue ? (
                             <a href={fileUrl} rel="noreferrer" target="_blank">{fileValue.replace(/.*\//, '')}</a>
                         ) : (
-                            <a href="#" onClick={(ev) => {this.download(imageData, this.props.fieldId + "." + extension); ev.preventDefault();}} rel="noreferrer" target="_blank">{LocaleUtils.tr("editing.selectedpicture")}</a>
+                            <a href="#" onClick={(ev) => {this.download(imageData, this.state.imageFilename); ev.preventDefault();}} rel="noreferrer" target="_blank">{this.state.imageFilename}</a>
                         )}
                         <img onClick={() => this.download(imageData, this.props.fieldId + "." + extension)} src={imageData} />
                         {this.props.report ? null : (<Icon icon="clear" onClick={this.props.disabled ? null : this.clearImage} />)}
@@ -117,7 +118,7 @@ export default class EditUploadField extends React.Component {
             const reader = new FileReader();
             reader.readAsDataURL(ev.target.files[0]);
             reader.onload = () => {
-                this.setState({imageData: reader.result});
+                this.setState({imageData: reader.result, imageFilename: ev.target.files[0].name});
                 this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(reader.result)], ev.target.files[0].name, {type: ev.target.files[0].type}));
                 this.props.updateField(this.props.fieldId, '');
             };
@@ -153,7 +154,7 @@ export default class EditUploadField extends React.Component {
             const context = canvas.getContext("2d");
             context.drawImage(this.videoElement, 0, 0, width, height);
             const imageData = canvas.toDataURL("image/jpeg");
-            this.setState({imageData: imageData});
+            this.setState({imageData: imageData, imageFilename: uuidv1() + ".jpg"});
             this.props.updateField(this.props.fieldId, '');
             this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], uuidv1() + ".jpg", {type: "image/jpeg"}));
         }
@@ -167,7 +168,7 @@ export default class EditUploadField extends React.Component {
             const fileUrl = editServiceUrl + this.props.dataset + "/attachment?file=" + encodeURIComponent(fileValue);
             const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
             showImageEditor(imageData, (newImageData) => {
-                this.setState({imageData: newImageData});
+                this.setState({imageData: newImageData, imageFilename: fileValue.replace(/.*\//, '')});
                 this.props.updateField(this.props.fieldId, '');
                 this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuidv1() + ".jpg", {type: "image/jpeg"}));
             });
@@ -176,7 +177,7 @@ export default class EditUploadField extends React.Component {
         }
     };
     clearImage = () => {
-        this.setState({imageData: null});
+        this.setState({imageData: null, imageFilename: null});
         this.props.updateField(this.props.fieldId, '');
         this.props.updateFile(this.props.fieldId, null);
     };
