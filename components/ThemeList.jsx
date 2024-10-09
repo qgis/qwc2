@@ -24,7 +24,8 @@ import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import Icon from './Icon';
 
-import './style/ThemeList.css';
+import './style/ThemeListPortal.css';
+import './style/ThemeListSidebar.css';
 
 class ThemeList extends React.Component {
     static propTypes = {
@@ -45,7 +46,8 @@ class ThemeList extends React.Component {
         setUserInfoFields: PropTypes.func,
         showDefaultThemeSelector: PropTypes.bool,
         showLayerAfterChangeTheme: PropTypes.bool,
-        themes: PropTypes.object
+        themes: PropTypes.object,
+        className: PropTypes.string
     };
     state = {
         expandedGroups: [],
@@ -130,22 +132,6 @@ class ThemeList extends React.Component {
                             onClick={() => this.setTheme(item)}
                             title={title}
                         >
-                            <div className="theme-item-title" title={item.title}>
-                                <span>{item.title}</span>
-
-                            </div>
-                            {!isEmpty(infoLinks) ? (<div className={"theme-item-info-menu " + (this.state.visibleThemeInfoMenu ? "theme-item-info-menu-active" : "")} onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}>
-                                <Icon icon="info" />
-                                {item.themeInfoLinks.title ? (<span>{item.themeInfoLinks.title}</span>) : LocaleUtils.tr(item.themeInfoLinks.titleMsgId)}
-                                <Icon icon="triangle-down" />
-                                {this.state.visibleThemeInfoMenu === item.id ? (
-                                    <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
-                                        {infoLinks.map(link => (
-                                            <a href={link.url} key={link.name} target={link.target}>{link.title}</a>
-                                        ))}
-                                    </div>
-                                ) : null}
-                            </div>) : null}
                             <div className="theme-item-body">
                                 {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: item.description}} />) : null}
                                 <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
@@ -162,13 +148,22 @@ class ThemeList extends React.Component {
                                     <Icon icon="lock" />
                                 </div>
                             )}
-                            {isEmpty(matches) ? null : (
-                                <div className="theme-item-filterinfo-overlay">
-                                    {matches.map(match => (
-                                        <div key={match[0]} title={match[2]}><i>{LocaleUtils.tr(match[0])}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
-                                    ))}
-                                </div>
-                            )}
+                            <div className="theme-item-title" title={item.title}>
+                                <span>{item.title}</span>
+
+                            </div>
+                            {!isEmpty(infoLinks) ? (<div className={"theme-item-info-menu " + (this.state.visibleThemeInfoMenu ? "theme-item-info-menu-active" : "")} onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}>
+                                <Icon icon="info" />
+                                {item.themeInfoLinks.title ? (<span>{item.themeInfoLinks.title}</span>) : LocaleUtils.tr(item.themeInfoLinks.titleMsgId)}
+                                <Icon icon="triangle-down" />
+                                {this.state.visibleThemeInfoMenu === item.id ? (
+                                    <div className="theme-item-info-links" onClick={ev => ev.stopPropagation()}>
+                                        {infoLinks.map(link => (
+                                            <a href={link.url} key={link.name} target={link.target}>{link.title}</a>
+                                        ))}
+                                    </div>
+                                ) : null}
+                            </div>) : null}
                         </li>
                     );
                 })}
@@ -190,9 +185,10 @@ class ThemeList extends React.Component {
         return false;
     };
     render() {
+        const { className } = this.props;
         const filter = this.props.filter ? new RegExp(removeDiacritics(this.props.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
-            <div className="ThemeList">
+            <div className={`ThemeList ${className}`}>
                 {this.renderThemeGroup(this.props.themes, filter)}
             </div>
         );
