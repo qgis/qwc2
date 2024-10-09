@@ -128,7 +128,7 @@ class Map3D extends React.Component {
                 <div className="map3d-body" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
                     <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={baseLayers} />
                     <BottomBar cursorPosition={this.state.cursorPosition} instance={this.instance} projection={this.props.projection} />
-                    <div className="map3d-nav-pan">
+                    <div className="map3d-nav-widget map3d-nav-pan">
                         <span />
                         <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
                         <span />
@@ -137,6 +137,17 @@ class Map3D extends React.Component {
                         <Icon icon="chevron-right" onMouseDown={(ev) => this.pan(ev, -1, 0)} />
                         <span />
                         <Icon icon="chevron-down" onMouseDown={(ev) => this.pan(ev, 0, -1)} />
+                        <span />
+                    </div>
+                    <div className="map3d-nav-widget map3d-nav-rotate">
+                        <span />
+                        <Icon icon="tilt-up" onMouseDown={(ev) => this.tilt(ev, 0, 1)} />
+                        <span />
+                        <Icon icon="tilt-left" onMouseDown={(ev) => this.tilt(ev, 1, 0)} />
+                        <Icon icon="point" onClick={() => this.setViewTopDown()} />
+                        <Icon icon="tilt-right" onMouseDown={(ev) => this.tilt(ev, -1, 0)} />
+                        <span />
+                        <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -1)} />
                         <span />
                     </div>
                 </div>
@@ -373,6 +384,69 @@ class Map3D extends React.Component {
             const k = timestamp - lastTimestamp;
             lastTimestamp = timestamp;
             this.instance.view.controls._pan(delta.x * k, delta.y * k);
+            this.instance.view.controls.update();
+            requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+        window.addEventListener("mouseup", () => {
+            this.animationInterrupted = true;
+        }, {once: true});
+    };
+    setViewTopDown = () => {
+        // Animate from old to new position
+        const target = this.instance.view.controls.target;
+        const oldPosition = this.instance.view.camera.position.clone();
+        const oldYaw = this.instance.view.controls.getAzimuthalAngle();
+        const newPosition = new Vector3(target.x, target.y, target.distanceTo(oldPosition));
+        const startTime = new Date() / 1000;
+
+        this.animationInterrupted = false;
+        const animate = () => {
+            if (!this.instance || this.animationInterrupted) {
+                return;
+            }
+            const duration = 2;
+            const elapsed = new Date() / 1000 - startTime;
+            const x = elapsed / duration;
+            const k =  0.5 * (1 - Math.cos(x * Math.PI));
+
+            const currentPosition = new Vector3().lerpVectors(oldPosition, newPosition, k);
+            currentPosition.x -= target.x;
+            currentPosition.y -= target.y;
+            currentPosition.applyAxisAngle(new Vector3(0, 0, 1), -oldYaw * k);
+            currentPosition.x += target.x;
+            currentPosition.y += target.y;
+            this.instance.view.camera.position.copy(currentPosition);
+            this.instance.view.controls.update();
+
+            if (elapsed < duration) {
+                requestAnimationFrame(animate);
+            } else {
+                this.instance.view.camera.position.copy(newPosition);
+                this.instance.view.controls.update();
+            }
+        };
+        requestAnimationFrame(animate);
+    };
+    tilt = (ev, yaw, az) => {
+        MiscUtils.killEvent(ev);
+        // Pan faster the heigher one is above the terrain
+        this.animationInterrupted = false;
+        let lastTimestamp = new Date() / 1000;
+        const animate = () => {
+            if (this.animationInterrupted) {
+                return;
+            }
+            // Pan <delta> distance per second
+            const timestamp = new Date() / 1000;
+            const k = timestamp - lastTimestamp;
+            lastTimestamp = timestamp;
+            if (az) {
+                this.instance.view.controls._rotateUp(az * k);
+            }
+            if (yaw) {
+                this.instance.view.controls._rotateLeft(yaw * k);
+            }
             this.instance.view.controls.update();
             requestAnimationFrame(animate);
         };
