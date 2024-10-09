@@ -16,7 +16,7 @@ import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import PropTypes from 'prop-types';
-import {Vector2, Vector3, Raycaster} from 'three';
+import {Vector2, Vector3, Raycaster, CubeTextureLoader} from 'three';
 import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
 
 import {LayerRole} from '../actions/layers';
@@ -198,6 +198,19 @@ class Map3D extends React.Component {
         this.instance.view.camera.position.set(center.x, center.y, 0.5 * (extent.east - extent.west));
         this.instance.view.controls.target = extent.centerAsVector3();
         this.instance.view.controls.addEventListener('change', this.updateControlsTarget);
+
+        // Skybox
+        const cubeTextureLoader = new CubeTextureLoader();
+        cubeTextureLoader.setPath(ConfigUtils.getAssetsPath() + "/3d/skybox/");
+        const cubeTexture = cubeTextureLoader.load([
+            "px.jpg",
+            "nx.jpg",
+            "py.jpg",
+            "ny.jpg",
+            "pz.jpg",
+            "nz.jpg"
+        ]);
+        this.instance.scene.background = cubeTexture;
 
         // Setup elevation
         let demUrl = this.props.theme.map3d?.dtm?.url ?? "";
