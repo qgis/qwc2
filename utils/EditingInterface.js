@@ -161,7 +161,10 @@ function getExtent(layerId, mapCrs, callback, filter = null) {
 
 /*
  layerId: The edit layer id
- featureData: a FormData instance, with a 'feature' entry containing the GeoJSON serialized feature and optionally one or more 'file:' prefixed file upload entries
+ featureData: a FormData instance, with:
+  - A 'feature' entry containing the GeoJSON serialized feature
+  - Zero or more 'file:' prefixed file upload entries
+  - Zero or more 'relfile:' prefixed file upload entries
  callback: function(success, result), if success = true, result is the committed GeoJSON feature, if success = false, result is an error message
 */
 function addFeatureMultipart(layerId, featureData, callback) {
@@ -180,7 +183,10 @@ function addFeatureMultipart(layerId, featureData, callback) {
 /*
  layerId: The edit layer id
  featureId: The id of the feature to edit
- featureData: a FormData instance, with a 'feature' entry containing the GeoJSON serialized feature and optionally one or more 'file:' prefixed file upload entries
+ featureData: a FormData instance, with:
+  - A 'feature' entry containing the GeoJSON serialized feature
+  - Zero or more 'file:' prefixed file upload entries
+  - Zero or more 'relfile:' prefixed file upload entries
  callback: function(success, result), if success = true, result is the committed GeoJSON feature, if success = false, result is an error message
 */
 function editFeatureMultipart(layerId, featureId, featureData, callback) {
@@ -227,21 +233,6 @@ function getRelations(layerId, featureId, tables, mapCrs, callback) {
     }).catch(() => callback({}));
 }
 
-function writeRelations(layerId, featureId, relationData, mapCrs, callback) {
-    const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
-    const req = SERVICE_URL + layerId + '/' + featureId + "/relations";
-    const params = {
-        crs: mapCrs
-    };
-    const headers = {
-        "Content-Type": "multipart/form-data",
-        "Accept-Language": LocaleUtils.lang()
-    };
-    axios.post(req, relationData, {headers, params}).then(response => {
-        callback(response.data);
-    }).catch(err => callback(false, buildErrMsg(err)));
-}
-
 /*
  keyvalues: <dataset>:<key_column>:<value_column>,<dataset>:<key_column>:<value_column>,...
  callback: function(result), result is a {"keyvalues": {"<dataset>": [{"key": <key>, "value": <value}, ...]}}
@@ -269,7 +260,6 @@ export default {
     addFeatureMultipart,
     editFeatureMultipart,
     deleteFeature,
-    writeRelations,
     getRelations,
     getKeyValues
 };

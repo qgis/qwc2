@@ -176,8 +176,8 @@ class AttributeForm extends React.Component {
                         return name + ":" + entry.fk;
                     }
                 }).join(",");
-                this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (response => {
-                    const newFeature = {...feature, relationValues: response.relationvalues};
+                this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (relationValues => {
+                    const newFeature = {...feature, relationValues: relationValues};
                     callback(newFeature);
                 }));
             } else {
@@ -439,79 +439,61 @@ class AttributeForm extends React.Component {
                 }
             }
         });
+
+        // Set relation values CRS and sort index if necessary
+        Object.keys(relationValues).forEach(relTable => {
+            relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map((relFeature, idx) => {
+                const newRelFeature = {
+                    ...relFeature,
+                    crs: {
+                        type: "name",
+                        properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
+                    }
+                };
+                const sortcol = this.state.relationTables[relTable].sortcol;
+                const noreorder = this.state.relationTables[relTable].noreorder;
+                if (sortcol && !noreorder) {
+                    newRelFeature.__status__ = feature.__status__ || (newRelFeature.properties[sortcol] !== idx ? "changed" : "");
+                    newRelFeature.properties[sortcol] = idx;
+                }
+                return newRelFeature;
+            });
+        });
+
+        feature.relationValues = relationValues;
+
         const featureData = new FormData();
         featureData.set('feature', JSON.stringify(feature));
         Object.entries(featureUploads).forEach(([key, value]) => featureData.set('file:' + key, value));
+        Object.entries(relationUploads).forEach(([key, value]) => featureData.set('relfile:' + mapPrefix + key, value));
 
         if (this.props.editContext.action === "Draw") {
             if (this.props.iface.addFeatureMultipart) {
-                this.props.iface.addFeatureMultipart(this.props.editConfig.editDataset, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.addFeatureMultipart(this.props.editConfig.editDataset, featureData, (success, result) => this.featureCommited(success, result));
             } else {
-                this.props.iface.addFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.addFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
             }
         } else if (this.props.editContext.action === "Pick") {
             if (this.props.iface.editFeatureMultipart) {
-                this.props.iface.editFeatureMultipart(this.props.editConfig.editDataset, feature.id, featureData, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.editFeatureMultipart(this.props.editConfig.editDataset, feature.id, featureData, (success, result) => this.featureCommited(success, result));
             } else {
-                this.props.iface.editFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result, relationValues, relationUploads));
+                this.props.iface.editFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
             }
         }
     };
-    featureCommited = (success, result, relationValues, relationUploads) => {
+    featureCommited = (success, result) => {
         if (!success) {
             this.commitFinished(false, result);
             return;
         }
-        let newFeature = result;
-        // Commit relations
-        if (!isEmpty(relationValues)) {
-
-            // Set CRS and foreign key, set sort index if necessary
-            Object.keys(relationValues).forEach(relTable => {
-                relationValues[relTable].features = relationValues[relTable].features.filter(relFeature => relFeature.__status__ !== "empty").map((relFeature, idx) => {
-                    const fk = this.state.relationTables[relTable].fk;
-                    const feature = {
-                        ...relFeature,
-                        type: "Feature",
-                        properties: {
-                            ...relFeature.properties,
-                            [fk]: newFeature.id
-                        },
-                        __status__: relFeature.__status__ || (relFeature.properties[fk] !== newFeature.id ? "changed" : ""),
-                        crs: {
-                            type: "name",
-                            properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
-                        }
-                    };
-                    const sortcol = this.state.relationTables[relTable].sortcol;
-                    const noreorder = this.state.relationTables[relTable].noreorder;
-                    if (sortcol && !noreorder) {
-                        feature.__status__ = feature.__status__ || (feature.properties[sortcol] !== idx ? "changed" : "");
-                        feature.properties[sortcol] = idx;
-                    }
-                    return feature;
-                });
-            });
-
-            const mapPrefix = this.editMapPrefix();
-            const relationData = new FormData();
-            relationData.set('values', JSON.stringify(relationValues));
-            Object.entries(relationUploads).forEach(([key, value]) => relationData.set(mapPrefix + key, value));
-
-            this.props.iface.writeRelations(this.props.editConfig.editDataset, newFeature.id, relationData, this.props.map.projection, (relResult, errorMsg) => {
-                if (relResult === false) {
-                    this.commitFinished(false, errorMsg);
-                } else if (relResult.success !== true) {
-                    // Relation values commit failed, switch to pick to avoid adding feature again on next attempt
-                    this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
-                    newFeature = {...newFeature, relationValues: relResult.relationvalues};
-                    this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: newFeature, changed: true});
-                } else {
-                    this.commitFinished(true, newFeature);
-                }
-            });
+        // Check for relation records which failed to commit
+        const relationValueErrors = Object.values(result.relationValues || {}).find(entry => entry.error) !== undefined;
+        if (relationValueErrors) {
+            // Relation values commit failed, switch to pick to avoid adding feature again on next attempt
+            this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
+            this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: result, changed: true});
         } else {
-            this.commitFinished(true, newFeature);
+            this.commitFinished(true, result);
         }
     };
     deleteClicked = () => {
