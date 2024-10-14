@@ -245,7 +245,13 @@ class IdentifyViewer extends React.Component {
                 return res.concat(resultTree[layer].map(result => ({...result, id: layer + "." + result.id})));
             }, []);
         }
-        results = (results || []).filter(result => result.type.toLowerCase() === "feature");
+        results = (results || []).filter(result => result.type.toLowerCase() === "feature").map(feature => {
+            const newFeature = {...feature};
+            // Ensure selection style is used
+            delete newFeature.styleName;
+            delete newFeature.styleOptions;
+            return newFeature;
+        });
         if (!isEmpty(results)) {
             const layer = {
                 id: "identifyslection",

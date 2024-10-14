@@ -168,12 +168,15 @@ class Identify extends React.Component {
                 if (!isEmpty(this.props.click.features)) {
                     this.props.click.features.forEach((feature) => {
                         const layer = this.props.layers.find(l => l.id === feature.layerId);
-                        if (layer && layer.role === LayerRole.USERLAYER && !isEmpty(feature.properties)) {
+                        if (layer && layer.role === LayerRole.USERLAYER) {
+                            const queryFeature = {...layer.features.find(f => f.id === feature.id)};
+                            if (!queryFeature?.properties) {
+                                return;
+                            }
                             if (!identifyResults[layer.name]) {
                                 identifyResults[layer.name] = [];
                             }
-                            const queryFeature = {...feature};
-                            queryFeature.crs = layer.projection;
+                            queryFeature.crs = layer.projection ?? this.props.map.projection;
                             queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
                             queryFeature.layertitle = layer.title || layer.name || layer.id;
                             queryFeature.properties = Object.entries(queryFeature.properties).reduce((res, [key, val]) => ({
