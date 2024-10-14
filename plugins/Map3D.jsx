@@ -111,6 +111,7 @@ class Map3D extends React.Component {
                 visibility: e.name === this.state.baselayer
             };
         });
+        const baseLayer = baseLayers.find(l => l.visibility === true);
         const extraControls = [{
             icon: "sync",
             callback: () => this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation),
@@ -156,6 +157,7 @@ class Map3D extends React.Component {
                         <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -1)} />
                         <span />
                     </div>
+                    <OverviewMap baseLayer={baseLayer} projection={this.props.projection} {...this.state.overviewState}  />
                 </div>
             </ResizeableWindow>
         ), (
@@ -518,6 +520,13 @@ class Map3D extends React.Component {
         // If camera height is at twice the terrain height or further, target height should be zero
         const targetHeight = terrainHeight > 0 ? terrainHeight * Math.max(0, 1 - (cameraHeight - terrainHeight) / terrainHeight) : 0;
         this.instance.view.controls.target.z = targetHeight;
+        this.setState({
+            overviewState: {
+                center: [x, y],
+                resolution: (cameraHeight - terrainHeight) / 200,
+                azimuth: this.instance.view.controls.getAzimuthalAngle()
+            }
+        });
     };
     redrawScene = (ev) => {
         const width = ev.target.innerWidth;
