@@ -298,7 +298,7 @@ class OlMap extends React.Component {
             } catch (e) {
                 /* pass */
             }
-        });
+        }, {hitTolerance: 5});
         const data = {
             ts: +new Date(),
             coordinate: this.map.getEventCoordinate(event),
