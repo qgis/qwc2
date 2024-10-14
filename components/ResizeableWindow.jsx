@@ -303,7 +303,7 @@ class ResizeableWindow extends React.Component {
         }
         return (
             <div className="resizeable-window-container" key="InternalWindow" style={containerStyle}>
-                <Rnd bounds="parent"
+                <Rnd bounds="parent" cancel=".resizeable-window-titlebar-control"
                     className={windowclasses} default={this.state.geometry}
                     disableDragging={maximized || this.state.geometry.docked} enableResizing={resizeMode}
                     maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
