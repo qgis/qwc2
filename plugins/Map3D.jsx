@@ -418,7 +418,7 @@ class Map3D extends React.Component {
             requestAnimationFrame(animate);
         };
         requestAnimationFrame(animate);
-        window.addEventListener("mouseup", () => {
+        ev.view.addEventListener("mouseup", () => {
             this.animationInterrupted = true;
         }, {once: true});
     };
@@ -481,7 +481,7 @@ class Map3D extends React.Component {
             requestAnimationFrame(animate);
         };
         requestAnimationFrame(animate);
-        window.addEventListener("mouseup", () => {
+        ev.view.addEventListener("mouseup", () => {
             this.animationInterrupted = true;
         }, {once: true});
     };
