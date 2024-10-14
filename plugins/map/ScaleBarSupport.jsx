@@ -38,7 +38,6 @@ class ScaleBarSupport extends React.Component {
         if (this.scalebar) {
             this.props.map.removeControl(this.scalebar);
         }
-        document.getElementById("PluginsContainer").removeChild(this.scalebarContainer);
     };
     initScaleBar = (el) => {
         this.scalebar = new ol.control.ScaleLine({
