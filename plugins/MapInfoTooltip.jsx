@@ -63,6 +63,7 @@ class MapInfoTooltip extends React.Component {
         enabled: PropTypes.bool,
         includeWGS84: PropTypes.bool,
         map: PropTypes.object,
+        mapMargins: PropTypes.object,
         /** Additional plugin components for the map info tooltip. */
         plugins: PropTypes.array,
         setCurrentTask: PropTypes.func
@@ -147,8 +148,8 @@ class MapInfoTooltip extends React.Component {
         const title = LocaleUtils.tr("mapinfotooltip.title");
         const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.point.coordinate);
         const style = {
-            left: pixel[0] + "px",
-            top: pixel[1] + "px"
+            left: (this.props.mapMargins.left + pixel[0]) + "px",
+            top: (this.props.mapMargins.top + pixel[1]) + "px"
         };
         const text = info.map(entry => entry.join(": ")).join("\n");
         let routingButtons = null;
@@ -212,6 +213,7 @@ class MapInfoTooltip extends React.Component {
 
 export default (plugins) => {
     return connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+        mapMargins: state.windows.mapMargins,
         enabled: state.identify.tool !== null,
         map: state.map,
         displaycrs: displaycrs,
