@@ -349,6 +349,9 @@ class OlMap extends React.Component {
         MapUtils.registerHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK, (pixel) => {
             return this.map.getCoordinateFromPixel(pixel);
         });
+        MapUtils.registerHook(MapUtils.GET_SNAPPED_COORDINATES_FROM_PIXEL_HOOK, (pixel) => {
+            return this.map.getCoordinateFromPixel(pixel);
+        });
         MapUtils.registerHook(MapUtils.GET_NATIVE_LAYER, (id) => {
             return this.map.getLayers().getArray().find(layer => layer.get('id') === id);
         });

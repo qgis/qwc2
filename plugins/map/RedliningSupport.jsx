@@ -400,7 +400,7 @@ class RedliningSupport extends React.Component {
         this.interactions.push(drawInteraction);
         this.picking = false;
 
-        const clickCoord = MapUtils.getHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK)(ev.pixel);
+        const clickCoord = MapUtils.getHook(MapUtils.GET_SNAPPED_COORDINATES_FROM_PIXEL_HOOK)(ev.pixel);
         drawInteraction.appendCoordinates([clickCoord]);
         if (this.props.redlining.geomType === 'Point') {
             drawInteraction.finishDrawing();

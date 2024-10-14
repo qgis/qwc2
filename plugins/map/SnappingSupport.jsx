@@ -58,6 +58,11 @@ class SnappingSupport extends React.Component {
 
         props.map.getInteractions().on('add', this.handleInteractionAdded);
         props.map.getInteractions().on('remove', this.handleInteractionRemoved);
+        MapUtils.registerHook(MapUtils.GET_SNAPPED_COORDINATES_FROM_PIXEL_HOOK, (pixel) => {
+            const coo = props.map.getCoordinateFromPixel(pixel);
+            const snapResult = this.snapInteraction.snapTo(pixel, coo, props.map);
+            return snapResult ? props.map.getCoordinateFromPixel(snapResult.vertexPixel) : coo;
+        });
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.drawing && (this.props.mapObj.bbox !== prevProps.mapObj.bbox || this.props.theme !== prevProps.theme)) {
