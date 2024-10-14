@@ -25,6 +25,7 @@ import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
 import BottomBar from '../components/map3d/BottomBar';
+import OverviewMap from '../components/map3d/OverviewMap';
 import {BackgroundSwitcher} from '../plugins/BackgroundSwitcher';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -69,6 +70,11 @@ class Map3D extends React.Component {
         enabled: false,
         layers: {},
         baselayer: null,
+        overviewState: {
+            azimuth: 0,
+            center: [0, 0],
+            resolution: 1
+        },
         cursorPosition: null
     };
     constructor(props) {
@@ -107,7 +113,7 @@ class Map3D extends React.Component {
         });
         const extraControls = [{
             icon: "sync",
-            callback: () => this.setViewToExtent(this.props.mapBbox.bounds),
+            callback: () => this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation),
             msgid: LocaleUtils.trmsg("map3d.syncview")
         }];
         return [(
@@ -243,7 +249,8 @@ class Map3D extends React.Component {
         // Sync 2d layers
         this.sync2dLayers({});
 
-        this.setViewToExtent(this.props.mapBbox.bounds);
+        this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation);
+
 
         // this.inspector = Inspector.attach("map3dinspector", this.instance);
     };
@@ -325,7 +332,7 @@ class Map3D extends React.Component {
             return {layers: newLayers};
         });
     };
-    setViewToExtent = (bounds) => {
+    setViewToExtent = (bounds, angle = 0) => {
         const center = {
             x: 0.5 * (bounds[0] + bounds[2]),
             y: 0.5 * (bounds[1] + bounds[3])
@@ -344,6 +351,13 @@ class Map3D extends React.Component {
         const oldYaw = this.instance.view.controls.getAzimuthalAngle();
         const newPosition = new Vector3(center.x, center.y, center.z + cameraHeight);
         const newTarget = new Vector3(center.x, center.y, center.z);
+        let rotateAngle = -oldYaw + angle;
+        while (rotateAngle > Math.PI) {
+            rotateAngle -= 2 * Math.PI;
+        }
+        while (rotateAngle < -Math.PI) {
+            rotateAngle += 2 * Math.PI;
+        }
         const startTime = new Date() / 1000;
 
         this.animationInterrupted = false;
@@ -360,7 +374,7 @@ class Map3D extends React.Component {
             const currentTarget = new Vector3().lerpVectors(oldTarget, newTarget, k);
             currentPosition.x -= currentTarget.x;
             currentPosition.y -= currentTarget.y;
-            currentPosition.applyAxisAngle(new Vector3(0, 0, 1), -oldYaw * k);
+            currentPosition.applyAxisAngle(new Vector3(0, 0, 1), rotateAngle * k);
             currentPosition.x += currentTarget.x;
             currentPosition.y += currentTarget.y;
             this.instance.view.camera.position.copy(currentPosition);
@@ -372,6 +386,7 @@ class Map3D extends React.Component {
             } else {
                 this.instance.view.camera.position.copy(newPosition);
                 this.instance.view.controls.target.copy(newTarget);
+                this.instance.view.controls._rotateLeft(-angle);
                 this.instance.view.controls.update();
             }
         };
