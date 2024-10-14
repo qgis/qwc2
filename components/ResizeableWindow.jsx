@@ -46,6 +46,7 @@ class ResizeableWindow extends React.Component {
         initialX: PropTypes.number,
         initialY: PropTypes.number,
         initiallyDocked: PropTypes.bool,
+        mapMargins: PropTypes.object,
         maxHeight: PropTypes.number,
         maxWidth: PropTypes.number,
         maximizeable: PropTypes.bool,
@@ -258,11 +259,12 @@ class ResizeableWindow extends React.Component {
             "resizeable-window-body-nonscrollable": !this.props.scrollable
         });
 
-
+        const marginLeft = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.left : 0;
+        const marginRight = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.right : 0;
         const containerStyle = {
             display: this.props.visible ? 'initial' : 'none',
-            left: this.props.menuMargins.left + 'px',
-            right: this.props.menuMargins.right + 'px',
+            left: (marginLeft + this.props.menuMargins.left) + 'px',
+            right: (marginRight + this.props.menuMargins.right) + 'px',
             top: splitTopAndBottomBar ? 0 : this.props.topbarHeight + 'px',
             bottom: splitTopAndBottomBar ? 0 : this.props.bottombarHeight + 'px',
             zIndex: splitTopAndBottomBar ? 110 : this.props.baseZIndex + this.props.windowStacking.findIndex(item => item === this.id)
@@ -479,6 +481,7 @@ export default connect((state) => ({
     windowStacking: state.windows.stacking,
     topbarHeight: state.map.topbarHeight,
     bottombarHeight: state.map.bottombarHeight,
+    mapMargins: state.windows.mapMargins,
     menuMargins: state.windows.menuMargins,
     mobile: state.browser.mobile
 }), {
