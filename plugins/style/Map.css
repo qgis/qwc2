@@ -11,7 +11,9 @@ div.ol-rotate {
 
 div.ol-rotate button {
     font-size: 1.25em!important;
-    background-color: var(--panel-text-color)!important;
+    background-color: var(--map-button-bg-color)!important;
+    color: var(--map-button-text-color)!important;
+    cursor: pointer;
 }
 
 div.ol-overlaycontainer-stopevent {
