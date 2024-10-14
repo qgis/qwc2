@@ -178,7 +178,7 @@ class SnappingSupport extends React.Component {
         if (this.props.mapObj.snapping.enabled) {
             for (let i = 0; i < interactions.getLength(); ++i) {
                 const interaction = interactions.item(i);
-                if ((interaction instanceof ol.interaction.Draw) || (interaction instanceof ol.interaction.Modify)) {
+                if ((interaction instanceof ol.interaction.Draw) || (interaction instanceof ol.interaction.Modify) || (interaction instanceof ol.interaction.Select)) {
                     interactions.push(this.snapInteraction);
                     added = true;
                     break;
