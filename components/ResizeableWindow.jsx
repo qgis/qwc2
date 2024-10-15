@@ -202,12 +202,17 @@ class ResizeableWindow extends React.Component {
         let dockIcon = docked ? 'undock' : 'dock';
         dockIcon = dockIcon + "_" + dockSide;
 
+        const iconClasses = classnames({
+            "resizeable-window-titlebar-control": true,
+            "resizeable-window-nodrag": true
+        });
+
         let detachIcons = null;
         if (!this.props.mobile) {
             detachIcons = this.state.externalWindow ? (
-                <Icon className="resizeable-window-titlebar-control" icon="embed" onClick={this.moveToInternalWindow} title={LocaleUtils.tr("window.embed")} />
+                <Icon className={iconClasses} icon="embed" onClick={this.moveToInternalWindow} title={LocaleUtils.tr("window.embed")} />
             ) : (
-                <Icon className="resizeable-window-titlebar-control" icon="detach" onClick={this.moveToExternalWindow} title={LocaleUtils.tr("window.detach")} />
+                <Icon className={iconClasses} icon="detach" onClick={this.moveToExternalWindow} title={LocaleUtils.tr("window.detach")} />
             );
         }
         return (
@@ -217,31 +222,32 @@ class ResizeableWindow extends React.Component {
                     {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
                 </span>
                 {(this.props.extraControls || []).map(entry => {
-                    const iconClasses = classnames({
+                    const extraIconClasses = classnames({
                         "resizeable-window-titlebar-extra-control": true,
-                        "resizeable-window-titlebar-extra-control-active": entry.active
+                        "resizeable-window-titlebar-extra-control-active": entry.active,
+                        "resizeable-window-nodrag": true
                     });
                     return (
                         <Icon
-                            className={iconClasses} icon={entry.icon} key={entry.icon}
+                            className={extraIconClasses} icon={entry.icon} key={entry.icon}
                             onClick={entry.callback} titlemsgid={entry.msgid} />
                     );
                 })}
                 {!maximized && dockable ? (
                     <Icon
-                        className="resizeable-window-titlebar-control" icon={dockIcon}
+                        className={iconClasses} icon={dockIcon}
                         onClick={this.toggleDock}
                         titlemsgid={this.state.geometry.docked ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
                 ) : null}
                 {minimizeable ? (
-                    <Icon className="resizeable-window-titlebar-control" icon={minimized ? "unminimize" : "minimize"} onClick={this.toggleMinimize} title={minimized ? LocaleUtils.tr("window.unminimize") : LocaleUtils.tr("window.minimize")} />
+                    <Icon className={iconClasses} icon={minimized ? "unminimize" : "minimize"} onClick={this.toggleMinimize} title={minimized ? LocaleUtils.tr("window.unminimize") : LocaleUtils.tr("window.minimize")} />
                 ) : null}
                 {maximizeable ? (
-                    <Icon className="resizeable-window-titlebar-control" icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} title={maximized ? LocaleUtils.tr("window.unmaximize") : LocaleUtils.tr("window.maximize")} />
+                    <Icon className={iconClasses} icon={maximized ? "unmaximize" : "maximize"} onClick={this.toggleMaximize} title={maximized ? LocaleUtils.tr("window.unmaximize") : LocaleUtils.tr("window.maximize")} />
                 ) : null}
                 {detachIcons}
                 {this.props.onClose ? (
-                    <Icon className="resizeable-window-titlebar-control" icon="remove" onClick={this.onClose} title={LocaleUtils.tr("window.close")} />
+                    <Icon className={iconClasses} icon="remove" onClick={this.onClose} title={LocaleUtils.tr("window.close")} />
                 ) : null}
             </div>
         );
@@ -256,7 +262,8 @@ class ResizeableWindow extends React.Component {
         const bodyclasses = classnames({
             "resizeable-window-body": true,
             "resizeable-window-body-scrollable": this.props.scrollable,
-            "resizeable-window-body-nonscrollable": !this.props.scrollable
+            "resizeable-window-body-nonscrollable": !this.props.scrollable,
+            "resizeable-window-nodrag": true
         });
 
         const marginLeft = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.left : 0;
@@ -303,7 +310,7 @@ class ResizeableWindow extends React.Component {
         }
         return (
             <div className="resizeable-window-container" key="InternalWindow" style={containerStyle}>
-                <Rnd bounds="parent" cancel=".resizeable-window-titlebar-control"
+                <Rnd bounds="parent" cancel=".resizeable-window-nodrag"
                     className={windowclasses} default={this.state.geometry}
                     disableDragging={maximized || this.state.geometry.docked} enableResizing={resizeMode}
                     maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
