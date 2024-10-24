@@ -1,0 +1,168 @@
+div.ThemeList ul {
+    padding: 0;
+    list-style-type: none;
+}
+
+div.ThemeList li.theme-group-header > span {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.25em;
+    margin: 0 0.5em 0.5em 0.5em;
+}
+
+div.ThemeList li.theme-group-header > span > span.icon {
+    margin-right: 0.25em;
+}
+
+div.ThemeList ul.theme-group-body {
+    padding: 0.25em;
+}
+
+div.ThemeList li.theme-group-header ul.theme-group-body {
+    margin-left: 0.25em;
+}
+
+div.ThemeList li.theme-item {
+    background-color: var(--list-bg-color);
+    font-weight: bold;
+    margin: 0.5em;
+    text-align: center;
+    display: inline-block;
+    width: 15em;
+    position: relative;
+}
+
+div.ThemeList div.theme-item-title {
+    display: flex;
+    align-items: center;
+}
+
+div.ThemeList div.theme-item-title > span:first-child {
+    flex: 1 1 auto;
+    padding: 0.125em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+div.ThemeList div.theme-item-title > span.icon {
+    flex: 0 0 auto;
+    padding: 0.125em;
+    font-size: large;
+}
+
+div.ThemeList div.theme-item-body {
+    background-color: white;
+}
+
+div.ThemeList li.theme-item-active div.theme-item-title > span:first-child {
+    color: var(--color-active);
+}
+
+div.ThemeList img.theme-item-thumbnail {
+    width: calc(15em - 2px);
+    height: auto;
+}
+
+div.ThemeList div.theme-item-icons {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+div.ThemeList div.theme-item-icons > span.icon {
+    flex: 0 0 auto;
+    font-size: large;
+    padding: 0.25em;
+    background-color: var(--button-bg-color);
+    color: var(--text-color);
+    z-index: 2;
+    transition: color 0.3s; /* Añadir transición para un efecto suave */
+}
+
+div.ThemeList div.theme-item-icons > span.icon:hover {
+    color: var(--color-active); /* Cambia el color del icono a azul en el hover */
+}
+
+div.ThemeList li.theme-item:hover {
+    border: 1px solid var(--color-active);
+}
+
+div.ThemeList div.theme-item-icons > span.icon-active {
+    color: var(--color-active);
+}
+
+div.ThemeList div.theme-item-keywords {
+    position: relative;
+    display: inline-block;
+    color: gray;
+    font-size: x-small;
+    font-weight: normal;
+    max-width: 80%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+div.ThemeList li.theme-item-active {
+    border: 1px solid var(--color-active);
+}
+
+div.ThemeList div.theme-item-info-menu {
+    text-align: left;
+    display: flex;
+    align-items: center;
+    position: relative;
+    color: var(--color-active);
+    padding: 0.25em;
+}
+
+div.ThemeList div.theme-item-info-menu-active {
+    background-color: var(--color-active);
+    color: white;
+}
+
+div.ThemeList div.theme-item-info-menu > span.icon-info {
+    margin-right: 0.25em;
+}
+
+div.ThemeList div.theme-item-info-menu > span.icon-triangle-down {
+    margin-left: 0.25em;
+    font-size: 80%;
+}
+
+div.ThemeList div.theme-item-info-links {
+    position: absolute;
+    top: 100%;
+    max-width: calc(15em + 2px);
+    left: -1px;
+    right: -1px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid var(--color-active);
+}
+
+div.ThemeList div.theme-item-info-links > a {
+    display: block;
+    text-align: left;
+    padding: 0.25em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+div.ThemeList div.theme-item-restricted-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(127, 127, 127, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 400%;
+}
