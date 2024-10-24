@@ -382,7 +382,7 @@ class IdentifyViewer extends React.Component {
         let resultbox = null;
         let extraattribs = null;
         let featureReportTemplate = null;
-        if (ConfigUtils.getConfigProp("featureReportService")) {
+        if (ConfigUtils.getConfigProp("documentServiceUrl")) {
             featureReportTemplate = result.featurereport || this.findFeatureReportTemplate(layer);
         }
         if (featureReportTemplate) {
@@ -671,7 +671,7 @@ class IdentifyViewer extends React.Component {
         return reports[layer] || null;
     };
     getFeatureReportUrl = (template, result) => {
-        const serviceUrl = ConfigUtils.getConfigProp("featureReportService").replace(/\/$/, "");
+        const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         const params = {
             feature: result.id,
             x: result.clickPos[0],
@@ -681,7 +681,7 @@ class IdentifyViewer extends React.Component {
         return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
     };
     downloadAggregatedReport = (layername, results) => {
-        const serviceUrl = ConfigUtils.getConfigProp("featureReportService").replace(/\/$/, "");
+        const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         const params = {
             feature: results.map(result => result.id).join(","),
             x: results[0].clickPos[0],

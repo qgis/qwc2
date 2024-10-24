@@ -227,7 +227,7 @@ class Reports extends React.Component {
         });
     };
     downloadReport = () => {
-        const serviceUrl = ConfigUtils.getConfigProp("featureReportService").replace(/\/$/, "");
+        const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         let featureIds = '';
         if (this.state.featureSelectionMode === "All") {
             featureIds = '*';
