@@ -6,6 +6,7 @@ div.AppMenu {
     overflow: hidden;
     display: flex;
     align-items: center;
+    height: 100%;
 }
 
 div.AppMenu.appmenu-visible {
