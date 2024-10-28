@@ -19,10 +19,8 @@ import PropTypes from 'prop-types';
 import {setCurrentTask} from '../actions/task';
 import {setMenuMargin} from '../actions/windows';
 import InputContainer from '../components/InputContainer';
-import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
-import ThemeUtils from '../utils/ThemeUtils';
 import Icon from './Icon';
 
 import './style/AppMenu.css';
@@ -34,7 +32,6 @@ class AppMenu extends React.Component {
         appMenuShortcut: PropTypes.string,
         buttonContents: PropTypes.object,
         currentTaskBlocked: PropTypes.bool,
-        currentTheme: PropTypes.object,
         keepMenuOpen: PropTypes.bool,
         menuCompact: PropTypes.bool,
         menuItems: PropTypes.array,
@@ -93,9 +90,7 @@ class AppMenu extends React.Component {
                 this.addKeyBindings(item.subitems);
             } else if (item.shortcut) {
                 mousetrap.bind(item.shortcut, () => {
-                    if (this.itemAllowed(item)) {
-                        this.onMenuitemClicked(item);
-                    }
+                    this.onMenuitemClicked(item);
                     return false;
                 });
                 this.boundShortcuts.push(item.shortcut);
@@ -218,9 +213,6 @@ class AppMenu extends React.Component {
     renderMenuItems = (items, level, filter, path) => {
         if (items) {
             return items.map((item, idx) => {
-                if (!this.itemAllowed(item)) {
-                    return null;
-                }
                 const active = isEqual(this.state.curEntry, [...path, idx]);
                 if (item.subitems) {
                     const subitems = this.renderMenuItems(item.subitems, level + 1, filter, [...path, idx]);
@@ -318,26 +310,10 @@ class AppMenu extends React.Component {
             mousetrap(el).bind(this.props.appMenuShortcut, this.toggleMenu);
         }
     };
-    itemAllowed = (item) => {
-        if (!ThemeUtils.themFlagsAllowed(this.props.currentTheme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
-            return false;
-        }
-        if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
-            return false;
-        }
-        if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
-            return false;
-        }
-        if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
-            return false;
-        }
-        return true;
-    };
 }
 
 export default connect((state) => ({
-    currentTaskBlocked: state.task.blocked,
-    currentTheme: state.theme.current || {}
+    currentTaskBlocked: state.task.blocked
 }), {
     setCurrentTask: setCurrentTask,
     setMenuMargin: setMenuMargin

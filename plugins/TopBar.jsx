@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import classnames from 'classnames';
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
@@ -20,6 +21,7 @@ import Icon from '../components/Icon';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/TopBar.css';
 
@@ -42,6 +44,7 @@ class TopBar extends React.Component {
         /** Whether to open the app menu on application startup. */
         appMenuVisibleOnStartup: PropTypes.bool,
         components: PropTypes.object,
+        currentTheme: PropTypes.object,
         fullscreen: PropTypes.bool,
         /** The logo file format. */
         logoFormat: PropTypes.string,
@@ -108,6 +111,18 @@ class TopBar extends React.Component {
         toolbarItems: [],
         logoFormat: "svg"
     };
+    state = {
+        allowedMenuItems: [],
+        allowedToolbarItems: []
+    };
+    componentDidUpdate(prevProps) {
+        if (this.props.currentTheme !== prevProps.currentTheme) {
+            this.setState({
+                allowedToolbarItems: this.allowedItems(this.props.toolbarItems),
+                allowedMenuItems: this.allowedItems(this.props.menuItems)
+            });
+        }
+    }
     render() {
         let buttonContents;
         let logo;
@@ -165,7 +180,7 @@ class TopBar extends React.Component {
                         {this.props.components.Toolbar ? (
                             <this.props.components.Toolbar
                                 openExternalUrl={this.openUrl}
-                                toolbarItems={this.props.toolbarItems}
+                                toolbarItems={this.state.allowedToolbarItems}
                                 toolbarItemsShortcutPrefix={this.props.toolbarItemsShortcutPrefix} />
                         ) : null}
                     </div>
@@ -176,7 +191,7 @@ class TopBar extends React.Component {
                             buttonContents={buttonContents}
                             keepMenuOpen={keepMenuOpen}
                             menuCompact={menuCompact}
-                            menuItems={this.props.menuItems}
+                            menuItems={this.state.allowedMenuItems}
                             openExternalUrl={this.openUrl}
                             showFilterField={this.props.appMenuFilterField}
                             showOnStartup={showOnStartup} />
@@ -199,6 +214,32 @@ class TopBar extends React.Component {
             this.props.setTopbarHeight(el.clientHeight);
         }
     };
+    allowedItems = (items) => {
+        return items.map(item => {
+            if (item.subitems) {
+                const subitems = this.allowedItems(item.subitems);
+                if (!isEmpty(subitems)) {
+                    return {...item, subitems};
+                } else {
+                    return null;
+                }
+            } else {
+                if (!ThemeUtils.themFlagsAllowed(this.props.currentTheme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
+                    return null;
+                }
+                if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
+                    return null;
+                }
+                if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
+                    return null;
+                }
+                if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
+                    return null;
+                }
+                return item;
+            }
+        }).filter(Boolean);
+    };
 }
 
 export default (components) => {
@@ -206,6 +247,7 @@ export default (components) => {
         mobile: state.browser.mobile,
         fullscreen: state.display.fullscreen,
         components: components,
+        currentTheme: state.theme.current,
         mapMargins: state.windows.mapMargins
     }), {
         toggleFullscreen: toggleFullscreen,
