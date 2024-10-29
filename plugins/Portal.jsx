@@ -104,7 +104,7 @@ class Portal extends React.Component {
                         showOnStartup={this.props.showMenuOnStartup} />
                 </div>
                 <div className={"portal-body " + (this.state.menuVisible ? "portal-body-menuvisible" : "")}>
-                    <ThemeList collapsibleGroups dontPreserveSettingsOnSwitch={!preserveSettings} filter={this.state.filter} />
+                    <ThemeList collapsibleGroups dontPreserveSettingsOnSwitch={!preserveSettings} filter={this.state.filter} className="ThemeListPortal" />
                 </div>
                 <div className="portal-bottombar">
                     {this.props.userName ? (
