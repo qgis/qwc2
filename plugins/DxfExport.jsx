@@ -17,9 +17,9 @@ import PropTypes from 'prop-types';
 
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
-import InputContainer from '../components/InputContainer';
 import PrintFrame from '../components/PrintFrame';
 import TaskBar from '../components/TaskBar';
+import InputContainer from '../components/widgets/InputContainer';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';

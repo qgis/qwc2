@@ -12,10 +12,10 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Icon from '../components/Icon';
-import InputContainer from '../components/InputContainer';
 import SideBar from '../components/SideBar';
 import ThemeLayersListWindow from '../components/ThemeLayersListWindow';
 import ThemeList from '../components/ThemeList';
+import InputContainer from '../components/widgets/InputContainer';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 

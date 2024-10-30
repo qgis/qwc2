@@ -8,7 +8,7 @@ import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
 import Icon from '../Icon';
-import InputContainer from '../InputContainer';
+import InputContainer from './InputContainer';
 
 import './style/LayerCatalogWidget.css';
 

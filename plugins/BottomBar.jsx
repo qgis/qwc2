@@ -16,7 +16,7 @@ import {changeZoomLevel, setBottombarHeight} from '../actions/map';
 import {changeMousePositionState} from '../actions/mousePosition';
 import {openExternalUrl} from '../actions/task';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
-import InputContainer from '../components/InputContainer';
+import InputContainer from '../components/widgets/InputContainer';
 import displayCrsSelector from '../selectors/displaycrs';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';

@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
 import {setMenuMargin} from '../actions/windows';
-import InputContainer from '../components/InputContainer';
+import InputContainer from '../components/widgets/InputContainer';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';

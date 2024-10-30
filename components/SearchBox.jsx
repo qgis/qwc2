@@ -36,11 +36,11 @@ import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
-import InputContainer from './InputContainer';
 import MapSelection from './MapSelection';
 import Spinner from './Spinner';
 import ButtonBar from './widgets/ButtonBar';
 import ComboBox from './widgets/ComboBox';
+import InputContainer from './widgets/InputContainer';
 import NumberInput from './widgets/NumberInput';
 
 import './style/SearchBox.css';
