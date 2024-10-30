@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import Icon from '../Icon';
-import PopupMenu from '../PopupMenu';
+import PopupMenu from './PopupMenu';
 
 import './style/MenuButton.css';
 

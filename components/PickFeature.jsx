@@ -19,8 +19,8 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import MapSelection from './MapSelection';
-import PopupMenu from './PopupMenu';
 import Spinner from './Spinner';
+import PopupMenu from './widgets/PopupMenu';
 
 import './style/PickFeature.css';
 

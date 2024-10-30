@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 
 import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
-import PopupMenu from '../PopupMenu';
+import PopupMenu from './PopupMenu';
 
 import './style/ComboBox.css';
 
