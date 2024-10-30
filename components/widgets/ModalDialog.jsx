@@ -11,7 +11,7 @@ import ReactDOM from 'react-dom';
 
 import PropTypes from 'prop-types';
 
-import Icon from './Icon';
+import Icon from '../Icon';
 
 import './style/ModalDialog.css';
 

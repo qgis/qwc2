@@ -16,8 +16,8 @@ import ConfigUtils from '../utils/ConfigUtils';
 import {showImageEditor} from '../utils/ImageEditor';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
-import ModalDialog from './ModalDialog';
 import ButtonBar from './widgets/ButtonBar';
+import ModalDialog from './widgets/ModalDialog';
 
 import './style/EditUploadField.css';
 

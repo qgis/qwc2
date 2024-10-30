@@ -11,7 +11,7 @@ import Painterro from 'painterro';
 import StandardStore from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
 
-import '../components/style/ModalDialog.css';
+import '../components/widgets/style/ModalDialog.css';
 
 export function showImageEditor(imageData, imageDataCallback) {
     // Do old-school JS rather than react portal as portal event bubbling messes up Painterro
