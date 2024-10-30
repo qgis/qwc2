@@ -17,7 +17,7 @@ import {v1 as uuidv1} from 'uuid';
 import {LayerRole} from '../../actions/layers';
 import {setSnappingConfig} from '../../actions/map';
 import Icon from '../../components/Icon';
-import Spinner from '../../components/Spinner';
+import Spinner from '../../components/widgets/Spinner';
 import IdentifyUtils from '../../utils/IdentifyUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';

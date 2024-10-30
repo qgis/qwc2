@@ -37,11 +37,11 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import MapSelection from './MapSelection';
-import Spinner from './Spinner';
 import ButtonBar from './widgets/ButtonBar';
 import ComboBox from './widgets/ComboBox';
 import InputContainer from './widgets/InputContainer';
 import NumberInput from './widgets/NumberInput';
+import Spinner from './widgets/Spinner';
 
 import './style/SearchBox.css';
 

@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 
 import {clearProcess, ProcessStatus} from '../actions/processNotifications';
 import Icon from '../components/Icon';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/widgets/Spinner';
 
 import './style/ProcessNotifications.css';
 

@@ -14,9 +14,9 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {LayerRole} from '../actions/layers';
-import Spinner from '../components/Spinner';
 import OlLayer from '../components/map/OlLayer';
 import OlMap from '../components/map/OlMap';
+import Spinner from '../components/widgets/Spinner';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 

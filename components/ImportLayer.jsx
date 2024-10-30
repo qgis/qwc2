@@ -26,9 +26,9 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import Spinner from './Spinner';
 import FileSelector from './widgets/FileSelector';
 import LayerCatalogWidget from './widgets/LayerCatalogWidget';
+import Spinner from './widgets/Spinner';
 
 import './style/ImportLayer.css';
 

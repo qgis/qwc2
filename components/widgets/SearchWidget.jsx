@@ -16,7 +16,7 @@ import {v1 as uuidv1} from 'uuid';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
-import Spinner from '../Spinner';
+import Spinner from './Spinner';
 
 import './style/SearchWidget.css';
 

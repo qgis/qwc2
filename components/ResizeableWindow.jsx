@@ -21,7 +21,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';
-import Spinner from './Spinner';
+import Spinner from './widgets/Spinner';
 
 import './style/ResizeableWindow.css';
 

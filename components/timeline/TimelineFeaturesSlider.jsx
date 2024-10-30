@@ -16,8 +16,8 @@ import randomcolor from 'randomcolor';
 import {addLayerFeatures, removeLayer, LayerRole} from '../../actions/layers';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
-import Spinner from '../Spinner';
 import Input from '../widgets/Input';
+import Spinner from '../widgets/Spinner';
 
 import './style/TimelineFeaturesSlider.css';
 

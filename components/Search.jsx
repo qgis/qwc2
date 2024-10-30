@@ -34,7 +34,7 @@ import {UrlParams} from '../utils/PermaLinkUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import MessageBar from './MessageBar';
-import Spinner from './Spinner';
+import Spinner from './widgets/Spinner';
 
 import './style/Search.css';
 

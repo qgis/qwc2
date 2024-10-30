@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import { zoomToExtent, zoomToPoint } from '../actions/map';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';

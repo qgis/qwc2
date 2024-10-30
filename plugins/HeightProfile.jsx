@@ -30,7 +30,7 @@ import PropTypes from 'prop-types';
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
 import ResizeableWindow from '../components/ResizeableWindow';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';

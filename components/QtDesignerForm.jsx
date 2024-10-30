@@ -22,9 +22,9 @@ import MiscUtils from '../utils/MiscUtils';
 import EditComboField, {KeyValCache} from './EditComboField';
 import EditUploadField from './EditUploadField';
 import Icon from './Icon';
-import Spinner from './Spinner';
 import ButtonBar from './widgets/ButtonBar';
 import DateTimeInput from './widgets/DateTimeInput';
+import Spinner from './widgets/Spinner';
 import TextInput from './widgets/TextInput';
 
 import './style/QtDesignerForm.css';

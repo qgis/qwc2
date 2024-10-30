@@ -17,7 +17,7 @@ import {v1 as uuidv1} from 'uuid';
 
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/widgets/Spinner';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 

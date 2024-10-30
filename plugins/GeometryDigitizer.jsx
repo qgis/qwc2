@@ -20,9 +20,9 @@ import {LayerRole, addLayer, removeLayer, addLayerFeatures, removeLayerFeatures,
 import {changeRedliningState} from '../actions/redlining';
 import PickFeature from '../components/PickFeature';
 import ResizeableWindow from '../components/ResizeableWindow';
-import Spinner from '../components/Spinner';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
+import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
