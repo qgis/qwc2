@@ -1,11 +1,9 @@
 import React from 'react';
-import {connect} from 'react-redux';
 
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {addLayer} from '../../actions/layers';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
@@ -14,7 +12,8 @@ import InputContainer from '../InputContainer';
 
 import './style/LayerCatalogWidget.css';
 
-class LayerCatalogWidget extends React.PureComponent {
+
+export default class LayerCatalogWidget extends React.PureComponent {
     static propTypes = {
         addLayer: PropTypes.func,
         catalog: PropTypes.array,
@@ -121,8 +120,3 @@ class LayerCatalogWidget extends React.PureComponent {
         }
     };
 }
-
-export default connect(() => ({
-}), {
-    addLayer: addLayer
-})(LayerCatalogWidget);
