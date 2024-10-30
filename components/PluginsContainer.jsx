@@ -18,6 +18,7 @@ import './style/PluginsContainer.css';
 class PluginsContainer extends React.Component {
     static propTypes = {
         customPlugins: PropTypes.array,
+        locale: PropTypes.string,
         mode: PropTypes.string,
         plugins: PropTypes.object,
         pluginsAppConfig: PropTypes.object,
@@ -44,7 +45,7 @@ class PluginsContainer extends React.Component {
         });
     };
     render() {
-        if (this.props.pluginsConfig) {
+        if (this.props.pluginsConfig && this.props.locale) {
             return (
                 <div id="PluginsContainer">
                     {this.renderPlugins(this.props.pluginsConfig[this.props.mode])}
@@ -60,5 +61,6 @@ export default connect((state) => ({
     customPlugins: state.localConfig.customPlugins,
     pluginsConfig: state.localConfig.plugins,
     mode: state.browser.mobile ? 'mobile' : 'desktop',
+    locale: state.locale.current,
     theme: state.theme.current
 }))(PluginsContainer);

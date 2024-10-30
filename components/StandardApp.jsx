@@ -32,7 +32,6 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
-import Localized from './Localized';
 import PluginsContainer from './PluginsContainer';
 
 import './style/App.css';
@@ -236,9 +235,7 @@ export default class StandardApp extends React.Component {
             <Provider store={this.store}>
                 <div ref={this.setupTouchEvents}>
                     <AppInit appConfig={this.props.appConfig} initialParams={this.initialParams}/>
-                    <Localized>
-                        <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
-                    </Localized>
+                    <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
                 </div>
             </Provider>
         );
