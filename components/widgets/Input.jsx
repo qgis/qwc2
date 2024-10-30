@@ -10,7 +10,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-class Input extends React.Component {
+export default class Input extends React.Component {
     static propTypes = {
         className: PropTypes.string,
         disabled: PropTypes.bool,
@@ -61,5 +61,3 @@ class Input extends React.Component {
         }
     };
 }
-
-export default Input;

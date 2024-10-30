@@ -16,7 +16,7 @@ import MiscUtils from '../../utils/MiscUtils';
 
 import './style/TextInput.css';
 
-class TextInput extends React.Component {
+export default class TextInput extends React.Component {
     static propTypes = {
         addLinkAnchors: PropTypes.bool,
         className: PropTypes.string,
@@ -236,5 +236,3 @@ class TextInput extends React.Component {
         }, {once: true});
     };
 }
-
-export default TextInput;

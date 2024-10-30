@@ -10,7 +10,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-class NumberInput extends React.Component {
+export default class NumberInput extends React.Component {
     static propTypes = {
         decimals: PropTypes.number,
         disabled: PropTypes.bool,
@@ -78,5 +78,3 @@ class NumberInput extends React.Component {
         }
     };
 }
-
-export default NumberInput;
