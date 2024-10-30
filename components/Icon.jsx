@@ -24,8 +24,7 @@ export default class Icon extends React.Component {
         onMouseDown: PropTypes.func,
         onMouseUp: PropTypes.func,
         size: PropTypes.string,
-        title: PropTypes.string,
-        titlemsgid: PropTypes.string
+        title: PropTypes.string
     };
     static defaultProps = {
         className: "",
@@ -39,24 +38,20 @@ export default class Icon extends React.Component {
             [this.props.className]: !!this.props.className,
             icon_clickable: !!this.props.onClick || !!this.props.onMouseDown
         });
-        let title = this.props.title;
-        if (this.props.titlemsgid) {
-            title = LocaleUtils.tr(this.props.titlemsgid);
-        }
         if (this.props.icon.startsWith(":/")) {
             const assetsPath = ConfigUtils.getAssetsPath();
             const src = assetsPath + this.props.icon.substr(1);
             return (
-                <img alt={title} className={classes} onClick={this.props.onClick}
+                <img alt={this.props.title} className={classes} onClick={this.props.onClick}
                     onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
-                    src={src} title={title || undefined}
+                    src={src} title={this.props.title || undefined}
                 />
             );
         } else {
             return (
                 <span className={classes} onClick={this.props.onClick}
                     onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
-                    title={title || undefined}
+                    title={this.props.title || undefined}
                 />
             );
         }

@@ -230,14 +230,14 @@ class ResizeableWindow extends React.Component {
                     return (
                         <Icon
                             className={extraIconClasses} icon={entry.icon} key={entry.icon}
-                            onClick={entry.callback} titlemsgid={entry.msgid} />
+                            onClick={entry.callback} title={LocaleUtils.tr(entry.msgid)} />
                     );
                 })}
                 {!maximized && dockable ? (
                     <Icon
                         className={iconClasses} icon={dockIcon}
                         onClick={this.toggleDock}
-                        titlemsgid={this.state.geometry.docked ? LocaleUtils.trmsg("window.undock") : LocaleUtils.trmsg("window.dock")} />
+                        title={this.state.geometry.docked ? LocaleUtils.tr("window.undock") : LocaleUtils.tr("window.dock")} />
                 ) : null}
                 {minimizeable ? (
                     <Icon className={iconClasses} icon={minimized ? "unminimize" : "minimize"} onClick={this.toggleMinimize} title={minimized ? LocaleUtils.tr("window.unminimize") : LocaleUtils.tr("window.minimize")} />
