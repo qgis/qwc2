@@ -24,8 +24,8 @@ import LocaleUtils from '../utils/LocaleUtils';
 import AutoEditForm from './AutoEditForm';
 import LinkFeatureForm from './LinkFeatureForm';
 import QtDesignerForm from './QtDesignerForm';
-import ReCaptchaWidget from './ReCaptchaWidget';
 import ButtonBar from './widgets/ButtonBar';
+import ReCaptchaWidget from './widgets/ReCaptchaWidget';
 
 import './style/AttributeForm.css';
 

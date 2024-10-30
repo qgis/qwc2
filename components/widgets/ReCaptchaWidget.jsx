@@ -3,7 +3,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 
 import PropTypes from 'prop-types';
 
-import LocaleUtils from '../utils/LocaleUtils';
+import LocaleUtils from '../../utils/LocaleUtils';
 
 
 export default class ReCaptchaWidget extends React.Component {
