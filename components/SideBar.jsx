@@ -33,7 +33,6 @@ class SideBar extends React.Component {
         minWidth: PropTypes.string,
         onHide: PropTypes.func,
         onShow: PropTypes.func,
-        renderWhenHidden: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         side: PropTypes.string,
         title: PropTypes.string,
@@ -81,7 +80,7 @@ class SideBar extends React.Component {
     };
     render() {
         const visible = this.props.currentTask.id === this.props.id;
-        const render = visible || this.state.render || this.props.renderWhenHidden;
+        const render = visible || this.state.render;
         const style = {
             width: this.props.width,
             minWidth: this.props.minWidth,

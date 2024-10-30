@@ -32,20 +32,19 @@ class Help extends React.Component {
         renderBody: () => { return null; },
         side: 'right'
     };
-    constructor(props) {
-        super(props);
-        this.bodyEl = null;
-    }
+    state = {
+        body: ''
+    };
     componentDidMount() {
         if (this.props.bodyContentsFragmentUrl) {
             axios.get(this.props.bodyContentsFragmentUrl).then(response => {
-                this.bodyEl.innerHTML = response.data.replace('$VERSION$', process.env.BuildDate);
+                this.setState({body: response.data.replace('$VERSION$', process.env.BuildDate)});
             }).catch(() => {});
         }
     }
     render() {
         return (
-            <SideBar icon="info" id="Help" renderWhenHidden side={this.props.side} title="appmenu.items.Help" width="20em">
+            <SideBar icon="info" id="Help" side={this.props.side} title="appmenu.items.Help" width="20em">
                 {() => ({
                     body: this.renderBody()
                 })}
@@ -54,7 +53,7 @@ class Help extends React.Component {
     }
     renderBody = () => {
         if (this.props.bodyContentsFragmentUrl) {
-            return (<div ref={el => {this.bodyEl = el;}} />);
+            return (<div dangerouslySetInnerHTML={{__html: this.state.body}} />);
         } else {
             return this.props.renderBody();
         }
