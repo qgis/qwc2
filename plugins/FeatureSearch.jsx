@@ -130,7 +130,7 @@ class FeatureSearch extends React.Component {
                     <table><tbody>
                         {Object.entries(provider.params.fields).map(([key, value]) => (
                             <tr key={key}>
-                                <td>{value.label || LocaleUtils.tr(value.labelmsgid)}:</td>
+                                <td>{value.label ?? LocaleUtils.tr(value.labelmsgid)}:</td>
                                 <td>{this.renderField(key, value)}</td>
                             </tr>
                         ))}

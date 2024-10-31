@@ -73,7 +73,7 @@ export default class SearchWidget extends React.Component {
             <div className="search-widget-results" onMouseDown={this.setPreventBlur}>
                 {this.state.results.map(group => (
                     <div className="search-widget-results-group" key={group.id} onMouseDown={MiscUtils.killEvent}>
-                        <div className="search-widget-results-group-title">{group.titlemsgid ? LocaleUtils.tr(group.titlemsgid) : (<span>{group.title}</span>)}</div>
+                        <div className="search-widget-results-group-title"><span>{group.title ?? LocaleUtils.tr(group.titlemsgid)}</span></div>
                         {group.items.map(item => {
                             item.text = (item.label !== undefined ? item.label : item.text || '').replace(/<\/?\w+\s*\/?>/g, '');
                             return (

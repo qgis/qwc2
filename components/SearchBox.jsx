@@ -192,7 +192,7 @@ class SearchBox extends React.Component {
                 <div value="">{LocaleUtils.tr("search.all")}</div>
                 {haveFulltext ? (<option value="__fulltext">{LocaleUtils.tr("search.fulltext")}</option>) : null}
                 {Object.entries(this.props.searchProviders).map(([key, prov]) => (
-                    <div key={key} value={key}>{prov?.params?.title || (prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label)}</div>
+                    <div key={key} value={key}>{prov?.params?.title || (prov.label ?? LocaleUtils.tr(prov.labelmsgid))}</div>
                 ))}
             </ComboBox>
         );
@@ -337,7 +337,7 @@ class SearchBox extends React.Component {
                         <div key={sectionId}>
                             <div className="searchbox-results-section-title" onClick={() => this.toggleSection(sectionId)} onMouseDown={MiscUtils.killEvent}>
                                 <Icon icon={this.isCollapsed(sectionId) ? "expand" : "collapse"} />
-                                {group.titlemsgid ? LocaleUtils.tr(group.titlemsgid) : (<span>{group.title}</span>)}
+                                <span>{group.title ?? LocaleUtils.tr(group.titlemsgid)}</span>
                             </div>
                             {!this.isCollapsed(sectionId) ? (
                                 <div className="searchbox-results-section-body">

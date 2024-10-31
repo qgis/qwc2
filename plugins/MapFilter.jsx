@@ -425,7 +425,7 @@ class MapFilter extends React.Component {
         return Object.values(predefinedFilters).map(config => (
             <div className="map-filter-entry" key={config.id}>
                 <div className="map-filter-entry-titlebar">
-                    <span className="map-filter-entry-title">{config.title || LocaleUtils.tr(config.titlemsgid)}</span>
+                    <span className="map-filter-entry-title">{config.title ?? LocaleUtils.tr(config.titlemsgid)}</span>
                     <ToggleSwitch
                         active={this.state.filters[config.id]?.active}
                         onChange={(active) => this.toggleFilter(config.id, active)} />
@@ -435,7 +435,7 @@ class MapFilter extends React.Component {
                         <tbody>
                             {config.fields.map(field => (
                                 <tr key={field.id}>
-                                    <td>{field.title || LocaleUtils.tr(field.titlemsgid)}: </td>
+                                    <td>{field.title ?? LocaleUtils.tr(field.titlemsgid)}: </td>
                                     <td>
                                         {
                                             field.inputConfig.type === 'select' ? (

@@ -197,7 +197,7 @@ class Search extends React.Component {
             const providers = this.activeProviders(this.props);
             if (!isEmpty(providers)) {
                 placeholder +=  ": " + Object.values(providers).map(prov => {
-                    return prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label;
+                    return prov.label ?? LocaleUtils.tr(prov.labelmsgid);
                 }).join(", ");
             }
         } else {
@@ -240,7 +240,7 @@ class Search extends React.Component {
                             return (
                                 <li className={itemClass} key={key} onClick={() => this.props.changeSearch("", [key])} title="">
                                     {
-                                        prov?.params?.title || (prov.labelmsgid ? LocaleUtils.tr(prov.labelmsgid) : prov.label)
+                                        prov?.params?.title || (prov.label ?? LocaleUtils.tr(prov.labelmsgid))
                                     }
                                 </li>
                             );
@@ -368,7 +368,7 @@ class Search extends React.Component {
         setTimeout(() => {this.preventBlur = false; return false;}, 100);
     };
     renderCategory = (category) => {
-        const title = category.titlemsgid ? LocaleUtils.tr(category.titlemsgid) : category.title;
+        const title = category.title ?? LocaleUtils.tr(category.titlemsgid);
         return (
             <li key={category.id} onMouseDown={MiscUtils.killEvent}>
                 <span className="search-results-category-title">{title}</span>
