@@ -53,9 +53,9 @@ export default class FixedTimeline extends React.Component {
     }
     render() {
         const navButtons = [
-            {key: "home", tooltip: LocaleUtils.trmsg("timemanager.home"), icon: "home"},
-            {key: "zoomout", tooltip: LocaleUtils.trmsg("timemanager.zoomout"), icon: "zoomout"},
-            {key: "zoomin", tooltip: LocaleUtils.trmsg("timemanager.zoomin"), icon: "zoomin"}
+            {key: "home", tooltip: LocaleUtils.tr("timemanager.home"), icon: "home"},
+            {key: "zoomout", tooltip: LocaleUtils.tr("timemanager.zoomout"), icon: "zoomout"},
+            {key: "zoomin", tooltip: LocaleUtils.tr("timemanager.zoomin"), icon: "zoomin"}
         ];
         return (
             <div className="fixtimeline">

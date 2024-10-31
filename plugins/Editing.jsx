@@ -161,13 +161,13 @@ class Editing extends React.Component {
         const editPermissions = curConfig.permissions || {};
 
         const actionButtons = [];
-        actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick"), data: {action: 'Pick', geomReadOnly: false, feature: null}});
+        actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("editing.pick"), data: {action: 'Pick', geomReadOnly: false, feature: null}});
         if ( editPermissions.creatable !== false) {
             // Draw button will appear by default if no permissions are defined in theme editConfig or when creatable permission is set
-            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.trmsg("editing.draw"), data: {action: 'Draw', geomReadOnly: false}});
+            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.tr("editing.draw"), data: {action: 'Draw', geomReadOnly: false}});
         }
         if (ConfigUtils.havePlugin("AttributeTable")) {
-            actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.trmsg("editing.attrtable"), data: {action: 'AttrTable'}});
+            actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.tr("editing.attrtable"), data: {action: 'AttrTable'}});
         }
 
         let featureSelection = null;
@@ -186,7 +186,7 @@ class Editing extends React.Component {
         let pickBar = null;
         if (this.props.allowCloneGeometry && (this.props.editContext.action === "Draw" || this.state.drawPick) && !(this.props.editContext.feature || {}).geometry) {
             const pickButtons = [
-                {key: 'DrawPick', icon: 'pick', label: LocaleUtils.trmsg("editing.pickdrawfeature")}
+                {key: 'DrawPick', icon: 'pick', label: LocaleUtils.tr("editing.pickdrawfeature")}
             ];
             pickBar = (<ButtonBar active={this.state.drawPick ? "DrawPick" : null} buttons={pickButtons} onClick={this.toggleDrawPick} />);
         }

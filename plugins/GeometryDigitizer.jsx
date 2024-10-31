@@ -213,21 +213,21 @@ class GeometryDigitizer extends React.Component {
         const supportedGeomType = geomLinkData.geomType || ["Point", "LineString", "Polygon"];
         const drawButtons = [
             (supportedGeomType.includes("Polygon") && !supportedGeomType.includes("Point")) ?
-                {key: "Point", tooltip: LocaleUtils.trmsg("geomdigitizer.point_buffer"), icon: "point_buffer", data: {action: "Draw", geomType: "Point", text: ""}} :
-                {key: "Point", tooltip: "redlining.point", icon: "point", data: {action: "Draw", geomType: "Point", text: ""}, disabled: !supportedGeomType.includes("Point")},
+                {key: "Point", tooltip: LocaleUtils.tr("geomdigitizer.point_buffer"), icon: "point_buffer", data: {action: "Draw", geomType: "Point", text: ""}} :
+                {key: "Point", tooltip: LocaleUtils.tr("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}, disabled: !supportedGeomType.includes("Point")},
             (supportedGeomType.includes("Polygon") && !supportedGeomType.includes("LineString")) ?
-                {key: "LineString", tooltip: LocaleUtils.trmsg("geomdigitizer.line_buffer"), icon: "line_buffer", data: {action: "Draw", geomType: "LineString", text: ""}} :
-                {key: "LineString", tooltip: "redlining.line", icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}, disabled: !supportedGeomType.includes("LineString")},
-            {key: "Polygon", tooltip: "redlining.polygon", icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}, disabled: !supportedGeomType.includes("Polygon")}
+                {key: "LineString", tooltip: LocaleUtils.tr("geomdigitizer.line_buffer"), icon: "line_buffer", data: {action: "Draw", geomType: "LineString", text: ""}} :
+                {key: "LineString", tooltip: LocaleUtils.tr("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}, disabled: !supportedGeomType.includes("LineString")},
+            {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}, disabled: !supportedGeomType.includes("Polygon")}
         ];
         const editButtons = [
-            {key: "Pick", tooltip: "redlining.pick", icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Delete", tooltip: "redlining.delete", icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature},
-            {key: "Clear", tooltip: LocaleUtils.trmsg("geomdigitizer.clear"), icon: "clear", data: {action: "Clear"}}
+            {key: "Pick", tooltip: LocaleUtils.tr("redlining.pick"), icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Delete", tooltip: LocaleUtils.tr("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature},
+            {key: "Clear", tooltip: LocaleUtils.tr("geomdigitizer.clear"), icon: "clear", data: {action: "Clear"}}
         ];
         const pickButtons = [
-            {key: "SelectPoint", tooltip: LocaleUtils.trmsg("geomdigitizer.identifypick"), icon: "pick_point", data: {action: "SelectPoint", geomType: "Point"}},
-            {key: "SelectPolygon", tooltip: LocaleUtils.trmsg("geomdigitizer.identifypickregion"), icon: "pick_region", data: {action: "SelectPolygon", geomType: "Polygon"}}
+            {key: "SelectPoint", tooltip: LocaleUtils.tr("geomdigitizer.identifypick"), icon: "pick_point", data: {action: "SelectPoint", geomType: "Point"}},
+            {key: "SelectPolygon", tooltip: LocaleUtils.tr("geomdigitizer.identifypickregion"), icon: "pick_region", data: {action: "SelectPolygon", geomType: "Polygon"}}
         ];
 
         const featureLayer = this.state.bufferDistance ? "__geomdigitizerbuffer" : "__geomdigitizer";

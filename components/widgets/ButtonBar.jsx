@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
-import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import MenuButton from './MenuButton';
 
@@ -54,11 +53,11 @@ class ButtonBar extends React.Component {
                                     <div className="buttonbar-combo-entry" key={comboentry.key} onClick={() => this.props.onClick(comboentry.key, comboentry.data)} value={comboentry.key}>
                                         {comboentry.icon ? (<Icon icon={comboentry.icon} />) : null}
                                         {comboentry.label && (!this.props.mobile || !comboentry.icon || this.props.forceLabel) ? (
-                                            <span className="buttonbar-combo-entry-label">{LocaleUtils.tr(comboentry.label)}</span>
+                                            <span className="buttonbar-combo-entry-label">{comboentry.label}</span>
                                         ) : null}
                                         {comboentry.tooltip ? (
                                             <span className={"buttonbar-button-tooltip " + ("buttonbar-button-tooltip-" + this.props.tooltipPos)}>
-                                                {LocaleUtils.tr(comboentry.tooltip)}
+                                                {comboentry.tooltip}
                                             </span>
                                         ) : null}
                                     </div>
@@ -79,11 +78,11 @@ class ButtonBar extends React.Component {
                                     type={entry.type || "button"}
                                 >
                                     {entry.icon ? (<Icon icon={entry.icon} />) : null}
-                                    {entry.label && (!this.props.mobile || !entry.icon || this.props.forceLabel) ? (<span>{LocaleUtils.tr(entry.label)}</span>) : null}
+                                    {entry.label && (!this.props.mobile || !entry.icon || this.props.forceLabel) ? (<span>{entry.label}</span>) : null}
                                 </button>
                                 {entry.tooltip ? (
                                     <span className={"buttonbar-button-tooltip " + ("buttonbar-button-tooltip-" + this.props.tooltipPos)}>
-                                        {LocaleUtils.tr(entry.tooltip)}
+                                        {entry.tooltip}
                                     </span>
                                 ) : null}
                             </span>

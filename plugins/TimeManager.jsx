@@ -360,14 +360,14 @@ class TimeManager extends React.Component {
     }
     renderBody = () => {
         const timeButtons = [
-            {key: "rewind", tooltip: LocaleUtils.trmsg("timemanager.rewind"), icon: "nav-start"},
-            {key: "now", tooltip: LocaleUtils.trmsg("timemanager.now"), icon: "today"},
-            {key: "prev", tooltip: LocaleUtils.trmsg("timemanager.stepback"), icon: "nav-left"},
-            {key: "playrev", tooltip: LocaleUtils.trmsg("timemanager.playrev"), icon: "triangle-left", disabled: this.state.animationActive},
-            {key: "stop", tooltip: LocaleUtils.trmsg("timemanager.stop"), icon: "square", disabled: !this.state.animationActive},
-            {key: "play", tooltip: LocaleUtils.trmsg("timemanager.play"), icon: "triangle-right", disabled: this.state.animationActive},
-            {key: "next", tooltip: LocaleUtils.trmsg("timemanager.stepfwd"), icon: "nav-right"},
-            {key: "loop", tooltip: LocaleUtils.trmsg("timemanager.loop"), icon: "refresh", pressed: this.state.animationLoop}
+            {key: "rewind", tooltip: LocaleUtils.tr("timemanager.rewind"), icon: "nav-start"},
+            {key: "now", tooltip: LocaleUtils.tr("timemanager.now"), icon: "today"},
+            {key: "prev", tooltip: LocaleUtils.tr("timemanager.stepback"), icon: "nav-left"},
+            {key: "playrev", tooltip: LocaleUtils.tr("timemanager.playrev"), icon: "triangle-left", disabled: this.state.animationActive},
+            {key: "stop", tooltip: LocaleUtils.tr("timemanager.stop"), icon: "square", disabled: !this.state.animationActive},
+            {key: "play", tooltip: LocaleUtils.tr("timemanager.play"), icon: "triangle-right", disabled: this.state.animationActive},
+            {key: "next", tooltip: LocaleUtils.tr("timemanager.stepfwd"), icon: "nav-right"},
+            {key: "loop", tooltip: LocaleUtils.tr("timemanager.loop"), icon: "refresh", pressed: this.state.animationLoop}
         ];
         const markerConfiguration = {
             ...TimeManager.defaultProps.markerConfiguration,

@@ -493,9 +493,9 @@ class QtDesignerForm extends React.Component {
                         } else {
                             const featurebuttons = [];
                             if (feature.geometry !== null) {
-                                featurebuttons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")});
+                                featurebuttons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("editing.pick")});
                             }
-                            featurebuttons.push({key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")});
+                            featurebuttons.push({key: 'Create', icon: 'editdraw', label: LocaleUtils.tr("editing.create")});
                             return (<ButtonBar buttons={featurebuttons} forceLabel onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index, displayField)} />);
                         }
                     } else {
@@ -511,8 +511,8 @@ class QtDesignerForm extends React.Component {
                             );
                         } else {
                             const featurebuttons = [
-                                {key: 'Pick', icon: 'pick', label: LocaleUtils.trmsg("editing.pick")},
-                                {key: 'Create', icon: 'editdraw', label: LocaleUtils.trmsg("editing.create")}
+                                {key: 'Pick', icon: 'pick', label: LocaleUtils.tr("editing.pick")},
+                                {key: 'Create', icon: 'editdraw', label: LocaleUtils.tr("editing.create")}
                             ];
                             return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(action, layer, null, (v) => updateField(attrname, v), attrname)} />);
                         }

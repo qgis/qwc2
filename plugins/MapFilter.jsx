@@ -373,8 +373,8 @@ class MapFilter extends React.Component {
     };
     renderFilterEditor = () => {
         const commitButtons = [
-            {key: 'Save', icon: 'ok', label: LocaleUtils.trmsg("mapfilter.save"), extraClasses: "button-accept"},
-            {key: 'Cancel', icon: 'remove', label: LocaleUtils.trmsg("mapfilter.cancel"), extraClasses: "button-reject"}
+            {key: 'Save', icon: 'ok', label: LocaleUtils.tr("mapfilter.save"), extraClasses: "button-accept"},
+            {key: 'Cancel', icon: 'remove', label: LocaleUtils.tr("mapfilter.cancel"), extraClasses: "button-reject"}
         ];
         const sampleFilters = '["field", "=", "val"]\n' +
                               '[["field", ">", "val1"], "and", ["field", "<", "val2"]]';
@@ -546,9 +546,9 @@ class MapFilter extends React.Component {
     renderGeomFilter = () => {
         const geomFilter = this.state.geomFilter;
         const filterButtons = [
-            {key: "Polygon", tooltip: LocaleUtils.trmsg("redlining.polygon"), icon: "polygon", label: LocaleUtils.trmsg("redlining.polygon")},
-            {key: "Circle", tooltip: LocaleUtils.trmsg("redlining.circle"), icon: "circle", label: LocaleUtils.trmsg("redlining.circle")},
-            {key: "Pick", tooltip: LocaleUtils.trmsg("redlining.pick"), icon: "pick", label: LocaleUtils.trmsg("redlining.pick")}
+            {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", label: LocaleUtils.tr("redlining.polygon")},
+            {key: "Circle", tooltip: LocaleUtils.tr("redlining.circle"), icon: "circle", label: LocaleUtils.tr("redlining.circle")},
+            {key: "Pick", tooltip: LocaleUtils.tr("redlining.pick"), icon: "pick", label: LocaleUtils.tr("redlining.pick")}
         ];
         const active = geomFilter.picking ? "Pick" : geomFilter.geomType || "";
         return (

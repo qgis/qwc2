@@ -33,7 +33,7 @@ class AttributeForm extends React.Component {
     static propTypes = {
         childPickFilter: PropTypes.func,
         clearEditContext: PropTypes.func,
-        deleteMsgId: PropTypes.string,
+        deleteLabel: PropTypes.string,
         editConfig: PropTypes.object,
         editContext: PropTypes.object,
         hideDelete: PropTypes.bool,
@@ -51,7 +51,6 @@ class AttributeForm extends React.Component {
         touchFriendly: PropTypes.bool
     };
     static defaultProps = {
-        deleteMsgId: LocaleUtils.trmsg("editing.delete"),
         touchFriendly: true
     };
     state = {
@@ -97,8 +96,8 @@ class AttributeForm extends React.Component {
         let commitBar = null;
         if (this.props.editContext.changed) {
             const commitButtons = [
-                {key: 'Commit', icon: this.state.formValid ? 'ok' : 'warning', label: this.state.formValid ? LocaleUtils.trmsg("editing.commit") : LocaleUtils.trmsg("editing.invalidform"), extraClasses: this.state.formValid ? "button-accept" : "button-warning", type: "submit", disabled: !this.state.formValid || captchaPending},
-                {key: 'Discard', icon: 'remove', label: LocaleUtils.trmsg("editing.discard"), extraClasses: "button-reject"}
+                {key: 'Commit', icon: this.state.formValid ? 'ok' : 'warning', label: this.state.formValid ? LocaleUtils.tr("editing.commit") : LocaleUtils.tr("editing.invalidform"), extraClasses: this.state.formValid ? "button-accept" : "button-warning", type: "submit", disabled: !this.state.formValid || captchaPending},
+                {key: 'Discard', icon: 'remove', label: LocaleUtils.tr("editing.discard"), extraClasses: "button-reject"}
             ];
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
         }
@@ -112,13 +111,13 @@ class AttributeForm extends React.Component {
             // Delete button bar will appear by default if no permissions are defined in editConfig or when deletable permission is set
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
-                    {key: 'Delete', icon: 'trash', label: this.props.deleteMsgId}
+                    {key: 'Delete', icon: 'trash', label: this.props.deleteLabel ?? LocaleUtils.tr("editing.delete")}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteClicked} />);
             } else {
                 const deleteButtons = [
-                    {key: 'Yes', icon: 'ok', label: LocaleUtils.trmsg("editing.reallydelete"), extraClasses: "button-accept", disabled: captchaPending},
-                    {key: 'No', icon: 'remove', label: LocaleUtils.trmsg("editing.canceldelete"), extraClasses: "button-reject"}
+                    {key: 'Yes', icon: 'ok', label: LocaleUtils.tr("editing.reallydelete"), extraClasses: "button-accept", disabled: captchaPending},
+                    {key: 'No', icon: 'remove', label: LocaleUtils.tr("editing.canceldelete"), extraClasses: "button-reject"}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteFeature} />);
             }

@@ -240,11 +240,11 @@ class Routing extends React.Component {
             Reachability: this.renderIsochroneWidget
         };
         const buttons = [
-            {key: "auto", icon: "routing-car", tooltip: LocaleUtils.trmsg("routing.mode_auto")},
-            {key: "heavyvehicle", icon: "routing-truck", tooltip: LocaleUtils.trmsg("routing.mode_heavyvehicle")},
-            {key: "transit", icon: "routing-train", tooltip: LocaleUtils.trmsg("routing.mode_transit")},
-            {key: "bicycle", icon: "routing-bicycle", tooltip: LocaleUtils.trmsg("routing.mode_bicycle")},
-            {key: "pedestrian", icon: "routing-walking", tooltip: LocaleUtils.trmsg("routing.mode_walking")}
+            {key: "auto", icon: "routing-car", tooltip: LocaleUtils.tr("routing.mode_auto")},
+            {key: "heavyvehicle", icon: "routing-truck", tooltip: LocaleUtils.tr("routing.mode_heavyvehicle")},
+            {key: "transit", icon: "routing-train", tooltip: LocaleUtils.tr("routing.mode_transit")},
+            {key: "bicycle", icon: "routing-bicycle", tooltip: LocaleUtils.tr("routing.mode_bicycle")},
+            {key: "pedestrian", icon: "routing-walking", tooltip: LocaleUtils.tr("routing.mode_walking")}
         ];
         const enabledButtons = this.props.enabledModes.map(entry => buttons.find(button => button.key === entry));
         return (
