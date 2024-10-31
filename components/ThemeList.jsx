@@ -105,13 +105,13 @@ class ThemeList extends React.Component {
                     if (filter) {
                         let match = null;
                         if ((match = removeDiacritics(item.title).match(filter))) {
-                            matches.push([LocaleUtils.trmsg("themeswitcher.match.title"), this.extractSubstr(match, item.title), item.title]);
+                            matches.push([LocaleUtils.tr("themeswitcher.match.title"), this.extractSubstr(match, item.title), item.title]);
                         }
                         if ((match = removeDiacritics(item.keywords || "").match(filter))) {
-                            matches.push([LocaleUtils.trmsg("themeswitcher.match.keywords"), this.extractSubstr(match, item.keywords), item.keywords]);
+                            matches.push([LocaleUtils.tr("themeswitcher.match.keywords"), this.extractSubstr(match, item.keywords), item.keywords]);
                         }
                         if ((match = removeDiacritics(item.abstract || "").match(filter))) {
-                            matches.push([LocaleUtils.trmsg("themeswitcher.match.abstract"), this.extractSubstr(match, item.abstract), item.abstract]);
+                            matches.push([LocaleUtils.tr("themeswitcher.match.abstract"), this.extractSubstr(match, item.abstract), item.abstract]);
                         }
                         if (isEmpty(matches)) {
                             return null;
@@ -165,7 +165,7 @@ class ThemeList extends React.Component {
                             {isEmpty(matches) ? null : (
                                 <div className="theme-item-filterinfo-overlay">
                                     {matches.map(match => (
-                                        <div key={match[0]} title={match[2]}><i>{LocaleUtils.tr(match[0])}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
+                                        <div key={match[0]} title={match[2]}><i>{match[0]}:</i><br />{match[1][0]}<b>{match[1][1]}</b>{match[1][2]}</div>
                                     ))}
                                 </div>
                             )}

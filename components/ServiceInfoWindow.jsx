@@ -36,7 +36,7 @@ class ServiceInfoWindow extends React.Component {
         if (content) {
             return (
                 <tr>
-                    <td>{LocaleUtils.tr(title)}:</td>
+                    <td>{title}:</td>
                     {html ? (
                         <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(content)}} />
                     ) : (<td>{content}</td>)}
@@ -53,20 +53,20 @@ class ServiceInfoWindow extends React.Component {
             <ResizeableWindow icon="info-sign" initialHeight={this.props.layerInfoGeometry.initialHeight} initialWidth={this.props.layerInfoGeometry.initialWidth}
                 initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY}
                 initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
-                title={LocaleUtils.trmsg("serviceinfo.title")}>
+                title={LocaleUtils.tr("serviceinfo.title")}>
                 <div className="service-info-window-body" role="body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>
                     <div className="service-info-window-frame">
                         <table className="service-info-window-table">
                             <tbody>
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.abstract"), this.props.service.abstract, true)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.keywords"), this.props.service.keywords)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.onlineResource"), this.renderLink(this.props.service.onlineResource, this.props.service.onlineResource))}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPerson"), this.props.service.contact?.person)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactOrganization"), this.props.service.contact?.organization)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPosition"), this.props.service.contact?.position)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactPhone"), this.props.service.contact?.phone)}
-                                {this.renderRow(LocaleUtils.trmsg("serviceinfo.contactEmail"), this.props.service.contact?.email)}
+                                {this.renderRow(LocaleUtils.tr("serviceinfo.abstract"), this.props.service.abstract, true)}
+                                {this.renderRow(LocaleUtils.tr("serviceinfo.keywords"), this.props.service.keywords)}
+                                {this.renderRow(LocaleUtils.tr("serviceinfo.onlineResource"), this.renderLink(this.props.service.onlineResource, this.props.service.onlineResource))}
+                                {this.renderRow(LocaleUtils.tr("serviceinfo.contactPerson"), this.props.service.contact?.person)}
+                                {this.renderRow(LocaleUtils.tr("serviceinfo.contactOrganization"), this.props.service.contact?.organization)}
+                                {this.renderRow(LocaleUtils.tr("serviceinfo.contactPosition"), this.props.service.contact?.position)}
+                                {this.renderRow(LocaleUtils.tr("serviceinfo.contactPhone"), this.props.service.contact?.phone)}
+                                {this.renderRow(LocaleUtils.tr("serviceinfo.contactEmail"), this.props.service.contact?.email)}
                             </tbody>
                         </table>
                     </div>

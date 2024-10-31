@@ -43,7 +43,7 @@ class LayerInfoWindow extends React.Component {
         if (content) {
             return (
                 <tr>
-                    <td>{LocaleUtils.tr(title)}:</td>
+                    <td>{title}:</td>
                     {html ? (
                         <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(content)}} />
                     ) : (<td>{content}</td>)}
@@ -53,7 +53,7 @@ class LayerInfoWindow extends React.Component {
         return null;
     };
     renderMetadata = (metadata) => {
-        return metadata.map(entry => this.renderRow(entry.label, entry.content, true));
+        return metadata.map(entry => this.renderRow(LocaleUtils.tr(entry.label), entry.content, true));
     };
     render() {
         if (!this.props.layer || !this.props.sublayer) {
@@ -77,14 +77,14 @@ class LayerInfoWindow extends React.Component {
                     <div className="layer-info-window-frame">
                         <table className="layer-info-window-table">
                             <tbody>
-                                {this.renderRow(LocaleUtils.trmsg("layerinfo.abstract"), this.props.sublayer.abstract, true)}
-                                {this.props.sublayer.attribution ? this.renderRow(LocaleUtils.trmsg("layerinfo.attribution"), this.renderLink(this.props.sublayer.attribution.Title, this.props.sublayer.attribution.OnlineResource)) : null}
-                                {this.renderRow(LocaleUtils.trmsg("layerinfo.keywords"), this.props.sublayer.keywords)}
-                                {this.renderRow(LocaleUtils.trmsg("layerinfo.dataUrl"), this.renderLink(this.props.sublayer.dataUrl, this.props.sublayer.dataUrl))}
-                                {this.renderRow(LocaleUtils.trmsg("layerinfo.metadataUrl"), this.renderLink(this.props.sublayer.metadataUrl, this.props.sublayer.metadataUrl))}
-                                {this.props.sublayer.minScale !== undefined ? this.renderRow(LocaleUtils.trmsg("layerinfo.maxscale"), this.renderScale(this.props.sublayer.minScale)) : null}
-                                {this.props.sublayer.maxScale !== undefined ? this.renderRow(LocaleUtils.trmsg("layerinfo.minscale"), this.renderScale(this.props.sublayer.maxScale)) : null}
-                                {this.renderRow(LocaleUtils.trmsg("layerinfo.legend"), legend)}
+                                {this.renderRow(LocaleUtils.tr("layerinfo.abstract"), this.props.sublayer.abstract, true)}
+                                {this.props.sublayer.attribution ? this.renderRow(LocaleUtils.tr("layerinfo.attribution"), this.renderLink(this.props.sublayer.attribution.Title, this.props.sublayer.attribution.OnlineResource)) : null}
+                                {this.renderRow(LocaleUtils.tr("layerinfo.keywords"), this.props.sublayer.keywords)}
+                                {this.renderRow(LocaleUtils.tr("layerinfo.dataUrl"), this.renderLink(this.props.sublayer.dataUrl, this.props.sublayer.dataUrl))}
+                                {this.renderRow(LocaleUtils.tr("layerinfo.metadataUrl"), this.renderLink(this.props.sublayer.metadataUrl, this.props.sublayer.metadataUrl))}
+                                {this.props.sublayer.minScale !== undefined ? this.renderRow(LocaleUtils.tr("layerinfo.maxscale"), this.renderScale(this.props.sublayer.minScale)) : null}
+                                {this.props.sublayer.maxScale !== undefined ? this.renderRow(LocaleUtils.tr("layerinfo.minscale"), this.renderScale(this.props.sublayer.maxScale)) : null}
+                                {this.renderRow(LocaleUtils.tr("layerinfo.legend"), legend)}
                                 {this.props.sublayer.metadata !== undefined ? this.renderMetadata(this.props.sublayer.metadata) : null}
                             </tbody>
                         </table>
