@@ -69,7 +69,7 @@ class Bookmark extends React.Component {
         return (
             <SideBar icon="bookmark" id="Bookmark"
                 side={this.props.side}
-                title="appmenu.items.Bookmark" width="20em">
+                title={LocaleUtils.tr("appmenu.items.Bookmark")} width="20em">
                 {!username ? (
                     <div className="bookmark-body" role="body">{LocaleUtils.tr("bookmark.notloggedin")}</div>
                 ) : (

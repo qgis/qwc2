@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {closeWindow, closeAllWindows, NotificationType} from '../actions/windows';
+import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import ResizeableWindow from './ResizeableWindow';
 
@@ -67,7 +68,7 @@ class WindowManager extends React.Component {
                 initiallyDocked={docked} key={key}
                 onClose={() => this.closeWindow(key)}
                 splitScreenWhenDocked={splitScreenWhenDocked}
-                title={data.options.title || "windows." + key}>
+                title={LocaleUtils.tr(data.options.title || "windows." + key)}>
                 <iframe className="windows-iframe-dialog-body" name={key} role="body" src={data.url} />
             </ResizeableWindow>
         );

@@ -163,7 +163,7 @@ class GeometryDigitizer extends React.Component {
                 initialWidth={this.state.outputWindowSize.w > 0 ? this.state.outputWindowSize.w : 320}
                 initialX={0} initialY={0}
                 key="OutputWindow" onClose={() => this.setState({outputWindowVisible: false, outputLoaded: false})}
-                titlelabel={this.state.outputWindowTitle} visible={this.state.outputWindowVisible}
+                title={this.state.outputWindowTitle} visible={this.state.outputWindowVisible}
             >
                 <div className="geomdigitizer-output-window-body" role="body">
                     {!this.state.outputLoaded ? (

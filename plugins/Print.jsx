@@ -487,14 +487,14 @@ class Print extends React.Component {
     renderPrintOutputWindow = () => {
         const extraControls = [{
             icon: 'save',
-            msgid: LocaleUtils.trmsg('print.save'),
+            title: LocaleUtils.tr('print.save'),
             callback: this.savePrintOutput
         }];
         return (
             <ResizeableWindow extraControls={extraControls} icon="print" initialHeight={0.75 * window.innerHeight}
                 initialWidth={0.5 * window.innerWidth} key="PrintOutputWindow"
                 onClose={() => this.setState({printOutputVisible: false, outputLoaded: false, pdfData: null, pdfDataUrl: null})}
-                title={LocaleUtils.trmsg("print.output")} visible={this.state.printOutputVisible}
+                title={LocaleUtils.tr("print.output")} visible={this.state.printOutputVisible}
             >
                 <div className="print-output-window-body" role="body">
                     {!this.state.outputLoaded ? (

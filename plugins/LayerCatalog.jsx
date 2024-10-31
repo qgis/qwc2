@@ -116,7 +116,7 @@ class LayerCatalog extends React.Component {
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
-                onClose={this.onClose} title={LocaleUtils.trmsg("layercatalog.windowtitle")}
+                onClose={this.onClose} title={LocaleUtils.tr("layercatalog.windowtitle")}
             >
                 <div className="layer-catalog" role="body">
                     <LayerCatalogWidget addLayer={this.props.addLayer} catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} />

@@ -38,7 +38,7 @@ class ResizeableWindow extends React.Component {
             active: PropTypes.bool,
             icon: PropTypes.string.isRequired,
             callback: PropTypes.func.isRequired,
-            msgid: PropTypes.string
+            title: PropTypes.string
         })),
         icon: PropTypes.string,
         initialHeight: PropTypes.number,
@@ -65,7 +65,6 @@ class ResizeableWindow extends React.Component {
         splitScreenWhenDocked: PropTypes.bool,
         splitTopAndBottomBar: PropTypes.bool,
         title: PropTypes.string,
-        titlelabel: PropTypes.string,
         topbarHeight: PropTypes.number,
         unregisterWindow: PropTypes.func,
         usePortal: PropTypes.bool,
@@ -102,8 +101,8 @@ class ResizeableWindow extends React.Component {
         const canvasHeight = window.innerHeight - this.props.bottombarHeight - this.props.topbarHeight;
         const width = Math.min(props.initialWidth, window.innerWidth);
         const height = Math.min(props.initialHeight, canvasHeight);
-        if (WINDOW_GEOMETRIES[props.title || props.titlelabel]) {
-            this.state.geometry = WINDOW_GEOMETRIES[props.title || props.titlelabel];
+        if (WINDOW_GEOMETRIES[props.title]) {
+            this.state.geometry = WINDOW_GEOMETRIES[props.title];
         } else {
             this.state.geometry = {
                 x: props.initialX !== null ? this.computeInitialX(props.initialX) : Math.max(0, Math.round(0.5 * (window.innerWidth - width))),
@@ -146,7 +145,7 @@ class ResizeableWindow extends React.Component {
             this.rnd.updatePosition(this.state.geometry);
         }
         if (this.state.geometry !== prevState.geometry) {
-            WINDOW_GEOMETRIES[this.props.title || this.props.titlelabel] = this.state.geometry;
+            WINDOW_GEOMETRIES[this.props.title] = this.state.geometry;
         }
         if (this.props.splitScreenWhenDocked && (
             this.props.visible !== prevProps.visible ||
@@ -219,7 +218,7 @@ class ResizeableWindow extends React.Component {
             <div className="resizeable-window-titlebar" onDoubleClick={this.state.externalWindow ? null : this.toggleMaximize}>
                 {icon}
                 <span className="resizeable-window-titlebar-title">
-                    {this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "")}
+                    {this.props.title}
                 </span>
                 {(this.props.extraControls || []).map(entry => {
                     const extraIconClasses = classnames({
@@ -230,7 +229,7 @@ class ResizeableWindow extends React.Component {
                     return (
                         <Icon
                             className={extraIconClasses} icon={entry.icon} key={entry.icon}
-                            onClick={entry.callback} title={LocaleUtils.tr(entry.msgid)} />
+                            onClick={entry.callback} title={entry.title} />
                     );
                 })}
                 {!maximized && dockable ? (
@@ -419,7 +418,7 @@ class ResizeableWindow extends React.Component {
         }));
     };
     moveToExternalWindow = () => {
-        const title = this.props.title ? LocaleUtils.tr(this.props.title) : (this.props.titlelabel || "");
+        const title = this.props.title;
         const windowOptions = [
             "popup=true",
             "toolbar=no",

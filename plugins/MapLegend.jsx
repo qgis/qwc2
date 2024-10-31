@@ -101,9 +101,9 @@ class MapLegend extends React.Component {
         }
         const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
         const extraControls = [
-            {icon: "eye", callback: () => this.setState((state) => ({onlyVisibleLegend: !state.onlyVisibleLegend})), active: this.state.onlyVisibleLegend, msgid: LocaleUtils.trmsg("maplegend.onlyvisible")},
-            {icon: "box", callback: () => this.setState((state) => ({bboxDependentLegend: !state.bboxDependentLegend})), active: this.state.bboxDependentLegend, msgid: LocaleUtils.trmsg("maplegend.bboxdependent")},
-            {icon: "scale", callback: () => this.setState((state) => ({scaleDependentLegend: !state.scaleDependentLegend})), active: this.state.scaleDependentLegend, msgid: LocaleUtils.trmsg("maplegend.scaledependent")}
+            {icon: "eye", callback: () => this.setState((state) => ({onlyVisibleLegend: !state.onlyVisibleLegend})), active: this.state.onlyVisibleLegend, title: LocaleUtils.tr("maplegend.onlyvisible")},
+            {icon: "box", callback: () => this.setState((state) => ({bboxDependentLegend: !state.bboxDependentLegend})), active: this.state.bboxDependentLegend, title: LocaleUtils.tr("maplegend.bboxdependent")},
+            {icon: "scale", callback: () => this.setState((state) => ({scaleDependentLegend: !state.scaleDependentLegend})), active: this.state.scaleDependentLegend, title: LocaleUtils.tr("maplegend.scaledependent")}
         ];
 
         return (
@@ -111,7 +111,7 @@ class MapLegend extends React.Component {
                 icon="list-alt" initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked} maximizeable={false}
-                onClose={this.props.lockedWindow ? null : this.onClose} title={LocaleUtils.trmsg("maplegend.windowtitle")}
+                onClose={this.props.lockedWindow ? null : this.onClose} title={LocaleUtils.tr("maplegend.windowtitle")}
             >
                 <div className="map-legend" role="body">
                     {this.props.layers.map(layer => {

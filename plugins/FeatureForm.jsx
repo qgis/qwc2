@@ -218,7 +218,7 @@ class FeatureForm extends React.Component {
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="FeatureForm"
-                    onClose={this.onWindowClose} title={LocaleUtils.trmsg("featureform.title")}
+                    onClose={this.onWindowClose} title={LocaleUtils.tr("featureform.title")}
                 >
                     {body}
                 </ResizeableWindow>

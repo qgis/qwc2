@@ -115,7 +115,7 @@ class Map3D extends React.Component {
         const extraControls = [{
             icon: "sync",
             callback: () => this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation),
-            msgid: LocaleUtils.trmsg("map3d.syncview")
+            title: LocaleUtils.tr("map3d.syncview")
         }];
         return [(
             <ResizeableWindow
@@ -130,7 +130,7 @@ class Map3D extends React.Component {
                 onExternalWindowResized={this.redrawScene}
                 splitScreenWhenDocked
                 splitTopAndBottomBar
-                title={LocaleUtils.trmsg("map3d.title")}
+                title={LocaleUtils.tr("map3d.title")}
             >
                 <div className="map3d-body" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
                     <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={baseLayers} />

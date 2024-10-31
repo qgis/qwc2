@@ -571,7 +571,8 @@ class LayerTree extends React.Component {
                     icon="layers"
                     id="LayerTree" onHide={this.hideLegendTooltip}
                     side={this.props.side}
-                    title="appmenu.items.LayerTree" width={this.state.sidebarwidth || this.props.width}>
+                    title={LocaleUtils.tr("appmenu.items.LayerTree")}
+                    width={this.state.sidebarwidth || this.props.width}>
                     {() => ({
                         body: this.renderBody()
                     })}

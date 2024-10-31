@@ -389,7 +389,7 @@ class Identify extends React.Component {
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="IdentifyWindow"
-                    onClose={this.onWindowClose} title={LocaleUtils.trmsg("identify.title")}
+                    onClose={this.onWindowClose} title={LocaleUtils.tr("identify.title")}
                 >
                     {body}
                 </ResizeableWindow>

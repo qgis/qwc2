@@ -317,9 +317,9 @@ class HeightProfile extends React.Component {
             return null;
         }
         const extraControls = [
-            {icon: 'circle', active: this.state.drawnodes, callback: () => this.setState(state => ({drawnodes: !state.drawnodes})), msgid: LocaleUtils.trmsg("heightprofile.drawnodes")},
-            {icon: 'export', callback: this.exportProfile, msgid: LocaleUtils.trmsg("heightprofile.export")},
-            {icon: 'print', active: this.state.printdialog, callback: () => this.setState(state => ({printdialog: !state.printdialog})), msgid: LocaleUtils.trmsg("heightprofile.print")}
+            {icon: 'circle', active: this.state.drawnodes, callback: () => this.setState(state => ({drawnodes: !state.drawnodes})), title: LocaleUtils.tr("heightprofile.drawnodes")},
+            {icon: 'export', callback: this.exportProfile, title: LocaleUtils.tr("heightprofile.export")},
+            {icon: 'print', active: this.state.printdialog, callback: () => this.setState(state => ({printdialog: !state.printdialog})), title: LocaleUtils.tr("heightprofile.print")}
         ];
         return [(
             <ResizeableWindow
