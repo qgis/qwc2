@@ -73,7 +73,7 @@ class Settings extends React.Component {
     };
     render() {
         return (
-            <SideBar icon="cog" id="Settings" onShow={this.onShow} side={this.props.side} title="appmenu.items.Settings" width="25em">
+            <SideBar icon="cog" id="Settings" onShow={this.onShow} side={this.props.side} title={LocaleUtils.tr("appmenu.items.Settings")} width="25em">
                 {() => ({
                     body: this.renderBody()
                 })}

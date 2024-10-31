@@ -287,7 +287,7 @@ class RasterExport extends React.Component {
         return (
             <SideBar extraTitlebarContent={extraTitlebarContent} icon={"rasterexport"} id="RasterExport" key="RasterExport"
                 onHide={this.onHide} onShow={this.onShow} side={this.props.side}
-                title="appmenu.items.RasterExport" width="20em">
+                title={LocaleUtils.tr("appmenu.items.RasterExport")} width="20em">
                 {() => ({
                     body: this.state.minimized ? null : this.renderBody(),
                     extra: [

@@ -517,7 +517,7 @@ class Print extends React.Component {
             (
                 <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print" key="Print"
                     onHide={this.onHide} onShow={this.onShow} side={this.props.side}
-                    title="appmenu.items.Print" width="20em">
+                    title={LocaleUtils.tr("appmenu.items.Print")} width="20em">
                     {() => ({
                         body: this.state.minimized ? null : this.renderBody(),
                         extra: [

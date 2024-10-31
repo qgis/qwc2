@@ -79,7 +79,7 @@ class ThemeSwitcher extends React.Component {
         return (
             <div>
                 <SideBar extraTitlebarContent={extraTitlebarContent} icon="themes" id="ThemeSwitcher" minWidth="16em" side={this.props.side}
-                    title="appmenu.items.ThemeSwitcher" width={this.props.width}>
+                    title={LocaleUtils.tr("appmenu.items.ThemeSwitcher")} width={this.props.width}>
                     {() => ({
                         body: (
                             <ThemeList

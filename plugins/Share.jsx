@@ -114,7 +114,7 @@ class Share extends React.Component {
     render() {
         return (
             <SideBar icon="share" id="Share" onShow={this.onShow} side={this.props.side}
-                title="appmenu.items.Share" width="20em">
+                title={LocaleUtils.tr("appmenu.items.Share")} width="20em">
                 {() => ({
                     body: this.renderBody()
                 })}

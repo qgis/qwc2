@@ -313,7 +313,7 @@ class MapFilter extends React.Component {
             button,
             (
                 <SideBar icon="filter" id="MapFilter" key="MapFilterSidebar" onHide={this.onSidebarHide} side={this.props.side}
-                    title="appmenu.items.MapFilter" width="20em">
+                    title={LocaleUtils.tr("appmenu.items.MapFilter")} width="20em">
                     {() => ({
                         body: this.renderBody()
                     })}

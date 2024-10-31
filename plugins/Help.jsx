@@ -13,6 +13,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import SideBar from '../components/SideBar';
+import LocaleUtils from '../utils/LocaleUtils';
 
 
 /**
@@ -44,7 +45,7 @@ class Help extends React.Component {
     }
     render() {
         return (
-            <SideBar icon="info" id="Help" side={this.props.side} title="appmenu.items.Help" width="20em">
+            <SideBar icon="info" id="Help" side={this.props.side} title={LocaleUtils.tr("appmenu.items.Help")} width="20em">
                 {() => ({
                     body: this.renderBody()
                 })}

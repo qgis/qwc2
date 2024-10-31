@@ -88,7 +88,7 @@ class FeatureSearch extends React.Component {
     render() {
         return (
             <SideBar icon="search" id="FeatureSearch" onHide={this.onHide} side={this.props.side}
-                title={LocaleUtils.trmsg("featuresearch.title")} width="20em">
+                title={LocaleUtils.tr("featuresearch.title")} width="20em">
                 {() => ({
                     body: this.renderBody()
                 })}

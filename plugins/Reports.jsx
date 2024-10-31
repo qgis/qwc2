@@ -118,7 +118,7 @@ class Reports extends React.Component {
     render() {
         return [(
             <SideBar icon="report" id="Reports" key="Reports" onHide={this.onHide} onShow={this.onShow} side={this.props.side}
-                title="appmenu.items.Reports" width="20em">
+                title={LocaleUtils.tr("appmenu.items.Reports")} width="20em">
                 {() => ({
                     body: this.renderBody()
                 })}

@@ -19,7 +19,7 @@ import {Swipeable} from './Swipeable';
 
 import './style/SideBar.css';
 
-class SideBar extends React.Component {
+export class SideBar extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
@@ -119,7 +119,7 @@ class SideBar extends React.Component {
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}
                             <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
-                            <span className="sidebar-titlebar-title">{LocaleUtils.tr(this.props.title)}</span>
+                            <span className="sidebar-titlebar-title">{this.props.title}</span>
                             {this.state.render ? this.props.extraTitlebarContent : null}
                             <span className="sidebar-titlebar-spacer" />
                             <Icon className="sidebar-titlebar-closeicon" icon={closeIcon} onClick={this.closeClicked}/>

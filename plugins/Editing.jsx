@@ -227,7 +227,7 @@ class Editing extends React.Component {
         return [(
             <SideBar extraTitlebarContent={extraTitlebarContent} heightResizeable={attribFormVisible}
                 icon={"editing"} id="Editing" key="EditingSidebar" onHide={this.onHide} onShow={this.onShow}
-                side={this.props.side} title="appmenu.items.Editing" width={this.props.width}
+                side={this.props.side} title={LocaleUtils.tr("appmenu.items.Editing")} width={this.props.width}
             >
                 {() => ({
                     body: this.state.minimized ? null : this.renderBody()

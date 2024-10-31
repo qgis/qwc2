@@ -300,7 +300,7 @@ class MapExport extends React.Component {
         return (
             <SideBar extraTitlebarContent={extraTitlebarContent} icon={"rasterexport"} id="MapExport" key="MapExport"
                 onHide={this.onHide} onShow={this.onShow} side={this.props.side}
-                title="appmenu.items.MapExport" width="20em">
+                title={LocaleUtils.tr("appmenu.items.MapExport")} width="20em">
                 {() => ({
                     body: this.state.minimized ? null : this.renderBody(),
                     extra: [
