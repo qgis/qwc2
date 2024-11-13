@@ -13,7 +13,6 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
-import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import {Swipeable} from './Swipeable';
 
