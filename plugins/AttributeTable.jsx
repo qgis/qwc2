@@ -747,10 +747,17 @@ class AttributeTable extends React.Component {
 
         const fields = currentEditConfig.fields.filter(field => field.id !== 'id');
         let data = "";
-        data += "id\t" + fields.map(field => field.id).join("\t") + "\n";
+        data += "id," + fields.map(field => `"${field.id.replaceAll('"', '""')}"`).join(",") + "\n";
 
         this.state.features.forEach(feature => {
-            data += feature.id + "\t" + fields.map(field => feature.properties[field.id]).join("\t") + "\n";
+            data += feature.id + "," + fields.map(field => {
+                const value = feature.properties[field.id];
+                if (value === null || value === undefined) {
+                    return "null";
+                } else {
+                    return `"${String(feature.properties[field.id]).replaceAll('"', '""')}"`;
+                }
+            }).join(",") + "\n";
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), this.state.loadedLayer + ".csv");
     };
