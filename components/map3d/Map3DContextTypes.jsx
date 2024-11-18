@@ -9,6 +9,11 @@
 
 import React from 'react';
 
+export const TaskContext = React.createContext({
+    currentTask: {id: null, mode: null},
+    setCurrentTask: () => {}
+});
+
 export const LayersContext = React.createContext({
     layers: {},
     updateLayers: () => {}

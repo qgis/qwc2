@@ -81,6 +81,10 @@ class Map3D extends React.Component {
             drapedLayers: [],
             modelLayers: []
         },
+        taskContext: {
+            currentTask: {id: null, mode: null},
+            setCurrentTask: null
+        },
         cursorPosition: null
     };
     constructor(props) {
@@ -90,6 +94,7 @@ class Map3D extends React.Component {
         this.instance = null;
         this.map = null;
         this.animationInterrupted = false;
+        this.state.taskContext.setCurrentTask = this.setCurrentTask;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -580,6 +585,12 @@ class Map3D extends React.Component {
         this.instance.view.camera.aspect = width / height;
         this.instance.view.camera.updateProjectionMatrix();
         this.instance.renderer.render(this.instance.scene, this.instance.view.camera);
+    };
+    setCurrentTask = (task, mode) => {
+        this.setState(state => ({taskContext: {
+            ...state.taskContext,
+            currentTask: {id: task, mode: mode}
+        }}));
     };
 }
 
