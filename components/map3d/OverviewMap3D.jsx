@@ -17,7 +17,7 @@ import viewconeIcon from './img/viewcone.svg';
 /**
  * Overview map support for the map component.
 */
-export default class OverviewMap extends React.Component {
+export default class OverviewMap3D extends React.Component {
     static propTypes = {
         azimuth: PropTypes.number,
         baseLayer: PropTypes.object,

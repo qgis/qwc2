@@ -24,9 +24,9 @@ import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
-import BottomBar from '../components/map3d/BottomBar';
-import {LayersContext} from '../components/map3d/Map3DContextTypes';
-import OverviewMap from '../components/map3d/OverviewMap';
+import BottomBar3D from '../components/map3d/BottomBar3D';
+import {LayersContext, TaskContext} from '../components/map3d/Map3DContextTypes';
+import OverviewMap3D from '../components/map3d/OverviewMap3D';
 import {BackgroundSwitcher} from '../plugins/BackgroundSwitcher';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -225,7 +225,7 @@ class Map3D extends React.Component {
             >
                 <div className="map3d-body" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
                     <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.layersContext.baseLayers} />
-                    <BottomBar cursorPosition={this.state.cursorPosition} instance={this.instance} projection={this.props.projection} />
+                    <BottomBar3D cursorPosition={this.state.cursorPosition} instance={this.instance} projection={this.props.projection} />
                     <div className="map3d-nav-widget map3d-nav-pan">
                         <span />
                         <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
@@ -248,7 +248,7 @@ class Map3D extends React.Component {
                         <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -1)} />
                         <span />
                     </div>
-                    <OverviewMap baseLayer={baseLayer} projection={this.props.projection} {...this.state.overviewState}  />
+                    <OverviewMap3D baseLayer={baseLayer} projection={this.props.projection} {...this.state.overviewState}  />
                 </div>
             </ResizeableWindow>
         ), (

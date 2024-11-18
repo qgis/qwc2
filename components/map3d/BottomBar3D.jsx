@@ -12,9 +12,9 @@ import PropTypes from 'prop-types';
 
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 
-import './style/BottomBar.css';
+import './style/BottomBar3D.css';
 
-export default class BottomBar extends React.Component {
+export default class BottomBar3D extends React.Component {
     static propTypes = {
         cursorPosition: PropTypes.array,
         instance: PropTypes.object,
