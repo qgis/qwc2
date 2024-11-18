@@ -43,7 +43,7 @@ div.map3d-nav-widget > span {
 }
 
 div.map3d-nav-pan {
-    top: 1em;
+    top: 4em;
 }
 
 div.map3d-nav-pan > span.icon-home {
@@ -51,7 +51,7 @@ div.map3d-nav-pan > span.icon-home {
 }
 
 div.map3d-nav-rotate {
-    top: 6em;
+    top: 9em;
 }
 
 div#map3dinspector {
