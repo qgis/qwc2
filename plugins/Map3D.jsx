@@ -25,8 +25,10 @@ import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
 import BottomBar3D from '../components/map3d/BottomBar3D';
+import LayerTree3D from '../components/map3d/LayerTree3D';
 import {LayersContext, TaskContext} from '../components/map3d/Map3DContextTypes';
 import OverviewMap3D from '../components/map3d/OverviewMap3D';
+import TopBar3D from '../components/map3d/TopBar3D';
 import {BackgroundSwitcher} from '../plugins/BackgroundSwitcher';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -79,7 +81,8 @@ class Map3D extends React.Component {
         layersContext: {
             baseLayers: [],
             drapedLayers: [],
-            modelLayers: []
+            modelLayers: [],
+            updateDrapedLayer: null
         },
         taskContext: {
             currentTask: {id: null, mode: null},
@@ -95,6 +98,7 @@ class Map3D extends React.Component {
         this.map = null;
         this.animationInterrupted = false;
         this.state.taskContext.setCurrentTask = this.setCurrentTask;
+        this.state.layersContext.updateDrapedLayer = this.updateDrapedLayer;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -203,6 +207,16 @@ class Map3D extends React.Component {
         });
         this.instance.notifyChange(this.map);
     };
+    updateDrapedLayer = (layerId, diff) => {
+        this.setState(state => ({
+            layersContext: {
+                ...state.layersContext,
+                drapedLayers: state.layersContext.drapedLayers.map(entry => {
+                    return entry.id === layerId ? {...entry, ...diff} : entry;
+                })
+            }
+        }));
+    };
     render() {
         if (!this.state.enabled) {
             return null;
@@ -230,6 +244,12 @@ class Map3D extends React.Component {
             >
                 <div className="map3d-body" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
                     <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.layersContext.baseLayers} />
+                    <TaskContext.Provider value={this.state.taskContext}>
+                        <TopBar3D />
+                        <LayersContext.Provider value={this.state.layersContext}>
+                            <LayerTree3D />
+                        </LayersContext.Provider>
+                    </TaskContext.Provider>
                     <BottomBar3D cursorPosition={this.state.cursorPosition} instance={this.instance} projection={this.props.projection} />
                     <div className="map3d-nav-widget map3d-nav-pan">
                         <span />
