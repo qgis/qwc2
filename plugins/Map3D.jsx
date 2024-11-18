@@ -25,6 +25,7 @@ import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
 import BottomBar from '../components/map3d/BottomBar';
+import {LayersContext} from '../components/map3d/Map3DContextTypes';
 import OverviewMap from '../components/map3d/OverviewMap';
 import {BackgroundSwitcher} from '../plugins/BackgroundSwitcher';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -75,6 +76,11 @@ class Map3D extends React.Component {
             center: [0, 0],
             resolution: 1
         },
+        layersContext: {
+            baseLayers: [],
+            drapedLayers: [],
+            modelLayers: []
+        },
         cursorPosition: null
     };
     constructor(props) {
@@ -97,21 +103,106 @@ class Map3D extends React.Component {
                 this.disposeInstance();
                 this.setupInstance();
             } else if (this.props.layers !== prevProps.layers) {
-                this.sync2dLayers(this.state.layers);
+                this.setState((state) => (
+                    {
+                        layersContext: {...state.layersContext, drapedLayers: this.collectDrapedLayers(state.layersContext.drapedLayers)}
+                    }
+                ));
+            }
+
+            // Update map layers
+            if (this.state.layersContext.baseLayers !== prevState.layersContext.baseLayers) {
+                this.applyBaseLayer();
+            }
+
+            if (this.state.layersContext.drapedLayers !== prevState.layersContext.drapedLayers) {
+                this.applyDrapedLayers(this.state.layersContext.drapedLayers, prevState.layersContext.drapedLayers);
             }
         }
     }
+    applyBaseLayer = () => {
+        const baseLayer = this.state.layersContext.baseLayers.find(e => e.visibility === true);
+        const baseLayers = this.map.getLayers(l => l.name === "baselayer");
+        if (baseLayers.length > 0) {
+            baseLayers.forEach(bl => this.map.removeLayer(bl, {dispose: true}));
+        }
+        if (!baseLayer) {
+            return;
+        }
+        const layerCreator = LayerRegistry[baseLayer.type];
+        if (layerCreator?.create3d) {
+            const layer3d = layerCreator.create3d({...baseLayer, name: "baselayer"}, this.props.projection);
+            this.map.addLayer(layer3d);
+            this.map.insertLayerAfter(layer3d, null);
+        }
+    };
+    setBaseLayer = (layer, visibility) => {
+        this.setState(state => ({
+            layersContext: {
+                ...state.layersContext,
+                baseLayers: state.layersContext.baseLayers.map(entry => (
+                    {...entry, visibility: entry.name === layer.name ? visibility : false}
+                ))
+            }
+        }));
+    };
+    collectDrapedLayers = (prevDrapedLayers) => {
+        const prevLayersMap = prevDrapedLayers.reduce((res, layer) => (
+            {...res, [layer.id]: layer}
+        ), {});
+
+        return this.props.layers.map(layer => {
+            if (layer.role !== LayerRole.THEME && layer.role !== LayerRole.USERLAYER) {
+                return null;
+            }
+            const layerCreator = LayerRegistry[layer.type];
+            if (!layerCreator || !layerCreator.create3d) {
+                return null;
+            }
+            const prevLayer = prevLayersMap[layer.id];
+            return {
+                ...layer,
+                visibility: prevLayer?.visibility ?? true,
+                opacity: prevLayer?.opacity ?? 255
+            };
+        }).filter(Boolean);
+    };
+    applyDrapedLayers = (layers, prevLayers) => {
+        const layersMap = layers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
+        const prevLayersMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
+
+        // Add-update new layers
+        let prevLayer = this.map.getLayers(l => l.name === "baselayer")[0] ?? null;
+        [...layers].reverse().forEach(layer => {
+            const layerCreator = LayerRegistry[layer.type];
+            let mapLayer = this.map.getLayers(l => l.name === layer.id)[0];
+            if (mapLayer) {
+                layerCreator.update3d(mapLayer.source, layer, prevLayersMap[layer.id], this.props.projection);
+            } else {
+                mapLayer = layerCreator.create3d({...layer, name: layer.id}, this.props.projection);
+                this.map.addLayer(mapLayer);
+            }
+            this.map.insertLayerAfter(mapLayer, prevLayer);
+            mapLayer.visible = layer.visibility;
+            mapLayer.opacity = layer.opacity / 255;
+            prevLayer = mapLayer;
+        });
+        // Remove old layers
+        Object.keys(prevLayers).forEach(layer => {
+            if (!(layer.id in layersMap)) {
+                const mapLayer = this.map.getLayers(l => l.name === layer.id)[0];
+                if (mapLayer) {
+                    this.map.removeLayer(mapLayer);
+                }
+            }
+        });
+        this.instance.notifyChange(this.map);
+    };
     render() {
         if (!this.state.enabled) {
             return null;
         }
-        const baseLayers = (this.props.theme.map3d?.basemaps || []).map(e => {
-            return {
-                ...this.props.themes.backgroundLayers.find(bl => bl.name === e.name),
-                visibility: e.name === this.state.baselayer
-            };
-        });
-        const baseLayer = baseLayers.find(l => l.visibility === true);
+        const baseLayer = this.state.layersContext.baseLayers.find(l => l.visibility === true);
         const extraControls = [{
             icon: "sync",
             callback: () => this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation),
@@ -133,7 +224,7 @@ class Map3D extends React.Component {
                 title={LocaleUtils.tr("map3d.title")}
             >
                 <div className="map3d-body" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
-                    <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={baseLayers} />
+                    <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.layersContext.baseLayers} />
                     <BottomBar cursorPosition={this.state.cursorPosition} instance={this.instance} projection={this.props.projection} />
                     <div className="map3d-nav-widget map3d-nav-pan">
                         <span />
@@ -241,18 +332,36 @@ class Map3D extends React.Component {
             this.map.addLayer(elevationLayer);
         }
 
-        // Setup baselayer
-        const visibleBaseLayerName = (this.props.theme.map3d?.basemaps || []).find(e => e.visibility)?.name;
-        if (visibleBaseLayerName) {
-            const visibleBaseLayer = this.props.themes.backgroundLayers.find(l => l.name === visibleBaseLayerName);
+        // Collect baselayers
+        let visibleBaseLayer = null;
+        const baseLayers = (this.props.theme.map3d?.basemaps || []).map(e => {
+            const baseLayer = {
+                ...this.props.themes.backgroundLayers.find(bl => bl.name === e.name),
+                visibility: e.visibility === true
+            };
+            if (baseLayer.visibility) {
+                visibleBaseLayer = baseLayer;
+            }
+            return baseLayer;
+        });
+        if (visibleBaseLayer) {
             this.setBaseLayer(visibleBaseLayer, true);
         }
 
-        // Sync 2d layers
-        this.sync2dLayers({});
+        // Collect draped layers
+        const drapedLayers = this.collectDrapedLayers([]);
+
+
+        this.setState(state => ({
+            layersContext: {
+                ...state.layersContext,
+                baseLayers: baseLayers,
+                drapedLayers: drapedLayers,
+                modelLayers: []
+            }
+        }));
 
         this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation);
-
 
         // this.inspector = Inspector.attach("map3dinspector", this.instance);
     };
@@ -269,70 +378,6 @@ class Map3D extends React.Component {
     };
     close = () => {
         this.setState({enabled: false, baselayer: null, cursorPosition: null});
-    };
-    setBaseLayer = (layer, visibility) => {
-        this.setState({baselayer: visibility ? layer.name : null});
-
-        const baseLayers = this.map.getLayers(l => l.name === "baselayer");
-        if (baseLayers.length > 0) {
-            baseLayers.forEach(bl => this.map.removeLayer(bl, {dispose: true}));
-        }
-        if (!visibility) {
-            return;
-        }
-        const layerCreator = LayerRegistry[layer.type];
-        if (!layerCreator || !layerCreator.create3d) {
-            return;
-        }
-        const layer3d = layerCreator.create3d({...layer, name: "baselayer"}, this.props.projection);
-        this.map.addLayer(layer3d);
-        this.map.insertLayerAfter(layer3d, null);
-    };
-    sync2dLayers = (oldLayers) => {
-        this.setState((state) => {
-            const newLayers = {...state.layers};
-            const layers = [...this.props.layers].reverse();
-            layers.forEach((layer) => {
-                if (layer.role !== LayerRole.THEME && layer.role !== LayerRole.USERLAYER) {
-                    return;
-                }
-                const layerCreator = LayerRegistry[layer.type];
-                if (!layerCreator || !layerCreator.create3d) {
-                    return;
-                }
-                if (layer.name in oldLayers) {
-                    layerCreator.update3d(oldLayers[layer.name].layer.source, layer, oldLayers[layer.name].options, this.props.projection);
-                    newLayers[layer.name] = {
-                        ...newLayers[layer.name],
-                        options: layer
-                    };
-                } else {
-                    const layer3d = layerCreator.create3d(layer, this.props.projection);
-                    this.map.addLayer(layer3d);
-                    newLayers[layer.name] = {
-                        layer: layer3d,
-                        options: layer
-                    };
-                }
-                newLayers[layer.name].layer.visible = layer.visibility;
-                newLayers[layer.name].layer.opacity = layer.opacity / 255;
-            });
-            Object.keys(oldLayers).forEach(name => {
-                if (!(name in newLayers)) {
-                    this.map.removeLayer(oldLayers[name].layer);
-                }
-            });
-            // Reorder layers
-            let prevLayer = this.map.getLayers(l => l.name === "baselayer")[0] ?? null;
-            layers.forEach(layer => {
-                if (newLayers[layer.name]) {
-                    this.map.insertLayerAfter(newLayers[layer.name].layer, prevLayer);
-                    prevLayer = newLayers[layer.name].layer;
-                }
-            });
-
-            return {layers: newLayers};
-        });
     };
     setViewToExtent = (bounds, angle = 0) => {
         const center = {
