@@ -8,6 +8,8 @@
 
 import ol from 'openlayers';
 
+import minus from '../icons/minus.svg';
+import plus from '../icons/plus.svg';
 import ConfigUtils from './ConfigUtils';
 import ResourceRegistry from './ResourceRegistry';
 import arrowhead from './img/arrowhead.svg';
@@ -17,6 +19,8 @@ import measurehead from './img/measurehead.svg';
 ResourceRegistry.addResource('arrowhead', arrowhead);
 ResourceRegistry.addResource('measurehead', measurehead);
 ResourceRegistry.addResource('marker', markerIcon);
+ResourceRegistry.addResource('minus', minus);
+ResourceRegistry.addResource('plus', plus);
 
 const DEFAULT_FEATURE_STYLE = {
     strokeColor: [0, 0, 255, 1],
@@ -60,7 +64,12 @@ const DEFAULT_INTERACTION_STYLE = {
     measurePointRadius: 6,
     sketchPointFillColor: "#0099FF",
     sketchPointStrokeColor: "white",
-    sketchPointRadius: 6
+    sketchPointRadius: 6,
+    printStrokeColor: '#3399CC',
+    printStrokeWidth: 3,
+    printVertexColor: '#FFFFFF',
+    printVertexRadius: 6,
+    printBackgroundColor: [0, 0, 0, 0.5]
 };
 
 export const END_MARKERS = {
@@ -277,6 +286,82 @@ export default {
                 radius: opts.sketchPointRadius
             })
         });
+    },
+    printInteraction: (options) => {
+        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        return new ol.style.Style({
+            geometry: opts.geometryFunction,
+            fill: new ol.style.Fill({
+                color: [0, 0, 0, 0]
+            }),
+            stroke: new ol.style.Stroke({
+                color: opts.printStrokeColor,
+                width: opts.printStrokeWidth
+            })
+        });
+    },
+    printInteractionVertex: (options) => {
+        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        return new ol.style.Style({
+            geometry: opts.geometryFunction,
+            image: new ol.style.Circle({
+                radius: opts.printVertexRadius,
+                fill: new ol.style.Fill({
+                    color: opts.fill ? opts.printStrokeColor : opts.printVertexColor
+                }),
+                stroke: new ol.style.Stroke({
+                    color: opts.printStrokeColor,
+                    width: opts.printStrokeWidth
+                })
+            })
+        });
+    },
+    printInteractionBackground: (options) => {
+        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        return new ol.style.Style({
+            geometry: opts.geometryFunction,
+            fill: new ol.style.Fill({
+                color: opts.printBackgroundColor
+            })
+        });
+    },
+    printInteractionSeries: (options) => {
+        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        return new ol.style.Style({
+            geometry: opts.geometryFunction,
+            stroke: new ol.style.Stroke({
+                color: opts.printStrokeColor,
+                width: opts.printStrokeWidth
+            })
+        });
+    },
+    printInteractionSeriesIcon: (options) => {
+        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        return [
+            new ol.style.Style({
+                geometry: opts.geometryFunction,
+                image: new ol.style.Circle({
+                    radius: 20 * opts.radius,
+                    fill: new ol.style.Fill({
+                        color: opts.printVertexColor
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: opts.printStrokeColor,
+                        width: opts.printStrokeWidth
+                    })
+                })
+            }),
+            new ol.style.Style({
+                geometry: opts.geometryFunction,
+                image: new ol.style.Icon({
+                    src: ResourceRegistry.getResource(opts.img),
+                    opacity: 0.5,
+                    rotation: opts.rotation,
+                    scale: opts.radius,
+                    rotateWithView: true
+                })
+            })
+        ];
     },
     image: (feature, options) => {
         return new ol.style.Style({

@@ -10,15 +10,17 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
+import dayjs from 'dayjs';
 import FileSaver from 'file-saver';
 import formDataEntries from 'formdata-json';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import {setIdentifyEnabled} from '../actions/identify';
 import {LayerRole} from '../actions/layers';
-import {setCurrentTask} from '../actions/task';
+import {setSnappingConfig} from '../actions/map';
 import Icon from '../components/Icon';
-import PrintFrame from '../components/PrintFrame';
+import PrintSelection from '../components/PrintSelection';
 import SideBar from '../components/SideBar';
 import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
@@ -50,6 +52,8 @@ class MapExport extends React.Component {
         dpis: PropTypes.arrayOf(PropTypes.number),
         /** Whether to include external layers in the image. Requires QGIS Server 3.x! */
         exportExternalLayers: PropTypes.bool,
+        /** Template for the name of the generated files when downloading. */
+        fileNameTemplate: PropTypes.string,
         /** Custom export configuration per format.
          *  If more than one configuration per format is provided, a selection combo will be displayed.
          *  `extraQuery` will be appended to the query string (replacing any existing parameters).
@@ -71,7 +75,8 @@ class MapExport extends React.Component {
             width: PropTypes.number,
             height: PropTypes.number
         })),
-        setCurrentTask: PropTypes.func,
+        setIdentifyEnabled: PropTypes.func,
+        setSnappingConfig: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         theme: PropTypes.object
@@ -79,6 +84,7 @@ class MapExport extends React.Component {
     static defaultProps = {
         defaultScaleFactor: 1,
         exportExternalLayers: true,
+        fileNameTemplate: '{theme}_{timestamp}',
         side: 'right',
         pageSizes: []
     };
@@ -88,50 +94,21 @@ class MapExport extends React.Component {
         this.state.dpi = (props.dpis || [])[0] || 96;
     }
     state = {
-        extent: '',
-        width: 0,
-        height: 0,
+        extents: [],
         exporting: false,
         availableFormats: [],
         selectedFormat: null,
         selectedFormatConfiguration: '',
-        scale: '',
+        scale: null,
         pageSize: null,
         dpi: 96
     };
     componentDidUpdate(prevProps, prevState) {
-        if (
-            this.props.map.center !== prevProps.map.center ||
-            this.props.map.bbox !== prevProps.map.bbox ||
-            this.state.pageSize !== prevState.pageSize ||
-            this.state.scale !== prevState.scale ||
-            this.state.dpi !== prevState.dpi
-        ) {
-            if (this.state.pageSize !== null) {
-                this.setState((state) => {
-                    const scale = this.getExportScale(state);
-                    const center = this.props.map.center;
-                    const mapCrs = this.props.map.projection;
-                    const pageSize = this.props.pageSizes[state.pageSize];
-                    const widthm = scale * pageSize.width / 1000;
-                    const heightm = scale * pageSize.height / 1000;
-                    const {width, height} = MapUtils.transformExtent(mapCrs, center, widthm, heightm);
-                    let extent = [center[0] - 0.5 * width, center[1] - 0.5 * height, center[0] + 0.5 * width, center[1] + 0.5 * height];
-                    extent = (CoordinatesUtils.getAxisOrder(mapCrs).substr(0, 2) === 'ne' && this.props.theme.version === '1.3.0') ?
-                        extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
-                        extent.join(',');
-                    return {
-                        width: Math.round(pageSize.width / 1000 * 39.3701 * state.dpi),
-                        height: Math.round(pageSize.height / 1000 * 39.3701 * state.dpi),
-                        extent: extent
-                    };
-                });
-            } else if (prevState.pageSize !== null) {
-                this.setState({width: '', height: '', extent: ''});
-            }
+        if (this.state.pageSize === null && prevState.pageSize !== null) {
+            this.setState({extents: []});
         }
     }
-    formatChanged = (ev) => {
+    changeFormat = (ev) => {
         const selectedFormat = ev.target.value;
         const selectedFormatConfiguration = ((this.props.formatConfiguration?.[selectedFormat] || [])[0] || {}).name;
         this.setState({
@@ -139,8 +116,11 @@ class MapExport extends React.Component {
             selectedFormatConfiguration: selectedFormatConfiguration
         });
     };
-    dpiChanged = (ev) => {
-        this.setState({dpi: parseInt(ev.target.value, 10)});
+    changeScale = (ev) => {
+        this.setState({scale: parseInt(ev.target.value, 10) || 0});
+    };
+    changeResolution = (ev) => {
+        this.setState({dpi: parseInt(ev.target.value, 10) || 0});
     };
     renderBody = () => {
         if (!this.props.theme || !this.state.selectedFormat) {
@@ -162,26 +142,34 @@ class MapExport extends React.Component {
         let scaleChooser = null;
         if (!isEmpty(this.props.allowedScales)) {
             scaleChooser = (
-                <select onChange={ev => this.setState({scale: ev.target.value})} role="input" value={this.state.scale}>
+                <select onChange={this.changeScale} role="input" value={this.state.scale || ""}>
+                    <option hidden value={this.state.scale || ""}>{this.state.scale || ""}</option>
                     {this.props.allowedScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
                 </select>);
         } else if (this.props.allowedScales !== false) {
             scaleChooser = (
-                <input min="1" onChange={ev => this.setState({scale: ev.target.value})} role="input" type="number" value={this.state.scale} />
+                <input min="1" onChange={this.changeScale} role="input" type="number" value={this.state.scale || ""} />
             );
         }
-        const filename = this.props.theme.id.split("/").pop() + "." + this.state.selectedFormat.split(";")[0].split("/").pop();
         const action = this.props.theme.url;
         const exportExternalLayers = this.state.selectedFormat !== "application/dxf" && this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
 
-        const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-        let scaleFactor = 1;
-        if (this.state.pageSize === null && this.props.allowedScales !== false) {
-            scaleFactor = mapScale / this.state.scale;
-        }
         const selectedFormatConfiguration = formatConfiguration.find(entry => entry.name === this.state.selectedFormatConfiguration) || {};
         const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers, !!selectedFormatConfiguration.baseLayer);
         const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.props.map.projection, this.state.scale, this.state.dpi);
+
+        const version = this.props.theme.version;
+        const crs = this.props.map.projection;
+        const extent = this.state.extents.at(0) ?? [0, 0, 0, 0];
+        const formattedExtent = (CoordinatesUtils.getAxisOrder(crs).substring(0, 2) === 'ne' && version === '1.3.0') ?
+            extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
+            extent.join(',');
+
+        const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
+        const p1 = getPixelFromCoordinate(extent.slice(0, 2));
+        const p2 = getPixelFromCoordinate(extent.slice(2, 4));
+        const width = Math.abs(p1[0] - p2[0]) * this.state.dpi / 96;
+        const height = Math.abs(p1[1] - p2[1]) * this.state.dpi / 96;
 
         return (
             <div className="mapexport-body">
@@ -191,7 +179,7 @@ class MapExport extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("mapexport.format")}</td>
                                 <td>
-                                    <select name="FORMAT" onChange={this.formatChanged} value={this.state.selectedFormat}>
+                                    <select name="FORMAT" onChange={this.changeFormat} value={this.state.selectedFormat}>
                                         {this.state.availableFormats.map(format => {
                                             return (<option key={format} value={format}>{formatMap[format] || format}</option>);
                                         })}
@@ -214,7 +202,7 @@ class MapExport extends React.Component {
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.size")}</td>
                                     <td>
-                                        <select onChange={(ev) => this.setState({pageSize: ev.target.value || null})} value={this.state.pageSize ?? ""}>
+                                        <select onChange={(ev) => this.setState({pageSize: ev.target.value || null})} value={this.state.pageSize || ""}>
                                             <option value="">{LocaleUtils.tr("mapexport.usersize")}</option>
                                             {this.props.pageSizes.map((entry, idx) => (
                                                 <option key={"size_" + idx} value={idx}>{entry.name}</option>
@@ -223,7 +211,7 @@ class MapExport extends React.Component {
                                     </td>
                                 </tr>
                             ) : null}
-                            {scaleChooser ? (
+                            {scaleChooser && this.state.pageSize !== null ? (
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.scale")}</td>
                                     <td>
@@ -238,7 +226,7 @@ class MapExport extends React.Component {
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.resolution")}</td>
                                     <td>
-                                        <select name="DPI" onChange={this.dpiChanged} value={this.state.dpi}>
+                                        <select name="DPI" onChange={this.changeResolution} value={this.state.dpi}>
                                             {this.props.dpis.map(dpi => {
                                                 return (<option key={dpi + "dpi"} value={dpi}>{dpi + " dpi"}</option>);
                                             })}
@@ -255,10 +243,9 @@ class MapExport extends React.Component {
                     <input name="TRANSPARENT" readOnly type="hidden" value="true" />
                     <input name="TILED" readOnly type="hidden" value="false" />
                     <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
-                    <input name="filename" readOnly type="hidden" value={filename} />
-                    <input name="BBOX" readOnly type="hidden" value={this.state.extent} />
-                    <input name="WIDTH" readOnly type="hidden" value={Math.round(this.state.width * scaleFactor)} />
-                    <input name="HEIGHT" readOnly type="hidden" value={Math.round(this.state.height * scaleFactor)} />
+                    <input name="BBOX" readOnly type="hidden" value={formattedExtent} />
+                    <input name="WIDTH" readOnly type="hidden" value={Math.round(width)} />
+                    <input name="HEIGHT" readOnly type="hidden" value={Math.round(height)} />
                     {Object.keys(this.props.theme.watermark || {}).map(key => {
                         return (<input key={key} name={"WATERMARK_" + key.toUpperCase()} readOnly type="hidden" value={this.props.theme.watermark[key]} />);
                     })}
@@ -272,7 +259,7 @@ class MapExport extends React.Component {
                     <input name="HIGHLIGHT_LABEL_DISTANCE" readOnly type="hidden" value={highlightParams.labelDist.join(";")} />
                     <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                     <div className="button-bar">
-                        <button className="button" disabled={this.state.exporting || !this.state.extent} type="submit">
+                        <button className="button" disabled={this.state.exporting || isEmpty(this.state.extents)} type="submit">
                             {this.state.exporting ? (
                                 <span className="mapexport-wait"><Spinner /> {LocaleUtils.tr("mapexport.wait")}</span>
                             ) : LocaleUtils.tr("mapexport.submit")}
@@ -282,16 +269,18 @@ class MapExport extends React.Component {
             </div>
         );
     };
-    renderFrame = () => {
+    renderPrintSelection = () => {
         if (this.state.pageSize !== null) {
-            const px2m =  1 / (this.state.dpi * 39.3701) * this.getExportScale(this.state);
+            const pageSize = this.props.pageSizes[this.state.pageSize];
             const frame = {
-                width: this.state.width * px2m,
-                height: this.state.height * px2m
+                width: pageSize.width,
+                height: pageSize.height
             };
-            return (<PrintFrame fixedFrame={frame} key="PrintFrame" map={this.props.map} />);
+            return (<PrintSelection allowRotation={false} allowScaling={this.props.allowedScales !== false}
+                center={this.props.map.center} fixedFrame={frame} geometryChanged={this.geometryChanged} scale={this.state.scale}
+            />);
         } else {
-            return (<PrintFrame bboxSelected={this.bboxSelected} dpi={parseInt(this.state.dpi, 10)} key="PrintFrame" map={this.props.map} />);
+            return (<PrintSelection allowRotation={false} geometryChanged={this.geometryChanged} />);
         }
     };
     render() {
@@ -304,7 +293,7 @@ class MapExport extends React.Component {
                 {() => ({
                     body: this.state.minimized ? null : this.renderBody(),
                     extra: [
-                        this.renderFrame()
+                        this.renderPrintSelection()
                     ]
                 })}
             </SideBar>
@@ -336,33 +325,23 @@ class MapExport extends React.Component {
             selectedFormat: selectedFormat,
             selectedFormatConfiguration: selectedFormatConfiguration
         });
+        this.props.setIdentifyEnabled(false);
+        this.props.setSnappingConfig(false, false);
     };
     onHide = () => {
         this.setState({
-            extent: '',
-            width: '',
-            height: ''
+            extents: [],
+            width: 0,
+            height: 0,
+            scale: null,
+            pageSize: null
         });
+        this.props.setIdentifyEnabled(true);
     };
-    getExportScale = (state) => {
-        if (this.props.allowedScales === false) {
-            return Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-        } else {
-            return state.scale;
-        }
-    };
-    bboxSelected = (bbox, crs, pixelsize) => {
-        const version = this.props.theme.version;
-        let extent = '';
-        if (bbox) {
-            extent = (CoordinatesUtils.getAxisOrder(crs).substr(0, 2) === 'ne' && version === '1.3.0') ?
-                bbox[1] + "," + bbox[0] + "," + bbox[3] + "," + bbox[2] :
-                bbox.join(',');
-        }
+    geometryChanged = (center, extents, rotation, scale) => {
         this.setState({
-            extent: extent,
-            width: pixelsize[0],
-            height: pixelsize[1]
+            extents: extents,
+            scale: scale
         });
     };
     export = (ev) => {
@@ -384,6 +363,14 @@ class MapExport extends React.Component {
         // Add parameters from custom format configuration
         const format = this.state.selectedFormat.split(";")[0];
         const formatConfiguration = (this.props.formatConfiguration?.[format] || []).find(entry => entry.name === this.state.selectedFormatConfiguration);
+
+        const ext = format.split("/").pop();
+        const timestamp = dayjs(new Date()).format("YYYYMMDD_HHmmss");
+        const fileName = this.props.fileNameTemplate
+            .replace("{theme}", this.props.theme.id)
+            .replace("{timestamp}", timestamp) + "." + ext;
+
+        params.filename = fileName;
 
         if (formatConfiguration) {
             const keyCaseMap = Object.keys(params).reduce((res, key) => ({...res, [key.toLowerCase()]: key}), {});
@@ -411,8 +398,8 @@ class MapExport extends React.Component {
         axios.post(this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
-            const ext = this.state.selectedFormat.split(";")[0].split("/").pop();
-            FileSaver.saveAs(new Blob([response.data], {type: contentType}), this.props.theme.id + '.' + ext);
+
+            FileSaver.saveAs(new Blob([response.data], {type: contentType}), fileName);
         }).catch(e => {
             this.setState({exporting: false});
             if (e.response) {
@@ -432,5 +419,6 @@ const selector = (state) => ({
 });
 
 export default connect(selector, {
-    setCurrentTask: setCurrentTask
+    setIdentifyEnabled: setIdentifyEnabled,
+    setSnappingConfig: setSnappingConfig
 })(MapExport);
