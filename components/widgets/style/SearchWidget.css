@@ -1,5 +1,6 @@
 div.search-widget-container {
     position: relative;
+    height: 2em;
 }
 
 div.search-widget-container > input {
@@ -7,7 +8,8 @@ div.search-widget-container > input {
     height: 100%!important;
 }
 
-div.search-widget-container > div.spinner {
+div.search-widget-container > div.spinner,
+div.search-widget-container > span.icon-remove {
     position: absolute;
     width: calc(2em - 2px);
     height: calc(2em - 2px);

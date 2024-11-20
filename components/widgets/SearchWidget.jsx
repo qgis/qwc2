@@ -16,6 +16,7 @@ import {v1 as uuidv1} from 'uuid';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import Icon from '../Icon';
 import Spinner from './Spinner';
 
 import './style/SearchWidget.css';
@@ -69,7 +70,7 @@ export default class SearchWidget extends React.Component {
                     ref={el => {this.input = el;}}
                     type="text"
                     value={this.state.text} />
-                {this.state.pending > 0 ? (<Spinner />) : null}
+                {this.state.pending > 0 ? (<Spinner />) : (<Icon icon="remove" onClick={this.clear} />)}
                 {(!isEmpty(this.state.results) || this.state.pending > 0) && this.state.active ? this.renderResults() : null}
             </div>
         );
@@ -147,5 +148,9 @@ export default class SearchWidget extends React.Component {
         if (this.input) {
             this.input.blur();
         }
+    };
+    clear = () => {
+        this.props.resultSelected(null);
+        this.setState({results: []});
     };
 }
