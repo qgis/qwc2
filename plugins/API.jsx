@@ -42,7 +42,7 @@ import MessageBar from '../components/MessageBar';
 import NumericInputWindow from '../components/NumericInputWindow';
 import PickFeature from '../components/PickFeature';
 import PluginsContainer from '../components/PluginsContainer';
-import PrintFrame from '../components/PrintFrame';
+import PrintSelection from '../components/PrintSelection';
 import QtDesignerForm from '../components/QtDesignerForm';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Search from '../components/Search';
@@ -193,7 +193,7 @@ class API extends React.Component {
         window.qwc2.components.PickFeature = PickFeature;
         window.qwc2.components.PluginsContainer = PluginsContainer;
         window.qwc2.components.PopupMenu = PopupMenu;
-        window.qwc2.components.PrintFrame = PrintFrame;
+        window.qwc2.components.PrintSelection = PrintSelection;
         window.qwc2.components.QtDesignerForm = QtDesignerForm;
         window.qwc2.components.ResizeableWindow = ResizeableWindow;
         window.qwc2.components.SearchBox = SearchBox;

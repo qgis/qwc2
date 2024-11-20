@@ -41,7 +41,7 @@ import OlGeomMultiPoint from 'ol/geom/MultiPoint';
 import OlGeomMultiPolygon from 'ol/geom/MultiPolygon';
 import OlGeomPoint from 'ol/geom/Point';
 import OlGeomPolygon from 'ol/geom/Polygon';
-import {fromCircle as olPolygonFromCircle} from 'ol/geom/Polygon';
+import {fromCircle as olPolygonFromCircle, fromExtent as olPolygonFromExtent} from 'ol/geom/Polygon';
 import {defaults as olInteractionDefaults} from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
 import OlInteractionDragBox from 'ol/interaction/DragBox';
@@ -127,7 +127,8 @@ export default {
         MultiPolygon: OlGeomMultiPolygon,
         Point: OlGeomPoint,
         Polygon: OlGeomPolygon,
-        polygonFromCircle: olPolygonFromCircle
+        polygonFromCircle: olPolygonFromCircle,
+        polygonFromExtent: olPolygonFromExtent
     },
     Graticule: OlGraticule,
     interaction: {
