@@ -18,14 +18,12 @@
         "MapExport": "Eksport kart",
         "MapFilter": "",
         "Print": "Skriv ut",
-        "RasterExport": "Eksporter Raster",
         "Reports": "",
         "Settings": "",
         "Share": "Del lenke",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "",
         "Cyclomedia": "",
-        "DxfExport": "Eksporter DXF",
         "FeatureForm": "",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "",
       "scalehint": "",
       "title": ""
-    },
-    "dxfexport": {
-      "layers": "",
-      "selectinfo": "Tegn et rektangel rundt området som skal eksporteres...",
-      "symbologyscale": "Symbolskala:"
     },
     "editing": {
       "add": "",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": ""
-    },
-    "rasterexport": {
-      "format": "Format:",
-      "resolution": "Oppløsning:",
-      "scale": "",
-      "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
     },
     "redlining": {
       "border": "Kant",

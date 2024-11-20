@@ -9,7 +9,6 @@ Plugin reference
 * [BottomBar](#bottombar)
 * [CookiePopup](#cookiepopup)
 * [Cyclomedia](#cyclomedia)
-* [DxfExport](#dxfexport)
 * [Editing](#editing)
 * [FeatureForm](#featureform)
 * [FeatureSearch](#featuresearch)
@@ -35,7 +34,6 @@ Plugin reference
 * [Portal](#portal)
 * [Print](#print)
 * [ProcessNotifications](#processnotifications)
-* [RasterExport](#rasterexport)
 * [Redlining](#redlining)
 * [Reports](#reports)
 * [Routing](#routing)
@@ -262,20 +260,6 @@ Cyclomedia integration for QWC2.
 | logoutRedirectUri | `string` | The relative path to the redirect logout handling of oauth. | `undefined` |
 | maxMapScale | `number` | The maximum map scale above which the recordings WFS won't be displayed. | `5000` |
 | projection | `string` | The projection to use for Cyclomedia. | `'EPSG:3857'` |
-
-DxfExport<a name="dxfexport"></a>
-----------------------------------------------------------------
-Allows exporting a selected extent of the map as DXF.
-
-Uses the DXF format support of QGIS Server.
-
-Deprecated. Use the MapExport plugin instead.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| formatOptions | `string` | Optional format options to pass to QGIS Server via FORMAT_OPTIONS. | `undefined` |
-| layerOptions | `[{`<br />`  label: string,`<br />`  layers: string,`<br />`}]` | Optional choice of layer sets to pass to QGIS Server via LAYERS. | `undefined` |
-| serviceUrl | `string` | Optional URL invoked on export instead of the default QGIS Server URL. | `undefined` |
 
 Editing<a name="editing"></a>
 ----------------------------------------------------------------
@@ -680,23 +664,6 @@ ProcessNotifications<a name="processnotifications"></a>
 Adds support for displaying notifications of background processes.
 
 Only useful for third-party plugins which use this functionality.
-
-RasterExport<a name="rasterexport"></a>
-----------------------------------------------------------------
-Allows exporting a selected portion of the map to an image ("screenshot").
-
-Deprecated. Use the MapExport plugin instead.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| allowedFormats | `[string]` | Whitelist of allowed export format mimetypes. If empty, supported formats are listed. | `undefined` |
-| allowedScales | `[number]` | List of scales at which to export the map. | `undefined` |
-| defaultFormat | `string` | Default export format mimetype. If empty, first available format is used. | `undefined` |
-| defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale. | `0.5` |
-| dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
-| exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
-| pageSizes | `[{`<br />`  name: string,`<br />`  width: number,`<br />`  height: number,`<br />`}]` | List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. | `[`<br />`    {name: '15 x 15 cm', width: 150, height: 150},`<br />`    {name: '30 x 30 cm', width: 300, height: 300}`<br />`]` |
-| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 Redlining<a name="redlining"></a>
 ----------------------------------------------------------------

@@ -18,14 +18,12 @@
         "MapExport": "Export mapu",
         "MapFilter": "",
         "Print": "Tisk",
-        "RasterExport": "Export rastru",
         "Reports": "",
         "Settings": "Nastavení",
         "Share": "Sdílet odkaz",
         "ThemeSwitcher": "Téma",
         "AttributeTable": "Atributy",
         "Cyclomedia": "Cyclomedia",
-        "DxfExport": "DXF Export",
         "FeatureForm": "Editační formulář",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "",
       "scalehint": "",
       "title": "Cyclomedia"
-    },
-    "dxfexport": {
-      "layers": "Vrstvy",
-      "selectinfo": "Vyberte oblast pro export...",
-      "symbologyscale": "Meřítko symbolů:"
     },
     "editing": {
       "add": "Přidat",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": ""
-    },
-    "rasterexport": {
-      "format": "Formát:",
-      "resolution": "Rozlišení:",
-      "scale": "Měřítko",
-      "size": "Velikost",
-      "submit": "Export",
-      "usersize": "Vybrat na mapě...",
-      "wait": "Čekejte..."
     },
     "redlining": {
       "border": "Okraj",

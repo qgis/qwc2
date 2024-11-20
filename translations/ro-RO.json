@@ -18,14 +18,12 @@
         "MapExport": "",
         "MapFilter": "",
         "Print": "Tipărire",
-        "RasterExport": "Export Raster",
         "Reports": "",
         "Settings": "Setări",
         "Share": "Trimite Link",
         "ThemeSwitcher": "Hărți tematice",
         "AttributeTable": "Tabela de atribute",
         "Cyclomedia": "Cyclomedia",
-        "DxfExport": "Export DXF",
         "FeatureForm": "Editare atribute",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "Autentificare",
       "scalehint": "Înregistrările sunt vizibile pe hartă doar la scara 1:{0} sau mai mare",
       "title": "Informații Cyclomedia"
-    },
-    "dxfexport": {
-      "layers": "Straturi",
-      "selectinfo": "Încadrați într-un dreptunghi zona de exportat..",
-      "symbologyscale": "Scara simbolurilor"
     },
     "editing": {
       "add": "Adaugă",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": "Formularul se încarcă"
-    },
-    "rasterexport": {
-      "format": "Format",
-      "resolution": "Rezoluție",
-      "scale": "Scara",
-      "size": "Dimensiuni",
-      "submit": "Export",
-      "usersize": "Selectați în hartă...",
-      "wait": "Vă rugăm așteptați..."
     },
     "redlining": {
       "border": "Margine",

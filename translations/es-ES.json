@@ -18,14 +18,12 @@
         "MapExport": "Exportar mapa",
         "MapFilter": "",
         "Print": "Imprimir",
-        "RasterExport": "Exportar trama",
         "Reports": "",
         "Settings": "Opciones",
         "Share": "Compartir enlace",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabla de Atributos",
         "Cyclomedia": "",
-        "DxfExport": "Exportar DXF",
         "FeatureForm": "Formulario de Elemento",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "",
       "scalehint": "",
       "title": ""
-    },
-    "dxfexport": {
-      "layers": "Capas",
-      "selectinfo": "Arrastre un rectángulo alrededor de la zona para exportar...",
-      "symbologyscale": "Escala de la simbología:"
     },
     "editing": {
       "add": "Añadir",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": "Cargando formulario..."
-    },
-    "rasterexport": {
-      "format": "Formato:",
-      "resolution": "Resolución:",
-      "scale": "",
-      "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
     },
     "redlining": {
       "border": "Límite",
