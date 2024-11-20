@@ -26,10 +26,16 @@ export default class SearchWidget extends React.Component {
         onBlur: PropTypes.func,
         onFocus: PropTypes.func,
         placeholder: PropTypes.string,
-        resultSelected: PropTypes.func,
+        resultSelected: PropTypes.func.isRequired,
         searchParams: PropTypes.object,
         searchProviders: PropTypes.array,
         value: PropTypes.string
+    };
+    static defaultProps = {
+        onBlur: () => {},
+        onFocus: () => {},
+        searchParams: {},
+        searchProviders: []
     };
     state = {
         text: '',
