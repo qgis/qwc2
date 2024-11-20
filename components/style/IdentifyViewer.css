@@ -241,3 +241,26 @@ div.identify-body div.identify-result-feature-report-frame > div.spinner {
     height: 1em;
     margin-left: 0.5em;
 }
+table.identify-attr-subtable {
+    width: 100%;
+}
+
+table.identify-attr-subtable > tbody > tr:nth-child(even) {
+    background-color: #F0F0F0;
+}
+
+table.identify-attr-subtable td.identify-attr-spacer {
+    height: 8px;
+}
+
+table.identify-attr-subtable {
+    width: 100%;
+}
+
+table.identify-attr-subtable > tbody > tr:nth-child(even) {
+    background-color: #F0F0F0;
+}
+
+table.identify-attr-subtable td.identify-attr-spacer {
+    height: 8px;
+}
