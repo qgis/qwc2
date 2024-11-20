@@ -31,6 +31,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
+import SearchProviders from '../utils/SearchProviders';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import MessageBar from './MessageBar';
@@ -557,39 +558,36 @@ class Search extends React.Component {
     };
 }
 
-export default (searchProviders) => {
-    const providersSelector = searchProvidersSelector(searchProviders);
-    return connect(
-        createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, providers) => ({
-            searchText: state.search.text,
-            activeProviders: state.search.providers,
-            pendingProviders: state.search.pendingProviders,
-            startupSearch: state.search.startup,
-            results: state.search.results,
-            currentResult: state.search.currentResult,
-            map: state.map,
-            displaycrs: displaycrs,
-            theme: state.theme.current,
-            themes: state.theme.themes,
-            layers: state.layers.flat,
-            searchProviders: providers,
-            startupParams: state.localConfig.startupParams
-        })),
-        {
-            changeSearch: changeSearch,
-            startSearch: startSearch,
-            searchMore: searchMore,
-            setCurrentSearchResult: setCurrentSearchResult,
-            panToResult: zoomToPoint,
-            addLayerFeatures: addLayerFeatures,
-            removeLayer: removeLayer,
-            addLayer: addLayer,
-            addThemeSublayer: addThemeSublayer,
-            changeLayerProperty: changeLayerProperty,
-            setCurrentTask: setCurrentTask,
-            setCurrentTheme: setCurrentTheme,
-            showNotification: showNotification,
-            zoomToExtent: zoomToExtent
-        }
-    )(Search);
-};
+export default connect(
+    createSelector([state => state, displayCrsSelector, searchProvidersSelector(SearchProviders)], (state, displaycrs, providers) => ({
+        searchText: state.search.text,
+        activeProviders: state.search.providers,
+        pendingProviders: state.search.pendingProviders,
+        startupSearch: state.search.startup,
+        results: state.search.results,
+        currentResult: state.search.currentResult,
+        map: state.map,
+        displaycrs: displaycrs,
+        theme: state.theme.current,
+        themes: state.theme.themes,
+        layers: state.layers.flat,
+        searchProviders: providers,
+        startupParams: state.localConfig.startupParams
+    })),
+    {
+        changeSearch: changeSearch,
+        startSearch: startSearch,
+        searchMore: searchMore,
+        setCurrentSearchResult: setCurrentSearchResult,
+        panToResult: zoomToPoint,
+        addLayerFeatures: addLayerFeatures,
+        removeLayer: removeLayer,
+        addLayer: addLayer,
+        addThemeSublayer: addThemeSublayer,
+        changeLayerProperty: changeLayerProperty,
+        setCurrentTask: setCurrentTask,
+        setCurrentTheme: setCurrentTheme,
+        showNotification: showNotification,
+        zoomToExtent: zoomToExtent
+    }
+)(Search);

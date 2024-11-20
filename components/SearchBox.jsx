@@ -34,6 +34,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
+import SearchProviders from '../utils/SearchProviders';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import MapSelection from './MapSelection';
@@ -1018,31 +1019,28 @@ class SearchBox extends React.Component {
     };
 }
 
-export default (searchProviders) => {
-    const providersSelector = searchProvidersSelector(searchProviders);
-    return connect(
-        createSelector([state => state, displayCrsSelector, providersSelector], (state, displaycrs, searchproviders) => ({
-            map: state.map,
-            layers: state.layers.flat,
-            theme: state.theme.current,
-            themes: state.theme.themes,
-            localConfig: state.localConfig,
-            selection: state.selection,
-            displaycrs: displaycrs,
-            searchProviders: searchproviders
-        })), {
-            addThemeSublayer: addThemeSublayer,
-            addLayer: addLayer,
-            addLayerFeatures: addLayerFeatures,
-            removeLayer: removeLayer,
-            setCurrentTask: setCurrentTask,
-            zoomToExtent: zoomToExtent,
-            zoomToPoint: zoomToPoint,
-            panTo: panTo,
-            logAction: logAction,
-            setCurrentTheme: setCurrentTheme,
-            showNotification: showNotification,
-            openExternalUrl: openExternalUrl
-        }
-    )(SearchBox);
-};
+export default connect(
+    createSelector([state => state, displayCrsSelector, searchProvidersSelector(SearchProviders)], (state, displaycrs, searchproviders) => ({
+        map: state.map,
+        layers: state.layers.flat,
+        theme: state.theme.current,
+        themes: state.theme.themes,
+        localConfig: state.localConfig,
+        selection: state.selection,
+        displaycrs: displaycrs,
+        searchProviders: searchproviders
+    })), {
+        addThemeSublayer: addThemeSublayer,
+        addLayer: addLayer,
+        addLayerFeatures: addLayerFeatures,
+        removeLayer: removeLayer,
+        setCurrentTask: setCurrentTask,
+        zoomToExtent: zoomToExtent,
+        zoomToPoint: zoomToPoint,
+        panTo: panTo,
+        logAction: logAction,
+        setCurrentTheme: setCurrentTheme,
+        showNotification: showNotification,
+        openExternalUrl: openExternalUrl
+    }
+)(SearchBox);

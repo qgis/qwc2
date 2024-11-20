@@ -1,6 +1,6 @@
 {
     "name": "qwc2",
-    "version": "2024.11.18-master",
+    "version": "2024.11.20-master",
     "description": "QGIS Web Client 2 core",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
@@ -29,6 +29,7 @@
         "geojson-bounding-box": "^0.2.0",
         "html-react-parser": "^5.1.10",
         "ismobilejs": "^1.1.1",
+        "js-yaml": "^4.1.0",
         "jszip": "^3.10.1",
         "lodash.isempty": "^4.4.0",
         "lodash.isequal": "^4.5.0",

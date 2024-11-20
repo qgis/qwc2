@@ -33,6 +33,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import RoutingInterface from '../utils/RoutingInterface';
+import SearchProviders from '../utils/SearchProviders';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Routing.css';
@@ -868,20 +869,17 @@ class Routing extends React.Component {
     };
 }
 
-export default (searchProviders) => {
-    const providers = {...searchProviders, ...window.QWC2SearchProviders || {}};
-    return connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-        task: state.task,
-        theme: state.theme.current,
-        mapcrs: state.map.projection,
-        searchProviders: providers,
-        displaycrs: displaycrs,
-        layers: state.layers.flat,
-        locatePos: state.locate.position
-    })), {
-        addLayerFeatures: addLayerFeatures,
-        removeLayer: removeLayer,
-        setCurrentTask: setCurrentTask,
-        zoomToExtent: zoomToExtent
-    })(Routing);
-};
+export default connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+    task: state.task,
+    theme: state.theme.current,
+    mapcrs: state.map.projection,
+    searchProviders: {...SearchProviders, ...window.QWC2SearchProviders || {}},
+    displaycrs: displaycrs,
+    layers: state.layers.flat,
+    locatePos: state.locate.position
+})), {
+    addLayerFeatures: addLayerFeatures,
+    removeLayer: removeLayer,
+    setCurrentTask: setCurrentTask,
+    zoomToExtent: zoomToExtent
+})(Routing);
