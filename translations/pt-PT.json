@@ -18,14 +18,12 @@
         "MapExport": "Exportar Mapa",
         "MapFilter": "",
         "Print": "Imprimir",
-        "RasterExport": "Exportar Raster",
         "Reports": "",
         "Settings": "Configurações",
         "Share": "Partilhar Link",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabela de Atributos",
         "Cyclomedia": "Cyclomedia",
-        "DxfExport": "Exportar DXF",
         "FeatureForm": "Formulário de Recurso",
         "FeatureSearch": "Pesquisa de Recurso",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "Iniciar Sessão",
       "scalehint": "Dica de Escala",
       "title": "Cyclomedia"
-    },
-    "dxfexport": {
-      "layers": "Camadas",
-      "selectinfo": "Arraste um retângulo ao redor da região para exportar...",
-      "symbologyscale": "Escala de Símbolos"
     },
     "editing": {
       "add": "Adicionar",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": "A carregar..."
-    },
-    "rasterexport": {
-      "format": "Formato:",
-      "resolution": "Resolução:",
-      "scale": "Escala:",
-      "size": "Tamanho:",
-      "submit": "Enviar",
-      "usersize": "Tamanho Personalizado",
-      "wait": "Por favor, aguarde..."
     },
     "redlining": {
       "border": "Fronteira",

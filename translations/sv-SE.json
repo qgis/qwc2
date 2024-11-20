@@ -18,14 +18,12 @@
         "MapExport": "Exportera karta",
         "MapFilter": "",
         "Print": "Skriv ut",
-        "RasterExport": "Raster Export",
         "Reports": "",
         "Settings": "",
         "Share": "Dela länk",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "",
         "Cyclomedia": "",
-        "DxfExport": "DXF Export",
         "FeatureForm": "",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "",
       "scalehint": "",
       "title": ""
-    },
-    "dxfexport": {
-      "layers": "",
-      "selectinfo": "Rita en rektangel runt området som ska exporteras...",
-      "symbologyscale": "Symbolskala:"
     },
     "editing": {
       "add": "",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": ""
-    },
-    "rasterexport": {
-      "format": "Format:",
-      "resolution": "Upplösning:",
-      "scale": "",
-      "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
     },
     "redlining": {
       "border": "Kant",

@@ -18,14 +18,12 @@
         "MapExport": "экспортировать карту",
         "MapFilter": "",
         "Print": "Печать",
-        "RasterExport": "Экспорт в растровый Формат бумаги",
         "Reports": "",
         "Settings": "",
         "Share": "Поделиться ссылкой",
         "ThemeSwitcher": "Тема",
         "AttributeTable": "",
         "Cyclomedia": "",
-        "DxfExport": "Экспорт в DXF",
         "FeatureForm": "",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "",
       "scalehint": "",
       "title": ""
-    },
-    "dxfexport": {
-      "layers": "",
-      "selectinfo": "Для экспорта обведите регион многоугольником...",
-      "symbologyscale": "Масштаб символики:"
     },
     "editing": {
       "add": "",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": ""
-    },
-    "rasterexport": {
-      "format": "Формат бумаги:",
-      "resolution": "Разрешение:",
-      "scale": "",
-      "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
     },
     "redlining": {
       "border": "Граница",

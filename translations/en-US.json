@@ -18,14 +18,12 @@
         "MapExport": "Export map",
         "MapFilter": "Map Filter",
         "Print": "Print",
-        "RasterExport": "Raster Export",
         "Reports": "Reports",
         "Settings": "Settings",
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
         "AttributeTable": "Attribute Table",
         "Cyclomedia": "Cyclomedia",
-        "DxfExport": "DXF Export",
         "FeatureForm": "Feature Form",
         "FeatureSearch": "Feature Search",
         "GeometryDigitizer": "Geometry digitizer",
@@ -112,11 +110,6 @@
       "login": "Login",
       "scalehint": "The recordings are only visible on the map below scale 1:{0}.",
       "title": "Cyclomedia Viewer"
-    },
-    "dxfexport": {
-      "layers": "Layers",
-      "selectinfo": "Drag a rectangle around the region to export...",
-      "symbologyscale": "Symbology scale"
     },
     "editing": {
       "add": "Add",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": "Loading form..."
-    },
-    "rasterexport": {
-      "format": "Format",
-      "resolution": "Resolution",
-      "scale": "Scale",
-      "size": "Size",
-      "submit": "Export",
-      "usersize": "Select on map...",
-      "wait": "Please wait..."
     },
     "redlining": {
       "border": "Border",

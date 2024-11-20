@@ -18,14 +18,12 @@
         "MapExport": "Export térkép",
         "MapFilter": "",
         "Print": "Nyomtatás",
-        "RasterExport": "Kép exportálása",
         "Reports": "",
         "Settings": "",
         "Share": "Megosztható link",
         "ThemeSwitcher": "Térkép",
         "AttributeTable": "",
         "Cyclomedia": "",
-        "DxfExport": "DXF Exportálás",
         "FeatureForm": "",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "",
       "scalehint": "",
       "title": ""
-    },
-    "dxfexport": {
-      "layers": "",
-      "selectinfo": "Rajzolj egy négyszöget az exportálni kívánt terület köré...",
-      "symbologyscale": "Jel méretatarány:"
     },
     "editing": {
       "add": "",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": ""
-    },
-    "rasterexport": {
-      "format": "Formátum:",
-      "resolution": "Felbontás:",
-      "scale": "",
-      "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
     },
     "redlining": {
       "border": "Szegély",

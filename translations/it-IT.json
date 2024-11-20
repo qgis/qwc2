@@ -18,14 +18,12 @@
         "MapExport": "Esporta mappa",
         "MapFilter": "Filta mappa",
         "Print": "Stampa",
-        "RasterExport": "Esporta su immagine",
         "Reports": "Rapporti",
         "Settings": "Impostazioni",
         "Share": "Condividi",
         "ThemeSwitcher": "Temi",
         "AttributeTable": "Tabella attributi",
         "Cyclomedia": "Cyclomedia",
-        "DxfExport": "Esporta su DXF",
         "FeatureForm": "Formulario oggetto",
         "FeatureSearch": "Ricerca oggetto",
         "GeometryDigitizer": "Digitalizzazione geometrie",
@@ -112,11 +110,6 @@
       "login": "Login",
       "scalehint": "Le registrazioni sono solo visibili sulla mappa a partire da una scala di 1:{0}.",
       "title": "Visualizzatore Cyclomedia"
-    },
-    "dxfexport": {
-      "layers": "Livelli",
-      "selectinfo": "Seleziona l'area da esportare",
-      "symbologyscale": "Scala per la simbologia"
     },
     "editing": {
       "add": "Aggiungi",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": "Caricando formulario..."
-    },
-    "rasterexport": {
-      "format": "Formato",
-      "resolution": "Risoluzione",
-      "scale": "Scala",
-      "size": "Dimensione",
-      "submit": "Esporta",
-      "usersize": "Seleziona sulla mappa...",
-      "wait": "Attendere..."
     },
     "redlining": {
       "border": "Bordo",

@@ -18,14 +18,12 @@
         "MapExport": "Exportar mapa",
         "MapFilter": "",
         "Print": "Imprimir",
-        "RasterExport": "Exportar trama",
         "Reports": "",
         "Settings": "Opcions",
         "Share": "Compartir link",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Taula d'atributs",
         "Cyclomedia": "",
-        "DxfExport": "Exportar DXF",
         "FeatureForm": "Formulari d'element",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -112,11 +110,6 @@
       "login": "",
       "scalehint": "",
       "title": ""
-    },
-    "dxfexport": {
-      "layers": "Capes",
-      "selectinfo": "Arrossega un rectangle al voltant de la zona per exportar...",
-      "symbologyscale": "Escala de la simbologia:"
     },
     "editing": {
       "add": "Afegir",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": "Carregant formulari..."
-    },
-    "rasterexport": {
-      "format": "Format:",
-      "resolution": "Resolució:",
-      "scale": "",
-      "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
     },
     "redlining": {
       "border": "Límit",

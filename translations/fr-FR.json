@@ -18,14 +18,12 @@
         "MapExport": "Exporter la carte",
         "MapFilter": "Filtrer la carte",
         "Print": "Imprimer",
-        "RasterExport": "Exporter l'image",
         "Reports": "Rapports",
         "Settings": "Paramètres",
         "Share": "Partager",
         "ThemeSwitcher": "Thèmes",
         "AttributeTable": "Table d'attributs",
         "Cyclomedia": "Cyclomedia",
-        "DxfExport": "Export DXF",
         "FeatureForm": "Formulaire d'objet",
         "FeatureSearch": "Recherche objet",
         "GeometryDigitizer": "Digitalisation des géométries",
@@ -112,11 +110,6 @@
       "login": "Connexion",
       "scalehint": "Les enregistrements ne sont visibles que sur la carte sous l'échelle 1 :{0}.",
       "title": "Visualiseur Cyclomedia"
-    },
-    "dxfexport": {
-      "layers": "Couches",
-      "selectinfo": "Faites glisser un rectangle autour de la région à exporter..",
-      "symbologyscale": "Echelle"
     },
     "editing": {
       "add": "Ajouter",
@@ -375,15 +368,6 @@
     },
     "qtdesignerform": {
       "loading": "Chargement du formulaire..."
-    },
-    "rasterexport": {
-      "format": "Format",
-      "resolution": "Résolution",
-      "scale": "Echelle",
-      "size": "Dimension",
-      "submit": "Exporter",
-      "usersize": "Selectionner sur la carte...",
-      "wait": "Veuillez patienter..."
     },
     "redlining": {
       "border": "Bordure",
