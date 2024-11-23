@@ -77,7 +77,7 @@ class TopBar extends React.Component {
             }),
             /** Minimum scale denominator when zooming to search result. */
             minScaleDenom: PropTypes.number,
-            /** Maximum number of results the fulltext search should return (SearchBox only). */
+            /** Result count limit which is passed to the search provider. */
             resultLimit: PropTypes.number,
             /** Whether to collapse search sections by default (SearchBox only). */
             sectionsDefaultCollapsed: PropTypes.bool,

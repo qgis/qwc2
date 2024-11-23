@@ -34,7 +34,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
-import SearchProviders from '../utils/SearchProviders';
+import {FulltextSearch} from '../utils/SearchProviders';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import MapSelection from './MapSelection';
@@ -53,7 +53,6 @@ class SearchBox extends React.Component {
         addThemeSublayer: PropTypes.func,
         displaycrs: PropTypes.string,
         layers: PropTypes.array,
-        localConfig: PropTypes.object,
         logAction: PropTypes.func,
         map: PropTypes.object,
         openExternalUrl: PropTypes.func,
@@ -75,6 +74,7 @@ class SearchBox extends React.Component {
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
         showNotification: PropTypes.func,
+        startupParams: PropTypes.object,
         theme: PropTypes.object,
         themes: PropTypes.object,
         zoomToExtent: PropTypes.func,
@@ -82,7 +82,8 @@ class SearchBox extends React.Component {
     };
     state = {
         searchText: "",
-        searchFilter: [],
+        searchTerms: [],
+        activeLayers: [],
         searchSession: null,
         pendingSearches: [],
         recentSearches: [],
@@ -106,39 +107,16 @@ class SearchBox extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // Restore highlight from URL as soon as theme is loaded
         if (this.props.theme && !prevProps.theme) {
-            const hp = UrlParams.getParam('hp');
-            const hf = UrlParams.getParam('hf');
-            const ht = UrlParams.getParam('ht') || "";
-            const st = UrlParams.getParam('st');
-            if (hp && hf) {
-                const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
-                axios.get(DATA_URL + "/" + hp + "/?filter=" + hf).then(response => {
-                    this.showFeatureGeometry(response.data, prevProps.localConfig.startupParams.s, ht);
-                }).catch(() => {});
-            } else if (hp && ht) {
-                const params = {
-                    searchtext: ht,
-                    filter: hp,
-                    limit: 1
-                };
-                const service = (ConfigUtils.getConfigProp("searchServiceUrl") || "").replace(/\/$/g, "") + '/';
-                axios.get(service, {params}).then(response => {
-                    if (response.data.results && response.data.results.length === 1) {
-                        const result = response.data.results[0].feature;
-                        let filter = `[["${result.id_field_name}","=",`;
-                        if (typeof(result.feature_id) === 'string') {
-                            filter += `"${result.feature_id}"]]`;
-                        } else {
-                            filter += `${result.feature_id}]]`;
-                        }
-                        const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
-                        axios.get(DATA_URL + "/" + result.dataproduct_id + "/?filter=" + filter).then(r => this.showFeatureGeometry(r.data, undefined, result.display)).catch(() => {});
-                    } else {
-                        this.setState({searchText: ht});
-                    }
-                }).catch(() => {});
-            } else if (st) {
-                this.setState({searchText: st}, () => this.startSearch(true));
+            const hp = this.props.startupParams.hp;
+            const hf = this.props.startupParams.hf;
+            const st = this.props.startupParams.st || this.props.startupParams.ht || "";
+            if (hp && (hf || st)) {
+                this.setState({searchText: st});
+                FulltextSearch.handleHighlightParameters(hp, hf, st, (item, result) => {
+                    this.showResultGeometry(item, result, this.props.startupParams.s);
+                });
+            } else {
+                this.setState({searchText: st}, () => this.startSearch(null, true));
             }
             UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined, st: undefined});
         } else if (this.props.theme !== prevProps.theme) {
@@ -148,38 +126,26 @@ class SearchBox extends React.Component {
         if (!this.state.filterOptionsVisible && prevState.filterOptionsVisible) {
             this.searchTextChanged(this.state.searchText);
         }
-        // Compute search filter
-        if (this.props.theme !== prevProps.theme || this.props.layers !== prevProps.layers) {
-            let searchFilter = [];
-            const fulltextProvider = (this.props.theme?.searchProviders || []).find(entry => entry.provider === "solr" || entry.provider === "fulltext");
-            if (fulltextProvider) {
-                searchFilter = [...fulltextProvider.default || []];
-                const layerFacets = fulltextProvider.layers || {};
-                // searchterms of active layers
-                const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-                for (const entry of LayerUtils.explodeLayers(this.props.layers)) {
-                    if (entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true && LayerUtils.layerScaleInRange(entry.sublayer, mapScale)) {
-                        searchFilter = searchFilter.concat(entry.sublayer.searchterms || []);
-                        if (entry.sublayer.name in layerFacets) {
-                            searchFilter.push(layerFacets[entry.sublayer.name]);
-                        }
-                    }
+        // Collect active layers/search terms
+        if (this.props.layers !== prevProps.layers) {
+            let searchTerms = [];
+            const activeLayers = [];
+            const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
+            for (const entry of LayerUtils.explodeLayers(this.props.layers)) {
+                if (entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true && LayerUtils.layerScaleInRange(entry.sublayer, mapScale)) {
+                    searchTerms = searchTerms.concat(entry.sublayer.searchterms || []);
+                    activeLayers.push(entry.sublayer.name);
                 }
             }
-            this.setState({searchFilter: [...new Set(searchFilter)].join(",")});
+            this.setState({activeLayers: activeLayers, searchTerms: [...new Set(searchTerms)]});
         }
         // Select single search result
         if (this.state.pendingSearches.length === 0 && prevState.pendingSearches.length > 0 && this.state.searchResults.zoomToUniqueResult) {
             // eslint-disable-next-line no-unused-vars
-            const uniqueResults = Object.entries(this.state.searchResults).filter(([key, value]) => value.tot_result_count === 1);
-            // If a single result is returned, select it immediately if it is a feature or provider result
-            if (uniqueResults.length === 1) {
-                const uniqueResult = uniqueResults[0];
-                if (uniqueResult[0] === "__fulltext" && uniqueResult[1].results[0].feature) {
-                    this.selectFeatureResult(uniqueResult[1].results[0].feature);
-                } else if (uniqueResults[0] !== "__fulltext" && uniqueResult[1].results[0].items[0].bbox) {
-                    this.selectProviderResult(uniqueResult[1].results[0], uniqueResult[1].results[0].items[0], uniqueResult[0]);
-                }
+            const groupsWithResults = Object.entries(this.state.searchResults).filter(([key, value]) => value.tot_result_count > 0);
+            if (groupsWithResults.length === 1 && groupsWithResults[0][1].tot_result_count === 1) {
+                const group = groupsWithResults[0];
+                this.selectProviderResult(group[1].results[0], group[1].results[0].items[0], group[0]);
             }
         }
     }
@@ -187,11 +153,9 @@ class SearchBox extends React.Component {
         if (!this.state.filterOptionsVisible) {
             return null;
         }
-        const haveFulltext = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr" || entry.provider === "fulltext");
         const providerSelection = (
             <ComboBox onChange={value => this.setState({selectedProvider: value})} value={this.state.selectedProvider}>
                 <div value="">{LocaleUtils.tr("search.all")}</div>
-                {haveFulltext ? (<option value="__fulltext">{LocaleUtils.tr("search.fulltext")}</option>) : null}
                 {Object.entries(this.props.searchProviders).map(([key, prov]) => (
                     <div key={key} value={key}>{prov?.params?.title || (prov.label ?? LocaleUtils.tr(prov.labelmsgid))}</div>
                 ))}
@@ -273,6 +237,31 @@ class SearchBox extends React.Component {
     clearFilter = () => {
         this.setState({filterGeomType: null, filterRegionName: "", filterGeometry: null});
     };
+    renderResultsMenu = () => {
+        if (!this.state.resultsVisible) {
+            return false;
+        }
+        let children = [
+            this.renderRecentResults(),
+            this.renderFilters(),
+            this.renderResults()
+        ];
+        children = children.filter(child => !isEmpty(child));
+        if (isEmpty(children)) {
+            if (isEmpty(this.state.pendingSearches) && this.state.searchResults.query_text) {
+                children = (
+                    <div className="searchbox-noresults">{LocaleUtils.tr("search.noresults")}</div>
+                );
+            } else {
+                return null;
+            }
+        }
+        return (
+            <div className="searchbox-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
+                {children}
+            </div>
+        );
+    };
     renderRecentResults = () => {
         const recentSearches = this.state.recentSearches.filter(entry => entry.toLowerCase().includes(this.state.searchText.toLowerCase()));
         if (isEmpty(recentSearches) || (recentSearches.length === 1 && recentSearches[0].toLowerCase() === this.state.searchText.toLowerCase())) {
@@ -295,45 +284,64 @@ class SearchBox extends React.Component {
             </div>
         );
     };
-    renderFilters = (searchResults) => {
-        if (isEmpty(searchResults.result_counts) || searchResults.result_counts.length < 2) {
-            return null;
-        }
-        const minResultsExanded = ConfigUtils.getConfigProp("minResultsExanded");
-        const initialCollapsed = searchResults.tot_result_count < minResultsExanded;
-        const collapsed = this.isCollapsed('filter', initialCollapsed);
-        const values = searchResults.result_counts.map(entry => entry.filterword + ": " + searchResults.query_text);
-        values.sort((a, b) => a.localeCompare(b));
-        return (
-            <div key="filter">
-                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("filter")} onMouseDown={MiscUtils.killEvent}>
-                    <Icon icon={collapsed ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.filter")}
-                </div>
-                {!collapsed ? (
-                    <div className="searchbox-results-section-body">
-                        {values.map((value, idx) => {
-                            return (
-                                <div className="searchbox-result" key={"f" + idx} onClick={() => this.searchTextChanged(value, true)} onMouseDown={MiscUtils.killEvent}>
-                                    <span className="searchbox-result-label">{value}</span>
-                                </div>
-                            );
-                        })}
+    renderFilters = () => {
+        return Object.entries(this.state.searchResults).map(([provider, results]) => {
+            if (isEmpty(results.result_counts) || results.result_counts.length < 2) {
+                return null;
+            }
+            const collapsed = this.isCollapsed('filter', false);
+            const values = results.result_counts.map(entry => entry.filterword + ": " + this.state.searchResults.query_text);
+            values.sort((a, b) => a.localeCompare(b));
+            return (
+                <div key="filter">
+                    <div className="searchbox-results-section-title" onClick={() => this.toggleSection("filter")} onMouseDown={MiscUtils.killEvent}>
+                        <Icon icon={collapsed ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.filter")}
                     </div>
-                ) : null}
-            </div>
-        );
+                    {!collapsed ? (
+                        <div className="searchbox-results-section-body">
+                            {values.map((value, idx) => {
+                                return (
+                                    <div className="searchbox-result" key={"f" + idx} onClick={() => this.searchTextChanged(value, true, provider)} onMouseDown={MiscUtils.killEvent}>
+                                        <span className="searchbox-result-label">{value}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : null}
+                </div>
+            );
+        }).filter(Boolean);
     };
-    renderProviderResults = () => {
-        const addTitle = LocaleUtils.tr("themeswitcher.addtotheme");
-        const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
+    renderResults = () => {
+        const resultRenderers = {
+            [SearchResultType.PLACE]: this.renderPlaceResult,
+            [SearchResultType.THEMELAYER]: this.renderThemeLayerResult,
+            [SearchResultType.THEME]: this.renderThemeResult
+        };
+        const layersBeforePlaces = this.props.searchOptions.showLayerResultsBeforePlaces;
+        const priorities = {
+            [SearchResultType.PLACE]: layersBeforePlaces ? 0 : 2,
+            [SearchResultType.THEMELAYER]: layersBeforePlaces ? 2 : 1,
+            [SearchResultType.THEME]: layersBeforePlaces ? 1 : 0
+        };
         const results = Object.keys(this.props.searchProviders).reduce((result, provider) => {
             if (!this.state.searchResults[provider]) {
                 return result;
             }
             return result.concat(this.state.searchResults[provider].results.map(group => {
                 const sectionId = provider + ":" + group.id;
+                const additionalResults = group.resultCount ? group.resultCount - group.items.length : 0;
+                if (group.items.length === 0) {
+                    return null;
+                }
+                const renderer = resultRenderers[group.type ?? SearchResultType.PLACE];
+                if (!renderer) {
+                    return null;
+                }
+                const priority = priorities[group.type ?? SearchResultType.PLACE];
                 return {
-                    priority: group.priority || 0,
+                    priority: priority * 1000000 + (group.priority || 0),
+                    title: group.title ?? LocaleUtils.tr(group.titlemsgid),
                     tree: (
                         <div key={sectionId}>
                             <div className="searchbox-results-section-title" onClick={() => this.toggleSection(sectionId)} onMouseDown={MiscUtils.killEvent}>
@@ -342,169 +350,183 @@ class SearchBox extends React.Component {
                             </div>
                             {!this.isCollapsed(sectionId) ? (
                                 <div className="searchbox-results-section-body">
-                                    {group.items.map((entry, idx) => (
-                                        <div className="searchbox-result" key={"c" + idx} onClick={() => {this.selectProviderResult(group, entry, provider); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
-                                            {entry.thumbnail ? (<img className="searchbox-result-thumbnail" src={entry.thumbnail} />) : null}
-                                            {entry.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
-                                            <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: entry.text.replace(/<br\s*\/>/ig, ' ')}} title={entry.label ?? entry.text} />
-                                            {entry.externalLink ? <Icon icon="info-sign" onClick={ev => { MiscUtils.killEvent(ev); this.openUrl(entry.externalLink, entry.target, entry.label ?? entry.text); } } /> : null}
-                                            {entry.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => { MiscUtils.killEvent(ev); this.addThemeLayers(entry.layer); this.searchBox.blur(); }} title={addTitle}/>) : null}
+                                    {group.items.map((entry) => renderer(provider, group, entry))}
+                                    {additionalResults > 0 && (
+                                        <div className="searchbox-more-results">
+                                            {additionalResults}&nbsp;{LocaleUtils.tr("searchbox.more")}
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             ) : null}
                         </div>
                     )
                 };
             }));
-        }, []);
-        results.sort((a, b) => (b.priority - a.priority));
+        }, []).filter(Boolean);
+        results.sort((a, b) => {
+            if (b.priority !== a.priority) {
+                return (b.priority - a.priority);
+            } else {
+                return b.title.localeCompare(a.title);
+            }
+        });
         return isEmpty(results) ? null : results.map(entry => entry.tree);
     };
-    renderPlaces = (searchResults) => {
-        const features = (searchResults.results || []).filter(result => result.feature);
-        if (isEmpty(features)) {
-            return null;
-        }
-        const featureResultCount = (searchResults.result_counts || []).reduce((res, entry) => res + (entry.dataproduct_id !== 'dataproduct' ? (entry.count || 0) : 0), 0);
-        const additionalResults = featureResultCount - features.length;
-        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
+    renderPlaceResult = (provider, group, result) => {
+        const key = provider + ":" + group.id + ":" + result.id;
         return (
-            <div key="places">
-                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("places")} onMouseDown={MiscUtils.killEvent}>
-                    <Icon icon={this.isCollapsed("places") ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.places")}
-                </div>
-                {!this.isCollapsed("places") ? (
-                    <div className="searchbox-results-section-body">
-                        {features.map((entry, idx) => (
-                            <div className="searchbox-result" key={"p" + idx} onClick={() => { this.selectFeatureResult(entry.feature); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
-                                <img onError={this.loadFallbackPlacesImage} src={iconPath + entry.feature.dataproduct_id + ".svg"} />
-                                <span className="searchbox-result-label">{entry.feature.display}</span>
-                            </div>
-                        ))}
-                        {additionalResults > 0 && (
-                            <div className="searchbox-more-results">
-                                {additionalResults}&nbsp;{LocaleUtils.tr("searchbox.more")}
-                            </div>
-                        )}
-                    </div>
-                ) : null}
+            <div className="searchbox-result" key={key} onClick={() => {this.selectPlaceResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+                {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />) : null}
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                {result.externalLink ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.openUrl(result.externalLink, result.target, result.label ?? result.text);} } /> : null}
             </div>
         );
     };
-    loadFallbackPlacesImage = (ev) => {
-        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
-        if (!ev.target.src.endsWith(iconPath + "feature.svg")) {
-            ev.target.src = iconPath + "feature.svg";
+    renderThemeLayerResult = (provider, group, result) => {
+        const key = provider + ":" + group.id + ":" + result.id;
+        const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
+        let icon = null;
+        if (result.sublayers) {
+            const toggleLayerGroup = () => {
+                this.setState((state) => ({expandedLayerGroup: state.expandedLayerGroup === key ? null : key}));
+            };
+            icon = (<Icon className="searchbox-result-thumbnail" icon={this.state.expandedLayerGroup === key ? "collapse" : "expand"} onClick={ev => {MiscUtils.killEvent(ev); toggleLayerGroup();}} />);
+        } else if (result.thumbnail) {
+            icon = (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />);
         }
-    };
-    renderLayers = (searchResults) => {
-        const layers = (searchResults.results || []).filter(result => result.dataproduct);
-        if (isEmpty(layers)) {
-            return null;
-        }
-        const additionalLayerResults = !isEmpty((searchResults.result_counts || []).filter(entry => entry.dataproduct_id === 'dataproduct'));
+        const selectResult = result.theme ? this.selectThemeResult : this.selectThemeLayerResult;
         return (
-            <div key="layers">
-                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("layers")} onMouseDown={MiscUtils.killEvent}>
-                    <Icon icon={this.isCollapsed("layers") ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.layers")}
+            <div key={key}>
+                <div className="searchbox-result" onClick={() => {selectResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+                    {icon}
+                    {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
+                    <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                    {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectThemeLayerResult(provider, group, result); this.blur(); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+                    {result.info ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.toggleLayerInfo(provider, group, result, key);} } /> : null}
                 </div>
-                {!this.isCollapsed("layers") ? (
-                    <div className="searchbox-results-section-body">
-                        {layers.map((entry, idx) => !isEmpty(entry.dataproduct.sublayers) ? this.renderLayerGroup(entry.dataproduct, idx) : this.renderLayer(entry.dataproduct, idx))}
-                        {additionalLayerResults ? (
-                            <div className="searchbox-more-results">
-                                {LocaleUtils.tr("searchbox.morelayers")}
-                            </div>
-                        ) : null}
-                    </div>
-                ) : null}
-            </div>
-        );
-    };
-    renderLayer = (dataproduct, idx) => {
-        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
-        const showAbstract = dataproduct.dataproduct_id in (this.state.activeLayerInfo || {});
-        return (
-            <div key={"p" + idx}>
-                <div className={"searchbox-result " + (showAbstract ? "searchbox-result-expandedinfo" : "")} onClick={() => { this.selectLayerResult(dataproduct); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
-                    <img src={iconPath + "dataproduct.svg"} />
-                    <span className="searchbox-result-label">{dataproduct.display}</span>
-                    {dataproduct.dset_info ? (<Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.selectLayerResult(dataproduct, true); }} />) : null}
-                </div>
-                {showAbstract ? (
+                {this.state.activeLayerInfo === key ? (
                     <div className="searchbox-result-abstract"
-                        dangerouslySetInnerHTML={{__html: this.getLayerDescription(this.state.activeLayerInfo[dataproduct.dataproduct_id][0])}}
+                        dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.layer?.abstract || "") || LocaleUtils.tr("searchbox.nodescription")}}
                     />
                 ) : null}
+                {this.state.expandedLayerGroup === key ? (
+                    <div className="searchbox-result-group">{result.sublayers.map(sublayer => this.renderThemeLayerResult(provider, group, sublayer))}</div>
+                ) : null}
             </div>
         );
     };
-    renderLayerGroup = (dataproduct, idx) => {
-        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
-        const showAbstract = dataproduct.dataproduct_id in (this.state.activeLayerInfo || {});
-        return [(
-            <div key={"g" + idx}>
-                <div className={"searchbox-result " + (showAbstract ? "searchbox-result-expandedinfo" : "")} onClick={() => { this.selectLayerResult(dataproduct); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
-                    <img onClick={ev => this.toggleLayerGroup(ev, dataproduct.dataproduct_id)} src={iconPath + (this.state.expandedLayerGroup === dataproduct.dataproduct_id ? "layergroup_close" : "layergroup_open") + ".svg"} />
-                    <span className="searchbox-result-label">{dataproduct.display}</span>
-                    {dataproduct.dset_info ? (<Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.selectLayerResult(dataproduct, true); }} />) : null}
-                </div>
-                {showAbstract ? (
-                    <div className="searchbox-result-abstract"
-                        dangerouslySetInnerHTML={{__html: this.getLayerDescription(this.state.activeLayerInfo[dataproduct.dataproduct_id][0])}}
-                    />
-                ) : null}
+    renderThemeResult = (provider, group, result) => {
+        const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
+        return (
+            <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => {this.selectThemeResult(provider, group, result); this.blur();}} onMouseDown={MiscUtils.killEvent}>
+                {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />) : null}
+                <Icon className="searchbox-result-openicon" icon="open" />
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.addThemeLayers(result.layer); this.blur();}} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
             </div>
-        ),
-        this.state.expandedLayerGroup === dataproduct.dataproduct_id ? (
-            <div className="searchbox-result-group" key={"eg" + idx}>{dataproduct.sublayers.map(this.renderLayer)}</div>
-        ) : null
-        ];
+        );
     };
-    getLayerDescription = (layer) => {
-        if (isEmpty(layer.abstract)) {
-            return LocaleUtils.tr("searchbox.nodescription");
+    selectPlaceResult = (provider, group, result) => {
+        const resultText = result.text.replace(/<\/?\w+\s*\/?>/g, '');
+        if (this.props.searchOptions.showResultInSearchText !== false) {
+            // Show selected result text in search field
+            this.setState({
+                searchText: resultText,
+                searchResults: {
+                    query_text: resultText,
+                    [provider]: {
+                        results: [{...group, items: [result]}],
+                        tot_result_count: 1
+                    }
+                }
+            });
+        }
+        this.updateRecentSearches();
+        if (this.props.searchProviders[provider].getResultGeometry) {
+            this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showResultGeometry(result, response); }, axios);
         } else {
-            return MiscUtils.addLinkAnchors(layer.abstract);
+            // Display marker
+            this.showResultGeometry(result, {geometry: {type: "Point", coordinates: [result.x, result.y]}, crs: result.crs});
         }
-    };
-    toggleLayerGroup = (ev, dataproductId) => {
-        MiscUtils.killEvent(ev);
-        this.setState((state) => ({expandedLayerGroup: state.expandedLayerGroup === dataproductId ? null : dataproductId}));
-    };
-    renderSearchResults = () => {
-        if (!this.state.resultsVisible) {
-            return false;
-        }
-        const fulltextResults = this.state.searchResults.__fulltext || {};
-        let children = [
-            this.renderRecentResults(),
-            this.renderFilters(fulltextResults),
-            this.renderProviderResults()
-        ];
-        if (this.props.searchOptions.showLayerResultsBeforePlaces) {
-            children.push(this.renderLayers(fulltextResults));
-            children.push(this.renderPlaces(fulltextResults));
+        if (result.dataproduct_id) {
+            const quot = typeof(result.id) === 'string' ? '"' : '';
+            const filter = `[["${result.id_field_name}","=", ${quot}${result.id}${quot}]]`;
+            UrlParams.updateParams({hp: result.dataproduct_id, hf: filter, st: resultText});
         } else {
-            children.push(this.renderPlaces(fulltextResults));
-            children.push(this.renderLayers(fulltextResults));
+            UrlParams.updateParams({hp: undefined, hf: undefined, st: resultText});
         }
-        children = children.filter(element => element);
-        if (isEmpty(children)) {
-            if (isEmpty(this.state.pendingSearches) && this.state.searchResults.query_text) {
-                children = (
-                    <div className="searchbox-noresults">{LocaleUtils.tr("search.noresults")}</div>
-                );
+        this.props.logAction("SEARCH_TEXT", {searchText: this.state.searchText});
+        this.props.logAction("SEARCH_RESULT_SELECTED", {place: resultText});
+    };
+    selectThemeLayerResult = (provider, group, result) => {
+        if (result.layer) {
+            if (result.theme) {
+                this.addThemeLayers(result.layer);
             } else {
-                return null;
+                this.props.addThemeSublayer(result.layer);
+            }
+            // Show layer tree to notify user that something has happened
+            this.props.setCurrentTask('LayerTree');
+        } else if (this.props.searchProviders[provider].getLayerDefinition) {
+            this.props.searchProviders[provider].getLayerDefinition(result, (layer) => {
+                if (layer) {
+                    if (result.theme) {
+                        this.addThemeLayers(layer);
+                    } else {
+                        this.props.addThemeSublayer(layer);
+                    }
+                    // Show layer tree to notify user that something has happened
+                    this.props.setCurrentTask('LayerTree');
+                }
+            }, axios);
+        }
+    };
+    selectThemeResult = (provider, group, result) => {
+        this.props.setCurrentTheme(result.theme, this.props.themes);
+        if (this.props.searchOptions.showLayerAfterChangeTheme) {
+            this.props.setCurrentTask('LayerTree');
+        }
+    };
+    loadFallbackResultImage = (ev, item) => {
+        if ((item.type ?? SearchResultType.PLACE) === SearchResultType.PLACE) {
+            const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
+            if (!ev.target.src.endsWith(iconPath + "feature.svg")) {
+                ev.target.src = iconPath + "feature.svg";
             }
         }
-        return (
-            <div className="searchbox-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
-                {children}
-            </div>
-        );
+    };
+    toggleLayerInfo = (provider, group, result, key) => {
+        const setResultLayerAndActiveInfo = (layer) => {
+            // Embed returned layer into result item, so that layer info is read from item.layer.abstract
+            this.setState((state) => ({
+                searchResults: {
+                    ...state.searchResults,
+                    [provider]: {
+                        ...state.searchResults[provider],
+                        results: state.searchResults[provider].results.map(g => {
+                            if (g.id === group.id) {
+                                return {...g, items: g.items.map(i => (i.id === result.id ? {...i, layer: layer} : i))};
+                            } else {
+                                return g;
+                            }
+                        })
+                    }
+                },
+                activeLayerInfo: key
+            }));
+        };
+        this.setState((state) => {
+            if (state.activeLayerInfo === key) {
+                return {activeLayerInfo: null};
+            } else {
+                if (!result.layer && this.props.searchProviders[provider].getLayerDefinition) {
+                    this.props.searchProviders[provider].getLayerDefinition(result, setResultLayerAndActiveInfo, axios);
+                    return {};
+                } else {
+                    return {activeLayerInfo: key};
+                }
+            }
+        });
     };
     setPreventBlur = () => {
         this.preventBlur = true;
@@ -535,7 +557,7 @@ class SearchBox extends React.Component {
                     <InputContainer className="searchbox-field">
                         <Icon icon="search" role="prefix" />
                         <input onBlur={this.onBlur} onChange={ev => this.searchTextChanged(ev.target.value)}
-                            onFocus={this.onFocus} onKeyDown={this.onKeyDown}
+                            onFocus={this.onFocus}
                             placeholder={placeholder} ref={el => { this.searchBox = el; }}
                             role="input"
                             type="text" value={this.state.searchText} />
@@ -547,7 +569,7 @@ class SearchBox extends React.Component {
                             <Icon icon="chevron-down" />
                         </button>
                     ) : null}
-                    {this.renderSearchResults()}
+                    {this.renderResultsMenu()}
                     {this.renderFilterOptions()}
                 </div>
             ),
@@ -564,7 +586,7 @@ class SearchBox extends React.Component {
     toggleFilterOptions = (visible) => {
         this.setState({filterOptionsVisible: visible});
     };
-    searchTextChanged = (text, expandSections = false) => {
+    searchTextChanged = (text, expandSections = false, provider = null) => {
         if (this.props.layers.find(layer => layer.id === 'searchselection')) {
             this.props.removeLayer('searchselection');
         }
@@ -574,7 +596,7 @@ class SearchBox extends React.Component {
         }
         this.setState(newState);
         clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(this.startSearch, 250);
+        this.searchTimeout = setTimeout(() => this.startSearch(provider), 250);
     };
     onFocus = () => {
         this.setState({resultsVisible: true});
@@ -595,38 +617,20 @@ class SearchBox extends React.Component {
             this.setState({resultsVisible: false, collapsedSections: {}, expandedLayerGroup: null, activeLayerInfo: null});
         }
     };
-    onKeyDown = (ev) => {
-        if (ev.keyCode === 27 && this.searchBox) {
-            if (this.searchBox.selectionStart !== this.searchBox.selectionEnd) {
-                this.searchBox.setSelectionRange(this.searchBox.value.length, this.searchBox.value.length);
-            } else {
-                this.searchBox.blur();
-            }
-        }
-    };
     clear = () => {
-        if (this.searchBox) {
-            this.searchBox.blur();
-        }
+        this.blur();
         this.setState({searchText: '', searchResults: {}, selectedProvider: '', filterRegionName: "", filterGeometry: null});
         this.props.removeLayer('searchselection');
-        UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
+        UrlParams.updateParams({hp: undefined, hf: undefined, st: undefined});
     };
-    startSearch = (zoomToUniqueResult = false) => {
+    startSearch = (provider = null, uniquePlaceResult = false) => {
         let availableProviders = this.props.searchProviders;
-        let fulltextSearchEnabled = (this.props.theme.searchProviders || []).find(entry => entry.provider === "solr" || entry.provider === "fulltext");
-        if (this.state.selectedProvider) {
-            if (this.state.selectedProvider === "__fulltext") {
-                fulltextSearchEnabled = true;
-                availableProviders = {};
-            } else {
-                fulltextSearchEnabled = false;
-                availableProviders = {
-                    [this.state.selectedProvider]: this.props.searchProviders[this.state.selectedProvider]
-                };
-            }
+        const selectedProvider = provider ?? this.state.selectedProvider;
+        if (selectedProvider) {
+            availableProviders = {
+                [selectedProvider]: this.props.searchProviders[selectedProvider]
+            };
         }
-        const service = (ConfigUtils.getConfigProp("searchServiceUrl") || "").replace(/\/$/g, "") + '/';
         // eslint-disable-next-line
         const searchText = this.state.searchText.trim();
         if (isEmpty(searchText)) {
@@ -634,69 +638,56 @@ class SearchBox extends React.Component {
             return;
         }
         const searchSession = uuidv1();
-        const pendingSearches = [];
-        // Collect pending searches
-        if (fulltextSearchEnabled) {
-            pendingSearches.push("__fulltext");
-        }
-        pendingSearches.push(...Object.keys(availableProviders));
         this.setState({
-            searchResults: {query_text: searchText, zoomToUniqueResult: zoomToUniqueResult},
+            searchResults: {query_text: searchText},
             searchSession: searchSession,
-            pendingSearches: pendingSearches
+            pendingSearches: Object.keys(availableProviders)
         });
-        // Fulltext search
-        if (fulltextSearchEnabled) {
-            const params = {
-                searchtext: searchText,
-                filter: this.state.searchFilter,
-                limit: this.props.searchOptions.resultLimit
-            };
-            axios.get(service, {params}).then(response => {
-                const results = this.filterFulltextResults(response.data);
-                const searchResults = {...results, query_text: searchText};
-                searchResults.tot_result_count = (searchResults.result_counts || []).reduce((res, entry) => res + (entry.count || 0), 0);
-                this.addSearchResults(searchSession, "__fulltext", searchResults);
-            }).catch(e => {
-                // eslint-disable-next-line
-                console.warn("Search failed: " + e);
-                this.addSearchResults(searchSession, "__fulltext", {results: [], tot_result_count: 0});
-            });
-        }
-        // Additional provider searches
         const searchParams = {
             mapcrs: this.props.map.projection,
             displaycrs: this.props.displaycrs,
             lang: LocaleUtils.lang(),
             theme: this.props.theme,
+            limit: this.props.searchOptions.resultLimit,
+            activeLayers: this.state.activeLayers,
+            searchTerms: this.state.searchTerms,
             filterPoly: this.state.filterGeometry?.coordinates?.[0],
             filterBBox: this.state.filterGeometry ? VectorLayerUtils.computeFeatureBBox(this.state.filterGeometry) : null
         };
-        Object.entries(availableProviders).forEach(([key, entry]) => {
-            entry.onSearch(searchText, {...searchParams, cfgParams: entry.params}, (response) => {
-                const results = entry.handlesGeomFilter ? response.results : this.filterProviderResults(response.results);
-                const count = response.results.reduce((tot, cur) => (tot + cur.items.length), 0);
-                this.addSearchResults(searchSession, key, {results: results, tot_result_count: count});
+        Object.entries(availableProviders).forEach(([provKey, prov]) => {
+            prov.onSearch(searchText, {...searchParams, cfgParams: prov.params || {}}, (response) => {
+                let results = prov.handlesGeomFilter ? response.results : this.filterProviderResults(response.results);
+                const totResultCount = results.reduce((tot, group) => (tot + (group.resultCount ?? group.items.length)), 0);
+                if (uniquePlaceResult) {
+                    // If looking for unique place result, filter non-place results
+                    results = results.filter(group => (group.type ?? SearchResultType.PLACE) === SearchResultType.PLACE);
+                }
+                this.setState((state) => {
+                    if (searchSession !== state.searchSession) {
+                        return {};
+                    }
+                    const searchResults = {...state.searchResults, [provKey]: {
+                        results: results,
+                        result_counts: response.result_counts,
+                        tot_result_count: totResultCount
+                    }};
+                    const newPendingSearches = state.pendingSearches.filter(entry => entry !== provKey);
+                    if (isEmpty(newPendingSearches) && uniquePlaceResult) {
+                        // eslint-disable-next-line no-unused-vars
+                        const providersWithResults = Object.entries(searchResults).filter(([_, providerResults]) => providerResults.tot_result_count > 0);
+                        if (providersWithResults.length === 1 && providersWithResults[0][1].tot_result_count === 1) {
+                            const group = providersWithResults[0][1].results[0];
+                            this.selectPlaceResult(providersWithResults[0][0], group, group.items[0]);
+                        }
+                    }
+                    return {
+                        searchResults: searchResults,
+                        pendingSearches: newPendingSearches
+                    };
+                });
+
             }, axios);
         });
-    };
-    filterFulltextResults = (data) => {
-        if (!this.state.filterGeometry) {
-            return data;
-        }
-        const filterPolygon = this.state.filterGeometry.coordinates[0];
-        data.results = data.results.filter(result => {
-            if (!result.feature || !result.feature.bbox) {
-                return true;
-            }
-            const [xmin, ymin, xmax, ymax] = CoordinatesUtils.reprojectBbox(result.feature.bbox, "EPSG:" + result.feature.srid, this.props.map.projection);
-            const intersects = polygonIntersectTest([[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax], [xmin, ymin]], filterPolygon);
-            if (!intersects) {
-                data.result_counts.find(entry => entry.dataproduct_id === result.feature.dataproduct_id).count -= 1;
-            }
-            return intersects;
-        });
-        return data;
     };
     filterProviderResults = (results) => {
         if (!this.state.filterGeometry) {
@@ -704,121 +695,40 @@ class SearchBox extends React.Component {
         }
         const filterPolygon = this.state.filterGeometry.coordinates[0];
         return results.map(group => {
+            const resultType = group.type ?? SearchResultType.PLACE;
+            if (resultType !== SearchResultType.PLACE) {
+                return group;
+            }
             const newItems = group.items.filter(item => {
-                const resultType = item.type || SearchResultType.PLACE;
-                if (resultType !== SearchResultType.PLACE) {
-                    return true;
-                }
                 let geometry = null;
+                const itemCrs = item.crs ?? this.props.map.projection;
                 if (item.geometry) {
-                    geometry = VectorLayerUtils.reprojectGeometry(item.geometry, item.crs, this.props.map.projection);
+                    geometry = VectorLayerUtils.reprojectGeometry(item.geometry, itemCrs, this.props.map.projection);
                 } else {
-                    geometry = {type: 'Point', coordinates: CoordinatesUtils.reproject([item.x, item.y], item.crs, this.props.map.projection)};
+                    geometry = {type: 'Point', coordinates: CoordinatesUtils.reproject([item.x, item.y], itemCrs, this.props.map.projection)};
                 }
                 if (geometry.type === 'Polygon') {
                     return polygonIntersectTest(geometry.coordinates[0], filterPolygon);
                 } else if (item.bbox) {
-                    const [xmin, ymin, xmax, ymax] = CoordinatesUtils.reprojectBbox(item.bbox, item.crs, this.props.map.projection);
+                    const [xmin, ymin, xmax, ymax] = CoordinatesUtils.reprojectBbox(item.bbox, itemCrs, this.props.map.projection);
                     return polygonIntersectTest([[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax], [xmin, ymin]], filterPolygon);
                 } else if (geometry.type === 'Point') {
                     return pointInPolygon(geometry.coordinates, filterPolygon);
                 }
                 return true;
             });
-            if (newItems.length > 0) {
-                return {...group, items: newItems};
-            }
-            return null;
+            return newItems.length > 0 ? {...group, items: newItems} : null;
         }).filter(Boolean);
     };
-    addSearchResults = (searchSession, searchId, results) => {
-        this.setState((state) => {
-            if (searchSession !== state.searchSession) {
-                return {};
-            }
-            const pendingSearches = state.pendingSearches.filter(entry => entry !== searchId);
-            const searchResults = {...state.searchResults, [searchId]: results};
-            return {
-                searchResults: searchResults,
-                pendingSearches: pendingSearches
-            };
-        });
-    };
     updateRecentSearches = () => {
-        if (!this.state.searchResults || !this.state.searchResults.query_text) {
-            return;
-        }
         const text = this.state.searchResults.query_text;
-        if (!this.state.recentSearches.includes(text)) {
+        if (text && !this.state.recentSearches.includes(text)) {
             this.setState((state) => ({recentSearches: [text, ...state.recentSearches.slice(0, 4)]}));
         }
     };
     blur = () => {
         if (this.searchBox) {
             this.searchBox.blur();
-        }
-    };
-    setProviderResult = (text, provider, group, result) => {
-        if (this.props.searchOptions.showResultInSearchText !== false) {
-            const results = {
-                query_text: text,
-                [provider]: {
-                    results: [{...group, items: [result]}],
-                    tot_result_count: 1
-                }
-            };
-            this.setState({
-                searchText: text,
-                searchResults: results
-            });
-        }
-    };
-    selectProviderResult = (group, result, provider, zoom = true) => {
-        this.setProviderResult(result.text.replace(/<\/?\w+\s*\/?>/g, ''), provider, group, result);
-        this.updateRecentSearches();
-        const resultType = result.type || SearchResultType.PLACE;
-        if (resultType === SearchResultType.PLACE) {
-            const label = this.props.searchOptions.hideResultLabels ? '' : (result.label ?? result.text ?? '').replace(/<\/?\w+\s*\/?>/g, '');
-            if (this.props.searchProviders[provider].getResultGeometry) {
-                this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showProviderResultGeometry(result, response, label, zoom); }, axios);
-            } else {
-                this.zoomToResult(result, zoom);
-                const geometry = result.geometry || {type: 'Point', coordinates: [result.x, result.y]};
-                const feature = {
-                    geometry: geometry,
-                    properties: { label: label },
-                    styleName: geometry.type === 'Point' ? 'marker' : 'default',
-                    styleOptions: this.props.searchOptions.highlightStyle || {},
-                    crs: result.crs,
-                    id: 'searchmarker'
-                };
-                const layer = {
-                    id: "searchselection",
-                    role: LayerRole.SELECTION
-                };
-                this.props.addLayerFeatures(layer, [feature], true);
-            }
-            UrlParams.updateParams({hp: undefined, hf: undefined, hc: "1"});
-            this.props.logAction("SEARCH_TEXT", {searchText: this.state.searchText});
-            this.props.logAction("SEARCH_RESULT_SELECTED", {place: result.text});
-        } else if (resultType === SearchResultType.THEMELAYER) {
-            this.props.addThemeSublayer(result.layer);
-            // Show layer tree to notify user that something has happened
-            this.props.setCurrentTask('LayerTree');
-        } else if (resultType === SearchResultType.EXTERNALLAYER) {
-            if (result.theme) {
-                if (this.props.searchOptions.showLayerAfterChangeTheme) {
-                    this.props.setCurrentTask('LayerTree');
-                }
-                this.props.setCurrentTheme(result.theme, this.props.themes);
-            } else {
-                this.addThemeLayers(result.layer);
-            }
-        } else if (resultType === SearchResultType.THEME) {
-            if (this.props.searchOptions.showLayerAfterChangeTheme) {
-                this.props.setCurrentTask('LayerTree');
-            }
-            this.props.setCurrentTheme(result.theme, this.props.themes);
         }
     };
     addThemeLayers = (layer) => {
@@ -840,99 +750,67 @@ class SearchBox extends React.Component {
         // Show layer tree to notify user that something has happened
         this.props.setCurrentTask('LayerTree');
     };
-    showProviderResultGeometry = (item, response, text, zoom) => {
-        if (!isEmpty(response.geometry)) {
-            let features = [];
+    showResultGeometry = (item, response, scale = undefined) => {
+        const features = [];
+        if (!isEmpty(response?.geometry)) {
             const highlightFeature = response.geometry.coordinates ? {
                 type: "Feature", geometry: response.geometry
-            } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, this.props.map.projection);
+            } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, response.crs);
             if (highlightFeature) {
-                const isPoint = response.geometry.type === 'Point';
-                highlightFeature.styleName = isPoint ? 'marker' : 'default';
-                highlightFeature.styleOptions = this.props.searchOptions.highlightStyle || {};
-                const center = VectorLayerUtils.getFeatureCenter(highlightFeature);
-                if (!item.x || !item.y) {
-                    item.x = center[0];
-                    item.y = center[1];
-                }
-                if (!item.bbox) {
-                    item.bbox = VectorLayerUtils.computeFeatureBBox(highlightFeature);
-                }
-
-                features = [highlightFeature];
-                if (!isPoint && !response.hidemarker) {
-                    features.push(this.createMarker(center, this.props.map.projection, text));
-                }
-            } else {
-                features = [this.createMarker([item.x, item.y], item.crs, text)];
+                features.push(highlightFeature);
             }
-            this.zoomToResult(item, zoom);
-
+        } else if (!isEmpty(response?.feature)) {
+            if (response.feature.features) {
+                features.push(...response.feature.features);
+            } else {
+                features.push(response.feature);
+            }
+        }
+        if (!isEmpty(features)) {
             const layer = {
                 id: "searchselection",
                 role: LayerRole.SELECTION
             };
+            features.forEach(feature => {
+                feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, response.crs ?? this.props.map.projection, this.props.map.projection);
+                feature.styleName = feature.geometry?.type === 'Point' ? 'marker' : 'default';
+                feature.styleOptions = this.props.searchOptions.highlightStyle || {};
+            });
+            // If first feature is not a point(=marker), add a marker
+            if (features[0].styleName !== "marker" && !response.hidemarker) {
+                features.unshift({
+                    geometry: {type: 'Point', coordinates: CoordinatesUtils.reproject([item.x, item.y], item.crs ?? this.props.map.projection, this.props.map.projection)},
+                    styleName: 'marker'
+                });
+            }
+            // Label first feature
+            if (!this.props.searchOptions.hideResultLabels) {
+                const label = (item.label ?? item.text ?? '').replace(/<\/?\w+\s*\/?>/g, '');
+                features[0].properties = {...features[0].properties, label: label};
+            }
+            // Mark first feature as searchmarker
+            features[0].id = 'searchmarker';
             this.props.addLayerFeatures(layer, features, true);
         }
+        let bbox = item.bbox ?? [item.x, item.y, item.x, item.y];
+        bbox = CoordinatesUtils.reprojectBbox(bbox, item.crs ?? this.props.map.projection, this.props.map.projection);
+        this.zoomToResultBBox(bbox, scale);
     };
-    zoomToResult = (result, zoom) => {
-        if (zoom) {
-            if (result.bbox && !(result.bbox[0] === result.bbox[2] && result.bbox[1] === result.bbox[3])) {
-                this.props.zoomToExtent(result.bbox, result.crs);
+    zoomToResultBBox = (bbox, scale) => {
+        let zoom = 0;
+        if (scale) {
+            zoom = MapUtils.computeZoom(this.props.map.scales, scale);
+        } else {
+            const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
+            if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
+                zoom = Math.max(0, MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
             } else {
-                const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
-                this.props.zoomToPoint([result.x, result.y], maxZoom, result.crs);
+                zoom = maxZoom;
             }
-        } else {
-            this.props.panTo([result.x, result.y], result.crs);
         }
-    };
-    createMarker = (center, crs, text) => {
-        return {
-            geometry: {type: 'Point', coordinates: center},
-            styleName: 'marker',
-            id: 'searchmarker',
-            crs: crs,
-            properties: { label: text }
-        };
-    };
-    setFeatureResult = (text, result) => {
-        if (this.props.searchOptions.showResultInSearchText !== false) {
-            this.setState(state => {
-                const results = {
-                    query_text: text,
-                    __fulltext: {
-                        result_counts: [{
-                            ...state.searchResults.__fulltext.result_counts.find(entry => entry.dataproduct_id === result.dataproduct_id),
-                            count: 1
-                        }],
-                        tot_result_count: 1,
-                        results: [{feature: result}]
-                    }
-                };
-                return {
-                    searchText: text,
-                    searchResults: results
-                };
-            });
-        }
-    };
-    selectFeatureResult = (result) => {
-        this.setFeatureResult(result.display, result);
-        this.updateRecentSearches();
-        // URL example: /api/data/v1/ch.so.afu.fliessgewaesser.netz/?filter=[["gewissnr","=",1179]]
-        let filter = `[["${result.id_field_name}","=",`;
-        if (typeof(result.feature_id) === 'string') {
-            filter += `"${result.feature_id}"]]`;
-        } else {
-            filter += `${result.feature_id}]]`;
-        }
-        const DATA_URL = ConfigUtils.getConfigProp("searchDataServiceUrl").replace(/\/$/g, "");
-        axios.get(DATA_URL + "/" + result.dataproduct_id + "/?filter=" + filter).then(response => this.showFeatureGeometry(response.data, undefined, result.display));
-        UrlParams.updateParams({hp: result.dataproduct_id, hf: filter, hc: undefined, ht: result.display});
-
-        this.props.logAction("SEARCH_TEXT", {searchText: this.state.searchText});
-        this.props.logAction("SEARCH_RESULT_SELECTED", {feature: result.display});
+        const x = 0.5 * (bbox[0] + bbox[2]);
+        const y = 0.5 * (bbox[1] + bbox[3]);
+        this.props.zoomToPoint([x, y], zoom, this.props.map.projection);
     };
     showFeatureGeometry = (data, scale = undefined, label = "") => {
         // Zoom to bbox
@@ -965,52 +843,6 @@ class SearchBox extends React.Component {
         }
         this.props.addLayerFeatures(layer, data.features, true);
     };
-    setLayerResult = (text, result) => {
-        if (this.props.searchOptions.showResultInSearchText !== false) {
-            const results = {
-                query_text: text,
-                __fulltext: {
-                    result_counts: [],
-                    tot_result_count: 0,
-                    results: [{dataproduct: result}]
-                }
-            };
-            this.setState({
-                searchText: text,
-                searchResults: results
-            });
-        }
-    };
-    selectLayerResult = (result, info = false) => {
-        if (!info) {
-            this.setLayerResult(result.display, result);
-            this.updateRecentSearches();
-        } else if (result.dataproduct_id in (this.state.activeLayerInfo || {})) {
-            this.setState({activeLayerInfo: null});
-            return;
-        }
-        const DATAPRODUCT_URL = ConfigUtils.getConfigProp("dataproductServiceUrl").replace(/\/$/g, "");
-        const params = {
-            filter: result.dataproduct_id
-        };
-        axios.get(DATAPRODUCT_URL + "/weblayers", {params}).then(response => {
-            if (info) {
-                this.setState({activeLayerInfo: response.data});
-            } else {
-                this.props.logAction("SEARCH_TEXT", {searchText: this.state.searchText});
-                this.props.logAction("SEARCH_RESULT_SELECTED", {layer: result.dataproduct_id});
-                this.addLayer(result, response.data);
-            }
-        });
-        UrlParams.updateParams({hp: undefined, hf: undefined, hc: undefined});
-    };
-    addLayer = (item, data) => {
-        if (!isEmpty(data[item.dataproduct_id])) {
-            this.props.addThemeSublayer({sublayers: data[item.dataproduct_id]});
-            // Show layer tree to notify user that something has happened
-            this.props.setCurrentTask('LayerTree');
-        }
-    };
     openUrl = (url, target, title) => {
         if (target === "iframe") {
             target = ":iframedialog:externallinkiframe";
@@ -1020,15 +852,15 @@ class SearchBox extends React.Component {
 }
 
 export default connect(
-    createSelector([state => state, displayCrsSelector, searchProvidersSelector(SearchProviders)], (state, displaycrs, searchproviders) => ({
+    createSelector([state => state, displayCrsSelector, searchProvidersSelector], (state, displaycrs, searchProviders) => ({
         map: state.map,
         layers: state.layers.flat,
         theme: state.theme.current,
         themes: state.theme.themes,
-        localConfig: state.localConfig,
         selection: state.selection,
         displaycrs: displaycrs,
-        searchProviders: searchproviders
+        searchProviders: searchProviders,
+        startupParams: state.localConfig.startupParams
     })), {
         addThemeSublayer: addThemeSublayer,
         addLayer: addLayer,

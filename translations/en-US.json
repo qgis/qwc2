@@ -457,7 +457,6 @@
       "enablelayer": "Enable layer",
       "existinglayer": "The layer already exists in the map",
       "filter": "Filter",
-      "fulltext": "Fulltext search",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "limittoarea": "Limit to area",
       "more": "More...",
@@ -473,9 +472,8 @@
     },
     "searchbox": {
       "filter": "Refine search",
-      "layers": "Maps",
+      "layers": "Layers",
       "more": "more results",
-      "morelayers": "More results available",
       "nodescription": "No description available",
       "placeholder": "Search place or add map...",
       "places": "Places",

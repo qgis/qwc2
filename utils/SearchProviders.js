@@ -9,9 +9,13 @@
 
 import axios from 'axios';
 import yaml from 'js-yaml';
+import polygonIntersectTest from 'polygon-intersect-test';
 
+import {SearchResultType} from '../actions/search';
+import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import IdentifyUtils from './IdentifyUtils';
+import LocaleUtils from './LocaleUtils';
 
 function coordinatesSearch(text, searchParams, callback) {
     const displaycrs = searchParams.displaycrs || "EPSG:4326";
@@ -61,6 +65,7 @@ function coordinatesSearch(text, searchParams, callback) {
             {
                 id: "coords",
                 titlemsgid: "search.coordinates",
+                type: SearchResultType.PLACE,
                 items: items
             }
         );
@@ -113,7 +118,7 @@ class NominatimSearch {
             if (!(entry.class in groups)) {
                 let title = entry.type;
                 try {
-                    title = translations[entry.class][entry.type];
+                    title = translations[entry.class][entry.type] || entry.type;
                 } catch (e) {
                     /* pass */
                 }
@@ -121,6 +126,7 @@ class NominatimSearch {
                     id: "nominatimgroup" + (groupcounter++),
                     // capitalize class
                     title: title,
+                    type: SearchResultType.PLACE,
                     items: []
                 };
                 results.push(groups[entry.class]);
@@ -261,6 +267,7 @@ class QgisSearch {
                 {
                     id: "qgis." + layername,
                     title: title + ": " + layername,
+                    type: SearchResultType.PLACE,
                     items: items
                 }
             );
@@ -273,6 +280,159 @@ class QgisSearch {
 }
 
 /** ************************************************************************ **/
+
+export class FulltextSearch {
+    static search(searchText, searchParams, callback) {
+        const searchServiceUrl = ConfigUtils.getConfigProp("searchServiceUrl");
+        if (!searchServiceUrl) {
+            /* eslint-disable-next-line */
+            console.warn("Fulltext search failed: searchServiceUrl not set");
+            callback({results: []});
+        }
+        // Compute search filter
+        const searchFilter = new Set([...searchParams.cfgParams.default || [], ...searchParams.searchTerms]);
+        const facetMap = searchParams.cfgParams.layers;
+        searchParams.activeLayers.forEach(layername => {
+            if (facetMap[layername]) {
+                searchFilter.add(facetMap[layername]);
+            }
+        });
+        const params = {
+            searchtext: searchText,
+            filter: [...searchFilter].join(","),
+            limit: searchParams.limit
+        };
+        const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
+        axios.get(searchServiceUrl, {params}).then(response => {
+            const data = FulltextSearch.filterFulltextResults(response.data, searchParams.filterPoly, searchParams.mapcrs);
+            const placeResultCount = (data.result_counts || []).reduce((res, entry) => res + (entry.dataproduct_id !== 'dataproduct' ? (entry.count || 0) : 0), 0);
+            const results = [];
+            // Layers
+            const formatLayerEntry = (dataproduct => ({
+                type: SearchResultType.THEMELAYER,
+                id: dataproduct.dataproduct_id,
+                text: dataproduct.display,
+                thumbnail: iconPath + "dataproduct.svg",
+                info: dataproduct.dset_info,
+                sublayers: dataproduct.sublayers ? dataproduct.sublayers.map(formatLayerEntry) : null
+            }));
+            results.push({
+                id: "fulltext.layers",
+                titlemsgid: LocaleUtils.trmsg("searchbox.layers"),
+                type: SearchResultType.THEMELAYER,
+                items: data.results.filter(entry => entry.dataproduct).map(entry => formatLayerEntry(entry.dataproduct))
+            });
+            // Places
+            results.push({
+                id: "fulltext.places",
+                titlemsgid: LocaleUtils.trmsg("searchbox.places"),
+                resultCount: placeResultCount,
+                type: SearchResultType.PLACE,
+                items: data.results.filter(entry => entry.feature).map(entry => ({
+                    id: entry.feature.feature_id,
+                    text: entry.feature.display,
+                    x: 0.5 * (entry.feature.bbox[0] + entry.feature.bbox[2]),
+                    y: 0.5 * (entry.feature.bbox[1] + entry.feature.bbox[3]),
+                    crs: entry.feature.srid,
+                    bbox: entry.feature.bbox,
+                    thumbnail: iconPath + entry.feature.dataproduct_id + ".svg",
+                    // fulltext specific info
+                    dataproduct_id: entry.feature.dataproduct_id,
+                    id_field_name: entry.feature.id_field_name
+                }))
+            });
+            callback({results: results, result_counts: data.result_counts});
+        }).catch(e => {
+            // eslint-disable-next-line
+            console.warn("Fulltext search failed: " + e);
+            callback({results: []});
+        });
+    }
+    static filterFulltextResults(data, filterPoly, mapCrs) {
+        if (!filterPoly) {
+            return data;
+        }
+        data.results = data.results.filter(result => {
+            if (!result.feature || !result.feature.bbox) {
+                return true;
+            }
+            const [xmin, ymin, xmax, ymax] = CoordinatesUtils.reprojectBbox(result.feature.bbox, "EPSG:" + result.feature.srid, mapCrs);
+            const intersects = polygonIntersectTest([[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax], [xmin, ymin]], filterPoly);
+            if (!intersects) {
+                data.result_counts.find(entry => entry.dataproduct_id === result.feature.dataproduct_id).count -= 1;
+            }
+            return intersects;
+        });
+        return data;
+    }
+    static getResultGeometry(resultItem, callback) {
+        const dataServiceUrl = ConfigUtils.getConfigProp("searchDataServiceUrl") || ConfigUtils.getConfigProp("dataServiceUrl");
+        if (!dataServiceUrl) {
+            callback(null);
+        }
+        // URL example: /api/data/v1/ch.so.afu.fliessgewaesser.netz/?filter=[["gewissnr","=",1179]]
+        const quot = typeof(resultItem.id) === 'string' ? '"' : '';
+        const filter = `[["${resultItem.id_field_name}","=", ${quot}${resultItem.id}${quot}]]`;
+        axios.get(dataServiceUrl.replace(/\/?$/, "/") + resultItem.dataproduct_id + "/?filter=" + filter).then(response => {
+            callback({feature: response.data, crs: response.data.crs.properties.name});
+        }).catch(() => {
+            callback(null);
+        });
+    }
+    static getLayerDefinition(resultItem, callback) {
+        const dataProductServiceUrl = ConfigUtils.getConfigProp("dataproductServiceUrl");
+        if (!dataProductServiceUrl) {
+            /* eslint-disable-next-line */
+            console.warn("Fulltext search: failed to get layer definition, dataproductServiceUrl is not defined");
+            callback(null);
+        }
+        const params = {
+            filter: resultItem.id
+        };
+        axios.get(dataProductServiceUrl.replace(/\/?$/, "/") + "weblayers", {params}).then(response => {
+            callback(response.data[resultItem.id]?.[0]);
+        }).catch(() => {
+            callback(null);
+        });
+    }
+    static handleHighlightParameters(hp, hf, st, callback) {
+        const searchServiceUrl = ConfigUtils.getConfigProp("searchServiceUrl");
+        const dataServiceUrl = ConfigUtils.getConfigProp("searchDataServiceUrl") || ConfigUtils.getConfigProp("dataServiceUrl");
+        if (!searchServiceUrl || !dataServiceUrl) {
+            return;
+        }
+        const queryFeature = (filter) => {
+            axios.get(dataServiceUrl.replace(/\/?$/, "/") + hp + "/?filter=" + filter).then(response => {
+                const bbox = response.data.bbox;
+                const item = {
+                    x: 0.5 * [bbox[0] + bbox[2]],
+                    y: 0.5 * [bbox[1] + bbox[3]],
+                    label: st,
+                    crs: response.data.crs.properties.name,
+                    bbox: bbox
+                };
+                callback(item, {feature: response.data, crs: response.data.crs.properties.name});
+            }).catch(() => {});
+        };
+        if (hp && hf) {
+            queryFeature(hf);
+        } else if (hp && st) {
+            const params = {
+                searchtext: st,
+                filter: hp,
+                limit: 1
+            };
+            axios.get(searchServiceUrl, {params}).then(response => {
+                if (response.data.results && response.data.results.length === 1) {
+                    const result = response.data.results[0].feature;
+                    const quot = typeof(result.feature_id) === 'string' ? '"' : '';
+                    const filter = `[["${result.id_field_name}","=", ${quot}${result.feature_id}${quot}]]`;
+                    queryFeature(filter);
+                }
+            }).catch(() => {});
+        }
+    }
+}
 
 export default {
     coordinates: {
@@ -290,5 +450,12 @@ export default {
         onSearch: QgisSearch.search,
         getResultGeometry: QgisSearch.getResultGeometry,
         handlesGeomFilter: false
+    },
+    fulltext: {
+        label: "Fulltext",
+        onSearch: FulltextSearch.search,
+        getResultGeometry: FulltextSearch.getResultGeometry,
+        getLayerDefinition: FulltextSearch.getLayerDefinition,
+        handlesGeomFilter: true
     }
 };

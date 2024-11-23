@@ -60,7 +60,7 @@ div.searchbox-results-section-title > span.icon {
 }
 
 div.searchbox-result {
-    padding: 0.125em 0.5em;
+    padding: 0.125em 0.25em;
     display: flex;
     align-items: center;
 }
@@ -81,17 +81,13 @@ div.searchbox-result-expandedinfo {
     color: var(--list-item-text-color-hover);
 }
 
-div.searchbox-result > img {
-    flex: 0 0 1.75em;
-    height: 1.5em;
-}
-
 div.searchbox-result > span.icon {
-    flex: 0 0 1em;
+    flex: 0 0 1.5em;
 }
 
-img.searchbox-result-thumbnail {
-    margin-right: 0.25em;
+.searchbox-result-thumbnail {
+    flex: 0 0 1.5em;
+    height: 1.5em;
 }
 
 span.searchbox-result-openicon {

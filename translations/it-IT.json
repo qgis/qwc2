@@ -457,7 +457,6 @@
       "enablelayer": "Attivare il livello",
       "existinglayer": "Il livello esiste già nella mappa",
       "filter": "Filtro",
-      "fulltext": "Full text",
       "invisiblelayer": "Il risultato si trova su un livello che non è visibile.",
       "limittoarea": "Limita a area",
       "more": "Altri risultati",
@@ -473,9 +472,8 @@
     },
     "searchbox": {
       "filter": "Filtro",
-      "layers": "Livelli",
+      "layers": "Cartine",
       "more": "Altri risultati",
-      "morelayers": "Sono disponibili altri risultati",
       "nodescription": "Nessuna descrizione disponibile",
       "placeholder": "Cerca luoghi o aggiungi cartina...",
       "places": "Luoghi",

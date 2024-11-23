@@ -457,7 +457,6 @@
       "enablelayer": "Ativar a camada",
       "existinglayer": "A camada já existe no mapa",
       "filter": "",
-      "fulltext": "",
       "invisiblelayer": "O resultado reside numa camada que não é visível.",
       "limittoarea": "",
       "more": "Mais...",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Refinar a procura",
-      "layers": "Mapas",
+      "layers": "",
       "more": "Mais resultados",
-      "morelayers": "Mais resultados disponíveis",
       "nodescription": "Não há descrição disponível",
       "placeholder": "Procurar local ou adicionar mapa...",
-      "places": "Lugares",
+      "places": "",
       "recent": "Pesquisas recentes"
     },
     "serviceinfo": {

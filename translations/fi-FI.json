@@ -457,7 +457,6 @@
       "enablelayer": "Aktivoi taso",
       "existinglayer": "Taso on jo lisätty karttaan",
       "filter": "",
-      "fulltext": "",
       "invisiblelayer": "The result lies on a layer which is not visible.",
       "limittoarea": "",
       "more": "Lisää...",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Tarkenna hakua",
-      "layers": "Kartat",
+      "layers": "",
       "more": "Lisää tuloksia",
-      "morelayers": "Tuloksia on lisää saatavilla",
       "nodescription": "Kuvausta ei löytynyt",
       "placeholder": "Etsi kohde tai lisää kartta...",
-      "places": "Kohteet",
+      "places": "",
       "recent": "Viimeisimmät haut"
     },
     "serviceinfo": {

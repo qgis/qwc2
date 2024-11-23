@@ -457,7 +457,6 @@
       "enablelayer": "Activer la couche",
       "existinglayer": "La couche existe déjà dans la carte",
       "filter": "Filtre",
-      "fulltext": "Recherche en plein texte",
       "invisiblelayer": "Le résultat est sur une couche désactivée",
       "limittoarea": "Limiter à la région",
       "more": "Plus...",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Affiner la recherche",
-      "layers": "Cartes",
+      "layers": "Couches",
       "more": "Plus de résultats",
-      "morelayers": "Plus de résultats disponibles",
       "nodescription": "Pas de description disponible",
       "placeholder": "Rechercher un lieu ou ajouter une carte...",
-      "places": "Lieux",
+      "places": "Lieus",
       "recent": "Recherches récentes"
     },
     "serviceinfo": {

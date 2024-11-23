@@ -457,7 +457,6 @@
       "enablelayer": "Ativar Camada",
       "existinglayer": "A camada já existe no mapa",
       "filter": "Filtro",
-      "fulltext": "Solr",
       "invisiblelayer": "O resultado está numa camada não visível.",
       "limittoarea": "Limitar à Área",
       "more": "Mais...",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Refinar Pesquisa",
-      "layers": "Mapas",
+      "layers": "",
       "more": "mais resultados",
-      "morelayers": "Mais resultados disponíveis",
       "nodescription": "Sem descrição disponível",
       "placeholder": "Procurar local ou adicionar mapa...",
-      "places": "Locais",
+      "places": "",
       "recent": "Pesquisas Recentes"
     },
     "serviceinfo": {

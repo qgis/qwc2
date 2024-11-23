@@ -457,7 +457,6 @@
       "enablelayer": "Aktiver lag",
       "existinglayer": "Laget finnes allerede på kartet",
       "filter": "",
-      "fulltext": "",
       "invisiblelayer": "Resultatet finnes på et lag som er usynlig",
       "limittoarea": "",
       "more": "Flere resultater",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Filtrer",
-      "layers": "Lag",
+      "layers": "",
       "more": "Flere resultater",
-      "morelayers": "Flere tilgjengelige resultater",
       "nodescription": "Beskrivelse ikke tilgjengelig",
       "placeholder": "Søk etter steder eller legg til kart",
-      "places": "Steder",
+      "places": "",
       "recent": "Nylige søk"
     },
     "serviceinfo": {

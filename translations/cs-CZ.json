@@ -457,7 +457,6 @@
       "enablelayer": "Zapnout vrstvu",
       "existinglayer": "Vrstva v mapě již existuje",
       "filter": "",
-      "fulltext": "",
       "invisiblelayer": "Výsledek je ve vrstvě, která se nezobrazuje.",
       "limittoarea": "",
       "more": "Více...",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Filtrovat výsledky",
-      "layers": "Vrstvy",
+      "layers": "",
       "more": "další výsledky",
-      "morelayers": "",
       "nodescription": "",
       "placeholder": "Hledat místo nebo přidat vrstvu...",
-      "places": "Místa",
+      "places": "",
       "recent": "Nedávná hledání"
     },
     "serviceinfo": {

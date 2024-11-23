@@ -176,9 +176,8 @@ const ThemeUtils = {
         return isEmpty(matches) ? [] : [{
             id: "themes",
             titlemsgid: "search.themes",
-            priority: -1,
+            type: SearchResultType.THEME,
             items: matches.map(theme => ({
-                type: SearchResultType.THEME,
                 id: theme.id,
                 text: theme.title,
                 theme: theme,
@@ -221,9 +220,8 @@ const ThemeUtils = {
         return isEmpty(matches) ? [] : [{
             id: "themelayers",
             titlemsgid: "search.themelayers",
-            priority: -1,
+            type: SearchResultType.THEMELAYER,
             items: matches.map(result => ({
-                type: SearchResultType.EXTERNALLAYER,
                 id: result.layer.id + ":" + result.layer.sublayers[0].name,
                 text: result.layer.title + ": " + result.layer.sublayers[0].title,
                 layer: result.layer,

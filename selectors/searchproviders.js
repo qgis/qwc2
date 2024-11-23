@@ -11,27 +11,30 @@ import {createSelector} from 'reselect';
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import SearchProviders from '../utils/SearchProviders';
 import ThemeUtils from '../utils/ThemeUtils';
 
-export default (searchProviders) => createSelector(
+export default createSelector(
     [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
-        searchProviders = {...searchProviders, ...window.QWC2SearchProviders || {}};
+        const searchProviders = {...SearchProviders, ...window.QWC2SearchProviders || {}};
         const availableProviders = {};
         const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
         const themeProviders = theme && theme.current && theme.current.searchProviders ? theme.current.searchProviders : [];
         const providerKeys = new Set();
-        for (const entry of themeProviders) {
+        for (let entry of themeProviders) {
+            if (typeof entry === 'string') {
+                entry = {provider: entry};
+            }
             // Omit qgis provider with field configuration, this is only supported through the FeatureSearch plugin
             if (entry.provider === 'qgis' && entry?.params?.fields) {
                 continue;
             }
-            // "key" is the legacy name for "provider"
-            const provider = searchProviders[entry.provider ?? entry.key ?? entry];
+            const provider = searchProviders[entry.provider];
             if (provider) {
                 if (provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
                     continue;
                 }
-                let key = entry.provider ?? entry.key ?? entry;
+                let key = entry.key ?? entry.provider;
                 if (providerKeys.has(key)) {
                     let i = 0;
                     for (i = 0; providerKeys.has(key + "_" + i); ++i);
@@ -42,7 +45,7 @@ export default (searchProviders) => createSelector(
                     ...provider,
                     label: entry.label ?? provider.label,
                     labelmsgid: entry.labelmsgid ?? provider.labelmsgid,
-                    params: entry.params
+                    params: {...entry.params}
                 };
             }
         }

@@ -457,7 +457,6 @@
       "enablelayer": "Habilitar capa",
       "existinglayer": "La capa ya existe en el mapa",
       "filter": "",
-      "fulltext": "",
       "invisiblelayer": "El resultado se encuentra en una capa no visible",
       "limittoarea": "",
       "more": "Más...",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Refinar búsqueda",
-      "layers": "Mapas",
+      "layers": "",
       "more": "más resultados",
-      "morelayers": "Más resultados disponibles",
       "nodescription": "No hay descripción disponible",
       "placeholder": "Busque un lugar o agregue mapa",
-      "places": "Lugares",
+      "places": "",
       "recent": "Búsquedas recientes"
     },
     "serviceinfo": {

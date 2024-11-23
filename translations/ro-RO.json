@@ -457,7 +457,6 @@
       "enablelayer": "Activare strat",
       "existinglayer": "Stratul există deja în hartă",
       "filter": "",
-      "fulltext": "",
       "invisiblelayer": "Rezultatul este într-un strat invizibil",
       "limittoarea": "",
       "more": "Mai multe...",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Filtrare căutare",
-      "layers": "Hărți",
+      "layers": "",
       "more": "mai multe rezultate",
-      "morelayers": "Mai multe rezultate disponibile",
       "nodescription": "Nicio descriere disponibilă",
       "placeholder": "Caută locație sau adaugă hartă",
-      "places": "Locații",
+      "places": "",
       "recent": "Căutări recente"
     },
     "serviceinfo": {

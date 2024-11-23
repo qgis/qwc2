@@ -457,7 +457,6 @@
       "enablelayer": "Katmanı etkinleştir",
       "existinglayer": "Katman zaten haritada mevcut",
       "filter": "Filtre",
-      "fulltext": "Tam metin araması",
       "invisiblelayer": "Sonuç, görünmeyen bir katmanda bulunuyor.",
       "limittoarea": "Bölgeyle sınırla",
       "more": "Daha fazla sonuç...",
@@ -473,12 +472,11 @@
     },
     "searchbox": {
       "filter": "Gelişmiş arama",
-      "layers": "Haritalar",
+      "layers": "",
       "more": "Daha fazla sonuç",
-      "morelayers": "Kullanılabilir daha fazla sonuç",
       "nodescription": "Açıklama yok",
       "placeholder": "Bir yer ara ya da harita ekle...",
-      "places": "Yerler",
+      "places": "",
       "recent": "Son aramalar"
     },
     "serviceinfo": {
