@@ -318,14 +318,14 @@ export class FulltextSearch {
             }));
             results.push({
                 id: "fulltext.layers",
-                titlemsgid: LocaleUtils.trmsg("searchbox.layers"),
+                titlemsgid: LocaleUtils.trmsg("search.layers"),
                 type: SearchResultType.THEMELAYER,
                 items: data.results.filter(entry => entry.dataproduct).map(entry => formatLayerEntry(entry.dataproduct))
             });
             // Places
             results.push({
                 id: "fulltext.places",
-                titlemsgid: LocaleUtils.trmsg("searchbox.places"),
+                titlemsgid: LocaleUtils.trmsg("search.places"),
                 resultCount: placeResultCount,
                 type: SearchResultType.PLACE,
                 items: data.results.filter(entry => entry.feature).map(entry => ({

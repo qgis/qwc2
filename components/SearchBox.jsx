@@ -270,7 +270,7 @@ class SearchBox extends React.Component {
         return (
             <div key="recent">
                 <div className="searchbox-results-section-title" onClick={() => this.toggleSection("recent")} onMouseDown={MiscUtils.killEvent}>
-                    <Icon icon={this.isCollapsed("recent") ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.recent")}
+                    <Icon icon={this.isCollapsed("recent") ? "expand" : "collapse"} />{LocaleUtils.tr("search.recent")}
                 </div>
                 {!this.isCollapsed("recent") ? (
                     <div className="searchbox-results-section-body">
@@ -295,7 +295,7 @@ class SearchBox extends React.Component {
             return (
                 <div key="filter">
                     <div className="searchbox-results-section-title" onClick={() => this.toggleSection("filter")} onMouseDown={MiscUtils.killEvent}>
-                        <Icon icon={collapsed ? "expand" : "collapse"} />{LocaleUtils.tr("searchbox.filter")}
+                        <Icon icon={collapsed ? "expand" : "collapse"} />{LocaleUtils.tr("search.filter")}
                     </div>
                     {!collapsed ? (
                         <div className="searchbox-results-section-body">
@@ -353,7 +353,7 @@ class SearchBox extends React.Component {
                                     {group.items.map((entry) => renderer(provider, group, entry))}
                                     {additionalResults > 0 && (
                                         <div className="searchbox-more-results">
-                                            {additionalResults}&nbsp;{LocaleUtils.tr("searchbox.more")}
+                                            {LocaleUtils.tr("search.more", additionalResults)}
                                         </div>
                                     )}
                                 </div>
@@ -406,7 +406,7 @@ class SearchBox extends React.Component {
                 </div>
                 {this.state.activeLayerInfo === key ? (
                     <div className="searchbox-result-abstract"
-                        dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.layer?.abstract || "") || LocaleUtils.tr("searchbox.nodescription")}}
+                        dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.layer?.abstract || "") || LocaleUtils.tr("search.nodescription")}}
                     />
                 ) : null}
                 {this.state.expandedLayerGroup === key ? (
@@ -545,7 +545,7 @@ class SearchBox extends React.Component {
         return this.state.collapsedSections[section] ?? deflt;
     };
     render() {
-        const placeholder = LocaleUtils.tr("searchbox.placeholder");
+        const placeholder = LocaleUtils.tr("search.placeholder");
         const filterButtonClasses = classnames({
             "button": true,
             "searchbox-filter-button": true,

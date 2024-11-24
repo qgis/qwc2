@@ -45,7 +45,6 @@ import PluginsContainer from '../components/PluginsContainer';
 import PrintSelection from '../components/PrintSelection';
 import QtDesignerForm from '../components/QtDesignerForm';
 import ResizeableWindow from '../components/ResizeableWindow';
-import Search from '../components/Search';
 import SearchBox from '../components/SearchBox';
 import ServiceInfoWindow from '../components/ServiceInfoWindow';
 import SideBar from '../components/SideBar';
@@ -197,7 +196,6 @@ class API extends React.Component {
         window.qwc2.components.QtDesignerForm = QtDesignerForm;
         window.qwc2.components.ResizeableWindow = ResizeableWindow;
         window.qwc2.components.SearchBox = SearchBox;
-        window.qwc2.components.Search = Search;
         window.qwc2.components.ServiceInfoWindow = ServiceInfoWindow;
         window.qwc2.components.ShareLink = ShareLink;
         window.qwc2.components.ShareQRCode = ShareQRCode;
