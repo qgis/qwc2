@@ -28,12 +28,12 @@ import Spinner from '../components/widgets/Spinner';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import displayCrsSelector from '../selectors/displaycrs';
+import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import RoutingInterface from '../utils/RoutingInterface';
-import SearchProviders from '../utils/SearchProviders';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Routing.css';
@@ -149,15 +149,20 @@ class Routing extends React.Component {
     constructor(props) {
         super(props);
         this.recomputeTimeout = null;
-        this.state.searchProviders = props.enabledProviders.map(key => props.searchProviders[key]);
-        this.state.searchParams = {
-            mapcrs: this.props.mapcrs,
-            displaycrs: this.props.displaycrs,
-            lang: LocaleUtils.lang()
-        };
         this.state.mode = this.props.enabledModes[0];
     }
     componentDidUpdate(prevProps, prevState) {
+        // Recollect search providers
+        if (this.props.searchProviders !== prevProps.searchProviders) {
+            this.setState({
+                searchProviders: this.props.enabledProviders.map(key => this.props.searchProviders[key]).filter(Boolean),
+                searchParams: {
+                    mapcrs: this.props.mapcrs,
+                    displaycrs: this.props.displaycrs,
+                    lang: LocaleUtils.lang()
+                }
+            });
+        }
         // Activated / message
         if (this.props.task.id === "Routing") {
             this.props.setCurrentTask(null);
@@ -869,11 +874,11 @@ class Routing extends React.Component {
     };
 }
 
-export default connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+export default connect(createSelector([state => state, displayCrsSelector, searchProvidersSelector], (state, displaycrs, searchProviders) => ({
     task: state.task,
     theme: state.theme.current,
     mapcrs: state.map.projection,
-    searchProviders: {...SearchProviders, ...window.QWC2SearchProviders || {}},
+    searchProviders: searchProviders,
     displaycrs: displaycrs,
     layers: state.layers.flat,
     locatePos: state.locate.position
