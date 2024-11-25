@@ -74,7 +74,7 @@ class Identify extends React.Component {
         /** Whether to highlight all results if no result is hovered */
         highlightAllResults: PropTypes.bool,
         iframeDialogsInitiallyDocked: PropTypes.bool,
-        /** The initial radius units of the identify dialog in radius mode. One of 'meters', 'feet', 'kilometers', 'miles'. */
+        /** The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. */
         initialRadiusUnits: PropTypes.string,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.string,
@@ -106,7 +106,7 @@ class Identify extends React.Component {
             initiallyDocked: false,
             side: 'left'
         },
-        initialRadiusUnits: 'meters',
+        initialRadiusUnits: 'm',
         highlightAllResults: true
     };
     state = {
@@ -327,13 +327,13 @@ class Identify extends React.Component {
                         value={this.state.radius}
                     />
                     <select
-                        onChange={unit => this.updateRadius(this.state.radius, unit)}
+                        onChange={ev => this.updateRadius(this.state.radius, ev.target.value)}
                         value={this.state.radiusUnits}
                     >
-                        <option value="meters">m</option>
-                        <option value="feet">ft</option>
-                        <option value="kilometers">km</option>
-                        <option value="miles">mi</option>
+                        <option value="m">m</option>
+                        <option value="ft">ft</option>
+                        <option value="km">km</option>
+                        <option value="mi">mi</option>
                     </select>
                 </span>
             </div>
