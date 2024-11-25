@@ -44,7 +44,8 @@ class MapSelection extends React.Component {
         styleOptions: {}
     };
     state = {
-        geometry: null
+        geometry: null,
+        modifiers: {alt: false, ctrl: false, shift: false}
     };
     constructor(props) {
         super(props);
@@ -80,7 +81,7 @@ class MapSelection extends React.Component {
         }
         if (this.state.geometry !== prevState.geometry) {
             if (this.state.geometry !== this.props.geometry) {
-                this.props.geometryChanged(this.state.geometry);
+                this.props.geometryChanged(this.state.geometry, {...this.state.modifiers});
             }
         }
         if (this.props.geometry !== prevProps.geometry && this.props.geometry !== this.state.geometry) {
@@ -165,6 +166,9 @@ class MapSelection extends React.Component {
 
         this.map.addInteraction(this.drawInteraction);
 
+        window.addEventListener('keydown', this.checkModifier);
+        window.addEventListener('keyup', this.checkModifier);
+
         if (this.props.cursor) {
             this.map.getViewport().style.cursor = this.props.cursor;
         }
@@ -174,7 +178,19 @@ class MapSelection extends React.Component {
             this.map.removeInteraction(this.drawInteraction);
             this.drawInteraction = null;
         }
+        window.removeEventListener('keydown', this.checkModifier);
+        window.removeEventListener('keyup', this.checkModifier);
         this.map.getViewport().style.cursor = '';
+    };
+    checkModifier = (ev) => {
+        const down = ev.type === "keydown";
+        this.setState((state) => ({
+            modifiers: {
+                alt: ev.key === 'Alt' ? down : state.modifiers.alt,
+                ctrl: ev.key === 'Control' ? down : state.modifiers.ctrl,
+                shift: ev.key === 'Shift' ? down : state.modifiers.shift
+            }
+        }));
     };
     updateSelectionState = (geometry) => {
         if (!geometry) {
