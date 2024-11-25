@@ -116,7 +116,8 @@ class Identify extends React.Component {
         radius: 0,
         radiusUnits: this.props.initialRadiusUnits,
         exitTaskOnResultsClose: null,
-        filterGeom: null
+        filterGeom: null,
+        filterGeomModifiers: {}
     };
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
@@ -207,7 +208,7 @@ class Identify extends React.Component {
         if (poly.length < 3 || isEmpty(queryableLayers)) {
             return;
         }
-        const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : this.state.identifyResults;
+        const identifyResults = this.state.filterGeomModifiers.ctrl !== true ? {} : this.state.identifyResults;
         const center = [0, 0];
         poly.forEach(point => {
             center[0] += point[0];
@@ -241,7 +242,7 @@ class Identify extends React.Component {
         if (isEmpty(queryableLayers)) {
             return;
         }
-        const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : this.state.identifyResults;
+        const identifyResults = this.filterGeomModifiers.ctrl !== true ? {} : this.state.identifyResults;
         const filter = VectorLayerUtils.geoJSONGeomToWkt(this.state.filterGeom);
         let pendingRequests = 0;
         const params = {...this.props.params};
@@ -405,7 +406,7 @@ class Identify extends React.Component {
             <MapSelection
                 active geomType={this.state.mode === "Radius" ? "Circle" : "Polygon"}
                 geometry={this.state.filterGeom}
-                geometryChanged={geom => this.setState({filterGeom: geom})} key="MapSelection"
+                geometryChanged={(geom, mod) => this.setState({filterGeom: geom, filterGeomModifiers: mod})} key="MapSelection"
                 measure={this.state.mode === "Radius"}
             />
         ) : null];
