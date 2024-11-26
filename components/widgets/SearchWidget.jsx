@@ -140,7 +140,7 @@ class SearchWidget extends React.Component {
         if (!this.preventBlur) {
             clearTimeout(this.searchTimeout);
             this.props.onBlur();
-            this.setState({active: false, reqId: null, results: [], pending: 0});
+            this.setState({active: false});
         }
     };
     onFocus = (ev) => {
@@ -201,8 +201,8 @@ class SearchWidget extends React.Component {
         }
     };
     clear = () => {
+        this.setState({results: [], text: ""});
         this.props.resultSelected(null);
-        this.setState({results: []});
     };
 }
 
