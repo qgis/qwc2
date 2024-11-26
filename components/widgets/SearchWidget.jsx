@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
+import {SearchResultType} from '../../actions/search';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
@@ -37,6 +38,7 @@ class SearchWidget extends React.Component {
         placeholder: PropTypes.string,
         queryGeometries: PropTypes.bool,
         resultSelected: PropTypes.func.isRequired,
+        resultTypeFilter: PropTypes.array,
         searchParams: PropTypes.object,
         searchProviders: PropTypes.array,
         theme: PropTypes.object,
@@ -45,6 +47,7 @@ class SearchWidget extends React.Component {
     static defaultProps = {
         onBlur: () => {},
         onFocus: () => {},
+        resultTypeFilter: [SearchResultType.PLACE],
         searchParams: {},
         searchProviders: []
     };
@@ -106,7 +109,7 @@ class SearchWidget extends React.Component {
     renderResults = () => {
         return (
             <div className="search-widget-results" onMouseDown={this.setPreventBlur}>
-                {this.state.results.map(group => (
+                {this.state.results.filter(group => this.props.resultTypeFilter.includes(group.type ?? SearchResultType.PLACE)).map(group => (
                     <div className="search-widget-results-group" key={group.id} onMouseDown={MiscUtils.killEvent}>
                         <div className="search-widget-results-group-title"><span>{group.title ?? LocaleUtils.tr(group.titlemsgid)}</span></div>
                         {group.items.map(item => {
