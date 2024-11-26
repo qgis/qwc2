@@ -13,6 +13,40 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import SearchProviders from '../utils/SearchProviders';
 import ThemeUtils from '../utils/ThemeUtils';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
+
+// Uniformize the response of getResultGeometry
+function getResultGeometry(provider, item, callback) {
+    provider.getResultGeometry(item, (response) => {
+        const features = [];
+        if (response?.geometry) {
+            const highlightFeature = response.geometry.coordinates ? {
+                type: "Feature", geometry: response.geometry
+            } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, response.crs);
+            if (highlightFeature) {
+                features.push(highlightFeature);
+            }
+        } else if (response?.feature) {
+            if (response.feature.features) {
+                features.push(...response.feature.features);
+            } else {
+                features.push(response.feature);
+            }
+        }
+        if (features.length === 0) {
+            callback(null);
+        } else {
+            callback({
+                feature: {
+                    type: "FeatureCollection",
+                    features: features
+                },
+                crs: response.crs,
+                hidemarker: response.hidemarker
+            });
+        }
+    });
+}
 
 export default createSelector(
     [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
@@ -45,6 +79,7 @@ export default createSelector(
                     ...provider,
                     label: entry.label ?? provider.label,
                     labelmsgid: entry.labelmsgid ?? provider.labelmsgid,
+                    getResultGeometry: provider.getResultGeometry ? (item, callback) => getResultGeometry(provider, item, callback) : null,
                     params: {...entry.params}
                 };
             }

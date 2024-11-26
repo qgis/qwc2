@@ -446,7 +446,7 @@ class SearchBox extends React.Component {
             this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showResultGeometry(result, response); }, axios);
         } else {
             // Display marker
-            this.showResultGeometry(result, {geometry: {type: "Point", coordinates: [result.x, result.y]}, crs: result.crs});
+            this.showResultGeometry(result, {feature: {type: "Feature", geometry: {type: "Point", coordinates: [result.x, result.y]}}, crs: result.crs});
         }
         if (result.dataproduct_id) {
             const quot = typeof(result.id) === 'string' ? '"' : '';
@@ -751,22 +751,9 @@ class SearchBox extends React.Component {
         this.props.setCurrentTask('LayerTree');
     };
     showResultGeometry = (item, response, scale = undefined) => {
-        const features = [];
-        if (!isEmpty(response?.geometry)) {
-            const highlightFeature = response.geometry.coordinates ? {
-                type: "Feature", geometry: response.geometry
-            } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, response.crs);
-            if (highlightFeature) {
-                features.push(highlightFeature);
-            }
-        } else if (!isEmpty(response?.feature)) {
-            if (response.feature.features) {
-                features.push(...response.feature.features);
-            } else {
-                features.push(response.feature);
-            }
-        }
-        if (!isEmpty(features)) {
+        if (response?.feature) {
+            const features = response.feature.features ?? [response.feature];
+
             const layer = {
                 id: "searchselection",
                 role: LayerRole.SELECTION
