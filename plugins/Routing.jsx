@@ -158,8 +158,7 @@ class Routing extends React.Component {
                 searchProviders: this.props.enabledProviders.map(key => this.props.searchProviders[key]).filter(Boolean),
                 searchParams: {
                     mapcrs: this.props.mapcrs,
-                    displaycrs: this.props.displaycrs,
-                    lang: LocaleUtils.lang()
+                    displaycrs: this.props.displaycrs
                 }
             });
         }
