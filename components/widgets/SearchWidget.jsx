@@ -20,6 +20,7 @@ import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import Icon from '../Icon';
 import Spinner from './Spinner';
 
@@ -34,6 +35,7 @@ class SearchWidget extends React.Component {
         onBlur: PropTypes.func,
         onFocus: PropTypes.func,
         placeholder: PropTypes.string,
+        queryGeometries: PropTypes.bool,
         resultSelected: PropTypes.func.isRequired,
         searchParams: PropTypes.object,
         searchProviders: PropTypes.array,
@@ -110,7 +112,7 @@ class SearchWidget extends React.Component {
                         {group.items.map(item => {
                             item.text = (item.label !== undefined ? item.label : item.text || '').replace(/<\/?\w+\s*\/?>/g, '');
                             return (
-                                <div className="search-widget-results-group-item" key={item.id} onClick={() => this.resultSelected(item)} title={item.text}>{item.text}</div>
+                                <div className="search-widget-results-group-item" key={item.id} onClick={() => this.resultSelected(group, item)} title={item.text}>{item.text}</div>
                             );
                         })}
                     </div>
@@ -170,15 +172,27 @@ class SearchWidget extends React.Component {
                         return {};
                     }
                     return {
-                        results: [...state.results, ...response.results],
+                        results: [...state.results, ...response.results.map(group => ({...group, provider}))],
                         pending: state.pending - 1
                     };
                 });
             }, axios);
         });
     };
-    resultSelected = (item) => {
-        this.props.resultSelected(item);
+    resultSelected = (group, item) => {
+        if (!item.geometry && group.provider.getResultGeometry) {
+            group.provider.getResultGeometry(item, (response) => {
+                this.props.resultSelected({
+                    ...item,
+                    feature: VectorLayerUtils.reprojectFeature(response.feature, response.crs, item.crs)
+                });
+            });
+        } else {
+            this.props.resultSelected({
+                ...item,
+                feature: item.geomety ? {type: "Feature", geometry: item.geometry} : null
+            });
+        }
         if (this.input) {
             this.input.blur();
         }

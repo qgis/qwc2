@@ -355,6 +355,22 @@ const VectorLayerUtils = {
             return geometry;
         }
     },
+    reprojectFeature(feature, srccrs, dstcrs) {
+        if (srccrs === dstcrs || !srccrs || !dstcrs) {
+            return feature;
+        }
+        if (feature.features) {
+            return {
+                ...feature,
+                features: feature.features.map(f => VectorLayerUtils.reprojectFeature(srccrs, dstcrs))
+            };
+        } else {
+            return {
+                ...feature,
+                geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, srccrs, dstcrs)
+            };
+        }
+    },
     wktToGeoJSON(wkt, srccrs, dstcrs, id = uuidv1()) {
         wkt = wkt
             .replace(/Point(\w+)/i, "Point $1")
