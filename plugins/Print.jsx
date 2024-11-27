@@ -559,6 +559,7 @@ class Print extends React.Component {
                 center={this.state.center || this.props.map.center}
                 fixedFrame={frame}
                 geometryChanged={this.geometryChanged}
+                key="PrintSelection"
                 printSeriesChanged={this.printSeriesChanged}
                 printSeriesEnabled={this.props.displayPrintSeries && this.state.printSeriesEnabled}
                 printSeriesOverlap={this.state.printSeriesOverlap / 100}

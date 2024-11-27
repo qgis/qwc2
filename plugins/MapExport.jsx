@@ -277,10 +277,10 @@ class MapExport extends React.Component {
                 height: pageSize.height
             };
             return (<PrintSelection allowRotation={false} allowScaling={this.props.allowedScales !== false}
-                center={this.props.map.center} fixedFrame={frame} geometryChanged={this.geometryChanged} scale={this.state.scale}
+                center={this.props.map.center} fixedFrame={frame} geometryChanged={this.geometryChanged} key="PrintSelection" scale={this.state.scale}
             />);
         } else {
-            return (<PrintSelection allowRotation={false} geometryChanged={this.geometryChanged} />);
+            return (<PrintSelection allowRotation={false} geometryChanged={this.geometryChanged} key="PrintSelection" />);
         }
     };
     render() {
