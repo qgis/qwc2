@@ -187,7 +187,7 @@ class SearchWidget extends React.Component {
             group.provider.getResultGeometry(item, (response) => {
                 this.props.resultSelected({
                     ...item,
-                    feature: VectorLayerUtils.reprojectFeature(response.feature, response.crs, item.crs)
+                    feature: response ? VectorLayerUtils.reprojectFeature(response.feature, response.crs, item.crs) : null
                 });
             });
         } else {
