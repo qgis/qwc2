@@ -894,12 +894,14 @@ const LayerUtils = {
                 if (printBgLayerName) {
                     let match = null;
                     if ((match = printBgLayerName.match(/^(\w+):(.*)#([^#]+)$/)) && match[1] === "wms") {
-                        const layer = {
-                            type: 'wms',
-                            params: {LAYERS: match[3], OPACITIES: '255', STYLES: ''},
-                            url: match[2]
-                        };
-                        LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
+                        if (printExternalLayers) {
+                            const layer = {
+                                type: 'wms',
+                                params: {LAYERS: match[3], OPACITIES: '255', STYLES: ''},
+                                url: match[2]
+                            };
+                            LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
+                        }
                     } else {
                         params.LAYERS.push(printBgLayerName);
                         params.OPACITIES.push("255");
