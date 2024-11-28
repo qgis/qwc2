@@ -12,14 +12,13 @@ import PropTypes from 'prop-types';
 
 import {AppMenu} from '../AppMenu';
 import Icon from '../Icon';
-import {TaskContext} from './Map3DContextTypes';
 
 import './style/TopBar3D.css';
 
 export default class TopBar3D extends React.Component {
     static propTypes = {
-        currentTask: PropTypes.object,
-        setCurrentTask: PropTypes.func
+        sceneContext: PropTypes.object,
+        taskContext: PropTypes.object
     };
     state = {
     };
@@ -28,16 +27,12 @@ export default class TopBar3D extends React.Component {
             {key: "LayerTree3D", icon: "layers"}
         ];
         return (
-            <TaskContext.Consumer>
-                {taskContext => (
-                    <div className="map3d-topbar">
-                        <span className="map3d-topbar-spacer" />
-                        <AppMenu appMenuClearsTask={false} buttonContents={this.menuButtonContents()}
-                            currentTask={taskContext.currentTask} menuItems={menuItems}
-                            setCurrentTask={taskContext.setCurrentTask} />
-                    </div>
-                )}
-            </TaskContext.Consumer>
+            <div className="map3d-topbar">
+                <span className="map3d-topbar-spacer" />
+                <AppMenu appMenuClearsTask buttonContents={this.menuButtonContents()}
+                    currentTask={this.props.taskContext.currentTask} menuItems={menuItems}
+                    setCurrentTask={this.props.taskContext.setCurrentTask} />
+            </div>
         );
     }
     menuButtonContents = () => {

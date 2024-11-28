@@ -26,7 +26,6 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
 import BottomBar3D from '../components/map3d/BottomBar3D';
 import LayerTree3D from '../components/map3d/LayerTree3D';
-import {LayersContext, TaskContext} from '../components/map3d/Map3DContextTypes';
 import OverviewMap3D from '../components/map3d/OverviewMap3D';
 import TopBar3D from '../components/map3d/TopBar3D';
 import {BackgroundSwitcher} from '../plugins/BackgroundSwitcher';
@@ -69,24 +68,33 @@ class Map3D extends React.Component {
             initiallyDocked: true
         }
     };
+    static defaultSceneState = {
+        scene: null,
+        map: null,
+        mapCrs: null,
+        dtmUrl: null,
+        dtmCrs: null,
+        baseLayers: [],
+        drapedLayers: []
+    };
     state = {
         enabled: false,
-        layers: {},
-        baselayer: null,
-        overviewState: {
-            azimuth: 0,
-            center: [0, 0],
-            resolution: 1
-        },
-        layersContext: {
-            baseLayers: [],
-            drapedLayers: [],
-            modelLayers: [],
-            updateDrapedLayer: null
+        sceneContext: {
+            ...Map3D.defaultSceneState,
+
+            addLayer: (layer) => {},
+            getLayer: (layer) => {},
+            removeLayer: (layerId) => {},
+            updateDrapedLayer: (layerId, diff) => {},
+
+            addSceneObject: (object) => {},
+            removeSceneObject: (objectId) => {},
+
+            setViewToExtent: (bounds, angle) => {}
         },
         taskContext: {
             currentTask: {id: null, mode: null},
-            setCurrentTask: null
+            setCurrentTask: (task, mode) => {}
         },
         cursorPosition: null
     };
@@ -95,10 +103,17 @@ class Map3D extends React.Component {
         this.container = null;
         this.inspector = null;
         this.instance = null;
+        this.sceneObjects = {};
         this.map = null;
         this.animationInterrupted = false;
+        this.state.sceneContext.addLayer = this.addLayer;
+        this.state.sceneContext.getLayer = this.getLayer;
+        this.state.sceneContext.removeLayer = this.removeLayer;
+        this.state.sceneContext.updateDrapedLayer = this.updateDrapedLayer;
+        this.state.sceneContext.addSceneObject = this.addSceneObject;
+        this.state.sceneContext.removeSceneObject = this.removeSceneObject;
+        this.state.sceneContext.setViewToExtent = this.setViewToExtent;
         this.state.taskContext.setCurrentTask = this.setCurrentTask;
-        this.state.layersContext.updateDrapedLayer = this.updateDrapedLayer;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -114,42 +129,39 @@ class Map3D extends React.Component {
             } else if (this.props.layers !== prevProps.layers) {
                 this.setState((state) => (
                     {
-                        layersContext: {...state.layersContext, drapedLayers: this.collectDrapedLayers(state.layersContext.drapedLayers)}
+                        sceneContext: {...state.sceneContext, drapedLayers: this.collectDrapedLayers(state.sceneContext.drapedLayers)}
                     }
                 ));
             }
 
             // Update map layers
-            if (this.state.layersContext.baseLayers !== prevState.layersContext.baseLayers) {
+            if (this.state.sceneContext.baseLayers !== prevState.sceneContext.baseLayers) {
                 this.applyBaseLayer();
             }
 
-            if (this.state.layersContext.drapedLayers !== prevState.layersContext.drapedLayers) {
-                this.applyDrapedLayers(this.state.layersContext.drapedLayers, prevState.layersContext.drapedLayers);
+            if (this.state.sceneContext.drapedLayers !== prevState.sceneContext.drapedLayers) {
+                this.applyDrapedLayers(this.state.sceneContext.drapedLayers, prevState.sceneContext.drapedLayers);
             }
         }
     }
     applyBaseLayer = () => {
-        const baseLayer = this.state.layersContext.baseLayers.find(e => e.visibility === true);
-        const baseLayers = this.map.getLayers(l => l.name === "baselayer");
-        if (baseLayers.length > 0) {
-            baseLayers.forEach(bl => this.map.removeLayer(bl, {dispose: true}));
-        }
+        const baseLayer = this.state.sceneContext.baseLayers.find(e => e.visibility === true);
+        this.removeLayer("__baselayer");
         if (!baseLayer) {
             return;
         }
         const layerCreator = LayerRegistry[baseLayer.type];
         if (layerCreator?.create3d) {
-            const layer3d = layerCreator.create3d({...baseLayer, name: "baselayer"}, this.props.projection);
-            this.map.addLayer(layer3d);
+            const layer3d = layerCreator.create3d(baseLayer, this.props.projection);
+            this.addLayer("__baselayer", layer3d);
             this.map.insertLayerAfter(layer3d, null);
         }
     };
     setBaseLayer = (layer, visibility) => {
         this.setState(state => ({
-            layersContext: {
-                ...state.layersContext,
-                baseLayers: state.layersContext.baseLayers.map(entry => (
+            sceneContext: {
+                ...state.sceneContext,
+                baseLayers: state.sceneContext.baseLayers.map(entry => (
                     {...entry, visibility: entry.name === layer.name ? visibility : false}
                 ))
             }
@@ -181,15 +193,15 @@ class Map3D extends React.Component {
         const prevLayersMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
 
         // Add-update new layers
-        let prevLayer = this.map.getLayers(l => l.name === "baselayer")[0] ?? null;
+        let prevLayer = this.getLayer("__baselayer");
         [...layers].reverse().forEach(layer => {
             const layerCreator = LayerRegistry[layer.type];
-            let mapLayer = this.map.getLayers(l => l.name === layer.id)[0];
+            let mapLayer = this.getLayer(layer.id);
             if (mapLayer) {
                 layerCreator.update3d(mapLayer.source, layer, prevLayersMap[layer.id], this.props.projection);
             } else {
-                mapLayer = layerCreator.create3d({...layer, name: layer.id}, this.props.projection);
-                this.map.addLayer(mapLayer);
+                mapLayer = layerCreator.create3d(layer, this.props.projection);
+                this.addLayer(layer.id, mapLayer);
             }
             this.map.insertLayerAfter(mapLayer, prevLayer);
             mapLayer.visible = layer.visibility;
@@ -199,29 +211,48 @@ class Map3D extends React.Component {
         // Remove old layers
         Object.keys(prevLayers).forEach(layer => {
             if (!(layer.id in layersMap)) {
-                const mapLayer = this.map.getLayers(l => l.name === layer.id)[0];
-                if (mapLayer) {
-                    this.map.removeLayer(mapLayer);
-                }
+                this.removeLayer(layer.id);
             }
         });
         this.instance.notifyChange(this.map);
     };
+    addLayer = (layerId, layer) => {
+        layer.__qwcLayerId = layerId;
+        this.map.addLayer(layer);
+    };
+    getLayer = (layerId) => {
+        return this.map.getLayers(l => l.__qwcLayerId === layerId)[0] ?? null;
+    }
+    removeLayer = (layerId) => {
+        this.map.getLayers(l => l.__qwcLayerId === layerId).forEach(layer => {
+            this.map.removeLayer(layer, {dispose: true});
+        });
+    };
     updateDrapedLayer = (layerId, diff) => {
         this.setState(state => ({
-            layersContext: {
-                ...state.layersContext,
-                drapedLayers: state.layersContext.drapedLayers.map(entry => {
+            sceneContext: {
+                ...state.sceneContext,
+                drapedLayers: state.sceneContext.drapedLayers.map(entry => {
                     return entry.id === layerId ? {...entry, ...diff} : entry;
                 })
             }
         }));
     };
+    addSceneObject = (objectId, object) => {
+        this.sceneObjects[objectId] = object;
+        this.instance.add(object);
+    };
+    removeSceneObject = (objectId) => {
+        if (this.sceneObjects[objectId]) {
+            this.instance.remove(this.sceneObjects[objectId]);
+            delete this.sceneObjects[objectId];
+        }
+    };
     render() {
         if (!this.state.enabled) {
             return null;
         }
-        const baseLayer = this.state.layersContext.baseLayers.find(l => l.visibility === true);
+        const baseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true);
         const extraControls = [{
             icon: "sync",
             callback: () => this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation),
@@ -236,21 +267,18 @@ class Map3D extends React.Component {
                 initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
                 key="Map3D"
-                onClose={this.close}
+                onClose={() => this.setState({enabled: false})}
                 onExternalWindowResized={this.redrawScene}
                 splitScreenWhenDocked
                 splitTopAndBottomBar
                 title={LocaleUtils.tr("map3d.title")}
             >
-                <div className="map3d-body" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} role="body">
-                    <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.layersContext.baseLayers} />
-                    <TaskContext.Provider value={this.state.taskContext}>
-                        <TopBar3D />
-                        <LayersContext.Provider value={this.state.layersContext}>
-                            <LayerTree3D />
-                        </LayersContext.Provider>
-                    </TaskContext.Provider>
-                    <BottomBar3D cursorPosition={this.state.cursorPosition} instance={this.instance} projection={this.props.projection} />
+                <div className="map3d-body" role="body">
+                    <div className="map3d-map" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} />
+                    <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
+                    <TopBar3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                    <LayerTree3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                    <BottomBar3D cursorPosition={this.state.cursorPosition} sceneContext={this.state.sceneContext} />
                     <div className="map3d-nav-widget map3d-nav-pan">
                         <span />
                         <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
@@ -273,7 +301,7 @@ class Map3D extends React.Component {
                         <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -1)} />
                         <span />
                     </div>
-                    <OverviewMap3D baseLayer={baseLayer} projection={this.props.projection} {...this.state.overviewState}  />
+                    <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
                 </div>
             </ResizeableWindow>
         ), (
@@ -299,6 +327,7 @@ class Map3D extends React.Component {
                 clearColor: 0x000000
             }
         });
+        this.sceneObjects = {};
 
         // Setup map
         const bounds = CoordinatesUtils.reprojectBbox(this.props.theme.bbox.bounds, this.props.theme.bbox.crs, projection);
@@ -321,7 +350,6 @@ class Map3D extends React.Component {
         const center = extent.center();
         this.instance.view.camera.position.set(center.x, center.y, 0.5 * (extent.east - extent.west));
         this.instance.view.controls.target = extent.centerAsVector3();
-        this.instance.view.controls.addEventListener('change', this.updateControlsTarget);
 
         // Skybox
         const cubeTextureLoader = new CubeTextureLoader();
@@ -341,10 +369,11 @@ class Map3D extends React.Component {
         if (demUrl.startsWith(":")) {
             demUrl = location.href.split("?")[0] + ConfigUtils.getAssetsPath() + demUrl.substr(1);
         }
+        const demCrs = this.props.theme.map3d?.dtm?.crs || "EPSG:3857";
         if (demUrl) {
             const demSource = new GeoTIFFSource({
                 url: demUrl,
-                crs: this.props.theme.map3d.dtm.crs || "EPSG:3857"
+                crs: demCrs
             });
             const demMin = this.props.theme.map3d.dtm.min ?? undefined;
             const demMax = this.props.theme.map3d.dtm.max ?? undefined;
@@ -354,7 +383,7 @@ class Map3D extends React.Component {
                 source: demSource,
                 minmax: demMin !== undefined && demMax !== undefined ? { demMin, demMax } : undefined
             });
-            this.map.addLayer(elevationLayer);
+            this.addLayer("__dtm", elevationLayer);
         }
 
         // Collect baselayers
@@ -378,8 +407,13 @@ class Map3D extends React.Component {
 
 
         this.setState(state => ({
-            layersContext: {
-                ...state.layersContext,
+            sceneContext: {
+                ...state.sceneContext,
+                scene: this.instance,
+                map: this.map,
+                mapCrs: projection,
+                dtmUrl: demUrl,
+                dtmCrs: demCrs,
                 baseLayers: baseLayers,
                 drapedLayers: drapedLayers,
                 modelLayers: []
@@ -397,12 +431,18 @@ class Map3D extends React.Component {
         this.map.dispose({disposeLayers: true});
         this.instance.view.controls.dispose();
         this.instance.dispose();
+        Object.values(this.sceneObjects).forEach(object => {
+            this.instance.remove(object);
+        });
+        this.sceneObjects = {};
         this.inspector = null;
         this.map = null;
         this.instance = null;
-    };
-    close = () => {
-        this.setState({enabled: false, baselayer: null, cursorPosition: null});
+        this.setState((state) => ({
+            cursorPosition: null,
+            sceneContext: {...state.sceneContext, ...Map3D.defaultSceneState},
+            taskContext: {...state.taskContext, currentTask: {id: null, mode: null}}
+        }));
     };
     setViewToExtent = (bounds, angle = 0) => {
         const center = {
@@ -559,6 +599,9 @@ class Map3D extends React.Component {
         this.animationInterrupted = true;
     };
     getScenePosition = (ev) => {
+        if (!this.instance) {
+            return;
+        }
         const rect = ev.currentTarget.getBoundingClientRect();
         const x = ev.clientX - rect.left;
         const y = ev.clientY - rect.top;
@@ -578,25 +621,6 @@ class Map3D extends React.Component {
             const p = intersects[0].point;
             this.setState({cursorPosition: [p.x, p.y, p.z]});
         }
-    };
-    updateControlsTarget = () => {
-        const x = this.instance.view.controls.target.x;
-        const y = this.instance.view.controls.target.y;
-        const elevationResult = this.map.getElevation({coordinates: new Coordinates(this.props.projection, x, y)});
-        elevationResult.samples.sort((a, b) => a.resolution > b.resolution);
-        const terrainHeight = elevationResult.samples[0]?.elevation || 0;
-        const cameraHeight = this.instance.view.camera.position.z;
-        // If camera height is at terrain height, target height should be at terrain height
-        // If camera height is at twice the terrain height or further, target height should be zero
-        const targetHeight = terrainHeight > 0 ? terrainHeight * Math.max(0, 1 - (cameraHeight - terrainHeight) / terrainHeight) : 0;
-        this.instance.view.controls.target.z = targetHeight;
-        this.setState({
-            overviewState: {
-                center: [x, y],
-                resolution: (cameraHeight - terrainHeight) / 200,
-                azimuth: this.instance.view.controls.getAzimuthalAngle()
-            }
-        });
     };
     redrawScene = (ev) => {
         const width = ev.target.innerWidth;

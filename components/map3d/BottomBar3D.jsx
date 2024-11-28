@@ -17,16 +17,15 @@ import './style/BottomBar3D.css';
 export default class BottomBar3D extends React.Component {
     static propTypes = {
         cursorPosition: PropTypes.array,
-        instance: PropTypes.object,
-        projection: PropTypes.string
+        sceneContext: PropTypes.object
     };
     state = {
         progress: 0
     };
     componentDidUpdate(prevProps) {
-        if (this.props.instance && this.props.instance !== prevProps.instance) {
-            this.props.instance.addEventListener("update-end", () => {
-                this.setState({progress: Math.round(this.props.instance.progress * 100) + "%"});
+        if (this.props.sceneContext.scene && this.props.sceneContext.scene !== prevProps.sceneContext.scene) {
+            this.props.sceneContext.scene.addEventListener("update-end", () => {
+                this.setState({progress: Math.round(this.props.sceneContext.scene.progress * 100) + "%"});
             });
         }
     }
@@ -42,7 +41,7 @@ export default class BottomBar3D extends React.Component {
                     {(this.props.cursorPosition || []).map(x => x.toFixed(0)).join(" ")}
                 </div>
                 <div className="map3d-bottombar-projection">
-                    {CoordinatesUtils.getAvailableCRS()[this.props.projection].label}
+                    {this.props.sceneContext.mapCrs ? CoordinatesUtils.getAvailableCRS()[this.props.sceneContext.mapCrs].label : ""}
                 </div>
                 <div className="map3d-bottombar-spacer" />
             </div>
