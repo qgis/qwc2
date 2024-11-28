@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 
 import {AppMenu} from '../AppMenu';
 import Icon from '../Icon';
+import SearchField3D from './SearchField3D';
 
 import './style/TopBar3D.css';
 
@@ -28,6 +29,7 @@ export default class TopBar3D extends React.Component {
         ];
         return (
             <div className="map3d-topbar">
+                <SearchField3D sceneContext={this.props.sceneContext} />
                 <span className="map3d-topbar-spacer" />
                 <AppMenu appMenuClearsTask buttonContents={this.menuButtonContents()}
                     currentTask={this.props.taskContext.currentTask} menuItems={menuItems}

@@ -15,6 +15,7 @@ import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
+import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
 import {Vector2, Vector3, Raycaster, CubeTextureLoader} from 'three';
 import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
@@ -90,7 +91,8 @@ class Map3D extends React.Component {
             addSceneObject: (object) => {},
             removeSceneObject: (objectId) => {},
 
-            setViewToExtent: (bounds, angle) => {}
+            setViewToExtent: (bounds, angle) => {},
+            getTerrainHeight: (scenePos) => {}
         },
         taskContext: {
             currentTask: {id: null, mode: null},
@@ -113,6 +115,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.addSceneObject = this.addSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.setViewToExtent = this.setViewToExtent;
+        this.state.sceneContext.getTerrainHeight = this.getTerrainHeight;
         this.state.taskContext.setCurrentTask = this.setCurrentTask;
     }
     componentDidUpdate(prevProps, prevState) {
@@ -621,6 +624,29 @@ class Map3D extends React.Component {
             const p = intersects[0].point;
             this.setState({cursorPosition: [p.x, p.y, p.z]});
         }
+    };
+    getTerrainHeight = (scenePos) => {
+        const dtmPos = CoordinatesUtils.reproject(scenePos, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);
+        return new Promise((resolve) => {
+            fromUrl(this.state.sceneContext.dtmUrl).then(tiff => {
+
+                tiff.getImage().then(image => {
+                    const { ModelTiepoint, ModelPixelScale } = image.fileDirectory;
+
+                    // Extract scale and tiepoint values
+                    const [scaleX, scaleY] = [ModelPixelScale[0], ModelPixelScale[1]];
+                    const [tiepointX, tiepointY] = [ModelTiepoint[3], ModelTiepoint[4]]; // Tiepoint world coordinates
+
+                    // Calculate pixel indices (rounded to nearest integers)
+                    const pixelX = Math.round((dtmPos[0] - tiepointX) / scaleX);
+                    const pixelY = Math.round((tiepointY - dtmPos[1]) / scaleY); // Inverted Y-axis in image
+
+                    image.readRasters({ window: [pixelX, pixelY, pixelX + 1, pixelY + 1] }).then(raster => {
+                        resolve(raster[0][0]);
+                    });
+                });
+            });
+        });
     };
     redrawScene = (ev) => {
         const width = ev.target.innerWidth;

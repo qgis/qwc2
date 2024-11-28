@@ -1,0 +1,7 @@
+span.map3d-search-pin-label {
+    -webkit-text-stroke: 0.8px black;
+    text-stroke: 0.8px black;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+}

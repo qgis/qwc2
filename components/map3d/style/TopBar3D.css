@@ -10,6 +10,12 @@ div.map3d-topbar {
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     backdrop-filter: blur(3px);
     display: flex;
+    align-items: center;
+}
+
+div.map3d-topbar div.search-widget-container {
+    margin: 0 0.75em;
+    width: 25em;
 }
 
 span.map3d-topbar-spacer {
