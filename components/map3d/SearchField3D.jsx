@@ -30,6 +30,7 @@ import './style/SearchField3D.css';
 
 class SearchField3D extends React.Component {
     static propTypes = {
+        options: PropTypes.object,
         sceneContext: PropTypes.object,
         searchProviders: PropTypes.object
     };
@@ -72,10 +73,27 @@ class SearchField3D extends React.Component {
         }
 
         // Zoom to bounds
-        const bounds = result.feature ? VectorLayerUtils.computeFeatureBBox(result.feature) : [
-            scenePos[0] - 500, scenePos[1] - 500,
-            scenePos[0] + 500, scenePos[1] + 500
+        let bounds = result.feature ? VectorLayerUtils.computeFeatureBBox(result.feature) : [
+            scenePos[0], scenePos[1],
+            scenePos[0], scenePos[1]
         ];
+        // Adjust bounds so that we do not zoom further than 1:searchMinScaleDenom
+        const bbWidth = bounds[2] - bounds[0];
+        const bbHeight = bounds[3] - bounds[1];
+        const sceneRect = this.props.sceneContext.scene.viewport.getBoundingClientRect();
+        // Compute maximum allowed dimensions at the given scale
+        const px2m = 0.0254 / 96;
+        const minWidth = sceneRect.width * px2m * this.props.options.searchMinScaleDenom;
+        const minHeight = sceneRect.height * px2m * this.props.options.searchMinScaleDenom;
+        const scaleFactor = Math.max(bbWidth / minWidth, bbHeight / minHeight);
+        if (scaleFactor < 1) {
+            const bbCenterX = 0.5 * (bounds[0] + bounds[2]);
+            const bbCenterY = 0.5 * (bounds[1] + bounds[3]);
+            bounds = [
+                bbCenterX - minWidth / 2, bbCenterY - minHeight / 2,
+                bbCenterX + minWidth / 2, bbCenterY + minHeight / 2
+            ];
+        }
 
         sceneContext.setViewToExtent(bounds, 0);
         // Add pin and label at result position above terrain

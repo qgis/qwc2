@@ -55,6 +55,11 @@ class Map3D extends React.Component {
         }),
         layers: PropTypes.array,
         mapBbox: PropTypes.object,
+        /** Various configuration options */
+        options: PropTypes.shape({
+            /** Minimum scale denominator when zooming to search result. */
+            searchMinScaleDenom: PropTypes.number
+        }),
         projection: PropTypes.string,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
@@ -67,6 +72,9 @@ class Map3D extends React.Component {
             initialX: 0,
             initialY: 0,
             initiallyDocked: true
+        },
+        options: {
+            searchMinScaleDenom: 1000
         }
     };
     static defaultSceneState = {
@@ -279,7 +287,7 @@ class Map3D extends React.Component {
                 <div className="map3d-body" role="body">
                     <div className="map3d-map" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} />
                     <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
-                    <TopBar3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                    <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
                     <LayerTree3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
                     <BottomBar3D cursorPosition={this.state.cursorPosition} sceneContext={this.state.sceneContext} />
                     <div className="map3d-nav-widget map3d-nav-pan">
