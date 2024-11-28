@@ -17,7 +17,7 @@ import Map from '@giro3d/giro3d/entities/Map.js';
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
-import {Vector2, Vector3, Raycaster, CubeTextureLoader} from 'three';
+import {Vector2, Vector3, Raycaster, CubeTextureLoader, AmbientLight} from 'three';
 import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
 
 import {LayerRole} from '../actions/layers';
@@ -331,6 +331,9 @@ class Map3D extends React.Component {
             }
         });
         this.sceneObjects = {};
+
+        // Light
+        this.instance.scene.add(new AmbientLight('white', 1));
 
         // Setup map
         const bounds = CoordinatesUtils.reprojectBbox(this.props.theme.bbox.bounds, this.props.theme.bbox.crs, projection);
