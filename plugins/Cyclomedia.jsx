@@ -39,6 +39,11 @@ class Cyclomedia extends React.Component {
         click: PropTypes.object,
         /** OAuth client ID. */
         clientId: PropTypes.string,
+        /** Fields from user_infos which contain username and password which will be pre-inserted into the login form. */
+        credentialUserInfoFields: PropTypes.shape({
+            username: PropTypes.string,
+            password: PropTypes.string
+        }),
         /** The cyclomedia version. */
         cyclomediaVersion: PropTypes.string,
         /** Whether to display Cyclomedia measurement geometries on the map. */
@@ -64,7 +69,8 @@ class Cyclomedia extends React.Component {
         projection: PropTypes.string,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        userInfos: PropTypes.object
     };
     static defaultProps = {
         cyclomediaVersion: '24.1',
@@ -91,6 +97,10 @@ class Cyclomedia extends React.Component {
         super(props);
         this.iframe = null;
         this.iframePollIntervall = null;
+        if (props.credentialUserInfoFields) {
+            this.state.username = props.userInfos[props.credentialUserInfoFields.username];
+            this.state.password = props.userInfos[props.credentialUserInfoFields.password];
+        }
     }
     componentDidUpdate(prevProps, prevState) {
         if (!prevProps.active && this.props.active) {
@@ -491,7 +501,8 @@ export default connect((state) => ({
     click: state.map.click,
     mapCrs: state.map.projection,
     mapScale: MapUtils.computeForZoom(state.map.scales, state.map.zoom),
-    theme: state.theme.current
+    theme: state.theme.current,
+    userInfos: state.localConfig.user_infos
 }), {
     addLayer: addLayer,
     addLayerFeatures: addLayerFeatures,
