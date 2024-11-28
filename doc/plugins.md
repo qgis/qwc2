@@ -253,6 +253,7 @@ Cyclomedia integration for QWC2.
 |----------|------|-------------|---------------|
 | apikey | `string` | The Cyclomedia API key | `undefined` |
 | clientId | `string` | OAuth client ID. | `undefined` |
+| credentialUserInfoFields | `{`<br />`  username: string,`<br />`  password: string,`<br />`}` | Fields from user_infos which contain username and password which will be pre-inserted into the login form. | `undefined` |
 | cyclomediaVersion | `string` | The cyclomedia version. | `'24.1'` |
 | displayMeasurements | `bool` | Whether to display Cyclomedia measurement geometries on the map. | `true` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
@@ -380,7 +381,7 @@ for customized queries and templates for the result presentation.
 | featureInfoReturnsLayerName | `bool` | Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. | `true` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | highlightAllResults | `bool` | Whether to highlight all results if no result is hovered | `true` |
-| initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'meters', 'feet', 'kilometers', 'miles'. | `'meters'` |
+| initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. | `'m'` |
 | params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
 
@@ -516,7 +517,7 @@ Allows exporting a selected portion of the map to a variety of formats.
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale (if `allowedScales` is not `false`). | `1` |
 | dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
 | exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
-| fileNameTemplate        | `string`   | Template for the name of the generated files when downloading. | `'{theme}_{timestamp}'` |
+| fileNameTemplate | `string` | Template for the name of the generated files when downloading. | `'{theme}_{timestamp}'` |
 | formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `extraQuery` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS instead of the background layer. | `undefined` |
 | pageSizes | `[{`<br />`  name: string,`<br />`  width: number,`<br />`  height: number,`<br />`}]` | List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. | `[]` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
@@ -649,9 +650,9 @@ Uses the print layouts defined in the QGIS project.
 | defaultDpi | `number` | The default print dpi. | `300` |
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial print map scale. | `0.5` |
 | displayPrintSeries | `bool` | Show an option to print a series of extents. | `false` |
-| displayRotation | `bool` | Whether to display the map rotation control. | `true` |
+| displayRotation | `bool` | Whether to display the printing rotation control. | `true` |
 | fileNameTemplate | `string` | Template for the name of the generated files when downloading. | `'{theme}_{timestamp}'` |
-| formats | `[string]` | Export layout format mimetypes. If empty, supported formats are listed. If format is not supported by QGIS Server, print will fail | `undefined` |
+| formats | `[string]` | Export layout format mimetypes. If format is not supported by QGIS Server, print will fail. | `['application/pdf', 'image/jpeg', 'image/png', 'image/svg']` |
 | gridInitiallyEnabled | `bool` | Whether the grid is enabled by default. | `false` |
 | hideAutopopulatedFields | `bool` | Whether to hide form fields which contain autopopulated values (i.e. search result label). | `undefined` |
 | inlinePrintOutput | `bool` | Whether to display the print output in an inline dialog instead triggering a download. | `false` |
@@ -846,7 +847,7 @@ Overview map support for the map component.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.<br /> Additionally, you can specify:<br /> - `layer`: Custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).<br /> - `viewOptions`: Options for the OverviewMap View, see [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_View.html). | `undefined` |
+| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.<br /> Additionally, you can specify:<br /> - `layer`: Custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).<br /> - `viewOptions`: Options for the OverviewMap View, see [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_View.html). | `{}` |
 
 RedliningSupport<a name="redliningsupport"></a>
 ----------------------------------------------------------------
