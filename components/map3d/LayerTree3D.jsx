@@ -31,7 +31,7 @@ export default class LayerTree extends React.Component {
                     icon="layers"
                     id="LayerTree3D"
                     setCurrentTask={this.props.taskContext.setCurrentTask}
-                    title={LocaleUtils.tr("appmenu.items.LayerTree")}
+                    title={LocaleUtils.tr("appmenu.items.LayerTree3D")}
                     width="20em"
                 >
                     {() => ({
