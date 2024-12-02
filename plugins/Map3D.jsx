@@ -17,7 +17,7 @@ import Map from '@giro3d/giro3d/entities/Map.js';
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
-import {Vector2, Vector3, Raycaster, CubeTextureLoader, AmbientLight} from 'three';
+import {Vector2, Vector3, CubeTextureLoader} from 'three';
 import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
 
 import {LayerRole} from '../actions/layers';
@@ -105,8 +105,7 @@ class Map3D extends React.Component {
         taskContext: {
             currentTask: {id: null, mode: null},
             setCurrentTask: (task, mode) => {}
-        },
-        cursorPosition: null
+        }
     };
     constructor(props) {
         super(props);
@@ -233,7 +232,7 @@ class Map3D extends React.Component {
     };
     getLayer = (layerId) => {
         return this.map.getLayers(l => l.__qwcLayerId === layerId)[0] ?? null;
-    }
+    };
     removeLayer = (layerId) => {
         this.map.getLayers(l => l.__qwcLayerId === layerId).forEach(layer => {
             this.map.removeLayer(layer, {dispose: true});
@@ -285,34 +284,38 @@ class Map3D extends React.Component {
                 title={LocaleUtils.tr("map3d.title")}
             >
                 <div className="map3d-body" role="body">
-                    <div className="map3d-map" onMouseDown={this.stopAnimations} onMouseMove={this.getScenePosition} ref={this.setupContainer} />
-                    <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
-                    <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
-                    <LayerTree3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
-                    <BottomBar3D cursorPosition={this.state.cursorPosition} sceneContext={this.state.sceneContext} />
-                    <div className="map3d-nav-widget map3d-nav-pan">
-                        <span />
-                        <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
-                        <span />
-                        <Icon icon="chevron-left" onMouseDown={(ev) => this.pan(ev, 1, 0)} />
-                        <Icon icon="home" onClick={() => this.home()} />
-                        <Icon icon="chevron-right" onMouseDown={(ev) => this.pan(ev, -1, 0)} />
-                        <span />
-                        <Icon icon="chevron-down" onMouseDown={(ev) => this.pan(ev, 0, -1)} />
-                        <span />
-                    </div>
-                    <div className="map3d-nav-widget map3d-nav-rotate">
-                        <span />
-                        <Icon icon="tilt-up" onMouseDown={(ev) => this.tilt(ev, 0, 1)} />
-                        <span />
-                        <Icon icon="tilt-left" onMouseDown={(ev) => this.tilt(ev, 1, 0)} />
-                        <Icon icon="point" onClick={() => this.setViewTopDown()} />
-                        <Icon icon="tilt-right" onMouseDown={(ev) => this.tilt(ev, -1, 0)} />
-                        <span />
-                        <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -1)} />
-                        <span />
-                    </div>
-                    <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
+                    <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} />
+                    {this.state.sceneContext.scene ? (
+                        <div>
+                            <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
+                            <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                            <LayerTree3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                            <BottomBar3D sceneContext={this.state.sceneContext} />
+                            <div className="map3d-nav-widget map3d-nav-pan">
+                                <span />
+                                <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
+                                <span />
+                                <Icon icon="chevron-left" onMouseDown={(ev) => this.pan(ev, 1, 0)} />
+                                <Icon icon="home" onClick={() => this.home()} />
+                                <Icon icon="chevron-right" onMouseDown={(ev) => this.pan(ev, -1, 0)} />
+                                <span />
+                                <Icon icon="chevron-down" onMouseDown={(ev) => this.pan(ev, 0, -1)} />
+                                <span />
+                            </div>
+                            <div className="map3d-nav-widget map3d-nav-rotate">
+                                <span />
+                                <Icon icon="tilt-up" onMouseDown={(ev) => this.tilt(ev, 0, 1)} />
+                                <span />
+                                <Icon icon="tilt-left" onMouseDown={(ev) => this.tilt(ev, 1, 0)} />
+                                <Icon icon="point" onClick={() => this.setViewTopDown()} />
+                                <Icon icon="tilt-right" onMouseDown={(ev) => this.tilt(ev, -1, 0)} />
+                                <span />
+                                <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -1)} />
+                                <span />
+                            </div>
+                            <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
+                        </div>
+                    ) : null}
                 </div>
             </ResizeableWindow>
         ), (
@@ -447,13 +450,19 @@ class Map3D extends React.Component {
         this.instance.dispose();
         Object.values(this.sceneObjects).forEach(object => {
             this.instance.remove(object);
+            if (object.isMesh) {
+                object.geometry.dispose();
+                object.material.dispose();
+            }
+            if (object.dispose) {
+                object.dispose();
+            }
         });
         this.sceneObjects = {};
         this.inspector = null;
         this.map = null;
         this.instance = null;
         this.setState((state) => ({
-            cursorPosition: null,
             sceneContext: {...state.sceneContext, ...Map3D.defaultSceneState},
             taskContext: {...state.taskContext, currentTask: {id: null, mode: null}}
         }));
@@ -611,30 +620,6 @@ class Map3D extends React.Component {
     };
     stopAnimations = () => {
         this.animationInterrupted = true;
-    };
-    getScenePosition = (ev) => {
-        if (!this.instance) {
-            return;
-        }
-        const rect = ev.currentTarget.getBoundingClientRect();
-        const x = ev.clientX - rect.left;
-        const y = ev.clientY - rect.top;
-
-        // Normalize mouse position (-1 to +1)
-        const mouse = new Vector2();
-        mouse.x = (x / rect.width) * 2 - 1;
-        mouse.y = -(y / rect.height) * 2 + 1;
-
-        const raycaster = new Raycaster();
-        const camera = this.instance.view.camera;
-        raycaster.setFromCamera(mouse, camera);
-
-        const intersects = raycaster.intersectObjects(this.instance.scene.children, true);
-
-        if (intersects.length > 0) {
-            const p = intersects[0].point;
-            this.setState({cursorPosition: [p.x, p.y, p.z]});
-        }
     };
     getTerrainHeight = (scenePos) => {
         const dtmPos = CoordinatesUtils.reproject(scenePos, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);

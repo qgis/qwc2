@@ -9,19 +9,24 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
+import {Raycaster, Vector2} from 'three';
 
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 
 import './style/BottomBar3D.css';
 
+
 export default class BottomBar3D extends React.Component {
     static propTypes = {
-        cursorPosition: PropTypes.array,
         sceneContext: PropTypes.object
     };
     state = {
+        cursorPosition: null,
         progress: 0
     };
+    componentDidMount() {
+        this.props.sceneContext.scene.viewport.addEventListener('mousemove', this.getCursorPosition);
+    }
     componentDidUpdate(prevProps) {
         if (this.props.sceneContext.scene && this.props.sceneContext.scene !== prevProps.sceneContext.scene) {
             this.props.sceneContext.scene.addEventListener("update-end", () => {
@@ -38,7 +43,7 @@ export default class BottomBar3D extends React.Component {
                 </div>
                 <div className="map3d-bottombar-spacer" />
                 <div className="map3d-bottombar-position">
-                    {(this.props.cursorPosition || []).map(x => x.toFixed(0)).join(" ")}
+                    {(this.state.cursorPosition || []).map(x => x.toFixed(0)).join(" ")}
                 </div>
                 <div className="map3d-bottombar-projection">
                     {this.props.sceneContext.mapCrs ? CoordinatesUtils.getAvailableCRS()[this.props.sceneContext.mapCrs].label : ""}
@@ -46,5 +51,26 @@ export default class BottomBar3D extends React.Component {
                 <div className="map3d-bottombar-spacer" />
             </div>
         );
+    }
+    getCursorPosition = (ev) => {
+        const rect = ev.currentTarget.getBoundingClientRect();
+        const x = ev.clientX - rect.left;
+        const y = ev.clientY - rect.top;
+
+        // Normalize mouse position (-1 to +1)
+        const mouse = new Vector2();
+        mouse.x = (x / rect.width) * 2 - 1;
+        mouse.y = -(y / rect.height) * 2 + 1;
+
+        const raycaster = new Raycaster();
+        const camera = this.props.sceneContext.scene.view.camera;
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersects = raycaster.intersectObjects(this.props.sceneContext.scene.scene.children, true);
+
+        if (intersects.length > 0) {
+            const p = intersects[0].point;
+            this.setState({cursorPosition: [p.x, p.y, p.z]});
+        }
     }
 }
