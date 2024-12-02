@@ -8,7 +8,6 @@
 
 import React from 'react';
 
-import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
@@ -24,11 +23,7 @@ export default class OverviewMap3D extends React.Component {
         sceneContext: PropTypes.object
     };
     state = {
-        collapsed: true,
-        viewConeLayer: null,
-        azimuth: 0,
-        center: [0, 0],
-        resolution: 1
+        collapsed: true
     };
     constructor(props) {
         super(props);
@@ -58,6 +53,9 @@ export default class OverviewMap3D extends React.Component {
             zIndex: 10000
         });
     }
+    componentDidMount() {
+        this.props.sceneContext.scene.view.controls.addEventListener('change', this.updateViewCone);
+    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.sceneContext.mapCrs !== prevProps.sceneContext.mapCrs) {
             this.setupView();
@@ -72,9 +70,6 @@ export default class OverviewMap3D extends React.Component {
             if (this.state.resolution !== prevState.resolution) {
                 this.map.getView().setResolution(this.state.resolution);
             }
-        }
-        if (this.props.sceneContext.scene && this.props.sceneContext.scene !== prevProps.sceneContext.scene) {
-            this.props.sceneContext.scene.view.controls.addEventListener('change', this.updateControlsTarget);
         }
     }
     initOverviewMap = (el) => {
@@ -93,8 +88,7 @@ export default class OverviewMap3D extends React.Component {
             projection: this.props.sceneContext.mapCrs
         });
         this.map.setView(overviewView);
-        overviewView.setResolution(this.state.resolution);
-        overviewView.setCenter(this.state.center);
+        this.updateViewCone();
     };
     render() {
         const style = {
@@ -114,22 +108,20 @@ export default class OverviewMap3D extends React.Component {
             ) : null
         ];
     }
-    updateControlsTarget = () => {
+    updateViewCone = () => {
         const scene = this.props.sceneContext.scene;
         const x = scene.view.controls.target.x;
         const y = scene.view.controls.target.y;
-        const elevationResult = this.props.sceneContext.map.getElevation({coordinates: new Coordinates(this.props.sceneContext.mapCrs, x, y)});
-        elevationResult.samples.sort((a, b) => a.resolution > b.resolution);
-        const terrainHeight = elevationResult.samples[0]?.elevation || 0;
+        const azimuth = scene.view.controls.getAzimuthalAngle();
         const cameraHeight = scene.view.camera.position.z;
-        // If camera height is at terrain height, target height should be at terrain height
-        // If camera height is at twice the terrain height or further, target height should be zero
-        const targetHeight = terrainHeight > 0 ? terrainHeight * Math.max(0, 1 - (cameraHeight - terrainHeight) / terrainHeight) : 0;
-        scene.view.controls.target.z = targetHeight;
-        this.setState({
-            center: [x, y],
-            resolution: (cameraHeight - terrainHeight) / 200,
-            azimuth: scene.view.controls.getAzimuthalAngle()
-        });
+        const resolution = cameraHeight / 200;
+
+        if (this.map) {
+            this.map.getView().setCenter([x, y]);
+            this.map.getView().setResolution(resolution);
+            this.viewConeFeature.getGeometry().setCoordinates([x, y]);
+            this.viewConeFeature.set('rotation', -azimuth, true);
+            this.viewConeLayer.getSource().changed();
+        }
     };
 }
