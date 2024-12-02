@@ -367,6 +367,7 @@ class Map3D extends React.Component {
         const center = extent.center();
         this.instance.view.camera.position.set(center.x, center.y, 0.5 * (extent.east - extent.west));
         this.instance.view.controls.target = extent.centerAsVector3();
+        this.instance.view.controls.addEventListener('change', this.updateControlsTarget);
 
         // Skybox
         const cubeTextureLoader = new CubeTextureLoader();
@@ -643,6 +644,18 @@ class Map3D extends React.Component {
                 });
             });
         });
+    };
+    updateControlsTarget = () => {
+        const x = this.instance.view.camera.position.x;
+        const y = this.instance.view.camera.position.y;
+        const elevationResult = this.map.getElevation({coordinates: new Coordinates(this.props.projection, x, y)});
+        elevationResult.samples.sort((a, b) => a.resolution > b.resolution);
+        const terrainHeight = elevationResult.samples[0]?.elevation || 0;
+        const cameraHeight = this.instance.view.camera.position.z;
+        // If camera height is at terrain height, target height should be at terrain height
+        // If camera height is at twice the terrain height or further, target height should be zero
+        const targetHeight = terrainHeight > 0 ? terrainHeight * Math.max(0, 1 - (cameraHeight - terrainHeight) / terrainHeight) : 0;
+        this.instance.view.controls.target.z = targetHeight;
     };
     redrawScene = (ev) => {
         const width = ev.target.innerWidth;
