@@ -85,13 +85,24 @@ if not tileMatrix:
     sys.exit(1)
 
 # Boundingbox
-bboxEl = getFirstElementByTagName(layer, "ows:WGS84BoundingBox")
-bboxLower = list(map(float, getFirstElementValueByTagName(bboxEl, "ows:LowerCorner").split(" ")))
-bboxUpper = list(map(float, getFirstElementValueByTagName(bboxEl, "ows:UpperCorner").split(" ")))
-bbox = {
-    "crs": "EPSG:4326",
-    "bounds": [bboxLower[0], bboxLower[1], bboxUpper[0], bboxUpper[1]]
-}
+wgsBboxEl = getFirstElementByTagName(layer, "ows:WGS84BoundingBox")
+tmsBboxEl = getFirstElementByTagName(tileMatrixSet, "ows:BoundingBox")
+if wgsBboxEl is not None:
+    bboxLower = list(map(float, getFirstElementValueByTagName(wgsBboxEl, "ows:LowerCorner").split(" ")))
+    bboxUpper = list(map(float, getFirstElementValueByTagName(wgsBboxEl, "ows:UpperCorner").split(" ")))
+    bbox = {
+        "crs": "EPSG:4326",
+        "bounds": [bboxLower[0], bboxLower[1], bboxUpper[0], bboxUpper[1]]
+    }
+elif tmsBboxEl is not None:
+    bboxLower = list(map(float, getFirstElementValueByTagName(tmsBboxEl, "ows:LowerCorner").split(" ")))
+    bboxUpper = list(map(float, getFirstElementValueByTagName(tmsBboxEl, "ows:UpperCorner").split(" ")))
+    crsMatch = re.search(r'(EPSG).*:(\d+)', tmsBboxEl.getAttribute("crs"))
+    bbox = {
+        "crs": ("EPSG:" + crsMatch.group(2)) if crsMatch else crs,
+        "bounds": [bboxLower[0], bboxLower[1], bboxUpper[0], bboxUpper[1]]
+    }
+
 
 # Compute origin and resolutions
 origin = list(map(float, filter(bool, getFirstElementValueByTagName(tileMatrix[0], "TopLeftCorner").split(" "))))
@@ -124,14 +135,6 @@ for dimension in targetLayer.getElementsByTagName("Dimension"):
     dimensionValue = getFirstElementValueByTagName(dimension, "Default")
     tileUrl = tileUrl.replace("{%s}" % dimensionIdentifier, dimensionValue)
 
-# BBox
-bounds = []
-wgs84BoundingBox = getFirstElementByTagName(targetLayer, "ows:WGS84BoundingBox")
-if wgs84BoundingBox is not None:
-    lowerCorner = list(map(float, filter(bool, getFirstElementValueByTagName(wgs84BoundingBox,"ows:LowerCorner").split(" "))))
-    upperCorner = list(map(float, filter(bool, getFirstElementValueByTagName(wgs84BoundingBox,"ows:UpperCorner").split(" "))))
-    bounds = lowerCorner + upperCorner
-
 # Format
 format = getFirstElementValueByTagName(targetLayer, "Format")
 
@@ -158,10 +161,7 @@ result = {
     "projection": crs,
     "tileSize": tileSize,
     "style": styleIdentifier,
-    "bbox": {
-        "crs": "EPSG:4326",
-        "bounds": bounds
-    },
+    "bbox": bbox,
     "resolutions": resolutions,
     "thumbnail": layerName + ".jpg",
 }

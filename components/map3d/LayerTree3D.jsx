@@ -18,7 +18,7 @@ import {SideBar} from '../SideBar';
 import './style/LayerTree3D.css';
 
 
-export default class LayerTree extends React.Component {
+export default class LayerTree3D extends React.Component {
     static propTypes = {
         sceneContext: PropTypes.object,
         taskContext: PropTypes.object
