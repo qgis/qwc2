@@ -9,6 +9,8 @@
 
 import ol from 'openlayers';
 
+import ConfigUtils from '../../../utils/ConfigUtils';
+
 export default {
     create: (options) => {
         if (!options.apiKey) {
@@ -18,7 +20,7 @@ export default {
         const layer = new ol.layer.Tile({
             minResolution: options.minResolution,
             maxResolution: options.maxResolution,
-            preload: Infinity,
+            preload: ConfigUtils.getConfigProp("tilePreloadLevels", null, 0),
             source: new ol.source.BingMaps({
                 projection: options.projection,
                 key: options.apiKey,

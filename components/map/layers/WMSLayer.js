@@ -97,6 +97,7 @@ export default {
             const layer = new ol.layer.Tile({
                 minResolution: options.minResolution,
                 maxResolution: options.maxResolution,
+                preload: ConfigUtils.getConfigProp("tilePreloadLevels", null, 0),
                 source: new ol.source.TileWMS({
                     urls: [options.url.split("?")[0]],
                     params: queryParameters,

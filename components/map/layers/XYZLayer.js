@@ -8,11 +8,14 @@
 
 import ol from 'openlayers';
 
+import ConfigUtils from '../../../utils/ConfigUtils';
+
 export default {
     create: (options) => {
         return new ol.layer.Tile({
             minResolution: options.minResolution,
             maxResolution: options.maxResolution,
+            preload: ConfigUtils.getConfigProp("tilePreloadLevels", null, 0),
             source: new ol.source.XYZ({
                 url: options.url,
                 projection: options.projection,
