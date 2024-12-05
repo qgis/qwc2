@@ -115,6 +115,12 @@ class TopBar extends React.Component {
         allowedMenuItems: [],
         allowedToolbarItems: []
     };
+    componentDidMount() {
+        this.setState({
+            allowedToolbarItems: this.allowedItems(this.props.toolbarItems),
+            allowedMenuItems: this.allowedItems(this.props.menuItems)
+        });
+    }
     componentDidUpdate(prevProps) {
         if (this.props.currentTheme !== prevProps.currentTheme) {
             this.setState({
