@@ -314,14 +314,10 @@ const IdentifyUtils = {
             if (result[layer.name] === undefined) {
                 result[layer.name] = [];
             }
-            let geometry = feature.geometry;
-            if (geometry) {
-                geometry = VectorLayerUtils.reprojectGeometry(geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
-            }
             result[layer.name].push({
                 ...feature,
                 id: id,
-                geometry: geometry,
+                geometry: feature.geometry,
                 layername: layer.name,
                 layertitle: layer.title
             });
