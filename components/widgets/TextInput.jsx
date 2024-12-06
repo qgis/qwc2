@@ -7,15 +7,19 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
+
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+
 import './style/TextInput.css';
 
-class TextInput extends React.Component {
+export default class TextInput extends React.Component {
     static propTypes = {
         addLinkAnchors: PropTypes.bool,
+        className: PropTypes.string,
         disabled: PropTypes.bool,
         multiline: PropTypes.bool,
         name: PropTypes.string,
@@ -77,6 +81,7 @@ class TextInput extends React.Component {
     };
     render() {
         const wrapperClassName = classNames({
+            "TextInput": true,
             "text-input-wrapper": true,
             "text-input-wrapper-multiline": this.props.multiline
         });
@@ -87,7 +92,7 @@ class TextInput extends React.Component {
             "text-input-invalid": this.props.required && !this.state.curValue
         });
         return (
-            <div className={wrapperClassName} ref={this.storeInitialHeight}>
+            <div className={wrapperClassName + " " + (this.props.className || "")} ref={this.storeInitialHeight}>
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"
@@ -216,22 +221,20 @@ class TextInput extends React.Component {
         }
     };
     startResize = (ev) => {
-        const input = ev.target.previousElementSibling;
-        if (!input) {
+        const container = ev.target.parentElement;
+        if (!container) {
             return;
         }
-        const startHeight = input.offsetHeight;
+        const startHeight = container.offsetHeight;
         const startMouseY = ev.clientY;
         const resizeInput = (event) => {
-            input.style.height = Math.max(this.initialHeight, (startHeight + (event.clientY - startMouseY))) + 'px';
+            container.style.height = Math.max(this.initialHeight, (startHeight + (event.clientY - startMouseY))) + 'px';
         };
         document.body.style.userSelect = 'none';
-        window.addEventListener("mousemove", resizeInput);
-        window.addEventListener("mouseup", () => {
+        ev.view.addEventListener("mousemove", resizeInput);
+        ev.view.addEventListener("mouseup", () => {
             document.body.style.userSelect = '';
-            window.removeEventListener("mousemove", resizeInput);
+            ev.view.removeEventListener("mousemove", resizeInput);
         }, {once: true});
     };
 }
-
-export default TextInput;

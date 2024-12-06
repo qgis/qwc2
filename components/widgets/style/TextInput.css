@@ -56,6 +56,8 @@ div.text-input-placeholder {
     color: var(--text-color-disabled);
     pointer-events: none;
     border: 1px solid transparent;
+    white-space: pre-wrap;
+    overflow: hidden;
 }
 
 div.text-input-resize-handle {
