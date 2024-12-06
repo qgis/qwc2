@@ -92,7 +92,7 @@ export default class TextInput extends React.Component {
             "text-input-invalid": this.props.required && !this.state.curValue
         });
         return (
-            <div className={wrapperClassName + " " + (this.props.className || "")}>
+            <div className={wrapperClassName + " " + (this.props.className || "")} ref={this.storeInitialHeight}>
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"
@@ -215,15 +215,17 @@ export default class TextInput extends React.Component {
             }
         }
     };
+    storeInitialHeight = (el) => {
+        if (el) {
+            this.initialHeight = el.offsetHeight;
+        }
+    };
     startResize = (ev) => {
         const container = ev.target.parentElement;
         if (!container) {
             return;
         }
         const startHeight = container.offsetHeight;
-        if (this.initialHeight === null) {
-            this.initialHeight = startHeight;
-        }
         const startMouseY = ev.clientY;
         const resizeInput = (event) => {
             container.style.height = Math.max(this.initialHeight, (startHeight + (event.clientY - startMouseY))) + 'px';
