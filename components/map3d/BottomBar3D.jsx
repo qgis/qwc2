@@ -26,13 +26,9 @@ export default class BottomBar3D extends React.Component {
     };
     componentDidMount() {
         this.props.sceneContext.scene.viewport.addEventListener('mousemove', this.getCursorPosition);
-    }
-    componentDidUpdate(prevProps) {
-        if (this.props.sceneContext.scene && this.props.sceneContext.scene !== prevProps.sceneContext.scene) {
-            this.props.sceneContext.scene.addEventListener("update-end", () => {
-                this.setState({progress: Math.round(this.props.sceneContext.scene.progress * 100) + "%"});
-            });
-        }
+        this.props.sceneContext.scene.addEventListener("update-end", () => {
+            this.setState({progress: Math.round(this.props.sceneContext.scene.progress * 100) + "%"});
+        });
     }
     render() {
         return (

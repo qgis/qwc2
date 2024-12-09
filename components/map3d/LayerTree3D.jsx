@@ -49,7 +49,7 @@ export default class LayerTree3D extends React.Component {
                     const classes = classNames({
                         "layertree-item": true,
                         "layertree-item-disabled": !entry.visibility
-                    })
+                    });
                     return (
                         <div className={classes} key={entry.id}>
                             <Icon className="layertree-item-checkbox"
