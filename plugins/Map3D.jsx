@@ -96,7 +96,8 @@ class Map3D extends React.Component {
             removeLayer: (layerId) => {},
             updateDrapedLayer: (layerId, diff) => {},
 
-            addSceneObject: (object) => {},
+            addSceneObject: (objectId, object) => {},
+            getSceneObject: (objectId) => {},
             removeSceneObject: (objectId) => {},
 
             setViewToExtent: (bounds, angle) => {},
@@ -120,6 +121,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.removeLayer = this.removeLayer;
         this.state.sceneContext.updateDrapedLayer = this.updateDrapedLayer;
         this.state.sceneContext.addSceneObject = this.addSceneObject;
+        this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.setViewToExtent = this.setViewToExtent;
         this.state.sceneContext.getTerrainHeight = this.getTerrainHeight;
@@ -251,6 +253,9 @@ class Map3D extends React.Component {
     addSceneObject = (objectId, object) => {
         this.sceneObjects[objectId] = object;
         this.instance.add(object);
+    };
+    getSceneObject = (objectId) => {
+        return this.sceneObjects[objectId];
     };
     removeSceneObject = (objectId) => {
         if (this.sceneObjects[objectId]) {
