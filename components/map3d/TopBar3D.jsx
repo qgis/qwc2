@@ -26,7 +26,8 @@ export default class TopBar3D extends React.Component {
     };
     render() {
         const menuItems = [
-            {key: "LayerTree3D", icon: "layers"}
+            {key: "LayerTree3D", icon: "layers"},
+            {key: "DateTime3D", icon: "clock"}
         ];
         return (
             <div className="map3d-topbar">

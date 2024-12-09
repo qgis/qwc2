@@ -61,6 +61,7 @@
     "app.missingtheme",
     "appmenu.filter",
     "appmenu.items.Bookmark",
+    "appmenu.items.DateTime3D",
     "appmenu.items.Editing",
     "appmenu.items.Help",
     "appmenu.items.LayerTree",

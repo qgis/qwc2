@@ -12,6 +12,7 @@
       "filter": "Filtra menù...",
       "items": {
         "Bookmark": "Segnalibri",
+        "DateTime3D": "Data e ora",
         "Editing": "Strumenti di modifica",
         "Help": "Aiuto",
         "LayerTree": "Livelli",

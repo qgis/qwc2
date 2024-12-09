@@ -27,6 +27,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
 import BottomBar3D from '../components/map3d/BottomBar3D';
 import LayerTree3D from '../components/map3d/LayerTree3D';
+import Map3DLight from '../components/map3d/Map3DLight';
 import OverviewMap3D from '../components/map3d/OverviewMap3D';
 import TopBar3D from '../components/map3d/TopBar3D';
 import {BackgroundSwitcher} from '../plugins/BackgroundSwitcher';
@@ -319,6 +320,7 @@ class Map3D extends React.Component {
                                 <span />
                             </div>
                             <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
+                            <Map3DLight sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
                         </div>
                     ) : null}
                 </div>
@@ -347,9 +349,6 @@ class Map3D extends React.Component {
             }
         });
         this.sceneObjects = {};
-
-        // Light
-        this.instance.scene.add(new AmbientLight('white', 1));
 
         // Setup map
         const bounds = CoordinatesUtils.reprojectBbox(this.props.theme.bbox.bounds, this.props.theme.bbox.crs, projection);

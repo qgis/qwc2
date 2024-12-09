@@ -12,6 +12,7 @@
       "filter": "Filtrer le menu...",
       "items": {
         "Bookmark": "Marque-pages",
+        "DateTime3D": "Date et heure",
         "Editing": "Editer",
         "Help": "Aide",
         "LayerTree": "Couches",

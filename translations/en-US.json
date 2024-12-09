@@ -12,6 +12,7 @@
       "filter": "Filter menu...",
       "items": {
         "Bookmark": "Bookmarks",
+        "DateTime3D": "Date and Time",
         "Editing": "Editing",
         "Help": "Help",
         "LayerTree": "Layers & Legend",

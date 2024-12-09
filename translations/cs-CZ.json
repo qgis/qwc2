@@ -12,6 +12,7 @@
       "filter": "Hledat v menu...",
       "items": {
         "Bookmark": "Záložky",
+        "DateTime3D": "",
         "Editing": "Úpravy",
         "Help": "Nápověda",
         "LayerTree": "Vrstvy & legenda",

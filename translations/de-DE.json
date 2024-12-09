@@ -12,6 +12,7 @@
       "filter": "Menü filtern...",
       "items": {
         "Bookmark": "Lesezeichen",
+        "DateTime3D": "Datum und Zeit",
         "Editing": "Editieren",
         "Help": "Hilfe",
         "LayerTree": "Ebenen und Legende",

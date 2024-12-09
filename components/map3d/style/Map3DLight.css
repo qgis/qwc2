@@ -1,0 +1,11 @@
+#DateTime3D div.datetime3d-body {
+    padding: 0.25em;
+}
+
+#DateTime3D div.datetime3d-body > table {
+    width: 100%;
+}
+
+#DateTime3D div.datetime3d-body > table td > input {
+    width: 100%;
+}
