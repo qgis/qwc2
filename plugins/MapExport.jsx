@@ -152,7 +152,7 @@ class MapExport extends React.Component {
             );
         }
         const action = this.props.theme.url;
-        const exportExternalLayers = this.state.selectedFormat !== "application/dxf" && this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion") >= 3;
+        const exportExternalLayers = this.state.selectedFormat !== "application/dxf" && this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion", null, 3) >= 3;
 
         const selectedFormatConfiguration = formatConfiguration.find(entry => entry.name === this.state.selectedFormatConfiguration) || {};
         const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers, !!selectedFormatConfiguration.baseLayer);

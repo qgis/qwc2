@@ -21,7 +21,7 @@ import {END_MARKERS, computeFeatureStyle} from '../utils/FeatureStyles';
 
 const VectorLayerUtils = {
     createPrintHighlighParams(layers, printCrs, printScale, dpi = 96, scaleFactor = 1.0) {
-        const qgisServerVersion = ConfigUtils.getConfigProp("qgisServerVersion") || 3;
+        const qgisServerVersion = ConfigUtils.getConfigProp("qgisServerVersion", null, 3);
         const params = {
             geoms: [],
             styles: [],

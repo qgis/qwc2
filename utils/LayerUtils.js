@@ -786,7 +786,7 @@ const LayerUtils = {
         return (layer.minScale === undefined || mapScale >= layer.minScale) && (layer.maxScale === undefined || mapScale < layer.maxScale);
     },
     addExternalLayerPrintParams(layer, params, printCrs, counterRef) {
-        const qgisServerVersion = (ConfigUtils.getConfigProp("qgisServerVersion") || 3);
+        const qgisServerVersion = ConfigUtils.getConfigProp("qgisServerVersion", null, 3);
         if (qgisServerVersion >= 3) {
             if (layer.type === "wms") {
                 let layerUrl = layer.url;
