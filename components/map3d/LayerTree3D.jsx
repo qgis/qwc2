@@ -45,7 +45,7 @@ export default class LayerTree3D extends React.Component {
         const sceneContext = this.props.sceneContext;
         return (
             <div className="layertree-item-container" key="draped-layers">
-                {sceneContext.drapedLayers.map(entry => {
+                {sceneContext.colorLayers.map(entry => {
                     const classes = classNames({
                         "layertree-item": true,
                         "layertree-item-disabled": !entry.visibility
@@ -54,12 +54,12 @@ export default class LayerTree3D extends React.Component {
                         <div className={classes} key={entry.id}>
                             <Icon className="layertree-item-checkbox"
                                 icon={entry.visibility ? "checked" : "unchecked"}
-                                onClick={() => sceneContext.updateDrapedLayer(entry.id, {visibility: !entry.visibility})}
+                                onClick={() => sceneContext.updateColorLayer(entry.id, {visibility: !entry.visibility})}
                             />
                             <span className="layertree-item-title" title={entry.title}>{entry.title}</span>
                             <span className="layertree-item-transparency">
                                 <input className="layertree-item-transparency-slider" max="255" min="0"
-                                    onChange={(ev) => sceneContext.updateDrapedLayer(entry.id, {opacity: parseInt(ev.target.value, 10)})}
+                                    onChange={(ev) => sceneContext.updateColorLayer(entry.id, {opacity: parseInt(ev.target.value, 10)})}
                                     step="1" type="range" value={entry.opacity} />
                             </span>
                         </div>

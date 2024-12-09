@@ -85,7 +85,7 @@ class Map3D extends React.Component {
         dtmUrl: null,
         dtmCrs: null,
         baseLayers: [],
-        drapedLayers: []
+        colorLayers: []
     };
     state = {
         enabled: false,
@@ -95,7 +95,7 @@ class Map3D extends React.Component {
             addLayer: (layer) => {},
             getLayer: (layer) => {},
             removeLayer: (layerId) => {},
-            updateDrapedLayer: (layerId, diff) => {},
+            updateColorLayer: (layerId, diff) => {},
 
             addSceneObject: (objectId, object) => {},
             getSceneObject: (objectId) => {},
@@ -120,7 +120,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.addLayer = this.addLayer;
         this.state.sceneContext.getLayer = this.getLayer;
         this.state.sceneContext.removeLayer = this.removeLayer;
-        this.state.sceneContext.updateDrapedLayer = this.updateDrapedLayer;
+        this.state.sceneContext.updateColorLayer = this.updateColorLayer;
         this.state.sceneContext.addSceneObject = this.addSceneObject;
         this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
@@ -142,7 +142,7 @@ class Map3D extends React.Component {
             } else if (this.props.layers !== prevProps.layers) {
                 this.setState((state) => (
                     {
-                        sceneContext: {...state.sceneContext, drapedLayers: this.collectDrapedLayers(state.sceneContext.drapedLayers)}
+                        sceneContext: {...state.sceneContext, colorLayers: this.collectColorLayers(state.sceneContext.colorLayers)}
                     }
                 ));
             }
@@ -152,8 +152,8 @@ class Map3D extends React.Component {
                 this.applyBaseLayer();
             }
 
-            if (this.state.sceneContext.drapedLayers !== prevState.sceneContext.drapedLayers) {
-                this.applyDrapedLayers(this.state.sceneContext.drapedLayers, prevState.sceneContext.drapedLayers);
+            if (this.state.sceneContext.colorLayers !== prevState.sceneContext.colorLayers) {
+                this.applyColorLayers(this.state.sceneContext.colorLayers, prevState.sceneContext.colorLayers);
             }
         }
     }
@@ -180,8 +180,8 @@ class Map3D extends React.Component {
             }
         }));
     };
-    collectDrapedLayers = (prevDrapedLayers) => {
-        const prevLayersMap = prevDrapedLayers.reduce((res, layer) => (
+    collectColorLayers = (prevColorLayers) => {
+        const prevLayersMap = prevColorLayers.reduce((res, layer) => (
             {...res, [layer.id]: layer}
         ), {});
 
@@ -196,12 +196,12 @@ class Map3D extends React.Component {
             const prevLayer = prevLayersMap[layer.id];
             return {
                 ...layer,
-                visibility: prevLayer?.visibility ?? true,
+                visibility: prevLayer?.visibility ?? false,
                 opacity: prevLayer?.opacity ?? 255
             };
         }).filter(Boolean);
     };
-    applyDrapedLayers = (layers, prevLayers) => {
+    applyColorLayers = (layers, prevLayers) => {
         const layersMap = layers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
         const prevLayersMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
 
@@ -241,11 +241,11 @@ class Map3D extends React.Component {
             this.map.removeLayer(layer, {dispose: true});
         });
     };
-    updateDrapedLayer = (layerId, diff) => {
+    updateColorLayer = (layerId, diff) => {
         this.setState(state => ({
             sceneContext: {
                 ...state.sceneContext,
-                drapedLayers: state.sceneContext.drapedLayers.map(entry => {
+                colorLayers: state.sceneContext.colorLayers.map(entry => {
                     return entry.id === layerId ? {...entry, ...diff} : entry;
                 })
             }
@@ -424,8 +424,8 @@ class Map3D extends React.Component {
             this.setBaseLayer(visibleBaseLayer, true);
         }
 
-        // Collect draped layers
-        const drapedLayers = this.collectDrapedLayers([]);
+        // Collect color layers
+        const colorLayers = this.collectColorLayers([]);
 
 
         this.setState(state => ({
@@ -437,7 +437,7 @@ class Map3D extends React.Component {
                 dtmUrl: demUrl,
                 dtmCrs: demCrs,
                 baseLayers: baseLayers,
-                drapedLayers: drapedLayers,
+                colorLayers: colorLayers,
                 modelLayers: []
             }
         }));
