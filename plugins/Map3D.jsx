@@ -229,14 +229,14 @@ class Map3D extends React.Component {
         this.instance.notifyChange(this.map);
     };
     addLayer = (layerId, layer) => {
-        layer.__qwcLayerId = layerId;
+        layer.userData.layerId = layerId;
         this.map.addLayer(layer);
     };
     getLayer = (layerId) => {
-        return this.map.getLayers(l => l.__qwcLayerId === layerId)[0] ?? null;
+        return this.map.getLayers(l => l.userData.layerId === layerId)[0] ?? null;
     };
     removeLayer = (layerId) => {
-        this.map.getLayers(l => l.__qwcLayerId === layerId).forEach(layer => {
+        this.map.getLayers(l => l.userData.layerId === layerId).forEach(layer => {
             this.map.removeLayer(layer, {dispose: true});
         });
     };
