@@ -27,12 +27,17 @@ export default class Map3DLight extends React.Component {
         taskContext: PropTypes.object
     };
     state = {
-        systemTime: true,
+        systemTime: false,
         timestamp: 0
     };
     constructor(props) {
         super(props);
         this.setTimestampTimeout = null;
+        const now = new Date();
+        now.setHours(12);
+        now.setMinutes(0);
+        now.setSeconds(0);
+        this.state.timestamp = +now;
     }
     componentDidMount() {
         const ambientLight = new AmbientLight('white', 0.5);
@@ -45,8 +50,6 @@ export default class Map3DLight extends React.Component {
         // Ensure light position is updated at least once per minute
         this.lightPositionInterval = setInterval(() => this.updateLightPosition(true), 1000 * 60);
         this.updateLightPosition();
-
-        this.setCurrentTimestamp();
 
     }
     componentDidUpdate(prevProps, prevState) {
