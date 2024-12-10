@@ -625,6 +625,8 @@ revision is published (specified via newsRev prop).
 |----------|------|-------------|---------------|
 | newsDocument | `string` | URL to the news HTML document to display in the popup. | `undefined` |
 | newsRev | `string` | Revision of the document. | `undefined` |
+| showInSidebar | `bool` | Whether to show the news in a sidebar instead of a popup. | `undefined` |
+| side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 
 Portal<a name="portal"></a>
 ----------------------------------------------------------------

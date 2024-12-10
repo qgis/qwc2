@@ -71,3 +71,17 @@ div.newspopup-dialog-popup-body > div.newspopup-dialog-popup-buttonbar button {
     font-weight: bold;
     border: 1px solid var(--border-color);
 }
+
+#NewsPopup {
+    height: 480px;
+}
+
+#NewsPopup div.newspopup-dialog-popup-body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#NewsPopup div.newspopup-dialog-popup-body > iframe {
+    flex: 1 1 auto;
+}
