@@ -22,6 +22,7 @@ import {setActiveServiceInfo} from '../actions/serviceinfo';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
 import LayerInfoWindow from '../components/LayerInfoWindow';
+import ResizeableWindow from '../components/ResizeableWindow';
 import ServiceInfoWindow from '../components/ServiceInfoWindow';
 import SideBar from '../components/SideBar';
 import {Image} from '../components/widgets/Primitives';
@@ -155,7 +156,8 @@ class LayerTree extends React.Component {
         legendTooltip: null,
         sidebarwidth: null,
         importvisible: false,
-        filtervisiblelayers: false
+        filtervisiblelayers: false,
+        legendPrintVisible: false
     };
     constructor(props) {
         super(props);
@@ -516,8 +518,12 @@ class LayerTree extends React.Component {
 
         let legendPrintIcon = null;
         if (this.props.enableLegendPrint) {
-            const printLegendTooltip = LocaleUtils.tr("layertree.printlegend");
-            legendPrintIcon = (<Icon className="layertree-print-legend" icon="print" onClick={this.printLegend} title={printLegendTooltip}/>);
+            legendPrintIcon = (
+                <Icon className="layertree-print-legend" icon="print"
+                    onClick={() => this.setState({legendPrintVisible: true})}
+                    title={LocaleUtils.tr("layertree.printlegend")}
+                />
+            );
         }
         let visibleFilterIcon = null;
         if (this.props.enableVisibleFilter) {
@@ -578,11 +584,61 @@ class LayerTree extends React.Component {
                     })}
                 </SideBar>
                 {legendTooltip}
+                {this.renderLegendPrintWindow()}
                 <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} layerInfoGeometry={this.props.layerInfoGeometry} scaleDependentLegend={this.props.scaleDependentLegend} />
                 <ServiceInfoWindow layerInfoGeometry={this.props.layerInfoGeometry} />
             </div>
         );
     }
+    renderLegendPrintWindow = () => {
+        if (!this.state.legendPrintVisible) {
+            return null;
+        }
+        const setLegendPrintContents = (el) => {
+            if (!el) {
+                return;
+            }
+            el.addEventListener('load', () => {
+                const container = el.contentWindow.document.getElementById("legendcontainer");
+                if (container) {
+                    let body = '<p id="legendcontainerbody">';
+                    body += this.props.layers.map(layer => {
+                        if (!layer.visibility) {
+                            return "";
+                        } else if (layer.legendUrl) {
+                            return this.printLayerLegend(layer, layer);
+                        } else if (layer.color) {
+                            return '<div class="legend-entry"><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
+                        } else {
+                            return "";
+                        }
+                    }).join("");
+                    body += "</p>";
+                    container.innerHTML = body;
+                } else {
+                    this.legendPrintWindow.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
+                }
+            });
+        };
+        const printLegend = (ev) => {
+            ev.target.parentElement.parentElement.getElementsByTagName('iframe')[0].contentWindow.print();
+        };
+
+        return (
+            <ResizeableWindow icon="print" initialHeight={0.75 * window.innerHeight}
+                initialWidth={0.5 * window.innerWidth}
+                onClose={() => this.setState({legendPrintVisible: false})}
+                title={LocaleUtils.tr("layertree.printlegend")}
+            >
+                <div className="layertree-legend-print-body" role="body">
+                    <iframe ref={setLegendPrintContents} src={MiscUtils.resolveAssetsPath(this.props.templatePath)} />
+                    <div className="layertree-legend-print-body-buttonbar">
+                        <button onClick={printLegend}>{LocaleUtils.tr("layertree.printlegend")}</button>
+                    </div>
+                </div>
+            </ResizeableWindow>
+        );
+    };
     legendTooltipLoaded = (ev) => {
         if (ev.target.naturalWidth > 1) {
             ev.target.style.visibility = 'visible';
@@ -678,57 +734,6 @@ class LayerTree extends React.Component {
             }
         }
         return body;
-    };
-    printLegend = () => {
-        let body = '<p id="legendcontainerbody">';
-        const printLabel = LocaleUtils.tr("layertree.printlegend");
-        body += '<div id="print" style="margin-bottom: 1em">' +
-                '<style type="text/css">@media print{ #print { display: none; }}</style>' +
-                '<button onClick="(function(){window.print();})()">' + printLabel + '</button>' +
-                '</div>';
-        body += this.props.layers.map(layer => {
-            if (!layer.visibility) {
-                return "";
-            } else if (layer.legendUrl) {
-                return this.printLayerLegend(layer, layer);
-            } else if (layer.color) {
-                return '<div class="legend-entry"><span style="display: inline-block; width: 1em; height: 1em; box-shadow: inset 0 0 0 1000px ' + layer.color + '; margin: 0.25em; border: 1px solid black;">&nbsp;</span>' + (layer.title || layer.name) + '</div>';
-            } else {
-                return "";
-            }
-        }).join("");
-        body += "</p>";
-        const setLegendPrintContent = () => {
-            const container = this.legendPrintWindow.document.getElementById("legendcontainer");
-            if (container) {
-                container.innerHTML = body;
-            } else {
-                this.legendPrintWindow.document.body.innerHTML = "Broken template. An element with id=legendcontainer must exist.";
-            }
-        };
-
-        if (this.legendPrintWindow && !this.legendPrintWindow.closed) {
-            setLegendPrintContent();
-            this.legendPrintWindow.focus();
-        } else {
-            let templatePath = this.props.templatePath;
-            if (templatePath.startsWith(":/")) {
-                const assetsPath = ConfigUtils.getAssetsPath();
-                templatePath = assetsPath + templatePath.substr(1);
-            }
-            this.legendPrintWindow = window.open(templatePath, "Legend", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
-            if (window.navigator.userAgent.indexOf('Trident/') > 0) {
-                // IE...
-                const interval = setInterval(() => {
-                    if (this.legendPrintWindow.document.readyState === 'complete') {
-                        setLegendPrintContent();
-                        clearInterval(interval);
-                    }
-                });
-            } else {
-                this.legendPrintWindow.addEventListener('load', setLegendPrintContent, false);
-            }
-        }
     };
     deleteAllLayers = () => {
         for (const layer of this.props.layers) {
