@@ -96,11 +96,7 @@ class QtDesignerForm extends React.Component {
                 ...QtDesignerForm.defaultState,
                 activetabs: this.props.form === prevProps.form ? state.activetabs : {}
             }));
-            let url = this.props.form;
-            if (url && url.startsWith(":/")) {
-                const assetsPath = ConfigUtils.getAssetsPath();
-                url = assetsPath + this.props.form.substr(1);
-            }
+            let url = MiscUtils.resolveAssetsPath(this.props.form);
             url += (url.includes('?') ? '&' : '?') + "lang=" + this.props.locale;
 
             axios.get(url).then(response => {

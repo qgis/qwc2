@@ -142,6 +142,9 @@ const MiscUtils = {
         ctx.fillText(glyph, size / 2, size / 2);
 
         return canvas.toDataURL('image/png');
+    },
+    resolveAssetsPath(path) {
+        return path && path.startsWith(":/") ? ConfigUtils.getAssetsPath() + path.substr(1) : path;
     }
 };
 
