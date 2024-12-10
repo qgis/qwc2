@@ -85,7 +85,8 @@ class Map3D extends React.Component {
         dtmUrl: null,
         dtmCrs: null,
         baseLayers: [],
-        colorLayers: []
+        colorLayers: [],
+        sceneObjects: {}
     };
     state = {
         enabled: false,
@@ -93,13 +94,14 @@ class Map3D extends React.Component {
             ...Map3D.defaultSceneState,
 
             addLayer: (layer) => {},
-            getLayer: (layer) => {},
+            getLayer: (layerId) => {},
             removeLayer: (layerId) => {},
-            updateColorLayer: (layerId, diff) => {},
+            updateColorLayer: (layerId, options) => {},
 
-            addSceneObject: (objectId, object) => {},
+            addSceneObject: (objectId, object, options = {}) => {},
             getSceneObject: (objectId) => {},
             removeSceneObject: (objectId) => {},
+            updateSceneObject: (objectId, options) => {},
 
             setViewToExtent: (bounds, angle) => {},
             getTerrainHeight: (scenePos) => {}
@@ -114,8 +116,8 @@ class Map3D extends React.Component {
         this.container = null;
         this.inspector = null;
         this.instance = null;
-        this.sceneObjects = {};
         this.map = null;
+        this.objectMap = {};
         this.animationInterrupted = false;
         this.state.sceneContext.addLayer = this.addLayer;
         this.state.sceneContext.getLayer = this.getLayer;
@@ -124,6 +126,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.addSceneObject = this.addSceneObject;
         this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
+        this.state.sceneContext.updateSceneObject = this.updateSceneObject;
         this.state.sceneContext.setViewToExtent = this.setViewToExtent;
         this.state.sceneContext.getTerrainHeight = this.getTerrainHeight;
         this.state.taskContext.setCurrentTask = this.setCurrentTask;
@@ -153,7 +156,11 @@ class Map3D extends React.Component {
             }
 
             if (this.state.sceneContext.colorLayers !== prevState.sceneContext.colorLayers) {
-                this.applyColorLayers(this.state.sceneContext.colorLayers, prevState.sceneContext.colorLayers);
+                this.applyColorLayerUpdates(this.state.sceneContext.colorLayers, prevState.sceneContext.colorLayers);
+            }
+            // Update scene objects
+            if (this.state.sceneContext.sceneObjects !== prevState.sceneContext.sceneObjects) {
+                this.applySceneObjectUpdates(this.state.sceneContext.sceneObjects);
             }
         }
     }
@@ -201,7 +208,7 @@ class Map3D extends React.Component {
             };
         }).filter(Boolean);
     };
-    applyColorLayers = (layers, prevLayers) => {
+    applyColorLayerUpdates = (layers, prevLayers) => {
         const layersMap = layers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
         const prevLayersMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
 
@@ -229,6 +236,14 @@ class Map3D extends React.Component {
         });
         this.instance.notifyChange(this.map);
     };
+    applySceneObjectUpdates = (sceneObjects) => {
+        Object.entries(sceneObjects).forEach(([objectId, options]) => {
+            const object = this.objectMap[objectId];
+            object.visible = options.visible;
+            object.opacity = options.opacity;
+            this.instance.notifyChange(object);
+        });
+    };
     addLayer = (layerId, layer) => {
         layer.userData.layerId = layerId;
         this.map.addLayer(layer);
@@ -251,18 +266,59 @@ class Map3D extends React.Component {
             }
         }));
     };
-    addSceneObject = (objectId, object) => {
-        this.sceneObjects[objectId] = object;
+    addSceneObject = (objectId, object, options = {}) => {
         this.instance.add(object);
+        this.objectMap[objectId] = object;
+        this.setState((state) => {
+            const objectState = {
+                visible: true,
+                opacity: 100,
+                layertree: false,
+                ...options
+            };
+            return {
+                sceneContext: {
+                    ...state.sceneContext,
+                    sceneObjects: {...state.sceneContext.sceneObjects, [objectId]: objectState}
+                }
+            };
+        });
     };
     getSceneObject = (objectId) => {
-        return this.sceneObjects[objectId];
+        return this.objectMap[objectId];
     };
     removeSceneObject = (objectId) => {
-        if (this.sceneObjects[objectId]) {
-            this.instance.remove(this.sceneObjects[objectId]);
-            delete this.sceneObjects[objectId];
+        if (!this.objectMap[objectId]) {
+            return;
         }
+        this.setState((state) => {
+            this.instance.remove(this.objectMap[objectId]);
+            delete this.objectMap[objectId];
+            const newSceneObjects = {...state.sceneContext.sceneObjects};
+            delete newSceneObjects[objectId];
+            return {
+                sceneContext: {
+                    ...state.sceneContext,
+                    sceneObjects: newSceneObjects
+                }
+            };
+        });
+    };
+    updateSceneObject = (objectId, options) => {
+        this.setState((state) => {
+            return {
+                sceneContext: {
+                    ...state.sceneContext,
+                    sceneObjects: {
+                        ...state.sceneContext.sceneObjects,
+                        [objectId]: {
+                            ...state.sceneContext.sceneObjects[objectId],
+                            ...options
+                        }
+                    }
+                }
+            };
+        });
     };
     render() {
         if (!this.state.enabled) {
@@ -348,7 +404,6 @@ class Map3D extends React.Component {
                 clearColor: 0x000000
             }
         });
-        this.sceneObjects = {};
 
         // Setup map
         const bounds = CoordinatesUtils.reprojectBbox(this.props.theme.bbox.bounds, this.props.theme.bbox.crs, projection);
@@ -463,9 +518,9 @@ class Map3D extends React.Component {
                 object.dispose();
             }
         });
-        this.sceneObjects = {};
         this.inspector = null;
         this.map = null;
+        this.sceneObjects = {};
         this.instance = null;
         this.setState((state) => ({
             sceneContext: {...state.sceneContext, ...Map3D.defaultSceneState},
