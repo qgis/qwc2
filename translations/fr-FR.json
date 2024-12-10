@@ -248,6 +248,10 @@
       "visiblefilter": "Filtrer couches invisibles",
       "zoomtolayer": "Zoomer sur la couche"
     },
+    "layertree3d": {
+      "layers": "Couches",
+      "objects": "Objets"
+    },
     "linkfeatureform": {
       "cancel": "Annuler",
       "close": "Fermer",

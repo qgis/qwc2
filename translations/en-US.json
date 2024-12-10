@@ -248,6 +248,10 @@
       "visiblefilter": "Filter invisible layers",
       "zoomtolayer": "Zoom to layer"
     },
+    "layertree3d": {
+      "layers": "Layers",
+      "objects": "Objects"
+    },
     "linkfeatureform": {
       "cancel": "Cancel",
       "close": "Close",

@@ -248,6 +248,10 @@
       "visiblefilter": "Filtra livelli non visibili",
       "zoomtolayer": "Zoom a tutto il livello"
     },
+    "layertree3d": {
+      "layers": "Livelli",
+      "objects": "Oggetti"
+    },
     "linkfeatureform": {
       "cancel": "Annulla",
       "close": "Chiudi",

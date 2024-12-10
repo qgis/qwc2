@@ -248,6 +248,10 @@
       "visiblefilter": "Unsichtbare Ebenen filtern",
       "zoomtolayer": "Auf den Layer zoomen"
     },
+    "layertree3d": {
+      "layers": "Ebenen",
+      "objects": "Objekte"
+    },
     "linkfeatureform": {
       "cancel": "Abbrechen",
       "close": "Schließen",

@@ -248,6 +248,10 @@
       "visiblefilter": "Filtrar camadas invisíveis",
       "zoomtolayer": "Ampliar a camada"
     },
+    "layertree3d": {
+      "layers": "",
+      "objects": ""
+    },
     "linkfeatureform": {
       "cancel": "Cancelar",
       "close": "Fechar",

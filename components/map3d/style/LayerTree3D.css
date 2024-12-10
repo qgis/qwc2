@@ -1,5 +1,5 @@
 #LayerTree3D div.layertree-item-container {
-    margin-left: 0.5em;
+    padding: 0.25em 0.25em 0.25em 0.5em;
 }
 
 #LayerTree3D span.layertree-item-checkbox {
@@ -31,4 +31,9 @@
 
 #LayerTree3D input.layertree-item-transparency-slider {
     width: 100%;
+}
+
+#LayerTree3D div.layertree-section {
+    font-weight: bold;
+    margin-left: -0.25em;
 }

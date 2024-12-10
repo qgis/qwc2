@@ -44,7 +44,32 @@ export default class LayerTree3D extends React.Component {
     renderDrapedLayerEntries = () => {
         const sceneContext = this.props.sceneContext;
         return (
-            <div className="layertree-item-container" key="draped-layers">
+            <div className="layertree-item-container">
+                <div className="layertree-section">{LocaleUtils.tr("layertree3d.objects")}</div>
+                {Object.entries(sceneContext.sceneObjects).map(([objectId, entry]) => {
+                    if (!entry.layertree) {
+                        return null;
+                    }
+                    const classes = classNames({
+                        "layertree-item": true,
+                        "layertree-item-disabled": !entry.visible
+                    });
+                    return (
+                        <div className={classes} key={objectId}>
+                            <Icon className="layertree-item-checkbox"
+                                icon={entry.visible ? "checked" : "unchecked"}
+                                onClick={() => sceneContext.updateSceneObject(objectId, {visible: !entry.visible})}
+                            />
+                            <span className="layertree-item-title" title={objectId}>{objectId}</span>
+                            <span className="layertree-item-transparency">
+                                <input className="layertree-item-transparency-slider" max="100" min="0"
+                                    onChange={(ev) => sceneContext.updateSceneObject(objectId, {opacity: parseInt(ev.target.value, 10) / 100})}
+                                    step="1" type="range" value={entry.opacity * 100} />
+                            </span>
+                        </div>
+                    );
+                })}
+                <div className="layertree-section">{LocaleUtils.tr("layertree3d.layers")}</div>
                 {sceneContext.colorLayers.map(entry => {
                     const classes = classNames({
                         "layertree-item": true,

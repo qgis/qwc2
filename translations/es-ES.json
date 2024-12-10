@@ -248,6 +248,10 @@
       "visiblefilter": "Filtrar capas no visibles",
       "zoomtolayer": "Zoom a la capa"
     },
+    "layertree3d": {
+      "layers": "",
+      "objects": ""
+    },
     "linkfeatureform": {
       "cancel": "Cancelar",
       "close": "Cerrar",

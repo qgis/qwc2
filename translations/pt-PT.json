@@ -248,6 +248,10 @@
       "visiblefilter": "Filtrar Camadas Invisíveis",
       "zoomtolayer": "Zoom para a Camada"
     },
+    "layertree3d": {
+      "layers": "",
+      "objects": ""
+    },
     "linkfeatureform": {
       "cancel": "Cancelar",
       "close": "Fechar",

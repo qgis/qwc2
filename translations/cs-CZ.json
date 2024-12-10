@@ -248,6 +248,10 @@
       "visiblefilter": "Skrýt nezobrazující se vrstvy",
       "zoomtolayer": "Vycentrovat na vrstvu"
     },
+    "layertree3d": {
+      "layers": "",
+      "objects": ""
+    },
     "linkfeatureform": {
       "cancel": "",
       "close": "",

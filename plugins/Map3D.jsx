@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Sourcepole AG
+ * Copyright 2024 Sourcepole AG
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
@@ -14,7 +14,9 @@ import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
+import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
+import Tiles3DSource from "@giro3d/giro3d/sources/Tiles3DSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
 import {Vector2, Vector3, CubeTextureLoader} from 'three';
@@ -482,6 +484,22 @@ class Map3D extends React.Component {
         // Collect color layers
         const colorLayers = this.collectColorLayers([]);
 
+        // Add 3d tiles
+        this.objectMap = {};
+        const sceneObjects = {};
+        (this.props.theme.map3d?.tiles3d || []).forEach(entry => {
+            let tilesUrl = entry.url;
+            if (tilesUrl.startsWith(":")) {
+                tilesUrl = location.href.split("?")[0] + ConfigUtils.getAssetsPath() + tilesUrl.substr(1);
+            }
+            const tiles = new Tiles3D(
+                new Tiles3DSource(tilesUrl)
+            );
+            tiles.userData.layertree = true;
+            this.instance.add(tiles);
+            this.objectMap[entry.name] = tiles;
+            sceneObjects[entry.name] = {visible: true, opacity: 100, layertree: true};
+        });
 
         this.setState(state => ({
             sceneContext: {
@@ -493,7 +511,7 @@ class Map3D extends React.Component {
                 dtmCrs: demCrs,
                 baseLayers: baseLayers,
                 colorLayers: colorLayers,
-                modelLayers: []
+                sceneObjects: sceneObjects
             }
         }));
 

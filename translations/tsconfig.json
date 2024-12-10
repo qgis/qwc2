@@ -226,6 +226,8 @@
     "layertree.transparency",
     "layertree.visiblefilter",
     "layertree.zoomtolayer",
+    "layertree3d.layers",
+    "layertree3d.objects",
     "linkfeatureform.cancel",
     "linkfeatureform.close",
     "linkfeatureform.drawhint",

@@ -248,6 +248,10 @@
       "visiblefilter": "Filtrer usynlige lag",
       "zoomtolayer": "Zoom til lag"
     },
+    "layertree3d": {
+      "layers": "",
+      "objects": ""
+    },
     "linkfeatureform": {
       "cancel": "",
       "close": "",
