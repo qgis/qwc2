@@ -42,6 +42,10 @@ class Redlining extends React.Component {
         /** Whether to allow labeling geometric figures. */
         allowGeometryLabels: PropTypes.bool,
         changeRedliningState: PropTypes.func,
+        /** Default border color. In format [r, g, b, a]. */
+        defaultBorderColor: PropTypes.array,
+        /** Default fill color. In format [r, g, b, a]. */
+        defaultFillColor: PropTypes.array,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
         mobile: PropTypes.bool,
@@ -59,7 +63,9 @@ class Redlining extends React.Component {
         allowGeometryLabels: true,
         snapping: true,
         snappingActive: true,
-        plugins: []
+        plugins: [],
+        defaultBorderColor: [255, 0, 0, 1],
+        defaultFillColor: [255, 255, 255, 1]
     };
     state = {
         selectText: false
@@ -68,6 +74,13 @@ class Redlining extends React.Component {
         super(props);
         this.labelInput = null;
         window.addEventListener('keydown', this.keyPressed);
+        props.changeRedliningState({
+            style: {
+                ...props.redlining.style,
+                borderColor: props.defaultBorderColor,
+                fillColor: props.defaultFillColor
+            }
+        });
     }
     componentDidUpdate(prevProps) {
         if (prevProps.redlining.geomType !== this.props.redlining.geomType && this.props.redlining.geomType === 'Text' && !this.state.selectText) {
