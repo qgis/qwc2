@@ -327,6 +327,7 @@
     "redlining.draw",
     "redlining.edit",
     "redlining.ellipse",
+    "redlining.export",
     "redlining.freehand",
     "redlining.label",
     "redlining.layer",
