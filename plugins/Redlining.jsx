@@ -194,7 +194,7 @@ class Redlining extends React.Component {
         if (vectorLayers.length === 0) {
             vectorLayers = [{id: 'redlining', title: LocaleUtils.tr('redlining.layertitle')}, ...vectorLayers];
         }
-        const haveLayer = this.props.layers.find(l => l.id === this.props.redlining.layer) !== undefined;
+        const haveLayer = (this.props.layers.find(l => l.id === this.props.redlining.layer)?.features?.length || 0) > 0;
 
         const activePlugin = Object.values(this.props.plugins || {}).find(plugin => plugin.cfg.key === this.props.redlining.action);
         const controls = activePlugin ? (<activePlugin.controls />) : this.renderStandardControls();
