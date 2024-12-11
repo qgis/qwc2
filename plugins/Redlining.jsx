@@ -42,10 +42,14 @@ class Redlining extends React.Component {
         /** Whether to allow labeling geometric figures. */
         allowGeometryLabels: PropTypes.bool,
         changeRedliningState: PropTypes.func,
+        /** Default area unit. Options: metric, imperial, sqm, ha, sqkm, sqft, acre, sqmi */
+        defaultAreaUnit: PropTypes.string,
         /** Default border color. In format [r, g, b, a]. */
         defaultBorderColor: PropTypes.array,
         /** Default fill color. In format [r, g, b, a]. */
         defaultFillColor: PropTypes.array,
+        /** Default length unit. Options: metric, imperial, m, km, ft, mi */
+        defaultLengthUnit: PropTypes.string,
         /** Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. */
         hiddenTools: PropTypes.array,
         layers: PropTypes.array,
@@ -68,7 +72,9 @@ class Redlining extends React.Component {
         snappingActive: true,
         plugins: [],
         defaultBorderColor: [255, 0, 0, 1],
-        defaultFillColor: [255, 255, 255, 1]
+        defaultFillColor: [255, 255, 255, 1],
+        defaultAreaUnit: 'metric',
+        defaultLengthUnit: 'metric'
     };
     state = {
         selectText: false
@@ -77,15 +83,27 @@ class Redlining extends React.Component {
         super(props);
         this.labelInput = null;
         window.addEventListener('keydown', this.keyPressed);
-        props.changeRedliningState({
-            style: {
-                ...props.redlining.style,
-                borderColor: props.defaultBorderColor,
-                fillColor: props.defaultFillColor
-            }
-        });
+    }
+    componentDidMount() {
+        this.componentDidUpdate({redlining: {}});
     }
     componentDidUpdate(prevProps) {
+        if (
+            this.props.defaultBorderColor !== prevProps.defaultBorderColor ||
+            this.props.defaultFillColor !== prevProps.defaultFillColor ||
+            this.props.defaultLengthUnit !== prevProps.defaultLengthUnit ||
+            this.props.defaultAreaUnit !== prevProps.defaultAreaUnit
+        ) {
+            this.props.changeRedliningState({
+                style: {
+                    ...this.props.redlining.style,
+                    borderColor: this.props.defaultBorderColor,
+                    fillColor: this.props.defaultFillColor
+                },
+                lenUnit: this.props.defaultLengthUnit,
+                areaUnit: this.props.defaultAreaUnit
+            });
+        }
         if (prevProps.redlining.geomType !== this.props.redlining.geomType && this.props.redlining.geomType === 'Text' && !this.state.selectText) {
             this.setState({selectText: true});
         }
