@@ -21,6 +21,7 @@ div.redlining-group {
 
 div.redlining-group > div:first-child {
     font-size: 85%;
+    text-align: center;
 }
 
 div.redlining-group > div:last-child {

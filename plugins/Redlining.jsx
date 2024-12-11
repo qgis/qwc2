@@ -46,6 +46,8 @@ class Redlining extends React.Component {
         defaultBorderColor: PropTypes.array,
         /** Default fill color. In format [r, g, b, a]. */
         defaultFillColor: PropTypes.array,
+        /** Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. */
+        hiddenTools: PropTypes.array,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
         mobile: PropTypes.bool,
@@ -61,6 +63,7 @@ class Redlining extends React.Component {
     };
     static defaultProps = {
         allowGeometryLabels: true,
+        hiddenTools: [],
         snapping: true,
         snappingActive: true,
         plugins: [],
@@ -129,41 +132,44 @@ class Redlining extends React.Component {
         this.updateRedliningState({style: newStyle});
     };
     renderBody = () => {
+        const toolEnabled = (tool) => !this.props.hiddenTools.includes(tool);
         const activeButton = this.props.redlining.action === "Draw" ? this.props.redlining.geomType : this.props.redlining.action;
         let drawButtons = [
             {key: "Point", tooltip: LocaleUtils.tr("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
             {key: "LineString", tooltip: LocaleUtils.tr("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
             {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
             [
-                {key: "Circle", tooltip: LocaleUtils.tr("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}},
-                {key: "Ellipse", tooltip: LocaleUtils.tr("redlining.ellipse"), icon: "ellipse", data: {action: "Draw", geomType: "Ellipse", text: ""}},
-                {key: "Square", tooltip: LocaleUtils.tr("redlining.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}},
-                {key: "Box", tooltip: LocaleUtils.tr("redlining.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box", text: ""}}
-            ],
+                toolEnabled("Circle") ? {key: "Circle", tooltip: LocaleUtils.tr("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}} : null,
+                toolEnabled("Ellipse") ? {key: "Ellipse", tooltip: LocaleUtils.tr("redlining.ellipse"), icon: "ellipse", data: {action: "Draw", geomType: "Ellipse", text: ""}} : null,
+                toolEnabled("Square") ? {key: "Square", tooltip: LocaleUtils.tr("redlining.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}} : null,
+                toolEnabled("Box") ? {key: "Box", tooltip: LocaleUtils.tr("redlining.rectangle"), icon: "rect", data: {action: "Draw", geomType: "Box", text: ""}} : null
+            ].filter(Boolean),
             {key: "Text", tooltip: LocaleUtils.tr("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: "", measurements: false}}
         ];
         if (this.props.mobile) {
             drawButtons = [drawButtons.flat()];
         }
         const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
-        const freehandButtons = [{
+        const freehandButtons = toolEnabled("HandWriting") ? [{
             key: "HandDrawing", tooltip: LocaleUtils.tr("redlining.freehand"), icon: "freehand",
             data: {action: "Draw", geomType: this.props.redlining.geomType, text: "", freehand: !this.props.redlining.freehand},
             disabled: (this.props.redlining.geomType !== "LineString" && this.props.redlining.geomType !== "Polygon")
-        }];
+        }] : [];
         const editButtons = [
             {key: "Pick", tooltip: LocaleUtils.tr("redlining.pick"), icon: "nodetool", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Transform", tooltip: LocaleUtils.tr("redlining.transform"), icon: "transformtool", data: {action: "Transform", geomType: null, text: ""}},
+            toolEnabled("Transform") ? {key: "Transform", tooltip: LocaleUtils.tr("redlining.transform"), icon: "transformtool", data: {action: "Transform", geomType: null, text: ""}} : null,
             {key: "Delete", tooltip: LocaleUtils.tr("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
-        ];
-        const extraButtons = [
+        ].filter(Boolean);
+        const extraButtons = toolEnabled("NumericInput") ? [
             {key: "NumericInput", tooltip: LocaleUtils.tr("redlining.numericinput"), icon: "numericinput"}
-        ];
+        ] : [];
         for (const plugin of Object.values(this.props.plugins || {})) {
-            editButtons.push({
-                ...plugin.cfg,
-                tooltip: plugin.cfg.tooltip ? LocaleUtils.tr(plugin.cfg.tooltip) : undefined
-            });
+            if (toolEnabled(plugin.cfg.key)) {
+                editButtons.push({
+                    ...plugin.cfg,
+                    tooltip: plugin.cfg.tooltip ? LocaleUtils.tr(plugin.cfg.tooltip) : undefined
+                });
+            }
         }
         let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
         // Ensure list always contains at least a "Redlining" layer
@@ -201,13 +207,15 @@ class Redlining extends React.Component {
                         <div>&nbsp;</div>
                         <ButtonBar active={this.props.redlining.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={() => this.updateRedliningState({numericInput: !this.props.redlining.numericInput})} />
                     </div>
-                    <div className="redlining-group">
-                        <div>&nbsp;</div>
-                        <MenuButton className="redlining-export-menu" disabled={!haveLayer} menuIcon="export" onActivate={this.export}>
-                            <div className="redlining-export-menu-entry" key="GeoJSON" value="geojson">GeoJSON</div>
-                            <div className="redlining-export-menu-entry" key="KML" value="kml">KML</div>
-                        </MenuButton>
-                    </div>
+                    {toolEnabled("Export") ? (
+                        <div className="redlining-group">
+                            <div>&nbsp;</div>
+                            <MenuButton className="redlining-export-menu" disabled={!haveLayer} menuIcon="export" onActivate={this.export}>
+                                <div className="redlining-export-menu-entry" key="GeoJSON" value="geojson">GeoJSON</div>
+                                <div className="redlining-export-menu-entry" key="KML" value="kml">KML</div>
+                            </MenuButton>
+                        </div>
+                    ) : null}
                 </div>
                 {controls}
             </div>
