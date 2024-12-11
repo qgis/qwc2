@@ -399,7 +399,7 @@ class HeightProfile extends React.Component {
                     displayColors: false,
                     bodyFont: {weight: 'bold'},
                     callbacks: {
-                        title: (ctx) => (distanceStr + ": " + MeasureUtils.formatMeasurement(ctx[0].parsed.x, false, 'metric', 2)),
+                        title: (ctx) => (distanceStr + ": " + MeasureUtils.formatMeasurement(ctx[0].parsed.x, false, 'metric')),
                         label: (ctx) => (heightStr + ": " + ctx.parsed.y.toFixed(prec) + " m " + aslStr)
                     }
                 }

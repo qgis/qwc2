@@ -30,7 +30,10 @@ const MeasureUtils = {
     formatDuration(valueSeconds) {
         return new Date(valueSeconds * 1000).toISOString().slice(11, 19);
     },
-    formatMeasurement(valueMetric, isArea, unit = 'metric', decimals = 2, withUnit = true) {
+    formatMeasurement(valueMetric, isArea, unit = 'metric', decimals = -1, withUnit = true) {
+        if (decimals < 0) {
+            decimals = ConfigUtils.getConfigProp("measurementPrecision", null, 2);
+        }
         let result = '';
         let unitlabel = unit;
         switch (unit) {
@@ -201,15 +204,15 @@ const MeasureUtils = {
             const lengths = MeasureUtils.computeSegmentLengths(geom.getCoordinates(), featureCrs, geodesic);
             measurements.segment_lengths = lengths;
             measurements.length = lengths.reduce((sum, len) => sum + len, 0);
-            feature.set('segment_labels', lengths.map(length => MeasureUtils.formatMeasurement(length, false, settings.lenUnit, settings.decimals)));
+            feature.set('segment_labels', lengths.map(length => MeasureUtils.formatMeasurement(length, false, settings.lenUnit)));
         } else if (["Ellipse", "Polygon", "Square", "Box"].includes(geomType)) {
             const area = MeasureUtils.computeArea(geom, featureCrs, geodesic);
             measurements.area = area;
-            feature.set('label', MeasureUtils.formatMeasurement(area, true, settings.areaUnit, settings.decimals));
+            feature.set('label', MeasureUtils.formatMeasurement(area, true, settings.areaUnit));
         } else if (geomType === 'Circle') {
             const radius = geom.getRadius();
             measurements.radius = radius;
-            feature.set('label', "r = " + MeasureUtils.formatMeasurement(radius, false, settings.lenUnit, settings.decimals));
+            feature.set('label', "r = " + MeasureUtils.formatMeasurement(radius, false, settings.lenUnit));
         } else if (geomType === 'Bearing') {
             const coo = geom.getCoordinates();
             measurements.bearing = CoordinatesUtils.calculateAzimuth(coo[0], coo[1], featureCrs);

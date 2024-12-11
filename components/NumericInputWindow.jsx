@@ -14,6 +14,7 @@ import {createSelector} from 'reselect';
 
 import {addLayerFeatures, LayerRole, removeLayer} from '../actions/layers';
 import displayCrsSelector from '../selectors/displaycrs';
+import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -95,10 +96,17 @@ class NumericInputWindow extends React.Component {
         const decimals = CoordinatesUtils.getPrecision(this.state.displayCrs);
         const value = ordinate.toFixed(decimals);
         return (
-            <TextInput onChange={(text) => this.onOrdinateChanged(text, onChange)} value={value} />
+            <TextInput onChange={(text) => this.onValueChanged(text, onChange)} value={value} />
         );
     };
-    onOrdinateChanged = (text, onChange) => {
+    renderMeasureInput = (measure, onChange, decimals = null) => {
+        decimals = decimals ?? ConfigUtils.getConfigProp("measurementPrecision", null, 2);
+        const value = measure.toFixed(decimals);
+        return (
+            <TextInput onChange={(text) => this.onValueChanged(text, onChange)} value={value} />
+        );
+    };
+    onValueChanged = (text, onChange) => {
         const number = parseFloat(text);
         if (!isNaN(number)) {
             onChange(number);
@@ -233,7 +241,7 @@ class NumericInputWindow extends React.Component {
                         <td>y:&nbsp;</td><td>{this.renderOrdinateInput(center[1], value => this.updateCircle(center[0], value, circleParams.radius))}</td>
                     </tr>
                     <tr>
-                        <td>r:&nbsp;</td><td>{this.renderOrdinateInput(circleParams.radius, value => this.updateCircle(center[0], center[1], value))}</td>
+                        <td>r:&nbsp;</td><td>{this.renderMeasureInput(circleParams.radius, value => this.updateCircle(center[0], center[1], value))}</td>
                     </tr>
                 </tbody>
             </table>
@@ -279,19 +287,19 @@ class NumericInputWindow extends React.Component {
                     </tr>
                     {shape === "Box" ? [(
                         <tr key="w">
-                            <td>{LocaleUtils.tr("numericinput.width")}:&nbsp;</td><td>{this.renderOrdinateInput(w, value => this.updateBox(x, y, value, h, r))}</td>
+                            <td>{LocaleUtils.tr("numericinput.width")}:&nbsp;</td><td>{this.renderMeasureInput(w, value => this.updateBox(x, y, value, h, r))}</td>
                         </tr>
                     ), (
                         <tr key="h">
-                            <td>{LocaleUtils.tr("numericinput.height")}:&nbsp;</td><td>{this.renderOrdinateInput(h, value => this.updateBox(x, y, w, value, r))}</td>
+                            <td>{LocaleUtils.tr("numericinput.height")}:&nbsp;</td><td>{this.renderMeasureInput(h, value => this.updateBox(x, y, w, value, r))}</td>
                         </tr>
                     )] : (
                         <tr>
-                            <td>{LocaleUtils.tr("numericinput.side")}:&nbsp;</td><td>{this.renderOrdinateInput(w, value => this.updateBox(x, y, value, value, r))}</td>
+                            <td>{LocaleUtils.tr("numericinput.side")}:&nbsp;</td><td>{this.renderMeasureInput(w, value => this.updateBox(x, y, value, value, r))}</td>
                         </tr>
                     )}
                     <tr>
-                        <td>{LocaleUtils.tr("numericinput.angle")}:&nbsp;</td><td>{this.renderOrdinateInput(r, value => this.updateBox(x, y, w, h, value))}</td>
+                        <td>{LocaleUtils.tr("numericinput.angle")}:&nbsp;</td><td>{this.renderMeasureInput(r, value => this.updateBox(x, y, w, h, value), 1)}</td>
                     </tr>
                 </tbody>
             </table>

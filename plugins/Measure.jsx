@@ -92,7 +92,7 @@ class Measure extends React.Component {
             );
         } else if (this.props.measureState.geomType === "LineString") {
             const length = this.props.measureState.length || 0;
-            const text = MeasureUtils.formatMeasurement(length, false, this.props.measureState.lenUnit, this.props.measureState.decimals);
+            const text = MeasureUtils.formatMeasurement(length, false, this.props.measureState.lenUnit);
             resultBody = (
                 <div className="measure-body">
                     <span className="measure-result">{text}</span>
@@ -109,7 +109,7 @@ class Measure extends React.Component {
             );
         } else if (this.props.measureState.geomType === "Polygon") {
             const area = this.props.measureState.area || 0;
-            const text = MeasureUtils.formatMeasurement(area, true, this.props.measureState.areaUnit, this.props.measureState.decimals);
+            const text = MeasureUtils.formatMeasurement(area, true, this.props.measureState.areaUnit);
             resultBody = (
                 <div className="measure-body">
                     <span className="measure-result">{text}</span>

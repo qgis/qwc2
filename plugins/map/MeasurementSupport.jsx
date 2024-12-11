@@ -146,8 +146,6 @@ class MeasurementSupport extends React.Component {
         const settings = {
             lenUnit: this.props.measurement.lenUnit,
             areaUnit: this.props.measurement.areaUnit,
-            decimals: this.props.measurement.decimals,
-            mapCrs: this.props.mapCrs,
             displayCrs: this.props.displayCrs
         };
         MeasureUtils.updateFeatureMeasurements(feature, geomType, this.props.projection, settings);
