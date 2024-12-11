@@ -10,7 +10,6 @@ import React from 'react';
 import NumericInput from 'react-numeric-input2';
 import {connect} from 'react-redux';
 
-import buffer from '@turf/buffer';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
@@ -33,8 +32,8 @@ class RedliningBufferSupport extends React.Component {
         bufferLayer: null,
         bufferUnit: "meters"
     };
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
         this.state.bufferLayer = {
             id: "buffer",
             title: LocaleUtils.tr("redlining.bufferlayername"),
@@ -101,32 +100,34 @@ class RedliningBufferSupport extends React.Component {
         if (!feature || !feature.geometry || !this.state.bufferLayer) {
             return;
         }
-        if (feature.circleParams) {
-            const {center, radius} = feature.circleParams;
-            const deg2rad = Math.PI / 180;
-            feature = {
-                ...feature,
-                geometry: {
-                    type: 'Polygon',
-                    coordinates: [
-                        Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))
-                    ]
-                }
-            };
-        }
-        const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
-        const wgsFeature = {...feature, geometry: wgsGeometry};
-        const output = buffer(wgsFeature, this.state.bufferDistance, {units: this.state.bufferUnit});
-        if (output && output.geometry) {
-            output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
-            output.id = uuidv4();
-            output.styleName = 'default';
-            output.styleOptions = {
-                fillColor: [0, 0, 255, 0.5],
-                strokeColor: [0, 0, 255, 1]
-            };
-            this.props.addLayerFeatures(this.state.bufferLayer, [output]);
-        }
+        import("@turf/buffer").then(buffer => {
+            if (feature.circleParams) {
+                const {center, radius} = feature.circleParams;
+                const deg2rad = Math.PI / 180;
+                feature = {
+                    ...feature,
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [
+                            Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))
+                        ]
+                    }
+                };
+            }
+            const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
+            const wgsFeature = {...feature, geometry: wgsGeometry};
+            const output = buffer(wgsFeature, this.state.bufferDistance, {units: this.state.bufferUnit});
+            if (output && output.geometry) {
+                output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
+                output.id = uuidv4();
+                output.styleName = 'default';
+                output.styleOptions = {
+                    fillColor: [0, 0, 255, 0.5],
+                    strokeColor: [0, 0, 255, 1]
+                };
+                this.props.addLayerFeatures(this.state.bufferLayer, [output]);
+            }
+        });
     };
 }
 

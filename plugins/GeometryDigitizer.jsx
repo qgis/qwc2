@@ -10,7 +10,6 @@ import React from 'react';
 import NumericInput from 'react-numeric-input2';
 import {connect} from 'react-redux';
 
-import buffer from '@turf/buffer';
 import polySelfIntersections from 'geojson-polygon-self-intersections';
 import isEmpty from 'lodash.isempty';
 import Mousetrap from 'mousetrap';
@@ -329,30 +328,48 @@ class GeometryDigitizer extends React.Component {
         }
     };
     computeBuffer = (distance) => {
-        this.setState({bufferDistance: distance});
-        const layer = this.props.layers.find(l => l.id === "__geomdigitizer");
-        if (!layer || distance === 0) {
-            this.props.removeLayer("__geomdigitizerbuffer");
-            return;
-        }
-        const bufferfeatures = [];
-
-        (layer.features || []).forEach(feature => {
-            if (this.props.redlining.selectedFeature && this.props.redlining.selectedFeature.id === feature.id) {
-                feature = this.props.redlining.selectedFeature;
+        import("@turf/buffer").then(buffer => {
+            this.setState({bufferDistance: distance});
+            const layer = this.props.layers.find(l => l.id === "__geomdigitizer");
+            if (!layer || distance === 0) {
+                this.props.removeLayer("__geomdigitizerbuffer");
+                return;
             }
-            const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
-            const wgsFeature = {...feature, geometry: wgsGeometry};
-            const output = buffer(wgsFeature, distance, {units: 'meters'});
-            if (output && output.geometry) {
-                output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
-                output.id = feature.id;
-                output.styleName = 'default';
-                output.styleOptions = this.featureStyleOptions(output.geometry.type, "__geomdigitizerbuffer", true);
-                bufferfeatures.push(output);
+            const bufferfeatures = [];
+
+            (layer.features || []).forEach(feature => {
+                if (this.props.redlining.selectedFeature && this.props.redlining.selectedFeature.id === feature.id) {
+                    feature = this.props.redlining.selectedFeature;
+                }
+                const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
+                const wgsFeature = {...feature, geometry: wgsGeometry};
+                const output = buffer(wgsFeature, distance, {units: 'meters'});
+                if (output && output.geometry) {
+                    output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
+                    output.id = feature.id;
+                    output.styleName = 'default';
+                    output.styleOptions = this.featureStyleOptions(output.geometry.type, "__geomdigitizerbuffer", true);
+                    bufferfeatures.push(output);
+                }
+            });
+            if (!isEmpty(bufferfeatures)) {
+                const bufferlayer = {
+                    id: "__geomdigitizerbuffer",
+                    title: LocaleUtils.tr("geomdigitizer.bufferlayername"),
+                    role: LayerRole.USERLAYER,
+                    type: 'vector',
+                    readonly: true
+                };
+                this.props.addLayerFeatures(bufferlayer, bufferfeatures, true);
             }
         });
-        if (!isEmpty(bufferfeatures)) {
+    };
+    updateFeatureBuffer = (feature) => {
+        if (this.state.bufferDistance === 0) {
+            return;
+        }
+        import("@turf/buffer").then(buffer => {
+            this.props.removeLayerFeatures("__geomdigitizerbuffer", [feature.id]);
             const bufferlayer = {
                 id: "__geomdigitizerbuffer",
                 title: LocaleUtils.tr("geomdigitizer.bufferlayername"),
@@ -360,31 +377,17 @@ class GeometryDigitizer extends React.Component {
                 type: 'vector',
                 readonly: true
             };
-            this.props.addLayerFeatures(bufferlayer, bufferfeatures, true);
-        }
-    };
-    updateFeatureBuffer = (feature) => {
-        if (this.state.bufferDistance === 0) {
-            return;
-        }
-        this.props.removeLayerFeatures("__geomdigitizerbuffer", [feature.id]);
-        const bufferlayer = {
-            id: "__geomdigitizerbuffer",
-            title: LocaleUtils.tr("geomdigitizer.bufferlayername"),
-            role: LayerRole.USERLAYER,
-            type: 'vector',
-            readonly: true
-        };
-        const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
-        const wgsFeature = {...feature, geometry: wgsGeometry};
-        const output = buffer(wgsFeature, this.state.bufferDistance, {units: 'meters'});
-        if (output && output.geometry) {
-            output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
-            output.id = feature.id;
-            output.styleName = 'default';
-            output.styleOptions = this.featureStyleOptions(output.geometry.type, "__geomdigitizerbuffer", true);
-            this.props.addLayerFeatures(bufferlayer, [output]);
-        }
+            const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
+            const wgsFeature = {...feature, geometry: wgsGeometry};
+            const output = buffer(wgsFeature, this.state.bufferDistance, {units: 'meters'});
+            if (output && output.geometry) {
+                output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
+                output.id = feature.id;
+                output.styleName = 'default';
+                output.styleOptions = this.featureStyleOptions(output.geometry.type, "__geomdigitizerbuffer", true);
+                this.props.addLayerFeatures(bufferlayer, [output]);
+            }
+        });
     };
     featureStyleOptions = (geometryType, layerId, bufferActive) => {
         const geomLinkData = this.geometryLinkData(this.state.geomLink);
