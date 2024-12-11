@@ -45,7 +45,7 @@ class NumericInputWindow extends React.Component {
         this.componentDidUpdate({});
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.feature && this.props.feature !== prevProps.feature) {
+        if (prevProps.feature && this.props.feature?.id !== prevProps.feature?.id) {
             this.props.removeLayer("numericinputselection");
         }
     }
