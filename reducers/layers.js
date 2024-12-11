@@ -192,9 +192,16 @@ export default function layers(state = defaultState, action) {
         }
         let newLayers = state.flat;
         if (layer.role === LayerRole.BACKGROUND || isEmpty(action.sublayerpath)) {
-            newLayers = state.flat.filter(l => l.id !== action.layerId);
-            // Compress layers if possible
-            newLayers = LayerUtils.implodeLayers(LayerUtils.explodeLayers(newLayers));
+            const position = state.flat.findIndex(l => l.id === action.layerId);
+            newLayers = [...newLayers];
+            newLayers.splice(position, 1);
+            if (
+                position > 0 && position < newLayers.length &&
+                newLayers[position - 1].id === newLayers[position].id
+            ) {
+                // Compress layers
+                newLayers = LayerUtils.implodeLayers(LayerUtils.explodeLayers(newLayers));
+            }
         } else {
             newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath);
             for (const lyr of newLayers) {
