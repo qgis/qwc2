@@ -51,7 +51,7 @@ span.menubutton-button-content {
     align-items: center;
 }
 
-div.menubutton-menubutton > span.menubotton-button-arrow {
+div.menubutton span.menubotton-button-arrow {
     height: 100%;
     display: flex;
     align-items: flex-end;
@@ -59,11 +59,7 @@ div.menubutton-menubutton > span.menubotton-button-arrow {
     padding: 0.2em;
 }
 
-div.menubutton-togglebutton > span.menubotton-button-arrow {
-    padding: 0 0.125em;
-    height: 100%;
-    display: flex;
-    align-items: center;
+div.menubutton-togglebutton span.menubotton-button-arrow {
     border-left: 1px solid var(--border-color);
 }
 
