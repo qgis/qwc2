@@ -31,15 +31,16 @@ class OlLayer extends React.Component {
         swipe: PropTypes.number,
         zIndex: PropTypes.number
     };
-    state = {
-        layer: null
-    };
+    constructor(props) {
+        super(props);
+        this.layer = null;
+    }
     componentDidMount() {
         this.tilestoload = 0;
         this.createLayer(this.makeOptions(this.props.options));
     }
     componentDidUpdate(prevProps) {
-        if (!this.state.layer) {
+        if (!this.layer) {
             return;
         }
         const newOptions = this.makeOptions(this.props.options);
@@ -48,25 +49,25 @@ class OlLayer extends React.Component {
         this.updateLayer(newOptions, oldOptions);
         // WMS layer handles visibility separately
         if (newOptions.type !== "wms") {
-            this.state.layer.setVisible(newOptions.visibility);
+            this.layer.setVisible(newOptions.visibility);
         }
-        this.state.layer.setOpacity(newOptions.opacity / 255.0);
-        this.state.layer.setZIndex(this.props.zIndex);
+        this.layer.setOpacity(newOptions.opacity / 255.0);
+        this.layer.setZIndex(this.props.zIndex);
 
         if (this.props.swipe !== prevProps.swipe) {
             this.props.map.render();
         }
     }
     componentWillUnmount() {
-        if (this.state.layer && this.props.map) {
-            this.props.map.removeLayer(this.state.layer);
+        if (this.layer && this.props.map) {
+            this.props.map.removeLayer(this.layer);
         }
     }
     render() {
         const layerCreator = LayerRegistry[this.props.options.type];
         if (layerCreator && layerCreator.render) {
             // NOTE: required for Google Maps layer
-            return layerCreator.render(this.props.options, this.props.map, this.state.layer);
+            return layerCreator.render(this.props.options, this.props.map, this.layer);
         }
         return null;
     }
@@ -81,14 +82,13 @@ class OlLayer extends React.Component {
         };
     };
     createLayer = (options) => {
-        let layer = null;
         if (options.type === 'group') {
-            layer = new ol.layer.Group({zIndex: this.props.zIndex});
-            layer.setLayers(new ol.Collection(options.items.map(item => {
+            this.layer = new ol.layer.Group({zIndex: this.props.zIndex});
+            this.layer.setLayers(new ol.Collection(options.items.map(item => {
                 const layerCreator = LayerRegistry[item.type];
                 if (layerCreator) {
                     const sublayer = layerCreator.create(this.makeOptions(item), this.props.map);
-                    layer.set('id', options.id + "#" + item.name);
+                    this.layer.set('id', options.id + "#" + item.name);
                     return sublayer;
                 } else {
                     return null;
@@ -97,16 +97,15 @@ class OlLayer extends React.Component {
         } else {
             const layerCreator = LayerRegistry[options.type];
             if (layerCreator) {
-                layer = layerCreator.create(options, this.props.map);
+                this.layer = layerCreator.create(options, this.props.map);
             }
         }
-        if (layer) {
-            layer.set('id', options.id);
-            layer.setVisible(layer.get("empty") !== true && options.visibility);
-            layer.setOpacity(options.opacity / 255.0);
-            layer.setZIndex(this.props.zIndex);
-            this.addLayer(layer, options);
-            this.setState({layer: layer});
+        if (this.layer) {
+            this.layer.set('id', options.id);
+            this.layer.setVisible(this.layer.get("empty") !== true && options.visibility);
+            this.layer.setOpacity(options.opacity / 255.0);
+            this.layer.setZIndex(this.props.zIndex);
+            this.addLayer(this.layer, options);
         }
     };
     updateLayer = (newOptions, oldOptions) => {
@@ -117,12 +116,12 @@ class OlLayer extends React.Component {
         const layerCreator = LayerRegistry[this.props.options.type];
         if (layerCreator && layerCreator.update) {
             layerCreator.update(
-                this.state.layer,
+                this.layer,
                 newOptions,
                 oldOptions,
                 this.props.map
             );
-            OlLayerUpdated.notify(this.state.layer);
+            OlLayerUpdated.notify(this.layer);
         }
     };
     addLayer = (layer, options) => {
