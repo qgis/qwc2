@@ -566,8 +566,6 @@ class MapInfoTooltipPlugin extends React.Component {
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| cooPrecision | `number` | The number of decimal places to display for metric/imperial coordinates. | `0` |
-| degreeCooPrecision | `number` | The number of decimal places to display for degree coordinates. | `4` |
 | elevationPrecision | `number` | The number of decimal places to display for elevation values. | `0` |
 | plugins | `array` | Additional plugin components for the map info tooltip. | `[]` |
 

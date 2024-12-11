@@ -77,7 +77,7 @@ class Share extends React.Component {
             urlParts.query.hc = 1;
             if (!urlParts.query.c) {
                 const posCrs = urlParts.query.crs || this.props.state.map.projection;
-                const prec = CoordinatesUtils.getUnits(posCrs) === 'degrees' ? 4 : 0;
+                const prec = CoordinatesUtils.getPrecision(posCrs);
                 urlParts.query.c = this.props.state.map.center.map(x => x.toFixed(prec)).join(",");
             }
             delete urlParts.search;

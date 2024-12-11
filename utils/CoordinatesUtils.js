@@ -9,6 +9,9 @@
 import ol from 'openlayers';
 import Proj4js from 'proj4';
 
+import ConfigUtils from './ConfigUtils';
+import LocaleUtils from './LocaleUtils';
+
 const crsLabels = {
     "EPSG:4326": "WGS 84",
     "EPSG:3857": "WGS 84 / Pseudo Mercator"
@@ -30,6 +33,12 @@ const CoordinatesUtils = {
     getUnits(projection) {
         const proj = ol.proj.get(projection);
         return proj.getUnits() || 'degrees';
+    },
+    getPrecision(projection) {
+        const precisions = ConfigUtils.getConfigProp("projections").reduce((res, entry) => (
+            {...res, [entry.code]: entry.precision ?? 0}
+        ), {});
+        return precisions[projection] ?? (CoordinatesUtils.getUnits(projection) === 'degrees' ? 4 : 0);
     },
     getAxisOrder(projection) {
         const axis = ol.proj.get(projection).getAxisOrientation();
@@ -121,7 +130,16 @@ const CoordinatesUtils = {
     toOgcUrnCrs(crsStr) {
         const parts = crsStr.split(":");
         return "urn:ogc:def:crs:" + parts[0] + "::" + parts[1];
-    }
+    },
+    getFormattedCoordinate(coo, srcCrs = null, dstCrs = null, decimals = -1) {
+        if (srcCrs && dstCrs && srcCrs !== dstCrs) {
+            coo = CoordinatesUtils.reproject(coo, srcCrs, dstCrs);
+        }
+        if (decimals < 0) {
+            decimals = CoordinatesUtils.getPrecision(dstCrs);
+        }
+        return coo.map(ord => LocaleUtils.toLocaleFixed(ord, decimals)).join(", ");
+    },
 };
 
 export default CoordinatesUtils;

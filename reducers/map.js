@@ -50,7 +50,7 @@ export default function map(state = defaultState, action) {
         const newParams = {};
         const positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
         const positionCrs = ConfigUtils.getConfigProp("urlPositionCrs") || newState.projection;
-        const prec = CoordinatesUtils.getUnits(positionCrs) === 'degrees' ? 4 : 0;
+        const prec = CoordinatesUtils.getPrecision(positionCrs);
         if (positionFormat === "centerAndZoom") {
             const center = CoordinatesUtils.reproject(newState.center, newState.projection, positionCrs);
             const scale = Math.round(MapUtils.computeForZoom(newState.scales, newState.zoom));

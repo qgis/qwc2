@@ -36,11 +36,11 @@ const LocaleUtils = {
         const state = StandardStore.get().getState();
         return state.locale.current;
     },
-    toLocaleFixed(number, digits) {
+    toLocaleFixed(number, decimals) {
         if (ConfigUtils.getConfigProp("localeAwareNumbers")) {
-            return number.toLocaleString(LocaleUtils.lang(), { minimumFractionDigits: digits, maximumFractionDigits: digits });
+            return number.toLocaleString(LocaleUtils.lang(), { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
         } else {
-            return number.toFixed(digits);
+            return number.toFixed(decimals);
         }
     }
 };

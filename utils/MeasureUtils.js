@@ -27,20 +27,6 @@ const MeasureUtils = {
         }
         return bearing;
     },
-    getFormattedCoordinate(coo, srcCrs = null, dstCrs = null, decimals = -1) {
-        if (srcCrs && dstCrs && srcCrs !== dstCrs) {
-            coo = CoordinatesUtils.reproject(coo, srcCrs, dstCrs);
-        }
-        if (decimals < 0) {
-            // Automatically set decimals
-            if (CoordinatesUtils.getUnits(dstCrs) === 'degrees') {
-                decimals = 4;
-            } else {
-                decimals = 0;
-            }
-        }
-        return coo.map(ord => LocaleUtils.toLocaleFixed(ord, decimals)).join(", ");
-    },
     formatDuration(valueSeconds) {
         return new Date(valueSeconds * 1000).toISOString().slice(11, 19);
     },
@@ -210,7 +196,7 @@ const MeasureUtils = {
         feature.set('segment_labels', undefined);
         const geom = feature.getGeometry();
         if (geomType === 'Point') {
-            feature.set('label', MeasureUtils.getFormattedCoordinate(geom.getCoordinates(), settings.mapCrs, settings.displayCrs));
+            feature.set('label', CoordinatesUtils.getFormattedCoordinate(geom.getCoordinates(), featureCrs, settings.displayCrs));
         } else if (geomType === 'LineString') {
             const lengths = MeasureUtils.computeSegmentLengths(geom.getCoordinates(), featureCrs, geodesic);
             measurements.segment_lengths = lengths;

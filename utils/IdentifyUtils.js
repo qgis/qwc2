@@ -175,8 +175,8 @@ const IdentifyUtils = {
         }
     },
     parseResponse(response, layer, format, clickPoint, projection, featureInfoReturnsLayerName, layers) {
-        const digits = CoordinatesUtils.getUnits(projection).units === 'degrees' ? 4 : 0;
-        const posstr = clickPoint ? clickPoint[0].toFixed(digits) + ", " + clickPoint[1].toFixed(digits) : "";
+        const decimals = CoordinatesUtils.getPrecision(projection);
+        const posstr = clickPoint ? clickPoint[0].toFixed(decimals) + ", " + clickPoint[1].toFixed(decimals) : "";
         let results = {};
         if (["application/json", "application/geojson", "application/geo+json", "GeoJSON"].includes(format)) {
             results = IdentifyUtils.parseGeoJSONResponse(response, projection, layer);

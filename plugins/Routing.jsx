@@ -610,7 +610,7 @@ class Routing extends React.Component {
                 if (obj.crs && obj.crs.properties) {
                     crs = CoordinatesUtils.fromOgcUrnCrs(obj.crs.properties.name);
                 }
-                const prec = CoordinatesUtils.getUnits(crs) === 'degrees' ? 4 : 0;
+                const prec = CoordinatesUtils.getPrecision(crs);
                 this.setState((state) => ({[config]: {
                     ...state[config],
                     points: obj.features.map(feature => {

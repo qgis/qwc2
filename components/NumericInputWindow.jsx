@@ -92,7 +92,7 @@ class NumericInputWindow extends React.Component {
         });
     };
     renderOrdinateInput = (ordinate, onChange) => {
-        const decimals = CoordinatesUtils.getUnits(this.state.displayCrs) === 'degrees' ? 4 : 0;
+        const decimals = CoordinatesUtils.getPrecision(this.state.displayCrs);
         const value = ordinate.toFixed(decimals);
         return (
             <TextInput onChange={(text) => this.onOrdinateChanged(text, onChange)} value={value} />
