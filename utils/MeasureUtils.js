@@ -195,11 +195,12 @@ const MeasureUtils = {
             lenUnit: settings.lenUnit,
             areaUnit: settings.areaUnit
         };
+        const displayCrs = settings.displayCrs ?? featureCrs;
         feature.set('label', '');
         feature.set('segment_labels', undefined);
         const geom = feature.getGeometry();
         if (geomType === 'Point') {
-            feature.set('label', CoordinatesUtils.getFormattedCoordinate(geom.getCoordinates(), featureCrs, settings.displayCrs));
+            feature.set('label', CoordinatesUtils.getFormattedCoordinate(geom.getCoordinates(), featureCrs, displayCrs));
         } else if (geomType === 'LineString') {
             const lengths = MeasureUtils.computeSegmentLengths(geom.getCoordinates(), featureCrs, geodesic);
             measurements.segment_lengths = lengths;
