@@ -228,7 +228,7 @@ class Redlining extends React.Component {
                     {toolEnabled("Export") ? (
                         <div className="redlining-group">
                             <div>&nbsp;</div>
-                            <MenuButton className="redlining-export-menu" disabled={!haveLayer} menuIcon="export" onActivate={this.export}>
+                            <MenuButton className="redlining-export-menu" disabled={!haveLayer} menuIcon="export" onActivate={this.export} tooltip={LocaleUtils.tr("redlining.export")}>
                                 <div className="redlining-export-menu-entry" key="GeoJSON" value="geojson">GeoJSON</div>
                                 <div className="redlining-export-menu-entry" key="KML" value="kml">KML</div>
                             </MenuButton>
