@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Přidat vrstvu",
       "addlayerstotheme": "Přidat vrstvy do aktuálního tématu",
-      "addselectedlayers": "Přidat vybrané vrstvy"
+      "addselectedlayers": "Přidat vybrané vrstvy",
+      "existinglayers": ""
     },
     "themeswitcher": {
       "addlayerstotheme": "Přidat vrstvy do aktuálního tématu",

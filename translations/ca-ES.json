@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Afegir capa",
       "addlayerstotheme": "Afegir capa al mapa actual",
-      "addselectedlayers": "Afegir capa(s) seleccionada(s)"
+      "addselectedlayers": "Afegir capa(s) seleccionada(s)",
+      "existinglayers": ""
     },
     "themeswitcher": {
       "addlayerstotheme": "Afegir capes al mapa actual",

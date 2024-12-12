@@ -439,6 +439,7 @@
     "themelayerslist.addlayer",
     "themelayerslist.addlayerstotheme",
     "themelayerslist.addselectedlayers",
+    "themelayerslist.existinglayers",
     "themeswitcher.addlayerstotheme",
     "themeswitcher.addtotheme",
     "themeswitcher.changedefaulttheme",

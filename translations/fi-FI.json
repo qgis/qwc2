@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Lisää taso",
       "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",
-      "addselectedlayers": "Lisää valitut tasot"
+      "addselectedlayers": "Lisää valitut tasot",
+      "existinglayers": ""
     },
     "themeswitcher": {
       "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",

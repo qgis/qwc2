@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Layer hinzufügen",
       "addlayerstotheme": "Ebenen der Karte hinzufügen",
-      "addselectedlayers": "Selektierte Ebenen hinzufügen"
+      "addselectedlayers": "Selektierte Ebenen hinzufügen",
+      "existinglayers": "Folgende Ebenen sind bereits vorhanden"
     },
     "themeswitcher": {
       "addlayerstotheme": "Ebenen der Karte hinzufügen",

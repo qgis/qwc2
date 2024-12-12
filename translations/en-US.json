@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Add layer",
       "addlayerstotheme": "Add layers to current map",
-      "addselectedlayers": "Add selected layer(s)"
+      "addselectedlayers": "Add selected layer(s)",
+      "existinglayers": "The following layers already exists in the map"
     },
     "themeswitcher": {
       "addlayerstotheme": "Add layers to current map",

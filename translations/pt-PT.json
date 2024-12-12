@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Adicionar Camada",
       "addlayerstotheme": "Adicionar Camadas ao Mapa Atual",
-      "addselectedlayers": "Adicionar Camadas Selecionadas"
+      "addselectedlayers": "Adicionar Camadas Selecionadas",
+      "existinglayers": ""
     },
     "themeswitcher": {
       "addlayerstotheme": "Adicionar Camadas ao Mapa Atual",

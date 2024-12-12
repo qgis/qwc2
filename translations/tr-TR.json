@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Katman ekle",
       "addlayerstotheme": "Geçerli haritaya katman ekle",
-      "addselectedlayers": "Seçili katmanları ekle"
+      "addselectedlayers": "Seçili katmanları ekle",
+      "existinglayers": ""
     },
     "themeswitcher": {
       "addlayerstotheme": "Geçerli haritaya katmanları ekle",

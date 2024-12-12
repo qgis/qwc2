@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Adaugă strat",
       "addlayerstotheme": "Adaugă strat la hartă",
-      "addselectedlayers": "Adaugă straturile selectate"
+      "addselectedlayers": "Adaugă straturile selectate",
+      "existinglayers": ""
     },
     "themeswitcher": {
       "addlayerstotheme": "Adaugă straturi în hartă",

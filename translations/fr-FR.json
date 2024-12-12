@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Ajouter la couche",
       "addlayerstotheme": "Ajouter des couches à la carte",
-      "addselectedlayers": "Ajouter les couches sélectionnées"
+      "addselectedlayers": "Ajouter les couches sélectionnées",
+      "existinglayers": "Les couches suivantes existent déjà dans la carte"
     },
     "themeswitcher": {
       "addlayerstotheme": "Ajouter des couches à la carte",

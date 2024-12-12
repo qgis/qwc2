@@ -461,7 +461,7 @@
       "all": "Tutti",
       "circleradius": "Raggio del cerchio",
       "clearfilter": "Azzera",
-      "existinglayer": "Il livello esiste già nella mappa",
+      "existinglayer": "Il layer esiste già nella mappa",
       "filter": "Filtro",
       "layers": "Cartine",
       "limittoarea": "Limita a area",
@@ -517,7 +517,8 @@
     "themelayerslist": {
       "addlayer": "Aggiungi layer",
       "addlayerstotheme": "Aggiungi layer alla mappa corrente",
-      "addselectedlayers": "Aggiungi i layer selezionati"
+      "addselectedlayers": "Aggiungi i layer selezionati",
+      "existinglayers": "I seguenti layer esistono già nella mappa"
     },
     "themeswitcher": {
       "addlayerstotheme": "Aggiungi layer alla mappa corrente",
