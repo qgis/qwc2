@@ -11,8 +11,10 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
+import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import Icon from '../Icon';
 
 import './style/TextInput.css';
 
@@ -91,6 +93,7 @@ export default class TextInput extends React.Component {
             "text-input-readonly": this.props.readOnly || !this.state.curValue,
             "text-input-invalid": this.props.required && !this.state.curValue
         });
+        const editTextNullValue = ConfigUtils.getConfigProp("editTextNullValue");
         return (
             <div className={wrapperClassName + " " + (this.props.className || "")} ref={this.storeInitialHeight}>
                 {this.props.name ? (
@@ -123,6 +126,11 @@ export default class TextInput extends React.Component {
                     <div
                         className="text-input-resize-handle"
                         onMouseDown={this.startResize} />
+                ) : null}
+                {!this.props.multiline && !this.props.disabled && editTextNullValue ? (
+                    <div className="text-input-clear-icon">
+                        <Icon icon="clear" onClick={() => this.props.onChange(editTextNullValue)} />
+                    </div>
                 ) : null}
             </div>
         );

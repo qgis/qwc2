@@ -72,6 +72,15 @@ div.text-input-resize-handle {
     cursor: ns-resize;
 }
 
+div.text-input-clear-icon {
+    position: absolute;
+    right: 0.25em;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+}
+
 span.text-input-link-tooltip {
     border: 1px solid var(--tooltip-border-color);
     background-color: var(--tooltip-bg-color);
