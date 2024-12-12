@@ -468,6 +468,7 @@ class Print extends React.Component {
                         <input name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} readOnly type={formvisibility} value={highlightParams.labelOutlineSizes.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABELSIZE"} readOnly type={formvisibility} value={highlightParams.labelSizes.join(";")} />
                         <input name={mapName + ":HIGHLIGHT_LABEL_DISTANCE"} readOnly type={formvisibility} value={highlightParams.labelDist.join(";")} />
+                        <input name={mapName + ":HIGHLIGHT_LABEL_ROTATION"} readOnly type={formvisibility} value={highlightParams.labelRotations.join(";")} />
                         {pdfFormatSelected && this.props.allowGeoPdfExport ? (<input name="FORMAT_OPTIONS" readOnly type={formvisibility} value={this.state.geoPdf ? "WRITE_GEO_PDF:true" : "WRITE_GEO_PDF:false"} />) : null}
                         {gridIntervalX}
                         {gridIntervalY}

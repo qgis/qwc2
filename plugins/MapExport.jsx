@@ -257,6 +257,7 @@ class MapExport extends React.Component {
                     <input name="HIGHLIGHT_LABELBUFFERSIZE" readOnly type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
                     <input name="HIGHLIGHT_LABELSIZE" readOnly type="hidden" value={highlightParams.labelSizes.join(";")} />
                     <input name="HIGHLIGHT_LABEL_DISTANCE" readOnly type="hidden" value={highlightParams.labelDist.join(";")} />
+                    <input name={"HIGHLIGHT_LABEL_ROTATION"} readOnly type="hidden" value={highlightParams.labelRotations.join(";")} />
                     <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                     <div className="button-bar">
                         <button className="button" disabled={this.state.exporting || isEmpty(this.state.extents)} type="submit">

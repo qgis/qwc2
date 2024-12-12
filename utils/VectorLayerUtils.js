@@ -29,6 +29,7 @@ const VectorLayerUtils = {
             labelFillColors: [],
             labelOutlineColors: [],
             labelOutlineSizes: [],
+            labelRotations: [],
             labelSizes: [],
             labelDist: []
         };
@@ -82,6 +83,7 @@ const VectorLayerUtils = {
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                         params.labelDist.push("-5");
+                        params.labelRotations.push("0");
                     }
                 } else {
                     params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, styleOptions, layer.opacity, dpi, scaleFactor));
@@ -106,6 +108,7 @@ const VectorLayerUtils = {
                         params.labelOutlineSizes.push(scaleFactor * styleOptions.strokeWidth * 0.5);
                         params.labelSizes.push(Math.round(10 * styleOptions.strokeWidth * scaleFactor));
                         params.labelDist.push("5");
+                        params.labelRotations.push(((properties.rotation || 0) / Math.PI * 180).toFixed(0));
                     } else {
                         params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry));
                         params.labelFillColors.push(styleOptions.textFill);
@@ -113,6 +116,7 @@ const VectorLayerUtils = {
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                         params.labelDist.push("-5");
+                        params.labelRotations.push("0");
                     }
                 }
             }

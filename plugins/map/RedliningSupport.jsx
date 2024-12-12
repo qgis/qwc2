@@ -62,6 +62,7 @@ class RedliningSupport extends React.Component {
             text: new ol.style.Text({
                 font: '10pt sans-serif',
                 text: feature.getProperties().label || "",
+                rotation: feature.getProperties().rotation || 0,
                 scale: opts.strokeWidth,
                 fill: new ol.style.Fill({color: opts.fillColor}),
                 stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4})
@@ -340,7 +341,12 @@ class RedliningSupport extends React.Component {
             });
             this.props.map.addInteraction(transformInteraction);
             transformInteraction.select(this.currentFeature, true);
-            transformInteraction.on('rotateend', () => {
+            transformInteraction.on('rotating', (e) => {
+                if (this.currentFeature.get('shape') === 'Text') {
+                    this.currentFeature.set('rotation', -e.angle);
+                }
+            });
+            transformInteraction.on('rotateend', (e) => {
                 this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
             });
             transformInteraction.on('translateend', () => {
@@ -474,7 +480,12 @@ class RedliningSupport extends React.Component {
         modifyInteraction.on('modifyend', () => {
             this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
         });
-        transformInteraction.on('rotateend', () => {
+        transformInteraction.on('rotating', (e) => {
+            if (this.currentFeature.get('shape') === 'Text') {
+                this.currentFeature.set('rotation', -e.angle);
+            }
+        });
+        transformInteraction.on('rotateend', (e) => {
             this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
         });
         transformInteraction.on('translateend', () => {
@@ -520,7 +531,12 @@ class RedliningSupport extends React.Component {
                 this.setCurrentFeature(evt.feature);
             }
         });
-        transformInteraction.on('rotateend', () => {
+        transformInteraction.on('rotating', (e) => {
+            if (this.currentFeature.get('shape') === 'Text') {
+                this.currentFeature.set('rotation', -e.angle);
+            }
+        });
+        transformInteraction.on('rotateend', (e) => {
             this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
         });
         transformInteraction.on('translateend', () => {

@@ -380,6 +380,7 @@ export default {
                 text: new ol.style.Text({
                     font: '10pt sans-serif',
                     text: feature.getProperties().label || "",
+                    rotation: feature.getProperties().rotation || 0,
                     scale: options.strokeWidth,
                     fill: new ol.style.Fill({color: options.fillColor}),
                     stroke: new ol.style.Stroke({color: options.strokeColor, width: 2})
