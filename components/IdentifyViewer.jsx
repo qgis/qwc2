@@ -246,7 +246,7 @@ class IdentifyViewer extends React.Component {
             }, []);
         }
         results = (results || []).filter(result => result.type.toLowerCase() === "feature").map(feature => {
-            const newFeature = {...feature};
+            const newFeature = {...feature, properties: {}};
             // Ensure selection style is used
             delete newFeature.styleName;
             delete newFeature.styleOptions;
