@@ -456,6 +456,7 @@ with containing a container element with id=legendcontainer.
 | layerInfoGeometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default layer info window geometry with size, position and docking status. | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 480,`<br />`    initialX: null,`<br />`    initialY: null,`<br />`    initiallyDocked: false`<br />`}` |
 | onlyGroups | `bool` | Whether to only display layer groups but not individual layers in layertree. | `false` |
 | scaleDependentLegend | `{bool, string}` | Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
+| showAttributeTableLink | `bool` | Whether to display an icon linking to the layer attribute table in the layer options menu. | `undefined` |
 | showLegendIcons | `bool` | Whether to display legend icons. | `true` |
 | showQueryableIcon | `bool` | Whether to display the queryable icon to indicate that a layer is identifyable. | `true` |
 | showRootEntry | `bool` | Whether to display the root entry of the layertree. | `true` |
@@ -673,8 +674,11 @@ Allows drawing figures and text labels on the map.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowGeometryLabels | `bool` | Whether to allow labeling geometric figures. | `true` |
+| defaultAreaUnit | `string` | Default area unit. Options: metric, imperial, sqm, ha, sqkm, sqft, acre, sqmi | `'metric'` |
 | defaultBorderColor | `array` | Default border color. In format [r, g, b, a]. | `[255, 0, 0, 1]` |
 | defaultFillColor | `array` | Default fill color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
+| defaultLengthUnit | `string` | Default length unit. Options: metric, imperial, m, km, ft, mi | `'metric'` |
+| hiddenTools | `array` | Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. | `[]` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
 
