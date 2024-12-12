@@ -19,6 +19,7 @@ import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator} from '../actions/layers';
 import {toggleMapTips, zoomToExtent} from '../actions/map';
 import {setActiveServiceInfo} from '../actions/serviceinfo';
+import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
 import LayerInfoWindow from '../components/LayerInfoWindow';
@@ -98,7 +99,10 @@ class LayerTree extends React.Component {
         scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         setActiveLayerInfo: PropTypes.func,
         setActiveServiceInfo: PropTypes.func,
+        setCurrentTask: PropTypes.func,
         setSwipe: PropTypes.func,
+        /** Whether to display an icon linking to the layer attribute table in the layer options menu.  */
+        showAttributeTableLink: PropTypes.bool,
         /** Whether to display legend icons. */
         showLegendIcons: PropTypes.bool,
         /** Whether to display the queryable icon to indicate that a layer is identifyable. */
@@ -371,8 +375,15 @@ class LayerTree extends React.Component {
             );
         }
         let infoButton = null;
-        if (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts") {
+        if (this.props.infoInSettings && (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts")) {
             infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
+        }
+        let attrTableButton = null;
+        if (
+            this.props.showAttributeTableLink && ConfigUtils.havePlugin("AttributeTable") &&
+            layer.role === LayerRole.THEME && this.props.theme.editConfig[sublayer.name]
+        ) {
+            attrTableButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("AttributeTable", null, null, {layer: sublayer.name})} />);
         }
         return (
             <div className="layertree-item-optionsmenu" onMouseDown={this.preventLayerTreeItemDrag} style={{marginRight: (marginRight * 1.75) + 'em'}}>
@@ -382,7 +393,8 @@ class LayerTree extends React.Component {
                     onChange={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value, !isEmpty(sublayer.sublayers) ? 'children' : null)}
                     step="1" type="range" value={255 - LayerUtils.computeLayerOpacity(sublayer)} />
                 {reorderButtons}
-                {this.props.infoInSettings ? infoButton : null}
+                {infoButton}
+                {attrTableButton}
                 {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
             </div>
         );
@@ -790,5 +802,6 @@ export default connect(selector, {
     setSwipe: setSwipe,
     setActiveLayerInfo: setActiveLayerInfo,
     setActiveServiceInfo: setActiveServiceInfo,
+    setCurrentTask: setCurrentTask,
     zoomToExtent: zoomToExtent
 })(LayerTree);
