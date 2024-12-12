@@ -203,12 +203,13 @@ export default function layers(state = defaultState, action) {
                 newLayers = LayerUtils.implodeLayers(LayerUtils.explodeLayers(newLayers));
             }
         } else {
-            newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath);
-            for (const lyr of newLayers) {
-                if (lyr.type === "wms") {
-                    Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr, state.filter));
+            newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath).map(l => {
+                if (l.type === "wms") {
+                    return {...l, ...LayerUtils.buildWMSLayerParams(l, state.filter)};
+                } else {
+                    return l;
                 }
-            }
+            });
         }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers};
