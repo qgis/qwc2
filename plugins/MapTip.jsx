@@ -36,9 +36,9 @@ class MapTip extends React.Component {
         layers: PropTypes.array,
         map: PropTypes.object,
         mapTipsEnabled: PropTypes.bool,
-        /* The maximum height of the maptip popop bubble, as a CSS string. */
+        /** The maximum height of the maptip popop bubble, as a CSS string. */
         maxHeight: PropTypes.string,
-        /* The maximum height of the maptip popop bubble, as a CSS string. */
+        /** The maximum height of the maptip popop bubble, as a CSS string. */
         maxWidth: PropTypes.string,
         mousepos: PropTypes.object,
         openExternalUrl: PropTypes.func,

@@ -601,6 +601,8 @@ The map tip needs to be configured in QGIS Layer Properties &rarr; Display.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | layerFeatureCount | `number` | The maximum number of feature maptips to display for a single layer. | `5` |
+| maxHeight | `string` | The maximum height of the maptip popop bubble, as a CSS string. | `"15em"` |
+| maxWidth | `string` | The maximum height of the maptip popop bubble, as a CSS string. | `"20em"` |
 | showFeatureSelection | `bool` | Whether to show the maptip feature selection on the map or not | `true` |
 
 Measure<a name="measure"></a>
