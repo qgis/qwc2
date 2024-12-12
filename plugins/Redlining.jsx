@@ -392,7 +392,8 @@ class Redlining extends React.Component {
         this.updateRedliningState(data);
     };
     changeRedliningLayer = (layer) => {
-        this.updateRedliningState({layer: layer.id, layerTitle: layer.title});
+        const action = ["Draw", "Pick", "Transform"].includes(this.props.redlining.action) ? this.props.redlining.action : "Pick";
+        this.updateRedliningState({layer: layer.id, layerTitle: layer.title, action: action});
     };
 }
 
