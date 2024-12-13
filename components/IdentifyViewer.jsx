@@ -197,7 +197,7 @@ class IdentifyViewer extends React.Component {
         selectedAggregatedReport: null,
         generatingReport: false,
         selectedLayer: 'all',
-        originalResultTree : {}
+        originalResultTree: {}
     };
     constructor(props) {
         super(props);
@@ -561,7 +561,7 @@ class IdentifyViewer extends React.Component {
             body = (
                 <div className="identify-flat-results-list">
                     <div className="identify-selectbox">
-                        <select name="identify-layer-select" id="identify-layer-select"
+                        <select className="identify-layer-select"
                             onChange={(e) => {const selectedLayer = e.target.value; this.setState({ selectedLayer });}}
                         >
                             <option value="all">{LocaleUtils.tr("identify.layerall")}</option>
