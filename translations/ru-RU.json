@@ -189,6 +189,8 @@
       "export": "Экспорт",
       "exportformat": "",
       "featureReport": "Отчёт об объекте",
+      "featurecount": "",
+      "layerall": "",
       "link": "гиперссылка",
       "noattributes": "Аттрибуты отсутствуют",
       "noresults": "Для выбранной точки нет доступной информации",

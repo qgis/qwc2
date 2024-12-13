@@ -189,6 +189,8 @@
       "export": "Export",
       "exportformat": "Export format:",
       "featureReport": "Feature report",
+      "featurecount": "Feature count",
+      "layerall": "All layers",
       "link": "Link",
       "noattributes": "No attributes",
       "noresults": "No information available for the selected point",

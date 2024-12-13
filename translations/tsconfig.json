@@ -180,6 +180,8 @@
     "identify.export",
     "identify.exportformat",
     "identify.featureReport",
+    "identify.featurecount",
+    "identify.layerall",
     "identify.link",
     "identify.noattributes",
     "identify.noresults",

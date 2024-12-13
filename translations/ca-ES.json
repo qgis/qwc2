@@ -189,6 +189,8 @@
       "export": "Exportar",
       "exportformat": "Exportar format",
       "featureReport": "Informe d'element",
+      "featurecount": "",
+      "layerall": "",
       "link": "Link",
       "noattributes": "Sense atributs",
       "noresults": "Sense informació disponible sobre el punt seleccionat",
