@@ -209,7 +209,7 @@ class IdentifyViewer extends React.Component {
         this.updateResultTree();
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.selectedLayer !== prevState.selectedLayer){
+        if (this.state.selectedLayer !== prevState.selectedLayer) {
             this.filterResult();
         }
         if (this.props.identifyResults !== prevProps.identifyResults) {
@@ -245,7 +245,7 @@ class IdentifyViewer extends React.Component {
         } else if (newOriginalResultTree[this.state.selectedLayer]) {
             newResultTree = { [this.state.selectedLayer]: newOriginalResultTree[this.state.selectedLayer] };
         } else {
-            newResultTree = {}; 
+            newResultTree = {};
         }
         this.setState({
             resultTree: newResultTree,
