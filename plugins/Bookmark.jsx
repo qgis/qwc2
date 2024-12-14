@@ -169,7 +169,7 @@ class Bookmark extends React.Component {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.savefailed"));
             }
-            this.setState({saving: false});
+            this.setState({saving: false, description: "", currentBookmark: null});
             this.refresh();
         });
     };
