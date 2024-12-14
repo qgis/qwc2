@@ -93,7 +93,11 @@ class NewsPopup extends React.Component {
             d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
             document.cookie = "newsrev=" + this.props.newsRev + "; SameSite=Lax; expires=" + d.toUTCString();
         }
-        this.setState({showPopup: false});
+        if (this.props.showInSidebar) {
+            this.props.setCurrentTask(null);
+        } else {
+            this.setState({showPopup: false});
+        }
     };
 }
 
