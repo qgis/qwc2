@@ -196,8 +196,7 @@ class IdentifyViewer extends React.Component {
         exportFormat: 'geojson',
         selectedAggregatedReport: null,
         generatingReport: false,
-        selectedLayer: 'all',
-        originalResultTree: {}
+        selectedLayer: ''
     };
     constructor(props) {
         super(props);
@@ -209,9 +208,6 @@ class IdentifyViewer extends React.Component {
         this.updateResultTree();
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.selectedLayer !== prevState.selectedLayer) {
-            this.filterResult();
-        }
         if (this.props.identifyResults !== prevProps.identifyResults) {
             this.updateResultTree();
         }
@@ -234,30 +230,22 @@ class IdentifyViewer extends React.Component {
         const layers = Object.keys(this.props.identifyResults);
         let currentResult = null;
         let currentLayer = null;
-        let newResultTree = null;
-        const newOriginalResultTree = clone(this.props.identifyResults);
         if (layers.length === 1 && this.props.identifyResults[layers[0]].length === 1) {
             currentResult = this.props.identifyResults[layers[0]][0];
             currentLayer = layers[0];
         }
-        if (this.state.selectedLayer === "all") {
-            newResultTree = newOriginalResultTree;
-        } else if (newOriginalResultTree[this.state.selectedLayer]) {
-            newResultTree = { [this.state.selectedLayer]: newOriginalResultTree[this.state.selectedLayer] };
-        } else {
-            newResultTree = {};
-        }
         this.setState({
-            resultTree: newResultTree,
-            originalResultTree: newOriginalResultTree,
+            resultTree: clone(this.props.identifyResults),
             currentResult: currentResult,
             currentLayer: currentLayer
         });
     };
     setHighlightedResults = (results, resultTree) => {
         if (!results && this.props.highlightAllResults) {
+            const selectedLayer = this.state.selectedLayer || '';
             results = Object.keys(resultTree).reduce((res, layer) => {
-                return res.concat(resultTree[layer].map(result => ({...result, id: layer + "." + result.id})));
+                const layerData = resultTree[selectedLayer || layer];
+                return res.concat(layerData.map(result => ({ ...result, id: `${selectedLayer || layer}.${result.id}` })));
             }, []);
         }
         results = (results || []).filter(result => result.type.toLowerCase() === "feature").map(feature => {
@@ -302,14 +290,9 @@ class IdentifyViewer extends React.Component {
     removeResultLayer = (layer) => {
         this.setState((state) => {
             const newResultTree = {...state.resultTree};
-            const newOriginalResultTree = {...state.originalResultTree};
             delete newResultTree[layer];
-            delete newOriginalResultTree[layer];
-            const selectedLayer = isEmpty(newResultTree[layer]) ? "all" : state.selectedLayer;
             this.setState({
                 resultTree: newResultTree,
-                originalResultTree: newOriginalResultTree,
-                selectedLayer: selectedLayer,
                 currentResult: state.currentLayer === layer ? null : state.currentResult,
                 currentLayer: state.currentLayer === layer ? null : state.currentLayer
             });
@@ -318,34 +301,21 @@ class IdentifyViewer extends React.Component {
     removeResult = (layer, result) => {
         this.setState((state) => {
             const newResultTree = {...state.resultTree};
-            const newOriginalResultTree = {...state.originalResultTree};
             newResultTree[layer] = state.resultTree[layer].filter(item => item !== result);
-            newOriginalResultTree[layer] = state.originalResultTree[layer].filter(item => item !== result);
             if (isEmpty(newResultTree[layer])) {
                 delete newResultTree[layer];
-                delete newOriginalResultTree[layer];
             }
-            const selectedLayer = isEmpty(newResultTree[layer]) ? "all" : state.selectedLayer;
+            const selectedLayer = isEmpty(newResultTree[layer]) ? '' : state.selectedLayer;
             return {
                 resultTree: newResultTree,
-                originalResultTree: newOriginalResultTree,
                 currentResult: state.currentResult === result ? null : state.currentResult,
                 selectedLayer: selectedLayer
             };
         });
     };
-    filterResult = () => {
-        let newResultTree;
-        if (this.state.selectedLayer === "all") {
-            newResultTree = this.state.originalResultTree;
-        } else {
-            newResultTree = { [this.state.selectedLayer]: this.state.originalResultTree[this.state.selectedLayer] };
-        }
-        this.setState({resultTree: newResultTree});
-    };
     exportResults = (clipboard = false) => {
         const filteredResults = {};
-        Object.keys(this.state.resultTree).map(key => {
+        Object.keys(this.state.selectedLayer !== '' ? { [this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer] } : this.state.resultTree).map(key => {
             if (!isEmpty(this.state.resultTree[key])) {
                 filteredResults[key] = this.state.resultTree[key];
             }
@@ -561,11 +531,9 @@ class IdentifyViewer extends React.Component {
             body = (
                 <div className="identify-flat-results-list">
                     <div className="identify-selectbox">
-                        <select className="identify-layer-select"
-                            onChange={(e) => {const selectedLayer = e.target.value; this.setState({ selectedLayer });}}
-                        >
-                            <option value="all">{LocaleUtils.tr("identify.layerall")}</option>
-                            {Object.keys(this.state.originalResultTree).sort().map(
+                        <select className="identify-layer-select" onChange={(e) => {const selectedLayer = e.target.value; this.setState({ selectedLayer });}}>
+                            <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
+                            {Object.keys(this.state.resultTree).sort().map(
                                 layer => (
                                     <option key={layer} value={layer}>
                                         {layer}
@@ -575,20 +543,21 @@ class IdentifyViewer extends React.Component {
                         <span className="identify-buttonbox-spacer" />
                         <span>{LocaleUtils.tr("identify.featurecount")}: {Object.values(this.state.resultTree || {}).flat().length}</span>
                     </div>
-                    {Object.keys(this.state.resultTree).map(layer => {
+                    {Object.keys(this.state.selectedLayer !== '' ? { [this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer] } : this.state.resultTree).map(layer => {
                         const layerResults = this.state.resultTree[layer];
                         return layerResults.map(result => {
                             const resultClass = this.state.currentResult === result ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal';
                             return (
                                 <div key={result.id}
-                                    onMouseEnter={() => this.setState({currentResult: result, currentLayer: layer})}
-                                    onMouseLeave={() => this.setState({currentResult: null, currentLayer: null})}
+                                    onMouseEnter={() => this.setState({ currentResult: result, currentLayer: layer })}
+                                    onMouseLeave={() => this.setState({ currentResult: null, currentLayer: null })}
                                 >
                                     {this.renderResultAttributes(layer, result, resultClass, reportFeatures)}
                                 </div>
                             );
                         });
-                    })}
+                    })
+                    }
                 </div>
             );
         }
