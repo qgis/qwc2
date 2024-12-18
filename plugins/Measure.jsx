@@ -18,6 +18,7 @@ import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
 import displayCrsSelector from '../selectors/displaycrs';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 
@@ -83,7 +84,7 @@ class Measure extends React.Component {
         let resultBody = null;
         if (this.props.measureState.geomType === "Point") {
             const coo = this.props.measureState.coordinates || [0, 0];
-            const text = MeasureUtils.getFormattedCoordinate(coo, this.props.mapcrs, this.props.displaycrs);
+            const text = CoordinatesUtils.getFormattedCoordinate(coo, this.props.mapcrs, this.props.displaycrs);
             resultBody = (
                 <div className="measure-body">
                     <span className="measure-result">{text}</span>
