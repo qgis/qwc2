@@ -6,6 +6,11 @@ div.input-container {
     background-color: var(--input-bg-color);
 }
 
+div.input-container div.input-container {
+    border: none;
+    height: calc(2em - 2px);
+}
+
 div.input-container-focus {
     outline: var(--focus-outline);
 }
