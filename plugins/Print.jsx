@@ -26,7 +26,9 @@ import PickFeature from '../components/PickFeature';
 import PrintSelection from '../components/PrintSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
 import SideBar from '../components/SideBar';
+import EditableSelect from '../components/widgets/EditableSelect';
 import InputContainer from '../components/widgets/InputContainer';
+import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -207,14 +209,14 @@ class Print extends React.Component {
         if (!isEmpty(this.state.atlasFeatures)) {
             formattedExtent = "";
         }
-        let scaleChooser = (<input min="1" name={mapName + ":scale"} onChange={this.changeScale} role="input" type="number" value={this.state.scale || ""}/>);
+        let scaleChooser = (<NumberInput min={1} name={mapName + ":scale"} onChange={this.changeScale} role="input" type="number" value={this.state.scale || null}/>);
 
         if (this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             scaleChooser = (
-                <select name={mapName + ":scale"} onChange={this.changeScale} role="input" value={this.state.scale || ""}>
-                    <option hidden value={this.state.scale || ""}>{this.state.scale || ""}</option>
-                    {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
-                </select>
+                <EditableSelect
+                    name={mapName + ":scale"} onChange={this.changeScale}
+                    options={this.props.theme.printScales} role="input" value={this.state.scale || ""}
+                />
             );
         }
         let resolutionChooser = null;
@@ -673,8 +675,8 @@ class Print extends React.Component {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);
         this.setState({layout: layout, atlasFeature: null});
     };
-    changeScale = (ev) => {
-        this.setState({scale: parseInt(ev.target.value, 10) || 0});
+    changeScale = (value) => {
+        this.setState({scale: parseInt(value, 10) || 0});
     };
     changeResolution = (ev) => {
         this.setState({dpi: ev.target.value});
