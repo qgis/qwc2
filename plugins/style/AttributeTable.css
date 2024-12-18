@@ -113,15 +113,6 @@ table.attribtable-table td:first-child {
     width: 2.5em;
 }
 
-table.attribtable-table td:first-child::after {
-    position: absolute;
-    right: -1px;
-    top: 0;
-    bottom: 0;
-    border-right: 1px solid var(--border-color);
-    content: '';
-}
-
 span.attribtable-table-ldraghandle,
 span.attribtable-table-rdraghandle {
     display: block;
@@ -165,8 +156,10 @@ table.attribtable-table {
 table.attribtable-table td {
     border: 1px solid var(--border-color);
     text-align: center;
-    vertical-align: center;
-    position: relative;
+}
+
+table.attribtable-table td:first-child {
+    border-left-width: 0;
 }
 
 table.attribtable-table td > input:not([type=checkbox]),
