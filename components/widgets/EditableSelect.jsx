@@ -8,6 +8,7 @@
 
 import React from 'react';
 
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import MiscUtils from '../../utils/MiscUtils';
@@ -18,85 +19,126 @@ import './style/EditableSelect.css';
 
 export default class EditableSelect extends React.Component {
     static propTypes = {
+        className: PropTypes.string,
+        name: PropTypes.string,
         onChange: PropTypes.func,
         onSubmit: PropTypes.func,
         options: PropTypes.array,
         placeholder: PropTypes.string,
-        readOnly: PropTypes.bool
-    };
-    static defaultProps = {
-        onSubmit: () => {}
+        readOnly: PropTypes.bool,
+        value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     };
     state = {
-        textValue: "",
+        propValue: "",
+        value: "",
+        changed: false,
         selectedOption: null,
         focused: false
     };
+    static getDerivedStateFromProps(nextProps, state) {
+        if (state.focused) {
+            // No changes while focussed
+            return null;
+        }
+        const value = String(nextProps.value ?? "");
+        if (value !== state.propValue) {
+            const selectedOption = nextProps.options.find(option => EditableSelect.optionValue(option) === value) ?? null;
+            return {
+                propValue: value,
+                value: value,
+                changed: false,
+                selectedOption: selectedOption
+            };
+        }
+        return null;
+    }
+    static optionLabel(option) {
+        return typeof option === 'object' ? option.label : String(option);
+    }
+    static optionValue(option) {
+        return typeof option === 'object' ? option.value : String(option);
+    }
     render() {
+        const classes = classNames({
+            EditableSelect: true,
+            [this.props.className]: true
+        });
         return (
-            <div className="EditableSelect">
+            <div className={classes}>
                 <InputContainer className="editable-select-inputcontainer">
                     <input
-                        onBlur={() => this.setState({focused: false})}
+                        autoComplete="off"
+                        name={this.props.name}
+                        onBlur={this.onBlur}
                         onChange={this.valueChanged}
-                        onClick={() => this.setState({focused: true})}
-                        onKeyPress={this.onKeyPress}
-                        placeholder={this.state.selectedOption ? "" : this.props.placeholder}
+                        onClick={this.onClick}
+                        onKeyDown={this.onKeyDown}
+                        placeholder={this.props.placeholder}
                         readOnly={this.props.readOnly}
-                        ref={el => { this.input = el; }}
                         role="input"
                         type="text"
-                        value={this.state.textValue} />
+                        value={this.state.value} />
                     <Icon icon="clear" onClick={this.clear} role="suffix" />
                 </InputContainer>
-                {this.state.selectedOption !== null ? this.renderSelectedOption() : null}
+                {this.state.selectedOption ? this.renderSelectedOption() : null}
                 {this.state.focused && !this.props.readOnly ? this.renderOptions() : null}
             </div>
         );
     }
-    optionLabel = (option) => {
-        return typeof option === 'string' ? option : option.label;
-    };
-    optionValue = (option) => {
-        return typeof option === 'string' ? option : option.value;
-    };
     renderOptions = () => {
+        const lvalue = this.state.value.toLowerCase();
         return (
             <div className="editable-select-dropdown">
                 {this.props.options.map((option, idx) => {
-                    const label = this.optionLabel(option);
-                    if (this.state.textValue && !label.toLowerCase().startsWith(this.state.textValue.toLowerCase())) {
+                    const label = EditableSelect.optionLabel(option);
+                    if (this.state.changed && lvalue && !label.toLowerCase().startsWith(lvalue)) {
                         return null;
                     }
                     return (
-                        <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent}>{this.optionLabel(option)}</div>
+                        <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
                     );
                 })}
             </div>
         );
     };
     renderSelectedOption = () => {
+        const label = EditableSelect.optionLabel(this.state.selectedOption);
         return (
-            <div className="editable-select-selopt">
-                <span>{this.optionLabel(this.state.selectedOption)}</span>
+            <div className="editable-select-selopt" title={label}>
+                {label}
             </div>
         );
     };
     valueChanged = (ev) => {
-        this.setState({textValue: ev.target.value, selectedOption: null});
-        this.props.onChange(ev.target.value.trim());
+        this.setState({value: ev.target.value, selectedOption: null, changed: true});
     };
     optionSelected = (option) => {
-        this.setState({textValue: "", selectedOption: option, focused: false});
-        this.props.onChange(this.optionValue(option.value));
+        this.props.onChange(EditableSelect.optionValue(option));
+        this.setState({selectedOption: option, focused: false});
     };
     clear = () => {
-        this.setState({textValue: "", selectedOption: null, focused: false});
-        this.props.onChange("");
+        if (!this.props.readOnly) {
+            this.props.onChange("");
+        }
     };
-    onKeyPress = (ev) => {
-        if (!ev.target.readOnly && ev.key === 'Enter') {
-            this.props.onSubmit();
+    onClick = (ev) => {
+        ev.target.select();
+        this.setState({focused: true});
+    };
+    onBlur = () => {
+        if (!this.props.readOnly) {
+            this.props.onChange(this.state.value.trim());
+            this.setState({focused: false, changed: false});
+        }
+    };
+    onKeyDown = (ev) => {
+        if (!this.props.readOnly && ev.key === 'Enter') {
+            this.props.onChange(this.state.value.trim());
+            this.setState({changed: false});
+            MiscUtils.killEvent(ev);
+            if (this.props.onSubmit) {
+                this.props.onSubmit(this.state.value.trim());
+            }
         }
     };
 }

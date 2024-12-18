@@ -6,6 +6,9 @@ div.editable-select-inputcontainer {
     width: 100%;    
 }
 
+div.editable-select-inputcontainer > span.icon-clear {
+    width: 1.5em;
+}
 
 div.editable-select-dropdown {
     position: absolute;
@@ -20,6 +23,9 @@ div.editable-select-dropdown {
 
 div.editable-select-dropdown > div {
     padding: 0.25em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 div.editable-select-dropdown > div:hover {
@@ -29,13 +35,17 @@ div.editable-select-dropdown > div:hover {
 
 div.editable-select-selopt {
     position: absolute;
-    display: inline-block;
-    left: 0;
-    right: 1em;
-    top: 0;
-    bottom: 0;
+    left: 1px;
+    right: 1.5em;
+    top: 1px;
+    bottom: 1px;
+    z-index: 1;
     pointer-events: none;
     display: flex;
     align-items: center;
     padding: 0 0.25em;
+    background-color: var(--input-bg-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
