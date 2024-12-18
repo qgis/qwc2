@@ -12,10 +12,12 @@ import PropTypes from 'prop-types';
 
 export default class NumberInput extends React.Component {
     static propTypes = {
+        className: PropTypes.string,
         decimals: PropTypes.number,
         disabled: PropTypes.bool,
         max: PropTypes.number,
         min: PropTypes.number,
+        name: PropTypes.string,
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
@@ -41,12 +43,12 @@ export default class NumberInput extends React.Component {
     render() {
         const step = Math.pow(10, -this.props.decimals || 0);
         return (
-            <input disabled={this.props.disabled} max={this.props.max}
-                min={this.props.min} onBlur={this.onBlur} onChange={this.onChange}
-                onFocus={this.onFocus} onKeyDown={this.onKeyDown}
-                placeholder={this.props.placeholder} readOnly={this.props.readOnly}
-                required={this.props.required} step={step} style={this.props.style}
-                type="number" value={this.state.curValue} />
+            <input className={this.props.className} disabled={this.props.disabled}
+                max={this.props.max} min={this.props.min} name={this.props.name}
+                onBlur={this.onBlur} onChange={this.onChange} onFocus={this.onFocus}
+                onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
+                readOnly={this.props.readOnly} required={this.props.required} step={step}
+                style={this.props.style} type="number" value={this.state.curValue} />
         );
     }
     onChange = (ev) => {
