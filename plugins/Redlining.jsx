@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 
 import {LayerRole, addLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
-import {changeRedliningState} from '../actions/redlining';
+import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import Icon from '../components/Icon';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
@@ -57,6 +57,7 @@ class Redlining extends React.Component {
         mobile: PropTypes.bool,
         plugins: PropTypes.object,
         redlining: PropTypes.object,
+        resetRedliningState: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setSnappingConfig: PropTypes.func,
         /** Whether snapping is available when editing. */
@@ -138,16 +139,12 @@ class Redlining extends React.Component {
         }
     };
     onHide = () => {
-        this.props.changeRedliningState({action: null, geomType: null, numericInput: false});
+        this.props.resetRedliningState();
         Mousetrap.unbind('del', this.triggerDelete);
-    };
-    updateRedliningState = (diff) => {
-        const newState = {...this.props.redlining, ...diff};
-        this.props.changeRedliningState(newState);
     };
     updateRedliningStyle = (diff) => {
         const newStyle = {...this.props.redlining.style, ...diff};
-        this.updateRedliningState({style: newStyle});
+        this.props.changeRedliningState({style: newStyle});
     };
     renderBody = () => {
         const toolEnabled = (tool) => !this.props.hiddenTools.includes(tool);
@@ -223,7 +220,7 @@ class Redlining extends React.Component {
                     </div>
                     <div className="redlining-group">
                         <div>&nbsp;</div>
-                        <ButtonBar active={this.props.redlining.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={() => this.updateRedliningState({numericInput: !this.props.redlining.numericInput})} />
+                        <ButtonBar active={this.props.redlining.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={() => this.props.changeRedliningState({numericInput: !this.props.redlining.numericInput})} />
                     </div>
                     {toolEnabled("Export") ? (
                         <div className="redlining-group">
@@ -331,7 +328,7 @@ class Redlining extends React.Component {
                 {this.props.redlining.geomType !== 'Text' && this.props.allowGeometryLabels ? (
                     <button
                         className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
-                        onClick={() => this.updateRedliningState({measurements: !this.props.redlining.measurements, style: {...this.props.redlining.style, text: ''}})}
+                        onClick={() => this.props.changeRedliningState({measurements: !this.props.redlining.measurements, style: {...this.props.redlining.style, text: ''}})}
                         title={LocaleUtils.tr("redlining.measurements")}
                     >
                         <Icon icon="measure" />
@@ -341,7 +338,7 @@ class Redlining extends React.Component {
                     <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
                 ) : null}
                 {this.props.redlining.measurements && ['LineString', 'Circle'].includes(this.props.redlining.geomType) ? (
-                    <select className="redlining-unit" onChange={ev => this.updateRedliningState({lenUnit: ev.target.value})} value={this.props.redlining.lenUnit}>
+                    <select className="redlining-unit" onChange={ev => this.props.changeRedliningState({lenUnit: ev.target.value})} value={this.props.redlining.lenUnit}>
                         <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
                         <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
                         <option value="m">m</option>
@@ -351,7 +348,7 @@ class Redlining extends React.Component {
                     </select>
                 ) : null}
                 {this.props.redlining.measurements && ['Polygon', 'Ellipse', 'Square', 'Box'].includes(this.props.redlining.geomType) ? (
-                    <select className="redlining-unit" onChange={ev => this.updateRedliningState({areaUnit: ev.target.value})} value={this.props.redlining.areaUnit}>
+                    <select className="redlining-unit" onChange={ev => this.props.changeRedliningState({areaUnit: ev.target.value})} value={this.props.redlining.areaUnit}>
                         <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
                         <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
                         <option value="sqm">m&#178;</option>
@@ -383,17 +380,17 @@ class Redlining extends React.Component {
         }
     };
     triggerDelete = () => {
-        this.updateRedliningState({action: "Delete", geomType: null});
+        this.props.changeRedliningState({action: "Delete"});
     };
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {
             data = {...data, text: LocaleUtils.tr("redlining.text")};
         }
-        this.updateRedliningState(data);
+        this.props.changeRedliningState(data);
     };
     changeRedliningLayer = (layer) => {
         const action = ["Draw", "Pick", "Transform"].includes(this.props.redlining.action) ? this.props.redlining.action : "Pick";
-        this.updateRedliningState({layer: layer.id, layerTitle: layer.title, action: action});
+        this.props.changeRedliningState({layer: layer.id, layerTitle: layer.title, action: action});
     };
 }
 
@@ -407,6 +404,7 @@ export default (plugins) => {
     }), {
         changeRedliningState: changeRedliningState,
         addLayer: addLayer,
+        resetRedliningState: resetRedliningState,
         setSnappingConfig: setSnappingConfig
     })(Redlining);
 };

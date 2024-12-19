@@ -15,7 +15,7 @@ import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayer, clearLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
-import {changeRedliningState} from '../actions/redlining';
+import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import {setCurrentTask} from '../actions/task';
 import TaskBar from '../components/TaskBar';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -40,6 +40,7 @@ class ScratchDrawing extends React.Component {
         projection: PropTypes.string,
         redlining: PropTypes.object,
         removeLayer: PropTypes.func,
+        resetRedliningState: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setSnappingConfig: PropTypes.func,
         task: PropTypes.object
@@ -73,8 +74,7 @@ class ScratchDrawing extends React.Component {
             if (!this.submitted) {
                 prevProps.task.data.callback(null, null);
             }
-            this.props.changeRedliningState({action: null, geomType: null, layer: null, layerTitle: null, drawMultiple: true, style: this.prevstyle || this.props.redlining.style});
-            this.prevstyle = null;
+            this.props.resetRedliningState();
             Mousetrap.unbind('del', this.triggerDelete);
         }
         this.submitted = false;
@@ -174,6 +174,7 @@ export default connect((state) => ({
     addLayerFeatures: addLayerFeatures,
     clearLayer: clearLayer,
     removeLayer: removeLayer,
+    resetRedliningState: resetRedliningState,
     setCurrentTask: setCurrentTask,
     setSnappingConfig: setSnappingConfig
 })(ScratchDrawing);

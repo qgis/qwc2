@@ -11,10 +11,17 @@ import redliningReducer from '../reducers/redlining';
 ReducerIndex.register("redlining", redliningReducer);
 
 export const CHANGE_REDLINING_STATE = 'CHANGE_REDLINING_STATE';
+export const RESET_REDLINING_STATE = 'RESET_REDLINING_STATE';
 
 export function changeRedliningState(redliningState) {
     return {
         type: CHANGE_REDLINING_STATE,
         data: redliningState
+    };
+}
+
+export function resetRedliningState() {
+    return {
+        type: RESET_REDLINING_STATE
     };
 }

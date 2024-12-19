@@ -15,7 +15,7 @@ import Mousetrap from 'mousetrap';
 import PropTypes from 'prop-types';
 
 import {LayerRole, addLayer, removeLayer, addLayerFeatures, removeLayerFeatures, clearLayer} from '../actions/layers';
-import {changeRedliningState} from '../actions/redlining';
+import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import PickFeature from '../components/PickFeature';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
@@ -49,6 +49,7 @@ class GeometryDigitizer extends React.Component {
         redlining: PropTypes.object,
         removeLayer: PropTypes.func,
         removeLayerFeatures: PropTypes.func,
+        resetRedliningState: PropTypes.func,
         setCurrentTask: PropTypes.func,
         /** The style of active geometries (i.e. supported by the selected application) */
         styleActive: PropTypes.shape({
@@ -194,8 +195,7 @@ class GeometryDigitizer extends React.Component {
     };
     onHide = () => {
         this.setState({geomLink: "", outputWindowVisible: false, outputLoaded: false, outputWindowSize: null, outputWindowTitle: "", pickGeomType: null});
-        this.props.changeRedliningState({action: null, geomType: null, layer: null, layerTitle: null, style: this.prevstyle || this.props.redlining.style});
-        this.prevstyle = null;
+        this.props.resetRedliningState();
         Mousetrap.unbind('del', this.triggerDelete);
     };
     updateRedliningState = (diff) => {
@@ -476,5 +476,6 @@ export default connect((state) => ({
     removeLayer: removeLayer,
     addLayerFeatures: addLayerFeatures,
     removeLayerFeatures: removeLayerFeatures,
-    clearLayer: clearLayer
+    clearLayer: clearLayer,
+    resetRedliningState: resetRedliningState
 })(GeometryDigitizer);
