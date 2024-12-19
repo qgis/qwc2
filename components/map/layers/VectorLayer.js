@@ -121,7 +121,6 @@ const VectorLayer = {
         const features = createFeatures(options, mapCrs);
         source.addFeatures(features);
         const vectorLayer = new ol.layer.Vector({
-            msId: options.id,
             source: source,
             style: options.styleFunction || featureStyleFunction(options)
         });

@@ -627,13 +627,7 @@ class RedliningSupport extends React.Component {
         }
     };
     searchRedliningLayer = (layerId) => {
-        let redliningLayer = null;
-        this.props.map.getLayers().forEach(olLayer => {
-            if (olLayer.get('msId') === layerId) {
-                redliningLayer = olLayer;
-            }
-        });
-        return redliningLayer;
+        return this.props.map.getLayers().getArray().find(l => l.get('id') === layerId) ?? null;
     };
     currentFeatureObject = () => {
         if (!this.currentFeature) {

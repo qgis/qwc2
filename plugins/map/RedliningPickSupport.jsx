@@ -126,7 +126,7 @@ class RedliningPickSupport extends React.Component {
     searchRedliningLayer = (layerId) => {
         let redliningLayer = null;
         this.props.map.getLayers().forEach(olLayer => {
-            if (olLayer.get('msId') === layerId) {
+            if (olLayer.get('id') === layerId) {
                 redliningLayer = olLayer;
             }
         });
