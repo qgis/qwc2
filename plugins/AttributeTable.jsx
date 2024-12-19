@@ -13,7 +13,7 @@ import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {LayerRole} from '../actions/layers';
+import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import EditComboField, {KeyValCache} from '../components/EditComboField';
@@ -49,6 +49,7 @@ import './style/AttributeTable.css';
 class AttributeTable extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
+        addLayerFeatures: PropTypes.func,
         /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
         filter: PropTypes.object,
@@ -57,6 +58,7 @@ class AttributeTable extends React.Component {
         mapBbox: PropTypes.object,
         mapCrs: PropTypes.string,
         mapScales: PropTypes.array,
+        removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
         /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
@@ -81,6 +83,7 @@ class AttributeTable extends React.Component {
         features: [],
         filteredSortedFeatures: [],
         selectedFeatures: {},
+        highlightedFeature: null,
         changedFeatureIdx: null,
         originalFeatureProps: null,
         pageSize: 50,
@@ -118,6 +121,10 @@ class AttributeTable extends React.Component {
             this.reload();
         } else if (this.props.active && !this.state.limitToExtent && prevState.limitToExtent) {
             this.reload();
+        }
+        // Highlight feature
+        if (this.state.highlightedFeature !== prevState.highlightedFeature || this.state.filteredSortedFeatures !== prevState.filteredSortedFeatures) {
+            this.highlightFeatures();
         }
     }
     render() {
@@ -197,7 +204,10 @@ class AttributeTable extends React.Component {
                             const disabled = readOnly || (this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx);
                             const key = this.state.changedFeatureIdx === featureidx && this.state.newFeature ? "newfeature" : feature.id;
                             return (
-                                <tr className={disabled ? "row-disabled" : ""} key={key}>
+                                <tr className={disabled ? "row-disabled" : ""} key={key}
+                                    onMouseEnter={() => this.setState({highlightedFeature: feature})}
+                                    onMouseLeave={() => this.setState(state => ({highlightedFeature: state.highlightedFeature === feature ? null : state.highlightedFeature}))}
+                                >
                                     <td>
                                         <span>
                                             {filteredIndex > 0 ? this.renderRowResizeHandle(filteredIndex, 't') : null}
@@ -377,6 +387,7 @@ class AttributeTable extends React.Component {
             this.setState(AttributeTable.defaultState);
             this.props.setCurrentTask(null);
         }
+        this.props.removeLayer("__attributetablehighlight");
     };
     changeSelectedLayer = (value) => {
         this.setState({selectedLayer: value});
@@ -621,6 +632,20 @@ class AttributeTable extends React.Component {
         this.setState((state) => ({features: newFeatures, filteredSortedFeatures: this.filteredSortedFeatures(newFeatures, state), changedFeatureIdx: null, originalFeatureProps: null, newFeature: false}));
         this.props.setCurrentTaskBlocked(false);
     };
+    highlightFeatures = () => {
+        const features = [];
+        if (this.state.highlightedFeature) {
+            features.push(this.state.highlightedFeature);
+        } else if (this.state.filterVal) {
+            console.log(this.state.filteredSortedFeatures)
+            features.push(...Object.values(this.state.filteredSortedFeatures));
+        }
+        const layer = {
+            id: "__attributetablehighlight",
+            role: LayerRole.SELECTION
+        };
+        this.props.addLayerFeatures(layer, features.map(f => ({id: f.id, geometry: f.geometry})), true);
+    };
     zoomToSelection = () => {
         const collection = {
             type: "FeatureCollection",
@@ -777,6 +802,8 @@ export default (iface = EditingInterface) => {
         taskData: state.task.id === "AttributeTable" ? state.task.data : null,
         theme: state.theme.current
     }), {
+        addLayerFeatures: addLayerFeatures,
+        removeLayer: removeLayer,
         setCurrentTask: setCurrentTask,
         setCurrentTaskBlocked: setCurrentTaskBlocked,
         zoomToExtent: zoomToExtent,
