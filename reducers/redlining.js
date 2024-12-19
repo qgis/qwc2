@@ -21,6 +21,7 @@ const defaultState = {
     layerTitle: null,
     selectedFeature: null,
     drawMultiple: true,
+    freehand: false,
     measurements: false,
     numericInput: false,
     lenUnit: 'metric',
