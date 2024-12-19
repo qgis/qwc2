@@ -8,7 +8,13 @@
 
 import React from 'react';
 
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
+
+import Icon from '../Icon';
+
+import './style/NumberInput.css';
+
 
 export default class NumberInput extends React.Component {
     static propTypes = {
@@ -17,57 +23,82 @@ export default class NumberInput extends React.Component {
         disabled: PropTypes.bool,
         max: PropTypes.number,
         min: PropTypes.number,
+        mobile: PropTypes.bool,
         name: PropTypes.string,
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
+        prefix: PropTypes.string,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,
         style: PropTypes.object,
+        suffix: PropTypes.string,
         value: PropTypes.number
     };
+    static defaultProps = {
+        decimals: 0,
+        mobile: false
+    };
     state = {
+        propValue: "",
         value: "",
-        curValue: "",
         changed: false
     };
     static getDerivedStateFromProps(nextProps, state) {
-        if (state.value !== nextProps.value) {
-            return {value: nextProps.value, curValue: (typeof nextProps.value === "number") ? nextProps.value.toFixed(nextProps.decimals) : "", changed: false};
+        if (state.propValue !== nextProps.value) {
+            return {propValue: nextProps.value, value: (typeof nextProps.value === "number") ? nextProps.value.toFixed(nextProps.decimals) : "", changed: false};
         }
         return null;
     }
-    constructor(props) {
-        super(props);
-        this.focused = false;
-    }
     render() {
-        const step = Math.pow(10, -this.props.decimals || 0);
+        const className = classNames({
+            "number-input": true,
+            "number-input-mobile": this.props.mobile,
+            "number-input-normal": !this.props.mobile
+        });
+        const padding = this.props.mobile ? 4 : 1.5;
+        const style = {
+            minWidth: 2 + padding + Math.max(
+                (this.props.min || 0).toFixed(this.props.decimals).length,
+                (this.props.max || 0).toFixed(this.props.decimals).length
+            ) + "em",
+            ...this.props.style
+        };
+        const step = Math.pow(10, -this.props.decimals);
+        const plusIcon = this.props.mobile ? "plus" : "chevron-up";
+        const minusIcon = this.props.mobile ? "minus" : "chevron-down";
         return (
-            <input className={this.props.className} disabled={this.props.disabled}
-                max={this.props.max} min={this.props.min} name={this.props.name}
-                onBlur={this.onBlur} onChange={this.onChange} onFocus={this.onFocus}
-                onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
-                readOnly={this.props.readOnly} required={this.props.required} step={step}
-                style={this.props.style} type="number" value={this.state.curValue} />
+            <div className={className + " " + this.props.className}>
+                <input disabled={this.props.disabled}
+                    max={this.props.max} min={this.props.min} name={this.props.name}
+                    onBlur={this.commit} onChange={this.onChange}
+                    onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
+                    readOnly={this.props.readOnly} required={this.props.required} step={step}
+                    style={style} type="number" value={this.state.value} />
+                <Icon icon={plusIcon} onMouseDown={() => this.startStep(+step)} />
+                <Icon icon={minusIcon} onMouseDown={() => this.startStep(-step)} />
+            </div>
         );
     }
     onChange = (ev) => {
         const value = parseFloat(ev.target.value);
-        if (!this.focused) {
-            this.props.onChange(Number.isNaN(value) ? null : value);
-        } else if (!Number.isNaN(value)) {
-            const factor = Math.pow(10, this.props.decimals || 0);
-            this.setState({curValue: Math.round(value * factor) / factor, changed: true});
+        if (!Number.isNaN(value)) {
+            this.setState({value: value.toFixed(this.props.decimals), changed: true});
         } else {
-            this.setState({curValue: "", changed: true});
+            this.setState({value: "", changed: true});
         }
     };
-    onFocus = () => {
-        this.focused = true;
-    };
-    onBlur = () => {
-        this.commit();
-        this.focused = false;
+    startStep = (delta) => {
+        this.props.onChange(this.constrainValue((parseFloat(this.state.value) || 0) + delta));
+        let stepInterval = null;
+        const stepTimeout = setTimeout(() => {
+            stepInterval = setInterval(() => {
+                this.props.onChange(this.constrainValue((parseFloat(this.state.value) || 0) + delta));
+            }, 100);
+        }, 500);
+        document.addEventListener('mouseup', () => {
+            clearTimeout(stepTimeout);
+            clearInterval(stepInterval);
+        }, {once: true});
     };
     onKeyDown = (ev) => {
         if (ev.keyCode === 13) {
@@ -76,7 +107,20 @@ export default class NumberInput extends React.Component {
     };
     commit = () => {
         if (this.state.changed) {
-            this.props.onChange(this.state.curValue === "" ? null : this.state.curValue);
+            const value = parseFloat(this.state.value);
+            this.props.onChange(this.constrainValue(isNaN(value) ? null : value));
         }
+    };
+    constrainValue = (value) => {
+        if (value === null) {
+            return null;
+        }
+        if (this.props.min) {
+            value = Math.max(this.props.min, value);
+        }
+        if (this.props.max) {
+            value = Math.min(this.props.max, value);
+        }
+        return value;
     };
 }

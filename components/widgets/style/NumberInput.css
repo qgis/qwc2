@@ -1,0 +1,86 @@
+div.number-input {
+    border: 1px solid var(--border-color);
+    position: relative;
+    display: flex;
+    height: 2em;
+}
+
+div.number-input > input {
+    min-width: 0;
+    width: 0;
+    flex: 1 1 auto;
+    border: 0!important;
+    height: calc(2em - 2px)!important;
+}
+
+div.number-input > input::-webkit-outer-spin-button,
+div.number-input > input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+div.number-input > input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/** Normal **/
+div.number-input-normal > input {
+    padding-right: 1.5em;
+}
+
+div.number-input > span.icon-chevron-up,
+div.number-input > span.icon-chevron-down {
+    position: absolute;
+    right: 0;
+    width: 1.5em;
+    height: 50%;
+    cursor: pointer;
+    user-select: none;
+}
+
+div.number-input > span.icon-chevron-up {
+    top: 0;
+}
+
+div.number-input > span.icon-chevron-down {
+    bottom: 0;
+}
+
+div.number-input > span.icon-chevron-up:hover,
+div.number-input > span.icon-chevron-down:hover {
+    background-color: var(--button-bg-color-hover);
+}
+
+/** Mobile **/
+div.number-input-mobile > input {
+    padding: 0 2em;
+    text-align: center;
+}
+
+div.number-input > span.icon-plus,
+div.number-input > span.icon-minus {
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    width: 2em;
+    cursor: pointer;
+    background-color: var(--button-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    user-select: none;
+}
+
+div.number-input > span.icon-plus:hover,
+div.number-input > span.icon-minus:hover {
+    background-color: var(--button-bg-color-hover);
+}
+
+div.number-input > span.icon-plus {
+    right: 1px;
+}
+
+div.number-input > span.icon-minus {
+    left: 1px;
+}
