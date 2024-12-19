@@ -45,8 +45,7 @@ class MapTip extends React.Component {
         openExternalUrl: PropTypes.func,
         removeLayer: PropTypes.func,
         /** Whether to show the maptip feature selection on the map or not */
-        showFeatureSelection: PropTypes.bool,
-        theme: PropTypes.object
+        showFeatureSelection: PropTypes.bool
     };
     static defaultProps = {
         layerFeatureCount: 5,
@@ -55,7 +54,6 @@ class MapTip extends React.Component {
         showFeatureSelection: true
     };
     state = {
-        reqId: null,
         maptips: {},
         maptipsOrder: [],
         mousePos: null,
@@ -68,7 +66,7 @@ class MapTip extends React.Component {
         MapUtils.getHook(MapUtils.GET_MAP).un('pointermove', this.getMapMousePos);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.map !== prevProps.map || this.props.theme !== prevProps.theme) {
+        if (this.props.map !== prevProps.map) {
             this.clearMaptip();
         }
         if (this.props.mapTipsEnabled && this.state.mousePos &&
@@ -96,7 +94,7 @@ class MapTip extends React.Component {
         this.timeoutId = null;
         if (this.state.pos) {
             this.props.removeLayer('maptipselection');
-            this.setState({maptips: {}, maptipsOrder: [], pos: null, reqId: null});
+            this.setState({maptips: {}, maptipsOrder: [], pos: null});
         }
     };
     queryMapTip = (pos) => {
@@ -111,7 +109,7 @@ class MapTip extends React.Component {
             with_htmlcontent: false
         };
         const reqId = uuidv1();
-        this.setState({reqId: reqId});
+        this.reqId = reqId;
         this.props.layers.forEach(layer => {
             if (
                 !(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) ||
@@ -125,7 +123,7 @@ class MapTip extends React.Component {
             }
             const request = IdentifyUtils.buildRequest(layer, queryLayers.join(","), this.state.mousePos.coordinate, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
-                if (this.state.reqId === reqId) {
+                if (this.reqId === reqId) {
                     const mapTips = {};
                     const features = [];
                     if (response) {
@@ -169,7 +167,7 @@ class MapTip extends React.Component {
                 top: (this.state.pos[1] - 8) + "px"
             };
             return [(
-                <div className="MapTipPointerBufferr" key="MapTipPointerBuffer" style={bufferPos} />
+                <div id="MapTipPointerBuffer" key="MapTipPointerBuffer" style={bufferPos} />
             ), (
                 <div
                     id="MapTip" key="MapTip"
@@ -227,7 +225,6 @@ class MapTip extends React.Component {
 export default connect((state) => ({
     // Only enable maptips when an identify tool is active (i.e. no other task is)
     mapTipsEnabled: state.map.maptips && state.identify.tool !== null,
-    theme: state.theme.current || {},
     layers: state.layers.flat,
     map: state.map
 }), {
