@@ -203,7 +203,7 @@ class SearchBox extends React.Component {
                         {this.state.filterGeomType === 'Circle' ? (
                             <tr>
                                 <td>{LocaleUtils.tr("search.circleradius")}:</td>
-                                <td><NumberInput disabled={!this.state.filterGeometry} min={1} onChange={this.setCircleRadius} type="text" value={this.state.filterGeometry?.radius || 0}/> m</td>
+                                <td><NumberInput disabled={!this.state.filterGeometry} min={1} mobile onChange={this.setCircleRadius} type="text" value={this.state.filterGeometry?.radius || 0}/> m</td>
                             </tr>
                         ) : null}
                     </tbody>

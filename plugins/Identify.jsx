@@ -323,7 +323,7 @@ class Identify extends React.Component {
                 <span>
                     <span>{LocaleUtils.tr("infotool.radius")} &nbsp;</span>
                     <NumberInput
-                        disabled={!this.state.filterGeom} max={10000} min={1}
+                        disabled={!this.state.filterGeom} max={10000} min={1} mobile
                         onChange={rad => this.updateRadius(rad, this.state.radiusUnits)}
                         value={this.state.radius}
                     />

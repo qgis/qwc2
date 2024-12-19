@@ -7,13 +7,13 @@
  */
 
 import React from 'react';
-import NumericInput from 'react-numeric-input2';
 
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
 
 import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
+import NumberInput from './widgets/NumberInput';
 import ToggleSwitch from './widgets/ToggleSwitch';
 
 import './style/AutoEditForm.css';
@@ -73,11 +73,10 @@ export default class AutoEditForm extends React.Component {
         } else if (field.type === "number") {
             const precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
             input = (
-                <NumericInput format={nr => String(Number(nr))} max={constraints.max} min={constraints.min}
-                    mobile={this.props.touchFriendly} name={field.id} onChange={nr => this.props.updateField(field.id, nr)}
+                <NumberInput format={nr => String(Number(nr))} max={constraints.max} min={constraints.min}
+                    mobile name={field.id} onChange={nr => this.props.updateField(field.id, nr)}
                     precision={precision} readOnly={readOnly} required={constraints.required}
-                    step={constraints.step || 1}
-                    strict value={value} />
+                    step={constraints.step || 1} value={value} />
             );
         } else if (field.type === "date") {
             // Truncate time portion of ISO date string

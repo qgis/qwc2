@@ -21,6 +21,7 @@ import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import NavBar from '../components/widgets/NavBar';
+import NumberInput from '../components/widgets/NumberInput';
 import ReCaptchaWidget from '../components/widgets/ReCaptchaWidget';
 import Spinner from '../components/widgets/Spinner';
 import TextInput from '../components/widgets/TextInput';
@@ -441,10 +442,10 @@ class AttributeTable extends React.Component {
             );
         } else if (field.type === "number") {
             input = (
-                <input disabled={disabled} max={constraints.max} min={constraints.min}
-                    name={field.id} onChange={ev => updateField(field.id, ev.target.value, true)}
+                <NumberInput disabled={disabled} max={constraints.max} min={constraints.min}
+                    name={field.id} onChange={v => updateField(field.id, v, true)}
                     readOnly={constraints.readOnly} required={constraints.required}
-                    step={constraints.step || 1} type="number" value={value} />
+                    step={constraints.step || 1} value={value} />
             );
         } else if (field.type === "date") {
             // Truncate time portion of ISO date string

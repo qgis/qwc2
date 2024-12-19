@@ -7,13 +7,13 @@
  */
 
 import React from 'react';
-import NumericInput from 'react-numeric-input2';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayer, addLayerFeatures} from '../../actions/layers';
+import NumberInput from '../../components/widgets/NumberInput';
 import VectorLayerPicker from '../../components/widgets/VectorLayerPicker';
 import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
@@ -67,9 +67,9 @@ class RedliningBufferSupport extends React.Component {
             <div className="redlining-controlsbar">
                 <span>
                     <span>{LocaleUtils.tr("redlining.bufferdistance")} &nbsp;</span>
-                    <NumericInput max={99999} min={-99999}
-                        mobile onChange={(nr) => this.setState({bufferDistance: nr})} precision={0} step={1}
-                        strict value={this.state.bufferDistance} />
+                    <NumberInput max={99999} min={-99999} mobile
+                        onChange={(nr) => this.setState({bufferDistance: nr})} precision={0}
+                        step={1} value={this.state.bufferDistance} />
                     <select onChange={this.changeBufferUnit} value={this.state.bufferUnit}>
                         <option value="meters">m</option>
                         <option value="feet">ft</option>

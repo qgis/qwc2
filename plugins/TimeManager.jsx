@@ -380,7 +380,7 @@ class TimeManager extends React.Component {
                         <tr>
                             <td>{LocaleUtils.tr("timemanager.stepsize")}:</td>
                             <td>
-                                <NumberInput max={100} min={1} onChange={value => this.setState({stepSize: value})} value={this.state.stepSize} />
+                                <NumberInput max={100} min={1} mobile onChange={value => this.setState({stepSize: value})} value={this.state.stepSize} />
                             </td>
                             <td>
                                 <select onChange={ev => this.setState({stepSizeUnit: ev.target.value})} value={this.state.stepSizeUnit}>
@@ -393,7 +393,7 @@ class TimeManager extends React.Component {
                         <tr>
                             <td>{LocaleUtils.tr("timemanager.animationinterval")}:</td>
                             <td>
-                                <NumberInput max={10} min={1} onChange={value => this.setState({animationInterval: value})} value={this.state.animationInterval} />
+                                <NumberInput max={10} min={1} mobile onChange={value => this.setState({animationInterval: value})} value={this.state.animationInterval} />
                             </td>
                             <td>
                                 &nbsp;{LocaleUtils.tr("timemanager.unit.seconds")}

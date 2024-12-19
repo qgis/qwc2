@@ -23,6 +23,7 @@ import Icon from '../components/Icon';
 import PrintSelection from '../components/PrintSelection';
 import SideBar from '../components/SideBar';
 import InputContainer from '../components/widgets/InputContainer';
+import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -116,8 +117,8 @@ class MapExport extends React.Component {
             selectedFormatConfiguration: selectedFormatConfiguration
         });
     };
-    changeScale = (ev) => {
-        this.setState({scale: parseInt(ev.target.value, 10) || 0});
+    changeScale = (value) => {
+        this.setState({scale: value || 0});
     };
     changeResolution = (ev) => {
         this.setState({dpi: parseInt(ev.target.value, 10) || 0});
@@ -148,7 +149,7 @@ class MapExport extends React.Component {
                 </select>);
         } else if (this.props.allowedScales !== false) {
             scaleChooser = (
-                <input min="1" onChange={this.changeScale} role="input" type="number" value={this.state.scale || ""} />
+                <NumberInput min={1} onChange={this.changeScale} role="input" value={this.state.scale || ""} />
             );
         }
         const action = this.props.theme.url;

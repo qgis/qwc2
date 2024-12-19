@@ -63,9 +63,9 @@ export default class InfiniteTimeline extends React.Component {
                     <div className="inftimeline-toolbar-block">
                         <span>{LocaleUtils.tr("timemanager.timelinescale")}: &nbsp;</span>
                         <Icon icon="before" title={LocaleUtils.tr("timemanager.past")} />
-                        <NumberInput decimals={2} max={10} min={0.01} onChange={this.setTimeScalePast} value={this.state.timeScalePast} />
+                        <NumberInput decimals={2} max={10} min={0.01} mobile onChange={this.setTimeScalePast} value={this.state.timeScalePast} />
                         <Icon icon="after" title={LocaleUtils.tr("timemanager.future")} />
-                        <NumberInput decimals={2} max={10} min={0.01} onChange={this.setTimeScaleFuture} value={this.state.timeScaleFuture} />
+                        <NumberInput decimals={2} max={10} min={0.01} mobile onChange={this.setTimeScaleFuture} value={this.state.timeScaleFuture} />
                     </div>
                     <div className="inftimeline-toolbar-spacer" />
                 </div>

@@ -7,7 +7,6 @@
  */
 
 import React from 'react';
-import NumericInput from 'react-numeric-input2';
 import {connect} from 'react-redux';
 
 import FileSaver from 'file-saver';
@@ -24,6 +23,7 @@ import ButtonBar from '../components/widgets/ButtonBar';
 import ColorButton from '../components/widgets/ColorButton';
 import ComboBox from '../components/widgets/ComboBox';
 import MenuButton from '../components/widgets/MenuButton';
+import NumberInput from '../components/widgets/NumberInput';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import {END_MARKERS} from '../utils/FeatureStyles';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -303,9 +303,9 @@ class Redlining extends React.Component {
                 )}
                 <span>
                     <span>{sizeLabel}:&nbsp;</span>
-                    <NumericInput max={99} min={1}
-                        mobile onChange={(nr) => this.updateRedliningStyle({size: nr})} precision={0} step={1}
-                        strict value={this.props.redlining.style.size}/>
+                    <NumberInput max={99} min={1} mobile
+                        onChange={(nr) => this.updateRedliningStyle({size: nr})} precision={0}
+                        step={1} value={this.props.redlining.style.size}/>
                 </span>
                 {this.props.redlining.geomType === 'LineString' ? (
                     <span>

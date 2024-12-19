@@ -53,6 +53,10 @@ div.routing-input {
     flex: 0 0 auto;
 }
 
+table.routing-settings-menu-entries {
+    width: 100%;
+}
+
 table.routing-settings-menu-entries td {
     white-space: nowrap;
 }

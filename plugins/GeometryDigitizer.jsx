@@ -7,7 +7,6 @@
 */
 
 import React from 'react';
-import NumericInput from 'react-numeric-input2';
 import {connect} from 'react-redux';
 
 import polySelfIntersections from 'geojson-polygon-self-intersections';
@@ -21,6 +20,8 @@ import PickFeature from '../components/PickFeature';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
+import InputContainer from '../components/widgets/InputContainer';
+import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -251,10 +252,12 @@ class GeometryDigitizer extends React.Component {
                     <div className="redlining-group">
                         <div>{LocaleUtils.tr("redlining.buffer")}</div>
                         <div>
-                            <NumericInput max={99999} min={-99999}
-                                mobile onChange={this.computeBuffer} precision={0} step={1}
-                                strict value={this.state.bufferDistance}/>
-                            <span>&nbsp;[m]</span>
+                            <InputContainer>
+                                <NumberInput max={99999} min={-99999} mobile onChange={this.computeBuffer}
+                                    precision={0} role="input" step={1} value={this.state.bufferDistance}
+                                />
+                                <span role="suffix">m</span>
+                            </InputContainer>
                         </div>
                     </div>
                     <div className="redlining-group">

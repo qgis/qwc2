@@ -7,7 +7,6 @@
  */
 
 import React from 'react';
-import NumericInput from 'react-numeric-input2';
 import {connect} from 'react-redux';
 import Sortable from 'react-sortablejs';
 
@@ -23,6 +22,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import ButtonBar from '../components/widgets/ButtonBar';
 import DateTimeInput from '../components/widgets/DateTimeInput';
 import InputContainer from '../components/widgets/InputContainer';
+import NumberInput from '../components/widgets/NumberInput';
 import SearchWidget from '../components/widgets/SearchWidget';
 import Spinner from '../components/widgets/Spinner';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
@@ -296,10 +296,13 @@ class Routing extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("routing.maxspeed")}:</td>
                                 <td>
-                                    <NumericInput
-                                        format={x => x + " km/h"} max={250} min={1} mobile
-                                        onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
-                                        precision={0} step={1} strict value={settings.maxSpeed} />
+                                    <InputContainer>
+                                        <NumberInput
+                                            max={250} min={1} mobile
+                                            onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
+                                            precision={0} role="input" step={1} value={settings.maxSpeed} />
+                                        <span role="suffix">km/h</span>
+                                    </InputContainer>
                                 </td>
                             </tr>
                         ) : null}

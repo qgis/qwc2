@@ -209,7 +209,7 @@ class Print extends React.Component {
         if (!isEmpty(this.state.atlasFeatures)) {
             formattedExtent = "";
         }
-        let scaleChooser = (<NumberInput min={1} name={mapName + ":scale"} onChange={this.changeScale} role="input" type="number" value={this.state.scale || null}/>);
+        let scaleChooser = (<NumberInput min={1} name={mapName + ":scale"} onChange={this.changeScale} role="input" value={this.state.scale || null}/>);
 
         if (this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             scaleChooser = (
@@ -232,12 +232,12 @@ class Print extends React.Component {
                 resolutionInput = (<input name="DPI" readOnly role="input" type={formvisibility} value={this.props.theme.printResolutions[0]} />);
             }
         } else {
-            resolutionChooser = (<input max="1200" min="50" name="DPI" onChange={this.changeResolution} role="input" type="number" value={this.state.dpi || ""} />);
+            resolutionChooser = (<NumberInput max={1200} min={50} name="DPI" onChange={this.changeResolution} role="input" value={this.state.dpi || ""} />);
         }
 
         let rotationInput = null;
         if (this.props.displayRotation) {
-            rotationInput = (<input name={mapName + ":rotation"} onChange={this.changeRotation} role="input" step="0.1" type="number" value={this.state.rotation} />);
+            rotationInput = (<NumberInput name={mapName + ":rotation"} onChange={this.changeRotation} role="input" step={0.1} value={this.state.rotation} />);
         }
 
         let gridIntervalX = null;
@@ -678,16 +678,12 @@ class Print extends React.Component {
     changeScale = (value) => {
         this.setState({scale: parseInt(value, 10) || 0});
     };
-    changeResolution = (ev) => {
-        this.setState({dpi: ev.target.value});
+    changeResolution = (value) => {
+        this.setState({dpi: value || 300});
     };
-    changeRotation = (ev) => {
-        if (!ev.target.value) {
-            this.setState({rotation: 0});
-        } else {
-            const angle = parseFloat(ev.target.value) || 0;
-            this.setState({rotation: (angle % 360 + 360) % 360});
-        }
+    changeRotation = (value) => {
+        const angle = value || 0;
+        this.setState({rotation: (angle % 360 + 360) % 360});
     };
     changeSeriesOverlap = (ev) => {
         this.setState({printSeriesOverlap: parseInt(ev.target.value, 10) || 0});
