@@ -101,7 +101,7 @@ export default class NumberInput extends React.Component {
         }, {once: true});
     };
     onKeyDown = (ev) => {
-        if (ev.keyCode === 13) {
+        if (ev.key === 'Enter') {
             this.commit();
         }
     };

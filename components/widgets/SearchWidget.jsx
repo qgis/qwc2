@@ -149,9 +149,9 @@ class SearchWidget extends React.Component {
         this.setState({active: true});
     };
     onKeyDown = (ev) => {
-        if (ev.keyCode === 13) {
+        if (ev.key === 'Enter') {
             this.startSearch();
-        } else if (ev.keyCode === 27) {
+        } else if (ev.key === 'Escape') {
             ev.target.blur();
         }
     };

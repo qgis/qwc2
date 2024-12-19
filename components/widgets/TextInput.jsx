@@ -199,10 +199,10 @@ export default class TextInput extends React.Component {
         }
     };
     onKeyDown = (ev) => {
-        if (ev.keyCode === 13 && !this.props.multiline) { // Enter
+        if (ev.key === 'Enter' && !this.props.multiline) {
             ev.preventDefault();
             this.commit();
-        } else if (ev.keyCode === 27) { // Esc
+        } else if (ev.key === 'Escape') {
             this.setState((state) => ({
                 value: this.props.value,
                 valueRev: state.valueRev + 1,

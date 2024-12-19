@@ -98,10 +98,10 @@ export class AppMenu extends React.Component {
         });
     };
     onKeyPress = (ev) => {
-        if (ev.keyCode === 13 || ev.keyCode === 37 || ev.keyCode === 38 || ev.keyCode === 39 || ev.keyCode === 40) {
+        if (ev.key === 'Enter' || ev.key === 'ArrowLeft' || ev.key === 'ArrowUp' || ev.key === 'ArrowRight' || ev.key === 'ArrowDown') {
             if (!this.state.curEntry) {
-                if (ev.keyCode === 38 || ev.keyCode === 40) {
-                    this.setState({curEntry: [ev.keyCode === 38 ? this.props.menuItems.length - 1 : 0]});
+                if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
+                    this.setState({curEntry: [ev.key === 'ArrowUp' ? this.props.menuItems.length - 1 : 0]});
                 }
             } else {
                 const curEntry = [...this.state.curEntry];
@@ -112,17 +112,17 @@ export class AppMenu extends React.Component {
                 stack.pop();
                 let leaf = curEntry.pop();
                 const level = stack.length - 1;
-                if (ev.keyCode === 13) { // Enter
+                if (ev.key === 'Enter') {
                     if (!isEmpty(stack[stack.length - 1][leaf].subitems)) {
                         this.onSubmenuClicked(stack[stack.length - 1][leaf].key, level);
                     } else {
                         this.onMenuitemClicked(stack[stack.length - 1][leaf]);
                     }
-                } else if (ev.keyCode === 37) { // Left
+                } else if (ev.key === 'ArrowLeft') {
                     if (!isEmpty(stack[stack.length - 1][leaf].subitems) && this.state.submenusVisible[level] === stack[stack.length - 1][leaf].key) {
                         this.onSubmenuClicked(stack[stack.length - 1][leaf].key, level);
                     }
-                } else if (ev.keyCode === 38) { // Up
+                } else if (ev.key === 'ArrowUp') {
                     leaf -= 1;
                     if (leaf >= 0 && !isEmpty(stack[stack.length - 1][leaf].subitems) && this.state.submenusVisible[level] === stack[stack.length - 1][leaf].key) {
                         curEntry.push(leaf);
@@ -135,11 +135,11 @@ export class AppMenu extends React.Component {
                             leaf = this.props.menuItems.length - 1;
                         }
                     }
-                } else if (ev.keyCode === 39) { // Right
+                } else if (ev.key === 'ArrowRight') {
                     if (!isEmpty(stack[stack.length - 1][leaf].subitems) && !this.state.submenusVisible[level]) {
                         this.onSubmenuClicked(stack[stack.length - 1][leaf].key, level);
                     }
-                } else if (ev.keyCode === 40) { // Down
+                } else if (ev.key === 'ArrowDown') {
                     if (!isEmpty(stack[stack.length - 1][leaf].subitems) && this.state.submenusVisible[level] === stack[stack.length - 1][leaf].key) {
                         curEntry.push(leaf);
                         leaf = 0;
@@ -157,7 +157,7 @@ export class AppMenu extends React.Component {
                 this.setState({curEntry: [...curEntry, leaf], keyNav: true});
             }
             MiscUtils.killEvent(ev);
-        } else if (ev.keyCode === 27) {
+        } else if (ev.key === 'Escape') {
             this.toggleMenu();
             MiscUtils.killEvent(ev);
         }

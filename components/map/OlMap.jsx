@@ -211,19 +211,19 @@ class OlMap extends React.Component {
         }
     }
     panHStepCondition = (ev) => {
-        const horiz = ev.originalEvent.keyCode === 37 || ev.originalEvent.keyCode === 39;
+        const horiz = ev.originalEvent.key === 'ArrowLeft' || ev.originalEvent.key === 'ArrowRight';
         return horiz && ol.events.condition.noModifierKeys(ev) && ol.events.condition.targetNotEditable(ev);
     };
     panVStepCondition = (ev) => {
-        const vert = ev.originalEvent.keyCode === 38 || ev.originalEvent.keyCode === 40;
+        const vert = ev.originalEvent.key === 'ArrowUp' || ev.originalEvent.key === 'ArrowDown';
         return vert && ol.events.condition.noModifierKeys(ev) && ol.events.condition.targetNotEditable(ev);
     };
     panHPageCondition = (ev) => {
-        const horiz = ev.originalEvent.keyCode === 37 || ev.originalEvent.keyCode === 39;
+        const horiz = ev.originalEvent.key === 'ArrowLeft' || ev.originalEvent.key === 'ArrowRight';
         return horiz && ol.events.condition.shiftKeyOnly(ev) && ol.events.condition.targetNotEditable(ev);
     };
     panVPageCondition = (ev) => {
-        const vert = ev.originalEvent.keyCode === 38 || ev.originalEvent.keyCode === 40;
+        const vert = ev.originalEvent.key === 'ArrowUp' || ev.originalEvent.key === 'ArrowDown';
         return vert && ol.events.condition.shiftKeyOnly(ev) && ol.events.condition.targetNotEditable(ev);
     };
     render() {

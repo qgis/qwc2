@@ -50,7 +50,7 @@ export default class Input extends React.Component {
         this.commit();
     };
     onKeyDown = (ev) => {
-        if (ev.keyCode === 13) {
+        if (ev.key === 'Enter') {
             this.commit();
         }
     };
