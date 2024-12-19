@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import FileSaver from 'file-saver';
-import Mousetrap from 'mousetrap';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
@@ -83,7 +82,6 @@ class Redlining extends React.Component {
     constructor(props) {
         super(props);
         this.labelInput = null;
-        window.addEventListener('keydown', this.keyPressed);
     }
     componentDidMount() {
         this.componentDidUpdate({redlining: {}});
@@ -109,20 +107,9 @@ class Redlining extends React.Component {
             }
         }
     }
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.keyPressed);
-    }
-    keyPressed = (ev) => {
-        if (this.props.redlining.action && ev.keyCode === 27) {
-            if (this.props.redlining.action === 'Draw' && !this.props.redlining.selectedFeature) {
-                this.props.changeRedliningState({action: 'Delete'});
-            }
-        }
-    };
     onShow = (mode, data) => {
         this.props.changeRedliningState({action: mode ?? 'Pick', geomType: data?.geomType ?? null, ...this.redliningStateDefaults()});
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
-        Mousetrap.bind('del', this.triggerDelete);
         if (data && data.layerId) {
             const layer = this.props.layers.find(l => l.id === data.layerId);
             if (layer) {
@@ -132,7 +119,6 @@ class Redlining extends React.Component {
     };
     onHide = () => {
         this.props.resetRedliningState();
-        Mousetrap.unbind('del', this.triggerDelete);
     };
     redliningStateDefaults = () => {
         return {
@@ -381,9 +367,6 @@ class Redlining extends React.Component {
             el.select();
             this.setState({selectText: false});
         }
-    };
-    triggerDelete = () => {
-        this.props.changeRedliningState({action: "Delete"});
     };
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {

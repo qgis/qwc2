@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import Mousetrap from 'mousetrap';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
@@ -84,9 +85,18 @@ class RedliningSupport extends React.Component {
         this.selectedStyle = FeatureStyles.interactionVertex({geometryFunction});
     }
     componentDidUpdate(prevProps) {
-        // Handle delete action immediately, which then resets the redlining state to the previous action
+        // Bind keyboard shortcuts to delete features
+        if (this.props.redlining.action && !prevProps.redlining.action) {
+            Mousetrap.bind('del', this.triggerDelete);
+            Mousetrap.bind('backspace', this.triggerDelete);
+        } else if (!this.props.redlining.action && prevProps.redlining.action) {
+            Mousetrap.unbind('del', this.triggerDelete);
+            Mousetrap.unbind('backspace', this.triggerDelete);
+        }
+        // Handle delete action immediately and reset the redlining state to the previous action
         if (this.props.redlining.action === 'Delete') {
-            this.deleteCurrentFeature(prevProps.redlining);
+            this.deleteCurrentFeature();
+            this.props.changeRedliningState({...prevProps.redlining, selectedFeature: null});
             return;
         }
         const recreateInteraction = (
@@ -488,11 +498,13 @@ class RedliningSupport extends React.Component {
         transformInteraction.setSelection(new ol.Collection(selectedFeatures));
         return transformInteraction;
     };
-    deleteCurrentFeature = (redliningProps) => {
+    triggerDelete = () => {
+        this.props.changeRedliningState({action: "Delete"});
+    };
+    deleteCurrentFeature = () => {
         if (this.currentFeature) {
             this.props.removeLayerFeatures(this.props.redlining.layer, [this.currentFeature.getId()], true);
             this.currentFeature = null;
-            this.props.changeRedliningState({...redliningProps, selectedFeature: null});
         }
     };
     commitCurrentFeature = (redliningProps, newFeature = false) => {

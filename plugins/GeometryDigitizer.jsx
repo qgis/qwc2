@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 
 import polySelfIntersections from 'geojson-polygon-self-intersections';
 import isEmpty from 'lodash.isempty';
-import Mousetrap from 'mousetrap';
 import PropTypes from 'prop-types';
 
 import {LayerRole, removeLayer, addLayerFeatures, removeLayerFeatures, clearLayer} from '../actions/layers';
@@ -187,12 +186,10 @@ class GeometryDigitizer extends React.Component {
         };
         this.props.addLayerFeatures(layer, [], true);
         this.props.changeRedliningState({action: mode || 'Pick', geomType: null, layer: '__geomdigitizer', layerTitle: 'Geometry digitizer'});
-        Mousetrap.bind('del', this.triggerDelete);
     };
     onHide = () => {
         this.setState(GeometryDigitizer.defaultState);
         this.props.resetRedliningState();
-        Mousetrap.unbind('del', this.triggerDelete);
     };
     renderBody = () => {
         const geomLinkData = this.geometryLinkData(this.state.geomLink);
@@ -320,12 +317,6 @@ class GeometryDigitizer extends React.Component {
             ) : null
         ];
     }
-    triggerDelete = () => {
-        this.props.changeRedliningState({action: "Delete"});
-        if (this.props.redlining.selectedFeature) {
-            this.props.removeLayerFeatures("__geomdigitizerbuffer", [this.props.redlining.selectedFeature.id]);
-        }
-    };
     actionChanged = (data) => {
         if (data.action === "Clear") {
             this.props.changeRedliningState({action: "Delete"});
@@ -336,7 +327,10 @@ class GeometryDigitizer extends React.Component {
             this.props.changeRedliningState({action: null, geomType: null});
             this.setState({pickGeomType: data.geomType});
         } else if (data.action === "Delete") {
-            this.triggerDelete();
+            this.props.changeRedliningState({action: "Delete"});
+            if (this.props.redlining.selectedFeature) {
+                this.props.removeLayerFeatures("__geomdigitizerbuffer", [this.props.redlining.selectedFeature.id]);
+            }
         } else {
             this.props.changeRedliningState({...data, style: this.redliningStyle(data.geomType)});
             this.setState({pickGeomType: null});

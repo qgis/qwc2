@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import Mousetrap from 'mousetrap';
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
@@ -58,7 +57,6 @@ class ScratchDrawing extends React.Component {
             }
             this.props.removeLayer(prevProps.redlining.layer);
             this.props.resetRedliningState();
-            Mousetrap.unbind('del', this.triggerDelete);
         }
         // Setup redlining state
         if (this.props.task !== prevProps.task && this.props.task.id === "ScratchDrawing") {
@@ -74,7 +72,6 @@ class ScratchDrawing extends React.Component {
             const layerId = this.createDrawLayer(data);
             this.props.setSnappingConfig(data.snapping, data.snappingActive);
             this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: layerId, layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
-            Mousetrap.bind('del', this.triggerDelete);
         }
     }
     createDrawLayer = (data) => {
@@ -126,9 +123,6 @@ class ScratchDrawing extends React.Component {
             </TaskBar>
         );
     }
-    triggerDelete = () => {
-        this.props.changeRedliningState({action: "Delete"});
-    };
     submitGeometry = () => {
         const features = this.props.layers.find(l => l.id === this.props.redlining.layer)?.features || [];
         this.submitted = true;
