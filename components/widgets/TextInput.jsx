@@ -22,6 +22,7 @@ export default class TextInput extends React.Component {
     static propTypes = {
         addLinkAnchors: PropTypes.bool,
         className: PropTypes.string,
+        clearValue: PropTypes.string,
         disabled: PropTypes.bool,
         multiline: PropTypes.bool,
         name: PropTypes.string,
@@ -33,6 +34,7 @@ export default class TextInput extends React.Component {
         value: PropTypes.string
     };
     static defaultProps = {
+        clearValue: "",
         placeholder: ""
     };
     state = {
@@ -93,7 +95,6 @@ export default class TextInput extends React.Component {
             "text-input-readonly": this.props.readOnly || !this.state.curValue,
             "text-input-invalid": this.props.required && !this.state.curValue
         });
-        const editTextNullValue = ConfigUtils.getConfigProp("editTextNullValue");
         return (
             <div className={wrapperClassName + " " + (this.props.className || "")} ref={this.storeInitialHeight}>
                 {this.props.name ? (
@@ -127,9 +128,9 @@ export default class TextInput extends React.Component {
                         className="text-input-resize-handle"
                         onMouseDown={this.startResize} />
                 ) : null}
-                {!this.props.multiline && !this.props.disabled && editTextNullValue ? (
+                {!this.props.multiline && !this.props.disabled && this.state.curValue ? (
                     <div className="text-input-clear-icon">
-                        <Icon icon="clear" onClick={() => this.props.onChange(editTextNullValue)} />
+                        <Icon icon="clear" onClick={() => this.props.onChange(this.props.clearValue)} />
                     </div>
                 ) : null}
             </div>

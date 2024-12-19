@@ -377,7 +377,8 @@ class QtDesignerForm extends React.Component {
                     return (<div style={fontStyle}>{value || inputConstraints.placeholder}</div>);
                 } else {
                     const addLinkAnchors = ConfigUtils.getConfigProp("editingAddLinkAnchors") !== false;
-                    return (<TextInput addLinkAnchors={addLinkAnchors} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
+                    const editTextNullValue = ConfigUtils.getConfigProp("editTextNullValue");
+                    return (<TextInput addLinkAnchors={addLinkAnchors} clearValue={editTextNullValue} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
                 }
             }
         } else if (widget.class === "QCheckBox" || widget.class === "QRadioButton") {
