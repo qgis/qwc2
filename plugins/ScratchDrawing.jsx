@@ -47,46 +47,38 @@ class ScratchDrawing extends React.Component {
     };
     constructor(props) {
         super(props);
-        window.addEventListener('keydown', this.keyPressed);
         this.submitted = false;
-        this.prevstyle = null;
-    }
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.keyPressed);
     }
     componentDidUpdate(prevProps) {
-        // Remove layers when not used anymore
-        if (prevProps.redlining.layer === "__scratchdrawing" && this.props.redlining.layer !== "__scratchdrawing") {
-            this.props.removeLayer("__scratchdrawing");
-        }
-        // Setup redlining state when task is set
-        if (this.props.task.id !== prevProps.task.id && this.props.task.id === "ScratchDrawing") {
-            this.prevstyle = this.props.redlining.style;
-            const data = this.props.task.data || {};
-            this.createDrawLayer(data);
-            this.props.setSnappingConfig(data.snapping, data.snappingActive);
-            this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
-            this.submitted = false;
-            Mousetrap.bind('del', this.triggerDelete);
-        }
-        // Call callback and reset redlining state if task unset
-        if (this.props.task.id !== prevProps.task.id && prevProps.task.id === "ScratchDrawing") {
+        // Clear when task changes
+        if (this.props.task.id !== "ScratchDrawing" && prevProps.task.id === "ScratchDrawing") {
             if (!this.submitted) {
                 prevProps.task.data.callback(null, null);
+                this.submitted = true;
             }
+            this.props.removeLayer(prevProps.redlining.layer);
             this.props.resetRedliningState();
             Mousetrap.unbind('del', this.triggerDelete);
         }
-        this.submitted = false;
-        // Reset drawing mode if task data changes
-        if (this.props.task.id === "ScratchDrawing" && prevProps.task.id === "ScratchDrawing" && this.props.task.data !== prevProps.task.data) {
-            const data = this.props.task.data || {};
-            this.createDrawLayer(data);
+        // Setup redlining state
+        if (this.props.task !== prevProps.task && this.props.task.id === "ScratchDrawing") {
+            if (prevProps.task.id === "ScratchDrawing") {
+                this.props.removeLayer(prevProps.redlining.layer);
+                if (!this.submitted) {
+                    prevProps.task.data.callback(null, null);
+                    this.submitted = true;
+                }
+            }
+            this.submitted = false;
+            const data = this.props.task.data;
+            const layerId = this.createDrawLayer(data);
             this.props.setSnappingConfig(data.snapping, data.snappingActive);
-            this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: '__scratchdrawing', layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
+            this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: layerId, layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
+            Mousetrap.bind('del', this.triggerDelete);
         }
     }
     createDrawLayer = (data) => {
+        const layerId = uuidv1();
         const features = (data.initialFeatures || []).map(feature => ({
             ...feature,
             id: uuidv1(),
@@ -95,11 +87,12 @@ class ScratchDrawing extends React.Component {
             styleOptions: this.styleOptions(this.drawingStyle(data.style))
         }));
         const layer = {
-            id: "__scratchdrawing",
+            id: layerId,
             role: LayerRole.USERLAYER,
             type: 'vector'
         };
         this.props.addLayerFeatures(layer, features, true);
+        return layerId;
     };
     drawingStyle = (style) => {
         return {
@@ -121,42 +114,23 @@ class ScratchDrawing extends React.Component {
             tailmarker: styleProps.tailmarker
         };
     };
-    keyPressed = (ev) => {
-        if (this.props.task.id === "ScratchDrawing" && ev.keyCode === 27) {
-            if (this.props.redlining.action === 'PickDraw' && !this.props.redlining.selectedFeature) {
-                this.props.changeRedliningState({action: 'Delete'});
-            }
-        }
-    };
-    updateRedliningState = (diff) => {
-        const newState = {...this.props.redlining, ...diff};
-        this.props.changeRedliningState(newState);
-    };
-    renderBody = () => {
-        return (
-            <div className="scratch-drawing-taskbar-body">
-                <span>{this.props.task.data.message}</span>
-                <button className="button" onClick={() => this.submitGeometry()}>
-                    {LocaleUtils.tr("scratchdrawing.finish")}
-                </button>
-            </div>
-        );
-    };
     render() {
         return (
             <TaskBar task="ScratchDrawing">
-                {() => ({
-                    body: this.renderBody()
-                })}
+                <div className="scratch-drawing-taskbar-body" role="body">
+                    <span>{this.props.task.data?.message}</span>
+                    <button className="button" onClick={() => this.submitGeometry()}>
+                        {LocaleUtils.tr("scratchdrawing.finish")}
+                    </button>
+                </div>
             </TaskBar>
         );
     }
     triggerDelete = () => {
-        this.updateRedliningState({action: "Delete", geomType: null});
+        this.props.changeRedliningState({action: "Delete"});
     };
     submitGeometry = () => {
-        const layer = this.props.layers.find(l => l.id === "__scratchdrawing");
-        const features = (layer || {}).features || [];
+        const features = this.props.layers.find(l => l.id === this.props.redlining.layer)?.features || [];
         this.submitted = true;
         this.props.task.data.callback(features, this.props.projection);
         this.props.setCurrentTask(null);

@@ -162,10 +162,11 @@ export class AppMenu extends React.Component {
             MiscUtils.killEvent(ev);
         }
     };
-    onMouseMove = () => {
+    onMouseMove = (ev) => {
         if (this.state.keyNav) {
             this.setState({keyNav: false});
         }
+        MiscUtils.killEvent(ev);
     };
     toggleMenu = () => {
         if (!this.state.menuVisible && this.props.currentTaskBlocked) {
@@ -195,6 +196,7 @@ export class AppMenu extends React.Component {
         if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.keepMenuOpen) {
             this.toggleMenu();
         }
+        MiscUtils.killEvent(ev);
     };
     onSubmenuClicked = (key, level) => {
         const a = this.state.submenusVisible[level] === key ? [] : [key];
