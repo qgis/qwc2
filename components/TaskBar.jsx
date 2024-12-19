@@ -46,9 +46,6 @@ class TaskBar extends React.Component {
             this.props.setCurrentTask(null);
         }
     };
-    renderRole = (role) => {
-        return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    };
     render() {
         if (this.props.currentTask.id !== this.props.task) {
             return null;
