@@ -223,7 +223,7 @@ class IdentifyViewer extends React.Component {
         }
     }
     componentWillUnmount() {
-        this.props.removeLayer("identifyslection");
+        this.props.removeLayer("__identifyviewerhighlight");
     }
     updateResultTree = () => {
         const layers = Object.keys(this.props.identifyResults);
@@ -254,12 +254,12 @@ class IdentifyViewer extends React.Component {
         });
         if (!isEmpty(results)) {
             const layer = {
-                id: "identifyslection",
+                id: "__identifyviewerhighlight",
                 role: LayerRole.SELECTION
             };
             this.props.addLayerFeatures(layer, results, true);
         } else {
-            this.props.removeLayer("identifyslection");
+            this.props.removeLayer("__identifyviewerhighlight");
         }
     };
     getExpandedClass = (path, deflt) => {
