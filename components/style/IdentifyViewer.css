@@ -235,8 +235,8 @@ span.identify-buttonbox-spacer {
     flex: 1 1 auto;
 }
 
-div.identify-body select.identify-export-format {
-    margin-right: -1px;
+div.identify-buttonbox > button {
+    margin-left: -1px;
 }
 
 div.identify-body div.identify-result-feature-report-frame {

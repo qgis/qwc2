@@ -570,7 +570,7 @@ class IdentifyViewer extends React.Component {
                 {this.props.enableExport === true || !isEmpty(this.props.enableExport) ? (
                     <div className="identify-buttonbox">
                         <span className="identify-buttonbox-spacer" />
-                        <span>{LocaleUtils.tr("identify.exportformat")}&nbsp;</span>
+                        <span>{LocaleUtils.tr("identify.export")}:&nbsp;</span>
                         <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
                             {exporters.filter(entry => {
                                 return !Array.isArray(this.props.enableExport) || this.props.enableExport.includes(entry.id);
@@ -578,8 +578,8 @@ class IdentifyViewer extends React.Component {
                                 <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                             ))}
                         </select>
-                        <button className="button" onClick={() => this.exportResults()}>
-                            <Icon icon="export" /><span>{LocaleUtils.tr("identify.export")}</span>
+                        <button className="button" onClick={() => this.exportResults()} title={LocaleUtils.tr("identify.download")}>
+                            <Icon icon="export" />
                         </button>
                         <button className="button" disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}>
                             <Icon icon="copy" />

@@ -178,7 +178,6 @@
     "identify.clipboard",
     "identify.download",
     "identify.export",
-    "identify.exportformat",
     "identify.featureReport",
     "identify.featurecount",
     "identify.layerall",
