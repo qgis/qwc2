@@ -475,8 +475,8 @@ class RedliningSupport extends React.Component {
     setupTransformInteraction = (selectedFeatures = []) => {
         const transformInteraction = new ol.interaction.Transform({
             stretch: false,
-            keepAspectRatio: () => {
-                return this.currentFeature ? GeomTypeConfig[this.currentFeature.get('shape')].regular : false;
+            keepAspectRatio: (ev) => {
+                return this.currentFeature ? GeomTypeConfig[this.currentFeature.get('shape')].regular || ol.events.condition.shiftKeyOnly(ev) : false;
             }
         });
         transformInteraction.on('rotating', (e) => {
