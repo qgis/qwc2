@@ -189,6 +189,8 @@
       "export": "Exportera",
       "exportformat": "",
       "featureReport": "Objektrapport",
+      "featurecount": "",
+      "layerall": "",
       "link": "Länk",
       "noattributes": "Inga attribut",
       "noresults": "Ingen information för vald punkt",

@@ -189,6 +189,8 @@
       "export": "Export",
       "exportformat": "Formatul de export:",
       "featureReport": "Raport obiect spațial",
+      "featurecount": "",
+      "layerall": "",
       "link": "Link",
       "noattributes": "Fără atribute",
       "noresults": "Nu există informații în punctul selectat",

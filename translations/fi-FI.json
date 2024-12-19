@@ -189,6 +189,8 @@
       "export": "Vienti",
       "exportformat": "Viennin formaatti:",
       "featureReport": "Ominaisuustietoraportti",
+      "featurecount": "",
+      "layerall": "",
       "link": "Linkki",
       "noattributes": "Attribuutteja ei löytynyt",
       "noresults": "Valitulla pisteellä ei ole informaatiota",
