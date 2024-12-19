@@ -95,15 +95,7 @@ class Redlining extends React.Component {
             this.props.defaultLengthUnit !== prevProps.defaultLengthUnit ||
             this.props.defaultAreaUnit !== prevProps.defaultAreaUnit
         ) {
-            this.props.changeRedliningState({
-                style: {
-                    ...this.props.redlining.style,
-                    borderColor: this.props.defaultBorderColor,
-                    fillColor: this.props.defaultFillColor
-                },
-                lenUnit: this.props.defaultLengthUnit,
-                areaUnit: this.props.defaultAreaUnit
-            });
+            this.props.changeRedliningState(this.redliningStateDefaults());
         }
         if (prevProps.redlining.geomType !== this.props.redlining.geomType && this.props.redlining.geomType === 'Text' && !this.state.selectText) {
             this.setState({selectText: true});
@@ -128,7 +120,7 @@ class Redlining extends React.Component {
         }
     };
     onShow = (mode, data) => {
-        this.props.changeRedliningState({action: mode || 'Pick', geomType: null});
+        this.props.changeRedliningState({action: mode ?? 'Pick', geomType: data?.geomType ?? null, ...this.redliningStateDefaults()});
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
         Mousetrap.bind('del', this.triggerDelete);
         if (data && data.layerId) {
@@ -141,6 +133,17 @@ class Redlining extends React.Component {
     onHide = () => {
         this.props.resetRedliningState();
         Mousetrap.unbind('del', this.triggerDelete);
+    };
+    redliningStateDefaults = () => {
+        return {
+            style: {
+                ...this.props.redlining.style,
+                borderColor: this.props.defaultBorderColor,
+                fillColor: this.props.defaultFillColor
+            },
+            lenUnit: this.props.defaultLengthUnit,
+            areaUnit: this.props.defaultAreaUnit
+        };
     };
     updateRedliningStyle = (diff) => {
         const newStyle = {...this.props.redlining.style, ...diff};
