@@ -195,7 +195,8 @@ class IdentifyViewer extends React.Component {
         currentLayer: null,
         exportFormat: 'geojson',
         selectedAggregatedReport: null,
-        generatingReport: false
+        generatingReport: false,
+        selectedLayer: ''
     };
     constructor(props) {
         super(props);
@@ -241,8 +242,10 @@ class IdentifyViewer extends React.Component {
     };
     setHighlightedResults = (results, resultTree) => {
         if (!results && this.props.highlightAllResults) {
+            const selectedLayer = this.state.selectedLayer || '';
             results = Object.keys(resultTree).reduce((res, layer) => {
-                return res.concat(resultTree[layer].map(result => ({...result, id: layer + "." + result.id})));
+                const layerData = resultTree[selectedLayer || layer];
+                return res.concat(layerData.map(result => ({ ...result, id: `${selectedLayer || layer}.${result.id}` })));
             }, []);
         }
         results = (results || []).filter(result => result.type.toLowerCase() === "feature").map(feature => {
@@ -302,15 +305,17 @@ class IdentifyViewer extends React.Component {
             if (isEmpty(newResultTree[layer])) {
                 delete newResultTree[layer];
             }
+            const selectedLayer = isEmpty(newResultTree[layer]) ? '' : state.selectedLayer;
             return {
                 resultTree: newResultTree,
-                currentResult: state.currentResult === result ? null : state.currentResult
+                currentResult: state.currentResult === result ? null : state.currentResult,
+                selectedLayer: selectedLayer
             };
         });
     };
     exportResults = (clipboard = false) => {
         const filteredResults = {};
-        Object.keys(this.state.resultTree).map(key => {
+        Object.keys(this.state.selectedLayer !== '' ? { [this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer] } : this.state.resultTree).map(key => {
             if (!isEmpty(this.state.resultTree[key])) {
                 filteredResults[key] = this.state.resultTree[key];
             }
@@ -525,20 +530,34 @@ class IdentifyViewer extends React.Component {
         } else {
             body = (
                 <div className="identify-flat-results-list">
-                    {Object.keys(this.state.resultTree).map(layer => {
+                    <div className="identify-selectbox">
+                        <select className="identify-layer-select" onChange={(e) => {const selectedLayer = e.target.value; this.setState({ selectedLayer });}}>
+                            <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
+                            {Object.keys(this.state.resultTree).sort().map(
+                                layer => (
+                                    <option key={layer} value={layer}>
+                                        {layer}
+                                    </option>
+                                ))}
+                        </select>
+                        <span className="identify-buttonbox-spacer" />
+                        <span>{LocaleUtils.tr("identify.featurecount")}: {Object.values(this.state.resultTree || {}).flat().length}</span>
+                    </div>
+                    {Object.keys(this.state.selectedLayer !== '' ? { [this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer] } : this.state.resultTree).map(layer => {
                         const layerResults = this.state.resultTree[layer];
                         return layerResults.map(result => {
                             const resultClass = this.state.currentResult === result ? 'identify-result-frame-highlighted' : 'identify-result-frame-normal';
                             return (
                                 <div key={result.id}
-                                    onMouseEnter={() => this.setState({currentResult: result, currentLayer: layer})}
-                                    onMouseLeave={() => this.setState({currentResult: null, currentLayer: null})}
+                                    onMouseEnter={() => this.setState({ currentResult: result, currentLayer: layer })}
+                                    onMouseLeave={() => this.setState({ currentResult: null, currentLayer: null })}
                                 >
                                     {this.renderResultAttributes(layer, result, resultClass, reportFeatures)}
                                 </div>
                             );
                         });
-                    })}
+                    })
+                    }
                 </div>
             );
         }

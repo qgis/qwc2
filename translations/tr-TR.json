@@ -189,6 +189,8 @@
       "export": "Dışarıya aktar",
       "exportformat": "Dışarı aktarma formatı:",
       "featureReport": "Obje raporu",
+      "featurecount": "",
+      "layerall": "",
       "link": "Bağlantı",
       "noattributes": "Öznitelik yok",
       "noresults": "Seçilen nokta için geçerli bilgi yok",

@@ -189,6 +189,8 @@
       "export": "Exportar",
       "exportformat": "Formato de Exportação",
       "featureReport": "Relatório de Recurso",
+      "featurecount": "",
+      "layerall": "",
       "link": "Link",
       "noattributes": "Sem Atributos",
       "noresults": "Nenhuma informação disponível para o ponto selecionado",

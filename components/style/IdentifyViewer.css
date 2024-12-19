@@ -208,6 +208,16 @@ div.identify-body div.identify-buttonbox {
     align-items: center;
 }
 
+div.identify-body div.identify-selectbox {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+select:focus {
+outline: none;
+}
+
 div.identify-body table.identify-attr-subtable {
     width: 100%;
 }

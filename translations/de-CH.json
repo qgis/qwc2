@@ -189,6 +189,8 @@
       "export": "Exportieren",
       "exportformat": "Exportformat",
       "featureReport": "Objektblatt",
+      "featurecount": "",
+      "layerall": "",
       "link": "Link",
       "noattributes": "Keine Attribute",
       "noresults": "Keine Resultate an der ausgewählten Position",
