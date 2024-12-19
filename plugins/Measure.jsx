@@ -10,15 +10,12 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
-import {createSelector} from 'reselect';
 
 import {setSnappingConfig} from '../actions/map.js';
 import {changeMeasurementState} from '../actions/measurement.js';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
-import displayCrsSelector from '../selectors/displaycrs';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 
@@ -31,8 +28,8 @@ import './style/Measure.css';
 class Measure extends React.Component {
     static propTypes = {
         changeMeasurementState: PropTypes.func,
-        displaycrs: PropTypes.string,
-        mapcrs: PropTypes.string,
+        displayCrs: PropTypes.string,
+        mapCrs: PropTypes.string,
         measureState: PropTypes.object,
         setSnappingConfig: PropTypes.func,
         /** Whether to show the widget to switch between measure modes. */
@@ -84,7 +81,7 @@ class Measure extends React.Component {
         let resultBody = null;
         if (this.props.measureState.geomType === "Point") {
             const coo = this.props.measureState.coordinates || [0, 0];
-            const text = CoordinatesUtils.getFormattedCoordinate(coo, this.props.mapcrs, this.props.displaycrs);
+            const text = CoordinatesUtils.getFormattedCoordinate(coo, this.props.mapCrs, this.props.displayCrs);
             resultBody = (
                 <div className="measure-body">
                     <span className="measure-result">{text}</span>
@@ -157,13 +154,11 @@ class Measure extends React.Component {
     }
 }
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+export default connect((state) => ({
     measureState: state.measurement,
-    mapcrs: state.map.projection,
-    displaycrs: displaycrs
-}));
-
-export default connect(selector, {
+    mapCrs: state.map.projection,
+    displayCrs: state.map.displayCrs
+}), {
     changeMeasurementState: changeMeasurementState,
     setSnappingConfig: setSnappingConfig
 })(Measure);

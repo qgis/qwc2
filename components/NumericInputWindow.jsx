@@ -10,10 +10,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
-import {createSelector} from 'reselect';
 
 import {addLayerFeatures, LayerRole, removeLayer} from '../actions/layers';
-import displayCrsSelector from '../selectors/displaycrs';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -323,12 +321,10 @@ class NumericInputWindow extends React.Component {
     };
 }
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    displayCrs: displaycrs,
+export default connect((state) => ({
+    displayCrs: state.map.displayCrs,
     mapCrs: state.map.projection
-}));
-
-export default connect(selector, {
+}), {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer
 })(NumericInputWindow);

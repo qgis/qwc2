@@ -12,14 +12,12 @@ import {connect} from 'react-redux';
 import Mousetrap from 'mousetrap';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
-import {createSelector} from 'reselect';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 import {changeRedliningState} from '../../actions/redlining';
 import NumericInputWindow from '../../components/NumericInputWindow';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
-import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
@@ -126,7 +124,7 @@ class RedliningSupport extends React.Component {
             }
             // Update current feature measurements
             if (
-                this.props.displayCrs !== prevProps.displayCrs ||
+                this.props.map.displayCrs !== prevProps.map.displayCrs ||
                 this.props.redlining.measurements !== prevProps.redlining.measurements ||
                 this.props.redlining.lenUnit !== prevProps.redlining.lenUnit ||
                 this.props.redlining.areaUnit !== prevProps.redlining.areaUnit
@@ -600,13 +598,12 @@ class RedliningSupport extends React.Component {
     };
 }
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    displayCrs: displaycrs,
+
+export default connect((state) => ({
+    displayCrs: state.map.displayCrs,
     mapCrs: state.map.projection,
     redlining: state.redlining
-}));
-
-export default connect(selector, {
+}), {
     changeRedliningState: changeRedliningState,
     addLayerFeatures: addLayerFeatures,
     removeLayerFeatures: removeLayerFeatures

@@ -12,10 +12,8 @@ import {connect} from 'react-redux';
 
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
-import {createSelector} from 'reselect';
 
 import {changeMeasurementState} from '../../actions/measurement';
-import displayCrsSelector from '../../selectors/displaycrs';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MeasureUtils from '../../utils/MeasureUtils';
 
@@ -145,7 +143,7 @@ class MeasurementSupport extends React.Component {
         const settings = {
             lenUnit: this.props.measurement.lenUnit,
             areaUnit: this.props.measurement.areaUnit,
-            displayCrs: this.props.displayCrs
+            displayCrs: this.props.map.displayCrs
         };
         MeasureUtils.updateFeatureMeasurements(feature, geomType, this.props.projection, settings);
 
@@ -178,11 +176,9 @@ class MeasurementSupport extends React.Component {
     };
 }
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
-    measurement: state.measurement,
-    displayCrs: displaycrs
-}));
-
-export default connect(selector, {
+export default connect((state) => ({
+    displayCrs: state.map.displayCrs,
+    measurement: state.measurement
+}), {
     changeMeasurementState
 })(MeasurementSupport);

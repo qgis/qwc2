@@ -11,12 +11,10 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import {createSelector} from 'reselect';
 
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import CopyButton from '../components/widgets/CopyButton';
-import displayCrsSelector from '../selectors/displaycrs';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -53,7 +51,6 @@ import './style/MapInfoTooltip.css';
  */
 class MapInfoTooltip extends React.Component {
     static propTypes = {
-        displaycrs: PropTypes.string,
         /** The number of decimal places to display for elevation values. */
         elevationPrecision: PropTypes.number,
         enabled: PropTypes.bool,
@@ -113,7 +110,7 @@ class MapInfoTooltip extends React.Component {
 
         const info = [];
 
-        const projections = [this.props.displaycrs];
+        const projections = [this.props.map.displayCrs];
         if (!projections.includes(this.props.map.projection)) {
             projections.push(this.props.map.projection);
         }
@@ -148,12 +145,12 @@ class MapInfoTooltip extends React.Component {
         const text = info.map(entry => entry.join(": ")).join("\n");
         let routingButtons = null;
         if (ConfigUtils.havePlugin("Routing")) {
-            const prec = CoordinatesUtils.getPrecision(this.props.displaycrs);
-            const pos = CoordinatesUtils.reproject(this.state.point.coordinate, this.props.map.projection, this.props.displaycrs);
+            const prec = CoordinatesUtils.getPrecision(this.props.map.displayCrs);
+            const pos = CoordinatesUtils.reproject(this.state.point.coordinate, this.props.map.projection, this.props.map.displayCrs);
             const point = {
-                text: pos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.displaycrs + ")",
+                text: pos.map(x => x.toFixed(prec)).join(", ") + " (" + this.props.map.displayCrs + ")",
                 pos: [...pos],
-                crs: this.props.displaycrs
+                crs: this.props.map.displayCrs
             };
             routingButtons = (
                 <table className="mapinfotooltip-body-routing">
@@ -206,13 +203,13 @@ class MapInfoTooltip extends React.Component {
 }
 
 export default (plugins) => {
-    return connect(createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
+    return connect((state) => ({
         mapMargins: state.windows.mapMargins,
+        // Only enable mapinfo tooltip when an identify tool is active (i.e. no other task is)
         enabled: state.identify.tool !== null,
         map: state.map,
-        displaycrs: displaycrs,
         plugins: plugins
-    })), {
+    }), {
         setCurrentTask: setCurrentTask
     })(MapInfoTooltip);
 };

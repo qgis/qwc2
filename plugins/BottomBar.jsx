@@ -10,14 +10,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
-import {createSelector} from 'reselect';
 
-import {changeZoomLevel, setBottombarHeight} from '../actions/map';
-import {changeMousePositionState} from '../actions/mousePosition';
+import {changeZoomLevel, setBottombarHeight, setDisplayCrs} from '../actions/map';
 import {openExternalUrl} from '../actions/task';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
 import InputContainer from '../components/widgets/InputContainer';
-import displayCrsSelector from '../selectors/displaycrs';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -39,18 +36,17 @@ class BottomBar extends React.Component {
             icon: PropTypes.string
         })),
         additionalMouseCrs: PropTypes.array,
-        changeMousePositionState: PropTypes.func,
         changeZoomLevel: PropTypes.func,
         /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
         /** Whether to display the scale in the bottom bar. */
         displayScales: PropTypes.bool,
-        displaycrs: PropTypes.string,
         fullscreen: PropTypes.bool,
         map: PropTypes.object,
         mapMargins: PropTypes.object,
         openExternalUrl: PropTypes.func,
         setBottombarHeight: PropTypes.func,
+        setDisplayCrs: PropTypes.func,
         /** The URL of the terms label anchor. */
         termsUrl: PropTypes.string,
         /** Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. */
@@ -71,13 +67,7 @@ class BottomBar extends React.Component {
     state = {
         scale: 0
     };
-    componentDidMount() {
-        this.props.changeMousePositionState({crs: this.props.map.projection});
-    }
     componentDidUpdate(prevProps) {
-        if (this.props.map.projection !== prevProps.map.projection) {
-            this.props.changeMousePositionState({crs: this.props.map.projection, position: null});
-        }
         if (this.props.map !== prevProps.map) {
             this.setState({scale: Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom))});
         }
@@ -116,8 +106,8 @@ class BottomBar extends React.Component {
             coordinates = (
                 <span>
                     <span>{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
-                    <CoordinateDisplayer className={"bottombar-mousepos"} displaycrs={this.props.displaycrs} />
-                    <select onChange={ev => this.props.changeMousePositionState({crs: ev.target.value})} value={this.props.displaycrs}>
+                    <CoordinateDisplayer className={"bottombar-mousepos"} displayCrs={this.props.map.displayCrs} mapCrs={this.props.map.projection} />
+                    <select onChange={ev => this.props.setDisplayCrs(ev.target.value)} value={this.props.map.displayCrs}>
                         {Object.keys(availableCRS).map(crs =>
                             (<option key={crs} value={crs}>{availableCRS[crs].label}</option>)
                         )}
@@ -186,19 +176,14 @@ class BottomBar extends React.Component {
     };
 }
 
-const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => {
-    return {
-        displaycrs: displaycrs,
-        map: state.map,
-        fullscreen: state.display && state.display.fullscreen,
-        mapMargins: state.windows.mapMargins,
-        additionalMouseCrs: state.theme.current ? state.theme.current.additionalMouseCrs : []
-    };
-});
-
-export default connect(selector, {
-    changeMousePositionState: changeMousePositionState,
+export default connect((state) => ({
+    map: state.map,
+    fullscreen: state.display?.fullscreen,
+    mapMargins: state.windows.mapMargins,
+    additionalMouseCrs: state.theme.current?.additionalMouseCrs ?? []
+}), {
     changeZoomLevel: changeZoomLevel,
     openExternalUrl: openExternalUrl,
-    setBottombarHeight: setBottombarHeight
+    setBottombarHeight: setBottombarHeight,
+    setDisplayCrs: setDisplayCrs
 })(BottomBar);

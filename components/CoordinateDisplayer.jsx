@@ -7,39 +7,40 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 
-class CoordinateDisplayer extends React.Component {
+export default class CoordinateDisplayer extends React.Component {
     static propTypes = {
         className: PropTypes.string,
-        coordinate: PropTypes.object,
-        displaycrs: PropTypes.string,
-        mapcrs: PropTypes.string,
-        mousepos: PropTypes.object
+        displayCrs: PropTypes.string,
+        mapCrs: PropTypes.string
     };
+    state = {
+        mousePos: []
+    };
+    componentDidMount() {
+        MapUtils.getHook(MapUtils.GET_MAP).on('pointermove', this.getMapMousePos);
+    }
+    componentWillUnmount() {
+        MapUtils.getHook(MapUtils.GET_MAP).un('pointermove', this.getMapMousePos);
+    }
     render() {
         let value = "";
-        if (this.props.mousepos) {
-            const coo = CoordinatesUtils.reproject(this.props.mousepos.coordinate, this.props.mapcrs, this.props.displaycrs);
-            if (!isNaN(coo[0]) && !isNaN(coo[1])) {
-                const decimals = CoordinatesUtils.getPrecision(this.props.displaycrs);
-                value = LocaleUtils.toLocaleFixed(coo[0], decimals) + " " + LocaleUtils.toLocaleFixed(coo[1], decimals);
-            }
+        const coo = CoordinatesUtils.reproject(this.state.mousePos, this.props.mapCrs, this.props.displayCrs);
+        if (!isNaN(coo[0]) && !isNaN(coo[1])) {
+            const decimals = CoordinatesUtils.getPrecision(this.props.displayCrs);
+            value = LocaleUtils.toLocaleFixed(coo[0], decimals) + " " + LocaleUtils.toLocaleFixed(coo[1], decimals);
         }
         return (
             <input className={this.props.className} readOnly="readOnly" type="text" value={value}/>
         );
     }
+    getMapMousePos = (ev) => {
+        this.setState({mousePos: ev.coordinate});
+    };
 }
-
-const selector = state => ({
-    mapcrs: state.map.projection,
-    mousepos: state.mousePosition.position
-});
-
-export default connect(selector)(CoordinateDisplayer);

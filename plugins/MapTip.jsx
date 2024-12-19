@@ -17,6 +17,7 @@ import {v1 as uuidv1} from 'uuid';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {openExternalUrl} from '../actions/task';
 import IdentifyUtils from '../utils/IdentifyUtils';
+import MapUtils from '../utils/MapUtils';
 
 import './style/MapTip.css';
 
@@ -57,26 +58,39 @@ class MapTip extends React.Component {
         reqId: null,
         maptips: {},
         maptipsOrder: [],
+        mousePos: null,
         pos: null
     };
-    componentDidUpdate(prevProps) {
+    componentDidMount() {
+        MapUtils.getHook(MapUtils.GET_MAP).on('pointermove', this.getMapMousePos);
+    }
+    componentWillUnmount() {
+        MapUtils.getHook(MapUtils.GET_MAP).un('pointermove', this.getMapMousePos);
+    }
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.map !== prevProps.map || this.props.theme !== prevProps.theme) {
             this.clearMaptip();
         }
-        if (this.props.mapTipsEnabled && this.props.mousepos &&
-            this.props.mousepos !== prevProps.mousepos &&
+        if (this.props.mapTipsEnabled && this.state.mousePos &&
+            this.state.mousePos !== prevState.mousePos &&
             (
                 isEmpty(this.state.pos) ||
-                Math.abs(this.props.mousepos.pixel[0] - this.state.pos[0]) > 5 ||
-                Math.abs(this.props.mousepos.pixel[1] - this.state.pos[1]) > 5
+                Math.abs(this.state.mousePos.pixel[0] - this.state.pos[0]) > 5 ||
+                Math.abs(this.state.mousePos.pixel[1] - this.state.pos[1]) > 5
             )
         ) {
-            this.clearMaptip();
-            this.timeoutId = setTimeout(() => this.queryMapTip(this.props.mousepos.pixel), 500);
+            this.timeoutId = setTimeout(() => this.queryMapTip(this.state.mousePos.pixel), 500);
         } else if (!this.props.mapTipsEnabled && prevProps.mapTipsEnabled) {
             this.clearMaptip();
         }
     }
+    getMapMousePos = (ev) => {
+        this.clearMaptip();
+        clearTimeout(this.mouseStateTimeout);
+        this.mouseStateTimeout = setTimeout(() => {
+            this.setState({mousePos: {coordinate: ev.coordinate, pixel: ev.pixel}});
+        }, 100);
+    };
     clearMaptip = () => {
         clearTimeout(this.timeoutId);
         this.timeoutId = null;
@@ -109,7 +123,7 @@ class MapTip extends React.Component {
             if (!isEmpty(layer.drawingOrder)) {
                 queryLayers = layer.drawingOrder.slice(0).reverse().filter(entry => layer.queryLayers.includes(entry));
             }
-            const request = IdentifyUtils.buildRequest(layer, queryLayers.join(","), this.props.mousepos.coordinate, this.props.map, options);
+            const request = IdentifyUtils.buildRequest(layer, queryLayers.join(","), this.state.mousePos.coordinate, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
                 if (this.state.reqId === reqId) {
                     const mapTips = {};
@@ -210,16 +224,13 @@ class MapTip extends React.Component {
     };
 }
 
-
-const selector = (state) => ({
+export default connect((state) => ({
+    // Only enable maptips when an identify tool is active (i.e. no other task is)
     mapTipsEnabled: state.map.maptips && state.identify.tool !== null,
     theme: state.theme.current || {},
     layers: state.layers.flat,
-    mousepos: state.mousePosition.position,
     map: state.map
-});
-
-export default connect(selector, {
+}), {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer,
     openExternalUrl: openExternalUrl

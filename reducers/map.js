@@ -11,7 +11,8 @@ import isEmpty from 'lodash.isempty';
 
 import {
     CHANGE_MAP_VIEW, CONFIGURE_MAP, CHANGE_ZOOM_LVL, ZOOM_TO_EXTENT, ZOOM_TO_POINT,
-    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_TOPBAR_HEIGHT, SET_BOTTOMBAR_HEIGHT, SET_SNAPPING_CONFIG
+    PAN_TO, CHANGE_ROTATION, CLICK_ON_MAP, TOGGLE_MAPTIPS, SET_DISPLAY_CRS,
+    SET_TOPBAR_HEIGHT, SET_BOTTOMBAR_HEIGHT, SET_SNAPPING_CONFIG
 } from '../actions/map';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -23,6 +24,7 @@ const defaultState = {
     center: [0, 0],
     dpi: MapUtils.DEFAULT_SCREEN_DPI,
     projection: "EPSG:3857",
+    displayCrs: "EPSG:3857",
     zoom: 0,
     scales: [0],
     resolutions: [0],
@@ -88,6 +90,7 @@ export default function map(state = defaultState, action) {
             center: center,
             zoom: zoom,
             projection: action.crs,
+            displayCrs: action.crs,
             scales: action.scales,
             resolutions: resolutions
         };
@@ -144,6 +147,9 @@ export default function map(state = defaultState, action) {
     }
     case SET_SNAPPING_CONFIG: {
         return {...state, snapping: {enabled: action.enabled, active: action.active}};
+    }
+    case SET_DISPLAY_CRS: {
+        return {...state, displayCrs: action.displayCrs};
     }
     default:
         return state;

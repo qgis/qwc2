@@ -27,7 +27,6 @@ import SearchWidget from '../components/widgets/SearchWidget';
 import Spinner from '../components/widgets/Spinner';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
-import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -47,7 +46,7 @@ import './style/Routing.css';
 class Routing extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
-        displaycrs: PropTypes.string,
+        displayCrs: PropTypes.string,
         /** List of enabled routing modes. */
         enabledModes: PropTypes.arrayOf(PropTypes.string),
         /** List of search providers to use for routing location search. */
@@ -63,7 +62,7 @@ class Routing extends React.Component {
         }),
         layers: PropTypes.array,
         locatePos: PropTypes.array,
-        mapcrs: PropTypes.string,
+        mapCrs: PropTypes.string,
         removeLayer: PropTypes.func,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
@@ -157,8 +156,8 @@ class Routing extends React.Component {
             this.setState({
                 searchProviders: this.props.enabledProviders.map(key => this.props.searchProviders[key]).filter(Boolean),
                 searchParams: {
-                    mapcrs: this.props.mapcrs,
-                    displaycrs: this.props.displaycrs
+                    mapcrs: this.props.mapCrs,
+                    displaycrs: this.props.displayCrs
                 }
             });
         }
@@ -731,7 +730,7 @@ class Routing extends React.Component {
                 settings.exclude_polygons = layer.features.filter(feature => {
                     return feature.geometry.type === "Polygon";
                 }).map(feature => {
-                    return VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.mapcrs, "EPSG:4326").coordinates[0];
+                    return VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.mapCrs, "EPSG:4326").coordinates[0];
                 });
             }
         }
@@ -876,14 +875,14 @@ class Routing extends React.Component {
     };
 }
 
-export default connect(createSelector([state => state, displayCrsSelector, searchProvidersSelector], (state, displaycrs, searchProviders) => ({
-    task: state.task,
-    theme: state.theme.current,
-    mapcrs: state.map.projection,
-    searchProviders: searchProviders,
-    displaycrs: displaycrs,
+export default connect(createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
+    displayCrs: state.map.displayCrs,
     layers: state.layers.flat,
-    locatePos: state.locate.position
+    locatePos: state.locate.position,
+    mapCrs: state.map.projection,
+    searchProviders: searchProviders,
+    task: state.task,
+    theme: state.theme.current
 })), {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer,

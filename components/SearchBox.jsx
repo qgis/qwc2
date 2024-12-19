@@ -25,7 +25,6 @@ import {SearchResultType} from '../actions/search';
 import {openExternalUrl, setCurrentTask} from '../actions/task';
 import {setCurrentTheme} from '../actions/theme';
 import {showNotification} from '../actions/windows';
-import displayCrsSelector from '../selectors/displaycrs';
 import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -51,7 +50,6 @@ class SearchBox extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         addThemeSublayer: PropTypes.func,
-        displaycrs: PropTypes.string,
         layers: PropTypes.array,
         logAction: PropTypes.func,
         map: PropTypes.object,
@@ -645,7 +643,7 @@ class SearchBox extends React.Component {
         });
         const searchParams = {
             mapcrs: this.props.map.projection,
-            displaycrs: this.props.displaycrs,
+            displaycrs: this.props.map.displayCrs,
             lang: LocaleUtils.lang(),
             theme: this.props.theme,
             limit: this.props.searchOptions.resultLimit,
@@ -839,13 +837,12 @@ class SearchBox extends React.Component {
 }
 
 export default connect(
-    createSelector([state => state, displayCrsSelector, searchProvidersSelector], (state, displaycrs, searchProviders) => ({
+    createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
         map: state.map,
         layers: state.layers.flat,
         theme: state.theme.current,
         themes: state.theme.themes,
         selection: state.selection,
-        displaycrs: displaycrs,
         searchProviders: searchProviders,
         startupParams: state.localConfig.startupParams
     })), {

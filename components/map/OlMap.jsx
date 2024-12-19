@@ -13,7 +13,6 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import {changeMapView, clickOnMap} from '../../actions/map';
-import {changeMousePositionState} from '../../actions/mousePosition';
 import {setCurrentTask} from '../../actions/task';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
@@ -47,7 +46,6 @@ class OlMap extends React.Component {
         projection: PropTypes.string,
         resolutions: PropTypes.array,
         setCurrentTask: PropTypes.func,
-        trackMousePos: PropTypes.bool,
         unsetTaskOnMapClick: PropTypes.bool,
         zoom: PropTypes.number.isRequired
     };
@@ -128,16 +126,6 @@ class OlMap extends React.Component {
         });
         map.on('singleclick', (event) => this.onClick(0, event.originalEvent, event.pixel));
         map.getViewport().addEventListener('contextmenu', (event) => this.onClick(2, event, this.map.getEventPixel(event)));
-        map.on('pointermove', (event) => {
-            if (this.props.trackMousePos && !this.moving) {
-                this.props.onMouseMove({
-                    position: {
-                        coordinate: event.coordinate,
-                        pixel: event.pixel
-                    }
-                });
-            }
-        });
         map.set('id', props.id);
         map.setIgnoreNextClick = (ignore) => {
             this.ignoreNextClick = ignore;
@@ -360,11 +348,9 @@ class OlMap extends React.Component {
 
 export default connect((state) => ({
     mapMargins: state.windows.mapMargins,
-    trackMousePos: state.mousePosition.enabled || false,
     unsetTaskOnMapClick: state.task.unsetOnMapClick
 }), {
     onMapViewChanges: changeMapView,
     onClick: clickOnMap,
-    onMouseMove: changeMousePositionState,
     setCurrentTask: setCurrentTask
 })(OlMap);
