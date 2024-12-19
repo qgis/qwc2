@@ -76,7 +76,10 @@ export class SideBar extends React.Component {
         }
     };
     renderRole = (role) => {
-        return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
+        const children = typeof this.props.children === "function" ?
+            this.props.children() :
+            React.Children.toArray(this.props.children).reduce((res, child) => ({...res, [child.props.role]: child}), {});
+        return children[role];
     };
     render() {
         const visible = this.props.currentTask.id === this.props.id;
@@ -101,15 +104,11 @@ export class SideBar extends React.Component {
         });
         const closeIcon = isLeftSide ? "chevron-left" : "chevron-right";
 
-        let contents = null;
-        if (render && typeof this.props.children === "function") {
-            contents = this.props.children();
-        }
         let body = null;
         let extra = null;
         if (render) {
-            body = contents ? contents.body || null : this.renderRole("body");
-            extra = contents ? contents.extra || null : this.renderRole("extra");
+            body = this.renderRole("body");
+            extra = this.renderRole("extra");
         }
         return (
             <div>

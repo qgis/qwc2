@@ -31,10 +31,12 @@ class MessageBar extends React.Component {
         }
     }
     renderRole = (role) => {
-        return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
+        const children = typeof this.props.children === "function" ?
+            this.props.children() :
+            React.Children.toArray(this.props.children).reduce((res, child) => ({...res, [child.props.role]: child}), {});
+        return children[role];
     };
     render() {
-        const contents = (typeof this.props.children === "function") ? this.props.children() : null;
         const containerStyle = {
             left: (this.props.menuMargins.left + this.props.mapMargins.left) +  'px',
             right: (this.props.menuMargins.right + this.props.mapMargins.right) + 'px'
@@ -44,7 +46,7 @@ class MessageBar extends React.Component {
                 <div className="messagebar-container" style={containerStyle}>
                     <div className={"messagebar " + (this.props.className || "")}>
                         <div className="body">
-                            {contents ? contents.body || null : this.renderRole("body")}
+                            {this.renderRole("body")}
                         </div>
                         {this.props.onHide ? (
                             <span className="closewrapper">
@@ -53,7 +55,7 @@ class MessageBar extends React.Component {
                         ) : null}
                     </div>
                 </div>
-                {contents ? contents.extra || null : this.renderRole("extra")}
+                {this.renderRole("extra")}
             </div>
         );
     }
