@@ -137,7 +137,10 @@ export default class TextInput extends React.Component {
         );
     }
     onChange = (ev) => {
-        const curValue = ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, '');
+        let curValue = ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, '');
+        if (!this.props.multiline) {
+            curValue = curValue.replace('\n', '');
+        }
         this.setState({curValue: curValue, changed: true});
     };
     onBlur = () => {
