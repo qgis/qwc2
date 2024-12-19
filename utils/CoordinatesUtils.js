@@ -139,7 +139,7 @@ const CoordinatesUtils = {
             decimals = CoordinatesUtils.getPrecision(dstCrs);
         }
         return coo.map(ord => LocaleUtils.toLocaleFixed(ord, decimals)).join(", ");
-    },
+    }
 };
 
 export default CoordinatesUtils;
