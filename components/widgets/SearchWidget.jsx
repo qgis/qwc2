@@ -16,11 +16,11 @@ import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
-import {SearchResultType} from '../../actions/search';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MapUtils from '../../utils/MapUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import {SearchResultType} from '../../utils/SearchProviders';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import Icon from '../Icon';
 import Spinner from './Spinner';

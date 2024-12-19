@@ -11,11 +11,17 @@ import axios from 'axios';
 import yaml from 'js-yaml';
 import polygonIntersectTest from 'polygon-intersect-test';
 
-import {SearchResultType} from '../actions/search';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import IdentifyUtils from './IdentifyUtils';
 import LocaleUtils from './LocaleUtils';
+
+export const SearchResultType = {
+    PLACE: 0,
+    THEMELAYER: 1,
+    THEME: 2,
+    EXTERNALLAYER: 3
+};
 
 function coordinatesSearch(text, searchParams, callback) {
     const displaycrs = searchParams.displaycrs || "EPSG:4326";

@@ -12,8 +12,8 @@ import url from 'url';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../actions/layers';
-import {SearchResultType} from '../actions/search';
 import {NotificationType, showNotification} from '../actions/windows';
+import {SearchResultType} from '../utils/SearchProviders';
 import ConfigUtils from './ConfigUtils';
 import LayerUtils from './LayerUtils';
 import LocaleUtils from './LocaleUtils';

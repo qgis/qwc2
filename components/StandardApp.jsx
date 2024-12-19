@@ -20,7 +20,6 @@ import {addLayer} from '../actions/layers';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {loadLocale} from '../actions/locale';
 import {setBottombarHeight, setTopbarHeight} from '../actions/map';
-import {changeSearch} from '../actions/search';
 import {setCurrentTask} from '../actions/task';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import {NotificationType, showNotification} from '../actions/windows';
@@ -56,7 +55,6 @@ class AppInitComponent extends React.Component {
     static propTypes = {
         addLayer: PropTypes.func,
         appConfig: PropTypes.object,
-        changeSearch: PropTypes.func,
         initialParams: PropTypes.object,
         mapSize: PropTypes.object,
         setBottombarHeight: PropTypes.func,
@@ -194,7 +192,6 @@ const AppInit = connect(state => ({
 }), {
     themesLoaded: themesLoaded,
     setCurrentTask: setCurrentTask,
-    changeSearch: changeSearch,
     setColorScheme: setColorScheme,
     setCurrentTheme: setCurrentTheme,
     setStartupParameters: setStartupParameters,

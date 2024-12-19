@@ -90,6 +90,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import * as PermaLinkUtils from '../utils/PermaLinkUtils';
+import {SearchResultType} from '../utils/SearchProviders';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
@@ -161,6 +162,7 @@ class API extends React.Component {
         window.qwc2.LocaleUtils = LocaleUtils;
         window.qwc2.MapUtils = MapUtils;
         window.qwc2.PermaLinkUtils = PermaLinkUtils;
+        window.qwc2.SearchResultType = SearchResultType;
         window.qwc2.VectorLayerUtils = VectorLayerUtils;
 
         window.qwc2.libs = {};
