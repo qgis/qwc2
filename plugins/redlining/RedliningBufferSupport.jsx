@@ -100,7 +100,8 @@ class RedliningBufferSupport extends React.Component {
         if (!feature || !feature.geometry || !this.state.bufferLayer) {
             return;
         }
-        import("@turf/buffer").then(buffer => {
+        import("@turf/buffer").then(bufferMod => {
+            const buffer = bufferMod.default;
             if (feature.circleParams) {
                 const {center, radius} = feature.circleParams;
                 const deg2rad = Math.PI / 180;

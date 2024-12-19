@@ -331,8 +331,8 @@ class GeometryDigitizer extends React.Component {
         }
     };
     computeBuffer = (distance) => {
-        import("@turf/buffer").then(buffer => {
-            this.setState({bufferDistance: distance});
+        import("@turf/buffer").then(bufferMod => {
+            const buffer = bufferMod.default;
             const layer = this.props.layers.find(l => l.id === "__geomdigitizer");
             if (!layer || distance === 0) {
                 this.props.removeLayer("__geomdigitizerbuffer");
@@ -371,7 +371,8 @@ class GeometryDigitizer extends React.Component {
         if (this.state.bufferDistance === 0) {
             return;
         }
-        import("@turf/buffer").then(buffer => {
+        import("@turf/buffer").then(bufferMod {
+            const buffer = bufferMod.default;
             this.props.removeLayerFeatures("__geomdigitizerbuffer", [feature.id]);
             const bufferlayer = {
                 id: "__geomdigitizerbuffer",
