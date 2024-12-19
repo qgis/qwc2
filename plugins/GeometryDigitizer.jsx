@@ -14,7 +14,7 @@ import isEmpty from 'lodash.isempty';
 import Mousetrap from 'mousetrap';
 import PropTypes from 'prop-types';
 
-import {LayerRole, addLayer, removeLayer, addLayerFeatures, removeLayerFeatures, clearLayer} from '../actions/layers';
+import {LayerRole, removeLayer, addLayerFeatures, removeLayerFeatures, clearLayer} from '../actions/layers';
 import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import PickFeature from '../components/PickFeature';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -34,18 +34,44 @@ import './style/Redlining.css';
 
 /**
  * Allows digitizing geometries to send to configured applications.
+ *
+ * Configure the available target applications in `themesConfig.json`:
+ * ```
+ * {
+ *   "themes": {
+ *     "items": [{
+ *       ...
+ *       "pluginData": {
+ *         "geometryLinks": ["<geomLinkName>", "<geomLinkName>", ...]
+ *       }
+ *     }],
+ *   },
+ *   "pluginData": {
+ *     "geometryLinks": [
+ *       {
+ *         "name": "<geomLinkName>",                // Link name referenced in theme item
+ *         "title": "<geomLinkTitle>",              // Link title, displayed in the selection combo
+ *         "geomType": ["<geomType>", "<geomType>"] // Supported geometry types (Point, LineString, Polygon)
+ *         "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit
+ *         "params": {"<key>": "<value>", ...}      // Optional: additional form parameters to post to URL
+ *         "target": "<target>" | {                 // Optional: form POST target which to display the result
+ *           "iframedialog": true,                  // Use an iframe dialog
+ *           "w": <dialogWidth>,                    // Dialog width
+ *           "h": <dialogHeight>                    // Dialog height
+ *         }
+ *       }
+ *     ]
+ *   }
+ * }
+ * ```
  */
 class GeometryDigitizer extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
-        addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         changeRedliningState: PropTypes.func,
         clearLayer: PropTypes.func,
         layers: PropTypes.array,
-        map: PropTypes.object,
-        mobile: PropTypes.bool,
-        projection: PropTypes.string,
         redlining: PropTypes.object,
         removeLayer: PropTypes.func,
         removeLayerFeatures: PropTypes.func,
@@ -76,7 +102,7 @@ class GeometryDigitizer extends React.Component {
         theme: PropTypes.object,
         themes: PropTypes.object
     };
-    state = {
+    static defaultState = {
         bufferDistance: 0,
         geomLink: "",
         outputWindowVisible: false,
@@ -85,37 +111,40 @@ class GeometryDigitizer extends React.Component {
         outputWindowSize: null,
         pickGeomType: null
     };
+    static defaultProps = {
+        styleInactive: {
+            strokeColor: [127, 127, 127, 1],
+            fillColor: [127, 127, 127, 0.33]
+        },
+        styleActive: {
+            strokeColor: [0, 160, 0, 1],
+            fillColor: [0, 160, 0, 0.33]
+        }
+    };
     constructor(props) {
         super(props);
-        this.prevstyle = null;
         const defaultStyle = {...ConfigUtils.getConfigProp("defaultFeatureStyle"), strokeDash: []};
         this.styleActive = {...defaultStyle, ...props.styleActive};
         this.styleInactive = {...defaultStyle, ...props.styleInactive};
+        this.state = GeometryDigitizer.defaultState;
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.redlining.layer === "__geomdigitizer") {
-            // Refresh buffer when layer features changed
-            const newLayer = this.props.layers.find(layer => layer.id === "__geomdigitizer");
-            const oldLayer = prevProps.layers.find(layer => layer.id === "__geomdigitizer");
-            if (newLayer && newLayer.features !== (oldLayer ? oldLayer.features : [])) {
-                this.computeBuffer(this.state.bufferDistance);
-            }
-            if (this.props.redlining.selectedFeature && this.props.redlining.selectedFeature !== prevProps.redlining.selectedFeature) {
-                this.updateFeatureBuffer(this.props.redlining.selectedFeature);
-            }
+        if (!this.props.active) {
+            return;
         }
+        // Refresh buffer when layer features changed
+        const newLayer = this.props.layers.find(layer => layer.id === "__geomdigitizer");
+        const oldLayer = prevProps.layers.find(layer => layer.id === "__geomdigitizer");
+        if (newLayer?.features !== oldLayer?.features) {
+            this.computeBuffer(this.state.bufferDistance);
+        }
+        // Recompute buffer feature when selected feature changes and buffering is active
+        if (this.state.bufferDistance !== 0 && this.props.redlining.selectedFeature && this.props.redlining.selectedFeature !== prevProps.redlining.selectedFeature) {
+            this.updateFeatureBuffer(this.props.redlining.selectedFeature);
+        }
+        // Update feature styles according to permissible geometry types
         if (this.state.geomLink !== prevState.geomLink) {
-            // Commit when changing application and set style so that feature is commited with correct style
-            const geomLinkData = this.geometryLinkData(this.state.geomLink);
-            const supportedGeomType = this.state.geomLink ? (geomLinkData.geomType || ["Point", "LineString", "Polygon"]) : [];
-            const featureStyle = supportedGeomType.includes(this.props.redlining.geomType) && this.state.bufferDistance === 0 ? this.styleActive : this.styleInactive;
-            const style = {
-                borderColor: featureStyle.strokeColor,
-                size: featureStyle.strokeWidth,
-                fillColor: featureStyle.fillColor
-            };
-            this.updateRedliningState({action: "Commit", style: style});
-            // Update feature styles according to permissible geometry types
+            this.props.changeRedliningState({style: this.redliningStyle(this.props.redlining.geomType)});
             ["__geomdigitizer", "__geomdigitizerbuffer"].forEach(layerId => {
                 const layer = this.props.layers.find(l => l.id === layerId);
                 if (layer && layer.features) {
@@ -133,8 +162,9 @@ class GeometryDigitizer extends React.Component {
                 }
             });
         }
+        // Mark base geometries as inactive or active depending on whether buffering is active
         if ((this.state.bufferDistance !== 0) !== (prevState.bufferDistance !== 0)) {
-            // Mark base geometries as inactive or active depending on whether buffering is active
+            this.props.changeRedliningState({style: this.redliningStyle(this.props.redlining.geomType)});
             const layer = this.props.layers.find(l => l.id === "__geomdigitizer");
             if (layer && layer.features) {
                 const newFeatures = layer.features.map(feature => {
@@ -147,60 +177,22 @@ class GeometryDigitizer extends React.Component {
             }
         }
     }
-    renderOutputWindow = () => {
-        if (!this.state.outputWindowTitle) {
-            return null;
-        }
-        const controls = [{
-            icon: 'print',
-            callback: () => {
-                window.frames['geomdigitizer-output-window'].focus();
-                window.frames['geomdigitizer-output-window'].print();
-            }
-        }];
-        return (
-            <ResizeableWindow dockable={false} extraControls={controls}
-                initialHeight={this.state.outputWindowSize.h > 0 ? this.state.outputWindowSize.h : 0.75 * window.innerHeight}
-                initialWidth={this.state.outputWindowSize.w > 0 ? this.state.outputWindowSize.w : 320}
-                initialX={0} initialY={0}
-                key="OutputWindow" onClose={() => this.setState({outputWindowVisible: false, outputLoaded: false})}
-                title={this.state.outputWindowTitle} visible={this.state.outputWindowVisible}
-            >
-                <div className="geomdigitizer-output-window-body" role="body">
-                    {!this.state.outputLoaded ? (
-                        <span className="geomdigitizer-output-window-wait">
-                            <Spinner /> <span>{LocaleUtils.tr("geomdigitizer.wait")}</span>
-                        </span>
-                    ) : null}
-                    <iframe name="geomdigitizer-output-window" onLoad={() => this.setState({outputLoaded: true})}/>
-                </div>
-            </ResizeableWindow>
-        );
-    };
     onShow = (mode) => {
-        this.prevstyle = this.props.redlining.style;
-        let layer = this.props.layers.find(l => l.id === "__geomdigitizer");
-        if (!layer) {
-            layer = {
-                id: "__geomdigitizer",
-                title: LocaleUtils.tr("geomdigitizer.layername"),
-                role: LayerRole.USERLAYER,
-                type: 'vector',
-                readonly: true
-            };
-            this.props.addLayer(layer);
-        }
+        const layer = {
+            id: "__geomdigitizer",
+            title: LocaleUtils.tr("geomdigitizer.layername"),
+            role: LayerRole.USERLAYER,
+            type: 'vector',
+            readonly: true
+        };
+        this.props.addLayerFeatures(layer, [], true);
         this.props.changeRedliningState({action: mode || 'Pick', geomType: null, layer: '__geomdigitizer', layerTitle: 'Geometry digitizer'});
         Mousetrap.bind('del', this.triggerDelete);
     };
     onHide = () => {
-        this.setState({geomLink: "", outputWindowVisible: false, outputLoaded: false, outputWindowSize: null, outputWindowTitle: "", pickGeomType: null});
+        this.setState(GeometryDigitizer.defaultState);
         this.props.resetRedliningState();
         Mousetrap.unbind('del', this.triggerDelete);
-    };
-    updateRedliningState = (diff) => {
-        const newState = {...this.props.redlining, ...diff};
-        this.props.changeRedliningState(newState);
     };
     renderBody = () => {
         const geomLinkData = this.geometryLinkData(this.state.geomLink);
@@ -231,58 +223,86 @@ class GeometryDigitizer extends React.Component {
         ];
 
         const featureLayer = this.state.bufferDistance ? "__geomdigitizerbuffer" : "__geomdigitizer";
-        const haveFeatures = !isEmpty(((this.props.layers.find(layer => layer.id === featureLayer) || {}).features || []).filter(feature => supportedGeomType.includes(feature.geometry.type.replace(/^Multi/, ''))));
-        const target = typeof geomLinkData.target === "object" && geomLinkData.target.iframedialog ? "geomdigitizer-output-window" : (geomLinkData.target || "_blank");
+        const haveFeatures = !isEmpty((this.props.layers.find(layer => layer.id === featureLayer)?.features || []).filter(feature => supportedGeomType.includes(feature.geometry.type.replace(/^Multi/, ''))));
+        const target = geomLinkData.target?.iframedialog ? "geomdigitizer-output-window" : (geomLinkData.target ?? "_blank");
 
         return (
-            <div>
-                <div className="redlining-buttongroups">
-                    <div className="redlining-group">
-                        <div>{LocaleUtils.tr("redlining.draw")}</div>
-                        <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
+            <div className="redlining-buttongroups">
+                <div className="redlining-group">
+                    <div>{LocaleUtils.tr("redlining.draw")}</div>
+                    <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
+                </div>
+                <div className="redlining-group">
+                    <div>{LocaleUtils.tr("redlining.edit")}</div>
+                    <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
+                </div>
+                <div className="redlining-group">
+                    <div>{LocaleUtils.tr("redlining.pick")}</div>
+                    <ButtonBar active={activeButton} buttons={pickButtons} onClick={(key, data) => this.actionChanged(data)} />
+                </div>
+                <div className="redlining-group">
+                    <div>{LocaleUtils.tr("redlining.buffer")}</div>
+                    <div>
+                        <InputContainer>
+                            <NumberInput max={99999} min={-99999} mobile onChange={this.computeBuffer}
+                                precision={0} role="input" step={1} value={this.state.bufferDistance}
+                            />
+                            <span role="suffix">m</span>
+                        </InputContainer>
                     </div>
-                    <div className="redlining-group">
-                        <div>{LocaleUtils.tr("redlining.edit")}</div>
-                        <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
-                    </div>
-                    <div className="redlining-group">
-                        <div>{LocaleUtils.tr("redlining.pick")}</div>
-                        <ButtonBar active={activeButton} buttons={pickButtons} onClick={(key, data) => this.actionChanged(data)} />
-                    </div>
-                    <div className="redlining-group">
-                        <div>{LocaleUtils.tr("redlining.buffer")}</div>
-                        <div>
-                            <InputContainer>
-                                <NumberInput max={99999} min={-99999} mobile onChange={this.computeBuffer}
-                                    precision={0} role="input" step={1} value={this.state.bufferDistance}
-                                />
-                                <span role="suffix">m</span>
-                            </InputContainer>
-                        </div>
-                    </div>
-                    <div className="redlining-group">
-                        <div>{LocaleUtils.tr("geomdigitizer.applink")}</div>
-                        <div className="geometry-digitizer-applink">
-                            <select onChange={ev => this.setState({geomLink: ev.target.value})} value={this.state.geomLink}>
-                                <option value="">{LocaleUtils.tr("geomdigitizer.chooselink")}</option>
-                                {(!this.props.theme.pluginData || !this.props.theme.pluginData.geometryLinks) ? null : this.props.theme.pluginData.geometryLinks.map(entry => (
-                                    <option key={entry} value={entry}>{this.geometryLinkData(entry).title}</option>
-                                ))}
-                            </select>
-                            <form action={geomLinkData.url} method="post" onSubmit={this.submitGeometryLink} target={target}>
-                                <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
-                                <input name="GEOMETRIES" type="hidden" />
-                                <input name="GEOMCOUNT" type="hidden" />
-                                <input name="BUFFERDIST" type="hidden" />
-                                {Object.entries(geomLinkData.params || {}).map(([key, value]) => (
-                                    <input key={key} name={key} type="hidden" value={value} />
-                                ))}
-                                <button disabled={!geomLinkData.url || !haveFeatures} type="submit">{LocaleUtils.tr("geomdigitizer.send")}</button>
-                            </form>
-                        </div>
+                </div>
+                <div className="redlining-group">
+                    <div>{LocaleUtils.tr("geomdigitizer.applink")}</div>
+                    <div className="geometry-digitizer-applink">
+                        <select onChange={ev => this.setState({geomLink: ev.target.value})} value={this.state.geomLink}>
+                            <option value="">{LocaleUtils.tr("geomdigitizer.chooselink")}</option>
+                            {(this.props.theme.pluginData?.geometryLinks || []).map(entry => (
+                                <option key={entry} value={entry}>{this.geometryLinkData(entry).title}</option>
+                            ))}
+                        </select>
+                        <form action={geomLinkData.url} method="post" onSubmit={this.submitGeometryLink} target={target}>
+                            <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
+                            <input name="GEOMETRIES" type="hidden" />
+                            <input name="GEOMCOUNT" type="hidden" />
+                            <input name="BUFFERDIST" type="hidden" />
+                            {Object.entries(geomLinkData.params || {}).map(([key, value]) => (
+                                <input key={key} name={key} type="hidden" value={value} />
+                            ))}
+                            <button disabled={!geomLinkData.url || !haveFeatures} type="submit">{LocaleUtils.tr("geomdigitizer.send")}</button>
+                        </form>
                     </div>
                 </div>
             </div>
+        );
+    };
+    renderOutputWindow = () => {
+        if (!this.state.outputWindowTitle) {
+            return null;
+        }
+        const controls = [{
+            icon: 'print',
+            callback: () => {
+                window.frames['geomdigitizer-output-window'].focus();
+                window.frames['geomdigitizer-output-window'].print();
+            }
+        }];
+        return (
+            <ResizeableWindow dockable={false} extraControls={controls}
+                initialHeight={this.state.outputWindowSize.h > 0 ? this.state.outputWindowSize.h : 0.75 * window.innerHeight}
+                initialWidth={this.state.outputWindowSize.w > 0 ? this.state.outputWindowSize.w : 320}
+                initialX={0} initialY={0}
+                key="OutputWindow" onClose={() => this.setState({outputWindowVisible: false, outputLoaded: false})}
+                title={this.state.outputWindowTitle} visible={this.state.outputWindowVisible}
+            >
+                <div className="geomdigitizer-output-window-body" role="body">
+                    {!this.state.outputLoaded ? (
+                        <span className="geomdigitizer-output-window-wait">
+                            <Spinner /> <span>{LocaleUtils.tr("geomdigitizer.wait")}</span>
+                        </span>
+                    ) : null}
+                    <iframe name="geomdigitizer-output-window" onLoad={() => this.setState({outputLoaded: true})}/>
+                </div>
+            </ResizeableWindow>
         );
     };
     render() {
@@ -301,14 +321,14 @@ class GeometryDigitizer extends React.Component {
         ];
     }
     triggerDelete = () => {
-        this.updateRedliningState({action: "Delete", geomType: null});
+        this.props.changeRedliningState({action: "Delete"});
         if (this.props.redlining.selectedFeature) {
             this.props.removeLayerFeatures("__geomdigitizerbuffer", [this.props.redlining.selectedFeature.id]);
         }
     };
     actionChanged = (data) => {
         if (data.action === "Clear") {
-            this.props.changeRedliningState({action: "Delete", geomType: null});
+            this.props.changeRedliningState({action: "Delete"});
             this.setState({pickGeomType: null});
             this.props.clearLayer("__geomdigitizer");
             this.props.clearLayer("__geomdigitizerbuffer");
@@ -318,19 +338,13 @@ class GeometryDigitizer extends React.Component {
         } else if (data.action === "Delete") {
             this.triggerDelete();
         } else {
-            const geomLinkData = this.geometryLinkData(this.state.geomLink);
-            const supportedGeomType = geomLinkData.geomType || [];
-            const featureStyle = supportedGeomType.includes(data.geomType) && this.state.bufferDistance === 0 ? this.styleActive : this.styleInactive;
-            const style = {
-                borderColor: featureStyle.strokeColor,
-                size: featureStyle.strokeWidth,
-                fillColor: featureStyle.fillColor
-            };
-            this.updateRedliningState({...data, style: style});
+            this.props.changeRedliningState({...data, style: this.redliningStyle(data.geomType)});
             this.setState({pickGeomType: null});
         }
     };
     computeBuffer = (distance) => {
+        distance = distance || 0;
+        this.setState({bufferDistance: distance});
         import("@turf/buffer").then(bufferMod => {
             const buffer = bufferMod.default;
             const layer = this.props.layers.find(l => l.id === "__geomdigitizer");
@@ -344,11 +358,11 @@ class GeometryDigitizer extends React.Component {
                 if (this.props.redlining.selectedFeature && this.props.redlining.selectedFeature.id === feature.id) {
                     feature = this.props.redlining.selectedFeature;
                 }
-                const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
+                const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, "EPSG:4326");
                 const wgsFeature = {...feature, geometry: wgsGeometry};
                 const output = buffer(wgsFeature, distance, {units: 'meters'});
                 if (output && output.geometry) {
-                    output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
+                    output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", feature.crs);
                     output.id = feature.id;
                     output.styleName = 'default';
                     output.styleOptions = this.featureStyleOptions(output.geometry.type, "__geomdigitizerbuffer", true);
@@ -368,30 +382,29 @@ class GeometryDigitizer extends React.Component {
         });
     };
     updateFeatureBuffer = (feature) => {
-        if (this.state.bufferDistance === 0) {
-            return;
-        }
-        import("@turf/buffer").then(bufferMod {
+        import("@turf/buffer").then(bufferMod => {
             const buffer = bufferMod.default;
-            this.props.removeLayerFeatures("__geomdigitizerbuffer", [feature.id]);
-            const bufferlayer = {
-                id: "__geomdigitizerbuffer",
-                title: LocaleUtils.tr("geomdigitizer.bufferlayername"),
-                role: LayerRole.USERLAYER,
-                type: 'vector',
-                readonly: true
-            };
-            const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, this.props.projection, "EPSG:4326");
+            const wgsGeometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, "EPSG:4326");
             const wgsFeature = {...feature, geometry: wgsGeometry};
             const output = buffer(wgsFeature, this.state.bufferDistance, {units: 'meters'});
             if (output && output.geometry) {
-                output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", this.props.projection);
+                output.geometry = VectorLayerUtils.reprojectGeometry(output.geometry, "EPSG:4326", feature.crs);
                 output.id = feature.id;
                 output.styleName = 'default';
                 output.styleOptions = this.featureStyleOptions(output.geometry.type, "__geomdigitizerbuffer", true);
-                this.props.addLayerFeatures(bufferlayer, [output]);
+                this.props.addLayerFeatures({id: "__geomdigitizerbuffer"}, [output]);
             }
         });
+    };
+    redliningStyle = (geomType) => {
+        const geomLinkData = this.geometryLinkData(this.state.geomLink);
+        const supportedGeomType = this.state.geomLink ? (geomLinkData.geomType || ["Point", "LineString", "Polygon"]) : [];
+        const featureStyle = supportedGeomType.includes(geomType) && this.state.bufferDistance === 0 ? this.styleActive : this.styleInactive;
+        return {
+            borderColor: featureStyle.strokeColor,
+            size: featureStyle.strokeWidth,
+            fillColor: featureStyle.fillColor
+        };
     };
     featureStyleOptions = (geometryType, layerId, bufferActive) => {
         const geomLinkData = this.geometryLinkData(this.state.geomLink);
@@ -402,10 +415,7 @@ class GeometryDigitizer extends React.Component {
         return supportedGeomType.includes(geometryType.replace(/^Multi/, '')) ? this.styleActive : this.styleInactive;
     };
     geometryLinkData = (name) => {
-        if (!this.props.themes.pluginData || !this.props.themes.pluginData.geometryLinks) {
-            return {};
-        }
-        return this.props.themes.pluginData.geometryLinks.find(entry => entry.name === name) || {};
+        return (this.props.themes.pluginData?.geometryLinks || []).find(entry => entry.name === name) || {};
     };
     submitGeometryLink = (ev) => {
         let features = [];
@@ -445,13 +455,7 @@ class GeometryDigitizer extends React.Component {
         }
     };
     selectFeature = (layername, feature) => {
-        const geomdigitizerlayer = {
-            id: "__geomdigitizer",
-            title: LocaleUtils.tr("geomdigitizer.layername"),
-            role: LayerRole.USERLAYER,
-            type: 'vector',
-            readonly: true
-        };
+        const geomdigitizerlayer = {id: "__geomdigitizer"};
         const addFeature = {
             ...feature,
             styleName: "default",
@@ -465,17 +469,13 @@ export default connect((state) => ({
     active: state.task.id === "GeometryDigitizer",
     layers: state.layers.flat,
     redlining: state.redlining,
-    map: state.map,
-    mobile: state.browser.mobile,
-    projection: state.map.projection,
     theme: state.theme.current,
     themes: state.theme.themes
 }), {
-    changeRedliningState: changeRedliningState,
-    addLayer: addLayer,
-    removeLayer: removeLayer,
     addLayerFeatures: addLayerFeatures,
-    removeLayerFeatures: removeLayerFeatures,
+    changeRedliningState: changeRedliningState,
     clearLayer: clearLayer,
+    removeLayer: removeLayer,
+    removeLayerFeatures: removeLayerFeatures,
     resetRedliningState: resetRedliningState
 })(GeometryDigitizer);

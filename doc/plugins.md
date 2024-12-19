@@ -313,10 +313,40 @@ GeometryDigitizer<a name="geometrydigitizer"></a>
 ----------------------------------------------------------------
 Allows digitizing geometries to send to configured applications.
 
+Configure the available target applications in `themesConfig.json`:
+```
+{
+  "themes": {
+    "items": [{
+      ...
+      "pluginData": {
+        "geometryLinks": ["<geomLinkName>", "<geomLinkName>", ...]
+      }
+    }],
+  },
+  "pluginData": {
+    "geometryLinks": [
+      {
+        "name": "<geomLinkName>",                // Link name referenced in theme item
+        "title": "<geomLinkTitle>",              // Link title, displayed in the selection combo
+        "geomType": ["<geomType>", "<geomType>"] // Supported geometry types (Point, LineString, Polygon)
+        "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit
+        "params": {"<key>": "<value>", ...}      // Optional: additional form parameters to post to URL
+        "target": "<target>" | {                 // Optional: form POST target which to display the result
+          "iframedialog": true,                  // Use an iframe dialog
+          "w": <dialogWidth>,                    // Dialog width
+          "h": <dialogHeight>                    // Dialog height
+        }
+      }
+    ]
+  }
+}
+```
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| styleActive | `{`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`}` | The style of active geometries (i.e. supported by the selected application) | `undefined` |
-| styleInactive | `{`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`}` | The style of inactive (i.e. not supported by the selected application) | `undefined` |
+| styleActive | `{`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`}` | The style of active geometries (i.e. supported by the selected application) | `{`<br />`    strokeColor: [0, 160, 0, 1],`<br />`    fillColor: [0, 160, 0, 0.33]`<br />`}` |
+| styleInactive | `{`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`}` | The style of inactive (i.e. not supported by the selected application) | `{`<br />`    strokeColor: [127, 127, 127, 1],`<br />`    fillColor: [127, 127, 127, 0.33]`<br />`}` |
 
 HeightProfile<a name="heightprofile"></a>
 ----------------------------------------------------------------
