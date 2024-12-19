@@ -27,7 +27,6 @@ class MeasurementSupport extends React.Component {
         changeMeasurementState: PropTypes.func,
         displayCrs: PropTypes.string,
         map: PropTypes.object,
-        mapCrs: PropTypes.string,
         measurement: PropTypes.object,
         projection: PropTypes.string
     };
@@ -181,7 +180,6 @@ class MeasurementSupport extends React.Component {
 
 const selector = createSelector([state => state, displayCrsSelector], (state, displaycrs) => ({
     measurement: state.measurement,
-    mapCrs: state.map.projection,
     displayCrs: displaycrs
 }));
 
