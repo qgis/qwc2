@@ -205,7 +205,11 @@ div.attribtable-filter {
     flex: 1 1 auto;
 }
 
-div.attribtable-filter input {
+div.attribtable-filter > select {
+    margin-right: -1px;
+}
+
+div.attribtable-filter div.TextInput {
     flex: 1 1 auto;
     width: 0;
 }

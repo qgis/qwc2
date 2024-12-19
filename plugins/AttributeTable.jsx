@@ -264,8 +264,7 @@ class AttributeTable extends React.Component {
                             <option value="<=">&lt;=</option>
                             <option value="<">&lt;</option>
                         </select>
-                        <input disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterVal", ev.target.value, true)} type="text" value={this.state.filterVal} />
-                        <button className="button" disabled={this.state.changedFeatureIdx !== null} onClick={() => this.updateFilter("filterVal", "")} value={this.state.filterValue}><Icon icon="clear" /></button>
+                        <TextInput disabled={this.state.changedFeatureIdx !== null} onChange={value => this.updateFilter("filterVal", value, true)} value={this.state.filterVal} />
                     </div>
                     {this.props.showLimitToExtent ? (
                         <div>
