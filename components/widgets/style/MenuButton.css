@@ -52,11 +52,11 @@ span.menubutton-button-content {
 }
 
 div.menubutton span.menubotton-button-arrow {
-    height: 100%;
+    height: 80%;
     display: flex;
     align-items: flex-end;
     font-size: 80%;
-    padding: 0.2em;
+    padding: 0 0.2em;
 }
 
 div.menubutton-togglebutton span.menubotton-button-arrow {

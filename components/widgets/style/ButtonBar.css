@@ -27,8 +27,8 @@ div.ButtonBar span.buttonbar-button-container > button {
     width: 100%;
 }
 
-div.ButtonBar span.buttonbar-button-container:not(:last-child) > button {
-    border-right-width: 0;
+div.ButtonBar > *:not(:last-child) {
+    margin-right: -1px;
 }
 
 span.buttonbar-button-tooltip {
