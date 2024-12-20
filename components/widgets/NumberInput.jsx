@@ -73,12 +73,13 @@ export default class NumberInput extends React.Component {
         const minusIcon = this.props.mobile ? "minus" : "chevron-down";
         return (
             <div className={className + " " + this.props.className}>
-                <input disabled={this.props.disabled} name={this.props.name}
+                <input disabled={this.props.disabled}
                     onBlur={this.commit} onChange={this.onChange}
                     onFocus={this.setupSelectionListener}
                     onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
                     readOnly={this.props.readOnly} required={this.props.required} step={step}
                     style={style} type="text" value={this.props.prefix + this.state.value + this.props.suffix} />
+                <input name={this.props.name} type="hidden" value={this.state.value} />
                 <Icon icon={plusIcon} onMouseDown={() => this.startStep(+step)} />
                 <Icon icon={minusIcon} onMouseDown={() => this.startStep(-step)} />
             </div>
