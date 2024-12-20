@@ -330,7 +330,7 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {this.state.layout.atlasCoverageLayer ? (
+                        {this.state.layout.atlasCoverageLayer && !this.state.printSeriesEnabled ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.atlasfeature")}</td>
                                 <td>
@@ -399,7 +399,7 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.series")}</td>
                                 <td>
-                                    <ToggleSwitch active={this.state.printSeriesEnabled} onChange={(newstate) => this.setState({printSeriesEnabled: newstate})} />
+                                    <ToggleSwitch active={this.state.printSeriesEnabled} onChange={(newstate) => this.setState({printSeriesEnabled: newstate, atlasFeatures: []})} />
                                 </td>
                             </tr>
                         ) : null}
