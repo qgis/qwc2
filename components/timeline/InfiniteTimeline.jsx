@@ -62,8 +62,8 @@ export default class InfiniteTimeline extends React.Component {
                     <ButtonBar buttons={navButtons} onClick={this.navButtonClicked} />
                     <div className="inftimeline-toolbar-block">
                         <span>{LocaleUtils.tr("timemanager.timelinescale")}: &nbsp;</span>
-                        <Icon icon="before" title={LocaleUtils.tr("timemanager.past")} />
                         <NumberInput decimals={2} max={10} min={0.01} mobile onChange={this.setTimeScalePast} value={this.state.timeScalePast} />
+                        <Icon icon="before" title={LocaleUtils.tr("timemanager.past")} />
                         <Icon icon="after" title={LocaleUtils.tr("timemanager.future")} />
                         <NumberInput decimals={2} max={10} min={0.01} mobile onChange={this.setTimeScaleFuture} value={this.state.timeScaleFuture} />
                     </div>
