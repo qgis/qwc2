@@ -242,7 +242,7 @@ class Identify extends React.Component {
         if (isEmpty(queryableLayers)) {
             return;
         }
-        const identifyResults = this.filterGeomModifiers.ctrl !== true ? {} : this.state.identifyResults;
+        const identifyResults = this.state.filterGeomModifiers.ctrl !== true ? {} : this.state.identifyResults;
         const filter = VectorLayerUtils.geoJSONGeomToWkt(this.state.filterGeom);
         let pendingRequests = 0;
         const params = {...this.props.params};
