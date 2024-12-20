@@ -187,6 +187,8 @@ class GeometryDigitizer extends React.Component {
         this.props.changeRedliningState({action: mode || 'Pick', geomType: null, layer: '__geomdigitizer', layerTitle: 'Geometry digitizer'});
     };
     onHide = () => {
+        this.props.removeLayer("__geomdigitizer");
+        this.props.removeLayer("__geomdigitizerbuffer");
         this.setState(GeometryDigitizer.defaultState);
         this.props.resetRedliningState();
     };
