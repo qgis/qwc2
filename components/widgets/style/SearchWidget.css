@@ -5,14 +5,13 @@ div.search-widget-container {
 
 div.search-widget-container > input {
     width: 100%;
-    height: 100%!important;
 }
 
 div.search-widget-container > div.spinner,
 div.search-widget-container > span.icon-clear {
     position: absolute;
-    width: calc(2em - 2px);
-    height: calc(2em - 2px);
+    width: 2em;
+    height: 2em;
     right: 0;
     top: 0;
 }

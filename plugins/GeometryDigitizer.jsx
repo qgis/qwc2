@@ -248,7 +248,7 @@ class GeometryDigitizer extends React.Component {
                 </div>
                 <div className="redlining-group">
                     <div>{LocaleUtils.tr("geomdigitizer.applink")}</div>
-                    <div className="geometry-digitizer-applink controlgroup">
+                    <div className="controlgroup">
                         <select onChange={ev => this.setState({geomLink: ev.target.value})} value={this.state.geomLink}>
                             <option value="">{LocaleUtils.tr("geomdigitizer.chooselink")}</option>
                             {(this.props.theme.pluginData?.geometryLinks || []).map(entry => (
@@ -263,7 +263,7 @@ class GeometryDigitizer extends React.Component {
                             {Object.entries(geomLinkData.params || {}).map(([key, value]) => (
                                 <input key={key} name={key} type="hidden" value={value} />
                             ))}
-                            <button disabled={!geomLinkData.url || !haveFeatures} type="submit">{LocaleUtils.tr("geomdigitizer.send")}</button>
+                            <button className="button" disabled={!geomLinkData.url || !haveFeatures} type="submit">{LocaleUtils.tr("geomdigitizer.send")}</button>
                         </form>
                     </div>
                 </div>

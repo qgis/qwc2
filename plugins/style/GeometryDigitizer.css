@@ -1,18 +1,3 @@
-div.geometry-digitizer-applink > form {
-    display: inline;
-}
-
-div.geometry-digitizer-applink > select,
-div.geometry-digitizer-applink > form > button {
-    height: 2em;
-    padding: 0.25em;
-    border: 1px solid var(--border-color);
-}
-
-div.geometry-digitizer-applink > form > button:disabled {
-    color: gray;
-}
-
 div.geomdigitizer-output-window-body {
     width: 100%;
     height: 100%;

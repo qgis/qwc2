@@ -1,23 +1,14 @@
 .bookmark-body {
     padding: 0.5em;
-    height: 100%;
-    overflow-y: hidden;
     display: flex;
     flex-direction: column;
-}
-
-.bookmark-body > h4 {
-    flex: 0 0 auto;
-}
-
-div.bookmark-create {
-    display: flex;
-    flex: 0 0 auto;
+    /* titlebar: 2.5em */
+    max-height: calc(100vh - 2.5em - var(--topbar-height) - var(--bottombar-height)); /* viewport - sidebar_titlebar - topbar - bottombar*/
+    max-height: calc(var(--vh, 1vh) * 100 - 2.5em - var(--topbar-height) - var(--bottombar-height)); /* viewport - sidebar_titlebar - topbar - bottombar*/
 }
 
 div.bookmark-create > input {
-    flex: 1 1 auto;
-    border-radius: 0;
+    width: 100%;
 }
 
 div.bookmark-actions {
@@ -28,13 +19,15 @@ span.bookmark-actions-spacer {
     flex: 1 1 auto;
 }
 
-span.bookmark-actions-buttonbox > button:not(:disabled) > span.icon-trash {
+span.bookmark-actions > button:not(:disabled) > span.icon-trash {
     color: red;
 }
 
 div.bookmark-list {
     border: 1px solid var(--border-color);
     background-color: var(--list-bg-color);
+    flex: 1 1 auto;
+    overflow-y: auto;
 }
 
 div.bookmark-list-item {

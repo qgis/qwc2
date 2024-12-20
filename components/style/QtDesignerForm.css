@@ -6,19 +6,9 @@ div.qt-designer-form textarea {
     height: 100%;
 }
 
-div.qt-designer-form div.text-input-wrapper,
-div.qt-designer-form div.text-input-wrapper > pre {
-    min-height: 2em;
-}
-
 div.qt-designer-form div.text-input-wrapper-multiline,
 div.qt-designer-form div.text-input-wrapper-multiline > pre {
     height: 100%;
-}
-
-div.qt-designer-form div.TextInput,
-div.qt-designer-form div.TextInput > pre {
-    min-height: 2em;
 }
 
 div.qt-designer-form label > input {

@@ -5,7 +5,7 @@ div.routing-body {
 }
 
 div.routing-buttonbar {
-    flex: 0 0 auto;
+    margin-bottom: -1px;
 }
 
 div.routing-frame {

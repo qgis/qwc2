@@ -33,17 +33,11 @@ div.dock-window > div.resizeable-window-body > div.attribtable-body {
 div.attribtable-toolbar {
     display: flex;
     align-items: center;
-    padding: 0.25em;
-    flex: 0 0 auto;
+    margin-bottom: 0.125em;
 }
 
 div.attribtable-toolbar > * {
     margin: 0.125em;
-}
-
-div.attribtable-toolbar > select {
-    border: 1px solid var(--border-color);
-    height: 2em;
 }
 
 div.attribtable-contents {

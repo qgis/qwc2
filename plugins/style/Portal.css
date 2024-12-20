@@ -23,11 +23,8 @@ img.portal-logo {
 }
 
 input.portal-search-field {
-    flex: 1 0 auto;
-    height: 2em;
+    flex: 1 1 auto;
     max-width: 70ch;
-    background-color: var(--input-bg-color);
-    border: 1px solid var(--border-color);
 }
 
 span.portal-topbar-spacer {

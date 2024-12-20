@@ -19,7 +19,6 @@
 #TopBar img.logo {
     width: auto;
     height: 3.0em;
-    flex: 0 0 auto;
     vertical-align: middle;
 }
 
@@ -30,13 +29,8 @@
     align-items: center;
 }
 
-#TopBar div.AppMenu {
-    flex: 0 0 auto;
-}
-
 #TopBar #FullScreenSwitcher {
     height: 3.5em;
-    flex: 0 0 auto;
 }
 
 #TopBar.fullscreen {
