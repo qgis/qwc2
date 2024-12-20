@@ -58,7 +58,6 @@
       "discard": "Discard changed row",
       "formeditmode": "Open the edit form for the selected feature",
       "geomnoadd": "Please use the edit form for adding new features to this layer",
-      "layer": "Layer",
       "limittoextent": "Limit to map extent",
       "loadfailed": "Failed to load the feature data",
       "loading": "Loading...",

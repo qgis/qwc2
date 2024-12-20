@@ -296,7 +296,6 @@ class AttributeTable extends React.Component {
                 <div className="attribtable-body" role="body">
                     {loadOverlay}
                     <div className="attribtable-toolbar">
-                        <span>{LocaleUtils.tr("attribtable.layer")}</span>
                         <select disabled={loading || editing} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                             <option disabled value="">{LocaleUtils.tr("attribtable.selectlayer")}</option>
                             {Object.keys(editConfig).map(layerId => {
