@@ -636,7 +636,6 @@ class AttributeTable extends React.Component {
         if (this.state.highlightedFeature) {
             features.push(this.state.highlightedFeature);
         } else if (this.state.filterVal) {
-            console.log(this.state.filteredSortedFeatures)
             features.push(...Object.values(this.state.filteredSortedFeatures));
         }
         const layer = {
