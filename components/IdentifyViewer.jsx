@@ -541,7 +541,7 @@ class IdentifyViewer extends React.Component {
                                 ))}
                         </select>
                         <span className="identify-buttonbox-spacer" />
-                        <span>{LocaleUtils.tr("identify.featurecount")}: {Object.values(this.state.resultTree || {}).flat().length}</span>
+                        <span>{LocaleUtils.tr("identify.featurecount")}: {Object.values(this.state.selectedLayer !== '' ? this.state.resultTree[this.state.selectedLayer] : this.state.resultTree ).flat().length}</span>
                     </div>
                     {Object.keys(this.state.selectedLayer !== '' ? { [this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer] } : this.state.resultTree).map(layer => {
                         const layerResults = this.state.resultTree[layer];
