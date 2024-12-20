@@ -404,7 +404,7 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {overlapChooser ? (
+                        {overlapChooser && this.state.printSeriesEnabled ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.overlap")}</td>
                                 <td>
@@ -415,7 +415,7 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {downloadModeChooser ? (
+                        {downloadModeChooser && this.state.printSeriesEnabled ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.download")}</td>
                                 <td>
