@@ -314,10 +314,15 @@ const IdentifyUtils = {
             if (result[layer.name] === undefined) {
                 result[layer.name] = [];
             }
+            let geometry = feature.geometry;
+            if (geometry && response.crs) {
+                // Reproject geometry only if there is crs information in GetFeatureInfo response
+                geometry = VectorLayerUtils.reprojectGeometry(geometry, response.crs.properties?.name ?? "EPSG:4326", geometrycrs);
+            }
             result[layer.name].push({
                 ...feature,
                 id: id,
-                geometry: feature.geometry,
+                geometry: geometry,
                 layername: layer.name,
                 layertitle: layer.title
             });
