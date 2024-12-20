@@ -13,22 +13,18 @@ div.ButtonBar.buttonbar-disabled:before {
     content: '';
 }
 
-div.ButtonBar.buttonbar-disabled span.buttonbar-button-container > button {
+div.ButtonBar.buttonbar-disabled div.buttonbar-button-container > button {
     background-color: var(--button-bg-color-disabled);
     color: var(--button-text-color-disabled);
 }
 
-div.ButtonBar span.buttonbar-button-container {
+div.ButtonBar div.buttonbar-button-container {
     position: relative;
     flex: 1 1 auto;
 }
 
-div.ButtonBar span.buttonbar-button-container > button {
+div.ButtonBar div.buttonbar-button-container > button {
     width: 100%;
-}
-
-div.ButtonBar > *:not(:last-child) {
-    margin-right: -1px;
 }
 
 span.buttonbar-button-tooltip {

@@ -67,14 +67,11 @@ div.colorbutton-picker-icons > span.colorbutton-icon {
 
 div.colorbutton-picker-input {
     margin: 0.25em;
-    display: flex;
-    align-items: center;
 }
 
 div.colorbutton-picker-input > input[type=text] {
     font-size: 100%;
     display: inline-block;
-    margin-left: -1px;
     min-width: 0;
     flex: 1 1 5em;
 }

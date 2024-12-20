@@ -6,11 +6,6 @@ div.ImportLayer div.importlayer-input-fields {
     display: flex;
 }
 
-div.ImportLayer div.importlayer-input-fields > select {
-    flex: 0 0 auto;
-    margin-right: -1px;
-}
-
 div.ImportLayer div.importlayer-input-fields > div {
     flex: 1 1 auto;
 }

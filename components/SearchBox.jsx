@@ -188,11 +188,11 @@ class SearchBox extends React.Component {
                         <tr>
                             <td>{LocaleUtils.tr("search.limittoarea")}:</td>
                             <td>
-                                <div className="searchbox-filter-options-geometry">
+                                <div className="searchbox-filter-options-geometry controlgroup">
                                     <ButtonBar active={this.state.filterGeomType} buttons={filterButtons} onClick={this.setFilterGeomType} />
                                     {searchRegionSelection}
-                                    <button className="button" onClick={this.clearFilter}>
-                                        <Icon icon="clear" />&nbsp;{LocaleUtils.tr("search.clearfilter")}
+                                    <button className="button" onClick={this.clearFilter} title={LocaleUtils.tr("search.clearfilter")}>
+                                        <Icon icon="clear" />
                                     </button>
                                 </div>
                             </td>

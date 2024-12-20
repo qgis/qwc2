@@ -44,7 +44,7 @@ class ButtonBar extends React.Component {
     };
     render() {
         return (
-            <div className={"ButtonBar" + (this.props.disabled ? " buttonbar-disabled" : "")}>
+            <div className={"ButtonBar controlgroup" + (this.props.disabled ? " buttonbar-disabled" : "")}>
                 {this.props.buttons.map((entry, idx) => {
                     if (Array.isArray(entry) && entry.length > 1) {
                         const active = entry.find(e => e.key === this.props.active) !== undefined ? this.props.active : null;
@@ -75,7 +75,7 @@ class ButtonBar extends React.Component {
                         });
                         classes += entry.extraClasses ? ' ' + entry.extraClasses : '';
                         return (
-                            <span className="buttonbar-button-container" key={entry.key}>
+                            <div className="buttonbar-button-container" key={entry.key}>
                                 <button
                                     className={classes} disabled={entry.disabled || this.props.disabled}
                                     onClick={entry.type !== "submit" ? () => this.props.onClick(entry.key, entry.data) : null}
@@ -89,7 +89,7 @@ class ButtonBar extends React.Component {
                                         {entry.tooltip}
                                     </span>
                                 ) : null}
-                            </span>
+                            </div>
                         );
                     } else {
                         return null;

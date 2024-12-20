@@ -79,62 +79,50 @@ class Measure extends React.Component {
         );
     };
     renderResult = () => {
-        let resultBody = null;
+        let text = "";
+        let unitSelector = null;
+
         if (this.props.measureState.geomType === "Point") {
             const coo = this.props.measureState.coordinates || [0, 0];
-            const text = CoordinatesUtils.getFormattedCoordinate(coo, this.props.mapCrs, this.props.displayCrs);
-            resultBody = (
-                <div className="measure-body">
-                    <span className="measure-result">{text}</span>
-                    <CopyButton buttonClass="copy-measure-button" text={text} />
-                </div>
-            );
+            text = CoordinatesUtils.getFormattedCoordinate(coo, this.props.mapCrs, this.props.displayCrs);
         } else if (this.props.measureState.geomType === "LineString") {
             const length = this.props.measureState.length || 0;
-            const text = MeasureUtils.formatMeasurement(length, false, this.props.measureState.lenUnit);
-            resultBody = (
-                <div className="measure-body">
-                    <span className="measure-result">{text}</span>
-                    <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
-                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
-                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
-                        <option value="m">m</option>
-                        <option value="km">km</option>
-                        <option value="ft">ft</option>
-                        <option value="mi">mi</option>
-                    </select>
-                    <CopyButton buttonClass="copy-measure-button" text={text} />
-                </div>
+            text = MeasureUtils.formatMeasurement(length, false, this.props.measureState.lenUnit);
+            unitSelector = (
+                <select onChange={this.changeLengthUnit} value={this.props.measureState.lenUnit}>
+                    <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                    <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
+                    <option value="m">m</option>
+                    <option value="km">km</option>
+                    <option value="ft">ft</option>
+                    <option value="mi">mi</option>
+                </select>
             );
         } else if (this.props.measureState.geomType === "Polygon") {
             const area = this.props.measureState.area || 0;
-            const text = MeasureUtils.formatMeasurement(area, true, this.props.measureState.areaUnit);
-            resultBody = (
-                <div className="measure-body">
-                    <span className="measure-result">{text}</span>
-                    <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
-                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
-                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
-                        <option value="sqm">m&#178;</option>
-                        <option value="ha">ha</option>
-                        <option value="sqkm">km&#178;</option>
-                        <option value="sqft">ft&#178;</option>
-                        <option value="acre">acre</option>
-                        <option value="sqmi">mi&#178;</option>
-                    </select>
-                    <CopyButton buttonClass="copy-measure-button" text={text} />
-                </div>
+            text = MeasureUtils.formatMeasurement(area, true, this.props.measureState.areaUnit);
+            unitSelector = (
+                <select onChange={this.changeAreaUnit} value={this.props.measureState.areaUnit}>
+                    <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                    <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
+                    <option value="sqm">m&#178;</option>
+                    <option value="ha">ha</option>
+                    <option value="sqkm">km&#178;</option>
+                    <option value="sqft">ft&#178;</option>
+                    <option value="acre">acre</option>
+                    <option value="sqmi">mi&#178;</option>
+                </select>
             );
         } else if (this.props.measureState.geomType === "Bearing") {
-            const text = MeasureUtils.getFormattedBearingValue(this.props.measureState.bearing);
-            resultBody = (
-                <div className="measure-body">
-                    <span className="measure-result">{text}</span>
-                    <CopyButton buttonClass="copy-measure-button" text={text} />
-                </div>
-            );
+            text = MeasureUtils.getFormattedBearingValue(this.props.measureState.bearing);
         }
-        return resultBody;
+        return (
+            <div className="controlgroup">
+                <input className="measure-result" defaultValue={text} readOnly type="text" />
+                {unitSelector}
+                <CopyButton text={text} />
+            </div>
+        );
     };
     renderBody = () => {
         return (

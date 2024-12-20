@@ -246,7 +246,7 @@ class GeometryDigitizer extends React.Component {
                 </div>
                 <div className="redlining-group">
                     <div>{LocaleUtils.tr("geomdigitizer.applink")}</div>
-                    <div className="geometry-digitizer-applink">
+                    <div className="geometry-digitizer-applink controlgroup">
                         <select onChange={ev => this.setState({geomLink: ev.target.value})} value={this.state.geomLink}>
                             <option value="">{LocaleUtils.tr("geomdigitizer.chooselink")}</option>
                             {(this.props.theme.pluginData?.geometryLinks || []).map(entry => (

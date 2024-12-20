@@ -59,12 +59,12 @@ export default class FileSelector extends React.Component {
         }
         const placeholder = LocaleUtils.tr("fileselector.placeholder");
         return (
-            <div className="FileSelector" onClick={this.triggerFileOpen}>
+            <div className="FileSelector controlgroup" onClick={this.triggerFileOpen}>
                 <input placeholder={placeholder} readOnly title={this.props.title} type="text" value={value} />
+                <input accept={this.props.accept} multiple={this.props.multiple} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />
                 <button className="button" title={this.props.title}>
                     <Icon icon="folder-open" />
                 </button>
-                <input accept={this.props.accept} multiple={this.props.multiple} onChange={this.fileChanged} ref={el => { this.fileinput = el; }} type="file" />
             </div>
         );
     }

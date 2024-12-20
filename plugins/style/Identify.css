@@ -1,12 +1,4 @@
 div.identify-radius-controls {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-div.identify-radius-controls > span {
-    display: inline-flex;
-    flex: 1 0 auto;
-    align-items: center;
+    margin-top: 0.25em;
     justify-content: center;
-    margin: 0.25em 0.25em;
 }

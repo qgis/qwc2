@@ -571,44 +571,47 @@ class IdentifyViewer extends React.Component {
                     <div className="identify-buttonbox">
                         <span className="identify-buttonbox-spacer" />
                         <span>{LocaleUtils.tr("identify.export")}:&nbsp;</span>
-                        <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
-                            {exporters.filter(entry => {
-                                return !Array.isArray(this.props.enableExport) || this.props.enableExport.includes(entry.id);
-                            }).map(entry => (
-                                <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
-                            ))}
-                        </select>
-                        <button className="button" onClick={() => this.exportResults()} title={LocaleUtils.tr("identify.download")}>
-                            <Icon icon="export" />
-                        </button>
-                        <button className="button" disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}>
-                            <Icon icon="copy" />
-                        </button>
+                        <div className="controlgroup">
+                            <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
+                                {exporters.filter(entry => {
+                                    return !Array.isArray(this.props.enableExport) || this.props.enableExport.includes(entry.id);
+                                }).map(entry => (
+                                    <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
+                                ))}
+                            </select>
+                            <button className="button" onClick={() => this.exportResults()} title={LocaleUtils.tr("identify.download")}>
+                                <Icon icon="export" />
+                            </button>
+                            <button className="button" disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}>
+                                <Icon icon="copy" />
+                            </button>
+                        </div>
                     </div>
                 ) : null}
                 {Object.values(reportFeatures).find(entry => entry.length > 1) !== undefined ? (
                     <div className="identify-buttonbox">
                         <span className="identify-buttonbox-spacer" />
-                        <span>{LocaleUtils.tr("identify.aggregatedreport")}&nbsp;</span>
-                        <select className="combo identify-export-format" onChange={ev => this.setState({selectedAggregatedReport: ev.target.value})} value={this.state.selectedAggregatedReport || ""}>
-                            <option disabled value=''>{LocaleUtils.tr("identify.selectlayer")}</option>
-                            {Object.entries(reportFeatures).map(([layername, results]) => {
-                                if (results.length > 1) {
-                                    return (
-                                        <option key={layername} value={layername}>{results[0].layertitle}</option>
-                                    );
-                                }
-                                return null;
-                            })}
-                        </select>
-                        <button
-                            className="button"
-                            disabled={!this.state.selectedAggregatedReport || this.state.generatingReport}
-                            onClick={() => this.downloadAggregatedReport(this.state.selectedAggregatedReport, reportFeatures[this.state.selectedAggregatedReport])}
-                        >
-                            {this.state.generatingReport ? (<Spinner />) : (<Icon icon="report" />)}
-                            <span>{LocaleUtils.tr("identify.download")}</span>
-                        </button>
+                        <span>{LocaleUtils.tr("identify.aggregatedreport")}:&nbsp;</span>
+                        <div className="controlgroup">
+                            <select className="combo identify-export-format" onChange={ev => this.setState({selectedAggregatedReport: ev.target.value})} value={this.state.selectedAggregatedReport || ""}>
+                                <option disabled value=''>{LocaleUtils.tr("identify.selectlayer")}</option>
+                                {Object.entries(reportFeatures).map(([layername, results]) => {
+                                    if (results.length > 1) {
+                                        return (
+                                            <option key={layername} value={layername}>{results[0].layertitle}</option>
+                                        );
+                                    }
+                                    return null;
+                                })}
+                            </select>
+                            <button
+                                className="button"
+                                disabled={!this.state.selectedAggregatedReport || this.state.generatingReport}
+                                onClick={() => this.downloadAggregatedReport(this.state.selectedAggregatedReport, reportFeatures[this.state.selectedAggregatedReport])}
+                            >
+                                {this.state.generatingReport ? (<Spinner />) : (<Icon icon="report" />)}
+                            </button>
+                        </div>
                     </div>
                 ) : null}
             </div>

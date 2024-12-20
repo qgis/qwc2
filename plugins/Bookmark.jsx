@@ -80,30 +80,26 @@ class Bookmark extends React.Component {
                                 onKeyDown={ev => {if (ev.key === "Enter" && this.state.description !== "") { this.addBookmark(); }}}
                                 placeholder={placeholder} type="text"  value={this.state.description} />
                         </div>
-                        <div className="bookmark-actions">
-                            <span className="bookmark-actions-buttonbox">
-                                <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, false)} title={openTitle}>
-                                    <Icon icon="folder-open" />
-                                </button>
-                                <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, true)} title={openTabTitle}>
-                                    <Icon icon="open_link" />
-                                </button>
-                                <button className="button" disabled={!currentBookmark} onClick={() => this.zoomToBookmarkExtent(currentBookmark.key)} title={zoomTitle}>
-                                    <Icon icon="zoom" />
-                                </button>
-                            </span>
+                        <div className="bookmark-actions controlgroup">
+                            <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, false)} title={openTitle}>
+                                <Icon icon="folder-open" />
+                            </button>
+                            <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, true)} title={openTabTitle}>
+                                <Icon icon="open_link" />
+                            </button>
+                            <button className="button" disabled={!currentBookmark} onClick={() => this.zoomToBookmarkExtent(currentBookmark.key)} title={zoomTitle}>
+                                <Icon icon="zoom" />
+                            </button>
                             <span className="bookmark-actions-spacer" />
-                            <span className="bookmark-actions-buttonbox">
-                                <button className="button" disabled={!this.state.description} onClick={this.addBookmark} title={addBookmarkTitle}>
-                                    <Icon icon="plus" />
-                                </button>
-                                <button className="button" disabled={!currentBookmark || !this.state.description} onClick={() => this.updateBookmark(currentBookmark)} title={updateTitle}>
-                                    {this.state.saving ? (<Spinner />) : (<Icon icon="save" />)}
-                                </button>
-                                <button className="button" disabled={!currentBookmark} onClick={() => this.removeBookmark(currentBookmark)} title={removeTitle}>
-                                    <Icon icon="trash" />
-                                </button>
-                            </span>
+                            <button className="button" disabled={!this.state.description} onClick={this.addBookmark} title={addBookmarkTitle}>
+                                <Icon icon="plus" />
+                            </button>
+                            <button className="button" disabled={!currentBookmark || !this.state.description} onClick={() => this.updateBookmark(currentBookmark)} title={updateTitle}>
+                                {this.state.saving ? (<Spinner />) : (<Icon icon="save" />)}
+                            </button>
+                            <button className="button" disabled={!currentBookmark} onClick={() => this.removeBookmark(currentBookmark)} title={removeTitle}>
+                                <Icon icon="trash" />
+                            </button>
                         </div>
                         <div className="bookmark-list">
                             {this.state.bookmarks.map((bookmark) => {

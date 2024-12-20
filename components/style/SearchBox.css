@@ -156,23 +156,7 @@ div.searchbox-filter-options > table td:last-child > div.combobox {
     height: 2em;
 }
 
-div.searchbox-filter-options-geometry {
-    display: flex;
-    align-items: center;
-}
-
-div.searchbox-filter-options-geometry > div.ButtonBar {
-    flex: 0 0 auto;
-}
-
 div.searchbox-filter-options-geometry > div.combobox {
     flex: 1 1 auto;
-    margin-left: -1px;
-    z-index: 1;
     height: 2em;
-}
-
-div.searchbox-filter-options-geometry > button {
-    margin-left: 0.25em;
-    flex: 0 0 auto;
 }

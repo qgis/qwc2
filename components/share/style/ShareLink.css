@@ -4,7 +4,6 @@ div.share-link-frame {
 
 div.share-link-frame > input {
     flex: 1 1 auto;
-    margin-right: -1px;
 }
 
 span.share-link-button {

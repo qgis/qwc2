@@ -248,7 +248,7 @@ class AttributeTable extends React.Component {
                         nPages={npages} pageChanged={currentPage => this.setState({currentPage})}
                         pageSize={this.state.pageSize} pageSizeChanged={pageSize => this.setState({pageSize})} />
 
-                    <div className="attribtable-filter">
+                    <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
                         <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterField", ev.target.value)} value={this.state.filterField}>
                             <option value="id">id</option>

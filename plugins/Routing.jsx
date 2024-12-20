@@ -261,7 +261,7 @@ class Routing extends React.Component {
                 <div className="routing-body" role="body">
                     <ButtonBar active={this.state.currentTab} buttons={tabButtons} className="routing-buttonbar" onClick={(key) => this.setState({currentTab: key})} />
                     <div className="routing-frame">
-                        <div className="routing-buttons">
+                        <div className="routing-buttons controlgroup">
                             <ButtonBar active={this.state.mode} buttons={enabledButtons} onClick={key => this.setState({mode: key})} />
                             <button className={"button" + (this.state.settingsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({settingsPopup: !state.settingsPopup}))}>
                                 <Icon icon="cog" />
@@ -381,7 +381,7 @@ class Routing extends React.Component {
                         </div>
                     ) : null}
                     {ConfigUtils.havePlugin("Redlining") ? (
-                        <div className="routing-points-commands">
+                        <div className="routing-points-commands controlgroup">
                             <span>{LocaleUtils.tr("routing.excludepolygons")}:&nbsp;</span>
                             <VectorLayerPicker
                                 layers={vectorLayers} onChange={layer => this.updateRouteConfig({excludeLayer: (layer || {}).id})}

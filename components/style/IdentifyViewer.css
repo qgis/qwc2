@@ -235,10 +235,6 @@ span.identify-buttonbox-spacer {
     flex: 1 1 auto;
 }
 
-div.identify-buttonbox > button {
-    margin-left: -1px;
-}
-
 div.identify-body div.identify-result-feature-report-frame {
     padding: 0.25em 0.5em;
     font-size: small;

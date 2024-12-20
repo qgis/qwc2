@@ -50,7 +50,7 @@ export default class NavBar extends React.Component {
             pages[pages.length - 1] = -1;
         }
         return (
-            <div className="navbar">
+            <div className="navbar controlgroup">
                 <button className="button" disabled={this.props.currentPage <= 0 || this.props.disabled} onClick={() => this.props.pageChanged(this.props.currentPage - 1)}>
                     <Icon icon="chevron-left" />
                 </button>

@@ -9,10 +9,6 @@ div.geometry-digitizer-applink > form > button {
     border: 1px solid var(--border-color);
 }
 
-div.geometry-digitizer-applink > select {
-    margin-right: -1px;
-}
-
 div.geometry-digitizer-applink > form > button:disabled {
     color: gray;
 }

@@ -23,7 +23,7 @@ export default class ShareLink extends React.Component {
         return (
             <div className="share-link">
                 <h4>{LocaleUtils.tr("share.directLinkTitle")}</h4>
-                <div className="share-link-frame">
+                <div className="controlgroup share-link-frame">
                     <input onFocus={ev => ev.target.select()} readOnly type="text" value={this.props.shareUrl} />
                     <CopyButton buttonClass="share-link-button" text={this.props.shareUrl} tooltipAlign="right" />
                 </div>

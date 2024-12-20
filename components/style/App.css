@@ -168,6 +168,15 @@ button.button > div.spinner {
     height: 1.5em;
 }
 
+div.controlgroup {
+    display: flex;
+    align-items: center;
+}
+
+div.controlgroup > *:not(:last-child):not(span) {
+    margin-right: -1px;
+}
+
 /** Range slider **/
 input[type=range] {
     -webkit-appearance: none;

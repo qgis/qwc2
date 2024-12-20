@@ -68,7 +68,7 @@ export default class ColorButton extends React.Component {
                             </span>
                         ))}
                     </div>
-                    <div className="colorbutton-picker-input">
+                    <div className="colorbutton-picker-input controlgroup">
                         <span className="colorbutton-icon">
                             <span style={{backgroundColor: this.cssColor(curColor)}} />
                         </span>

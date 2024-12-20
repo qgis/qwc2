@@ -186,7 +186,6 @@ table.attribtable-table tr.row-disabled * {
 }
 
 div.attribtable-footbar {
-    flex: 0 0 auto;
     display: flex;
     align-items: center;
 }
@@ -195,23 +194,12 @@ div.attribtable-footbar > div {
     margin: 0.25em;
 }
 
-div.attribtable-footbar > div.navbar {
-    flex: 0 0 auto;
-}
-
 div.attribtable-filter {
-    display: inline-flex;
-    align-items: center;
     flex: 1 1 auto;
-}
-
-div.attribtable-filter > select {
-    margin-right: -1px;
 }
 
 div.attribtable-filter div.TextInput {
     flex: 1 1 auto;
-    width: 0;
 }
 
 body.ewresizing, body.ewresizing * {

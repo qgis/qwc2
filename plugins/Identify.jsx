@@ -317,29 +317,6 @@ class Identify extends React.Component {
             filterGeom: {...state.filterGeom, radius: MeasureUtils.convertLength(radius, units, 'm')}}
         ));
     };
-    renderRadiusContent = () => {
-        return (
-            <div className="identify-radius-controls">
-                <span>
-                    <span>{LocaleUtils.tr("infotool.radius")}: &nbsp;</span>
-                    <NumberInput
-                        disabled={!this.state.filterGeom} max={1000000} min={1} mobile
-                        onChange={rad => this.updateRadius(rad, this.state.radiusUnits)}
-                        value={this.state.radius}
-                    />
-                    <select
-                        onChange={ev => this.updateRadius(this.state.radius, ev.target.value)}
-                        value={this.state.radiusUnits}
-                    >
-                        <option value="m">m</option>
-                        <option value="ft">ft</option>
-                        <option value="km">km</option>
-                        <option value="mi">mi</option>
-                    </select>
-                </span>
-            </div>
-        );
-    };
     renderBody = () => {
         if (this.state.mode === "Point") {
             return LocaleUtils.tr("infotool.clickhelpPoint");
@@ -350,9 +327,25 @@ class Identify extends React.Component {
             return (
                 <div>
                     <div>
-                        <span>{text}</span>
+                        {text}
                     </div>
-                    {this.renderRadiusContent()}
+                    <div className="identify-radius-controls controlgroup">
+                        <span>{LocaleUtils.tr("infotool.radius")}:&nbsp;</span>
+                        <NumberInput
+                            disabled={!this.state.filterGeom} max={1000000} min={1} mobile
+                            onChange={rad => this.updateRadius(rad, this.state.radiusUnits)}
+                            value={this.state.radius}
+                        />
+                        <select
+                            onChange={ev => this.updateRadius(this.state.radius, ev.target.value)}
+                            value={this.state.radiusUnits}
+                        >
+                            <option value="m">m</option>
+                            <option value="ft">ft</option>
+                            <option value="km">km</option>
+                            <option value="mi">mi</option>
+                        </select>
+                    </div>
                 </div>
             );
         }

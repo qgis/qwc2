@@ -104,7 +104,7 @@ class BottomBar extends React.Component {
         let coordinates = null;
         if (this.props.displayCoordinates) {
             coordinates = (
-                <span>
+                <div className="controlgroup">
                     <span>{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
                     <CoordinateDisplayer className={"bottombar-mousepos"} displayCrs={this.props.map.displayCrs} mapCrs={this.props.map.projection} />
                     <select onChange={ev => this.props.setDisplayCrs(ev.target.value)} value={this.props.map.displayCrs}>
@@ -112,7 +112,7 @@ class BottomBar extends React.Component {
                             (<option key={crs} value={crs}>{availableCRS[crs].label}</option>)
                         )}
                     </select>
-                </span>
+                </div>
             );
         }
         let scales = null;

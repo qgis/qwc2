@@ -6,22 +6,7 @@ div.measure-body {
     display: flex;
 }
 
-div.measure-body > span.measure-result {
+input.measure-result {
     flex: 1 1 auto;
-    border: 1px solid var(--border-color);
-    background-color: var(--input-bg-color);
-    height: 2em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-div.measure-body > select {
-    flex: 0 0 auto;
-    margin-left: -1px;
-    z-index: 1;
-}
-
-div.measure-body > span.CopyButton {
-    margin-left: -1px;
+    text-align: center;
 }

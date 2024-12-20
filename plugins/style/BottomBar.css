@@ -15,17 +15,13 @@
     padding-left: 125px;
 }
 
-#BottomBar > span {
-    margin: 0.5em;
-    display: flex;
-    align-items: center;
+#BottomBar > * {
+    margin: 0 0.5em;
 }
-
 
 #BottomBar input.bottombar-mousepos {
     width: 20ch;
     text-align: center;
-    margin-right: -1px;
 }
 
 #BottomBar div.bottombar-scale-combo {

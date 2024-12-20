@@ -7,12 +7,6 @@ div.FileSelector {
 
 div.FileSelector > input[type=text] {
     flex: 1 1 auto;
-    margin-right: -1px;
-}
-
-div.FileSelector > button {
-    width: 2em;
-    flex: 0 0 2em;
 }
 
 div.FileSelector > input[type=file] {

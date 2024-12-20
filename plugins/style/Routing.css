@@ -18,10 +18,7 @@ div.routing-frame {
 }
 
 div.routing-buttons {
-    display: flex;
-    align-items: center;
     position: relative;
-    flex: 0 0 auto;
 }
 
 div.routing-buttons > div.ButtonBar {
