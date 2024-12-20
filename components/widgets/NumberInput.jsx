@@ -35,8 +35,11 @@ export default class NumberInput extends React.Component {
         value: PropTypes.number
     };
     static defaultProps = {
+        className: "",
         decimals: 0,
-        mobile: false
+        mobile: false,
+        prefix: "",
+        suffix: ""
     };
     state = {
         propValue: "",
@@ -55,32 +58,34 @@ export default class NumberInput extends React.Component {
             "number-input-mobile": this.props.mobile,
             "number-input-normal": !this.props.mobile
         });
-        const padding = this.props.mobile ? 4 : 1.5;
+        const paddingLength = (this.props.mobile ? 4 : 1.5) + 'em';
+        const prefixSuffixLength = (this.props.prefix.length + this.props.suffix.length) + 'ch';
+        const numberLength = (2 + Math.max(
+            (this.props.min || 0).toFixed(this.props.decimals).length,
+            (this.props.max || 0).toFixed(this.props.decimals).length
+        )) + "ch";
         const style = {
-            minWidth: 2 + padding + Math.max(
-                (this.props.min || 0).toFixed(this.props.decimals).length,
-                (this.props.max || 0).toFixed(this.props.decimals).length
-            ) + "em",
-            ...this.props.style
+            minWidth: `calc(${paddingLength} + ${prefixSuffixLength} + ${numberLength})`
         };
         const step = Math.pow(10, -this.props.decimals);
         const plusIcon = this.props.mobile ? "plus" : "chevron-up";
         const minusIcon = this.props.mobile ? "minus" : "chevron-down";
         return (
             <div className={className + " " + this.props.className}>
-                <input disabled={this.props.disabled}
-                    max={this.props.max} min={this.props.min} name={this.props.name}
+                <input disabled={this.props.disabled} name={this.props.name}
                     onBlur={this.commit} onChange={this.onChange}
+                    onFocus={this.setupSelectionListener}
                     onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
                     readOnly={this.props.readOnly} required={this.props.required} step={step}
-                    style={style} type="number" value={this.state.value} />
+                    style={style} type="text" value={this.props.prefix + this.state.value + this.props.suffix} />
                 <Icon icon={plusIcon} onMouseDown={() => this.startStep(+step)} />
                 <Icon icon={minusIcon} onMouseDown={() => this.startStep(-step)} />
             </div>
         );
     }
     onChange = (ev) => {
-        const value = parseFloat(ev.target.value);
+        const len = ev.target.value.length;
+        const value = parseFloat(ev.target.value.substring(this.props.prefix.length, len - this.props.suffix.length));
         if (!Number.isNaN(value)) {
             this.setState({value: value.toFixed(this.props.decimals), changed: true});
         } else {
@@ -104,6 +109,18 @@ export default class NumberInput extends React.Component {
         if (ev.key === 'Enter') {
             this.commit();
         }
+        // Ensure prefix/suffix isn't changed
+        const selStart = ev.target.selectionStart;
+        const selEnd = ev.target.selectionEnd;
+        const len = ev.target.value.length;
+        const startOffset = ev.key === 'Backspace' && selStart === selEnd ? 1 : 0;
+        const endOffset = ev.key === 'Delete' && selStart === selEnd ? 1 : 0;
+        if (
+            (selStart < this.props.prefix.length + startOffset) ||
+            (selEnd > len - this.props.suffix.length - endOffset)
+        ) {
+            ev.preventDefault();
+        }
     };
     commit = () => {
         if (this.state.changed) {
@@ -123,4 +140,24 @@ export default class NumberInput extends React.Component {
         }
         return value;
     };
+    setupSelectionListener = (event) => {
+        const input = event.target;
+        const selectionHandler = (ev) => {
+            if (ev.target === input) {
+                // Ensure prefix/suffix isn't selected
+                const len = input.value.length;
+                const prefixLen = this.props.prefix.length;
+                const suffixLen = this.props.suffix.length;
+                const selStart = Math.min(Math.max(input.selectionStart, prefixLen), len - suffixLen);
+                const selEnd = Math.max(Math.min(input.selectionEnd, len - suffixLen), prefixLen);
+                if (selStart !== input.selectionStart || selEnd !== input.selectionEnd) {
+                    input.setSelectionRange(selStart, selEnd);
+                }
+            }
+        };
+        document.addEventListener("selectionchange", selectionHandler);
+        input.addEventListener("blur", () => {
+            document.removeEventListener("selectionchange", selectionHandler);
+        }, {once: true});
+    }
 }

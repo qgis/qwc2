@@ -13,17 +13,6 @@ div.number-input > input {
     height: calc(2em - 2px)!important;
 }
 
-div.number-input > input::-webkit-outer-spin-button,
-div.number-input > input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-div.number-input > input[type=number] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
 
 /** Normal **/
 div.number-input-normal > input {
