@@ -16,6 +16,7 @@ import {changeMeasurementState} from '../actions/measurement.js';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import CopyButton from '../components/widgets/CopyButton';
+import CoordinatesUtils from '../utils/CoordinatesUtils.js';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 
