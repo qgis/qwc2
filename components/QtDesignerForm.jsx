@@ -24,6 +24,7 @@ import EditUploadField from './EditUploadField';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
 import DateTimeInput from './widgets/DateTimeInput';
+import NumberInput from './widgets/NumberInput';
 import Spinner from './widgets/Spinner';
 import TextInput from './widgets/TextInput';
 
@@ -429,13 +430,17 @@ class QtDesignerForm extends React.Component {
                 );
             }
         } else if (widget.class === "QSpinBox" || widget.class === "QDoubleSpinBox" || widget.class === "QSlider") {
-            const min = prop.minimum ?? fieldConstraints.min ?? undefined;
-            const max = prop.maximum ?? fieldConstraints.max ?? undefined;
+            const floatConstraint = (x) => { const f = parseFloat(x); return isNaN(f) ? undefined : f; };
+            const min = floatConstraint(prop.minimum ?? fieldConstraints.min);
+            const max = floatConstraint(prop.maximum ?? fieldConstraints.max);
             const step = prop.singleStep ?? fieldConstraints.step ?? 1;
-            const type = (widget.class === "QSlider" ? "range" : "number");
-            return (
-                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} step={step} style={fontStyle} type={type} value={value} />
-            );
+            if (widget.class === "QSlider") {
+                return (<input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} step={step} style={fontStyle} type="range" value={value} />);
+            } else {
+                const precision = step > 0 ? Math.ceil(-Math.log10(step)) : 0;
+                value = (feature.properties || {})[widget.name] ?? null;
+                return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
+            }
         } else if (widget.class === "QDateEdit") {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1600-01-01";
             const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
