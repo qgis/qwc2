@@ -558,7 +558,7 @@ class SearchBox extends React.Component {
                             placeholder={placeholder} ref={el => { this.searchBox = el; }}
                             role="input"
                             type="text" value={this.state.searchText} />
-                        {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="remove" onClick={this.clear} role="suffix" />)}
+                        {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="clear" onClick={this.clear} role="suffix" />)}
                     </InputContainer>
                     {this.props.searchOptions.allowSearchFilters ? (
                         <button className={filterButtonClasses} onClick={() => this.toggleFilterOptions(!this.state.filterOptionsVisible)} title={LocaleUtils.tr("search.filter")}>
