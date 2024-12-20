@@ -209,14 +209,17 @@ class Print extends React.Component {
         if (!isEmpty(this.state.atlasFeatures)) {
             formattedExtent = "";
         }
-        let scaleChooser = (<NumberInput min={1} name={mapName + ":scale"} onChange={this.changeScale} role="input" value={this.state.scale || null}/>);
+        let scaleChooser = (<NumberInput min={1} mobile name={mapName + ":scale"} onChange={this.changeScale} prefix="1 : " value={this.state.scale || null}/>);
 
         if (this.props.theme.printScales && this.props.theme.printScales.length > 0) {
             scaleChooser = (
-                <EditableSelect
-                    name={mapName + ":scale"} onChange={this.changeScale}
-                    options={this.props.theme.printScales} role="input" value={this.state.scale || ""}
-                />
+                <InputContainer>
+                    <span role="prefix">1&nbsp;:&nbsp;</span>
+                    <EditableSelect
+                        name={mapName + ":scale"} onChange={this.changeScale}
+                        options={this.props.theme.printScales} role="input" value={this.state.scale || ""}
+                    />
+                </InputContainer>
             );
         }
         let resolutionChooser = null;
@@ -224,20 +227,20 @@ class Print extends React.Component {
         if (!isEmpty(this.props.theme.printResolutions)) {
             if (this.props.theme.printResolutions.length > 1) {
                 resolutionChooser = (
-                    <select name={"DPI"} onChange={this.changeResolution} role="input" value={this.state.dpi || ""}>
-                        {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res}</option>))}
+                    <select name={"DPI"} onChange={this.changeResolution} value={this.state.dpi || ""}>
+                        {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res} dpi</option>))}
                     </select>
                 );
             } else {
-                resolutionInput = (<input name="DPI" readOnly role="input" type={formvisibility} value={this.props.theme.printResolutions[0]} />);
+                resolutionInput = (<input name="DPI" readOnly type={formvisibility} value={this.props.theme.printResolutions[0]} />);
             }
         } else {
-            resolutionChooser = (<NumberInput max={1200} min={50} name="DPI" onChange={this.changeResolution} role="input" value={this.state.dpi || ""} />);
+            resolutionChooser = (<NumberInput max={1200} min={50} mobile name="DPI" onChange={this.changeResolution} suffix=" dpi" value={this.state.dpi || ""} />);
         }
 
         let rotationInput = null;
         if (this.props.displayRotation) {
-            rotationInput = (<NumberInput name={mapName + ":rotation"} onChange={this.changeRotation} role="input" step={0.1} value={this.state.rotation} />);
+            rotationInput = (<NumberInput decimals={1} mobile name={mapName + ":rotation"} onChange={this.changeRotation} role="input" value={this.state.rotation} />);
         }
 
         let gridIntervalX = null;
@@ -352,10 +355,7 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.scale")}</td>
                                 <td>
-                                    <InputContainer>
-                                        <span role="prefix">1&nbsp;:&nbsp;</span>
-                                        {scaleChooser}
-                                    </InputContainer>
+                                    {scaleChooser}
                                 </td>
                             </tr>
                         ) : null}
@@ -363,10 +363,7 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.resolution")}</td>
                                 <td>
-                                    <InputContainer>
-                                        {resolutionChooser}
-                                        <span role="suffix">&nbsp;dpi</span>
-                                    </InputContainer>
+                                    {resolutionChooser}
                                 </td>
                             </tr>
                         ) : null}
@@ -676,7 +673,7 @@ class Print extends React.Component {
         this.setState({layout: layout, atlasFeature: null});
     };
     changeScale = (value) => {
-        this.setState({scale: parseInt(value, 10) || 0});
+        this.setState({scale: Math.max(1, parseInt(value, 10) || 0)});
     };
     changeResolution = (value) => {
         this.setState({dpi: value || 300});

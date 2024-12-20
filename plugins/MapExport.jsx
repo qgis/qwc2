@@ -22,7 +22,6 @@ import {setSnappingConfig} from '../actions/map';
 import Icon from '../components/Icon';
 import PrintSelection from '../components/PrintSelection';
 import SideBar from '../components/SideBar';
-import InputContainer from '../components/widgets/InputContainer';
 import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -118,7 +117,7 @@ class MapExport extends React.Component {
         });
     };
     changeScale = (value) => {
-        this.setState({scale: value || 0});
+        this.setState({scale: Math.max(1, parseInt(value, 10) || 0)});
     };
     changeResolution = (ev) => {
         this.setState({dpi: parseInt(ev.target.value, 10) || 0});
@@ -143,13 +142,13 @@ class MapExport extends React.Component {
         let scaleChooser = null;
         if (!isEmpty(this.props.allowedScales)) {
             scaleChooser = (
-                <select onChange={this.changeScale} role="input" value={this.state.scale || ""}>
+                <select onChange={this.changeScale} value={this.state.scale || ""}>
                     <option hidden value={this.state.scale || ""}>{this.state.scale || ""}</option>
-                    {this.props.allowedScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
+                    {this.props.allowedScales.map(scale => (<option key={scale} value={scale}>1 : {scale}</option>))}
                 </select>);
         } else if (this.props.allowedScales !== false) {
             scaleChooser = (
-                <NumberInput min={1} onChange={this.changeScale} role="input" value={this.state.scale || ""} />
+                <NumberInput min={1} mobile onChange={this.changeScale} prefix="1 : " value={this.state.scale || null} />
             );
         }
         const action = this.props.theme.url;
@@ -216,10 +215,7 @@ class MapExport extends React.Component {
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.scale")}</td>
                                     <td>
-                                        <InputContainer>
-                                            <span role="prefix">1&nbsp;:&nbsp;</span>
-                                            {scaleChooser}
-                                        </InputContainer>
+                                        {scaleChooser}
                                     </td>
                                 </tr>
                             ) : null}

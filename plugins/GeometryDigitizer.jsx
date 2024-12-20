@@ -19,7 +19,6 @@ import PickFeature from '../components/PickFeature';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
-import InputContainer from '../components/widgets/InputContainer';
 import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -240,12 +239,9 @@ class GeometryDigitizer extends React.Component {
                 <div className="redlining-group">
                     <div>{LocaleUtils.tr("redlining.buffer")}</div>
                     <div>
-                        <InputContainer>
-                            <NumberInput max={99999} min={-99999} mobile onChange={this.computeBuffer}
-                                precision={0} role="input" step={1} value={this.state.bufferDistance}
-                            />
-                            <span role="suffix">m</span>
-                        </InputContainer>
+                        <NumberInput max={99999} min={-99999} mobile onChange={this.computeBuffer}
+                            suffix=" m" value={this.state.bufferDistance}
+                        />
                     </div>
                 </div>
                 <div className="redlining-group">

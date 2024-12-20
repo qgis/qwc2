@@ -68,8 +68,8 @@ class RedliningBufferSupport extends React.Component {
                 <span>
                     <span>{LocaleUtils.tr("redlining.bufferdistance")} &nbsp;</span>
                     <NumberInput max={99999} min={-99999} mobile
-                        onChange={(nr) => this.setState({bufferDistance: nr})} precision={0}
-                        step={1} value={this.state.bufferDistance} />
+                        onChange={(nr) => this.setState({bufferDistance: nr})}
+                        value={this.state.bufferDistance} />
                     <select onChange={this.changeBufferUnit} value={this.state.bufferUnit}>
                         <option value="meters">m</option>
                         <option value="feet">ft</option>

@@ -73,10 +73,9 @@ export default class AutoEditForm extends React.Component {
         } else if (field.type === "number") {
             const precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
             input = (
-                <NumberInput format={nr => String(Number(nr))} max={constraints.max} min={constraints.min}
+                <NumberInput decimals={precision} max={constraints.max} min={constraints.min}
                     mobile name={field.id} onChange={nr => this.props.updateField(field.id, nr)}
-                    precision={precision} readOnly={readOnly} required={constraints.required}
-                    step={constraints.step || 1} value={value} />
+                    readOnly={readOnly} required={constraints.required} value={value} />
             );
         } else if (field.type === "date") {
             // Truncate time portion of ISO date string

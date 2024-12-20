@@ -290,8 +290,8 @@ class Redlining extends React.Component {
                 <span>
                     <span>{sizeLabel}:&nbsp;</span>
                     <NumberInput max={99} min={1} mobile
-                        onChange={(nr) => this.updateRedliningStyle({size: nr})} precision={0}
-                        step={1} value={this.props.redlining.style.size}/>
+                        onChange={(nr) => this.updateRedliningStyle({size: nr})}
+                        value={this.props.redlining.style.size}/>
                 </span>
                 {this.props.redlining.geomType === 'LineString' ? (
                     <span>

@@ -295,13 +295,9 @@ class Routing extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("routing.maxspeed")}:</td>
                                 <td>
-                                    <InputContainer>
-                                        <NumberInput
-                                            max={250} min={1} mobile
-                                            onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
-                                            precision={0} role="input" step={1} value={settings.maxSpeed} />
-                                        <span role="suffix">km/h</span>
-                                    </InputContainer>
+                                    <NumberInput max={350} min={1} mobile
+                                        onChange={(value) => this.updateSetting(this.state.mode, {maxSpeed: value})}
+                                        suffix=" km/h" value={settings.maxSpeed} />
                                 </td>
                             </tr>
                         ) : null}

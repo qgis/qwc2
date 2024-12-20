@@ -321,9 +321,9 @@ class Identify extends React.Component {
         return (
             <div className="identify-radius-controls">
                 <span>
-                    <span>{LocaleUtils.tr("infotool.radius")} &nbsp;</span>
+                    <span>{LocaleUtils.tr("infotool.radius")}: &nbsp;</span>
                     <NumberInput
-                        disabled={!this.state.filterGeom} max={10000} min={1} mobile
+                        disabled={!this.state.filterGeom} max={1000000} min={1} mobile
                         onChange={rad => this.updateRadius(rad, this.state.radiusUnits)}
                         value={this.state.radius}
                     />
