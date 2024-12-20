@@ -49,9 +49,9 @@ function createWMTSSource(options) {
             matrixIds: matrixIds,
             tileSize: options.tileSize || [256, 256]
         }),
-        style: options.style !== undefined ? options.style : '',
-        wrapX: options.wrapX !== undefined ? options.wrapX : true,
-        requestEncoding: options.requestEncoding !== undefined ? options.requestEncoding : "REST",
+        style: options.style ?? '',
+        wrapX: options.wrapX ?? false,
+        requestEncoding: options.requestEncoding ?? "REST",
         ...(options.sourceConfig || {})
     });
 }
