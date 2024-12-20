@@ -33,6 +33,7 @@ class ButtonBar extends React.Component {
     static propTypes = {
         active: PropTypes.string,
         buttons: PropTypes.arrayOf(PropTypes.oneOfType([ButtonPropShape, PropTypes.arrayOf(ButtonPropShape)])),
+        className: PropTypes.string,
         disabled: PropTypes.bool,
         forceLabel: PropTypes.bool,
         mobile: PropTypes.bool,
@@ -40,11 +41,12 @@ class ButtonBar extends React.Component {
         tooltipPos: PropTypes.string
     };
     static defaultProps = {
+        className: "",
         tooltipPos: 'bottom'
     };
     render() {
         return (
-            <div className={"ButtonBar controlgroup" + (this.props.disabled ? " buttonbar-disabled" : "")}>
+            <div className={"ButtonBar controlgroup " + this.props.className + (this.props.disabled ? " buttonbar-disabled" : "")}>
                 {this.props.buttons.map((entry, idx) => {
                     if (Array.isArray(entry) && entry.length > 1) {
                         const active = entry.find(e => e.key === this.props.active) !== undefined ? this.props.active : null;
