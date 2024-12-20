@@ -7,13 +7,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
-import VectorSource from "@giro3d/giro3d/sources/VectorSource.js";
 import ol from 'openlayers';
 
 import FeatureStyles from '../../../utils/FeatureStyles';
 
-function createFeatures(options, mapCrs) {
+
+export function createFeatures(options, mapCrs) {
     const format = new ol.format.GeoJSON();
     return (options.features || []).reduce((collection, feature) => {
         const featureObject = format.readFeatures({...feature, type: "Feature"});
@@ -46,7 +45,7 @@ function createFeatures(options, mapCrs) {
     }, []);
 }
 
-function updateFeatures(source, newOptions, oldOptions, mapCrs) {
+export function updateFeatures(source, newOptions, oldOptions, mapCrs) {
     const format = new ol.format.GeoJSON();
 
     const oldFeaturesMap = (oldOptions.features || []).reduce((res, f) => {
@@ -105,7 +104,7 @@ function updateFeatures(source, newOptions, oldOptions, mapCrs) {
     }
 }
 
-function featureStyleFunction(options) {
+export function featureStyleFunction(options) {
     return (feature => {
         const styleName = options.styleName || 'default';
         const styleOptions = options.styleOptions || {};
@@ -113,7 +112,7 @@ function featureStyleFunction(options) {
     });
 }
 
-const VectorLayer = {
+export default {
     create: (options, map) => {
         const source = new ol.source.Vector();
         const mapCrs = map.getView().getProjection().getCode();
@@ -142,33 +141,5 @@ const VectorLayer = {
     },
     render: () => {
         return null;
-    },
-    create3d: (options, projection) => {
-        return new ColorLayer({
-            name: options.name,
-            source: new VectorSource({
-                data: createFeatures(options, projection),
-                format: new ol.format.GeoJSON(),
-                style: options.styleFunction || (feature => {
-                    const styleName = options.styleName || 'default';
-                    const styleOptions = options.styleOptions || {};
-                    return FeatureStyles[styleName](feature, styleOptions);
-                })
-            })
-        });
-    },
-    update3d: (layer, newOptions, oldOptions, projection) => {
-        if (newOptions.styleName !== oldOptions.styleName || newOptions.styleOptions !== oldOptions.styleOptions) {
-            layer.source.setStyle(featureStyleFunction(newOptions));
-        } else if (newOptions.styleFunction !== oldOptions.styleFunction) {
-            layer.source.setStyle(newOptions.styleFunction);
-        }
-        if (newOptions.features !== oldOptions.features) {
-            updateFeatures(layer.source, newOptions, oldOptions, projection);
-        } else if ((oldOptions.rev || 0) !== (newOptions.rev || 0)) {
-            layer.source.update();
-        }
     }
 };
-
-export default VectorLayer;

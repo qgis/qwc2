@@ -7,8 +7,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
-import TiledImageSource from "@giro3d/giro3d/sources/TiledImageSource.js";
 import ol from 'openlayers';
 
 import ConfigUtils from '../../../utils/ConfigUtils';
@@ -18,7 +16,7 @@ function getWMSURLs(urls) {
     return urls.map((url) => url.split("?")[0]);
 }
 
-function createWMTSSource(options) {
+export function createWMTSSource(options) {
     const urls = getWMSURLs(Array.isArray(options.url) ? options.url : [options.url]).map((url) => {
         if (options.rev) {
             return url + "?" + options.rev;
@@ -70,16 +68,5 @@ export default {
         if (newOptions.rev !== oldOptions.rev) {
             layer.setSource(createWMTSSource(newOptions));
         }
-    },
-    create3d: (options, projection) => {
-        return new ColorLayer({
-            name: options.name,
-            source: new TiledImageSource({
-                source: createWMTSSource({...options, projection})
-            })
-        });
-    },
-    update3d: (layer, newOptions, oldOptions, projection) => {
-        // pass
     }
 };

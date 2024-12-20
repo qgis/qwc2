@@ -7,8 +7,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
-import TiledImageSource from '@giro3d/giro3d/sources/TiledImageSource.js';
 import axios from 'axios';
 import ol from 'openlayers';
 import url from 'url';
@@ -18,7 +16,7 @@ import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import MiscUtils from '../../../utils/MiscUtils';
 
 
-function wmsImageLoadFunction(image, src) {
+export function wmsImageLoadFunction(image, src) {
     const maxUrlLength = ConfigUtils.getConfigProp("wmsMaxGetUrlLength", null, 2048);
     const postOrigins = ConfigUtils.getConfigProp("wmsPostOrigins", null, []);
     const reqOrigin = (new URL(src, location.href)).origin;
@@ -45,7 +43,7 @@ function wmsImageLoadFunction(image, src) {
     }
 }
 
-function wmsToOpenlayersOptions(options) {
+export function wmsToOpenlayersOptions(options) {
     const urlParams = Object.entries(url.parse(options.url, true).query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
     return {
         ...urlParams,
@@ -143,54 +141,6 @@ export default {
                     layer.getSource().changed();
                     layer.set("updateTimeout", null);
                 }, 500));
-            }
-        }
-    },
-    create3d: (options, projection) => {
-        const queryParameters = {...wmsToOpenlayersOptions(options), __t: +new Date()};
-        return new ColorLayer({
-            name: options.name,
-            source: new TiledImageSource({
-                source: new ol.source.TileWMS({
-                    url: options.url.split("?")[0],
-                    params: queryParameters,
-                    version: options.version,
-                    projection: projection,
-                    tileLoadFunction: (imageTile, src) => wmsImageLoadFunction(imageTile.getImage(), src)
-                })
-            })
-        });
-    },
-    update3d: (layer, newOptions, oldOptions, projection) => {
-        if (oldOptions && layer?.source?.source?.updateParams) {
-            let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
-            const oldParams = wmsToOpenlayersOptions(oldOptions);
-            const newParams = wmsToOpenlayersOptions(newOptions);
-            Object.keys(oldParams).forEach(key => {
-                if (!(key in newParams)) {
-                    newParams[key] = undefined;
-                }
-            });
-            if (!changed) {
-                changed = Object.keys(newParams).find(key => {
-                    return newParams[key] !== oldParams[key];
-                }) !== undefined;
-            }
-            changed |= newOptions.visibility !== oldOptions.visibility;
-            if (changed) {
-                const queryParameters = {...newParams,  __t: +new Date()};
-                if (layer.__updateTimeout) {
-                    clearTimeout(layer.__updateTimeout);
-                }
-                if (!newOptions.visibility || !queryParameters.LAYERS) {
-                    layer.visible = false;
-                }
-                layer.__updateTimeout = setTimeout(() => {
-                    layer.visible = queryParameters.LAYERS && newOptions.visibility;
-                    layer.source.source.updateParams(queryParameters);
-                    layer.source.update();
-                    layer.__updateTimeout = null;
-                }, 500);
             }
         }
     }
