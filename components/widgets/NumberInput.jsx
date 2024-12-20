@@ -86,22 +86,22 @@ export default class NumberInput extends React.Component {
     }
     onChange = (ev) => {
         const len = ev.target.value.length;
-        const value = parseFloat(ev.target.value.substring(this.props.prefix.length, len - this.props.suffix.length));
-        if (!Number.isNaN(value)) {
-            this.setState({value: value.toFixed(this.props.decimals), changed: true});
-        } else {
-            this.setState({value: "", changed: true});
-        }
+        const value = ev.target.value.substring(this.props.prefix.length, len - this.props.suffix.length);
+        this.setState({value: value, changed: true});
+    };
+    currentFloatValue = () => {
+        const floatValue = parseFloat(this.state.value);
+        return isNaN(floatValue) ? null : floatValue;
     };
     startStep = (delta) => {
         if (this.props.disabled || this.props.readOnly) {
             return;
         }
-        this.props.onChange(this.constrainValue((parseFloat(this.state.value) || 0) + delta));
+        this.props.onChange(this.constrainValue(this.currentFloatValue() + delta));
         let stepInterval = null;
         const stepTimeout = setTimeout(() => {
             stepInterval = setInterval(() => {
-                this.props.onChange(this.constrainValue((parseFloat(this.state.value) || 0) + delta));
+                this.props.onChange(this.constrainValue(this.currentFloatValue() + delta));
             }, 50);
         }, 500);
         document.addEventListener('mouseup', () => {
@@ -128,8 +128,9 @@ export default class NumberInput extends React.Component {
     };
     commit = () => {
         if (this.state.changed) {
-            const value = parseFloat(this.state.value);
-            this.props.onChange(this.constrainValue(isNaN(value) ? null : value));
+            const value = this.constrainValue(this.currentFloatValue());
+            this.setState({value: value === null ? "" : value.toFixed(this.props.decimals)});
+            this.props.onChange(value);
         }
     };
     constrainValue = (value) => {
@@ -142,7 +143,8 @@ export default class NumberInput extends React.Component {
         if (this.props.max) {
             value = Math.min(this.props.max, value);
         }
-        return value;
+        const k = Math.pow(10, this.decimals);
+        return Math.round(value * k) / k;
     };
     setupSelectionListener = (event) => {
         const input = event.target;
@@ -163,5 +165,5 @@ export default class NumberInput extends React.Component {
         input.addEventListener("blur", () => {
             document.removeEventListener("selectionchange", selectionHandler);
         }, {once: true});
-    }
+    };
 }
