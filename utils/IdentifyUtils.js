@@ -315,8 +315,9 @@ const IdentifyUtils = {
                 result[layer.name] = [];
             }
             let geometry = feature.geometry;
-            if (geometry) {
-                geometry = VectorLayerUtils.reprojectGeometry(geometry, "EPSG:4326", geometrycrs); // GeoJSON always wgs84
+            if (geometry && response.crs) {
+                // Reproject geometry only if there is crs information in GetFeatureInfo response
+                geometry = VectorLayerUtils.reprojectGeometry(geometry, response.crs.properties?.name ?? "EPSG:4326", geometrycrs);
             }
             result[layer.name].push({
                 ...feature,
