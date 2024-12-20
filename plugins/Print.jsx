@@ -15,7 +15,6 @@ import FileSaver from 'file-saver';
 import formDataEntries from 'formdata-json';
 import JSZip from 'jszip';
 import isEmpty from 'lodash.isempty';
-import {PDFDocument} from 'pdf-lib';
 import PropTypes from 'prop-types';
 
 import {setIdentifyEnabled} from '../actions/identify';
@@ -782,6 +781,7 @@ class Print extends React.Component {
         });
     }
     async collectOnePdf(docs) {
+        const {PDFDocument} = await import('pdf-lib');
         const mergedDoc = await PDFDocument.create();
         for (const doc of docs) {
             const pdfBytes = await PDFDocument.load(doc.data);
