@@ -385,10 +385,12 @@ class AttributeForm extends React.Component {
         parseExpressionsAsync(constraintExpressions, feature, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
             let valid = true;
             Object.entries(result).forEach(([key, value]) => {
+                const element = this.form.elements.namedItem(key);
                 if (value === false) {
-                    valid &= (value === true);
-                    const element = this.form.elements.namedItem(key);
+                    valid = false;
                     element.setCustomValidity(this.props.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation"));
+                } else {
+                    element.setCustomValidity("");
                 }
             });
             if (!valid) {
