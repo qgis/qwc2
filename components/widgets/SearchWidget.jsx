@@ -101,7 +101,7 @@ class SearchWidget extends React.Component {
                     ref={el => {this.input = el;}}
                     type="text"
                     value={this.state.text} />
-                {this.state.pending > 0 ? (<Spinner />) : (<Icon icon="remove" onClick={this.clear} />)}
+                {this.state.pending > 0 ? (<Spinner />) : (<Icon icon="clear" onClick={this.clear} />)}
                 {(!isEmpty(this.state.results) || this.state.pending > 0) && this.state.active ? this.renderResults() : null}
             </div>
         );

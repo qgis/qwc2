@@ -9,7 +9,7 @@ div.search-widget-container > input {
 }
 
 div.search-widget-container > div.spinner,
-div.search-widget-container > span.icon-remove {
+div.search-widget-container > span.icon-clear {
     position: absolute;
     width: calc(2em - 2px);
     height: calc(2em - 2px);
