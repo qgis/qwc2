@@ -56,7 +56,8 @@ export default class NumberInput extends React.Component {
         const className = classNames({
             "number-input": true,
             "number-input-mobile": this.props.mobile,
-            "number-input-normal": !this.props.mobile
+            "number-input-normal": !this.props.mobile,
+            "number-input-disabled": this.props.disabled || this.props.readOnly
         });
         const paddingLength = (this.props.mobile ? 4 : 1.5) + 'em';
         const prefixSuffixLength = (this.props.prefix.length + this.props.suffix.length) + 'ch';
@@ -93,12 +94,15 @@ export default class NumberInput extends React.Component {
         }
     };
     startStep = (delta) => {
+        if (this.props.disabled || this.props.readOnly) {
+            return;
+        }
         this.props.onChange(this.constrainValue((parseFloat(this.state.value) || 0) + delta));
         let stepInterval = null;
         const stepTimeout = setTimeout(() => {
             stepInterval = setInterval(() => {
                 this.props.onChange(this.constrainValue((parseFloat(this.state.value) || 0) + delta));
-            }, 100);
+            }, 50);
         }, 500);
         document.addEventListener('mouseup', () => {
             clearTimeout(stepTimeout);
