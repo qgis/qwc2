@@ -208,21 +208,3 @@ input[type=range]::-webkit-slider-thumb {
     background: var(--input-bg-color);
     margin-top: -3.5px;
 }
-
-/* react-numeric-input */
-span.react-numeric-input > input {
-    border-radius: 0!important;
-    height: 2em;
-    width: 100%;
-    border: 1px solid var(--border-color)!important;
-}
-
-span.react-numeric-input > b {
-    border: 1px solid var(--border-color)!important;
-    background-color: var(--button-bg-color)!important;
-    color: var(--button-text-color)!important;
-}
-
-span.react-numeric-input > b:hover {
-    background-color: var(--button-bg-color-hover)!important;
-}

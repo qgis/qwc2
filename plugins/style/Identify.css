@@ -10,7 +10,3 @@ div.identify-radius-controls > span {
     justify-content: center;
     margin: 0.25em 0.25em;
 }
-
-div.identify-radius-controls span.react-numeric-input {
-    width: 10em;
-}

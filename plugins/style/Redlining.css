@@ -63,11 +63,6 @@ div.redlining-controlsbar > span {
     margin: 0 0.25em;
 }
 
-div.redlining-group span.react-numeric-input,
-div.redlining-controlsbar span.react-numeric-input {
-    width: 6em;
-}
-
 div.redlining-controlsbar input.redlining-label,
 div.redlining-controlsbar select.redlining-unit {
     flex: 1 1 auto;

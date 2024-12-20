@@ -26,11 +26,6 @@ table.AutoEditForm span.input-frame select {
     padding: 0.25em;
 }
 
-table.AutoEditForm span.react-numeric-input {
-    width: 100%;
-    height: 2em;
-}
-
 table.AutoEditForm table.fields-table label {
     display: flex;
     height: 2em;
