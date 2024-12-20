@@ -91,19 +91,12 @@ div.routing-points-commands > div.VectorLayerPicker {
 }
 
 div.routing-search-field {
-    display: flex;
     margin-bottom: 0.25em;
+    width: 100%;
 }
 
-div.routing-search-field input.search-widget-input[type=text] {
-    border: none;
-    outline: none;
-    height: calc(2em - 2px);
-}
-
-div.routing-search-field button.button {
-    border-right: none;
-    width: 2em;
+div.routing-search-field > div {
+    flex: 1 1 auto;
 }
 
 button.routing-compute-button {

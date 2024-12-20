@@ -21,7 +21,6 @@ import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import ButtonBar from '../components/widgets/ButtonBar';
 import DateTimeInput from '../components/widgets/DateTimeInput';
-import InputContainer from '../components/widgets/InputContainer';
 import NumberInput from '../components/widgets/NumberInput';
 import SearchWidget from '../components/widgets/SearchWidget';
 import Spinner from '../components/widgets/Spinner';
@@ -535,7 +534,7 @@ class Routing extends React.Component {
     };
     renderSearchField = (entry, idx, config, removeable, placeholder = null) => {
         return (
-            <InputContainer className="routing-search-field" key={"field" + idx}>
+            <div className="routing-search-field controlgroup" key={"field" + idx}>
                 <SearchWidget placeholder={placeholder} resultSelected={(result) => this.searchResultSelected(config, idx, result)} role="input" searchParams={this.state.searchParams} searchProviders={this.state.searchProviders} value={entry.text} />
                 {idx === 0 ? (
                     <button className="button" disabled={!this.props.locatePos} onClick={() => this.updatePoint(config, 0, this.locatePos())} role="suffix">
@@ -547,7 +546,7 @@ class Routing extends React.Component {
                         <Icon icon="remove" />
                     </button>
                 ) : null}
-            </InputContainer>
+            </div>
         );
     };
     renderImportButton = (config) => {
