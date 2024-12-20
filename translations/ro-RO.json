@@ -34,7 +34,6 @@
         "LayerCatalog": "Catalog  de straturi",
         "Login": "Conectează-te",
         "Logout": "Deconectează-te",
-        "Map3D": "",
         "MapLegend": "Legenda",
         "Measure": "Măsoară",
         "MeasureLineString": "Măsoară o linie",
@@ -43,7 +42,8 @@
         "Redlining": "Evidențiere",
         "Routing": "Traseu",
         "Tools": "Unelte hartă",
-        "TimeManager": "Informații temporale"
+        "TimeManager": "Informații temporale",
+        "View3D": ""
       },
       "menulabel": "Hărți & Unelte"
     },

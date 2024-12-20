@@ -34,7 +34,6 @@
         "LayerCatalog": "Katman Kataloğu",
         "Login": "Giriş",
         "Logout": "Çıkış",
-        "Map3D": "",
         "MapLegend": "Harita Lejandı",
         "Measure": "Ölç",
         "MeasureLineString": "Çizgi Ölç",
@@ -43,7 +42,8 @@
         "Redlining": "Serbest Çizim",
         "Routing": "Navigasyon",
         "Tools": "Harita Araçları",
-        "TimeManager": "Zaman Yöneticisi"
+        "TimeManager": "Zaman Yöneticisi",
+        "View3D": ""
       },
       "menulabel": "Harita & Araçlar"
     },

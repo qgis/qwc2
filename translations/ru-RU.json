@@ -34,7 +34,6 @@
         "LayerCatalog": "",
         "Login": "",
         "Logout": "",
-        "Map3D": "",
         "MapLegend": "",
         "Measure": "Измерения",
         "MeasureLineString": "измерить линию",
@@ -43,7 +42,8 @@
         "Redlining": "Обводка",
         "Routing": "",
         "Tools": "Средства картографии",
-        "TimeManager": ""
+        "TimeManager": "",
+        "View3D": ""
       },
       "menulabel": "Карта и инструменты"
     },

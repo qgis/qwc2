@@ -34,7 +34,6 @@
         "LayerCatalog": "",
         "Login": "Logg inn",
         "Logout": "Logg ut",
-        "Map3D": "",
         "MapLegend": "",
         "Measure": "Mål",
         "MeasureLineString": "Måle en linje",
@@ -43,7 +42,8 @@
         "Redlining": "Redlining",
         "Routing": "",
         "Tools": "Kartverktøy",
-        "TimeManager": ""
+        "TimeManager": "",
+        "View3D": ""
       },
       "menulabel": "Kart & Verktøy"
     },

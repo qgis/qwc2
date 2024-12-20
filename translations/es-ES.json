@@ -34,7 +34,6 @@
         "LayerCatalog": "Capa catálogo",
         "Login": "Inicio de sesión",
         "Logout": "Cierre de sesión",
-        "Map3D": "",
         "MapLegend": "Leyenda",
         "Measure": "Medida",
         "MeasureLineString": "Medir una línea",
@@ -43,7 +42,8 @@
         "Redlining": "Línea de demarcación",
         "Routing": "Routing",
         "Tools": "Herramientas de Mapa",
-        "TimeManager": "Gestor de Tiempo"
+        "TimeManager": "Gestor de Tiempo",
+        "View3D": ""
       },
       "menulabel": "Mapa & Herramientas"
     },

@@ -32,7 +32,6 @@
     "appmenu.items.LayerTree",
     "appmenu.items.Login",
     "appmenu.items.Logout",
-    "appmenu.items.Map3D",
     "appmenu.items.MapLegend",
     "appmenu.items.Measure",
     "appmenu.items.MeasureLineString",
@@ -42,7 +41,8 @@
     "appmenu.items.Routing",
     "appmenu.items.Tools",
     "appmenu.items.Bookmark",
-    "appmenu.items.TimeManager"
+    "appmenu.items.TimeManager",
+    "appmenu.items.View3D"
   ],
   "strings": [
     "app.missingbg",

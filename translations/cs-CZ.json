@@ -34,7 +34,6 @@
         "LayerCatalog": "Katalog vrstev",
         "Login": "Přihlášení",
         "Logout": "Odhlášení",
-        "Map3D": "",
         "MapLegend": "Legenda",
         "Measure": "Měření",
         "MeasureLineString": "Změřit úsek",
@@ -43,7 +42,8 @@
         "Redlining": "Připomínkování",
         "Routing": "Trasy",
         "Tools": "Nástroje mapy",
-        "TimeManager": ""
+        "TimeManager": "",
+        "View3D": ""
       },
       "menulabel": "Mapa & Nástroje"
     },

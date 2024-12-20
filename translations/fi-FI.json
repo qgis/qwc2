@@ -34,7 +34,6 @@
         "LayerCatalog": "",
         "Login": "Kirjaudu",
         "Logout": "Kirjaudu ulos",
-        "Map3D": "",
         "MapLegend": "",
         "Measure": "Mittaa",
         "MeasureLineString": "Mittaa viiva",
@@ -43,7 +42,8 @@
         "Redlining": "Omat merkinnät",
         "Routing": "",
         "Tools": "Karttatyökalut",
-        "TimeManager": ""
+        "TimeManager": "",
+        "View3D": ""
       },
       "menulabel": "Kartat & Työkalut"
     },

@@ -34,7 +34,6 @@
         "LayerCatalog": "Layer catalog",
         "Login": "Login",
         "Logout": "Logout",
-        "Map3D": "3D View",
         "MapLegend": "Legend",
         "Measure": "Measure",
         "MeasureLineString": "Measure a line",
@@ -43,7 +42,8 @@
         "Redlining": "Redlining",
         "Routing": "Routing",
         "Tools": "Map Tools",
-        "TimeManager": "Time Manager"
+        "TimeManager": "Time Manager",
+        "View3D": "3D View"
       },
       "menulabel": "Map & Tools"
     },

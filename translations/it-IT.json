@@ -34,7 +34,6 @@
         "LayerCatalog": "Catalogo livelli",
         "Login": "Accedi",
         "Logout": "Disconnetti",
-        "Map3D": "Visuale 3D",
         "MapLegend": "Legenda",
         "Measure": "Misura",
         "MeasureLineString": "Misura una linea",
@@ -43,7 +42,8 @@
         "Redlining": "Strumenti di disegno",
         "Routing": "Routing",
         "Tools": "Strumenti",
-        "TimeManager": "Linea temporale"
+        "TimeManager": "Linea temporale",
+        "View3D": "Vista 3D"
       },
       "menulabel": "Mappa e strumenti"
     },

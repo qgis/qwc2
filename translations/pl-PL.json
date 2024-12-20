@@ -34,7 +34,6 @@
         "LayerCatalog": "",
         "Login": "Zaloguj",
         "Logout": "Wyloguj",
-        "Map3D": "",
         "MapLegend": "",
         "Measure": "Pomiary",
         "MeasureLineString": "Zmierzyć linię",
@@ -43,7 +42,8 @@
         "Redlining": "Redlining",
         "Routing": "",
         "Tools": "Narzędzia Mapy",
-        "TimeManager": ""
+        "TimeManager": "",
+        "View3D": ""
       },
       "menulabel": "Zawartość mapy i narzędzia"
     },

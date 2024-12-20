@@ -34,7 +34,6 @@
         "LayerCatalog": "Capes",
         "Login": "Inicio de sessió",
         "Logout": "Tancament de sessió",
-        "Map3D": "",
         "MapLegend": "Llegenda",
         "Measure": "Mesurar",
         "MeasureLineString": "Mesurar una línia",
@@ -43,7 +42,8 @@
         "Redlining": "Línia de demarcació",
         "Routing": "Routing",
         "Tools": "Eines de Mapa",
-        "TimeManager": "Gestor de Temps"
+        "TimeManager": "Gestor de Temps",
+        "View3D": ""
       },
       "menulabel": "Mapa & Eines"
     },

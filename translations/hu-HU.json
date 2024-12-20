@@ -34,7 +34,6 @@
         "LayerCatalog": "",
         "Login": "",
         "Logout": "",
-        "Map3D": "",
         "MapLegend": "",
         "Measure": "Mérés",
         "MeasureLineString": "Mérési vonal",
@@ -43,7 +42,8 @@
         "Redlining": "Vázlat",
         "Routing": "",
         "Tools": "Térkép eszközök",
-        "TimeManager": ""
+        "TimeManager": "",
+        "View3D": ""
       },
       "menulabel": "Eszközök"
     },

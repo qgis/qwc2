@@ -22,49 +22,29 @@ import PropTypes from 'prop-types';
 import {Vector2, Vector3, CubeTextureLoader} from 'three';
 import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
 
-import {LayerRole} from '../actions/layers';
-import {setCurrentTask} from '../actions/task';
-import Icon from '../components/Icon';
-import ResizeableWindow from '../components/ResizeableWindow';
-import BottomBar3D from '../components/map3d/BottomBar3D';
-import LayerTree3D from '../components/map3d/LayerTree3D';
-import Map3DLight from '../components/map3d/Map3DLight';
-import OverviewMap3D from '../components/map3d/OverviewMap3D';
-import TopBar3D from '../components/map3d/TopBar3D';
-import LayerRegistry from '../components/map3d/layers/index';
-import {BackgroundSwitcher} from '../plugins/BackgroundSwitcher';
-import ConfigUtils from '../utils/ConfigUtils';
-import CoordinatesUtils from '../utils/CoordinatesUtils';
-import LocaleUtils from '../utils/LocaleUtils';
-import MiscUtils from '../utils/MiscUtils';
+import {LayerRole} from '../../actions/layers';
+import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
+import ConfigUtils from '../../utils/ConfigUtils';
+import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import MiscUtils from '../../utils/MiscUtils';
+import Icon from '../Icon';
+import BottomBar3D from './BottomBar3D';
+import LayerTree3D from './LayerTree3D';
+import Map3DLight from './Map3DLight';
+import OverviewMap3D from './OverviewMap3D';
+import TopBar3D from './TopBar3D';
+import LayerRegistry from './layers/index';
 
 import './style/Map3D.css';
 
 
-/**
- * Displays a 3D map view.
- */
 class Map3D extends React.Component {
     static propTypes = {
-        bbox: PropTypes.object,
-        enabled: PropTypes.bool,
-        /** Default window geometry. */
-        geometry: PropTypes.shape({
-            initialWidth: PropTypes.number,
-            initialHeight: PropTypes.number,
-            initialX: PropTypes.number,
-            initialY: PropTypes.number,
-            initiallyDocked: PropTypes.bool
-        }),
+        innerRef: PropTypes.func,
         layers: PropTypes.array,
-        mapBbox: PropTypes.object,
-        /** Various configuration options */
-        options: PropTypes.shape({
-            /** Minimum scale denominator when zooming to search result. */
-            searchMinScaleDenom: PropTypes.number
-        }),
+        mapBBox: PropTypes.object,
+        options: PropTypes.object,
         projection: PropTypes.string,
-        setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
         themes: PropTypes.object
     };
@@ -91,7 +71,6 @@ class Map3D extends React.Component {
         sceneObjects: {}
     };
     state = {
-        enabled: false,
         sceneContext: {
             ...Map3D.defaultSceneState,
 
@@ -133,37 +112,34 @@ class Map3D extends React.Component {
         this.state.sceneContext.getTerrainHeight = this.getTerrainHeight;
         this.state.taskContext.setCurrentTask = this.setCurrentTask;
     }
+    componentDidMount() {
+        this.props.innerRef(this);
+    }
+    componentWillUnmount() {
+        this.disposeInstance();
+    }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.enabled && !prevProps.enabled) {
-            this.setState({enabled: true});
-            this.props.setCurrentTask(null);
-        } else if (!this.state.enabled && prevState.enabled) {
-            this.disposeInstance();
+        if (this.props.theme !== prevProps.theme) {
+            this.setupInstance();
+        } else if (this.props.layers !== prevProps.layers) {
+            this.setState((state) => (
+                {
+                    sceneContext: {...state.sceneContext, colorLayers: this.collectColorLayers(state.sceneContext.colorLayers)}
+                }
+            ));
         }
-        if (this.state.enabled) {
-            if (this.props.theme !== prevProps.theme) {
-                this.disposeInstance();
-                this.setupInstance();
-            } else if (this.props.layers !== prevProps.layers) {
-                this.setState((state) => (
-                    {
-                        sceneContext: {...state.sceneContext, colorLayers: this.collectColorLayers(state.sceneContext.colorLayers)}
-                    }
-                ));
-            }
 
-            // Update map layers
-            if (this.state.sceneContext.baseLayers !== prevState.sceneContext.baseLayers) {
-                this.applyBaseLayer();
-            }
+        // Update map layers
+        if (this.state.sceneContext.baseLayers !== prevState.sceneContext.baseLayers) {
+            this.applyBaseLayer();
+        }
 
-            if (this.state.sceneContext.colorLayers !== prevState.sceneContext.colorLayers) {
-                this.applyColorLayerUpdates(this.state.sceneContext.colorLayers, prevState.sceneContext.colorLayers);
-            }
-            // Update scene objects
-            if (this.state.sceneContext.sceneObjects !== prevState.sceneContext.sceneObjects) {
-                this.applySceneObjectUpdates(this.state.sceneContext.sceneObjects);
-            }
+        if (this.state.sceneContext.colorLayers !== prevState.sceneContext.colorLayers) {
+            this.applyColorLayerUpdates(this.state.sceneContext.colorLayers, prevState.sceneContext.colorLayers);
+        }
+        // Update scene objects
+        if (this.state.sceneContext.sceneObjects !== prevState.sceneContext.sceneObjects) {
+            this.applySceneObjectUpdates(this.state.sceneContext.sceneObjects);
         }
     }
     applyBaseLayer = () => {
@@ -323,69 +299,44 @@ class Map3D extends React.Component {
         });
     };
     render() {
-        if (!this.state.enabled) {
-            return null;
-        }
         const baseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true);
-        const extraControls = [{
-            icon: "sync",
-            callback: () => this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation),
-            title: LocaleUtils.tr("map3d.syncview")
-        }];
-        return [(
-            <ResizeableWindow
-                extraControls={extraControls} icon="map3d"
-                initialHeight={this.props.geometry.initialHeight}
-                initialWidth={this.props.geometry.initialWidth}
-                initialX={this.props.geometry.initialX}
-                initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked}
-                key="Map3D"
-                onClose={() => this.setState({enabled: false})}
-                onExternalWindowResized={this.redrawScene}
-                splitScreenWhenDocked
-                splitTopAndBottomBar
-                title={LocaleUtils.tr("map3d.title")}
-            >
-                <div className="map3d-body" role="body">
-                    <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} />
-                    {this.state.sceneContext.scene ? (
-                        <div>
-                            <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
-                            <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
-                            <LayerTree3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
-                            <BottomBar3D sceneContext={this.state.sceneContext} />
-                            <div className="map3d-nav-widget map3d-nav-pan">
-                                <span />
-                                <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
-                                <span />
-                                <Icon icon="chevron-left" onMouseDown={(ev) => this.pan(ev, 1, 0)} />
-                                <Icon icon="home" onClick={() => this.home()} />
-                                <Icon icon="chevron-right" onMouseDown={(ev) => this.pan(ev, -1, 0)} />
-                                <span />
-                                <Icon icon="chevron-down" onMouseDown={(ev) => this.pan(ev, 0, -1)} />
-                                <span />
-                            </div>
-                            <div className="map3d-nav-widget map3d-nav-rotate">
-                                <span />
-                                <Icon icon="tilt-up" onMouseDown={(ev) => this.tilt(ev, 0, 1)} />
-                                <span />
-                                <Icon icon="tilt-left" onMouseDown={(ev) => this.tilt(ev, 1, 0)} />
-                                <Icon icon="point" onClick={() => this.setViewTopDown()} />
-                                <Icon icon="tilt-right" onMouseDown={(ev) => this.tilt(ev, -1, 0)} />
-                                <span />
-                                <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -1)} />
-                                <span />
-                            </div>
-                            <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
-                            <Map3DLight sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+        return (
+            <div className="map3d-body">
+                <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} />
+                {this.state.sceneContext.scene ? (
+                    <div>
+                        <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
+                        <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                        <LayerTree3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                        <BottomBar3D sceneContext={this.state.sceneContext} />
+                        <div className="map3d-nav-widget map3d-nav-pan">
+                            <span />
+                            <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
+                            <span />
+                            <Icon icon="chevron-left" onMouseDown={(ev) => this.pan(ev, 1, 0)} />
+                            <Icon icon="home" onClick={() => this.home()} />
+                            <Icon icon="chevron-right" onMouseDown={(ev) => this.pan(ev, -1, 0)} />
+                            <span />
+                            <Icon icon="chevron-down" onMouseDown={(ev) => this.pan(ev, 0, -1)} />
+                            <span />
                         </div>
-                    ) : null}
-                </div>
-            </ResizeableWindow>
-        ), (
-            <div id="map3dinspector" key="Map3DInspector" />
-        )];
+                        <div className="map3d-nav-widget map3d-nav-rotate">
+                            <span />
+                            <Icon icon="tilt-up" onMouseDown={(ev) => this.tilt(ev, 0, 1)} />
+                            <span />
+                            <Icon icon="tilt-left" onMouseDown={(ev) => this.tilt(ev, 1, 0)} />
+                            <Icon icon="point" onClick={() => this.setViewTopDown()} />
+                            <Icon icon="tilt-right" onMouseDown={(ev) => this.tilt(ev, -1, 0)} />
+                            <span />
+                            <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -1)} />
+                            <span />
+                        </div>
+                        <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
+                        <Map3DLight sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                    </div>
+                ) : null}
+            </div>
+        );
     }
     setupContainer = (el) => {
         if (el) {
@@ -515,7 +466,7 @@ class Map3D extends React.Component {
             }
         }));
 
-        this.setViewToExtent(this.props.mapBbox.bounds, this.props.mapBbox.rotation);
+        this.setViewToExtent(this.props.mapBBox.bounds, this.props.mapBBox.rotation);
 
         // this.inspector = Inspector.attach("map3dinspector", this.instance);
     };
@@ -526,7 +477,7 @@ class Map3D extends React.Component {
         this.map.dispose({disposeLayers: true});
         this.instance.view.controls.dispose();
         this.instance.dispose();
-        Object.values(this.sceneObjects).forEach(object => {
+        Object.values(this.objectMap).forEach(object => {
             this.instance.remove(object);
             if (object.isMesh) {
                 object.geometry.dispose();
@@ -538,7 +489,7 @@ class Map3D extends React.Component {
         });
         this.inspector = null;
         this.map = null;
-        this.sceneObjects = {};
+        this.objectMap = {};
         this.instance = null;
         this.setState((state) => ({
             sceneContext: {...state.sceneContext, ...Map3D.defaultSceneState},
@@ -751,13 +702,10 @@ class Map3D extends React.Component {
 }
 
 export default connect((state) => ({
-    enabled: state.task.id === 'Map3D',
-    mapBbox: state.map.bbox,
+    mapBBox: state.map.bbox,
     projection: state.map.projection,
-    bbox: (state.theme.current || {}).initialBbox,
     layers: state.layers.flat,
     theme: state.theme.current,
     themes: state.theme.themes
 }), {
-    setCurrentTask: setCurrentTask
 })(Map3D);
