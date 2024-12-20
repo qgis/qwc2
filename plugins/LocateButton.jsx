@@ -51,7 +51,7 @@ class LocateButton extends React.Component {
         }
     };
     render = () => {
-        if (!ThemeUtils.themFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
+        if (!ThemeUtils.themeFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
             return null;
         }
         const right = this.props.mapMargins.right;

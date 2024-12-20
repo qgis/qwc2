@@ -236,7 +236,7 @@ const ThemeUtils = {
         });
         return names;
     },
-    themFlagsAllowed(theme, flagWhitelist, flagBlacklist) {
+    themeFlagsAllowed(theme, flagWhitelist, flagBlacklist) {
         const themeFlags = theme?.flags || [];
         if (flagBlacklist && flagBlacklist.find(flag => themeFlags.includes(flag)) !== undefined) {
             return false;

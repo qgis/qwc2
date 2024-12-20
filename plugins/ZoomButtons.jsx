@@ -73,7 +73,7 @@ class ZoomButton extends React.Component {
         }
     }
     render() {
-        if (!ThemeUtils.themFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
+        if (!ThemeUtils.themeFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
             return null;
         }
         const defaultPosition = (this.props.direction > 0 ? 4 : 3);
