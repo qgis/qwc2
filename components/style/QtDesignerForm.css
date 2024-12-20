@@ -87,27 +87,7 @@ div.qt-designer-form-frame {
 }
 
 div.qt-designer-form-tabbar {
-    overflow-x: auto;
-}
-
-div.qt-designer-form-tabbar > span {
-    padding: 0.25em;
-    border-left: 1px solid var(--border-color);
-    border-top: 1px solid var(--border-color);
-    display: inline-block;
-    background-color: var(--button-bg-color);
-    height: 2em;
-    display: inline-flex;
-    align-items: center;
-}
-
-div.qt-designer-form-tabbar > span:last-child {
-    border-right: 1px solid var(--border-color);
-}
-
-div.qt-designer-form-tabbar > span.qt-designer-form-tab-active {
-    background-color: var(--button-bg-color-active);
-    color: var(--button-text-color-active);
+    margin-bottom: -1px;
 }
 
 div.qt-designer-widget-relation {
