@@ -223,8 +223,7 @@ class MapTip extends React.Component {
 }
 
 export default connect((state) => ({
-    // Only enable maptips when an identify tool is active (i.e. no other task is)
-    mapTipsEnabled: state.map.maptips && state.identify.tool !== null,
+    mapTipsEnabled: state.map.maptips && state.task.identifyEnabled,
     layers: state.layers.flat,
     map: state.map
 }), {

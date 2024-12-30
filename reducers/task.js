@@ -13,7 +13,8 @@ const defaultState = {
     mode: null,
     data: null,
     blocked: false,
-    unsetOnMapClick: false
+    unsetOnMapClick: false,
+    identifyEnabled: true
 };
 
 export default function task(state = defaultState, action) {
@@ -22,7 +23,14 @@ export default function task(state = defaultState, action) {
         if (state.blocked) {
             return state;
         }
-        return {...state, id: action.id, mode: action.mode, data: action.data, unsetOnMapClick: action.unsetOnMapClick};
+        return {
+            ...state,
+            id: action.id,
+            mode: action.mode,
+            data: action.data,
+            unsetOnMapClick: action.unsetOnMapClick,
+            identifyEnabled: action.identifyEnabled
+        };
     }
     case SET_CURRENT_TASK_BLOCKED: {
         return {...state, blocked: action.blocked};

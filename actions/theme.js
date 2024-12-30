@@ -12,7 +12,6 @@ ReducerIndex.register("theme", themeReducer);
 
 import isEmpty from 'lodash.isempty';
 
-import {setIdentifyEnabled} from '../actions/identify';
 import {setCurrentTask} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -102,7 +101,6 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         }
     }
 
-    dispatch(setIdentifyEnabled(true, theme));
     dispatch({
         type: SET_CURRENT_THEME,
         theme: theme,

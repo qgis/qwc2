@@ -19,6 +19,7 @@ import MapSelection from '../components/MapSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import NumberInput from '../components/widgets/NumberInput';
+import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
@@ -56,6 +57,7 @@ class Identify extends React.Component {
         displayResultTree: PropTypes.bool,
         /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`) */
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
+        enabled: PropTypes.bool,
         /** Whether to clear the task when the results window is closed. */
         exitTaskOnResultsClose: PropTypes.bool,
         /** Whether to include the geometry in exported features. Default: `true`. */
@@ -122,12 +124,12 @@ class Identify extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             this.clearResults();
-        } else if (this.props.currentIdentifyTool !== prevProps.currentIdentifyTool && prevProps.currentIdentifyTool === "Identify") {
+        } else if (!this.props.enabled && prevProps.enabled) {
             if (this.props.clearResultsOnClose) {
                 this.clearResults();
             }
         }
-        if (this.props.currentIdentifyTool === "Identify" || this.props.currentTask === "Identify") {
+        if (this.props.enabled) {
             if (this.state.mode === "Point") {
                 const clickPoint = this.queryPoint(prevProps);
                 this.identifyPoint(clickPoint);
@@ -406,17 +408,20 @@ class Identify extends React.Component {
     }
 }
 
-const selector = (state) => ({
-    click: state.map.click || {modifiers: {}},
-    currentTask: state.task.id,
-    currentIdentifyTool: state.identify.tool,
-    layers: state.layers.flat,
-    map: state.map,
-    selection: state.selection,
-    theme: state.theme.current
-});
-
-export default connect(selector, {
+export default connect((state) => {
+    const enabled = state.task.id === "FeatureForm" || (
+        state.task.identifyEnabled &&
+        ConfigUtils.getConfigProp("identifyTool", state.theme.current, "Identify") === "Identify"
+    );
+    return {
+        click: state.map.click || {modifiers: {}},
+        enabled: enabled,
+        layers: state.layers.flat,
+        map: state.map,
+        selection: state.selection,
+        theme: state.theme.current
+    };
+}, {
     addLayerFeatures: addLayerFeatures,
     addMarker: addMarker,
     removeMarker: removeMarker,

@@ -205,8 +205,7 @@ class MapInfoTooltip extends React.Component {
 export default (plugins) => {
     return connect((state) => ({
         mapMargins: state.windows.mapMargins,
-        // Only enable mapinfo tooltip when an identify tool is active (i.e. no other task is)
-        enabled: state.identify.tool !== null,
+        enabled: state.task.identifyEnabled,
         map: state.map,
         plugins: plugins
     }), {

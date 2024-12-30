@@ -18,6 +18,7 @@ import {setCurrentTask} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
+import ConfigUtils from '../utils/ConfigUtils';
 import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -248,10 +249,14 @@ class FeatureForm extends React.Component {
     };
 }
 
-export default (iface = EditingInterface) => {
-    return connect((state) => ({
+export default (iface = EditingInterface) => connect((state) => {
+    const enabled = state.task.id === "FeatureForm" || (
+        state.task.identifyEnabled &&
+        ConfigUtils.getConfigProp("identifyTool", state.theme.current, "Identify") === "FeatureForm"
+    );
+    return {
         click: state.map.click || {modifiers: {}},
-        enabled: state.task.id === "FeatureForm" || state.identify.tool === "FeatureForm",
+        enabled: enabled,
         editContext: state.editing.contexts.FeatureForm || {},
         currentEditContext: state.editing.currentContext,
         iface: iface,
@@ -259,9 +264,10 @@ export default (iface = EditingInterface) => {
         filter: state.layers.filter,
         map: state.map,
         theme: state.theme.current
-    }), {
-        setCurrentTask: setCurrentTask,
-        clearEditContext: clearEditContext,
-        setEditContext: setEditContext
-    })(FeatureForm);
-};
+    };
+},
+{
+    setCurrentTask: setCurrentTask,
+    clearEditContext: clearEditContext,
+    setEditContext: setEditContext
+})(FeatureForm);

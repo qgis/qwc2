@@ -16,7 +16,6 @@ import formDataEntries from 'formdata-json';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {setIdentifyEnabled} from '../actions/identify';
 import {LayerRole} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
 import Icon from '../components/Icon';
@@ -323,7 +322,6 @@ class MapExport extends React.Component {
             selectedFormat: selectedFormat,
             selectedFormatConfiguration: selectedFormatConfiguration
         });
-        this.props.setIdentifyEnabled(false);
         this.props.setSnappingConfig(false, false);
     };
     onHide = () => {
@@ -334,7 +332,6 @@ class MapExport extends React.Component {
             scale: null,
             pageSize: null
         });
-        this.props.setIdentifyEnabled(true);
     };
     geometryChanged = (center, extents, rotation, scale) => {
         this.setState({
@@ -417,6 +414,5 @@ const selector = (state) => ({
 });
 
 export default connect(selector, {
-    setIdentifyEnabled: setIdentifyEnabled,
     setSnappingConfig: setSnappingConfig
 })(MapExport);

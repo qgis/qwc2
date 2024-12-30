@@ -17,7 +17,6 @@ import JSZip from 'jszip';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {setIdentifyEnabled} from '../actions/identify';
 import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
 import Icon from '../components/Icon';
@@ -180,12 +179,10 @@ class Print extends React.Component {
                 scale: scale
             });
         }
-        this.props.setIdentifyEnabled(false);
         this.props.setSnappingConfig(false, false);
     };
     onHide = () => {
         this.setState({minimized: false, printSeriesEnabled: false, atlasFeatures: []});
-        this.props.setIdentifyEnabled(true);
     };
     renderBody = () => {
         if (!this.state.layout) {
@@ -814,6 +811,5 @@ const selector = (state) => ({
 export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
     clearLayer: clearLayer,
-    setIdentifyEnabled: setIdentifyEnabled,
     setSnappingConfig: setSnappingConfig
 })(Print);
