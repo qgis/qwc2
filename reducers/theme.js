@@ -14,7 +14,11 @@ import {
 } from '../actions/theme';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
-const defaultState = {};
+const defaultState = {
+    current: null,
+    themelist: null,
+    switching: false
+};
 
 export default function theme(state = defaultState, action) {
     switch (action.type) {
