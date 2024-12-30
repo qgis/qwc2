@@ -7,12 +7,12 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
 
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import ConfigUtils from '../../utils/ConfigUtils';
 import Icon from '../Icon';
 import MenuButton from './MenuButton';
 
@@ -29,14 +29,13 @@ const ButtonPropShape = PropTypes.shape({
     disabled: PropTypes.bool
 });
 
-class ButtonBar extends React.Component {
+export default class ButtonBar extends React.Component {
     static propTypes = {
         active: PropTypes.string,
         buttons: PropTypes.arrayOf(PropTypes.oneOfType([ButtonPropShape, PropTypes.arrayOf(ButtonPropShape)])),
         className: PropTypes.string,
         disabled: PropTypes.bool,
         forceLabel: PropTypes.bool,
-        mobile: PropTypes.bool,
         onClick: PropTypes.func,
         tooltipPos: PropTypes.string
     };
@@ -45,6 +44,7 @@ class ButtonBar extends React.Component {
         tooltipPos: 'bottom'
     };
     render() {
+        const isMobile = ConfigUtils.isMobile();
         return (
             <div className={"ButtonBar controlgroup " + this.props.className + (this.props.disabled ? " buttonbar-disabled" : "")}>
                 {this.props.buttons.map((entry, idx) => {
@@ -55,7 +55,7 @@ class ButtonBar extends React.Component {
                                 {entry.map(comboentry => (
                                     <div className="buttonbar-combo-entry" key={comboentry.key} onClick={() => this.props.onClick(comboentry.key, comboentry.data)} value={comboentry.key}>
                                         {comboentry.icon ? (<Icon icon={comboentry.icon} />) : null}
-                                        {comboentry.label && (!this.props.mobile || !comboentry.icon || this.props.forceLabel) ? (
+                                        {comboentry.label && (!isMobile || !comboentry.icon || this.props.forceLabel) ? (
                                             <span className="buttonbar-combo-entry-label">{comboentry.label}</span>
                                         ) : null}
                                         {comboentry.tooltip ? (
@@ -84,7 +84,7 @@ class ButtonBar extends React.Component {
                                     type={entry.type || "button"}
                                 >
                                     {entry.icon ? (<Icon icon={entry.icon} />) : null}
-                                    {entry.label && (!this.props.mobile || !entry.icon || this.props.forceLabel) ? (<span>{entry.label}</span>) : null}
+                                    {entry.label && (!isMobile || !entry.icon || this.props.forceLabel) ? (<span>{entry.label}</span>) : null}
                                 </button>
                                 {entry.tooltip ? (
                                     <span className={"buttonbar-button-tooltip " + ("buttonbar-button-tooltip-" + this.props.tooltipPos)}>
@@ -101,9 +101,3 @@ class ButtonBar extends React.Component {
         );
     }
 }
-
-const selector = (state) => ({
-    mobile: state.browser.mobile
-});
-
-export default connect(selector, {})(ButtonBar);

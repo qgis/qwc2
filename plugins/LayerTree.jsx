@@ -65,8 +65,9 @@ class LayerTree extends React.Component {
         enableServiceInfo: PropTypes.bool,
         /** Whether to display a button to filter invisible layers from the layertree. */
         enableVisibleFilter: PropTypes.bool,
-        /** Additional parameters to pass to the GetLegendGraphics request- */
+        /** Additional parameters to pass to the GetLegendGraphics request. */
         extraLegendParameters: PropTypes.string,
+        /** Whether to use the fallback logic for drag-and-drop. */
         fallbackDrag: PropTypes.bool,
         filter: PropTypes.object,
         /** Whether to display a flat layer tree, omitting any groups. */
@@ -174,7 +175,7 @@ class LayerTree extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (this.props.theme.mapTips !== undefined && this.props.theme.mapTips !== prevProps.theme.mapTips) {
-            this.props.toggleMapTips(this.props.theme.mapTips && !prevProps.mobile);
+            this.props.toggleMapTips(this.props.theme.mapTips && !ConfigUtils.isMobile());
         }
     }
     renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
@@ -448,7 +449,7 @@ class LayerTree extends React.Component {
             maptipsEnabled = this.props.allowMapTips;
         }
 
-        if (!this.props.mobile && maptipsEnabled) {
+        if (!ConfigUtils.isMobile() && maptipsEnabled) {
             maptipCheckbox = (
                 <div className="layertree-option">
                     <Icon icon={maptipcheckboxstate} onClick={this.toggleMapTips} />
@@ -780,9 +781,6 @@ class LayerTree extends React.Component {
 }
 
 const selector = (state) => ({
-    mobile: state.browser.mobile,
-    ie: state.browser.ie,
-    fallbackDrag: state.browser.ie || (state.browser.platform === 'Win32' && state.browser.chrome),
     layers: state.layers.flat,
     filter: state.layers.filter,
     loadingLayers: state.layers.loading,

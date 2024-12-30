@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
+import ConfigUtils from '../utils/ConfigUtils';
 import WindowManager from './WindowManager';
 
 import './style/PluginsContainer.css';
@@ -19,17 +20,18 @@ class PluginsContainer extends React.Component {
     static propTypes = {
         customPlugins: PropTypes.array,
         locale: PropTypes.string,
-        mode: PropTypes.string,
         plugins: PropTypes.object,
         pluginsAppConfig: PropTypes.object,
         pluginsConfig: PropTypes.object,
         theme: PropTypes.object
     };
-    renderPlugins = (pluginsConfig) => {
+    renderPlugins = () => {
         const allPlugins = {
             ...this.props.plugins,
             ...(window.qwc2?.__customPlugins ?? {})
         };
+        const mode = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+        const pluginsConfig = this.props.pluginsConfig[mode]
         return pluginsConfig.map((pluginConf, idx) => {
             const Plugin = allPlugins[pluginConf.name + "Plugin"];
             if (!Plugin) {
@@ -37,7 +39,7 @@ class PluginsContainer extends React.Component {
                 console.warn("Non-existing plugin: " + pluginConf.name);
                 return null;
             }
-            const themeDevicePluginConfig = this.props.theme?.config?.[this.props.mode]?.plugins?.[pluginConf.name] || {};
+            const themeDevicePluginConfig = this.props.theme?.config?.[mode]?.plugins?.[pluginConf.name] || {};
             const themePluginConfig = this.props.theme?.config?.plugins?.[pluginConf.name] || {};
             const cfg = {...(pluginConf.cfg || {}), ...themePluginConfig, ...themeDevicePluginConfig};
             const appCfg = this.props.pluginsAppConfig[pluginConf.name + "Plugin"] || {};
@@ -48,7 +50,7 @@ class PluginsContainer extends React.Component {
         if (this.props.pluginsConfig && this.props.locale) {
             return (
                 <div id="PluginsContainer">
-                    {this.renderPlugins(this.props.pluginsConfig[this.props.mode])}
+                    {this.renderPlugins()}
                     <WindowManager />
                 </div>
             );
@@ -60,7 +62,6 @@ class PluginsContainer extends React.Component {
 export default connect((state) => ({
     customPlugins: state.localConfig.customPlugins,
     pluginsConfig: state.localConfig.plugins,
-    mode: state.browser.mobile ? 'mobile' : 'desktop',
     locale: state.locale.current,
     theme: state.theme.current
 }))(PluginsContainer);

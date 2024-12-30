@@ -55,7 +55,6 @@ class TopBar extends React.Component {
         mapMargins: PropTypes.object,
         /** The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         menuItems: PropTypes.array,
-        mobile: PropTypes.bool,
         openExternalUrl: PropTypes.func,
         restoreDefaultTheme: PropTypes.func,
         /** Options passed down to the search component. */
@@ -133,8 +132,9 @@ class TopBar extends React.Component {
         let buttonContents;
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
+        const isMobile = ConfigUtils.isMobile();
         const tooltip = LocaleUtils.tr("appmenu.menulabel");
-        if (this.props.mobile || this.props.appMenuCompact) {
+        if (isMobile || this.props.appMenuCompact) {
             buttonContents = (
                 <span className="appmenu-button">
                     <Icon className="appmenu-icon" icon="menu-hamburger" title={tooltip}/>
@@ -152,7 +152,7 @@ class TopBar extends React.Component {
         }
 
         const classes = classnames({
-            mobile: this.props.mobile,
+            mobile: isMobile,
             fullscreen: this.props.fullscreen
         });
         let logoEl = (<img className="logo" src={this.props.logoSrc || logo} />);
@@ -164,7 +164,7 @@ class TopBar extends React.Component {
         searchOptions.minScaleDenom = searchOptions.minScaleDenom || searchOptions.minScale;
         delete searchOptions.minScale;
         // Menu compact only available for desktop client
-        const menuCompact = !this.props.mobile ? this.props.appMenuCompact : false;
+        const menuCompact = !isMobile ? this.props.appMenuCompact : false;
         // Keep menu open when appMenu is in compact mode (Visible on Hover)
         const keepMenuOpen = menuCompact;
         // Menu should be visible on startup when appMenu is in compact mode (Visible on Hover)
@@ -250,7 +250,6 @@ class TopBar extends React.Component {
 
 export default (components) => {
     return connect((state) => ({
-        mobile: state.browser.mobile,
         fullscreen: state.display.fullscreen,
         components: components,
         currentTheme: state.theme.current,

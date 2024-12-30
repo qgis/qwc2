@@ -227,7 +227,6 @@ class HeightProfile extends React.Component {
         /** The precision of displayed and exported values (0: no decimals, 1: 1 decimal position, etc). */
         heightProfilePrecision: PropTypes.number,
         measurement: PropTypes.object,
-        mobile: PropTypes.bool,
         projection: PropTypes.string,
         removeMarker: PropTypes.func,
         /** The number of elevation samples to query. */
@@ -548,8 +547,7 @@ class HeightProfile extends React.Component {
 
 export default connect((state) => ({
     measurement: state.measurement,
-    projection: state.map.projection,
-    mobile: state.browser.mobile
+    projection: state.map.projection
 }), {
     addMarker: addMarker,
     changeMeasurementState: changeMeasurementState,

@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/FullscreenSwitcher.css';
@@ -19,8 +20,7 @@ import './style/FullscreenSwitcher.css';
 class FullscreenSwitcher extends React.Component {
     static propTypes = {
         fullscreen: PropTypes.bool,
-        fullscreenToggled: PropTypes.func,
-        mobile: PropTypes.bool
+        fullscreenToggled: PropTypes.func
     };
     toggleFullscreen = () => {
         this.props.fullscreenToggled(!this.props.fullscreen);
@@ -58,7 +58,7 @@ class FullscreenSwitcher extends React.Component {
     };
     render() {
         // Render nothing on mobile, but keep the component for the onfullscreenchange logic
-        if (this.props.mobile) {
+        if (ConfigUtils.isMobile()) {
             return null;
         }
         const tooltip = this.props.fullscreen ? LocaleUtils.tr("tooltip.fullscreendisable") : LocaleUtils.tr("tooltip.fullscreenenable");
@@ -70,11 +70,9 @@ class FullscreenSwitcher extends React.Component {
     }
 }
 
-const selector = (state) => ({
-    mobile: state.browser.mobile,
-    fullscreen: state.display.fullscreen
-});
 
-export default connect(selector, {
+export default connect((state) => ({
+    fullscreen: state.display.fullscreen
+}), {
     fullscreenToggled: toggleFullscreen
 })(FullscreenSwitcher);

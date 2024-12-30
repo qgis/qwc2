@@ -24,6 +24,7 @@ import ComboBox from '../components/widgets/ComboBox';
 import MenuButton from '../components/widgets/MenuButton';
 import NumberInput from '../components/widgets/NumberInput';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
+import ConfigUtils from '../utils/ConfigUtils';
 import {END_MARKERS} from '../utils/FeatureStyles';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -53,7 +54,6 @@ class Redlining extends React.Component {
         hiddenTools: PropTypes.array,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
-        mobile: PropTypes.bool,
         plugins: PropTypes.object,
         redlining: PropTypes.object,
         resetRedliningState: PropTypes.func,
@@ -150,7 +150,7 @@ class Redlining extends React.Component {
             ].filter(Boolean),
             {key: "Text", tooltip: LocaleUtils.tr("redlining.text"), icon: "text", data: {action: "Draw", geomType: "Text", text: "", measurements: false}}
         ];
-        if (this.props.mobile) {
+        if (ConfigUtils.isMobile()) {
             drawButtons = [drawButtons.flat()];
         }
         const activeFreeHand = this.props.redlining.freehand ? "HandDrawing" : null;
@@ -385,7 +385,6 @@ export default (plugins) => {
         layers: state.layers.flat,
         redlining: state.redlining,
         mapCrs: state.map.projection,
-        mobile: state.browser.mobile,
         plugins: plugins
     }), {
         changeRedliningState: changeRedliningState,

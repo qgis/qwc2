@@ -15,7 +15,6 @@ import {register as olProj4Register} from 'ol/proj/proj4';
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
-import {changeBrowserProperties} from '../actions/browser';
 import {addLayer} from '../actions/layers';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {loadLocale} from '../actions/locale';
@@ -278,9 +277,6 @@ export default class StandardApp extends React.Component {
         }
     };
     init = () => {
-        // Detect browser properties
-        StandardApp.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
-
         // Load config.json
         const urlParams = UrlParams.getParams();
         const configParams = Object.entries(urlParams).reduce((res, [key, value]) => {

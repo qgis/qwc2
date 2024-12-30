@@ -54,7 +54,6 @@ class ResizeableWindow extends React.Component {
         minHeight: PropTypes.number,
         minWidth: PropTypes.number,
         minimizeable: PropTypes.bool,
-        mobile: PropTypes.bool,
         onClose: PropTypes.func,
         onExternalWindowResized: PropTypes.func,
         onGeometryChanged: PropTypes.func,
@@ -207,7 +206,7 @@ class ResizeableWindow extends React.Component {
         });
 
         let detachIcons = null;
-        if (!this.props.mobile) {
+        if (!ConfigUtils.isMobile()) {
             detachIcons = this.state.externalWindow ? (
                 <Icon className={iconClasses} icon="embed" onClick={this.moveToInternalWindow} title={LocaleUtils.tr("window.embed")} />
             ) : (
@@ -488,8 +487,7 @@ export default connect((state) => ({
     topbarHeight: state.map.topbarHeight,
     bottombarHeight: state.map.bottombarHeight,
     mapMargins: state.windows.mapMargins,
-    menuMargins: state.windows.menuMargins,
-    mobile: state.browser.mobile
+    menuMargins: state.windows.menuMargins
 }), {
     raiseWindow: raiseWindow,
     registerWindow: registerWindow,
