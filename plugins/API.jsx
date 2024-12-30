@@ -38,7 +38,6 @@ import ImportLayer from '../components/ImportLayer';
 import LayerInfoWindow from '../components/LayerInfoWindow';
 import LinkFeatureForm from '../components/LinkFeatureForm';
 import MapSelection from '../components/MapSelection';
-import MessageBar from '../components/MessageBar';
 import NumericInputWindow from '../components/NumericInputWindow';
 import PickFeature from '../components/PickFeature';
 import PluginsContainer from '../components/PluginsContainer';
@@ -188,7 +187,6 @@ class API extends React.Component {
         window.qwc2.components.LayerInfoWindow = LayerInfoWindow;
         window.qwc2.components.LinkFeatureForm = LinkFeatureForm;
         window.qwc2.components.MapSelection = MapSelection;
-        window.qwc2.components.MessageBar = MessageBar;
         window.qwc2.components.ModalDialog = ModalDialog;
         window.qwc2.components.NumericInputWindow = NumericInputWindow;
         window.qwc2.components.PickFeature = PickFeature;

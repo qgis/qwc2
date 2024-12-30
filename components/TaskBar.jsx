@@ -12,12 +12,17 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
-import MessageBar from './MessageBar';
+import Icon from './Icon';
 
-class TaskBar extends React.Component {
+import './style/TaskBar.css';
+
+
+export class TaskBar extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
+        mapMargins: PropTypes.object,
+        menuMargins: PropTypes.object,
         onHide: PropTypes.func,
         onShow: PropTypes.func,
         setCurrentTask: PropTypes.func,
@@ -27,42 +32,65 @@ class TaskBar extends React.Component {
     };
     static defaultProps = {
         onShow: () => {},
-        onHide: () => {}
+        onHide: () => {},
+        mapMargins: {left: 0, top: 0, right: 0, bottom: 0},
+        menuMargins: {left: 0, right: 0}
     };
     componentDidUpdate(prevProps) {
-        const newVisible = this.props.currentTask && this.props.currentTask.id === this.props.task;
-        const oldVisible = prevProps.currentTask && prevProps.currentTask.id === this.props.task;
-        if (newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask.mode)) {
+        const newVisible = this.props.currentTask?.id === this.props.task;
+        const oldVisible = prevProps.currentTask?.id === this.props.task;
+        if (newVisible && (!oldVisible || this.props.currentTask.mode !== prevProps.currentTask?.mode)) {
             this.props.onShow(this.props.currentTask.mode, this.props.currentTask.data);
         } else if (!newVisible && oldVisible) {
             this.props.onHide();
         }
     }
     closeClicked = () => {
-        if (this.props.currentTask.id === this.props.task) {
-            if (this.props.unblockOnClose) {
-                this.props.setCurrentTaskBlocked(false);
-            }
-            this.props.setCurrentTask(null);
+        if (this.props.unblockOnClose) {
+            this.props.setCurrentTaskBlocked(false);
         }
+        this.props.setCurrentTask(null);
+    };
+    renderRole = (role) => {
+        const children = typeof this.props.children === "function" ?
+            this.props.children() :
+            React.Children.toArray(this.props.children).reduce((res, child) => ({...res, [child.props.role]: child}), {});
+        return children[role];
     };
     render() {
         if (this.props.currentTask.id !== this.props.task) {
             return null;
         }
+        const containerStyle = {
+            left: (this.props.menuMargins.left + this.props.mapMargins.left) +  'px',
+            right: (this.props.menuMargins.right + this.props.mapMargins.right) + 'px'
+        };
         return (
-            <MessageBar className={this.props.task} onHide={this.closeClicked}>
-                {this.props.children}
-            </MessageBar>
+            <div>
+                <div className="taskbar-container" style={containerStyle}>
+                    <div className={"taskbar " + this.props.task}>
+                        <div className="body">
+                            {this.renderRole("body")}
+                        </div>
+                        {this.props.onHide ? (
+                            <span className="closewrapper">
+                                <Icon className="close" icon="remove" onClick={this.closeClicked} size="large"/>
+                            </span>
+                        ) : null}
+                    </div>
+                </div>
+                {this.renderRole("extra")}
+            </div>
         );
     }
 }
 
-const selector = (state) => ({
-    currentTask: state.task
-});
 
-export default connect(selector, {
+export default connect((state) => ({
+    currentTask: state.task,
+    mapMargins: state.windows.mapMargins,
+    menuMargins: state.windows.menuMargins
+}), {
     setCurrentTask: setCurrentTask,
     setCurrentTaskBlocked: setCurrentTaskBlocked
 })(TaskBar);

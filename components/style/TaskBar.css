@@ -1,4 +1,4 @@
-div.messagebar-container {
+div.taskbar-container {
     position: absolute;
     left: 0;
     right: 0;
@@ -9,7 +9,7 @@ div.messagebar-container {
     z-index: 3;
 }
 
-div.messagebar {
+div.taskbar {
     position: relative;
     flex: 0 0 auto;
     pointer-events: initial;
@@ -21,12 +21,12 @@ div.messagebar {
     border-top: 1px solid rgba(136, 136, 136, 0.5);
 }
 
-div.messagebar > div.body {
+div.taskbar > div.body {
     padding: 0.25em 0.5em 0.25em 0.25em;
     display: inline-block;
 }
 
-div.messagebar > span.closewrapper {
+div.taskbar > span.closewrapper {
     position: absolute;
     right: 0;
     top: 0;
