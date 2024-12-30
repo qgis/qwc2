@@ -14,7 +14,7 @@ import {AmbientLight, DirectionalLight} from 'three';
 
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
-import {SideBar} from '../SideBar';
+import SideBar from '../SideBar';
 import Input from '../widgets/Input';
 import ToggleSwitch from '../widgets/ToggleSwitch';
 
@@ -23,8 +23,7 @@ import './style/Map3DLight.css';
 
 export default class Map3DLight extends React.Component {
     static propTypes = {
-        sceneContext: PropTypes.object,
-        taskContext: PropTypes.object
+        sceneContext: PropTypes.object
     };
     state = {
         systemTime: false,
@@ -63,11 +62,7 @@ export default class Map3DLight extends React.Component {
     render() {
         return (
             <div>
-                <SideBar
-                    currentTask={this.props.taskContext.currentTask}
-                    icon="clock"
-                    id="DateTime3D"
-                    setCurrentTask={this.props.taskContext.setCurrentTask}
+                <SideBar icon="clock" id="DateTime3D"
                     title={LocaleUtils.tr("appmenu.items.DateTime3D")}
                     width="20em"
                 >

@@ -7,12 +7,16 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
+import {connect, Provider} from 'react-redux';
 
 import PropTypes from 'prop-types';
+import {createSelector} from 'reselect';
 
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
+import searchProvidersSelector from '../selectors/searchproviders';
+import ReducerIndex from '../reducers/index';
+import {createStore} from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
 
 
@@ -30,13 +34,17 @@ class View3D extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
+        layers: PropTypes.array,
         mapBBox: PropTypes.object,
         /** Various configuration options */
         options: PropTypes.shape({
             /** Minimum scale denominator when zooming to search result. */
             searchMinScaleDenom: PropTypes.number
         }),
-        setCurrentTask: PropTypes.func
+        projection: PropTypes.string,
+        searchProviders: PropTypes.object,
+        setCurrentTask: PropTypes.func,
+        theme: PropTypes.object
     };
     static defaultProps = {
         geometry: {
@@ -58,6 +66,12 @@ class View3D extends React.Component {
         super(props);
         this.map3dComponent = null;
         this.map3dComponentRef = null;
+        // Subset of 2d reducers
+        const {
+            task,
+            windows
+        } = ReducerIndex.reducers;
+        this.store = createStore({task, windows});
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -99,7 +113,14 @@ class View3D extends React.Component {
                 title={LocaleUtils.tr("map3d.title")}
             >
                 {this.state.componentLoaded ? (
-                    <Map3D innerRef={this.setRef} options={this.props.options} role="body"/>
+                    <Provider role="body" store={this.store}>
+                        <Map3D
+                            innerRef={this.setRef} layers={this.props.layers}
+                            mapBBox={this.props.mapBBox} options={this.props.options}
+                            projection={this.props.projection}
+                            searchProviders={this.props.searchProviders}
+                            theme={this.props.theme} />
+                    </Provider>
                 ) : null}
             </ResizeableWindow>
         );
@@ -122,9 +143,16 @@ class View3D extends React.Component {
     };
 }
 
-export default connect((state) => ({
-    enabled: state.task.id === 'View3D',
-    mapBBox: state.map.bbox
-}), {
-    setCurrentTask: setCurrentTask
-})(View3D);
+export default connect(
+    createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
+        enabled: state.task.id === 'View3D',
+        mapBBox: state.map.bbox,
+        projection: state.map.projection,
+        layers: state.layers.flat,
+        theme: state.theme.current,
+        themes: state.theme.themes,
+        searchProviders
+    })), {
+        setCurrentTask: setCurrentTask
+    }
+)(View3D);

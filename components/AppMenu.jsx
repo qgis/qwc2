@@ -26,7 +26,7 @@ import Icon from './Icon';
 import './style/AppMenu.css';
 
 
-export class AppMenu extends React.Component {
+class AppMenu extends React.Component {
     static propTypes = {
         appMenuClearsTask: PropTypes.bool,
         appMenuShortcut: PropTypes.string,

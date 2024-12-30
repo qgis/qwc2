@@ -68,5 +68,5 @@ export default class BottomBar3D extends React.Component {
             const p = intersects[0].point;
             this.setState({cursorPosition: [p.x, p.y, p.z]});
         }
-    }
+    };
 }

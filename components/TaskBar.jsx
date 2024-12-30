@@ -17,7 +17,7 @@ import Icon from './Icon';
 import './style/TaskBar.css';
 
 
-export class TaskBar extends React.Component {
+class TaskBar extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
@@ -32,9 +32,7 @@ export class TaskBar extends React.Component {
     };
     static defaultProps = {
         onShow: () => {},
-        onHide: () => {},
-        mapMargins: {left: 0, top: 0, right: 0, bottom: 0},
-        menuMargins: {left: 0, right: 0}
+        onHide: () => {}
     };
     componentDidUpdate(prevProps) {
         const newVisible = this.props.currentTask?.id === this.props.task;

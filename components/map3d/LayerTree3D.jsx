@@ -13,24 +13,21 @@ import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
-import {SideBar} from '../SideBar';
+import SideBar from '../SideBar';
 
 import './style/LayerTree3D.css';
 
 
 export default class LayerTree3D extends React.Component {
     static propTypes = {
-        sceneContext: PropTypes.object,
-        taskContext: PropTypes.object
+        sceneContext: PropTypes.object
     };
     render() {
         return (
             <div>
                 <SideBar
-                    currentTask={this.props.taskContext.currentTask}
                     icon="layers"
                     id="LayerTree3D"
-                    setCurrentTask={this.props.taskContext.setCurrentTask}
                     title={LocaleUtils.tr("appmenu.items.LayerTree3D")}
                     width="20em"
                 >

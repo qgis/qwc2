@@ -45,8 +45,8 @@ class Map3D extends React.Component {
         mapBBox: PropTypes.object,
         options: PropTypes.object,
         projection: PropTypes.string,
-        theme: PropTypes.object,
-        themes: PropTypes.object
+        searchProviders: PropTypes.object,
+        theme: PropTypes.object
     };
     static defaultProps = {
         geometry: {
@@ -86,10 +86,6 @@ class Map3D extends React.Component {
 
             setViewToExtent: (bounds, angle) => {},
             getTerrainHeight: (scenePos) => {}
-        },
-        taskContext: {
-            currentTask: {id: null, mode: null},
-            setCurrentTask: (task, mode) => {}
         }
     };
     constructor(props) {
@@ -110,7 +106,6 @@ class Map3D extends React.Component {
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
         this.state.sceneContext.setViewToExtent = this.setViewToExtent;
         this.state.sceneContext.getTerrainHeight = this.getTerrainHeight;
-        this.state.taskContext.setCurrentTask = this.setCurrentTask;
     }
     componentDidMount() {
         this.props.innerRef(this);
@@ -306,8 +301,8 @@ class Map3D extends React.Component {
                 {this.state.sceneContext.scene ? (
                     <div>
                         <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
-                        <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
-                        <LayerTree3D sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                        <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
+                        <LayerTree3D sceneContext={this.state.sceneContext} />
                         <BottomBar3D sceneContext={this.state.sceneContext} />
                         <div className="map3d-nav-widget map3d-nav-pan">
                             <span />
@@ -332,7 +327,7 @@ class Map3D extends React.Component {
                             <span />
                         </div>
                         <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
-                        <Map3DLight sceneContext={this.state.sceneContext} taskContext={this.state.taskContext} />
+                        <Map3DLight sceneContext={this.state.sceneContext} />
                     </div>
                 ) : null}
             </div>
@@ -420,7 +415,7 @@ class Map3D extends React.Component {
         let visibleBaseLayer = null;
         const baseLayers = (this.props.theme.map3d?.basemaps || []).map(e => {
             const baseLayer = {
-                ...this.props.themes.backgroundLayers.find(bl => bl.name === e.name),
+                ...this.props.layers.find(bl => bl.name === e.name),
                 visibility: e.visibility === true
             };
             if (baseLayer.visibility) {
@@ -492,8 +487,7 @@ class Map3D extends React.Component {
         this.objectMap = {};
         this.instance = null;
         this.setState((state) => ({
-            sceneContext: {...state.sceneContext, ...Map3D.defaultSceneState},
-            taskContext: {...state.taskContext, currentTask: {id: null, mode: null}}
+            sceneContext: {...state.sceneContext, ...Map3D.defaultSceneState}
         }));
     };
     setViewToExtent = (bounds, angle = 0) => {
@@ -693,19 +687,8 @@ class Map3D extends React.Component {
         this.instance.view.camera.updateProjectionMatrix();
         this.instance.renderer.render(this.instance.scene, this.instance.view.camera);
     };
-    setCurrentTask = (task, mode) => {
-        this.setState(state => ({taskContext: {
-            ...state.taskContext,
-            currentTask: {id: task, mode: mode}
-        }}));
-    };
 }
 
 export default connect((state) => ({
-    mapBBox: state.map.bbox,
-    projection: state.map.projection,
-    layers: state.layers.flat,
-    theme: state.theme.current,
-    themes: state.theme.themes
 }), {
 })(Map3D);

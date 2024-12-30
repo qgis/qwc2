@@ -18,7 +18,7 @@ import {Swipeable} from './Swipeable';
 
 import './style/SideBar.css';
 
-export class SideBar extends React.Component {
+class SideBar extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
@@ -42,7 +42,6 @@ export class SideBar extends React.Component {
         onShow: () => {},
         onHide: () => {},
         width: '15em',
-        menuMargins: {left: 0, right: 0},
         minWidth: '15em',
         // allowed values are 'left' and 'right'
         side: 'right'
@@ -172,11 +171,10 @@ export class SideBar extends React.Component {
     };
 }
 
-const selector = (state) => ({
+
+export default connect((state) => ({
     currentTask: state.task,
     menuMargins: state.windows.menuMargins
-});
-
-export default connect(selector, {
+}), {
     setCurrentTask: setCurrentTask
 })(SideBar);

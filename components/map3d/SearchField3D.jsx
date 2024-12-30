@@ -7,18 +7,15 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
 
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import VectorSource from '@giro3d/giro3d/sources/VectorSource';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
-import {createSelector} from 'reselect';
 import {Group} from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
-import searchProvidersSelector from '../../selectors/searchproviders';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import FeatureStyles from '../../utils/FeatureStyles';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
@@ -28,7 +25,7 @@ import pinModel from './models/pin.glb';
 import './style/SearchField3D.css';
 
 
-class SearchField3D extends React.Component {
+export default class SearchField3D extends React.Component {
     static propTypes = {
         options: PropTypes.object,
         sceneContext: PropTypes.object,
@@ -143,9 +140,3 @@ class SearchField3D extends React.Component {
         });
     };
 }
-
-export default connect(
-    createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
-        searchProviders
-    }))
-)(SearchField3D);
