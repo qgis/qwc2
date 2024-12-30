@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
-import {openExternalUrl} from '../actions/task';
+import {openExternalUrl} from '../actions/windows';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import MapUtils from '../utils/MapUtils';
 

@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
-import {openExternalUrl} from '../actions/task';
+import {openExternalUrl} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';

@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {changeZoomLevel, setBottombarHeight, setDisplayCrs} from '../actions/map';
-import {openExternalUrl} from '../actions/task';
+import {openExternalUrl} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
 import InputContainer from '../components/widgets/InputContainer';
 import CoordinatesUtils from '../utils/CoordinatesUtils';

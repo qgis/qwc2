@@ -11,7 +11,8 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {setCurrentTask, openExternalUrl} from '../actions/task';
+import {setCurrentTask} from '../actions/task';
+import {openExternalUrl} from '../actions/windows';
 import AppMenu from '../components/AppMenu';
 import Icon from '../components/Icon';
 import ThemeList from '../components/ThemeList';

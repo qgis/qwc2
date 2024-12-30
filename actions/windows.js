@@ -8,6 +8,11 @@
 
 import ReducerIndex from '../reducers/index';
 import windowsReducer from '../reducers/windows';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
+import MapUtils from '../utils/MapUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
+
 ReducerIndex.register("windows", windowsReducer);
 
 export const SHOW_IFRAME_DIALOG = 'SHOW_IFRAME_DIALOG';
@@ -94,5 +99,54 @@ export function setMenuMargin(right, left) {
         type: SET_MENU_MARGIN,
         right: right,
         left: left
+    };
+}
+
+export function openExternalUrl(url, target = '', iframeDialogOpts = {}) {
+    return (dispatch, getState) => {
+        // Replace all entries in URL
+        Object.entries(UrlParams.getParams()).forEach(([key, value]) => {
+            url = url.replace('$' + key + '$', value);
+        });
+
+        // Additional entries
+        const state = getState();
+        const bounds = state.map.bbox.bounds;
+        const proj = state.map.projection;
+        const roundfactor = CoordinatesUtils.getUnits(proj) === 'degrees' ? 100000 : 1;
+        const xmin = Math.round(bounds[0] * roundfactor) / roundfactor;
+        const ymin = Math.round(bounds[1] * roundfactor) / roundfactor;
+        const xmax = Math.round(bounds[2] * roundfactor) / roundfactor;
+        const ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
+        const x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
+        const y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
+        const scale = Math.round(MapUtils.computeForZoom(state.map.scales, state.map.zoom));
+        // In case mode is center + scale, extent is missing in UrlParams
+        url = url.replace('$e$', [xmin, ymin, xmax, ymax].join(","));
+        // In case mode is extent, center + scale are missing in UrlParams
+        url = url.replace('$c$', x + "," + y);
+        url = url.replace('$s$', scale);
+        // Add separate x, y
+        url = url.replace('$x$', x);
+        url = url.replace('$y$', y);
+
+        url = url.replace('$crs$', proj);
+
+        url = url.replace('$user$', ConfigUtils.getConfigProp("username") || "");
+
+        if (target.startsWith(":iframedialog")) {
+            const targetParts = target.split(":");
+            const options = targetParts.slice(2).reduce((res, cur) => {
+                const parts = cur.split("=");
+                if (parts.length === 2) {
+                    const value = parseFloat(parts[1]);
+                    res[parts[0]] = isNaN(value) ? parts[1] : value;
+                }
+                return res;
+            }, {});
+            dispatch(showIframeDialog(targetParts[2], url, {...iframeDialogOpts, ...options}));
+        } else {
+            window.open(url, target || "_blank");
+        }
     };
 }

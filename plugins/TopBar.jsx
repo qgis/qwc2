@@ -15,8 +15,8 @@ import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
 import {setTopbarHeight} from '../actions/map';
-import {openExternalUrl} from '../actions/task';
 import {restoreDefaultTheme} from '../actions/theme';
+import {openExternalUrl} from '../actions/windows';
 import Icon from '../components/Icon';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
