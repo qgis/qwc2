@@ -11,7 +11,7 @@ import axios from 'axios';
 import isMobile from 'ismobilejs';
 import url from 'url';
 
-import StandardStore from '../stores/StandardStore';
+import StandardApp from '../components/StandardApp';
 
 let defaultConfig = {
     translationsPath: "translations",
@@ -128,11 +128,11 @@ const ConfigUtils = {
         return (ConfigUtils.getConfigProp("translationsPath") || "translations").replace(/\/$/g, "");
     },
     havePlugin(name) {
-        const state = StandardStore.get().getState();
+        const state = StandardApp.store.getState();
         return defaultConfig.plugins[state.browser.mobile ? "mobile" : "desktop"].find(entry => entry.name === name);
     },
     getPluginConfig(name) {
-        const state = StandardStore.get().getState();
+        const state = StandardApp.store.getState();
         return defaultConfig.plugins[state.browser.mobile ? "mobile" : "desktop"].find(entry => entry.name === name) || {};
     }
 };

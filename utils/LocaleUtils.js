@@ -7,12 +7,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import StandardStore from '../stores/StandardStore';
+import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 
 const LocaleUtils = {
     tr(key) {
-        const state = StandardStore.get().getState();
+        const state = StandardApp.store.getState();
         const text = key in state.locale.messages ? (state.locale.messages[key] || state.locale.fallbackMessages[key] || key) : key;
 
         const args = Array.prototype.slice.call(arguments, 1);
@@ -29,11 +29,11 @@ const LocaleUtils = {
         return key;
     },
     trWithFallback(key, fallback) {
-        const state = StandardStore.get().getState();
+        const state = StandardApp.store.getState();
         return state.locale.messages[key] || fallback;
     },
     lang() {
-        const state = StandardStore.get().getState();
+        const state = StandardApp.store.getState();
         return state.locale.current;
     },
     toLocaleFixed(number, decimals) {

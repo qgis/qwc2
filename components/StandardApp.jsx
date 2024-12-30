@@ -23,7 +23,8 @@ import {setBottombarHeight, setTopbarHeight} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import {NotificationType, showNotification} from '../actions/windows';
-import StandardStore from '../stores/StandardStore';
+import ReducerIndex from '../reducers/index';
+import {createStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -203,13 +204,14 @@ const AppInit = connect(state => ({
 
 
 export default class StandardApp extends React.Component {
+    static store = null;
     static propTypes = {
         appConfig: PropTypes.object
     };
     constructor(props) {
         super(props);
-        StandardStore.init(this.props.appConfig.initialState || {}, this.props.appConfig.actionLogger);
-        this.store = StandardStore.get();
+        const initialState = this.props.appConfig.initialState || {};
+        StandardApp.store = createStore(ReducerIndex.reducers, initialState, this.props.appConfig.actionLogger);
         this.init();
         // Save initial params before they get overwritten
         this.initialParams = UrlParams.getParams();
@@ -229,7 +231,7 @@ export default class StandardApp extends React.Component {
     render() {
         const plugins = this.props.appConfig.pluginsDef.plugins;
         return (
-            <Provider store={this.store}>
+            <Provider store={StandardApp.store}>
                 <div ref={this.setupTouchEvents}>
                     <AppInit appConfig={this.props.appConfig} initialParams={this.initialParams}/>
                     <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
@@ -277,7 +279,7 @@ export default class StandardApp extends React.Component {
     };
     init = () => {
         // Detect browser properties
-        this.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
+        StandardApp.store.dispatch(changeBrowserProperties(ConfigUtils.getBrowserProperties()));
 
         // Load config.json
         const urlParams = UrlParams.getParams();
@@ -302,10 +304,10 @@ export default class StandardApp extends React.Component {
                 return {...res, [key]: entry};
             }, {})));
             delete config.plugins.common;
-            this.store.dispatch(localConfigLoaded(config));
+            StandardApp.store.dispatch(localConfigLoaded(config));
             const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";
             // Dispatch user locale
-            this.store.dispatch(loadLocale(this.props.appConfig.defaultLocaleData, defaultLocale));
+            StandardApp.store.dispatch(loadLocale(this.props.appConfig.defaultLocaleData, defaultLocale));
             // Add projections from config
             for (const proj of config.projections || []) {
                 if (Proj4js.defs(proj.code) === undefined) {

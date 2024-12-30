@@ -8,7 +8,6 @@
 
 import Painterro from 'painterro';
 
-import StandardStore from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
 
 import '../components/widgets/style/ModalDialog.css';
@@ -56,7 +55,7 @@ export function showImageEditor(imageData, imageDataCallback) {
     window.ptro = Painterro({
         id: 'painterro',
         hiddenTools: ['open'],
-        language: StandardStore.get().getState().locale.current.slice(0, 2).toLowerCase(),
+        language: LocaleUtils.lang().slice(0, 2).toLowerCase(),
         onBeforeClose: (hasUnsaved, doClose) => {
             if (hasUnsaved) {
                 // eslint-disable-next-line
