@@ -8,17 +8,13 @@
 
 
 import React from 'react';
-import {connect} from 'react-redux';
 
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
-import {LayerRole} from '../../actions/layers';
-import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
-import MapUtils from '../../utils/MapUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import {SearchResultType} from '../../utils/SearchProviders';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
@@ -28,11 +24,9 @@ import Spinner from './Spinner';
 import './style/SearchWidget.css';
 
 
-class SearchWidget extends React.Component {
+export default class SearchWidget extends React.Component {
     static propTypes = {
         className: PropTypes.string,
-        layers: PropTypes.array,
-        map: PropTypes.object,
         onBlur: PropTypes.func,
         onFocus: PropTypes.func,
         placeholder: PropTypes.string,
@@ -41,7 +35,6 @@ class SearchWidget extends React.Component {
         resultTypeFilter: PropTypes.array,
         searchParams: PropTypes.object,
         searchProviders: PropTypes.array,
-        theme: PropTypes.object,
         value: PropTypes.string
     };
     static defaultProps = {
@@ -56,9 +49,7 @@ class SearchWidget extends React.Component {
         reqId: null,
         results: [],
         pending: 0,
-        active: false,
-        activeLayers: [],
-        searchTerms: []
+        active: false
     };
     constructor(props) {
         super(props);
@@ -73,19 +64,6 @@ class SearchWidget extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.value !== prevProps.value) {
             this.setState({text: this.props.value});
-        }
-        // Collect active layers/search terms
-        if (this.props.layers !== prevProps.layers) {
-            let searchTerms = [];
-            const activeLayers = [];
-            const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-            for (const entry of LayerUtils.explodeLayers(this.props.layers)) {
-                if (entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true && LayerUtils.layerScaleInRange(entry.sublayer, mapScale)) {
-                    searchTerms = searchTerms.concat(entry.sublayer.searchterms || []);
-                    activeLayers.push(entry.sublayer.name);
-                }
-            }
-            this.setState({activeLayers: activeLayers, searchTerms: [...new Set(searchTerms)]});
         }
     }
     render() {
@@ -163,10 +141,8 @@ class SearchWidget extends React.Component {
         this.props.searchProviders.forEach(provider => {
             const searchParams = {
                 lang: LocaleUtils.lang(),
-                activeLayers: this.state.activeLayers,
-                searchTerms: this.state.searchTerms,
-                theme: this.props.theme,
-                cfgParams: provider.params || {},
+                cfgParams: provider.cfgParams,
+                ...provider.params,
                 ...this.props.searchParams
             };
             provider.onSearch(this.state.text, searchParams, (response) => {
@@ -205,9 +181,3 @@ class SearchWidget extends React.Component {
         this.props.resultSelected(null);
     };
 }
-
-export default connect((state) => ({
-    layers: state.layers.flat,
-    map: state.map,
-    theme: state.theme.current
-}))(SearchWidget);

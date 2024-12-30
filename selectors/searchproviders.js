@@ -10,7 +10,9 @@ import {createSelector} from 'reselect';
 
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import SearchProviders from '../utils/SearchProviders';
 import ThemeUtils from '../utils/ThemeUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -49,13 +51,28 @@ function getResultGeometry(provider, item, callback) {
 }
 
 export default createSelector(
-    [state => state.theme, state => state.layers && state.layers.flat || null], (theme, layers) => {
+    [
+        state => state.theme.current,
+        state => state.layers.flat,
+        state => state.map.scales,
+        state => state.map.zoom
+    ], (theme, layers, scales, zoom) => {
+        // Collect active layers/search terms
+        let searchTerms = [];
+        const activeLayers = [];
+        const mapScale = MapUtils.computeForZoom(scales, zoom);
+        for (const entry of LayerUtils.explodeLayers(layers)) {
+            if (entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true && LayerUtils.layerScaleInRange(entry.sublayer, mapScale)) {
+                searchTerms = searchTerms.concat(entry.sublayer.searchterms || []);
+                activeLayers.push(entry.sublayer.name);
+            }
+        }
+
         const searchProviders = {...SearchProviders, ...window.QWC2SearchProviders || {}};
         const availableProviders = {};
         const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
-        const themeProviders = theme && theme.current && theme.current.searchProviders ? theme.current.searchProviders : [];
         const providerKeys = new Set();
-        for (let entry of themeProviders) {
+        for (let entry of theme?.searchProviders || []) {
             if (typeof entry === 'string') {
                 entry = {provider: entry};
             }
@@ -80,7 +97,12 @@ export default createSelector(
                     label: entry.label ?? provider.label,
                     labelmsgid: entry.labelmsgid ?? provider.labelmsgid,
                     getResultGeometry: provider.getResultGeometry ? (item, callback) => getResultGeometry(provider, item, callback) : null,
-                    params: {...entry.params}
+                    cfgParams: entry.params || {},
+                    params: {
+                        searchTerms: searchTerms,
+                        activeLayers: activeLayers,
+                        theme: theme
+                    }
                 };
             }
         }

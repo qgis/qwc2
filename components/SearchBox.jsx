@@ -79,8 +79,6 @@ class SearchBox extends React.Component {
     };
     state = {
         searchText: "",
-        searchTerms: [],
-        activeLayers: [],
         searchSession: null,
         pendingSearches: [],
         recentSearches: [],
@@ -122,19 +120,6 @@ class SearchBox extends React.Component {
         // Trigger search when closing filter options
         if (!this.state.filterOptionsVisible && prevState.filterOptionsVisible) {
             this.searchTextChanged(this.state.searchText);
-        }
-        // Collect active layers/search terms
-        if (this.props.layers !== prevProps.layers) {
-            let searchTerms = [];
-            const activeLayers = [];
-            const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-            for (const entry of LayerUtils.explodeLayers(this.props.layers)) {
-                if (entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true && LayerUtils.layerScaleInRange(entry.sublayer, mapScale)) {
-                    searchTerms = searchTerms.concat(entry.sublayer.searchterms || []);
-                    activeLayers.push(entry.sublayer.name);
-                }
-            }
-            this.setState({activeLayers: activeLayers, searchTerms: [...new Set(searchTerms)]});
         }
         // Select single search result
         if (this.state.pendingSearches.length === 0 && prevState.pendingSearches.length > 0 && this.state.searchResults.zoomToUniqueResult) {
@@ -644,15 +629,16 @@ class SearchBox extends React.Component {
             mapcrs: this.props.map.projection,
             displaycrs: this.props.map.displayCrs,
             lang: LocaleUtils.lang(),
-            theme: this.props.theme,
             limit: this.props.searchOptions.resultLimit,
-            activeLayers: this.state.activeLayers,
-            searchTerms: this.state.searchTerms,
             filterPoly: this.state.filterGeometry?.coordinates?.[0],
             filterBBox: this.state.filterGeometry ? VectorLayerUtils.computeFeatureBBox(this.state.filterGeometry) : null
         };
         Object.entries(availableProviders).forEach(([provKey, prov]) => {
-            prov.onSearch(searchText, {...searchParams, cfgParams: prov.params || {}}, (response) => {
+            prov.onSearch(searchText, {
+                cfgParams: prov.cfgParams,
+                ...prov.params,
+                ...searchParams
+            }, (response) => {
                 let results = prov.handlesGeomFilter ? response.results : this.filterProviderResults(response.results);
                 const totResultCount = results.reduce((tot, group) => (tot + (group.resultCount ?? group.items.length)), 0);
                 if (uniquePlaceResult) {
