@@ -131,12 +131,12 @@ const CoordinatesUtils = {
         const parts = crsStr.split(":");
         return "urn:ogc:def:crs:" + parts[0] + "::" + parts[1];
     },
-    getFormattedCoordinate(coo, srcCrs = null, dstCrs = null, decimals = -1) {
+    getFormattedCoordinate(coo, srcCrs, dstCrs = null, decimals = -1) {
         if (srcCrs && dstCrs && srcCrs !== dstCrs) {
             coo = CoordinatesUtils.reproject(coo, srcCrs, dstCrs);
         }
         if (decimals < 0) {
-            decimals = CoordinatesUtils.getPrecision(dstCrs);
+            decimals = CoordinatesUtils.getPrecision(dstCrs ?? srcCrs);
         }
         return coo.map(ord => LocaleUtils.toLocaleFixed(ord, decimals)).join(", ");
     }
