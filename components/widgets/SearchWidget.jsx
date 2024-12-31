@@ -33,7 +33,10 @@ export default class SearchWidget extends React.Component {
         queryGeometries: PropTypes.bool,
         resultSelected: PropTypes.func.isRequired,
         resultTypeFilter: PropTypes.array,
-        searchParams: PropTypes.object,
+        searchParams: PropTypes.shape({
+            mapcrs: PropTypes.string.isRequired,
+            displaycrs: PropTypes.string.isRequired
+        }),
         searchProviders: PropTypes.array,
         value: PropTypes.string
     };

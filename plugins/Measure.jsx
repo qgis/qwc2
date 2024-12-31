@@ -118,7 +118,7 @@ class Measure extends React.Component {
         }
         return (
             <div className="controlgroup">
-                <input className="measure-result" defaultValue={text} readOnly type="text" />
+                <input className="measure-result" value={text} readOnly type="text" />
                 {unitSelector}
                 <CopyButton text={text} />
             </div>
