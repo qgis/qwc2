@@ -32,6 +32,7 @@ import Icon from '../Icon';
 import BottomBar3D from './BottomBar3D';
 import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
+import Measure3D from './Measure3D';
 import OverviewMap3D from './OverviewMap3D';
 import TopBar3D from './TopBar3D';
 import LayerRegistry from './layers/index';
@@ -337,6 +338,7 @@ class Map3D extends React.Component {
                         </div>
                         <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
                         <Map3DLight sceneContext={this.state.sceneContext} />
+                        <Measure3D sceneContext={this.state.sceneContext} />
                     </div>
                 ) : null}
             </div>
@@ -360,7 +362,8 @@ class Map3D extends React.Component {
             target: this.container,
             crs: projection,
             renderer: {
-                clearColor: 0x000000
+                clearColor: 0x000000,
+                preserveDrawingBuffer: true
             }
         });
 
