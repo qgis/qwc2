@@ -36,6 +36,7 @@
         "Logout": "Tancament de sessió",
         "MapLegend": "Llegenda",
         "Measure": "Mesurar",
+        "Measure3D": "",
         "MeasureLineString": "Mesurar una línia",
         "MeasurePolygon": "Mesurar un polígon",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": "Llegenda"
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Àrea",
       "bearingLabel": "Direcció",
+      "ground": "",
       "imperial": "",
       "lengthLabel": "Longitud",
       "metric": "",

@@ -36,6 +36,7 @@
         "Logout": "Odhlášení",
         "MapLegend": "Legenda",
         "Measure": "Měření",
+        "Measure3D": "",
         "MeasureLineString": "Změřit úsek",
         "MeasurePolygon": "Měřit mnohoúhelník",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": "Legenda"
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Plocha",
       "bearingLabel": "Střed",
+      "ground": "",
       "imperial": "Imperiálně",
       "lengthLabel": "Délka",
       "metric": "Metricky",

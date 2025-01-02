@@ -36,6 +36,7 @@
         "Logout": "Cierre de sesión",
         "MapLegend": "Leyenda",
         "Measure": "Medida",
+        "Measure3D": "",
         "MeasureLineString": "Medir una línea",
         "MeasurePolygon": "Medir un polígono",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": "Leyenda"
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Area",
       "bearingLabel": "Dirección",
+      "ground": "",
       "imperial": "",
       "lengthLabel": "Longitud",
       "metric": "",

@@ -36,6 +36,7 @@
         "Logout": "Déconnexion",
         "MapLegend": "Légende",
         "Measure": "Mesurer",
+        "Measure3D": "Mesurer",
         "MeasureLineString": "Mesurer une ligne",
         "MeasurePolygon": "Mesurer un polygone",
         "Portal": "Portail",
@@ -313,8 +314,10 @@
       "windowtitle": "Légende"
     },
     "measureComponent": {
+      "absolute": "m alt.",
       "areaLabel": "Surface",
       "bearingLabel": "Direction",
+      "ground": "m a.d.s.",
       "imperial": "Impérial",
       "lengthLabel": "Longueur",
       "metric": "Métrique",

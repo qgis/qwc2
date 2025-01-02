@@ -36,6 +36,7 @@
         "Logout": "Deconectează-te",
         "MapLegend": "Legenda",
         "Measure": "Măsoară",
+        "Measure3D": "",
         "MeasureLineString": "Măsoară o linie",
         "MeasurePolygon": "Măsoară un poligon",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": "Legenda"
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Arie",
       "bearingLabel": "Direcție",
+      "ground": "",
       "imperial": "Mărimi imperiale",
       "lengthLabel": "Lungime",
       "metric": "Mărimi metrice",

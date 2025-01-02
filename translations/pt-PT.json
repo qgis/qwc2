@@ -36,6 +36,7 @@
         "Logout": "Terminar Sessão",
         "MapLegend": "Legenda do Mapa",
         "Measure": "Medir",
+        "Measure3D": "",
         "MeasureLineString": "Medir Linha",
         "MeasurePolygon": "Medir Polígono",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": "Legenda do Mapa"
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Área",
       "bearingLabel": "Direção",
+      "ground": "",
       "imperial": "Imperial",
       "lengthLabel": "Comprimento",
       "metric": "Métrico",

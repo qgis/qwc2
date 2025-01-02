@@ -36,6 +36,7 @@
         "Logout": "Kirjaudu ulos",
         "MapLegend": "",
         "Measure": "Mittaa",
+        "Measure3D": "",
         "MeasureLineString": "Mittaa viiva",
         "MeasurePolygon": "Mittaa monikulmion",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": ""
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Alue",
       "bearingLabel": "Suunta",
+      "ground": "",
       "imperial": "",
       "lengthLabel": "Pituus",
       "metric": "",

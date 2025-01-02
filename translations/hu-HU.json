@@ -36,6 +36,7 @@
         "Logout": "",
         "MapLegend": "",
         "Measure": "Mérés",
+        "Measure3D": "",
         "MeasureLineString": "Mérési vonal",
         "MeasurePolygon": "Mérési sokszög",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": ""
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Terület",
       "bearingLabel": "Szög",
+      "ground": "",
       "imperial": "",
       "lengthLabel": "Hossz",
       "metric": "",

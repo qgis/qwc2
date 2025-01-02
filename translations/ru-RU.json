@@ -36,6 +36,7 @@
         "Logout": "",
         "MapLegend": "",
         "Measure": "Измерения",
+        "Measure3D": "",
         "MeasureLineString": "измерить линию",
         "MeasurePolygon": "измерить многоугольник",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": ""
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Площадь",
       "bearingLabel": "Пеленг",
+      "ground": "",
       "imperial": "",
       "lengthLabel": "Длина",
       "metric": "",

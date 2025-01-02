@@ -36,6 +36,7 @@
         "Logout": "Logg ut",
         "MapLegend": "",
         "Measure": "Mål",
+        "Measure3D": "",
         "MeasureLineString": "Måle en linje",
         "MeasurePolygon": "Måle en polygon",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": ""
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Areal",
       "bearingLabel": "Orientering",
+      "ground": "",
       "imperial": "",
       "lengthLabel": "Lengde",
       "metric": "",

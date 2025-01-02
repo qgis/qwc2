@@ -36,6 +36,7 @@
         "Logout": "Çıkış",
         "MapLegend": "Harita Lejandı",
         "Measure": "Ölç",
+        "Measure3D": "",
         "MeasureLineString": "Çizgi Ölç",
         "MeasurePolygon": "Alan Ölç",
         "Portal": "Portal",
@@ -313,8 +314,10 @@
       "windowtitle": "Lejant"
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Alan",
       "bearingLabel": "Doğrultu",
+      "ground": "",
       "imperial": "Imperial",
       "lengthLabel": "Uzunluk",
       "metric": "Metrik",

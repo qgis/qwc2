@@ -36,6 +36,7 @@
         "Logout": "Wyloguj",
         "MapLegend": "",
         "Measure": "Pomiary",
+        "Measure3D": "",
         "MeasureLineString": "Zmierzyć linię",
         "MeasurePolygon": "Zmierzyć wielokąt",
         "Portal": "",
@@ -313,8 +314,10 @@
       "windowtitle": ""
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Obszar",
       "bearingLabel": "Bearing",
+      "ground": "",
       "imperial": "",
       "lengthLabel": "Odległość",
       "metric": "",
