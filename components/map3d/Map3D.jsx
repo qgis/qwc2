@@ -23,6 +23,7 @@ import {Vector2, Vector3, CubeTextureLoader} from 'three';
 import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
 
 import {LayerRole} from '../../actions/layers';
+import {setMapCrs} from '../../actions/map3d';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
@@ -43,9 +44,11 @@ class Map3D extends React.Component {
         innerRef: PropTypes.func,
         layers: PropTypes.array,
         mapBBox: PropTypes.object,
+        mapMargins: PropTypes.object,
         options: PropTypes.object,
         projection: PropTypes.string,
         searchProviders: PropTypes.object,
+        setMapCrs: PropTypes.func,
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -295,9 +298,15 @@ class Map3D extends React.Component {
     };
     render() {
         const baseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true);
+        const style = {
+            marginTop: this.props.mapMargins.top,
+            marginRight: this.props.mapMargins.right,
+            marginBottom: this.props.mapMargins.bottom,
+            marginLeft: this.props.mapMargins.left
+        };
         return (
             <div className="map3d-body">
-                <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} />
+                <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
                 {this.state.sceneContext.scene ? (
                     <div>
                         <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
@@ -344,6 +353,8 @@ class Map3D extends React.Component {
             this.disposeInstance();
         }
         const projection = this.props.projection;
+        this.props.setMapCrs(projection);
+
         // Setup instance
         this.instance = new Instance({
             target: this.container,
@@ -690,5 +701,7 @@ class Map3D extends React.Component {
 }
 
 export default connect((state) => ({
+    mapMargins: state.windows.mapMargins
 }), {
+    setMapCrs: setMapCrs
 })(Map3D);

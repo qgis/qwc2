@@ -7,30 +7,35 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
+import {setTopbarHeight} from '../../actions/map';
 import AppMenu from '../AppMenu';
 import Icon from '../Icon';
 import SearchField3D from './SearchField3D';
 
 import './style/TopBar3D.css';
 
-export default class TopBar3D extends React.Component {
+
+class TopBar3D extends React.Component {
     static propTypes = {
         options: PropTypes.object,
         sceneContext: PropTypes.object,
-        searchProviders: PropTypes.object
+        searchProviders: PropTypes.object,
+        setTopbarHeight: PropTypes.func
     };
     state = {
     };
     render() {
         const menuItems = [
             {key: "LayerTree3D", icon: "layers"},
+            {key: "Measure3D", icon: "measure"},
             {key: "DateTime3D", icon: "clock"}
         ];
         return (
-            <div className="map3d-topbar">
+            <div className="map3d-topbar" ref={this.storeHeight}>
                 <SearchField3D options={this.props.options} sceneContext={this.props.sceneContext} searchProviders={this.props.searchProviders} />
                 <span className="map3d-topbar-spacer" />
                 <AppMenu appMenuClearsTask buttonContents={this.menuButtonContents()} menuItems={menuItems} />
@@ -44,4 +49,13 @@ export default class TopBar3D extends React.Component {
             </span>
         );
     };
+    storeHeight = (el) => {
+        if (el) {
+            this.props.setTopbarHeight(el.clientHeight);
+        }
+    };
 }
+
+export default connect(() => {}, {
+    setTopbarHeight: setTopbarHeight
+})(TopBar3D);

@@ -7,18 +7,21 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 import {Raycaster, Vector2} from 'three';
 
+import {setBottombarHeight} from '../../actions/map';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 
 import './style/BottomBar3D.css';
 
 
-export default class BottomBar3D extends React.Component {
+class BottomBar3D extends React.Component {
     static propTypes = {
-        sceneContext: PropTypes.object
+        sceneContext: PropTypes.object,
+        setBottombarHeight: PropTypes.func
     };
     state = {
         cursorPosition: null,
@@ -32,7 +35,7 @@ export default class BottomBar3D extends React.Component {
     }
     render() {
         return (
-            <div className="map3d-bottombar">
+            <div className="map3d-bottombar" ref={this.storeHeight}>
                 <div className="map3d-bottombar-progress">
                     <div className="map3d-bottombar-progressbar" style={{width: this.state.progress}} />
                     <div className="map3d-bottombar-progress-label">{this.state.progress}</div>
@@ -69,4 +72,13 @@ export default class BottomBar3D extends React.Component {
             this.setState({cursorPosition: [p.x, p.y, p.z]});
         }
     };
+    storeHeight = (el) => {
+        if (el) {
+            this.props.setBottombarHeight(el.clientHeight);
+        }
+    };
 }
+
+export default connect(() => {}, {
+    setBottombarHeight: setBottombarHeight
+})(BottomBar3D);
