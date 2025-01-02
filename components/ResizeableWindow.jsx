@@ -97,34 +97,8 @@ class ResizeableWindow extends React.Component {
         this.rnd = null;
         this.dragShield = null;
         this.id = uuidv1();
-        const canvasHeight = window.innerHeight - this.props.bottombarHeight - this.props.topbarHeight;
-        const width = Math.min(props.initialWidth, window.innerWidth);
-        const height = Math.min(props.initialHeight, canvasHeight);
-        if (WINDOW_GEOMETRIES[props.title]) {
-            this.state.geometry = WINDOW_GEOMETRIES[props.title];
-        } else {
-            this.state.geometry = {
-                x: props.initialX !== null ? this.computeInitialX(props.initialX) : Math.max(0, Math.round(0.5 * (window.innerWidth - width))),
-                y: props.initialY !== null ? this.computeInitialY(props.initialY) : Math.max(0, Math.round(0.5 * (canvasHeight - height))),
-                width: width,
-                height: height,
-                docked: props.initiallyDocked
-            };
-        }
-        if (props.splitScreenWhenDocked && this.state.geometry.docked) {
-            const dockSide = props.dockable === true ? "left" : props.dockable;
-            const dockSize = ["left", "right"].includes(dockSide) ? this.state.geometry.width : this.state.geometry.height;
-            props.setSplitScreen(this.id, dockSide, dockSize, props.splitTopAndBottomBar);
-        }
         this.portalNode = props.usePortal ? portals.createHtmlPortalNode() : null;
     }
-    computeInitialX = (x) => {
-        return x > 0 || Object.is(x, 0) ? x : window.innerWidth - this.props.initialWidth - Math.abs(x);
-    };
-    computeInitialY = (y) => {
-        const canvasHeight = window.innerHeight - this.props.bottombarHeight - this.props.topbarHeight;
-        return y > 0 || Object.is(y, 0) ? y : canvasHeight - this.props.initialHeight - Math.abs(y);
-    };
     componentDidMount() {
         this.props.registerWindow(this.id);
         this.props.onGeometryChanged(this.state.geometry);
@@ -139,6 +113,9 @@ class ResizeableWindow extends React.Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
+        if (!this.state.geometry || !prevState.geometry) {
+            return;
+        }
         if (this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
             this.props.onGeometryChanged(this.state.geometry);
             this.rnd.updatePosition(this.state.geometry);
@@ -250,20 +227,10 @@ class ResizeableWindow extends React.Component {
             </div>
         );
     };
-    renderInternalWindow = () => {
-        const maximized = this.state.geometry.maximized ? true : false;
-        const minimized = this.state.geometry.minimized ? true : false;
-        const docked = this.state.geometry.docked;
-        const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
+    renderInternalWindowContainer = () => {
+        const docked = this.state.geometry?.docked ?? this.props.initiallyDocked;
+        const maximized = this.state.geometry?.maximized ?? false;
         const splitTopAndBottomBar = this.props.splitTopAndBottomBar && this.props.splitScreenWhenDocked && (docked || maximized);
-
-        const bodyclasses = classnames({
-            "resizeable-window-body": true,
-            "resizeable-window-body-scrollable": this.props.scrollable,
-            "resizeable-window-body-nonscrollable": !this.props.scrollable,
-            "resizeable-window-nodrag": true
-        });
-
         const marginLeft = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.left : 0;
         const marginRight = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.right : 0;
         const containerStyle = {
@@ -274,6 +241,23 @@ class ResizeableWindow extends React.Component {
             bottom: splitTopAndBottomBar ? 0 : this.props.bottombarHeight + 'px',
             zIndex: splitTopAndBottomBar ? 110 : this.props.baseZIndex + this.props.windowStacking.findIndex(item => item === this.id)
         };
+        return (
+            <div className="resizeable-window-container" key="InternalWindow" ref={this.setInitialSize} style={containerStyle}>
+                {this.state.geometry ? this.renderInternalWindow() : null}
+            </div>
+        );
+    };
+    renderInternalWindow = () => {
+        const maximized = this.state.geometry.maximized ? true : false;
+        const minimized = this.state.geometry.minimized ? true : false;
+        const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
+
+        const bodyclasses = classnames({
+            "resizeable-window-body": true,
+            "resizeable-window-body-scrollable": this.props.scrollable,
+            "resizeable-window-body-nonscrollable": !this.props.scrollable,
+            "resizeable-window-nodrag": true
+        });
 
         const windowclasses = classnames({
             "resizeable-window": true,
@@ -307,32 +291,61 @@ class ResizeableWindow extends React.Component {
             };
         }
         return (
-            <div className="resizeable-window-container" key="InternalWindow" style={containerStyle}>
-                <Rnd bounds="parent" cancel=".resizeable-window-nodrag"
-                    className={windowclasses} default={this.state.geometry}
-                    disableDragging={maximized || this.state.geometry.docked} enableResizing={resizeMode}
-                    maxHeight={this.props.maxHeight || window.innerHeight} maxWidth={this.props.maxWidth || window.innerWidth}
-                    minHeight={this.props.minHeight} minWidth={this.props.minWidth}
-                    onDragStart={this.onDragStart}
-                    onDragStop={this.onDragStop}
-                    onMouseDown={() => this.props.raiseWindow(this.id)}
-                    onResizeStop={this.onResizeStop}
-                    ref={this.initRnd}
-                >
-                    <div className="resizeable-window-contents">
-                        {this.renderTitleBar()}
-                        <div className={bodyclasses} onMouseDown={() => this.props.raiseWindow(this.id)}>
-                            <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
-                            {this.portalNode ? (
-                                <div className="resizeable-window-portal-container">
-                                    <portals.OutPortal node={this.portalNode} />
-                                </div>
-                            ) : this.renderRole("body")}
-                        </div>
+            <Rnd bounds="parent" cancel=".resizeable-window-nodrag"
+                className={windowclasses} default={this.state.geometry}
+                disableDragging={maximized || this.state.geometry.docked} enableResizing={resizeMode}
+                maxHeight={this.props.maxHeight || "100%"} maxWidth={this.props.maxWidth || "100%"}
+                minHeight={this.props.minHeight} minWidth={this.props.minWidth}
+                onDragStart={this.onDragStart}
+                onDragStop={this.onDragStop}
+                onMouseDown={() => this.props.raiseWindow(this.id)}
+                onResizeStop={this.onResizeStop}
+                ref={this.initRnd}
+            >
+                <div className="resizeable-window-contents">
+                    {this.renderTitleBar()}
+                    <div className={bodyclasses} onMouseDown={() => this.props.raiseWindow(this.id)}>
+                        <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
+                        {this.portalNode ? (
+                            <div className="resizeable-window-portal-container">
+                                <portals.OutPortal node={this.portalNode} />
+                            </div>
+                        ) : this.renderRole("body")}
                     </div>
-                </Rnd>
-            </div>
+                </div>
+            </Rnd>
         );
+    };
+    setInitialSize = (container) => {
+        if (!container) {
+            return;
+        }
+        const width = Math.min(this.props.initialWidth, container.offsetWidth);
+        const height = Math.min(this.props.initialHeight, container.offsetHeight);
+        let geometry = null;
+        if (WINDOW_GEOMETRIES[this.props.title]) {
+            geometry = WINDOW_GEOMETRIES[this.props.title];
+        } else {
+            geometry = {
+                x: this.props.initialX !== null ? this.computeInitialX(container, this.props.initialX) : Math.max(0, Math.round(0.5 * (container.offsetWidth - width))),
+                y: this.props.initialY !== null ? this.computeInitialY(container, this.props.initialY) : Math.max(0, Math.round(0.5 * (container.offsetHeight - height))),
+                width: width,
+                height: height,
+                docked: this.props.initiallyDocked
+            };
+        }
+        if (this.props.splitScreenWhenDocked && geometry.docked) {
+            const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
+            const dockSize = ["left", "right"].includes(dockSide) ? geometry.width : geometry.height;
+            this.props.setSplitScreen(this.id, dockSide, dockSize, this.props.splitTopAndBottomBar);
+        }
+        this.setState({geometry: geometry});
+    };
+    computeInitialX = (container, x) => {
+        return x > 0 || Object.is(x, 0) ? x : container.offsetWidth - this.props.initialWidth - Math.abs(x);
+    };
+    computeInitialY = (container, y) => {
+        return y > 0 || Object.is(y, 0) ? y : container.offsetHeight - this.props.initialHeight - Math.abs(y);
     };
     renderExternalWindow = () => {
         return ReactDOM.createPortal((
@@ -354,7 +367,7 @@ class ResizeableWindow extends React.Component {
         ) : null, this.state.externalWindow ? (
             this.renderExternalWindow()
         ) : (
-            this.renderInternalWindow()
+            this.renderInternalWindowContainer()
         )];
     }
     initRnd = (el) => {
