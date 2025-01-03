@@ -25,20 +25,18 @@ export default class LayerTree3D extends React.Component {
     render() {
         return (
             <div>
-                <SideBar
-                    icon="layers"
-                    id="LayerTree3D"
+                <SideBar icon="layers" id="LayerTree3D"
                     title={LocaleUtils.tr("appmenu.items.LayerTree3D")}
                     width="20em"
                 >
                     {() => ({
-                        body: this.renderDrapedLayerEntries()
+                        body: this.renderBody()
                     })}
                 </SideBar>
             </div>
         );
     }
-    renderDrapedLayerEntries = () => {
+    renderBody = () => {
         const sceneContext = this.props.sceneContext;
         return (
             <div className="layertree-item-container">
