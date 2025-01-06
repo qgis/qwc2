@@ -55,7 +55,7 @@ export default class LayerTree3D extends React.Component {
                                 icon={entry.visible ? "checked" : "unchecked"}
                                 onClick={() => sceneContext.updateSceneObject(objectId, {visible: !entry.visible})}
                             />
-                            <span className="layertree3d-item-title" title={objectId}>{objectId}</span>
+                            <span className="layertree3d-item-title" title={entry.title ?? objectId}>{entry.title ?? objectId}</span>
                             <span className="layertree3d-item-transparency">
                                 <input className="layertree3d-item-transparency-slider" max="100" min="0"
                                     onChange={(ev) => sceneContext.updateSceneObject(objectId, {opacity: parseInt(ev.target.value, 10) / 100})}
