@@ -32,6 +32,7 @@ class TopBar3D extends React.Component {
         const menuItems = [
             {key: "LayerTree3D", icon: "layers"},
             {key: "Measure3D", icon: "measure"},
+            {key: "Compare3D", icon: "compare"},
             {key: "DateTime3D", icon: "clock"}
         ];
         return (

@@ -1,0 +1,57 @@
+#Compare3D div.compare3d-title {
+    display: flex;
+    align-items: center;
+    padding: 0 0.125em;
+}
+
+#Compare3D div.compare3d-title > span.icon {
+    margin-right: 0.5em;
+}
+
+#Compare3D div.compare3d-objects {
+    display: flex;
+    background-color: var(--list-bg-color);
+    margin: 0.25em;
+}
+
+#Compare3D div.compare3d-section {
+    flex: 1 1 auto;
+    border: 1px solid var(--border-color);
+}
+
+#Compare3D div.compare3d-section:first-child {
+    border-right: 1px solid var(--border-color);
+}
+
+#Compare3D div.compare3d-section:last-child {
+    border-left: 1px solid var(--border-color);
+}
+
+#Compare3D div.compare3d-item {
+    display: flex;
+    align-items: center;
+    padding: 0.25em;
+}
+
+#Compare3D div.compare3d-item-toggleall {
+    border-bottom: 1px solid var(--border-color);
+}
+
+#Compare3D span.compare3d-item-checkbox {
+    margin-right: 0.5em;
+    flex: 0 0 auto;
+}
+
+#Compare3D div.compare3d-title {
+    font-weight: bold;
+    margin: 0.25em;
+}
+
+#Compare3D table.compare3d-planeconfig {
+    width: 100%;
+    margin-bottom: 0.25em;
+}
+
+#Compare3D table.compare3d-planeconfig td {
+    padding: 0 0.25em 0 0.5em;
+}

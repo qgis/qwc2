@@ -12,6 +12,7 @@
       "filter": "Filtrer le menu...",
       "items": {
         "Bookmark": "Marque-pages",
+        "Compare3D": "Comparer",
         "DateTime3D": "Date et heure",
         "Editing": "Editer",
         "Help": "Aide",
@@ -94,6 +95,11 @@
       "scale_label": "Echelle",
       "terms_label": "Conditions d'utilisation",
       "viewertitle_label": ""
+    },
+    "compare3d": {
+      "clipplane": "Plan d'écrêtage",
+      "compare_objects": "Comparer objets",
+      "toggleall": "Tous"
     },
     "cookiepopup": {
       "accept": "Accepter",
@@ -277,6 +283,7 @@
     },
     "map3d": {
       "syncview": "Synchroniser la vue",
+      "terrain": "Terrain",
       "title": "Vue 3D"
     },
     "mapexport": {

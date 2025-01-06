@@ -12,6 +12,7 @@
       "filter": "",
       "items": {
         "Bookmark": "Marcaj",
+        "Compare3D": "",
         "DateTime3D": "",
         "Editing": "Editare",
         "Help": "Ajutor",
@@ -94,6 +95,11 @@
       "scale_label": "Scara",
       "terms_label": "Termeni de utilizare",
       "viewertitle_label": "Despre"
+    },
+    "compare3d": {
+      "clipplane": "",
+      "compare_objects": "",
+      "toggleall": ""
     },
     "cookiepopup": {
       "accept": "",
@@ -277,6 +283,7 @@
     },
     "map3d": {
       "syncview": "",
+      "terrain": "",
       "title": ""
     },
     "mapexport": {

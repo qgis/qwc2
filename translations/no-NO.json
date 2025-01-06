@@ -12,6 +12,7 @@
       "filter": "",
       "items": {
         "Bookmark": "",
+        "Compare3D": "",
         "DateTime3D": "",
         "Editing": "Rediger",
         "Help": "Hjelp",
@@ -94,6 +95,11 @@
       "scale_label": "Skala",
       "terms_label": "Vilkår",
       "viewertitle_label": ""
+    },
+    "compare3d": {
+      "clipplane": "",
+      "compare_objects": "",
+      "toggleall": ""
     },
     "cookiepopup": {
       "accept": "",
@@ -277,6 +283,7 @@
     },
     "map3d": {
       "syncview": "",
+      "terrain": "",
       "title": ""
     },
     "mapexport": {

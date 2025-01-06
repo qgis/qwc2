@@ -12,6 +12,7 @@
       "filter": "",
       "items": {
         "Bookmark": "",
+        "Compare3D": "",
         "DateTime3D": "",
         "Editing": "Правка",
         "Help": "Помощь",
@@ -94,6 +95,11 @@
       "scale_label": "Масштаб",
       "terms_label": "Условия использования",
       "viewertitle_label": "Домашняя страница"
+    },
+    "compare3d": {
+      "clipplane": "",
+      "compare_objects": "",
+      "toggleall": ""
     },
     "cookiepopup": {
       "accept": "",
@@ -277,6 +283,7 @@
     },
     "map3d": {
       "syncview": "",
+      "terrain": "",
       "title": ""
     },
     "mapexport": {

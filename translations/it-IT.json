@@ -12,6 +12,7 @@
       "filter": "Filtra menù...",
       "items": {
         "Bookmark": "Segnalibri",
+        "Compare3D": "Confronta",
         "DateTime3D": "Data e ora",
         "Editing": "Strumenti di modifica",
         "Help": "Aiuto",
@@ -94,6 +95,11 @@
       "scale_label": "Scala",
       "terms_label": "Condizioni di uso",
       "viewertitle_label": ""
+    },
+    "compare3d": {
+      "clipplane": "Piano di taglio",
+      "compare_objects": "Confronta oggetti",
+      "toggleall": "Tutti"
     },
     "cookiepopup": {
       "accept": "Accetta",
@@ -277,6 +283,7 @@
     },
     "map3d": {
       "syncview": "Sincronizza visuale",
+      "terrain": "Terreno",
       "title": "Visuale 3D"
     },
     "mapexport": {

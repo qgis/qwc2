@@ -12,6 +12,7 @@
       "filter": "Filtre menüsü...",
       "items": {
         "Bookmark": "Yer işaretleri",
+        "Compare3D": "",
         "DateTime3D": "",
         "Editing": "Düzenleme",
         "Help": "Yardım",
@@ -94,6 +95,11 @@
       "scale_label": "Ölçek",
       "terms_label": "Kullanım Şartları",
       "viewertitle_label": "QWC2"
+    },
+    "compare3d": {
+      "clipplane": "",
+      "compare_objects": "",
+      "toggleall": ""
     },
     "cookiepopup": {
       "accept": "Kabul",
@@ -277,6 +283,7 @@
     },
     "map3d": {
       "syncview": "",
+      "terrain": "",
       "title": ""
     },
     "mapexport": {

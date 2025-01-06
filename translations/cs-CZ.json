@@ -12,6 +12,7 @@
       "filter": "Hledat v menu...",
       "items": {
         "Bookmark": "Záložky",
+        "Compare3D": "",
         "DateTime3D": "",
         "Editing": "Úpravy",
         "Help": "Nápověda",
@@ -94,6 +95,11 @@
       "scale_label": "Měřítko",
       "terms_label": "Podmínky použití",
       "viewertitle_label": ""
+    },
+    "compare3d": {
+      "clipplane": "",
+      "compare_objects": "",
+      "toggleall": ""
     },
     "cookiepopup": {
       "accept": "",
@@ -277,6 +283,7 @@
     },
     "map3d": {
       "syncview": "",
+      "terrain": "",
       "title": ""
     },
     "mapexport": {

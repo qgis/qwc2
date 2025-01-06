@@ -12,6 +12,7 @@
       "filter": "",
       "items": {
         "Bookmark": "",
+        "Compare3D": "",
         "DateTime3D": "",
         "Editing": "Szerkesztés",
         "Help": "Segítség",
@@ -94,6 +95,11 @@
       "scale_label": "Méretarány",
       "terms_label": "Használati feltételek",
       "viewertitle_label": ""
+    },
+    "compare3d": {
+      "clipplane": "",
+      "compare_objects": "",
+      "toggleall": ""
     },
     "cookiepopup": {
       "accept": "",
@@ -277,6 +283,7 @@
     },
     "map3d": {
       "syncview": "",
+      "terrain": "",
       "title": ""
     },
     "mapexport": {
