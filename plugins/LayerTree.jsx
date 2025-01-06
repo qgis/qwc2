@@ -421,23 +421,26 @@ class LayerTree extends React.Component {
             }, {once: true});
         }
     };
-    renderLayerTree = (layer) => {
-        if (layer.role === LayerRole.BACKGROUND || layer.layertreehidden) {
-            return null;
-        } else if (!Array.isArray(layer.sublayers)) {
-            return this.renderLayer(layer, layer, [], layer.visibility);
-        } else if (this.props.showRootEntry) {
-            return this.renderLayerGroup(layer, layer, [], layer.visibility);
-        } else {
-            return layer.sublayers.map((sublayer, idx) => {
-                const subpath = [idx];
-                if (sublayer.sublayers) {
-                    return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility);
-                } else {
-                    return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, true);
-                }
-            });
-        }
+    renderLayerTree = (layers) => {
+        const havesublayers = this.props.showRootEntry ? true : layers.find(layer => {
+            (layer.sublayers || []).find(sublayer => !isEmpty(sublayer.sublayers));
+        }) !== undefined;
+        return layers.map(layer => {
+            if (isEmpty(layer.sublayers)) {
+                return this.renderLayer(layer, layer, [], layer.visibility, false, !havesublayers);
+            } else if (this.props.showRootEntry) {
+                return this.renderLayerGroup(layer, layer, [], layer.visibility);
+            } else {
+                return layer.sublayers.map((sublayer, idx) => {
+                    const subpath = [idx];
+                    if (sublayer.sublayers) {
+                        return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility);
+                    } else {
+                        return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, !havesublayers);
+                    }
+                });
+            }
+        });
     };
     renderBody = () => {
         const maptipcheckboxstate = this.props.mapTipsEnabled === true ? 'checked' : 'unchecked';
@@ -479,6 +482,7 @@ class LayerTree extends React.Component {
         }
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         const sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true || flattenGroups === true);
+        const treelayers = this.props.layers.filter(layer => layer.role !== LayerRole.BACKGROUND && !layer.layertreehidden);
         return (
             <div className="layertree-container-wrapper" role="body">
                 <div className="layertree-container">
@@ -503,7 +507,7 @@ class LayerTree extends React.Component {
                         ref={MiscUtils.setupKillTouchEvents}
                     >
                         <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
-                            {this.props.layers.map(this.renderLayerTree)}
+                            {this.renderLayerTree(treelayers)}
                         </Sortable>
                     </div>
                     {maptipCheckbox}
