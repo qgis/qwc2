@@ -144,7 +144,7 @@ export default class NumberInput extends React.Component {
         if (this.props.max) {
             value = Math.min(this.props.max, value);
         }
-        const k = Math.pow(10, this.decimals);
+        const k = Math.pow(10, this.props.decimals);
         return Math.round(value * k) / k;
     };
     setupSelectionListener = (event) => {
