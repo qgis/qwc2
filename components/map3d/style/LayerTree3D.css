@@ -1,39 +1,40 @@
-#LayerTree3D div.layertree-item-container {
+#LayerTree3D div.layertree3d-item-container {
     padding: 0.25em 0.25em 0.25em 0.5em;
 }
 
-#LayerTree3D span.layertree-item-checkbox {
-    margin-right: 0.5em;
-    flex: 0 0 auto;
-}
 
-#LayerTree3D div.layertree-item {
+#LayerTree3D div.layertree3d-item {
     display: flex;
     align-items: center;
     height: 1.75em;
 }
 
-#LayerTree3D div.layertree-item-disabled > span.layertree-item-title {
+#LayerTree3D span.layertree3d-item-checkbox {
+    margin-right: 0.5em;
+    flex: 0 0 auto;
+}
+
+#LayerTree3D div.layertree3d-item-disabled > span.layertree3d-item-title {
     color: var(--text-color-disabled);
 }
 
-#LayerTree3D span.layertree-item-title {
+#LayerTree3D span.layertree3d-item-title {
     flex: 1 1 auto;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-#LayerTree3D span.layertree-item-transparency {
+#LayerTree3D span.layertree3d-item-transparency {
     flex: 0 0 5em;
     margin: 0 0.5em;
 }
 
-#LayerTree3D input.layertree-item-transparency-slider {
+#LayerTree3D input.layertree3d-item-transparency-slider {
     width: 100%;
 }
 
-#LayerTree3D div.layertree-section {
+#LayerTree3D div.layertree3d-section {
     font-weight: bold;
     margin-left: -0.25em;
 }
