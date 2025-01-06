@@ -19,3 +19,8 @@ span.icon_xlarge:before {
 .icon_clickable {
     cursor: pointer;
 }
+
+.icon_disabled {
+    cursor: default;
+    color: var(--text-color-disabled);
+}

@@ -12,13 +12,13 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import ConfigUtils from '../utils/ConfigUtils';
-import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/Icon.css';
 
 export default class Icon extends React.Component {
     static propTypes = {
         className: PropTypes.string,
+        disabled: PropTypes.bool,
         icon: PropTypes.string,
         onClick: PropTypes.func,
         onMouseDown: PropTypes.func,
@@ -33,16 +33,17 @@ export default class Icon extends React.Component {
     render() {
         const classes = classnames({
             icon: true,
+            icon_disabled: this.props.disabled,
+            icon_clickable: !!this.props.onClick || !!this.props.onMouseDown,
             ["icon-" + this.props.icon]: true,
             ["icon_" + this.props.size]: !!this.props.size,
-            [this.props.className]: !!this.props.className,
-            icon_clickable: !!this.props.onClick || !!this.props.onMouseDown
+            [this.props.className]: !!this.props.className
         });
         if (this.props.icon.startsWith(":/")) {
             const assetsPath = ConfigUtils.getAssetsPath();
             const src = assetsPath + this.props.icon.substr(1);
             return (
-                <img alt={this.props.title} className={classes} onClick={this.props.onClick}
+                <img alt={this.props.title} className={classes} onClick={this.props.disabled ? null : this.props.onClick}
                     onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
                     src={src} title={this.props.title || undefined}
                 />
