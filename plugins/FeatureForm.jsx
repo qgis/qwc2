@@ -32,12 +32,12 @@ import './style/FeatureForm.css';
  *
  * The attribute form is generated from the QGIS attribute form configuration.
  *
- * If the dataset it editable, allows editing the attributes directly in the
- * displayed form.
- *
  * This plugin queries the feature via the editing service specified by
  * `editServiceUrl` in `config.json` (by default the `qwc-data-service`), rather than over WMS
  * GetFeatureInfo like the `Identify` plugin.
+ *
+ * You need to create and permit `Data` resources for datasets which should be queryable via `FeatureForm`.
+ * If the dataset it editable, the feature attributes can be edited directly in the displayed form.
  *
  * Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` in `config.json`.
  */
