@@ -151,6 +151,10 @@ export default function layers(state = defaultState, action) {
             layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
         };
         LayerUtils.addUUIDs(newLayer);
+        if (newLayer.type === "wms") {
+            // Propagate opacity to children (same behaviour as LayerTree)
+            propagateLayerProperty(newLayer, "opacity", newLayer.opacity);
+        }
         if (action.beforename) {
             newLayers = LayerUtils.insertLayer(newLayers, newLayer, "name", action.beforename);
         } else {
