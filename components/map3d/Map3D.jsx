@@ -458,7 +458,7 @@ class Map3D extends React.Component {
             tiles.userData.layertree = true;
             this.instance.add(tiles);
             this.objectMap[entry.name] = tiles;
-            sceneObjects[entry.name] = {visible: true, opacity: 100, layertree: true};
+            sceneObjects[entry.name] = {visible: true, opacity: 100, layertree: true, title: entry.title ?? entry.name};
         });
 
         this.setState(state => ({
