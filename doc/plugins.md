@@ -478,7 +478,8 @@ with containing a container element with id=legendcontainer.
 | enableLegendPrint | `bool` | Whether to enable the legend print functionality. | `true` |
 | enableServiceInfo | `bool` | Whether to display a service info button to display the WMS service metadata. | `true` |
 | enableVisibleFilter | `bool` | Whether to display a button to filter invisible layers from the layertree. | `true` |
-| extraLegendParameters | `string` | Additional parameters to pass to the GetLegendGraphics request- | `undefined` |
+| extraLegendParameters | `string` | Additional parameters to pass to the GetLegendGraphics request. | `undefined` |
+| fallbackDrag | `bool` | Whether to use the fallback logic for drag-and-drop. | `undefined` |
 | flattenGroups | `bool` | Whether to display a flat layer tree, omitting any groups. | `false` |
 | grayUnchecked | `bool` | Whether to display unchecked layers gray in the layertree. | `true` |
 | groupTogglesSublayers | `bool` | Whether toggling a group also toggles all sublayers. | `false` |
