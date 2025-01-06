@@ -67,8 +67,9 @@ export default {
             /* eslint-disable-next-line */
             console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
         }
+        let layer = null;
         if (!queryParameters.TILED || !options.bbox) {
-            const layer = new ol.layer.Image({
+            layer = new ol.layer.Image({
                 minResolution: options.minResolution,
                 maxResolution: options.maxResolution,
                 source: new ol.source.ImageWMS({
@@ -82,8 +83,6 @@ export default {
                 }),
                 ...(options.layerConfig || {})
             });
-            layer.set("empty", !queryParameters.LAYERS);
-            return layer;
         } else {
             const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.projection);
             const tileGrid = new ol.tilegrid.TileGrid({
@@ -92,7 +91,7 @@ export default {
                 maxZoom: map.getView().getResolutions().length,
                 resolutions: map.getView().getResolutions()
             });
-            const layer = new ol.layer.Tile({
+            layer = new ol.layer.Tile({
                 minResolution: options.minResolution,
                 maxResolution: options.maxResolution,
                 preload: ConfigUtils.getConfigProp("tilePreloadLevels", null, 0),
@@ -107,9 +106,9 @@ export default {
                 }),
                 ...(options.layerConfig || {})
             });
-            layer.set("empty", !queryParameters.LAYERS);
-            return layer;
         }
+        layer.setVisible(queryParameters.LAYERS && options.visibility);
+        return layer;
     },
     update: (layer, newOptions, oldOptions) => {
         if (oldOptions && layer?.getSource()?.updateParams) {

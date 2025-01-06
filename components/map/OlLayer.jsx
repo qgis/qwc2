@@ -47,11 +47,11 @@ class OlLayer extends React.Component {
         const oldOptions = this.makeOptions(prevProps.options);
 
         this.updateLayer(newOptions, oldOptions);
-        // WMS layer handles visibility separately
+        // WMS layer handles visibility and opacity internally
         if (newOptions.type !== "wms") {
             this.layer.setVisible(newOptions.visibility);
+            this.layer.setOpacity(newOptions.opacity / 255.0);
         }
-        this.layer.setOpacity(newOptions.opacity / 255.0);
         this.layer.setZIndex(this.props.zIndex);
 
         if (this.props.swipe !== prevProps.swipe) {
@@ -102,8 +102,11 @@ class OlLayer extends React.Component {
         }
         if (this.layer) {
             this.layer.set('id', options.id);
-            this.layer.setVisible(this.layer.get("empty") !== true && options.visibility);
-            this.layer.setOpacity(options.opacity / 255.0);
+            // WMS layer handles visibility and opacity internally
+            if (options.type !== "wms") {
+                this.layer.setVisible(this.layer.get("empty") !== true && options.visibility);
+                this.layer.setOpacity(options.opacity / 255.0);
+            }
             this.layer.setZIndex(this.props.zIndex);
             this.addLayer(this.layer, options);
         }
