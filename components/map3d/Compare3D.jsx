@@ -7,20 +7,25 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
+import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import PropTypes from 'prop-types';
-import {Plane, Vector3} from 'three';
+import {Group, Plane, Raycaster, Vector2, Vector3} from 'three';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
 import NumberInput from '../widgets/NumberInput';
+import arrowModel from './models/arrow.glb';
 
 import './style/Compare3D.css';
 
 
-export default class Compare3D extends React.Component {
+class Compare3D extends React.Component {
     static propTypes = {
+        active: PropTypes.bool,
         sceneContext: PropTypes.object
     };
     state = {
@@ -30,11 +35,42 @@ export default class Compare3D extends React.Component {
         planeY: 0,
         planeA: 0
     };
+    componentDidMount() {
+        const loader = new GLTFLoader();
+        loader.load(arrowModel, (gltf) => {
+            gltf.scene.traverse((object) => {
+                if (object.isMesh) {
+                    object.material.depthTest = false;  // Ignores depth buffer
+                    object.material.depthWrite = false; // Prevents modifying depth buffer
+                }
+            });
+            gltf.scene.renderOrder = 9999999; // Ensures it is rendered last
+
+            const leftArrow = gltf.scene.clone();
+            leftArrow.position.y = -4;
+            leftArrow.rotation.z = - 0.5 * Math.PI;
+            const rightArrow = gltf.scene.clone();
+            rightArrow.position.y = 4;
+            rightArrow.rotation.z = 0.5 * Math.PI;
+            this.arrows = new Group();
+            this.arrows.add(leftArrow);
+            this.arrows.add(rightArrow);
+        });
+    }
     componentWillUnmount() {
         this.clearClippingPlane();
+        this.arrows.traverse(obj => obj.dispose?.());
     }
     componentDidUpdate(prevProps, prevState) {
+        if (this.state.enabled && this.props.active && !prevProps.active) {
+            this.enableArrows();
+        } else if (this.state.enabled && !this.props.active && prevProps.active) {
+            this.disableArrows();
+        }
         if (this.state.enabled && this.state !== prevState) {
+            if (this.props.active && !prevState.enabled) {
+                this.enableArrows();
+            }
             // Recompute clipping plane
             this.updateClippingPlane();
         } else if (!this.state.enabled && prevState.enabled) {
@@ -48,7 +84,7 @@ export default class Compare3D extends React.Component {
         const leftPlane = new Plane();
         const rightPlane = new Plane();
         leftPlane.setFromNormalAndCoplanarPoint(normal, point);
-        rightPlane.setFromNormalAndCoplanarPoint(-normal, point);
+        rightPlane.setFromNormalAndCoplanarPoint(normal.multiplyScalar(-1), point);
         Object.entries(this.state.clippedObjects).forEach(([objectId, config]) => {
             const planes = [];
             if (config.left) {
@@ -64,6 +100,7 @@ export default class Compare3D extends React.Component {
             }
         });
         this.props.sceneContext.scene.notifyChange();
+        this.positionArrows(this.state.planeX, this.state.planeY, this.state.planeA);
     };
     clearClippingPlane = () => {
         Object.keys(this.state.clippedObjects).forEach(objectId => {
@@ -73,7 +110,86 @@ export default class Compare3D extends React.Component {
                 this.props.sceneContext.getSceneObject(objectId).clippingPlanes = [];
             }
         });
+        if (this.props.active) {
+            this.disableArrows();
+        }
         this.props.sceneContext.scene.notifyChange();
+    };
+    enableArrows = () => {
+        this.props.sceneContext.addSceneObject("__compareArrows", this.arrows);
+        this.props.sceneContext.scene.view.controls.addEventListener('change', this.centerArrowsInView);
+
+        const renderer = this.props.sceneContext.scene.renderer;
+        renderer.domElement.addEventListener("pointerdown", this.dragArrows);
+    };
+    disableArrows = () => {
+        this.props.sceneContext.scene.view.controls.removeEventListener('change', this.centerArrowsInView);
+        this.props.sceneContext.removeSceneObject("__compareArrows");
+        this.props.sceneContext.scene.renderer.domElement.removeEventListener("pointerdown", this.dragArrows);
+    };
+    dragArrows = (ev) => {
+        const mousePos = (event) => {
+            const rect = event.target.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            return new Vector2(x, y);
+        };
+        const camera = this.props.sceneContext.scene.view.camera;
+        const raycaster = new Raycaster();
+        raycaster.setFromCamera(mousePos(ev), camera);
+        const intersects = raycaster.intersectObject(this.arrows).length > 0;
+        if (!intersects) {
+            return;
+        }
+        const plane = new Plane(new Vector3(0, 0, 1), 0);
+        const startPos = raycaster.ray.intersectPlane(plane, new Vector3());
+        const planePos = new Vector2(this.state.planeX, this.state.planeY);
+        const alpha = this.state.planeA / 180 * Math.PI;
+        const planeNormal = new Vector3(Math.sin(alpha), Math.cos(alpha), 0);
+        const moveArrows = (event) => {
+            raycaster.setFromCamera(mousePos(event), camera);
+            const pos = raycaster.ray.intersectPlane(plane, new Vector3());
+            const delta = planeNormal.clone().multiplyScalar(
+                new Vector3().copy(pos.sub(startPos)).dot(planeNormal)
+            );
+            this.setState({planeX: planePos.x + delta.x, planeY: planePos.y + delta.y});
+            this.positionArrows(planePos.x + delta.x, planePos.y + delta.y, this.state.planeA);
+        };
+        this.props.sceneContext.scene.view.controls.enabled = false;
+        ev.view.addEventListener("pointermove", moveArrows);
+        ev.view.addEventListener("pointerup", () => {
+            this.props.sceneContext.scene.view.controls.enabled = true;
+            ev.view.removeEventListener("pointermove", moveArrows);
+        }, {once: true});
+    };
+    centerArrowsInView = () => {
+        const cameraTarget = this.props.sceneContext.scene.view.controls.target.clone();
+        const alpha = this.state.planeA / 180 * Math.PI;
+        const dir = new Vector3(Math.cos(alpha), -Math.sin(alpha), 0);
+        const curPos = new Vector3(this.state.planeX, this.state.planeY, 0);
+        const newPos = curPos.add(dir.multiplyScalar(cameraTarget.sub(curPos).dot(dir)));
+        this.setState({planeX: newPos.x, planeY: newPos.y});
+        this.positionArrows(newPos.x, newPos.y, this.state.planeA);
+    };
+    positionArrows = (x, y, alpha) => {
+        const target = new Vector3(x, y, 0);
+        const distance = this.props.sceneContext.scene.view.camera.position.distanceTo(target);
+        const scale = Math.max(1, distance / 200);
+
+        const coordinates = new Coordinates(this.props.sceneContext.mapCrs, x, y, 0);
+        const result = this.props.sceneContext.map.getElevation({coordinates});
+        let z = 0;
+        if (result.samples.length > 0) {
+            result.samples.sort((a, b) => a.resolution - b.resolution);
+            z = result.samples[0].elevation;
+        }
+
+        this.arrows.position.x = target.x;
+        this.arrows.position.y = target.y;
+        this.arrows.position.z = z;
+        this.arrows.rotation.z = -alpha / 180 * Math.PI;
+        this.arrows.scale.set(scale, scale, scale);
+        this.arrows.updateMatrixWorld();
     };
     render() {
         return (
@@ -115,7 +231,7 @@ export default class Compare3D extends React.Component {
                             <div className="compare3d-section" key={"compare-" + section}>
                                 <div
                                     className="compare3d-item compare3d-item-toggleall"
-                                    onClick={() => this.toggleAllObjects(section, objectIds, toggleAllValue)}
+                                    onClick={this.state.enabled ? () => this.toggleAllObjects(section, objectIds, toggleAllValue) : null}
                                     title={LocaleUtils.tr("compare3d.toggleall")}
                                 >
                                     <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={toggleAllIcon} />
@@ -125,7 +241,7 @@ export default class Compare3D extends React.Component {
                                     <div
                                         className="compare3d-item"
                                         key={objectId}
-                                        onClick={() => this.toggleObject(section, objectId)}
+                                        onClick={this.state.enabled ? () => this.toggleObject(section, objectId) : null}
                                         title={objects[objectId].title ?? objectId}
                                     >
                                         <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={clipState[objectId]?.[section] ? "unchecked" : "checked"} />
@@ -191,3 +307,9 @@ export default class Compare3D extends React.Component {
         }));
     };
 }
+
+export default connect(state => ({
+    active: state.task.id === "Compare3D"
+}), {
+
+})(Compare3D);
