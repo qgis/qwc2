@@ -52,6 +52,7 @@ class SideBar extends React.Component {
     constructor(props) {
         super(props);
         this.state.render = props.currentTask && props.currentTask.id === props.id;
+        this.sidebar = null;
     }
     componentDidUpdate(prevProps) {
         const newVisible = this.props.currentTask && this.props.currentTask.id === this.props.id;
@@ -65,8 +66,7 @@ class SideBar extends React.Component {
             setTimeout(() => { this.setState({render: false}); }, 300);
         }
         if (!this.props.heightResizeable && prevProps.heightResizeable) {
-            const sidebar = document.getElementById(this.props.id);
-            sidebar.style.height = 'initial';
+            this.sidebar.style.height = '';
         }
     }
     closeClicked = () => {
@@ -112,7 +112,7 @@ class SideBar extends React.Component {
         return (
             <div>
                 <Swipeable delta={30} onSwipedRight={this.closeClicked}>
-                    <div className={`${classes} ${this.props.extraClasses}`} id={this.props.id} style={style}>
+                    <div className={`${classes} ${this.props.extraClasses}`} id={this.props.id} ref={this.setRef} style={style}>
                         <div className={"sidebar-resize-handle sidebar-resize-handle-" + this.props.side} onMouseDown={this.startSidebarResize}/>
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}
@@ -134,39 +134,34 @@ class SideBar extends React.Component {
             </div>
         );
     }
+    setRef = (el) => {
+        this.sidebar = el;
+    };
     startSidebarResize = (ev) => {
-        const sidebar = document.getElementById(this.props.id);
-        if (!sidebar) {
-            return;
-        }
-        const startWidth = sidebar.offsetWidth;
+        const startWidth = this.sidebar.offsetWidth;
         const startMouseX = ev.clientX;
         const sign = this.props.side === 'left' ? -1 : 1;
         const resizeSidebar = (event) => {
-            sidebar.style.width = (startWidth + sign * (startMouseX - event.clientX)) + 'px';
+            this.sidebar.style.width = (startWidth + sign * (startMouseX - event.clientX)) + 'px';
         };
-        document.body.style.userSelect = 'none';
-        window.addEventListener("mousemove", resizeSidebar);
-        window.addEventListener("mouseup", () => {
-            document.body.style.userSelect = '';
-            window.removeEventListener("mousemove", resizeSidebar);
+        ev.view.document.body.style.userSelect = 'none';
+        ev.view.addEventListener("mousemove", resizeSidebar);
+        ev.view.addEventListener("mouseup", () => {
+            ev.view.document.body.style.userSelect = '';
+            ev.view.removeEventListener("mousemove", resizeSidebar);
         }, {once: true});
     };
     startSidebarBottomResize = (ev) => {
-        const sidebar = document.getElementById(this.props.id);
-        if (!sidebar) {
-            return;
-        }
-        const startHeight = sidebar.offsetHeight;
+        const startHeight = this.sidebar.offsetHeight;
         const startMouseY = ev.clientY;
         const resizeSidebar = (event) => {
-            sidebar.style.height = (startHeight + (event.clientY - startMouseY)) + 'px';
+            this.sidebar.style.height = Math.max(64, (startHeight + (event.clientY - startMouseY))) + 'px';
         };
-        document.body.style.userSelect = 'none';
-        window.addEventListener("mousemove", resizeSidebar);
-        window.addEventListener("mouseup", () => {
-            document.body.style.userSelect = '';
-            window.removeEventListener("mousemove", resizeSidebar);
+        ev.view.document.body.style.userSelect = 'none';
+        ev.view.addEventListener("mousemove", resizeSidebar);
+        ev.view.addEventListener("mouseup", () => {
+            ev.view.document.body.style.userSelect = '';
+            ev.view.removeEventListener("mousemove", resizeSidebar);
         }, {once: true});
     };
 }
