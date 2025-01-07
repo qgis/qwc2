@@ -481,6 +481,12 @@ class ResizeableWindow extends React.Component {
                     externalWindow.document.head.appendChild(styleElement);
                 }
             });
+            externalWindow.document.querySelector(':root').style.setProperty('--topbar-height',
+                document.querySelector(':root').style.getPropertyValue('--topbar-height')
+            );
+            externalWindow.document.querySelector(':root').style.setProperty('--bottombar-height',
+                document.querySelector(':root').style.getPropertyValue('--bottombar-height')
+            );
 
             this.setState({externalWindow: externalWindow});
         }, 50);
