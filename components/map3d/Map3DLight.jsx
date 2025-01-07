@@ -39,20 +39,21 @@ export default class Map3DLight extends React.Component {
         this.state.timestamp = +now;
     }
     componentDidMount() {
-        const ambientLight = new AmbientLight('white', 0.5);
-        this.props.sceneContext.addSceneObject("__ambientLight", ambientLight);
-
-        const directionalLight = new DirectionalLight(0xffffff, 1.5);
-        this.props.sceneContext.addSceneObject("__directionalLight", directionalLight);
-
-        this.props.sceneContext.scene.view.controls.addEventListener('change', () => this.updateLightPosition());
-        // Ensure light position is updated at least once per minute
-        this.lightPositionInterval = setInterval(() => this.updateLightPosition(true), 1000 * 60);
-        this.updateLightPosition();
-
+        this.componentDidUpdate({});
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.timestamp !== prevState.timestamp) {
+        if (this.props.sceneContext.scene !== prevProps.sceneContext?.scene) {
+            const ambientLight = new AmbientLight('white', 0.5);
+            this.props.sceneContext.addSceneObject("__ambientLight", ambientLight);
+
+            const directionalLight = new DirectionalLight(0xffffff, 1.5);
+            this.props.sceneContext.addSceneObject("__directionalLight", directionalLight);
+
+            this.props.sceneContext.scene.view.controls.addEventListener('change', () => this.updateLightPosition());
+            // Ensure light position is updated at least once per minute
+            this.lightPositionInterval = setInterval(() => this.updateLightPosition(true), 1000 * 60);
+            this.updateLightPosition();
+        } else if (this.state.timestamp !== prevState.timestamp) {
             this.updateLightPosition(true);
         }
     }
