@@ -225,7 +225,7 @@ class Editing extends React.Component {
         const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState((state) => ({minimized: !state.minimized}))} title={minMaxTooltip}/>);
         const attribFormVisible = !!(this.props.editContext.feature && (this.props.editContext.action === "Pick" || this.props.editContext.feature.geometry));
         return [(
-            <SideBar extraTitlebarContent={extraTitlebarContent} heightResizeable={attribFormVisible}
+            <SideBar extraTitlebarContent={extraTitlebarContent} heightResizeable={!this.state.minimized && attribFormVisible}
                 icon={"editing"} id="Editing" key="EditingSidebar" onHide={this.onHide} onShow={this.onShow}
                 side={this.props.side} title={LocaleUtils.tr("appmenu.items.Editing")} width={this.props.width}
             >
