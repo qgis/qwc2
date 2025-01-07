@@ -40,6 +40,20 @@ import LayerRegistry from './layers/index';
 
 import './style/Map3D.css';
 
+class UnloadWrapper extends React.Component {
+    onUnload = (el) => {
+        if (!el)
+            this.props.onUnload();
+    }
+    render () {
+        return (
+            <div>
+                {this.props.children}
+                <span ref={this.onUnload} />
+            </div>
+        );
+    }
+}
 
 class Map3D extends React.Component {
     static propTypes = {
@@ -114,9 +128,6 @@ class Map3D extends React.Component {
     }
     componentDidMount() {
         this.props.innerRef(this);
-    }
-    componentWillUnmount() {
-        this.disposeInstance();
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
@@ -310,7 +321,7 @@ class Map3D extends React.Component {
             <div className="map3d-body">
                 <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
                 {this.state.sceneContext.scene ? (
-                    <div>
+                    <UnloadWrapper onUnload={this.disposeInstance}>
                         <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
                         <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                         <LayerTree3D sceneContext={this.state.sceneContext} />
@@ -341,7 +352,7 @@ class Map3D extends React.Component {
                         <Map3DLight sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
                         <Compare3D sceneContext={this.state.sceneContext} />
-                    </div>
+                    </UnloadWrapper>
                 ) : null}
             </div>
         );
