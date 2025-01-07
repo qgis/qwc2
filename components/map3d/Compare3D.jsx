@@ -141,13 +141,14 @@ class Compare3D extends React.Component {
         if (!intersects) {
             return;
         }
-        const plane = new Plane(new Vector3(0, 0, 1), 0);
+        const plane = new Plane().setFromNormalAndCoplanarPoint(new Vector3(0, 0, 1), this.arrows.position);
         const startPos = raycaster.ray.intersectPlane(plane, new Vector3());
         const planePos = new Vector2(this.state.planeX, this.state.planeY);
         const alpha = this.state.planeA / 180 * Math.PI;
         const planeNormal = new Vector3(Math.sin(alpha), Math.cos(alpha), 0);
         const moveArrows = (event) => {
             raycaster.setFromCamera(mousePos(event), camera);
+            plane.setFromNormalAndCoplanarPoint(new Vector3(0, 0, 1), this.arrows.position);
             const pos = raycaster.ray.intersectPlane(plane, new Vector3());
             const delta = planeNormal.clone().multiplyScalar(
                 new Vector3().copy(pos.sub(startPos)).dot(planeNormal)
