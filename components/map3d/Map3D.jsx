@@ -501,13 +501,7 @@ class Map3D extends React.Component {
         this.instance.dispose();
         Object.values(this.objectMap).forEach(object => {
             this.instance.remove(object);
-            if (object.isMesh) {
-                object.geometry.dispose();
-                object.material.dispose();
-            }
-            if (object.dispose) {
-                object.dispose();
-            }
+            object.traverse(obj => obj.dispose?.());
         });
         this.inspector = null;
         this.map = null;
