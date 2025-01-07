@@ -102,6 +102,7 @@ class ResizeableWindow extends React.Component {
     componentDidMount() {
         this.props.registerWindow(this.id);
         this.props.onGeometryChanged(this.state.geometry);
+        window.addEventListener('beforeunload', this.closeExternalWindow, {once: true});
     }
     componentWillUnmount() {
         this.props.unregisterWindow(this.id);
@@ -111,6 +112,7 @@ class ResizeableWindow extends React.Component {
         if (this.state.externalWindow) {
             this.state.externalWindow.close();
         }
+        window.removeEventListener('beforeunload', this.closeExternalWindow);
     }
     componentDidUpdate(prevProps, prevState) {
         if (!this.state.geometry || !prevState.geometry) {
@@ -497,6 +499,11 @@ class ResizeableWindow extends React.Component {
             this.state.externalWindow.removeEventListener('resize', this.props.onExternalWindowResized, false);
             this.state.externalWindow.close();
             this.setState({externalWindow: null});
+        }
+    };
+    closeExternalWindow = () => {
+        if (this.state.externalWindow) {
+            this.state.externalWindow.close();
         }
     };
 }
