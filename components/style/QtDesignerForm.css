@@ -84,6 +84,19 @@ div.qt-designer-widget-relation {
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
+}
+
+div.qt-designer-widget-relation-resize-handle {
+    position: absolute;
+    right: -0.25em;
+    bottom: -0.25em;
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid var(--border-color);
+    border-left: 10px solid transparent;
+    z-index: 1;
+    cursor: ns-resize;
 }
 
 div.qt-designer-widget-relation-table-container {

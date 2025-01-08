@@ -610,12 +610,30 @@ class QtDesignerForm extends React.Component {
                         <button className="button qt-designer-widget-relation-add" disabled={!this.props.feature.relationValues} onClick={(ev) => this.addRelationRecord(ev, datasetname)} type="button">{LocaleUtils.tr("editing.add")}</button>
                     </div>
                 ) : null}
+                <div className="qt-designer-widget-relation-resize-handle" onMouseDown={this.startRelationTableResize} />
             </div>
         );
     };
     addRelationRecord = (ev, datasetname) => {
         this.setState({relationAddPressed: ev.target});
         this.props.addRelationRecord(datasetname);
+    };
+    startRelationTableResize = (ev) => {
+        const container = ev.target.parentElement.parentElement;
+        if (!container) {
+            return;
+        }
+        const startHeight = container.offsetHeight;
+        const startMouseY = ev.clientY;
+        const resizeInput = (event) => {
+            container.style.height = Math.max(30, (startHeight + (event.clientY - startMouseY))) + 'px';
+        };
+        document.body.style.userSelect = 'none';
+        ev.view.addEventListener("mousemove", resizeInput);
+        ev.view.addEventListener("mouseup", () => {
+            document.body.style.userSelect = '';
+            ev.view.removeEventListener("mousemove", resizeInput);
+        }, {once: true});
     };
     groupOrName = (widget) => {
         return widget.attribute && widget.attribute.buttonGroup ? widget.attribute.buttonGroup._ : widget.name;
