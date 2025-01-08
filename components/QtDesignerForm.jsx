@@ -50,6 +50,9 @@ export function removeFormPreprocessor(editLayerId) {
     delete FormPreprocessors[editLayerId];
 }
 
+const hFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
+const vFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit", "QPushButton", "QComboBox", "QLineEdit", "QSpinBox", "QDoubleSpinBox", "QSlider"];
+
 
 class QtDesignerForm extends React.Component {
     static propTypes = {
@@ -201,24 +204,21 @@ class QtDesignerForm extends React.Component {
     };
     computeLayoutColumns = (items, useIndex = false) => {
         const columns = [];
-        const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
-        let index = 0;
         let hasAuto = false;
-        const hasSpacer = items.find(item => (item.spacer && (item.spacer.property || {}).orientation === "Qt::Horizontal"));
-        for (const item of items) {
+        const hasSpacer = items.find(item => item.spacer?.property?.orientation === "Qt::Horizontal");
+        items.forEach((item, index) => {
             const col = useIndex ? index : (parseInt(item.column, 10) || 0);
             const colSpan = useIndex ? 1 : (parseInt(item.colspan, 10) || 1);
-            if (!hasSpacer && item.widget && !fitWidgets.includes(item.widget.class) && colSpan === 1) {
+            if (item.spacer?.property?.orientation === "Qt::Horizontal") {
                 columns[col] = 'auto';
                 hasAuto = true;
-            } else if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Horizontal") {
+            } else if (!hasSpacer && !hFitWidgets.includes(item.widget?.class) && colSpan === 1) {
                 columns[col] = 'auto';
                 hasAuto = true;
             } else {
-                columns[col] = columns[col] || null; // Placeholder replaced by fit-content below
+                columns[col] = columns[col] ?? null; // Placeholder replaced by fit-content below
             }
-            ++index;
-        }
+        });
         const fit = 'fit-content(' + Math.round(1 / columns.length * 100) + '%)';
         for (let col = 0; col < columns.length; ++col) {
             columns[col] = hasAuto ? (columns[col] || fit) : 'auto';
@@ -227,27 +227,23 @@ class QtDesignerForm extends React.Component {
     };
     computeLayoutRows = (items, useIndex = false) => {
         const rows = [];
-        const fitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit", "QPushButton", "QComboBox", "QLineEdit", "QSpinBox", "QDoubleSpinBox", "QSlider"];
-        let index = 0;
-        let hasAuto = false;
-        const hasSpacer = items.find(item => (item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical"));
-        for (const item of items) {
+        const hasSpacer = items.find(item => item.spacer?.property?.orientation === "Qt::Vertical");
+        items.forEach((item, index) => {
             const row = useIndex ? index : (parseInt(item.row, 10) || 0);
             const rowSpan = useIndex ? 1 : (parseInt(item.rowspan, 10) || 1);
-            if (!hasSpacer && item.widget && !fitWidgets.includes(item.widget.class) && rowSpan === 1) {
+            if (item.spacer?.property?.orientation === "Qt::Vertical" || item.widget?.name?.startsWith?.("nrel_")) {
                 rows[row] = 'auto';
-                hasAuto = true;
-            } else if (item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical") {
+            } else if (item.widget?.layout ?? item.layout) {
+                rows[row] = item.widget?.layout?.verticalFill || item.layout?.verticalFill ? 'auto' : null; // Placeholder replaced by fit-content below
+            } else if (!hasSpacer && !vFitWidgets.includes(item.widget?.class) && rowSpan === 1) {
                 rows[row] = 'auto';
-                hasAuto = true;
             } else {
-                rows[row] = rows[row] || null; // Placeholder replaced by fit-content below
+                rows[row] = rows[row] ?? null; // Placeholder replaced by fit-content below
             }
-            ++index;
-        }
+        });
         const fit = 'fit-content(' + Math.round(1 / rows.length * 100) + '%)';
         for (let row = 0; row < rows.length; ++row) {
-            rows[row] = hasAuto ? (rows[row] || fit) : 'auto';
+            rows[row] = rows[row] || fit;
         }
         return rows;
     };
@@ -679,8 +675,11 @@ class QtDesignerForm extends React.Component {
         } else {
             widget.attribute = {};
         }
+        let verticalFill = false;
         if (widget.item) {
-            MiscUtils.ensureArray(widget.item).map(item => this.reformatWidget(item, relationTables, fields, buttons, nrels, externalFields, widgets, counters));
+            MiscUtils.ensureArray(widget.item).forEach(item => {
+                verticalFill |= this.reformatWidget(item, relationTables, fields, buttons, nrels, externalFields, widgets, counters)
+            });
         }
 
         widget.name = widget.name || (":widget_" + counters.widget++);
@@ -705,37 +704,48 @@ class QtDesignerForm extends React.Component {
         widgets[widget.name] = widget;
 
         if (widget.layout) {
-            this.reformatLayout(widget.layout, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
+            verticalFill |= this.reformatLayout(widget.layout, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
         }
         if (widget.widget) {
             widget.widget = Array.isArray(widget.widget) ? widget.widget : [widget.widget];
             widget.widget.forEach(child => {
                 child.name = (":widget_" + counters.widget++);
-                this.reformatWidget(child, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
+                verticalFill |= this.reformatWidget(child, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
             });
+        }
+
+        if (widget.name.startsWith("nrel__") || (!widget.layout && !vFitWidgets.includes(widget.class))) {
+            verticalFill = true;
         }
 
         const parts = widget.name.split("__");
         if (parts.length >= 3 && parts[0] === "nrel") {
             relationTables[this.props.mapPrefix + parts[1]] = {fk: parts[2], sortcol: parts[3] || null, noreorder: parts[4] || false};
         }
+        return verticalFill;
     };
     reformatLayout = (layout, relationTables, fields, buttons, nrels, externalFields, widgets, counters) => {
         layout.item = MiscUtils.ensureArray(layout.item);
         layout.name = layout.name || (":layout_" + counters.layout++);
+        let verticalFill = false;
         layout.item.forEach(item => {
             if (!item) {
                 return;
             } else if (item.widget) {
-                this.reformatWidget(item.widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
+                verticalFill |= this.reformatWidget(item.widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
             } else if (item.spacer) {
                 item.spacer.property = MiscUtils.ensureArray(item.spacer.property).reduce((res, prop) => {
                     return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
                 }, {});
+                if (item.spacer.property.orientation === "Qt::Vertical") {
+                    verticalFill = true;
+                }
             } else if (item.layout) {
-                this.reformatLayout(item.layout, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
+                verticalFill |= this.reformatLayout(item.layout, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
             }
         });
+        layout.verticalFill = verticalFill;
+        return verticalFill;
     };
     buildErrMsg = (record) => {
         let message = record.error;
