@@ -166,9 +166,13 @@ class FeatureForm extends React.Component {
                         };
                     });
                 } else {
-                    this.setState((state) => ({
-                        pendingRequests: state.pendingRequests - 1
-                    }));
+                    this.setState((state) => {
+                        const selectedFeature = state.pendingRequests <= 1 && !state.selectedFeature ? Object.keys(state.pickedFeatures)[0] : "";
+                        return {
+                            pendingRequests: state.pendingRequests - 1,
+                            selectedFeature: selectedFeature
+                        };
+                    });
                 }
             }, this.props.filter.filterParams?.[sublayer.name], this.props.filter.filterGeom);
         });
