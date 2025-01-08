@@ -344,7 +344,7 @@ class QtDesignerForm extends React.Component {
                 </div>
             );
         } else if (widget.class === "QTextEdit" || widget.class === "QTextBrowser" || widget.class === "QPlainTextEdit") {
-            if (((feature.properties || {})[widget.name] ?? null) === null) {
+            if ((feature.properties?.[widget.name] ?? null) === null) {
                 value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
             }
             if (this.props.report) {
@@ -356,7 +356,7 @@ class QtDesignerForm extends React.Component {
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
                 const fieldId = widget.name.replace(/__upload/, '');
-                const uploadValue = ((feature.properties || {})[fieldId] || "");
+                const uploadValue = (feature.properties?.[fieldId] || "");
                 const uploadElName = elname.replace(/__upload/, '');
                 const constraints = {
                     accept: prop.text || "",
@@ -366,7 +366,7 @@ class QtDesignerForm extends React.Component {
             } else {
                 if (fieldConstraints.prec !== undefined && typeof value === 'number') {
                     value = value.toFixed(fieldConstraints.prec);
-                } else if (((feature.properties || {})[widget.name] ?? null) === null) {
+                } else if ((feature.properties?.[widget.name] ?? null) === null) {
                     value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
                 }
                 if (this.props.report) {
@@ -380,7 +380,7 @@ class QtDesignerForm extends React.Component {
         } else if (widget.class === "QCheckBox" || widget.class === "QRadioButton") {
             const type = widget.class === "QCheckBox" ? "checkbox" : "radio";
             const inGroup = attr.buttonGroup;
-            const checked = inGroup ? (this.props.feature.properties || {})[this.groupOrName(widget)] === widget.name : value;
+            const checked = inGroup ? this.props.feature.properties?.[this.groupOrName(widget)] === widget.name : value;
             return (
                 <label style={fontStyle}>
                     <input checked={checked} disabled={inputConstraints.readOnly} name={nametransform(this.groupOrName(widget))} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} {...inputConstraints} type={type} value={widget.name} />
@@ -433,7 +433,7 @@ class QtDesignerForm extends React.Component {
                 return (<input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} step={step} style={fontStyle} type="range" value={value} />);
             } else {
                 const precision = step > 0 ? Math.ceil(-Math.log10(step)) : 0;
-                value = (feature.properties || {})[widget.name] ?? null;
+                value = feature.properties?.[widget.name] ?? null;
                 return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
             }
         } else if (widget.class === "QDateEdit") {
@@ -473,7 +473,7 @@ class QtDesignerForm extends React.Component {
                     const layer = parts[1];
                     const reltable = parts.length === 4 ? parts[2] : "";
                     const attrname = parts.slice(2).join("__");
-                    value = (feature.properties || {})[attrname];
+                    value = feature.properties?.[attrname];
                     if (layer === reltable) {
                         const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
                         const reldataset = this.props.mapPrefix + reltable;
@@ -552,7 +552,7 @@ class QtDesignerForm extends React.Component {
                                     <th />
                                 </tr>
                             ) : null}
-                            {(((this.props.feature.relationValues || {})[datasetname] || {}).features || []).map((feature, idx) => {
+                            {(this.props.feature.relationValues?.[datasetname]?.features || []).map((feature, idx) => {
                                 const updateField = (name, value) => {
                                     const fieldname = name.slice(tablename.length + 2); // Strip <tablename>__ prefix
                                     this.props.updateRelationField(datasetname, idx, fieldname, value);
