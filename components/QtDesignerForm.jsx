@@ -254,21 +254,24 @@ class QtDesignerForm extends React.Component {
     renderWidget = (widget, feature, dataset, updateField, nametransform = (name) => name, disabled = false) => {
         let value = (feature.properties || {})[widget.name] ?? "";
         const prop = widget.property || {};
-        if (prop.visible === "false") {
+        if (String(prop.visible) === "false") {
             return null;
         }
         const attr = widget.attribute || {};
         const fieldConstraints = this.props.fields[widget.name]?.constraints || {};
         const inputConstraints = {};
-        inputConstraints.readOnly = this.props.readOnly || prop.readOnly === "true" || prop.enabled === "false" || fieldConstraints.readOnly === true || disabled;
-        inputConstraints.required = !inputConstraints.readOnly && (prop.required === "true" || fieldConstraints.required === true);
+        inputConstraints.readOnly = this.props.readOnly || String(prop.readOnly) === "true" || String(prop.enabled) === "false" || fieldConstraints.readOnly === true || disabled;
+        inputConstraints.required = !inputConstraints.readOnly && (String(prop.required) === "true" || String(fieldConstraints.required) === "true");
         inputConstraints.placeholder = prop.placeholderText || fieldConstraints.placeholder || "";
 
         const fontProps = prop.font || {};
         const fontStyle = {
-            fontWeight: fontProps.bold === "true" ? "bold" : "normal",
-            fontStyle: fontProps.italic === "true" ? "italic" : "normal",
-            textDecoration: [fontProps.underline === "true" ? "underline" : "", fontProps.strikeout === "true" ? "line-through" : ""].join(" "),
+            fontWeight: String(fontProps.bold) === "true" ? "bold" : "normal",
+            fontStyle: String(fontProps.italic) === "true" ? "italic" : "normal",
+            textDecoration: [
+                String(fontProps.underline) === "true" ? "underline" : "",
+                String(fontProps.strikeout) === "true" ? "line-through" : ""
+            ].join(" "),
             fontSize: Math.round((fontProps.pointsize || 9) / 9 * 100) + "%",
             textAlign: 'left'
         };
@@ -523,7 +526,7 @@ class QtDesignerForm extends React.Component {
         if (parts.length < 3) {
             return null;
         }
-        const disabled = (widget.property || {}).enabled === "false";
+        const disabled = String(widget.property?.enabled) === "false";
         const tablename = parts[1];
         const sortcol = parts[3] || null;
         const noreorder = parts[4] || false;
