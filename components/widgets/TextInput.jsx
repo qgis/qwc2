@@ -127,7 +127,7 @@ export default class TextInput extends React.Component {
                         className="text-input-resize-handle"
                         onMouseDown={this.startResize} />
                 ) : null}
-                {!this.props.multiline && !this.props.disabled && this.state.curValue ? (
+                {!this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue ? (
                     <div className="text-input-clear-icon">
                         <Icon icon="clear" onClick={() => this.props.onChange(this.props.clearValue)} />
                     </div>
