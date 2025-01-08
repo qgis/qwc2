@@ -79,6 +79,6 @@ class BottomBar3D extends React.Component {
     };
 }
 
-export default connect(() => {}, {
+export default connect(() => ({}), {
     setBottombarHeight: setBottombarHeight
 })(BottomBar3D);
