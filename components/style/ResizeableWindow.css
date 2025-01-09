@@ -92,6 +92,10 @@ div.resizeable-window-docked-bottom {
     max-width: initial!important;
 }
 
+div.resizeable-window-fit-height {
+    height: initial!important;
+}
+
 div.resizeable-window-titlebar {
     color: var(--titlebar-text-color);
     background-color: var(--titlebar-bg-color);

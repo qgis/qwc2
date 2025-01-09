@@ -40,6 +40,7 @@ class ResizeableWindow extends React.Component {
             callback: PropTypes.func.isRequired,
             title: PropTypes.string
         })),
+        fitHeight: PropTypes.bool,
         icon: PropTypes.string,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
@@ -163,7 +164,7 @@ class ResizeableWindow extends React.Component {
         if (ConfigUtils.getConfigProp("globallyDisableDockableDialogs")) {
             dockable = false;
         }
-        let maximizeable = this.props.maximizeable && !this.state.externalWindow;
+        let maximizeable = this.props.maximizeable && !this.state.externalWindow && !this.props.fitHeight;
         if (ConfigUtils.getConfigProp("globallyDisableMaximizeableDialogs")) {
             maximizeable = false;
         }
@@ -265,6 +266,7 @@ class ResizeableWindow extends React.Component {
             "resizeable-window": true,
             "resizeable-window-maximized": maximized,
             "resizeable-window-minimized": minimized,
+            "resizeable-window-fit-height": this.props.fitHeight,
             "resizeable-window-docked-left": !this.props.splitScreenWhenDocked && this.state.geometry.docked && dockSide === "left" && !maximized,
             "resizeable-window-docked-right": !this.props.splitScreenWhenDocked && this.state.geometry.docked && dockSide === "right" && !maximized,
             "resizeable-window-split-left": this.props.splitScreenWhenDocked && this.state.geometry.docked && dockSide === "left" && !maximized,
@@ -291,6 +293,14 @@ class ResizeableWindow extends React.Component {
                 top: dockSide === "bottom",
                 bottom: (dockSide !== "bottom" && !this.props.splitScreenWhenDocked) || (this.props.splitScreenWhenDocked && dockSide === "top")
             };
+        }
+        if (this.props.fitHeight) {
+            resizeMode.top = false;
+            resizeMode.bottom = false;
+            resizeMode.bottomLeft = true;
+            resizeMode.bottomRight = true;
+            resizeMode.topLeft = true;
+            resizeMode.topRight = true;
         }
         return (
             <Rnd bounds="parent" cancel=".resizeable-window-nodrag"
