@@ -27,6 +27,7 @@
         "ThemeSwitcher": "Téma",
         "AttributeTable": "Atributy",
         "Cyclomedia": "Cyclomedia",
+        "Draw3D": "",
         "FeatureForm": "Editační formulář",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -118,6 +119,25 @@
       "login": "",
       "scalehint": "",
       "title": "Cyclomedia"
+    },
+    "draw3d": {
+      "cone": "",
+      "cuboid": "",
+      "cylinder": "",
+      "delete": "",
+      "drawings": "",
+      "newgroupprompt": "",
+      "numericinput": "",
+      "pick": "",
+      "position": "",
+      "pyramid": "",
+      "rotate": "",
+      "rotation": "",
+      "scale": "",
+      "sphere": "",
+      "thescale": "",
+      "translate": "",
+      "wedge": ""
     },
     "editing": {
       "add": "Přidat",

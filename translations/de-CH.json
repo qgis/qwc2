@@ -27,6 +27,7 @@
         "ThemeSwitcher": "Themen",
         "AttributeTable": "Attributtabelle",
         "Cyclomedia": "Cyclomedia",
+        "Draw3D": "Zeichnen",
         "FeatureForm": "Objektformular",
         "FeatureSearch": "Objektsuche",
         "GeometryDigitizer": "Geometriedigitalisierung",
@@ -118,6 +119,25 @@
       "login": "Anmelden",
       "scalehint": "Die Aufnahmen sind nur ab Massstab 1:{0} auf der Karte sichtbar.",
       "title": "Cyclomedia Viewer"
+    },
+    "draw3d": {
+      "cone": "Kegel",
+      "cuboid": "Quader",
+      "cylinder": "Zylinder",
+      "delete": "Löschen",
+      "drawings": "Zeichnungen",
+      "newgroupprompt": "Zeichungsgruppe hinzufügen",
+      "numericinput": "Numerische Eingabe",
+      "pick": "Auswählen",
+      "position": "Position",
+      "pyramid": "Pyramide",
+      "rotate": "Rotieren",
+      "rotation": "Rotation",
+      "scale": "Skalieren",
+      "sphere": "Kugel",
+      "thescale": "Skalierung",
+      "translate": "Verschieben",
+      "wedge": "Kegel"
     },
     "editing": {
       "add": "Hinzufügen",

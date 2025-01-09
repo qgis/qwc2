@@ -32,6 +32,7 @@ import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
+import Draw3D from './Draw3D';
 import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
 import Measure3D from './Measure3D';
@@ -362,6 +363,7 @@ class Map3D extends React.Component {
                         <Map3DLight sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
                         <Compare3D sceneContext={this.state.sceneContext} />
+                        <Draw3D sceneContext={this.state.sceneContext} />
                     </UnloadWrapper>
                 ) : null}
             </div>

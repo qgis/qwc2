@@ -31,6 +31,7 @@ class TopBar3D extends React.Component {
     render() {
         const menuItems = [
             {key: "LayerTree3D", icon: "layers"},
+            {key: "Draw3D", icon: "draw"},
             {key: "Measure3D", icon: "measure"},
             {key: "Compare3D", icon: "compare"},
             {key: "DateTime3D", icon: "clock"}
@@ -57,6 +58,6 @@ class TopBar3D extends React.Component {
     };
 }
 
-export default connect(() => {}, {
+export default connect(() => ({}), {
     setTopbarHeight: setTopbarHeight
 })(TopBar3D);

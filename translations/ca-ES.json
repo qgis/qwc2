@@ -27,6 +27,7 @@
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Taula d'atributs",
         "Cyclomedia": "",
+        "Draw3D": "",
         "FeatureForm": "Formulari d'element",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -118,6 +119,25 @@
       "login": "",
       "scalehint": "",
       "title": ""
+    },
+    "draw3d": {
+      "cone": "",
+      "cuboid": "",
+      "cylinder": "",
+      "delete": "",
+      "drawings": "",
+      "newgroupprompt": "",
+      "numericinput": "",
+      "pick": "",
+      "position": "",
+      "pyramid": "",
+      "rotate": "",
+      "rotation": "",
+      "scale": "",
+      "sphere": "",
+      "thescale": "",
+      "translate": "",
+      "wedge": ""
     },
     "editing": {
       "add": "Afegir",

@@ -27,6 +27,7 @@
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Öznitelik Tablosu",
         "Cyclomedia": "Siklomedya",
+        "Draw3D": "",
         "FeatureForm": "Obje Formu",
         "FeatureSearch": "Obje Arama",
         "GeometryDigitizer": "Geometri Sayısallaştırıcı",
@@ -118,6 +119,25 @@
       "login": "Login",
       "scalehint": "The recordings are only visible on the map below scale 1:{0}.",
       "title": "Cyclomedia Viewer"
+    },
+    "draw3d": {
+      "cone": "",
+      "cuboid": "",
+      "cylinder": "",
+      "delete": "",
+      "drawings": "",
+      "newgroupprompt": "",
+      "numericinput": "",
+      "pick": "",
+      "position": "",
+      "pyramid": "",
+      "rotate": "",
+      "rotation": "",
+      "scale": "",
+      "sphere": "",
+      "thescale": "",
+      "translate": "",
+      "wedge": ""
     },
     "editing": {
       "add": "Ekle",

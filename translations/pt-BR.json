@@ -27,6 +27,7 @@
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabela de atributos",
         "Cyclomedia": "Cyclomedia",
+        "Draw3D": "",
         "FeatureForm": "Atributos da feição",
         "FeatureSearch": "Procurar feição",
         "GeometryDigitizer": "",
@@ -118,6 +119,25 @@
       "login": "Login",
       "scalehint": "Indicação de escala",
       "title": "Titulo"
+    },
+    "draw3d": {
+      "cone": "",
+      "cuboid": "",
+      "cylinder": "",
+      "delete": "",
+      "drawings": "",
+      "newgroupprompt": "",
+      "numericinput": "",
+      "pick": "",
+      "position": "",
+      "pyramid": "",
+      "rotate": "",
+      "rotation": "",
+      "scale": "",
+      "sphere": "",
+      "thescale": "",
+      "translate": "",
+      "wedge": ""
     },
     "editing": {
       "add": "Adicionar",

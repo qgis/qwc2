@@ -27,6 +27,7 @@
         "ThemeSwitcher": "Hărți tematice",
         "AttributeTable": "Tabela de atribute",
         "Cyclomedia": "Cyclomedia",
+        "Draw3D": "",
         "FeatureForm": "Editare atribute",
         "FeatureSearch": "",
         "GeometryDigitizer": "",
@@ -118,6 +119,25 @@
       "login": "Autentificare",
       "scalehint": "Înregistrările sunt vizibile pe hartă doar la scara 1:{0} sau mai mare",
       "title": "Informații Cyclomedia"
+    },
+    "draw3d": {
+      "cone": "",
+      "cuboid": "",
+      "cylinder": "",
+      "delete": "",
+      "drawings": "",
+      "newgroupprompt": "",
+      "numericinput": "",
+      "pick": "",
+      "position": "",
+      "pyramid": "",
+      "rotate": "",
+      "rotation": "",
+      "scale": "",
+      "sphere": "",
+      "thescale": "",
+      "translate": "",
+      "wedge": ""
     },
     "editing": {
       "add": "Adaugă",

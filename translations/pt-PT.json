@@ -27,6 +27,7 @@
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabela de Atributos",
         "Cyclomedia": "Cyclomedia",
+        "Draw3D": "",
         "FeatureForm": "Formulário de Recurso",
         "FeatureSearch": "Pesquisa de Recurso",
         "GeometryDigitizer": "",
@@ -118,6 +119,25 @@
       "login": "Iniciar Sessão",
       "scalehint": "Dica de Escala",
       "title": "Cyclomedia"
+    },
+    "draw3d": {
+      "cone": "",
+      "cuboid": "",
+      "cylinder": "",
+      "delete": "",
+      "drawings": "",
+      "newgroupprompt": "",
+      "numericinput": "",
+      "pick": "",
+      "position": "",
+      "pyramid": "",
+      "rotate": "",
+      "rotation": "",
+      "scale": "",
+      "sphere": "",
+      "thescale": "",
+      "translate": "",
+      "wedge": ""
     },
     "editing": {
       "add": "Adicionar",

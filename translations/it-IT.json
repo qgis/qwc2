@@ -27,6 +27,7 @@
         "ThemeSwitcher": "Temi",
         "AttributeTable": "Tabella attributi",
         "Cyclomedia": "Cyclomedia",
+        "Draw3D": "Disegnare",
         "FeatureForm": "Formulario oggetto",
         "FeatureSearch": "Ricerca oggetto",
         "GeometryDigitizer": "Digitalizzazione geometrie",
@@ -118,6 +119,25 @@
       "login": "Login",
       "scalehint": "Le registrazioni sono solo visibili sulla mappa a partire da una scala di 1:{0}.",
       "title": "Visualizzatore Cyclomedia"
+    },
+    "draw3d": {
+      "cone": "Cono",
+      "cuboid": "Cuboide",
+      "cylinder": "Cilindro",
+      "delete": "Elimina",
+      "drawings": "Disegni",
+      "newgroupprompt": "Nuovo gruppo disegni",
+      "numericinput": "Formulario numerico",
+      "pick": "Seleziona",
+      "position": "Posizione",
+      "pyramid": "Piramide",
+      "rotate": "Ruota",
+      "rotation": "Rotazione",
+      "scale": "Scala",
+      "sphere": "Sfera",
+      "thescale": "Scala",
+      "translate": "Trasla",
+      "wedge": "Cuneo"
     },
     "editing": {
       "add": "Aggiungi",
