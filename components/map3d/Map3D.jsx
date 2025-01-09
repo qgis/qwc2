@@ -19,7 +19,7 @@ import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import Tiles3DSource from "@giro3d/giro3d/sources/Tiles3DSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
-import {Vector2, Vector3, CubeTextureLoader} from 'three';
+import {Vector2, Vector3, CubeTextureLoader, Group, Raycaster} from 'three';
 import {MapControls} from 'three/addons/controls/MapControls';
 
 import {LayerRole} from '../../actions/layers';
@@ -111,7 +111,8 @@ class Map3D extends React.Component {
             updateSceneObject: (objectId, options) => {},
 
             setViewToExtent: (bounds, angle) => {},
-            getTerrainHeight: (scenePos) => {}
+            getTerrainHeight: (scenePos) => {},
+            getSceneIntersection: (x, y) => {}
         }
     };
     constructor(props) {
@@ -120,6 +121,7 @@ class Map3D extends React.Component {
         this.inspector = null;
         this.instance = null;
         this.map = null;
+        this.sceneObjectGroup = null;
         this.objectMap = {};
         this.animationInterrupted = false;
         this.state.sceneContext.addLayer = this.addLayer;
@@ -132,6 +134,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
         this.state.sceneContext.setViewToExtent = this.setViewToExtent;
         this.state.sceneContext.getTerrainHeight = this.getTerrainHeight;
+        this.state.sceneContext.getSceneIntersection = this.getSceneIntersection;
     }
     componentDidMount() {
         this.props.innerRef(this);
@@ -263,7 +266,7 @@ class Map3D extends React.Component {
         }));
     };
     addSceneObject = (objectId, object, options = {}) => {
-        this.instance.add(object);
+        this.sceneObjectGroup.add(object);
         this.objectMap[objectId] = object;
         this.setState((state) => {
             const objectState = {
@@ -386,6 +389,8 @@ class Map3D extends React.Component {
                 preserveDrawingBuffer: true
             }
         });
+        this.sceneObjectGroup = new Group();
+        this.instance.add(this.sceneObjectGroup);
 
         // Setup map
         const bounds = CoordinatesUtils.reprojectBbox(this.props.theme.bbox.bounds, this.props.theme.bbox.crs, projection);
@@ -513,6 +518,7 @@ class Map3D extends React.Component {
         this.inspector = null;
         this.map = null;
         this.objectMap = {};
+        this.sceneObjectGroup = null;
         this.instance = null;
         this.setState((state) => ({
             sceneContext: {...state.sceneContext, ...Map3D.defaultSceneState}
@@ -695,6 +701,23 @@ class Map3D extends React.Component {
                 });
             });
         });
+    };
+    getSceneIntersection = (x, y) => {
+        const raycaster = new Raycaster();
+        const camera = this.instance.view.camera;
+        raycaster.setFromCamera(new Vector2(x, y), camera);
+        // Query object intersection
+        const objInter = raycaster.intersectObjects([
+            this.sceneObjectGroup,
+            ...this.instance.getEntities().filter(e => e !== this.map).map(entity => entity.object3d)
+        ], true)[0];
+        // Query highest resolution terrain tile (i.e. tile with no children)
+        const terrInter = raycaster.intersectObjects([this.map.object3d]).filter(result => result.object.children.length === 0)[0];
+        // Return closest result
+        if (objInter && terrInter) {
+            return objInter.distance < terrInter.distance ? objInter : terrInter;
+        }
+        return objInter ?? terrInter;
     };
     updateControlsTarget = () => {
         const x = this.instance.view.camera.position.x;
