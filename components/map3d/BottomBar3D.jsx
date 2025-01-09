@@ -28,10 +28,13 @@ class BottomBar3D extends React.Component {
         progress: 0
     };
     componentDidMount() {
-        this.props.sceneContext.scene.viewport.addEventListener('mousemove', this.getCursorPosition);
+        this.props.sceneContext.scene.viewport.addEventListener('mousemove', this.scheduleGetCursorPosition);
         this.props.sceneContext.scene.addEventListener("update-end", () => {
             this.setState({progress: Math.round(this.props.sceneContext.scene.progress * 100) + "%"});
         });
+    }
+    componentWillUnmount() {
+        clearTimeout(this.cursorPositionTimeout);
     }
     render() {
         return (
@@ -51,19 +54,17 @@ class BottomBar3D extends React.Component {
             </div>
         );
     }
-    getCursorPosition = (ev) => {
+    scheduleGetCursorPosition = (ev) => {
         const rect = ev.currentTarget.getBoundingClientRect();
-        const x = ev.clientX - rect.left;
-        const y = ev.clientY - rect.top;
-
-        // Normalize mouse position (-1 to +1)
-        const mouse = new Vector2();
-        mouse.x = (x / rect.width) * 2 - 1;
-        mouse.y = -(y / rect.height) * 2 + 1;
-
+        const x = (ev.clientX - rect.left) / rect.width * 2 - 1;
+        const y = -(ev.clientY - rect.top) / rect.height * 2 + 1;
+        clearTimeout(this.cursorPositionTimeout);
+        this.cursorPositionTimeout = setTimeout(() => this.getCursorPosition(x, y), 150);
+    };
+    getCursorPosition = (x, y) => {
         const raycaster = new Raycaster();
         const camera = this.props.sceneContext.scene.view.camera;
-        raycaster.setFromCamera(mouse, camera);
+        raycaster.setFromCamera(new Vector2(x, y), camera);
 
         const intersects = raycaster.intersectObjects(this.props.sceneContext.scene.scene.children, true);
 
