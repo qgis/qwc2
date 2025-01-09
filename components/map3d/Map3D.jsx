@@ -24,6 +24,7 @@ import {MapControls} from 'three/addons/controls/MapControls';
 
 import {LayerRole} from '../../actions/layers';
 import {setMapCrs} from '../../actions/map3d';
+import {setCurrentTask} from '../../actions/task';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
@@ -69,6 +70,7 @@ class Map3D extends React.Component {
         options: PropTypes.object,
         projection: PropTypes.string,
         searchProviders: PropTypes.object,
+        setCurrentTask: PropTypes.func,
         setMapCrs: PropTypes.func,
         theme: PropTypes.object
     };
@@ -515,6 +517,7 @@ class Map3D extends React.Component {
         this.setState((state) => ({
             sceneContext: {...state.sceneContext, ...Map3D.defaultSceneState}
         }));
+        this.props.setCurrentTask(null);
     };
     setViewToExtent = (bounds, angle = 0) => {
         const center = {
@@ -718,5 +721,6 @@ class Map3D extends React.Component {
 export default connect((state) => ({
     mapMargins: state.windows.mapMargins
 }), {
-    setMapCrs: setMapCrs
+    setMapCrs: setMapCrs,
+    setCurrentTask: setCurrentTask
 })(Map3D);
