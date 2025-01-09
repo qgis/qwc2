@@ -58,33 +58,33 @@ export default class ColorButton extends React.Component {
         };
         const curColor = this.props.color;
         return (
-            <span className="ColorButton">
-                <span className="colorbutton-icon" onClick={this.togglePicker}>
+            <div className="ColorButton">
+                <div className="colorbutton-icon" onClick={this.togglePicker}>
                     <span style={{backgroundColor: this.cssColor(curColor)}} />
-                </span>
+                </div>
                 <div className="colorbutton-picker" ref={el => { this.pickerEl = el; }} style={pickerStyle}>
                     <div className="colorbutton-picker-icons">
                         {this.state.colors.map((color, idx) => (
-                            <span className="colorbutton-icon" key={"color" + idx} onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}>
+                            <div className="colorbutton-icon" key={"color" + idx} onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}>
                                 <span style={{backgroundColor: this.cssColor(color)}} />
-                            </span>
+                            </div>
                         ))}
                     </div>
                     <div className="colorbutton-picker-input controlgroup">
-                        <span className="colorbutton-icon">
+                        <div className="colorbutton-icon">
                             <span style={{backgroundColor: this.cssColor(curColor)}} />
-                        </span>
+                        </div>
                         <input onChange={ev => this.changeColor(ev.target.value)} type="text" value={this.state.hexStr || this.hexColor(curColor)} />
                         {this.props.alpha ? (
-                            <span className="colorbutton-picker-alpha">
-                                <span>
+                            <div className="colorbutton-picker-alpha">
+                                <div>
                                     <input max="1" min="0" onChange={ev => this.changeColorAlpha(ev.target.value)} step="0.1" type="range" value={curColor[3]}/>
-                                </span>
-                            </span>
+                                </div>
+                            </div>
                         ) : null}
                     </div>
                 </div>
-            </span>
+            </div>
         );
     }
     cssColor(color) {

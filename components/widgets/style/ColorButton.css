@@ -1,16 +1,13 @@
-span.ColorButton {
+div.ColorButton {
     position: relative;
     width: 2em;
     height: 2em;
-    display: inline-block;
 }
 
-span.colorbutton-icon {
+div.colorbutton-icon {
     border-radius: 4px;
-    overflow: hidden;
     width: 2em;
     height: 2em;
-    display: inline-block;
     cursor: pointer;
     background-image: linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%);
     background-size: 12px 12px;
@@ -18,14 +15,9 @@ span.colorbutton-icon {
     border: 1px solid var(--border-color);
 }
 
-span.colorbutton-icon-selected {
-    outline-offset: 2px;
-    outline: 1px solid var(--border-color);
-}
-
-span.colorbutton-icon > span {
-    width: 2em;
-    height: 2em;
+div.colorbutton-icon > span {
+    width: calc(2em - 2px);
+    height: calc(2em - 2px);
     display: inline-block;
 }
 
@@ -60,7 +52,7 @@ div.colorbutton-picker-icons {
     flex-wrap: wrap;
 }
 
-div.colorbutton-picker-icons > span.colorbutton-icon {
+div.colorbutton-picker-icons > div.colorbutton-icon {
     flex: 0 0 auto;
     margin: 0.25em;
 }
@@ -70,18 +62,13 @@ div.colorbutton-picker-input {
 }
 
 div.colorbutton-picker-input > input[type=text] {
-    font-size: 100%;
-    display: inline-block;
     min-width: 0;
     flex: 1 1 5em;
 }
 
-span.colorbutton-picker-alpha {
+div.colorbutton-picker-alpha {
     border-radius: 0 4px 4px 0;
-    border-style: solid;
-    border-color: var(--border-color);
-    border-width: 1px 1px 1px 0;
-    display: inline-block;
+    border: 1px solid var(--border-color);
     height: 2em;
     background-image: linear-gradient(45deg, #808080 25%, transparent 25%), linear-gradient(-45deg, #808080 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #808080 75%), linear-gradient(-45deg, transparent 75%, #808080 75%);
     background-size: 12px 12px;
@@ -89,16 +76,13 @@ span.colorbutton-picker-alpha {
     flex: 1 1 5em;
 }
 
-span.colorbutton-picker-alpha > span {
-    padding: 0.25em 0;
-    display: inline-block;
-    width: 100%;
+div.colorbutton-picker-alpha > div {
+    display: flex;
+    align-items: center;
     height: calc(2em - 2px);
     background-image: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, white 100%);
 }
 
-span.colorbutton-picker-alpha input[type=range] {
-    display: inline-block;
+div.colorbutton-picker-alpha input[type=range] {
     width: 100%;
-    padding: 0;
 }
