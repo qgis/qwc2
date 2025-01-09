@@ -13,8 +13,8 @@ import VectorSource from '@giro3d/giro3d/sources/VectorSource';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {Group} from 'three';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import {CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
+import {CSS2DObject} from 'three/addons/renderers/CSS2DRenderer';
 
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import FeatureStyles from '../../utils/FeatureStyles';

@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import PropTypes from 'prop-types';
 import {Group, Plane, Raycaster, Vector2, Vector3} from 'three';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';

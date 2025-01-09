@@ -20,7 +20,7 @@ import Tiles3DSource from "@giro3d/giro3d/sources/Tiles3DSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
 import {Vector2, Vector3, CubeTextureLoader} from 'three';
-import {MapControls} from 'three/examples/jsm/controls/MapControls.js';
+import {MapControls} from 'three/addons/controls/MapControls';
 
 import {LayerRole} from '../../actions/layers';
 import {setMapCrs} from '../../actions/map3d';
