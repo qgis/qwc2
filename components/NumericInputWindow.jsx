@@ -75,7 +75,7 @@ class NumericInputWindow extends React.Component {
         }
 
         return (
-            <ResizeableWindow icon="numericinput" initialHeight={320} initialWidth={320}
+            <ResizeableWindow fitHeight icon="numericinput" initialWidth={320}
                 onClose={this.props.onClose} scrollable title={LocaleUtils.tr("numericinput.windowtitle")} >
                 <div className="numeric-input-widget-body" role="body">{body}</div>
             </ResizeableWindow>
