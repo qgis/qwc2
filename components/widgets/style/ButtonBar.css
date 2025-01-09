@@ -56,7 +56,7 @@ div.ButtonBar div.menubutton {
     flex: 1 1 auto;
 }
 
-span.buttonbar-button-container:hover span.buttonbar-button-tooltip,
+div.buttonbar-button-container:hover span.buttonbar-button-tooltip,
 div.ButtonBar div.menubutton-button:hover span.buttonbar-button-tooltip {
     display: inline;
 }
