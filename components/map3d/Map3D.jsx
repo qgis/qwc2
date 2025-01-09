@@ -41,11 +41,16 @@ import LayerRegistry from './layers/index';
 import './style/Map3D.css';
 
 class UnloadWrapper extends React.Component {
+    static propTypes = {
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        onUnload: PropTypes.func
+    };
     onUnload = (el) => {
-        if (!el)
+        if (!el) {
             this.props.onUnload();
-    }
-    render () {
+        }
+    };
+    render() {
         return (
             <div>
                 {this.props.children}
