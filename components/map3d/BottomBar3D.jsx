@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
-import {Raycaster, Vector2} from 'three';
 
 import {setBottombarHeight} from '../../actions/map';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
@@ -62,14 +61,9 @@ class BottomBar3D extends React.Component {
         this.cursorPositionTimeout = setTimeout(() => this.getCursorPosition(x, y), 150);
     };
     getCursorPosition = (x, y) => {
-        const raycaster = new Raycaster();
-        const camera = this.props.sceneContext.scene.view.camera;
-        raycaster.setFromCamera(new Vector2(x, y), camera);
-
-        const intersects = raycaster.intersectObjects(this.props.sceneContext.scene.scene.children, true);
-
-        if (intersects.length > 0) {
-            const p = intersects[0].point;
+        const intersection = this.props.sceneContext.getSceneIntersection(x, y);
+        if (intersection) {
+            const p = intersection.point;
             this.setState({cursorPosition: [p.x, p.y, p.z]});
         }
     };
