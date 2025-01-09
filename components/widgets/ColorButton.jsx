@@ -29,11 +29,13 @@ const defaultColors = [
 
 export default class ColorButton extends React.Component {
     static propTypes = {
+        alpha: PropTypes.bool,
         color: PropTypes.array,
         defaultColors: PropTypes.array,
         onColorChanged: PropTypes.func
     };
     static defaultProps = {
+        alpha: true,
         defaultColors: defaultColors,
         color: [255, 255, 255, 1],
         onColorChanged: (/* color */) => {}
@@ -73,11 +75,13 @@ export default class ColorButton extends React.Component {
                             <span style={{backgroundColor: this.cssColor(curColor)}} />
                         </span>
                         <input onChange={ev => this.changeColor(ev.target.value)} type="text" value={this.state.hexStr || this.hexColor(curColor)} />
-                        <span className="colorbutton-picker-alpha">
-                            <span>
-                                <input max="1" min="0" onChange={ev => this.changeColorAlpha(ev.target.value)} step="0.1" type="range" value={curColor[3]}/>
+                        {this.props.alpha ? (
+                            <span className="colorbutton-picker-alpha">
+                                <span>
+                                    <input max="1" min="0" onChange={ev => this.changeColorAlpha(ev.target.value)} step="0.1" type="range" value={curColor[3]}/>
+                                </span>
                             </span>
-                        </span>
+                        ) : null}
                     </div>
                 </div>
             </span>
@@ -105,7 +109,8 @@ export default class ColorButton extends React.Component {
     };
     selectColor = (idx) => {
         this.setState({hexStr: null});
-        this.props.onColorChanged([...this.state.colors[idx]]);
+        const n = this.props.alpha ? 4 : 3;
+        this.props.onColorChanged([...this.state.colors[idx]].slice(0, n));
     };
     replaceDefaultColor = (ev, idx) => {
         this.setState(state => {
@@ -121,7 +126,8 @@ export default class ColorButton extends React.Component {
         if (match) {
             const newColor = [parseInt(match[1], 16), parseInt(match[2], 16), parseInt(match[3], 16), this.props.color[3]];
             this.setState({hexStr: null});
-            this.props.onColorChanged(newColor);
+            const n = this.props.alpha ? 4 : 3;
+            this.props.onColorChanged(newColor.slice(0, n));
         } else {
             this.setState({hexStr: hexStr});
         }
