@@ -35,7 +35,7 @@ class TopBar3D extends React.Component {
             {key: "Measure3D", icon: "measure"},
             {key: "Compare3D", icon: "compare"},
             {key: "DateTime3D", icon: "clock"},
-            {key: "PrintScreen3D", icon: "rasterexport"}
+            {key: "MapExport3D", icon: "rasterexport"}
         ];
         return (
             <div className="map3d-topbar" ref={this.storeHeight}>

@@ -1,18 +1,15 @@
-div.printscreen3d-event-container {
+div.mapexport3d-event-container {
     z-index: 2;
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
-    
 }
 
-div.printscreen3d-frame {
+div.mapexport3d-frame {
     position: absolute;
-    background: rgba(255, 255, 255, 0.5);
     box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 30000px;
-    padding: 0.25em;
     white-space: nowrap;
     display: flex;
     align-items: center;
@@ -22,11 +19,7 @@ div.printscreen3d-frame {
     user-select: none;
 }
 
-div.printscreen3d-body {
-    display: flex;
-    align-items: center;
-}
-
-div.printscreen3d-body > div:first-child {
-    margin-right: 1em;
+span.mapexport3d-frame-label {
+    padding: 0.25em;
+    background: rgba(255, 255, 255, 0.5);
 }
