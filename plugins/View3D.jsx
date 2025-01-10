@@ -151,7 +151,6 @@ export default connect(
         projection: state.map.projection,
         layers: state.layers.flat,
         theme: state.theme.current,
-        themes: state.theme.themes,
         searchProviders
     })), {
         setCurrentTask: setCurrentTask
