@@ -284,7 +284,7 @@ class MapExport extends React.Component {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
         const extraTitlebarContent = (<Icon className="mapexport-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState((state) => ({minimized: !state.minimized}))} title={minMaxTooltip}/>);
         return (
-            <SideBar extraTitlebarContent={extraTitlebarContent} icon={"rasterexport"} id="MapExport" key="MapExport"
+            <SideBar extraClasses="MapExport" extraTitlebarContent={extraTitlebarContent} icon={"rasterexport"} id="MapExport" key="MapExport"
                 onHide={this.onHide} onShow={this.onShow} side={this.props.side}
                 title={LocaleUtils.tr("appmenu.items.MapExport")} width="20em">
                 {() => ({
