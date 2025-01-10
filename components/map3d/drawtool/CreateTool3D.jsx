@@ -102,6 +102,9 @@ export default class CreateTool3D extends React.Component {
             geometry = new CylinderGeometry( 0.5 * s, 0.5 * s, s );
         } else if (this.props.geomType === "Pyramid") {
             geometry = new ConeGeometry( 0.5 * s * Math.sqrt(2), s, 4, 1, false, Math.PI / 4);
+            // Ensure flat normals (pointing from faces, not edges)
+            geometry = geometry.toNonIndexed();
+            geometry.computeVertexNormals();
         } else if (this.props.geomType === "Sphere") {
             geometry = new SphereGeometry( 0.5 * s );
         } else if (this.props.geomType === "Cone") {
