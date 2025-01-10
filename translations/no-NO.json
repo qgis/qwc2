@@ -42,6 +42,7 @@
         "MeasureLineString": "Måle en linje",
         "MeasurePolygon": "Måle en polygon",
         "Portal": "",
+        "PrintScreen3D": "",
         "Redlining": "Redlining",
         "Routing": "",
         "Tools": "Kartverktøy",
@@ -401,6 +402,10 @@
       "series": "",
       "submit": "Skriv ut",
       "wait": "Venter..."
+    },
+    "printscreen3d": {
+      "format": "",
+      "selectinfo": ""
     },
     "qtdesignerform": {
       "loading": ""

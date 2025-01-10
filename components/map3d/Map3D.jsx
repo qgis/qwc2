@@ -37,6 +37,7 @@ import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
 import Measure3D from './Measure3D';
 import OverviewMap3D from './OverviewMap3D';
+import PrintScreen3D from './PrintScreen3D';
 import TopBar3D from './TopBar3D';
 import LayerRegistry from './layers/index';
 
@@ -364,6 +365,7 @@ class Map3D extends React.Component {
                         <Measure3D sceneContext={this.state.sceneContext} />
                         <Compare3D sceneContext={this.state.sceneContext} />
                         <Draw3D sceneContext={this.state.sceneContext} />
+                        <PrintScreen3D sceneContext={this.state.sceneContext} />
                     </UnloadWrapper>
                 ) : null}
             </div>

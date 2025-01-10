@@ -42,6 +42,7 @@
         "MeasureLineString": "Măsoară o linie",
         "MeasurePolygon": "Măsoară un poligon",
         "Portal": "",
+        "PrintScreen3D": "",
         "Redlining": "Evidențiere",
         "Routing": "Traseu",
         "Tools": "Unelte hartă",
@@ -401,6 +402,10 @@
       "series": "",
       "submit": "Tipărește",
       "wait": "Vă rugăm așteptați..."
+    },
+    "printscreen3d": {
+      "format": "",
+      "selectinfo": ""
     },
     "qtdesignerform": {
       "loading": "Formularul se încarcă"

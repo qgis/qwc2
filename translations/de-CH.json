@@ -42,6 +42,7 @@
         "MeasureLineString": "Messen Linie",
         "MeasurePolygon": "Messen Polygon",
         "Portal": "Portal",
+        "PrintScreen3D": "Raster Export",
         "Redlining": "Zeichnen",
         "Routing": "Routing",
         "Tools": "Werkzeuge",
@@ -401,6 +402,10 @@
       "series": "Seriendruck",
       "submit": "Erzeugen",
       "wait": "Bitte warten..."
+    },
+    "printscreen3d": {
+      "format": "Exportformat",
+      "selectinfo": "Bereich in der Karte auswählen..."
     },
     "qtdesignerform": {
       "loading": "Formular wird geladen..."

@@ -42,6 +42,7 @@
         "MeasureLineString": "Mesurar una línia",
         "MeasurePolygon": "Mesurar un polígon",
         "Portal": "",
+        "PrintScreen3D": "",
         "Redlining": "Línia de demarcació",
         "Routing": "Routing",
         "Tools": "Eines de Mapa",
@@ -401,6 +402,10 @@
       "series": "",
       "submit": "Imprimir",
       "wait": "Esperi si us plau..."
+    },
+    "printscreen3d": {
+      "format": "",
+      "selectinfo": ""
     },
     "qtdesignerform": {
       "loading": "Carregant formulari..."

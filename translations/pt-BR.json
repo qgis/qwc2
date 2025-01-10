@@ -42,6 +42,7 @@
         "MeasureLineString": "Medir uma linha",
         "MeasurePolygon": "Medir um polígono",
         "Portal": "",
+        "PrintScreen3D": "",
         "Redlining": "Linha de demarcação",
         "Routing": "Roteamento",
         "Tools": "Ferramentas de mapa",
@@ -401,6 +402,10 @@
       "series": "",
       "submit": "Imprimir",
       "wait": "Aguarde..."
+    },
+    "printscreen3d": {
+      "format": "",
+      "selectinfo": ""
     },
     "qtdesignerform": {
       "loading": "Carregando"

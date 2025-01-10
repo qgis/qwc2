@@ -42,6 +42,7 @@
         "MeasureLineString": "Measure a line",
         "MeasurePolygon": "Measure a polygon",
         "Portal": "Portal",
+        "PrintScreen3D": "Raster Export",
         "Redlining": "Redlining",
         "Routing": "Routing",
         "Tools": "Map Tools",
@@ -401,6 +402,10 @@
       "series": "Print series",
       "submit": "Print",
       "wait": "Please wait..."
+    },
+    "printscreen3d": {
+      "format": "Format",
+      "selectinfo": "Select export area on the map..."
     },
     "qtdesignerform": {
       "loading": "Loading form..."

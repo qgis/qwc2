@@ -42,6 +42,7 @@
         "MeasureLineString": "измерить линию",
         "MeasurePolygon": "измерить многоугольник",
         "Portal": "",
+        "PrintScreen3D": "",
         "Redlining": "Обводка",
         "Routing": "",
         "Tools": "Средства картографии",
@@ -401,6 +402,10 @@
       "series": "",
       "submit": "Печать",
       "wait": ""
+    },
+    "printscreen3d": {
+      "format": "",
+      "selectinfo": ""
     },
     "qtdesignerform": {
       "loading": ""

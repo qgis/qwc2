@@ -42,6 +42,7 @@
         "MeasureLineString": "Změřit úsek",
         "MeasurePolygon": "Měřit mnohoúhelník",
         "Portal": "",
+        "PrintScreen3D": "",
         "Redlining": "Připomínkování",
         "Routing": "Trasy",
         "Tools": "Nástroje mapy",
@@ -401,6 +402,10 @@
       "series": "",
       "submit": "Tisk",
       "wait": "Čekejte..."
+    },
+    "printscreen3d": {
+      "format": "",
+      "selectinfo": ""
     },
     "qtdesignerform": {
       "loading": ""
