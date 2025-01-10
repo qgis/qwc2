@@ -283,7 +283,7 @@ class Print extends React.Component {
             return res;
         }, {});
 
-        const extraOptions = Object.fromEntries((this.props.theme.extraPrintParameters || "").split("&").map(entry => entry.split("=")));
+        const extraOptions = Object.fromEntries((this.props.theme.extraPrintParameters || "").split("&").filter(Boolean).map(entry => entry.split("=")));
         const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
             return a.name.localeCompare(b.name, undefined, {numeric: true});
         });
