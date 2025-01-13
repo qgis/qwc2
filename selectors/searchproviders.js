@@ -53,10 +53,11 @@ function getResultGeometry(provider, item, callback) {
 export default createSelector(
     [
         state => state.theme.current,
+        state => state.theme,
         state => state.layers.flat,
         state => state.map.scales,
         state => state.map.zoom
-    ], (theme, layers, scales, zoom) => {
+    ], (theme, themes, layers, scales, zoom) => {
         // Collect active layers/search terms
         let searchTerms = [];
         const activeLayers = [];
@@ -110,7 +111,7 @@ export default createSelector(
             availableProviders.themes = {
                 labelmsgid: LocaleUtils.trmsg("search.themes"),
                 onSearch: (text, options, callback) => {
-                    callback({results: ThemeUtils.searchThemes(theme.themes, text)});
+                    callback({results: ThemeUtils.searchThemes(themes.themes, text)});
                 }
             };
         }
@@ -118,7 +119,7 @@ export default createSelector(
             availableProviders.themelayers = {
                 labelmsgid: LocaleUtils.trmsg("search.themelayers"),
                 onSearch: (text, options, callback) => {
-                    callback({results: ThemeUtils.searchThemeLayers(theme.themes, text)});
+                    callback({results: ThemeUtils.searchThemeLayers(themes.themes, text)});
                 }
             };
         }
