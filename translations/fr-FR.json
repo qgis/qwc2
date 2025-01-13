@@ -19,6 +19,7 @@
         "LayerTree": "Couches",
         "LayerTree3D": "Couches",
         "MapExport": "Exporter la carte",
+        "MapExport3D": "",
         "MapFilter": "Filtrer la carte",
         "Print": "Imprimer",
         "Reports": "Rapports",
@@ -403,12 +404,11 @@
       "submit": "Imprimer",
       "wait": "Veuillez patienter..."
     },
-    "printscreen3d": {
-      "format": "Format",
-      "selectinfo": "Sélectionner une zone sur la carte..."
-    },
     "qtdesignerform": {
       "loading": "Chargement du formulaire..."
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Bordure",

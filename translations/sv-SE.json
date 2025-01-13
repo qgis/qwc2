@@ -19,6 +19,7 @@
         "LayerTree": "Lager & teckenförklaring",
         "LayerTree3D": "",
         "MapExport": "Exportera karta",
+        "MapExport3D": "",
         "MapFilter": "",
         "Print": "Skriv ut",
         "Reports": "",
@@ -403,12 +404,11 @@
       "submit": "Skriv ut",
       "wait": "Vänta..."
     },
-    "printscreen3d": {
-      "format": "",
-      "selectinfo": ""
-    },
     "qtdesignerform": {
       "loading": ""
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Kant",

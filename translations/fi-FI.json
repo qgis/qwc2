@@ -19,6 +19,7 @@
         "LayerTree": "Karttatasot ja selite",
         "LayerTree3D": "",
         "MapExport": "Vienti kartta",
+        "MapExport3D": "",
         "MapFilter": "",
         "Print": "Tulosta",
         "Reports": "",
@@ -403,12 +404,11 @@
       "submit": "Tulosta",
       "wait": "Odota..."
     },
-    "printscreen3d": {
-      "format": "",
-      "selectinfo": ""
-    },
     "qtdesignerform": {
       "loading": ""
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Reunat",

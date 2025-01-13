@@ -19,6 +19,7 @@
         "LayerTree": "Árvore de Camadas",
         "LayerTree3D": "",
         "MapExport": "Exportar Mapa",
+        "MapExport3D": "",
         "MapFilter": "",
         "Print": "Imprimir",
         "Reports": "",
@@ -403,12 +404,11 @@
       "submit": "Imprimir",
       "wait": "Por favor, aguarde..."
     },
-    "printscreen3d": {
-      "format": "",
-      "selectinfo": ""
-    },
     "qtdesignerform": {
       "loading": "A carregar..."
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Fronteira",

@@ -19,6 +19,7 @@
         "LayerTree": "Camadas & Legendas",
         "LayerTree3D": "",
         "MapExport": "Exportar mapa",
+        "MapExport3D": "",
         "MapFilter": "",
         "Print": "Imprimir",
         "Reports": "",
@@ -403,12 +404,11 @@
       "submit": "Imprimir",
       "wait": "Aguarde..."
     },
-    "printscreen3d": {
-      "format": "",
-      "selectinfo": ""
-    },
     "qtdesignerform": {
       "loading": "Carregando"
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Borda",

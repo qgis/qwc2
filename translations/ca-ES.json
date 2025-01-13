@@ -19,6 +19,7 @@
         "LayerTree": "Capes i Llegenda",
         "LayerTree3D": "",
         "MapExport": "Exportar mapa",
+        "MapExport3D": "",
         "MapFilter": "",
         "Print": "Imprimir",
         "Reports": "",
@@ -403,12 +404,11 @@
       "submit": "Imprimir",
       "wait": "Esperi si us plau..."
     },
-    "printscreen3d": {
-      "format": "",
-      "selectinfo": ""
-    },
     "qtdesignerform": {
       "loading": "Carregant formulari..."
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Límit",

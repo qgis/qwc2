@@ -19,6 +19,7 @@
         "LayerTree": "Fóliák és jelmagyarázat",
         "LayerTree3D": "",
         "MapExport": "Export térkép",
+        "MapExport3D": "",
         "MapFilter": "",
         "Print": "Nyomtatás",
         "Reports": "",
@@ -403,12 +404,11 @@
       "submit": "Nyomtatás",
       "wait": ""
     },
-    "printscreen3d": {
-      "format": "",
-      "selectinfo": ""
-    },
     "qtdesignerform": {
       "loading": ""
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Szegély",

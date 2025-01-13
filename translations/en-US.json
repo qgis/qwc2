@@ -19,6 +19,7 @@
         "LayerTree": "Layers & Legend",
         "LayerTree3D": "Layers",
         "MapExport": "Export map",
+        "MapExport3D": "",
         "MapFilter": "Map Filter",
         "Print": "Print",
         "Reports": "Reports",
@@ -403,12 +404,11 @@
       "submit": "Print",
       "wait": "Please wait..."
     },
-    "printscreen3d": {
-      "format": "Format",
-      "selectinfo": "Select export area on the map..."
-    },
     "qtdesignerform": {
       "loading": "Loading form..."
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Border",

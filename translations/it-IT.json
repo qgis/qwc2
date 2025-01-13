@@ -19,6 +19,7 @@
         "LayerTree": "Livelli",
         "LayerTree3D": "Livelli",
         "MapExport": "Esporta mappa",
+        "MapExport3D": "",
         "MapFilter": "Filta mappa",
         "Print": "Stampa",
         "Reports": "Rapporti",
@@ -403,12 +404,11 @@
       "submit": "Stampa",
       "wait": "Attendere..."
     },
-    "printscreen3d": {
-      "format": "Formato",
-      "selectinfo": "Seleziona l'area sulla mappa..."
-    },
     "qtdesignerform": {
       "loading": "Caricando formulario..."
+    },
+    "rasterexport": {
+      "format": ""
     },
     "redlining": {
       "border": "Bordo",
