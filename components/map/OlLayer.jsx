@@ -89,7 +89,7 @@ class OlLayer extends React.Component {
                 const layerCreator = LayerRegistry[item.type];
                 if (layerCreator) {
                     const sublayer = layerCreator.create(this.makeOptions(item), this.props.map);
-                    this.layer.set('id', options.id + "#" + item.name);
+                    sublayer.set('id', options.id + "#" + item.name);
                     return sublayer;
                 } else {
                     return null;
