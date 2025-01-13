@@ -135,8 +135,9 @@ class FeatureForm extends React.Component {
             }
             const path = [];
             let sublayer = null;
+            const mapScale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
             const layer = this.props.layers.find(l => (l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', layerId, path))));
-            if (layer && sublayer && !LayerUtils.sublayerVisible(layer, path)) {
+            if (!layer || !sublayer || !LayerUtils.sublayerVisible(layer, path) || !LayerUtils.layerScaleInRange(sublayer, mapScale)) {
                 return;
             }
             const layerOrder = layer.params.LAYERS.split(",");
