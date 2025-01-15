@@ -148,7 +148,7 @@ class MapExport3D extends React.Component {
             height: this.state.height + 'px'
         };
         return (
-            <div className="mapexport3d-event-container" onMouseDown={this.startSelection}>
+            <div className="mapexport3d-event-container" onPointerDown={this.startSelection}>
                 <div className="mapexport3d-frame" style={boxStyle}>
                     <span className="mapexport3d-frame-label">
                         {this.state.width + " x " + this.state.height}
@@ -175,8 +175,20 @@ class MapExport3D extends React.Component {
         );
     }
     startSelection = (ev) => {
-        if (ev.button === 0) {
-            const rect = ev.target.getBoundingClientRect();
+        if (ev.shiftKey) {
+            const target = ev.currentTarget;
+            const view = ev.view;
+            view.addEventListener('pointerup', () => {
+                target.style.pointerEvents = '';
+                view.document.body.style.userSelect = '';
+            }, {once: true});
+            // Move behind
+            target.style.pointerEvents = 'none';
+            view.document.body.style.userSelect = 'none';
+            this.props.sceneContext.scene.domElement.dispatchEvent(new PointerEvent('pointerdown', ev));
+            return;
+        } else if (ev.button === 0) {
+            const rect = ev.currentTarget.getBoundingClientRect();
             this.setState({
                 x: Math.round(ev.clientX - rect.left),
                 y: Math.round(ev.clientY - rect.top),
@@ -195,9 +207,9 @@ class MapExport3D extends React.Component {
                     };
                 });
             };
-            ev.view.addEventListener('mousemove', onMouseMove);
-            ev.view.addEventListener('mouseup', () => {
-                ev.view.removeEventListener('mousemove', onMouseMove);
+            ev.view.addEventListener('pointermove', onMouseMove);
+            ev.view.addEventListener('pointerup', () => {
+                ev.view.removeEventListener('pointermove', onMouseMove);
             }, {once: true});
         }
     };
