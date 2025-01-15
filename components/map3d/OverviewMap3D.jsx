@@ -111,19 +111,20 @@ export default class OverviewMap3D extends React.Component {
         ];
     }
     updateViewCone = () => {
-        const scene = this.props.sceneContext.scene;
-        const x = scene.view.controls.target.x;
-        const y = scene.view.controls.target.y;
-        const azimuth = scene.view.controls.getAzimuthalAngle();
-        const cameraHeight = scene.view.camera.position.z;
-        const resolution = cameraHeight / 200;
-
-        if (this.map) {
-            this.map.getView().setCenter([x, y]);
-            this.map.getView().setResolution(resolution);
-            this.viewConeFeature.getGeometry().setCoordinates([x, y]);
-            this.viewConeFeature.set('rotation', -azimuth, true);
-            this.viewConeLayer.getSource().changed();
+        if (!this.map) {
+            return;
         }
+        const scene = this.props.sceneContext.scene;
+        const x = scene.view.camera.position.x;
+        const y = scene.view.camera.position.y;
+        const azimuth = scene.view.controls?.getAzimuthalAngle?.() ?? 0;
+        const cameraHeight = scene.view.camera.position.z;
+        const resolution = cameraHeight / 100;
+
+        this.map.getView().setCenter([x, y]);
+        this.map.getView().setResolution(resolution);
+        this.viewConeFeature.getGeometry().setCoordinates([x, y]);
+        this.viewConeFeature.set('rotation', -azimuth, true);
+        this.viewConeLayer.getSource().changed();
     };
 }
