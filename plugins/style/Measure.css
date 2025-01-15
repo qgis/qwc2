@@ -9,4 +9,15 @@ div.measure-body {
 input.measure-result {
     flex: 1 1 auto;
     text-align: center;
+    field-sizing: content;
+}
+
+span.measure-unit-label {
+    padding: 0.25em;
+    height: 2em;
+    background-color: var(--input-bg-color);
+    border: 1px solid var(--border-color);
+    border-right-width: 0;
+    display: flex;
+    align-items: center;
 }

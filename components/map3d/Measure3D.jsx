@@ -57,6 +57,11 @@ export default class Measure3D extends React.Component {
             this.clearResult();
             this.restart();
         }
+        if (this.state.elevUnit !== prevState.elevUnit) {
+            // Re-render height label
+            this.measurementObjects[0].rebuildLabels();
+            this.props.sceneContext.scene.notifyChange();
+        }
     }
     onShow = (mode) => {
         this.setState({mode: mode ?? 'Point'});
@@ -101,14 +106,18 @@ export default class Measure3D extends React.Component {
 
         if (this.state.mode === "Point") {
             text = CoordinatesUtils.getFormattedCoordinate(this.state.result.pos.slice(0, 2), this.props.sceneContext.mapCrs);
-            if (this.state.result.ground >= 0) {
-                const prec = ConfigUtils.getConfigProp("measurementPrecision");
-                text += ", " + (this.state.elevUnit === 'ground' ? this.state.result.ground : this.state.result.pos[2]).toFixed(prec);
+            const prec = ConfigUtils.getConfigProp("measurementPrecision");
+            text += ", " + (this.state.result.ground > 0 && this.state.elevUnit === 'ground' ? this.state.result.ground : this.state.result.pos[2]).toFixed(prec);
+            if (this.state.result.ground > 0) {
                 unitSelector = (
                     <select onChange={ev => this.setState({elevUnit: ev.target.value})} value={this.state.elevUnit}>
                         <option value="ground">{LocaleUtils.tr("measureComponent.ground")}</option>
                         <option value="absolute">{LocaleUtils.tr("measureComponent.absolute")}</option>
                     </select>
+                );
+            } else {
+                unitSelector = (
+                    <span className="measure-unit-label">{LocaleUtils.tr("measureComponent.absolute")}</span>
                 );
             }
         } else if (this.state.mode === "LineString") {
@@ -191,6 +200,7 @@ export default class Measure3D extends React.Component {
         this.measurementObjects.forEach(object => {
             this.props.sceneContext.scene.remove(object);
         });
+        this.measurementObjects = [];
         this.setState({result: null});
     };
     restart = () => {
@@ -222,24 +232,42 @@ export default class Measure3D extends React.Component {
 
         // Measure point above terrain
         const elevation = this.getElevation([pos.x, pos.y]);
-        if (pos.z - elevation > 0) {
-            const elevationStr = MeasureUtils.formatMeasurement(pos.z - elevation, false, 'm');
+        const ground = pos.z - elevation > 0.3 ? pos.z - elevation : 0;
+
+        const elevationLabelFormatter = (options) => {
+            if (options.index === 0) {
+                return MeasureUtils.formatMeasurement(elevation, false, LocaleUtils.tr("measureComponent.absolute"));
+            } else if (ground > 0 && this.state.elevUnit === "ground") {
+                return MeasureUtils.formatMeasurement(pos.z - elevation, false, LocaleUtils.tr("measureComponent.ground"));
+            } else {
+                return MeasureUtils.formatMeasurement(pos.z, false, LocaleUtils.tr("measureComponent.absolute"));
+            }
+        };
+        let shape = null;
+        if (ground > 0) {
             // Add line
-            const line = new Shape({
-                showLineLabel: true,
+            shape = new Shape({
+                showVertexLabels: true,
                 showLine: true,
                 showVertices: true,
-                lineLabelFormatter: () => elevationStr
+                vertexLabelFormatter: elevationLabelFormatter
             });
-            line.setPoints([new Vector3(pos.x, pos.y, elevation), pos]);
-            this.props.sceneContext.scene.add(line);
-            this.measurementObjects.push(line);
-            this.props.sceneContext.scene.remove(point);
+            shape.setPoints([new Vector3(pos.x, pos.y, elevation), pos]);
         } else {
-            this.measurementObjects.push(point);
+            // Add point
+            shape = new Shape({
+                showVertexLabels: true,
+                showLine: false,
+                showVertices: true,
+                vertexLabelFormatter: elevationLabelFormatter
+            });
+            shape.setPoints([new Vector3(pos.x, pos.y, pos.z)]);
         }
+        this.props.sceneContext.scene.add(shape);
+        this.measurementObjects.push(shape);
+        this.props.sceneContext.scene.remove(point);
 
-        this.setState({result: {pos: [pos.x, pos.y, pos.z], ground: pos.z - elevation}});
+        this.setState({result: {pos: [pos.x, pos.y, pos.z], ground: ground}});
 
         // Setup for next measurement
         this.restart();
