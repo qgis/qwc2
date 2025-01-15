@@ -1,0 +1,37 @@
+div.overview-map-3d {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 101;
+}
+
+div.overview-map-3d > button {
+    font-size: initial!important;
+    right: 0.25em;
+    bottom: 0.25em;
+    width: 1.375em;
+    height: 1.375em;
+    position: absolute;
+    color: var(--map-button-text-color)!important;
+    background-color: var(--map-button-bg-color)!important;
+    border: 0!important;
+    outline: 0;
+    z-index: 101;
+    border-radius: 2px;
+    font-weight: bold;
+}
+
+div.overview-map-3d > div.ol-overviewmap-map-3d {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+}
+
+div.overview-map-3d.ol-collapsed > div.ol-overviewmap-map-3d {
+    display: none;
+}

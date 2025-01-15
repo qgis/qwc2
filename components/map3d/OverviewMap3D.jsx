@@ -14,6 +14,8 @@ import PropTypes from 'prop-types';
 import OlLayer from '../../components/map/OlLayer';
 import viewconeIcon from './img/viewcone.svg';
 
+import './style/OverviewMap3D.css';
+
 /**
  * Overview map support for the map component.
 */
@@ -96,8 +98,8 @@ export default class OverviewMap3D extends React.Component {
         };
         return [
             (
-                <div className="overview-map" key="map3d-overview-map">
-                    <div className="ol-overviewmap-map" ref={this.initOverviewMap} style={style} />
+                <div className="overview-map-3d" key="map3d-overview-map">
+                    <div className="ol-overviewmap-map-3d" ref={this.initOverviewMap} style={style} />
                     <button onClick={() => this.setState(state => ({collapsed: !state.collapsed}))} type="button">
                         {this.state.collapsed ? '«' : '»'}
                     </button>
