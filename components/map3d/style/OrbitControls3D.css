@@ -1,0 +1,33 @@
+div.map3d-nav-pan,
+div.map3d-nav-rotate {
+    position: absolute;
+    right: 1em;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 4em;
+    height: 4em;
+    border-radius: 2em;
+    color: var(--map-button-text-color);
+    background-color: var(--map-button-bg-color);
+    box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+}
+
+div.map3d-nav-pan > span,
+div.map3d-nav-rotate > span {
+    flex: 0 0 1.25em;
+}
+
+div.map3d-nav-pan {
+    top: 4em;
+}
+
+div.map3d-nav-pan > span.icon-home {
+    font-size: 120%;
+}
+
+div.map3d-nav-rotate {
+    top: 9em;
+}
