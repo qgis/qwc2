@@ -80,7 +80,7 @@ class MapExport3D extends React.Component {
                     <table className="options-table">
                         <tbody>
                             <tr>
-                                <td>{LocaleUtils.tr("rasterexport.format")}</td>
+                                <td>{LocaleUtils.tr("mapexport.format")}</td>
                                 <td>
                                     <select name="FORMAT" onChange={this.formatChanged} value={this.state.selectedFormat}>
                                         {Object.entries(formatMap).map(([format, label]) => (

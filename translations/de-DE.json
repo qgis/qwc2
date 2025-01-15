@@ -19,7 +19,7 @@
         "LayerTree": "Ebenen und Legende",
         "LayerTree3D": "Ebenen",
         "MapExport": "Karte exportieren",
-        "MapExport3D": "",
+        "MapExport3D": "Karte exportieren",
         "MapFilter": "Kartenfilter",
         "Print": "Drucken",
         "Reports": "Berichte",
@@ -406,9 +406,6 @@
     },
     "qtdesignerform": {
       "loading": "Formular wird geladen..."
-    },
-    "rasterexport": {
-      "format": ""
     },
     "redlining": {
       "border": "Rand",
