@@ -9,13 +9,13 @@ div.attribtable-overlay {
     position: absolute;
     left: 0;
     right: 0;
-    top: 2.75em;
+    top: 2.25em;
     bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: rgba(200, 200, 200, 0.9);
-    z-index: 2;
+    z-index: 3;
 }
 
 div.attribtable-overlay > div.spinner {
@@ -150,6 +150,7 @@ table.attribtable-table {
 table.attribtable-table td {
     border: 1px solid var(--border-color);
     text-align: center;
+    overflow: hidden;
 }
 
 table.attribtable-table td:first-child {
@@ -158,10 +159,12 @@ table.attribtable-table td:first-child {
 
 table.attribtable-table td > input:not([type=checkbox]),
 table.attribtable-table td > select,
-table.attribtable-table td pre.text-input,
-table.attribtable-table td > span.edit-upload-field {
-    width: 100%;
-    min-width: 4em;
+table.attribtable-table td > div.TextInput,
+table.attribtable-table td > div.number-input,
+table.attribtable-table td > span.edit-upload-field,
+table.attribtable-table td > span.edit-upload-field-input {
+    min-width: 100%;
+    width: 0;
     border: none!important;
     background-color: transparent!important;
     margin: 0;
