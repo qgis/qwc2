@@ -748,16 +748,16 @@ class AttributeTable extends React.Component {
                 const delta = event.clientY - resize.anchor;
                 resize.element.style.height = Math.max((resize.initial + delta), 16) + "px";
             };
+            const eventShield = ev.view.document.createElement("div");
+            eventShield.className = '__event_shield';
+            ev.view.document.body.appendChild(eventShield);
             document.body.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
-            document.addEventListener("mousemove", resizeDo);
-            document.addEventListener("mouseup", (event) => {
-                document.removeEventListener("mousemove", resizeDo);
-                event.preventDefault();
-                event.stopPropagation();
+            ev.view.addEventListener("mousemove", resizeDo);
+            ev.view.addEventListener("mouseup", (event) => {
+                event.view.document.body.removeChild(eventShield);
+                event.view.removeEventListener("mousemove", resizeDo);
                 document.body.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
-            }, {once: true, capture: true});
-            ev.preventDefault();
-            ev.stopPropagation();
+            }, {once: true});
         }
     };
     csvExport = () => {

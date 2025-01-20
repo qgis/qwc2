@@ -217,3 +217,12 @@ input[type=range]::-webkit-slider-thumb {
     background: var(--input-bg-color);
     margin-top: -3.5px;
 }
+
+div.__event_shield {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 999999999999;
+}
