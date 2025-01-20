@@ -339,7 +339,7 @@ export class FulltextSearch {
                     text: entry.feature.display,
                     x: 0.5 * (entry.feature.bbox[0] + entry.feature.bbox[2]),
                     y: 0.5 * (entry.feature.bbox[1] + entry.feature.bbox[3]),
-                    crs: entry.feature.srid,
+                    crs: "EPSG:" + String(entry.feature.srid).replace(/^EPSG:/, ''),
                     bbox: entry.feature.bbox,
                     thumbnail: iconPath + entry.feature.dataproduct_id + ".svg",
                     // fulltext specific info
