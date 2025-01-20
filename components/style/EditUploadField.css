@@ -7,6 +7,9 @@ span.edit-upload-field {
 }
 
 span.edit-upload-field > a {
+    width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     flex: 1 1 auto;
     white-space: nowrap;
 }
@@ -16,6 +19,7 @@ span.edit-upload-field > span.icon {
 }
 
 span.edit-upload-field-input {
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
 }
@@ -24,6 +28,7 @@ span.edit-upload-field-input > input {
     min-width: 8em;
     width: 0;
     flex: 1 1 auto;
+    border: none!important;
 }
 
 span.edit-upload-field-input > span.icon {
