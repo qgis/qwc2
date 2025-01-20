@@ -369,14 +369,12 @@ class AttributeTable extends React.Component {
     renderColumnResizeHandle = (col, pos) => {
         return (
             <span className={"attribtable-table-" + pos + "draghandle"}
-                onClick={ev => { ev.preventDefault(); ev.stopPropagation(); }}
                 onMouseDown={(ev) => this.resizeTable(ev, col, true)} />
         );
     };
     renderRowResizeHandle = (row, pos) => {
         return (
             <span className={"attribtable-table-" + pos + "draghandle"}
-                onClick={ev => { ev.preventDefault(); ev.stopPropagation(); }}
                 onMouseDown={(ev) => this.resizeTable(ev, row, false)} />
         );
     };
@@ -745,7 +743,7 @@ class AttributeTable extends React.Component {
             };
             const resizeDo = resizeCol ? (event) => {
                 const delta = event.clientX - resize.anchor;
-                resize.element.style.width = Math.max((resize.initial + delta), 16) + "px";
+                resize.element.style.minWidth = Math.max((resize.initial + delta), 16) + "px";
             } : (event) => {
                 const delta = event.clientY - resize.anchor;
                 resize.element.style.height = Math.max((resize.initial + delta), 16) + "px";
