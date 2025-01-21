@@ -42,6 +42,7 @@
         "Measure3D": "Measure",
         "MeasureLineString": "Measure a line",
         "MeasurePolygon": "Measure a polygon",
+        "NewsPopup": "News",
         "Portal": "Portal",
         "PrintScreen3D": "Raster Export",
         "Redlining": "Redlining",

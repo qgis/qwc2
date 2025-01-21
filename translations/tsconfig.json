@@ -38,6 +38,7 @@
     "appmenu.items.Measure3D",
     "appmenu.items.MeasureLineString",
     "appmenu.items.MeasurePolygon",
+    "appmenu.items.NewsPopup",
     "appmenu.items.Portal",
     "appmenu.items.PrintScreen3D",
     "appmenu.items.Redlining",
