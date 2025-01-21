@@ -37,6 +37,7 @@ export default class TextInput extends React.Component {
         placeholder: ""
     };
     state = {
+        focus: false,
         value: "",
         valueRev: 0,
         curValue: "",
@@ -127,7 +128,7 @@ export default class TextInput extends React.Component {
                         className="text-input-resize-handle"
                         onMouseDown={this.startResize} />
                 ) : null}
-                {!this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue ? (
+                {this.state.focus && !this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue ? (
                     <div className="text-input-clear-icon">
                         <Icon icon="clear" onClick={() => this.props.onChange(this.props.clearValue)} />
                     </div>
@@ -143,11 +144,13 @@ export default class TextInput extends React.Component {
         this.setState({curValue: curValue, changed: true});
     };
     onBlur = () => {
+        this.setState({focus: false});
         if (!this.skipNextCommitOnBlur) {
             this.commit();
         }
     };
     onFocus = (ev) => {
+        this.setState({focus: true});
         window.setTimeout(function() {
             if (window.getSelection && document.createRange) {
                 const range = document.createRange();
