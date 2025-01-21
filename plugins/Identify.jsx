@@ -277,9 +277,7 @@ class Identify extends React.Component {
                 const existingFeatures = identifyResults[layername] || [];
                 newResults[layername].forEach((newFeature) => {
                     const featureIndex = existingFeatures.findIndex((feature) => feature.id === newFeature.id);
-                    if (featureIndex !== -1) {
-                        existingFeatures.splice(featureIndex, 1);
-                    } else {
+                    if (featureIndex === -1) {
                         existingFeatures.push(newFeature);
                     }
                 });
