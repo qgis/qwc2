@@ -738,14 +738,21 @@ class AttributeTable extends React.Component {
     resizeTable = (ev, index, resizeCol) => {
         if (this.table) {
             const element = this.table.getElementsByTagName(resizeCol ? "th" : "tr")[index];
+            let initial = 0;
+            if (resizeCol) {
+                initial = parseFloat(element.style.minWidth.replace(/px$/, '')) || element.clientWidth;
+            } else {
+                initial = parseFloat(element.style.height.replace(/px$/, '')) || element.clientHeight;
+            }
             const resize = {
                 anchor: resizeCol ? ev.clientX : ev.clientY,
                 element: element,
-                initial: resizeCol ? element.clientWidth : element.clientHeight
+                initial: initial
             };
             const resizeDo = resizeCol ? (event) => {
                 const delta = event.clientX - resize.anchor;
                 resize.element.style.minWidth = Math.max((resize.initial + delta), 16) + "px";
+                resize.element.style.width = Math.max((resize.initial + delta), 16) + "px";
             } : (event) => {
                 const delta = event.clientY - resize.anchor;
                 resize.element.style.height = Math.max((resize.initial + delta), 16) + "px";
@@ -753,12 +760,12 @@ class AttributeTable extends React.Component {
             const eventShield = ev.view.document.createElement("div");
             eventShield.className = '__event_shield';
             ev.view.document.body.appendChild(eventShield);
-            document.body.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
+            ev.view.document.body.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
             ev.view.addEventListener("mousemove", resizeDo);
             ev.view.addEventListener("mouseup", (event) => {
                 event.view.document.body.removeChild(eventShield);
                 event.view.removeEventListener("mousemove", resizeDo);
-                document.body.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
+                event.view.document.body.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
             }, {once: true});
         }
     };
