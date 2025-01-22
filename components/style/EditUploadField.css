@@ -22,6 +22,8 @@ span.edit-upload-field-input {
     border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
+    background-color: var(--input-bg-color);
+    overflow: hidden;
 }
 
 span.edit-upload-field-input > input {
@@ -29,6 +31,7 @@ span.edit-upload-field-input > input {
     width: 0;
     flex: 1 1 auto;
     border: none!important;
+    background-color: transparent!important;
 }
 
 span.edit-upload-field-input > span.icon {
