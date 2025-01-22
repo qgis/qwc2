@@ -27,15 +27,14 @@ import {setCurrentTask} from '../../actions/task';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
-import Icon from '../Icon';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
 import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
+import MapControls3D from './MapControls3D';
 import MapExport3D from './MapExport3D';
 import Measure3D from './Measure3D';
-import OrbitControls3D from './OrbitControls3D';
 import OverviewMap3D from './OverviewMap3D';
 import TopBar3D from './TopBar3D';
 import LayerRegistry from './layers/index';
@@ -333,12 +332,11 @@ class Map3D extends React.Component {
                 <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
                 {this.state.sceneContext.scene ? (
                     <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
+                        <MapControls3D ref={this.setupControls} sceneContext={this.state.sceneContext} />
                         <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
                         <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                         <LayerTree3D sceneContext={this.state.sceneContext} />
                         <BottomBar3D sceneContext={this.state.sceneContext} />
-                        <OrbitControls3D ref={this.setupControls} sceneContext={this.state.sceneContext} />
-                        </div>
                         <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
                         <Map3DLight sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
@@ -470,8 +468,7 @@ class Map3D extends React.Component {
                 dtmCrs: demCrs,
                 baseLayers: baseLayers,
                 colorLayers: colorLayers,
-                sceneObjects: sceneObjects,
-                firstPersonControls: false
+                sceneObjects: sceneObjects
             },
             sceneId: uuidv1()
         }));
@@ -535,15 +532,15 @@ class Map3D extends React.Component {
             });
         });
     };
-    getSceneIntersection = (x, y) => {
+    getSceneIntersection = (x, y, objects = true) => {
         const raycaster = new Raycaster();
         const camera = this.instance.view.camera;
         raycaster.setFromCamera(new Vector2(x, y), camera);
         // Query object intersection
-        const objInter = raycaster.intersectObjects([
+        const objInter = objects ? raycaster.intersectObjects([
             this.sceneObjectGroup,
             ...this.instance.getEntities().filter(e => e !== this.map).map(entity => entity.object3d)
-        ], true)[0];
+        ], true)[0] : undefined;
         // Query highest resolution terrain tile (i.e. tile with no children)
         const terrInter = raycaster.intersectObjects([this.map.object3d]).filter(result => result.object.children.length === 0)[0];
         // Return closest result
