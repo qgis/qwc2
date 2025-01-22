@@ -121,12 +121,18 @@ export default class TextInput extends React.Component {
                 ) : null}
                 {this.state.focus && !this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue ? (
                     <div className="text-input-clear-icon">
-                        <Icon icon="clear" onClick={() => this.props.onChange(this.props.clearValue)} />
+                        <Icon icon="clear" onClick={this.clear} onMouseDown={MiscUtils.killEvent} />
                     </div>
                 ) : null}
             </div>
         );
     }
+    clear = () => {
+        const clearValue = this.props.clearValue;
+        this.props.onChange(clearValue);
+        this.setState(state => ({curValue: this.props.clearValue, changed: state.value !== clearValue}));
+        this.input.innerHTML = clearValue;
+    };
     onChange = (ev) => {
         let curValue = ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, '');
         if (!this.props.multiline) {
