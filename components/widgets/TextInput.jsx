@@ -102,6 +102,8 @@ export default class TextInput extends React.Component {
                     contentEditable={!this.props.disabled && !this.props.readOnly}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
+                    onCopy={(ev) => this.onCopy(ev, false)}
+                    onCut={(ev) => this.onCopy(ev, true)}
                     onFocus={this.onFocus}
                     onInput={this.onChange}
                     onKeyDown={this.onKeyDown}
@@ -127,6 +129,17 @@ export default class TextInput extends React.Component {
             </div>
         );
     }
+    onCopy = (ev, cut) => {
+        ev.preventDefault();
+        const selection = window.getSelection();
+        const plainText = selection.toString();
+        if (ev.clipboardData) {
+            ev.clipboardData.setData('text/plain', plainText);
+        }
+        if (cut) {
+            this.clear();
+        }
+    };
     clear = () => {
         const clearValue = this.props.clearValue;
         this.props.onChange(clearValue);
