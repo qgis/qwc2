@@ -72,15 +72,6 @@ export default class TextInput extends React.Component {
     setDefaultValue = (value, valueRev, prevValueRef) => {
         if (valueRev > prevValueRef) {
             this.input.innerHTML = value;
-            // Move cursor to end
-            if (this.input === document.activeElement) {
-                const range = document.createRange();
-                range.selectNodeContents(this.input);
-                range.collapse(false);
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
         }
     };
     render() {
