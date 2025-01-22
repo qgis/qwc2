@@ -187,7 +187,7 @@ class AttributeTable extends React.Component {
                                 </span>
                             </th>
                             {fields.map((field, idx) => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)}>
+                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={field.name}>
                                     <span>
                                         {this.renderColumnResizeHandle(idx + 1, 'l')}
                                         <span className="attribtable-table-headername">{field.name}</span>
