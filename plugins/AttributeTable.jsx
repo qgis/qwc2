@@ -465,13 +465,15 @@ class AttributeTable extends React.Component {
         } else if (field.type === "file") {
             return (<EditUploadField constraints={constraints} dataset={this.editLayerId(this.state.selectedLayer)} disabled={disabled} fieldId={field.id} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
-            const updateTextField = (val) => {
-                const textNullValue = ConfigUtils.getConfigProp("editTextNullValue");
-                return updateField(field.id, textNullValue !== undefined && val === textNullValue ? null : val);
-            };
             if ((feature.properties[field.id] ?? null) === null) {
                 value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
             }
+            const updateTextField = (val) => {
+                if (val !== value) {
+                    const textNullValue = ConfigUtils.getConfigProp("editTextNullValue");
+                    updateField(field.id, textNullValue !== undefined && val === textNullValue ? null : val);
+                }
+            };
             const addLinkAnchors = ConfigUtils.getConfigProp("editingAddLinkAnchors") !== false;
             const editTextNullValue = ConfigUtils.getConfigProp("editTextNullValue");
             input = (
