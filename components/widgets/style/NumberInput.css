@@ -4,6 +4,7 @@ div.number-input {
     display: flex;
     height: 2em;
     background-color: var(--input-bg-color);
+    align-items: center;
 }
 
 div.number-input > input {
@@ -34,16 +35,16 @@ div.number-input > span.icon-chevron-down {
     position: absolute;
     right: 0;
     width: 1.5em;
-    height: 50%;
+    height: 1em;
     user-select: none;
 }
 
 div.number-input > span.icon-chevron-up {
-    top: 0;
+    top: calc(50% - 1em);
 }
 
 div.number-input > span.icon-chevron-down {
-    bottom: 0;
+    bottom: calc(50% - 1em);
 }
 
 /** Mobile **/
