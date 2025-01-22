@@ -45,12 +45,12 @@ import './style/Map3D.css';
 class UnloadWrapper extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-        key: PropTypes.string,
-        onUnload: PropTypes.func
+        onUnload: PropTypes.func,
+        sceneId: PropTypes.string
     };
     onUnload = (el) => {
         if (!el) {
-            this.props.onUnload(this.props.key);
+            this.props.onUnload(this.props.sceneId);
         }
     };
     render() {
@@ -332,7 +332,7 @@ class Map3D extends React.Component {
             <div className="map3d-body">
                 <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
                 {this.state.sceneContext.scene ? (
-                    <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload}>
+                    <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
                         <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
                         <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                         <LayerTree3D sceneContext={this.state.sceneContext} />
