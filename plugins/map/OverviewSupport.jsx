@@ -23,6 +23,7 @@ import './style/OverviewSupport.css';
  */
 class OverviewMap extends React.Component {
     static propTypes = {
+        backgroundLayer: PropTypes.object,
         center: PropTypes.array,
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -51,7 +52,7 @@ class OverviewMap extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             this.setupView();
-        } else if (this.props.layers !== prevProps.layers || this.state.overviewView !== prevState.overviewView) {
+        } else if (this.state.overviewView !== prevState.overviewView) {
             const overviewLayerName = (this.props.theme?.backgroundLayers || []).find(entry => entry.overview)?.name;
             let overviewLayer = null;
             if (this.props.options.layer) {
@@ -68,9 +69,11 @@ class OverviewMap extends React.Component {
                     overviewLayer = {...overviewLayer, visibility: true};
                 }
             } else {
-                overviewLayer = this.props.layers.find(l => l.role === LayerRole.BACKGROUND && l.visibility);
+                overviewLayer = this.props.backgroundLayer;
             }
             this.setState({overviewLayer: overviewLayer});
+        } else if (this.props.backgroundLayer !== prevProps.backgroundLayer) {
+            this.setState({overviewLayer: this.props.backgroundLayer});
         }
     }
     initOverviewMap = (el) => {
@@ -124,6 +127,7 @@ export default connect((state) => ({
     theme: state.theme.current,
     themes: state.theme.themes,
     layers: state.layers.flat,
+    backgroundLayer: state.layers.flat.find(l => l.role === LayerRole.BACKGROUND && l.visibility),
     projection: state.map.projection,
     center: state.map.center,
     zoom: state.map.zoom
