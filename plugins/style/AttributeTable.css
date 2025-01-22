@@ -14,8 +14,8 @@ div.attribtable-overlay {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(200, 200, 200, 0.9);
-    z-index: 3;
+    background-color: rgba(200, 200, 200);
+    z-index: 4;
 }
 
 div.attribtable-overlay > div.spinner {
