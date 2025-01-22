@@ -57,8 +57,8 @@ P4 -> P4 _ "*" _ P5                {% function(d) { return d[0] * d[4]; } %}
 
 # Priority-5 operators (exponent, IS, IS NOT)
 P5 -> P6 _ "^" _ P5                {% function(d) { return Math.pow(d[0], d[4]); } %}
-    | P5 __ "IS"i __ P6            {% function(d) { return d[0] === d[4]; } %}
-    | P5 __ "IS"i __ "NOT"i __ P6  {% function(d) { return d[0] !== d[6]; } %}
+    | P5 __ "IS"i __ P6            {% function(d) { return asFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; } %}
+    | P5 __ "IS"i __ "NOT"i __ P6  {% function(d) { return asFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; } %}
     | P6                           {% id %}
 
 # Priority-6 operators (parenthesis, number, unary operators)
