@@ -67,6 +67,7 @@ table.attribtable-table th:first-child {
     position: sticky;
     left: 0;
     z-index: 3;
+    width: 2em;
 }
 
 table.attribtable-table th > span {
