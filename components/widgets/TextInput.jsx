@@ -63,9 +63,6 @@ export default class TextInput extends React.Component {
         }
         return null;
     }
-    componentDidMount() {
-        this.setDefaultValue(this.state.value, this.state.valueRev, -1);
-    }
     componentDidUpdate(prevProps, prevState) {
         this.setDefaultValue(this.state.value, this.state.valueRev, prevState.valueRev);
     }
@@ -100,6 +97,7 @@ export default class TextInput extends React.Component {
                 <pre
                     className={preClassName}
                     contentEditable={!this.props.disabled && !this.props.readOnly}
+                    dangerouslySetInnerHTML={{__html: this.state.value}}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
                     onCopy={(ev) => this.onCopy(ev, false)}
