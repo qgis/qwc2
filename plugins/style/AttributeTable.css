@@ -54,7 +54,7 @@ table.attribtable-table {
 table.attribtable-table th {
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
     padding: 0;
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
@@ -65,7 +65,7 @@ table.attribtable-table th {
 table.attribtable-table th:first-child {
     position: sticky;
     left: 0;
-    z-index: 2;
+    z-index: 3;
 }
 
 table.attribtable-table th > span {
@@ -145,12 +145,13 @@ span.attribtable-table-bdraghandle {
 
 table.attribtable-table {
     table-layout: fixed;
+    width: 100%;
 }
 
 table.attribtable-table td {
     border: 1px solid var(--border-color);
     text-align: center;
-    overflow: hidden;
+    height: 2em;
 }
 
 table.attribtable-table td:first-child {
@@ -168,6 +169,7 @@ table.attribtable-table td > span.edit-upload-field-input {
     border: none!important;
     background-color: transparent!important;
     margin: 0;
+    height: 100%;
 }
 
 table.attribtable-table td > div.TextInput,
@@ -201,8 +203,10 @@ div.attribtable-filter div.TextInput {
 
 body.ewresizing, body.ewresizing * {
     cursor: ew-resize!important;
+    user-select: none;
 }
 
 body.nsresizing, body.nsresizing * {
     cursor: ns-resize!important;
+    user-select: none;
 }
