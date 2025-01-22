@@ -112,7 +112,6 @@ class OlMap extends React.Component {
             layers: [],
             controls: controls,
             interactions: interactions,
-            keyboardEventTarget: document,
             view: this.createView(props.center, props.zoom, props.projection, props.resolutions, this.state.mapOptions.enableRotation, this.state.mapOptions.rotation)
         });
         this.unpauseTimeout = null;
@@ -258,7 +257,7 @@ class OlMap extends React.Component {
         };
 
         return (
-            <div id={this.props.id} key="map" style={style}>
+            <div id={this.props.id} key="map" style={style} tabIndex="0">
                 {children}
             </div>
         );
