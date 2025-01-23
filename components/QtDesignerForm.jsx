@@ -696,7 +696,7 @@ class QtDesignerForm extends React.Component {
         let verticalFill = false;
         if (widget.item) {
             MiscUtils.ensureArray(widget.item).forEach(item => {
-                verticalFill |= this.reformatWidget(item, relationTables, fields, buttons, nrels, externalFields, widgets, counters)
+                verticalFill |= this.reformatWidget(item, relationTables, fields, buttons, nrels, externalFields, widgets, counters);
             });
         }
 
