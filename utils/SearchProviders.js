@@ -297,7 +297,7 @@ export class FulltextSearch {
         }
         // Compute search filter
         const searchFilter = new Set([...searchParams.cfgParams.default || [], ...searchParams.searchTerms]);
-        const facetMap = searchParams.cfgParams.layers;
+        const facetMap = searchParams.cfgParams.layers || {};
         searchParams.activeLayers.forEach(layername => {
             if (facetMap[layername]) {
                 searchFilter.add(facetMap[layername]);
