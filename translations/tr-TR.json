@@ -1,9 +1,16 @@
 {
   "locale": "tr-TR",
   "messages": {
+    "app": {
+      "missingbg": "Arkaplan bulunamadı \"{0}\", varsayılan arkaplan gösteriliyor.",
+      "missinglayers": "Bu katmanlar bulunamıyor: {0}.",
+      "missingpermalink": "Belirtilen yer işareti ya da bağlantı geçerli değil.",
+      "missingprojection": "Tema yüklenemedi \"{0}\": projeksiyon {1} tanımlı değil.",
+      "missingtheme": "Tema bulunamadı \"{0}\", varsayılan tema yükleniyor."
+    },
     "appmenu": {
+      "filter": "Filtre menüsü...",
       "items": {
-        "ExternalLink": "",
         "Bookmark": "Yer işaretleri",
         "Compare3D": "Karşılaştır",
         "DateTime3D": "Tarih Zaman",
@@ -35,6 +42,7 @@
         "Measure3D": "Ölç",
         "MeasureLineString": "Çizgi Ölç",
         "MeasurePolygon": "Alan Ölç",
+        "NewsPopup": "",
         "Portal": "Portal",
         "PrintScreen3D": "Görüntüyü ver",
         "Redlining": "Serbest Çizim",
@@ -43,41 +51,7 @@
         "TimeManager": "Zaman Yöneticisi",
         "View3D": "3 Boyutlu Görünüm"
       },
-      "filter": "Filtre menüsü...",
       "menulabel": "Harita & Araçlar"
-    },
-    "search": {
-      "coordinates": "Koordinatlar",
-      "all": "Tümü",
-      "circleradius": "Daire yarıçapı",
-      "clearfilter": "Temizle",
-      "existinglayer": "Katman zaten haritada mevcut",
-      "filter": "Gelişmiş arama",
-      "layers": "Katmanlar",
-      "limittoarea": "Bölgeyle sınırla",
-      "more": "{0} daha fazla sonuç",
-      "nodescription": "Açıklama yok",
-      "none": "Yok",
-      "noresults": "Sonuç yok",
-      "placeholder": "Bir yer ara ya da harita ekle...",
-      "places": "Yerler",
-      "providerselection": "Arama sağlayıcılar",
-      "recent": "Son aramalar",
-      "search": "Ara",
-      "themelayers": "Tema katmanları",
-      "themes": "Temalar"
-    },
-    "colorschemes": {
-      "default": "Varsayılan",
-      "dark": "Koyu",
-      "highcontrast": "Yüksek karşıtlık"
-    },
-    "app": {
-      "missingbg": "Arkaplan bulunamadı \"{0}\", varsayılan arkaplan gösteriliyor.",
-      "missinglayers": "Bu katmanlar bulunamıyor: {0}.",
-      "missingpermalink": "Belirtilen yer işareti ya da bağlantı geçerli değil.",
-      "missingprojection": "Tema yüklenemedi \"{0}\": projeksiyon {1} tanımlı değil.",
-      "missingtheme": "Tema bulunamadı \"{0}\", varsayılan tema yükleniyor."
     },
     "attribtable": {
       "addfeature": "Obje ekle",
@@ -399,16 +373,6 @@
       "width": "Genişlik",
       "windowtitle": "Sayısal giriş"
     },
-    "parcelsearch": {
-      "blockno": "Ada no",
-      "countyselection": "İlçe seçimi",
-      "districtselection": "Mahalle seçimi",
-      "noresults": "Kayıt yok",
-      "parcelno": "Parsel no",
-      "provinceselection": "İl seçimi",
-      "select": "Arama türü",
-      "title": "Parsel arama"
-    },
     "pickfeature": {
       "querying": "Sorgulanıyor..."
     },
@@ -443,9 +407,6 @@
     },
     "qtdesignerform": {
       "loading": "Form yükleniyor..."
-    },
-    "rasterexport": {
-      "format": ""
     },
     "redlining": {
       "border": "Sınır",
@@ -528,6 +489,26 @@
     },
     "scratchdrawing": {
       "finish": "Bitir"
+    },
+    "search": {
+      "all": "Tümü",
+      "circleradius": "Daire yarıçapı",
+      "clearfilter": "Temizle",
+      "existinglayer": "Katman zaten haritada mevcut",
+      "filter": "Gelişmiş arama",
+      "layers": "Katmanlar",
+      "limittoarea": "Bölgeyle sınırla",
+      "more": "{0} daha fazla sonuç",
+      "nodescription": "Açıklama yok",
+      "none": "Yok",
+      "noresults": "Sonuç yok",
+      "placeholder": "Bir yer ara ya da harita ekle...",
+      "places": "Yerler",
+      "providerselection": "Arama sağlayıcılar",
+      "recent": "Son aramalar",
+      "search": "Ara",
+      "themelayers": "Tema katmanları",
+      "themes": "Temalar"
     },
     "serviceinfo": {
       "abstract": "Özet",
