@@ -292,11 +292,11 @@
       "metersUnit": "メートル",
       "popup": "あなたはこの点から {distance} {unit} 内にいます",
       "statustooltip": {
-        "DISABLED": "位置: 無効",
-        "ENABLED": "位置: 有効",
-        "FOLLOWING": "位置: 追跡中",
-        "LOCATING": "位置: 確認中...",
-        "PERMISSION_DENIED": "位置: 許可無し"
+        "DISABLED": "位置情報: 無効",
+        "ENABLED": "位置情報: 有効",
+        "FOLLOWING": "位置情報: 追跡中",
+        "LOCATING": "位置情報: 取得中...",
+        "PERMISSION_DENIED": "位置情報: 許可無し"
       }
     },
     "map": {
