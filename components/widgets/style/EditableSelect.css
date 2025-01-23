@@ -11,10 +11,6 @@ div.editable-select-inputcontainer > span.icon-clear {
 }
 
 div.editable-select-dropdown {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 100%;
     border: 1px solid var(--border-color);
     max-height: 8em;
     overflow-y: auto;

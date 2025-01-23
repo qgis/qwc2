@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
 import InputContainer from './InputContainer';
+import PopupMenu from './PopupMenu';
 
 import './style/EditableSelect.css';
 
@@ -35,6 +36,10 @@ export default class EditableSelect extends React.Component {
         selectedOption: null,
         focused: false
     };
+    constructor(props) {
+        super(props);
+        this.el = null;
+    }
     static getDerivedStateFromProps(nextProps, state) {
         if (state.focused) {
             // No changes while focussed
@@ -75,20 +80,22 @@ export default class EditableSelect extends React.Component {
                         onKeyDown={this.onKeyDown}
                         placeholder={this.props.placeholder}
                         readOnly={this.props.readOnly}
+                        ref={el => { this.el = el; }}
                         role="input"
                         type="text"
                         value={this.state.value} />
                     <Icon icon="clear" onClick={this.clear} role="suffix" />
                 </InputContainer>
                 {this.state.selectedOption ? this.renderSelectedOption() : null}
-                {this.state.focused && !this.props.readOnly ? this.renderOptions() : null}
+                {this.el && this.state.focused && !this.props.readOnly ? this.renderOptions() : null}
             </div>
         );
     }
     renderOptions = () => {
+        const rect = this.el.getBoundingClientRect();
         const lvalue = this.state.value.toLowerCase();
         return (
-            <div className="editable-select-dropdown">
+            <PopupMenu className="editable-select-dropdown" onClose={() => this.setState({focused: false})} width={rect.width} x={rect.left} y={rect.bottom}>
                 {this.props.options.map((option, idx) => {
                     const label = EditableSelect.optionLabel(option);
                     if (this.state.changed && lvalue && !label.toLowerCase().startsWith(lvalue)) {
@@ -98,7 +105,7 @@ export default class EditableSelect extends React.Component {
                         <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
                     );
                 })}
-            </div>
+            </PopupMenu>
         );
     };
     renderSelectedOption = () => {
