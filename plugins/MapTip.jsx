@@ -55,7 +55,7 @@ class MapTip extends React.Component {
     };
     state = {
         maptips: {},
-        maptipsOrder: [],
+        maptipsLayerOrder: [],
         mousePos: null,
         pos: null
     };
@@ -110,6 +110,7 @@ class MapTip extends React.Component {
         };
         const reqId = uuidv1();
         this.reqId = reqId;
+        const layerOrder = [];
         this.props.layers.forEach(layer => {
             if (
                 !(layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) ||
@@ -121,21 +122,17 @@ class MapTip extends React.Component {
             if (!isEmpty(layer.drawingOrder)) {
                 queryLayers = layer.drawingOrder.slice(0).reverse().filter(entry => layer.queryLayers.includes(entry));
             }
+            layerOrder.push(layer.uuid);
             const request = IdentifyUtils.buildRequest(layer, queryLayers.join(","), this.state.mousePos.coordinate, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
                 if (this.reqId === reqId) {
-                    const mapTips = {};
+                    const result = IdentifyUtils.parseXmlResponse(response || "", this.props.map.projection);
+                    const mapTips = [];
                     const features = [];
-                    if (response) {
-                        const result = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
-                        for (const layerName of request.params.layers.split(",")) {
-                            for (const feature of result[layerName] || []) {
-                                if (feature.properties.maptip) {
-                                    features.push(feature);
-                                    mapTips[layer.name + ":" + layerName] = feature.properties.maptip;
-                                }
-                            }
-                        }
+                    for (const sublayer of request.params.layers.split(",")) {
+                        const sublayerFeatures = (result[sublayer] || []).filter(feature => feature.properties.maptip);
+                        features.push(...sublayerFeatures);
+                        mapTips.push(...sublayerFeatures.map(feature => feature.properties.maptip));
                     }
                     if (this.props.showFeatureSelection && !isEmpty(features)) {
                         const sellayer = {
@@ -146,12 +143,12 @@ class MapTip extends React.Component {
                     }
                     this.setState((state) => ({
                         pos: pos,
-                        maptips: {...state.maptips, ...mapTips},
-                        maptipsOrder: [...state.maptipsOrder, ...queryLayers.map(l => layer.name + ":" + l)]
+                        maptips: {...state.maptips, [layer.uuid]: mapTips}
                     }));
                 }
             });
         });
+        this.setState({maptipsLayerOrder: layerOrder});
     };
     render() {
         if (!isEmpty(this.state.maptips) && this.state.pos) {
@@ -173,11 +170,11 @@ class MapTip extends React.Component {
                     id="MapTip" key="MapTip"
                     ref={this.positionMapTip}
                     style={style}>
-                    {this.state.maptipsOrder.map(key => this.state.maptips[key] ? (
-                        <div key={key}>
-                            {this.parsedContent(this.state.maptips[key])}
+                    {this.state.maptipsLayerOrder.map(key => this.state.maptips[key] || []).flat().map((maptip, idx) => (
+                        <div key={idx}>
+                            {this.parsedContent(maptip)}
                         </div>
-                    ) : null)}
+                    ))}
                 </div>
             )];
         }
