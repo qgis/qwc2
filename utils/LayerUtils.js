@@ -224,6 +224,8 @@ const LayerUtils = {
                 return `"${expr[0]}" ${op} ${expr[2]}`;
             } else if (expr[2] === null) {
                 return `"${expr[0]}" ${op} NULL`;
+            } else if (Array.isArray(expr[2]) ){
+                return `"${expr[0]}" ${op} ( ${expr[2].join(' , ')} )`;
             } else {
                 return `"${expr[0]}" ${op} '${expr[2]}'`;
             }
