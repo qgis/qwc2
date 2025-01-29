@@ -242,6 +242,7 @@
       "nofeatures": "No s'han pogut importar els elements.",
       "noresults": "Sense resultats o l'adreça URL no és vàlida",
       "notgeopdf": "",
+      "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",
       "url": "URL",

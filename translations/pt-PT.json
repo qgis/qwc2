@@ -242,6 +242,7 @@
       "nofeatures": "Nenhuma característica poderia ser importada.",
       "noresults": "Sem resultados ou URL inválida",
       "notgeopdf": "Não é um ficheiro GeoPDF",
+      "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "Projeção Desconhecida",
       "url": "URL",

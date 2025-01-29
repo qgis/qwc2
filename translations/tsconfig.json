@@ -226,6 +226,7 @@
     "importlayer.nofeatures",
     "importlayer.noresults",
     "importlayer.notgeopdf",
+    "importlayer.shpreprojectionerror",
     "importlayer.supportedformats",
     "importlayer.unknownproj",
     "importlayer.url",

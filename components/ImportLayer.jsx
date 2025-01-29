@@ -413,17 +413,38 @@ class ImportLayer extends React.Component {
                     const fetch = fileSystem.fetch.bind(fileSystem.fetch);
                     const filename = `${f}.shp`;
                     // Load SHP and reproject to mapCrs
-                    const data = await load(filename, ShapefileLoader, {
-                        fetch,
-                        shapefile: {shape: 'geojson-table'},
-                        gis: {format: 'geojson', reproject: true, _targetCrs: this.props.mapCrs}
-                    });
-                    data.crs = {
-                        type: "name",
-                        properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
-                    };
-                    // Add data as GeoJSON layer
-                    this.addGeoJSONLayer(f, data);
+                    let data = null;
+                    try {
+                        data = await load(filename, ShapefileLoader, {
+                            fetch,
+                            shapefile: {shape: 'geojson-table'},
+                            gis: {
+                                format: 'geojson', reproject: true, _targetCrs: this.props.mapCrs
+                            }
+                        });
+                    } catch (e) {
+                        try {
+                            data = await load(filename, ShapefileLoader, {
+                                fetch,
+                                shapefile: {shape: 'geojson-table'},
+                                gis: {
+                                    format: 'geojson', reproject: false, _targetCrs: this.props.mapCrs
+                                }
+                            });
+                            /* eslint-disable-next-line */
+                            alert(LocaleUtils.tr("importlayer.shpreprojectionerror"));
+                        } catch (e2) {
+                            data = null;
+                        }
+                    }
+                    if (data) {
+                        data.crs = {
+                            type: "name",
+                            properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
+                        };
+                        // Add data as GeoJSON layer
+                        this.addGeoJSONLayer(f, data);
+                    }
                 }
             }
             this.setState({file: null, addingLayer: false});

@@ -242,6 +242,7 @@
       "nofeatures": "地物をインポート出来ませんでした。",
       "noresults": "検索結果無し、または無効な URL",
       "notgeopdf": "選択されたファイルは GeoPDF ではないようです。",
+      "shpreprojectionerror": "",
       "supportedformats": "サポートされている形式: KML, GeoJSON, GeoPDF, SHP (zip形式)",
       "unknownproj": "選択された GeoPDF は未知の投影法を使っています: {0}。",
       "url": "URL",

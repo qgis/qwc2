@@ -242,6 +242,7 @@
       "nofeatures": "Нет объектов, доступных для импорта",
       "noresults": "",
       "notgeopdf": "",
+      "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",
       "url": "",

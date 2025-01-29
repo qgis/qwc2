@@ -242,6 +242,7 @@
       "nofeatures": "No features could be imported.",
       "noresults": "No results or invalid URL",
       "notgeopdf": "The selected file does not seem to be a GeoPDF.",
+      "shpreprojectionerror": "The Shapefile geometry could not be reprojected, and may be misplaced.",
       "supportedformats": "Supported formats: KML, GeoJSON, GeoPDF, SHP (in zip)",
       "unknownproj": "The selected GeoPDF uses an unknown projection: {0}.",
       "url": "URL",
