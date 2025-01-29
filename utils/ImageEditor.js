@@ -67,14 +67,20 @@ export function showImageEditor(imageData, imageDataCallback) {
         onClose: () => {
             window.ptro.hide();
             delete window.ptro;
-            document.body.removeChild(modalDialogContainer);
+            // Delay to next iteration to ensure ptro event handlers have executed
+            setTimeout(() => {
+                document.body.removeChild(modalDialogContainer);
+            }, 0);
         },
         saveHandler: (image, done) => {
             imageDataCallback(image.asDataURL('image/jpeg'));
             done(true);
             window.ptro.hide();
             delete window.ptro;
-            document.body.removeChild(modalDialogContainer);
+            // Delay to next iteration to ensure ptro event handlers have executed
+            setTimeout(() => {
+                document.body.removeChild(modalDialogContainer);
+            }, 0);
         }
     }).show(imageData);
 
@@ -83,7 +89,10 @@ export function showImageEditor(imageData, imageDataCallback) {
         if (confirm(LocaleUtils.tr("imageeditor.confirmclose"))) {
             window.ptro.hide();
             delete window.ptro;
-            document.body.removeChild(modalDialogContainer);
+            // Delay to next iteration to ensure ptro event handlers have executed
+            setTimeout(() => {
+                document.body.removeChild(modalDialogContainer);
+            }, 0);
         }
     });
 }
