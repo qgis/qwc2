@@ -102,7 +102,6 @@ class ResizeableWindow extends React.Component {
     }
     componentDidMount() {
         this.props.registerWindow(this.id);
-        this.props.onGeometryChanged(this.state.geometry);
         window.addEventListener('beforeunload', this.closeExternalWindow, {once: true});
     }
     componentWillUnmount() {
@@ -352,6 +351,7 @@ class ResizeableWindow extends React.Component {
             this.props.setSplitScreen(this.id, dockSide, dockSize, this.props.splitTopAndBottomBar);
         }
         this.setState({geometry: geometry});
+        this.props.onGeometryChanged(geometry);
     };
     computeInitialX = (container, x) => {
         return x > 0 || Object.is(x, 0) ? x : container.offsetWidth - this.props.initialWidth - Math.abs(x);
