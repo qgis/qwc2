@@ -60,7 +60,7 @@ class ImportLayer extends React.Component {
             return (
                 <EditableSelect
                     onChange={value => this.setState({url: value})} onSubmit={this.scanService} options={urlPresets}
-                    placeholder={placeholder} readOnly={this.state.pendingRequests > 0} />
+                    placeholder={placeholder} readOnly={this.state.pendingRequests > 0} value={this.state.url} />
             );
         }
     }
