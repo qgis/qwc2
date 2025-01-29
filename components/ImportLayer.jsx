@@ -9,9 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {_BrowserFileSystem as BrowserFileSystem, load} from '@loaders.gl/core';
-import {ShapefileLoader} from '@loaders.gl/shapefile';
-import {ZipLoader} from '@loaders.gl/zip';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import {WorkerMessageHandler} from "pdfjs-dist/build/pdf.worker";
@@ -385,6 +382,10 @@ class ImportLayer extends React.Component {
         reader.readAsDataURL(file);
     };
     addSHPLayer = async(file) => {
+        const {_BrowserFileSystem, load} = await import('@loaders.gl/core');
+        const {ShapefileLoader} = await import('@loaders.gl/shapefile');
+        const {ZipLoader} = await import('@loaders.gl/zip');
+
         // Import SHP layer from ZIP. Zip must contain all the required files : shp, dbf, shx, prj, cpg
         if (file.type === "application/zip") {
             const fileMap = await load(file, ZipLoader);
@@ -408,7 +409,7 @@ class ImportLayer extends React.Component {
             for (const f in files) {
                 if (Object.hasOwn(files, f)) {
                     const list = files[f];
-                    const fileSystem = new BrowserFileSystem(list);
+                    const fileSystem = new _BrowserFileSystem(list);
                     const fetch = fileSystem.fetch.bind(fileSystem.fetch);
                     const filename = `${f}.shp`;
                     // Load SHP and reproject to mapCrs
