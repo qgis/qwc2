@@ -43,6 +43,7 @@
         "MeasureLineString": "Çizgi Ölç",
         "MeasurePolygon": "Alan Ölç",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "Portal",
         "PrintScreen3D": "Görüntüyü ver",
         "Redlining": "Serbest Çizim",
@@ -372,6 +373,10 @@
       "side": "Taraf",
       "width": "Genişlik",
       "windowtitle": "Sayısal giriş"
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": "Sorgulanıyor..."

@@ -43,6 +43,7 @@
         "MeasureLineString": "измерить линию",
         "MeasurePolygon": "измерить многоугольник",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "",
         "PrintScreen3D": "",
         "Redlining": "Обводка",
@@ -372,6 +373,10 @@
       "side": "",
       "width": "",
       "windowtitle": ""
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": ""

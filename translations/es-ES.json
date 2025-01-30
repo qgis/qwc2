@@ -43,6 +43,7 @@
         "MeasureLineString": "Medir una línea",
         "MeasurePolygon": "Medir un polígono",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "",
         "PrintScreen3D": "",
         "Redlining": "Línea de demarcación",
@@ -372,6 +373,10 @@
       "side": "",
       "width": "",
       "windowtitle": ""
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": ""

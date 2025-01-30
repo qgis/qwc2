@@ -43,6 +43,7 @@
         "MeasureLineString": "Mesurer une ligne",
         "MeasurePolygon": "Mesurer un polygone",
         "NewsPopup": "Actualités",
+        "Panoramax": "Panoramax",
         "Portal": "Portail",
         "PrintScreen3D": "Export raster",
         "Redlining": "Dessiner",
@@ -372,6 +373,10 @@
       "side": "Côté",
       "width": "Largeur",
       "windowtitle": "Entrée numérique"
+    },
+    "panoramax": {
+      "notfound": "Il n'y a pas d'image disponible pour cet emplacement.",
+      "title": "Visionneuse Panoramax"
     },
     "pickfeature": {
       "querying": "Interrogation"

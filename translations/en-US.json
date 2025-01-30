@@ -43,6 +43,7 @@
         "MeasureLineString": "Measure a line",
         "MeasurePolygon": "Measure a polygon",
         "NewsPopup": "News",
+        "Panoramax": "Panoramax",
         "Portal": "Portal",
         "PrintScreen3D": "Raster Export",
         "Redlining": "Redlining",
@@ -372,6 +373,10 @@
       "side": "Side",
       "width": "Width",
       "windowtitle": "Numeric input"
+    },
+    "panoramax": {
+      "notfound": "There is no image available for this location.",
+      "title": "Panoramax Viewer"
     },
     "pickfeature": {
       "querying": "Querying..."

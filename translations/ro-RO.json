@@ -43,6 +43,7 @@
         "MeasureLineString": "Măsoară o linie",
         "MeasurePolygon": "Măsoară un poligon",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "",
         "PrintScreen3D": "",
         "Redlining": "Evidențiere",
@@ -372,6 +373,10 @@
       "side": "Partea",
       "width": "Lățimea",
       "windowtitle": "Valori numerice"
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": ""

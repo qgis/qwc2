@@ -43,6 +43,7 @@
         "MeasureLineString": "Medir Linha",
         "MeasurePolygon": "Medir Polígono",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "",
         "PrintScreen3D": "",
         "Redlining": "Marcação",
@@ -372,6 +373,10 @@
       "side": "Lado",
       "width": "Largura",
       "windowtitle": "Entrada Numérica"
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": ""
