@@ -422,12 +422,17 @@ class LayerTree extends React.Component {
         }
     };
     renderLayerTree = (layers) => {
-        const havesublayers = this.props.showRootEntry ? true : layers.find(layer => {
-            (layer.sublayers || []).find(sublayer => !isEmpty(sublayer.sublayers));
-        }) !== undefined;
+        const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
+        const haveGroups = !flattenGroups && layers.find(layer => {
+            if (!this.props.showRootEntry) {
+                return (layer.sublayers || []).find(sublayer => !isEmpty(sublayer.sublayers));
+            } else {
+                return !isEmpty(layer.sublayers);
+            }
+        });
         return layers.map(layer => {
-            if (isEmpty(layer.sublayers)) {
-                return this.renderLayer(layer, layer, [], layer.visibility, false, !havesublayers);
+            if (isEmpty(layer.sublayers) && layer.role !== LayerRole.THEME) {
+                return this.renderLayer(layer, layer, [], layer.visibility, false, !haveGroups);
             } else if (this.props.showRootEntry) {
                 return this.renderLayerGroup(layer, layer, [], layer.visibility);
             } else {
@@ -436,7 +441,7 @@ class LayerTree extends React.Component {
                     if (sublayer.sublayers) {
                         return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility);
                     } else {
-                        return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, !havesublayers);
+                        return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, !haveGroups);
                     }
                 });
             }
