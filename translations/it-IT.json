@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "Impossibile aggiungere il livello",
       "addlayer": "Aggiungi livello",
+      "asgroup": "Aggiungi come gruppo",
       "connect": "Connetti",
       "filter": "Filtro",
       "loading": "Caricamento...",

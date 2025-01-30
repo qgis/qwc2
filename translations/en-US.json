@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "Failed to add layer.",
       "addlayer": "Add layer",
+      "asgroup": "Add as group",
       "connect": "Connect",
       "filter": "Filter...",
       "loading": "Loading...",

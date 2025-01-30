@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "Error a l'afegir capa",
       "addlayer": "Afegir capa",
+      "asgroup": "",
       "connect": "Connectar",
       "filter": "Filtrant...",
       "loading": "Carregant...",

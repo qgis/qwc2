@@ -218,6 +218,7 @@
     "imageeditor.title",
     "importlayer.addfailed",
     "importlayer.addlayer",
+    "importlayer.asgroup",
     "importlayer.connect",
     "importlayer.filter",
     "importlayer.loading",

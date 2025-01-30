@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "Adăugarea stratului a eșuat",
       "addlayer": "Adaugă strat",
+      "asgroup": "",
       "connect": "Conectare",
       "filter": "Filtrare...",
       "loading": "Se încarcă...",

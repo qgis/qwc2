@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "Přidání vrstvy selhalo",
       "addlayer": "Přidat vrstvu",
+      "asgroup": "",
       "connect": "Připojit",
       "filter": "Filtr...",
       "loading": "Načítání...",

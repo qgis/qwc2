@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "",
       "addlayer": "Добавить слой",
+      "asgroup": "",
       "connect": "Подключиться",
       "filter": "Фильтровать...",
       "loading": "",

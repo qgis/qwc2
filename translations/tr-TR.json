@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "Katman ekleme başarısız",
       "addlayer": "Katman ekle",
+      "asgroup": "",
       "connect": "Bağlan",
       "filter": "Filtre...",
       "loading": "Yükleniyor...",

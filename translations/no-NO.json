@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "",
       "addlayer": "Legg til lag",
+      "asgroup": "",
       "connect": "Koble til",
       "filter": "Filter...",
       "loading": "Laster inn...",

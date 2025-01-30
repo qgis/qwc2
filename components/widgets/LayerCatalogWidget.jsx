@@ -55,6 +55,9 @@ export default class LayerCatalogWidget extends React.PureComponent {
                         {type ? (<span className="layer-catalog-widget-entry-service">{type}</span>) : null}
                         {entry.title}
                     </span>
+                    {hasSublayers ? (
+                        <Icon icon="group" onClick={() => this.addServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
+                    ) : null}
                 </div>
                 {entry.expanded ? sublayers : null}
             </div>
@@ -101,7 +104,7 @@ export default class LayerCatalogWidget extends React.PureComponent {
             </div>
         );
     }
-    addServiceLayer = (entry) => {
+    addServiceLayer = (entry, asGroup = false) => {
         if (entry.resource) {
             const params = LayerUtils.splitLayerUrlParam(entry.resource);
             ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
@@ -116,7 +119,11 @@ export default class LayerCatalogWidget extends React.PureComponent {
                 }
             });
         } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {
-            this.props.addLayer({...entry, sublayers: null});
+            if (asGroup) {
+                this.props.addLayer(entry);
+            } else {
+                this.props.addLayer({...entry, sublayers: null});
+            }
         }
     };
 }

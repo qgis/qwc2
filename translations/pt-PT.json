@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "Falha ao Adicionar",
       "addlayer": "Adicionar Camada",
+      "asgroup": "",
       "connect": "Ligar",
       "filter": "Filtro...",
       "loading": "A carregar...",

@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "",
       "addlayer": "Lägg till lager",
+      "asgroup": "",
       "connect": "Anslut",
       "filter": "Filter...",
       "loading": "",

@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "",
       "addlayer": "Fólia hozzáadása",
+      "asgroup": "",
       "connect": "Kapcsolódás",
       "filter": "Szűrés...",
       "loading": "",

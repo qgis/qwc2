@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "La couche n'a pas pu être ajoutée",
       "addlayer": "Ajouter une couche",
+      "asgroup": "Ajouter comme groupe",
       "connect": "Connecter",
       "filter": "Filtrer",
       "loading": "Chargement...",

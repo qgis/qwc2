@@ -234,6 +234,7 @@
     "importlayer": {
       "addfailed": "",
       "addlayer": "Lisää karttataso",
+      "asgroup": "",
       "connect": "Yhdistä",
       "filter": "Suodatus...",
       "loading": "Lataa...",
