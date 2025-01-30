@@ -455,7 +455,7 @@ class SearchBox extends React.Component {
                     if (result.theme) {
                         this.addThemeLayers(layer);
                     } else {
-                        this.props.addThemeSublayer(layer);
+                        this.props.addThemeSublayer({sublayers: [layer]});
                     }
                     // Show layer tree to notify user that something has happened
                     this.props.setCurrentTask('LayerTree');
