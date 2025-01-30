@@ -206,7 +206,7 @@ class Cyclomedia extends React.Component {
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
-                onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("cyclomedia.title")}
+                onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("cyclomedia.title")} usePortal={false}
             >
                 <div className="cyclomedia-body" role="body">
                     {this.props.mapScale > this.props.maxMapScale && this.state.status > Status.LOGIN ? (
