@@ -234,7 +234,7 @@
     "importlayer": {
       "addfailed": "レイヤを追加できませんでした。",
       "addlayer": "レイヤを追加",
-      "asgroup": "",
+      "asgroup": "グループとして追加",
       "connect": "接続",
       "filter": "フィルタ...",
       "loading": "ロード中...",
@@ -242,7 +242,7 @@
       "nofeatures": "地物をインポート出来ませんでした。",
       "noresults": "検索結果無し、または無効な URL",
       "notgeopdf": "選択されたファイルは GeoPDF ではないようです。",
-      "shpreprojectionerror": "",
+      "shpreprojectionerror": "シェープファイルのジオメトリを投影できませんでした。間違った場所に置かれたかも知れません。",
       "supportedformats": "サポートされている形式: KML, GeoJSON, GeoPDF, SHP (zip形式)",
       "unknownproj": "選択された GeoPDF は未知の投影法を使っています: {0}。",
       "url": "URL",
