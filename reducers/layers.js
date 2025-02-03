@@ -146,8 +146,8 @@ export default function layers(state = defaultState, action) {
             name: action.layer.name || layerId,
             role: action.layer.role || LayerRole.USERLAYER,
             queryable: action.layer.queryable || false,
-            visibility: action.layer.visibility !== undefined ? action.layer.visibility : true,
-            opacity: action.layer.opacity || 255,
+            visibility: action.layer.visibility ?? true,
+            opacity: action.layer.opacity ?? 255,
             layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
         };
         LayerUtils.addUUIDs(newLayer);
