@@ -212,7 +212,23 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                 if (newLayerNames) {
                     layerConfigs = layerConfigs.reduce((res, layerConfig) => {
                         if (layerConfig.name in newLayerNames) {
-                            return [...res, ...newLayerNames[layerConfig.name].map(name => ({...layerConfig, name}))];
+                            // If layerConfig exactly matches a restored theme layer, return unchanged config
+                            if (newLayerNames[layerConfig.name].length === 1 && newLayerNames[layerConfig.name][0] === layerConfig.name) {
+                                return [...res, layerConfig];
+                            }
+                            // Else, in case multiple theme layers were returned (i.e. layerConfig.name specifies a group)
+                            // generate layerConfigs based on the group layerConfig, preserving the opacity/visibility/etc of the sublayer
+                            return [...res, ...newLayerNames[layerConfig.name].map(sublayername => {
+                                const sublayer = LayerUtils.searchSubLayer({sublayers: newLayers}, "name", sublayername);
+                                return {
+                                    ...layerConfig,
+                                    name: sublayername,
+                                    opacity: sublayer.opacity ?? 255,
+                                    visibility: sublayer.visibility ?? true,
+                                    tristate: sublayer.tristate || false,
+                                    style: sublayer.style
+                                };
+                            })];
                         } else {
                             return [...res, layerConfig];
                         }
