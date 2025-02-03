@@ -1,78 +1,57 @@
 {
   "locale": "nl-NL",
   "messages": {
-    "appmenu": {
-      "items": {
-        "ExternalLink": "Externe link",
-        "ExternalLink2": "Externe link",
-        "ExternalLink3": "Externe link",
-        "IframeLink": "Link naar iframe",
-        "MapFilter": "Kaartfilter",
-        "AttributeTable": "Attributentabel",
-        "Cyclomedia": "Cyclomedia",
-        "DxfExport": "DXF Export",
-        "Editing": "Bewerken",
-        "FeatureForm": "Objectgegevens",
-        "FeatureSearch": "Zoeken op kenmerken",
-        "GeometryDigitizer": "Geometry digitizer",
-        "Help": "Help",
-        "IdentifyRegion": "Data opvragen",
-        "LayerCatalog": "Lagencatalogus",
-        "LayerTree": "Lagen & legenda",
-        "Login": "Inloggen",
-        "Logout": "Uitloggen",
-        "MapLegend": "Legenda",
-        "Measure": "Meten",
-        "MeasureLineString": "lengte meten",
-        "MeasurePolygon": "Oppervlakte meten",
-        "Portal": "Portal",
-        "Print": "Print",
-        "RasterExport": "Raster exporteren",
-        "MapExport": "Export kaart",
-        "Redlining": "Redlining",
-        "Routing": "Routing",
-        "Share": "Link delen",
-        "ThemeSwitcher": "Kaartselectie",
-        "Tools": "Tools",
-        "Bookmark": "Bladwijzers",
-        "TimeManager": "Tijd Manager",
-        "Settings": "Instellingen"
-      },
-      "filter": "Filter menu...",
-      "menulabel": "Kaartselectie & Tools"
-    },
-    "search": {
-      "coordinates": "Coördinaten",
-      "all": "Alle",
-      "circleradius": "Straal van de cirkel",
-      "clearfilter": "Wissen",
-      "enablelayer": "Laag inschakelen",
-      "existinglayer": "Kaartlaag bestaat al",
-      "filter": "Filteren",
-      "invisiblelayer": "Het resultaat staat op onzichtbare kaartlaag",
-      "limittoarea": "Beperken tot gebied",
-      "more": "Meer...",
-      "noresults": "Geen resultaten",
-      "providerselection": "Zoek providers",
-      "search": "Zoeken",
-      "searchall": "Plaats zoeken of kaart toevoegen ...",
-      "searchinprogress": "Bezig met zoeken",
-      "searchreset": "Reset zoeken",
-      "solr": "Fulltext zoeken",
-      "themelayers": "Kaartlagen",
-      "themes": "Kaarten"
-    },
-    "colorschemes": {
-      "default": "Standaard",
-      "dark": "Donker",
-      "highcontrast": "Hoog contrast"
-    },
     "app": {
       "missingbg": "Kan de achtergrond \"{0}\" niet vinden, Standaard achtergrond wordt weergegeven.",
       "missinglayers": "Kan de volgende lagen niet vinden: {0}.",
       "missingpermalink": "De opgegeven permalink of bladwijzer is ongeldig of verlopen.",
       "missingprojection": "Kan de kaart \"{0}\": de projectie {1} is niet gedefinieerd.",
       "missingtheme": "Kan de kaart \"{0}\" niet vinden, default kaart wordt geladen."
+    },
+    "appmenu": {
+      "filter": "Filter menu...",
+      "items": {
+        "Bookmark": "Bladwijzers",
+        "Compare3D": "",
+        "DateTime3D": "",
+        "Editing": "Bewerken",
+        "Help": "Help",
+        "LayerTree": "Lagen & legenda",
+        "LayerTree3D": "",
+        "MapExport": "Export kaart",
+        "MapExport3D": "",
+        "MapFilter": "Kaartfilter",
+        "Print": "Print",
+        "Reports": "",
+        "Settings": "Instellingen",
+        "Share": "Link delen",
+        "ThemeSwitcher": "Kaartselectie",
+        "AttributeTable": "Attributentabel",
+        "Cyclomedia": "Cyclomedia",
+        "Draw3D": "",
+        "FeatureForm": "Objectgegevens",
+        "FeatureSearch": "Zoeken op kenmerken",
+        "GeometryDigitizer": "Geometry digitizer",
+        "IdentifyPoint": "",
+        "IdentifyRegion": "Data opvragen",
+        "LayerCatalog": "Lagencatalogus",
+        "Login": "Inloggen",
+        "Logout": "Uitloggen",
+        "MapLegend": "Legenda",
+        "Measure": "Meten",
+        "Measure3D": "",
+        "MeasureLineString": "lengte meten",
+        "MeasurePolygon": "Oppervlakte meten",
+        "NewsPopup": "",
+        "Portal": "Portal",
+        "PrintScreen3D": "",
+        "Redlining": "Redlining",
+        "Routing": "Routing",
+        "Tools": "Tools",
+        "TimeManager": "Tijd Manager",
+        "View3D": ""
+      },
+      "menulabel": "Kaartselectie & Tools"
     },
     "attribtable": {
       "addfeature": "Object toevoegen",
@@ -85,7 +64,6 @@
       "discard": "Negeer gewijzigde rij",
       "formeditmode": "Open het wijzigformulier voor geselecteerde object",
       "geomnoadd": "Gebruik het wijzigformulier om nieuwe objecten aan deze laag toe te voegen",
-      "layer": "Laag",
       "limittoextent": "Beperken tot kaartgebied",
       "loadfailed": "Kan de object data niet laden",
       "loading": "Laden...",
@@ -122,6 +100,15 @@
       "terms_label": "Voorwaarden",
       "viewertitle_label": ""
     },
+    "compare3d": {
+      "clipplane": "",
+      "compare_objects": "",
+      "toggleall": ""
+    },
+    "cookiepopup": {
+      "accept": "",
+      "message": ""
+    },
     "copybtn": {
       "click_to_copy": "Klik om te kopiëren",
       "copied": "Gekopieerd",
@@ -135,11 +122,25 @@
       "login": "Inloggen",
       "scalehint": "De opnames zijn alleen zichtbaar op de kaart onder schaal 1:{0}.",
       "title": "Cyclomedia Viewer"
-    },    
-    "dxfexport": {
-      "layers": "Lagen",
-      "selectinfo": "Sleep een rechthoek rond het te exporteren gebied...",
-      "symbologyscale": "Schaal voor kaartopmaak"
+    },
+    "draw3d": {
+      "cone": "",
+      "cuboid": "",
+      "cylinder": "",
+      "delete": "",
+      "drawings": "",
+      "newgroupprompt": "",
+      "numericinput": "",
+      "pick": "",
+      "position": "",
+      "pyramid": "",
+      "rotate": "",
+      "rotation": "",
+      "scale": "",
+      "sphere": "",
+      "thescale": "",
+      "translate": "",
+      "wedge": ""
     },
     "editing": {
       "add": "Toevoegen",
@@ -148,6 +149,7 @@
       "clearpicture": "Wissen",
       "commit": "Bevestigen",
       "commitfailed": "Bevestigen mislukt",
+      "contraintviolation": "",
       "create": "Toevoegen",
       "delete": "Verwijderen",
       "discard": "Negeren",
@@ -164,7 +166,6 @@
       "reallydelete": "Verwijderen",
       "relationcommitfailed": "Sommige relatiegegevens konden niet worden bevestigd. Controleer de pictogrammen voor details",
       "select": "Selecteren",
-      "selectedpicture": "Geselecteerde afbeelding",
       "takepicture": "Foto maken",
       "unsavedchanged": "Er zijn niet-opgeslagen wijzigingen. Wil je de pagina toch verlaten?"
     },
@@ -181,6 +182,7 @@
       "title": "Zoek object"
     },
     "fileselector": {
+      "files": "",
       "placeholder": "Selecteer bestand..."
     },
     "geomdigitizer": {
@@ -196,7 +198,7 @@
       "selfinter": "Eén of meer polygonen bevatten zelfdoorsnijdingen",
       "send": "Verzenden",
       "wait": "Bezig met laden..."
-    },    
+    },
     "heightprofile": {
       "asl": "NAP",
       "distance": "Afstand",
@@ -210,14 +212,19 @@
       "title": "Hoogteprofiel"
     },
     "identify": {
+      "aggregatedreport": "",
       "clipboard": "Kopiëren naar klembord",
+      "download": "",
       "export": "Exporteren",
-      "exportformat": "Exportformaat:",
       "featureReport": "Rapport",
+      "featurecount": "",
+      "layerall": "",
       "link": "Link",
       "noattributes": "Geen attributen",
       "noresults": "Geen informatie beschikbaar voor het aangewezen punt",
       "querying": "Zoeken...",
+      "reportfail": "",
+      "selectlayer": "",
       "title": "Objectgegevens"
     },
     "imageeditor": {
@@ -227,6 +234,7 @@
     "importlayer": {
       "addfailed": "Toevoegen van laag mislukt",
       "addlayer": "Laag toevoegen",
+      "asgroup": "",
       "connect": "Verbinden",
       "filter": "Filteren...",
       "loading": "Laden...",
@@ -234,6 +242,8 @@
       "nofeatures": "Objecten konden niet geïmporteerd worden",
       "noresults": "Geen resultaten of ongeldige URL",
       "notgeopdf": "Het geselecteerde bestand lijkt geen GeoPDF te zijn.",
+      "shpreprojectionerror": "",
+      "supportedformats": "",
       "unknownproj": "De geselecteerde GeoPDF gebruikt een onbekende projectie: {0}.",
       "url": "URL",
       "urlplaceholder": "Voer URL in voor WMS, WMTS, WFS..."
@@ -270,6 +280,10 @@
       "visiblefilter": "Filter onzichtbare lagen",
       "zoomtolayer": "Zoom naar laag"
     },
+    "layertree3d": {
+      "layers": "",
+      "objects": ""
+    },
     "linkfeatureform": {
       "cancel": "Annuleren",
       "close": "Sluiten",
@@ -292,6 +306,11 @@
       "loading": "Laden...",
       "resetrotation": "Rotatie resetten"
     },
+    "map3d": {
+      "syncview": "",
+      "terrain": "",
+      "title": ""
+    },
     "mapexport": {
       "configuration": "Configuratie",
       "format": "Format",
@@ -307,8 +326,8 @@
       "brokenrendering": "Kaartweergave kan verstoord zijn door een ongeldige filterexpressie",
       "cancel": "Annuleren",
       "geomfilter": "Geometriefilter",
-      "invalidfilter": "Ongeldige filterexpressie",
       "hidefiltergeom": "Verberg filtergeometrie",
+      "invalidfilter": "Ongeldige filterexpressie",
       "save": "Opslaan",
       "select": "Selecteren...",
       "selectlayer": "Laag selecteren",
@@ -327,8 +346,10 @@
       "windowtitle": "Legenda"
     },
     "measureComponent": {
+      "absolute": "",
       "areaLabel": "Oppervlakte",
       "bearingLabel": "Richting",
+      "ground": "",
       "imperial": "Imperiaal",
       "lengthLabel": "Lengte",
       "metric": "Metrisch",
@@ -363,6 +384,10 @@
     },
     "print": {
       "atlasfeature": "Atlasobject",
+      "download": "",
+      "download_as_onepdf": "",
+      "download_as_onezip": "",
+      "download_as_single": "",
       "format": "Format",
       "grid": "Raster",
       "layout": "Indeling",
@@ -372,24 +397,18 @@
       "nolayouts": "De geselecteerde kaart ondersteunt geen afdrukken",
       "notheme": "Geen kaart geselecteerd",
       "output": "Print resultaat",
+      "overlap": "",
       "pickatlasfeature": "Kies in kaartlaag {0}...",
       "resolution": "Resolutie",
       "rotation": "Rotatie",
+      "save": "",
       "scale": "Schaal",
+      "series": "",
       "submit": "Print",
       "wait": "Even geduld a.u.b...."
     },
     "qtdesignerform": {
       "loading": "Formulier laden..."
-    },
-    "rasterexport": {
-      "format": "Formaat",
-      "resolution": "Resolutie",
-      "scale": "Schaal",
-      "size": "Grootte",
-      "submit": "Exporteren",
-      "usersize": "Selecteer op kaart...",
-      "wait": "Even geduld a.u.b..."
     },
     "redlining": {
       "border": "Rand",
@@ -404,23 +423,31 @@
       "draw": "Tekenen",
       "edit": "Bewerken",
       "ellipse": "Ellips",
+      "export": "",
       "freehand": "Uit de hand tekenen",
       "label": "Label",
       "layer": "Laag",
-      "line": "Lijn",
       "layertitle": "Laag",
+      "line": "Lijn",
       "markers": "Markeringen",
       "measurements": "Metingen tonen",
       "numericinput": "Numeriek invoerpaneel tonen",
       "pick": "Selecteren",
-      "outline": "Contour",
       "point": "Punt",
       "polygon": "Polygoon",
       "rectangle": "Rechthoek",
       "size": "Afmeting",
+      "square": "",
       "text": "Tekst",
       "transform": "Transformeer",
       "width": "Breedte"
+    },
+    "reports": {
+      "all": "",
+      "download": "",
+      "pick": "",
+      "region": "",
+      "selectlayer": ""
     },
     "routing": {
       "add": "Punt toevoegen",
@@ -461,19 +488,29 @@
       "usehighways": "Gebruik snelwegen",
       "usetollways": "Gebruik tolwegen",
       "windowtitle": "Routering"
-    },    
+    },
     "scratchdrawing": {
       "finish": "Voltooien"
     },
-    "searchbox": {
-      "filter": "Verfijn zoekopdracht",
-      "layers": "Kaarten",
-      "more": "Meer resultaten",
-      "morelayers": "Meer resultaten beschikbaar",
-      "nodescription": "Geen beschrijving beschikbaar",
-      "placeholder": "Zoek plaats of voeg kaart toe...",
-      "places": "Plaatsen",
-      "recent": "Recente zoekopdrachten"
+    "search": {
+      "all": "Alle",
+      "circleradius": "Straal van de cirkel",
+      "clearfilter": "Wissen",
+      "existinglayer": "Kaartlaag bestaat al",
+      "filter": "Filteren",
+      "layers": "",
+      "limittoarea": "Beperken tot gebied",
+      "more": "Meer...",
+      "nodescription": "",
+      "none": "",
+      "noresults": "Geen resultaten",
+      "placeholder": "",
+      "places": "",
+      "providerselection": "Zoek providers",
+      "recent": "",
+      "search": "Zoeken",
+      "themelayers": "Kaartlagen",
+      "themes": "Kaarten"
     },
     "serviceinfo": {
       "abstract": "Samenvatting",
@@ -515,7 +552,8 @@
     "themelayerslist": {
       "addlayer": "Laag toevoegen",
       "addlayerstotheme": "Lagen toevoegen aan huidige kaart",
-      "addselectedlayers": "Geselecteerde la(a)g(en) toevoegen"
+      "addselectedlayers": "Geselecteerde la(a)g(en) toevoegen",
+      "existinglayers": ""
     },
     "themeswitcher": {
       "addlayerstotheme": "Voeg lagen toe aan huidige kaart",
@@ -594,13 +632,14 @@
     },
     "window": {
       "close": "Sluiten",
+      "detach": "",
       "dock": "Dock",
+      "embed": "",
       "maximize": "Maximaliseren",
       "minimize": "Minimaliseren",
       "undock": "Losmaken",
       "unmaximize": "Herstellen",
       "unminimize": "Minimaliseer niet"
     }
-    
   }
 }
