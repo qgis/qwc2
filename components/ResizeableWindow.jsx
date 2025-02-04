@@ -41,6 +41,7 @@ class ResizeableWindow extends React.Component {
             title: PropTypes.string
         })),
         fitHeight: PropTypes.bool,
+        fullscreen: PropTypes.bool,
         icon: PropTypes.string,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
@@ -155,6 +156,9 @@ class ResizeableWindow extends React.Component {
         ev.stopPropagation();
     };
     renderTitleBar = () => {
+        if (this.props.fullscreen) {
+            return null;
+        }
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
         const docked = this.state.geometry.docked;
@@ -250,7 +254,7 @@ class ResizeableWindow extends React.Component {
         );
     };
     renderInternalWindow = () => {
-        const maximized = this.state.geometry.maximized ? true : false;
+        const maximized = (this.state.geometry.maximized || this.props.fullscreen) ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
         const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
 
