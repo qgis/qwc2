@@ -99,7 +99,7 @@ class Portal extends React.Component {
                         type="text"
                         value={this.state.filter} />
                     <span className="portal-topbar-spacer" />
-                    <AppMenu appMenuClearsTask={false} buttonContents={this.menuButtonContents()}
+                    <AppMenu appMenuClearsTask={false} buttonLabel={LocaleUtils.tr("portal.menulabel")}
                         keepMenuOpen={this.props.keepMenuOpen} menuItems={this.props.menuItems} onMenuToggled={this.menuToggled}
                         openExternalUrl={this.openUrl}
                         showOnStartup={this.props.showMenuOnStartup} />
@@ -125,14 +125,6 @@ class Portal extends React.Component {
             </div>
         );
     }
-    menuButtonContents = () => {
-        return (
-            <span className="portal-menu-button">
-                <span className="portal-menu-label">{LocaleUtils.tr("portal.menulabel")}</span>
-                <Icon className="portal-menu-icon" icon="menu-hamburger"/>
-            </span>
-        );
-    };
     openUrl = (url, target, title) => {
         if (target === "iframe") {
             target = ":iframedialog:externallinkiframe";

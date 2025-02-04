@@ -19,6 +19,7 @@ import PropTypes from 'prop-types';
 import {setCurrentTask} from '../actions/task';
 import {setMenuMargin} from '../actions/windows';
 import InputContainer from '../components/widgets/InputContainer';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';
@@ -30,7 +31,7 @@ class AppMenu extends React.Component {
     static propTypes = {
         appMenuClearsTask: PropTypes.bool,
         appMenuShortcut: PropTypes.string,
-        buttonContents: PropTypes.object,
+        buttonLabel: PropTypes.string,
         currentTaskBlocked: PropTypes.bool,
         keepMenuOpen: PropTypes.bool,
         menuCompact: PropTypes.bool,
@@ -272,6 +273,7 @@ class AppMenu extends React.Component {
         }
     };
     render() {
+        const isMobile = ConfigUtils.isMobile();
         const visible = !this.props.currentTaskBlocked && this.state.menuVisible;
         const className = classnames({
             "appmenu-blocked": this.props.currentTaskBlocked,
@@ -282,8 +284,11 @@ class AppMenu extends React.Component {
         return (
             <div className={"AppMenu " + className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
             >
-                <div className="appmenu-button-container" onMouseDown={this.toggleMenu} >
-                    {this.props.buttonContents}
+                <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
+                    <div className="appmenu-button" title={this.props.buttonLabel}>
+                        {!isMobile ? (<span className="appmenu-label">{this.props.buttonLabel}</span>) : null}
+                        <Icon className="appmenu-icon" icon="menu-hamburger"/>
+                    </div>
                 </div>
                 <div className="appmenu-menu-container">
                     <ul className="appmenu-menu">

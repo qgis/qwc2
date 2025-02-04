@@ -129,33 +129,21 @@ class TopBar extends React.Component {
         }
     }
     render() {
-        let buttonContents;
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
         const isMobile = ConfigUtils.isMobile();
-        const tooltip = LocaleUtils.tr("appmenu.menulabel");
         if (isMobile || this.props.appMenuCompact) {
-            buttonContents = (
-                <span className="appmenu-button">
-                    <Icon className="appmenu-icon" icon="menu-hamburger" title={tooltip}/>
-                </span>
-            );
             logo = assetsPath + "/img/logo-mobile." + this.props.logoFormat;
         } else {
-            buttonContents = (
-                <span className="appmenu-button">
-                    <span className="appmenu-label">{LocaleUtils.tr("appmenu.menulabel")}</span>
-                    <Icon className="appmenu-icon" icon="menu-hamburger" title={tooltip}/>
-                </span>
-            );
             logo = assetsPath + "/img/logo."  + this.props.logoFormat;
         }
 
         const classes = classnames({
+            TopBar: true,
             mobile: isMobile,
             fullscreen: this.props.fullscreen
         });
-        let logoEl = (<img className="logo" src={this.props.logoSrc || logo} />);
+        let logoEl = (<img className="topbar-logo" src={this.props.logoSrc || logo} />);
         if (this.props.logoUrl) {
             logoEl = (<a href={this.props.logoUrl} rel="noreferrer" target="_blank">{logoEl}</a>);
         }
@@ -176,10 +164,11 @@ class TopBar extends React.Component {
         return (
             <Swipeable
                 onSwipedDown={() => this.props.toggleFullscreen(false)}
-                onSwipedUp={() => this.props.toggleFullscreen(true)}>
-                <div className={classes} id="TopBar" ref={this.storeHeight} style={style}>
+                onSwipedUp={() => this.props.toggleFullscreen(true)}
+            >
+                <div className={classes} ref={this.storeHeight} style={style}>
                     {logoEl}
-                    <div className="center-span">
+                    <div className="topbar-center-span">
                         {this.props.components.Search ? (
                             <this.props.components.Search searchOptions={searchOptions}/>
                         ) : null}
@@ -194,7 +183,7 @@ class TopBar extends React.Component {
                         <this.props.components.AppMenu
                             appMenuClearsTask={this.props.appMenuClearsTask}
                             appMenuShortcut={this.props.appMenuShortcut}
-                            buttonContents={buttonContents}
+                            buttonLabel={LocaleUtils.tr("appmenu.menulabel")}
                             keepMenuOpen={keepMenuOpen}
                             menuCompact={menuCompact}
                             menuItems={this.state.allowedMenuItems}
