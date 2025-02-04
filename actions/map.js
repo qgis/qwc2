@@ -21,8 +21,6 @@ export const ZOOM_TO_POINT = 'ZOOM_TO_POINT';
 export const CHANGE_ROTATION = 'CHANGE_ROTATION';
 export const TOGGLE_MAPTIPS = 'TOGGLE_MAPTIPS';
 export const SET_DISPLAY_CRS = 'SET_DISPLAY_CRS';
-export const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
-export const SET_BOTTOMBAR_HEIGHT = 'SET_BOTTOMBAR_HEIGHT';
 export const SET_SNAPPING_CONFIG = 'SET_SNAPPING_CONFIG';
 
 export function changeMapView(center, zoom, bbox, size, mapStateSource, projection) {
@@ -106,22 +104,6 @@ export function toggleMapTips(active) {
     return {
         type: TOGGLE_MAPTIPS,
         active: active
-    };
-}
-
-export function setTopbarHeight(height) {
-    document.querySelector(':root').style.setProperty('--topbar-height', height + 'px');
-    return {
-        type: SET_TOPBAR_HEIGHT,
-        height
-    };
-}
-
-export function setBottombarHeight(height) {
-    document.querySelector(':root').style.setProperty('--bottombar-height', height + 'px');
-    return {
-        type: SET_BOTTOMBAR_HEIGHT,
-        height
     };
 }
 

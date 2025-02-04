@@ -24,6 +24,8 @@ export const UNREGISTER_WINDOW = 'UNREGISTER_WINDOW';
 export const RAISE_WINDOW = 'RAISE_WINDOW';
 export const SET_MENU_MARGIN = 'SET_MENU_MARGIN';
 export const SET_SPLIT_SCREEN = 'SET_SPLIT_SCREEN';
+export const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
+export const SET_BOTTOMBAR_HEIGHT = 'SET_BOTTOMBAR_HEIGHT';
 
 export const NotificationType = {
     INFO: 1,
@@ -99,6 +101,22 @@ export function setMenuMargin(right, left) {
         type: SET_MENU_MARGIN,
         right: right,
         left: left
+    };
+}
+
+export function setTopbarHeight(height) {
+    document.querySelector(':root').style.setProperty('--topbar-height', height + 'px');
+    return {
+        type: SET_TOPBAR_HEIGHT,
+        height
+    };
+}
+
+export function setBottombarHeight(height) {
+    document.querySelector(':root').style.setProperty('--bottombar-height', height + 'px');
+    return {
+        type: SET_BOTTOMBAR_HEIGHT,
+        height
     };
 }
 

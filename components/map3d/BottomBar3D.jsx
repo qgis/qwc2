@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {setBottombarHeight} from '../../actions/map';
+import {setBottombarHeight} from '../../actions/windows';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 
 import './style/BottomBar3D.css';
