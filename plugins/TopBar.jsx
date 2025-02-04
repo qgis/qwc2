@@ -14,9 +14,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
-import {restoreDefaultTheme} from '../actions/theme';
 import {openExternalUrl, setTopbarHeight} from '../actions/windows';
-import Icon from '../components/Icon';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -55,7 +53,6 @@ class TopBar extends React.Component {
         /** The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
-        restoreDefaultTheme: PropTypes.func,
         /** Options passed down to the search component. */
         searchOptions: PropTypes.shape({
             /** Whether to show the search filter widget (SearchBox only). */
@@ -244,7 +241,6 @@ export default (components) => {
         mapMargins: state.windows.mapMargins
     }), {
         toggleFullscreen: toggleFullscreen,
-        restoreDefaultTheme: restoreDefaultTheme,
         openExternalUrl: openExternalUrl,
         setTopbarHeight: setTopbarHeight
     })(TopBar);
