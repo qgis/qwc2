@@ -112,6 +112,7 @@ export default class LayerCatalogWidget extends React.PureComponent {
                     if (entry.sublayers === false) {
                         layer.sublayers = null;
                     }
+                    LayerUtils.propagateLayerProperty(layer, "opacity", params.opacity);
                     this.props.addLayer(layer);
                 } else {
                     // eslint-disable-next-line

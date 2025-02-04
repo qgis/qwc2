@@ -1023,6 +1023,21 @@ const LayerUtils = {
             newlayer.bbox = {bounds, crs: "EPSG:4326"};
         }
         return newlayer;
+    },
+    propagateLayerProperty(newlayer, property, value, path = null) {
+        Object.assign(newlayer, {[property]: value});
+        // Don't propagate visibility for mutually exclusive groups
+        if (newlayer.sublayers && !(property === "visibility" && newlayer.mutuallyExclusive)) {
+            newlayer.sublayers = newlayer.sublayers.map((sublayer, idx) => {
+                if (path === null || (!isEmpty(path) && path[0] === idx)) {
+                    const newsublayer = {...sublayer};
+                    LayerUtils.propagateLayerProperty(newsublayer, property, value, path ? path.slice(1) : null);
+                    return newsublayer;
+                } else {
+                    return sublayer;
+                }
+            });
+        }
     }
 };
 
