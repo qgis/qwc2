@@ -57,7 +57,7 @@ export default class LayerCatalogWidget extends React.PureComponent {
                         {type ? (<span className="layer-catalog-widget-entry-service">{type}</span>) : null}
                         {entry.title}
                     </span>
-                    {hasSublayers ? (
+                    {hasSublayers && entry.type === "wms" ? (
                         <Icon icon="group" onClick={() => this.addServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
                     ) : null}
                 </div>
