@@ -19,7 +19,9 @@ export default class LayerCatalogWidget extends React.PureComponent {
         catalog: PropTypes.array,
         levelBasedIndentSize: PropTypes.bool,
         mapCrs: PropTypes.string,
-        pendingRequests: PropTypes.number
+        pendingRequests: PropTypes.number,
+        removeLayer: PropTypes.func,
+        replacePlaceholderLayer: PropTypes.func
     };
     state = {
         catalog: [],
@@ -107,16 +109,26 @@ export default class LayerCatalogWidget extends React.PureComponent {
     addServiceLayer = (entry, asGroup = false) => {
         if (entry.resource) {
             const params = LayerUtils.splitLayerUrlParam(entry.resource);
+            // Create placeholder layer
+            this.props.addLayer({
+                id: params.id,
+                type: "placeholder",
+                name: params.name,
+                title: entry.title ?? params.name,
+                role: params.USERLAYER,
+                loading: true
+            });
             ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
                 if (layer) {
                     if (entry.sublayers === false) {
                         layer.sublayers = null;
                     }
                     LayerUtils.propagateLayerProperty(layer, "opacity", params.opacity);
-                    this.props.addLayer(layer);
+                    this.props.replacePlaceholderLayer(params.id, layer);
                 } else {
                     // eslint-disable-next-line
                     alert(LocaleUtils.tr("importlayer.addfailed"));
+                    this.props.removeLayer(params.id);
                 }
             });
         } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {

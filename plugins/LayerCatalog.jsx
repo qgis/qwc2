@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
-import {addLayer} from '../actions/layers';
+import {addLayer, removeLayer, replacePlaceholderLayer} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
@@ -76,6 +76,8 @@ class LayerCatalog extends React.Component {
         }),
         /** Whether to increase the indent size dynamically according to the current level (`true`) or keep the indent size constant (`false`). */
         levelBasedIndentSize: PropTypes.bool,
+        removeLayer: PropTypes.func,
+        replacePlaceholderLayer: PropTypes.func,
         setCurrentTask: PropTypes.func
     };
     static defaultProps = {
@@ -119,7 +121,10 @@ class LayerCatalog extends React.Component {
                 onClose={this.onClose} title={LocaleUtils.tr("layercatalog.windowtitle")}
             >
                 <div className="layer-catalog" role="body">
-                    <LayerCatalogWidget addLayer={this.props.addLayer} catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} />
+                    <LayerCatalogWidget
+                        addLayer={this.props.addLayer} catalog={this.state.catalog}
+                        levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0}
+                        removeLayer={this.props.removeLayer} replacePlaceholderLayer={this.props.replacePlaceholderLayer} />
                 </div>
             </ResizeableWindow>
         );
@@ -133,5 +138,7 @@ export default connect(state => ({
     active: state.task.id === "LayerCatalog"
 }), {
     addLayer: addLayer,
+    removeLayer: removeLayer,
+    replacePlaceholderLayer: replacePlaceholderLayer,
     setCurrentTask: setCurrentTask
 })(LayerCatalog);
