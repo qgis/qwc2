@@ -15,13 +15,11 @@ import {register as olProj4Register} from 'ol/proj/proj4';
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
-import {addLayer} from '../actions/layers';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {loadLocale} from '../actions/locale';
-import {setBottombarHeight, setTopbarHeight} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
-import {NotificationType, showNotification} from '../actions/windows';
+import {NotificationType, showNotification, setBottombarHeight, setTopbarHeight} from '../actions/windows';
 import ReducerIndex from '../reducers/index';
 import {createStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -51,12 +49,14 @@ if (CSRF_TOKEN) {
 }
 
 
-class AppInitComponent extends React.Component {
+class AppContainerComponent extends React.Component {
     static propTypes = {
-        addLayer: PropTypes.func,
         appConfig: PropTypes.object,
+        defaultUrlParams: PropTypes.string,
+        haveLocale: PropTypes.bool,
+        haveMapSize: PropTypes.bool,
         initialParams: PropTypes.object,
-        mapSize: PropTypes.object,
+        pluginsConfig: PropTypes.object,
         setBottombarHeight: PropTypes.func,
         setColorScheme: PropTypes.func,
         setCurrentTask: PropTypes.func,
@@ -64,23 +64,36 @@ class AppInitComponent extends React.Component {
         setStartupParameters: PropTypes.func,
         setTopbarHeight: PropTypes.func,
         showNotification: PropTypes.func,
-        themesLoaded: PropTypes.func,
-        userInfos: PropTypes.object
+        themesLoaded: PropTypes.func
     };
     constructor(props) {
         super(props);
         this.initialized = false;
 
-        // Set initial bottom/topbar height to zero, the components will set the proper height when initialized
+        // Set initial bottom/topbar height to zero in case not topbar/bottombar is enabled
+        // The components will set the proper height if and when initialized
         props.setTopbarHeight(0);
         props.setBottombarHeight(0);
     }
     componentDidMount() {
         this.componentDidUpdate();
+
+        window.addEventListener("QWC2ApiReady", () => {
+            // Warn about non-existing plugins
+            const plugins = {
+                ...this.props.appConfig.pluginsDef.plugins,
+                ...window.qwc2?.__customPlugins
+            };
+            const mode = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+            this.props.pluginsConfig[mode].filter(entry => !plugins[entry.name + "Plugin"]).forEach(entry => {
+                // eslint-disable-next-line
+                console.warn("Non-existing plugin: " + entry.name);
+            });
+        });
     }
     componentDidUpdate() {
         // The map component needs to have finished loading before theme initialization can proceed
-        if (this.props.mapSize && !this.initialized) {
+        if (this.props.haveMapSize && !this.initialized) {
             this.init();
         }
     }
@@ -114,7 +127,7 @@ class AppInitComponent extends React.Component {
                         this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
                         params.l = undefined;
                     }
-                    const defaultTheme = Object.fromEntries((this.props.userInfos?.default_url_params || "").split("&").map(x => x.split("="))).t || themes.defaultTheme;
+                    const defaultTheme = Object.fromEntries(this.props.defaultUrlParams.split("&").map(x => x.split("="))).t || themes.defaultTheme;
                     theme = ThemeUtils.getThemeById(themes, defaultTheme);
                     params.t = defaultTheme;
                 }
@@ -180,26 +193,37 @@ class AppInitComponent extends React.Component {
         });
     };
     render() {
-        return null;
+        // Ensure translations and config are loaded
+        if (!this.props.haveLocale || !this.props.pluginsConfig) {
+            return null;
+        }
+        const plugins = {
+            ...this.props.appConfig.pluginsDef.plugins,
+            ...window.qwc2?.__customPlugins
+        };
+        const pluginConfig = {...this.props.appConfig.pluginsDef.cfg};
+        return (
+            <PluginsContainer plugins={plugins} pluginsAppConfig={pluginConfig} pluginsConfig={this.props.pluginsConfig} />
+        );
     }
 }
 
-const AppInit = connect(state => ({
-    mapSize: state.map.size,
-    layers: state.layers.flat,
-    userInfos: state.localConfig.user_infos,
-    currentTask: state.task.id
+const AppContainer = connect(state => ({
+    customPlugins: state.localConfig.customPlugins, // Unused, just to ensure component reacts when custom plugins change
+    haveLocale: state.locale.current !== null,
+    haveMapSize: state.map.size !== null,
+    defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
+    pluginsConfig: state.localConfig.plugins
 }), {
     themesLoaded: themesLoaded,
     setCurrentTask: setCurrentTask,
     setColorScheme: setColorScheme,
     setCurrentTheme: setCurrentTheme,
     setStartupParameters: setStartupParameters,
-    addLayer: addLayer,
     showNotification: showNotification,
     setTopbarHeight: setTopbarHeight,
     setBottombarHeight: setBottombarHeight
-})(AppInitComponent);
+})(AppContainerComponent);
 
 
 export default class StandardApp extends React.Component {
@@ -228,12 +252,10 @@ export default class StandardApp extends React.Component {
         document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
     };
     render() {
-        const plugins = this.props.appConfig.pluginsDef.plugins;
         return (
             <Provider store={StandardApp.store}>
                 <div ref={this.setupTouchEvents}>
-                    <AppInit appConfig={this.props.appConfig} initialParams={this.initialParams}/>
-                    <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
+                    <AppContainer appConfig={this.props.appConfig} initialParams={this.initialParams}/>
                 </div>
             </Provider>
         );
@@ -301,8 +323,8 @@ export default class StandardApp extends React.Component {
             }, {})));
             delete config.plugins.common;
             StandardApp.store.dispatch(localConfigLoaded(config));
+            // Load locale
             const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";
-            // Dispatch user locale
             StandardApp.store.dispatch(loadLocale(this.props.appConfig.defaultLocaleData, defaultLocale));
             // Add projections from config
             for (const proj of config.projections || []) {
