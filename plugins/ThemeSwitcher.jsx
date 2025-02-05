@@ -26,6 +26,7 @@ import './style/ThemeSwitcher.css';
  * Theme switcher panel.
  */
 class ThemeSwitcher extends React.Component {
+    static availableIn3D = true;
     static propTypes = {
         activeTheme: PropTypes.object,
         /** Whether to allow collapsing theme groups. */
@@ -93,7 +94,9 @@ class ThemeSwitcher extends React.Component {
                         )
                     })}
                 </SideBar>
-                <ThemeLayersListWindow windowSize={this.props.themeLayersListWindowSize} />
+                {showAddThemeLayersButton ? (
+                    <ThemeLayersListWindow windowSize={this.props.themeLayersListWindowSize} />
+                ) : null}
             </div>
         );
     }

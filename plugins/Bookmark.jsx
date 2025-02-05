@@ -13,7 +13,7 @@ import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import { zoomToExtent, zoomToPoint } from '../actions/map';
+import {zoomToExtent, zoomToPoint} from '../actions/map';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
 import Spinner from '../components/widgets/Spinner';
@@ -32,6 +32,8 @@ import './style/Bookmark.css';
  * Requires `permalinkServiceUrl` to point to a `qwc-permalink-service`.
  */
 class Bookmark extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         mapCrs: PropTypes.string,
         mapScales: PropTypes.array,
@@ -87,9 +89,11 @@ class Bookmark extends React.Component {
                             <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, true)} title={openTabTitle}>
                                 <Icon icon="open_link" />
                             </button>
-                            <button className="button" disabled={!currentBookmark} onClick={() => this.zoomToBookmarkExtent(currentBookmark.key)} title={zoomTitle}>
-                                <Icon icon="zoom" />
-                            </button>
+                            {this.props.mapCrs && this.props.mapScales ? (
+                                <button className="button" disabled={!currentBookmark} onClick={() => this.zoomToBookmarkExtent(currentBookmark.key)} title={zoomTitle}>
+                                    <Icon icon="zoom" />
+                                </button>
+                            ) : null}
                             <span className="bookmark-actions-spacer" />
                             <button className="button" disabled={!this.state.description} onClick={this.addBookmark} title={addBookmarkTitle}>
                                 <Icon icon="plus" />
@@ -186,8 +190,8 @@ class Bookmark extends React.Component {
 }
 
 const selector = state => ({
-    mapCrs: state.map.projection,
-    mapScales: state.map.scales,
+    mapCrs: state.map?.projection,
+    mapScales: state.map?.scales,
     task: state.task.id,
     state
 });

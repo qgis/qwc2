@@ -322,6 +322,24 @@ export default class StandardApp extends React.Component {
                 return {...res, [key]: entry};
             }, {})));
             delete config.plugins.common;
+            // Store whether to show plugin in 2d/3d mode
+            const plugins = this.props.appConfig.pluginsDef.plugins;
+            config.plugins.mobile.forEach(entry => {
+                const plugin = plugins[entry.name + "Plugin"];
+                if (plugin) {
+                    const component = plugin.WrappedComponent ?? plugin;
+                    entry.availableIn3D = component.availableIn3D === true;
+                    entry.availableIn2D = component.availableIn2D === true || component.availableIn2D === undefined;
+                }
+            });
+            config.plugins.desktop.forEach(entry => {
+                const plugin = plugins[entry.name + "Plugin"];
+                if (plugin) {
+                    const component = plugin.WrappedComponent ?? plugin;
+                    entry.availableIn3D = component.availableIn3D === true;
+                    entry.availableIn2D = component.availableIn2D === true || component.availableIn2D === undefined;
+                }
+            });
             StandardApp.store.dispatch(localConfigLoaded(config));
             // Load locale
             const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";

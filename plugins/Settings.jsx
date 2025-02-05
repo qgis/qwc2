@@ -30,6 +30,7 @@ import './style/Settings.css';
  * Allows configuring language and color scheme.
  */
 class Settings extends React.Component {
+    static availableIn3D = true;
     static propTypes = {
         colorScheme: PropTypes.string,
         /** List of available color schemes. Value is the css class name, title/titleMsgId the display name. */

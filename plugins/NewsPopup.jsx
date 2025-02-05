@@ -26,6 +26,7 @@ import './style/NewsPopup.css';
  * revision is published (specified via newsRev prop).
  */
 class NewsPopup extends React.Component {
+    static availableIn3D = true;
     static propTypes = {
         /** URL to the news HTML document to display in the popup. */
         newsDocument: PropTypes.string,
