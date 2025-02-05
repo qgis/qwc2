@@ -748,7 +748,6 @@ class SearchBox extends React.Component {
             });
             // If first feature is not a point(=marker), add a marker
             if (features[0].styleName !== "marker" && !response.hidemarker) {
-                const coordinates = item.x && item.y ? [item.x, item.y] : VectorLayerUtils.getFeatureCenter(features[0]);
                 features.unshift({
                     geometry: {type: 'Point', coordinates: CoordinatesUtils.reproject(response.center ?? [item.x, item.y], item.crs ?? this.props.map.projection, this.props.map.projection)},
                     styleName: 'marker'
