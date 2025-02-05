@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 
 import {setCurrentTask} from '../actions/task';
+import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
@@ -34,13 +35,18 @@ class View3D extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
-        layers: PropTypes.array,
+        layers: PropTypes.object,
+        localConfig: PropTypes.object,
+        locale: PropTypes.object,
         mapBBox: PropTypes.object,
+        mapMargins: PropTypes.object,
         /** Various configuration options */
         options: PropTypes.shape({
             /** Minimum scale denominator when zooming to search result. */
             searchMinScaleDenom: PropTypes.number
         }),
+        plugins: PropTypes.object,
+        pluginsConfig: PropTypes.object,
         projection: PropTypes.string,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
@@ -68,10 +74,24 @@ class View3D extends React.Component {
         this.map3dComponentRef = null;
         // Subset of 2d reducers
         const {
+            display,
             task,
             windows
         } = ReducerIndex.reducers;
-        this.store = createStore({display, task, windows});
+        // Inline reducers to sync parts of parent store
+        const localConfig = (state = {}, action) => {
+            return action.type === "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE" ? action.localConfig : state;
+        };
+        const theme = (state = {}, action) => {
+            return action.type === "SYNC_THEME_FROM_PARENT_STORE" ? action.theme : state;
+        };
+        const locale = (state = {}, action) => {
+            return action.type === "SYNC_LOCALE_FROM_PARENT_STORE" ? action.locale : state;
+        };
+        const layers = (state = {}, action) => {
+            return action.type === "SYNC_LAYERS_FROM_PARENT_STORE" ? action.layers : state;
+        };
+        this.store = createStore({display, task, windows, localConfig, theme, locale, layers});
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -86,6 +106,18 @@ class View3D extends React.Component {
             this.map3dComponent = null;
             this.map3dComponentRef = null;
             this.setState({componentLoaded: false});
+        }
+        if (this.props.theme !== prevProps.theme) {
+            this.store.dispatch({type: "SYNC_THEME_FROM_PARENT_STORE", theme: this.props.theme});
+        }
+        if (this.props.localConfig !== prevProps.localConfig) {
+            this.store.dispatch({type: "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE", localConfig: this.props.localConfig});
+        }
+        if (this.props.locale !== prevProps.locale) {
+            this.store.dispatch({type: "SYNC_LOCALE_FROM_PARENT_STORE", locale: this.props.locale});
+        }
+        if (this.props.layers !== prevProps.layers) {
+            this.store.dispatch({type: "SYNC_LAYERS_FROM_PARENT_STORE", layers: this.props.layers});
         }
     }
     render() {
@@ -115,11 +147,12 @@ class View3D extends React.Component {
                 {this.state.componentLoaded ? (
                     <Provider role="body" store={this.store}>
                         <Map3D
-                            innerRef={this.setRef} layers={this.props.layers}
+                            innerRef={this.setRef}
                             mapBBox={this.props.mapBBox} options={this.props.options}
                             projection={this.props.projection}
                             searchProviders={this.props.searchProviders}
                             theme={this.props.theme} />
+                        <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}}  pluginsConfig={this.props.pluginsConfig} />
                     </Provider>
                 ) : null}
             </ResizeableWindow>
@@ -147,9 +180,13 @@ export default connect(
     createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
         enabled: state.task.id === 'View3D',
         mapBBox: state.map.bbox,
+        mapMargins: state.windows.mapMargins,
         projection: state.map.projection,
-        layers: state.layers.flat,
-        theme: state.theme.current,
+        layers: state.layers,
+        locale: state.locale,
+        pluginsConfig: state.localConfig.plugins,
+        theme: state.theme,
+        localConfig: state.localConfig,
         searchProviders
     })), {
         setCurrentTask: setCurrentTask

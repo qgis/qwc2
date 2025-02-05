@@ -340,7 +340,7 @@ class Map3D extends React.Component {
                         <Measure3D sceneContext={this.state.sceneContext} />
                         <Compare3D sceneContext={this.state.sceneContext} />
                         <Draw3D sceneContext={this.state.sceneContext} />
-                        <MapExport3D sceneContext={this.state.sceneContext} theme={this.props.theme} />
+                        <MapExport3D sceneContext={this.state.sceneContext} />
                     </UnloadWrapper>
                 ) : null}
             </div>
@@ -560,7 +560,9 @@ class Map3D extends React.Component {
 }
 
 export default connect((state) => ({
-    mapMargins: state.windows.mapMargins
+    mapMargins: state.windows.mapMargins,
+    theme: state.theme.current,
+    layers: state.layers.flat
 }), {
     setCurrentTask: setCurrentTask
 })(Map3D);

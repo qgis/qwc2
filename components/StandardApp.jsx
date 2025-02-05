@@ -202,6 +202,16 @@ class AppContainerComponent extends React.Component {
             ...window.qwc2?.__customPlugins
         };
         const pluginConfig = {...this.props.appConfig.pluginsDef.cfg};
+        // Inject plugins available in 3d view to View3D plugin configuration
+        pluginConfig.View3DPlugin = {
+            ...pluginConfig.View3DPlugin,
+            plugins: Object.entries(plugins).reduce((res, [key, plugin]) => {
+                if (plugin.WrappedComponent?.availableIn3D || plugin.availableIn3D) {
+                    return {...res, [key]: plugin};
+                }
+                return res;
+            }, {})
+        };
         return (
             <PluginsContainer plugins={plugins} pluginsAppConfig={pluginConfig} pluginsConfig={this.props.pluginsConfig} />
         );
