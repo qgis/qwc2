@@ -29,6 +29,7 @@ const defaultState = {
     scales: [0],
     resolutions: [0],
     click: null,
+    size: null,
     snapping: {
         enabled: false,
         active: false
