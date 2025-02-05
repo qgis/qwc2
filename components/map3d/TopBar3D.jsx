@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {setTopbarHeight} from '../../actions/map';
+import {setTopbarHeight} from '../../actions/windows';
 import AppMenu from '../AppMenu';
 import Icon from '../Icon';
 import SearchField3D from './SearchField3D';

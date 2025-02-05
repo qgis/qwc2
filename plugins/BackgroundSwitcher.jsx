@@ -173,7 +173,7 @@ export class BackgroundSwitcher extends React.Component {
 }
 
 const selector = (state) => ({
-    bottombarHeight: state.map.bottombarHeight,
+    bottombarHeight: state.windows.bottombarHeight,
     layers: state.layers.flat.filter(layer => layer.role === LayerRole.BACKGROUND),
     mapMargins: state.windows.mapMargins
 });

@@ -14,10 +14,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
-import {setTopbarHeight} from '../actions/map';
-import {restoreDefaultTheme} from '../actions/theme';
-import {openExternalUrl} from '../actions/windows';
-import Icon from '../components/Icon';
+import {openExternalUrl, setTopbarHeight} from '../actions/windows';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -56,7 +53,6 @@ class TopBar extends React.Component {
         /** The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
-        restoreDefaultTheme: PropTypes.func,
         /** Options passed down to the search component. */
         searchOptions: PropTypes.shape({
             /** Whether to show the search filter widget (SearchBox only). */
@@ -129,33 +125,21 @@ class TopBar extends React.Component {
         }
     }
     render() {
-        let buttonContents;
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
         const isMobile = ConfigUtils.isMobile();
-        const tooltip = LocaleUtils.tr("appmenu.menulabel");
         if (isMobile || this.props.appMenuCompact) {
-            buttonContents = (
-                <span className="appmenu-button">
-                    <Icon className="appmenu-icon" icon="menu-hamburger" title={tooltip}/>
-                </span>
-            );
             logo = assetsPath + "/img/logo-mobile." + this.props.logoFormat;
         } else {
-            buttonContents = (
-                <span className="appmenu-button">
-                    <span className="appmenu-label">{LocaleUtils.tr("appmenu.menulabel")}</span>
-                    <Icon className="appmenu-icon" icon="menu-hamburger" title={tooltip}/>
-                </span>
-            );
             logo = assetsPath + "/img/logo."  + this.props.logoFormat;
         }
 
         const classes = classnames({
+            TopBar: true,
             mobile: isMobile,
             fullscreen: this.props.fullscreen
         });
-        let logoEl = (<img className="logo" src={this.props.logoSrc || logo} />);
+        let logoEl = (<img className="topbar-logo" src={this.props.logoSrc || logo} />);
         if (this.props.logoUrl) {
             logoEl = (<a href={this.props.logoUrl} rel="noreferrer" target="_blank">{logoEl}</a>);
         }
@@ -176,10 +160,11 @@ class TopBar extends React.Component {
         return (
             <Swipeable
                 onSwipedDown={() => this.props.toggleFullscreen(false)}
-                onSwipedUp={() => this.props.toggleFullscreen(true)}>
-                <div className={classes} id="TopBar" ref={this.storeHeight} style={style}>
+                onSwipedUp={() => this.props.toggleFullscreen(true)}
+            >
+                <div className={classes} ref={this.storeHeight} style={style}>
                     {logoEl}
-                    <div className="center-span">
+                    <div className="topbar-center-span">
                         {this.props.components.Search ? (
                             <this.props.components.Search searchOptions={searchOptions}/>
                         ) : null}
@@ -194,7 +179,7 @@ class TopBar extends React.Component {
                         <this.props.components.AppMenu
                             appMenuClearsTask={this.props.appMenuClearsTask}
                             appMenuShortcut={this.props.appMenuShortcut}
-                            buttonContents={buttonContents}
+                            buttonLabel={LocaleUtils.tr("appmenu.menulabel")}
                             keepMenuOpen={keepMenuOpen}
                             menuCompact={menuCompact}
                             menuItems={this.state.allowedMenuItems}
@@ -256,7 +241,6 @@ export default (components) => {
         mapMargins: state.windows.mapMargins
     }), {
         toggleFullscreen: toggleFullscreen,
-        restoreDefaultTheme: restoreDefaultTheme,
         openExternalUrl: openExternalUrl,
         setTopbarHeight: setTopbarHeight
     })(TopBar);

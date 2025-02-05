@@ -15,7 +15,6 @@ import {createSelector} from 'reselect';
 import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
 import ReducerIndex from '../reducers/index';
-import map3dReducer from '../reducers/map3d';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -72,7 +71,7 @@ class View3D extends React.Component {
             task,
             windows
         } = ReducerIndex.reducers;
-        this.store = createStore({task, windows, map: map3dReducer});
+        this.store = createStore({display, task, windows});
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {

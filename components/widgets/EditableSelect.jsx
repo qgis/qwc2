@@ -102,7 +102,7 @@ export default class EditableSelect extends React.Component {
                         return null;
                     }
                     return (
-                        <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
+                        <div key={"opt" + idx} onClickCapture={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
                     );
                 })}
             </PopupMenu>

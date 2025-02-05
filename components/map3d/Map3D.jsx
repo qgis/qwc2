@@ -22,7 +22,6 @@ import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh} from 'three';
 import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
-import {setMapCrs} from '../../actions/map3d';
 import {setCurrentTask} from '../../actions/task';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
@@ -72,7 +71,6 @@ class Map3D extends React.Component {
         projection: PropTypes.string,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
-        setMapCrs: PropTypes.func,
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -359,7 +357,6 @@ class Map3D extends React.Component {
             this.disposeInstance();
         }
         const projection = this.props.projection;
-        this.props.setMapCrs(projection);
 
         // Setup instance
         this.instance = new Instance({
@@ -565,6 +562,5 @@ class Map3D extends React.Component {
 export default connect((state) => ({
     mapMargins: state.windows.mapMargins
 }), {
-    setMapCrs: setMapCrs,
     setCurrentTask: setCurrentTask
 })(Map3D);

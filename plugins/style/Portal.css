@@ -44,24 +44,18 @@ div.portal-topbar div.AppMenu ul.appmenu-menu li:last-child {
     border-bottom: 1px solid var(--app-menu-text-color);
 }
 
-span.portal-menu-button {
-    margin-right: 1em;
-    width: 19em;
-    display: inline-block;
+div.portal-topbar div.appmenu-button {
+    width: 20em;
 }
 
-span.portal-menu-label {
-    font-weight: bold;
+div.portal-topbar span.appmenu-label {
     color: var(--titlebar-text-color);
 }
 
-.portal-menu-icon {
+div.portal-topbar span.appmenu-icon {
     color: var(--titlebar-text-color);
-    padding: 0.25em;
-    margin: 0 1em;
     border: 2px solid var(--titlebar-text-color);
 }
-
 
 div.portal-body {
     background-color: var(--container-bg-color);

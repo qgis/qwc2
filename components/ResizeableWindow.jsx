@@ -524,8 +524,8 @@ class ResizeableWindow extends React.Component {
 
 export default connect((state) => ({
     windowStacking: state.windows.stacking,
-    topbarHeight: state.map.topbarHeight,
-    bottombarHeight: state.map.bottombarHeight,
+    topbarHeight: state.windows.topbarHeight,
+    bottombarHeight: state.windows.bottombarHeight,
     mapMargins: state.windows.mapMargins,
     menuMargins: state.windows.menuMargins
 }), {

@@ -15,7 +15,9 @@ import {
     UNREGISTER_WINDOW,
     RAISE_WINDOW,
     SET_SPLIT_SCREEN,
-    SET_MENU_MARGIN
+    SET_MENU_MARGIN,
+    SET_TOPBAR_HEIGHT,
+    SET_BOTTOMBAR_HEIGHT
 } from '../actions/windows';
 
 const defaultState = {
@@ -30,6 +32,8 @@ const defaultState = {
     menuMargins: {
         left: 0, right: 0
     },
+    topbarHeight: 0,
+    bottombarHeight: 0,
     entries: {}
 };
 
@@ -132,6 +136,12 @@ export default function windows(state = defaultState, action) {
             left: action.left
         };
         return {...state, menuMargins: menuMargins, mapMargins: computeMapMargins(state.windowMargins, menuMargins)};
+    }
+    case SET_TOPBAR_HEIGHT: {
+        return {...state, topbarHeight: action.height};
+    }
+    case SET_BOTTOMBAR_HEIGHT: {
+        return {...state, bottombarHeight: action.height};
     }
     default:
         return state;
