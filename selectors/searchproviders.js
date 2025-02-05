@@ -44,7 +44,9 @@ function getResultGeometry(provider, item, callback) {
                     features: features
                 },
                 crs: response.crs,
-                hidemarker: response.hidemarker
+                hidemarker: response.hidemarker,
+                ...(response.bbox && { bbox: response.bbox }),
+                ...(response.center && { center: response.center })
             });
         }
     });

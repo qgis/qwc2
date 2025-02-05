@@ -750,7 +750,7 @@ class SearchBox extends React.Component {
             if (features[0].styleName !== "marker" && !response.hidemarker) {
                 const coordinates = item.x && item.y ? [item.x, item.y] : VectorLayerUtils.getFeatureCenter(features[0]);
                 features.unshift({
-                    geometry: {type: 'Point', coordinates: CoordinatesUtils.reproject(coordinates, item.crs ?? this.props.map.projection, this.props.map.projection)},
+                    geometry: {type: 'Point', coordinates: CoordinatesUtils.reproject(response.center ?? [item.x, item.y], item.crs ?? this.props.map.projection, this.props.map.projection)},
                     styleName: 'marker'
                 });
             }
@@ -763,7 +763,7 @@ class SearchBox extends React.Component {
             features[0].id = 'searchmarker';
             this.props.addLayerFeatures(layer, features, true);
         }
-        let bbox = item.bbox ?? (item.x && item.y ? [item.x, item.y, item.x, item.y] : response?.feature?.features && VectorLayerUtils.computeFeatureBBox(response.feature));
+        let bbox = response.bbox ?? item.bbox ?? [item.x, item.y, item.x, item.y];
         bbox = CoordinatesUtils.reprojectBbox(bbox, item.crs ?? this.props.map.projection, this.props.map.projection);
         this.zoomToResultBBox(bbox, scale);
     };
