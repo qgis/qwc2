@@ -26,34 +26,21 @@ class FullscreenSwitcher extends React.Component {
         this.props.fullscreenToggled(!this.props.fullscreen);
     };
     componentDidMount() {
-        if (document.onfullscreenchange !== undefined) {
-            document.onfullscreenchange = this.checkFullscreenState;
-        } else if (document.onwebkitfullscreenchange !== undefined) {
-            document.onwebkitfullscreenchange = this.checkFullscreenState;
-        } else if (document.onmozfullscreenchange !== undefined) {
-            document.onmozfullscreenchange = this.checkFullscreenState;
-        } else if (document.onmsfullscreenchange !== undefined) {
-            document.onmsfullscreenchange = this.checkFullscreenState;
-        }
-        if (document.onfullscreenerror !== undefined) {
-            document.onfullscreenerror = this.checkFullscreenState;
-        } else if (document.onwebkitfullscreenerror !== undefined) {
-            document.onwebkitfullscreenerror = this.checkFullscreenState;
-        } else if (document.onmozfullscreenerror !== undefined) {
-            document.onmozfullscreenerror = this.checkFullscreenState;
-        } else if (document.onmsfullscreenerror !== undefined) {
-            document.onmsfullscreenerror = this.checkFullscreenState;
-        }
+        document.addEventListener('fullscreenchange', this.checkFullscreenState);
+        document.addEventListener('webkitfullscreenchange', this.checkFullscreenState);
+        document.addEventListener('fullscreenerror', this.checkFullscreenState);
+        document.addEventListener('webkitfullscreenerror', this.checkFullscreenState);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('fullscreenchange', this.checkFullscreenState);
+        document.removeEventListener('webkitfullscreenchange', this.checkFullscreenState);
+        document.removeEventListener('fullscreenerror', this.checkFullscreenState);
+        document.removeEventListener('webkitfullscreenerror', this.checkFullscreenState);
     }
     checkFullscreenState = () => {
-        const isFullScreen = (
-            document.fullscreenElement ||
-            document.webkitFullscreenElement ||
-            document.mozFullScreenElement ||
-            document.msFullscreenElement
-        ) !== undefined;
+        const isFullScreen = (document.fullscreenElement ?? document.webkitFullscreenElement ?? null) !== null;
         if (isFullScreen !== this.props.fullscreen) {
-            this.props.fullscreenToggled(!this.props.fullscreen);
+            this.props.fullscreenToggled(isFullScreen);
         }
     };
     render() {
