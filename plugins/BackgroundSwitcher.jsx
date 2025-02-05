@@ -26,7 +26,6 @@ import './style/BackgroundSwitcher.css';
  */
 export class BackgroundSwitcher extends React.Component {
     static propTypes = {
-        bottombarHeight: PropTypes.number,
         changeLayerVisibility: PropTypes.func,
         layers: PropTypes.array,
         mapMargins: PropTypes.object,
@@ -34,7 +33,6 @@ export class BackgroundSwitcher extends React.Component {
         position: PropTypes.number
     };
     static defaultProps = {
-        bottombarHeight: 0,
         position: 0,
         mapMargins: {left: 0, right: 0, top: 0, bottom: 0}
     };
@@ -73,14 +71,14 @@ export class BackgroundSwitcher extends React.Component {
         }, []);
         if (entries.length > 0) {
             const right = this.props.mapMargins.right;
-            const bottom = this.props.mapMargins.bottom + this.props.bottombarHeight;
+            const bottom = this.props.mapMargins.bottom;
             const style = {
                 right: 'calc(1.5em + ' + right + 'px)',
-                bottom: 'calc(' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
+                bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
             };
             const bgswitcherStyle = {
                 right: 'calc(5em + ' + right + 'px)',
-                bottom: 'calc(' + bottom + 'px + ' + (1.5 + 4 * this.props.position) + 'em)'
+                bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (1.5 + 4 * this.props.position) + 'em)'
             };
             return (
                 <div>
@@ -173,7 +171,6 @@ export class BackgroundSwitcher extends React.Component {
 }
 
 const selector = (state) => ({
-    bottombarHeight: state.windows.bottombarHeight,
     layers: state.layers.flat.filter(layer => layer.role === LayerRole.BACKGROUND),
     mapMargins: state.windows.mapMargins
 });
