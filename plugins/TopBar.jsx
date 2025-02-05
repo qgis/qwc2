@@ -166,7 +166,9 @@ class TopBar extends React.Component {
                     {logoEl}
                     <div className="topbar-center-span">
                         {this.props.components.Search ? (
-                            <this.props.components.Search searchOptions={searchOptions}/>
+                            <div className="topbar-search-container">
+                                <this.props.components.Search searchOptions={searchOptions}/>
+                            </div>
                         ) : null}
                         {this.props.components.Toolbar ? (
                             <this.props.components.Toolbar

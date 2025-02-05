@@ -74,7 +74,9 @@ class TopBar3D extends React.Component {
                 <div className={classes} ref={this.storeHeight}>
                     {logoEl}
                     <div className="topbar-center-span">
-                        <SearchField3D options={this.props.options} sceneContext={this.props.sceneContext} searchProviders={this.props.searchProviders} />
+                        <div className="topbar-search-container">
+                            <SearchField3D options={this.props.options} sceneContext={this.props.sceneContext} searchProviders={this.props.searchProviders} />
+                        </div>
                     </div>
                     <AppMenu
                         appMenuClearsTask={config.appMenuClearsTask}

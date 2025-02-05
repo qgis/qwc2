@@ -1,9 +1,7 @@
 div.SearchBox {
-    flex: 1 1 auto;
     position: relative;
     display: flex;
     height: 2em;
-    max-width: 70ch;
     background-color: var(--input-bg-color);
     color: var(--text-color);
 }

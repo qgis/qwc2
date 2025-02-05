@@ -29,6 +29,11 @@ div.TopBar div.topbar-center-span {
     align-items: center;
 }
 
+div.TopBar div.topbar-search-container {
+    flex: 1 1 auto;
+    max-width: 70ch;
+}
+
 div.TopBar.fullscreen {
     background-color: transparent;
     box-shadow: none;
