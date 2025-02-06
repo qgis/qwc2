@@ -29,6 +29,7 @@ import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
+import Identify3D from './Identify3D';
 import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
 import MapControls3D from './MapControls3D';
@@ -36,6 +37,7 @@ import MapExport3D from './MapExport3D';
 import Measure3D from './Measure3D';
 import OverviewMap3D from './OverviewMap3D';
 import TopBar3D from './TopBar3D';
+import View3DSwitcher from './View3DSwitcher';
 import LayerRegistry from './layers/index';
 
 import './style/Map3D.css';
@@ -237,7 +239,16 @@ class Map3D extends React.Component {
         Object.entries(sceneObjects).forEach(([objectId, options]) => {
             const object = this.objectMap[objectId];
             object.visible = options.visible;
-            object.opacity = options.opacity;
+            if (object.opacity !== undefined) {
+                object.opacity = options.opacity;
+            } else {
+                object.traverse(child => {
+                    if (child instanceof Mesh) {
+                        child.material.transparent = options.opacity < 1;
+                        child.material.opacity = options.opacity;
+                    }
+                });
+            }
             this.instance.notifyChange(object);
         });
     };
@@ -328,6 +339,7 @@ class Map3D extends React.Component {
         return (
             <div className="map3d-body">
                 <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
+                <View3DSwitcher position={2} />
                 {this.state.sceneContext.scene ? (
                     <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
                         <MapControls3D ref={this.setupControls} sceneContext={this.state.sceneContext} />
@@ -338,6 +350,7 @@ class Map3D extends React.Component {
                         <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
                         <Map3DLight sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
+                        {/*<Identify3D sceneContext={this.state.sceneContext} />*/}
                         <Compare3D sceneContext={this.state.sceneContext} />
                         <Draw3D sceneContext={this.state.sceneContext} />
                         <MapExport3D sceneContext={this.state.sceneContext} />

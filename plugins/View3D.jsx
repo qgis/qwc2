@@ -13,10 +13,12 @@ import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 
 import * as displayExports from '../actions/display';
+import {setView3dMode, View3DMode} from '../actions/display';
 import {setCurrentTask} from '../actions/task';
 import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import StandardApp from '../components/StandardApp';
+import View3DSwitcher from '../components/map3d/View3DSwitcher';
 import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
@@ -28,6 +30,8 @@ import LocaleUtils from '../utils/LocaleUtils';
  */
 class View3D extends React.Component {
     static propTypes = {
+        /** The position slot index of the 3d switch map button, from the bottom (0: bottom slot). */
+        buttonPosition: PropTypes.number,
         display: PropTypes.object,
         enabled: PropTypes.bool,
         /** Default window geometry. */
@@ -51,9 +55,11 @@ class View3D extends React.Component {
         projection: PropTypes.string,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
+        setView3dMode: PropTypes.func,
         theme: PropTypes.object
     };
     static defaultProps = {
+        buttonPosition: 6,
         geometry: {
             initialWidth: 600,
             initialHeight: 800,
@@ -66,7 +72,6 @@ class View3D extends React.Component {
         }
     };
     state = {
-        enabled: false,
         componentLoaded: false
     };
     constructor(props) {
@@ -102,14 +107,15 @@ class View3D extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
-            this.setState({enabled: true});
+            this.setState({mode: View3DMode.FULLSCREEN});
             this.props.setCurrentTask(null);
+        } else if (this.props.display.view3dMode !== View3DMode.DISABLED && prevProps.display.view3dMode === View3DMode.DISABLED) {
             import('../components/map3d/Map3D').then(component => {
                 this.map3dComponent = component.default;
                 this.map3dComponentRef = null;
                 this.setState({componentLoaded: true});
             });
-        } else if (!this.state.enabled && prevState.enabled) {
+        } else if (this.props.display.view3dMode === View3DMode.DISABLED && prevProps.display.view3dMode !== View3DMode.DISABLED) {
             this.map3dComponent = null;
             this.map3dComponentRef = null;
             this.setState({componentLoaded: false});
@@ -128,46 +134,66 @@ class View3D extends React.Component {
             this.store.dispatch({type: "SYNC_LAYERS_FROM_PARENT_STORE", layers: this.props.layers});
         }
     }
-    render() {
-        if (!this.state.enabled) {
-            return null;
+    render3DWindow = () => {
+        if (this.props.display.view3dMode > View3DMode.DISABLED) {
+            const extraControls = [{
+                icon: "sync",
+                callback: this.setViewToExtent,
+                title: LocaleUtils.tr("map3d.syncview")
+            }, {
+                icon: "maximize",
+                callback: () => this.props.setView3dMode(View3DMode.FULLSCREEN),
+                title: LocaleUtils.tr("window.maximize")
+            }];
+            const Map3D = this.map3dComponent;
+            return (
+                <ResizeableWindow
+                    extraControls={extraControls}
+                    fullscreen={this.props.display.view3dMode === View3DMode.FULLSCREEN}
+                    icon="map3d"
+                    initialHeight={this.props.geometry.initialHeight}
+                    initialWidth={this.props.geometry.initialWidth}
+                    initialX={this.props.geometry.initialX}
+                    initialY={this.props.geometry.initialY}
+                    initiallyDocked={this.props.geometry.initiallyDocked}
+                    key="View3DWindow"
+                    maximizeable={false}
+                    onClose={this.onClose}
+                    onExternalWindowResized={this.redrawScene}
+                    onGeometryChanged={this.onGeometryChanged}
+                    splitScreenWhenDocked
+                    splitTopAndBottomBar
+                    title={LocaleUtils.tr("map3d.title")}
+                >
+                    {this.state.componentLoaded ? (
+                        <Provider role="body" store={this.store}>
+                            <Map3D
+                                innerRef={this.setRef}
+                                mapBBox={this.props.mapBBox} options={this.props.options}
+                                projection={this.props.projection}
+                                searchProviders={this.props.searchProviders}
+                                theme={this.props.theme} />
+                            <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig} />
+                        </Provider>
+                    ) : null}
+                </ResizeableWindow>
+            );
         }
-        const extraControls = [{
-            icon: "sync",
-            callback: this.setViewToExtent,
-            title: LocaleUtils.tr("map3d.syncview")
-        }];
-        const Map3D = this.map3dComponent;
-        return (
-            <ResizeableWindow
-                extraControls={extraControls} icon="map3d"
-                initialHeight={this.props.geometry.initialHeight}
-                initialWidth={this.props.geometry.initialWidth}
-                initialX={this.props.geometry.initialX}
-                initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked}
-                onClose={this.onClose}
-                onExternalWindowResized={this.redrawScene}
-                splitScreenWhenDocked
-                splitTopAndBottomBar
-                title={LocaleUtils.tr("map3d.title")}
-            >
-                {this.state.componentLoaded ? (
-                    <Provider role="body" store={this.store}>
-                        <Map3D
-                            innerRef={this.setRef}
-                            mapBBox={this.props.mapBBox} options={this.props.options}
-                            projection={this.props.projection}
-                            searchProviders={this.props.searchProviders}
-                            theme={this.props.theme} />
-                        <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}}  pluginsConfig={this.props.pluginsConfig} />
-                    </Provider>
-                ) : null}
-            </ResizeableWindow>
+        return null;
+    };
+    render() {
+        const button = (
+            <View3DSwitcher key="View3DButton" position={this.props.buttonPosition} />
         );
+        return [button, this.render3DWindow()];
     }
     onClose = () => {
-        this.setState({enabled: false});
+        this.props.setView3dMode(View3DMode.DISABLED);
+    };
+    onGeometryChanged = (geometry) => {
+        if (geometry.maximized && this.props.display.view3dMode !== View3DMode.FULLSCREEN) {
+            this.props.setView3dMode(View3DMode.FULLSCREEN);
+        }
     };
     setRef = (ref) => {
         this.map3dComponentRef = ref;
@@ -196,6 +222,7 @@ export default connect(
         localConfig: state.localConfig,
         searchProviders
     })), {
-        setCurrentTask: setCurrentTask
+        setCurrentTask: setCurrentTask,
+        setView3dMode: setView3dMode
     }
 )(View3D);
