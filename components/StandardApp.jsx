@@ -95,7 +95,8 @@ class AppContainerComponent extends React.Component {
     }
     loadThemes = () => {
         this.themesLoaded = true;
-        const {params, state, permalinkInvalid} = this.props.startupConfig;
+        const {state, permalinkInvalid} = this.props.startupConfig;
+        const params = {...this.props.startupConfig.params}; // Clone as changed below
 
         // Warn if permalink key is invalid
         if (permalinkInvalid) {
