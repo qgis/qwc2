@@ -12,9 +12,11 @@ import {connect, Provider} from 'react-redux';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 
+import * as displayExports from '../actions/display';
 import {setCurrentTask} from '../actions/task';
 import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
+import StandardApp from '../components/StandardApp';
 import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
@@ -26,6 +28,7 @@ import LocaleUtils from '../utils/LocaleUtils';
  */
 class View3D extends React.Component {
     static propTypes = {
+        display: PropTypes.object,
         enabled: PropTypes.bool,
         /** Default window geometry. */
         geometry: PropTypes.shape({
@@ -74,11 +77,20 @@ class View3D extends React.Component {
         this.map3dComponentRef = null;
         // Subset of 2d reducers
         const {
-            display,
             task,
             windows
         } = ReducerIndex.reducers;
         // Inline reducers to sync parts of parent store
+        const displayActions = Object.values(displayExports).filter(x => typeof(x) === 'string');
+        const display = (state = {}, action) => {
+            if (displayActions.includes(action.type)) {
+                // Forward to parent store
+                StandardApp.store.dispatch(action);
+                return state;
+            } else {
+                return action.type === "SYNC_DISPLAY_FROM_PARENT_STORE" ? action.display : state;
+            }
+        };
         const localConfig = (state = {}, action) => {
             return action.type === "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE" ? action.localConfig : state;
         };
@@ -91,7 +103,7 @@ class View3D extends React.Component {
         const layers = (state = {}, action) => {
             return action.type === "SYNC_LAYERS_FROM_PARENT_STORE" ? action.layers : state;
         };
-        this.store = createStore({display, task, windows, localConfig, theme, locale, layers});
+        this.store = createStore({task, windows, display, localConfig, theme, locale, layers});
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -106,6 +118,10 @@ class View3D extends React.Component {
             this.map3dComponent = null;
             this.map3dComponentRef = null;
             this.setState({componentLoaded: false});
+        }
+        // Sync parts of parent store
+        if (this.props.display !== prevProps.display) {
+            this.store.dispatch({type: "SYNC_DISPLAY_FROM_PARENT_STORE", display: this.props.display});
         }
         if (this.props.theme !== prevProps.theme) {
             this.store.dispatch({type: "SYNC_THEME_FROM_PARENT_STORE", theme: this.props.theme});
@@ -179,6 +195,7 @@ class View3D extends React.Component {
 export default connect(
     createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
         enabled: state.task.id === 'View3D',
+        display: state.display,
         mapBBox: state.map.bbox,
         mapMargins: state.windows.mapMargins,
         projection: state.map.projection,
