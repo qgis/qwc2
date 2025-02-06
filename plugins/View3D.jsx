@@ -56,7 +56,8 @@ class View3D extends React.Component {
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setView3dMode: PropTypes.func,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        view3dMode: PropTypes.number
     };
     static defaultProps = {
         buttonPosition: 6,
@@ -173,7 +174,9 @@ class View3D extends React.Component {
                                 projection={this.props.projection}
                                 searchProviders={this.props.searchProviders}
                                 theme={this.props.theme} />
-                            <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig} />
+                            {this.props.view3dMode === View3DMode.FULLSCREEN ? (
+                                <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig} />
+                            ) : null}
                         </Provider>
                     ) : null}
                 </ResizeableWindow>
@@ -220,6 +223,7 @@ export default connect(
         pluginsConfig: state.localConfig.plugins,
         theme: state.theme,
         localConfig: state.localConfig,
+        view3dMode: state.display.view3dMode,
         searchProviders
     })), {
         setCurrentTask: setCurrentTask,

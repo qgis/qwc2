@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import {toggleFullscreen} from '../../actions/display';
+import {toggleFullscreen, View3DMode} from '../../actions/display';
 import {openExternalUrl, setTopbarHeight} from '../../actions/windows';
 import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -30,7 +30,8 @@ class TopBar3D extends React.Component {
         sceneContext: PropTypes.object,
         searchProviders: PropTypes.object,
         setTopbarHeight: PropTypes.func,
-        toggleFullscreen: PropTypes.func
+        toggleFullscreen: PropTypes.func,
+        view3dMode: PropTypes.number
     };
     state = {
     };
@@ -44,7 +45,9 @@ class TopBar3D extends React.Component {
             {key: "DateTime3D", icon: "clock"},
             {key: "MapExport3D", icon: "rasterexport"}
         ];
-        this.addGenericMenuItems(menuItems, config.menuItems);
+        if (this.props.view3dMode === View3DMode.FULLSCREEN) {
+            this.addGenericMenuItems(menuItems, config.menuItems);
+        }
 
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
@@ -122,7 +125,8 @@ class TopBar3D extends React.Component {
 }
 
 export default connect((state) => ({
-    fullscreen: state.display.fullscreen
+    fullscreen: state.display.fullscreen,
+    view3dMode: state.display.view3dMode
 }), {
     setTopbarHeight: setTopbarHeight,
     toggleFullscreen: toggleFullscreen,
