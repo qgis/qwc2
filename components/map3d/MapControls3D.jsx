@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
 import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import classNames from 'classnames';
@@ -19,8 +20,10 @@ import Icon from '../Icon';
 import './style/MapControls3D.css';
 
 
-export default class MapControls3D extends React.Component {
+class MapControls3D extends React.Component {
     static propTypes = {
+        currentTask: PropTypes.string,
+        onControlsSet: PropTypes.func,
         sceneContext: PropTypes.object
     };
     constructor(props) {
@@ -49,6 +52,7 @@ export default class MapControls3D extends React.Component {
         this.controls.addEventListener('change', this.updateControlsTarget);
 
         sceneElement.addEventListener('dblclick', this.switchToFirstPersonView);
+        this.props.onControlsSet(this);
     }
     componentWillUnmount() {
         this.animationInterrupted = true;
@@ -320,6 +324,10 @@ export default class MapControls3D extends React.Component {
         this.animationInterrupted = true;
     };
     switchToFirstPersonView = (ev) => {
+        // Don't do anything if a task is set, may interfere
+        if (this.props.currentTask) {
+            return;
+        }
         if (!this.state.firstPerson) {
             this.setupFirstPerson(ev);
         }
@@ -392,3 +400,9 @@ export default class MapControls3D extends React.Component {
         });
     };
 }
+
+export default connect((state) => ({
+    currentTask: state.task.id
+}), {
+
+})(MapControls3D);
