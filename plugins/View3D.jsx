@@ -56,6 +56,7 @@ class View3D extends React.Component {
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setView3dMode: PropTypes.func,
+        startupParams: PropTypes.object,
         theme: PropTypes.object,
         view3dMode: PropTypes.number
     };
@@ -105,6 +106,13 @@ class View3D extends React.Component {
             return action.type === "SYNC_LAYERS_FROM_PARENT_STORE" ? action.layers : state;
         };
         this.store = createStore({task, windows, display, localConfig, theme, layers});
+    }
+    componentDidMount() {
+        if (this.props.startupParams.v === "3d") {
+            this.props.setView3dMode(View3DMode.FULLSCREEN);
+        } else if (this.props.startupParams.v === "3d2d") {
+            this.props.setView3dMode(View3DMode.SPLITSCREEN);
+        }
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -224,6 +232,7 @@ export default connect(
         theme: state.theme,
         localConfig: state.localConfig,
         view3dMode: state.display.view3dMode,
+        startupParams: state.localConfig.startupParams,
         searchProviders
     })), {
         setCurrentTask: setCurrentTask,
