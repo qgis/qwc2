@@ -40,9 +40,7 @@ class View3D extends React.Component {
         }),
         layers: PropTypes.object,
         localConfig: PropTypes.object,
-        locale: PropTypes.object,
         mapBBox: PropTypes.object,
-        mapMargins: PropTypes.object,
         /** Various configuration options */
         options: PropTypes.shape({
             /** Minimum scale denominator when zooming to search result. */
@@ -97,13 +95,10 @@ class View3D extends React.Component {
         const theme = (state = {}, action) => {
             return action.type === "SYNC_THEME_FROM_PARENT_STORE" ? action.theme : state;
         };
-        const locale = (state = {}, action) => {
-            return action.type === "SYNC_LOCALE_FROM_PARENT_STORE" ? action.locale : state;
-        };
         const layers = (state = {}, action) => {
             return action.type === "SYNC_LAYERS_FROM_PARENT_STORE" ? action.layers : state;
         };
-        this.store = createStore({task, windows, display, localConfig, theme, locale, layers});
+        this.store = createStore({task, windows, display, localConfig, theme, layers});
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
@@ -128,9 +123,6 @@ class View3D extends React.Component {
         }
         if (this.props.localConfig !== prevProps.localConfig) {
             this.store.dispatch({type: "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE", localConfig: this.props.localConfig});
-        }
-        if (this.props.locale !== prevProps.locale) {
-            this.store.dispatch({type: "SYNC_LOCALE_FROM_PARENT_STORE", locale: this.props.locale});
         }
         if (this.props.layers !== prevProps.layers) {
             this.store.dispatch({type: "SYNC_LAYERS_FROM_PARENT_STORE", layers: this.props.layers});
@@ -197,10 +189,8 @@ export default connect(
         enabled: state.task.id === 'View3D',
         display: state.display,
         mapBBox: state.map.bbox,
-        mapMargins: state.windows.mapMargins,
         projection: state.map.projection,
         layers: state.layers,
-        locale: state.locale,
         pluginsConfig: state.localConfig.plugins,
         theme: state.theme,
         localConfig: state.localConfig,
