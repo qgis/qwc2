@@ -55,7 +55,7 @@ class TopBar extends React.Component {
         openExternalUrl: PropTypes.func,
         /** Options passed down to the search component. */
         searchOptions: PropTypes.shape({
-            /** Whether to show the search filter widget (SearchBox only). */
+            /** Whether to show the search filter widget. */
             allowSearchFilters: PropTypes.bool,
             /** Whether to hide the result labels on the map. */
             hideResultLabels: PropTypes.bool,
@@ -74,20 +74,14 @@ class TopBar extends React.Component {
             minScaleDenom: PropTypes.number,
             /** Result count limit which is passed to the search provider. */
             resultLimit: PropTypes.number,
-            /** Whether to collapse search sections by default (SearchBox only). */
+            /** Whether to collapse search sections by default. */
             sectionsDefaultCollapsed: PropTypes.bool,
             /** Whether to show the layer tree after selecting a theme result. */
             showLayerAfterChangeTheme: PropTypes.bool,
-            /** Whether to show layer results before pkaces in the result menu (SearchBox only). */
+            /** Whether to show layer results before pkaces in the result menu. */
             showLayerResultsBeforePlaces: PropTypes.bool,
-            /** Whether to show provider selection menu (Search only). */
-            showProviderSelection: PropTypes.bool,
-            /** Whether to list the names of active providers as search field placeholder (Search only). */
-            showProvidersInPlaceholder: PropTypes.bool,
-            /** Whether to replace the search text with the selected search result text (SearchBox only). */
+            /** Whether to replace the search text with the selected search result text. */
             showResultInSearchText: PropTypes.bool,
-            /** Whether to show the 'All providers' entry in the provider selection menu (Search only). */
-            providerSelectionAllowAll: PropTypes.bool,
             /** Whether to zoom to layer search results. */
             zoomToLayers: PropTypes.bool
         }),
