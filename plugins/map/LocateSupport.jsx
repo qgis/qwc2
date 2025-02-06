@@ -55,8 +55,10 @@ class LocateSupport extends React.Component {
         this.configureLocate(this.props.locateState.state);
 
         const startupMode = options.startupMode.toUpperCase();
-        const highlightCenter = ["true", "1"].includes("" + (this.props.startupParams && this.props.startupParams.hc || "").toLowerCase());
-        if (startupMode !== "DISABLED" && !this.props.startupParams.st && !highlightCenter) {
+        const startupParams = this.props.startupParams;
+        const highlightCenter = ["true", "1"].includes((startupParams.hc || "").toLowerCase());
+        const searchParams = startupParams.hp || startupParams.hf || startupParams.st;
+        if (startupMode !== "DISABLED" && !searchParams && !highlightCenter) {
             this.props.changeLocateState(startupMode);
         }
     }
