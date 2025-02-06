@@ -27,6 +27,8 @@
         "Share": "Partager",
         "ThemeSwitcher": "Thèmes",
         "AttributeTable": "Table d'attributs",
+        "AuthenticationLogin": "Connexion",
+        "AuthenticationLogout": "Déconnexion",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Dessiner",
         "FeatureForm": "Formulaire d'objet",

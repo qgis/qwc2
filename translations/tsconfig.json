@@ -24,6 +24,8 @@
   ],
   "extra_strings": [
     "appmenu.items.AttributeTable",
+    "appmenu.items.AuthenticationLogin",
+    "appmenu.items.AuthenticationLogout",
     "appmenu.items.Cyclomedia",
     "appmenu.items.Draw3D",
     "appmenu.items.FeatureForm",

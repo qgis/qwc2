@@ -20,7 +20,6 @@ Plugin reference
 * [LayerCatalog](#layercatalog)
 * [LayerTree](#layertree)
 * [LocateButton](#locatebutton)
-* [LoginUser](#loginuser)
 * [MapPlugin](#mapplugin)
 * [MapComparePlugin](#mapcompareplugin)
 * [MapCopyright](#mapcopyright)
@@ -204,6 +203,7 @@ Invokes the the authentication service specified by `authServiceUrl` in `config.
 | idleTimeout | `number` | An idle timeout in seconds after which the user is automatically logged of. | `undefined` |
 | logoutTargetUrl | `string` | An URL to redirect to on logout, instead of the viewer URL. | `undefined` |
 | requireLogin | `bool` | Whether authentication is required, i.e. the viewer automatically redirects to the login page if no user is authenticated. | `undefined` |
+| showLoginUser | `bool` | Whether to display the currently logged in user below the application menu button. | `undefined` |
 
 BackgroundSwitcher<a name="backgroundswitcher"></a>
 ----------------------------------------------------------------
@@ -505,10 +505,6 @@ Map button for controling the locate (GPS) state.
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `2` |
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
-
-LoginUser<a name="loginuser"></a>
-----------------------------------------------------------------
-Displays the currently logged in user.
 
 MapPlugin<a name="mapplugin"></a>
 ----------------------------------------------------------------
