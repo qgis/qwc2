@@ -11,6 +11,15 @@ import ReducerIndex from '../reducers/index';
 ReducerIndex.register("display", displayReducer);
 
 export const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
+export const SET_VIEW_3D_MODE = 'SET_VIEW_3D_MODE';
+
+
+export const View3DMode = {
+    DISABLED: 0,
+    FULLSCREEN: 1,
+    SPLITSCREEN: 2
+};
+
 
 export function toggleFullscreen(fullscreen) {
     if (fullscreen) {
@@ -21,5 +30,12 @@ export function toggleFullscreen(fullscreen) {
     return {
         type: TOGGLE_FULLSCREEN,
         fullscreen: fullscreen
+    };
+}
+
+export function setView3dMode(mode) {
+    return {
+        type: SET_VIEW_3D_MODE,
+        mode
     };
 }
