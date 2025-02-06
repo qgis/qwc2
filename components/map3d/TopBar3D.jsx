@@ -116,7 +116,7 @@ class TopBar3D extends React.Component {
                 }
             } else {
                 const pluginConfig = ConfigUtils.getPluginConfig(entry.key);
-                if (pluginConfig.availableIn3D) {
+                if (entry.url || pluginConfig.availableIn3D) {
                     menuItems.push(entry);
                 }
             }
