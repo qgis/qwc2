@@ -241,7 +241,6 @@ class ResizeableWindow extends React.Component {
         const marginLeft = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.left : 0;
         const marginRight = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.right : 0;
         const containerStyle = {
-            display: this.props.visible ? 'initial' : 'none',
             left: (marginLeft + this.props.menuMargins.left) + 'px',
             right: (marginRight + this.props.menuMargins.right) + 'px',
             top: splitTopAndBottomBar ? 0 : this.props.topbarHeight + 'px',
@@ -250,7 +249,7 @@ class ResizeableWindow extends React.Component {
         };
         return (
             <div className="resizeable-window-container" key="InternalWindow" ref={this.setInitialSize} style={containerStyle}>
-                {this.state.geometry ? this.renderInternalWindow() : null}
+                {this.props.visible && this.state.geometry ? this.renderInternalWindow() : null}
             </div>
         );
     };
