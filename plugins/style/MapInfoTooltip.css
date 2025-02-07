@@ -45,8 +45,7 @@ button.mapinfotooltip-button:hover {
 }
 
 div.mapinfotooltip-body {
-    padding: 0.5em;
-    font-size: 75%;
+    padding: 0.25em;
 }
 
 div.mapinfotooltip-body:after {
@@ -60,6 +59,10 @@ div.mapinfotooltip-body:after {
     border-left: 1em solid transparent;
     border-right: 1em solid transparent;
     border-bottom: 1em solid var(--titlebar-bg-color);
+}
+
+div.mapinfotooltip-body table {
+    font-size: 75%;
 }
 
 div.mapinfotooltip-body td {
