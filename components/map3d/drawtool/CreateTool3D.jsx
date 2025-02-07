@@ -33,13 +33,14 @@ export default class CreateTool3D extends React.Component {
         this.drawCursor = new GiroShape({
             showVertices: true
         });
-        this.props.sceneContext.addSceneObject("__drawCursor", this.drawCursor);
+        this.props.sceneContext.scene.add(this.drawCursor);
         const renderer = this.props.sceneContext.scene.renderer;
         renderer.domElement.addEventListener("pointermove", this.moveDrawCursor);
         renderer.domElement.addEventListener("pointerdown", this.drawShapeOnRelease);
     }
     componentWillUnmount() {
-        this.props.sceneContext.removeSceneObject("__drawCursor");
+        this.props.sceneContext.scene.remove(this.drawCursor);
+        this.drawCursor = null;
         const renderer = this.props.sceneContext.scene.renderer;
         renderer.domElement.removeEventListener("pointermove", this.moveDrawCursor);
         renderer.domElement.removeEventListener("pointerdown", this.drawShapeOnRelease);
