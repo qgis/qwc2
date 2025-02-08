@@ -29,7 +29,6 @@ import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
-import Identify3D from './Identify3D';
 import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
 import MapControls3D from './MapControls3D';
