@@ -228,7 +228,7 @@ class AppMenu extends React.Component {
                         "appmenu-submenu-expanded": visible
                     });
                     return (
-                        <li className={className} key={item.key}
+                        <li className={className} key={item.key ?? item.title}
                             onClick={() => this.onSubmenuClicked(item.key, level)}
                             onMouseEnter={() => { if (!this.state.keyNav) { this.setState({curEntry: [...path, idx]}); } } }
                             onMouseLeave={() => { if (!this.state.keyNav) { this.setState({curEntry: null}); } } }
@@ -250,7 +250,7 @@ class AppMenu extends React.Component {
                             "appmenu-leaf-active": active
                         });
                         return (
-                            <li className={className} key={item.key + (item.mode || "")}
+                            <li className={className} key={item.key ? item.key + (item.mode || "") : item.title}
                                 onClick={() => this.onMenuitemClicked(item)}
                                 onMouseEnter={() => { if (!this.state.keyNav) { this.setState({curEntry: [...path, idx]}); } } }
                                 onMouseLeave={() => { if (!this.state.keyNav) { this.setState({curEntry: null}); } } }
