@@ -208,7 +208,8 @@ class AppMenu extends React.Component {
             this.toggleMenu();
         }
         if (item.url) {
-            this.props.openExternalUrl(item.url, item.target, LocaleUtils.tr("appmenu.items." + item.key), item.icon);
+            const label = item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
+            this.props.openExternalUrl(item.url, item.target, label, item.icon);
         } else {
             this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
