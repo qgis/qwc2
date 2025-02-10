@@ -796,13 +796,13 @@ class LayerTree extends React.Component {
     };
 
     manageStyleSelector = () => {
-        let styleList = this.getLayerStyles(this.props.layers);
+        const styleList = this.getLayerStyles(this.props.layers);
         if (styleList.length > 0) {
-            this.setState({ styleList: styleList, activestyleselector: !this.state.activestyleselector });
+            this.setState((state) => ({styleList: styleList, activestyleselector: !state.activestyleselector}));
         }
     };
     getLayerStyles = (layerList) => {
-        let styleList = new Set();
+        const styleList = new Set();
         const collectStyles = (layers) => {
             for (const layer of layers) {
                 if (layer.sublayers && layer.sublayers.length > 0) {
@@ -810,7 +810,7 @@ class LayerTree extends React.Component {
                 }
                 if (layer.styles && Object.keys(layer.styles).length > 0) {
                     for (const styleKey in layer.styles) {
-                        if (layer.styles.hasOwnProperty(styleKey)) {
+                        if (Object.prototype.hasOwnProperty.call(layer.styles, styleKey)) {
                             styleList.add(layer.styles[styleKey]);
                         }
                     }
@@ -845,8 +845,8 @@ class LayerTree extends React.Component {
                 }
                 if (layer.styles && Object.keys(layer.styles).length > 0) {
                     for (const styleKey in layer.styles) {
-                        if (layer.styles.hasOwnProperty(styleKey) && styleKey === style) {
-                            const wmsLayer = this.props.layers.find(layer => layer.type === "wms");
+                        if (Object.prototype.hasOwnProperty.call(layer.styles, styleKey) && styleKey === style) {
+                            const wmsLayer = this.props.layers.find(l => l.type === "wms");
                             this.props.changeLayerProperty(wmsLayer.uuid, "style", style, adjustedPath);
                         }
                     }
