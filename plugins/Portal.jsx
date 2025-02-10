@@ -117,7 +117,7 @@ class Portal extends React.Component {
                         {(this.props.bottomBarLinks || []).map((link, idx) => {
                             const label = link.label ?? LocaleUtils.tr(link.labelmsgid);
                             return (
-                                <a href="#" key={"l" + idx} onClick={() => this.openUrl(link.href, link.target, {title: label})}>{label}</a>
+                                <a href="#" key={"l" + idx} onClick={(ev) => {ev.preventDefault(); this.openUrl(link.href, link.target, label);}}>{label}</a>
                             );
                         })}
                     </div>
