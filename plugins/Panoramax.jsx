@@ -43,7 +43,9 @@ class Panoramax extends React.Component {
         panoramaxInstance: PropTypes.string,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        tileMode: PropTypes.string,
+        wmsUrl: PropTypes.string
     };
     static defaultProps = {
         geometry: {
@@ -52,11 +54,12 @@ class Panoramax extends React.Component {
             initialX: 0,
             initialY: 0,
             initiallyDocked: false,
-            side: 'left',
-            isPictureLoading: false
+            side: 'left'
+
         },
         loadSequencesTiles: true,
-        panoramaxInstance: 'api.panoramax.xyz'
+        panoramaxInstance: 'api.panoramax.xyz',
+        tileMode: 'mvt'
     };
     state = {
         lon: null,
@@ -75,7 +78,11 @@ class Panoramax extends React.Component {
         if (!prevProps.active && this.props.active) {
             this.setState({selectionActive: true});
             if (this.props.loadSequencesTiles) {
-                this.addRecordingsMVT();
+                if (this.props.tileMode === "wms" && this.props.wmsUrl) {
+                    this.addRecordingsWMS();
+                } else {
+                    this.addRecordingsMVT();
+                }
             }
         } else if ( this.state.selectionGeom &&
             this.state.selectionGeom !== prevState.selectionGeom) {
@@ -91,7 +98,7 @@ class Panoramax extends React.Component {
     }
     onClose = () => {
         this.props.setCurrentTask(null);
-        this.props.removeLayer('Panoramax-recordings');
+        this.props.removeLayer('panoramax-recordings');
         this.props.removeLayer('panoramaxselection');
         this.setState({selectionGeom: null, queryImage: null, lon: null, lat: null, selectionActive: null, yaw: null, currentTooltip: ''});
         if (this.viewer) {
@@ -99,6 +106,7 @@ class Panoramax extends React.Component {
             this.viewer.destroy();
             delete this.viewer;
         }
+        ResourceRegistry.removeResource('selected');
     };
     render() {
         if (!this.props.active) {
@@ -157,8 +165,7 @@ class Panoramax extends React.Component {
                 this.setState(
                     {
                         lon: event.detail.lon,
-                        lat: event.detail.lat,
-                        isPictureLoading: true
+                        lat: event.detail.lat
                     },
                     () => this.handlePanoramaxEvent()
                 );
@@ -201,7 +208,7 @@ class Panoramax extends React.Component {
     addRecordingsMVT = () => {
         const resolutions = MapUtils.getResolutionsForScales(this.props.theme.scales, this.props.theme.mapCrs);
         const layer = {
-            id: 'Panoramax-recordings',
+            id: 'panoramax-recordings',
             type: 'mvt',
             projection: this.props.theme.mapCrs,
             tileGridConfig: {
@@ -209,6 +216,16 @@ class Panoramax extends React.Component {
                 resolutions: resolutions
             },
             style: `https://${this.props.panoramaxInstance}/api/map/style.json`,
+            role: LayerRole.USERLAYER
+        };
+        this.props.addLayer(layer);
+    };
+    addRecordingsWMS = () => {
+        const layer = {
+            id: 'panoramax-recordings',
+            type: 'wms',
+            projection: this.props.theme.mapCrs,
+            url: this.props.wmsUrl,
             role: LayerRole.USERLAYER
         };
         this.props.addLayer(layer);
