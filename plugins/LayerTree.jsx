@@ -158,6 +158,9 @@ class LayerTree extends React.Component {
     state = {
         activemenu: null,
         activestylemenu: null,
+        activestyleselector: false,
+        styleList: [],
+        selectedStyle: null,
         legendTooltip: null,
         sidebarwidth: null,
         importvisible: false,
@@ -491,6 +494,7 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-container-wrapper" role="body">
                 <div className="layertree-container">
+                    {this.state.activestyleselector === true ? this.renderStyleSelector() : null}
                     <div className="layertree-tree"
                         onContextMenuCapture={ev => {
                             // Prevent context menu on drag-sort
@@ -565,15 +569,18 @@ class LayerTree extends React.Component {
         if (this.props.enableServiceInfo) {
             serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>);
         }
+        let styleSelectorIcon = null;
+        styleSelectorIcon = (<Icon className="layertree-style-selecor" icon="paint" onClick={this.manageStyleSelector} title={"Layer style selector"}/>);
 
         let extraTitlebarContent = null;
-        if (legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon) {
+        if (legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon || styleSelectorIcon) {
             extraTitlebarContent = (
                 <span>
                     {legendPrintIcon}
                     {visibleFilterIcon}
                     {deleteAllLayersIcon}
                     {serviceInfoIcon}
+                    {styleSelectorIcon}
                 </span>
             );
         }
@@ -786,6 +793,67 @@ class LayerTree extends React.Component {
             })
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
+    };
+
+    manageStyleSelector = () => {
+        let styleList = this.getLayerStyles(this.props.layers);
+        if (styleList.length > 0) {
+            this.setState({ styleList: styleList, activestyleselector: !this.state.activestyleselector });
+        }
+    };
+    getLayerStyles = (layerList) => {
+        let styleList = new Set();
+        const collectStyles = (layers) => {
+            for (const layer of layers) {
+                if (layer.sublayers && layer.sublayers.length > 0) {
+                    collectStyles(layer.sublayers);
+                }
+                if (layer.styles && Object.keys(layer.styles).length > 0) {
+                    for (const styleKey in layer.styles) {
+                        if (layer.styles.hasOwnProperty(styleKey)) {
+                            styleList.add(layer.styles[styleKey]);
+                        }
+                    }
+                }
+            }
+        };
+        collectStyles(layerList);
+        return Array.from(styleList);
+    };
+    renderStyleSelector = () => {
+        return (
+            <div className="layertree-option-style" >
+                {this.state.styleList.map((style) => (
+                    <div key={style} onClick={() => this.applyLayerStyle(style)}>
+                        <Icon icon={this.state.selectedStyle === style ? "radio_checked" : "radio_unchecked"} />
+                        <div>{style}</div>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+    applyLayerStyle = (style) => {
+        this.setState({ selectedStyle: style });
+        const setStyle = (layers, path = []) => {
+            for (let i = 0; i < layers.length; i++) {
+                const layer = layers[i];
+                const currentPath = [...path, i];
+                const adjustedPath = path.length === 0 ? [] : currentPath.slice(1);
+
+                if (layer.sublayers && layer.sublayers.length > 0) {
+                    setStyle(layer.sublayers, currentPath);
+                }
+                if (layer.styles && Object.keys(layer.styles).length > 0) {
+                    for (const styleKey in layer.styles) {
+                        if (layer.styles.hasOwnProperty(styleKey) && styleKey === style) {
+                            const wmsLayer = this.props.layers.find(layer => layer.type === "wms");
+                            this.props.changeLayerProperty(wmsLayer.uuid, "style", style, adjustedPath);
+                        }
+                    }
+                }
+            }
+        };
+        setStyle(this.props.layers);
     };
 }
 
