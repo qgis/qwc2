@@ -13,9 +13,9 @@ import Instance from '@giro3d/giro3d/core/Instance.js';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
+import {MapLightingMode} from '@giro3d/giro3d/entities/MapLightingOptions';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
-import Tiles3DSource from "@giro3d/giro3d/sources/Tiles3DSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
 import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh} from 'three';
@@ -388,7 +388,10 @@ class Map3D extends React.Component {
         this.map = new Map({
             extent: extent,
             backgroundColor: "white",
-            hillshading: true
+            lighting: {
+                enabled: true,
+                mode: MapLightingMode.LightBased
+            }
         });
         this.instance.add(this.map);
 
@@ -458,9 +461,9 @@ class Map3D extends React.Component {
             if (tilesUrl.startsWith(":")) {
                 tilesUrl = location.href.split("?")[0] + ConfigUtils.getAssetsPath() + tilesUrl.substr(1);
             }
-            const tiles = new Tiles3D(
-                new Tiles3DSource(tilesUrl)
-            );
+            const tiles = new Tiles3D({
+                url: tilesUrl
+            });
             tiles.userData.layertree = true;
             this.instance.add(tiles);
             this.objectMap[entry.name] = tiles;

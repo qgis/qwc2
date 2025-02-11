@@ -174,10 +174,10 @@ export default class Map3DLight extends React.Component {
             const alpha = Math.max(0, alt / (0.5 * Math.PI));
             const intensity = 1.15 * alpha / (alpha + 0.15);
 
-            sceneContext.map.hillshading.azimuth = az / Math.PI * 180; // Azimuth is measured from South
-            sceneContext.map.hillshading.zenith = 90 - intensity * 30;
-            sceneContext.map.hillshading.intensity = 1 - 0.4 * intensity;
-            sceneContext.map.hillshading.elevationLayersOnly = true;
+            sceneContext.map.lighting.azimuth = az / Math.PI * 180; // Azimuth is measured from South
+            sceneContext.map.lighting.zenith = 90 - intensity * 30;
+            sceneContext.map.lighting.intensity = 1 - 0.4 * intensity;
+            sceneContext.map.lighting.elevationLayersOnly = true;
 
             // Modulate light intensities based on sun altitude
             sceneContext.getSceneObject("__ambientLight").intensity = 0.01 + 0.49 * intensity;
