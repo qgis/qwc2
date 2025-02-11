@@ -23,6 +23,7 @@ import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
 
 
 /**
@@ -141,6 +142,15 @@ class View3D extends React.Component {
         }
         if (this.props.layers !== prevProps.layers) {
             this.store.dispatch({type: "SYNC_LAYERS_FROM_PARENT_STORE", layers: this.props.layers});
+        }
+        if (this.props.view3dMode !== prevProps.view3dMode) {
+            if (this.props.view3dMode === View3DMode.FULLSCREEN) {
+                UrlParams.updateParams({v: "3d"});
+            } else if (this.props.view3dMode === View3DMode.SPLITSCREEN) {
+                UrlParams.updateParams({v: "3d2d"});
+            } else {
+                UrlParams.updateParams({v: undefined});
+            }
         }
     }
     render3DWindow = () => {
