@@ -214,7 +214,7 @@ const ServiceLayerUtils = {
         } catch (e) {
             /* pass */
         }
-        const styles = MiscUtils.ensureArray(layer.Style).reduce((res, entry) => ({...res, [entry.Name]: entry.Title}), {});
+        const styles = MiscUtils.ensureArray(layer.Style).reduce((res, entry) => ({...res, [String(entry.Name)]: entry.Title}), {});
         const style = styles.default ? 'default' : (Object.keys(styles)[0] ?? '');
         const attribution = {
             Title: layer.Attribution?.Title,
@@ -222,7 +222,7 @@ const ServiceLayerUtils = {
         };
         return {
             type: "wms",
-            name: layer.Name,
+            name: String(layer.Name),
             title: layer.Title,
             abstract: layer.Abstract,
             attribution: attribution,
