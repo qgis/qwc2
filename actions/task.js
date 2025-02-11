@@ -8,6 +8,7 @@
 
 import ReducerIndex from '../reducers/index';
 import taskReducer from '../reducers/task';
+import ConfigUtils from '../utils/ConfigUtils';
 ReducerIndex.register("task", taskReducer);
 
 export const SET_CURRENT_TASK = 'SET_CURRENT_TASK';
@@ -21,7 +22,7 @@ export function setCurrentTask(task, mode = null, mapClickAction = null, data = 
         }
         // Attempt to read mapClickAction from plugin configuration block if not set
         if (!mapClickAction) {
-            const device = getState().browser?.mobile ? 'mobile' : 'desktop';
+            const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
             mapClickAction = (getState().localConfig?.plugins?.[device] || []).find(config => config.name === task)?.mapClickAction;
         }
         dispatch({
