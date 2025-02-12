@@ -293,8 +293,7 @@ export default class StandardApp extends React.Component {
         UrlParams.clear();
 
         // Load config.json
-        const urlParams = UrlParams.getParams();
-        const configParams = Object.entries(urlParams).reduce((res, [key, value]) => {
+        const configParams = Object.entries(initialParams).reduce((res, [key, value]) => {
             if (key.startsWith("config:")) {
                 res[key.slice(7)] = value;
             }
