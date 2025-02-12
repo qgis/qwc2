@@ -15,6 +15,7 @@ import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
 import {MapLightingMode} from '@giro3d/giro3d/entities/MapLightingOptions';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
+import Inspector from "@giro3d/giro3d/gui/Inspector.js";
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
@@ -26,6 +27,7 @@ import {setCurrentTask} from '../../actions/task';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import {UrlParams} from '../../utils/PermaLinkUtils';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
@@ -337,6 +339,7 @@ class Map3D extends React.Component {
         };
         return (
             <div className="map3d-body">
+                <div className="map3d-inspector" />
                 <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
                 <View3DSwitcher position={2} />
                 {this.state.sceneContext.scene ? (
@@ -485,7 +488,10 @@ class Map3D extends React.Component {
             sceneId: uuidv1()
         }));
 
-        // this.inspector = Inspector.attach("map3dinspector", this.instance);
+        // Inspector
+        if (["1", "true"].includes((UrlParams.getParam("inspector") || "").toLowerCase())) {
+            this.inspector = new Inspector(this.container.previousElementSibling, this.instance);
+        }
     };
     disposeInstance = () => {
         if (this.inspector) {
