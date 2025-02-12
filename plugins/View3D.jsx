@@ -188,8 +188,8 @@ class View3D extends React.Component {
                         <Provider role="body" store={this.store}>
                             <Map3D
                                 innerRef={this.setRef}
-                                mapBBox={this.props.mapBBox} options={this.props.options}
-                                projection={this.props.projection}
+                                onMapInitialized={this.setViewToExtent}
+                                options={this.props.options}
                                 searchProviders={this.props.searchProviders}
                                 theme={this.props.theme} />
                             {this.props.view3dMode === View3DMode.FULLSCREEN ? (
@@ -220,7 +220,7 @@ class View3D extends React.Component {
         this.map3dComponentRef = ref;
     };
     setViewToExtent = () => {
-        if (this.map3dComponentRef) {
+        if (this.props.view3dMode !== View3DMode.FULLSCREEN && this.map3dComponentRef) {
             this.map3dComponentRef.setViewToExtent(this.props.mapBBox.bounds, this.props.mapBBox.rotation);
         }
     };

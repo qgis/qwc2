@@ -68,10 +68,9 @@ class Map3D extends React.Component {
     static propTypes = {
         innerRef: PropTypes.func,
         layers: PropTypes.array,
-        mapBBox: PropTypes.object,
         mapMargins: PropTypes.object,
+        onMapInitialized: PropTypes.func,
         options: PropTypes.object,
-        projection: PropTypes.string,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object
@@ -172,7 +171,7 @@ class Map3D extends React.Component {
         }
         const layerCreator = LayerRegistry[baseLayer.type];
         if (layerCreator?.create3d) {
-            const layer3d = layerCreator.create3d(baseLayer, this.props.projection);
+            const layer3d = layerCreator.create3d(baseLayer, this.state.sceneContext.mapCrs);
             this.addLayer("__baselayer", layer3d);
             this.map.insertLayerAfter(layer3d, null);
         }
@@ -218,9 +217,9 @@ class Map3D extends React.Component {
             const layerCreator = LayerRegistry[layer.type];
             let mapLayer = this.getLayer(layer.id);
             if (mapLayer) {
-                layerCreator.update3d(mapLayer.source, layer, prevLayersMap[layer.id], this.props.projection);
+                layerCreator.update3d(mapLayer.source, layer, prevLayersMap[layer.id], this.state.sceneContext.mapCrs);
             } else {
-                mapLayer = layerCreator.create3d(layer, this.props.projection);
+                mapLayer = layerCreator.create3d(layer, this.state.sceneContext.mapCrs);
                 this.addLayer(layer.id, mapLayer);
             }
             this.map.insertLayerAfter(mapLayer, prevLayer);
@@ -371,7 +370,7 @@ class Map3D extends React.Component {
         if (this.instance) {
             this.disposeInstance();
         }
-        const projection = this.props.projection;
+        const projection = this.props.theme.mapCrs;
 
         // Setup instance
         this.instance = new Instance({
@@ -524,8 +523,7 @@ class Map3D extends React.Component {
             ...state.sceneContext,
             setViewToExtent: instance?.setViewToExtent
 
-        }}));
-        instance?.setViewToExtent?.(this.props.mapBBox.bounds, this.props.mapBBox.rotation);
+        }}), this.props.onMapInitialized);
     };
     getTerrainHeight = (scenePos) => {
         const dtmPos = CoordinatesUtils.reproject(scenePos, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);
