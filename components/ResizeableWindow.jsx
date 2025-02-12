@@ -190,7 +190,7 @@ class ResizeableWindow extends React.Component {
         });
 
         let detachIcons = null;
-        if (!ConfigUtils.isMobile()) {
+        if (!ConfigUtils.isMobile() && !ConfigUtils.getConfigProp("globallyDisableDetachableDialogs")) {
             detachIcons = this.state.externalWindow ? (
                 <Icon className={iconClasses} icon="embed" onClick={this.moveToInternalWindow} title={LocaleUtils.tr("window.embed")} />
             ) : (
