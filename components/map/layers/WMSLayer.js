@@ -62,7 +62,7 @@ export function wmsToOpenlayersOptions(options) {
 
 export function getClientSideOpacity(queryParameters) {
     // If WMS parameters contain only one opacity value, set opacity client side (as some WMS servers don't support opacity)
-    const opacities = queryParameters.OPACITIES.split(",");
+    const opacities = (queryParameters.OPACITIES ?? "255").split(",");
     if (opacities.length === 1) {
         queryParameters.OPACITIES = "255";
         return parseInt(opacities[0], 10) / 255;
