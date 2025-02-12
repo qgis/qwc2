@@ -15,6 +15,7 @@ import {createSelector} from 'reselect';
 import * as displayExports from '../actions/display';
 import {setView3dMode, View3DMode} from '../actions/display';
 import {setCurrentTask} from '../actions/task';
+import * as themeExports from '../actions/theme';
 import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import StandardApp from '../components/StandardApp';
@@ -86,27 +87,24 @@ class View3D extends React.Component {
             task,
             windows
         } = ReducerIndex.reducers;
-        // Inline reducers to sync parts of parent store
-        const displayActions = Object.values(displayExports).filter(x => typeof(x) === 'string');
-        const display = (state = {}, action) => {
-            if (displayActions.includes(action.type)) {
+
+        // Reducer for syncronization with parent store
+        const forwardReducer = (key, forwardActions, syncAction) => (state = {}, action) => {
+            if (forwardActions.includes(action.type)) {
                 // Forward to parent store
                 StandardApp.store.dispatch(action);
                 return state;
             } else {
-                return action.type === "SYNC_DISPLAY_FROM_PARENT_STORE" ? action.display : state;
+                return action.type === syncAction ? action[key] : state;
             }
         };
-        const localConfig = (state = {}, action) => {
-            return action.type === "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE" ? action.localConfig : state;
-        };
-        const theme = (state = {}, action) => {
-            return action.type === "SYNC_THEME_FROM_PARENT_STORE" ? action.theme : state;
-        };
-        const layers = (state = {}, action) => {
-            return action.type === "SYNC_LAYERS_FROM_PARENT_STORE" ? action.layers : state;
-        };
-        this.store = createStore({task, windows, display, localConfig, theme, layers});
+        const displayActions = Object.values(displayExports).filter(x => typeof(x) === 'string');
+        const themeActions = Object.values(themeExports).filter(x => typeof(x) === 'string');
+        const display = forwardReducer("display", displayActions, "SYNC_DISPLAY_FROM_PARENT_STORE");
+        const layers = forwardReducer("layers", [], "SYNC_LAYERS_FROM_PARENT_STORE");
+        const localConfig = forwardReducer("localConfig", [], "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE");
+        const theme = forwardReducer("theme", themeActions, "SYNC_THEME_FROM_PARENT_STORE");
+        this.store = createStore({display, layers, localConfig, theme, task, windows});
     }
     componentDidMount() {
         if (this.props.startupParams.v === "3d") {
