@@ -174,6 +174,7 @@ class IdentifyViewer extends React.Component {
         removeLayer: PropTypes.func,
         replaceImageUrls: PropTypes.bool,
         setActiveLayerInfo: PropTypes.func,
+        showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
@@ -185,6 +186,7 @@ class IdentifyViewer extends React.Component {
         attributeCalculator: (/* layer, feature */) => { return []; },
         attributeTransform: (name, value /* , layer, feature */) => value,
         showLayerTitles: true,
+        showLayerSelector: true,
         highlightAllResults: true
     };
     state = {
@@ -530,19 +532,21 @@ class IdentifyViewer extends React.Component {
         } else {
             body = (
                 <div className="identify-flat-results-list">
-                    <div className="identify-selectbox">
-                        <select className="identify-layer-select" onChange={(e) => {const selectedLayer = e.target.value; this.setState({ selectedLayer });}}>
-                            <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
-                            {Object.keys(this.state.resultTree).sort().map(
-                                layer => (
-                                    <option key={layer} value={layer}>
-                                        {layer}
-                                    </option>
-                                ))}
-                        </select>
-                        <span className="identify-buttonbox-spacer" />
-                        <span>{LocaleUtils.tr("identify.featurecount")}: {Object.values(this.state.selectedLayer !== '' ? this.state.resultTree[this.state.selectedLayer] : this.state.resultTree ).flat().length}</span>
-                    </div>
+                    {this.props.showLayerSelector ? (
+                        <div className="identify-selectbox">
+                            <select className="identify-layer-select" onChange={(e) => {const selectedLayer = e.target.value; this.setState({ selectedLayer });}}>
+                                <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
+                                {Object.keys(this.state.resultTree).sort().map(
+                                    layer => (
+                                        <option key={layer} value={layer}>
+                                            {layer}
+                                        </option>
+                                    ))}
+                            </select>
+                            <span className="identify-buttonbox-spacer" />
+                            <span>{LocaleUtils.tr("identify.featurecount")}: {Object.values(this.state.selectedLayer !== '' ? this.state.resultTree[this.state.selectedLayer] : this.state.resultTree ).flat().length}</span>
+                        </div>
+                    ) : null}
                     {Object.keys(this.state.selectedLayer !== '' ? { [this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer] } : this.state.resultTree).map(layer => {
                         const layerResults = this.state.resultTree[layer];
                         return layerResults.map(result => {

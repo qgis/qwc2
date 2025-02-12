@@ -89,6 +89,8 @@ class Identify extends React.Component {
         replaceImageUrls: PropTypes.bool,
         selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
+        /** Whether to show a layer selector to filter the identify results by layer. */
+        showLayerSelector: PropTypes.bool,
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -109,7 +111,8 @@ class Identify extends React.Component {
             side: 'left'
         },
         initialRadiusUnits: 'm',
-        highlightAllResults: true
+        highlightAllResults: true,
+        showLayerSelector: true
     };
     state = {
         mode: 'Point',
@@ -375,7 +378,9 @@ class Identify extends React.Component {
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
-                        role="body" />
+                        role="body"
+                        showLayerSelector={this.props.showLayerSelector}
+                    />
                 );
             }
             resultWindow = (
