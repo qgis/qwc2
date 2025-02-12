@@ -579,7 +579,7 @@ export default class PrintSelection extends React.Component {
         const extents = this.calculateExtents();
 
         let rotation = 0;
-        let scale = 0;
+        let scale = null;
 
         if (this.initialWidth !== null && this.initialHeight !== null) {
             const initialPoint = [
