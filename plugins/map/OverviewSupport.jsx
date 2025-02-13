@@ -74,7 +74,7 @@ class OverviewMap extends React.Component {
                 overviewLayer = this.props.backgroundLayer;
             }
             this.setState({overviewLayer: overviewLayer});
-        } else if (this.props.backgroundLayer !== prevProps.backgroundLayer) {
+        } else if (this.props.backgroundLayer !== prevProps.backgroundLayer && !this.props.options.layer) {
             this.setState({overviewLayer: this.props.backgroundLayer});
         }
     }
