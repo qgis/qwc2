@@ -210,21 +210,21 @@ class TopBar extends React.Component {
                 } else {
                     return null;
                 }
-            } else {
+            } else if (this.props.currentTheme) {
                 if (!ThemeUtils.themeFlagsAllowed(this.props.currentTheme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
                     return null;
                 }
-                if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme?.title) || item.themeBlacklist.includes(this.props.currentTheme?.name))) {
+                if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
                     return null;
                 }
-                if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme?.title) || item.themeWhitelist.includes(this.props.currentTheme?.name))) {
+                if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
                     return null;
                 }
                 if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
                     return null;
                 }
-                return item;
             }
+            return item;
         }).filter(Boolean);
     };
 }
