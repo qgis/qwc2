@@ -223,7 +223,7 @@ class TopBar extends React.Component {
                 } else {
                     return null;
                 }
-            } else {
+            } else if (this.props.currentTheme) {
                 if (!ThemeUtils.themeFlagsAllowed(this.props.currentTheme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
                     return null;
                 }
@@ -236,8 +236,8 @@ class TopBar extends React.Component {
                 if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
                     return null;
                 }
-                return item;
             }
+            return item;
         }).filter(Boolean);
     };
 }
