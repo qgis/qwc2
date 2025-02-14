@@ -45,6 +45,7 @@
         "MeasureLineString": "Misura una linea",
         "MeasurePolygon": "Misura un poligono",
         "NewsPopup": "Attualità",
+        "Panoramax": "",
         "Portal": "Portale",
         "PrintScreen3D": "Esporta raster",
         "Redlining": "Strumenti di disegno",
@@ -376,6 +377,10 @@
       "side": "Lato",
       "width": "Larghezza",
       "windowtitle": "Formulario numerico"
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": "Query..."

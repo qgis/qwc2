@@ -45,6 +45,7 @@
         "MeasureLineString": "Změřit úsek",
         "MeasurePolygon": "Měřit mnohoúhelník",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "",
         "PrintScreen3D": "",
         "Redlining": "Připomínkování",
@@ -376,6 +377,10 @@
       "side": "",
       "width": "",
       "windowtitle": ""
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": ""
