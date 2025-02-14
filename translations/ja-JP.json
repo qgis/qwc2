@@ -99,8 +99,8 @@
     "bottombar": {
       "mousepos_label": "座標",
       "scale_label": "縮尺",
-      "terms_label": "使用許諾",
-      "viewertitle_label": "ホームページ"
+      "terms_label": "使用許諾条件",
+      "viewertitle_label": "QWC2 デモ"
     },
     "compare3d": {
       "clipplane": "クリッピング平面",
