@@ -30,7 +30,7 @@ export function createWMTSSource(options) {
     const matrixIds = new Array(options.resolutions.length);
     // generate matrixIds arrays for this WMTS
     for (let z = 0; z < options.resolutions.length; ++z) {
-        matrixIds[z] = options.tileMatrixPrefix + z;
+        matrixIds[z] = options.tileMatrixPrefix !== "" ? options.tileMatrixPrefix + ":" + z : z;
     }
     const extent = options.bbox ? CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, options.projection) : null;
 
