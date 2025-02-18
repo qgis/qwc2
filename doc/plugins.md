@@ -710,6 +710,8 @@ Allows drawing figures and text labels on the map.
 | defaultFillColor | `array` | Default fill color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
 | defaultLengthUnit | `string` | Default length unit. Options: metric, imperial, m, km, ft, mi | `'metric'` |
 | hiddenTools | `array` | Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. | `[]` |
+| predefinedBorderColors | `[array]` | Predefined border colors. In format [[r, g, b, a], ...]. | `undefined` |
+| predefinedFillColors | `[array]` | Predefined fill colors. In format [[r, g, b, a], ...]. | `undefined` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
 
