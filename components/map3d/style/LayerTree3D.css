@@ -7,6 +7,7 @@
     display: flex;
     align-items: center;
     height: 1.75em;
+    margin-left: 0.25em;
 }
 
 #LayerTree3D span.layertree3d-item-checkbox {
@@ -36,7 +37,7 @@
 
 #LayerTree3D div.layertree3d-section {
     font-weight: bold;
-    margin-left: -0.25em;
+    margin-left: 0.25em;
 }
 
 #LayerTree3D span.layertree3d-item-menubutton {

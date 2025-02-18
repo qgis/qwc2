@@ -42,7 +42,7 @@ export default class LayerTree3D extends React.Component {
     renderBody = () => {
         const sceneContext = this.props.sceneContext;
         return (
-            <div className="layertree3d-item-container">
+            <div>
                 <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.objects")}</div>
                 {Object.entries(sceneContext.sceneObjects).map(([objectId, entry]) => {
                     return this.renderLayerEntry(objectId, entry, sceneContext.updateSceneObject);
