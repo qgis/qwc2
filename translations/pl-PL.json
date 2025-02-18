@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "",
         "Compare3D": "",
-        "DateTime3D": "",
         "Editing": "Edycja",
         "Help": "Pomoc",
         "LayerTree": "Warstwy i ich legendy",
@@ -21,6 +20,7 @@
         "MapExport": "Eksportuj mapę",
         "MapExport3D": "",
         "MapFilter": "",
+        "MapLight3D": "",
         "Print": "Drukuj",
         "Reports": "",
         "Settings": "",
@@ -346,6 +346,23 @@
       "onlyvisible": "",
       "scaledependent": "",
       "windowtitle": ""
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "",

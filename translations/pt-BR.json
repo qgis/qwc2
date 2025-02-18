@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Bookmark",
         "Compare3D": "",
-        "DateTime3D": "",
         "Editing": "Edição",
         "Help": "Ajuda",
         "LayerTree": "Camadas & Legendas",
@@ -21,6 +20,7 @@
         "MapExport": "Exportar mapa",
         "MapExport3D": "",
         "MapFilter": "",
+        "MapLight3D": "",
         "Print": "Imprimir",
         "Reports": "",
         "Settings": "Configurações",
@@ -346,6 +346,23 @@
       "onlyvisible": "Apenas visíveis",
       "scaledependent": "Escala da legenda",
       "windowtitle": "Titulo da janela"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "",

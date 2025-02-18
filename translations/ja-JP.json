@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "ブックマーク",
         "Compare3D": "比較",
-        "DateTime3D": "日付と時刻",
         "Editing": "編集",
         "Help": "ヘルプ",
         "LayerTree": "レイヤ & 凡例",
@@ -21,6 +20,7 @@
         "MapExport": "地図をエクスポート",
         "MapExport3D": "地図をエクスポート",
         "MapFilter": "マップ・フィルタ",
+        "MapLight3D": "日付と時刻",
         "Print": "印刷",
         "Reports": "レポート",
         "Settings": "設定",
@@ -346,6 +346,23 @@
       "onlyvisible": "可視レイヤのみ",
       "scaledependent": "地図縮尺限定の凡例",
       "windowtitle": "凡例"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "m (海抜)",

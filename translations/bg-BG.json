@@ -21,6 +21,7 @@
         "MapExport": "Експорт на карта",
         "MapExport3D": "",
         "MapFilter": "Филтър на картата",
+        "MapLight3D": "Дата и час",
         "Print": "Отпечатване",
         "Reports": "Доклади",
         "Settings": "Настройки",
@@ -346,6 +347,23 @@
       "onlyvisible": "Само видими слоеве",
       "scaledependent": "Легенда за зависимост от мащаба на картата",
       "windowtitle": "Легенда"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "m AMSL",

@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Bladwijzers",
         "Compare3D": "",
-        "DateTime3D": "",
         "Editing": "Bewerken",
         "Help": "Help",
         "LayerTree": "Lagen & legenda",
@@ -21,6 +20,7 @@
         "MapExport": "Export kaart",
         "MapExport3D": "",
         "MapFilter": "Kaartfilter",
+        "MapLight3D": "",
         "Print": "Print",
         "Reports": "",
         "Settings": "Instellingen",
@@ -346,6 +346,23 @@
       "onlyvisible": "Alleen zichtbare lagen",
       "scaledependent": "Legenda afhankelijk van kaartschaal",
       "windowtitle": "Legenda"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "",

@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Segnalibri",
         "Compare3D": "Confronta",
-        "DateTime3D": "Data e ora",
         "Editing": "Strumenti di modifica",
         "Help": "Aiuto",
         "LayerTree": "Livelli",
@@ -21,6 +20,7 @@
         "MapExport": "Esporta mappa",
         "MapExport3D": "Esporta mappa",
         "MapFilter": "Filta mappa",
+        "MapLight3D": "Illuminazione e ombre",
         "Print": "Stampa",
         "Reports": "Rapporti",
         "Settings": "Impostazioni",
@@ -346,6 +346,23 @@
       "onlyvisible": "Mostra solo i livelli attivi nella legenda",
       "scaledependent": "Legenda in base alla scala della mappa",
       "windowtitle": "Legenda"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "Intensità luce ambientale",
+      "directionalLightIntensity": "Intensità luce direzionale",
+      "helpersVisible": "Mostra aiuti",
+      "normalBias": "Bias normale",
+      "shadowBias": "Bias ombra",
+      "shadowMapSize": "Dimensione texture ombra",
+      "shadowType": "Tipo di ombra",
+      "shadowVolumeFar": "Volume ombra da",
+      "shadowVolumeNear": "Volume ombra a",
+      "shadowintensity": "Intensità ombra",
+      "shadows": "Abilita ombre",
+      "showadvanced": "Mostra avanzato",
+      "sunazimuth": "Azimut sole",
+      "sunzenith": "Zenith sole",
+      "zFactor": "Fattore Z"
     },
     "measureComponent": {
       "absolute": "m s.l.m.",

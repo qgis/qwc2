@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Lesezeichen",
         "Compare3D": "Vergleichen",
-        "DateTime3D": "Datum und Zeit",
         "Editing": "Editieren",
         "Help": "Hilfe",
         "LayerTree": "Ebenen und Legende",
@@ -21,6 +20,7 @@
         "MapExport": "Karte exportieren",
         "MapExport3D": "Karte exportieren",
         "MapFilter": "Kartenfilter",
+        "MapLight3D": "Beleuchtung und Schatten",
         "Print": "Drucken",
         "Reports": "Berichte",
         "Settings": "Einstellungen",
@@ -346,6 +346,23 @@
       "onlyvisible": "Legende abhängig von der Ebenensichtbarkeit",
       "scaledependent": "Legende abhängig vom Kartenmassstab",
       "windowtitle": "Legende"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "Intensität Umgebungslichts",
+      "directionalLightIntensity": "Intensität gerichtetes Licht",
+      "helpersVisible": "Hilfen anzeigen",
+      "normalBias": "Normal-Verzerrung",
+      "shadowBias": "Schatten-Verzerrung",
+      "shadowMapSize": "Grösse der Schattentextur",
+      "shadowType": "Schattentyp",
+      "shadowVolumeFar": "Schattenvolumen von",
+      "shadowVolumeNear": "Schattenvolumen bis",
+      "shadowintensity": "Schattenintensität",
+      "shadows": "Schatten aktivieren",
+      "showadvanced": "Erweitert anzeigen",
+      "sunazimuth": "Sonnenazimuth",
+      "sunzenith": "Sonnenzenit",
+      "zFactor": "Z-Faktor"
     },
     "measureComponent": {
       "absolute": "m ü.M.",

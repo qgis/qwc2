@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Marcaj",
         "Compare3D": "",
-        "DateTime3D": "",
         "Editing": "Editare",
         "Help": "Ajutor",
         "LayerTree": "Straturi & Legendă",
@@ -21,6 +20,7 @@
         "MapExport": "",
         "MapExport3D": "",
         "MapFilter": "",
+        "MapLight3D": "",
         "Print": "Tipărire",
         "Reports": "",
         "Settings": "Setări",
@@ -346,6 +346,23 @@
       "onlyvisible": "Doar straturi vizibile",
       "scaledependent": "Legendă ce depinde de scară",
       "windowtitle": "Legenda"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "",

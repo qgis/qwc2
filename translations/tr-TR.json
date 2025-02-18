@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Yer işaretleri",
         "Compare3D": "Karşılaştır",
-        "DateTime3D": "Tarih Zaman",
         "Editing": "Düzenleme",
         "Help": "Yardım",
         "LayerTree": "Katmanlar & Gösterim",
@@ -21,6 +20,7 @@
         "MapExport": "Dışarıya ver",
         "MapExport3D": "",
         "MapFilter": "Harita Filtresi",
+        "MapLight3D": "Tarih Zaman",
         "Print": "Yazdır",
         "Reports": "Raporlar",
         "Settings": "Ayarlar",
@@ -346,6 +346,23 @@
       "onlyvisible": "Sadece görünen katmanlar",
       "scaledependent": "Harita ölçeğine bağlı",
       "windowtitle": "Lejant"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "Ortalama yükseklik(m)",

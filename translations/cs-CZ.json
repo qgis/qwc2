@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Záložky",
         "Compare3D": "",
-        "DateTime3D": "",
         "Editing": "Úpravy",
         "Help": "Nápověda",
         "LayerTree": "Vrstvy & legenda",
@@ -21,6 +20,7 @@
         "MapExport": "Export mapu",
         "MapExport3D": "",
         "MapFilter": "",
+        "MapLight3D": "",
         "Print": "Tisk",
         "Reports": "",
         "Settings": "Nastavení",
@@ -346,6 +346,23 @@
       "onlyvisible": "Pouze pro zobrazené vrstvy",
       "scaledependent": "Pouze pro prvky v současném přiblížení",
       "windowtitle": "Legenda"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "",

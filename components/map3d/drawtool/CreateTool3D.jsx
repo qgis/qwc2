@@ -115,6 +115,8 @@ export default class CreateTool3D extends React.Component {
             geometry.rotateX(Math.PI / 2); // Z-up
             const material = new MeshStandardMaterial({color: new Color(...this.props.color.map(c => c / 255))});
             const mesh = new Mesh( geometry, material);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
             drawGroup.add(mesh);
             mesh.position.copy(this.drawCursor.points[0]);
             mesh.position.z += 0.5 * s;

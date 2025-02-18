@@ -13,7 +13,6 @@ import Instance from '@giro3d/giro3d/core/Instance.js';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
-import {MapLightingMode} from '@giro3d/giro3d/entities/MapLightingOptions';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import Inspector from "@giro3d/giro3d/gui/Inspector.js";
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
@@ -389,11 +388,7 @@ class Map3D extends React.Component {
         const extent = new Extent(projection, bounds[0], bounds[2], bounds[1], bounds[3]);
         this.map = new Map({
             extent: extent,
-            backgroundColor: "white",
-            lighting: {
-                enabled: true,
-                mode: MapLightingMode.LightBased
-            }
+            backgroundColor: "white"
         });
         this.instance.add(this.map);
 
@@ -466,6 +461,8 @@ class Map3D extends React.Component {
             const tiles = new Tiles3D({
                 url: tilesUrl
             });
+            tiles.castShadow = true;
+            tiles.receiveShadow = true;
             tiles.userData.layertree = true;
             this.instance.add(tiles);
             this.objectMap[entry.name] = tiles;

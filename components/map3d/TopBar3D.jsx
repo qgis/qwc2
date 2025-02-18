@@ -42,7 +42,7 @@ class TopBar3D extends React.Component {
             {key: "Draw3D", icon: "draw"},
             {key: "Measure3D", icon: "measure"},
             {key: "Compare3D", icon: "compare"},
-            {key: "DateTime3D", icon: "clock"},
+            {key: "MapLight3D", icon: "light"},
             {key: "MapExport3D", icon: "rasterexport"}
         ];
         if (this.props.view3dMode === View3DMode.FULLSCREEN) {

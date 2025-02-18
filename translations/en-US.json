@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Bookmarks",
         "Compare3D": "Compare",
-        "DateTime3D": "Date and Time",
         "Editing": "Editing",
         "Help": "Help",
         "LayerTree": "Layers & Legend",
@@ -21,6 +20,7 @@
         "MapExport": "Export map",
         "MapExport3D": "Export map",
         "MapFilter": "Map Filter",
+        "MapLight3D": "Light and Shadows",
         "Print": "Print",
         "Reports": "Reports",
         "Settings": "Settings",
@@ -346,6 +346,23 @@
       "onlyvisible": "Only visibile layers",
       "scaledependent": "Map scale depdendent legend",
       "windowtitle": "Legend"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "Ambient light intensity",
+      "directionalLightIntensity": "Directional light intensity",
+      "helpersVisible": "Show helpers",
+      "normalBias": "Normal bias",
+      "shadowBias": "Shadow bias",
+      "shadowMapSize": "Shadowmap size",
+      "shadowType": "Shadow type",
+      "shadowVolumeFar": "Shadow volume near",
+      "shadowVolumeNear": "Shadow volume far",
+      "shadowintensity": "Shadow intensity",
+      "shadows": "Enable shadows",
+      "showadvanced": "Show advanced",
+      "sunazimuth": "Sun azimuth",
+      "sunzenith": "Sun zenith",
+      "zFactor": "Z-factor"
     },
     "measureComponent": {
       "absolute": "m AMSL",

@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Kirjanmerkit",
         "Compare3D": "",
-        "DateTime3D": "",
         "Editing": "Editointi",
         "Help": "Apua",
         "LayerTree": "Karttatasot ja selite",
@@ -21,6 +20,7 @@
         "MapExport": "Vienti kartta",
         "MapExport3D": "",
         "MapFilter": "",
+        "MapLight3D": "",
         "Print": "Tulosta",
         "Reports": "",
         "Settings": "",
@@ -346,6 +346,23 @@
       "onlyvisible": "",
       "scaledependent": "",
       "windowtitle": ""
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "",

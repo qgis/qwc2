@@ -1,12 +1,12 @@
 {
     "name": "qwc2",
-    "version": "2025.02.11-master",
+    "version": "2025.02.18-master",
     "description": "QGIS Web Client 2 core",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
     "repository": "git@github.com:qgis/qwc2.git",
     "dependencies": {
-        "@giro3d/giro3d": "^0.42.0-beta.1",
+        "@giro3d/giro3d": "^0.42.0",
         "@ladjs/country-language": "^1.0.3",
         "@loaders.gl/core": "^4.3.3",
         "@loaders.gl/shapefile": "^4.3.3",

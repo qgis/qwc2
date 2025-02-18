@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Marque-pages",
         "Compare3D": "Comparer",
-        "DateTime3D": "Date et heure",
         "Editing": "Editer",
         "Help": "Aide",
         "LayerTree": "Couches",
@@ -21,6 +20,7 @@
         "MapExport": "Exporter la carte",
         "MapExport3D": "Exporter la carte",
         "MapFilter": "Filtrer la carte",
+        "MapLight3D": "Illumination et ombres",
         "Print": "Imprimer",
         "Reports": "Rapports",
         "Settings": "Paramètres",
@@ -346,6 +346,23 @@
       "onlyvisible": "Seulement les couches visibles",
       "scaledependent": "Légende dépendante de l'échelle de la carte",
       "windowtitle": "Légende"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "Intensité lumineuse ambiante",
+      "directionalLightIntensity": "Intensité lumineuse directionnelle",
+      "helpersVisible": "Montrer les aides",
+      "normalBias": "Bias normal",
+      "shadowBias": "Bias de l'ombre",
+      "shadowMapSize": "Taille texture d'ombre",
+      "shadowType": "Type d'ombre",
+      "shadowVolumeFar": "Volume d'ombre de",
+      "shadowVolumeNear": "Volume d'ombre à",
+      "shadowintensity": "Intensité de l'ombre",
+      "shadows": "Activer les ombres",
+      "showadvanced": "Paramètres avancés",
+      "sunazimuth": "Azimut solaire",
+      "sunzenith": "Zénith solaire",
+      "zFactor": "Facteur z"
     },
     "measureComponent": {
       "absolute": "m alt.",
