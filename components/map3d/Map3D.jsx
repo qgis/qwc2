@@ -237,14 +237,14 @@ class Map3D extends React.Component {
     applySceneObjectUpdates = (sceneObjects) => {
         Object.entries(sceneObjects).forEach(([objectId, options]) => {
             const object = this.objectMap[objectId];
-            object.visible = options.visible;
+            object.visible = options.visibility;
             if (object.opacity !== undefined) {
-                object.opacity = options.opacity;
+                object.opacity = options.opacity / 255;
             } else {
                 object.traverse(child => {
                     if (child instanceof Mesh) {
-                        child.material.transparent = options.opacity < 1;
-                        child.material.opacity = options.opacity;
+                        child.material.transparent = options.opacity < 255;
+                        child.material.opacity = options.opacity / 255;
                     }
                 });
             }
@@ -278,8 +278,8 @@ class Map3D extends React.Component {
         this.objectMap[objectId] = object;
         this.setState((state) => {
             const objectState = {
-                visible: true,
-                opacity: 100,
+                visibility: true,
+                opacity: 255,
                 layertree: false,
                 ...options
             };
@@ -466,7 +466,7 @@ class Map3D extends React.Component {
             tiles.userData.layertree = true;
             this.instance.add(tiles);
             this.objectMap[entry.name] = tiles;
-            sceneObjects[entry.name] = {visible: true, opacity: 100, layertree: true, title: entry.title ?? entry.name};
+            sceneObjects[entry.name] = {visibility: true, opacity: 255, layertree: true, title: entry.title ?? entry.name};
         });
 
         this.setState(state => ({
