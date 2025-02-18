@@ -55,6 +55,10 @@ class Redlining extends React.Component {
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
         plugins: PropTypes.object,
+        /** Predefined border colors. In format [[r, g, b, a], ...]. */
+        predefinedBorderColors: PropTypes.arrayOf(PropTypes.array),
+        /** Predefined fill colors. In format [[r, g, b, a], ...]. */
+        predefinedFillColors: PropTypes.arrayOf(PropTypes.array),
         redlining: PropTypes.object,
         resetRedliningState: PropTypes.func,
         setCurrentTask: PropTypes.func,
@@ -279,12 +283,12 @@ class Redlining extends React.Component {
             <div className="redlining-controlsbar">
                 <span>
                     <Icon className="redlining-control-icon" icon="pen" size="large" />
-                    <ColorButton color={this.props.redlining.style.borderColor} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
+                    <ColorButton color={this.props.redlining.style.borderColor} defaultColors={this.props.predefinedBorderColors} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
                 </span>
                 {this.props.redlining.geomType === 'LineString' ? null : (
                     <span>
                         <Icon className="redlining-control-icon" icon="fill" size="large" />
-                        <ColorButton color={this.props.redlining.style.fillColor} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />
+                        <ColorButton color={this.props.redlining.style.fillColor} defaultColors={this.props.predefinedFillColors} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />
                     </span>
                 )}
                 <span>
