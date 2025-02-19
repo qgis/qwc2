@@ -448,11 +448,12 @@ class AttributeTable extends React.Component {
                     updateField={updateField} value={value} values={constraints.values} />
             );
         } else if (field.type === "number") {
-            const precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 0;
+            const precision = constraints.prec ?? 0;
+            const step = constraints.step ?? 1;
             input = (
                 <NumberInput decimals={precision} disabled={disabled} max={constraints.max} min={constraints.min}
                     name={field.id} onChange={v => updateField(field.id, v, true)}
-                    readOnly={constraints.readOnly} required={constraints.required} value={value} />
+                    readOnly={constraints.readOnly} required={constraints.required} step={step} value={value} />
             );
         } else if (field.type === "date") {
             // Truncate time portion of ISO date string
