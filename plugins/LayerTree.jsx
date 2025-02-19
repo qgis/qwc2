@@ -247,11 +247,16 @@ class LayerTree extends React.Component {
         }
         const optMenuClasses = classnames({
             "layertree-item-menubutton": true,
-            "layertree-item-menubutton-active": this.state.activemenu === group.uuid
+            "layertree-item-menubutton-active": this.state.activemenu === true
+        });
+        const styleMenuClasses = classnames({
+            "layertree-item-menubutton": true,
+            "layertree-item-menubutton-active": this.state.activestyleselector === group.uuid
         });
         const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
+        const isTopLevelWMSGroup = layer.type === "wms" && path.length === 0;
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={group.uuid}>
                 <div className={classnames(itemclasses)}>
@@ -260,10 +265,12 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-title" onClick={() => this.itemVisibilityToggled(layer, path, visibility)} title={group.title}>{group.title}</span>
                     {LayerUtils.hasQueryableSublayers(group) && this.props.allowSelectIdentifyableLayers ? (<Icon className={"layertree-item-identifyable " + identifyableClassName}  icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, omitqueryable)} />) : null}
                     <span className="layertree-item-spacer" />
+                    {isTopLevelWMSGroup ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.manageStyleSelector(group.uuid)}/>) : null}
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {this.state.activemenu === group.uuid ? this.renderOptionsMenu(layer, group, path, allowRemove) : null}
+                {isTopLevelWMSGroup && this.state.activestyleselector === group.uuid ? this.renderStyleSelector() : null}
                 <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
                 </Sortable>
@@ -494,7 +501,6 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-container-wrapper" role="body">
                 <div className="layertree-container">
-                    {this.state.activestyleselector === true ? this.renderStyleSelector() : null}
                     <div className="layertree-tree"
                         onContextMenuCapture={ev => {
                             // Prevent context menu on drag-sort
@@ -569,18 +575,15 @@ class LayerTree extends React.Component {
         if (this.props.enableServiceInfo) {
             serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>);
         }
-        let styleSelectorIcon = null;
-        styleSelectorIcon = (<Icon className="layertree-style-selecor" icon="paint" onClick={this.manageStyleSelector} title={"Layer style selector"}/>);
 
         let extraTitlebarContent = null;
-        if (legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon || styleSelectorIcon) {
+        if (legendPrintIcon || deleteAllLayersIcon || visibleFilterIcon) {
             extraTitlebarContent = (
                 <span>
                     {legendPrintIcon}
                     {visibleFilterIcon}
                     {deleteAllLayersIcon}
                     {serviceInfoIcon}
-                    {styleSelectorIcon}
                 </span>
             );
         }
@@ -795,10 +798,13 @@ class LayerTree extends React.Component {
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     };
 
-    manageStyleSelector = () => {
+    manageStyleSelector = (uuid) => {
         const styleList = this.getLayerStyles(this.props.layers);
         if (styleList.length > 0) {
-            this.setState((state) => ({styleList: styleList, activestyleselector: !state.activestyleselector}));
+            this.setState((state) => ({
+                styleList: styleList,
+                activestyleselector: state.activestyleselector === uuid ? null : uuid
+            }));
         }
     };
     getLayerStyles = (layerList) => {
@@ -822,7 +828,7 @@ class LayerTree extends React.Component {
     };
     renderStyleSelector = () => {
         return (
-            <div className="layertree-option-style" >
+            <div className="layertree-item-stylemenu" >
                 {this.state.styleList.map((style) => (
                     <div key={style} onClick={() => this.applyLayerStyle(style)}>
                         <Icon icon={this.state.selectedStyle === style ? "radio_checked" : "radio_unchecked"} />

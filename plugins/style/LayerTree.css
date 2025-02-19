@@ -10,8 +10,7 @@
 #LayerTree span.layertree-print-legend,
 #LayerTree span.layertree-visible-filter,
 #LayerTree span.layertree-delete-legend,
-#LayerTree span.layertree-theme-metadata,
-#LayerTree span.layertree-style-selecor {
+#LayerTree span.layertree-theme-metadata {
     margin-left: 0.5em;
     padding: 0.25em;
 }
@@ -19,8 +18,7 @@
 #LayerTree span.layertree-print-legend:hover,
 #LayerTree span.layertree-visible-filter:hover,
 #LayerTree span.layertree-delete-legend:hover,
-#LayerTree span.layertree-theme-metadata:hover,
-#LayerTree span.layertree-style-selecor:hover {
+#LayerTree span.layertree-theme-metadata:hover {
     background-color: var(--titlebar-text-color);
     color: var(--titlebar-bg-color);
 }
@@ -28,17 +26,6 @@
 #LayerTree span.layertree-visible-filter-active {
     background-color: var(--titlebar-text-color);
     color: var(--titlebar-bg-color);
-}
-
-#LayerTree div.layertree-option-style {
-    flex: 0 0 auto;
-    padding: 0.5em;
-    border-top: 1px solid var(--border-color);
-    margin-left: 0.5em;
-    padding: 0.25em;
-}
-#LayerTree div.layertree-option-style > div {
-    display: flex;
 }
 
 /* https://github.com/philipwalton/flexbugs/issues/216 */
