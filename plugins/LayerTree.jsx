@@ -247,7 +247,7 @@ class LayerTree extends React.Component {
         }
         const optMenuClasses = classnames({
             "layertree-item-menubutton": true,
-            "layertree-item-menubutton-active": this.state.activemenu === true
+            "layertree-item-menubutton-active": this.state.activemenu === group.uuid
         });
         const styleMenuClasses = classnames({
             "layertree-item-menubutton": true,
