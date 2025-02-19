@@ -425,12 +425,12 @@ class QtDesignerForm extends React.Component {
             const min = floatConstraint(prop.minimum ?? fieldConstraints.min);
             const max = floatConstraint(prop.maximum ?? fieldConstraints.max);
             const step = prop.singleStep ?? fieldConstraints.step ?? 1;
+            const precision = prop.decimals ?? 0;
             if (widget.class === "QSlider") {
                 return (<input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} step={step} style={fontStyle} type="range" value={value} />);
             } else {
-                const precision = step > 0 ? Math.ceil(-Math.log10(step)) : 0;
                 value = feature.properties?.[widget.name] ?? null;
-                return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={value} />);
+                return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} step={step} style={fontStyle} value={value} />);
             }
         } else if (widget.class === "QDateEdit") {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1600-01-01";

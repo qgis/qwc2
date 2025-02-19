@@ -30,6 +30,7 @@ export default class NumberInput extends React.Component {
         prefix: PropTypes.string,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,
+        step: PropTypes.number,
         style: PropTypes.object,
         suffix: PropTypes.string,
         value: PropTypes.number
@@ -68,7 +69,7 @@ export default class NumberInput extends React.Component {
         const style = {
             width: `calc(${paddingLength} + ${prefixSuffixLength} + ${numberLength})`
         };
-        const step = Math.pow(10, -this.props.decimals);
+        const step = this.props.step ?? Math.pow(10, -this.props.decimals);
         const plusIcon = this.props.mobile ? "plus" : "chevron-up";
         const minusIcon = this.props.mobile ? "minus" : "chevron-down";
         return (
