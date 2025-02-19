@@ -10,6 +10,8 @@ import axios from 'axios';
 import deepmerge from 'deepmerge';
 import {XMLParser} from 'fast-xml-parser';
 import isEmpty from 'lodash.isempty';
+import { getWidth } from 'ol/extent';
+import { get as getProjection } from 'ol/proj';
 import ol from 'openlayers';
 import randomColor from 'randomcolor';
 import url from 'url';
@@ -45,9 +47,44 @@ const ServiceLayerUtils = {
             return res;
         }, {});
         const layers = capabilities.Contents.Layer.map(layer => {
-            const matchingMatrix = layer.TileMatrixSetLink.find(link => tileMatrices[link.TileMatrixSet].crs === mapCrs);
-            const tileMatrixSet = matchingMatrix ? matchingMatrix.TileMatrixSet : layer.TileMatrixSetLink[0].TileMatrixSet;
+            const styles = this.getWMTSLayerStyles(capabilities, capabilitiesUrl, layer, tileMatrices);
+            return {
+                capabilitiesUrl: capabilitiesUrl,
+                title: layer.Title,
+                name: layer.Identifier,
+                bbox: {
+                    crs: "EPSG:4326",
+                    bounds: layer.WGS84BoundingBox
+                },
+                sublayers: styles,
+                abstract: layer.Abstract,
+                attribution: {
+                    Title: capabilities.ServiceProvider?.ProviderName || capabilities.ServiceIdentification?.Title || "",
+                    OnlineResource: capabilities.ServiceProvider?.ProviderSite || ""
+                }
+            };
+        });
+        layers.sort((a, b) => a.title.localeCompare(b.title));
+        return layers;
+    },
+    getWMTSLayerStyles(capabilities, capabilitiesUrl, layer, tileMatrices) {
+        if (layer.Style.length === 1) {
+            return this.getWMTSLayerTileMatrixSetLinks(capabilities, capabilitiesUrl, layer, tileMatrices, layer.Style[0].Identifier);
+        } else {
+            return layer.Style.map(style => {
+                return {
+                    title: style.Identifier,
+                    sublayers: this.getWMTSLayerTileMatrixSetLinks(capabilities, capabilitiesUrl, layer, tileMatrices, style.Identifier)
+                };
+            });
+        }
+    },
+    getWMTSLayerTileMatrixSetLinks(capabilities, capabilitiesUrl, layer, tileMatrices, style) {
+        const tileMatrixSetLinks = layer.TileMatrixSetLink;
+        const layerLinks = tileMatrixSetLinks.map(link => {
+            const tileMatrixSet = link.TileMatrixSet;
             const topMatrix = tileMatrices[tileMatrixSet].matrix[0];
+            const tileMatrixPrefix = topMatrix.Identifier.includes(":") ? topMatrix.Identifier.replace(/:[0-9]+$/, "") : "";
             let origin = [topMatrix.TopLeftCorner[0], topMatrix.TopLeftCorner[1]];
             try {
                 const axisOrder = CoordinatesUtils.getAxisOrder(tileMatrices[tileMatrixSet].crs).substr(0, 2);
@@ -59,12 +96,14 @@ const ServiceLayerUtils = {
                 console.warn("Could not determine axis order for projection " + tileMatrices[tileMatrixSet].crs);
                 return null;
             }
-            const resolutions = tileMatrices[tileMatrixSet].matrix.map(entry => {
+            // https://openlayers.org/en/latest/examples/wmts-ign.html
+            const proj = getProjection(tileMatrices[tileMatrixSet].crs);
+            const maxResolution = proj?.getExtent() ? getWidth(proj?.getExtent()) / topMatrix.TileWidth : null;
+            const resolutions = tileMatrices[tileMatrixSet].matrix.map((entry, index) => {
                 // 0.00028: assumed pixel width in meters, as per WMTS standard
-                return entry.ScaleDenominator * 0.00028;
+                return maxResolution ? maxResolution / Math.pow(2, index) : entry.ScaleDenominator * 0.00028;
             });
-            const styles = MiscUtils.ensureArray(layer.Style || []);
-            const style = (styles.find(entry => entry.isDefault) || styles[0] || {Identifier: ""}).Identifier;
+            const format = MiscUtils.ensureArray(layer.Format).find(fmt => fmt === "image/png") ?? MiscUtils.ensureArray(layer.Format)[0];
             const getTile = MiscUtils.ensureArray(capabilities.OperationsMetadata.GetTile.DCP.HTTP.Get)[0];
             const getEncoding = MiscUtils.ensureArray(getTile.Constraint).find(c => c.name === "GetEncoding");
             const requestEncoding = MiscUtils.ensureArray(getEncoding.AllowedValues.Value)[0];
@@ -81,9 +120,9 @@ const ServiceLayerUtils = {
                 type: "wmts",
                 url: serviceUrl,
                 capabilitiesUrl: capabilitiesUrl,
-                title: layer.Title,
+                title: layer.Title + " - " + tileMatrixSet,
                 name: layer.Identifier,
-                tileMatrixPrefix: "",
+                tileMatrixPrefix: tileMatrixPrefix,
                 tileMatrixSet: tileMatrixSet,
                 originX: origin[0],
                 originY: origin[1],
@@ -97,7 +136,7 @@ const ServiceLayerUtils = {
                     crs: "EPSG:4326",
                     bounds: layer.WGS84BoundingBox
                 },
-                format: MiscUtils.ensureArray(layer.Format)[0],
+                format: format,
                 requestEncoding: requestEncoding,
                 resolutions: resolutions,
                 abstract: layer.Abstract,
@@ -107,8 +146,7 @@ const ServiceLayerUtils = {
                 }
             };
         }).filter(Boolean);
-        layers.sort((a, b) => a.title.localeCompare(b.title));
-        return layers;
+        return layerLinks;
     },
     getWMSLayers(capabilities, calledServiceUrl, asGroup = false) {
         if (!capabilities?.WMS_Capabilities && !capabilities?.WMT_MS_Capabilities) {
