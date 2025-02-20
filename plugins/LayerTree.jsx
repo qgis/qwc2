@@ -158,6 +158,7 @@ class LayerTree extends React.Component {
     state = {
         activemenu: null,
         activestylemenu: null,
+        selectedStyle: null,
         legendTooltip: null,
         sidebarwidth: null,
         importvisible: false,
@@ -246,9 +247,15 @@ class LayerTree extends React.Component {
             "layertree-item-menubutton": true,
             "layertree-item-menubutton-active": this.state.activemenu === group.uuid
         });
+        const styleMenuClasses = classnames({
+            "layertree-item-menubutton": true,
+            "layertree-item-menubutton-active": this.state.activestylemenu === group.uuid
+        });
         const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filtervisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
+        const isTopLevelWMSGroup = layer.type === "wms" && path.length === 0;
+        const styles = isTopLevelWMSGroup ? this.getLayerStyles([layer]) : {};
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={group.uuid}>
                 <div className={classnames(itemclasses)}>
@@ -257,10 +264,12 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-title" onClick={() => this.itemVisibilityToggled(layer, path, visibility)} title={group.title}>{group.title}</span>
                     {LayerUtils.hasQueryableSublayers(group) && this.props.allowSelectIdentifyableLayers ? (<Icon className={"layertree-item-identifyable " + identifyableClassName}  icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, omitqueryable)} />) : null}
                     <span className="layertree-item-spacer" />
+                    {isTopLevelWMSGroup && Object.keys(styles).length > 0 ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(group.uuid)}/>) : null}
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(group.uuid)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {this.state.activemenu === group.uuid ? this.renderOptionsMenu(layer, group, path, allowRemove) : null}
+                {isTopLevelWMSGroup && this.state.activestylemenu === group.uuid ? this.renderStyleMenu(styles, this.state.selectedStyle, (style) => this.applyLayerStyle(style)) : null}
                 <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
                 </Sortable>
@@ -354,7 +363,7 @@ class LayerTree extends React.Component {
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {this.state.activemenu === sublayer.uuid ? this.renderOptionsMenu(layer, sublayer, path, allowRemove) : null}
-                {this.state.activestylemenu === sublayer.uuid ? this.renderStyleMenu(layer, sublayer, path, allowOptions + allowRemove) : null}
+                {this.state.activestylemenu === sublayer.uuid ? this.renderStyleMenu(sublayer.styles, sublayer.style, (style) => this.layerStyleChanged(layer, path, style)) : null}
             </div>
         );
     };
@@ -400,12 +409,12 @@ class LayerTree extends React.Component {
             </div>
         );
     };
-    renderStyleMenu = (layer, sublayer, path, marginRight = 0) => {
+    renderStyleMenu = (styles, selectedStyle, onStyleChange, marginRight = 0) => {
         return (
             <div className="layertree-item-stylemenu" style={{marginRight: (marginRight * 1.75) + 'em'}}>
-                {Object.entries(sublayer.styles).map(([name, title]) => (
-                    <div key={name} onClick={() => this.layerStyleChanged(layer, path, name)}>
-                        <Icon icon={sublayer.style === name ? "radio_checked" : "radio_unchecked"} />
+                {Object.entries(styles).map(([name, title]) => (
+                    <div key={name} onClick={() => onStyleChange(name)}>
+                        <Icon icon={selectedStyle === name ? "radio_checked" : "radio_unchecked"} />
                         <div>{title}</div>
                     </div>
                 ))}
@@ -786,6 +795,45 @@ class LayerTree extends React.Component {
             })
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
+    };
+    getLayerStyles = (layerList) => {
+        const styleList = {};
+        const collectStyles = (layers) => {
+            for (const layer of layers) {
+                if (layer.sublayers?.length) {
+                    collectStyles(layer.sublayers);
+                }
+                Object.entries(layer.styles || {}).forEach(([key]) => {
+                    styleList[key] = key;
+                });
+            }
+        };
+        collectStyles(layerList);
+        return styleList;
+
+    };
+    applyLayerStyle = (style) => {
+        this.setState({selectedStyle: style});
+        const setStyle = (layers, path = []) => {
+            for (let i = 0; i < layers.length; i++) {
+                const layer = layers[i];
+                const currentPath = [...path, i];
+                const adjustedPath = path.length === 0 ? [] : currentPath.slice(1);
+
+                if (layer.sublayers && layer.sublayers.length > 0) {
+                    setStyle(layer.sublayers, currentPath);
+                }
+                if (layer.styles && Object.keys(layer.styles).length > 0) {
+                    for (const styleKey in layer.styles) {
+                        if (Object.prototype.hasOwnProperty.call(layer.styles, styleKey) && styleKey === style) {
+                            const wmsLayer = this.props.layers.find(l => l.type === "wms");
+                            this.props.changeLayerProperty(wmsLayer.uuid, "style", style, adjustedPath);
+                        }
+                    }
+                }
+            }
+        };
+        setStyle(this.props.layers);
     };
 }
 
