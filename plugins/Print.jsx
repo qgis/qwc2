@@ -223,7 +223,7 @@ class Print extends React.Component {
         if (!isEmpty(this.props.theme.printResolutions)) {
             if (this.props.theme.printResolutions.length > 1) {
                 resolutionChooser = (
-                    <select name={"DPI"} onChange={this.changeResolution} value={this.state.dpi || ""}>
+                    <select name={"DPI"} onChange={(ev) => this.changeResolution(ev.target.value)} value={this.state.dpi || ""}>
                         {this.props.theme.printResolutions.map(res => (<option key={res} value={res}>{res} dpi</option>))}
                     </select>
                 );
