@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import FileSaver from 'file-saver';
-import formDataEntries from 'formdata-json';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
@@ -28,7 +27,6 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/MapExport.css';
@@ -150,35 +148,15 @@ class MapExport extends React.Component {
                 <NumberInput min={1} mobile onChange={this.changeScale} prefix="1 : " value={this.state.scale || null} />
             );
         }
-        const action = this.props.theme.url;
-        const exportExternalLayers = this.state.selectedFormat !== "application/dxf" && this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion", null, 3) >= 3;
-
-        const selectedFormatConfiguration = formatConfiguration.find(entry => entry.name === this.state.selectedFormatConfiguration) || {};
-        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers, !!selectedFormatConfiguration.baseLayer);
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.props.map.projection, this.state.scale, this.state.dpi);
-
-        const version = this.props.theme.version;
-        const crs = this.props.map.projection;
-        const extent = this.state.extents.at(0) ?? [0, 0, 0, 0];
-        const formattedExtent = (CoordinatesUtils.getAxisOrder(crs).substring(0, 2) === 'ne' && version === '1.3.0') ?
-            extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
-            extent.join(',');
-
-        const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
-        const p1 = getPixelFromCoordinate(extent.slice(0, 2));
-        const p2 = getPixelFromCoordinate(extent.slice(2, 4));
-        const width = Math.abs(p1[0] - p2[0]) * this.state.dpi / 96;
-        const height = Math.abs(p1[1] - p2[1]) * this.state.dpi / 96;
-
         return (
             <div className="mapexport-body">
-                <form action={action} method="POST" onSubmit={this.export} ref={el => { this.form = el; }}>
+                <form action="#" method="POST" onSubmit={this.export} ref={el => { this.form = el; }}>
                     <table className="options-table">
                         <tbody>
                             <tr>
                                 <td>{LocaleUtils.tr("mapexport.format")}</td>
                                 <td>
-                                    <select name="FORMAT" onChange={this.changeFormat} value={this.state.selectedFormat}>
+                                    <select onChange={this.changeFormat} value={this.state.selectedFormat}>
                                         {this.state.availableFormats.map(format => {
                                             return (<option key={format} value={format}>{formatMap[format] || format}</option>);
                                         })}
@@ -222,7 +200,7 @@ class MapExport extends React.Component {
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.resolution")}</td>
                                     <td>
-                                        <select name="DPI" onChange={this.changeResolution} value={this.state.dpi}>
+                                        <select onChange={this.changeResolution} value={this.state.dpi}>
                                             {this.props.dpis.map(dpi => {
                                                 return (<option key={dpi + "dpi"} value={dpi}>{dpi + " dpi"}</option>);
                                             })}
@@ -232,29 +210,6 @@ class MapExport extends React.Component {
                             ) : null}
                         </tbody>
                     </table>
-                    <input name="SERVICE" readOnly type="hidden" value="WMS" />
-                    <input name="VERSION" readOnly type="hidden" value={this.props.theme.version} />
-                    <input name="REQUEST" readOnly type="hidden" value="GetMap" />
-                    {Object.entries(exportParams).map(([key, value]) => (<input key={key} name={key} type="hidden" value={value} />))}
-                    <input name="TRANSPARENT" readOnly type="hidden" value="true" />
-                    <input name="TILED" readOnly type="hidden" value="false" />
-                    <input name="CRS" readOnly type="hidden" value={this.props.map.projection} />
-                    <input name="BBOX" readOnly type="hidden" value={formattedExtent} />
-                    <input name="WIDTH" readOnly type="hidden" value={Math.round(width)} />
-                    <input name="HEIGHT" readOnly type="hidden" value={Math.round(height)} />
-                    {Object.keys(this.props.theme.watermark || {}).map(key => {
-                        return (<input key={key} name={"WATERMARK_" + key.toUpperCase()} readOnly type="hidden" value={this.props.theme.watermark[key]} />);
-                    })}
-                    <input name="HIGHLIGHT_GEOM" readOnly type="hidden" value={highlightParams.geoms.join(";")} />
-                    <input name="HIGHLIGHT_SYMBOL" readOnly type="hidden" value={highlightParams.styles.join(";")} />
-                    <input name="HIGHLIGHT_LABELSTRING" readOnly type="hidden" value={highlightParams.labels.join(";")} />
-                    <input name="HIGHLIGHT_LABELCOLOR" readOnly type="hidden" value={highlightParams.labelFillColors.join(";")} />
-                    <input name="HIGHLIGHT_LABELBUFFERCOLOR" readOnly type="hidden" value={highlightParams.labelOutlineColors.join(";")} />
-                    <input name="HIGHLIGHT_LABELBUFFERSIZE" readOnly type="hidden" value={highlightParams.labelOutlineSizes.join(";")} />
-                    <input name="HIGHLIGHT_LABELSIZE" readOnly type="hidden" value={highlightParams.labelSizes.join(";")} />
-                    <input name="HIGHLIGHT_LABEL_DISTANCE" readOnly type="hidden" value={highlightParams.labelDist.join(";")} />
-                    <input name={"HIGHLIGHT_LABEL_ROTATION"} readOnly type="hidden" value={highlightParams.labelRotations.join(";")} />
-                    <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                     <div className="button-bar">
                         <button className="button" disabled={this.state.exporting || isEmpty(this.state.extents)} type="submit">
                             {this.state.exporting ? (
@@ -342,9 +297,49 @@ class MapExport extends React.Component {
     export = (ev) => {
         ev.preventDefault();
         this.setState({exporting: true});
-        const params = formDataEntries(new FormData(this.form));
 
-        // Add dimension values
+        const exportExternalLayers = this.state.selectedFormat !== "application/dxf" && this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion", null, 3) >= 3;
+
+        const format = this.state.selectedFormat.split(";")[0];
+        const formatConfiguration = (this.props.formatConfiguration?.[format] || []).find(entry => entry.name === this.state.selectedFormatConfiguration);
+
+        const version = this.props.theme.version;
+        const crs = this.props.map.projection;
+        const extent = this.state.extents.at(0) ?? [0, 0, 0, 0];
+        const formattedExtent = (CoordinatesUtils.getAxisOrder(crs).substring(0, 2) === 'ne' && version === '1.3.0') ?
+            extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
+            extent.join(',');
+
+        const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
+        const p1 = getPixelFromCoordinate(extent.slice(0, 2));
+        const p2 = getPixelFromCoordinate(extent.slice(2, 4));
+        const width = Math.round(Math.abs(p1[0] - p2[0]) * this.state.dpi / 96);
+        const height = Math.round(Math.abs(p1[1] - p2[1]) * this.state.dpi / 96);
+
+        const ext = format.split("/").pop();
+        const timestamp = dayjs(new Date()).format("YYYYMMDD_HHmmss");
+        const fileName = this.props.fileNameTemplate
+            .replace("{theme}", this.props.theme.id)
+            .replace("{timestamp}", timestamp) + "." + ext;
+
+
+        const params = {};
+
+        // Base request params
+        params.SERVICE = "WMS";
+        params.VERSION = version;
+        params.REQUEST = "GetMap";
+        params.FORMAT = this.state.selectedFormat;
+        params.DPI = this.state.dpi;
+        params.TRANSPARENT = true;
+        params.TILED = false;
+        params.CRS = this.props.map.projection;
+        params.BBOX = formattedExtent;
+        params.WIDTH = width;
+        params.HEIGHT = height;
+        params.filename = fileName;
+
+        // Dimension values
         this.props.layers.forEach(layer => {
             if (layer.role === LayerRole.THEME) {
                 Object.entries(layer.dimensionValues || {}).forEach(([key, value]) => {
@@ -356,17 +351,6 @@ class MapExport extends React.Component {
         });
 
         // Add parameters from custom format configuration
-        const format = this.state.selectedFormat.split(";")[0];
-        const formatConfiguration = (this.props.formatConfiguration?.[format] || []).find(entry => entry.name === this.state.selectedFormatConfiguration);
-
-        const ext = format.split("/").pop();
-        const timestamp = dayjs(new Date()).format("YYYYMMDD_HHmmss");
-        const fileName = this.props.fileNameTemplate
-            .replace("{theme}", this.props.theme.id)
-            .replace("{timestamp}", timestamp) + "." + ext;
-
-        params.filename = fileName;
-
         if (formatConfiguration) {
             const keyCaseMap = Object.keys(params).reduce((res, key) => ({...res, [key.toLowerCase()]: key}), {});
             (formatConfiguration.extraQuery || "").split(/[?&]/).filter(Boolean).forEach(entry => {
@@ -382,6 +366,27 @@ class MapExport extends React.Component {
                 }
             }
         }
+
+        // Layer params
+        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers, !!formatConfiguration.baseLayer);
+        Object.assign(params, exportParams);
+
+        // Highlight params
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.props.map.projection, this.state.scale, this.state.dpi);
+        params.HIGHLIGHT_GEOM = highlightParams.geoms.join(";");
+        params.HIGHLIGHT_SYMBOL = highlightParams.styles.join(";");
+        params.HIGHLIGHT_LABELSTRING = highlightParams.labels.join(";");
+        params.HIGHLIGHT_LABELCOLOR = highlightParams.labelFillColors.join(";");
+        params.HIGHLIGHT_LABELBUFFERCOLOR = highlightParams.labelOutlineColors.join(";");
+        params.HIGHLIGHT_LABELBUFFERSIZE = highlightParams.labelOutlineSizes.join(";");
+        params.HIGHLIGHT_LABELSIZE = highlightParams.labelSizes.join(";");
+        params.HIGHLIGHT_LABEL_DISTANCE = highlightParams.labelDist.join(";");
+        params.HIGHLIGHT_LABEL_ROTATION = highlightParams.labelRotations.join(";");
+
+        // Watermark params
+        Object.keys(this.props.theme.watermark || {}).forEach(key => {
+            params["WATERMARK_" + key.toUpperCase()] = this.props.theme.watermark[key];
+        });
 
         const data = Object.entries(params).map((pair) =>
             pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
