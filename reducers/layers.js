@@ -34,23 +34,6 @@ import LayerUtils from '../utils/LayerUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
-
-function propagateLayerProperty(newlayer, property, value, path = null) {
-    Object.assign(newlayer, {[property]: value});
-    // Don't propagate visibility for mutually exclusive groups
-    if (newlayer.sublayers && !(property === "visibility" && newlayer.mutuallyExclusive)) {
-        newlayer.sublayers = newlayer.sublayers.map((sublayer, idx) => {
-            if (path === null || (!isEmpty(path) && path[0] === idx)) {
-                const newsublayer = {...sublayer};
-                propagateLayerProperty(newsublayer, property, value, path ? path.slice(1) : null);
-                return newsublayer;
-            } else {
-                return sublayer;
-            }
-        });
-    }
-}
-
 const defaultState = {
     flat: [],
     loading: [],
@@ -105,10 +88,10 @@ export default function layers(state = defaultState, action) {
                 }
 
                 if (["children", "both"].includes(recurseDirection)) { // recurse to children (except visibility to children in mutex case)
-                    propagateLayerProperty(newsublayer, action.property, action.newvalue);
+                    LayerUtils.propagateLayerProperty(newsublayer, action.property, action.newvalue);
                 }
                 if (["parents", "both"].includes(recurseDirection)) { // recurse to parents
-                    propagateLayerProperty(newlayer, action.property, action.newvalue, action.sublayerpath);
+                    LayerUtils.propagateLayerProperty(newlayer, action.property, action.newvalue, action.sublayerpath);
                 }
 
                 if (newlayer.type === "wms") {
@@ -146,15 +129,11 @@ export default function layers(state = defaultState, action) {
             name: action.layer.name || layerId,
             role: action.layer.role || LayerRole.USERLAYER,
             queryable: action.layer.queryable || false,
-            visibility: action.layer.visibility !== undefined ? action.layer.visibility : true,
-            opacity: action.layer.opacity || 255,
+            visibility: action.layer.visibility ?? true,
+            opacity: action.layer.opacity ?? 255,
             layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
         };
         LayerUtils.addUUIDs(newLayer);
-        if (newLayer.type === "wms") {
-            // Propagate opacity to children (same behaviour as LayerTree)
-            propagateLayerProperty(newLayer, "opacity", newLayer.opacity);
-        }
         if (action.beforename) {
             newLayers = LayerUtils.insertLayer(newLayers, newLayer, "name", action.beforename);
         } else {

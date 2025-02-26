@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Segnalibri",
         "Compare3D": "Confronta",
-        "DateTime3D": "Data e ora",
         "Editing": "Strumenti di modifica",
         "Help": "Aiuto",
         "LayerTree": "Livelli",
@@ -21,12 +20,15 @@
         "MapExport": "Esporta mappa",
         "MapExport3D": "Esporta mappa",
         "MapFilter": "Filta mappa",
+        "MapLight3D": "Illuminazione e ombre",
         "Print": "Stampa",
         "Reports": "Rapporti",
         "Settings": "Impostazioni",
         "Share": "Condividi",
         "ThemeSwitcher": "Temi",
         "AttributeTable": "Tabella attributi",
+        "AuthenticationLogin": "Accedi",
+        "AuthenticationLogout": "Disconnetti",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Disegnare",
         "FeatureForm": "Formulario oggetto",
@@ -99,7 +101,7 @@
       "mousepos_label": "Coordinate",
       "scale_label": "Scala",
       "terms_label": "Condizioni di uso",
-      "viewertitle_label": ""
+      "viewertitle_label": "Homepage"
     },
     "compare3d": {
       "clipplane": "Piano di taglio",
@@ -235,6 +237,7 @@
     "importlayer": {
       "addfailed": "Impossibile aggiungere il livello",
       "addlayer": "Aggiungi livello",
+      "asgroup": "Aggiungi come gruppo",
       "connect": "Connetti",
       "filter": "Filtro",
       "loading": "Caricamento...",
@@ -242,6 +245,7 @@
       "nofeatures": "Non è stato importato nessun oggetto ",
       "noresults": "Nessun risultato o URL non valido",
       "notgeopdf": "Il file selezionato non sembra essere un GeoPDF.",
+      "shpreprojectionerror": "Non è stato possibile riproiettare la geometria dello shapefile, che potrebbe essere posizionata in modo errato.",
       "supportedformats": "Formati supportati",
       "unknownproj": "Il GeoPDF selezionato utilizza una proiezione sconosciuta: {0}",
       "url": "URL",
@@ -343,6 +347,23 @@
       "onlyvisible": "Mostra solo i livelli attivi nella legenda",
       "scaledependent": "Legenda in base alla scala della mappa",
       "windowtitle": "Legenda"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "Intensità luce ambientale",
+      "directionalLightIntensity": "Intensità luce direzionale",
+      "helpersVisible": "Mostra aiuti",
+      "normalBias": "Bias normale",
+      "shadowBias": "Bias ombra",
+      "shadowMapSize": "Dimensione texture ombra",
+      "shadowType": "Tipo di ombra",
+      "shadowVolumeFar": "Volume ombra da",
+      "shadowVolumeNear": "Volume ombra a",
+      "shadowintensity": "Intensità ombra",
+      "shadows": "Abilita ombre",
+      "showadvanced": "Mostra avanzato",
+      "sunazimuth": "Azimut sole",
+      "sunzenith": "Zenith sole",
+      "zFactor": "Fattore Z"
     },
     "measureComponent": {
       "absolute": "m s.l.m.",

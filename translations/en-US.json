@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Bookmarks",
         "Compare3D": "Compare",
-        "DateTime3D": "Date and Time",
         "Editing": "Editing",
         "Help": "Help",
         "LayerTree": "Layers & Legend",
@@ -21,12 +20,15 @@
         "MapExport": "Export map",
         "MapExport3D": "Export map",
         "MapFilter": "Map Filter",
+        "MapLight3D": "Light and Shadows",
         "Print": "Print",
         "Reports": "Reports",
         "Settings": "Settings",
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
         "AttributeTable": "Attribute Table",
+        "AuthenticationLogin": "Login",
+        "AuthenticationLogout": "Logout",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Draw",
         "FeatureForm": "Feature Form",
@@ -99,7 +101,7 @@
       "mousepos_label": "Coordinates",
       "scale_label": "Scale",
       "terms_label": "Terms of use",
-      "viewertitle_label": ""
+      "viewertitle_label": "Homepage"
     },
     "compare3d": {
       "clipplane": "Clipping plane",
@@ -235,6 +237,7 @@
     "importlayer": {
       "addfailed": "Failed to add layer.",
       "addlayer": "Add layer",
+      "asgroup": "Add as group",
       "connect": "Connect",
       "filter": "Filter...",
       "loading": "Loading...",
@@ -242,6 +245,7 @@
       "nofeatures": "No features could be imported.",
       "noresults": "No results or invalid URL",
       "notgeopdf": "The selected file does not seem to be a GeoPDF.",
+      "shpreprojectionerror": "The Shapefile geometry could not be reprojected, and may be misplaced.",
       "supportedformats": "Supported formats: KML, GeoJSON, GeoPDF, SHP (in zip)",
       "unknownproj": "The selected GeoPDF uses an unknown projection: {0}.",
       "url": "URL",
@@ -343,6 +347,23 @@
       "onlyvisible": "Only visibile layers",
       "scaledependent": "Map scale depdendent legend",
       "windowtitle": "Legend"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "Ambient light intensity",
+      "directionalLightIntensity": "Directional light intensity",
+      "helpersVisible": "Show helpers",
+      "normalBias": "Normal bias",
+      "shadowBias": "Shadow bias",
+      "shadowMapSize": "Shadowmap size",
+      "shadowType": "Shadow type",
+      "shadowVolumeFar": "Shadow volume near",
+      "shadowVolumeNear": "Shadow volume far",
+      "shadowintensity": "Shadow intensity",
+      "shadows": "Enable shadows",
+      "showadvanced": "Show advanced",
+      "sunazimuth": "Sun azimuth",
+      "sunzenith": "Sun zenith",
+      "zFactor": "Z-factor"
     },
     "measureComponent": {
       "absolute": "m AMSL",

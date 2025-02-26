@@ -19,6 +19,7 @@ import PropTypes from 'prop-types';
 import {setCurrentTask} from '../actions/task';
 import {setMenuMargin} from '../actions/windows';
 import InputContainer from '../components/widgets/InputContainer';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';
@@ -30,7 +31,7 @@ class AppMenu extends React.Component {
     static propTypes = {
         appMenuClearsTask: PropTypes.bool,
         appMenuShortcut: PropTypes.string,
-        buttonContents: PropTypes.object,
+        buttonLabel: PropTypes.string,
         currentTaskBlocked: PropTypes.bool,
         keepMenuOpen: PropTypes.bool,
         menuCompact: PropTypes.bool,
@@ -207,7 +208,8 @@ class AppMenu extends React.Component {
             this.toggleMenu();
         }
         if (item.url) {
-            this.props.openExternalUrl(item.url, item.target, LocaleUtils.tr("appmenu.items." + item.key), item.icon);
+            const label = item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
+            this.props.openExternalUrl(item.url, item.target, label, item.icon);
         } else {
             this.props.setCurrentTask(item.task || item.key, item.mode, item.mapClickAction || (item.identifyEnabled ? "identify" : null));
         }
@@ -228,7 +230,7 @@ class AppMenu extends React.Component {
                         "appmenu-submenu-expanded": visible
                     });
                     return (
-                        <li className={className} key={item.key}
+                        <li className={className} key={item.key ?? item.title}
                             onClick={() => this.onSubmenuClicked(item.key, level)}
                             onMouseEnter={() => { if (!this.state.keyNav) { this.setState({curEntry: [...path, idx]}); } } }
                             onMouseLeave={() => { if (!this.state.keyNav) { this.setState({curEntry: null}); } } }
@@ -250,7 +252,7 @@ class AppMenu extends React.Component {
                             "appmenu-leaf-active": active
                         });
                         return (
-                            <li className={className} key={item.key + (item.mode || "")}
+                            <li className={className} key={item.key ? item.key + (item.mode || "") : item.title}
                                 onClick={() => this.onMenuitemClicked(item)}
                                 onMouseEnter={() => { if (!this.state.keyNav) { this.setState({curEntry: [...path, idx]}); } } }
                                 onMouseLeave={() => { if (!this.state.keyNav) { this.setState({curEntry: null}); } } }
@@ -272,6 +274,7 @@ class AppMenu extends React.Component {
         }
     };
     render() {
+        const isMobile = ConfigUtils.isMobile();
         const visible = !this.props.currentTaskBlocked && this.state.menuVisible;
         const className = classnames({
             "appmenu-blocked": this.props.currentTaskBlocked,
@@ -282,8 +285,11 @@ class AppMenu extends React.Component {
         return (
             <div className={"AppMenu " + className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
             >
-                <div className="appmenu-button-container" onMouseDown={this.toggleMenu} >
-                    {this.props.buttonContents}
+                <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
+                    <div className="appmenu-button" title={this.props.buttonLabel}>
+                        {!isMobile ? (<span className="appmenu-label">{this.props.buttonLabel}</span>) : null}
+                        <Icon className="appmenu-icon" icon="menu-hamburger"/>
+                    </div>
                 </div>
                 <div className="appmenu-menu-container">
                     <ul className="appmenu-menu">

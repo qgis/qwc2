@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   id="svg6"
+   sodipodi:docname="2d.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <path
+     id="text2"
+     style="-inkscape-font-specification:'Myriad Apple';stroke-width:0.831844"
+     d="m 15.345247,5.9138909 c -1.265879,0 -2.407421,0.081324 -3.424857,0.2469537 V 17.926889 c 0.816315,0.106476 1.779877,0.15922 2.891957,0.15922 2.366131,0 4.141062,-0.532317 5.324127,-1.597076 C 21.378693,15.388783 22,13.791832 22,11.697807 22,9.7220876 21.372652,8.2262092 20.118603,7.2087731 19.042014,6.3451355 17.451104,5.9138909 15.345247,5.9138909 Z M 5.7270512,6.2323311 c -1.3723557,0 -2.5501437,0.3845415 -3.5320878,1.1535338 L 2.8513403,9.0365554 C 3.6676553,8.4095309 4.472984,8.0958568 5.2656377,8.0958568 c 1.325033,0 1.9870025,0.6213071 1.9870025,1.8635256 -0.01183,0.7098396 -0.3375868,1.4789226 -0.976442,2.3070666 -0.508718,0.650686 -1.4722795,1.650495 -2.8919578,2.999188 L 1.9999999,16.56052 v 1.402112 h 7.7904145 v -1.899269 h -4.56052 v -0.03574 L 6.224208,15.140536 C 7.3007973,14.194084 8.0924193,13.337635 8.6011374,12.568643 9.2281619,11.622191 9.541836,10.681169 9.541836,9.7465473 9.541836,8.7291112 9.2221209,7.9012433 8.5832657,7.262388 7.8970879,6.5762103 6.9456084,6.2323311 5.7270512,6.2323311 Z m 9.8489028,1.4735988 c 1.289541,0 2.277267,0.3482953 2.963445,1.0463038 0.698008,0.6861779 1.046304,1.6920263 1.046304,3.0170593 0,1.478832 -0.378501,2.602251 -1.135663,3.371243 -0.74533,0.75716 -1.791842,1.12962 -3.140535,1.117791 -0.544211,0 -0.910629,-0.0165 -1.099919,-0.05199 V 7.8115351 c 0.36675,-0.070984 0.822159,-0.1056052 1.366368,-0.1056052 z" />
+  <metadata
+     id="metadata12">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>uniE251</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1600"
+     inkscape:window-height="842"
+     id="namedview8"
+     showgrid="true"
+     inkscape:zoom="11.700515"
+     inkscape:cx="5.4698447"
+     inkscape:cy="6.7945727"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg6"
+     inkscape:document-rotation="0"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid831"
+       originx="0"
+       originy="0"
+       spacingy="1"
+       spacingx="1"
+       units="px" />
+  </sodipodi:namedview>
+  <title
+     id="title2">uniE251</title>
+</svg>

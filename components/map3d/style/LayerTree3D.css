@@ -7,6 +7,7 @@
     display: flex;
     align-items: center;
     height: 1.75em;
+    margin-left: 0.25em;
 }
 
 #LayerTree3D span.layertree3d-item-checkbox {
@@ -36,5 +37,42 @@
 
 #LayerTree3D div.layertree3d-section {
     font-weight: bold;
-    margin-left: -0.25em;
+    margin-left: 0.25em;
+}
+
+#LayerTree3D span.layertree3d-item-menubutton {
+    text-align: center;
+    width: 1.75em;
+    flex: 0 0 auto;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#LayerTree3D span.layertree3d-item-menubutton-active {
+    background-color: var(--color-active);
+    color: white;
+}
+
+#LayerTree3D div.layertree3d-item-optionsmenu {
+    height: 1.75em;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+}
+
+#LayerTree3D div.layertree3d-item-optionsmenu > span.icon {
+    flex: 0 0 auto;
+    width: 1.75em;
+}
+
+#LayerTree3D input.layertree3d-item-transparency-slider {
+    flex: 1 1 auto;
+    font-size: small;
+    min-width: 0;
+    max-width: none;
+    width: 1000em; /* exagerated value */
+    margin: 0 0.25em;
 }

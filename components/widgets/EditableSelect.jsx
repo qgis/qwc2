@@ -102,7 +102,7 @@ export default class EditableSelect extends React.Component {
                         return null;
                     }
                     return (
-                        <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
+                        <div key={"opt" + idx} onClickCapture={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
                     );
                 })}
             </PopupMenu>
@@ -120,8 +120,9 @@ export default class EditableSelect extends React.Component {
         this.setState({value: ev.target.value, selectedOption: null, changed: true});
     };
     optionSelected = (option) => {
-        this.props.onChange(EditableSelect.optionValue(option));
-        this.setState({selectedOption: option, focused: false});
+        const value = EditableSelect.optionValue(option);
+        this.props.onChange(value);
+        this.setState({selectedOption: option, focused: false, value: value});
     };
     clear = () => {
         if (!this.props.readOnly) {

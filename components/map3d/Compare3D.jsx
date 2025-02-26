@@ -59,7 +59,9 @@ class Compare3D extends React.Component {
     }
     componentWillUnmount() {
         this.clearClippingPlane();
-        this.arrows.traverse(obj => obj.dispose?.());
+        if (this.arrows) {
+            this.arrows.traverse(obj => obj.dispose?.());
+        }
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.enabled && this.props.active && !prevProps.active) {

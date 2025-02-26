@@ -1,12 +1,12 @@
 {
     "name": "qwc2",
-    "version": "2025.01.23-master",
+    "version": "2025.02.18-master",
     "description": "QGIS Web Client 2 core",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
     "repository": "git@github.com:qgis/qwc2.git",
     "dependencies": {
-        "@giro3d/giro3d": "^0.41.0",
+        "@giro3d/giro3d": "^0.42.0",
         "@ladjs/country-language": "^1.0.3",
         "@loaders.gl/core": "^4.3.3",
         "@loaders.gl/shapefile": "^4.3.3",
@@ -67,7 +67,7 @@
         "sortablejs": "^1.15.6",
         "suncalc": "^1.9.0",
         "svgpath": "^2.6.0",
-        "three": "^0.172.0",
+        "three": "^0.170.0",
         "url": "^0.11.4",
         "utif": "^3.1.0",
         "uuid": "^11.0.3"

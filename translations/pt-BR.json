@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Bookmark",
         "Compare3D": "",
-        "DateTime3D": "",
         "Editing": "Edição",
         "Help": "Ajuda",
         "LayerTree": "Camadas & Legendas",
@@ -21,12 +20,15 @@
         "MapExport": "Exportar mapa",
         "MapExport3D": "",
         "MapFilter": "",
+        "MapLight3D": "",
         "Print": "Imprimir",
         "Reports": "",
         "Settings": "Configurações",
         "Share": "Compartilhar link",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabela de atributos",
+        "AuthenticationLogin": "Inicio da sessão",
+        "AuthenticationLogout": "Fim da sessão",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "",
         "FeatureForm": "Atributos da feição",
@@ -99,7 +101,7 @@
       "mousepos_label": "Coordenadas",
       "scale_label": "Escala",
       "terms_label": "Termos de uso",
-      "viewertitle_label": ""
+      "viewertitle_label": "Home page"
     },
     "compare3d": {
       "clipplane": "",
@@ -235,6 +237,7 @@
     "importlayer": {
       "addfailed": "Falha ao adicionar",
       "addlayer": "Adicionar camada",
+      "asgroup": "",
       "connect": "Conectar",
       "filter": "Filtro...",
       "loading": "Carregando...",
@@ -242,6 +245,7 @@
       "nofeatures": "Nenhum recurso poder ser importado.",
       "noresults": "Sem resultados ou URL inválido",
       "notgeopdf": "",
+      "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",
       "url": "URL",
@@ -343,6 +347,23 @@
       "onlyvisible": "Apenas visíveis",
       "scaledependent": "Escala da legenda",
       "windowtitle": "Titulo da janela"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "",

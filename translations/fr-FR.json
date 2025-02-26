@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Marque-pages",
         "Compare3D": "Comparer",
-        "DateTime3D": "Date et heure",
         "Editing": "Editer",
         "Help": "Aide",
         "LayerTree": "Couches",
@@ -21,12 +20,15 @@
         "MapExport": "Exporter la carte",
         "MapExport3D": "Exporter la carte",
         "MapFilter": "Filtrer la carte",
+        "MapLight3D": "Illumination et ombres",
         "Print": "Imprimer",
         "Reports": "Rapports",
         "Settings": "Paramètres",
         "Share": "Partager",
         "ThemeSwitcher": "Thèmes",
         "AttributeTable": "Table d'attributs",
+        "AuthenticationLogin": "Connexion",
+        "AuthenticationLogout": "Déconnexion",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Dessiner",
         "FeatureForm": "Formulaire d'objet",
@@ -99,7 +101,7 @@
       "mousepos_label": "Coordonnées",
       "scale_label": "Echelle",
       "terms_label": "Conditions d'utilisation",
-      "viewertitle_label": ""
+      "viewertitle_label": "Page d'accueil"
     },
     "compare3d": {
       "clipplane": "Plan d'écrêtage",
@@ -235,6 +237,7 @@
     "importlayer": {
       "addfailed": "La couche n'a pas pu être ajoutée",
       "addlayer": "Ajouter une couche",
+      "asgroup": "Ajouter comme groupe",
       "connect": "Connecter",
       "filter": "Filtrer",
       "loading": "Chargement...",
@@ -242,6 +245,7 @@
       "nofeatures": "Aucune entité ne peut être importée.",
       "noresults": "Pas de résultat ou URL non valide",
       "notgeopdf": "Le fichier sélectionné ne semble pas être un GeoPDF.",
+      "shpreprojectionerror": "La géométrie du fichier Shapefile n'a pas pu être reprojetée et peut être mal placée.",
       "supportedformats": "Formats supportés: KML, GeoJSON, GeoPDF, SHP (zip)",
       "unknownproj": "Le GeoPDF sélectionné utilise une projection inconnue: {0}.",
       "url": "URL",
@@ -343,6 +347,23 @@
       "onlyvisible": "Seulement les couches visibles",
       "scaledependent": "Légende dépendante de l'échelle de la carte",
       "windowtitle": "Légende"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "Intensité lumineuse ambiante",
+      "directionalLightIntensity": "Intensité lumineuse directionnelle",
+      "helpersVisible": "Montrer les aides",
+      "normalBias": "Bias normal",
+      "shadowBias": "Bias de l'ombre",
+      "shadowMapSize": "Taille texture d'ombre",
+      "shadowType": "Type d'ombre",
+      "shadowVolumeFar": "Volume d'ombre de",
+      "shadowVolumeNear": "Volume d'ombre à",
+      "shadowintensity": "Intensité de l'ombre",
+      "shadows": "Activer les ombres",
+      "showadvanced": "Paramètres avancés",
+      "sunazimuth": "Azimut solaire",
+      "sunzenith": "Zénith solaire",
+      "zFactor": "Facteur z"
     },
     "measureComponent": {
       "absolute": "m alt.",

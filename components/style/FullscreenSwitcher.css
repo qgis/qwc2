@@ -1,4 +1,4 @@
-#FullScreenSwitcher {
+div.FullScreenSwitcher {
     display: inline-block;
     height: 100%;
     cursor: pointer;
@@ -6,7 +6,7 @@
     margin-left: -1em;
 }
 
-#FullScreenSwitcher > span {
+div.FullScreenSwitcher > span {
     display: inline-block;
     vertical-align: top;
     width: 0;
@@ -14,12 +14,12 @@
     border-style: solid;
 }
 
-#FullScreenSwitcher > span.maximize {
+div.FullScreenSwitcher > span.maximize {
     border-width: 0 1em 1em 0;
     border-color: transparent var(--panel-text-color) transparent transparent;
 }
 
-#FullScreenSwitcher > span.minimize {
+div.FullScreenSwitcher > span.minimize {
     border-width: 1em 0 0 1em;
     border-color: transparent transparent transparent var(--panel-text-color);
 }

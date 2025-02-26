@@ -94,3 +94,8 @@ div.redlining-marker-combo-entry img {
     filter: invert(1);
     height: 100%;
 }
+
+div.redlining-message {
+    text-align: center;
+    font-style: italic;
+}

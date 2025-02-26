@@ -14,19 +14,19 @@ import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
+import Inspector from "@giro3d/giro3d/gui/Inspector.js";
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
-import Tiles3DSource from "@giro3d/giro3d/sources/Tiles3DSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
 import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh} from 'three';
 import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
-import {setMapCrs} from '../../actions/map3d';
 import {setCurrentTask} from '../../actions/task';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import {UrlParams} from '../../utils/PermaLinkUtils';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
@@ -37,6 +37,7 @@ import MapExport3D from './MapExport3D';
 import Measure3D from './Measure3D';
 import OverviewMap3D from './OverviewMap3D';
 import TopBar3D from './TopBar3D';
+import View3DSwitcher from './View3DSwitcher';
 import LayerRegistry from './layers/index';
 
 import './style/Map3D.css';
@@ -66,13 +67,11 @@ class Map3D extends React.Component {
     static propTypes = {
         innerRef: PropTypes.func,
         layers: PropTypes.array,
-        mapBBox: PropTypes.object,
         mapMargins: PropTypes.object,
+        onMapInitialized: PropTypes.func,
         options: PropTypes.object,
-        projection: PropTypes.string,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
-        setMapCrs: PropTypes.func,
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -171,7 +170,7 @@ class Map3D extends React.Component {
         }
         const layerCreator = LayerRegistry[baseLayer.type];
         if (layerCreator?.create3d) {
-            const layer3d = layerCreator.create3d(baseLayer, this.props.projection);
+            const layer3d = layerCreator.create3d(baseLayer, this.state.sceneContext.mapCrs);
             this.addLayer("__baselayer", layer3d);
             this.map.insertLayerAfter(layer3d, null);
         }
@@ -217,9 +216,9 @@ class Map3D extends React.Component {
             const layerCreator = LayerRegistry[layer.type];
             let mapLayer = this.getLayer(layer.id);
             if (mapLayer) {
-                layerCreator.update3d(mapLayer.source, layer, prevLayersMap[layer.id], this.props.projection);
+                layerCreator.update3d(mapLayer.source, layer, prevLayersMap[layer.id], this.state.sceneContext.mapCrs);
             } else {
-                mapLayer = layerCreator.create3d(layer, this.props.projection);
+                mapLayer = layerCreator.create3d(layer, this.state.sceneContext.mapCrs);
                 this.addLayer(layer.id, mapLayer);
             }
             this.map.insertLayerAfter(mapLayer, prevLayer);
@@ -238,8 +237,17 @@ class Map3D extends React.Component {
     applySceneObjectUpdates = (sceneObjects) => {
         Object.entries(sceneObjects).forEach(([objectId, options]) => {
             const object = this.objectMap[objectId];
-            object.visible = options.visible;
-            object.opacity = options.opacity;
+            object.visible = options.visibility;
+            if (object.opacity !== undefined) {
+                object.opacity = options.opacity / 255;
+            } else {
+                object.traverse(child => {
+                    if (child instanceof Mesh) {
+                        child.material.transparent = options.opacity < 255;
+                        child.material.opacity = options.opacity / 255;
+                    }
+                });
+            }
             this.instance.notifyChange(object);
         });
     };
@@ -270,8 +278,8 @@ class Map3D extends React.Component {
         this.objectMap[objectId] = object;
         this.setState((state) => {
             const objectState = {
-                visible: true,
-                opacity: 100,
+                visibility: true,
+                opacity: 255,
                 layertree: false,
                 ...options
             };
@@ -329,10 +337,12 @@ class Map3D extends React.Component {
         };
         return (
             <div className="map3d-body">
+                <div className="map3d-inspector" />
                 <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
+                <View3DSwitcher position={2} />
                 {this.state.sceneContext.scene ? (
                     <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
-                        <MapControls3D ref={this.setupControls} sceneContext={this.state.sceneContext} />
+                        <MapControls3D onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
                         <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
                         <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                         <LayerTree3D sceneContext={this.state.sceneContext} />
@@ -340,9 +350,10 @@ class Map3D extends React.Component {
                         <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
                         <Map3DLight sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
+                        {/*<Identify3D sceneContext={this.state.sceneContext} />*/}
                         <Compare3D sceneContext={this.state.sceneContext} />
                         <Draw3D sceneContext={this.state.sceneContext} />
-                        <MapExport3D sceneContext={this.state.sceneContext} theme={this.props.theme} />
+                        <MapExport3D sceneContext={this.state.sceneContext} />
                     </UnloadWrapper>
                 ) : null}
             </div>
@@ -358,8 +369,7 @@ class Map3D extends React.Component {
         if (this.instance) {
             this.disposeInstance();
         }
-        const projection = this.props.projection;
-        this.props.setMapCrs(projection);
+        const projection = this.props.theme.mapCrs;
 
         // Setup instance
         this.instance = new Instance({
@@ -378,8 +388,7 @@ class Map3D extends React.Component {
         const extent = new Extent(projection, bounds[0], bounds[2], bounds[1], bounds[3]);
         this.map = new Map({
             extent: extent,
-            backgroundColor: "white",
-            hillshading: true
+            backgroundColor: "white"
         });
         this.instance.add(this.map);
 
@@ -449,13 +458,15 @@ class Map3D extends React.Component {
             if (tilesUrl.startsWith(":")) {
                 tilesUrl = location.href.split("?")[0] + ConfigUtils.getAssetsPath() + tilesUrl.substr(1);
             }
-            const tiles = new Tiles3D(
-                new Tiles3DSource(tilesUrl)
-            );
+            const tiles = new Tiles3D({
+                url: tilesUrl
+            });
+            tiles.castShadow = true;
+            tiles.receiveShadow = true;
             tiles.userData.layertree = true;
             this.instance.add(tiles);
             this.objectMap[entry.name] = tiles;
-            sceneObjects[entry.name] = {visible: true, opacity: 100, layertree: true, title: entry.title ?? entry.name};
+            sceneObjects[entry.name] = {visibility: true, opacity: 255, layertree: true, title: entry.title ?? entry.name};
         });
 
         this.setState(state => ({
@@ -473,7 +484,10 @@ class Map3D extends React.Component {
             sceneId: uuidv1()
         }));
 
-        // this.inspector = Inspector.attach("map3dinspector", this.instance);
+        // Inspector
+        if (["1", "true"].includes((UrlParams.getParam("inspector") || "").toLowerCase())) {
+            this.inspector = new Inspector(this.container.previousElementSibling, this.instance);
+        }
     };
     disposeInstance = () => {
         if (this.inspector) {
@@ -506,8 +520,7 @@ class Map3D extends React.Component {
             ...state.sceneContext,
             setViewToExtent: instance?.setViewToExtent
 
-        }}));
-        instance?.setViewToExtent?.(this.props.mapBBox.bounds, this.props.mapBBox.rotation);
+        }}), this.props.onMapInitialized);
     };
     getTerrainHeight = (scenePos) => {
         const dtmPos = CoordinatesUtils.reproject(scenePos, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);
@@ -563,8 +576,9 @@ class Map3D extends React.Component {
 }
 
 export default connect((state) => ({
-    mapMargins: state.windows.mapMargins
+    mapMargins: state.windows.mapMargins,
+    theme: state.theme.current,
+    layers: state.layers.flat
 }), {
-    setMapCrs: setMapCrs,
     setCurrentTask: setCurrentTask
 })(Map3D);

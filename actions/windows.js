@@ -24,6 +24,8 @@ export const UNREGISTER_WINDOW = 'UNREGISTER_WINDOW';
 export const RAISE_WINDOW = 'RAISE_WINDOW';
 export const SET_MENU_MARGIN = 'SET_MENU_MARGIN';
 export const SET_SPLIT_SCREEN = 'SET_SPLIT_SCREEN';
+export const SET_TOPBAR_HEIGHT = 'SET_TOPBAR_HEIGHT';
+export const SET_BOTTOMBAR_HEIGHT = 'SET_BOTTOMBAR_HEIGHT';
 
 export const NotificationType = {
     INFO: 1,
@@ -102,6 +104,22 @@ export function setMenuMargin(right, left) {
     };
 }
 
+export function setTopbarHeight(height) {
+    document.querySelector(':root').style.setProperty('--topbar-height', height + 'px');
+    return {
+        type: SET_TOPBAR_HEIGHT,
+        height
+    };
+}
+
+export function setBottombarHeight(height) {
+    document.querySelector(':root').style.setProperty('--bottombar-height', height + 'px');
+    return {
+        type: SET_BOTTOMBAR_HEIGHT,
+        height
+    };
+}
+
 export function openExternalUrl(url, target = '', iframeDialogOpts = {}) {
     return (dispatch, getState) => {
         // Replace all entries in URL
@@ -120,12 +138,12 @@ export function openExternalUrl(url, target = '', iframeDialogOpts = {}) {
         const ymax = Math.round(bounds[3] * roundfactor) / roundfactor;
         const x = Math.round(0.5 * (bounds[0] + bounds[2]) * roundfactor) / roundfactor;
         const y = Math.round(0.5 * (bounds[1] + bounds[3]) * roundfactor) / roundfactor;
-        const scale = Math.round(MapUtils.computeForZoom(state.map.scales, state.map.zoom));
-        // In case mode is center + scale, extent is missing in UrlParams
+        if (state.map.scales) {
+            const scale = Math.round(MapUtils.computeForZoom(state.map.scales, state.map.zoom));
+            url = url.replace('$s$', scale);
+            url = url.replace('$c$', x + "," + y);
+        }
         url = url.replace('$e$', [xmin, ymin, xmax, ymax].join(","));
-        // In case mode is extent, center + scale are missing in UrlParams
-        url = url.replace('$c$', x + "," + y);
-        url = url.replace('$s$', scale);
         // Add separate x, y
         url = url.replace('$x$', x);
         url = url.replace('$y$', y);

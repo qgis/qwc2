@@ -364,7 +364,7 @@ class SearchBox extends React.Component {
             </div>
         );
     };
-    renderThemeLayerResult = (provider, group, result) => {
+    renderThemeLayerResult = (provider, group, result, parent = null) => {
         const key = provider + ":" + group.id + ":" + result.id;
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         let icon = null;
@@ -384,7 +384,7 @@ class SearchBox extends React.Component {
                     {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
                     <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                     {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectThemeLayerResult(provider, group, result); this.blur(); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
-                    {result.info ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.toggleLayerInfo(provider, group, result, key);} } /> : null}
+                    {result.info ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.toggleLayerInfo(provider, group, result, key, parent);} } /> : null}
                 </div>
                 {this.state.activeLayerInfo === key ? (
                     <div className="searchbox-result-abstract"
@@ -392,7 +392,7 @@ class SearchBox extends React.Component {
                     />
                 ) : null}
                 {this.state.expandedLayerGroup === key ? (
-                    <div className="searchbox-result-group">{result.sublayers.map(sublayer => this.renderThemeLayerResult(provider, group, sublayer))}</div>
+                    <div className="searchbox-result-group">{result.sublayers.map(sublayer => this.renderThemeLayerResult(provider, group, sublayer, result.id))}</div>
                 ) : null}
             </div>
         );
@@ -455,7 +455,7 @@ class SearchBox extends React.Component {
                     if (result.theme) {
                         this.addThemeLayers(layer);
                     } else {
-                        this.props.addThemeSublayer(layer);
+                        this.props.addThemeSublayer({sublayers: [layer]});
                     }
                     // Show layer tree to notify user that something has happened
                     this.props.setCurrentTask('LayerTree');
@@ -477,7 +477,7 @@ class SearchBox extends React.Component {
             }
         }
     };
-    toggleLayerInfo = (provider, group, result, key) => {
+    toggleLayerInfo = (provider, group, result, key, parent) => {
         const setResultLayerAndActiveInfo = (layer) => {
             // Embed returned layer into result item, so that layer info is read from item.layer.abstract
             this.setState((state) => ({
@@ -487,7 +487,24 @@ class SearchBox extends React.Component {
                         ...state.searchResults[provider],
                         results: state.searchResults[provider].results.map(g => {
                             if (g.id === group.id) {
-                                return {...g, items: g.items.map(i => (i.id === result.id ? {...i, layer: layer} : i))};
+                                return {...g, items: g.items.map(item => {
+                                    if (item.id === result.id) {
+                                        return {...item, layer: layer};
+                                    } else if (item.id === parent) {
+                                        return {
+                                            ...item,
+                                            sublayers: item.sublayers.map(sublayer => {
+                                                if (sublayer.id === result.id) {
+                                                    return {...sublayer, layer: layer};
+                                                } else {
+                                                    return sublayer;
+                                                }
+                                            })
+                                        };
+                                    } else {
+                                        return item;
+                                    }
+                                })};
                             } else {
                                 return g;
                             }
@@ -749,7 +766,7 @@ class SearchBox extends React.Component {
             // If first feature is not a point(=marker), add a marker
             if (features[0].styleName !== "marker" && !response.hidemarker) {
                 features.unshift({
-                    geometry: {type: 'Point', coordinates: CoordinatesUtils.reproject([item.x, item.y], item.crs ?? this.props.map.projection, this.props.map.projection)},
+                    geometry: {type: 'Point', coordinates: CoordinatesUtils.reproject(response.center ?? [item.x, item.y], item.crs ?? this.props.map.projection, this.props.map.projection)},
                     styleName: 'marker'
                 });
             }
@@ -762,7 +779,7 @@ class SearchBox extends React.Component {
             features[0].id = 'searchmarker';
             this.props.addLayerFeatures(layer, features, true);
         }
-        let bbox = item.bbox ?? [item.x, item.y, item.x, item.y];
+        let bbox = response.bbox ?? item.bbox ?? [item.x, item.y, item.x, item.y];
         bbox = CoordinatesUtils.reprojectBbox(bbox, item.crs ?? this.props.map.projection, this.props.map.projection);
         this.zoomToResultBBox(bbox, scale);
     };

@@ -30,13 +30,13 @@ div.map3d-map {
     bottom: 0;
 }
 
-div#map3dinspector {
-    position: fixed;
-    z-index: 5;
-    right: 0;
-    top: 3.5em;
+div.map3d-inspector {
+    position: absolute;
+    z-index: 1000;
+    left: 0;
+    top: var(--topbar-height);
 }
 
-div#map3dinspector input {
+div.map3d-inspector input {
     color: black!important;
 }

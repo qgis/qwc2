@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "ブックマーク",
         "Compare3D": "比較",
-        "DateTime3D": "日付と時刻",
         "Editing": "編集",
         "Help": "ヘルプ",
         "LayerTree": "レイヤ & 凡例",
@@ -21,19 +20,22 @@
         "MapExport": "地図をエクスポート",
         "MapExport3D": "地図をエクスポート",
         "MapFilter": "マップ・フィルタ",
+        "MapLight3D": "日付と時刻",
         "Print": "印刷",
         "Reports": "レポート",
         "Settings": "設定",
         "Share": "リンクを共有",
         "ThemeSwitcher": "テーマ",
         "AttributeTable": "属性テーブル",
+        "AuthenticationLogin": "ログイン",
+        "AuthenticationLogout": "ログアウト",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "描画",
         "FeatureForm": "地物フォーム",
         "FeatureSearch": "地物検索",
         "GeometryDigitizer": "ジオメトリ・デジタイザ",
-        "IdentifyPoint": "点を特定",
-        "IdentifyRegion": "領域を特定",
+        "IdentifyPoint": "点で地物を確認",
+        "IdentifyRegion": "領域内の地物を確認",
         "LayerCatalog": "レイヤ・カタログ",
         "Login": "ログイン",
         "Logout": "ログアウト",
@@ -98,8 +100,8 @@
     "bottombar": {
       "mousepos_label": "座標",
       "scale_label": "縮尺",
-      "terms_label": "使用許諾",
-      "viewertitle_label": ""
+      "terms_label": "使用許諾条件",
+      "viewertitle_label": "QWC2 デモ"
     },
     "compare3d": {
       "clipplane": "クリッピング平面",
@@ -111,7 +113,7 @@
       "message": "当ウェブサイトはクッキーを使用します。"
     },
     "copybtn": {
-      "click_to_copy": "クリックしてコピー",
+      "click_to_copy": "クリップボードにコピー",
       "copied": "コピーしました",
       "copyfailed": "コピー出来ませんでした"
     },
@@ -235,6 +237,7 @@
     "importlayer": {
       "addfailed": "レイヤを追加できませんでした。",
       "addlayer": "レイヤを追加",
+      "asgroup": "グループとして追加",
       "connect": "接続",
       "filter": "フィルタ...",
       "loading": "ロード中...",
@@ -242,15 +245,16 @@
       "nofeatures": "地物をインポート出来ませんでした。",
       "noresults": "検索結果無し、または無効な URL",
       "notgeopdf": "選択されたファイルは GeoPDF ではないようです。",
+      "shpreprojectionerror": "シェープファイルのジオメトリを投影できませんでした。間違った場所に置かれたかも知れません。",
       "supportedformats": "サポートされている形式: KML, GeoJSON, GeoPDF, SHP (zip形式)",
       "unknownproj": "選択された GeoPDF は未知の投影法を使っています: {0}。",
       "url": "URL",
       "urlplaceholder": "WMS, WMTS, WFS の URL を入力..."
     },
     "infotool": {
-      "clickhelpPoint": "地図上の特定したい地点をクリック...",
-      "clickhelpPolygon": "特定したい地物のまわりにポリゴンを描画...",
-      "clickhelpRadius": "半径をセットし、中心地点をクリックして、円内の地物を特定...",
+      "clickhelpPoint": "地物を確認したい地点をクリック...",
+      "clickhelpPolygon": "地物を確認したい領域をポリゴンで囲む...",
+      "clickhelpRadius": "中心地点をクリックして半径を指定し、円内の地物を確認...",
       "radius": "半径"
     },
     "layercatalog": {
@@ -273,8 +277,8 @@
       "importlayer": "レイヤをインポート",
       "maptip": "レイヤのマップ・チップを表示",
       "printlegend": "凡例を印刷",
-      "separator": "区切り線",
-      "separatortooltip": "区切り線を追加",
+      "separator": "区切り",
+      "separatortooltip": "区切りを追加",
       "transparency": "透明度",
       "visiblefilter": "不可視のレイヤをフィルタ",
       "zoomtolayer": "レイヤにズーム"
@@ -339,10 +343,27 @@
       "title": "位置"
     },
     "maplegend": {
-      "bboxdependent": "地図領域限定の凡例",
+      "bboxdependent": "領域依存の凡例",
       "onlyvisible": "可視レイヤのみ",
-      "scaledependent": "地図縮尺限定の凡例",
+      "scaledependent": "縮尺依存の凡例",
       "windowtitle": "凡例"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "",
+      "directionalLightIntensity": "",
+      "helpersVisible": "",
+      "normalBias": "",
+      "shadowBias": "",
+      "shadowMapSize": "",
+      "shadowType": "",
+      "shadowVolumeFar": "",
+      "shadowVolumeNear": "",
+      "shadowintensity": "",
+      "shadows": "",
+      "showadvanced": "",
+      "sunazimuth": "",
+      "sunzenith": "",
+      "zFactor": ""
     },
     "measureComponent": {
       "absolute": "m (海抜)",
@@ -623,9 +644,9 @@
     },
     "tooltip": {
       "background": "背景を切り替える",
-      "fullscreendisable": "フル・スクリーン・モードを無効化",
-      "fullscreenenable": "フル・スクリーン・モードを有効化",
-      "home": "地図全体を表示",
+      "fullscreendisable": "全画面モードを終了",
+      "fullscreenenable": "全画面モードにする",
+      "home": "地図の初期領域を表示",
       "zoomin": "ズーム・イン",
       "zoomout": "ズーム・アウト"
     },

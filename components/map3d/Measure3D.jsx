@@ -50,10 +50,11 @@ export default class Measure3D extends React.Component {
     constructor(props) {
         super(props);
         this.measureTool = null;
+        this.drawLayer = null;
         this.measurementObjects = [];
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.mode !== prevState.mode) {
+        if (this.state.mode && this.state.mode !== prevState.mode) {
             this.clearResult();
             this.restart();
         }
@@ -86,6 +87,7 @@ export default class Measure3D extends React.Component {
         this.measureTool.dispose();
         this.measureTool = null;
         this.props.sceneContext.map.removeLayer(this.drawLayer, {dispose: true});
+        this.drawLayer = null;
     };
     renderModeSwitcher = () => {
         const buttons = [

@@ -1,19 +1,14 @@
 div.search-widget-container {
     position: relative;
-    height: 2em;
-}
-
-div.search-widget-container > input {
     width: 100%;
 }
 
-div.search-widget-container > div.spinner,
-div.search-widget-container > span.icon-clear {
-    position: absolute;
+div.search-widget-container > div.input-container {
+    width: 100%;
+}
+div.search-widget-container > div.input-container > div.spinner {
     width: 2em;
     height: 2em;
-    right: 0;
-    top: 0;
 }
 
 div.search-widget-results {

@@ -20,7 +20,6 @@ Plugin reference
 * [LayerCatalog](#layercatalog)
 * [LayerTree](#layertree)
 * [LocateButton](#locatebutton)
-* [LoginUser](#loginuser)
 * [MapPlugin](#mapplugin)
 * [MapComparePlugin](#mapcompareplugin)
 * [MapCopyright](#mapcopyright)
@@ -45,6 +44,7 @@ Plugin reference
 * [ThemeSwitcher](#themeswitcher)
 * [TimeManager](#timemanager)
 * [TopBar](#topbar)
+* [View3D](#view3d)
 * [ZoomButton](#zoombutton)
 * [EditingSupport](#editingsupport)
 * [LocateSupport](#locatesupport)
@@ -204,6 +204,7 @@ Invokes the the authentication service specified by `authServiceUrl` in `config.
 | idleTimeout | `number` | An idle timeout in seconds after which the user is automatically logged of. | `undefined` |
 | logoutTargetUrl | `string` | An URL to redirect to on logout, instead of the viewer URL. | `undefined` |
 | requireLogin | `bool` | Whether authentication is required, i.e. the viewer automatically redirects to the login page if no user is authenticated. | `undefined` |
+| showLoginUser | `bool` | Whether to display the currently logged in user below the application menu button. | `undefined` |
 
 BackgroundSwitcher<a name="backgroundswitcher"></a>
 ----------------------------------------------------------------
@@ -414,6 +415,7 @@ for customized queries and templates for the result presentation.
 | initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. | `'m'` |
 | params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
+| showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
 
 LayerCatalog<a name="layercatalog"></a>
 ----------------------------------------------------------------
@@ -505,10 +507,6 @@ Map button for controling the locate (GPS) state.
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `2` |
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
-
-LoginUser<a name="loginuser"></a>
-----------------------------------------------------------------
-Displays the currently logged in user.
 
 MapPlugin<a name="mapplugin"></a>
 ----------------------------------------------------------------
@@ -712,6 +710,8 @@ Allows drawing figures and text labels on the map.
 | defaultFillColor | `array` | Default fill color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
 | defaultLengthUnit | `string` | Default length unit. Options: metric, imperial, m, km, ft, mi | `'metric'` |
 | hiddenTools | `array` | Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. | `[]` |
+| predefinedBorderColors | `[array]` | Predefined border colors. In format [[r, g, b, a], ...]. | `undefined` |
+| predefinedFillColors | `[array]` | Predefined fill colors. In format [[r, g, b, a], ...]. | `undefined` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
 
@@ -851,9 +851,19 @@ Top bar, containing the logo, searchbar, task buttons and app menu.
 | logoSrc | `string` | The logo image URL if a different source than the default assets/img/logo.<ext> and assets/img/logo-mobile.<ext> is desired. | `undefined` |
 | logoUrl | `string` | The hyperlink to open when the logo is clicked. | `undefined` |
 | menuItems | `array` | The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. | `[]` |
-| searchOptions | `{`<br />`  allowSearchFilters: bool,`<br />`  hideResultLabels: bool,`<br />`  highlightStyle: {`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`},`<br />`  minScaleDenom: number,`<br />`  resultLimit: number,`<br />`  sectionsDefaultCollapsed: bool,`<br />`  showLayerAfterChangeTheme: bool,`<br />`  showLayerResultsBeforePlaces: bool,`<br />`  showProviderSelection: bool,`<br />`  showProvidersInPlaceholder: bool,`<br />`  showResultInSearchText: bool,`<br />`  providerSelectionAllowAll: bool,`<br />`  zoomToLayers: bool,`<br />`}` | Options passed down to the search component. | `{`<br />`    showResultInSearchText: true`<br />`}` |
+| searchOptions | `{`<br />`  allowSearchFilters: bool,`<br />`  hideResultLabels: bool,`<br />`  highlightStyle: {`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`},`<br />`  minScaleDenom: number,`<br />`  resultLimit: number,`<br />`  sectionsDefaultCollapsed: bool,`<br />`  showLayerAfterChangeTheme: bool,`<br />`  showLayerResultsBeforePlaces: bool,`<br />`  showResultInSearchText: bool,`<br />`  zoomToLayers: bool,`<br />`}` | Options passed down to the search component. | `{`<br />`    showResultInSearchText: true`<br />`}` |
 | toolbarItems | `array` | The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. | `[]` |
 | toolbarItemsShortcutPrefix | `string` | The keyboard shortcut prefix for triggering toolbar tasks. I.e. alt+shift. The task are then triggered by <prefix>+{1,2,3,...} for the 1st, 2nd, 3rd... toolbar icon. | `undefined` |
+
+View3D<a name="view3d"></a>
+----------------------------------------------------------------
+Displays a 3D map view.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| buttonPosition | `number` | The position slot index of the 3d switch map button, from the bottom (0: bottom slot). | `6` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
+| options | `{`<br />`  searchMinScaleDenom: number,`<br />`}` | Various configuration options | `{`<br />`    searchMinScaleDenom: 1000`<br />`}` |
 
 ZoomButton<a name="zoombutton"></a>
 ----------------------------------------------------------------

@@ -9,16 +9,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import {_BrowserFileSystem as BrowserFileSystem, load} from '@loaders.gl/core';
-import {ShapefileLoader} from '@loaders.gl/shapefile';
-import {ZipLoader} from '@loaders.gl/zip';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import {WorkerMessageHandler} from "pdfjs-dist/build/pdf.worker";
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
-import {addLayer, addLayerFeatures} from '../actions/layers';
+import {addLayer, addLayerFeatures, removeLayer, replacePlaceholderLayer} from '../actions/layers';
 import EditableSelect from '../components/widgets/EditableSelect';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -38,6 +35,8 @@ class ImportLayer extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         mapCrs: PropTypes.string,
+        removeLayer: PropTypes.func,
+        replacePlaceholderLayer: PropTypes.func,
         theme: PropTypes.object,
         themes: PropTypes.object
     };
@@ -63,7 +62,7 @@ class ImportLayer extends React.Component {
             return (
                 <EditableSelect
                     onChange={value => this.setState({url: value})} onSubmit={this.scanService} options={urlPresets}
-                    placeholder={placeholder} readOnly={this.state.pendingRequests > 0} />
+                    placeholder={placeholder} readOnly={this.state.pendingRequests > 0} value={this.state.url} />
             );
         }
     }
@@ -86,7 +85,12 @@ class ImportLayer extends React.Component {
         }
         let layerList = null;
         if (this.state.serviceLayers !== null) {
-            layerList = (<LayerCatalogWidget addLayer={this.props.addLayer} catalog={this.state.serviceLayers} pendingRequests={this.state.pendingRequests} />);
+            layerList = (
+                <LayerCatalogWidget
+                    addLayer={this.props.addLayer} catalog={this.state.serviceLayers}
+                    pendingRequests={this.state.pendingRequests}
+                    removeLayer={this.props.removeLayer} replacePlaceholderLayer={this.props.replacePlaceholderLayer} />
+            );
         }
         const disableLocal = ConfigUtils.getConfigProp("disableImportingLocalLayers", this.props.theme);
         return (
@@ -385,6 +389,10 @@ class ImportLayer extends React.Component {
         reader.readAsDataURL(file);
     };
     addSHPLayer = async(file) => {
+        const {_BrowserFileSystem, load} = await import('@loaders.gl/core');
+        const {ShapefileLoader} = await import('@loaders.gl/shapefile');
+        const {ZipLoader} = await import('@loaders.gl/zip');
+
         // Import SHP layer from ZIP. Zip must contain all the required files : shp, dbf, shx, prj, cpg
         if (file.type === "application/zip") {
             const fileMap = await load(file, ZipLoader);
@@ -408,21 +416,42 @@ class ImportLayer extends React.Component {
             for (const f in files) {
                 if (Object.hasOwn(files, f)) {
                     const list = files[f];
-                    const fileSystem = new BrowserFileSystem(list);
+                    const fileSystem = new _BrowserFileSystem(list);
                     const fetch = fileSystem.fetch.bind(fileSystem.fetch);
                     const filename = `${f}.shp`;
                     // Load SHP and reproject to mapCrs
-                    const data = await load(filename, ShapefileLoader, {
-                        fetch,
-                        shapefile: {shape: 'geojson-table'},
-                        gis: {format: 'geojson', reproject: true, _targetCrs: this.props.mapCrs}
-                    });
-                    data.crs = {
-                        type: "name",
-                        properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
-                    };
-                    // Add data as GeoJSON layer
-                    this.addGeoJSONLayer(f, data);
+                    let data = null;
+                    try {
+                        data = await load(filename, ShapefileLoader, {
+                            fetch,
+                            shapefile: {shape: 'geojson-table'},
+                            gis: {
+                                format: 'geojson', reproject: true, _targetCrs: this.props.mapCrs
+                            }
+                        });
+                    } catch (e) {
+                        try {
+                            data = await load(filename, ShapefileLoader, {
+                                fetch,
+                                shapefile: {shape: 'geojson-table'},
+                                gis: {
+                                    format: 'geojson', reproject: false, _targetCrs: this.props.mapCrs
+                                }
+                            });
+                            /* eslint-disable-next-line */
+                            alert(LocaleUtils.tr("importlayer.shpreprojectionerror"));
+                        } catch (e2) {
+                            data = null;
+                        }
+                    }
+                    if (data) {
+                        data.crs = {
+                            type: "name",
+                            properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
+                        };
+                        // Add data as GeoJSON layer
+                        this.addGeoJSONLayer(f, data);
+                    }
                 }
             }
             this.setState({file: null, addingLayer: false});
@@ -435,5 +464,7 @@ export default connect((state) => ({
     themes: state.theme.themes
 }), {
     addLayer: addLayer,
-    addLayerFeatures: addLayerFeatures
+    addLayerFeatures: addLayerFeatures,
+    removeLayer: removeLayer,
+    replacePlaceholderLayer: replacePlaceholderLayer
 })(ImportLayer);

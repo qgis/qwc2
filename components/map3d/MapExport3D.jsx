@@ -336,6 +336,7 @@ class MapExport3D extends React.Component {
 }
 
 export default connect((state) => ({
+    theme: state.theme.current
 }), {
     setCurrentTask: setCurrentTask
 })(MapExport3D);

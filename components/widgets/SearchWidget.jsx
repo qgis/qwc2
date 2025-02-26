@@ -19,6 +19,7 @@ import MiscUtils from '../../utils/MiscUtils';
 import {SearchResultType} from '../../utils/SearchProviders';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import Icon from '../Icon';
+import InputContainer from './InputContainer';
 import Spinner from './Spinner';
 
 import './style/SearchWidget.css';
@@ -71,18 +72,20 @@ export default class SearchWidget extends React.Component {
     }
     render() {
         return (
-            <div className={"search-widget-container " + (this.props.className || "")}>
-                <input
-                    className="search-widget-input"
-                    onBlur={this.onBlur}
-                    onChange={this.textChanged}
-                    onFocus={this.onFocus}
-                    onKeyDown={this.onKeyDown}
-                    placeholder={this.props.placeholder ?? LocaleUtils.tr("search.search")}
-                    ref={el => {this.input = el;}}
-                    type="text"
-                    value={this.state.text} />
-                {this.state.pending > 0 ? (<Spinner />) : (<Icon icon="clear" onClick={this.clear} />)}
+            <div className="search-widget-container">
+                <InputContainer>
+                    <input
+                        onBlur={this.onBlur}
+                        onChange={this.textChanged}
+                        onFocus={this.onFocus}
+                        onKeyDown={this.onKeyDown}
+                        placeholder={this.props.placeholder ?? LocaleUtils.tr("search.search")}
+                        ref={el => {this.input = el;}}
+                        role="input"
+                        type="text"
+                        value={this.state.text} />
+                    {this.state.pending > 0 ? (<Spinner role="suffix" />) : (<Icon icon="clear" onClick={this.clear} role="suffix" />)}
+                </InputContainer>
                 {(!isEmpty(this.state.results) || this.state.pending > 0) && this.state.active ? this.renderResults() : null}
             </div>
         );

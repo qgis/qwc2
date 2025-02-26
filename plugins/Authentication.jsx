@@ -12,8 +12,10 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import url from 'url';
 
+import Icon from '../components/Icon';
 import ConfigUtils from '../utils/ConfigUtils';
 
+import './style/Authentication.css';
 
 /**
  * Handles authentication
@@ -21,6 +23,8 @@ import ConfigUtils from '../utils/ConfigUtils';
  * Invokes the the authentication service specified by `authServiceUrl` in `config.json`.
  */
 class Authentication extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         /** Whether to clear the layer parameter from the URL on login. */
         clearLayerParam: PropTypes.bool,
@@ -28,9 +32,12 @@ class Authentication extends React.Component {
         idleTimeout: PropTypes.number,
         /** An URL to redirect to on logout, instead of the viewer URL. */
         logoutTargetUrl: PropTypes.string,
+        mapMargins: PropTypes.object,
         /** Whether authentication is required, i.e. the viewer automatically redirects to the login page if no user is authenticated. */
         requireLogin: PropTypes.bool,
-        task: PropTypes.string
+        /** Whether to display the currently logged in user below the application menu button. */
+        showLoginUser: PropTypes.bool,
+        task: PropTypes.object
     };
     constructor(props) {
         super(props);
@@ -49,10 +56,12 @@ class Authentication extends React.Component {
         }
     }
     componentDidUpdate(prevProps) {
-        if (this.props.task !== prevProps.task) {
-            if (this.props.task === "Login") {
+        const task = this.props.task;
+        if (task !== prevProps.task) {
+            // "Login" and "Logout" task ids are legacy
+            if (task.id === "Login" || (task.id === "Authentication" && task.mode === "Login")) {
                 this.showLogin();
-            } else if (this.props.task === "Logout") {
+            } else if (task === "Logout" || (task.id === "Authentication" && task.mode === "Logout")) {
                 // logout and redirect to custom logoutTargetUrl or current location if not set
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(this.props.logoutTargetUrl || window.location.href);
             }
@@ -79,11 +88,27 @@ class Authentication extends React.Component {
         window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(loginUrl);
     };
     render() {
-        return null;
+        if (!this.props.showLoginUser) {
+            return null;
+        }
+        const username = ConfigUtils.getConfigProp("username");
+        const style = {
+            right: this.props.mapMargins.right
+        };
+        if (!username) {
+            return null;
+        }
+        return (
+            <div className="login-user" style={style}>
+                <Icon icon="login" />
+                <span>{username}</span>
+            </div>
+        );
     }
 }
 
 export default connect(state => ({
-    task: state.task.id
+    mapMargins: state.windows.mapMargins,
+    task: state.task
 }), {
 })(Authentication);

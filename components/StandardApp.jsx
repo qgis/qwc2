@@ -15,13 +15,11 @@ import {register as olProj4Register} from 'ol/proj/proj4';
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
-import {addLayer} from '../actions/layers';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {loadLocale} from '../actions/locale';
-import {setBottombarHeight, setTopbarHeight} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
-import {NotificationType, showNotification} from '../actions/windows';
+import {NotificationType, showNotification, setBottombarHeight, setTopbarHeight} from '../actions/windows';
 import ReducerIndex from '../reducers/index';
 import {createStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -51,155 +49,166 @@ if (CSRF_TOKEN) {
 }
 
 
-class AppInitComponent extends React.Component {
+class AppContainerComponent extends React.Component {
     static propTypes = {
-        addLayer: PropTypes.func,
         appConfig: PropTypes.object,
-        initialParams: PropTypes.object,
-        mapSize: PropTypes.object,
+        defaultUrlParams: PropTypes.string,
+        haveLocale: PropTypes.bool,
+        haveMapSize: PropTypes.bool,
+        localConfig: PropTypes.object,
         setBottombarHeight: PropTypes.func,
-        setColorScheme: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
-        setStartupParameters: PropTypes.func,
         setTopbarHeight: PropTypes.func,
         showNotification: PropTypes.func,
-        themesLoaded: PropTypes.func,
-        userInfos: PropTypes.object
+        startupConfig: PropTypes.object,
+        themesLoaded: PropTypes.func
     };
     constructor(props) {
         super(props);
-        this.initialized = false;
+        this.themesLoaded = false;
 
-        // Set initial bottom/topbar height to zero, the components will set the proper height when initialized
+        // Set initial bottom/topbar height to zero in case not topbar/bottombar is enabled
+        // The components will set the proper height if and when initialized
         props.setTopbarHeight(0);
         props.setBottombarHeight(0);
     }
     componentDidMount() {
-        this.componentDidUpdate();
+        window.addEventListener("QWC2ApiReady", () => {
+            // Warn about non-existing plugins
+            const plugins = {
+                ...this.props.appConfig.pluginsDef.plugins,
+                ...window.qwc2?.__customPlugins
+            };
+            const mode = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+            this.props.localConfig.plugins[mode].filter(entry => !plugins[entry.name + "Plugin"]).forEach(entry => {
+                // eslint-disable-next-line
+                console.warn("Non-existing plugin: " + entry.name);
+            });
+        });
     }
     componentDidUpdate() {
         // The map component needs to have finished loading before theme initialization can proceed
-        if (this.props.mapSize && !this.initialized) {
-            this.init();
+        if (this.props.haveMapSize && !this.themesLoaded) {
+            this.loadThemes();
         }
     }
-    init = () => {
-        this.initialized = true;
+    loadThemes = () => {
+        this.themesLoaded = true;
+        const {state, permalinkInvalid} = this.props.startupConfig;
+        const params = {...this.props.startupConfig.params}; // Clone as changed below
 
-        // Set color scheme
-        const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
-        const colorScheme = this.props.initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
-        this.props.setColorScheme(colorScheme);
+        // Warn if permalink key is invalid
+        if (permalinkInvalid) {
+            this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingpermalink"), NotificationType.WARN, true);
+        }
 
         // Load themes.json
         axios.get("themes.json").then(response => {
             const themes = response.data.themes || {};
-            if (this.props.appConfig.themePreprocessor) {
-                this.props.appConfig.themePreprocessor(themes);
-            }
+            this.props.appConfig.themePreprocessor?.(themes);
             this.props.themesLoaded(themes);
 
-            // Resolve permalink and restore settings
-            resolvePermaLink(this.props.initialParams, (params, state, success) => {
-                if (!success) {
-                    this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingpermalink"), NotificationType.WARN, true);
+            let theme = ThemeUtils.getThemeById(themes,  params.t);
+            if ((!theme || theme.restricted) && !ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
+                if (params.t) {
+                    this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
+                    params.l = undefined;
                 }
-                let theme = ThemeUtils.getThemeById(themes,  params.t);
-                if (!theme || theme.restricted) {
-                    if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
-                        return;
+                const defaultTheme = Object.fromEntries(this.props.defaultUrlParams.split("&").map(x => x.split("="))).t || themes.defaultTheme;
+                theme = ThemeUtils.getThemeById(themes, defaultTheme);
+                params.t = defaultTheme;
+            }
+
+            if (theme) {
+                // Compute initial view
+                let initialView = null;
+                if (params.c && params.s !== undefined) {
+                    const coords = params.c.split(/[;,]/g).map(x => parseFloat(x) || 0);
+                    const scales = theme.scales || themes.defaultScales;
+                    const zoom = MapUtils.computeZoom(scales, params.s);
+                    if (coords.length === 2) {
+                        const p = CoordinatesUtils.reproject(coords, params.crs || theme.mapCrs, theme.bbox.crs);
+                        const bounds = theme.bbox.bounds;
+                        // Only accept c if it is within the theme bounds
+                        if (bounds[0] <= p[0] && p[0] <= bounds[2] && bounds[1] <= p[1] && p[1] <= bounds[3]) {
+                            initialView = {
+                                center: coords,
+                                zoom: zoom,
+                                crs: params.crs || theme.mapCrs
+                            };
+                        } else {
+                            initialView = {
+                                center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
+                                zoom: zoom,
+                                crs: theme.bbox.crs
+                            };
+                        }
                     }
-                    if (params.t) {
-                        this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
-                        params.l = undefined;
+                } else if (params.e) {
+                    const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x) || 0);
+                    if (CoordinatesUtils.isValidExtent(bounds)) {
+                        initialView = {
+                            bounds: bounds,
+                            crs: params.crs || theme.mapCrs
+                        };
                     }
-                    const defaultTheme = Object.fromEntries((this.props.userInfos?.default_url_params || "").split("&").map(x => x.split("="))).t || themes.defaultTheme;
-                    theme = ThemeUtils.getThemeById(themes, defaultTheme);
-                    params.t = defaultTheme;
                 }
-                this.props.setStartupParameters({...params});
                 const layerParams = params.l !== undefined ? params.l.split(",").filter(entry => entry) : null;
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
                     layerParams.reverse();
                 }
-                const visibleBgLayer = params.bl || params.bl === '' ? params.bl : null;
-                let initialView = null;
-                if (theme) {
-                    if (params.c && params.s !== undefined) {
-                        const coords = params.c.split(/[;,]/g).map(x => parseFloat(x) || 0);
-                        const scales = theme.scales || themes.defaultScales;
-                        const zoom = MapUtils.computeZoom(scales, params.s);
-                        if (coords.length === 2) {
-                            const p = CoordinatesUtils.reproject(coords, params.crs || theme.mapCrs, theme.bbox.crs);
-                            const bounds = theme.bbox.bounds;
-                            // Only accept c if it is within the theme bounds
-                            if (bounds[0] <= p[0] && p[0] <= bounds[2] && bounds[1] <= p[1] && p[1] <= bounds[3]) {
-                                initialView = {
-                                    center: coords,
-                                    zoom: zoom,
-                                    crs: params.crs || theme.mapCrs
-                                };
-                            } else {
-                                initialView = {
-                                    center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
-                                    zoom: zoom,
-                                    crs: theme.bbox.crs
-                                };
-                            }
-                        }
-                    } else if (params.e) {
-                        const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x) || 0);
-                        if (CoordinatesUtils.isValidExtent(bounds)) {
-                            initialView = {
-                                bounds: bounds,
-                                crs: params.crs || theme.mapCrs
-                            };
-                        }
-                    }
-                }
+                this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
+            }
 
-                // Clear all params
-                UrlParams.clear();
-
-                // Restore theme and layers
-                if (theme) {
-                    try {
-                        this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, visibleBgLayer, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
-                    } catch (e) {
-                        // eslint-disable-next-line
-                        console.log(e.stack);
-                    }
-                }
-                const task = ConfigUtils.getConfigProp("startupTask");
-                if (task && !theme.config?.startupTask) {
-                    const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
-                    this.props.setCurrentTask(task.key, task.mode, mapClickAction);
-                }
-            });
+            const task = ConfigUtils.getConfigProp("startupTask");
+            if (task && !theme?.config?.startupTask) {
+                const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
+                this.props.setCurrentTask(task.key, task.mode, mapClickAction);
+            }
         });
     };
     render() {
-        return null;
+        // Ensure translations and config are loaded
+        if (!this.props.haveLocale || !this.props.localConfig.plugins || !this.props.localConfig.startupParams) {
+            return null;
+        }
+        const plugins = {
+            ...this.props.appConfig.pluginsDef.plugins,
+            ...window.qwc2?.__customPlugins
+        };
+        const pluginsConfig = this.props.localConfig.plugins;
+        const appPluginConfig = {...this.props.appConfig.pluginsDef.cfg};
+        // Inject plugins available in 3d view to View3D plugin configuration
+        appPluginConfig.View3DPlugin = {
+            ...appPluginConfig.View3DPlugin,
+            plugins: Object.entries(plugins).reduce((res, [key, plugin]) => {
+                if (plugin.WrappedComponent?.availableIn3D || plugin.availableIn3D) {
+                    return {...res, [key]: plugin};
+                }
+                return res;
+            }, {})
+        };
+        return (
+            <PluginsContainer plugins={plugins} pluginsAppConfig={appPluginConfig} pluginsConfig={pluginsConfig} />
+        );
     }
 }
 
-const AppInit = connect(state => ({
-    mapSize: state.map.size,
-    layers: state.layers.flat,
-    userInfos: state.localConfig.user_infos,
-    currentTask: state.task.id
+const AppContainer = connect(state => ({
+    customPlugins: state.localConfig.customPlugins, // Unused, just to ensure component reacts when custom plugins change
+    haveLocale: state.locale.current !== null,
+    haveMapSize: state.map.size !== null,
+    defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
+    localConfig: state.localConfig
 }), {
     themesLoaded: themesLoaded,
     setCurrentTask: setCurrentTask,
-    setColorScheme: setColorScheme,
     setCurrentTheme: setCurrentTheme,
-    setStartupParameters: setStartupParameters,
-    addLayer: addLayer,
     showNotification: showNotification,
     setTopbarHeight: setTopbarHeight,
     setBottombarHeight: setBottombarHeight
-})(AppInitComponent);
+})(AppContainerComponent);
 
 
 export default class StandardApp extends React.Component {
@@ -207,13 +216,14 @@ export default class StandardApp extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object
     };
+    state = {
+        startupConfig: null
+    };
     constructor(props) {
         super(props);
         const initialState = this.props.appConfig.initialState || {};
         StandardApp.store = createStore(ReducerIndex.reducers, initialState, this.props.appConfig.actionLogger);
         this.init();
-        // Save initial params before they get overwritten
-        this.initialParams = UrlParams.getParams();
         this.touchY = null;
     }
     componentDidMount() {
@@ -228,12 +238,13 @@ export default class StandardApp extends React.Component {
         document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
     };
     render() {
-        const plugins = this.props.appConfig.pluginsDef.plugins;
+        if (!this.state.startupConfig) {
+            return null;
+        }
         return (
             <Provider store={StandardApp.store}>
                 <div ref={this.setupTouchEvents}>
-                    <AppInit appConfig={this.props.appConfig} initialParams={this.initialParams}/>
-                    <PluginsContainer plugins={plugins} pluginsAppConfig={this.props.appConfig.pluginsDef.cfg || {}} />
+                    <AppContainer appConfig={this.props.appConfig} startupConfig={this.state.startupConfig}/>
                 </div>
             </Provider>
         );
@@ -277,9 +288,12 @@ export default class StandardApp extends React.Component {
         }
     };
     init = () => {
+        // Save initial params and clear URL
+        const initialParams = UrlParams.getParams();
+        UrlParams.clear();
+
         // Load config.json
-        const urlParams = UrlParams.getParams();
-        const configParams = Object.entries(urlParams).reduce((res, [key, value]) => {
+        const configParams = Object.entries(initialParams).reduce((res, [key, value]) => {
             if (key.startsWith("config:")) {
                 res[key.slice(7)] = value;
             }
@@ -300,10 +314,24 @@ export default class StandardApp extends React.Component {
                 return {...res, [key]: entry};
             }, {})));
             delete config.plugins.common;
-            StandardApp.store.dispatch(localConfigLoaded(config));
-            const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";
-            // Dispatch user locale
-            StandardApp.store.dispatch(loadLocale(this.props.appConfig.defaultLocaleData, defaultLocale));
+            // Store whether to show plugin in 2d/3d mode
+            const plugins = this.props.appConfig.pluginsDef.plugins;
+            config.plugins.mobile.forEach(entry => {
+                const plugin = plugins[entry.name + "Plugin"];
+                if (plugin) {
+                    const component = plugin.WrappedComponent ?? plugin;
+                    entry.availableIn3D = component.availableIn3D === true;
+                    entry.availableIn2D = component.availableIn2D === true || component.availableIn2D === undefined;
+                }
+            });
+            config.plugins.desktop.forEach(entry => {
+                const plugin = plugins[entry.name + "Plugin"];
+                if (plugin) {
+                    const component = plugin.WrappedComponent ?? plugin;
+                    entry.availableIn3D = component.availableIn3D === true;
+                    entry.availableIn2D = component.availableIn2D === true || component.availableIn2D === undefined;
+                }
+            });
             // Add projections from config
             for (const proj of config.projections || []) {
                 if (Proj4js.defs(proj.code) === undefined) {
@@ -312,6 +340,24 @@ export default class StandardApp extends React.Component {
                 CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
             }
             olProj4Register(Proj4js);
+            StandardApp.store.dispatch(localConfigLoaded(config));
+
+            // Load locale
+            const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";
+            StandardApp.store.dispatch(loadLocale(this.props.appConfig.defaultLocaleData, defaultLocale));
+
+            // Set color scheme
+            const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
+            const colorScheme = initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
+            StandardApp.store.dispatch(setColorScheme(colorScheme));
+
+            // Resolve permalink and restore settings
+            resolvePermaLink(initialParams, (params, state, success) => {
+                StandardApp.store.dispatch(setStartupParameters(params));
+                this.setState({startupConfig: {
+                    params, state, permalinkInvalid: !success
+                }});
+            });
         });
     };
 }

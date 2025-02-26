@@ -21,6 +21,7 @@ import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';
+import {View3DMode} from './display';
 import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} from './layers';
 import {configureMap} from './map';
 import {showNotification, NotificationType} from './windows';
@@ -119,6 +120,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
 
 export function setCurrentTheme(theme, themes, preserve = true, initialView = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null) {
     return (dispatch, getState) => {
+        const curLayers = getState().layers?.flat || [];
         const mapCrs = theme.mapCrs || themes.defaultMapCrs || "EPSG:3857";
         if (!(mapCrs in CoordinatesUtils.getAvailableCRS())) {
             dispatch(showNotification("missingprojection", LocaleUtils.tr("app.missingprojection", theme.title, mapCrs), NotificationType.WARN, true));
@@ -132,7 +134,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
 
         // Get current background layer if it needs to be preserved
         if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
-            const curBgLayer = getState().layers.flat.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
+            const curBgLayer = curLayers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
             visibleBgLayer = curBgLayer ? curBgLayer.name : null;
         }
 
@@ -140,9 +142,9 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         let insertPos = 0;
         if (preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch", theme) === true) {
             // Compute insertion position of new theme layers by counting how many non-theme layers remain
-            insertPos = getState().layers.flat.filter(layer => layer.role === LayerRole.USERLAYER).length;
+            insertPos = curLayers.filter(layer => layer.role === LayerRole.USERLAYER).length;
 
-            const removeLayers = getState().layers.flat.filter(layer => layer.role !== LayerRole.USERLAYER).map(layer => layer.id);
+            const removeLayers = curLayers.filter(layer => layer.role !== LayerRole.USERLAYER).map(layer => layer.id);
             for (const layerId of removeLayers) {
                 dispatch(removeLayer(layerId));
             }
@@ -172,17 +174,21 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         };
 
         // Preserve extent if desired and possible
-        if (preserve && !initialView && getState().map.projection === theme.mapCrs) {
-            if (ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === true) {
-                // If theme bbox (b1) includes current bbox (b2), keep current extent
-                const b1 = CoordinatesUtils.reprojectBbox(theme.bbox.bounds, theme.bbox.crs, getState().map.projection);
-                const b2 = getState().map.bbox.bounds;
-                if (b2[0] >= b1[0] && b2[1] >= b1[1] && b2[2] <= b1[2] && b2[3] <= b1[3]) {
-                    // theme bbox (b1) includes current bbox (b2)
-                    initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
+        if (getState().display.view3dMode !== View3DMode.FULLSCREEN) {
+            const curCrs = getState().map.projection;
+            if (preserve && !initialView && curCrs === theme.mapCrs) {
+                const curBounds = getState().map.bbox.bounds;
+                if (ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === true) {
+                    // If theme bbox (b1) includes current bbox (b2), keep current extent
+                    const b1 = CoordinatesUtils.reprojectBbox(theme.bbox.bounds, theme.bbox.crs, curCrs);
+                    const b2 = curBounds;
+                    if (b2[0] >= b1[0] && b2[1] >= b1[1] && b2[2] <= b1[2] && b2[3] <= b1[3]) {
+                        // theme bbox (b1) includes current bbox (b2)
+                        initialView = {bounds: curBounds, crs: curCrs};
+                    }
+                } else if (ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === "force") {
+                    initialView = {bounds: curBounds, crs: curCrs};
                 }
-            } else if (ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === "force") {
-                initialView = {bounds: getState().map.bbox.bounds, crs: getState().map.projection};
             }
         }
 
@@ -212,7 +218,23 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                 if (newLayerNames) {
                     layerConfigs = layerConfigs.reduce((res, layerConfig) => {
                         if (layerConfig.name in newLayerNames) {
-                            return [...res, ...newLayerNames[layerConfig.name].map(name => ({...layerConfig, name}))];
+                            // If layerConfig exactly matches a restored theme layer, return unchanged config
+                            if (newLayerNames[layerConfig.name].length === 1 && newLayerNames[layerConfig.name][0] === layerConfig.name) {
+                                return [...res, layerConfig];
+                            }
+                            // Else, in case multiple theme layers were returned (i.e. layerConfig.name specifies a group)
+                            // generate layerConfigs based on the group layerConfig, preserving the opacity/visibility/etc of the sublayer
+                            return [...res, ...newLayerNames[layerConfig.name].map(sublayername => {
+                                const sublayer = LayerUtils.searchSubLayer({sublayers: newLayers}, "name", sublayername);
+                                return {
+                                    ...layerConfig,
+                                    name: sublayername,
+                                    opacity: sublayer.opacity ?? 255,
+                                    visibility: sublayer.visibility ?? true,
+                                    tristate: sublayer.tristate || false,
+                                    style: sublayer.style
+                                };
+                            })];
                         } else {
                             return [...res, layerConfig];
                         }
@@ -230,12 +252,5 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
             }
             finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
         }
-    };
-}
-
-export function restoreDefaultTheme() {
-    return (dispatch, getState) => {
-        const themes = getState().theme.themes;
-        dispatch(setCurrentTheme(ThemeUtils.getThemeById(themes, themes.defaultTheme), themes, false));
     };
 }

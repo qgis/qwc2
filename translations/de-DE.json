@@ -13,7 +13,6 @@
       "items": {
         "Bookmark": "Lesezeichen",
         "Compare3D": "Vergleichen",
-        "DateTime3D": "Datum und Zeit",
         "Editing": "Editieren",
         "Help": "Hilfe",
         "LayerTree": "Ebenen und Legende",
@@ -21,12 +20,15 @@
         "MapExport": "Karte exportieren",
         "MapExport3D": "Karte exportieren",
         "MapFilter": "Kartenfilter",
+        "MapLight3D": "Beleuchtung und Schatten",
         "Print": "Drucken",
         "Reports": "Berichte",
         "Settings": "Einstellungen",
         "Share": "Teilen",
         "ThemeSwitcher": "Themen",
         "AttributeTable": "Attributtabelle",
+        "AuthenticationLogin": "Anmelden",
+        "AuthenticationLogout": "Abmelden",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Zeichnen",
         "FeatureForm": "Objektformular",
@@ -99,7 +101,7 @@
       "mousepos_label": "Koordinaten",
       "scale_label": "Maßstab",
       "terms_label": "Nutzungsbedingungen",
-      "viewertitle_label": ""
+      "viewertitle_label": "Homepage"
     },
     "compare3d": {
       "clipplane": "Schnittebene",
@@ -235,6 +237,7 @@
     "importlayer": {
       "addfailed": "Die Ebene konnte nicht hinzugefügt werden",
       "addlayer": "Ebene hinzufügen",
+      "asgroup": "Als Gruppe hinzufügen",
       "connect": "Verbinden",
       "filter": "Filter...",
       "loading": "Laden...",
@@ -242,6 +245,7 @@
       "nofeatures": "Keine Objekte konnten importiert werden",
       "noresults": "Keine Resultate oder ungültige URL",
       "notgeopdf": "Die ausgewählte Datei scheint kein GeoPDF zu sein.",
+      "shpreprojectionerror": "Die Shapefile-Geometrie konnte nicht umprojiziert werden und ist möglicherweise nicht richtig platziert.",
       "supportedformats": "Unterstützte Formate",
       "unknownproj": "Das ausgewählte GeoPDF verwendet eine unbekannte Projektion: {0}.",
       "url": "URL",
@@ -343,6 +347,23 @@
       "onlyvisible": "Legende abhängig von der Ebenensichtbarkeit",
       "scaledependent": "Legende abhängig vom Kartenmaßstab",
       "windowtitle": "Legende"
+    },
+    "maplight3d": {
+      "ambientLightIntensity": "Intensität Umgebungslichts",
+      "directionalLightIntensity": "Intensität gerichtetes Licht",
+      "helpersVisible": "Hilfen anzeigen",
+      "normalBias": "Normal-Verzerrung",
+      "shadowBias": "Schatten-Verzerrung",
+      "shadowMapSize": "Größe der Schattentextur",
+      "shadowType": "Schattentyp",
+      "shadowVolumeFar": "Schattenvolumen von",
+      "shadowVolumeNear": "Schattenvolumen bis",
+      "shadowintensity": "Schattenintensität",
+      "shadows": "Schatten aktivieren",
+      "showadvanced": "Erweitert anzeigen",
+      "sunazimuth": "Sonnenazimuth",
+      "sunzenith": "Sonnenzenit",
+      "zFactor": "Z-Faktor"
     },
     "measureComponent": {
       "absolute": "m ü.M.",

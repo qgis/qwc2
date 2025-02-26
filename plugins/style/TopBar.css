@@ -1,4 +1,4 @@
-#TopBar {
+div.TopBar {
     position: absolute;
     left: 0;
     top: 0;
@@ -12,49 +12,50 @@
     align-items: center;
 }
 
-#TopBar:not(.fullscreen) {
+div.TopBar:not(.fullscreen) {
     backdrop-filter: blur(3px);
 }
 
-#TopBar img.logo {
+div.TopBar img.topbar-logo {
     width: auto;
     height: 3.0em;
     vertical-align: middle;
 }
 
-#TopBar div.center-span {
+div.TopBar div.topbar-center-span {
     margin: 0 1em;
     flex: 1 1 auto;
     display: inline-flex;
     align-items: center;
 }
 
-#TopBar #FullScreenSwitcher {
-    height: 3.5em;
+div.TopBar div.topbar-search-container {
+    flex: 1 1 auto;
+    max-width: 70ch;
 }
 
-#TopBar.fullscreen {
+div.TopBar.fullscreen {
     background-color: transparent;
     box-shadow: none;
 }
 
-#TopBar.fullscreen img.logo,
-#TopBar.fullscreen div.AppMenu .appmenu-label {
+div.TopBar.fullscreen img.topbar-logo,
+div.TopBar.fullscreen span.appmenu-label {
     display: none;
 }
 
-#TopBar div.AppMenu .appmenu-button {
+div.TopBar div.appmenu-button {
     width: 20em;
     display: inline-block;
 }
 
-#TopBar div.AppMenu.appmenu-compact .appmenu-button,
-#TopBar.mobile div.AppMenu .appmenu-button,
-#TopBar.fullscreen div.AppMenu .appmenu-button {
+div.TopBar div.AppMenu.appmenu-compact div.appmenu-button,
+div.TopBar.mobile div.appmenu-button,
+div.TopBar.fullscreen div.appmenu-button {
     width: auto;
 }
 
-#TopBar.mobile div.AppMenu .appmenu-button {
+div.TopBar.mobile div.appmenu-button {
     margin-right: 0;
 }
 

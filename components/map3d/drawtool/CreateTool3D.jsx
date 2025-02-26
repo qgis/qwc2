@@ -33,13 +33,14 @@ export default class CreateTool3D extends React.Component {
         this.drawCursor = new GiroShape({
             showVertices: true
         });
-        this.props.sceneContext.addSceneObject("__drawCursor", this.drawCursor);
+        this.props.sceneContext.scene.add(this.drawCursor);
         const renderer = this.props.sceneContext.scene.renderer;
         renderer.domElement.addEventListener("pointermove", this.moveDrawCursor);
         renderer.domElement.addEventListener("pointerdown", this.drawShapeOnRelease);
     }
     componentWillUnmount() {
-        this.props.sceneContext.removeSceneObject("__drawCursor");
+        this.props.sceneContext.scene.remove(this.drawCursor);
+        this.drawCursor = null;
         const renderer = this.props.sceneContext.scene.renderer;
         renderer.domElement.removeEventListener("pointermove", this.moveDrawCursor);
         renderer.domElement.removeEventListener("pointerdown", this.drawShapeOnRelease);
@@ -114,6 +115,8 @@ export default class CreateTool3D extends React.Component {
             geometry.rotateX(Math.PI / 2); // Z-up
             const material = new MeshStandardMaterial({color: new Color(...this.props.color.map(c => c / 255))});
             const mesh = new Mesh( geometry, material);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
             drawGroup.add(mesh);
             mesh.position.copy(this.drawCursor.points[0]);
             mesh.position.z += 0.5 * s;

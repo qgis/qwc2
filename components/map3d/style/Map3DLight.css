@@ -1,11 +1,15 @@
-#DateTime3D div.datetime3d-body {
+#MapLight3D div.maplight3d-body {
     padding: 0.25em;
 }
 
-#DateTime3D div.datetime3d-body > table {
+#MapLight3D div.maplight3d-body > table {
     width: 100%;
 }
 
-#DateTime3D div.datetime3d-body > table td > input {
+#MapLight3D div.maplight3d-body > table td > input {
     width: 100%;
+}
+
+#MapLight3D td.maplight3d-advanced {
+    height: 2em;
 }

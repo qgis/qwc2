@@ -41,6 +41,7 @@ class ResizeableWindow extends React.Component {
             title: PropTypes.string
         })),
         fitHeight: PropTypes.bool,
+        fullscreen: PropTypes.bool,
         icon: PropTypes.string,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
@@ -102,7 +103,6 @@ class ResizeableWindow extends React.Component {
     }
     componentDidMount() {
         this.props.registerWindow(this.id);
-        this.props.onGeometryChanged(this.state.geometry);
         window.addEventListener('beforeunload', this.closeExternalWindow, {once: true});
     }
     componentWillUnmount() {
@@ -124,6 +124,7 @@ class ResizeableWindow extends React.Component {
             this.rnd.updatePosition(this.state.geometry);
         }
         if (this.state.geometry !== prevState.geometry) {
+            this.props.onGeometryChanged(this.state.geometry);
             WINDOW_GEOMETRIES[this.props.title] = this.state.geometry;
         }
         if (this.props.splitScreenWhenDocked && (
@@ -156,6 +157,9 @@ class ResizeableWindow extends React.Component {
         ev.stopPropagation();
     };
     renderTitleBar = () => {
+        if (this.props.fullscreen) {
+            return null;
+        }
         const maximized = this.state.geometry.maximized ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
         const docked = this.state.geometry.docked;
@@ -186,7 +190,7 @@ class ResizeableWindow extends React.Component {
         });
 
         let detachIcons = null;
-        if (!ConfigUtils.isMobile()) {
+        if (!ConfigUtils.isMobile() && !ConfigUtils.getConfigProp("globallyDisableDetachableDialogs")) {
             detachIcons = this.state.externalWindow ? (
                 <Icon className={iconClasses} icon="embed" onClick={this.moveToInternalWindow} title={LocaleUtils.tr("window.embed")} />
             ) : (
@@ -237,7 +241,6 @@ class ResizeableWindow extends React.Component {
         const marginLeft = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.left : 0;
         const marginRight = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.right : 0;
         const containerStyle = {
-            display: this.props.visible ? 'initial' : 'none',
             left: (marginLeft + this.props.menuMargins.left) + 'px',
             right: (marginRight + this.props.menuMargins.right) + 'px',
             top: splitTopAndBottomBar ? 0 : this.props.topbarHeight + 'px',
@@ -246,12 +249,12 @@ class ResizeableWindow extends React.Component {
         };
         return (
             <div className="resizeable-window-container" key="InternalWindow" ref={this.setInitialSize} style={containerStyle}>
-                {this.state.geometry ? this.renderInternalWindow() : null}
+                {this.props.visible && this.state.geometry ? this.renderInternalWindow() : null}
             </div>
         );
     };
     renderInternalWindow = () => {
-        const maximized = this.state.geometry.maximized ? true : false;
+        const maximized = (this.state.geometry.maximized || this.props.fullscreen) ? true : false;
         const minimized = this.state.geometry.minimized ? true : false;
         const dockSide = this.props.dockable === true ? "left" : this.props.dockable;
 
@@ -520,8 +523,8 @@ class ResizeableWindow extends React.Component {
 
 export default connect((state) => ({
     windowStacking: state.windows.stacking,
-    topbarHeight: state.map.topbarHeight,
-    bottombarHeight: state.map.bottombarHeight,
+    topbarHeight: state.windows.topbarHeight,
+    bottombarHeight: state.windows.bottombarHeight,
     mapMargins: state.windows.mapMargins,
     menuMargins: state.windows.menuMargins
 }), {

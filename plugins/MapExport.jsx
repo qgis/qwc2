@@ -334,10 +334,10 @@ class MapExport extends React.Component {
         });
     };
     geometryChanged = (center, extents, rotation, scale) => {
-        this.setState({
+        this.setState(state => ({
             extents: extents,
-            scale: scale
-        });
+            scale: scale ?? state.scale
+        }));
     };
     export = (ev) => {
         ev.preventDefault();

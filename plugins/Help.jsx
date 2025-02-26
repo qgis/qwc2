@@ -22,6 +22,7 @@ import LocaleUtils from '../utils/LocaleUtils';
  * Define the help contents by specifying the `bodyContentsFragmentUrl` prop.
  */
 class Help extends React.Component {
+    static availableIn3D = true;
     static propTypes = {
         /** URL to a document containing a HTML fragment to display in the Help sidebar. */
         bodyContentsFragmentUrl: PropTypes.string,

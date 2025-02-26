@@ -14,7 +14,7 @@ import {CHANGE_LOCALE, ADD_TRANSLATIONS} from '../actions/locale';
 const defaultState = {
     messages: {},
     fallbackMessages: {},
-    current: ''
+    current: null
 };
 
 export default function locale(state = defaultState, action) {
