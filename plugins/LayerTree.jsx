@@ -269,7 +269,7 @@ class LayerTree extends React.Component {
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {this.state.activemenu === group.uuid ? this.renderOptionsMenu(layer, group, path, allowRemove) : null}
-                {isTopLevelWMSGroup && this.state.activestylemenu === group.uuid ? this.renderStyleMenu(styles, selectedStyle, (style) => this.applyLayerStyle(style)) : null}
+                {isTopLevelWMSGroup && this.state.activestylemenu === group.uuid ? this.renderStyleMenu(styles, selectedStyle, (style) => this.applyLayerStyle(style, layer)) : null}
                 <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
                 </Sortable>
@@ -816,28 +816,24 @@ class LayerTree extends React.Component {
         return styleList;
 
     };
-    applyLayerStyle = (style) => {
-        const setStyle = (layers, path = []) => {
-            for (let i = 0; i < layers.length; i++) {
-                const layer = layers[i];
-                const currentPath = [...path, i];
-                const adjustedPath = path.length === 0 ? [] : currentPath.slice(1);
-
-                if (layer.sublayers && layer.sublayers.length > 0) {
-                    setStyle(layer.sublayers, currentPath);
+    applyLayerStyle = (style, topLevelLayer) => {
+        const setStyle = (layer, path = []) => {
+            if (layer.sublayers && layer.sublayers.length > 0) {
+                for (let i = 0; i < layer.sublayers.length; i++) {
+                    setStyle(layer.sublayers[i], [...path, i]);
                 }
-                if (layer.styles && Object.keys(layer.styles).length > 0) {
-                    for (const styleKey in layer.styles) {
-                        if (Object.prototype.hasOwnProperty.call(layer.styles, styleKey) && styleKey === style) {
-                            const wmsLayer = this.props.layers.find(l => l.type === "wms");
-                            this.props.changeLayerProperty(wmsLayer.uuid, "style", style, adjustedPath);
-                        }
+            }
+            if (layer.styles && Object.keys(layer.styles).length > 0) {
+                for (const styleKey in layer.styles) {
+                    if (Object.prototype.hasOwnProperty.call(layer.styles, styleKey) && styleKey === style) {
+                        this.props.changeLayerProperty(topLevelLayer.uuid, "style", style, path);
                     }
                 }
             }
         };
-        setStyle(this.props.layers);
+        setStyle(topLevelLayer);
     };
+
 }
 
 const selector = (state) => ({
