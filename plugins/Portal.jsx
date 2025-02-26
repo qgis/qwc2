@@ -36,6 +36,8 @@ class Portal extends React.Component {
             labelmsgid: PropTypes.string,
             target: PropTypes.string
         })),
+        /** Whether to allow collapsing groups in the theme switcher. */
+        collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.string,
         currentTheme: PropTypes.object,
         keepMenuOpen: PropTypes.bool,
@@ -54,6 +56,7 @@ class Portal extends React.Component {
         userName: PropTypes.string
     };
     static defaultProps = {
+        collapsibleGroups: true,
         menuItems: []
     };
     state = {
@@ -105,7 +108,7 @@ class Portal extends React.Component {
                         showOnStartup={this.props.showMenuOnStartup} />
                 </div>
                 <div className={"portal-body " + (this.state.menuVisible ? "portal-body-menuvisible" : "")}>
-                    <ThemeList collapsibleGroups dontPreserveSettingsOnSwitch={!preserveSettings} filter={this.state.filter} />
+                    <ThemeList collapsibleGroups={this.props.collapsibleGroups} dontPreserveSettingsOnSwitch={!preserveSettings} filter={this.state.filter} />
                 </div>
                 <div className="portal-bottombar">
                     {this.props.userName ? (
