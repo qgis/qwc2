@@ -160,6 +160,9 @@ const VectorLayerUtils = {
         if (!geometry) {
             return false;
         }
+        if (geometry.type === "GeometryCollection") {
+            return geometry.geometries.every(VectorLayerUtils.validateGeometry);
+        }
         if (geometry.type === "Point") {
             return !isEmpty(geometry.coordinates);
         }
