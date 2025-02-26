@@ -158,7 +158,6 @@ class LayerTree extends React.Component {
     state = {
         activemenu: null,
         activestylemenu: null,
-        selectedStyle: null,
         legendTooltip: null,
         sidebarwidth: null,
         importvisible: false,
@@ -256,6 +255,7 @@ class LayerTree extends React.Component {
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
         const isTopLevelWMSGroup = layer.type === "wms" && path.length === 0;
         const styles = isTopLevelWMSGroup ? this.getLayerStyles([layer]) : {};
+        const selectedStyle = isTopLevelWMSGroup ? this.getSelectedStyle(layer) : null;
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.uuid, path: path})} key={group.uuid}>
                 <div className={classnames(itemclasses)}>
@@ -269,7 +269,7 @@ class LayerTree extends React.Component {
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
                 {this.state.activemenu === group.uuid ? this.renderOptionsMenu(layer, group, path, allowRemove) : null}
-                {isTopLevelWMSGroup && this.state.activestylemenu === group.uuid ? this.renderStyleMenu(styles, this.state.selectedStyle, (style) => this.applyLayerStyle(style)) : null}
+                {isTopLevelWMSGroup && this.state.activestylemenu === group.uuid ? this.renderStyleMenu(styles, selectedStyle, (style) => this.applyLayerStyle(style)) : null}
                 <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
                 </Sortable>
@@ -796,6 +796,10 @@ class LayerTree extends React.Component {
         }, null, ' ');
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
     };
+    getSelectedStyle = (layer) => {
+        const styles = new Set((layer.params?.STYLES || "").split(",").filter(Boolean));
+        return styles.size === 1 ? [...styles][0] : null;
+    };
     getLayerStyles = (layerList) => {
         const styleList = {};
         const collectStyles = (layers) => {
@@ -813,7 +817,6 @@ class LayerTree extends React.Component {
 
     };
     applyLayerStyle = (style) => {
-        this.setState({selectedStyle: style});
         const setStyle = (layers, path = []) => {
             for (let i = 0; i < layers.length; i++) {
                 const layer = layers[i];
