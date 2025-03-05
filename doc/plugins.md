@@ -30,6 +30,7 @@ Plugin reference
 * [MapTip](#maptip)
 * [Measure](#measure)
 * [NewsPopup](#newspopup)
+* [Panoramax](#panoramax)
 * [Portal](#portal)
 * [Print](#print)
 * [ProcessNotifications](#processnotifications)
@@ -657,6 +658,17 @@ revision is published (specified via newsRev prop).
 | newsRev | `string` | Revision of the document. | `undefined` |
 | showInSidebar | `bool` | Whether to show the news in a sidebar instead of a popup. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
+
+Panoramax<a name="panoramax"></a>
+----------------------------------------------------------------
+Panoramax Integration for QWC2.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| loadSequencesTiles | `bool` | Whether or not to load the layer containing the image sequences. | `true` |
+| panoramaxInstance | `string` | URL of the Panoramax instance. | `'api.panoramax.xyz'` |
+| tileMode | `string` | Mode for the image sequences layer: either WMS (Require a custom URL) or MVT(EPSG:3857 only). | `'mvt'` |
+| wmsUrl | `string` | URL of the WMS image sequences layer. | `undefined` |
 
 Portal<a name="portal"></a>
 ----------------------------------------------------------------

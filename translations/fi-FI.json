@@ -45,6 +45,7 @@
         "MeasureLineString": "Mittaa viiva",
         "MeasurePolygon": "Mittaa monikulmion",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "",
         "PrintScreen3D": "",
         "Redlining": "Omat merkinnät",
@@ -393,6 +394,10 @@
       "side": "",
       "width": "",
       "windowtitle": ""
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": ""

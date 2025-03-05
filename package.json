@@ -11,6 +11,7 @@
         "@loaders.gl/core": "^4.3.3",
         "@loaders.gl/shapefile": "^4.3.3",
         "@loaders.gl/zip": "^4.3.3",
+        "@panoramax/web-viewer": "^3.2.3",
         "@reduxjs/toolkit": "^2.4.0",
         "@turf/buffer": "^6.5.0",
         "@turf/helpers": "^6.5.0",
