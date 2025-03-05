@@ -32,7 +32,7 @@ div.ThemeList li.theme-item {
     margin: 0.5em;
     text-align: center;
     display: inline-block;
-    width: 15em;
+    width: calc(15em + 2px);
     position: relative;
 }
 div.ThemeList div.theme-item-title {
@@ -56,6 +56,8 @@ div.ThemeList div.theme-item-title > span.icon {
 
 div.ThemeList div.theme-item-body {
     background-color: white;
+    height: 7.5em;
+    width: 15em;
 }
 
 div.ThemeList li.theme-item-active div.theme-item-title > span:first-child {
@@ -63,8 +65,11 @@ div.ThemeList li.theme-item-active div.theme-item-title > span:first-child {
 }
 
 div.ThemeList img.theme-item-thumbnail {
-    width: calc(15em - 2px);
+    width: 100%;
     height: auto;
+    max-width: 15em;
+    max-height: 7.5em;
+    vertical-align: top;
 }
 
 div.ThemeList div.theme-item-icons {
@@ -73,12 +78,13 @@ div.ThemeList div.theme-item-icons {
     right: 0;
     display: flex;
     flex-direction: column;
+    max-height: 7.5em;
 }
 
 div.ThemeList div.theme-item-icons > span.icon {
-    flex: 0 0 auto;
+    flex: 0 1 1.5em;
+    padding: 0 0.25em;
     font-size: large;
-    padding: 0.25em;
     background-color: var(--button-bg-color);
     color: var(--text-color);
     z-index: 2;
