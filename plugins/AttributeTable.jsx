@@ -779,7 +779,7 @@ class AttributeTable extends React.Component {
 
         const fields = currentEditConfig.fields.filter(field => field.id !== 'id');
         let data = "";
-        data += "id," + fields.map(field => `"${field.id.replaceAll('"', '""')}"`).join(",") + "\n";
+        data += "id," + fields.map(field => `"${field.name.replaceAll('"', '""')}"`).join(",") + "\n";
 
         this.state.features.forEach(feature => {
             data += feature.id + "," + fields.map(field => {
