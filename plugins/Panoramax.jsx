@@ -1,5 +1,5 @@
 /**
- * Copyright 2024 Sourcepole AG
+ * Copyright 2025 Sourcepole AG
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
@@ -26,6 +26,11 @@ import LocaleUtils from '../utils/LocaleUtils';
 import './style/Panoramax.css';
 import '@panoramax/web-viewer/build/index.css';
 
+
+/**
+ * Panoramax Integration for QWC2.
+ *
+ */
 class Panoramax extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
@@ -39,12 +44,16 @@ class Panoramax extends React.Component {
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string
         }),
+        /** Whether or not to load the layer containing the image sequences. */
         loadSequencesTiles: PropTypes.bool,
+        /** URL of the Panoramax instance. */
         panoramaxInstance: PropTypes.string,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
+        /** Mode for the image sequences layer: either WMS (Require a custom URL) or MVT(EPSG:3857 only). */
         tileMode: PropTypes.string,
+        /** URL of the WMS image sequences layer. */
         wmsUrl: PropTypes.string
     };
     static defaultProps = {
@@ -55,7 +64,6 @@ class Panoramax extends React.Component {
             initialY: 0,
             initiallyDocked: false,
             side: 'left'
-
         },
         loadSequencesTiles: true,
         panoramaxInstance: 'api.panoramax.xyz',
