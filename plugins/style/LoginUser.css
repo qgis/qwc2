@@ -1,5 +1,6 @@
 div.login-user {
     position: fixed;
+    z-index: 2;
     right: 0.25em;
     top: var(--topbar-height);
     color: var(--panel-text-color);
