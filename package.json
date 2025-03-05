@@ -1,7 +1,7 @@
 {
     "name": "qwc2",
-    "version": "2025.03.05-lts",
-    "description": "QGIS Web Client 2 core",
+    "version": "2025.8-lts",
+    "description": "QGIS Web Client 2",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
     "repository": "git@github.com:qgis/qwc2.git",
@@ -81,15 +81,35 @@
         "@furkot/webfonts-generator": "^2.0.2",
         "@microsoft/eslint-formatter-sarif": "^3.1.0",
         "@types/react": "^18.3.1",
+        "babel-loader": "^9.2.1",
+        "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+        "clean-webpack-plugin": "^4.0.0",
+        "copy-webpack-plugin": "^12.0.2",
+        "css-loader": "^7.1.2",
         "eslint": "^8.56.0",
         "eslint-plugin-perfectionist": "^2.10.0",
         "eslint-plugin-react": "^7.37.2",
+        "html-webpack-plugin": "^5.6.3",
         "mkdirp": "^3.0.1",
         "object-path": "^0.11.8",
         "react-docgen": "^5.4.3",
-        "typescript": "^5.7.2"
+        "source-map-loader": "^5.0.0",
+        "style-loader": "^4.0.0",
+        "typescript": "^5.7.2",
+        "webpack": "^5.97.1",
+        "webpack-bundle-size-analyzer": "^3.1.0",
+        "webpack-cli": "^5.1.4",
+        "webpack-dev-server": "^5.1.0"
     },
     "scripts": {
-        "plugindoc": "node scripts/gen-plugin-docs.js"
+        "prod": "npm run tsupdate && npm run themesconfig && npm run iconfont && webpack --mode production --progress",
+        "start": "npm run tsupdate && npm run themesconfig && npm run iconfont && webpack serve --mode development --progress --host 0.0.0.0 --port 8081",
+        "iconfont": "node scripts/makeIconkit.js",
+        "themesconfig": "node scripts/themesConfig.js || :",
+        "tsupdate": "node scripts/updateTranslations.js",
+        "plugindoc": "node scripts/gen-plugin-docs.js",
+        "build": "npm run prod",
+        "analyze": "webpack --mode production --json | webpack-bundle-size-analyzer",
+        "release": "node -e \"process.exit(require('os').platform() === 'win32' ? 0 : 1)\" && scripts\\package-commands.bat release || ./scripts/package-commands.sh release"
     }
 }

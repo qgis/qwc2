@@ -1,0 +1,122 @@
+:root.highcontrast {
+    /* Base colors */
+    --text-color: black;
+    --text-color-link: blue;
+    --text-color-disabled: #999;
+    --container-bg-color: white;
+    --input-bg-color: white;
+    --input-bg-color-disabled: white;
+    --border-color: black;
+    --color-active: blue;
+    --focus-outline: 2px solid black;
+    /* Tooltips */
+    --tooltip-bg-color: rgba(0, 0, 0, 0.75);
+    --tooltip-text-color: white;
+    --tooltip-border-color: black;
+    /* Map buttons */
+    --map-button-bg-color: black;
+    --map-button-text-color: white;
+    --map-button-hover-bg-color: white;
+    --map-button-hover-text-color: black;
+    --map-button-active-bg-color: white;
+    --map-button-active-text-color: black;
+    /* Panels (topbar and bottom bar) */
+    --panel-bg-color: rgba(255, 255, 255, 0.85);
+    --panel-text-color: black;
+    /* Titlebars */
+    --titlebar-bg-color: black;
+    --titlebar-text-color: white;
+    /* Button */
+    --button-bg-color: white;
+    --button-bg-color-hover: #ddd;
+    --button-bg-color-active: black;
+    --button-bg-color-active-hover: #222;
+    --button-bg-color-disabled: white;
+    --button-text-color: black;
+    --button-text-color-hover: black;
+    --button-text-color-active: white;
+    --button-text-color-active-hover: white;
+    --button-text-color-disabled: #999;
+    /* List */
+    --list-bg-color: white;
+    --list-section-bg-color: black;
+    --list-section-text-color: white;
+    --list-item-bg-color-even: #eee;
+    --list-item-bg-color-hover: #ddd;
+    --list-item-bg-color-active: #aaa;
+    --list-item-bg-color-active-hover: #bbb;
+    --list-item-text-color-hover: black;
+    --list-item-text-color-active: black;
+    --list-item-text-color-active-hover: black;
+    /* App menu */
+    --app-menu-bg-color: white;
+    --app-menu-text-color: black;
+    --app-menu-bg-color-hover: #ddd;
+    --app-menu-text-color-hover: black;
+    --app-submenu-bg-color: black;
+    --app-submenu-text-color: white;
+    --app-submenu-bg-color-hover: #222;
+    --app-submenu-text-color-hover: white;
+}
+
+:root.dark {
+    /* Base colors */
+    --text-color: white;
+    --text-color-link: #AAAAFF;
+    --container-bg-color: #333;
+    --input-bg-color: #3f3f3f;
+    --input-bg-color-disabled: #252526;
+    --text-color-disabled: #999;
+    --border-color: #2c2c2c;
+    --color-active: #AAAAFF;
+    --focus-outline: 2px solid #007acc;
+    /* Tooltips */
+    --tooltip-bg-color: rgba(0, 0, 0, 0.75);
+    --tooltip-text-color: white;
+    --tooltip-border-color: black;
+    /* Map buttons */
+    --map-button-bg-color: #595959;
+    --map-button-text-color: white;
+    --map-button-hover-bg-color: #f2f2f2;
+    --map-button-hover-text-color: #595959;
+    --map-button-active-bg-color: #f2f2f2;
+    --map-button-active-text-color: #595959;
+    /* Panels (topbar and bottom bar) */
+    --panel-bg-color: rgba(42, 46, 50, 0.85);
+    --panel-text-color: white;
+    /* Titlebars */
+    --titlebar-bg-color: #475057;
+    --titlebar-text-color: white;
+    /* Button */
+    --button-bg-color: #3f3f3f;
+    --button-bg-color-hover: #3a3a3a;
+    --button-bg-color-active: #202020;
+    --button-bg-color-active-hover: #1a1a1a;
+    --button-bg-color-disabled: #333;
+    --button-text-color: white;
+    --button-text-color-hover: white;
+    --button-text-color-active: white;
+    --button-text-color-active-hover: white;
+    --button-text-color-disabled: #666;
+    /* List */
+    --list-bg-color: #3f3f3f;
+    --list-section-bg-color: black;
+    --list-section-text-color: white;
+    --list-item-bg-color-even: #393939;
+    --list-item-bg-color-hover: #292929;
+    --list-item-bg-color-active: #1f1f1f;
+    --list-item-bg-color-active-hover: #0f0f0f;
+    --list-item-text-color-hover: white;
+    --list-item-text-color-active: white;
+    --list-item-text-color-active-hover: white;
+    /* App menu */
+    --app-menu-bg-color: #4f4f4f;
+    --app-menu-text-color: white;
+    --app-menu-bg-color-hover: #666;
+    --app-menu-text-color-hover: white;
+    --app-submenu-bg-color: #222;
+    --app-submenu-text-color: white;
+    --app-submenu-bg-color-hover: #404040;
+    --app-submenu-text-color-hover: white;
+}
+
