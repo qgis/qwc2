@@ -176,6 +176,12 @@ const ServiceLayerUtils = {
         } catch (e) {
             // pass
         }
+        let mapFormats = null;
+        try {
+            mapFormats = MiscUtils.ensureArray(capabilities.Capability.Request.GetMap.Format);
+        } catch (e) {
+            mapFormats = ['image/png'];
+        }
         let infoFormats = null;
         try {
             infoFormats = MiscUtils.ensureArray(capabilities.Capability.Request.GetFeatureInfo.Format);
@@ -204,13 +210,13 @@ const ServiceLayerUtils = {
             };
         }
         if (!topLayer.Layer || asGroup) {
-            return [this.getWMSLayerParams(topLayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, topLayerExtent)].filter(entry => entry);
+            return [this.getWMSLayerParams(topLayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, mapFormats, infoFormats, extwmsparams, topLayerExtent)].filter(entry => entry);
         } else {
-            const entries = MiscUtils.ensureArray(topLayer.Layer).map(layer => this.getWMSLayerParams(layer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, topLayerExtent)).filter(entry => entry);
+            const entries = MiscUtils.ensureArray(topLayer.Layer).map(layer => this.getWMSLayerParams(layer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, mapFormats, infoFormats, extwmsparams, topLayerExtent)).filter(entry => entry);
             return entries.sort((a, b) => strcmp(a.title, b.title));
         }
     },
-    getWMSLayerParams(layer, parentCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, topLayerExtent, groupbbox = null) {
+    getWMSLayerParams(layer, parentCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, mapFormats, infoFormats, extwmsparams, topLayerExtent, groupbbox = null) {
         let supportedCrs = MiscUtils.ensureArray(layer.CRS);
         if (isEmpty(supportedCrs)) {
             supportedCrs = [...(parentCrs || [])];
@@ -220,7 +226,7 @@ const ServiceLayerUtils = {
         let sublayers = [];
         const sublayerbounds = {};
         if (!isEmpty(layer.Layer)) {
-            sublayers = MiscUtils.ensureArray(layer.Layer).map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, infoFormats, extwmsparams, topLayerExtent, sublayerbounds)).filter(entry => entry);
+            sublayers = MiscUtils.ensureArray(layer.Layer).map(sublayer => this.getWMSLayerParams(sublayer, supportedCrs, calledUrlParts, version, getMapUrl, featureInfoUrl, mapFormats, infoFormats, extwmsparams, topLayerExtent, sublayerbounds)).filter(entry => entry);
         }
         let bbox = null;
         if (isEmpty(layer.BoundingBox)) {
@@ -269,6 +275,7 @@ const ServiceLayerUtils = {
             legendUrl: legendUrl,
             version: version,
             infoFormats: infoFormats,
+            mapFormats: mapFormats,
             queryable: layer.queryable === 1,
             sublayers: isEmpty(sublayers) ? null : sublayers,
             expanded: false,
