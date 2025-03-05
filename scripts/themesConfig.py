@@ -25,7 +25,7 @@ import uuid
 
 baseUrl = "http://" + socket.getfqdn()
 qwc2_path = "."
-themesConfig = os.environ.get("QWC2_THEMES_CONFIG", "themesConfig.json")
+themesConfig = os.environ.get("QWC2_THEMES_CONFIG", "static/themesConfig.json")
 
 usedThemeIds = []
 autogenExternalLayers = []
