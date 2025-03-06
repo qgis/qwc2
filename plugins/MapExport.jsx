@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import {TextEncoder, TextDecoder} from "@kayahr/text-encoding";
 import axios from 'axios';
 import dayjs from 'dayjs';
 import FileSaver from 'file-saver';
@@ -24,12 +25,14 @@ import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {explodeDxf, implodeDxf, mergeDxf} from '../utils/DxfUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/MapExport.css';
+import "@kayahr/text-encoding/encodings/windows-1252";
 
 
 /**
@@ -298,8 +301,6 @@ class MapExport extends React.Component {
         ev.preventDefault();
         this.setState({exporting: true});
 
-        const exportExternalLayers = this.state.selectedFormat !== "application/dxf" && this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion", null, 3) >= 3;
-
         const format = this.state.selectedFormat.split(";")[0];
         const formatConfiguration = (this.props.formatConfiguration?.[format] || []).find(entry => entry.name === this.state.selectedFormatConfiguration);
 
@@ -367,7 +368,15 @@ class MapExport extends React.Component {
             }
         }
 
+        if (this.state.selectedFormat === "application/dxf") {
+            this.dxfExport(params, fileName);
+        } else {
+            this.genericExport(params, fileName, formatConfiguration);
+        }
+    };
+    genericExport = (params, fileName, formatConfiguration) => {
         // Layer params
+        const exportExternalLayers = this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion", null, 3) >= 3;
         const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers, !!formatConfiguration.baseLayer);
         Object.assign(params, exportParams);
 
@@ -408,6 +417,52 @@ class MapExport extends React.Component {
             }
             /* eslint-disable-next-line */
             alert('Export failed');
+        });
+    };
+    dxfExport = (baseParams, fileName) => {
+        const promises = this.props.layers.filter(
+            layer => layer.type === 'wms' && layer.role > LayerRole.BACKGROUND && layer.mapFormats?.includes("application/dxf")
+        ).reverse().map(layer => {
+            const params = {
+                ...baseParams,
+                LAYERS: layer.params.LAYERS,
+                OPACITIES: layer.params.OPACITIES,
+                STYLES: layer.params.STYLES,
+                FILTER: layer.params.FILTER ?? '',
+                FILTER_GEOM: layer.params.FILTER_GEOM ?? ''
+            };
+            const data = Object.entries(params).map((pair) =>
+                pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
+            ).join("&");
+            const config = {
+                headers: {'Content-Type': 'application/x-www-form-urlencoded' },
+                responseType: "arraybuffer"
+            };
+            return new Promise((resolve, reject) => {
+                axios.post(layer.url, data, config).then(response => {
+                    resolve(response);
+                }).catch((e) => {
+                    /* eslint-disable-next-line */
+                    console.warn(e);
+                    resolve(null);
+                });
+            });
+        });
+        Promise.all(promises).then((responses) => {
+            const decoder = new TextDecoder("iso-8859-1");
+            const dxfDocuments = responses.filter(
+                response => response.headers['content-type'] === "application/dxf"
+            ).map(response => explodeDxf(decoder.decode(response.data)));
+            const dxfDocument = mergeDxf(dxfDocuments);
+            const result = implodeDxf(dxfDocument);
+            const encoder = new TextEncoder("iso-8859-1");
+            FileSaver.saveAs(new Blob([encoder.encode(result)], {type: "application/dxf"}), fileName);
+            /*
+            responses.forEach((response, idx) => {
+                FileSaver.saveAs(new Blob([response.data], {type: "application/dxf"}), "orig_" + idx + "_" + fileName);
+            });
+            */
+            this.setState({exporting: false});
         });
     };
 }
