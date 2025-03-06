@@ -46,6 +46,7 @@
         "MeasureLineString": "lengte meten",
         "MeasurePolygon": "Oppervlakte meten",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "Portal",
         "PrintScreen3D": "",
         "Redlining": "Redlining",
@@ -394,6 +395,10 @@
       "side": "Zijde",
       "width": "Breedte",
       "windowtitle": "Numerieke invoer"
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": "Bezig met opvragen..."

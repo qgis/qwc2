@@ -46,6 +46,7 @@
         "MeasureLineString": "Измерване на линия",
         "MeasurePolygon": "Измерване на полигон",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "Портал",
         "PrintScreen3D": "Експорт на мрежата",
         "Redlining": "Redlining",
@@ -394,6 +395,10 @@
       "side": "Страна",
       "width": "Ширина",
       "windowtitle": "Цифрово въвеждане"
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": "Запитване..."
