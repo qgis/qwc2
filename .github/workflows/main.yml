@@ -1,0 +1,72 @@
+name: QWC2 Build
+on: [push]
+
+jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version: '20.x'
+
+      - name: Install all required dependencies
+        run: yarn install
+
+      - name: Compile a deployable application bundle
+        run: yarn run prod
+
+      - name: Create zip
+        run: zip -r qwc2-stock-app.zip prod/
+
+      - name: Version number
+        id: version_number
+        run: |
+          if [ ${{ startsWith(github.ref, 'refs/tags/') }} = true ]; then
+            VERSION=$(basename ${{ github.ref }})
+          else
+            VERSION=ci-latest-$(basename ${{ github.ref }})
+            PREV_RELEASE=$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$VERSION | jq -r .url)
+            # Reset ci-latest tag
+            git config --global user.email "ci@github.com"
+            git config --global user.name "Github CI"
+            # Workaround for "could not read Username for 'https://github.com': No such device or address"
+            git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+            git tag -d $VERSION || true
+            git push origin :$VERSION || true
+            git tag -m $VERSION $VERSION
+            git push --tags
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "prev_release=${PREV_RELEASE/null/}" >> $GITHUB_OUTPUT
+        env:
+          # This token is provided by Actions, you do not need to create your own token.
+          # The token is only valid for one hour.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version_number.outputs.version }}
+          release_name: CI Build
+          draft: false
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./qwc2-stock-app.zip
+          asset_name: qwc2-app.zip
+          asset_content_type: application/zip
+
+      - name: Delete previous release
+        run: |
+          curl -s -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -X DELETE ${{ steps.version_number.outputs.prev_release }}
+        if: steps.version_number.outputs.prev_release != ''
