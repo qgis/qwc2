@@ -11,7 +11,6 @@ import ReducerIndex from '../reducers/index';
 import localeReducer from '../reducers/locale';
 ReducerIndex.register("locale", localeReducer);
 
-import {getLanguageCountries} from '@ladjs/country-language';
 import axios from 'axios';
 import deepmerge from 'deepmerge';
 
@@ -29,21 +28,20 @@ export function loadLocale(defaultLangData, defaultLang = "") {
             data: {}
         };
         const translationsPath = ConfigUtils.getTranslationsPath();
-        axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
-            const messages = response.data.messages;
+        const dispatchChangeLocale = (locale, messages) => {
             if (ConfigUtils.getConfigProp("loadTranslationOverrides")) {
-                axios.get(translationsPath + '/' + lang + '_overrides.json', config).then(response2 => {
-                    const overrideMessages = response2.data.messages;
+                axios.get(translationsPath + '/' + locale + '_overrides.json', config).then(response => {
+                    const overrideMessages = response.data.messages;
                     dispatch({
                         type: CHANGE_LOCALE,
-                        locale: lang,
+                        locale: locale,
                         messages: deepmerge(messages, overrideMessages),
                         fallbackMessages: defaultLangData.messages
                     });
                 }).catch(() => {
                     dispatch({
                         type: CHANGE_LOCALE,
-                        locale: lang,
+                        locale: locale,
                         messages: messages,
                         fallbackMessages: defaultLangData.messages
                     });
@@ -51,54 +49,25 @@ export function loadLocale(defaultLangData, defaultLang = "") {
             } else {
                 dispatch({
                     type: CHANGE_LOCALE,
-                    locale: lang,
+                    locale: locale,
                     messages: messages,
                     fallbackMessages: defaultLangData.messages
                 });
             }
-        }).catch((e) => {
+        };
+        axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
+            dispatchChangeLocale(lang, response.data.messages);
+        }).catch(() => {
             const langCode = lang.slice(0, 2).toLowerCase();
-            const countries = getLanguageCountries(langCode);
-            const country = countries.find(entry => entry.code_2 === langCode.toUpperCase()) ? langCode.toUpperCase() : ((countries[0] || {}).code_2 || "");
             // eslint-disable-next-line
-            console.warn("Failed to load locale for " + lang + " (" + e + "), trying " + langCode + "-" + country);
-            lang = langCode + "-" + country;
-            axios.get(translationsPath + '/' + lang + '.json', config).then(response => {
-                const messages = response.data.messages;
-                if (ConfigUtils.getConfigProp("loadTranslationOverrides")) {
-                    axios.get(translationsPath + '/' + lang + '_overrides.json', config).then(response2 => {
-                        const overrideMessages = response2.data.messages;
-                        dispatch({
-                            type: CHANGE_LOCALE,
-                            locale: lang,
-                            messages: deepmerge(messages, overrideMessages),
-                            fallbackMessages: defaultLangData.messages
-                        });
-                    }).catch(() => {
-                        dispatch({
-                            type: CHANGE_LOCALE,
-                            locale: lang,
-                            messages: messages,
-                            fallbackMessages: defaultLangData.messages
-                        });
-                    });
-                } else {
-                    dispatch({
-                        type: CHANGE_LOCALE,
-                        locale: lang,
-                        messages: messages,
-                        fallbackMessages: defaultLangData.messages
-                    });
-                }
-            }).catch((e2) => {
+            console.warn("Failed to load locale for " + lang + ", trying " + langCode);
+            lang = langCode;
+            axios.get(translationsPath + '/' + lang + '.json', config).then(response2 => {
+                dispatchChangeLocale(lang, response2.data.messages);
+            }).catch(() => {
                 // eslint-disable-next-line
-                console.warn("Failed to load locale for " + lang + " (" + e2 + "), defaulting to " + defaultLangData.locale);
-                dispatch({
-                    type: CHANGE_LOCALE,
-                    locale: defaultLangData.locale,
-                    messages: defaultLangData.messages,
-                    fallbackMessages: defaultLangData.messages
-                });
+                console.warn("Failed to load locale for " + lang + ", defaulting to " + defaultLangData.locale);
+                dispatchChangeLocale(defaultLangData.locale, defaultLangData.messages);
             });
         });
     };

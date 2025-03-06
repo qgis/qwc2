@@ -8,7 +8,6 @@
     "dependencies": {
         "@giro3d/giro3d": "^0.42.0",
         "@kayahr/text-encoding": "^2.0.0",
-        "@ladjs/country-language": "^1.0.3",
         "@loaders.gl/core": "^4.3.3",
         "@loaders.gl/shapefile": "^4.3.3",
         "@loaders.gl/zip": "^4.3.3",
