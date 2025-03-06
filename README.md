@@ -16,7 +16,7 @@ Some examples of QWC2 production deployments:
 ## [Upgrade notes](https://qwc-services.github.io/master/release_notes/QWC2UpgradeNotes/)
 ## [Mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-qwc2)
 
-![Screenshot](https://github.com/qgis/qwc2-demo-app/blob/gh-pages/Screenshot.jpg?raw=true)
+![Screenshot](https://github.com/qgis/qwc2/blob/gh-pages/Screenshot.jpg?raw=true)
 
 # Main Features
 
@@ -45,7 +45,7 @@ Some examples of QWC2 production deployments:
 
 # License
 
-QWC2 is released under the terms of the [BSD license](https://github.com/qgis/qwc2-demo-app/blob/master/LICENSE).
+QWC2 is released under the terms of the [BSD license](https://github.com/qgis/qwc2/blob/master/LICENSE).
 
 # Issues
 
