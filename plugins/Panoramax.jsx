@@ -12,16 +12,16 @@ import {connect} from 'react-redux';
 import * as PanoViewer from '@panoramax/web-viewer';
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import ConfigUtils from 'qwc2/utils/ConfigUtils';
-import CoordinatesUtils from 'qwc2/utils/CoordinatesUtils';
-import MapUtils from 'qwc2/utils/MapUtils';
-import ResourceRegistry from 'qwc2/utils/ResourceRegistry';
 
 import {addLayer, addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import MapSelection from '../components/MapSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
+import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import ResourceRegistry from '../utils/ResourceRegistry';
 
 import './style/Panoramax.css';
 import '@panoramax/web-viewer/build/index.css';

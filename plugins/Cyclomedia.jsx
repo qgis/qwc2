@@ -10,8 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
-import MapUtils from 'qwc2/utils/MapUtils';
-import ResourceRegistry from 'qwc2/utils/ResourceRegistry';
 
 import {addLayer, addLayerFeatures, changeLayerProperty, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
@@ -19,6 +17,8 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import ResourceRegistry from '../utils/ResourceRegistry';
 
 import './style/Cyclomedia.css';
 
