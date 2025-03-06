@@ -53,6 +53,6 @@ Please report QWC2 issues at [issues](https://github.com/qgis/qwc2/issues).
 
 # Custom application
 
-This repository contains the stock QWC2 application, which you can run stand-alone.
+This repository contains the stock QWC2 application.
 
 If you want to extend QWC2 with custom plugins etc, you can use this repository as a submodule and build your custom application on top, see [https://github.com/qgis/qwc2-demo-app](qwc2-demo-app) for an example.
