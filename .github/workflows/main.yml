@@ -65,7 +65,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./qwc2-stock-app.zip
-          asset_name: qwc2-app.zip
+          asset_name: qwc2-stock-app.zip
           asset_content_type: application/zip
 
       - name: Delete previous release
