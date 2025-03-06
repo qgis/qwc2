@@ -351,6 +351,7 @@
     },
     "maplight3d": {
       "ambientLightIntensity": "Intensité lumineuse ambiante",
+      "date": "Date",
       "directionalLightIntensity": "Intensité lumineuse directionnelle",
       "helpersVisible": "Montrer les aides",
       "normalBias": "Bias normal",
@@ -362,8 +363,7 @@
       "shadowintensity": "Intensité de l'ombre",
       "shadows": "Activer les ombres",
       "showadvanced": "Paramètres avancés",
-      "sunazimuth": "Azimut solaire",
-      "sunzenith": "Zénith solaire",
+      "time": "Heure",
       "zFactor": "Facteur z"
     },
     "measureComponent": {
