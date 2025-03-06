@@ -54,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.version_number.outputs.version }}
-          release_name: CI Build
+          release_name: ${{ steps.version_number.outputs.version }}
           draft: false
           prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
