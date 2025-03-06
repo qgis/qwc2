@@ -45,6 +45,7 @@
         "MeasureLineString": "Mérési vonal",
         "MeasurePolygon": "Mérési sokszög",
         "NewsPopup": "",
+        "Panoramax": "",
         "Portal": "",
         "PrintScreen3D": "",
         "Redlining": "Vázlat",
@@ -393,6 +394,10 @@
       "side": "",
       "width": "",
       "windowtitle": ""
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": ""

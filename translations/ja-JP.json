@@ -45,6 +45,7 @@
         "MeasureLineString": "ラインを測る",
         "MeasurePolygon": "ポリゴンを測る",
         "NewsPopup": "ニュース",
+        "Panoramax": "",
         "Portal": "ポータル",
         "PrintScreen3D": "ラスタ・エクスポート",
         "Redlining": "赤線引き",
@@ -393,6 +394,10 @@
       "side": "サイド",
       "width": "幅",
       "windowtitle": "数値入力"
+    },
+    "panoramax": {
+      "notfound": "",
+      "title": ""
     },
     "pickfeature": {
       "querying": "検索中..."
