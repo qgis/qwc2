@@ -13,3 +13,28 @@
 #MapLight3D td.maplight3d-advanced {
     height: 2em;
 }
+
+div.maplight3d-slider {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1em;
+}
+
+div.maplight3d-slider > input {
+    margin-top: -0.5em;
+    margin-bottom: 0.5em;
+    width: 100%;
+    outline: none;
+}
+
+div.maplight3d-slider-label {
+    position: relative;
+    pointer-events: none;
+}
+
+div.maplight3d-slider-label > span {
+    position: absolute;
+    bottom: 0;
+    font-size: small;
+    transform: translateX(-50%);
+}

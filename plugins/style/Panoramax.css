@@ -1,0 +1,15 @@
+div.panoramax-body {
+    height: calc(100% + 0.5em);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: -0.25em;
+}
+
+div.panoramax-body .gvs-psv-tour-arrows{
+    all: unset;
+}
+
+div.panoramax-body .gvs-btn:focus{
+    outline: none;
+}

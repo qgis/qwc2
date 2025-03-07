@@ -132,6 +132,7 @@ const ThemeUtils = {
             printUrl: ThemeUtils.inheritBaseUrlParams(theme.printUrl, theme.url, baseParams),
             featureInfoUrl: ThemeUtils.inheritBaseUrlParams(theme.featureInfoUrl, theme.url, baseParams),
             infoFormats: theme.infoFormats,
+            mapFormats: theme.availableFormats,
             layerTreeHiddenSublayers: theme.layerTreeHiddenSublayers,
             predefinedFilters: (theme.predefinedFilters || []).filter(entry => Object.keys(entry.filter).find(name => sublayerNames.includes(name))),
             externalLayerMap: {

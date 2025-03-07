@@ -20,7 +20,7 @@ const dns = require('dns');
 const { lookup, lookupService } = dns.promises;
 
 let hostFqdn = "";
-const themesConfigPath = process.env.QWC2_THEMES_CONFIG || "themesConfig.json";
+const themesConfigPath = process.env.QWC2_THEMES_CONFIG || "static/themesConfig.json";
 
 const usedThemeIds = [];
 const autogenExternalLayers = [];

@@ -50,6 +50,7 @@ class Portal extends React.Component {
         setCurrentTask: PropTypes.func,
         /** Whether the menu should be visible on startup. */
         showMenuOnStartup: PropTypes.bool,
+        startupParams: PropTypes.object,
         themes: PropTypes.object,
         /** Portal title text to show in the top bar. */
         topBarText: PropTypes.string,
@@ -65,7 +66,7 @@ class Portal extends React.Component {
         menuVisible: false
     };
     componentDidMount() {
-        if (!UrlParams.getParam('t') && !UrlParams.getParam('k') && !UrlParams.getParam('bk')) {
+        if (!this.props.startupParams.t && !this.props.startupParams.k && !this.props.startupParams.bk) {
             this.props.setCurrentTask("Portal");
         }
     }
@@ -78,7 +79,7 @@ class Portal extends React.Component {
             UrlParams.clear();
         } else if (!prevProps.themes && this.props.themes && this.props.currentTask !== "Portal") {
             // Show portal if no theme is to be loaded
-            const theme = ThemeUtils.getThemeById(this.props.themes, UrlParams.getParam('t'));
+            const theme = ThemeUtils.getThemeById(this.props.themes, this.props.startupParams.t);
             if ((!theme || theme.restricted) && (ConfigUtils.getConfigProp("dontLoadDefaultTheme") || !this.props.themes.defaultTheme)) {
                 this.props.setCurrentTask("Portal");
             }
@@ -144,6 +145,7 @@ const selector = (state) => ({
     currentTheme: state.theme.current,
     map: state.map,
     themes: state.theme.themes,
+    startupParams: state.localConfig.startupParams,
     userName: state.localConfig.username || ""
 });
 

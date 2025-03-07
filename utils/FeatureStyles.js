@@ -368,7 +368,7 @@ export default {
             image: new ol.style.Icon({
                 src: ResourceRegistry.getResource(options.img),
                 rotation: options.rotation,
-                anchor: [0.5, 1],
+                anchor: options.anchor,
                 imgSize: options.size,
                 rotateWithView: true
             })

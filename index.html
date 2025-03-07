@@ -1,0 +1,65 @@
+<!-- Build version  <%= htmlWebpackPlugin.options.build %> -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+        <meta name="HandheldFriendly" content="true" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <title>QGIS Web Client 2</title>
+        <link rel="stylesheet" type="text/css" href="assets/css/qwc2.css" />
+        <link rel="stylesheet" type="text/css" href="assets/css/colorschemes.css" />
+        <link rel="apple-touch-icon" href="assets/img/app_icon.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="assets/img/app_icon_72.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="assets/img/app_icon_114.png"/>
+        <link rel="apple-touch-icon" sizes="144x144" href="assets/img/app_icon_144.png"/>
+        <link rel="icon" href="assets/img/favicon.ico" />
+        <style type="text/css">
+        div#splash {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lds-dual-ring {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+        }
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid #595959;
+            border-color: #595959 transparent #595959 transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        </style>
+        <script type="text/javascript" src="assets/searchProviders.js" ></script>
+        <script type="text/javascript">
+        window.addEventListener("load", function(ev) {
+            document.getElementById('splash').style.display = 'none';
+        }, false);
+        </script>
+    </head>
+    <body>
+        <div id="splash"><div class="lds-dual-ring"></div></div>
+        <div id="container"></div>
+    </body>
+
+</html>

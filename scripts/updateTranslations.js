@@ -52,6 +52,9 @@ const listDir = (dir, pattern) => {
     let results = [];
     const list = fs.readdirSync(dir);
     list.forEach((file) => {
+        if (file === 'node_modules') {
+            return;
+        }
         const path = dir + '/' + file;
         const stat = fs.statSync(path);
         if (stat && stat.isDirectory()) {
@@ -94,9 +97,9 @@ let collectedMsgIds = new Set();
 for (const workspace of workspaces) {
     /* eslint-disable-next-line */
     console.log("Generating translations for " + workspace);
-    const newMsgIds = updateTsConfig(process.cwd() + '/' + workspace, '/' + workspace + '/translations/tsconfig.json');
+    const newMsgIds = updateTsConfig(process.cwd() + '/' + workspace, '/' + workspace + '/static/translations/tsconfig.json');
     collectedMsgIds = new Set([...collectedMsgIds, ...newMsgIds]);
-    const config = readJSON('/' + workspace + '/translations/tsconfig.json');
+    const config = readJSON('/' + workspace + '/static/translations/tsconfig.json');
     const strings = [
         ...(config.strings || []),
         ...(config.extra_strings || [])
@@ -107,21 +110,21 @@ for (const workspace of workspaces) {
         const langskel = merge(skel, {locale: lang});
 
         // Merge translations
-        const data = merge(langskel, cleanMessages(readJSON('/' + workspace + '/translations/' + lang + '.json'), langskel));
+        const data = merge(langskel, cleanMessages(readJSON('/' + workspace + '/static/translations/' + lang + '.json'), langskel));
         // Write updated translations file
         try {
-            fs.writeFileSync(process.cwd() + '/' + workspace + '/translations/' + lang + ".json", JSON.stringify(data, null, 2) + "\n");
+            fs.writeFileSync(process.cwd() + '/' + workspace + '/static/translations/' + lang + ".json", JSON.stringify(data, null, 2) + "\n");
             /* eslint-disable-next-line */
-            console.log('Wrote ' + workspace + '/translations/' + lang + '.json');
+            console.log('Wrote ' + workspace + '/static/translations/' + lang + '.json');
         } catch (e) {
             /* eslint-disable-next-line */
-            console.error('Failed to write ' + workspace + '/translations/' + lang + '.json: ' + e);
+            console.error('Failed to write ' + workspace + '/static/translations/' + lang + '.json: ' + e);
         }
     }
 }
 
 // Generate application translations
-updateTsConfig(process.cwd() + '/js', '/static/translations/tsconfig.json', collectedMsgIds);
+updateTsConfig(fs.existsSync(process.cwd() + '/js') ? process.cwd() + '/js' : process.cwd(), '/static/translations/tsconfig.json', collectedMsgIds);
 const config = readJSON('/static/translations/tsconfig.json');
 const strings = [
     ...(config.strings || []),
@@ -136,7 +139,7 @@ for (const lang of config.languages || []) {
 
     // Merge translations from workspaces
     for (const workspace of workspaces) {
-        data = merge(data, readJSON('/' + workspace + '/translations/' + lang + '.json'));
+        data = merge(data, readJSON('/' + workspace + '/static/translations/' + lang + '.json'));
     }
 
     // Revert to original values for strings specified in overrides
