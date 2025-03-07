@@ -728,7 +728,8 @@ const LayerUtils = {
             FORMAT: "image/png",
             CRS: map.projection,
             SRS: map.projection,
-            SLD_VERSION: "1.1.0"
+            SLD_VERSION: "1.1.0",
+            WIDTH: 200
         };
         if (extraLegendParameters) {
             Object.assign(requestParams, Object.fromEntries(extraLegendParameters.split("&").map(entry => entry.split("="))));
@@ -737,8 +738,6 @@ const LayerUtils = {
             requestParams.SCALE = Math.round(scale);
         }
         if (bboxDependentLegend === true || (bboxDependentLegend === "theme" && layer.role === LayerRole.THEME)) {
-            requestParams.WIDTH = map.size.width;
-            requestParams.HEIGHT = map.size.height;
             const bounds = map.bbox.bounds;
             if (CoordinatesUtils.getAxisOrder(map.projection).substr(0, 2) === 'ne' && layer.version === '1.3.0') {
                 requestParams.BBOX = [bounds[1], bounds[0], bounds[3], bounds[2]].join(",");
