@@ -65,4 +65,4 @@ QWC2 is released under the terms of the [BSD license](https://github.com/qgis/qw
 
 This repository contains the stock QWC2 application.
 
-If you want to extend QWC2 with custom plugins etc, you can use this repository as a submodule and build your custom application on top, see [https://github.com/qgis/qwc2-demo-app](qwc2-demo-app) for an example.
+If you want to extend QWC2 with custom plugins etc, you can use this repository as a submodule and build your custom application on top, see [https://github.com/qgis/qwc2-demo-app](https://github.com/qgis/qwc2-demo-app) for an example.
