@@ -39,6 +39,7 @@ import MapLegendPlugin from './plugins/MapLegend';
 import MapTipPlugin from './plugins/MapTip';
 import MeasurePlugin from './plugins/Measure';
 import NewsPopupPlugin from './plugins/NewsPopup';
+import PanoramaxPlugin from './plugins/Panoramax';
 import PortalPlugin from './plugins/Portal';
 import PrintPlugin from './plugins/Print';
 import ProcessNotificationsPlugin from './plugins/ProcessNotifications';
@@ -110,6 +111,7 @@ export default {
             MapTipPlugin: MapTipPlugin,
             MeasurePlugin: MeasurePlugin,
             NewsPopupPlugin: NewsPopupPlugin,
+            PanoramaxPlugin: PanoramaxPlugin,
             PortalPlugin: PortalPlugin,
             PrintPlugin: PrintPlugin,
             ProcessNotificationsPlugin: ProcessNotificationsPlugin,
