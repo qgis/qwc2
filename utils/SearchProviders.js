@@ -311,7 +311,15 @@ export class FulltextSearch {
         const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
         axios.get(searchServiceUrl, {params}).then(response => {
             const data = FulltextSearch.filterFulltextResults(response.data, searchParams.filterPoly, searchParams.mapcrs);
-            const placeResultCount = (data.result_counts || []).reduce((res, entry) => res + (entry.dataproduct_id !== 'dataproduct' ? (entry.count || 0) : 0), 0);
+            const placeResultCount = (data.result_counts || []).reduce((res, entry) => {
+                if (entry.dataproduct_id === 'dataproduct') {
+                    return res;
+                } else if (res === -1 || entry.count === -1) {
+                    return -1;
+                } else {
+                    return res + entry.count;
+                }
+            }, 0);
             const results = [];
             // Layers
             const formatLayerEntry = (dataproduct => ({
