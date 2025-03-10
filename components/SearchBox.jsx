@@ -312,7 +312,12 @@ class SearchBox extends React.Component {
             }
             return result.concat(this.state.searchResults[provider].results.map(group => {
                 const sectionId = provider + ":" + group.id;
-                const additionalResults = group.resultCount ? group.resultCount - group.items.length : 0;
+                let moreLabel = null;
+                if (group.resultCount > 0 && group.resultCount > group.items.length) {
+                    moreLabel = LocaleUtils.tr("search.more", group.resultCount - group.items.length);
+                } else if (group.resultCount === -1) {
+                    moreLabel = LocaleUtils.tr("search.unknownmore");
+                }
                 if (group.items.length === 0) {
                     return null;
                 }
@@ -333,11 +338,11 @@ class SearchBox extends React.Component {
                             {!this.isCollapsed(sectionId) ? (
                                 <div className="searchbox-results-section-body">
                                     {group.items.map((entry) => renderer(provider, group, entry))}
-                                    {additionalResults > 0 && (
+                                    {moreLabel ? (
                                         <div className="searchbox-more-results">
-                                            {LocaleUtils.tr("search.more", additionalResults)}
+                                            {moreLabel}
                                         </div>
-                                    )}
+                                    ) : null}
                                 </div>
                             ) : null}
                         </div>

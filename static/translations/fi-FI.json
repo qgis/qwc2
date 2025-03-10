@@ -535,7 +535,8 @@
       "recent": "Viimeisimmät haut",
       "search": "Etsi",
       "themelayers": "",
-      "themes": "Teemat"
+      "themes": "Teemat",
+      "unknownmore": ""
     },
     "serviceinfo": {
       "abstract": "Tiivistelmä",

@@ -535,7 +535,8 @@
       "recent": "最近の検索",
       "search": "検索",
       "themelayers": "テーマのレイヤ",
-      "themes": "テーマ"
+      "themes": "テーマ",
+      "unknownmore": ""
     },
     "serviceinfo": {
       "abstract": "概要",
