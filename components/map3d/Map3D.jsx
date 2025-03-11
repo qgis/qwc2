@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import Instance from '@giro3d/giro3d/core/Instance.js';
+import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import Map from '@giro3d/giro3d/entities/Map.js';
@@ -112,6 +113,7 @@ class Map3D extends React.Component {
 
             setViewToExtent: (bounds, angle) => {},
             getTerrainHeight: (scenePos) => {},
+            getTerrainHeightFromMap: (scenePos) => {},
             getSceneIntersection: (x, y) => {}
         },
         sceneId: null
@@ -133,6 +135,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
         this.state.sceneContext.getTerrainHeight = this.getTerrainHeight;
+        this.state.sceneContext.getTerrainHeightFromMap = this.getTerrainHeightFromMap;
         this.state.sceneContext.getSceneIntersection = this.getSceneIntersection;
     }
     componentDidMount() {
@@ -544,6 +547,12 @@ class Map3D extends React.Component {
                 });
             });
         });
+    };
+    getTerrainHeightFromMap = (scenePos) => {
+        const coordinates = new Coordinates(this.state.sceneContext.mapCrs, scenePos[0], scenePos[1], 0);
+        const elevationResult = this.state.sceneContext.map.getElevation({coordinates});
+        elevationResult.samples.sort((a, b) => a.resolution > b.resolution);
+        return elevationResult.samples[0]?.elevation;
     };
     getSceneIntersection = (x, y, objects = true) => {
         const raycaster = new Raycaster();

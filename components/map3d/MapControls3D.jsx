@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {Raycaster, Vector2, Vector3} from 'three';
@@ -235,9 +234,7 @@ class MapControls3D extends React.Component {
             x: 0.5 * (bounds[0] + bounds[2]),
             y: 0.5 * (bounds[1] + bounds[3])
         };
-        const elevationResult = this.props.sceneContext.map.getElevation({coordinates: new Coordinates(this.props.sceneContext.mapCrs, center.x, center.y)});
-        elevationResult.samples.sort((a, b) => a.resolution > b.resolution);
-        center.z = elevationResult.samples[0]?.elevation || 0;
+        center.z = this.props.sceneContext.getTerrainHeightFromMap([center.x, center.y]) ?? 0;
 
         // Camera height to width bbox width
         const fov = 35 / 180 * Math.PI;
@@ -348,7 +345,7 @@ class MapControls3D extends React.Component {
             return;
         }
         const pos = intersection.point;
-        this.props.sceneContext.getTerrainHeight([pos.x, pos.y]).then(z => {
+        this.props.sceneContext.getTerrainHeightFromDTM([pos.x, pos.y]).then(z => {
             // Animate from old to new position/target
             const oldPosition = this.props.sceneContext.scene.view.camera.position.clone();
             const oldTarget = this.props.sceneContext.scene.view.controls.target.clone();

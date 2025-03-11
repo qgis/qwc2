@@ -8,7 +8,6 @@
 
 import React from 'react';
 
-import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import Shape from '@giro3d/giro3d/entities/Shape';
 import DrawTool, {conditions} from "@giro3d/giro3d/interactions/DrawTool.js";
@@ -398,13 +397,7 @@ export default class Measure3D extends React.Component {
         this.restart();
     };
     getElevation = (point) => {
-        const coordinates = new Coordinates(this.props.sceneContext.mapCrs, point[0], point[1], 0);
-        const result = this.props.sceneContext.map.getElevation({coordinates});
-        if (result.samples.length > 0) {
-            result.samples.sort((a, b) => a.resolution - b.resolution);
-            return result.samples[0].elevation;
-        }
-        return null;
+        return this.props.sceneContext.getTerrainHeightFromMap(point);
     };
     triangleArea = (u, v) => {
         const cross = [u[1] * v[2] - u[2] * v[1], u[0] * v[2] - u[2] * v[0], u[0] * v[1] - u[1] * v[0]];

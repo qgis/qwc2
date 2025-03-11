@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import PropTypes from 'prop-types';
 import {Group, Plane, Raycaster, Vector2, Vector3} from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
@@ -178,14 +177,7 @@ class Compare3D extends React.Component {
         const target = new Vector3(x, y, 0);
         const distance = this.props.sceneContext.scene.view.camera.position.distanceTo(target);
         const scale = Math.max(1, distance / 200);
-
-        const coordinates = new Coordinates(this.props.sceneContext.mapCrs, x, y, 0);
-        const result = this.props.sceneContext.map.getElevation({coordinates});
-        let z = 0;
-        if (result.samples.length > 0) {
-            result.samples.sort((a, b) => a.resolution - b.resolution);
-            z = result.samples[0].elevation;
-        }
+        const z = this.props.sceneContext.getTerrainHeightFromMap([x, y]) ?? 0;
 
         this.arrows.position.x = target.x;
         this.arrows.position.y = target.y;
