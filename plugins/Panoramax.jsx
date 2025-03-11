@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import * as PanoViewer from '@panoramax/web-viewer';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -161,34 +160,36 @@ class Panoramax extends React.Component {
     initializeViewer = (image) => {
         const viewerElement = this.viewerRef.current;
         if (viewerElement) {
-            this.viewer = new PanoViewer.Viewer(
-                viewerElement,
-                `https://${this.props.panoramaxInstance}/api`,
-                {
-                    map: false,
-                    selectedPicture: image
-                }
-            );
-            this.viewer.addEventListener('psv:picture-loading', (event) => {
-                this.setState(
+            import('@panoramax/web-viewer').then(PanoViewer => {
+                this.viewer = new PanoViewer.Viewer(
+                    viewerElement,
+                    `https://${this.props.panoramaxInstance}/api`,
                     {
-                        lon: event.detail.lon,
-                        lat: event.detail.lat
-                    },
-                    () => this.handlePanoramaxEvent()
+                        map: false,
+                        selectedPicture: image
+                    }
                 );
-            });
-            this.viewer.addEventListener('psv:view-rotated', (event) => {
-                this.setState(
-                    { yaw: event.detail.x },
-                    () => this.handlePanoramaxEvent()
-                );
-            });
-            this.viewer.addEventListener('psv:picture-loaded', (event) => {
-                this.setState(
-                    { yaw: event.detail.x },
-                    () => this.handlePanoramaxEvent()
-                );
+                this.viewer.addEventListener('psv:picture-loading', (event) => {
+                    this.setState(
+                        {
+                            lon: event.detail.lon,
+                            lat: event.detail.lat
+                        },
+                        () => this.handlePanoramaxEvent()
+                    );
+                });
+                this.viewer.addEventListener('psv:view-rotated', (event) => {
+                    this.setState(
+                        { yaw: event.detail.x },
+                        () => this.handlePanoramaxEvent()
+                    );
+                });
+                this.viewer.addEventListener('psv:picture-loaded', (event) => {
+                    this.setState(
+                        { yaw: event.detail.x },
+                        () => this.handlePanoramaxEvent()
+                    );
+                });
             });
         }
     };
