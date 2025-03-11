@@ -214,23 +214,24 @@ class Map3D extends React.Component {
         const prevLayersMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
 
         // Add-update new layers
-        let prevLayer = this.getLayer("__baselayer");
+        let layerBelow = this.getLayer("__baselayer");
         [...layers].reverse().forEach(layer => {
+            const prevLayer = prevLayersMap[layer.id];
             const layerCreator = LayerRegistry[layer.type];
             let mapLayer = this.getLayer(layer.id);
             if (mapLayer) {
-                layerCreator.update3d(mapLayer.source, layer, prevLayersMap[layer.id], this.state.sceneContext.mapCrs);
+                layerCreator.update3d(mapLayer.source, layer, prevLayer, this.state.sceneContext.mapCrs);
             } else {
                 mapLayer = layerCreator.create3d(layer, this.state.sceneContext.mapCrs);
                 this.addLayer(layer.id, mapLayer);
             }
-            this.map.insertLayerAfter(mapLayer, prevLayer);
+            this.map.insertLayerAfter(mapLayer, layerBelow);
             mapLayer.visible = layer.visibility;
             mapLayer.opacity = layer.opacity / 255;
-            prevLayer = mapLayer;
+            layerBelow = mapLayer;
         });
         // Remove old layers
-        Object.keys(prevLayers).forEach(layer => {
+        prevLayers.forEach(layer => {
             if (!(layer.id in layersMap)) {
                 this.removeLayer(layer.id);
             }
