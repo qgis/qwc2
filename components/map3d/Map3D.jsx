@@ -13,6 +13,7 @@ import Instance from '@giro3d/giro3d/core/Instance.js';
 import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
+import FeatureCollection from "@giro3d/giro3d/entities/FeatureCollection.js";
 import Map from '@giro3d/giro3d/entities/Map.js';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import Inspector from "@giro3d/giro3d/gui/Inspector.js";
@@ -205,7 +206,8 @@ class Map3D extends React.Component {
             return {
                 ...layer,
                 visibility: prevLayer?.visibility ?? false,
-                opacity: prevLayer?.opacity ?? 255
+                opacity: prevLayer?.opacity ?? 255,
+                extrusionHeight: prevLayer?.extrusionHeight ?? (layer.type === 'vector' ? 0 : undefined)
             };
         }).filter(Boolean);
     };
@@ -229,14 +231,82 @@ class Map3D extends React.Component {
             mapLayer.visible = layer.visibility;
             mapLayer.opacity = layer.opacity / 255;
             layerBelow = mapLayer;
+            if (layer.extrusionHeight > 0) {
+                this.createUpdateExtrudedLayer(mapLayer, layer, layer.features !== prevLayer?.features);
+            } else if (prevLayer?.extrusionHeight > 0) {
+                this.removeExtrudedLayer(layer.id);
+            }
         });
         // Remove old layers
         prevLayers.forEach(layer => {
             if (!(layer.id in layersMap)) {
+                if (layer.extrusionHeight) {
+                    this.removeExtrudedLayer(layer.id);
+                }
                 this.removeLayer(layer.id);
             }
         });
         this.instance.notifyChange(this.map);
+    };
+    createUpdateExtrudedLayer = (mapLayer, layer, forceCreate = false) => {
+        const bounds = layer.bbox.bounds;
+        const extent = new Extent(layer.bbox.crs, bounds[0], bounds[2], bounds[1], bounds[3]);
+        const objId = layer.id + ":extruded";
+        let obj = this.objectMap[objId];
+        if (!obj || forceCreate) {
+            if (obj) {
+                this.instance.remove(obj);
+            }
+            obj = new FeatureCollection({
+                source: mapLayer.source.source,
+                extent: extent,
+                elevation: (feature) => {
+                    let coordinates = feature.getGeometry().getCoordinates();
+                    while (Array.isArray(coordinates[0])) {
+                        coordinates = coordinates[0];
+                    }
+                    return coordinates[2] || this.getTerrainHeightFromMap(coordinates) || 0;
+                },
+                extrusionOffset: () => {
+                    return obj.userData.extrusionHeight;
+                },
+                style: (feature) => {
+                    return obj.userData.featureStyles?.[feature.getId()] ?? {
+                        fill: {color: 'red', shading: true}
+                    };
+                }
+            });
+            obj.castShadow = true;
+            obj.receiveShadow = true;
+            this.instance.add(obj);
+            this.objectMap[objId] = obj;
+        }
+        obj.userData.extrusionHeight = layer.extrusionHeight;
+        const makeColor = (c) => Array.isArray(c) ? ((c[0] << 16) | (c[1] << 8) | c[2]) : c;
+        obj.userData.featureStyles = layer.features?.reduce?.((res, feature) => ({
+            ...res,
+            [feature.id]: {
+                fill: {
+                    color: makeColor(feature.styleOptions.fillColor),
+                    shading: true
+                }
+            }
+        }), {});
+        obj.traverse(mesh => {
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+        });
+        obj.opacity = mapLayer.opacity;
+        obj.visible = mapLayer.visible;
+        obj.updateStyles();
+    };
+    removeExtrudedLayer = (layerId) => {
+        const objId = layerId + ":extruded";
+        if (this.objectMap[objId]) {
+            this.instance.remove(this.objectMap[objId]);
+            delete this.objectMap[objId];
+        }
+        this.instance.notifyChange();
     };
     applySceneObjectUpdates = (sceneObjects) => {
         Object.entries(sceneObjects).forEach(([objectId, options]) => {

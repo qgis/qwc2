@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
+import NumberInput from '../widgets/NumberInput';
 
 import './style/LayerTree3D.css';
 
@@ -78,10 +79,18 @@ export default class LayerTree3D extends React.Component {
                 </div>
                 {this.state.activemenu === entryId ? (
                     <div className="layertree3d-item-optionsmenu">
-                        <Icon icon="transparency" />
-                        <input className="layertree3d-item-transparency-slider" max="255" min="0"
-                            onChange={(ev) => updateCallback(entryId, {opacity: parseInt(ev.target.value, 10)})}
-                            step="1" type="range" value={entry.opacity} />
+                        <div className="layertree3d-item-optionsmenu-row">
+                            <Icon icon="transparency" />
+                            <input className="layertree3d-item-transparency-slider" max="255" min="0"
+                                onChange={(ev) => updateCallback(entryId, {opacity: parseInt(ev.target.value, 10)})}
+                                step="1" type="range" value={entry.opacity} />
+                        </div>
+                        {entry.extrusionHeight !== undefined ? (
+                            <div className="layertree3d-item-optionsmenu-row">
+                                <span>Extrude: </span>
+                                <NumberInput max={500} min={0} onChange={h => updateCallback(entryId, {extrusionHeight: h})} value={entry.extrusionHeight}/>
+                            </div>
+                        ) : null}
                     </div>
                 ) : null}
             </div>
