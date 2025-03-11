@@ -201,9 +201,9 @@ class View3D extends React.Component {
         return null;
     };
     render() {
-        const button = (
+        const button = this.props.theme.current?.map3d ? (
             <View3DSwitcher key="View3DButton" position={this.props.buttonPosition} />
-        );
+        ) : null;
         return [button, this.render3DWindow()];
     }
     onClose = () => {
