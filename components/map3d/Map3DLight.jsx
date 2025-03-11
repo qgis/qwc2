@@ -126,7 +126,7 @@ export default class Map3DLight extends React.Component {
                         </tr>
                         <tr>
                             <td>{LocaleUtils.tr("maplight3d.shadowintensity")}</td>
-                            <td><NumberInput decimals={1} disabled={!lightParams.shadowsEnabled} max={1} min={0} onChange={value => this.updateLightParams('shadowIntensity', value)} value={lightParams.shadowIntensity} /></td>
+                            <td><NumberInput decimals={1} disabled={!lightParams.shadowsEnabled} max={2} min={0} onChange={value => this.updateLightParams('shadowIntensity', value)} value={lightParams.shadowIntensity} /></td>
                         </tr>
                         <tr>
                             <td className="maplight3d-advanced" colSpan="2">
