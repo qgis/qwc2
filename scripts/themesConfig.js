@@ -534,6 +534,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.flags = configItem.flags;
             resultItem.mapTips = configItem.mapTips;
             resultItem.userMap = configItem.userMap;
+            resultItem.map3d = configItem.map3d;
             resultItem.editConfig = getEditConfig(configItem.editConfig);
 
             // set default theme

@@ -531,6 +531,9 @@ def getTheme(config, configItem, result, resultItem):
         if "userMap" in configItem:
             resultItem["userMap"] = configItem["userMap"]
 
+        if "map3d" in configItem:
+            resultItem["map3d"] = configItem["map3d"]
+
         resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None)
 
         # set default theme
