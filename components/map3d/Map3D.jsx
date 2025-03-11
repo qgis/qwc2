@@ -112,7 +112,7 @@ class Map3D extends React.Component {
             updateSceneObject: (objectId, options) => {},
 
             setViewToExtent: (bounds, angle) => {},
-            getTerrainHeight: (scenePos) => {},
+            getTerrainHeightFromDTM: (scenePos) => {},
             getTerrainHeightFromMap: (scenePos) => {},
             getSceneIntersection: (x, y) => {}
         },
@@ -134,7 +134,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
-        this.state.sceneContext.getTerrainHeight = this.getTerrainHeight;
+        this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
         this.state.sceneContext.getTerrainHeightFromMap = this.getTerrainHeightFromMap;
         this.state.sceneContext.getSceneIntersection = this.getSceneIntersection;
     }
@@ -525,7 +525,7 @@ class Map3D extends React.Component {
 
         }}), this.props.onMapInitialized);
     };
-    getTerrainHeight = (scenePos) => {
+    getTerrainHeightFromDTM = (scenePos) => {
         const dtmPos = CoordinatesUtils.reproject(scenePos, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);
         return new Promise((resolve) => {
             fromUrl(this.state.sceneContext.dtmUrl).then(tiff => {

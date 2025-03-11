@@ -94,7 +94,7 @@ export default class SearchField3D extends React.Component {
 
         sceneContext.setViewToExtent(bounds, 0);
         // Add pin and label at result position above terrain
-        sceneContext.getTerrainHeight(scenePos).then((terrainHeight) => {
+        sceneContext.getTerrainHeightFromDTM(scenePos).then((terrainHeight) => {
 
             const loader = new GLTFLoader();
             loader.load(pinModel, (gltf) => {
