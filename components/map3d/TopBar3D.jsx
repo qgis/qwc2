@@ -90,7 +90,9 @@ class TopBar3D extends React.Component {
                         menuItems={menuItems}
                         openExternalUrl={this.openUrl}
                         showFilterField={config.appMenuFilterField} />
-                    <FullscreenSwitcher />
+                    {this.props.view3dMode === View3DMode.FULLSCREEN ? (
+                        <FullscreenSwitcher />
+                    ) : null}
                 </div>
             </Swipeable>
         );
