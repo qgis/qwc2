@@ -145,6 +145,10 @@ class ResizeableWindow extends React.Component {
                 this.props.setSplitScreen(this.id, dockSide, dockSize, this.props.splitTopAndBottomBar);
             }
         }
+        if (!this.props.visible && prevProps.visible && this.state.externalWindow) {
+            // Cannot hide an external window
+            this.moveToInternalWindow();
+        }
     }
     renderRole = (role) => {
         return React.Children.toArray(this.props.children).find((child) => child.props.role === role);
