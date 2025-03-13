@@ -13,84 +13,90 @@ import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import FeatureStyles from '../../../utils/FeatureStyles';
 
 
+export function wfsToOpenlayersOptions(options) {
+    const formatMap = {
+        "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+        "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+        "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+
+        "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
+
+        "text/xml; subtype=gml/3.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+        "text/xml; subtype=gml/3.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+        "text/xml; subtype=gml/3.1.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+        "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
+        "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+        "text/xml; subtype=gml/3.2.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+        "text/xml; subtype=gml/3.2.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
+        "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
+
+        "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
+        "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({dataProjection: proj}),
+
+        "geojson": (proj) => new ol.format.GeoJSON({dataProjection: proj}),
+        "json": (proj) => new ol.format.GeoJSON({dataProjection: proj}),
+        "application/json": (proj) => new ol.format.GeoJSON({dataProjection: proj})
+    };
+
+    let olformat = null;
+    let format = null;
+    for (const key of Object.keys(formatMap)) {
+        const fmt = options.formats.find(entry => entry.toLowerCase() === key);
+        if (fmt) {
+            olformat = formatMap[key](options.projection);
+            format = fmt;
+            break;
+        }
+    }
+    if (!format) {
+        // eslint-disable-next-line
+        console.warn("No supported WFS format found");
+        return null;
+    }
+
+    const typeName = options.version < "2.0.0" ? "typeName" : "typeNames";
+
+    return {
+        formatName: format,
+        format: olformat,
+        url: options.url ? function(extent) {
+            let bbox = extent.join(',');
+            let srsName = options.projection;
+            if (options.version >= "1.1.0") {
+                // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
+                // Invert WGS axis orentation
+                const axisOrientation = CoordinatesUtils.getAxisOrder(options.projection);
+                const requestExtent = axisOrientation === 'neu' ? [extent[1], extent[0], extent[3], extent[2]] : extent;
+                bbox = requestExtent.join(',') + "," + CoordinatesUtils.toOgcUrnCrs(options.projection);
+                srsName = CoordinatesUtils.toOgcUrnCrs(options.projection);
+            }
+            const urlParts = url.parse(options.url, true);
+            const urlParams = Object.entries(urlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
+            delete urlParts.search;
+            urlParts.query = {
+                ...urlParams,
+                SERVICE: 'WFS',
+                VERSION: options.version,
+                REQUEST: 'GetFeature',
+                [typeName]: options.name,
+                outputFormat: format,
+                srsName: srsName,
+                bbox: bbox
+            };
+            return url.format(urlParts);
+        } : undefined,
+        strategy: ol.loadingstrategy.bbox
+    };
+}
+
 export default {
     create: (options) => {
-        const formatMap = {
-            "gml3": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
-            "gml32": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
-            "application/gml+xml; version=3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
-
-            "gml2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
-
-            "text/xml; subtype=gml/3.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
-            "text/xml; subtype=gml/3.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
-            "text/xml; subtype=gml/3.1.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
-            "text/xml; subtype=gml/3.1.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML3({dataProjection: proj}), version: options.version}),
-            "text/xml; subtype=gml/3.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
-            "text/xml; subtype=gml/3.2.0": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
-            "text/xml; subtype=gml/3.2.1": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML32({dataProjection: proj}), version: options.version}),
-            "text/xml; subtype=gml/2.1.2": (proj) => new ol.format.WFS({gmlFormat: new ol.format.GML2({dataProjection: proj}), version: options.version}),
-
-            "kml": (proj) => new ol.format.KML({defaultDataProjection: proj}),
-            "application/vnd.google-earth.kml+xml": (proj) => new ol.format.KML({dataProjection: proj}),
-
-            "geojson": (proj) => new ol.format.GeoJSON({dataProjection: proj}),
-            "json": (proj) => new ol.format.GeoJSON({dataProjection: proj}),
-            "application/json": (proj) => new ol.format.GeoJSON({dataProjection: proj})
-        };
-
-        let olformat = null;
-        let format = null;
-        for (const key of Object.keys(formatMap)) {
-            const fmt = options.formats.find(entry => entry.toLowerCase() === key);
-            if (fmt) {
-                olformat = formatMap[key](options.projection);
-                format = fmt;
-                break;
-            }
-        }
-        if (!format) {
-            // eslint-disable-next-line
-            console.warn("No supported WFS format found");
-            return null;
-        }
-
-        const typeName = options.version < "2.0.0" ? "typeName" : "typeNames";
-
         const vectorSource = new ol.source.Vector({
-            format: olformat,
+            ...wfsToOpenlayersOptions(options),
             loader: options.loader ? function(extent, resolution, projection, success, failure) {
                 options.loader(vectorSource, extent, resolution, projection, success, failure);
-            } : undefined,
-            url: options.url ? function(extent) {
-                let bbox = extent.join(',');
-                let srsName = options.projection;
-                if (options.version >= "1.1.0") {
-                    // http://augusttown.blogspot.com/2010/08/mysterious-bbox-parameter-in-web.html
-                    // Invert WGS axis orentation
-                    const axisOrientation = CoordinatesUtils.getAxisOrder(options.projection);
-                    const requestExtent = axisOrientation === 'neu' ? [extent[1], extent[0], extent[3], extent[2]] : extent;
-                    bbox = requestExtent.join(',') + "," + CoordinatesUtils.toOgcUrnCrs(options.projection);
-                    srsName = CoordinatesUtils.toOgcUrnCrs(options.projection);
-                }
-                const urlParts = url.parse(options.url, true);
-                const urlParams = Object.entries(urlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
-                delete urlParts.search;
-                urlParts.query = {
-                    ...urlParams,
-                    SERVICE: 'WFS',
-                    VERSION: options.version,
-                    REQUEST: 'GetFeature',
-                    [typeName]: options.name,
-                    outputFormat: format,
-                    srsName: srsName,
-                    bbox: bbox
-                };
-                return url.format(urlParts);
-            } : undefined,
-            strategy: ol.loadingstrategy.bbox
+            } : undefined
         });
-
         return new ol.layer.Vector({
             source: vectorSource,
             style: (feature) => FeatureStyles.default(feature, {

@@ -8,11 +8,13 @@
  */
 
 import vectorLayer from './VectorLayer3D';
+import wfsLayer from './WFSLayer3D';
 import wmsLayer from './WMSLayer3D';
 import wmtsLayer from './WMTSLayer3D';
 
 export default {
     vector: vectorLayer,
+    wfs: wfsLayer,
     wms: wmsLayer,
     wmts: wmtsLayer
 };
