@@ -150,6 +150,14 @@ class View3D extends React.Component {
                 UrlParams.updateParams({v: undefined});
             }
         }
+        // Switch to 2D mode if new theme has no 3D configuration
+        if (
+            this.props.theme.current !== prevProps.theme.current &&
+            !this.props.theme.current?.map3d &&
+            this.props.view3dMode !== View3DMode.DISABLED
+        ) {
+            this.props.setView3dMode(View3D.DISABLED);
+        }
     }
     render3DWindow = () => {
         if (this.props.display.view3dMode > View3DMode.DISABLED) {
