@@ -21,7 +21,7 @@ import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
 import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh} from 'three';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
 import {setCurrentTask} from '../../actions/task';
@@ -564,7 +564,7 @@ class Map3D extends React.Component {
                 colorLayers: colorLayers,
                 sceneObjects: sceneObjects
             },
-            sceneId: uuidv1()
+            sceneId: uuidv4()
         }));
 
         // Inspector
