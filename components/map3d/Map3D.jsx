@@ -252,11 +252,21 @@ class Map3D extends React.Component {
         const bounds = layer.bbox.bounds;
         const extent = new Extent(layer.bbox.crs, bounds[0], bounds[2], bounds[1], bounds[3]);
         const objId = layer.id + ":extruded";
+        const makeColor = (c) => {
+            if (Array.isArray(c)) {
+                return ((c[0] << 16) | (c[1] << 8) | c[2]);
+            } else if (typeof c === "string") {
+                return parseInt(c.replace("#", ""), 16);
+            } else {
+                return c;
+            }
+        };
         let obj = this.objectMap[objId];
         if (!obj || forceCreate) {
             if (obj) {
                 this.instance.remove(obj);
             }
+            const layercolor = makeColor(options.color ?? "#FF0000");
             obj = new FeatureCollection({
                 source: mapLayer.source.source,
                 extent: extent,
@@ -272,7 +282,7 @@ class Map3D extends React.Component {
                 },
                 style: (feature) => {
                     return obj.userData.featureStyles?.[feature.getId()] ?? {
-                        fill: {color: 'red', shading: true}
+                        fill: {color: layercolor, shading: true}
                     };
                 }
             });
@@ -282,7 +292,6 @@ class Map3D extends React.Component {
             this.objectMap[objId] = obj;
         }
         obj.userData.extrusionHeight = layer.extrusionHeight;
-        const makeColor = (c) => Array.isArray(c) ? ((c[0] << 16) | (c[1] << 8) | c[2]) : c;
         obj.userData.featureStyles = layer.features?.reduce?.((res, feature) => ({
             ...res,
             [feature.id]: {
