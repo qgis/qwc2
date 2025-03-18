@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import url from 'url';
 
+import {View3DMode} from '../actions/display';
 import {addMarker, removeMarker} from '../actions/layers';
 import SideBar from '../components/SideBar';
 import ShareLink from '../components/share/ShareLink';
@@ -32,6 +33,8 @@ import './style/Share.css';
  * Compact permalinks will be generated if `permalinkServiceUrl` in `config.json` points to a `qwc-permalink-service`.
  */
 class Share extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         addMarker: PropTypes.func,
         currentTask: PropTypes.string,
@@ -45,6 +48,7 @@ class Share extends React.Component {
         showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.arrayOf(PropTypes.string)]),
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
+        view3dMode: PropTypes.number
     };
     static defaultProps = {
         showSocials: true,
@@ -89,7 +93,7 @@ class Share extends React.Component {
         const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={shareUrl}/> : null;
         return (
             <div>
-                {ConfigUtils.havePlugin("StartupMarker") ? (
+                {this.props.view3dMode !== View3DMode.FULLSCREEN && ConfigUtils.havePlugin("StartupMarker") ? (
                     <div className="share-option-pin">
                         <span>{LocaleUtils.tr("share.showpin")}</span>
                         <ToggleSwitch active={this.state.pin} onChange={active => this.setState({pin: active})} />

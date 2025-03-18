@@ -21,6 +21,8 @@ import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import {fromUrl} from "geotiff";
 import PropTypes from 'prop-types';
 import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh} from 'three';
+import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
@@ -28,7 +30,7 @@ import {setCurrentTask} from '../../actions/task';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
-import {UrlParams} from '../../utils/PermaLinkUtils';
+import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
@@ -138,9 +140,13 @@ class Map3D extends React.Component {
         this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
         this.state.sceneContext.getTerrainHeightFromMap = this.getTerrainHeightFromMap;
         this.state.sceneContext.getSceneIntersection = this.getSceneIntersection;
+        registerPermalinkDataStoreHook("map3d", this.store3dState);
     }
     componentDidMount() {
         this.props.innerRef(this);
+    }
+    componentWillUnmount() {
+        unregisterPermalinkDataStoreHook("map3d");
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
@@ -660,6 +666,79 @@ class Map3D extends React.Component {
     };
     setViewToExtent = (bounds, rotation) => {
         this.state.sceneContext.setViewToExtent(bounds, rotation);
+    };
+    store3dState = () => {
+        const promises = Object.entries(this.state.sceneContext.sceneObjects).map(([objectId, entry]) => {
+            if (!entry.layertree) {
+                return null;
+            }
+            return new Promise(resolve => {
+                if (entry.drawGroup) {
+                    const exporter = new GLTFExporter();
+                    exporter.parse(this.state.sceneContext.getSceneObject(objectId), (result) => {
+                        resolve({id: objectId, options: entry, data: result});
+                    });
+                } else {
+                    resolve({id: objectId, options: entry});
+                }
+            });
+        }).filter(Boolean);
+        return new Promise(resolve => {
+            Promise.all(promises).then(objects => {
+                const cameraPos = this.state.sceneContext.scene.view.camera.position;
+                const target = this.state.sceneContext.scene.view.controls.target;
+                const layers = Object.entries(this.state.sceneContext.colorLayers).map(([layerId, options]) => ({
+                    id: layerId, options: {
+                        visibility: options.visibility,
+                        opacity: options.opacity,
+                        extrusionHeight: options.extrusionHeight
+                    }
+                }));
+                resolve({
+                    objects: objects,
+                    colorLayers: layers,
+                    cameraPos: [cameraPos.x, cameraPos.y, cameraPos.z],
+                    center: [target.x, target.y, target.z]
+                });
+            });
+        });
+    };
+    restore3dState = (data) => {
+        if (!data) {
+            return;
+        }
+        (data.objects || []).forEach(item => {
+            if (item.data) {
+                const loader = new GLTFLoader();
+                loader.parse(item.data, ConfigUtils.getAssetsPath(), (gltf) => {
+                    gltf.scene.traverse(obj => {
+                        if (obj.isMesh) {
+                            obj.castShadow = true;
+                            obj.receiveShadow = true;
+                        }
+                    });
+                    this.state.sceneContext.addSceneObject(item.id, gltf.scene, item.options);
+                });
+            } else if (item.id in this.state.sceneContext.sceneObjects) {
+                this.state.sceneContext.updateSceneObject(item.id, item.options);
+            }
+        });
+        (data.colorLayers || []).forEach(item => {
+            if (item.id in this.state.sceneContext.colorLayers) {
+                this.state.sceneContext.updateColorLayer(item.id, item.options);
+            }
+        });
+        if (data.cameraPos && data.center) {
+            const cameraPos = this.state.sceneContext.scene.view.camera.position;
+            cameraPos.x = data.cameraPos[0];
+            cameraPos.y = data.cameraPos[1];
+            cameraPos.z = data.cameraPos[2];
+            const controlsTarget = this.state.sceneContext.scene.view.controls.target;
+            controlsTarget.x = data.center[0];
+            controlsTarget.y = data.center[1];
+            controlsTarget.z = data.center[2];
+        }
+        this.state.sceneContext.scene.notifyChange();
     };
 }
 

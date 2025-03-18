@@ -60,6 +60,7 @@ class View3D extends React.Component {
         setCurrentTask: PropTypes.func,
         setView3dMode: PropTypes.func,
         startupParams: PropTypes.object,
+        startupState: PropTypes.object,
         theme: PropTypes.object,
         view3dMode: PropTypes.number
     };
@@ -110,8 +111,10 @@ class View3D extends React.Component {
     componentDidMount() {
         if (this.props.startupParams.v === "3d") {
             this.props.setView3dMode(View3DMode.FULLSCREEN);
+            this.restoreOnComponentLoad = true;
         } else if (this.props.startupParams.v === "3d2d") {
             this.props.setView3dMode(View3DMode.SPLITSCREEN);
+            this.restoreOnComponentLoad = true;
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -195,7 +198,7 @@ class View3D extends React.Component {
                         <Provider role="body" store={this.store}>
                             <Map3D
                                 innerRef={this.setRef}
-                                onMapInitialized={this.setViewToExtent}
+                                onMapInitialized={this.setupMap}
                                 options={this.props.options}
                                 searchProviders={this.props.searchProviders}
                                 theme={this.props.theme} />
@@ -231,6 +234,13 @@ class View3D extends React.Component {
             this.map3dComponentRef.setViewToExtent(this.props.mapBBox.bounds, this.props.mapBBox.rotation);
         }
     };
+    setupMap = () => {
+        this.setViewToExtent();
+        if (this.map3dComponentRef && this.restoreOnComponentLoad) {
+            this.restoreOnComponentLoad = false;
+            this.map3dComponentRef.restore3dState(this.props.startupState.map3d);
+        }
+    };
     redrawScene = (ev) => {
         if (this.map3dComponentRef) {
             this.map3dComponentRef.redrawScene(ev);
@@ -250,6 +260,7 @@ export default connect(
         localConfig: state.localConfig,
         view3dMode: state.display.view3dMode,
         startupParams: state.localConfig.startupParams,
+        startupState: state.localConfig.startupState,
         searchProviders
     })), {
         setCurrentTask: setCurrentTask,
