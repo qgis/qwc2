@@ -353,7 +353,7 @@ export default class StandardApp extends React.Component {
 
             // Resolve permalink and restore settings
             resolvePermaLink(initialParams, (params, state, success) => {
-                StandardApp.store.dispatch(setStartupParameters(params));
+                StandardApp.store.dispatch(setStartupParameters(params, state));
                 this.setState({startupConfig: {
                     params, state, permalinkInvalid: !success
                 }});

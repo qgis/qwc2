@@ -25,10 +25,11 @@ export function localConfigLoaded(config) {
     };
 }
 
-export function setStartupParameters(params) {
+export function setStartupParameters(params, state) {
     return {
         type: SET_STARTUP_PARAMETERS,
-        params
+        params,
+        state
     };
 }
 

@@ -21,6 +21,7 @@ const defaultState = {
     ...ConfigUtils.getDefaults(),
     customPlugins: [],
     startupParams: {},
+    startupState: {},
     permalinkParams: {},
     colorScheme: 'default'
 };
@@ -31,7 +32,7 @@ export default function localConfig(state = defaultState, action) {
         return {...state, ...action.config};
     }
     case SET_STARTUP_PARAMETERS: {
-        return {...state, startupParams: action.params};
+        return {...state, startupParams: action.params, startupState: action.state};
     }
     case SET_COLOR_SCHEME: {
         const root = document.querySelector(':root');
