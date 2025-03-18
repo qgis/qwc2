@@ -10,6 +10,7 @@ import axios from 'axios';
 import url from 'url';
 
 import {LayerRole} from '../actions/layers';
+import StandardApp from '../components/StandardApp';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 
@@ -84,7 +85,8 @@ export const UrlParams = {
     }
 };
 
-export function generatePermaLink(state, callback, user = false) {
+export async function generatePermaLink(callback, user = false) {
+    const state = StandardApp.store.getState();
     const fullUrl = UrlParams.getFullUrl();
     if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
         callback(fullUrl);
@@ -158,20 +160,12 @@ export function getUserBookmarks(user, callback) {
     }
 }
 
-export function removeBookmark(bkey, callback) {
-    if (bkey) {
-        axios.delete(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
-            .then(() => {
-                callback(true);
-            }).catch(() => callback(false));
-    }
-}
-
-export function createBookmark(state, description, callback) {
+export async function createBookmark(description, callback) {
     if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
         callback(false);
         return;
     }
+    const state = StandardApp.store.getState();
     // Only store redlining layers
     const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
     const bookmarkState = {};
@@ -191,11 +185,12 @@ export function createBookmark(state, description, callback) {
         .catch(() => callback(false));
 }
 
-export function updateBookmark(state, bkey, description, callback) {
+export async function updateBookmark(bkey, description, callback) {
     if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
         callback(false);
         return;
     }
+    const state = StandardApp.store.getState();
     // Only store redlining layers
     const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
     const bookmarkState = {};
@@ -213,4 +208,13 @@ export function updateBookmark(state, bkey, description, callback) {
         "?description=" + description, bookmarkState)
         .then(() => callback(true))
         .catch(() => callback(false));
+}
+
+export function removeBookmark(bkey, callback) {
+    if (bkey) {
+        axios.delete(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey)
+            .then(() => {
+                callback(true);
+            }).catch(() => callback(false));
+    }
 }

@@ -39,7 +39,6 @@ class Bookmark extends React.Component {
         mapScales: PropTypes.array,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
-        state: PropTypes.object,
         zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func
     };
@@ -152,7 +151,7 @@ class Bookmark extends React.Component {
         }
     };
     addBookmark = () => {
-        createBookmark(this.props.state, this.state.description, (success) => {
+        createBookmark(this.state.description, (success) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.addfailed"));
@@ -163,7 +162,7 @@ class Bookmark extends React.Component {
     };
     updateBookmark = (bookmark) => {
         this.setState({saving: true});
-        updateBookmark(this.props.state, bookmark.key, this.state.description, (success) => {
+        updateBookmark(bookmark.key, this.state.description, (success) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.savefailed"));
@@ -190,8 +189,7 @@ class Bookmark extends React.Component {
 
 const selector = state => ({
     mapCrs: state.map?.projection,
-    mapScales: state.map?.scales,
-    state
+    mapScales: state.map?.scales
 });
 
 export default connect(selector, {

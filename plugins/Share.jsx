@@ -34,6 +34,8 @@ import './style/Share.css';
 class Share extends React.Component {
     static propTypes = {
         addMarker: PropTypes.func,
+        currentTask: PropTypes.string,
+        map: PropTypes.object,
         removeMarker: PropTypes.func,
         /** Show the map URL. */
         showLink: PropTypes.bool,
@@ -43,7 +45,6 @@ class Share extends React.Component {
         showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.arrayOf(PropTypes.string)]),
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
-        state: PropTypes.object
     };
     static defaultProps = {
         showSocials: true,
@@ -57,16 +58,16 @@ class Share extends React.Component {
         pin: false
     };
     componentDidUpdate(prevProps, prevState) {
-        const isVisible = this.props.state.task.id === "Share";
-        const wasVisible = prevProps.state.task.id === "Share";
-        if (isVisible !== wasVisible || this.state.pin !== prevState.pin || this.props.state.map.center !== prevProps.state.map.center) {
+        const isVisible = this.props.currentTask === "Share";
+        const wasVisible = prevProps.currentTask === "Share";
+        if (this.props.map && isVisible !== wasVisible || this.state.pin !== prevState.pin || this.props.map.center !== prevProps.map.center) {
             if (isVisible && this.state.pin) {
-                this.props.addMarker('sharecenter', this.props.state.map.center, '', this.props.state.map.projection);
+                this.props.addMarker('sharecenter', this.props.map.center, '', this.props.map.projection);
             } else if (wasVisible) {
                 this.props.removeMarker('sharecenter');
             }
         }
-        if (isVisible !== wasVisible || this.props.state.map.center !== prevProps.state.map.center) {
+        if (isVisible !== wasVisible || this.props.map.center !== prevProps.map.center) {
             this.setState({location: "", expires: null});
         }
     }
@@ -76,9 +77,9 @@ class Share extends React.Component {
             const urlParts = url.parse(shareUrl, true);
             urlParts.query.hc = 1;
             if (!urlParts.query.c) {
-                const posCrs = urlParts.query.crs || this.props.state.map.projection;
+                const posCrs = urlParts.query.crs || this.props.map.projection;
                 const prec = CoordinatesUtils.getPrecision(posCrs);
-                urlParts.query.c = this.props.state.map.center.map(x => x.toFixed(prec)).join(",");
+                urlParts.query.c = this.props.map.center.map(x => x.toFixed(prec)).join(",");
             }
             delete urlParts.search;
             shareUrl = url.format(urlParts);
@@ -122,14 +123,16 @@ class Share extends React.Component {
         );
     }
     refreshPermalink = () => {
-        generatePermaLink(this.props.state, ((permalink, expires) => {
+        generatePermaLink(((permalink, expires) => {
             this.setState({location: permalink, expires: expires});
         }));
     };
 }
 
 export default connect(state => ({
-    state
+    currentTask: state.task.id,
+    map: state.map,
+    view3dMode: state.display.view3dMode
 }), {
     addMarker: addMarker,
     removeMarker: removeMarker
