@@ -6,7 +6,7 @@
     "license": "BSD-2-Clause",
     "repository": "git@github.com:qgis/qwc2.git",
     "dependencies": {
-        "@giro3d/giro3d": "^0.42.0",
+        "@giro3d/giro3d": "^0.42.2",
         "@kayahr/text-encoding": "^2.0.0",
         "@loaders.gl/core": "^4.3.3",
         "@loaders.gl/shapefile": "^4.3.3",
