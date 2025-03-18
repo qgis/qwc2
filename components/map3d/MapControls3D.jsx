@@ -15,6 +15,7 @@ import {Raycaster, Vector2, Vector3} from 'three';
 import {MapControls} from 'three/addons/controls/MapControls';
 
 import Icon from '../Icon';
+import {setCenter} from './slices/map3d';
 
 import './style/MapControls3D.css';
 
@@ -23,7 +24,8 @@ class MapControls3D extends React.Component {
     static propTypes = {
         currentTask: PropTypes.string,
         onControlsSet: PropTypes.func,
-        sceneContext: PropTypes.object
+        sceneContext: PropTypes.object,
+        setCenter: PropTypes.func
     };
     constructor(props) {
         super(props);
@@ -316,6 +318,8 @@ class MapControls3D extends React.Component {
         // If camera height is at twice the terrain height or further, target height should be zero
         const targetHeight = terrainHeight > 0 ? terrainHeight * Math.max(0, 1 - (cameraHeight - terrainHeight) / terrainHeight) : 0;
         this.props.sceneContext.scene.view.controls.target.z = targetHeight;
+
+        this.props.setCenter([target.x, target.y, target.z]);
     };
     stopAnimations = () => {
         this.animationInterrupted = true;
@@ -401,5 +405,6 @@ class MapControls3D extends React.Component {
 export default connect((state) => ({
     currentTask: state.task.id
 }), {
+    setCenter: setCenter
 
 })(MapControls3D);

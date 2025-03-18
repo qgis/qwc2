@@ -20,6 +20,7 @@ import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import StandardApp from '../components/StandardApp';
 import View3DSwitcher from '../components/map3d/View3DSwitcher';
+import map3dReducer from '../components/map3d/slices/map3d';
 import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
@@ -104,7 +105,7 @@ class View3D extends React.Component {
         const layers = forwardReducer("layers", [], "SYNC_LAYERS_FROM_PARENT_STORE");
         const localConfig = forwardReducer("localConfig", [], "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE");
         const theme = forwardReducer("theme", themeActions, "SYNC_THEME_FROM_PARENT_STORE");
-        this.store = createStore({display, layers, localConfig, theme, task, windows});
+        this.store = createStore({display, layers, localConfig, map: map3dReducer, theme, task, windows});
     }
     componentDidMount() {
         if (this.props.startupParams.v === "3d") {
