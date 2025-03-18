@@ -40,7 +40,6 @@ class Bookmark extends React.Component {
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         state: PropTypes.object,
-        task: PropTypes.string,
         zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func
     };
@@ -192,7 +191,6 @@ class Bookmark extends React.Component {
 const selector = state => ({
     mapCrs: state.map?.projection,
     mapScales: state.map?.scales,
-    task: state.task.id,
     state
 });
 
