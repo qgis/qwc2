@@ -85,6 +85,22 @@ export const UrlParams = {
     }
 };
 
+const PermalinkDataHooks = {};
+
+export function registerPermalinkDataStoreHook(key, storeFn) {
+    PermalinkDataHooks[key] = storeFn;
+}
+
+export function unregisterPermalinkDataStoreHook(key) {
+    delete PermalinkDataHooks[key];
+}
+
+async function executePermalinkDataStoreHooks(permalinkState) {
+    for await (const [key, storeFn] of Object.entries(PermalinkDataHooks)) {
+        permalinkState[key] = await storeFn();
+    }
+}
+
 export async function generatePermaLink(callback, user = false) {
     const state = StandardApp.store.getState();
     const fullUrl = UrlParams.getFullUrl();
@@ -105,6 +121,7 @@ export async function generatePermaLink(callback, user = false) {
     }
     permalinkState.permalinkParams = state.localConfig.permalinkParams;
     permalinkState.url = fullUrl;
+    await executePermalinkDataStoreHooks(permalinkState);
     const route = user ? "userpermalink" : "createpermalink";
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState)
         .then(response => callback(response.data.permalink || fullUrl, response.data.expires || null))
@@ -179,6 +196,7 @@ export async function createBookmark(description, callback) {
     }
     bookmarkState.permalinkParams = state.localConfig.permalinkParams;
     bookmarkState.url = UrlParams.getFullUrl();
+    await executePermalinkDataStoreHooks(bookmarkState);
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" +
         "?description=" + description, bookmarkState)
         .then(() => callback(true))
@@ -204,6 +222,7 @@ export async function updateBookmark(bkey, description, callback) {
     }
     bookmarkState.permalinkParams = state.localConfig.permalinkParams;
     bookmarkState.url = UrlParams.getFullUrl();
+    await executePermalinkDataStoreHooks(bookmarkState);
     axios.put(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey +
         "?description=" + description, bookmarkState)
         .then(() => callback(true))
