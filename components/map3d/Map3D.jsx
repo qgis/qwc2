@@ -95,7 +95,7 @@ class Map3D extends React.Component {
         dtmUrl: null,
         dtmCrs: null,
         baseLayers: [],
-        colorLayers: [],
+        colorLayers: {},
         sceneObjects: {}
     };
     state = {
@@ -190,68 +190,62 @@ class Map3D extends React.Component {
         }));
     };
     collectColorLayers = (prevColorLayers) => {
-        const prevLayersMap = prevColorLayers.reduce((res, layer) => (
-            {...res, [layer.id]: layer}
-        ), {});
-
-        return this.props.layers.map(layer => {
+        return this.props.layers.reduce((colorLayers, layer) => {
             if (layer.role !== LayerRole.THEME && layer.role !== LayerRole.USERLAYER) {
-                return null;
+                return colorLayers;
             }
             const layerCreator = LayerRegistry[layer.type];
             if (!layerCreator || !layerCreator.create3d) {
-                return null;
+                return colorLayers;
             }
-            const prevLayer = prevLayersMap[layer.id];
-            return {
+            const prevOptions = prevColorLayers[layer.uuid];
+            colorLayers[layer.uuid] = {
                 ...layer,
-                visibility: prevLayer?.visibility ?? false,
-                opacity: prevLayer?.opacity ?? 255,
-                extrusionHeight: prevLayer?.extrusionHeight ?? (layer.type === 'vector' ? 0 : undefined)
+                visibility: prevOptions?.visibility ?? false,
+                opacity: prevOptions?.opacity ?? 255,
+                extrusionHeight: prevOptions?.extrusionHeight ?? (['vector', 'wfs'].includes(layer.type) ? 0 : undefined)
             };
-        }).filter(Boolean);
+            return colorLayers;
+        }, {});
     };
-    applyColorLayerUpdates = (layers, prevLayers) => {
-        const layersMap = layers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
-        const prevLayersMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
-
+    applyColorLayerUpdates = (colorLayers, prevColorLayers) => {
         // Add-update new layers
         let layerBelow = this.getLayer("__baselayer");
-        [...layers].reverse().forEach(layer => {
-            const prevLayer = prevLayersMap[layer.id];
-            const layerCreator = LayerRegistry[layer.type];
-            let mapLayer = this.getLayer(layer.id);
+        Object.entries(colorLayers).reverse().forEach(([layerId, options]) => {
+            const prevOptions = prevColorLayers[layerId];
+            const layerCreator = LayerRegistry[options.type];
+            let mapLayer = this.getLayer(layerId);
             if (mapLayer) {
-                layerCreator.update3d(mapLayer.source, layer, prevLayer, this.state.sceneContext.mapCrs);
+                layerCreator.update3d(mapLayer.source, options, prevOptions, this.state.sceneContext.mapCrs);
             } else {
-                mapLayer = layerCreator.create3d(layer, this.state.sceneContext.mapCrs);
-                this.addLayer(layer.id, mapLayer);
+                mapLayer = layerCreator.create3d(options, this.state.sceneContext.mapCrs);
+                this.addLayer(layerId, mapLayer);
             }
             this.map.insertLayerAfter(mapLayer, layerBelow);
-            mapLayer.visible = layer.visibility;
-            mapLayer.opacity = layer.opacity / 255;
+            mapLayer.visible = options.visibility;
+            mapLayer.opacity = options.opacity / 255;
             layerBelow = mapLayer;
-            if (layer.extrusionHeight > 0) {
-                this.createUpdateExtrudedLayer(mapLayer, layer, layer.features !== prevLayer?.features);
-            } else if (prevLayer?.extrusionHeight > 0) {
-                this.removeExtrudedLayer(layer.id);
+            if (options.extrusionHeight > 0) {
+                this.createUpdateExtrudedLayer(mapLayer, options, options.features !== prevOptions?.features);
+            } else if (prevOptions?.extrusionHeight > 0) {
+                this.removeExtrudedLayer(options.id);
             }
         });
         // Remove old layers
-        prevLayers.forEach(layer => {
-            if (!(layer.id in layersMap)) {
-                if (layer.extrusionHeight) {
-                    this.removeExtrudedLayer(layer.id);
+        Object.entries(prevColorLayers).forEach(([layerId, options]) => {
+            if (!(layerId in colorLayers)) {
+                if (options.extrusionHeight) {
+                    this.removeExtrudedLayer(layerId);
                 }
-                this.removeLayer(layer.id);
+                this.removeLayer(layerId);
             }
         });
         this.instance.notifyChange(this.map);
     };
-    createUpdateExtrudedLayer = (mapLayer, layer, forceCreate = false) => {
-        const bounds = layer.bbox.bounds;
-        const extent = new Extent(layer.bbox.crs, bounds[0], bounds[2], bounds[1], bounds[3]);
-        const objId = layer.id + ":extruded";
+    createUpdateExtrudedLayer = (mapLayer, options, forceCreate = false) => {
+        const bounds = options.bbox.bounds;
+        const extent = new Extent(options.bbox.crs, bounds[0], bounds[2], bounds[1], bounds[3]);
+        const objId = options.uuid + ":extruded";
         const makeColor = (c) => {
             if (Array.isArray(c)) {
                 return ((c[0] << 16) | (c[1] << 8) | c[2]);
@@ -291,8 +285,8 @@ class Map3D extends React.Component {
             this.instance.add(obj);
             this.objectMap[objId] = obj;
         }
-        obj.userData.extrusionHeight = layer.extrusionHeight;
-        obj.userData.featureStyles = layer.features?.reduce?.((res, feature) => ({
+        obj.userData.extrusionHeight = options.extrusionHeight;
+        obj.userData.featureStyles = options.features?.reduce?.((res, feature) => ({
             ...res,
             [feature.id]: {
                 fill: {
@@ -346,15 +340,21 @@ class Map3D extends React.Component {
             this.map.removeLayer(layer, {dispose: true});
         });
     };
-    updateColorLayer = (layerId, diff) => {
-        this.setState(state => ({
-            sceneContext: {
-                ...state.sceneContext,
-                colorLayers: state.sceneContext.colorLayers.map(entry => {
-                    return entry.id === layerId ? {...entry, ...diff} : entry;
-                })
-            }
-        }));
+    updateColorLayer = (layerId, options) => {
+        this.setState((state) => {
+            return {
+                sceneContext: {
+                    ...state.sceneContext,
+                    colorLayers: {
+                        ...state.sceneContext.colorLayers,
+                        [layerId]: {
+                            ...state.sceneContext.colorLayers[layerId],
+                            ...options
+                        }
+                    }
+                }
+            };
+        });
     };
     addSceneObject = (objectId, object, options = {}) => {
         this.sceneObjectGroup.add(object);

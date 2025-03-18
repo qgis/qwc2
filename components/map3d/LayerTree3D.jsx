@@ -49,8 +49,8 @@ export default class LayerTree3D extends React.Component {
                     return this.renderLayerEntry(objectId, entry, sceneContext.updateSceneObject);
                 })}
                 <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.layers")}</div>
-                {sceneContext.colorLayers.map(entry => {
-                    return this.renderLayerEntry(entry.id, entry, sceneContext.updateColorLayer);
+                {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
+                    return this.renderLayerEntry(layerId, entry, sceneContext.updateColorLayer);
                 })}
             </div>
         );
