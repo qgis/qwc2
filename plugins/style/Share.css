@@ -29,7 +29,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     padding: 1em;
+}
+
+#Share div.share-group-restriction {
+    margin-top: 0.5em;
 }
 
 div.share-validity {

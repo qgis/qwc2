@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR コード",
       "directLinkTitle": "直接リンクで",
       "expires": "この永続リンクは {0} まで有効です。",
+      "norestriction": "",
       "refresh": "永続リンクを生成",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "ピンを表示",
       "socialIntro": "あなたの好みの SNS で"

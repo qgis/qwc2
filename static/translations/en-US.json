@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR Code",
       "directLinkTitle": "Via a direct link",
       "expires": "This permalink is valid until {0}.",
+      "norestriction": "No restriction",
       "refresh": "Generate permalink",
+      "restricttogroup": "Restrict to group",
       "shareTitle": "QWC2",
       "showpin": "Show pin",
       "socialIntro": "In your favourite social network"

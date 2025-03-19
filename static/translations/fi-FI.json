@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR-koodi",
       "directLinkTitle": "Suora linkillä",
       "expires": "",
+      "norestriction": "",
       "refresh": "",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "",
       "socialIntro": "Jaa someen"

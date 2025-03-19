@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR code",
       "directLinkTitle": "Via un lien direct",
       "expires": "Ce lien permanent est valide jusqu'au {0}.",
+      "norestriction": "Aucune restriction",
       "refresh": "Générer un lien permanent",
+      "restricttogroup": "Limiter au groupe",
       "shareTitle": "QWC2",
       "showpin": "Afficher les épingles",
       "socialIntro": "Via votre réseau social favori"

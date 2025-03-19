@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import url from 'url';
 
@@ -40,6 +41,8 @@ class Share extends React.Component {
         currentTask: PropTypes.string,
         map: PropTypes.object,
         removeMarker: PropTypes.func,
+        /** List of groups for which a permalink may optionally be restricted. */
+        restrictableGroups: PropTypes.array,
         /** Show the map URL. */
         showLink: PropTypes.bool,
         /** Show the QR code of the map URL. */
@@ -59,7 +62,8 @@ class Share extends React.Component {
     state = {
         location: "",
         expires: null,
-        pin: false
+        pin: false,
+        permittedGroup: ""
     };
     componentDidUpdate(prevProps, prevState) {
         const isVisible = this.props.currentTask === "Share";
@@ -101,7 +105,21 @@ class Share extends React.Component {
                 ) : null}
                 {!this.state.location ? (
                     <div className="share-reload-overlay">
-                        <button className="button" onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</button>
+                        <div>
+                            <button className="button" onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</button>
+                        </div>
+                        {!isEmpty(this.props.restrictableGroups) ? (
+                            <div className="share-group-restriction">
+                                <span>{LocaleUtils.tr("share.restricttogroup")}: </span>
+                                <select onChange={ev => this.setState({permittedGroup: ev.target.value})} value={this.state.permittedGroup}>
+                                    <option value="">{LocaleUtils.tr("share.norestriction")}</option>
+                                    {this.props.restrictableGroups.map(entry => (
+                                        <option key={entry} value={entry}>{entry}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        ) : null}
+
                     </div>
                 ) : (
                     <div className="share-body">
@@ -128,8 +146,8 @@ class Share extends React.Component {
     }
     refreshPermalink = () => {
         generatePermaLink(((permalink, expires) => {
-            this.setState({location: permalink, expires: expires});
-        }));
+            this.setState({location: permalink, expires: expires, permittedGroup: ""});
+        }), false, this.state.permittedGroup);
     };
 }
 

@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "Karekod",
       "directLinkTitle": "Doğrudan bağlantı yolu ile",
       "expires": "Bu bağlantı {0} zamanına kadar geçerlidir",
+      "norestriction": "",
       "refresh": "Bağlantı oluştur",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "Pini göster",
       "socialIntro": "Favori sosyal ağınıza"

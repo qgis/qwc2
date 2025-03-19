@@ -101,7 +101,7 @@ async function executePermalinkDataStoreHooks(permalinkState) {
     }
 }
 
-export async function generatePermaLink(callback, user = false) {
+export async function generatePermaLink(callback, user = false, permittedGroup = "") {
     const state = StandardApp.store.getState();
     const fullUrl = UrlParams.getFullUrl();
     if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
@@ -121,9 +121,12 @@ export async function generatePermaLink(callback, user = false) {
     }
     permalinkState.permalinkParams = state.localConfig.permalinkParams;
     permalinkState.url = fullUrl;
+    const params = {
+        permitted_group: permittedGroup || null
+    };
     await executePermalinkDataStoreHooks(permalinkState);
     const route = user ? "userpermalink" : "createpermalink";
-    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState)
+    axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState, {params})
         .then(response => callback(response.data.permalink || fullUrl, response.data.expires || null))
         .catch(() => callback(fullUrl));
 }

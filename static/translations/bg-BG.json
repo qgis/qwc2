@@ -564,7 +564,9 @@
       "QRCodeLinkTitle": "QR код",
       "directLinkTitle": "Чрез директна връзка",
       "expires": "Този перманент е валиден до {0}.",
+      "norestriction": "",
       "refresh": "Генериране на permalink",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "Показване на щифт",
       "socialIntro": "В любимата си социална мрежа"

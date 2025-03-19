@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR kode",
       "directLinkTitle": "Direktelenke",
       "expires": "",
+      "norestriction": "",
       "refresh": "",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "",
       "socialIntro": "Sosiale nettvert"

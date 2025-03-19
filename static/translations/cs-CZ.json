@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR kód",
       "directLinkTitle": "Přes přímý odkaz",
       "expires": "",
+      "norestriction": "",
       "refresh": "Generovat odkaz",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "Zobrazit bod",
       "socialIntro": "Na sociální síti"

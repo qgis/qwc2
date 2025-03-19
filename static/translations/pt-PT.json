@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "Código QR",
       "directLinkTitle": "Via ligação direta",
       "expires": "Expira",
+      "norestriction": "",
       "refresh": "Atualizar",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "Mostrar PIN",
       "socialIntro": "Na sua rede social favorita"

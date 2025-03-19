@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR Code (Smartphone)",
       "directLinkTitle": "Über einen direkten Link",
       "expires": "Dieser Permalink ist bis am {0} gültig.",
+      "norestriction": "Keine Einschränkung",
       "refresh": "Permalink generieren",
+      "restricttogroup": "Auf Gruppe einschränken",
       "shareTitle": "QWC2",
       "showpin": "Pin anzeigen",
       "socialIntro": "In den sozialen Medien"

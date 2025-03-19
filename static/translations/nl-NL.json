@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR-code",
       "directLinkTitle": "Via een directe link",
       "expires": "Deze permalink is geldig tot {0}.",
+      "norestriction": "",
       "refresh": "Genereer permalink",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "Pin weergeven",
       "socialIntro": "Op je favoriete sociale netwerk"

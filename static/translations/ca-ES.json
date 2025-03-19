@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "Codi QR",
       "directLinkTitle": "Via link",
       "expires": "",
+      "norestriction": "",
       "refresh": "Generar l'enllaç permanent",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "Mostrar el pin",
       "socialIntro": "En la teva xarxa social preferida"

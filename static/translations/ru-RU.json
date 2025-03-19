@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR-код",
       "directLinkTitle": "По прямой ссылке",
       "expires": "",
+      "norestriction": "",
       "refresh": "",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "",
       "socialIntro": "В Вашей любимой соцсети"

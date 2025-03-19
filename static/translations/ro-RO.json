@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "Cod QR",
       "directLinkTitle": "Via link direct",
       "expires": "",
+      "norestriction": "",
       "refresh": "Generare link permanent",
+      "restricttogroup": "",
       "shareTitle": "Link permanent",
       "showpin": "Arată pin",
       "socialIntro": "În rețeaua socială favorită"

@@ -563,7 +563,9 @@
       "QRCodeLinkTitle": "QR-kód",
       "directLinkTitle": "Közvetlen hivatkozással...",
       "expires": "",
+      "norestriction": "",
       "refresh": "",
+      "restricttogroup": "",
       "shareTitle": "QWC2",
       "showpin": "",
       "socialIntro": "A kedvenc közösségi hálózatodon"
