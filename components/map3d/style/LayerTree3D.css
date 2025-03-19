@@ -40,6 +40,16 @@
     margin-left: 0.25em;
 }
 
+#LayerTree3D span.layertree3d-item-remove {
+    text-align: center;
+    width: 1.75em;
+    flex: 0 0 auto;
+}
+
+#LayerTree3D span.layertree3d-item-remove:not(.icon_disabled):hover {
+    color: red;
+}
+
 #LayerTree3D span.layertree3d-item-menubutton {
     text-align: center;
     width: 1.75em;

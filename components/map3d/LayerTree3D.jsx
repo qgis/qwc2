@@ -76,6 +76,7 @@ export default class LayerTree3D extends React.Component {
                     />
                     <span className="layertree3d-item-title" title={entry.title ?? entryId}>{entry.title ?? entryId}</span>
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(entryId)}/>
+                    <Icon className="layertree3d-item-remove" disabled={!entry.drawGroup} icon="trash" onClick={() => this.props.sceneContext.removeSceneObject(entryId)} />
                 </div>
                 {this.state.activemenu === entryId ? (
                     <div className="layertree3d-item-optionsmenu">
