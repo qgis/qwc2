@@ -68,6 +68,8 @@
 
 #LayerTree3D div.layertree3d-item-optionsmenu-row > span.icon {
     flex: 0 0 auto;
+    width: 1.25em;
+    margin-right: 0.25em;
 }
 
 #LayerTree3D input.layertree3d-item-transparency-slider {
@@ -76,7 +78,8 @@
     min-width: 0;
     max-width: none;
     width: 1000em; /* exagerated value */
-    margin-left: 0.25em;
+    margin: 0 0.25em;
+    height: 1.25em;
 }
 
 #LayerTree3D div.layertree3d-item-optionsmenu-row > div.number-input {

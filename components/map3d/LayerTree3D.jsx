@@ -46,16 +46,16 @@ export default class LayerTree3D extends React.Component {
             <div>
                 <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.objects")}</div>
                 {Object.entries(sceneContext.sceneObjects).map(([objectId, entry]) => {
-                    return this.renderLayerEntry(objectId, entry, sceneContext.updateSceneObject);
+                    return this.renderLayerEntry(objectId, entry, sceneContext.updateSceneObject, true);
                 })}
                 <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.layers")}</div>
                 {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
-                    return this.renderLayerEntry(layerId, entry, sceneContext.updateColorLayer);
+                    return this.renderLayerEntry(layerId, entry, sceneContext.updateColorLayer, false);
                 })}
             </div>
         );
     };
-    renderLayerEntry = (entryId, entry, updateCallback) => {
+    renderLayerEntry = (entryId, entry, updateCallback, isObject) => {
         if (entry.layertree === false) {
             return null;
         }
@@ -80,6 +80,9 @@ export default class LayerTree3D extends React.Component {
                 {this.state.activemenu === entryId ? (
                     <div className="layertree3d-item-optionsmenu">
                         <div className="layertree3d-item-optionsmenu-row">
+                            {isObject ? (
+                                <Icon icon="zoom" onClick={() => this.zoomToObject(entryId)} title={LocaleUtils.tr("layertree3d.zoomtoobject")} />
+                            ) : null}
                             <Icon icon="transparency" />
                             <input className="layertree3d-item-transparency-slider" max="255" min="0"
                                 onChange={(ev) => updateCallback(entryId, {opacity: parseInt(ev.target.value, 10)})}
@@ -98,5 +101,18 @@ export default class LayerTree3D extends React.Component {
     };
     layerMenuToggled = (entryId) => {
         this.setState((state) => ({activemenu: state.activemenu === entryId ? null : entryId}));
+    };
+    zoomToObject = (objectId) => {
+        const obj = this.props.sceneContext.getSceneObject(objectId);
+        const bbox = new Box3();
+        if (obj?.tiles?.root) {
+            obj.tiles.root.cached.boundingVolume.getAABB(bbox);
+        } else {
+            bbox.setFromObject(obj);
+        }
+        if (!bbox.isEmpty()) {
+            const bounds = [bbox.min.x, bbox.min.y, bbox.max.x, bbox.max.y];
+            this.props.sceneContext.setViewToExtent(bounds, 0);
+        }
     };
 }
