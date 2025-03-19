@@ -34,6 +34,7 @@ import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlPar
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
+import Identify3D from './Identify3D';
 import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
 import MapControls3D from './MapControls3D';
@@ -439,7 +440,7 @@ class Map3D extends React.Component {
                         <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
                         <Map3DLight sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
-                        {/*<Identify3D sceneContext={this.state.sceneContext} />*/}
+                        <Identify3D sceneContext={this.state.sceneContext} />
                         <Compare3D sceneContext={this.state.sceneContext} />
                         <Draw3D sceneContext={this.state.sceneContext} />
                         <MapExport3D sceneContext={this.state.sceneContext} />
