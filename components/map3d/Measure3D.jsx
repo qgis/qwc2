@@ -220,13 +220,13 @@ export default class Measure3D extends React.Component {
             pick: pick
         };
         if (this.state.mode === 'Point') {
-            this.measureTool.createPoint(options).then(this.measurePoint);
+            this.measureTool.createPoint(options).then(this.measurePoint).catch(() => {});
         } else if (this.state.mode === 'LineString') {
-            this.measureTool.createLineString(options).then(this.measureLine);
+            this.measureTool.createLineString(options).then(this.measureLine).catch(() => {});
         } else if (this.state.mode === 'Polygon') {
-            this.measureTool.createPolygon(options).then(this.measureArea);
+            this.measureTool.createPolygon(options).then(this.measureArea).catch(() => {});
         } else if (this.state.mode === 'Height') {
-            this.measureTool.createVerticalMeasure(options).then(this.measureHeight);
+            this.measureTool.createVerticalMeasure(options).then(this.measureHeight).catch(() => {});
         }
     };
     measurePoint = (point) => {
