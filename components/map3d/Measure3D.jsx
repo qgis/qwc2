@@ -209,9 +209,15 @@ export default class Measure3D extends React.Component {
             this.abortController.abort();
         }
         this.abortController = new AbortController();
+        const pick = this.state.mode === 'Point' ? (
+            null // default pick
+        ) : (
+            (e) => this.props.sceneContext.scene.pickObjectsAt(e, {sortByDistance: true, where: [this.props.sceneContext.getMap()]})
+        );
         const options = {
             signal: this.abortController.signal,
-            endCondition: conditions.doubleClick
+            endCondition: conditions.doubleClick,
+            pick: pick
         };
         if (this.state.mode === 'Point') {
             this.measureTool.createPoint(options).then(this.measurePoint);

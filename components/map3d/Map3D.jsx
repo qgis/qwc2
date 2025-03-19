@@ -115,6 +115,8 @@ class Map3D extends React.Component {
             removeSceneObject: (objectId) => {},
             updateSceneObject: (objectId, options) => {},
 
+            getMap: () => {},
+
             setViewToExtent: (bounds, angle) => {},
             getTerrainHeightFromDTM: (scenePos) => {},
             getTerrainHeightFromMap: (scenePos) => {},
@@ -138,6 +140,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
+        this.state.sceneContext.getMap = this.getMap;
         this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
         this.state.sceneContext.getTerrainHeightFromMap = this.getTerrainHeightFromMap;
         this.state.sceneContext.getSceneIntersection = this.getSceneIntersection;
@@ -416,6 +419,9 @@ class Map3D extends React.Component {
                 }
             };
         });
+    };
+    getMap = () => {
+        return this.map;
     };
     render() {
         const baseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true);
