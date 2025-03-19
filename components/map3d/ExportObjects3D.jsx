@@ -17,7 +17,7 @@ import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import pointInPolygon from 'point-in-polygon';
 import PropTypes from 'prop-types';
-import {Box3, BufferGeometry, Float32BufferAttribute, Group, Mesh, MeshStandardMaterial, Scene, Vector3} from 'three';
+import {Box3, BufferGeometry, Float32BufferAttribute, Group, Matrix4, Mesh, MeshStandardMaterial, Quaternion, Scene, Vector3} from 'three';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 
 import {setCurrentTask} from '../../actions/task';
@@ -227,23 +227,35 @@ class ExportObjects3D extends React.Component {
                         bbox: new Box3()
                     };
                 }
-                const pos = new Vector3(...posAttr.array.slice(3 * idx, 3 * idx + 3));
+                const pos = posAttr.array.slice(3 * idx, 3 * idx + 3);
                 const nor = norAttr.array.slice(3 * idx, 3 * idx + 3);
-                pos.applyMatrix4(tile.cached.transform);
-                batches[batchId].position.push(...[pos.x, pos.y, pos.z]);
+                batches[batchId].position.push(...pos);
                 batches[batchId].normal.push(...nor);
-                batches[batchId].bbox.expandByPoint(pos);
+                batches[batchId].bbox.expandByPoint(new Vector3(...pos).applyMatrix4(tile.cached.transform));
             });
             Object.values(batches).forEach(batch => {
                 if (
                     selectionBox.intersectsBox(batch.bbox) &&
                     this.bboxInExportPolygon(batch.bbox)
                 ) {
+                    // Express coordinates wrt center of batch object bbox
+                    const prevPosition = new Vector3();
+                    tile.cached.transform.decompose(prevPosition, new Quaternion(), new Vector3());
+                    const newPosition = new Vector3();
+                    batch.bbox.getCenter(newPosition);
+                    const offset = new Vector3().subVectors(newPosition, prevPosition);
+                    for (let i = 0; i < batch.position.length / 3; ++i) {
+                        batch.position[3 * i + 0] -= offset.x;
+                        batch.position[3 * i + 1] -= offset.y;
+                        batch.position[3 * i + 2] -= offset.z;
+                    }
+                    // Construct mesh
                     const material = new MeshStandardMaterial({color: 0xffffff});
                     const geometry = new BufferGeometry();
                     geometry.setAttribute('position', new Float32BufferAttribute(batch.position, 3));
                     geometry.setAttribute('normal', new Float32BufferAttribute(batch.normal, 3));
                     const mesh = new Mesh(geometry, material);
+                    mesh.applyMatrix4(tile.cached.transform.clone().multiply(new Matrix4().makeTranslation(offset)));
                     exportGroup.add(mesh);
                 }
             });
@@ -275,9 +287,9 @@ class ExportObjects3D extends React.Component {
 
         // Check if any bbox vertex is inside the polygon
         if (
-            pointInPolygon([xmin, ymin], polygon) || 
-            pointInPolygon([xmax, ymin], polygon) || 
-            pointInPolygon([xmax, ymax], polygon) || 
+            pointInPolygon([xmin, ymin], polygon) ||
+            pointInPolygon([xmax, ymin], polygon) ||
+            pointInPolygon([xmax, ymax], polygon) ||
             pointInPolygon([xmax, ymin], polygon)
         ) {
             return true;
