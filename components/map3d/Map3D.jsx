@@ -439,7 +439,7 @@ class Map3D extends React.Component {
                 {this.state.sceneContext.scene ? (
                     <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
                         <MapControls3D onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
-                        <BackgroundSwitcher bottombarHeight={10} changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
+                        <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} mapMargins={this.props.mapMargins} />
                         <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                         <LayerTree3D sceneContext={this.state.sceneContext} />
                         <BottomBar3D sceneContext={this.state.sceneContext} />
