@@ -636,7 +636,7 @@ class Map3D extends React.Component {
     getTerrainHeightFromMap = (scenePos) => {
         const coordinates = new Coordinates(this.state.sceneContext.mapCrs, scenePos[0], scenePos[1], 0);
         const elevationResult = this.state.sceneContext.map.getElevation({coordinates});
-        elevationResult.samples.sort((a, b) => a.resolution > b.resolution);
+        elevationResult.samples.sort((a, b) => b.resolution - a.resolution);
         return elevationResult.samples[0]?.elevation;
     };
     getSceneIntersection = (x, y, objects = true) => {
