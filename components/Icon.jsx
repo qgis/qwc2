@@ -50,7 +50,7 @@ export default class Icon extends React.Component {
             );
         } else {
             return (
-                <span className={classes} onClick={this.props.onClick}
+                <span className={classes} onClick={this.props.disabled ? null : this.props.onClick}
                     onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
                     title={this.props.title || undefined}
                 />
