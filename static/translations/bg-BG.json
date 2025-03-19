@@ -285,8 +285,12 @@
       "zoomtolayer": "Увеличаване на слоя"
     },
     "layertree3d": {
+      "import": "",
+      "importobjects": "",
       "layers": "Слоеве",
-      "objects": "Обекти"
+      "objects": "Обекти",
+      "supportedformats": "",
+      "zoomtoobject": ""
     },
     "linkfeatureform": {
       "cancel": "Отмяна на",

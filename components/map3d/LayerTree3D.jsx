@@ -10,11 +10,17 @@ import React from 'react';
 
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import {Box3} from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
+import {v4 as uuidv4} from 'uuid';
 
+import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
+import FileSelector from '../widgets/FileSelector';
 import NumberInput from '../widgets/NumberInput';
+import Spinner from '../widgets/Spinner';
 
 import './style/LayerTree3D.css';
 
@@ -24,7 +30,10 @@ export default class LayerTree3D extends React.Component {
         sceneContext: PropTypes.object
     };
     state = {
-        activemenu: null
+        activemenu: null,
+        importvisible: false,
+        selectedfile: null,
+        importing: false
     };
     render() {
         return (
@@ -52,6 +61,10 @@ export default class LayerTree3D extends React.Component {
                 {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
                     return this.renderLayerEntry(layerId, entry, sceneContext.updateColorLayer, false);
                 })}
+                <div className="layertree3d-option" onClick={() => this.setState(state => ({importvisible: !state.importvisible}))}>
+                    <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
+                </div>
+                {this.state.importvisible ? this.renderImportForm() : null}
             </div>
         );
     };
@@ -100,6 +113,24 @@ export default class LayerTree3D extends React.Component {
             </div>
         );
     };
+    renderImportForm = () => {
+        return (
+            <div className="layertree3d-import-widget">
+                <div>
+                    <FileSelector
+                        accept=".gltf" file={this.state.selectedfile}
+                        onFileSelected={file => this.setState({selectedfile: file})}
+                        title={LocaleUtils.tr("layertree3d.supportedformats")} />
+                </div>
+                <div>
+                    <button className="button importlayer-addbutton" disabled={this.state.selectedfile === null || this.state.importing} onClick={this.importFile} type="button">
+                        {this.state.importing ? (<Spinner />) : null}
+                        {LocaleUtils.tr("layertree3d.import")}
+                    </button>
+                </div>
+            </div>
+        );
+    };
     layerMenuToggled = (entryId) => {
         this.setState((state) => ({activemenu: state.activemenu === entryId ? null : entryId}));
     };
@@ -115,5 +146,35 @@ export default class LayerTree3D extends React.Component {
             const bounds = [bbox.min.x, bbox.min.y, bbox.max.x, bbox.max.y];
             this.props.sceneContext.setViewToExtent(bounds, 0);
         }
+    };
+    importFile = () => {
+        if (!this.state.selectedfile) {
+            return;
+        }
+        this.setState({importing: true});
+        const file = this.state.selectedfile;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const loader = new GLTFLoader();
+            loader.parse(ev.target.result, ConfigUtils.getAssetsPath(), (gltf) => {
+                const group = gltf.scene;
+                // GLTF is Y-UP, we need Z-UP
+                group.rotation.x = Math.PI / 2;
+                group.updateMatrixWorld();
+
+                const objectId = uuidv4();
+                const options = {
+                    drawGroup: true,
+                    layertree: true,
+                    title: file.name
+                };
+                this.props.sceneContext.addSceneObject(objectId, group, options);
+            }, (err) => {
+                /* eslint-disable-next-line */
+                console.warn(err);
+            });
+            this.setState({selectedfile: null, importing: false});
+        };
+        reader.readAsArrayBuffer(this.state.selectedfile);
     };
 }

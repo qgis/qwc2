@@ -285,8 +285,12 @@
       "zoomtolayer": "Zoom to layer"
     },
     "layertree3d": {
+      "import": "Import",
+      "importobjects": "Import objects",
       "layers": "Layers",
-      "objects": "Objects"
+      "objects": "Objects",
+      "supportedformats": "Supported formats: GLTF",
+      "zoomtoobject": "Zoom to object"
     },
     "linkfeatureform": {
       "cancel": "Cancel",

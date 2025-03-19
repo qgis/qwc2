@@ -247,7 +247,7 @@
       "noresults": "Nessun risultato o URL non valido",
       "notgeopdf": "Il file selezionato non sembra essere un GeoPDF.",
       "shpreprojectionerror": "Non è stato possibile riproiettare la geometria dello shapefile, che potrebbe essere posizionata in modo errato.",
-      "supportedformats": "Formati supportati",
+      "supportedformats": "Formati supportati: KML, GeoJSON, GeoPDF, SHP (in zip)",
       "unknownproj": "Il GeoPDF selezionato utilizza una proiezione sconosciuta: {0}",
       "url": "URL",
       "urlplaceholder": "Indirizzo WMS, WMTS, WFS..."
@@ -285,8 +285,12 @@
       "zoomtolayer": "Zoom a tutto il livello"
     },
     "layertree3d": {
+      "import": "Importa",
+      "importobjects": "Importa oggetti",
       "layers": "Livelli",
-      "objects": "Oggetti"
+      "objects": "Oggetti",
+      "supportedformats": "Formati supportati: GLTF",
+      "zoomtoobject": "Zooma su oggetto"
     },
     "linkfeatureform": {
       "cancel": "Annulla",

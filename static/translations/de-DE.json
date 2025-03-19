@@ -247,7 +247,7 @@
       "noresults": "Keine Resultate oder ungültige URL",
       "notgeopdf": "Die ausgewählte Datei scheint kein GeoPDF zu sein.",
       "shpreprojectionerror": "Die Shapefile-Geometrie konnte nicht umprojiziert werden und ist möglicherweise nicht richtig platziert.",
-      "supportedformats": "Unterstützte Formate",
+      "supportedformats": "Unterstützte Formate: KML, GeoJSON, GeoPDF, SHP (in zip)",
       "unknownproj": "Das ausgewählte GeoPDF verwendet eine unbekannte Projektion: {0}.",
       "url": "URL",
       "urlplaceholder": "WMS, WMTS oder WFS URL eingeben..."
@@ -285,8 +285,12 @@
       "zoomtolayer": "Auf den Layer zoomen"
     },
     "layertree3d": {
+      "import": "Importieren",
+      "importobjects": "Objekte importieren",
       "layers": "Ebenen",
-      "objects": "Objekte"
+      "objects": "Objekte",
+      "supportedformats": "Unterstützte Formate: GLTF",
+      "zoomtoobject": "Auf Objekt zoomen"
     },
     "linkfeatureform": {
       "cancel": "Abbrechen",

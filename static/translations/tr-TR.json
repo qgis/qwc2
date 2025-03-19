@@ -285,8 +285,12 @@
       "zoomtolayer": "Katman sınırlarına yaklaş"
     },
     "layertree3d": {
+      "import": "",
+      "importobjects": "",
       "layers": "Katmanlar",
-      "objects": "Objeler"
+      "objects": "Objeler",
+      "supportedformats": "",
+      "zoomtoobject": ""
     },
     "linkfeatureform": {
       "cancel": "İptal",
