@@ -387,9 +387,9 @@ class Map3D extends React.Component {
         if (!this.objectMap[objectId]) {
             return;
         }
+        this.sceneObjectGroup.remove(this.objectMap[objectId]);
+        delete this.objectMap[objectId];
         this.setState((state) => {
-            this.instance.remove(this.objectMap[objectId]);
-            delete this.objectMap[objectId];
             const newSceneObjects = {...state.sceneContext.sceneObjects};
             delete newSceneObjects[objectId];
             return {
