@@ -55,6 +55,7 @@ export default class Draw3D extends React.Component {
                 this.props.sceneContext.removeSceneObject(objectId);
             }
         });
+        this.setState({selectedObject: null});
     };
     createDrawGroup = () => {
         const message = LocaleUtils.tr("draw3d.newgroupprompt");
