@@ -191,7 +191,7 @@ class ExportObjects3D extends React.Component {
             }
             const object = this.props.sceneContext.getSceneObject(objectId);
             if (object.tiles) {
-                this.addTileToExportGroup(object.tiles.root, exportGroup, selectionBox);
+                this.addTileToExportGroup(object.tiles, exportGroup, selectionBox);
             } else {
                 this.addObjectToExportGroup(object, exportGroup, selectionBox);
             }
@@ -205,61 +205,59 @@ class ExportObjects3D extends React.Component {
             this.setState({exporting: false});
         });
     };
-    addTileToExportGroup = (tile, exportGroup, selectionBox) => {
-        const tileBbox = new Box3();
-        tile.cached.boundingVolume.getAABB(tileBbox);
-        if (!selectionBox.intersectsBox(tileBbox)) {
-            return;
-        }
-        if (!isEmpty(tile.children)) {
-            tile.children.forEach(child => this.addTileToExportGroup(child, exportGroup, selectionBox));
-        } else {
-            const tileGeom = tile.cached.geometry[0];
-            const batchidAttr = tileGeom.getAttribute( '_batchid' );
-            const posAttr = tileGeom.getAttribute('position');
-            const norAttr = tileGeom.getAttribute('normal');
-            const batches = {};
-            batchidAttr.array.forEach((batchId, idx) => {
-                if (!batches[batchId]) {
-                    batches[batchId] = {
-                        position: [],
-                        normal: [],
-                        bbox: new Box3()
-                    };
+    addTileToExportGroup = (tiles, exportGroup, selectionBox) => {
+        tiles.group.traverse( c => {
+            if (c.geometry) {
+                const bbox = c.geometry.boundingBox.applyMatrix4(c.matrixWorld);
+                if (!selectionBox.intersectsBox(bbox)) {
+                    return;
                 }
-                const pos = posAttr.array.slice(3 * idx, 3 * idx + 3);
-                const nor = norAttr.array.slice(3 * idx, 3 * idx + 3);
-                batches[batchId].position.push(...pos);
-                batches[batchId].normal.push(...nor);
-                batches[batchId].bbox.expandByPoint(new Vector3(...pos).applyMatrix4(tile.cached.transform));
-            });
-            Object.values(batches).forEach(batch => {
-                if (
-                    selectionBox.intersectsBox(batch.bbox) &&
-                    this.bboxInExportPolygon(batch.bbox)
-                ) {
-                    // Express coordinates wrt center of batch object bbox
-                    const prevPosition = new Vector3();
-                    tile.cached.transform.decompose(prevPosition, new Quaternion(), new Vector3());
-                    const newPosition = new Vector3();
-                    batch.bbox.getCenter(newPosition);
-                    const offset = new Vector3().subVectors(newPosition, prevPosition);
-                    for (let i = 0; i < batch.position.length / 3; ++i) {
-                        batch.position[3 * i + 0] -= offset.x;
-                        batch.position[3 * i + 1] -= offset.y;
-                        batch.position[3 * i + 2] -= offset.z;
+                const batchidAttr = c.geometry.getAttribute( '_batchid' );
+                const posAttr = c.geometry.getAttribute('position');
+                const norAttr = c.geometry.getAttribute('normal');
+                const batches = {};
+                batchidAttr.array.forEach((batchId, idx) => {
+                    if (!batches[batchId]) {
+                        batches[batchId] = {
+                            position: [],
+                            normal: [],
+                            bbox: new Box3()
+                        };
                     }
-                    // Construct mesh
-                    const material = new MeshStandardMaterial({color: 0xffffff});
-                    const geometry = new BufferGeometry();
-                    geometry.setAttribute('position', new Float32BufferAttribute(batch.position, 3));
-                    geometry.setAttribute('normal', new Float32BufferAttribute(batch.normal, 3));
-                    const mesh = new Mesh(geometry, material);
-                    mesh.applyMatrix4(tile.cached.transform.clone().multiply(new Matrix4().makeTranslation(offset)));
-                    exportGroup.add(mesh);
-                }
-            });
-        }
+                    const pos = posAttr.array.slice(3 * idx, 3 * idx + 3);
+                    const nor = norAttr.array.slice(3 * idx, 3 * idx + 3);
+                    batches[batchId].position.push(...pos);
+                    batches[batchId].normal.push(...nor);
+                    batches[batchId].bbox.expandByPoint(new Vector3(...pos).applyMatrix4(c.matrixWorld));
+                });
+                Object.values(batches).forEach(batch => {
+                    if (
+                        selectionBox.intersectsBox(batch.bbox) &&
+                        this.bboxInExportPolygon(batch.bbox)
+                    ) {
+                        // Express coordinates wrt center of batch object bbox
+                        const prevPosition = new Vector3();
+                        c.matrixWorld.decompose(prevPosition, new Quaternion(), new Vector3());
+                        const newPosition = new Vector3();
+                        batch.bbox.getCenter(newPosition);
+                        const offset = new Vector3().subVectors(newPosition, prevPosition);
+                        for (let i = 0; i < batch.position.length / 3; ++i) {
+                            batch.position[3 * i + 0] -= offset.x;
+                            batch.position[3 * i + 1] -= offset.y;
+                            batch.position[3 * i + 2] -= offset.z;
+                        }
+                        // Construct mesh
+                        const material = new MeshStandardMaterial({color: 0xffffff});
+                        const geometry = new BufferGeometry();
+                        geometry.setAttribute('position', new Float32BufferAttribute(batch.position, 3));
+                        geometry.setAttribute('normal', new Float32BufferAttribute(batch.normal, 3));
+                        const mesh = new Mesh(geometry, material);
+                        mesh.applyMatrix4(c.matrixWorld.clone().multiply(new Matrix4().makeTranslation(offset)));
+                        exportGroup.add(mesh);
+                    }
+                });
+            }
+        });
     };
     addObjectToExportGroup = (object, exportGroup, selectionBox) => {
         object.children.forEach(child => {
