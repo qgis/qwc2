@@ -230,7 +230,7 @@ class ExportObjects3D extends React.Component {
                     batches[batchId].normal.push(...nor);
                     batches[batchId].bbox.expandByPoint(new Vector3(...pos).applyMatrix4(c.matrixWorld));
                 });
-                Object.values(batches).forEach(batch => {
+                Object.entries(batches).forEach(([batchId, batch]) => {
                     if (
                         selectionBox.intersectsBox(batch.bbox) &&
                         this.bboxInExportPolygon(batch.bbox)
@@ -253,6 +253,13 @@ class ExportObjects3D extends React.Component {
                         geometry.setAttribute('normal', new Float32BufferAttribute(batch.normal, 3));
                         const mesh = new Mesh(geometry, material);
                         mesh.applyMatrix4(c.matrixWorld.clone().multiply(new Matrix4().makeTranslation(offset)));
+                        // Include attribute from batch table
+                        let batchTableObject = c;
+                        while (!batchTableObject.batchTable) {
+                            batchTableObject = batchTableObject.parent;
+                        }
+                        Object.assign(mesh.userData, batchTableObject.batchTable.getDataFromId(batchId));
+
                         exportGroup.add(mesh);
                     }
                 });
