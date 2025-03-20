@@ -153,15 +153,28 @@ export default class Draw3D extends React.Component {
     actionChanged = (data) => {
         if (data.action === "Delete") {
             this.deleteSelectedObject();
-            this.setState({action: 'Pick', geomType: null, selectedObject: null});
         } else {
             this.setState({action: data.action, geomType: data.geomType, selectedObject: null});
         }
     };
     deleteSelectedObject = () => {
-        this.props.sceneContext.getSceneObject(this.state.drawGroupId).remove(this.state.selectedObject);
-        this.state.selectedObject.traverse(obj => obj.dispose?.());
-        this.props.sceneContext.scene.notifyChange();
+        const group = this.props.sceneContext.getSceneObject(this.state.drawGroupId);
+        let parent = null;
+        group.traverse(c => {
+            if (c === this.state.selectedObject) {
+                parent = c.parent;
+            }
+        });
+        if (parent) {
+            parent.remove(this.state.selectedObject);
+            while (parent.parent && !parent.isMesh && parent.children.length === 0 && parent !== group) {
+                const grandparent = parent.parent;
+                grandparent.remove(parent);
+                parent = grandparent;
+            }
+            this.setState({action: 'Pick', geomType: null, selectedObject: null});
+            this.props.sceneContext.scene.notifyChange();
+        }
     };
     objectCreated = (object) => {
         this.setState({action: 'Pick', geomType: null, selectedObject: object});
