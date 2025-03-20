@@ -653,10 +653,14 @@ class Map3D extends React.Component {
         const camera = this.instance.view.camera;
         raycaster.setFromCamera(new Vector2(x, y), camera);
         // Query object intersection
-        const objInter = objects ? raycaster.intersectObjects([
-            this.sceneObjectGroup,
-            ...this.instance.getEntities().filter(e => e !== this.map).map(entity => entity.object3d)
-        ], true)[0] : undefined;
+        const intersectionObjects = objects ? Object.entries(this.state.sceneContext.sceneObjects).map(([objId, options]) => {
+            if (options.layertree && options.visibility) {
+                const obj = this.objectMap[objId];
+                return obj.tiles?.group ?? obj;
+            }
+            return null;
+        }).filter(Boolean) : null;
+        const objInter = objects ? raycaster.intersectObjects(intersectionObjects, true)[0] : undefined;
         // Query highest resolution terrain tile (i.e. tile with no children)
         const terrInter = raycaster.intersectObjects([this.map.object3d]).filter(result => result.object.children.length === 0)[0];
         // Return closest result
