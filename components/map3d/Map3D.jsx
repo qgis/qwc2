@@ -333,6 +333,7 @@ class Map3D extends React.Component {
                     if (child instanceof Mesh) {
                         child.material.transparent = options.opacity < 255;
                         child.material.opacity = options.opacity / 255;
+                        child.material.needsUpdate = true;
                     }
                 });
             }
