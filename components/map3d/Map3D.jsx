@@ -45,6 +45,7 @@ import OverviewMap3D from './OverviewMap3D';
 import TopBar3D from './TopBar3D';
 import View3DSwitcher from './View3DSwitcher';
 import LayerRegistry from './layers/index';
+import Tiles3DStyle from './utils/Tiles3DStyle';
 
 import './style/Map3D.css';
 
@@ -560,6 +561,7 @@ class Map3D extends React.Component {
             const tiles = new Tiles3D({
                 url: tilesUrl
             });
+            tiles.tiles.addEventListener('load-model', ({scene}) => Tiles3DStyle.applyDeclarativeStyle(scene, entry));
             tiles.castShadow = true;
             tiles.receiveShadow = true;
             tiles.userData.layertree = true;
