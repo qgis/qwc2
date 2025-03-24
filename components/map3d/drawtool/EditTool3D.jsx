@@ -9,6 +9,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
+import {Group, Vector3} from 'three';
 import {TransformControls} from 'three/addons/controls/TransformControls';
 
 import LocaleUtils from '../../../utils/LocaleUtils';
@@ -17,6 +18,60 @@ import ButtonBar from '../../widgets/ButtonBar';
 import ColorButton from '../../widgets/ColorButton';
 import NumericInput3D from './NumericInput3D';
 
+
+class GroupSelection extends Group {
+    constructor() {
+        super();
+        this.isGroupSelection = true;
+    }
+    hasObject = (object) => {
+        return this.children.indexOf(object) >= 0;
+    };
+    addToSelection = (object) => {
+        this.children.forEach(child => {
+            child.position.add(this.position);
+        });
+        this.add(object);
+        object.userData.originalColor = object.material.color.clone();
+        object.material.color.set(0xFF0000);
+        this.recomputePosition();
+    };
+    removeFromSelection = (object) => {
+        this.parent.attach(object);
+        object.material.color.set(object.userData.originalColor);
+        delete object.userData.originalColor;
+        this.children.forEach(child => {
+            child.position.add(this.position);
+        });
+        this.recomputePosition();
+    };
+    dissolve = () => {
+        while (this.children.length) {
+            const object = this.children.pop();
+            object.material.color.set(object.userData.originalColor);
+            delete object.userData.originalColor;
+            this.parent.attach(object);
+        }
+        this.removeFromParent();
+    };
+    recomputePosition = () => {
+        if (this.children.length === 0) {
+            this.position.set(0, 0, 0);
+        } else {
+            const center = new Vector3();
+            this.children.forEach(child => {
+                center.add(child.position);
+            });
+            center.divideScalar(this.children.length);
+            this.position.copy(center)
+            this.updateMatrixWorld();
+            this.children.forEach(child => {
+                child.position.sub(this.position);
+                child.updateMatrixWorld();
+            });
+        }
+    };
+}
 
 export default class EditTool3D extends React.Component {
     static propTypes = {
@@ -44,6 +99,7 @@ export default class EditTool3D extends React.Component {
         });
         renderer.domElement.addEventListener("pointerdown", this.selectShapeOnRelease);
         renderer.domElement.addEventListener('keydown', this.onKeyDown);
+        renderer.domElement.addEventListener('keyup', this.onKeyUp);
         if (this.props.selectedObject) {
             this.transformControls.attach(this.props.selectedObject);
             this.transformControls.getHelper().updateMatrixWorld();
@@ -59,7 +115,9 @@ export default class EditTool3D extends React.Component {
             }
             if (this.props.selectedObject) {
                 this.transformControls.attach(this.props.selectedObject);
-                this.props.colorChanged(this.props.selectedObject.material.color.toArray().map(c => c * 255));
+                if (!this.props.selectedObject.isGroupSelection) {
+                    this.props.colorChanged(this.props.selectedObject.material.color.toArray().map(c => c * 255));
+                }
             }
             this.transformControls.getHelper().updateMatrixWorld();
             this.props.sceneContext.scene.notifyChange();
@@ -70,11 +128,18 @@ export default class EditTool3D extends React.Component {
             this.props.sceneContext.scene.notifyChange();
         }
         if (this.props.color !== prevProps.color && this.props.selectedObject) {
-            this.props.selectedObject.material.color.setRGB(...this.props.color.map(c => c / 255));
+            if (!this.props.selectedObject.isGroupSelection) {
+                this.props.selectedObject.material.color.setRGB(...this.props.color.map(c => c / 255));
+            } else {
+                this.props.selectedObject.children.forEach(child => {
+                    child.userData.originalColor.setRGB(...this.props.color.map(c => c / 255));
+                });
+            }
             this.props.sceneContext.scene.notifyChange();
         }
     }
     componentWillUnmount() {
+        this.dissolveSelectionGroup();
         this.transformControls.detach();
         this.props.sceneContext.scene.remove(this.transformControls.getHelper());
         this.transformControls.dispose();
@@ -134,11 +199,42 @@ export default class EditTool3D extends React.Component {
             const drawGroup = this.props.sceneContext.getSceneObject(this.props.drawGroupId);
             for (let parent = object.parent; parent; parent = parent.parent) {
                 if (parent === drawGroup) {
-                    this.props.objectPicked(object);
+                    if (ev.ctrlKey && this.props.selectedObject) {
+                        this.addRemoveFromSelection(object);
+                    } else {
+                        this.dissolveSelectionGroup();
+                        this.props.objectPicked(object);
+                    }
                     return;
                 }
             }
-            this.props.objectPicked(null);
+        }
+        if (!ev.ctrlKey) {
+            this.dissolveSelectionGroup();
+        }
+        this.props.objectPicked(null);
+    };
+    addRemoveFromSelection = (object) => {
+        if (this.props.selectedObject.isGroupSelection) {
+            if (this.props.selectedObject.hasObject(object)) {
+                this.props.selectedObject.removeFromSelection(object);
+            } else {
+                this.props.selectedObject.addToSelection(object);
+            }
+            this.updateTransformHelper();
+        } else {
+            const groupSelection = new GroupSelection();
+            object.parent.add(groupSelection);
+            groupSelection.addToSelection(object);
+            if (this.props.selectedObject && this.props.selectedObject !== object) {
+                groupSelection.addToSelection(this.props.selectedObject);
+            }
+            this.props.objectPicked(groupSelection);
+        }
+    };
+    dissolveSelectionGroup = () => {
+        if (this.props.selectedObject?.isGroupSelection) {
+            this.props.selectedObject.dissolve();
         }
     };
     updateTransformHelper = () => {
@@ -153,6 +249,13 @@ export default class EditTool3D extends React.Component {
     onKeyDown = (ev) => {
         if (ev.key === "Escape") {
             this.transformControls.reset();
+        } else if (ev.key === "Control") {
+            this.transformControls.enabled = false;
+        }
+    };
+    onKeyUp = (ev) => {
+        if (ev.key === "Control") {
+            this.transformControls.enabled = true;
         }
     };
     toggleNumericInput = () => {
