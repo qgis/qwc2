@@ -4,6 +4,10 @@ div.ButtonBar {
     margin: 0.25em 0;
 }
 
+div.buttonbar-fill {
+    width: 100%;
+}
+
 div.ButtonBar.buttonbar-disabled:before {
     position: absolute;
     top: 0;

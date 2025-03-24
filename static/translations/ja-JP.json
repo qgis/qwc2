@@ -133,6 +133,7 @@
       "cylinder": "円柱",
       "delete": "削除",
       "drawings": "線描",
+      "intersect": "",
       "newgroupprompt": "新しい線描グループ",
       "numericinput": "数字入力",
       "pick": "ピック",
@@ -142,8 +143,11 @@
       "rotation": "回転",
       "scale": "縮尺",
       "sphere": "球",
+      "subtract": "",
       "thescale": "縮尺",
       "translate": "トランスレート",
+      "undoBool": "",
+      "union": "",
       "wedge": "くさび"
     },
     "editing": {

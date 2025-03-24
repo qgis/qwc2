@@ -133,6 +133,7 @@
       "cylinder": "Cylinder",
       "delete": "Delete",
       "drawings": "Drawings",
+      "intersect": "Intersect",
       "newgroupprompt": "New drawing group",
       "numericinput": "Numeric input",
       "pick": "Pick",
@@ -142,8 +143,11 @@
       "rotation": "Rotation",
       "scale": "Scale",
       "sphere": "Sphere",
+      "subtract": "Subtract",
       "thescale": "Scale",
       "translate": "Translate",
+      "undoBool": "Undo operation",
+      "union": "Union",
       "wedge": "Wedge"
     },
     "editing": {

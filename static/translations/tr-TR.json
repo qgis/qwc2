@@ -133,6 +133,7 @@
       "cylinder": "Silindir",
       "delete": "Sil",
       "drawings": "Çizimler",
+      "intersect": "",
       "newgroupprompt": "Yeni çizim grubu",
       "numericinput": "Sayısal giriş",
       "pick": "Seç",
@@ -142,8 +143,11 @@
       "rotation": "Dönüklük",
       "scale": "Ölçek",
       "sphere": "Küre",
+      "subtract": "",
       "thescale": "Ölçek",
       "translate": "Çevir",
+      "undoBool": "",
+      "union": "",
       "wedge": "Kama"
     },
     "editing": {

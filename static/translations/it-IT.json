@@ -133,6 +133,7 @@
       "cylinder": "Cilindro",
       "delete": "Elimina",
       "drawings": "Disegni",
+      "intersect": "Intersezione",
       "newgroupprompt": "Nuovo gruppo disegni",
       "numericinput": "Formulario numerico",
       "pick": "Seleziona",
@@ -142,8 +143,11 @@
       "rotation": "Rotazione",
       "scale": "Scala",
       "sphere": "Sfera",
+      "subtract": "Differenza",
       "thescale": "Scala",
       "translate": "Trasla",
+      "undoBool": "Annulla l'operazione",
+      "union": "Unione",
       "wedge": "Cuneo"
     },
     "editing": {

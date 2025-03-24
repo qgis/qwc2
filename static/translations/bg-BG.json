@@ -133,6 +133,7 @@
       "cylinder": "Цилиндър",
       "delete": "Изтриване на",
       "drawings": "Чертежи",
+      "intersect": "",
       "newgroupprompt": "Нова група за рисуване",
       "numericinput": "Цифрово въвеждане",
       "pick": "Изберете",
@@ -142,8 +143,11 @@
       "rotation": "Завъртане",
       "scale": "Стълбища",
       "sphere": "Сфера",
+      "subtract": "",
       "thescale": "Стълбища",
       "translate": "Превод",
+      "undoBool": "",
+      "union": "",
       "wedge": "Клин"
     },
     "editing": {

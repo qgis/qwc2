@@ -133,6 +133,7 @@
       "cylinder": "Cylindre",
       "delete": "Effacer",
       "drawings": "Dessins",
+      "intersect": "Croiser",
       "newgroupprompt": "Ajouter un groupe de dessin",
       "numericinput": "Entrée numérique",
       "pick": "Choisir",
@@ -142,8 +143,11 @@
       "rotation": "Rotation",
       "scale": "Redimensionner",
       "sphere": "Sphère",
+      "subtract": "Soustraire",
       "thescale": "Echelle",
       "translate": "Déplacer",
+      "undoBool": "Annuler l'opération",
+      "union": "Unir",
       "wedge": "Coin"
     },
     "editing": {

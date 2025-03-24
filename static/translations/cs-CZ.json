@@ -133,6 +133,7 @@
       "cylinder": "",
       "delete": "",
       "drawings": "",
+      "intersect": "",
       "newgroupprompt": "",
       "numericinput": "",
       "pick": "",
@@ -142,8 +143,11 @@
       "rotation": "",
       "scale": "",
       "sphere": "",
+      "subtract": "",
       "thescale": "",
       "translate": "",
+      "undoBool": "",
+      "union": "",
       "wedge": ""
     },
     "editing": {

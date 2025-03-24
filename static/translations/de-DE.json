@@ -133,6 +133,7 @@
       "cylinder": "Zylinder",
       "delete": "Löschen",
       "drawings": "Zeichnungen",
+      "intersect": "Verschnitt",
       "newgroupprompt": "Zeichungsgruppe hinzufügen",
       "numericinput": "Numerische Eingabe",
       "pick": "Auswählen",
@@ -142,8 +143,11 @@
       "rotation": "Rotation",
       "scale": "Skalieren",
       "sphere": "Kugel",
+      "subtract": "Differenz",
       "thescale": "Skalierung",
       "translate": "Verschieben",
+      "undoBool": "Operation rückgängig machen",
+      "union": "Vereinigung",
       "wedge": "Kegel"
     },
     "editing": {
