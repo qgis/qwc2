@@ -29,6 +29,7 @@ import IdentifyPlugin from './plugins/Identify';
 import LayerCatalogPlugin from './plugins/LayerCatalog';
 import LayerTreePlugin from './plugins/LayerTree';
 import LocateButtonPlugin from './plugins/LocateButton';
+import LoginUserPlugin from './plugins/LoginUser';
 import MapPlugin from './plugins/Map';
 import MapComparePlugin from './plugins/MapCompare';
 import MapCopyrightPlugin from './plugins/MapCopyright';
@@ -101,6 +102,7 @@ export default {
             LayerCatalogPlugin: LayerCatalogPlugin,
             LayerTreePlugin: LayerTreePlugin,
             LocateButtonPlugin: LocateButtonPlugin,
+            LoginUserPlugin: LoginUserPlugin,
             MapComparePlugin: MapComparePlugin,
             MapCopyrightPlugin: MapCopyrightPlugin,
             MapExportPlugin: MapExportPlugin,
