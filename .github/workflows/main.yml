@@ -14,7 +14,9 @@ jobs:
           node-version: '20.x'
 
       - name: Install all required dependencies
-        run: yarn install
+        run: |
+          cat package.json
+          yarn install
 
       - name: Compile a deployable application bundle
         run: yarn run prod
