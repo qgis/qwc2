@@ -325,7 +325,7 @@ class Map3D extends React.Component {
     applySceneObjectUpdates = (sceneObjects) => {
         Object.entries(sceneObjects).forEach(([objectId, options]) => {
             const object = this.objectMap[objectId];
-            object.visible = options.visibility;
+            object.visible = options.visibility && options.opacity > 0;
             if (object.opacity !== undefined) {
                 object.opacity = options.opacity / 255;
             } else {
