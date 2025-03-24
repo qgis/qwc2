@@ -355,9 +355,12 @@
     },
     "maplight3d": {
       "ambientLightIntensity": "",
+      "animationstep": "",
       "date": "",
+      "dayspersec": "",
       "directionalLightIntensity": "",
       "helpersVisible": "",
+      "minspersec": "",
       "normalBias": "",
       "shadowBias": "",
       "shadowMapSize": "",

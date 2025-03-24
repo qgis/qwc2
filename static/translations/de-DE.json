@@ -355,9 +355,12 @@
     },
     "maplight3d": {
       "ambientLightIntensity": "Intensität Umgebungslichts",
+      "animationstep": "Animationsschritt",
       "date": "Datum",
+      "dayspersec": "Tage / Sek",
       "directionalLightIntensity": "Intensität gerichtetes Licht",
       "helpersVisible": "Hilfen anzeigen",
+      "minspersec": "Min / Sek",
       "normalBias": "Normal-Verzerrung",
       "shadowBias": "Schatten-Verzerrung",
       "shadowMapSize": "Größe der Schattentextur",

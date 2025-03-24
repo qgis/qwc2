@@ -16,6 +16,7 @@ import {AmbientLight, BasicShadowMap, CameraHelper, DirectionalLight, Directiona
 
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
+import Icon from '../Icon';
 import SideBar from '../SideBar';
 import NumberInput from '../widgets/NumberInput';
 import ToggleSwitch from '../widgets/ToggleSwitch';
@@ -46,9 +47,16 @@ export default class Map3DLight extends React.Component {
             shadowIntensity: 0.9,
             shadowVolumeNear: 60000,
             shadowVolumeFar: 100000
-        }
+        },
+        dayAnimation: false,
+        dayAnimationSettings: false,
+        dayStep: 30,
+        timeAnimation: false,
+        timeAnimationSettings: false,
+        timeStep: 30
     };
     componentDidMount() {
+        this.animationInterval = null;
         this.componentDidUpdate({});
     }
     componentDidUpdate(prevProps, prevState) {
@@ -77,10 +85,14 @@ export default class Map3DLight extends React.Component {
     componentWillUnmount() {
         clearInterval(this.lightPositionInterval);
     }
+    onHide = () => {
+        clearInterval(this.animationInterval);
+        this.setState({dayAnimation: false, timeAnimation: false});
+    };
     render() {
         return (
             <div>
-                <SideBar icon="light" id="MapLight3D"
+                <SideBar icon="light" id="MapLight3D" onHide={this.onHide}
                     title={LocaleUtils.tr("appmenu.items.MapLight3D")}
                     width="25em"
                 >
@@ -106,12 +118,50 @@ export default class Map3DLight extends React.Component {
                     <tbody>
                         <tr>
                             <td>{LocaleUtils.tr("maplight3d.date")}</td>
-                            <td>{this.renderSlider('day', 1, 365, 1, dateFormatter)}</td>
+                            <td>
+                                <div className="map3d-animation-slider">
+                                    <Icon icon={this.state.dayAnimation ? "square" : "triangle-right"} onClick={this.toggleDayAnimation} />
+                                    {this.renderSlider('day', 1, 365, 1, dateFormatter)}
+                                    <Icon
+                                        className={this.state.dayAnimationSettings ? "map3d-animation-settings-active" : ""}
+                                        icon="cog"
+                                        onClick={() => this.setState(state => ({dayAnimationSettings: !state.dayAnimationSettings}))} />
+                                </div>
+                            </td>
                         </tr>
+                        {this.state.dayAnimationSettings ? (
+                            <tr>
+                                <td colSpan="2">
+                                    <div className="maplight3d-animation-settings">
+                                        <span>{LocaleUtils.tr("maplight3d.animationstep")}:</span>
+                                        <NumberInput max={60} min={1} onChange={dayStep => this.setState({dayStep})} suffix={" " + LocaleUtils.tr("maplight3d.dayspersec")} value={this.state.dayStep} />
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : null}
                         <tr>
                             <td>{LocaleUtils.tr("maplight3d.time")}</td>
-                            <td>{this.renderSlider('time', 0, 1439, 1, timeFormatter)}</td>
+                            <td>
+                                <div className="map3d-animation-slider">
+                                    <Icon icon={this.state.timeAnimation ? "square" : "triangle-right"} onClick={this.toggleTimeAnimation} />
+                                    {this.renderSlider('time', 0, 1439, 1, timeFormatter)}
+                                    <Icon
+                                        className={this.state.timeAnimationSettings ? "map3d-animation-settings-active" : ""}
+                                        icon="cog"
+                                        onClick={() => this.setState(state => ({timeAnimationSettings: !state.timeAnimationSettings}))} />
+                                </div>
+                            </td>
                         </tr>
+                        {this.state.timeAnimationSettings ? (
+                            <tr>
+                                <td colSpan="2">
+                                    <div className="maplight3d-animation-settings">
+                                        <span>{LocaleUtils.tr("maplight3d.animationstep")}:</span>
+                                        <NumberInput max={60} min={1} onChange={timeStep => this.setState({timeStep})} suffix={" " + LocaleUtils.tr("maplight3d.minspersec")} value={this.state.timeStep} />
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : null}
                         <tr>
                             <td>{LocaleUtils.tr("maplight3d.ambientLightIntensity")}</td>
                             <td>{this.renderSlider('ambientLightIntensity', 0, 5, 0.1)}</td>
@@ -186,6 +236,26 @@ export default class Map3DLight extends React.Component {
                 </table>
             </div>
         );
+    };
+    toggleDayAnimation = () => {
+        this.setState(state => ({dayAnimation: !state.dayAnimation, timeAnimation: false}), () => {
+            clearInterval(this.animationInterval);
+            if (this.state.dayAnimation) {
+                this.animationInterval = setInterval(() => {
+                    this.updateLightParams('day', (this.state.lightParams.day + this.state.dayStep / 10) % 365);
+                }, 100);
+            }
+        });
+    };
+    toggleTimeAnimation = () => {
+        this.setState(state => ({timeAnimation: !state.timeAnimation, dayAnimation: false}), () => {
+            clearInterval(this.animationInterval);
+            if (this.state.timeAnimation) {
+                this.animationInterval = setInterval(() => {
+                    this.updateLightParams('time', (this.state.lightParams.time + this.state.timeStep / 10) % 1440);
+                }, 100);
+            }
+        });
     };
     renderSlider = (key, min, max, step, labelFormatter = undefined) => {
         const value = this.state.lightParams[key];

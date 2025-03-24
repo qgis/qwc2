@@ -355,9 +355,12 @@
     },
     "maplight3d": {
       "ambientLightIntensity": "Intensità luce ambientale",
+      "animationstep": "Passo animazione",
       "date": "Data",
+      "dayspersec": "giorni / sec",
       "directionalLightIntensity": "Intensità luce direzionale",
       "helpersVisible": "Mostra aiuti",
+      "minspersec": "minuti / sec",
       "normalBias": "Bias normale",
       "shadowBias": "Bias ombra",
       "shadowMapSize": "Dimensione texture ombra",
