@@ -170,6 +170,7 @@ class HideObjects3D extends React.Component {
         geometry.setAttribute('normal', new Float32BufferAttribute(normal, 3));
         geometry.setIndex(index);
         const mesh = new Mesh(geometry, material);
+        mesh.receiveShadow = true;
         mesh.applyMatrix4(pick.object.matrixWorld);
         mesh.updateMatrixWorld();
 

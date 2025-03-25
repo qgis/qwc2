@@ -167,6 +167,7 @@ class Identify3D extends React.Component {
         const mesh = new Mesh(geometry, material);
         mesh.applyMatrix4(matrixWorld);
         mesh.updateMatrixWorld();
+        mesh.receiveShadow = true;
         this.props.sceneContext.addSceneObject("__identify3d_highlight", mesh);
     };
 }
