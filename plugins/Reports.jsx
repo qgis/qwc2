@@ -124,7 +124,7 @@ class Reports extends React.Component {
                 })}
             </SideBar>
         ),
-        this.state.featureSelectionMode === "Pick" ? (
+        this.state.featureSelectionMode === "Pick" && this.state.selectedReportLayer ? (
             <PickFeature featurePicked={this.selectReportFeature} key="FeaturePicker" layer={this.state.selectedReportLayer} />
         ) : null,
         this.state.featureSelectionMode === "Region" ? (
