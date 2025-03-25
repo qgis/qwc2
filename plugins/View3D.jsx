@@ -220,6 +220,7 @@ class View3D extends React.Component {
     }
     onClose = () => {
         this.props.setView3dMode(View3DMode.DISABLED);
+        UrlParams.updateParams({v3d: undefined});
     };
     onGeometryChanged = (geometry) => {
         if (geometry.maximized && this.props.display.view3dMode !== View3DMode.FULLSCREEN) {
@@ -238,7 +239,17 @@ class View3D extends React.Component {
         this.setViewToExtent();
         if (this.map3dComponentRef && this.restoreOnComponentLoad) {
             this.restoreOnComponentLoad = false;
-            this.map3dComponentRef.restore3dState(this.props.startupState.map3d);
+            const state3d = {
+                ...this.props.startupState.map3d
+            };
+            if (this.props.startupParams.v3d) {
+                const values = this.props.startupParams.v3d.split(",").map(parseFloat).filter(x => !isNaN(x));
+                if (values.length === 6) {
+                    state3d.center = [values[0], values[1], values[2]];
+                    state3d.cameraPos = [values[3], values[4], values[5]];
+                }
+            }
+            this.map3dComponentRef.restore3dState(state3d);
         }
     };
     redrawScene = (ev) => {

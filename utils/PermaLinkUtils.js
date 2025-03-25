@@ -71,7 +71,7 @@ export const UrlParams = {
         }
     },
     clear() {
-        this.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, bk: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined, f: undefined}, true);
+        this.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, bk: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined, f: undefined, v3d: undefined}, true);
     },
     getFullUrl() {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {

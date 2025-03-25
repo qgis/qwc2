@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import {Raycaster, Vector2, Vector3} from 'three';
 import {MapControls} from 'three/addons/controls/MapControls';
 
+import {UrlParams} from '../../utils/PermaLinkUtils';
 import Icon from '../Icon';
 import {setCenter} from './slices/map3d';
 
@@ -320,6 +321,8 @@ class MapControls3D extends React.Component {
         this.props.sceneContext.scene.view.controls.target.z = targetHeight;
 
         this.props.setCenter([target.x, target.y, target.z]);
+        const cpos = camera.position;
+        UrlParams.updateParams({v3d: [target.x, target.y, target.z, cpos.x, cpos.y, cpos.z].map(v => v.toFixed(0)).join(",")});
     };
     stopAnimations = () => {
         this.animationInterrupted = true;

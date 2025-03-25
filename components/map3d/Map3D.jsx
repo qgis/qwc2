@@ -19,6 +19,7 @@ import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import Inspector from "@giro3d/giro3d/gui/Inspector.js";
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 import {fromUrl} from "geotiff";
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh} from 'three';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
@@ -722,7 +723,7 @@ class Map3D extends React.Component {
         });
     };
     restore3dState = (data) => {
-        if (!data) {
+        if (isEmpty(data)) {
             return;
         }
         (data.objects || []).forEach(item => {
