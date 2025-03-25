@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
 import IdentifyUtils from '../utils/IdentifyUtils';
@@ -62,7 +63,8 @@ class PickFeature extends React.Component {
         pickResults: null,
         clickPos: null,
         highlightedFeature: null,
-        pendingQueries: 0
+        pendingQueries: 0,
+        reqId: null
     };
     constructor(props) {
         super(props);
@@ -89,6 +91,7 @@ class PickFeature extends React.Component {
                         }
                     }
                     const clickPos = getPixelFromCoordinate([maxX, maxY]);
+                    const reqId = uuidv1();
                     queryLayers.forEach(layer => {
                         let request = null;
                         if (this.props.pickGeomType === 'Point') {
@@ -99,45 +102,49 @@ class PickFeature extends React.Component {
                         } else {
                             return;
                         }
-                        IdentifyUtils.sendRequest(request, (response) => {
-                            const result = IdentifyUtils.parseResponse(response, layer, request.params.info_format, clickPos, this.props.map.projection, false, this.props.layers);
-                            if (this.props.featureFilter) {
-                                Object.entries(result).forEach(([layername, features]) => {
-                                    result[layername] = features.filter(this.props.featureFilter);
-                                });
-                            } else {
-                                Object.entries(result).forEach(([layername, features]) => {
-                                    result[layername] = features.filter(feature => !!feature.geometry);
-                                });
-                            }
-                            this.setState((state2) => {
-                                const newState = {
-                                    pickResults: {
-                                        ...state2.pickResults,
-                                        ...result
-                                    },
-                                    pendingQueries: state2.pendingQueries - 1
-                                };
-                                if (newState.pendingQueries === 0) {
-                                    const entries = Object.entries(newState.pickResults);
-                                    if (entries.length === 1 && entries[0][1].length === 1) {
-                                        this.props.featurePicked(entries[0][0], entries[0][1][0]);
-                                        newState.pickResults = null;
-                                        newState.pickGeom = null;
-                                    } else if (entries.reduce((sum, entry) => sum + entry[1].length, 0) === 0) {
-                                        newState.pickResults = null;
-                                        newState.pickGeom = null;
-                                    }
-                                }
-                                return newState;
-                            });
-                        });
+                        IdentifyUtils.sendRequest(request, (response) => this.handleIdentifyResponse(response, reqId, layer, request.params.info_format));
                     });
-                    return {pickResults: {}, clickPos: clickPos, pendingQueries: queryLayers.length};
+                    return {pickResults: {}, clickPos: clickPos, pendingQueries: queryLayers.length, reqId: reqId};
                 });
             }
         }
     }
+    handleIdentifyResponse = (response, reqId, layer, infoFormat) => {
+        if (this.state.reqId !== reqId) {
+            return;
+        }
+        const result = IdentifyUtils.parseResponse(response, layer, infoFormat, this.state.clickPos, this.props.map.projection, false, this.props.layers);
+        if (this.props.featureFilter) {
+            Object.entries(result).forEach(([layername, features]) => {
+                result[layername] = features.filter(this.props.featureFilter);
+            });
+        } else {
+            Object.entries(result).forEach(([layername, features]) => {
+                result[layername] = features.filter(feature => !!feature.geometry);
+            });
+        }
+        this.setState((state) => {
+            const newState = {
+                pickResults: {
+                    ...state.pickResults,
+                    ...result
+                },
+                pendingQueries: state.pendingQueries - 1
+            };
+            if (newState.pendingQueries === 0) {
+                const entries = Object.entries(newState.pickResults);
+                if (entries.length === 1 && entries[0][1].length === 1) {
+                    this.props.featurePicked(entries[0][0], entries[0][1][0]);
+                    newState.pickResults = null;
+                    newState.pickGeom = null;
+                } else if (entries.reduce((sum, entry) => sum + entry[1].length, 0) === 0) {
+                    newState.pickResults = null;
+                    newState.pickGeom = null;
+                }
+            }
+            return newState;
+        });
+    };
     render() {
         let resultsMenu = null;
         if (this.state.pickResults) {
