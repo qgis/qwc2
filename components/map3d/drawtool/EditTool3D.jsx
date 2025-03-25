@@ -243,8 +243,8 @@ export default class EditTool3D extends React.Component {
         }
         if (!ev.ctrlKey) {
             this.dissolveSelectionGroup();
+            this.props.objectPicked(null);
         }
-        this.props.objectPicked(null);
     };
     addRemoveFromSelection = (object) => {
         if (this.props.selectedObject.isGroupSelection) {
