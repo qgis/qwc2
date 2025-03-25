@@ -143,7 +143,7 @@ const VectorLayerUtils = {
                     ...feature,
                     geometry: {type: "Polygon", coordinates: part}
                 });
-            });
+            }).flat();
         } else if (feature.geometry.type === "Polygon") {
             return simplepolygon(feature).features.map((feat, idx, features) => {
                 if (feat.properties.parent >= 0) {
