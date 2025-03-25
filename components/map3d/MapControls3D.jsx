@@ -130,7 +130,7 @@ class MapControls3D extends React.Component {
         const d = this.state.firstPerson ? (
             200000
         ) : (
-            100 + (this.props.sceneContext.scene.view.camera.position.z - this.props.sceneContext.scene.view.controls.target.z) / 250
+            300 + (this.props.sceneContext.scene.view.camera.position.z - this.props.sceneContext.scene.view.controls.target.z) / 250
         );
         const delta = new Vector2(dx, dy).multiplyScalar(d);
         this.animationInterrupted = false;
@@ -291,35 +291,31 @@ class MapControls3D extends React.Component {
         requestAnimationFrame(animate);
     };
     updateControlsTarget = () => {
-        const target = this.props.sceneContext.scene.view.controls.target;
-        if (this.prevTarget && this.prevTarget.distanceToSquared(target) < 50) {
-            return;
-        }
-        this.prevTarget = target.clone();
-        const x = target.x;
-        const y = target.y;
+        const controls = this.props.sceneContext.scene.view.controls;
+        const camera = this.props.sceneContext.scene.view.camera;
+        const target = controls.target;
         const raycaster = new Raycaster();
         // Query highest resolution terrain tile (i.e. tile with no children)
+        const x = target.x;
+        const y = target.y;
         raycaster.set(new Vector3(x, y, target.z + 100000), new Vector3(0, 0, -1));
-        const terrInter = raycaster.intersectObjects([this.props.sceneContext.map.object3d]).filter(result => result.object.children.length === 0)[0];
-        const terrainHeight = terrInter?.point?.z ?? 0;
+        const terrInter = raycaster.intersectObjects([this.props.sceneContext.map.object3d]).filter(result => result.object.children.length === 0)[0]?.point;
         // FIXME: Why does raycaster.intersectObjects on terrain return 0-ish even when above terrain?
-        if (terrainHeight <= 1) {
+        if ((terrInter?.z ?? 0) <= 1) {
             return;
         }
 
         if (this.state.firstPerson) {
-            const delta = (terrainHeight + this.personHeight) - this.props.sceneContext.scene.view.camera.position.z;
-            this.props.sceneContext.scene.view.camera.position.z += delta;
-            this.props.sceneContext.scene.view.controls.target.z += delta;
-            return;
+            const delta = (terrInter.z + this.personHeight) - camera.position.z;
+            camera.position.z += delta;
+            target.z += delta;
+        } else {
+            const cameraHeight = camera.position.z;
+            // If camera height is at terrain height, target height should be at terrain height
+            // If camera height is at twice the terrain height or further, target height should be zero
+            const k = Math.max(0, 1 - (cameraHeight - terrInter.z) / terrInter.z);
+            target.lerpVectors(new Vector3(x, y, 0), terrInter, k);
         }
-        const cameraHeight = this.props.sceneContext.scene.view.camera.position.z;
-        // If camera height is at terrain height, target height should be at terrain height
-        // If camera height is at twice the terrain height or further, target height should be zero
-        const targetHeight = terrainHeight > 0 ? terrainHeight * Math.max(0, 1 - (cameraHeight - terrainHeight) / terrainHeight) : 0;
-        this.props.sceneContext.scene.view.controls.target.z = targetHeight;
-
         this.props.setCenter([target.x, target.y, target.z]);
         const cpos = camera.position;
         UrlParams.updateParams({v3d: [target.x, target.y, target.z, cpos.x, cpos.y, cpos.z].map(v => v.toFixed(0)).join(",")});
