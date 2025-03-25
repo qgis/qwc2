@@ -13,7 +13,6 @@ import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import DrawTool, { conditions } from '@giro3d/giro3d/interactions/DrawTool';
 import VectorSource from '@giro3d/giro3d/sources/VectorSource';
 import FileSaver from 'file-saver';
-import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import pointInPolygon from 'point-in-polygon';
 import PropTypes from 'prop-types';
