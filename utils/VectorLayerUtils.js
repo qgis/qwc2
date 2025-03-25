@@ -78,8 +78,8 @@ const VectorLayerUtils = {
                         params.styles.push(VectorLayerUtils.createSld(segment.type, feature.styleName, styleOptions, layer.opacity, dpi, scaleFactor));
                         params.labels.push(properties.segment_labels[i] || " ");
                         params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(segment));
-                        params.labelFillColors.push(styleOptions.textFill);
-                        params.labelOutlineColors.push(styleOptions.textStroke);
+                        params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                        params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                         params.labelDist.push("-5");
@@ -111,8 +111,8 @@ const VectorLayerUtils = {
                         params.labelRotations.push(((properties.rotation || 0) / Math.PI * 180).toFixed(0));
                     } else {
                         params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry));
-                        params.labelFillColors.push(styleOptions.textFill);
-                        params.labelOutlineColors.push(styleOptions.textStroke);
+                        params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                        params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
                         params.labelOutlineSizes.push(scaleFactor);
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                         params.labelDist.push("-5");
