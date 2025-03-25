@@ -22,7 +22,9 @@ export default class PopupMenu extends React.Component {
         this.container.style.top = 0;
         this.container.style.bottom = 0;
         this.container.style.zIndex = 100000;
-        this.container.addEventListener('click', this.props.onClose);
+        setTimeout(() => this.container.addEventListener('click', () => {
+            this.props.onClose?.();
+        }), 0);
         document.body.appendChild(this.container);
     }
     componentWillUnmount() {
