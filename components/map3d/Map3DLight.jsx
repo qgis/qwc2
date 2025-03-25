@@ -181,7 +181,7 @@ export default class Map3DLight extends React.Component {
                         <tr>
                             <td className="maplight3d-advanced" colSpan="2">
                                 <label>
-                                    <input onChange={ev => this.setState(state => ({showAdvanced: !state.showAdvanced}))} type="checkbox" value={this.state.showAdvanced} /> {LocaleUtils.tr("maplight3d.showadvanced")}</label>
+                                    <input checked={this.state.showAdvanced} onChange={ev => this.setState(state => ({showAdvanced: !state.showAdvanced}))} type="checkbox" /> {LocaleUtils.tr("maplight3d.showadvanced")}</label>
                             </td>
                         </tr>
                         {this.state.showAdvanced ? [(
