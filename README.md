@@ -1,12 +1,12 @@
-![Logo](https://raw.githubusercontent.com/qgis/qwc2/refs/heads/master/static/assets/img/qwc-logo.svg) QGIS Web Client 2
+![Logo](https://raw.githubusercontent.com/qgis/qwc2/refs/heads/master/static/assets/img/qwc-logo.svg) QGIS Web Client
 =================
 
 ## Introduction
-QGIS Web Client 2 (QWC2) is a modular next generation responsive web client for QGIS Server, built with ReactJS and OpenLayers.
+QGIS Web Client (QWC) is a modular next generation responsive web client for QGIS Server, built with ReactJS and OpenLayers.
 
-This repository contains the QWC2 web application, which you can run as a static application on top of QGIS Server.
+This repository contains the QWC web application, which you can run as a static application on top of QGIS Server.
 
-Alternatively, you can run QWC2 as part of the **[qwc-services Docker application](https://github.com/qwc-services/qwc-docker)**, which extends QWC2 with functionalities such as authentication, user management and  editing.
+Alternatively, you can run QWC as part of the **[qwc-services Docker application](https://github.com/qwc-services/qwc-docker)**, which extends QWC with functionalities such as authentication, user management and  editing.
 
 ![Screenshot](https://github.com/qgis/qwc2/blob/gh-pages/Screenshot.jpg?raw=true)
 
@@ -51,18 +51,18 @@ See [qwc-services.github.io/master/QuickStart/](https://qwc-services.github.io/m
 
 ## Examples
 
-Some examples of QWC2 production deployments:
+Some examples of QWC production deployments:
 
-- [QWC2 demo instance](http://qwc2.sourcepole.ch)
+- [QWC demo instance](http://qwc2.sourcepole.ch)
 - [GeoViewer Kanton Glarus](https://map.geo.gl.ch/)
 - [Web GIS Client Kanton Solothurn](https://geo.so.ch/map/)
 
 ## License
 
-QWC2 is released under the terms of the [BSD license](https://github.com/qgis/qwc2/blob/master/LICENSE).
+QWC is released under the terms of the [BSD license](https://github.com/qgis/qwc2/blob/master/LICENSE).
 
 ## Building a custom application
 
-This repository contains the stock QWC2 application.
+This repository contains the stock QWC application.
 
-If you want to extend QWC2 with custom plugins etc, you can use this repository as a submodule and build your custom application on top, see [https://github.com/qgis/qwc2-demo-app](https://github.com/qgis/qwc2-demo-app) for an example.
+If you want to extend QWC with custom plugins etc, you can use this repository as a submodule and build your custom application on top, see [https://github.com/qgis/qwc2-demo-app](https://github.com/qgis/qwc2-demo-app) for an example.
