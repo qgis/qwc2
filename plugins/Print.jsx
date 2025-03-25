@@ -194,12 +194,10 @@ class Print extends React.Component {
         }
 
         const formvisibility = 'hidden';
-        const printDpi = parseInt(this.state.dpi, 10) || 0;
         const mapCrs = this.props.map.projection;
         const version = this.props.theme.version;
 
         const mapName = this.state.layout.map.name;
-        const printParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, mapCrs, this.props.printExternalLayers);
 
         let formattedExtent = this.formatExtent(this.state.extents.at(0) ?? [0, 0, 0, 0]);
         if (!isEmpty(this.state.atlasFeatures)) {
@@ -270,20 +268,6 @@ class Print extends React.Component {
 
         const labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, printDpi, this.props.scaleFactor);
-
-        const dimensionValues = this.props.layers.reduce((res, layer) => {
-            if (layer.role === LayerRole.THEME) {
-                Object.entries(layer.dimensionValues || {}).forEach(([key, value]) => {
-                    if (value !== undefined) {
-                        res[key] = value;
-                    }
-                });
-            }
-            return res;
-        }, {});
-
-        const extraOptions = Object.fromEntries((this.props.theme.extraPrintParameters || "").split("&").filter(Boolean).map(entry => entry.split("=")));
         const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
             return a.name.localeCompare(b.name, undefined, {numeric: true});
         });
@@ -449,32 +433,14 @@ class Print extends React.Component {
                         <input name="FORMAT" readOnly type={formvisibility} value={this.state.selectedFormat} />
                         <input name="TRANSPARENT" readOnly type={formvisibility} value="true" />
                         <input name="SRS" readOnly type={formvisibility} value={mapCrs} />
-                        {Object.entries(printParams).map(([key, value]) => (<input key={key} name={key} type={formvisibility} value={value} />))}
                         <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
-                        <input name={mapName + ":LAYERS"} readOnly type={formvisibility} value={printParams.LAYERS} />
-                        <input name={mapName + ":STYLES"} readOnly type={formvisibility} value={printParams.STYLES} />
-                        <input name={mapName + ":FILTER"} readOnly type={formvisibility} value={printParams.FILTER} />
-                        <input name={mapName + ":FILTER_GEOM"} readOnly type={formvisibility} value={printParams.FILTER_GEOM} />
-                        <input name={mapName + ":HIGHLIGHT_GEOM"} readOnly type={formvisibility} value={highlightParams.geoms.join(";")} />
-                        <input name={mapName + ":HIGHLIGHT_SYMBOL"} readOnly type={formvisibility} value={highlightParams.styles.join(";")} />
-                        <input name={mapName + ":HIGHLIGHT_LABELSTRING"} readOnly type={formvisibility} value={highlightParams.labels.join(";")} />
-                        <input name={mapName + ":HIGHLIGHT_LABELCOLOR"} readOnly type={formvisibility} value={highlightParams.labelFillColors.join(";")} />
-                        <input name={mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"} readOnly type={formvisibility} value={highlightParams.labelOutlineColors.join(";")} />
-                        <input name={mapName + ":HIGHLIGHT_LABELBUFFERSIZE"} readOnly type={formvisibility} value={highlightParams.labelOutlineSizes.join(";")} />
-                        <input name={mapName + ":HIGHLIGHT_LABELSIZE"} readOnly type={formvisibility} value={highlightParams.labelSizes.join(";")} />
-                        <input name={mapName + ":HIGHLIGHT_LABEL_DISTANCE"} readOnly type={formvisibility} value={highlightParams.labelDist.join(";")} />
-                        <input name={mapName + ":HIGHLIGHT_LABEL_ROTATION"} readOnly type={formvisibility} value={highlightParams.labelRotations.join(";")} />
                         {pdfFormatSelected && this.props.allowGeoPdfExport ? (<input name="FORMAT_OPTIONS" readOnly type={formvisibility} value={this.state.geoPdf ? "WRITE_GEO_PDF:true" : "WRITE_GEO_PDF:false"} />) : null}
                         {gridIntervalX}
                         {gridIntervalY}
                         {resolutionInput}
-                        {Object.entries(dimensionValues).map(([key, value]) => (
-                            <input key={key} name={key} readOnly type="hidden" value={value} />
-                        ))}
-                        {Object.entries(extraOptions).map(([key, value]) => (<input key={key} name={key} readOnly type="hidden" value={value} />))}
                     </div>
                     <div className="button-bar">
-                        <button className="button" disabled={!printParams.LAYERS || this.state.printing} type="submit">
+                        <button className="button" disabled={this.state.printing} type="submit">
                             {this.state.printing ? (<span className="print-wait"><Spinner /> {LocaleUtils.tr("print.wait")}</span>) : LocaleUtils.tr("print.submit")}
                         </button>
                     </div>
@@ -695,6 +661,49 @@ class Print extends React.Component {
         }
 
         const formData = formDataEntries(new FormData(this.printForm));
+        const mapCrs = this.props.map.projection;
+        const mapName = this.state.layout.map.name;
+
+        // Add base print params
+        const printParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, mapCrs, this.props.printExternalLayers);
+        Object.entries(printParams).forEach(([key, value]) => {
+            formData[key] = value;
+        });
+        formData[mapName + ":LAYERS"] = printParams.LAYERS;
+        formData[mapName + ":STYLES"] = printParams.STYLES;
+        formData[mapName + ":FILTER"] = printParams.FILTER;
+        formData[mapName + ":FILTER_GEOM"] = printParams.FILTER_GEOM;
+
+        // Add highlight params
+        const printDpi = parseInt(this.state.dpi, 10) || 0;
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, printDpi, this.props.scaleFactor);
+        formData[mapName + ":HIGHLIGHT_GEOM"] = highlightParams.geoms.join(";");
+        formData[mapName + ":HIGHLIGHT_SYMBOL"] = highlightParams.styles.join(";");
+        formData[mapName + ":HIGHLIGHT_LABELSTRING"] = highlightParams.labels.join(";");
+        formData[mapName + ":HIGHLIGHT_LABELCOLOR"] = highlightParams.labelFillColors.join(";");
+        formData[mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"] = highlightParams.labelOutlineColors.join(";");
+        formData[mapName + ":HIGHLIGHT_LABELBUFFERSIZE"] = highlightParams.labelOutlineSizes.join(";");
+        formData[mapName + ":HIGHLIGHT_LABELSIZE"] = highlightParams.labelSizes.join(";");
+        formData[mapName + ":HIGHLIGHT_LABEL_DISTANCE"] = highlightParams.labelDist.join(";");
+        formData[mapName + ":HIGHLIGHT_LABEL_ROTATION"] = highlightParams.labelRotations.join(";");
+
+        // Add dimension values
+        this.props.layers.forEach(layer => {
+            if (layer.role === LayerRole.THEME) {
+                Object.entries(layer.dimensionValues || {}).forEach(([key, value]) => {
+                    if (value !== undefined) {
+                        formData[key] = value;
+                    }
+                });
+            }
+        });
+
+        // Add extra print parameters
+        const extraOptions = Object.fromEntries((this.props.theme.extraPrintParameters || "").split("&").filter(Boolean).map(entry => entry.split("=")));
+        Object.entries(extraOptions).forEach(([key, value]) => {
+            formData[key] = value;
+        });
+
         let pages = [formData];
 
         if (this.state.printSeriesEnabled) {
