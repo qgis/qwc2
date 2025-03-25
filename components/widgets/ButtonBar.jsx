@@ -21,6 +21,7 @@ import './style/ButtonBar.css';
 const ButtonPropShape = PropTypes.shape({
     key: PropTypes.string,
     label: PropTypes.string,
+    forceLabel: PropTypes.bool,
     tooltip: PropTypes.string,
     icon: PropTypes.string,
     data: PropTypes.object,
@@ -55,7 +56,7 @@ export default class ButtonBar extends React.Component {
                                 {entry.map(comboentry => (
                                     <div className="buttonbar-combo-entry" key={comboentry.key} onClick={() => this.props.onClick(comboentry.key, comboentry.data)} value={comboentry.key}>
                                         {comboentry.icon ? (<Icon icon={comboentry.icon} />) : null}
-                                        {comboentry.label && (!isMobile || !comboentry.icon || this.props.forceLabel) ? (
+                                        {comboentry.label && (!isMobile || !comboentry.icon || this.props.forceLabel || comboentry.forceLabel) ? (
                                             <span className="buttonbar-combo-entry-label">{comboentry.label}</span>
                                         ) : null}
                                         {comboentry.tooltip ? (
@@ -84,7 +85,7 @@ export default class ButtonBar extends React.Component {
                                     type={entry.type || "button"}
                                 >
                                     {entry.icon ? (<Icon icon={entry.icon} />) : null}
-                                    {entry.label && (!isMobile || !entry.icon || this.props.forceLabel) ? (<span>{entry.label}</span>) : null}
+                                    {entry.label && (!isMobile || !entry.icon || this.props.forceLabel || entry.forceLabel) ? (<span>{entry.label}</span>) : null}
                                 </button>
                                 {entry.tooltip ? (
                                     <span className={"buttonbar-button-tooltip " + ("buttonbar-button-tooltip-" + this.props.tooltipPos)}>
