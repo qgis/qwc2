@@ -632,7 +632,7 @@ class Print extends React.Component {
                 </SideBar>
             ),
             this.renderPrintOutputWindow(),
-            this.props.active && this.state.layout && this.state.layout.atlasCoverageLayer ? (
+            this.props.active && this.state.layout && this.state.layout.atlasCoverageLayer && !this.state.printSeriesEnabled ? (
                 <PickFeature
                     featurePicked={this.selectAtlasFeature}
                     key="FeaturePicker"
