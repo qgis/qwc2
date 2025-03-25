@@ -41,7 +41,7 @@ export default class Map3DLight extends React.Component {
             shadowsEnabled: true,
             shadowType: PCFShadowMap,
             shadowMapSize: 4096,
-            shadowBias: -0.0001,
+            shadowBias: -0.00001,
             sunDistance: 80000,
             normalBias: 0,
             shadowIntensity: 0.9,
@@ -214,7 +214,7 @@ export default class Map3DLight extends React.Component {
                         ), (
                             <tr key="shadowBias">
                                 <td>{LocaleUtils.tr("maplight3d.shadowBias")}</td>
-                                <td><NumberInput decimals={4} max={0.01} min={-0.01} onChange={value => this.updateLightParams('shadowBias', value)} value={lightParams.shadowBias} /></td>
+                                <td><NumberInput decimals={5} max={0.01} min={-0.01} onChange={value => this.updateLightParams('shadowBias', value)} value={lightParams.shadowBias} /></td>
                             </tr>
                         ), (
                             <tr key="normalBias">
