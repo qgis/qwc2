@@ -16,6 +16,7 @@
         "Editing": "編集",
         "ExportObjects3D": "",
         "Help": "ヘルプ",
+        "HideObjects3D": "",
         "LayerTree": "レイヤ & 凡例",
         "LayerTree3D": "レイヤ",
         "MapExport": "地図をエクスポート",
@@ -218,6 +219,12 @@
       "loadingimage": "地図画像をロード中...",
       "print": "標高プロファイルを印刷",
       "title": "標高プロファイル"
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "集合レポート",

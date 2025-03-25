@@ -16,6 +16,7 @@
         "Editing": "Редактиране на",
         "ExportObjects3D": "",
         "Help": "Помощ",
+        "HideObjects3D": "",
         "LayerTree": "Слоеве и легенда",
         "LayerTree3D": "Слоеве",
         "MapExport": "Експорт на карта",
@@ -218,6 +219,12 @@
       "loadingimage": "Зареждане на изображение на картата...",
       "print": "Профил на височината за печат",
       "title": "Височинен профил"
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "Обобщен доклад",

@@ -16,6 +16,7 @@
         "Editing": "Editare",
         "ExportObjects3D": "",
         "Help": "Ajutor",
+        "HideObjects3D": "",
         "LayerTree": "Straturi & Legendă",
         "LayerTree3D": "",
         "MapExport": "",
@@ -218,6 +219,12 @@
       "loadingimage": "",
       "print": "",
       "title": ""
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "",

@@ -1,0 +1,29 @@
+#HideObjects3D div.hideobjects3d-body {
+    padding: 0.25em;
+}
+
+#HideObjects3D div.hideobjects3d-list {
+    border: 1px solid var(--border-color);
+    background-color: var(--list-bg-color);
+}
+
+#HideObjects3D div.hideobjects3d-list > div {
+    padding: 0.25em;
+    display: flex;
+}
+
+#HideObjects3D div.hideobjects3d-list > div:hover {
+    background-color: var(--list-item-bg-color-hover);
+}
+
+#HideObjects3D div.hideobjects3d-list > div > span:first-child {
+    flex: 1 1 auto;
+}
+
+#HideObjects3D div.hideobjects3d-restorebutton {
+    margin-top:-1px;
+}
+
+#HideObjects3D div.hideobjects3d-restorebutton > button {
+    width: 100%;
+}

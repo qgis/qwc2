@@ -16,6 +16,7 @@
         "Editing": "Editointi",
         "ExportObjects3D": "",
         "Help": "Apua",
+        "HideObjects3D": "",
         "LayerTree": "Karttatasot ja selite",
         "LayerTree3D": "",
         "MapExport": "Vienti kartta",
@@ -218,6 +219,12 @@
       "loadingimage": "",
       "print": "",
       "title": ""
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "",

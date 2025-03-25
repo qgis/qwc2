@@ -16,6 +16,7 @@
         "Editing": "Bewerken",
         "ExportObjects3D": "",
         "Help": "Help",
+        "HideObjects3D": "",
         "LayerTree": "Lagen & legenda",
         "LayerTree3D": "",
         "MapExport": "Export kaart",
@@ -218,6 +219,12 @@
       "loadingimage": "Kaartafbeelding laden...",
       "print": "Hoogteprofiel afdrukken",
       "title": "Hoogteprofiel"
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "",

@@ -16,6 +16,7 @@
         "Editing": "Strumenti di modifica",
         "ExportObjects3D": "Esporta oggetti",
         "Help": "Aiuto",
+        "HideObjects3D": "Nascondi oggetti",
         "LayerTree": "Livelli",
         "LayerTree3D": "Livelli",
         "MapExport": "Esporta mappa",
@@ -218,6 +219,12 @@
       "loadingimage": "Caricamento dell'immagine della mappa...",
       "print": "Stampa profilo d'altezza",
       "title": "Profilo di altezza"
+    },
+    "hideobjects3d": {
+      "clickonmap": "Seleziona oggetto per nasconderlo",
+      "object": "Oggetto",
+      "restore": "Ripristina oggetto",
+      "restoreall": "Ripristina tutti"
     },
     "identify": {
       "aggregatedreport": "Rapporto aggregato",

@@ -16,6 +16,7 @@
         "Editing": "Düzenleme",
         "ExportObjects3D": "",
         "Help": "Yardım",
+        "HideObjects3D": "",
         "LayerTree": "Katmanlar & Gösterim",
         "LayerTree3D": "Katmanlar",
         "MapExport": "Dışarıya ver",
@@ -218,6 +219,12 @@
       "loadingimage": "Harita görüntüsü yükleniyor",
       "print": "Yükseklik profili yazdır",
       "title": "Yükseklik profili"
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "Toplu rapor",

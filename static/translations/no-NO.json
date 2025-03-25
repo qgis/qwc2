@@ -16,6 +16,7 @@
         "Editing": "Rediger",
         "ExportObjects3D": "",
         "Help": "Hjelp",
+        "HideObjects3D": "",
         "LayerTree": "Lag & tegnforklaring",
         "LayerTree3D": "",
         "MapExport": "Eksport kart",
@@ -218,6 +219,12 @@
       "loadingimage": "",
       "print": "",
       "title": ""
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "",

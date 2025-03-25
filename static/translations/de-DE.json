@@ -16,6 +16,7 @@
         "Editing": "Editieren",
         "ExportObjects3D": "Objektexport",
         "Help": "Hilfe",
+        "HideObjects3D": "Objekte ausblenden",
         "LayerTree": "Ebenen und Legende",
         "LayerTree3D": "Ebenen",
         "MapExport": "Karte exportieren",
@@ -218,6 +219,12 @@
       "loadingimage": "Kartenbild wird geladen...",
       "print": "Höhenprofil drucken",
       "title": "Höhenprofil"
+    },
+    "hideobjects3d": {
+      "clickonmap": "Objekte anclicken um sie auszublenden...",
+      "object": "Objekt",
+      "restore": "Objekt wiederherstellen",
+      "restoreall": "Alle wiederherstellen"
     },
     "identify": {
       "aggregatedreport": "Aggregierter Bericht",

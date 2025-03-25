@@ -16,6 +16,7 @@
         "Editing": "Edição",
         "ExportObjects3D": "",
         "Help": "Ajuda",
+        "HideObjects3D": "",
         "LayerTree": "Árvore de Camadas",
         "LayerTree3D": "",
         "MapExport": "Exportar Mapa",
@@ -218,6 +219,12 @@
       "loadingimage": "",
       "print": "Imprimir",
       "title": "Perfil de Altura"
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "",

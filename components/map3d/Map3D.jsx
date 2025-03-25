@@ -35,6 +35,7 @@ import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
 import ExportObjects3D from './ExportObjects3D';
+import HideObjects3D from './HideObjects3D';
 import Identify3D from './Identify3D';
 import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
@@ -454,6 +455,7 @@ class Map3D extends React.Component {
                         <Draw3D sceneContext={this.state.sceneContext} />
                         <MapExport3D sceneContext={this.state.sceneContext} />
                         <ExportObjects3D sceneContext={this.state.sceneContext} />
+                        <HideObjects3D sceneContext={this.state.sceneContext} />
                     </UnloadWrapper>
                 ) : null}
             </div>

@@ -16,6 +16,7 @@
         "Editing": "Editing",
         "ExportObjects3D": "Export Objects",
         "Help": "Help",
+        "HideObjects3D": "Hide Objects",
         "LayerTree": "Layers & Legend",
         "LayerTree3D": "Layers",
         "MapExport": "Export Map",
@@ -218,6 +219,12 @@
       "loadingimage": "Loading map image...",
       "print": "Print height profile",
       "title": "Height profile"
+    },
+    "hideobjects3d": {
+      "clickonmap": "Click on objects to hide them...",
+      "object": "Object",
+      "restore": "Restore object",
+      "restoreall": "Restore all"
     },
     "identify": {
       "aggregatedreport": "Aggregated report",

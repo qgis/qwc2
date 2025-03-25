@@ -16,6 +16,7 @@
         "Editing": "Editer",
         "ExportObjects3D": "Exporter objets",
         "Help": "Aide",
+        "HideObjects3D": "Cacher objets",
         "LayerTree": "Couches",
         "LayerTree3D": "Couches",
         "MapExport": "Exporter la carte",
@@ -218,6 +219,12 @@
       "loadingimage": "Chargement de l'image de la carte...",
       "print": "Imprimer le profil de hauteur",
       "title": "Profil de hauteur"
+    },
+    "hideobjects3d": {
+      "clickonmap": "Cliquer sur les objets pour les cacher...",
+      "object": "Objet",
+      "restore": "Restaurer l'objet",
+      "restoreall": "Restaurer tous"
     },
     "identify": {
       "aggregatedreport": "Rapport agrégé",

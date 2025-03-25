@@ -16,6 +16,7 @@
         "Editing": "Edição",
         "ExportObjects3D": "",
         "Help": "Ajuda",
+        "HideObjects3D": "",
         "LayerTree": "Camadas & Legendas",
         "LayerTree3D": "",
         "MapExport": "Exportar mapa",
@@ -218,6 +219,12 @@
       "loadingimage": "",
       "print": "Imprimir",
       "title": "Título"
+    },
+    "hideobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "restore": "",
+      "restoreall": ""
     },
     "identify": {
       "aggregatedreport": "",
