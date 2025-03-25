@@ -10,6 +10,7 @@ import React from 'react';
 
 import classnames from 'classnames';
 import {remove as removeDiacritics} from 'diacritics';
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import MiscUtils from '../../utils/MiscUtils';
@@ -56,7 +57,7 @@ export default class ComboBox extends React.Component {
         const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
             <div className={"combobox " + (this.props.className || "")} ref={el => { this.el = el; }}>
-                <div className="combobox-button" onClick={this.props.readOnly ? null : () => this.setState({popup: true})}>
+                <div className="combobox-button" onClick={this.props.readOnly || isEmpty(children) ? null : () => this.setState({popup: true})}>
                     <span className="combobox-button-content">
                         {activeOption}
                     </span>
