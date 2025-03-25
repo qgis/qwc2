@@ -370,11 +370,13 @@ class ResizeableWindow extends React.Component {
         return ReactDOM.createPortal((
             <div className="resizeable-window-contents">
                 {this.renderTitleBar()}
-                {this.portalNode ? (
-                    <div className="resizeable-window-portal-container">
-                        <portals.OutPortal node={this.portalNode} />
-                    </div>
-                ) : this.renderRole("body")}
+                <div className="resizeable-window-body">
+                    {this.portalNode ? (
+                        <div className="resizeable-window-portal-container">
+                            <portals.OutPortal node={this.portalNode} />
+                        </div>
+                    ) : this.renderRole("body")}
+                </div>
             </div>
         ), this.state.externalWindow.document.body);
     };
