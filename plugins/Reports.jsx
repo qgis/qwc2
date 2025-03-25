@@ -80,7 +80,7 @@ class Reports extends React.Component {
         const pickButtons = [
             {key: 'Pick', icon: 'pick', label: LocaleUtils.tr("reports.pick")},
             {key: 'Region', icon: 'pick_region', label: LocaleUtils.tr("reports.region")},
-            {key: 'All', icon: 'ok', label: LocaleUtils.tr("reports.all")}
+            {key: 'All', icon: 'ok', label: LocaleUtils.tr("reports.all"), forceLabel: true}
         ];
         return (
             <div className="reports-body">
