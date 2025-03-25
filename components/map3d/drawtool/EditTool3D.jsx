@@ -314,7 +314,9 @@ export default class EditTool3D extends React.Component {
             result.userData.originalChildren = children;
             parent.attach(result);
             // Re-center object
-            result.position.add(result.geometry.boundingBox.getCenter(new Vector3()));
+            const offset = result.geometry.boundingBox.getCenter(new Vector3());
+            offset.applyQuaternion(result.quaternion);
+            result.position.add(offset);
             result.geometry.center();
             this.props.objectPicked(result);
         }
