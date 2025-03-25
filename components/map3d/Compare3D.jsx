@@ -97,7 +97,13 @@ class Compare3D extends React.Component {
             if (objectId === "__terrain") {
                 this.props.sceneContext.map.clippingPlanes = planes;
             } else {
-                this.props.sceneContext.getSceneObject(objectId).clippingPlanes = planes;
+                const object = this.props.sceneContext.getSceneObject(objectId);
+                object.clippingPlanes = planes;
+                object.traverse(child => {
+                    if (child.material) {
+                        child.material.clippingPlanes = planes;
+                    }
+                });
             }
         });
         this.props.sceneContext.scene.notifyChange();
@@ -108,7 +114,13 @@ class Compare3D extends React.Component {
             if (objectId === "__terrain") {
                 this.props.sceneContext.map.clippingPlanes = [];
             } else {
-                this.props.sceneContext.getSceneObject(objectId).clippingPlanes = [];
+                const object = this.props.sceneContext.getSceneObject(objectId);
+                object.clippingPlanes = [];
+                object.traverse(child => {
+                    if (child.material) {
+                        child.material.clippingPlanes = [];
+                    }
+                });
             }
         });
         if (this.props.active) {
