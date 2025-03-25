@@ -44,17 +44,6 @@ div.TopBar.fullscreen span.appmenu-label {
     display: none;
 }
 
-div.TopBar div.appmenu-button {
-    width: 20em;
-    display: inline-block;
-}
-
-div.TopBar div.AppMenu.appmenu-compact div.appmenu-button,
-div.TopBar.mobile div.appmenu-button,
-div.TopBar.fullscreen div.appmenu-button {
-    width: auto;
-}
-
 div.TopBar.mobile div.appmenu-button {
     margin-right: 0;
 }

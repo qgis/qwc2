@@ -15,16 +15,18 @@ div.AppMenu.appmenu-visible {
     overflow: visible;
 }
 
-
 div.AppMenu .appmenu-label {
     font-weight: bold;
     transition: color 0.25s;
+    width: 16.2em;
+    display: inline-block;
 }
 
 div.AppMenu .appmenu-icon {
     color: var(--app-menu-text-color);
     padding: 0.25em;
     margin: 0 1em;
+    width: 1.8em;
     border: 2px solid var(--app-menu-text-color);
     transition: color 0.25s, border-color 0.25s, background-color 0.25s;
 }

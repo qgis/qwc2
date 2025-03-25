@@ -277,17 +277,18 @@ class AppMenu extends React.Component {
         const isMobile = ConfigUtils.isMobile();
         const visible = !this.props.currentTaskBlocked && this.state.menuVisible;
         const className = classnames({
+            "AppMenu": true,
             "appmenu-blocked": this.props.currentTaskBlocked,
             "appmenu-visible": visible,
             "appmenu-compact": this.props.menuCompact
         });
         const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
-            <div className={"AppMenu " + className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
+            <div className={className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
             >
                 <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
                     <div className="appmenu-button" title={this.props.buttonLabel}>
-                        {!isMobile ? (<span className="appmenu-label">{this.props.buttonLabel}</span>) : null}
+                        {!this.props.menuCompact && !isMobile ? (<span className="appmenu-label">{this.props.buttonLabel}</span>) : null}
                         <Icon className="appmenu-icon" icon="menu-hamburger"/>
                     </div>
                 </div>

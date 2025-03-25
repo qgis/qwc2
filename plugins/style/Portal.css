@@ -44,10 +44,6 @@ div.portal-topbar div.AppMenu ul.appmenu-menu li:last-child {
     border-bottom: 1px solid var(--app-menu-text-color);
 }
 
-div.portal-topbar div.appmenu-button {
-    width: 20em;
-}
-
 div.portal-topbar span.appmenu-label {
     color: var(--titlebar-text-color);
 }
