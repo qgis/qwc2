@@ -569,6 +569,24 @@ const LayerUtils = {
         }
         return null;
     },
+    matchSubLayer(layer, func, path = []) {
+        if (layer.sublayers) {
+            let idx = 0;
+            for (const sublayer of layer.sublayers) {
+                const match = func(sublayer) ? sublayer : LayerUtils.matchSubLayer(sublayer, func, path);
+                if (match) {
+                    path.unshift(idx);
+                    return match;
+                }
+                idx += 1;
+            }
+        } else {
+            if (func(layer)) {
+                return layer;
+            }
+        }
+        return null;
+    },
     searchLayer(layers, key, value, roles = [LayerRole.THEME, LayerRole.USERLAYER]) {
         for (const layer of layers) {
             if (roles.includes(layer.role)) {
