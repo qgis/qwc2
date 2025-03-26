@@ -236,7 +236,6 @@ class View3D extends React.Component {
         }
     };
     setupMap = () => {
-        this.setViewToExtent();
         if (this.map3dComponentRef && this.restoreOnComponentLoad) {
             this.restoreOnComponentLoad = false;
             const state3d = {
@@ -250,6 +249,11 @@ class View3D extends React.Component {
                 }
             }
             this.map3dComponentRef.restore3dState(state3d);
+            if (!this.props.startupParams.v3d) {
+                this.setViewToExtent();
+            }
+        } else {
+            this.setViewToExtent();
         }
     };
     redrawScene = (ev) => {
