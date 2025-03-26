@@ -582,7 +582,7 @@ function getGroupThemes(config, configGroup, result, resultGroup, proxy, groupCo
 
 function genThemes(themesConfig) {
     // load themesConfig.json
-    const config = require(process.cwd() + '/' + themesConfig);
+    const config = JSON.parse(fs.readFileSync(process.cwd() + '/' + themesConfig, "utf8"));
 
     const result = {
         themes: {
