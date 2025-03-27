@@ -238,46 +238,47 @@ export default class Measure3D extends React.Component {
         const pos = point.points[0];
 
         // Measure point above terrain
-        const elevation = this.getElevation([pos.x, pos.y]);
-        const ground = pos.z - elevation > 0.3 ? pos.z - elevation : 0;
+        this.props.sceneContext.getTerrainHeightFromDTM([pos.x, pos.y]).then(elevation => {
+            const ground = pos.z - elevation > 0.3 ? pos.z - elevation : 0;
 
-        const elevationLabelFormatter = (options) => {
-            if (options.index === 0) {
-                return MeasureUtils.formatMeasurement(elevation, false, LocaleUtils.tr("measureComponent.absolute"));
-            } else if (ground > 0 && this.state.elevUnit === "ground") {
-                return MeasureUtils.formatMeasurement(pos.z - elevation, false, LocaleUtils.tr("measureComponent.ground"));
+            const elevationLabelFormatter = (options) => {
+                if (options.index === 0) {
+                    return MeasureUtils.formatMeasurement(elevation, false, LocaleUtils.tr("measureComponent.absolute"));
+                } else if (ground > 0 && this.state.elevUnit === "ground") {
+                    return MeasureUtils.formatMeasurement(pos.z - elevation, false, LocaleUtils.tr("measureComponent.ground"));
+                } else {
+                    return MeasureUtils.formatMeasurement(pos.z, false, LocaleUtils.tr("measureComponent.absolute"));
+                }
+            };
+            let shape = null;
+            if (ground > 0) {
+                // Add line
+                shape = new Shape({
+                    showVertexLabels: true,
+                    showLine: true,
+                    showVertices: true,
+                    vertexLabelFormatter: elevationLabelFormatter
+                });
+                shape.setPoints([new Vector3(pos.x, pos.y, elevation), pos]);
             } else {
-                return MeasureUtils.formatMeasurement(pos.z, false, LocaleUtils.tr("measureComponent.absolute"));
+                // Add point
+                shape = new Shape({
+                    showVertexLabels: true,
+                    showLine: false,
+                    showVertices: true,
+                    vertexLabelFormatter: elevationLabelFormatter
+                });
+                shape.setPoints([new Vector3(pos.x, pos.y, pos.z)]);
             }
-        };
-        let shape = null;
-        if (ground > 0) {
-            // Add line
-            shape = new Shape({
-                showVertexLabels: true,
-                showLine: true,
-                showVertices: true,
-                vertexLabelFormatter: elevationLabelFormatter
-            });
-            shape.setPoints([new Vector3(pos.x, pos.y, elevation), pos]);
-        } else {
-            // Add point
-            shape = new Shape({
-                showVertexLabels: true,
-                showLine: false,
-                showVertices: true,
-                vertexLabelFormatter: elevationLabelFormatter
-            });
-            shape.setPoints([new Vector3(pos.x, pos.y, pos.z)]);
-        }
-        this.props.sceneContext.scene.add(shape);
-        this.measurementObjects.push(shape);
-        this.props.sceneContext.scene.remove(point);
+            this.props.sceneContext.scene.add(shape);
+            this.measurementObjects.push(shape);
+            this.props.sceneContext.scene.remove(point);
 
-        this.setState({result: {pos: [pos.x, pos.y, pos.z], ground: ground}});
+            this.setState({result: {pos: [pos.x, pos.y, pos.z], ground: ground}});
 
-        // Setup for next measurement
-        this.restart();
+            // Setup for next measurement
+            this.restart();
+        });
     };
     measureLine = (lineString) => {
         if (lineString === null) {
