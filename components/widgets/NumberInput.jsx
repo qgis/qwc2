@@ -139,10 +139,10 @@ export default class NumberInput extends React.Component {
         if (value === null) {
             return null;
         }
-        if (this.props.min) {
+        if (this.props.min !== undefined) {
             value = Math.max(this.props.min, value);
         }
-        if (this.props.max) {
+        if (this.props.max !== undefined) {
             value = Math.min(this.props.max, value);
         }
         const k = Math.pow(10, this.props.decimals);
