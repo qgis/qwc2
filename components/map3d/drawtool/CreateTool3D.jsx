@@ -10,7 +10,7 @@ import React from 'react';
 
 import {default as GiroShape} from '@giro3d/giro3d/entities/Shape';
 import PropTypes from 'prop-types';
-import {BoxGeometry, Color, ConeGeometry, CylinderGeometry, ExtrudeGeometry, Mesh, MeshStandardMaterial, Shape, SphereGeometry} from 'three';
+import {BoxGeometry, Color, ConeGeometry, CylinderGeometry, DoubleSide, ExtrudeGeometry, Mesh, MeshStandardMaterial, Shape, SphereGeometry} from 'three';
 
 import LocaleUtils from '../../../utils/LocaleUtils';
 import Icon from '../../Icon';
@@ -114,6 +114,7 @@ export default class CreateTool3D extends React.Component {
         if (geometry) {
             geometry.rotateX(Math.PI / 2); // Z-up
             const material = new MeshStandardMaterial({color: new Color(...this.props.color.map(c => c / 255))});
+            material.side = DoubleSide;
             const mesh = new Mesh( geometry, material);
             mesh.castShadow = true;
             mesh.receiveShadow = true;
