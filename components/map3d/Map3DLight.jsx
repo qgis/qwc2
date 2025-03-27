@@ -41,7 +41,7 @@ export default class Map3DLight extends React.Component {
             shadowsEnabled: true,
             shadowType: PCFShadowMap,
             shadowMapSize: 4096,
-            shadowBias: -0.00001,
+            shadowBias: -0.0001,
             sunDistance: 80000,
             normalBias: 0,
             shadowIntensity: 0.9,
