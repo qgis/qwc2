@@ -24,6 +24,7 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import SideBar from '../SideBar';
 import Spinner from '../widgets/Spinner';
+import Tiles3DStyle from './utils/Tiles3DStyle';
 
 
 class ExportObjects3D extends React.Component {
@@ -234,6 +235,11 @@ class ExportObjects3D extends React.Component {
                         selectionBox.intersectsBox(batch.bbox) &&
                         this.bboxInExportPolygon(batch.bbox)
                     ) {
+                        // Get batch table object
+                        let batchTableObject = c;
+                        while (!batchTableObject.batchTable) {
+                            batchTableObject = batchTableObject.parent;
+                        }
                         // Express coordinates wrt center of batch object bbox
                         const prevPosition = new Vector3();
                         c.matrixWorld.decompose(prevPosition, new Quaternion(), new Vector3());
@@ -246,17 +252,13 @@ class ExportObjects3D extends React.Component {
                             batch.position[3 * i + 2] -= offset.z;
                         }
                         // Construct mesh
-                        const material = new MeshStandardMaterial({color: 0xffffff});
+                        const material = new MeshStandardMaterial({color: Tiles3DStyle.getBatchColor(batchTableObject, batchId)});
                         const geometry = new BufferGeometry();
                         geometry.setAttribute('position', new Float32BufferAttribute(batch.position, 3));
                         geometry.setAttribute('normal', new Float32BufferAttribute(batch.normal, 3));
                         const mesh = new Mesh(geometry, material);
                         mesh.applyMatrix4(c.matrixWorld.clone().multiply(new Matrix4().makeTranslation(offset)));
                         // Include attribute from batch table
-                        let batchTableObject = c;
-                        while (!batchTableObject.batchTable) {
-                            batchTableObject = batchTableObject.parent;
-                        }
                         Object.assign(mesh.userData, batchTableObject.batchTable.getDataFromId(batchId));
 
                         exportGroup.add(mesh);

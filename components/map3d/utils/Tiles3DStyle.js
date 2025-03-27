@@ -1,13 +1,20 @@
 import { Float32BufferAttribute } from "three";
 
 const Tiles3DStyle = {
+    getBatchColor(group, batchId) {
+        const colorAttr = group.userData.batchColorAttr;
+        if (!colorAttr) {
+            return 0xFFFFFF;
+        }
+        return group.batchTable.getDataFromId(batchId)[colorAttr] ?? 0xFFFFFF;
+    },
     applyDeclarativeStyle(group, tilesetConfig) {
-        const batchTable = group.batchTable;
+        group.userData.batchColorAttr = tilesetConfig.colorAttr;
 
         const batchColorCache = {};
         const batchColor = (batchId) => {
             if (!batchColorCache[batchId]) {
-                const color = batchTable.getDataFromId(batchId)[tilesetConfig.colorAttr] ?? 0xFFFFFF;
+                const color = Tiles3DStyle.getBatchColor(group, batchId);
                 const r = ((color >> 16) & 0xff) / 255;
                 const g = ((color >> 8) & 0xff) / 255;
                 const b = (color & 0xff) / 255;
