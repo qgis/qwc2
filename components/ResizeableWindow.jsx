@@ -350,7 +350,8 @@ class ResizeableWindow extends React.Component {
                 y: this.props.initialY !== null ? this.computeInitialY(container, this.props.initialY) : Math.max(0, Math.round(0.5 * (container.offsetHeight - height))),
                 width: width,
                 height: height,
-                docked: this.props.initiallyDocked
+                docked: this.props.initiallyDocked,
+                detached: false
             };
         }
         if (this.props.splitScreenWhenDocked && geometry.docked) {
@@ -509,7 +510,10 @@ class ResizeableWindow extends React.Component {
                 document.querySelector(':root').style.getPropertyValue('--bottombar-height')
             );
 
-            this.setState({externalWindow: externalWindow});
+            this.setState(state => ({
+                externalWindow: externalWindow,
+                geometry: {...state.geometry, detached: true}
+            }));
         }, 50);
     };
     moveToInternalWindow = () => {
@@ -517,7 +521,14 @@ class ResizeableWindow extends React.Component {
             this.state.externalWindow.removeEventListener('beforeunload', this.props.onClose);
             this.state.externalWindow.removeEventListener('resize', this.props.onExternalWindowResized, false);
             this.state.externalWindow.close();
-            this.setState({externalWindow: null});
+            this.setState(state => {
+                const newGeometry = {...state.geometry, detached: false};
+                WINDOW_GEOMETRIES[this.props.title] = newGeometry;
+                return {
+                    externalWindow: null,
+                    geometry: newGeometry
+                };
+            });
         }
     };
     closeExternalWindow = () => {
