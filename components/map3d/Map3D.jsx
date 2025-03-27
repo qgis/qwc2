@@ -242,14 +242,14 @@ class Map3D extends React.Component {
             if (options.extrusionHeight > 0) {
                 this.createUpdateExtrudedLayer(mapLayer, options, options.features !== prevOptions?.features);
             } else if (prevOptions?.extrusionHeight > 0) {
-                this.removeExtrudedLayer(options.id);
+                this.removeExtrudedLayer(options.uuid);
             }
         });
         // Remove old layers
         Object.entries(prevColorLayers).forEach(([layerId, options]) => {
             if (!(layerId in colorLayers)) {
                 if (options.extrusionHeight) {
-                    this.removeExtrudedLayer(layerId);
+                    this.removeExtrudedLayer(options.uuid);
                 }
                 this.removeLayer(layerId);
             }
