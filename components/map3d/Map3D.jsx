@@ -626,23 +626,50 @@ class Map3D extends React.Component {
         }}), this.props.onMapInitialized);
     };
     getTerrainHeightFromDTM = (scenePos) => {
-        const dtmPos = CoordinatesUtils.reproject(scenePos, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);
+        let returnArray = true;
+        if (!Array.isArray(scenePos[0])) {
+            returnArray = false;
+            scenePos = [scenePos];
+        }
+        const dtmPos = scenePos.map(p => {
+            return CoordinatesUtils.reproject(p, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);
+        });
+        const dtmExt = [Infinity, Infinity, -Infinity, -Infinity];
+        dtmPos.forEach(p => {
+            dtmExt[0] = Math.min(dtmExt[0], p[0]);
+            dtmExt[1] = Math.min(dtmExt[1], p[1]);
+            dtmExt[2] = Math.max(dtmExt[2], p[0]);
+            dtmExt[3] = Math.max(dtmExt[3], p[1]);
+        });
         return new Promise((resolve) => {
             fromUrl(this.state.sceneContext.dtmUrl).then(tiff => {
 
                 tiff.getImage().then(image => {
-                    const { ModelTiepoint, ModelPixelScale } = image.fileDirectory;
+                    const {ModelTiepoint, ModelPixelScale} = image.fileDirectory;
 
                     // Extract scale and tiepoint values
                     const [scaleX, scaleY] = [ModelPixelScale[0], ModelPixelScale[1]];
                     const [tiepointX, tiepointY] = [ModelTiepoint[3], ModelTiepoint[4]]; // Tiepoint world coordinates
 
                     // Calculate pixel indices (rounded to nearest integers)
-                    const pixelX = Math.round((dtmPos[0] - tiepointX) / scaleX);
-                    const pixelY = Math.round((tiepointY - dtmPos[1]) / scaleY); // Inverted Y-axis in image
+                    const minPixelX = Math.round((dtmExt[0] - tiepointX) / scaleX);
+                    const minPixelY = Math.round((tiepointY - dtmExt[3]) / scaleY); // Inverted Y-axis in image
+                    const maxPixelY = Math.round((tiepointY - dtmExt[1]) / scaleY) + 1; // Inverted Y-axis in image
+                    const maxPixelX = Math.round((dtmExt[2] - tiepointX) / scaleX) + 1;
+                    const width = maxPixelX - minPixelX;
+                    const height = maxPixelY - minPixelY;
 
-                    image.readRasters({ window: [pixelX, pixelY, pixelX + 1, pixelY + 1] }).then(raster => {
-                        resolve(raster[0][0]);
+                    image.readRasters({ window: [minPixelX, minPixelY, maxPixelX, maxPixelY] }).then(raster => {
+                        if (!returnArray) {
+                            resolve(raster[0][0]);
+                        } else {
+                            const h = dtmPos.map(p => {
+                                const x = Math.round((p[0] - dtmExt[0]) / (dtmExt[2] - dtmExt[0]) * (width - 1));
+                                const y = Math.round((1 - (p[1] - dtmExt[1]) / (dtmExt[3] - dtmExt[1])) * (height - 1));
+                                return raster[0][x + y * width];
+                            });
+                            resolve(h);
+                        }
                     });
                 });
             });
