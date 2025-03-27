@@ -231,7 +231,7 @@ class View3D extends React.Component {
         this.map3dComponentRef = ref;
     };
     setViewToExtent = () => {
-        if (this.props.view3dMode !== View3DMode.FULLSCREEN && this.map3dComponentRef) {
+        if (this.map3dComponentRef) {
             this.map3dComponentRef.setViewToExtent(this.props.mapBBox.bounds, this.props.mapBBox.rotation);
         }
     };
