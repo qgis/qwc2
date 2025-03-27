@@ -1,7 +1,7 @@
 {
     "name": "qwc2",
-    "version": "2025.03.12",
-    "description": "QGIS Web Client 2",
+    "version": "2025.03.27",
+    "description": "QGIS Web Client",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
     "repository": "git@github.com:qgis/qwc2.git",
