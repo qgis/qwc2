@@ -78,7 +78,8 @@ class View3D extends React.Component {
         }
     };
     state = {
-        componentLoaded: false
+        componentLoaded: false,
+        windowDetached: false
     };
     constructor(props) {
         super(props);
@@ -169,11 +170,14 @@ class View3D extends React.Component {
                 icon: "sync",
                 callback: this.setViewToExtent,
                 title: LocaleUtils.tr("map3d.syncview")
-            }, {
-                icon: "maximize",
-                callback: () => this.props.setView3dMode(View3DMode.FULLSCREEN),
-                title: LocaleUtils.tr("window.maximize")
             }];
+            if (!this.state.windowDetached) {
+                extraControls.push({
+                    icon: "maximize",
+                    callback: () => this.props.setView3dMode(View3DMode.FULLSCREEN),
+                    title: LocaleUtils.tr("window.maximize")
+                });
+            }
             const Map3D = this.map3dComponent;
             return (
                 <ResizeableWindow
@@ -226,6 +230,7 @@ class View3D extends React.Component {
         if (geometry.maximized && this.props.display.view3dMode !== View3DMode.FULLSCREEN) {
             this.props.setView3dMode(View3DMode.FULLSCREEN);
         }
+        this.setState({windowDetached: geometry.detached});
     };
     setRef = (ref) => {
         this.map3dComponentRef = ref;
