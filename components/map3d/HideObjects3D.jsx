@@ -180,7 +180,7 @@ class HideObjects3D extends React.Component {
                 {
                     object: pick.object,
                     isTileObject: pick.isTilePick,
-                    batchId: batchId, 
+                    batchId: batchId,
                     highlight: mesh
                 }
             ]

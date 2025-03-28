@@ -283,7 +283,7 @@ class MapExport3D extends React.Component {
             alert('Print failed');
             this.setState({exporting: false});
         }
-    };
+    }
     renderPrintLabelField = (label, opts) => {
         let defaultValue = opts.defaultValue || "";
         let autopopulated = false;

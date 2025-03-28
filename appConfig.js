@@ -64,7 +64,6 @@ import RedliningSupport from './plugins/map/RedliningSupport';
 import ScaleBarSupport from './plugins/map/ScaleBarSupport';
 import SnappingSupport from './plugins/map/SnappingSupport';
 import BufferSupport from './plugins/redlining/RedliningBufferSupport';
-
 import defaultLocaleData from './static/translations/en-US.json';
 
 export default {
@@ -136,7 +135,7 @@ export default {
             }),
             View3DPlugin: View3DPlugin,
             ZoomInPlugin: ZoomInPlugin,
-            ZoomOutPlugin: ZoomOutPlugin,
+            ZoomOutPlugin: ZoomOutPlugin
         },
         cfg: {
         }

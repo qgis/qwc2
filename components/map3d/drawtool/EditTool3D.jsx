@@ -64,7 +64,7 @@ class GroupSelection extends Group {
                 center.add(child.position);
             });
             center.divideScalar(this.children.length);
-            this.position.copy(center)
+            this.position.copy(center);
             this.updateMatrixWorld();
             this.children.forEach(child => {
                 child.position.sub(this.position);

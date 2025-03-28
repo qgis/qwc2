@@ -7,9 +7,12 @@
  */
 
 import React from 'react';
+
 import {createRoot} from 'react-dom/client';
-import StandardApp from './components/StandardApp';
+
 import appConfig from './appConfig';
+import StandardApp from './components/StandardApp';
+
 import './icons/build/qwc2-icons.css';
 
 const container = document.getElementById('container');
