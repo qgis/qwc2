@@ -14,9 +14,9 @@
         "Bookmark": "ブックマーク",
         "Compare3D": "比較",
         "Editing": "編集",
-        "ExportObjects3D": "",
+        "ExportObjects3D": "オブジェクトをエクスポート",
         "Help": "ヘルプ",
-        "HideObjects3D": "",
+        "HideObjects3D": "オブジェクトを非表示",
         "LayerTree": "レイヤ & 凡例",
         "LayerTree3D": "レイヤ",
         "MapExport": "地図をエクスポート",
@@ -32,7 +32,7 @@
         "AuthenticationLogin": "ログイン",
         "AuthenticationLogout": "ログアウト",
         "Cyclomedia": "Cyclomedia",
-        "Draw3D": "描画",
+        "Draw3D": "作図",
         "FeatureForm": "地物フォーム",
         "FeatureSearch": "地物検索",
         "GeometryDigitizer": "ジオメトリ・デジタイザ",
@@ -47,7 +47,7 @@
         "MeasureLineString": "ラインを測る",
         "MeasurePolygon": "ポリゴンを測る",
         "NewsPopup": "ニュース",
-        "Panoramax": "",
+        "Panoramax": "Panoramax",
         "Portal": "ポータル",
         "PrintScreen3D": "ラスタ・エクスポート",
         "Redlining": "スケッチ",
@@ -133,23 +133,23 @@
       "cuboid": "直方体",
       "cylinder": "円柱",
       "delete": "削除",
-      "drawings": "線描",
-      "intersect": "",
-      "newgroupprompt": "新しい線描グループ",
-      "numericinput": "数字入力",
-      "pick": "ピック",
+      "drawings": "作図",
+      "intersect": "交差",
+      "newgroupprompt": "新しい作図グループ",
+      "numericinput": "数値入力",
+      "pick": "選択",
       "position": "位置",
-      "pyramid": "角錐",
+      "pyramid": "四角錐",
       "rotate": "回転",
-      "rotation": "回転",
-      "scale": "縮尺",
-      "sphere": "球",
-      "subtract": "",
-      "thescale": "縮尺",
-      "translate": "トランスレート",
-      "undoBool": "",
-      "union": "",
-      "wedge": "くさび"
+      "rotation": "回転角",
+      "scale": "スケール",
+      "sphere": "球体",
+      "subtract": "差分",
+      "thescale": "スケール",
+      "translate": "移動",
+      "undoBool": "ブーリアン操作を取り消し",
+      "union": "合成（和）",
+      "wedge": "くさび形"
     },
     "editing": {
       "add": "追加",
@@ -162,7 +162,7 @@
       "create": "作成",
       "delete": "削除",
       "discard": "中止",
-      "draw": "描画",
+      "draw": "作図",
       "feature": "地物",
       "geomreadonly": "ジオメトリが 0 でない Z 値を含んでいるため、リード・オンリーです。",
       "invalidform": "無効なフォーム",
@@ -170,8 +170,8 @@
       "minimize": "最小化",
       "noeditablelayers": "編集可能なレイヤが有りません。",
       "paint": "修正",
-      "pick": "ピック",
-      "pickdrawfeature": "既存のジオメトリをクローン",
+      "pick": "選択",
+      "pickdrawfeature": "既存のジオメトリをクローンして作図",
       "reallydelete": "削除",
       "relationcommitfailed": "関連する値にコミット出来ないものがありました。詳細はアイコンのツールチップを参照して下さい。",
       "select": "選択",
@@ -211,7 +211,7 @@
     "heightprofile": {
       "asl": "a.s.l.",
       "distance": "距離",
-      "drawnodes": "ノードを描画",
+      "drawnodes": "ノードを作図",
       "error": "標高プロファイルを計算できませんでした",
       "export": "プロファイルをエクスポート",
       "height": "標高",
@@ -221,10 +221,10 @@
       "title": "標高プロファイル"
     },
     "hideobjects3d": {
-      "clickonmap": "",
-      "object": "",
-      "restore": "",
-      "restoreall": ""
+      "clickonmap": "非表示にするオブジェクトをクリック...",
+      "object": "オブジェクト",
+      "restore": "オブジェクトを元に戻す",
+      "restoreall": "すべて元に戻す"
     },
     "identify": {
       "aggregatedreport": "集合レポート",
@@ -296,18 +296,18 @@
       "zoomtolayer": "レイヤにズーム"
     },
     "layertree3d": {
-      "import": "",
-      "importobjects": "",
+      "import": "インポート",
+      "importobjects": "オブジェクトをインポート",
       "layers": "レイヤ",
       "objects": "オブジェクト",
-      "supportedformats": "",
-      "zoomtoobject": ""
+      "supportedformats": "サポートされている形式",
+      "zoomtoobject": "オブジェクトにズーム"
     },
     "linkfeatureform": {
       "cancel": "キャンセル",
       "close": "閉じる",
-      "drawhint": "地図上の地物を描画...",
-      "pickhint": "地図上の地物をピック..."
+      "drawhint": "地図上の地物を作図...",
+      "pickhint": "地図上の地物を選択..."
     },
     "locate": {
       "feetUnit": "フィート",
@@ -365,24 +365,24 @@
       "windowtitle": "凡例"
     },
     "maplight3d": {
-      "ambientLightIntensity": "",
-      "animationstep": "",
-      "date": "",
-      "dayspersec": "",
-      "directionalLightIntensity": "",
-      "helpersVisible": "",
-      "minspersec": "",
-      "normalBias": "",
-      "shadowBias": "",
-      "shadowMapSize": "",
-      "shadowType": "",
-      "shadowVolumeFar": "",
-      "shadowVolumeNear": "",
-      "shadowintensity": "",
-      "shadows": "",
-      "showadvanced": "",
-      "time": "",
-      "zFactor": ""
+      "ambientLightIntensity": "環境光強度",
+      "animationstep": "アニメーション・ステップ",
+      "date": "日付",
+      "dayspersec": "日数 / 秒",
+      "directionalLightIntensity": "平行光源強度",
+      "helpersVisible": "補助オブジェクト表示",
+      "minspersec": "分 / 秒",
+      "normalBias": "ノーマル・バイアス",
+      "shadowBias": "シャドウ・バイアス",
+      "shadowMapSize": "シャドウ・マップ・サイズ",
+      "shadowType": "シャドウ・タイプ",
+      "shadowVolumeFar": "シャドウ・ボリューム遠端",
+      "shadowVolumeNear": "シャドウ・ボリューム近端",
+      "shadowintensity": "影の強度",
+      "shadows": "シャドウを有効化",
+      "showadvanced": "詳細設定を表示",
+      "time": "時刻",
+      "zFactor": "Zファクター"
     },
     "measureComponent": {
       "absolute": "m (海抜)",
@@ -415,8 +415,8 @@
       "windowtitle": "数値入力"
     },
     "panoramax": {
-      "notfound": "",
-      "title": ""
+      "notfound": "この場所には表示できる画像がありません。",
+      "title": "Panoramax Viewer"
     },
     "pickfeature": {
       "querying": "検索中..."
@@ -463,7 +463,7 @@
       "bufferselectfeature": "バッファを適用する地物を選択...",
       "circle": "円",
       "delete": "削除",
-      "draw": "描画",
+      "draw": "作図",
       "edit": "編集",
       "ellipse": "楕円",
       "export": "エクスポート",
@@ -554,7 +554,7 @@
       "search": "検索",
       "themelayers": "テーマのレイヤ",
       "themes": "テーマ",
-      "unknownmore": ""
+      "unknownmore": "更なる結果"
     },
     "serviceinfo": {
       "abstract": "概要",
@@ -582,9 +582,9 @@
       "QRCodeLinkTitle": "QR コード",
       "directLinkTitle": "直接リンクで",
       "expires": "この永続リンクは {0} まで有効です。",
-      "norestriction": "",
+      "norestriction": "限定無し",
       "refresh": "永続リンクを生成",
-      "restricttogroup": "",
+      "restricttogroup": "グループに限定",
       "shareTitle": "QWC2",
       "showpin": "ピンを表示",
       "socialIntro": "あなたの好みの SNS で"
