@@ -137,6 +137,7 @@ const IdentifyUtils = {
             height: size[0],
             width: size[1],
             feature_count: 100,
+            bbox: map.bbox.bounds.join(","),
             FILTER_GEOM: filterGeom,
             ...options
         };
