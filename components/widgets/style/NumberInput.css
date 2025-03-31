@@ -14,6 +14,8 @@ div.number-input > input {
     border: 0!important;
     height: calc(2em - 2px)!important;
     background-color: transparent!important;
+    text-align: right;
+    margin-right: 1.5em;
 }
 
 div.number-input-disabled > span.icon {
