@@ -672,6 +672,24 @@
       "zoomin": "Mais zoom",
       "zoomout": "Reduzir o zoom"
     },
+    "valuetool": {
+      "all": "",
+      "allbands": "",
+      "alllayers": "",
+      "bands": "",
+      "graph": "",
+      "layer": "",
+      "nodata": "",
+      "options": "",
+      "selectedbands": "",
+      "selectedlayers": "",
+      "selectlayersbands": "",
+      "showbands": "",
+      "showlayers": "",
+      "table": "",
+      "title": "",
+      "visiblelayers": ""
+    },
     "vectorlayerpicker": {
       "none": "",
       "prompt": "Insira o nome da camada"

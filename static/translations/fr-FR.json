@@ -672,6 +672,24 @@
       "zoomin": "Zoomer",
       "zoomout": "Dézoomer"
     },
+    "valuetool": {
+      "all": "Tous",
+      "allbands": "Tous les bandes",
+      "alllayers": "Tous les couches",
+      "bands": "Bandes",
+      "graph": "Graphe",
+      "layer": "Couche",
+      "nodata": "Pas de données",
+      "options": "Options",
+      "selectedbands": "Bandes sélectionées",
+      "selectedlayers": "Couches sélectionées",
+      "selectlayersbands": "Selectionner couches / bandes",
+      "showbands": "Bandes",
+      "showlayers": "Couches",
+      "table": "Tableau",
+      "title": "Value Tool",
+      "visiblelayers": "Couches visibles"
+    },
     "vectorlayerpicker": {
       "none": "Aucune",
       "prompt": "Entrez le nom de la couche"

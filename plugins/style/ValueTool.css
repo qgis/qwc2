@@ -1,0 +1,60 @@
+table.valuetool-table,
+table.valuetool-table-selection {
+    background-color: var(--list-bg-color);
+    width: 100%;
+    border: 1px solid var(--border-color);
+}
+
+table.valuetool-table tr:nth-child(odd),
+table.valuetool-table-selection tr:nth-child(odd) {
+    background-color: #F0F0F0;
+}
+
+table.valuetool-table th,
+table.valuetool-table-selection th {
+    background-color: var(--list-section-bg-color);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 2px;
+}
+
+table.valuetool-table td:first-child,
+table.valuetool-table-selection td:first-child {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 2px;
+    padding-left: 0.25em;
+}
+
+table.valuetool-table td:nth-child(2) {
+    text-align: right;
+    max-width: 1px;
+    padding-right: 0.25em;
+}
+
+table.valuetool-table-selection td span.icon {
+    margin-right: 0.5em;
+}
+
+table.valuetool-table-selection td:nth-child(2) {
+    max-width: 2px;
+}
+
+table.valuetool-table-selection td:nth-child(2) > div.TextInput {
+    width: 100%;
+}
+
+
+table.valuetool-table-options {
+    width: 100%;
+}
+
+table.valuetool-table-options td > select {
+    width: 100%;
+}
+
+table.valuetool-table-options td:first-child {
+    white-space: nowrap;
+}

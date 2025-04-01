@@ -672,6 +672,24 @@
       "zoomin": "ズーム・イン",
       "zoomout": "ズーム・アウト"
     },
+    "valuetool": {
+      "all": "",
+      "allbands": "",
+      "alllayers": "",
+      "bands": "",
+      "graph": "",
+      "layer": "",
+      "nodata": "",
+      "options": "",
+      "selectedbands": "",
+      "selectedlayers": "",
+      "selectlayersbands": "",
+      "showbands": "",
+      "showlayers": "",
+      "table": "",
+      "title": "",
+      "visiblelayers": ""
+    },
     "vectorlayerpicker": {
       "none": "無し",
       "prompt": "レイヤ名を入力"

@@ -47,7 +47,7 @@
         "MeasureLineString": "Misura una linea",
         "MeasurePolygon": "Misura un poligono",
         "NewsPopup": "Attualità",
-        "Panoramax": "",
+        "Panoramax": "Panoramax",
         "Portal": "Portale",
         "PrintScreen3D": "Esporta raster",
         "Redlining": "Strumenti di disegno",
@@ -415,8 +415,8 @@
       "windowtitle": "Formulario numerico"
     },
     "panoramax": {
-      "notfound": "",
-      "title": ""
+      "notfound": "Nessun immagine disponibile per questa posizione",
+      "title": "Visualizzatore Panoramax"
     },
     "pickfeature": {
       "querying": "Query..."
@@ -671,6 +671,24 @@
       "home": "Mostra tutta la mappa intera",
       "zoomin": "Ingrandisci",
       "zoomout": "Rimpicciolisci"
+    },
+    "valuetool": {
+      "all": "Tutte",
+      "allbands": "Tutte le bande",
+      "alllayers": "Tutti i livelli",
+      "bands": "Bande",
+      "graph": "Grafico",
+      "layer": "Livello",
+      "nodata": "Nessun dato",
+      "options": "Opzioni",
+      "selectedbands": "Bande selezionate",
+      "selectedlayers": "Livelli selezionati",
+      "selectlayersbands": "Seleziona livelli / bande",
+      "showbands": "Bande",
+      "showlayers": "Livelli",
+      "table": "Tabelle",
+      "title": "Value Tool",
+      "visiblelayers": "Livelli visibili"
     },
     "vectorlayerpicker": {
       "none": "Nessuno",

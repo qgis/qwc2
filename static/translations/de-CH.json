@@ -47,7 +47,7 @@
         "MeasureLineString": "Messen Linie",
         "MeasurePolygon": "Messen Polygon",
         "NewsPopup": "Aktuelles",
-        "Panoramax": "",
+        "Panoramax": "Panoramax",
         "Portal": "Portal",
         "PrintScreen3D": "Raster Export",
         "Redlining": "Zeichnen",
@@ -415,8 +415,8 @@
       "windowtitle": "Numerische Eingabe"
     },
     "panoramax": {
-      "notfound": "",
-      "title": ""
+      "notfound": "An diesem Ort ist kein Bild verfügbar.",
+      "title": "Panoramax Viewer"
     },
     "pickfeature": {
       "querying": "Abfragen..."
@@ -671,6 +671,24 @@
       "home": "Ganze Karte anzeigen",
       "zoomin": "Hineinzoomen",
       "zoomout": "Hinauszoomen"
+    },
+    "valuetool": {
+      "all": "Alle",
+      "allbands": "Alle Bänder",
+      "alllayers": "Alle Ebenen",
+      "bands": "Bänder",
+      "graph": "Graph",
+      "layer": "Ebene",
+      "nodata": "Keine Daten",
+      "options": "Optionen",
+      "selectedbands": "Selektierte Bänder",
+      "selectedlayers": "Selektierte Ebenen",
+      "selectlayersbands": "Ebenen / Bänder auswählen",
+      "showbands": "Bänder",
+      "showlayers": "Ebenen",
+      "table": "Tabelle",
+      "title": "Value Tool",
+      "visiblelayers": "Sichtbare Ebenen"
     },
     "vectorlayerpicker": {
       "none": "Keine",

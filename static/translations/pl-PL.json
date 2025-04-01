@@ -672,6 +672,24 @@
       "zoomin": "Przybliż",
       "zoomout": "Oddal"
     },
+    "valuetool": {
+      "all": "",
+      "allbands": "",
+      "alllayers": "",
+      "bands": "",
+      "graph": "",
+      "layer": "",
+      "nodata": "",
+      "options": "",
+      "selectedbands": "",
+      "selectedlayers": "",
+      "selectlayersbands": "",
+      "showbands": "",
+      "showlayers": "",
+      "table": "",
+      "title": "",
+      "visiblelayers": ""
+    },
     "vectorlayerpicker": {
       "none": "",
       "prompt": ""

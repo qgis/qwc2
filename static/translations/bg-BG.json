@@ -672,6 +672,24 @@
       "zoomin": "Увеличаване на мащаба",
       "zoomout": "Увеличаване на мащаба"
     },
+    "valuetool": {
+      "all": "",
+      "allbands": "",
+      "alllayers": "",
+      "bands": "",
+      "graph": "",
+      "layer": "",
+      "nodata": "",
+      "options": "",
+      "selectedbands": "",
+      "selectedlayers": "",
+      "selectlayersbands": "",
+      "showbands": "",
+      "showlayers": "",
+      "table": "",
+      "title": "",
+      "visiblelayers": ""
+    },
     "vectorlayerpicker": {
       "none": "Няма",
       "prompt": "Въведете името на слоя"

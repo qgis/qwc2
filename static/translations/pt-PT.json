@@ -672,6 +672,24 @@
       "zoomin": "Aumentar Zoom",
       "zoomout": "Diminuir Zoom"
     },
+    "valuetool": {
+      "all": "",
+      "allbands": "",
+      "alllayers": "",
+      "bands": "",
+      "graph": "",
+      "layer": "",
+      "nodata": "",
+      "options": "",
+      "selectedbands": "",
+      "selectedlayers": "",
+      "selectlayersbands": "",
+      "showbands": "",
+      "showlayers": "",
+      "table": "",
+      "title": "",
+      "visiblelayers": ""
+    },
     "vectorlayerpicker": {
       "none": "Nenhum",
       "prompt": "Insira o Nome da Camada"

@@ -672,6 +672,24 @@
       "zoomin": "Zoom in",
       "zoomout": "Zoom out"
     },
+    "valuetool": {
+      "all": "All",
+      "allbands": "All bands",
+      "alllayers": "All layers",
+      "bands": "Bands",
+      "graph": "Graph",
+      "layer": "Layer",
+      "nodata": "No data",
+      "options": "Options",
+      "selectedbands": "Selected bands",
+      "selectedlayers": "Selected layers",
+      "selectlayersbands": "Select layers / bands",
+      "showbands": "Show bands",
+      "showlayers": "Show layers",
+      "table": "Table",
+      "title": "Value Tool",
+      "visiblelayers": "Visible"
+    },
     "vectorlayerpicker": {
       "none": "None",
       "prompt": "Enter layer name"
