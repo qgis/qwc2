@@ -132,8 +132,8 @@ export async function generatePermaLink(callback, user = false, permittedGroup =
 }
 
 export function resolvePermaLink(initialParams, callback) {
-    const key = UrlParams.getParam('k');
-    const bkey = UrlParams.getParam('bk');
+    const key = initialParams.k;
+    const bkey = initialParams.bk;
     if (key) {
         axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/resolvepermalink?key=" + key)
             .then(response => {
