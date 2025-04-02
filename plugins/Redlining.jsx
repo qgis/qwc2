@@ -50,6 +50,10 @@ class Redlining extends React.Component {
         defaultFillColor: PropTypes.array,
         /** Default length unit. Options: metric, imperial, m, km, ft, mi */
         defaultLengthUnit: PropTypes.string,
+        /** Default text fill color. In format [r, g, b, a]. */
+        defaultTextFillColor: PropTypes.array,
+        /** Default text outline color. In format [r, g, b, a]. */
+        defaultTextOutlineColor: PropTypes.array,
         /** Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. */
         hiddenTools: PropTypes.array,
         layers: PropTypes.array,
@@ -77,6 +81,8 @@ class Redlining extends React.Component {
         plugins: [],
         defaultBorderColor: [255, 0, 0, 1],
         defaultFillColor: [255, 255, 255, 1],
+        defaultTextFillColor: [0, 0, 0, 1],
+        defaultTextOutlineColor: [255, 255, 255, 1],
         defaultAreaUnit: 'metric',
         defaultLengthUnit: 'metric'
     };
@@ -95,7 +101,9 @@ class Redlining extends React.Component {
             this.props.defaultBorderColor !== prevProps.defaultBorderColor ||
             this.props.defaultFillColor !== prevProps.defaultFillColor ||
             this.props.defaultLengthUnit !== prevProps.defaultLengthUnit ||
-            this.props.defaultAreaUnit !== prevProps.defaultAreaUnit
+            this.props.defaultAreaUnit !== prevProps.defaultAreaUnit ||
+            this.props.defaultTextFillColor !== prevProps.defaultTextFillColor ||
+            this.props.defaultTextOutlineColor !== prevProps.defaultTextOutlineColor
         ) {
             this.props.changeRedliningState(this.redliningStateDefaults());
         }
@@ -129,7 +137,9 @@ class Redlining extends React.Component {
             style: {
                 ...this.props.redlining.style,
                 borderColor: this.props.defaultBorderColor,
-                fillColor: this.props.defaultFillColor
+                fillColor: this.props.defaultFillColor,
+                textOutlineColor: this.props.defaultTextOutlineColor,
+                textFillColor: this.props.defaultTextFillColor
             },
             lenUnit: this.props.defaultLengthUnit,
             areaUnit: this.props.defaultAreaUnit
@@ -279,16 +289,25 @@ class Redlining extends React.Component {
             return null;
         }
 
+        console.log(this.props.redlining)
         return (
             <div className="redlining-controlsbar">
                 <span>
                     <Icon className="redlining-control-icon" icon="pen" size="large" />
-                    <ColorButton color={this.props.redlining.style.borderColor} defaultColors={this.props.predefinedBorderColors} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
+                    {this.props.redlining.geomType === 'Text' || this.props.redlining.selectedFeature?.shape === 'Text' ? (
+                        <ColorButton color={this.props.redlining.style.textOutlineColor} defaultColors={this.props.predefinedBorderColors} onColorChanged={(color) => this.updateRedliningStyle({textOutlineColor: color})} />
+                    ) : (
+                        <ColorButton color={this.props.redlining.style.borderColor} defaultColors={this.props.predefinedBorderColors} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
+                    )}
                 </span>
                 {this.props.redlining.geomType === 'LineString' ? null : (
                     <span>
                         <Icon className="redlining-control-icon" icon="fill" size="large" />
-                        <ColorButton color={this.props.redlining.style.fillColor} defaultColors={this.props.predefinedFillColors} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />
+                        {this.props.redlining.geomType === 'Text' || this.props.redlining.selectedFeature?.shape === 'Text' ? (
+                            <ColorButton color={this.props.redlining.style.textFillColor} defaultColors={this.props.predefinedFillColors} onColorChanged={(color) => this.updateRedliningStyle({textFillColor: color})} />
+                        ) : (
+                            <ColorButton color={this.props.redlining.style.fillColor} defaultColors={this.props.predefinedFillColors} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />
+                        )}
                     </span>
                 )}
                 <span>
@@ -374,10 +393,9 @@ class Redlining extends React.Component {
     };
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {
-            data = {...data, style: {...this.props.redlining.style, text: LocaleUtils.tr("redlining.text")}};
+            data = {...data, style: {text: LocaleUtils.tr("redlining.text")}};
         } else if (!this.props.allowGeometryLabels) {
-            data = {...data, style: {...this.props.redlining.style}};
-            data.style.text = '';
+            data = {...data, style: {text: ''}};
         }
         this.props.changeRedliningState(data);
     };
