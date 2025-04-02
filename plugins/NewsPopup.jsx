@@ -36,12 +36,15 @@ class NewsPopup extends React.Component {
         /** Whether to show the news in a sidebar instead of a popup. */
         showInSidebar: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
-        side: PropTypes.string
+        side: PropTypes.string,
+        /** The default width of the sidebar, as a CSS width string. */
+        sidebarWidth: PropTypes.string
     };
     state = {
         dontShowAgain: false,
         showPopup: false,
-        side: 'right'
+        side: 'right',
+        sidebarWidth: '20em'
     };
     constructor(props) {
         super(props);
@@ -58,7 +61,7 @@ class NewsPopup extends React.Component {
         if (this.props.showInSidebar) {
             return (
                 <SideBar heightResizeable icon="new" id="NewsPopup" side={this.props.side}
-                    title={LocaleUtils.tr("newspopup.title")} width="20em"
+                    title={LocaleUtils.tr("newspopup.title")} width={this.props.sidebarWidth}
                 >
                     {this.renderBody()}
                 </SideBar>

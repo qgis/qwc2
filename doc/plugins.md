@@ -658,6 +658,7 @@ revision is published (specified via newsRev prop).
 | newsRev | `string` | Revision of the document. | `undefined` |
 | showInSidebar | `bool` | Whether to show the news in a sidebar instead of a popup. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
+| sidebarWidth | `string` | The default width of the sidebar, as a CSS width string. | `undefined` |
 
 Panoramax<a name="panoramax"></a>
 ----------------------------------------------------------------
