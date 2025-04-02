@@ -1,3 +1,5 @@
+[![NPM Version](https://img.shields.io/npm/v/qwc2.svg?style=flat)]()
+
 ![Logo](https://raw.githubusercontent.com/qgis/qwc2/refs/heads/master/static/assets/img/qwc-logo.svg) QGIS Web Client
 =================
 
@@ -65,4 +67,4 @@ QWC is released under the terms of the [BSD license](https://github.com/qgis/qwc
 
 This repository contains the stock QWC application.
 
-If you want to extend QWC with custom plugins etc, you can use this repository as a submodule and build your custom application on top, see [https://github.com/qgis/qwc2-demo-app](https://github.com/qgis/qwc2-demo-app) for an example.
+If you want to extend QWC with custom plugins etc, you can use this repository as a submodule or the [corresponding `qwc2` NPM module](https://www.npmjs.com/package/qwc2) and build your custom application on top, see [https://github.com/qgis/qwc2-demo-app](https://github.com/qgis/qwc2-demo-app) for an example.
