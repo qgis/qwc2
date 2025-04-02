@@ -13,9 +13,11 @@ const defaultState = {
     geomType: null,
     style: {
         borderColor: [255, 0, 0, 1],
-        size: 2,
         fillColor: [255, 255, 255, 1],
-        text: ""
+        size: 2,
+        text: "",
+        textOutlineColor: [255, 255, 255, 1],
+        textFillColor: [0, 0, 0, 1]
     },
     layer: null,
     layerTitle: null,
@@ -31,7 +33,7 @@ const defaultState = {
 export default function redlining(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_REDLINING_STATE: {
-        return {...state, ...action.data};
+        return {...state, ...action.data, style: {...state.style, ...action.data.style}};
     }
     case RESET_REDLINING_STATE: {
         return defaultState;

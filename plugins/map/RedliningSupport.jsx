@@ -63,7 +63,7 @@ class RedliningSupport extends React.Component {
                 text: feature.getProperties().label || "",
                 rotation: feature.getProperties().rotation || 0,
                 scale: opts.strokeWidth,
-                fill: new ol.style.Fill({color: opts.fillColor}),
+                fill: new ol.style.Fill({color: opts.textFillColor}),
                 stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4})
             })
         });
@@ -155,11 +155,11 @@ class RedliningSupport extends React.Component {
             this.props.changeRedliningState({selectedFeature: feature});
         }
     };
-    styleOptions = (styleProps) => {
+    styleOptions = (styleProps, isText) => {
         return {
-            strokeColor: styleProps.borderColor,
+            strokeColor: isText ? styleProps.textOutlineColor : styleProps.borderColor,
             strokeWidth: 1 + 0.5 * styleProps.size,
-            fillColor: styleProps.fillColor,
+            fillColor: isText ? styleProps.textFillColor : styleProps.fillColor,
             circleRadius: 5 + styleProps.size,
             strokeDash: [],
             headmarker: styleProps.headmarker,
@@ -169,18 +169,20 @@ class RedliningSupport extends React.Component {
     styleProps = (feature) => {
         const styleOptions = feature.get('styleOptions');
         const label = feature.get("label") || "";
+        const isText = feature.get("shape") === "Text";
         return {
-            borderColor: styleOptions.strokeColor,
+            [isText ? "textOutlineColor" : "borderColor"]: styleOptions.strokeColor,
             size: (styleOptions.strokeWidth - 1) * 2,
-            fillColor: styleOptions.fillColor,
+            [isText ? "textFillColor" : "fillColor"]: styleOptions.fillColor,
             text: label,
             headmarker: styleOptions.headmarker,
             tailmarker: styleOptions.tailmarker
         };
     };
     updateFeatureStyle = (styleProps) => {
-        const styleName = this.currentFeature.get("shape") === "Text" ? "text" : "default";
-        const opts = this.styleOptions(styleProps);
+        const isText = this.currentFeature.get("shape") === "Text";
+        const styleName = isText ? "text" : "default";
+        const opts = this.styleOptions(styleProps, isText);
         this.blockOnChange = true;
         this.currentFeature.set('label', styleProps.text);
         this.currentFeature.set('styleName', styleName);

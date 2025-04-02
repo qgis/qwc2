@@ -714,6 +714,8 @@ Allows drawing figures and text labels on the map.
 | defaultBorderColor | `array` | Default border color. In format [r, g, b, a]. | `[255, 0, 0, 1]` |
 | defaultFillColor | `array` | Default fill color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
 | defaultLengthUnit | `string` | Default length unit. Options: metric, imperial, m, km, ft, mi | `'metric'` |
+| defaultTextFillColor | `array` | Default text fill color. In format [r, g, b, a]. | `[0, 0, 0, 1]` |
+| defaultTextOutlineColor | `array` | Default text outline color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
 | hiddenTools | `array` | Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. | `[]` |
 | predefinedBorderColors | `[array]` | Predefined border colors. In format [[r, g, b, a], ...]. | `undefined` |
 | predefinedFillColors | `[array]` | Predefined fill colors. In format [[r, g, b, a], ...]. | `undefined` |
