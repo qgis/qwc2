@@ -45,6 +45,7 @@ Plugin reference
 * [ThemeSwitcher](#themeswitcher)
 * [TimeManager](#timemanager)
 * [TopBar](#topbar)
+* [ValueTool](#valuetool)
 * [View3D](#view3d)
 * [ZoomButton](#zoombutton)
 * [EditingSupport](#editingsupport)
@@ -870,6 +871,16 @@ Top bar, containing the logo, searchbar, task buttons and app menu.
 | searchOptions | `{`<br />`  allowSearchFilters: bool,`<br />`  hideResultLabels: bool,`<br />`  highlightStyle: {`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`},`<br />`  minScaleDenom: number,`<br />`  resultLimit: number,`<br />`  sectionsDefaultCollapsed: bool,`<br />`  showLayerAfterChangeTheme: bool,`<br />`  showLayerResultsBeforePlaces: bool,`<br />`  showResultInSearchText: bool,`<br />`  zoomToLayers: bool,`<br />`}` | Options passed down to the search component. | `{`<br />`    showResultInSearchText: true`<br />`}` |
 | toolbarItems | `array` | The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. | `[]` |
 | toolbarItemsShortcutPrefix | `string` | The keyboard shortcut prefix for triggering toolbar tasks. I.e. alt+shift. The task are then triggered by <prefix>+{1,2,3,...} for the 1st, 2nd, 3rd... toolbar icon. | `undefined` |
+
+ValueTool<a name="valuetool"></a>
+----------------------------------------------------------------
+Displays raster band values of active raster layers at the hovered mouse position,
+queried via GetFeatureInfo.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| enabled | `bool` | The number of decimal places to display for elevation values. | `undefined` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 
 View3D<a name="view3d"></a>
 ----------------------------------------------------------------
