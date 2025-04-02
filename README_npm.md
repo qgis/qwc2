@@ -2,11 +2,9 @@
 =================
 
 ## Introduction
-QGIS Web Client (QWC) is a modular next generation responsive web client for QGIS Server, built with ReactJS and OpenLayers.
+[QGIS Web Client (QWC)](https://github.com/qgis/qwc2) is a modular next generation responsive web client for QGIS Server, built with ReactJS and OpenLayers.
 
-This repository contains the QWC web application, which you can run as a static application on top of QGIS Server.
-
-Alternatively, you can run QWC as part of the **[qwc-services Docker application](https://github.com/qwc-services/qwc-docker)**, which extends QWC with functionalities such as authentication, user management and editing.
+The `qwc2` NPM package can be used as a dependency to build a custom QWC application, see [https://github.com/qgis/qwc2-demo-app](https://github.com/qgis/qwc2-demo-app) for an example.
 
 ![Screenshot](https://github.com/qgis/qwc2/blob/gh-pages/Screenshot.jpg?raw=true)
 
@@ -60,9 +58,3 @@ Some examples of QWC production deployments:
 ## License
 
 QWC is released under the terms of the [BSD license](https://github.com/qgis/qwc2/blob/master/LICENSE).
-
-## Building a custom application
-
-This repository contains the stock QWC application.
-
-If you want to extend QWC with custom plugins etc, you can use this repository as a submodule and build your custom application on top, see [https://github.com/qgis/qwc2-demo-app](https://github.com/qgis/qwc2-demo-app) for an example.

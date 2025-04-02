@@ -12,7 +12,7 @@ cp -a icons/*.svg dist/icons/
 cp -a static/translations/*.json dist/static/translations/
 cp -a package.json dist/
 cp -a LICENSE dist/
-cp -a README.md dist/
+cp -a README_npm.md dist/README.md
 
 echo "Ready to publish!"
 echo "Run publish in the dist folder to publish the package."
