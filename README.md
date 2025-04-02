@@ -1,4 +1,4 @@
-[![NPM Version](https://img.shields.io/npm/v/qwc2.svg?style=flat)]()
+[![NPM Version](https://img.shields.io/npm/v/qwc2.svg?style=flat)](https://www.npmjs.com/package/qwc2)
 
 ![Logo](https://raw.githubusercontent.com/qgis/qwc2/refs/heads/master/static/assets/img/qwc-logo.svg) QGIS Web Client
 =================
