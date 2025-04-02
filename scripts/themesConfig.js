@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * Copyright 2016-2024 Sourcepole AG
  * All rights reserved.

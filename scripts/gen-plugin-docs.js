@@ -1,3 +1,14 @@
+#!/usr/bin/env node
+
+/**
+ * Copyright 2024 Sourcepole AG
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
 const fs = require("fs");
 const path = require("path");
 const reactDocs = require("react-docgen");

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const webfontsGenerator = require('@furkot/webfonts-generator');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
@@ -12,11 +14,17 @@ const readJSON = (filename) => {
     }
 };
 
-const workspaces = readJSON('/package.json').workspaces || [];
+// Determine workspaces / dependencies
+const packageJson = readJSON('/package.json');
+const workspaces = packageJson.workspaces || [];
+const qwcDeps = Object.keys(packageJson.dependencies ?? {"qwc2": "0"}).filter(dep => dep.startsWith("qwc"));
 
 let icons = [];
 for (const workspace of workspaces) {
     icons = icons.concat(glob.sync(workspace + "/icons/*.svg"));
+}
+for (const qwcDep of qwcDeps) {
+    icons = icons.concat(glob.sync('node_modules/' + qwcDep + '/icons/*.svg'));
 }
 icons = icons.concat(glob.sync("icons/*.svg"));
 

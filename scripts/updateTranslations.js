@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * Copyright 2017-2024 Sourcepole AG
  * All rights reserved.
@@ -89,8 +91,10 @@ const updateTsConfig = (topdir, tsconfig, collectedMsgIds = null) => {
     return msgIds;
 };
 
-// Determine workspaces
-const workspaces = readJSON('/package.json').workspaces || [];
+// Determine workspaces / dependencies
+const packageJson = readJSON('/package.json');
+const workspaces = packageJson.workspaces || [];
+const qwcDeps = Object.keys(packageJson.dependencies ?? {qwc2: "0"}).filter(dep => dep.startsWith("qwc"));
 
 // Generate workspace translations
 let collectedMsgIds = new Set();
@@ -140,6 +144,10 @@ for (const lang of config.languages || []) {
     // Merge translations from workspaces
     for (const workspace of workspaces) {
         data = merge(data, readJSON('/' + workspace + '/static/translations/' + lang + '.json'));
+    }
+    // Merge translations from dependencies
+    for (const qwcDep of qwcDeps) {
+        data = merge(data, readJSON('/node_modules/' + qwcDep + '/static/translations/' + lang + '.json'));
     }
 
     // Revert to original values for strings specified in overrides

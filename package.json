@@ -5,7 +5,18 @@
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
     "repository": "git@github.com:qgis/qwc2.git",
+    "homepage": "https://https://qwc-services.github.io/",
+    "bugs": {
+        "url": "https://github.com/qgis/qwc2/issues"
+    },
+    "keywords": [
+        "qgis",
+        "webgis",
+        "mapping",
+        "geospatial"
+    ],
     "dependencies": {
+        "@furkot/webfonts-generator": "^2.0.2",
         "@giro3d/giro3d": "^0.42.2",
         "@kayahr/text-encoding": "^2.0.0",
         "@loaders.gl/core": "^4.3.3",
@@ -36,8 +47,10 @@
         "lodash.isequal": "^4.5.0",
         "lodash.omit": "^4.5.0",
         "mime-to-extensions": "^1.0.2",
+        "mkdirp": "^3.0.1",
         "mousetrap": "^1.6.5",
         "nearley": "^2.20.1",
+        "object-path": "^0.11.8",
         "ol": "^10.3.1",
         "ol-ext": "^4.0.24",
         "ol-mapbox-style": "^12.3.5",
@@ -74,13 +87,13 @@
         "uuid": "^11.0.3"
     },
     "devDependencies": {
+        "@babel/cli": "^7.27.0",
         "@babel/core": "^7.26.0",
         "@babel/eslint-parser": "^7.25.9",
         "@babel/plugin-transform-class-properties": "^7.25.9",
         "@babel/plugin-transform-object-rest-spread": "^7.25.9",
         "@babel/preset-env": "^7.26.0",
         "@babel/preset-react": "^7.26.3",
-        "@furkot/webfonts-generator": "^2.0.2",
         "@microsoft/eslint-formatter-sarif": "^3.1.0",
         "@types/react": "^18.3.1",
         "babel-loader": "^9.2.1",
@@ -92,8 +105,6 @@
         "eslint-plugin-perfectionist": "^2.10.0",
         "eslint-plugin-react": "^7.37.2",
         "html-webpack-plugin": "^5.6.3",
-        "mkdirp": "^3.0.1",
-        "object-path": "^0.11.8",
         "react-docgen": "^5.4.3",
         "source-map-loader": "^5.0.0",
         "style-loader": "^4.0.0",
@@ -103,6 +114,11 @@
         "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^5.1.0"
     },
+    "bin": {
+        "qwc_build_iconfont": "./scripts/makeIconkit.js",
+        "qwc_gen_themesconfig": "./scripts/themesConfig.js",
+        "qwc_update_translations": "./scripts/updateTranslations.js"
+    },
     "scripts": {
         "prod": "npm run tsupdate && npm run themesconfig && npm run iconfont && webpack --mode production --progress",
         "start": "npm run tsupdate && npm run themesconfig && npm run iconfont && webpack serve --mode development --progress --host 0.0.0.0 --port 8081",
@@ -110,6 +126,7 @@
         "themesconfig": "node scripts/themesConfig.js || :",
         "tsupdate": "node scripts/updateTranslations.js",
         "plugindoc": "node scripts/gen-plugin-docs.js",
+        "dist": "./scripts/dist.sh",
         "build": "npm run prod",
         "analyze": "webpack --mode production --json | webpack-bundle-size-analyzer",
         "release": "node -e \"process.exit(require('os').platform() === 'win32' ? 0 : 1)\" && scripts\\package-commands.bat release || ./scripts/package-commands.sh release"
