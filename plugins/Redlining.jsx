@@ -289,7 +289,6 @@ class Redlining extends React.Component {
             return null;
         }
 
-        console.log(this.props.redlining)
         return (
             <div className="redlining-controlsbar">
                 <span>
