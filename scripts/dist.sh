@@ -10,7 +10,9 @@ mkdir -p dist/static/translations
 mkdir -p dist/icons
 cp -a icons/*.svg dist/icons/
 cp -a static/translations/*.json dist/static/translations/
-cp -a {package.json,LICENSE,README.md} dist/
+cp -a package.json dist/
+cp -a LICENSE dist/
+cp -a README.md dist/
 
 echo "Ready to publish!"
 echo "Run publish in the dist folder to publish the package."
