@@ -56,12 +56,14 @@ class MapExport extends React.Component {
         fileNameTemplate: PropTypes.string,
         /** Custom export configuration per format.
          *  If more than one configuration per format is provided, a selection combo will be displayed.
+         *  `labelMsgId` is a translation string message id for the combo label. If not defined, `name` will be displayed.
          *  `extraQuery` will be appended to the query string (replacing any existing parameters).
          *  `formatOptions` will be passed as FORMAT_OPTIONS.
          *  `baseLayer` will be appended to the LAYERS instead of the background layer. */
         formatConfiguration: PropTypes.shape({
             format: PropTypes.arrayOf(PropTypes.shape({
                 name: PropTypes.string,
+                labelMsgId: PropTypes.string,
                 extraQuery: PropTypes.string,
                 formatOptions: PropTypes.string,
                 baseLayer: PropTypes.string
@@ -172,7 +174,7 @@ class MapExport extends React.Component {
                                     <td>
                                         <select onChange={(ev) => this.setState({selectedFormatConfiguration: ev.target.value})} value={this.state.selectedFormatConfiguration}>
                                             {formatConfiguration.map(config => {
-                                                return (<option key={config.name} value={config.name}>{config.name}</option>);
+                                                return (<option key={config.name} value={config.name}>{config.labelMsgId ? LocaleUtils.tr(config.labelMsgId) : config.name}</option>);
                                             })}
                                         </select>
                                     </td>
