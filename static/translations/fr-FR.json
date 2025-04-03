@@ -688,7 +688,9 @@
       "showlayers": "Couches",
       "table": "Tableau",
       "title": "Value Tool",
-      "visiblelayers": "Couches visibles"
+      "visiblelayers": "Couches visibles",
+      "ymax": "Min Y",
+      "ymin": "Max Y"
     },
     "vectorlayerpicker": {
       "none": "Aucune",

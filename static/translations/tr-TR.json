@@ -688,7 +688,9 @@
       "showlayers": "",
       "table": "",
       "title": "",
-      "visiblelayers": ""
+      "visiblelayers": "",
+      "ymax": "",
+      "ymin": ""
     },
     "vectorlayerpicker": {
       "none": "Yok",

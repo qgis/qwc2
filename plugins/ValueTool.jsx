@@ -19,6 +19,7 @@ import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import ButtonBar from '../components/widgets/ButtonBar';
+import NumberInput from '../components/widgets/NumberInput';
 import TextInput from '../components/widgets/TextInput';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -65,7 +66,9 @@ class ValueTool extends React.Component {
         showBands: 'all',
         selectedLayers: [],
         selectedBands: {},
-        values: {}
+        values: {},
+        graphMinY: null,
+        graphMaxY: null
     };
     constructor(props) {
         super(props);
@@ -157,16 +160,36 @@ class ValueTool extends React.Component {
                 borderWidth: 2
             }]
         };
+        const yAxisConfig = {};
+        if (this.state.graphMinY) {
+            yAxisConfig.min = this.state.graphMinY;
+        }
+        if (this.state.graphMaxY) {
+            yAxisConfig.max = this.state.graphMaxY;
+        }
+
         const options = {
             responsive: true,
             maintainAspectRatio: false,
             animation: {
                 duration: 0
+            },
+            scales: {
+                y: yAxisConfig
             }
         };
         return (
-            <div className="valuetool-chart-container">
-                <Line data={data} options={options} />
+            <div>
+                <div className="valuetool-chart-options">
+                    <span>{LocaleUtils.tr("valuetool.ymin")}: </span>
+                    <NumberInput onChange={value => this.setState({graphMinY: value})} value={this.state.graphMinY} />
+                    <span style={{marginLeft: '0.5em'}} />
+                    <span>{LocaleUtils.tr("valuetool.ymax")}: </span>
+                    <NumberInput onChange={value => this.setState({graphMaxY: value})} value={this.state.graphMaxY} />
+                </div>
+                <div className="valuetool-chart-container">
+                    <Line data={data} options={options} />
+                </div>
             </div>
         );
     };

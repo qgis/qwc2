@@ -688,7 +688,9 @@
       "showlayers": "Show layers",
       "table": "Table",
       "title": "Value Tool",
-      "visiblelayers": "Visible"
+      "visiblelayers": "Visible",
+      "ymax": "Max Y",
+      "ymin": "Min Y"
     },
     "vectorlayerpicker": {
       "none": "None",

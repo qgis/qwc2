@@ -688,7 +688,9 @@
       "showlayers": "Livelli",
       "table": "Tabelle",
       "title": "Value Tool",
-      "visiblelayers": "Livelli visibili"
+      "visiblelayers": "Livelli visibili",
+      "ymax": "Min Y",
+      "ymin": "Max Y"
     },
     "vectorlayerpicker": {
       "none": "Nessuno",

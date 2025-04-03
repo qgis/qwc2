@@ -591,6 +591,8 @@
     "valuetool.table",
     "valuetool.title",
     "valuetool.visiblelayers",
+    "valuetool.ymax",
+    "valuetool.ymin",
     "vectorlayerpicker.none",
     "vectorlayerpicker.prompt",
     "window.close",

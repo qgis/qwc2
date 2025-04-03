@@ -58,3 +58,13 @@ table.valuetool-table-options td > select {
 table.valuetool-table-options td:first-child {
     white-space: nowrap;
 }
+
+div.valuetool-chart-options {
+    display: flex;
+    align-items: center;
+}
+
+div.valuetool-chart-options > div.number-input {
+    flex: 1 1 auto;
+    margin-left: 0.25em;
+}

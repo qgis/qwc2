@@ -688,7 +688,9 @@
       "showlayers": "Ebenen",
       "table": "Tabelle",
       "title": "Value Tool",
-      "visiblelayers": "Sichtbare Ebenen"
+      "visiblelayers": "Sichtbare Ebenen",
+      "ymax": "Min Y",
+      "ymin": "Max Y"
     },
     "vectorlayerpicker": {
       "none": "Keine",
