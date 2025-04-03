@@ -267,14 +267,16 @@ export default function layers(state = defaultState, action) {
     case ADD_THEME_SUBLAYER: {
         const themeLayerIdx = state.flat.findIndex(layer => layer.role === LayerRole.THEME);
         if (themeLayerIdx >= 0) {
-            const newLayers = state.flat.slice(0);
-            newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer);
-            newLayers[themeLayerIdx].visibility = true;
-            for (const lyr of newLayers) {
-                if (lyr.type === "wms") {
-                    Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr, state.filter));
+            const newLayers = state.flat.map((layer, idx) => {
+                if (idx === themeLayerIdx) {
+                    layer = {
+                        ...LayerUtils.mergeSubLayers(layer, action.layer),
+                        visibility: true
+                    };
+                    return {...layer, ...LayerUtils.buildWMSLayerParams(layer, state.filter)};
                 }
-            }
+                return layer;
+            });
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return {...state, flat: newLayers};
         }
