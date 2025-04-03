@@ -549,7 +549,7 @@ Allows exporting a selected portion of the map to a variety of formats.
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale (if `allowedScales` is not `false`). | `1` |
 | dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
 | exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
-| fileNameTemplate | `string` | Template for the name of the generated files when downloading. | `'{theme}_{timestamp}'` |
+| fileNameTemplate | `string` | Template for the name of the generated files when downloading. Can contain the placeholders `{username}`, `{tenant}`, `{theme}`, `{timestamp}`. | `'{theme}_{timestamp}'` |
 | formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `extraQuery` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS instead of the background layer. | `undefined` |
 | pageSizes | `[{`<br />`  name: string,`<br />`  width: number,`<br />`  height: number,`<br />`}]` | List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. | `[]` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
@@ -698,7 +698,7 @@ Uses the print layouts defined in the QGIS project.
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial print map scale. | `0.5` |
 | displayPrintSeries | `bool` | Show an option to print a series of extents. | `false` |
 | displayRotation | `bool` | Whether to display the printing rotation control. | `true` |
-| fileNameTemplate | `string` | Template for the name of the generated files when downloading. | `'{theme}_{timestamp}'` |
+| fileNameTemplate | `string` | Template for the name of the generated files when downloading. Can contain the placeholders `{username}`, `{tenant}`, `{theme}`, `{timestamp}`. | `'{theme}_{timestamp}'` |
 | formats | `[string]` | Export layout format mimetypes. If format is not supported by QGIS Server, print will fail. | `['application/pdf', 'image/jpeg', 'image/png', 'image/svg']` |
 | gridInitiallyEnabled | `bool` | Whether the grid is enabled by default. | `false` |
 | hideAutopopulatedFields | `bool` | Whether to hide form fields which contain autopopulated values (i.e. search result label). | `undefined` |

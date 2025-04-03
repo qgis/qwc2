@@ -29,6 +29,7 @@ import InputContainer from '../components/widgets/InputContainer';
 import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
+import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -59,7 +60,7 @@ class Print extends React.Component {
         displayPrintSeries: PropTypes.bool,
         /** Whether to display the printing rotation control. */
         displayRotation: PropTypes.bool,
-        /** Template for the name of the generated files when downloading. */
+        /** Template for the name of the generated files when downloading. Can contain the placeholders `{username}`, `{tenant}`, `{theme}`, `{timestamp}`. */
         fileNameTemplate: PropTypes.string,
         /** Export layout format mimetypes. If format is not supported by QGIS Server, print will fail. */
         formats: PropTypes.arrayOf(PropTypes.string),
@@ -717,6 +718,8 @@ class Print extends React.Component {
 
         const timestamp = dayjs(new Date()).format("YYYYMMDD_HHmmss");
         const fileName = this.props.fileNameTemplate
+            .replace("{username}", ConfigUtils.getConfigProp("username", null, ""))
+            .replace("{tenant}", ConfigUtils.getConfigProp("tenant", null, ""))
             .replace("{theme}", this.props.theme.id)
             .replace("{timestamp}", timestamp);
 
