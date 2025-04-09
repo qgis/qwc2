@@ -1,3 +1,6 @@
+import {remove as removeDiacritics} from 'diacritics';
+
+
 const END_MARKERS = {
     SECTION: 'ENDSEC',
     TABLE: 'ENDTAB',
@@ -189,6 +192,12 @@ export function mergeDxf(documents) {
 
     // Update layer count
     mergedLayers.values.find(tuple => tuple[0] === "70")[1] = String(mergedLayers.children.length);
+
+    // Replace special characters in layer name
+    mergedLayers.children.forEach(child => {
+        const nameTuple = child.values.find(tuple => tuple[0] === "2");
+        nameTuple[1] = removeDiacritics(nameTuple[1]).replace(/\W/g, '_');
+    });
 
     return documents[0];
 }
