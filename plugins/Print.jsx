@@ -238,17 +238,6 @@ class Print extends React.Component {
             rotationInput = (<NumberInput decimals={1} mobile name={mapName + ":rotation"} onChange={this.changeRotation} role="input" value={this.state.rotation} />);
         }
 
-        let gridIntervalX = null;
-        let gridIntervalY = null;
-        const printGrid = this.props.theme.printGrid;
-        if (printGrid && printGrid.length > 0 && this.state.scale && this.state.grid) {
-            let cur = 0;
-            while (cur < printGrid.length - 1 && this.state.scale < printGrid[cur].s) {
-                cur += 1;
-            }
-            gridIntervalX = (<input name={mapName + ":GRID_INTERVAL_X"} readOnly type={formvisibility} value={printGrid[cur].x} />);
-            gridIntervalY = (<input name={mapName + ":GRID_INTERVAL_Y"} readOnly type={formvisibility} value={printGrid[cur].y} />);
-        }
         const printLegend = this.state.layout.legendLayout;
 
         let overlapChooser = null;
@@ -361,7 +350,7 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {printGrid ? (
+                        {!isEmpty(this.props.theme.printGrid) ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.grid")}</td>
                                 <td>
@@ -436,8 +425,6 @@ class Print extends React.Component {
                         <input name="SRS" readOnly type={formvisibility} value={mapCrs} />
                         <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
                         {pdfFormatSelected && this.props.allowGeoPdfExport ? (<input name="FORMAT_OPTIONS" readOnly type={formvisibility} value={this.state.geoPdf ? "WRITE_GEO_PDF:true" : "WRITE_GEO_PDF:false"} />) : null}
-                        {gridIntervalX}
-                        {gridIntervalY}
                         {resolutionInput}
                     </div>
                     <div className="button-bar">
@@ -687,6 +674,22 @@ class Print extends React.Component {
         formData[mapName + ":HIGHLIGHT_LABELSIZE"] = highlightParams.labelSizes.join(";");
         formData[mapName + ":HIGHLIGHT_LABEL_DISTANCE"] = highlightParams.labelDist.join(";");
         formData[mapName + ":HIGHLIGHT_LABEL_ROTATION"] = highlightParams.labelRotations.join(";");
+
+        // Add grid params
+        const printGrid = this.props.theme.printGrid;
+        if (!isEmpty(printGrid)) {
+            if (this.state.grid) {
+                let cur = 0;
+                while (cur < printGrid.length - 1 && this.state.scale < printGrid[cur].s) {
+                    cur += 1;
+                }
+                formData[mapName + ":GRID_INTERVAL_X"] = printGrid[cur].x;
+                formData[mapName + ":GRID_INTERVAL_Y"] = printGrid[cur].y;
+            } else {
+                formData[mapName + ":GRID_INTERVAL_X"] = 0;
+                formData[mapName + ":GRID_INTERVAL_Y"] = 0;
+            }
+        }
 
         // Add dimension values
         this.props.layers.forEach(layer => {
