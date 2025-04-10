@@ -79,6 +79,8 @@ window.addEventListener("QWC2ApiReady", () => {
 });
 ```
 
+Note: You can also write the plugin in JSX syntax, and transpile to plain JS using babel.
+
 All following action functions are available:
 
 - [display](https://github.com/qgis/qwc2/blob/master/actions/display.js)
