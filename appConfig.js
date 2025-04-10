@@ -54,6 +54,7 @@ import TaskButtonPlugin from './plugins/TaskButton';
 import ThemeSwitcherPlugin from './plugins/ThemeSwitcher';
 import TimeManagerPlugin from './plugins/TimeManager';
 import TopBarPlugin from './plugins/TopBar';
+import ValueToolPlugin from './plugins/ValueTool';
 import View3DPlugin from './plugins/View3D';
 import {ZoomInPlugin, ZoomOutPlugin} from './plugins/ZoomButtons';
 import EditingSupport from './plugins/map/EditingSupport';
@@ -133,6 +134,7 @@ export default {
                 Toolbar: Toolbar,
                 FullscreenSwitcher: FullscreenSwitcher
             }),
+            ValueToolPlugin: ValueToolPlugin,
             View3DPlugin: View3DPlugin,
             ZoomInPlugin: ZoomInPlugin,
             ZoomOutPlugin: ZoomOutPlugin
