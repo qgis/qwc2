@@ -27,6 +27,7 @@ import * as themeActions from '../actions/theme';
 import * as windowsActions from '../actions/windows';
 import AppMenu from '../components/AppMenu';
 import AttributeForm from '../components/AttributeForm';
+import AttributeTableWidget from '../components/AttributeTableWidget';
 import AutoEditForm from '../components/AutoEditForm';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
 import EditComboField from '../components/EditComboField';
@@ -177,6 +178,7 @@ class API extends React.Component {
         window.qwc2.components = {};
         window.qwc2.components.AppMenu = AppMenu;
         window.qwc2.components.AttributeForm = AttributeForm;
+        window.qwc2.components.AttributeTableWidget = AttributeTableWidget;
         window.qwc2.components.AutoEditForm = AutoEditForm;
         window.qwc2.components.CoordinateDisplayer = CoordinateDisplayer;
         window.qwc2.components.EditComboField = EditComboField;
