@@ -496,6 +496,7 @@
       "all": "Alle",
       "circleradius": "Kreis radius",
       "clearfilter": "Zurücksetzen",
+      "coordinates": "Koordinaten",
       "existinglayer": "Die Ebene existiert bereits in der Karte",
       "filter": "Suche verfeinern",
       "layers": "Ebenen",
@@ -641,6 +642,11 @@
       "undock": "Abdocken",
       "unmaximize": "Wiederherstellen",
       "unminimize": "Vergrössern"
+    },
+    "colorschemes": {
+      "default": "Standard",
+      "dark": "Dunkel",
+      "highcontrast": "Hochkontrast"
     }
   }
 }

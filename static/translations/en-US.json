@@ -496,6 +496,7 @@
       "all": "All",
       "circleradius": "Circle radius",
       "clearfilter": "Clear",
+      "coordinates": "Coordinates",
       "existinglayer": "The layer already exists in the map",
       "filter": "Refine search",
       "layers": "Layers",
@@ -641,6 +642,11 @@
       "undock": "Undock",
       "unmaximize": "Restore",
       "unminimize": "Unminimize"
+    },
+    "colorschemes": {
+      "default": "Default",
+      "dark": "Dark",
+      "highcontrast": "High contrast"
     }
   }
 }

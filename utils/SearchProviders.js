@@ -70,7 +70,7 @@ function coordinatesSearch(text, searchParams, callback) {
         results.push(
             {
                 id: "coords",
-                titlemsgid: "search.coordinates",
+                titlemsgid: LocaleUtils.trmsg("search.coordinates"),
                 type: SearchResultType.PLACE,
                 items: items
             }

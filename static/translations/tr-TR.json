@@ -496,6 +496,7 @@
       "all": "Tümü",
       "circleradius": "Daire yarıçapı",
       "clearfilter": "Temizle",
+      "coordinates": "",
       "existinglayer": "Katman zaten haritada mevcut",
       "filter": "Gelişmiş arama",
       "layers": "Katmanlar",
@@ -641,6 +642,11 @@
       "undock": "Çöz",
       "unmaximize": "Eski haline getir",
       "unminimize": "Küçültmeyi kaldır"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

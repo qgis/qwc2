@@ -496,6 +496,7 @@
       "all": "Todo",
       "circleradius": "",
       "clearfilter": "",
+      "coordinates": "",
       "existinglayer": "La capa ya existe en el mapa",
       "filter": "Refinar búsqueda",
       "layers": "",
@@ -641,6 +642,11 @@
       "undock": "Desacoplar",
       "unmaximize": "Restaurar",
       "unminimize": "Desminimizar"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

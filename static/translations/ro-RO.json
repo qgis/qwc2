@@ -496,6 +496,7 @@
       "all": "Toate",
       "circleradius": "",
       "clearfilter": "",
+      "coordinates": "",
       "existinglayer": "Stratul există deja în hartă",
       "filter": "Filtrare căutare",
       "layers": "",
@@ -641,6 +642,11 @@
       "undock": "Anulează andocarea",
       "unmaximize": "Restaurează",
       "unminimize": "Restaurează"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

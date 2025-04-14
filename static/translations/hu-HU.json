@@ -496,6 +496,7 @@
       "all": "Minden",
       "circleradius": "",
       "clearfilter": "",
+      "coordinates": "",
       "existinglayer": "",
       "filter": "",
       "layers": "",
@@ -641,6 +642,11 @@
       "undock": "",
       "unmaximize": "",
       "unminimize": ""
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

@@ -496,6 +496,7 @@
       "all": "Vše",
       "circleradius": "",
       "clearfilter": "",
+      "coordinates": "",
       "existinglayer": "Vrstva v mapě již existuje",
       "filter": "Filtrovat výsledky",
       "layers": "",
@@ -641,6 +642,11 @@
       "undock": "Zrušit přichycení",
       "unmaximize": "Obnovit velikost okna",
       "unminimize": "Obnovit velikost okna"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

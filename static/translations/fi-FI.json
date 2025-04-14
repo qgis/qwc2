@@ -496,6 +496,7 @@
       "all": "Kaikki",
       "circleradius": "",
       "clearfilter": "",
+      "coordinates": "",
       "existinglayer": "Taso on jo lisätty karttaan",
       "filter": "Tarkenna hakua",
       "layers": "",
@@ -641,6 +642,11 @@
       "undock": "Irrota",
       "unmaximize": "",
       "unminimize": ""
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }
