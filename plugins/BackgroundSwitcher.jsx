@@ -107,7 +107,7 @@ export class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer ? layer.name : "empty"} onClick={() => this.backgroundLayerClicked(layer)}>
                 <div className="background-layer-title">
-                    {layer ? (<span>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
+                    {layer ? (<span title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
                 </div>
                 <div className="background-layer-thumbnail">
                     <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
@@ -126,7 +126,7 @@ export class BackgroundSwitcher extends React.Component {
         return (
             <div className={itemclasses} key={layer.name}>
                 <div className="background-layer-title">
-                    <span>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
+                    <span title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
                 </div>
                 <div className="background-layer-thumbnail">
                     <img onClick={() => this.backgroundLayerClicked(layer)} src={assetsPath + "/" + layer.thumbnail} />
@@ -142,6 +142,7 @@ export class BackgroundSwitcher extends React.Component {
                                 onClick={() => this.backgroundLayerClicked(l)}
                                 onMouseEnter={ev => this.updateGroupItem(ev, l)}
                                 onMouseLeave={ev => this.updateGroupItem(ev, layer)}
+                                title={this.itemTitle(l)}
                             >{this.itemTitle(l)}</div>
                         );
                     })}
