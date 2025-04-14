@@ -539,6 +539,7 @@
       "all": "Всички",
       "circleradius": "Радиус на кръга",
       "clearfilter": "Clear",
+      "coordinates": "",
       "existinglayer": "Слоят вече съществува в картата",
       "filter": "Прецизиране на търсенето",
       "layers": "Слоеве",
@@ -706,6 +707,11 @@
       "undock": "Откачване на",
       "unmaximize": "Възстановяване на",
       "unminimize": "Намалете до минимум"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

@@ -539,6 +539,7 @@
       "all": "Tutti",
       "circleradius": "Raggio del cerchio",
       "clearfilter": "Azzera",
+      "coordinates": "Coordinate",
       "existinglayer": "Il layer esiste già nella mappa",
       "filter": "Filtro",
       "layers": "Cartine",
@@ -706,6 +707,11 @@
       "undock": "Sgancia",
       "unmaximize": "Ripristina",
       "unminimize": "Ingrandisci"
+    },
+    "colorschemes": {
+      "default": "Predefinito",
+      "dark": "Scuro",
+      "highcontrast": "Contrasto elevato"
     }
   }
 }

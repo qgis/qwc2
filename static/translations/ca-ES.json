@@ -539,6 +539,7 @@
       "all": "Tot",
       "circleradius": "",
       "clearfilter": "",
+      "coordinates": "",
       "existinglayer": "La capa ja existeix en el mapa",
       "filter": "Refinar búsqueda",
       "layers": "",
@@ -706,6 +707,11 @@
       "undock": "Desacoblar",
       "unmaximize": "Minimitzar",
       "unminimize": "Desminimitzar"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

@@ -539,6 +539,7 @@
       "all": "全て",
       "circleradius": "円の半径",
       "clearfilter": "クリア",
+      "coordinates": "",
       "existinglayer": "レイヤは既に地図の中に存在します",
       "filter": "検索を詳細化",
       "layers": "レイヤ",
@@ -706,6 +707,11 @@
       "undock": "アンドック",
       "unmaximize": "元のサイズに戻す",
       "unminimize": "元のサイズに戻す"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

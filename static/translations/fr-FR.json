@@ -539,6 +539,7 @@
       "all": "Tous",
       "circleradius": "Rayon du cercle",
       "clearfilter": "Effacer",
+      "coordinates": "",
       "existinglayer": "La couche existe déjà dans la carte",
       "filter": "Affiner la recherche",
       "layers": "Couches",
@@ -706,6 +707,11 @@
       "undock": "Détacher",
       "unmaximize": "Réduire",
       "unminimize": "Agrandir"
+    },
+    "colorschemes": {
+      "default": "Défaut",
+      "dark": "Sombre",
+      "highcontrast": "Contraste élevé"
     }
   }
 }

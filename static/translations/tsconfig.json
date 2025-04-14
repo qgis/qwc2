@@ -52,7 +52,10 @@
     "appmenu.items.Tools",
     "appmenu.items.Bookmark",
     "appmenu.items.TimeManager",
-    "appmenu.items.View3D"
+    "appmenu.items.View3D",
+    "colorschemes.default",
+    "colorschemes.dark",
+    "colorschemes.highcontrast"
   ],
   "strings": [
     "app.missingbg",
@@ -463,6 +466,7 @@
     "search.all",
     "search.circleradius",
     "search.clearfilter",
+    "search.coordinates",
     "search.existinglayer",
     "search.filter",
     "search.layers",

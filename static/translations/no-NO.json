@@ -539,6 +539,7 @@
       "all": "Alle",
       "circleradius": "",
       "clearfilter": "",
+      "coordinates": "",
       "existinglayer": "Laget finnes allerede på kartet",
       "filter": "Filtrer",
       "layers": "",
@@ -706,6 +707,11 @@
       "undock": "Utløs",
       "unmaximize": "",
       "unminimize": ""
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

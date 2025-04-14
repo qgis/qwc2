@@ -539,6 +539,7 @@
       "all": "Alle",
       "circleradius": "Straal van de cirkel",
       "clearfilter": "Wissen",
+      "coordinates": "",
       "existinglayer": "Kaartlaag bestaat al",
       "filter": "Filteren",
       "layers": "",
@@ -706,6 +707,11 @@
       "undock": "Losmaken",
       "unmaximize": "Herstellen",
       "unminimize": "Minimaliseer niet"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }

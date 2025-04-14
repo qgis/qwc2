@@ -539,6 +539,7 @@
       "all": "Todos",
       "circleradius": "",
       "clearfilter": "Limpar Filtro",
+      "coordinates": "",
       "existinglayer": "A camada já existe no mapa",
       "filter": "Refinar Pesquisa",
       "layers": "",
@@ -706,6 +707,11 @@
       "undock": "Desacoplar",
       "unmaximize": "Restaurar Tamanho",
       "unminimize": "Restaurar Tamanho"
+    },
+    "colorschemes": {
+      "default": "",
+      "dark": "",
+      "highcontrast": ""
     }
   }
 }
