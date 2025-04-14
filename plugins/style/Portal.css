@@ -31,10 +31,6 @@ span.portal-topbar-spacer {
     flex: 1 1 auto;
 }
 
-div.portal-topbar div.AppMenu {
-    flex: 0 0 auto;
-}
-
 div.portal-topbar div.AppMenu div.appmenu-menu-container {
     height: calc(100vh - 5.75em);
     background-color: var(--app-menu-bg-color);
@@ -48,9 +44,9 @@ div.portal-topbar span.appmenu-label {
     color: var(--titlebar-text-color);
 }
 
-div.portal-topbar span.appmenu-icon {
+div.portal-topbar span.appmenu-icon > span.icon {
     color: var(--titlebar-text-color);
-    border: 2px solid var(--titlebar-text-color);
+    border-color: var(--titlebar-text-color);
 }
 
 div.portal-body {

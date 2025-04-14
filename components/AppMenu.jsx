@@ -276,21 +276,23 @@ class AppMenu extends React.Component {
     render() {
         const isMobile = ConfigUtils.isMobile();
         const visible = !this.props.currentTaskBlocked && this.state.menuVisible;
+        const showLabel = !this.props.menuCompact && !isMobile;
         const className = classnames({
             "AppMenu": true,
             "appmenu-blocked": this.props.currentTaskBlocked,
             "appmenu-visible": visible,
-            "appmenu-compact": this.props.menuCompact
+            "appmenu-compact": this.props.menuCompact,
+            "appmenu-nolabel": !showLabel
         });
         const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         return (
             <div className={className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
             >
-                <div className="appmenu-button-container" onMouseDown={this.toggleMenu}>
-                    <div className="appmenu-button" title={this.props.buttonLabel}>
-                        {!this.props.menuCompact && !isMobile ? (<span className="appmenu-label">{this.props.buttonLabel}</span>) : null}
-                        <Icon className="appmenu-icon" icon="menu-hamburger"/>
-                    </div>
+                <div className="appmenu-button" onMouseDown={this.toggleMenu}  title={this.props.buttonLabel}>
+                    {showLabel ? (<span className="appmenu-label">{this.props.buttonLabel}</span>) : null}
+                    <span className="appmenu-icon">
+                        <Icon icon="menu-hamburger"/>
+                    </span>
                 </div>
                 <div className="appmenu-menu-container">
                     <ul className="appmenu-menu">

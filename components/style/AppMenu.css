@@ -6,7 +6,13 @@ div.AppMenu {
     overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: right;
     height: 100%;
+    flex: 0 1 20em;
+}
+
+div.AppMenu.appmenu-nolabel {
+    flex: 0 0 auto;
 }
 
 div.AppMenu.appmenu-visible {
@@ -15,23 +21,31 @@ div.AppMenu.appmenu-visible {
     overflow: visible;
 }
 
+div.AppMenu .appmenu-button {
+    display: flex;
+    align-items: center;
+}
+
 div.AppMenu .appmenu-label {
     font-weight: bold;
     transition: color 0.25s;
-    width: 16.2em;
-    display: inline-block;
+    color: var(--app-menu-text-color);
 }
 
-div.AppMenu .appmenu-icon {
+div.AppMenu.appmenu-visible .appmenu-label {
+    color: var(--app-submenu-text-color-hover);
+}
+
+div.AppMenu .appmenu-icon > span.icon {
     color: var(--app-menu-text-color);
     padding: 0.25em;
     margin: 0 1em;
-    width: 1.8em;
     border: 2px solid var(--app-menu-text-color);
     transition: color 0.25s, border-color 0.25s, background-color 0.25s;
 }
 
-div.AppMenu.appmenu-visible .appmenu-icon {
+
+div.AppMenu.appmenu-visible .appmenu-icon > span.icon {
     color: var(--app-submenu-text-color-hover);
     border-color: var(--app-submenu-text-color-hover);
     background-color: inherit;
