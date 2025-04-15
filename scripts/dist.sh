@@ -1,4 +1,5 @@
-#/bin/bash
+#!/bin/bash
+set -e
 
 rm -rf dist
 for dir in actions components libs plugins reducers scripts selectors stores utils;
@@ -13,6 +14,11 @@ cp -a static/translations/*.json dist/static/translations/
 cp -a package.json dist/
 cp -a LICENSE dist/
 cp -a README_npm.md dist/README.md
+
+if [[ $(grep '"version": ".*-lts"' package.json) != "" ]]; then
+  sed -Ei 's|"name":\s*"qwc2",|"name": "qwc2-lts",|' dist/package.json
+  sed -Ei 's|"version":\s*"([0-9]+\.[0-9]+\.[0-9]+)-lts",|"version": "\1",|' dist/package.json
+fi
 
 echo "Ready to publish!"
 echo "Run publish in the dist folder to publish the package."
