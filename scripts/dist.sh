@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 rm -rf dist
 for dir in actions components libs plugins reducers scripts selectors stores utils;

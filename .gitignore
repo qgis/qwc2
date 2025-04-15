@@ -2,9 +2,3 @@ node_modules/
 icons/build
 static/themes.json
 dist
-
-# On a fresh install with yarn 3.3.0 these extra files were generated.
-.yarn
-.pnp.cjs
-.pnp.loader.mjs
-yarn.lock
