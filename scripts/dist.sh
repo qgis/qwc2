@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 rm -rf dist
 for dir in actions components libs plugins reducers scripts selectors stores utils;
