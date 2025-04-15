@@ -4,7 +4,17 @@
     "description": "QGIS Web Client 2",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
-    "repository": "git@github.com:qgis/qwc2.git",
+    "repository": "git+ssh://git@github.com/qgis/qwc2.git",
+    "homepage": "https://https://qwc-services.github.io/",
+    "bugs": {
+        "url": "https://github.com/qgis/qwc2/issues"
+    },
+    "keywords": [
+        "qgis",
+        "webgis",
+        "mapping",
+        "geospatial"
+    ],
     "dependencies": {
         "@giro3d/giro3d": "^0.41.0",
         "@ladjs/country-language": "^1.0.3",
