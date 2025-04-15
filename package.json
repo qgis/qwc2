@@ -4,7 +4,7 @@
     "description": "QGIS Web Client",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
-    "repository": "git@github.com:qgis/qwc2.git",
+    "repository": "git+ssh://git@github.com/qgis/qwc2.git",
     "homepage": "https://https://qwc-services.github.io/",
     "bugs": {
         "url": "https://github.com/qgis/qwc2/issues"
