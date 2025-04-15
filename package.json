@@ -1,6 +1,6 @@
 {
     "name": "qwc2",
-    "version": "2025.12.0-lts",
+    "version": "2025.0.12-lts",
     "description": "QGIS Web Client 2",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
@@ -108,6 +108,7 @@
         "themesconfig": "node scripts/themesConfig.js || :",
         "tsupdate": "node scripts/updateTranslations.js",
         "plugindoc": "node scripts/gen-plugin-docs.js",
+        "dist": "./scripts/dist.sh",
         "build": "npm run prod",
         "analyze": "webpack --mode production --json | webpack-bundle-size-analyzer",
         "release": "node -e \"process.exit(require('os').platform() === 'win32' ? 0 : 1)\" && scripts\\package-commands.bat release || ./scripts/package-commands.sh release"
