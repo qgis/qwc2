@@ -389,6 +389,7 @@
       "areaLabel": "Oppervlakte",
       "bearingLabel": "Richting",
       "ground": "",
+      "heightDiffLabel": "",
       "imperial": "Imperiaal",
       "lengthLabel": "Lengte",
       "metric": "Metrisch",

@@ -389,6 +389,7 @@
       "areaLabel": "Area",
       "bearingLabel": "Bearing",
       "ground": "m AGL",
+      "heightDiffLabel": "Height diff.",
       "imperial": "Imperial",
       "lengthLabel": "Length",
       "metric": "Metric",

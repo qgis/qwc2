@@ -344,6 +344,7 @@
     "measureComponent.areaLabel",
     "measureComponent.bearingLabel",
     "measureComponent.ground",
+    "measureComponent.heightDiffLabel",
     "measureComponent.imperial",
     "measureComponent.lengthLabel",
     "measureComponent.metric",

@@ -389,6 +389,7 @@
       "areaLabel": "Surface",
       "bearingLabel": "Direction",
       "ground": "m a.d.s.",
+      "heightDiffLabel": "Diff. de hauteur",
       "imperial": "Impérial",
       "lengthLabel": "Longueur",
       "metric": "Métrique",

@@ -389,6 +389,7 @@
       "areaLabel": "Terület",
       "bearingLabel": "Szög",
       "ground": "",
+      "heightDiffLabel": "",
       "imperial": "",
       "lengthLabel": "Hossz",
       "metric": "",

@@ -389,6 +389,7 @@
       "areaLabel": "Fläche",
       "bearingLabel": "Richtung",
       "ground": "m ü.B.",
+      "heightDiffLabel": "Höhenunterschied",
       "imperial": "Imperial",
       "lengthLabel": "Länge",
       "metric": "Metrisch",

@@ -389,6 +389,7 @@
       "areaLabel": "Площадь",
       "bearingLabel": "Пеленг",
       "ground": "",
+      "heightDiffLabel": "",
       "imperial": "",
       "lengthLabel": "Длина",
       "metric": "",

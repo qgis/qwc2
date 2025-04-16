@@ -389,6 +389,7 @@
       "areaLabel": "Област",
       "bearingLabel": "Лагер",
       "ground": "m AGL",
+      "heightDiffLabel": "",
       "imperial": "Imperial",
       "lengthLabel": "Дължина",
       "metric": "Метричен",

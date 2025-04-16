@@ -389,6 +389,7 @@
       "areaLabel": "領域",
       "bearingLabel": "方角",
       "ground": "m (地上高)",
+      "heightDiffLabel": "",
       "imperial": "ヤード・ポンド法",
       "lengthLabel": "長さ",
       "metric": "メートル法",

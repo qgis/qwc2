@@ -389,6 +389,7 @@
       "areaLabel": "Alue",
       "bearingLabel": "Suunta",
       "ground": "",
+      "heightDiffLabel": "",
       "imperial": "",
       "lengthLabel": "Pituus",
       "metric": "",

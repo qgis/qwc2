@@ -389,6 +389,7 @@
       "areaLabel": "Area",
       "bearingLabel": "Bäring",
       "ground": "",
+      "heightDiffLabel": "",
       "imperial": "",
       "lengthLabel": "Längd",
       "metric": "",

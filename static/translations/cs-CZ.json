@@ -389,6 +389,7 @@
       "areaLabel": "Plocha",
       "bearingLabel": "Střed",
       "ground": "",
+      "heightDiffLabel": "",
       "imperial": "Imperiálně",
       "lengthLabel": "Délka",
       "metric": "Metricky",
