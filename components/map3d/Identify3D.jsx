@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
@@ -22,7 +23,8 @@ import '../style/IdentifyViewer.css';
 class Identify3D extends React.Component {
     static propTypes = {
         identifyEnabled: PropTypes.bool,
-        sceneContext: PropTypes.object
+        sceneContext: PropTypes.object,
+        tileInfoServiceUrl: PropTypes.string
     };
     state = {
         pickAttrs: null
@@ -146,7 +148,24 @@ class Identify3D extends React.Component {
             batchTableObject = batchTableObject.parent;
         }
         const batchTable = batchTableObject.batchTable;
-        this.setState({pickAttrs: batchTable.getDataFromId(pickBatchId)});
+        const batchAttrs = batchTable.getDataFromId(pickBatchId);
+        if (this.props.tileInfoServiceUrl) {
+            const url = this.props.tileInfoServiceUrl.replace(
+                '{tileset}', batchTableObject.userData.tilesetName
+            ).replace(
+                '{objectid}', batchAttrs[batchTableObject.userData.batchIdAttr]
+            );
+            axios.get(url).then(response => {
+                this.setState({pickAttrs: {
+                    ...batchAttrs,
+                    ...response.data
+                }});
+            }).catch(() => {
+                this.setState({pickAttrs: batchAttrs});
+            });
+        } else {
+            this.setState({pickAttrs: batchAttrs});
+        }
     };
     identifyObjectPick = (pick) => {
         const posAttr = pick.object.geometry.getAttribute('position');

@@ -451,7 +451,7 @@ class Map3D extends React.Component {
                         <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
                         <Map3DLight sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
-                        <Identify3D sceneContext={this.state.sceneContext} />
+                        <Identify3D sceneContext={this.state.sceneContext} tileInfoServiceUrl={this.props.options.tileInfoServiceUrl} />
                         <Compare3D sceneContext={this.state.sceneContext} />
                         <Draw3D sceneContext={this.state.sceneContext} />
                         <MapExport3D sceneContext={this.state.sceneContext} />
@@ -564,7 +564,12 @@ class Map3D extends React.Component {
             const tiles = new Tiles3D({
                 url: tilesUrl
             });
-            tiles.tiles.addEventListener('load-model', ({scene}) => Tiles3DStyle.applyDeclarativeStyle(scene, entry));
+            tiles.tiles.addEventListener('load-model', ({scene}) => {
+                scene.userData.tilesetName = entry.name;
+                scene.userData.batchColorAttr = entry.colorAttr;
+                scene.userData.batchIdAttr = entry.idAttr ?? "id";
+                Tiles3DStyle.applyDeclarativeStyle(scene, entry);
+            });
             tiles.castShadow = true;
             tiles.receiveShadow = true;
             tiles.userData.layertree = true;

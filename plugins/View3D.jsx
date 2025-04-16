@@ -41,7 +41,13 @@ import {UrlParams} from '../utils/PermaLinkUtils';
  *          ...
  *     ],
  *     "tiles3d": [
- *          {"name": "<name>", "url": "<url_to_tileset.json>", "title": "<title>", "colorAttr": "<tile_batch_attr>"}
+ *          {
+ *              "name": "<name>",
+ *              "url": "<url_to_tileset.json>",
+ *              "title": "<title>",
+ *              "idAttr": "<tile_batch_attr>",
+ *              "colorAttr": "<tile_batch_attr>"
+ *          }
  *     ]
  * }
  * ```
@@ -49,6 +55,7 @@ import {UrlParams} from '../utils/PermaLinkUtils';
  *
  * - The DTM should be a cloud optimized GeoTIFF.
  * - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`.
+ * - The optional `idAttr` is the name of an attribute stored in the tileset batch table which stores the batch feature id, passed to `tileInfoServiceUrl`. Default: `id`.
  * - The optional `colorAttr` is the name of an attribute stored in the tileset batch table which stores the batch color, as a 0xRRGGBB integer.
  */
 class View3D extends React.Component {
@@ -68,20 +75,21 @@ class View3D extends React.Component {
         layers: PropTypes.object,
         localConfig: PropTypes.object,
         mapBBox: PropTypes.object,
-        /** Various configuration options */
-        options: PropTypes.shape({
-            /** Minimum scale denominator when zooming to search result. */
-            searchMinScaleDenom: PropTypes.number
-        }),
         plugins: PropTypes.object,
         pluginsConfig: PropTypes.object,
         projection: PropTypes.string,
+        /** Minimum scale denominator when zooming to search result. */
+        searchMinScaleDenom: PropTypes.number,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setView3dMode: PropTypes.func,
         startupParams: PropTypes.object,
         startupState: PropTypes.object,
         theme: PropTypes.object,
+        /** URL to service for querying additional tile information.
+         * Can contain the `{tileset}` and `{objectid}` placeholders.
+         * Expected to return a JSON dict with attributes.*/
+        tileInfoServiceUrl: PropTypes.string,
         view3dMode: PropTypes.number
     };
     static defaultProps = {
@@ -93,9 +101,7 @@ class View3D extends React.Component {
             initialY: 0,
             initiallyDocked: true
         },
-        options: {
-            searchMinScaleDenom: 1000
-        }
+        searchMinScaleDenom: 1000
     };
     state = {
         componentLoaded: false,
@@ -199,6 +205,10 @@ class View3D extends React.Component {
                 });
             }
             const Map3D = this.map3dComponent;
+            const options = {
+                searchMinScaleDenom: this.props.searchMinScaleDenom,
+                tileInfoServiceUrl: this.props.tileInfoServiceUrl
+            };
             return (
                 <ResizeableWindow
                     extraControls={extraControls}
@@ -223,7 +233,7 @@ class View3D extends React.Component {
                             <Map3D
                                 innerRef={this.setRef}
                                 onMapInitialized={this.setupMap}
-                                options={this.props.options}
+                                options={options}
                                 searchProviders={this.props.searchProviders}
                                 theme={this.props.theme} />
                             {this.props.view3dMode === View3DMode.FULLSCREEN ? (

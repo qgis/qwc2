@@ -9,8 +9,6 @@ const Tiles3DStyle = {
         return group.batchTable.getDataFromId(batchId)[colorAttr] ?? 0xFFFFFF;
     },
     applyDeclarativeStyle(group, tilesetConfig) {
-        group.userData.batchColorAttr = tilesetConfig.colorAttr;
-
         const batchColorCache = {};
         const batchColor = (batchId) => {
             if (!batchColorCache[batchId]) {
