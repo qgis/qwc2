@@ -55,7 +55,7 @@ class WindowManager extends React.Component {
         if (this.boolVal(data.options.print, true) !== false) {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
-        const dockable = this.boolVal(data.options.dockable) !== false;
+        const dockable = ["left", "right", "top", "bottom"].includes(data.options.dockable) ? data.options.dockable : this.boolVal(data.options.dockable);
         const docked = this.boolVal(data.options.docked) !== false;
         const splitScreenWhenDocked = this.boolVal(data.options.splitScreenWhenDocked) !== false;
         return (
