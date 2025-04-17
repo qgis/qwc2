@@ -110,7 +110,13 @@ class Bookmark extends React.Component {
                                     "bookmark-list-item-active": this.state.currentBookmark === bookmark.key
                                 });
                                 return (
-                                    <div className={itemclasses} key={bookmark.key} onClick={() => this.toggleCurrentBookmark(bookmark)} title={lastUpdateTitle + ": " + bookmark.date}>{bookmark.description}</div>
+                                    <div className={itemclasses} key={bookmark.key}
+                                        onClick={() => this.toggleCurrentBookmark(bookmark)}
+                                        onDoubleClick={() => this.open(bookmark.key, false)}
+                                        title={lastUpdateTitle + ": " + bookmark.date}
+                                    >
+                                        {bookmark.description}
+                                    </div>
                                 );
                             })}
                             {isEmpty(this.state.bookmarks) ? (
