@@ -104,9 +104,9 @@ const ServiceLayerUtils = {
                 return maxResolution ? maxResolution / Math.pow(2, index) : entry.ScaleDenominator * 0.00028;
             });
             const format = MiscUtils.ensureArray(layer.Format).find(fmt => fmt === "image/png") ?? MiscUtils.ensureArray(layer.Format)[0];
-            const getTile = MiscUtils.ensureArray(capabilities.OperationsMetadata.GetTile.DCP.HTTP.Get)[0];
-            const getEncoding = MiscUtils.ensureArray(getTile.Constraint).find(c => c.name === "GetEncoding");
-            const requestEncoding = MiscUtils.ensureArray(getEncoding.AllowedValues.Value)[0];
+            const getTile = MiscUtils.ensureArray(capabilities.OperationsMetadata?.GetTile?.DCP?.HTTP?.Get)[0];
+            const getEncoding = MiscUtils.ensureArray(getTile?.Constraint).find(c => c.name === "GetEncoding");
+            const requestEncoding = MiscUtils.ensureArray(getEncoding?.AllowedValues.Value)[0];
             let serviceUrl = null;
             if (requestEncoding === 'KVP') {
                 serviceUrl = getTile.href;
