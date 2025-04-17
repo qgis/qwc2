@@ -315,7 +315,10 @@ export default function layers(state = defaultState, action) {
                         ...action.layer,
                         role: layer.role,
                         id: layer.id,
-                        uuid: layer.uuid
+                        uuid: layer.uuid,
+                        // keep original title and attribution
+                        title: layer.title || action.layer.title,
+                        attribution: layer.attribution || action.layer.attribution
                     };
                     delete newLayer.loading;
                     LayerUtils.addUUIDs(newLayer);
