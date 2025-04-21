@@ -24,7 +24,6 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import SideBar from '../SideBar';
 import Spinner from '../widgets/Spinner';
-import Tiles3DStyle from './utils/Tiles3DStyle';
 
 
 class ExportObjects3D extends React.Component {
