@@ -904,7 +904,9 @@ To add a 3D View to a theme, add the following configuration block to a theme it
              "url": "<url_to_tileset.json>",
              "title": "<title>",
              "idAttr": "<tile_batch_attr>",
-             "colorAttr": "<tile_batch_attr>"
+             "colorAttr": "<tile_batch_attr>",
+             "labelAttr": "<tile_batch_attr>",
+             "labelFileUrl": "<url_to_labels.json>"
          }
     ]
 }
@@ -913,8 +915,10 @@ Where:
 
 - The DTM should be a cloud optimized GeoTIFF.
 - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`.
-- The optional `idAttr` is the name of an attribute stored in the tileset batch table which stores the batch feature id, passed to `tileInfoServiceUrl`. Default: `id`.
-- The optional `colorAttr` is the name of an attribute stored in the tileset batch table which stores the batch color, as a 0xRRGGBB integer.
+- `idAttr`: optional, batch table attribute which stores the batch object id, passed to `tileInfoServiceUrl`. Default: `id`.
+- `colorAttr`: optional, batch table attribute which stores the batch color, as a 0xRRGGBB integer.
+- `labelAttr`: optional, batch table attribute which stores the batch label, displayed above the geometry.
+- `labelFileUrl`: optional, URL to a JSON dict of the shape `{"<object_id>": "<label>"}`.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|

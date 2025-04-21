@@ -40,3 +40,12 @@ div.map3d-inspector {
 div.map3d-inspector input {
     color: black!important;
 }
+
+span.map3d-tile-batch-label {
+    background-color: rgba(41, 120, 180, 0.75);
+    border: 1px solid white;
+    color: white;
+    font-weight: bold;
+    padding: 0.25em 0.5em;
+    border-radius: 8px;
+}
