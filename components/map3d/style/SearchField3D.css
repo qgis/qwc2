@@ -1,7 +1,8 @@
 span.map3d-search-pin-label {
-    -webkit-text-stroke: 0.8px black;
-    text-stroke: 0.8px black;
+    background-color: rgba(41, 120, 180, 0.75);
+    border: 1px solid white;
     color: white;
     font-weight: bold;
-    font-size: 16px;
+    padding: 0.25em 0.5em;
+    border-radius: 8px;
 }
