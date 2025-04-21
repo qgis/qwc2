@@ -31,6 +31,7 @@ import {setCurrentTask} from '../../actions/task';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import MiscUtils from '../../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
@@ -513,10 +514,7 @@ class Map3D extends React.Component {
         this.instance.scene.background = cubeTexture;
 
         // Setup elevation
-        let demUrl = this.props.theme.map3d?.dtm?.url ?? "";
-        if (demUrl.startsWith(":")) {
-            demUrl = location.href.split("?")[0] + ConfigUtils.getAssetsPath() + demUrl.substr(1);
-        }
+        const demUrl = MiscUtils.resolveAssetsPath(this.props.theme.map3d?.dtm?.url ?? "");
         const demCrs = this.props.theme.map3d?.dtm?.crs || "EPSG:3857";
         if (demUrl) {
             const demSource = new GeoTIFFSource({
@@ -557,12 +555,8 @@ class Map3D extends React.Component {
         this.objectMap = {};
         const sceneObjects = {};
         (this.props.theme.map3d?.tiles3d || []).forEach(entry => {
-            let tilesUrl = entry.url;
-            if (tilesUrl.startsWith(":")) {
-                tilesUrl = location.href.split("?")[0] + ConfigUtils.getAssetsPath() + tilesUrl.substr(1);
-            }
             const tiles = new Tiles3D({
-                url: tilesUrl
+                url: MiscUtils.resolveAssetsPath(entry.url)
             });
             tiles.tiles.addEventListener('load-model', ({scene}) => {
                 scene.userData.tilesetName = entry.name;
