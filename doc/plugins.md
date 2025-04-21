@@ -905,6 +905,7 @@ To add a 3D View to a theme, add the following configuration block to a theme it
              "title": "<title>",
              "idAttr": "<tile_batch_attr>",
              "colorAttr": "<tile_batch_attr>",
+             "alphaAttr": "<tile_batch_attr>",
              "labelAttr": "<tile_batch_attr>",
              "labelFileUrl": "<url_to_labels.json>"
          }
@@ -917,6 +918,7 @@ Where:
 - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`.
 - `idAttr`: optional, batch table attribute which stores the batch object id, passed to `tileInfoServiceUrl`. Default: `id`.
 - `colorAttr`: optional, batch table attribute which stores the batch color, as a 0xRRGGBB integer.
+- `alphaAttr`: optional, batch table attribute which stores the batch alpha (transparency), as a [0, 255] integer.
 - `labelAttr`: optional, batch table attribute which stores the batch label, displayed above the geometry.
 - `labelFileUrl`: optional, URL to a JSON dict of the shape `{"<object_id>": "<label>"}`.
 

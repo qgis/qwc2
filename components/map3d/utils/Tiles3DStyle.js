@@ -6,38 +6,39 @@ import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 import MiscUtils from "../../../utils/MiscUtils";
 
 
-function getBatchColor(group, batchId) {
-    const colorAttr = group.userData.batchColorAttr;
-    if (!colorAttr) {
-        return 0xFFFFFF;
+function applyDeclarativeStyle(group, config) {
+    if (!config.colorAttr) {
+        return;
     }
--    return group.batchTable.getDataFromId(batchId)[colorAttr] ?? 0xFFFFFF;
-}
-
-function applyDeclarativeStyle(group) {
     const batchColorCache = {};
     const batchColor = (batchId) => {
         if (!batchColorCache[batchId]) {
-            const color = getBatchColor(group, batchId);
+            const batchAttr = group.batchTable.getDataFromId(batchId);
+            const color = batchAttr[config.colorAttr] ?? 0xFFFFFF;
+            const alpha = config.alphaAttr ? batchAttr[config.alphaAttr] ?? 255 : 255;
             const r = ((color >> 16) & 0xff) / 255;
             const g = ((color >> 8) & 0xff) / 255;
             const b = (color & 0xff) / 255;
-            batchColorCache[batchId] = [r, g, b];
+            batchColorCache[batchId] = [r, g, b, alpha / 255];
         }
         return batchColorCache[batchId];
     };
+    const withAlpha = !!config.alphaAttr;
 
     group.traverse(c => {
         if (c.geometry) {
             const batchidAttr = c.geometry.getAttribute( '_batchid' );
-            if (group.userData.batchColorAttr) {
-                const colors = [];
-                batchidAttr.array.forEach(batchId => {
-                    colors.push(...batchColor(batchId));
-                });
-                c.geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
-                c.material.vertexColors = true;
-            }
+            const colors = [];
+            batchidAttr.array.forEach(batchId => {
+                const color = batchColor(batchId);
+                colors.push(...color.slice(0, 3));
+                if (withAlpha) {
+                    colors.push(color[3]);
+                }
+            });
+            c.geometry.setAttribute('color', new Float32BufferAttribute(colors, withAlpha ? 4 : 3));
+            c.material.vertexColors = true;
+            c.material.transparent = withAlpha;
         }
     });
 }
@@ -128,7 +129,7 @@ function applyLabels(group, config) {
 
 const Tiles3DStyle = {
     handleModelLoad(group, config) {
-        applyDeclarativeStyle(group);
+        applyDeclarativeStyle(group, config);
         applyLabels(group, config);
     },
     handleTileVisibilityChange(group, visible) {

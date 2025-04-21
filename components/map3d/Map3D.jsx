@@ -560,7 +560,6 @@ class Map3D extends React.Component {
             });
             tiles.tiles.addEventListener('load-model', ({scene}) => {
                 scene.userData.tilesetName = entry.name;
-                scene.userData.batchColorAttr = entry.colorAttr;
                 scene.userData.batchIdAttr = entry.idAttr ?? "id";
                 Tiles3DStyle.handleModelLoad(scene, entry);
             });

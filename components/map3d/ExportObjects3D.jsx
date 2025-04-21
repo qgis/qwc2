@@ -215,19 +215,27 @@ class ExportObjects3D extends React.Component {
                 const batchidAttr = c.geometry.getAttribute( '_batchid' );
                 const posAttr = c.geometry.getAttribute('position');
                 const norAttr = c.geometry.getAttribute('normal');
+                const colAttr = c.geometry.getAttribute('color');
+                const colStride = c.material.transparent ? 4 : 3;
                 const batches = {};
                 batchidAttr.array.forEach((batchId, idx) => {
                     if (!batches[batchId]) {
                         batches[batchId] = {
                             position: [],
                             normal: [],
+                            color: colAttr ? [] : null,
+                            colorStride: colStride,
                             bbox: new Box3()
                         };
                     }
                     const pos = posAttr.array.slice(3 * idx, 3 * idx + 3);
-                    const nor = norAttr.array.slice(3 * idx, 3 * idx + 3);
                     batches[batchId].position.push(...pos);
+                    const nor = norAttr.array.slice(3 * idx, 3 * idx + 3);
                     batches[batchId].normal.push(...nor);
+                    if (colAttr) {
+                        const col = colAttr.array.slice(colStride * idx, colStride * idx + colStride);
+                        batches[batchId].color.push(...col);
+                    }
                     batches[batchId].bbox.expandByPoint(new Vector3(...pos).applyMatrix4(c.matrixWorld));
                 });
                 Object.entries(batches).forEach(([batchId, batch]) => {
@@ -252,10 +260,15 @@ class ExportObjects3D extends React.Component {
                             batch.position[3 * i + 2] -= offset.z;
                         }
                         // Construct mesh
-                        const material = new MeshStandardMaterial({color: Tiles3DStyle.getBatchColor(batchTableObject, batchId)});
+                        const material = new MeshStandardMaterial({color: 0xFFFFFF});
+                        material.vertexColors = batch.color !== null;
+                        material.transparent = batch.colorStride === 4;
                         const geometry = new BufferGeometry();
                         geometry.setAttribute('position', new Float32BufferAttribute(batch.position, 3));
                         geometry.setAttribute('normal', new Float32BufferAttribute(batch.normal, 3));
+                        if (batch.color) {
+                            geometry.setAttribute('color', new Float32BufferAttribute(batch.color, batch.colorStride));
+                        }
                         const mesh = new Mesh(geometry, material);
                         mesh.applyMatrix4(c.matrixWorld.clone().multiply(new Matrix4().makeTranslation(offset)));
                         // Include attribute from batch table
