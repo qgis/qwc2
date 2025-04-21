@@ -18,6 +18,7 @@ import Map from '@giro3d/giro3d/entities/Map.js';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import Inspector from "@giro3d/giro3d/gui/Inspector.js";
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
+import axios from 'axios';
 import {fromUrl} from "geotiff";
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
@@ -555,23 +556,20 @@ class Map3D extends React.Component {
         this.objectMap = {};
         const sceneObjects = {};
         (this.props.theme.map3d?.tiles3d || []).forEach(entry => {
-            const tiles = new Tiles3D({
-                url: MiscUtils.resolveAssetsPath(entry.url)
-            });
-            tiles.tiles.addEventListener('load-model', ({scene}) => {
-                scene.userData.tilesetName = entry.name;
-                scene.userData.batchIdAttr = entry.idAttr ?? "id";
-                Tiles3DStyle.handleModelLoad(scene, entry);
-            });
-            tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
-                Tiles3DStyle.handleTileVisibilityChange(scene, visible);
-            });
-            tiles.castShadow = true;
-            tiles.receiveShadow = true;
-            tiles.userData.layertree = true;
-            this.instance.add(tiles);
-            this.objectMap[entry.name] = tiles;
-            sceneObjects[entry.name] = {visibility: true, opacity: 255, layertree: true, title: entry.title ?? entry.name};
+            if (entry.tilesetStyleUrl) {
+                axios.get(MiscUtils.resolveAssetsPath(entry.tilesetStyleUrl)).then(response => {
+                    this.add3dTiles({...entry, tilesetStyle: response.data});
+                }).catch(() => {
+                    /* eslint-disable-next-line */
+                    console.warn("Failed to load tilset style");
+                    this.add3dTiles(entry);
+                });
+            } else {
+                // Delay one cycle, to ensure setState below executed
+                setTimeout(() => {
+                    this.add3dTiles(entry);
+                }, 0);
+            }
         });
 
         this.setState(state => ({
@@ -593,6 +591,35 @@ class Map3D extends React.Component {
         if (["1", "true"].includes((UrlParams.getParam("inspector") || "").toLowerCase())) {
             this.inspector = new Inspector(this.container.previousElementSibling, this.instance);
         }
+    };
+    add3dTiles = (entry) => {
+        const tiles = new Tiles3D({
+            url: MiscUtils.resolveAssetsPath(entry.url),
+            errorTarget: 32
+        });
+        tiles.tiles.addEventListener('load-model', ({scene}) => {
+            scene.userData.tilesetName = entry.name;
+            scene.userData.batchIdAttr = entry.idAttr ?? "id";
+            Tiles3DStyle.handleModelLoad(scene, entry);
+        });
+        tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
+            Tiles3DStyle.handleTileVisibilityChange(scene, visible);
+        });
+        tiles.castShadow = true;
+        tiles.receiveShadow = true;
+        tiles.userData.layertree = true;
+        this.instance.add(tiles);
+        this.objectMap[entry.name] = tiles;
+
+        this.setState((state) => {
+            const objectState = {visibility: true, opacity: 255, layertree: true, title: entry.title ?? entry.name};
+            return {
+                sceneContext: {
+                    ...state.sceneContext,
+                    sceneObjects: {...state.sceneContext.sceneObjects, [entry.name]: objectState}
+                }
+            };
+        });
     };
     disposeInstance = () => {
         if (this.inspector) {

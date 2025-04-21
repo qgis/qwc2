@@ -1,47 +1,16 @@
-import axios from "axios";
+/**
+ * Copyright 2025 Sourcepole AG
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import isEmpty from "lodash.isempty";
+import parseCssColor from 'parse-css-color';
 import {Float32BufferAttribute, Group, Vector3} from "three";
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 
-import MiscUtils from "../../../utils/MiscUtils";
-
-
-function applyDeclarativeStyle(group, config) {
-    if (!config.colorAttr) {
-        return;
-    }
-    const batchColorCache = {};
-    const batchColor = (batchId) => {
-        if (!batchColorCache[batchId]) {
-            const batchAttr = group.batchTable.getDataFromId(batchId);
-            const color = batchAttr[config.colorAttr] ?? 0xFFFFFF;
-            const alpha = config.alphaAttr ? batchAttr[config.alphaAttr] ?? 255 : 255;
-            const r = ((color >> 16) & 0xff) / 255;
-            const g = ((color >> 8) & 0xff) / 255;
-            const b = (color & 0xff) / 255;
-            batchColorCache[batchId] = [r, g, b, alpha / 255];
-        }
-        return batchColorCache[batchId];
-    };
-    const withAlpha = !!config.alphaAttr;
-
-    group.traverse(c => {
-        if (c.geometry) {
-            const batchidAttr = c.geometry.getAttribute( '_batchid' );
-            const colors = [];
-            batchidAttr.array.forEach(batchId => {
-                const color = batchColor(batchId);
-                colors.push(...color.slice(0, 3));
-                if (withAlpha) {
-                    colors.push(color[3]);
-                }
-            });
-            c.geometry.setAttribute('color', new Float32BufferAttribute(colors, withAlpha ? 4 : 3));
-            c.material.vertexColors = true;
-            c.material.transparent = withAlpha;
-        }
-    });
-}
 
 function createLabelObject(entry) {
     const labelEl = document.createElement("span");
@@ -53,84 +22,128 @@ function createLabelObject(entry) {
     return label;
 }
 
-function applyLabels(group, config) {
-    const createLabels = (getLabel) => {
-        const labelPositions = {};
+function batchColor(batchId, batchAttr, config) {
+    if ((config.tilesetStyle?.[batchId]?.color ?? null) !== null) {
+        const color = parseCssColor(config.tilesetStyle[batchId].color);
+        return [...color.values.map(c => c / 255), color.alpha];
+    } else if (batchAttr[config.colorAttr]) {
+        const color = batchAttr[config.colorAttr];
+        const alpha = config.alphaAttr ? batchAttr[config.alphaAttr] ?? 255 : 255;
+        const r = ((color >> 16) & 0xff) / 255;
+        const g = ((color >> 8) & 0xff) / 255;
+        const b = (color & 0xff) / 255;
+        return [r, g, b, alpha / 255];
+    } else {
+        return null;
+    }
+}
+
+function batchLabel(batchId, batchAttr, config) {
+    if ((config.tilesetStyle?.[batchId]?.label ?? null) !== null) {
+        return config.tilesetStyle[batchId].label;
+    } else if (config.labelAttr) {
+        return batchAttr[config.labelAttr];
+    } else {
+        return null;
+    }
+}
+
+const Tiles3DStyle = {
+    handleModelLoad(group, config) {
+        const batchColorCache = {};
+        const batchLabelCache = {};
+        const labels = {};
+        const idAttr = config.idAttr ?? "id";
+
         group.traverse(c => {
             if (c.geometry) {
-                const batchidAttr = c.geometry.getAttribute( '_batchid' );
-                const posAttr = c.geometry.getAttribute('position');
-                batchidAttr.array.forEach((batchId, idx) => {
-                    const label = getLabel(batchId);
+                const batchidxAttr = c.geometry.getAttribute( '_batchid' );
+                const batchPosAttr = c.geometry.getAttribute('position');
+                const rgbaColors = [];
+                const rgbColors = [];
+                let haveColor = false;
+                let haveAlpha = false;
+
+                batchidxAttr.array.forEach((batchIdx, idx) => {
+                    const batchAttr = group.batchTable.getDataFromId(batchIdx);
+                    const batchId = String(batchAttr[idAttr]);
+
+                    // Handle color
+                    let color = batchColorCache[batchIdx];
+                    if (color === undefined) {
+                        color = batchColorCache[batchIdx] = batchColor(batchId, batchAttr, config);
+                    }
+                    if (color) {
+                        haveColor = true;
+                        haveAlpha |= color[3] < 1;
+                        rgbaColors.push(...color);
+                        rgbColors.push(...color.slice(0, 3));
+                    } else {
+                        rgbaColors.push(...[1, 1, 1, 1]);
+                        rgbColors.push(...[1, 1, 1]);
+                    }
+
+                    // Handle label
+                    let label = batchLabelCache[batchIdx];
+                    if (label === undefined) {
+                        label = batchLabelCache[batchIdx] = batchLabel(batchId, batchAttr, config);
+                    }
                     if (label) {
-                        const pos = posAttr.array.slice(3 * idx, 3 * idx + 3);
-                        if (!labelPositions[batchId]) {
-                            labelPositions[batchId] = {
+                        const pos = batchPosAttr.array.slice(3 * idx, 3 * idx + 3);
+                        let entry = labels[batchIdx];
+                        if (!entry) {
+                            entry = labels[batchIdx] = {
                                 label: label,
                                 pos: pos,
                                 count: 1,
                                 matrix: c.matrixWorld
                             };
                         } else {
-                            labelPositions[batchId].pos[0] += pos[0];
-                            labelPositions[batchId].pos[1] += pos[1];
-                            labelPositions[batchId].pos[2] = Math.max(
-                                labelPositions[batchId].pos[2], pos[2]
+                            entry.pos[0] += pos[0];
+                            entry.pos[1] += pos[1];
+                            entry.pos[2] = Math.max(
+                                entry.pos[2], pos[2]
                             );
-                            ++labelPositions[batchId].count;
+                            ++entry.count;
                         }
                     }
                 });
-            }
-        });
-        if (isEmpty(labelPositions)) {
-            return;
-        }
-        const labels = [];
-        const labelObjects = new Group();
-        Object.values(labelPositions).forEach(entry => {
-            const pos = new Vector3(
-                entry.pos[0] / entry.count,
-                entry.pos[1] / entry.count,
-                entry.pos[2] + 10
-            ).applyMatrix4(entry.matrix);
-            labels.push({pos, label: entry.label});
-            labelObjects.add(createLabelObject(labels[labels.length - 1]));
-        });
-        group.userData.tileLabels = labels;
-        group.add(labelObjects);
-    };
 
-    if (config.labelFileUrl) {
-        axios.get(MiscUtils.resolveAssetsPath(config.labelFileUrl)).then(response => {
-            const labelMap = response.data;
-            const batchLabelCache = {};
-            const getLabel = (batchId) => {
-                if (!batchLabelCache[batchId]) {
-                    const idAttr = group.userData.batchIdAttr;
-                    const objectId = group.batchTable.getDataFromId(batchId)[idAttr];
-                    batchLabelCache[batchId] = labelMap[String(objectId)];
+                if (haveColor) {
+                    if (haveAlpha) {
+                        c.geometry.setAttribute('color', new Float32BufferAttribute(rgbaColors, 4));
+                    } else {
+                        // Discard alpha
+                        const count = rgbaColors.length / 4;
+                        const bufAttr = new Float32BufferAttribute(count * 3, 3);
+                        for (let i = 0, j = 0; i < count; ++i) {
+                            bufAttr.array[j++] = rgbaColors[4 * i];
+                            bufAttr.array[j++] = rgbaColors[4 * i + 1];
+                            bufAttr.array[j++] = rgbaColors[4 * i + 2];
+                        }
+                        c.geometry.setAttribute('color', bufAttr);
+                    }
+                    c.material.vertexColors = true;
+                    c.material.transparent = haveAlpha;
                 }
-                return batchLabelCache[batchId];
-            };
-            createLabels(getLabel);
-        }).catch(() => {});
-    } else if (config.labelAttr) {
-        const batchLabelCache = {};
-        const getLabel = (batchId) => {
-            if (!batchLabelCache[batchId]) {
-                batchLabelCache[batchId] = group.batchTable.getDataFromId(batchId)[config.labelAttr];
             }
-            return batchLabelCache[batchId];
-        };
-        createLabels(getLabel);
-    }
-}
+        });
 
-const Tiles3DStyle = {
-    handleModelLoad(group, config) {
-        applyDeclarativeStyle(group, config);
-        applyLabels(group, config);
+        if (!isEmpty(labels)) {
+            const tileLabels = [];
+            const labelObjects = new Group();
+            Object.values(labels).forEach(entry => {
+                const pos = new Vector3(
+                    entry.pos[0] / entry.count,
+                    entry.pos[1] / entry.count,
+                    entry.pos[2] + 10
+                ).applyMatrix4(entry.matrix);
+                tileLabels.push({pos, label: entry.label});
+                labelObjects.add(createLabelObject(tileLabels[tileLabels.length - 1]));
+            });
+            group.userData.tileLabels = tileLabels;
+            group.add(labelObjects);
+        }
     },
     handleTileVisibilityChange(group, visible) {
         // Re-add labels

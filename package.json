@@ -55,6 +55,7 @@
         "ol-ext": "^4.0.24",
         "ol-mapbox-style": "^12.3.5",
         "painterro": "^1.2.87",
+        "parse-css-color": "^0.2.1",
         "path-browserify": "^1.0.1",
         "pdf-lib": "^1.17.1",
         "pdfjs-dist": "^4.9.155",
