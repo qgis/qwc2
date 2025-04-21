@@ -260,13 +260,14 @@ class ExportObjects3D extends React.Component {
                         }
                         // Construct mesh
                         const material = new MeshStandardMaterial({color: 0xFFFFFF});
-                        material.vertexColors = batch.color !== null;
-                        material.transparent = batch.colorStride === 4;
                         const geometry = new BufferGeometry();
                         geometry.setAttribute('position', new Float32BufferAttribute(batch.position, 3));
                         geometry.setAttribute('normal', new Float32BufferAttribute(batch.normal, 3));
                         if (batch.color) {
-                            geometry.setAttribute('color', new Float32BufferAttribute(batch.color, batch.colorStride));
+                            // geometry.setAttribute('color', new Float32BufferAttribute(batch.color, batch.colorStride));
+                            // material.vertexColors = batch.color !== null;
+                            // material.transparent = batch.colorStride === 4;
+                            material.color.set(...batch.color.slice(0, 3));
                         }
                         const mesh = new Mesh(geometry, material);
                         mesh.applyMatrix4(c.matrixWorld.clone().multiply(new Matrix4().makeTranslation(offset)));
