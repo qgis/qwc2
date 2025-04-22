@@ -267,6 +267,16 @@ function getKeyValues(keyvalues, callback, filter = null) {
     }).catch(() => callback({}));
 }
 
+/*
+ layerId: The edit layer id
+ fileValue: The attachment field value
+*/
+function resolveAttachmentUrl(layerId, fileValue) {
+    const SERVICE_URL = ConfigUtils.getConfigProp("editServiceUrl");
+    return SERVICE_URL + layerId + "/attachment?file=" + encodeURIComponent(fileValue);
+
+}
+
 export default {
     getFeature,
     getFeatureById,
@@ -276,5 +286,6 @@ export default {
     editFeatureMultipart,
     deleteFeature,
     getRelations,
-    getKeyValues
+    getKeyValues,
+    resolveAttachmentUrl
 };

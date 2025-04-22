@@ -12,7 +12,6 @@ import mime from 'mime-to-extensions';
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
-import ConfigUtils from '../utils/ConfigUtils';
 import {showImageEditor} from '../utils/ImageEditor';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
@@ -28,6 +27,7 @@ export default class EditUploadField extends React.Component {
         dataset: PropTypes.string,
         disabled: PropTypes.bool,
         fieldId: PropTypes.string,
+        iface: PropTypes.object,
         name: PropTypes.string,
         report: PropTypes.bool,
         showThumbnails: PropTypes.bool,
@@ -57,8 +57,7 @@ export default class EditUploadField extends React.Component {
     render() {
         const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
         const fileType = mime.lookup(fileValue);
-        const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
-        const fileUrl = editServiceUrl + this.props.dataset + "/attachment?file=" + encodeURIComponent(fileValue);
+        const fileUrl = this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue);
         const constraints = {
             ...this.props.constraints,
             accept: (this.props.constraints.accept || "").split(",").map(ext => mime.lookup(ext)).join(",")
@@ -164,8 +163,7 @@ export default class EditUploadField extends React.Component {
         if (action === "Draw") {
             const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
             const fileType = mime.lookup(fileValue);
-            const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl");
-            const fileUrl = editServiceUrl + this.props.dataset + "/attachment?file=" + encodeURIComponent(fileValue);
+            const fileUrl = this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue);
             const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
             showImageEditor(imageData, (newImageData) => {
                 this.setState({imageData: newImageData, imageFilename: fileValue.replace(/.*\//, '')});
