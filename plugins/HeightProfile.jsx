@@ -26,12 +26,13 @@ import {
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {v1 as uuidv1} from 'uuid';
 
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
-import ConfigUtils from '../utils/ConfigUtils';
+import {getElevationInterface} from '../utils/ElevationInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -213,7 +214,9 @@ const HeightProfilePrintDialog = connect((state) => ({
  *
  * Triggered automatically when a line is measured via the `Measure` plugin.
  *
- * Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`.
+ * Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`,
+ * or a custom elevation interface to be exposed in `window.QWC2ElevationInterface`, see
+ * [ElevationInterface.js](https://github.com/qgis/qwc2/blob/master/utils/ElevationInterface.js).
  *
  * The print height profile functionality requires a template located by default at `assets/templates/heightprofileprint.html`
  * with containing a container element with `id=heightprofilecontainer`.
@@ -242,7 +245,7 @@ class HeightProfile extends React.Component {
     };
     state = {
         data: {},
-        isloading: false,
+        reqId: null,
         drawnodes: true,
         printdialog: false
     };
@@ -262,47 +265,43 @@ class HeightProfile extends React.Component {
         }
     }
     queryElevations(coordinates, distances, projection) {
-        const serviceUrl = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
+        const reqId = uuidv1();
+        this.setState({reqId: reqId});
         const totLength = this.props.measurement.length;
-        if (serviceUrl) {
-            this.setState({ isloading: true });
-            axios.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection, samples: this.props.samples}).then(response => {
-                if (this.state.isloading !== true) {
-                    // Since aborted
-                    return;
+        getElevationInterface().getProfile(coordinates, distances, projection, this.props.samples).then(elevations => {
+            // Request changed
+            if (this.state.reqId !== reqId) {
+                return;
+            }
+            // Compute x-axis distances and get node points
+            const nodes = [];
+            let cumDist = distances[0];
+            let distIdx = 0;
+            const y = elevations;
+            const x = y.map((entry, idx, a) => {
+                const dist = (idx / (a.length - 1) * totLength).toFixed(0);
+                if (dist >= cumDist) {
+                    nodes.push({x: dist, y: y[idx]});
+                    cumDist += distances[++distIdx];
                 }
-                // Compute x-axis distances and get node points
-                const nodes = [];
-                let cumDist = distances[0];
-                let distIdx = 0;
-                const y = response.data.elevations;
-                const x = y.map((entry, idx, a) => {
-                    const dist = (idx / (a.length - 1) * totLength).toFixed(0);
-                    if (dist >= cumDist) {
-                        nodes.push({x: dist, y: y[idx]});
-                        cumDist += distances[++distIdx];
-                    }
-                    return dist;
-                });
-                // First and last node
-                nodes.unshift({x: x[0], y: y[0]});
-                nodes.push({x: x[x.length - 1], y: y[y.length - 1]});
-
-                const data = {
-                    x: x,
-                    y: response.data.elevations,
-                    maxY: Math.max(...response.data.elevations),
-                    totLength: totLength,
-                    nodes: nodes
-                };
-                this.setState({isloading: false, data: data});
-                this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: this.pickPositionCallback});
-            }).catch(e => {
-                this.setState({isloading: false, data: {error: String(e)}});
-                // eslint-disable-next-line
-                console.log("Query failed: " + e);
+                return dist;
             });
-        }
+            // First and last node
+            nodes.unshift({x: x[0], y: y[0]});
+            nodes.push({x: x[x.length - 1], y: y[y.length - 1]});
+
+            const data = {
+                x: x,
+                y: elevations,
+                maxY: Math.max(...elevations),
+                totLength: totLength,
+                nodes: nodes
+            };
+            this.setState({reqId: null, data: data});
+            this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: this.pickPositionCallback});
+        }).catch((error) => {
+            this.setState({reqId: null, data: error ? {error} : {}});
+        });
     }
     onClose = () => {
         this.setState({data: {}, isloading: false});

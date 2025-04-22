@@ -359,7 +359,9 @@ Displays a height profile along a measured line.
 
 Triggered automatically when a line is measured via the `Measure` plugin.
 
-Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`.
+Requires `elevationServiceUrl` in `config.json` to point to a `qwc-elevation-service`,
+or a custom elevation interface to be exposed in `window.QWC2ElevationInterface`, see
+[ElevationInterface.js](https://github.com/qgis/qwc2/blob/master/utils/ElevationInterface.js).
 
 The print height profile functionality requires a template located by default at `assets/templates/heightprofileprint.html`
 with containing a container element with `id=heightprofilecontainer`.
@@ -578,7 +580,9 @@ Provides map context information when right-clicking on the map.
 Displays the coordinates at the picked position by default.
 
 If `elevationServiceUrl` in `config.json` to points to a `qwc-elevation-service`,
-the height at the picked position is also displayed.
+or a custom elevation interface is exposed in `window.QWC2ElevationInterface` (see
+[ElevationInterface.js](https://github.com/qgis/qwc2/blob/master/utils/ElevationInterface.js)), the
+height at the picked position is also displayed.
 
 If `mapInfoService` in `config.json` points to a `qwc-mapinfo-service`, additional
 custom information according to the `qwc-mapinfo-service` configuration is returned.

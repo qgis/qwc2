@@ -17,6 +17,7 @@ import Icon from '../components/Icon';
 import CopyButton from '../components/widgets/CopyButton';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {getElevationInterface} from '../utils/ElevationInterface';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 
@@ -29,7 +30,9 @@ import './style/MapInfoTooltip.css';
  * Displays the coordinates at the picked position by default.
  *
  * If `elevationServiceUrl` in `config.json` to points to a `qwc-elevation-service`,
- * the height at the picked position is also displayed.
+ * or a custom elevation interface is exposed in `window.QWC2ElevationInterface` (see
+ * [ElevationInterface.js](https://github.com/qgis/qwc2/blob/master/utils/ElevationInterface.js)), the
+ * height at the picked position is also displayed.
  *
  * If `mapInfoService` in `config.json` points to a `qwc-mapinfo-service`, additional
  * custom information according to the `qwc-mapinfo-service` configuration is returned.
@@ -83,17 +86,15 @@ class MapInfoTooltip extends React.Component {
             const oldPoint = prevProps.map.click;
             if (!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
                 this.setState({point: newPoint, elevation: null});
-                const serviceParams = {pos: newPoint.coordinate.join(","), crs: this.props.map.projection};
-                const elevationService = (ConfigUtils.getConfigProp("elevationServiceUrl") || "").replace(/\/$/, '');
-                const elevationPrecision = prevProps.elevationPrecision;
-                if (elevationService) {
-                    axios.get(elevationService + '/getelevation', {params: serviceParams}).then(response => {
-                        this.setState({elevation: Math.round(response.data.elevation * Math.pow(10, elevationPrecision)) / Math.pow(10, elevationPrecision)});
-                    }).catch(() => {});
-                }
+                const pos = newPoint.coordinate;
+                const crs = this.props.map.projection;
+                getElevationInterface().getElevation(pos, crs).then(elevation => {
+                    const elevationPrecision = this.props.elevationPrecision;
+                    this.setState({elevation: Math.round(elevation * Math.pow(10, elevationPrecision)) / Math.pow(10, elevationPrecision)});
+                }).catch(() => {});
                 const mapInfoService = ConfigUtils.getConfigProp("mapInfoService");
                 if (mapInfoService) {
-                    axios.get(mapInfoService, {params: serviceParams}).then(response => {
+                    axios.get(mapInfoService, {params: {pos: pos.join(","), crs}}).then(response => {
                         this.setState({extraInfo: response.data.results});
                     }).catch(() => {});
                 }
