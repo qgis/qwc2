@@ -916,14 +916,14 @@ const LayerUtils = {
                         if (printExternalLayers) {
                             const layer = {
                                 type: 'wms',
-                                params: {LAYERS: match[3], OPACITIES: '255', STYLES: ''},
+                                params: {LAYERS: match[3], OPACITIES: String(backgroundLayer.opacity ?? 255), STYLES: ''},
                                 url: match[2]
                             };
                             LayerUtils.addExternalLayerPrintParams(layer, params, printCrs, counterRef);
                         }
                     } else {
                         params.LAYERS.push(printBgLayerName);
-                        params.OPACITIES.push("255");
+                        params.OPACITIES.push(String(backgroundLayer.opacity ?? 255));
                         params.COLORS.push("");
                         params.STYLES.push("");
                     }
