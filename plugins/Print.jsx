@@ -561,7 +561,9 @@ class Print extends React.Component {
                             <Spinner /> {LocaleUtils.tr("print.wait")}
                         </span>
                     ) : null}
-                    <iframe name="print-output-window" onLoad={() => this.setState({outputLoaded: true})} src={this.state.pdfDataUrl}/>
+                    <iframe name="print-output-window" onLoad={(ev) => {
+                        this.setState({outputLoaded: ev.target.contentDocument.body.children.length > 0});
+                    }} src={this.state.pdfDataUrl}/>
                 </div>
             </ResizeableWindow>
         );
