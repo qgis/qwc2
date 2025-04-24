@@ -45,7 +45,8 @@ export default class NumberInput extends React.Component {
     state = {
         propValue: "",
         value: "",
-        changed: false
+        changed: false,
+        valid: false
     };
     static getDerivedStateFromProps(nextProps, state) {
         if (state.propValue !== nextProps.value) {
@@ -58,7 +59,8 @@ export default class NumberInput extends React.Component {
             "number-input": true,
             "number-input-mobile": this.props.mobile,
             "number-input-normal": !this.props.mobile,
-            "number-input-disabled": this.props.disabled || this.props.readOnly
+            "number-input-disabled": this.props.disabled || this.props.readOnly,
+            "number-input-invalid": this.props.required && !this.state.value
         });
         const paddingLength = (this.props.mobile ? 4 : 1.5) + 'em';
         const prefixSuffixLength = (this.props.prefix.length + this.props.suffix.length) + 'ch';
@@ -80,7 +82,7 @@ export default class NumberInput extends React.Component {
                     onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
                     readOnly={this.props.readOnly} required={this.props.required} step={step}
                     style={style} type="text" value={this.props.prefix + this.state.value + this.props.suffix} />
-                <input name={this.props.name} type="hidden" value={this.state.value} />
+                <input name={this.props.name} required={this.props.required} type="hidden" value={this.state.value} />
                 <Icon icon={plusIcon} onMouseDown={() => this.startStep(+step)} />
                 <Icon icon={minusIcon} onMouseDown={() => this.startStep(-step)} />
             </div>

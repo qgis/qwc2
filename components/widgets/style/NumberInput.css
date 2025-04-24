@@ -7,6 +7,10 @@ div.number-input {
     align-items: center;
 }
 
+div.number-input-invalid {
+    background-color: #FFAAAA;
+}
+
 div.number-input > input {
     min-width: 0;
     width: 0;
