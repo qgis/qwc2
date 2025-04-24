@@ -372,7 +372,7 @@ class AttributeForm extends React.Component {
             this.props.setEditContext(this.props.editContext.id, {changed: true});
         }
     };
-    validateFieldConstraints = (feature, validCallback = null) => {
+    validateFieldConstraints = (feature, validCallback = null, invalidCallback = null) => {
         const constraintExpressions = this.props.editConfig.fields.reduce((res, cur) => {
             if (cur.constraints?.expression) {
                 return {
@@ -395,6 +395,9 @@ class AttributeForm extends React.Component {
             });
             if (!valid) {
                 this.setState({formValid: false});
+                if (invalidCallback) {
+                    invalidCallback();
+                }
             } else {
                 if (validCallback) {
                     validCallback();
@@ -404,7 +407,10 @@ class AttributeForm extends React.Component {
     };
     onSubmit = (ev) => {
         ev.preventDefault();
-        this.validateFieldConstraints(this.props.editContext.feature, this.doSubmit);
+        this.validateFieldConstraints(this.props.editContext.feature, this.doSubmit, () => {
+            /* eslint-disable-next-line */
+            alert(LocaleUtils.tr("editing.contraintviolation"));
+        });
     };
     doSubmit = () => {
 
