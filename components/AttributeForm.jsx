@@ -359,7 +359,7 @@ class AttributeForm extends React.Component {
             form.observer = new MutationObserver(() => {
                 this.setState({formValid: form.checkValidity()});
             });
-            form.observer.observe(form, {subtree: true, childList: true});
+            form.observer.observe(form, {subtree: true, childList: true, attributes: true});
         }
     };
     formChanged = (ev) => {
