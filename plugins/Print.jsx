@@ -608,7 +608,7 @@ class Print extends React.Component {
                         </span>
                     ) : null}
                     <iframe name="print-output-window" onLoad={(ev) => {
-                        this.setState({outputLoaded: ev.target.contentDocument.body.children.length > 0});
+                        this.setState({outputLoaded: !isEmpty(ev.target.contentDocument?.body?.children)});
                     }} src={this.state.pdfDataUrl}/>
                 </div>
             </ResizeableWindow>
