@@ -278,6 +278,12 @@ function flatLayers(layer) {
 
 // parse GetCapabilities for theme
 function getTheme(config, configItem, result, resultItem, proxy) {
+    if (configItem.disabled) {
+        /* eslint-disable-next-line no-console */
+        console.log(`Item ${configItem.url}` + (configItem.title ? ` (${configItem.title})` : "") + " has been disabled");
+        return;
+    }
+
     const parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
     parsedUrl.search = '';
     parsedUrl.query.SERVICE = "WMS";
@@ -302,7 +308,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             }
 
             /* eslint-disable-next-line */
-            console.log("Parsing WMS GetProjectSettings of " + configItem.url);
+            console.log("Parsing WMS GetProjectSettings of " + configItem.url + (configItem.title ? ` (${configItem.title})` : ""));
 
             const topLayer = capabilities.Capability.Layer;
             const wmsName = configItem.url.replace(/.*\//, '').replace(/\?^/, '');

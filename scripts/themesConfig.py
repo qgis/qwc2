@@ -294,6 +294,9 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
 # parse GetCapabilities for theme
 def getTheme(config, configItem, result, resultItem):
     global autogenExternalLayers
+    if (configItem.get("disabled", False)):
+        print(f"Item {configItem.get("url")} {"(" + configItem.get("title") + ")" if configItem.get("title") else ""} has been disabled")
+        return
 
     url = update_params(urljoin(baseUrl, configItem["url"]), {'SERVICE': 'WMS', 'VERSION': '1.3.0', 'REQUEST': 'GetProjectSettings'})
 
@@ -302,7 +305,7 @@ def getTheme(config, configItem, result, resultItem):
         reply = opener(url).read()
         capabilities = parseString(reply)
         capabilities = capabilities.getElementsByTagName("WMS_Capabilities")[0]
-        print("Parsing WMS GetProjectSettings of " + configItem["url"])
+        print(f"Parsing WMS GetProjectSettings of {configItem.get("url")} {"(" + configItem.get("title") + ")" if configItem.get("title") else ""}")
 
         topLayer = getChildElement(getChildElement(capabilities, "Capability"), "Layer")
         wmsName = re.sub(r".*/", "", configItem["url"]).rstrip("?")
