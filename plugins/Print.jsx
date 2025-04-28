@@ -561,9 +561,7 @@ class Print extends React.Component {
                             <Spinner /> {LocaleUtils.tr("print.wait")}
                         </span>
                     ) : null}
-                    <iframe name="print-output-window" onLoad={(ev) => {
-                        this.setState({outputLoaded: !isEmpty(ev.target.contentDocument?.body?.children)});
-                    }} src={this.state.pdfDataUrl}/>
+                    <iframe name="print-output-window" src={this.state.pdfDataUrl}/>
                 </div>
             </ResizeableWindow>
         );
@@ -647,7 +645,7 @@ class Print extends React.Component {
         ev.preventDefault();
         this.setState({ printing: true });
         if (this.props.inlinePrintOutput) {
-            this.setState({ printOutputVisible: true, outputLoaded: false });
+            this.setState({ printOutputVisible: true, outputLoaded: false, pdfDataUrl: null, pdfData: null });
         }
 
         const formData = formDataEntries(new FormData(this.printForm));
