@@ -353,11 +353,11 @@ class API extends React.Component {
      * * `message`: A descriptive string to display in the tool taskbar.
      * * `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
      * * `options`: Optional configuration:
-     *   * `drawMultiple`: Whether to allow drawing multiple geometries (default: `false`).
-     *   * `style`: A custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
-     *   * `initialFeatures`: Array of initial geometries.
-     *   * `snapping`: Whether snapping is available while drawing (default: `false`).
-     *   * `snappingActive`: Whether snapping is initially active (default: `false`)
+     *     * `drawMultiple`: Whether to allow drawing multiple geometries (default: `false`).
+     *     * `style`: A custom style object to use for the drawn features, in the same format as `DEFAULT_FEATURE_STYLE` in `qwc2/utils/FeatureStyles.js`.
+     *     * `initialFeatures`: Array of initial geometries.
+     *     * `snapping`: Whether snapping is available while drawing (default: `false`).
+     *     * `snappingActive`: Whether snapping is initially active (default: `false`)
      */
     drawGeometry = (geomType, message, callback, options = {}) => {
         this.props.setCurrentTask("ScratchDrawing", null, null, {
