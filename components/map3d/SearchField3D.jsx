@@ -22,8 +22,6 @@ import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import SearchWidget from '../widgets/SearchWidget';
 import pinModel from './models/pin.glb';
 
-import './style/SearchField3D.css';
-
 
 export default class SearchField3D extends React.Component {
     static propTypes = {
@@ -112,7 +110,7 @@ export default class SearchField3D extends React.Component {
                 // Add label
                 const labelEl = document.createElement("span");
                 labelEl.innerText = result.label ?? result.text;
-                labelEl.className = "map3d-search-pin-label";
+                labelEl.className = "map3d-object-label";
                 const label = new CSS2DObject(labelEl);
                 label.position.set(scenePos[0], scenePos[1], terrainHeight + 2);
                 label.updateMatrixWorld();
