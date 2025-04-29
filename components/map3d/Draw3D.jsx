@@ -34,15 +34,7 @@ export default class Draw3D extends React.Component {
         selectedObject: null
     };
     onShow = () => {
-        // Ensure a draw group is present
-        const drawGroup = Object.entries(this.props.sceneContext.sceneObjects).find(([key, options]) => {
-            return options.drawGroup === true;
-        });
-        if (drawGroup === undefined) {
-            this.addDrawGroup(LocaleUtils.tr("draw3d.drawings"));
-        } else {
-            this.setState({drawGroupId: drawGroup[0]});
-        }
+        this.ensureDrawGroup();
         this.setState({action: 'Pick'});
     };
     onHide = () => {
@@ -56,6 +48,17 @@ export default class Draw3D extends React.Component {
             }
         });
         this.setState({selectedObject: null});
+    };
+    ensureDrawGroup = () => {
+        // Ensure a draw group is present
+        const drawGroup = Object.entries(this.props.sceneContext.sceneObjects).find(([key, options]) => {
+            return options.drawGroup === true;
+        });
+        if (drawGroup === undefined) {
+            this.addDrawGroup(LocaleUtils.tr("draw3d.drawings"));
+        } else {
+            this.setState({drawGroupId: drawGroup[0]});
+        }
     };
     createDrawGroup = () => {
         const message = LocaleUtils.tr("draw3d.newgroupprompt");
@@ -171,6 +174,11 @@ export default class Draw3D extends React.Component {
                 const grandparent = parent.parent;
                 grandparent.remove(parent);
                 parent = grandparent;
+            }
+            if (group.children.length === 0) {
+                this.props.sceneContext.removeSceneObject(this.state.drawGroupId, () => {
+                    this.ensureDrawGroup();
+                });
             }
             this.setState({action: 'Pick', geomType: null, selectedObject: null});
             this.props.sceneContext.scene.notifyChange();

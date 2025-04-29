@@ -420,7 +420,7 @@ class Map3D extends React.Component {
     getSceneObject = (objectId) => {
         return this.objectMap[objectId];
     };
-    removeSceneObject = (objectId) => {
+    removeSceneObject = (objectId, callback = undefined) => {
         if (!this.objectMap[objectId]) {
             return;
         }
@@ -438,7 +438,7 @@ class Map3D extends React.Component {
                     sceneObjects: newSceneObjects
                 }
             };
-        });
+        }, callback);
     };
     updateSceneObject = (objectId, options) => {
         this.setState((state) => {
