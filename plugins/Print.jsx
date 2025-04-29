@@ -193,34 +193,15 @@ class Print extends React.Component {
         if (!this.state.layout) {
             return (<div className="print-body" role="body">{LocaleUtils.tr("print.nolayouts")}</div>);
         }
-        const themeLayers = this.props.layers.filter(layer => layer.role === LayerRole.THEME);
-        if (!this.props.theme || (!this.props.printExternalLayers && isEmpty(themeLayers))) {
+        const haveThemeLayers = this.props.layers.find(layer => layer.role === LayerRole.THEME) !== undefined;
+        if (!this.props.theme || (!this.props.printExternalLayers && !haveThemeLayers)) {
             return (<div className="print-body" role="body">{LocaleUtils.tr("print.notheme")}</div>);
         }
 
-        const formvisibility = 'hidden';
-        const mapCrs = this.props.map.projection;
-        const version = this.props.theme.version;
-
         const mapName = this.state.layout.map.name;
+        const printLegend = this.state.layout.legendLayout;
 
-        let formattedExtent = this.formatExtent(this.state.extents.at(0) ?? [0, 0, 0, 0]);
-        if (!isEmpty(this.state.atlasFeatures)) {
-            formattedExtent = "";
-        }
-        let scaleChooser = (<NumberInput min={1} mobile name={mapName + ":scale"} onChange={this.changeScale} prefix="1 : " value={this.state.scale || null}/>);
-
-        if (this.props.theme.printScales && this.props.theme.printScales.length > 0) {
-            scaleChooser = (
-                <InputContainer>
-                    <span role="prefix">1&nbsp;:&nbsp;</span>
-                    <EditableSelect
-                        name={mapName + ":scale"} onChange={this.changeScale}
-                        options={this.props.theme.printScales} role="input" value={this.state.scale || ""}
-                    />
-                </InputContainer>
-            );
-        }
+        const formattedExtent = !isEmpty(this.state.atlasFeatures) ? "" : (this.formatExtent(this.state.extents.at(0) ?? [0, 0, 0, 0]));
         let resolutionChooser = null;
         let resolutionInput = null;
         if (!isEmpty(this.props.theme.printResolutions)) {
@@ -231,36 +212,11 @@ class Print extends React.Component {
                     </select>
                 );
             } else {
-                resolutionInput = (<input name="DPI" readOnly type={formvisibility} value={this.props.theme.printResolutions[0]} />);
+                resolutionInput = (<input name="DPI" readOnly type="hidden" value={this.props.theme.printResolutions[0]} />);
             }
         } else {
             resolutionChooser = (<NumberInput max={1200} min={50} mobile name="DPI" onChange={this.changeResolution} suffix=" dpi" value={this.state.dpi || ""} />);
         }
-
-        let rotationInput = null;
-        if (this.props.displayRotation) {
-            rotationInput = (<NumberInput decimals={1} mobile name={mapName + ":rotation"} onChange={this.changeRotation} role="input" value={this.state.rotation} />);
-        }
-
-        const printLegend = this.state.layout.legendLayout;
-
-        let overlapChooser = null;
-        if (this.props.displayPrintSeries) {
-            overlapChooser = (<input disabled={!this.state.printSeriesEnabled} max="20" min="0" onChange={this.changeSeriesOverlap} role="input" type="range" value={this.state.printSeriesOverlap} />);
-        }
-
-        let downloadModeChooser = null;
-        if (this.props.displayPrintSeries && !this.props.inlinePrintOutput) {
-            downloadModeChooser = (
-                <select disabled={!this.state.printSeriesEnabled} onChange={this.changeDownloadMode} role="input" value={this.state.downloadMode || ""}>
-                    <option key="onepdf" value="onepdf">{LocaleUtils.tr("print.download_as_onepdf")}</option>
-                    <option key="onezip" value="onezip">{LocaleUtils.tr("print.download_as_onezip")}</option>
-                    <option key="single" value="single">{LocaleUtils.tr("print.download_as_single")}</option>
-                </select>
-            );
-        }
-
-        const labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
         const formatMap = {
             "application/pdf": "PDF",
@@ -268,7 +224,7 @@ class Print extends React.Component {
             "image/png": "PNG",
             "image/svg": "SVG"
         };
-        const pdfFormatSelected = this.state.selectedFormat === "application/pdf";
+        const allowGeoPdfExport = this.state.selectedFormat === "application/pdf" && this.props.allowGeoPdfExport;
 
         return (
             <div className="print-body">
@@ -325,7 +281,17 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.scale")}</td>
                                 <td>
-                                    {scaleChooser}
+                                    {!isEmpty(this.props.theme.printScales) ? (
+                                        <InputContainer>
+                                            <span role="prefix">1&nbsp;:&nbsp;</span>
+                                            <EditableSelect
+                                                name={mapName + ":scale"} onChange={this.changeScale}
+                                                options={this.props.theme.printScales} role="input" value={this.state.scale || ""}
+                                            />
+                                        </InputContainer>
+                                    ) : (
+                                        <NumberInput min={1} mobile name={mapName + ":scale"} onChange={this.changeScale} prefix="1 : " value={this.state.scale || null}/>
+                                    )}
                                 </td>
                             </tr>
                         ) : null}
@@ -337,12 +303,12 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {rotationInput ? (
+                        {this.props.displayRotation ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.rotation")}</td>
                                 <td>
                                     <InputContainer>
-                                        {rotationInput}
+                                        <NumberInput decimals={1} mobile name={mapName + ":rotation"} onChange={this.changeRotation} role="input" value={this.state.rotation} />
                                         <span role="suffix" style={{transform: "rotate(-" + this.state.rotation + "deg)"}}>
                                             <Icon icon="arrow-up" onClick={() => this.setState({rotation: 0})} title={LocaleUtils.tr("map.resetrotation")} />
                                         </span>
@@ -374,26 +340,30 @@ class Print extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {overlapChooser && this.state.printSeriesEnabled ? (
+                        {this.state.printSeriesEnabled ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.overlap")}</td>
                                 <td>
                                     <InputContainer>
-                                        {overlapChooser}
+                                        <input max="20" min="0" onChange={this.changeSeriesOverlap} role="input" type="range" value={this.state.printSeriesOverlap} />
                                         <span role="suffix">{this.state.printSeriesOverlap}&nbsp;%</span>
                                     </InputContainer>
                                 </td>
                             </tr>
                         ) : null}
-                        {downloadModeChooser && this.state.printSeriesEnabled ? (
+                        {!this.props.inlinePrintOutput && this.state.printSeriesEnabled ? (
                             <tr>
                                 <td>{LocaleUtils.tr("print.download")}</td>
                                 <td>
-                                    {downloadModeChooser}
+                                    <select onChange={this.changeDownloadMode} role="input" value={this.state.downloadMode || ""}>
+                                        <option key="onepdf" value="onepdf">{LocaleUtils.tr("print.download_as_onepdf")}</option>
+                                        <option key="onezip" value="onezip">{LocaleUtils.tr("print.download_as_onezip")}</option>
+                                        <option key="single" value="single">{LocaleUtils.tr("print.download_as_single")}</option>
+                                    </select>
                                 </td>
                             </tr>
                         ) : null}
-                        {(labels || []).map(label => {
+                        {(this.state.layout?.labels ?? []).map(label => {
                             // Omit labels which start with __
                             if (label.startsWith("__")) {
                                 return null;
@@ -405,7 +375,7 @@ class Print extends React.Component {
                             };
                             return this.renderPrintLabelField(label, opts);
                         })}
-                        {pdfFormatSelected && this.props.allowGeoPdfExport ? (
+                        {allowGeoPdfExport ? (
                             <tr>
                                 <td>GeoPDF</td>
                                 <td>
@@ -416,15 +386,15 @@ class Print extends React.Component {
                     </tbody></table>
                     <div>
                         <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
-                        <input name={mapName + ":extent"} readOnly type={formvisibility} value={formattedExtent} />
-                        <input name="SERVICE" readOnly type={formvisibility} value="WMS" />
-                        <input name="VERSION" readOnly type={formvisibility} value={version} />
-                        <input name="REQUEST" readOnly type={formvisibility} value="GetPrint" />
-                        <input name="FORMAT" readOnly type={formvisibility} value={this.state.selectedFormat} />
-                        <input name="TRANSPARENT" readOnly type={formvisibility} value="true" />
-                        <input name="SRS" readOnly type={formvisibility} value={mapCrs} />
-                        <input name="CONTENT_DISPOSITION" readOnly type={formvisibility} value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
-                        {pdfFormatSelected && this.props.allowGeoPdfExport ? (<input name="FORMAT_OPTIONS" readOnly type={formvisibility} value={this.state.geoPdf ? "WRITE_GEO_PDF:true" : "WRITE_GEO_PDF:false"} />) : null}
+                        <input name={mapName + ":extent"} readOnly type="hidden" value={formattedExtent} />
+                        <input name="SERVICE" readOnly type="hidden" value="WMS" />
+                        <input name="VERSION" readOnly type="hidden" value={this.props.theme.version} />
+                        <input name="REQUEST" readOnly type="hidden" value="GetPrint" />
+                        <input name="FORMAT" readOnly type="hidden" value={this.state.selectedFormat} />
+                        <input name="TRANSPARENT" readOnly type="hidden" value="true" />
+                        <input name="SRS" readOnly type="hidden" value={this.props.map.projection} />
+                        <input name="CONTENT_DISPOSITION" readOnly type="hidden" value={this.props.inlinePrintOutput ? "inline" : "attachment"} />
+                        {allowGeoPdfExport ? (<input name="FORMAT_OPTIONS" readOnly type="hidden" value={this.state.geoPdf ? "WRITE_GEO_PDF:true" : "WRITE_GEO_PDF:false"} />) : null}
                         {resolutionInput}
                     </div>
                     <div className="button-bar">
