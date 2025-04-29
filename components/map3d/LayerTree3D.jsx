@@ -174,6 +174,9 @@ export default class LayerTree3D extends React.Component {
                         c.castShadow = true;
                         c.receiveShadow = true;
                     }
+                    if (c.userData.label) {
+                        this.props.sceneContext.updateObjectLabel(c);
+                    }
                 });
                 this.props.sceneContext.addSceneObject(objectId, group, options);
             }, (err) => {
