@@ -710,6 +710,7 @@ Uses the print layouts defined in the QGIS project.
 | hideAutopopulatedFields | `bool` | Whether to hide form fields which contain autopopulated values (i.e. search result label). | `undefined` |
 | inlinePrintOutput | `bool` | Whether to display the print output in an inline dialog instead triggering a download. | `false` |
 | printExternalLayers | `bool` | Whether to print external layers. Requires QGIS Server 3.x! | `true` |
+| printMapHighlights | `bool` | Whether to print highlights on the map, e.g. selected features or redlining. | `true` |
 | scaleFactor | `number` | Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint. | `1.9` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 

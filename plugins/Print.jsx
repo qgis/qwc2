@@ -74,6 +74,8 @@ class Print extends React.Component {
         map: PropTypes.object,
         /** Whether to print external layers. Requires QGIS Server 3.x! */
         printExternalLayers: PropTypes.bool,
+        /** Whether to print highlights on the map, e.g. selected features or redlining. */
+        printMapHighlights: PropTypes.bool,
         /** Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint.  */
         scaleFactor: PropTypes.number,
         setIdentifyEnabled: PropTypes.func,
@@ -92,6 +94,7 @@ class Print extends React.Component {
         formats: ['application/pdf', 'image/jpeg', 'image/png', 'image/svg'],
         inlinePrintOutput: false,
         printExternalLayers: true,
+        printMapHighlights: true,
         scaleFactor: 1.9, // Experimentally determined...
         side: 'right'
     };
@@ -661,16 +664,19 @@ class Print extends React.Component {
 
         // Add highlight params
         const printDpi = parseInt(this.state.dpi, 10) || 0;
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, printDpi, this.props.scaleFactor);
-        formData[mapName + ":HIGHLIGHT_GEOM"] = highlightParams.geoms.join(";");
-        formData[mapName + ":HIGHLIGHT_SYMBOL"] = highlightParams.styles.join(";");
-        formData[mapName + ":HIGHLIGHT_LABELSTRING"] = highlightParams.labels.join(";");
-        formData[mapName + ":HIGHLIGHT_LABELCOLOR"] = highlightParams.labelFillColors.join(";");
-        formData[mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"] = highlightParams.labelOutlineColors.join(";");
-        formData[mapName + ":HIGHLIGHT_LABELBUFFERSIZE"] = highlightParams.labelOutlineSizes.join(";");
-        formData[mapName + ":HIGHLIGHT_LABELSIZE"] = highlightParams.labelSizes.join(";");
-        formData[mapName + ":HIGHLIGHT_LABEL_DISTANCE"] = highlightParams.labelDist.join(";");
-        formData[mapName + ":HIGHLIGHT_LABEL_ROTATION"] = highlightParams.labelRotations.join(";");
+
+        if (this.props.printMapHighlights) {
+            const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, printDpi, this.props.scaleFactor);
+            formData[mapName + ":HIGHLIGHT_GEOM"] = highlightParams.geoms.join(";");
+            formData[mapName + ":HIGHLIGHT_SYMBOL"] = highlightParams.styles.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELSTRING"] = highlightParams.labels.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELCOLOR"] = highlightParams.labelFillColors.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELBUFFERCOLOR"] = highlightParams.labelOutlineColors.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELBUFFERSIZE"] = highlightParams.labelOutlineSizes.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELSIZE"] = highlightParams.labelSizes.join(";");
+            formData[mapName + ":HIGHLIGHT_LABEL_DISTANCE"] = highlightParams.labelDist.join(";");
+            formData[mapName + ":HIGHLIGHT_LABEL_ROTATION"] = highlightParams.labelRotations.join(";");
+        }
 
         // Add grid params
         const printGrid = this.props.theme.printGrid;
