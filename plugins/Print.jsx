@@ -99,6 +99,7 @@ class Print extends React.Component {
         center: null,
         extents: [],
         layout: null,
+        layouts: [],
         rotation: 0,
         scale: 0,
         dpi: 300,
@@ -130,12 +131,12 @@ class Print extends React.Component {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
                 const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
-                    return a.name.localeCompare(b.name, undefined, {numeric: true});
+                    return a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
                 });
                 const layout = layouts.find(l => l.default) || layouts[0];
-                this.setState({layout: layout, atlasFeatures: []});
+                this.setState({layouts: layouts, layout: layout, atlasFeatures: []});
             } else {
-                this.setState({layout: null, atlasFeatures: []});
+                this.setState({layouts: [], layout: null, atlasFeatures: []});
             }
         }
         if (this.state.atlasFeatures !== prevState.atlasFeatures) {
@@ -258,10 +259,6 @@ class Print extends React.Component {
 
         const labels = this.state.layout && this.state.layout.labels ? this.state.layout.labels : [];
 
-        const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
-            return a.name.localeCompare(b.name, undefined, {numeric: true});
-        });
-
         const formatMap = {
             "application/pdf": "PDF",
             "image/jpeg": "JPEG",
@@ -281,7 +278,7 @@ class Print extends React.Component {
                             <td>{LocaleUtils.tr("print.layout")}</td>
                             <td>
                                 <select onChange={this.changeLayout} value={this.state.layout.name}>
-                                    {layouts.filter(l => l.map).map(item => {
+                                    {this.state.layouts.map(item => {
                                         return (
                                             <option key={item.name} value={item.name}>{item.name.split('/').pop()}</option>
                                         );
