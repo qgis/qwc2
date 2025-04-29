@@ -15,7 +15,7 @@ import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 function createLabelObject(entry) {
     const labelEl = document.createElement("span");
     labelEl.innerText = entry.label;
-    labelEl.className = "map3d-tile-batch-label";
+    labelEl.className = "map3d-object-label";
     const label = new CSS2DObject(labelEl);
     label.position.copy(entry.pos);
     label.updateMatrixWorld();

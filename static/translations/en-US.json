@@ -135,6 +135,7 @@
       "delete": "Delete",
       "drawings": "Drawings",
       "intersect": "Intersect",
+      "label": "Label",
       "newgroupprompt": "New drawing group",
       "numericinput": "Numeric input",
       "pick": "Pick",

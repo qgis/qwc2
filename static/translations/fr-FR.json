@@ -135,6 +135,7 @@
       "delete": "Effacer",
       "drawings": "Dessins",
       "intersect": "Croiser",
+      "label": "Texte",
       "newgroupprompt": "Ajouter un groupe de dessin",
       "numericinput": "Entrée numérique",
       "pick": "Choisir",

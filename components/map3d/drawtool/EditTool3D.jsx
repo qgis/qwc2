@@ -17,6 +17,7 @@ import LocaleUtils from '../../../utils/LocaleUtils';
 import Icon from '../../Icon';
 import ButtonBar from '../../widgets/ButtonBar';
 import ColorButton from '../../widgets/ColorButton';
+import TextInput from '../../widgets/TextInput';
 import NumericInput3D from './NumericInput3D';
 
 
@@ -87,7 +88,8 @@ export default class EditTool3D extends React.Component {
         mode: 'translate',
         numericInput: false,
         selectCount: 0,
-        csgBackup: null
+        csgBackup: null,
+        label: ''
     };
     componentDidMount() {
         const camera = this.props.sceneContext.scene.view.camera;
@@ -108,6 +110,7 @@ export default class EditTool3D extends React.Component {
             this.transformControls.attach(this.props.selectedObject);
             this.transformControls.getHelper().updateMatrixWorld();
             this.props.colorChanged(this.props.selectedObject.material.color.toArray().map(c => c * 255));
+            this.setState({label: this.props.selectedObject.userData?.label || "", selectCount: 1});
         }
         this.props.sceneContext.scene.view.controls.addEventListener('change', this.updateTransformHelper);
         this.props.sceneContext.scene.notifyChange();
@@ -131,6 +134,7 @@ export default class EditTool3D extends React.Component {
                     this.setState({csgBackup: this.props.selectedObject.userData.originalChildren});
                     delete this.props.selectedObject.userData.originalChildren;
                 }
+                this.setState({label: this.props.selectedObject.userData?.label || ""});
             }
             this.transformControls.getHelper().updateMatrixWorld();
             this.props.sceneContext.scene.notifyChange();
@@ -199,6 +203,12 @@ export default class EditTool3D extends React.Component {
                     ) : null}
                 </div>
             ),
+            this.state.selectCount === 1 ? (
+                <div className="redlining-controlsbar draw3d-label-controls" key="Label">
+                    <span>{LocaleUtils.tr("draw3d.label")}: </span>
+                    <TextInput onChange={this.setLabel} value={this.state.label} />
+                </div>
+            ) : null,
             this.state.selectCount === 2 ? (
                 <div className="redlining-controlsbar" key="CSGControls">
                     <ButtonBar buttons={csgButtons} className="buttonbar-fill" onClick={this.applyCsgOperation} />
@@ -335,5 +345,10 @@ export default class EditTool3D extends React.Component {
     };
     clearCsgBackup = () => {
         this.setState({csgBackup: null});
+    };
+    setLabel = (text) => {
+        this.setState({label: text});
+        this.props.selectedObject.userData.label = text;
+        this.props.sceneContext.updateObjectLabel(this.props.selectedObject);
     };
 }

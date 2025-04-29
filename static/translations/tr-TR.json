@@ -135,6 +135,7 @@
       "delete": "Sil",
       "drawings": "Çizimler",
       "intersect": "",
+      "label": "",
       "newgroupprompt": "Yeni çizim grubu",
       "numericinput": "Sayısal giriş",
       "pick": "Seç",

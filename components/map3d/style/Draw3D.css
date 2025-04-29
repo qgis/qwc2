@@ -5,3 +5,12 @@ div.draw3d-numeric-input-body {
 div.draw3d-numeric-input-body > table {
     width: 100%;
 }
+
+
+div.draw3d-label-controls {
+    display: flex;
+}
+
+div.draw3d-label-controls > div.TextInput {
+    flex: 1 1 auto;
+}

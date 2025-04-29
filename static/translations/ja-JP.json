@@ -135,6 +135,7 @@
       "delete": "削除",
       "drawings": "作図",
       "intersect": "交差",
+      "label": "",
       "newgroupprompt": "新しい作図グループ",
       "numericinput": "数値入力",
       "pick": "選択",

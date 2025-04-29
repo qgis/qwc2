@@ -142,6 +142,7 @@
     "draw3d.delete",
     "draw3d.drawings",
     "draw3d.intersect",
+    "draw3d.label",
     "draw3d.newgroupprompt",
     "draw3d.numericinput",
     "draw3d.pick",
