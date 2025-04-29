@@ -36,6 +36,7 @@ class MapExport3D extends React.Component {
     };
     state = {
         minimized: false,
+        layouts: [],
         selectedFormat: 'image/jpeg',
         layout: "",
         x: 0,
@@ -47,10 +48,12 @@ class MapExport3D extends React.Component {
     onShow = () => {
         if (!isEmpty(this.props.theme?.print)) {
             const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
-                return a.name.localeCompare(b.name, undefined, {numeric: true});
+                return a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
             });
             const layout = layouts.find(l => l.default) || layouts[0];
-            this.setState({layout: layout});
+            this.setState({layouts: layouts, layout: layout});
+        } else {
+            this.setState({layouts: [], layout: ""});
         }
     };
     formatChanged = (ev) => {
@@ -67,9 +70,6 @@ class MapExport3D extends React.Component {
             "image/tiff": "TIFF",
             "application/pdf": "PDF"
         };
-        const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
-            return a.name.localeCompare(b.name, undefined, {numeric: true});
-        });
         const exportDisabled = this.state.exporting || this.state.width === 0 || (
             this.state.selectedFormat === "application/pdf" && !this.state.layout
         );
@@ -94,7 +94,7 @@ class MapExport3D extends React.Component {
                                     <td>{LocaleUtils.tr("print.layout")}</td>
                                     <td>
                                         <select onChange={this.layoutChanged} value={this.state.layout.name}>
-                                            {layouts.map(item => (
+                                            {this.state.layouts.map(item => (
                                                 <option key={item.name} value={item.name}>{item.name.split('/').pop()}</option>
                                             ))}
                                         </select>
