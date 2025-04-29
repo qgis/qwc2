@@ -121,7 +121,7 @@ export default class SearchField3D extends React.Component {
                 // Scale search marker with distance
                 const scaleSearchMarker = () => {
                     const distance = sceneContext.scene.view.camera.position.distanceTo(pin.position) / 30;
-                    const scale = Math.max(1, distance);
+                    const scale = Math.max(20, distance);
                     label.position.z = terrainHeight + 2 * scale;
                     label.updateMatrixWorld();
                     pin.scale.set(scale, scale, scale);
