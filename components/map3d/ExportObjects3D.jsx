@@ -272,7 +272,13 @@ class ExportObjects3D extends React.Component {
                         const mesh = new Mesh(geometry, material);
                         mesh.applyMatrix4(c.matrixWorld.clone().multiply(new Matrix4().makeTranslation(offset)));
                         // Include attribute from batch table
-                        Object.assign(mesh.userData, batchTableObject.batchTable.getDataFromId(batchId));
+                        const batchAttrs = batchTableObject.batchTable.getDataFromId(batchId);
+                        Object.assign(mesh.userData, batchAttrs);
+                        // Add label
+                        const label = batchTableObject.userData.tileLabels?.[batchId];
+                        if (label) {
+                            mesh.userData.label = label;
+                        }
 
                         exportGroup.add(mesh);
                     }

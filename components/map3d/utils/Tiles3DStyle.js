@@ -130,16 +130,16 @@ const Tiles3DStyle = {
         });
 
         if (!isEmpty(labels)) {
-            const tileLabels = [];
+            const tileLabels = {};
             const labelObjects = new Group();
-            Object.values(labels).forEach(entry => {
+            Object.entries(labels).forEach(([batchId, entry]) => {
                 const pos = new Vector3(
                     entry.pos[0] / entry.count,
                     entry.pos[1] / entry.count,
                     entry.pos[2] + 10
                 ).applyMatrix4(entry.matrix);
-                tileLabels.push({pos, label: entry.label});
-                labelObjects.add(createLabelObject(tileLabels[tileLabels.length - 1]));
+                tileLabels[batchId] = {pos, label: entry.label};
+                labelObjects.add(createLabelObject(tileLabels[batchId]));
             });
             group.userData.tileLabels = tileLabels;
             group.add(labelObjects);
@@ -149,7 +149,7 @@ const Tiles3DStyle = {
         // Re-add labels
         if (visible && group.userData.tileLabels) {
             const labelObjects = new Group();
-            group.userData.tileLabels.forEach(entry => {
+            Object.values(group.userData.tileLabels).forEach(entry => {
                 labelObjects.add(createLabelObject(entry));
             });
             group.add(labelObjects);
