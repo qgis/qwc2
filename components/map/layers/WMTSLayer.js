@@ -36,7 +36,7 @@ export function createWMTSSource(options) {
 
     return new ol.source.WMTS({
         urls: urls,
-        layer: options.name,
+        layer: options.layerName ?? options.name,
         format: options.format,
         projection: projection ? projection : null,
         matrixSet: options.tileMatrixSet,
@@ -44,7 +44,7 @@ export function createWMTSSource(options) {
             extent: extent,
             origin: [options.originX, options.originY],
             resolutions: resolutions,
-            matrixIds: matrixIds,
+            matrixIds: options.matrixIds ?? matrixIds,
             tileSize: options.tileSize || [256, 256]
         }),
         style: options.style ?? '',
