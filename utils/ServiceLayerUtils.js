@@ -96,12 +96,11 @@ const ServiceLayerUtils = {
                 console.warn("Could not determine axis order for projection " + tileMatrices[tileMatrixSet].crs);
                 return null;
             }
-            // https://openlayers.org/en/latest/examples/wmts-ign.html
-            const proj = getProjection(tileMatrices[tileMatrixSet].crs);
-            const maxResolution = proj?.getExtent() ? getWidth(proj?.getExtent()) / topMatrix.TileWidth : null;
+            const matrixIds = [];
             const resolutions = tileMatrices[tileMatrixSet].matrix.map((entry, index) => {
                 // 0.00028: assumed pixel width in meters, as per WMTS standard
-                return maxResolution ? maxResolution / Math.pow(2, index) : entry.ScaleDenominator * 0.00028;
+                matrixIds.push(entry.Identifier);
+                return entry.ScaleDenominator * 0.00028;
             });
             const format = MiscUtils.ensureArray(layer.Format).find(fmt => fmt === "image/png") ?? MiscUtils.ensureArray(layer.Format)[0];
             const getTile = MiscUtils.ensureArray(capabilities.OperationsMetadata?.GetTile?.DCP?.HTTP?.Get)[0];
@@ -139,6 +138,7 @@ const ServiceLayerUtils = {
                 format: format,
                 requestEncoding: requestEncoding,
                 resolutions: resolutions,
+                matrixIds: matrixIds,
                 abstract: layer.Abstract,
                 attribution: {
                     Title: capabilities.ServiceProvider?.ProviderName || capabilities.ServiceIdentification?.Title || "",
