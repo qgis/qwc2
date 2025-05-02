@@ -73,6 +73,7 @@ class QtDesignerForm extends React.Component {
         setFormBusy: PropTypes.func,
         setRelationTables: PropTypes.func,
         switchEditContext: PropTypes.func,
+        theme: PropTypes.object,
         updateField: PropTypes.func,
         updateRelationField: PropTypes.func
     };
@@ -390,13 +391,14 @@ class QtDesignerForm extends React.Component {
                 // kvrel__reltablename__attrname__datatable__keyfield__valuefield
                 const count = parts.length;
                 const attrname = parts.slice(1, count - 3).join("__");
-                const comboFieldConstraints = this.props.fields[attrname]?.constraints || {};
+                const currentEditConfig = this.props.theme.editConfig[parts[1]];
+                const comboFieldConstraints = currentEditConfig.fields.find(field => field.id === attrname.split("__")[1])?.constraints || {};
                 value = (feature.properties || [])[attrname] ?? "";
                 const fieldId = parts.slice(1, count - 3).join("__");
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
-                if (this.props.fields[attrname]?.filterExpression) {
-                    filterExpr = parseExpression(this.props.fields[attrname].filterExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                if (currentEditConfig.fields.find(field => field.id === attrname.split("__")[1])?.filterExpression) {
+                    filterExpr = parseExpression(currentEditConfig.fields.find(field => field.id === attrname.split("__")[1]).filterExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
                 }
                 return (
                     <EditComboField
@@ -783,6 +785,7 @@ class QtDesignerForm extends React.Component {
 }
 
 export default connect((state) => ({
-    locale: state.locale.current
+    locale: state.locale.current,
+    theme: state.theme.current
 }), {
 })(QtDesignerForm);
