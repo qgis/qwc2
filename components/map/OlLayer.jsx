@@ -12,8 +12,9 @@ import {connect} from 'react-redux';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
-import {setLayerLoading} from '../../actions/layers';
+import {refreshLayer, setLayerLoading} from '../../actions/layers';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import LayerUtils from '../../utils/LayerUtils';
 import MapUtils from '../../utils/MapUtils';
 import Signal from '../../utils/Signal';
 import LayerRegistry from './layers/index';
@@ -27,6 +28,7 @@ class OlLayer extends React.Component {
         map: PropTypes.object,
         options: PropTypes.object,
         projection: PropTypes.string,
+        refreshLayer: PropTypes.func,
         setLayerLoading: PropTypes.func,
         swipe: PropTypes.number,
         zIndex: PropTypes.number
@@ -34,6 +36,7 @@ class OlLayer extends React.Component {
     constructor(props) {
         super(props);
         this.layer = null;
+        this.updateInterval = null;
     }
     componentDidMount() {
         this.tilestoload = 0;
@@ -62,6 +65,7 @@ class OlLayer extends React.Component {
         if (this.layer && this.props.map) {
             this.props.map.removeLayer(this.layer);
         }
+        clearInterval(this.updateInterval);
     }
     render() {
         const layerCreator = LayerRegistry[this.props.options.type];
@@ -110,6 +114,12 @@ class OlLayer extends React.Component {
             }
             this.layer.setZIndex(this.props.zIndex);
             this.addLayer(this.layer, options);
+            const refreshInterval = LayerUtils.getLayerRefreshInterval(options);
+            if (refreshInterval > 0 && options.visibility) {
+                this.updateInterval = setInterval(() => {
+                    this.props.refreshLayer((layer) => layer.id === options.id);
+                }, refreshInterval);
+            }
         }
     };
     updateLayer = (newOptions, oldOptions) => {
@@ -126,6 +136,17 @@ class OlLayer extends React.Component {
                 this.props.map
             );
             OlLayerUpdated.notify(this.layer);
+        }
+        const oldRefreshInterval = LayerUtils.getLayerRefreshInterval(oldOptions);
+        const newRefreshInterval = LayerUtils.getLayerRefreshInterval(newOptions);
+        if (oldRefreshInterval !== newRefreshInterval || oldOptions.visibility !== newOptions.visibility) {
+            clearInterval(this.updateInterval);
+            this.updateInterval = null;
+            if (newRefreshInterval && newOptions.visibility) {
+                this.updateInterval = setInterval(() => {
+                    this.props.refreshLayer((layer) => layer.id === newOptions.id);
+                }, newRefreshInterval);
+            }
         }
     };
     addLayer = (layer, options) => {
@@ -209,5 +230,6 @@ class OlLayer extends React.Component {
 }
 
 export default connect(() => ({}), {
-    setLayerLoading: setLayerLoading
+    setLayerLoading: setLayerLoading,
+    refreshLayer: refreshLayer
 })(OlLayer);
