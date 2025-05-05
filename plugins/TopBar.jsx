@@ -45,7 +45,7 @@ class TopBar extends React.Component {
         fullscreen: PropTypes.bool,
         /** The logo file format. */
         logoFormat: PropTypes.string,
-        /** The logo image URL if a different source than the default assets/img/logo.<ext> and assets/img/logo-mobile.<ext> is desired. */
+        /** The logo image URL if a different source than the default `assets/img/logo.<ext>` and `assets/img/logo-mobile.<ext>` is desired. */
         logoSrc: PropTypes.string,
         /** The hyperlink to open when the logo is clicked. */
         logoUrl: PropTypes.string,
