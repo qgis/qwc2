@@ -145,7 +145,7 @@ class AttributeForm extends React.Component {
                 ) : null}
                 <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
                     {this.props.editConfig.form ? (
-                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editLayerId={this.props.editConfig.editDataset}
+                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={this.props.theme.editConfig} editLayerId={this.props.editConfig.editDataset}
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
                             fields={this.fieldsMap(this.props.editConfig.fields)} form={this.props.editConfig.form} iface={this.props.iface}
                             mapCrs={this.props.map.projection} mapPrefix={this.editMapPrefix()} readOnly={readOnly}
