@@ -57,6 +57,7 @@ const vFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEd
 class QtDesignerForm extends React.Component {
     static propTypes = {
         addRelationRecord: PropTypes.func,
+        editConfig: PropTypes.object,
         editLayerId: PropTypes.string,
         editRelationRecord: PropTypes.func,
         feature: PropTypes.object,
@@ -73,7 +74,6 @@ class QtDesignerForm extends React.Component {
         setFormBusy: PropTypes.func,
         setRelationTables: PropTypes.func,
         switchEditContext: PropTypes.func,
-        theme: PropTypes.object,
         updateField: PropTypes.func,
         updateRelationField: PropTypes.func
     };
@@ -391,7 +391,7 @@ class QtDesignerForm extends React.Component {
                 // kvrel__reltablename__attrname__datatable__keyfield__valuefield
                 const count = parts.length;
                 const attrname = parts.slice(1, count - 3).join("__");
-                const currentEditConfig = this.props.theme.editConfig[parts[1]];
+                const currentEditConfig = this.props.editConfig[parts[1]];
                 const comboFieldConstraints = currentEditConfig.fields.find(field => field.id === attrname.split("__")[1])?.constraints || {};
                 value = (feature.properties || [])[attrname] ?? "";
                 const fieldId = parts.slice(1, count - 3).join("__");
@@ -785,7 +785,6 @@ class QtDesignerForm extends React.Component {
 }
 
 export default connect((state) => ({
-    locale: state.locale.current,
-    theme: state.theme.current
+    locale: state.locale.current
 }), {
 })(QtDesignerForm);
