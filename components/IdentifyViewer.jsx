@@ -162,6 +162,7 @@ class IdentifyViewer extends React.Component {
         collapsible: PropTypes.bool,
         customExporters: PropTypes.array,
         displayResultTree: PropTypes.bool,
+        enableAggregatedReports: PropTypes.bool,
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         exportGeometry: PropTypes.bool,
         highlightAllResults: PropTypes.bool,
@@ -185,6 +186,7 @@ class IdentifyViewer extends React.Component {
         displayResultTree: true,
         attributeCalculator: (/* layer, feature */) => { return []; },
         attributeTransform: (name, value /* , layer, feature */) => value,
+        enableAggregatedReports: true,
         showLayerTitles: true,
         showLayerSelector: true,
         highlightAllResults: true
@@ -592,7 +594,7 @@ class IdentifyViewer extends React.Component {
                         </div>
                     </div>
                 ) : null}
-                {Object.values(reportFeatures).find(entry => entry.length > 1) !== undefined ? (
+                {this.props.enableAggregatedReports && Object.values(reportFeatures).find(entry => entry.length > 1) !== undefined ? (
                     <div className="identify-buttonbox">
                         <span className="identify-buttonbox-spacer" />
                         <span>{LocaleUtils.tr("identify.aggregatedreport")}:&nbsp;</span>
