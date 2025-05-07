@@ -1055,6 +1055,16 @@ const LayerUtils = {
                 }
             });
         }
+    },
+    getLayerRefreshInterval(layer) {
+        let refreshInterval = layer.refreshInterval ?? 0;
+        (layer.sublayers || []).forEach(sublayer => {
+            const sublayerRefreshInterval = LayerUtils.getLayerRefreshInterval(sublayer);
+            if (sublayerRefreshInterval > 0) {
+                refreshInterval = refreshInterval > 0 ? Math.min(refreshInterval, sublayerRefreshInterval) : sublayerRefreshInterval;
+            }
+        });
+        return refreshInterval;
     }
 };
 
