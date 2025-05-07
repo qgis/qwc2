@@ -68,17 +68,29 @@ export default class Map3DLight extends React.Component {
             directionalLight.castShadow = true;
             this.props.sceneContext.addSceneObject("__directionalLight", directionalLight);
 
-            const directionalLightHelper = new DirectionalLightHelper(directionalLight, 200, 'white');
-            this.props.sceneContext.addSceneObject("__directionalLightHelper", directionalLightHelper);
-            directionalLightHelper.visible = this.state.lightParams.helpersVisible;
+            if (this.state.lightParams.helpersVisible) {
+                const directionalLightHelper = new DirectionalLightHelper(directionalLight, 200, 'white');
+                this.props.sceneContext.addSceneObject("__directionalLightHelper", directionalLightHelper);
 
-            const shadowCameraHelper = new CameraHelper(directionalLight.shadow.camera);
-            this.props.sceneContext.addSceneObject("__shadowCameraHelper", shadowCameraHelper);
-            shadowCameraHelper.visible = this.state.lightParams.helpersVisible;
+                const shadowCameraHelper = new CameraHelper(directionalLight.shadow.camera);
+                this.props.sceneContext.addSceneObject("__shadowCameraHelper", shadowCameraHelper);
+            }
 
             this.props.sceneContext.scene.view.controls.addEventListener('change', this.setLighting);
             this.setLighting();
         } else if (this.state.lightParams !== prevState.lightParams) {
+            if (this.state.lightParams.helpersVisible && !prevState.lightParams.helpersVisible) {
+                const directionalLight = this.props.sceneContext.getSceneObject("__directionalLight");
+
+                const directionalLightHelper = new DirectionalLightHelper(directionalLight, 200, 'white');
+                this.props.sceneContext.addSceneObject("__directionalLightHelper", directionalLightHelper);
+
+                const shadowCameraHelper = new CameraHelper(directionalLight.shadow.camera);
+                this.props.sceneContext.addSceneObject("__shadowCameraHelper", shadowCameraHelper);
+            } else if (prevState.lightParams.helpersVisible && !this.state.lightParams.helpersVisible) {
+                this.props.sceneContext.removeSceneObject("__directionalLightHelper");
+                this.props.sceneContext.removeSceneObject("__shadowCameraHelper");
+            }
             this.setLighting();
         }
     }
@@ -299,8 +311,6 @@ export default class Map3DLight extends React.Component {
 
         const ambientLight = sceneContext.getSceneObject("__ambientLight");
         const directionalLight = sceneContext.getSceneObject("__directionalLight");
-        const directionalLightHelper = sceneContext.getSceneObject("__directionalLightHelper");
-        const shadowCameraHelper = sceneContext.getSceneObject("__shadowCameraHelper");
 
         const lightTarget = sceneContext.scene.view.controls.target.clone();
         lightTarget.z = 0;
@@ -348,13 +358,15 @@ export default class Map3DLight extends React.Component {
         directionalLight.shadow.camera.updateProjectionMatrix();
         directionalLight.shadow.camera.updateMatrix();
 
-        directionalLightHelper.visible = lightParams.helpersVisible;
-        directionalLightHelper.update();
-        directionalLightHelper.updateMatrixWorld(true);
+        if (lightParams.helpersVisible) {
+            const directionalLightHelper = sceneContext.getSceneObject("__directionalLightHelper");
+            directionalLightHelper.update();
+            directionalLightHelper.updateMatrixWorld(true);
 
-        shadowCameraHelper.visible = lightParams.helpersVisible;
-        shadowCameraHelper.update();
-        shadowCameraHelper.updateMatrixWorld(true);
+            const shadowCameraHelper = sceneContext.getSceneObject("__shadowCameraHelper");
+            shadowCameraHelper.update();
+            shadowCameraHelper.updateMatrixWorld(true);
+        }
 
         sceneContext.scene.notifyChange();
     };
