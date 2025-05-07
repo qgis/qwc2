@@ -767,6 +767,9 @@ class SearchBox extends React.Component {
                 feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, response.crs ?? this.props.map.projection, this.props.map.projection);
                 feature.styleName = feature.geometry?.type === 'Point' ? 'marker' : 'default';
                 feature.styleOptions = this.props.searchOptions.highlightStyle || {};
+                if (feature.crs?.properties?.name) {
+                    feature.crs = CoordinatesUtils.fromOgcUrnCrs(feature.crs.properties.name);
+                }
             });
             // If first feature is not a point(=marker), add a marker
             if (features[0].styleName !== "marker" && !response.hidemarker) {
