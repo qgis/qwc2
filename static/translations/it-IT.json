@@ -297,6 +297,7 @@
       "zoomtolayer": "Zoom a tutto il livello"
     },
     "layertree3d": {
+      "customheight": "Valore",
       "import": "Importa",
       "importobjects": "Importa oggetti",
       "layers": "Livelli",

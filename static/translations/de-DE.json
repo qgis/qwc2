@@ -297,6 +297,7 @@
       "zoomtolayer": "Auf den Layer zoomen"
     },
     "layertree3d": {
+      "customheight": "Wert",
       "import": "Importieren",
       "importobjects": "Objekte importieren",
       "layers": "Ebenen",

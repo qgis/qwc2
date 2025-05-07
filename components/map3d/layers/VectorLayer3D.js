@@ -40,5 +40,14 @@ export default {
         } else if ((oldOptions.rev || 0) !== (newOptions.rev || 0)) {
             layer.source.update();
         }
+    },
+    getFields: (options) => {
+        return new Promise((resolve) => {
+            const fields = new Set();
+            options.features.forEach(feature => {
+                Object.keys(feature.properties).forEach(key => fields.add(key));
+            });
+            resolve([...fields.values()]);
+        });
     }
 };

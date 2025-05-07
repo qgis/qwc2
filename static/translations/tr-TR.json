@@ -297,6 +297,7 @@
       "zoomtolayer": "Katman sınırlarına yaklaş"
     },
     "layertree3d": {
+      "customheight": "",
       "import": "",
       "importobjects": "",
       "layers": "Katmanlar",

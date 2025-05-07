@@ -297,6 +297,7 @@
       "zoomtolayer": "Zoom naar laag"
     },
     "layertree3d": {
+      "customheight": "",
       "import": "",
       "importobjects": "",
       "layers": "",

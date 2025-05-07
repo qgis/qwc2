@@ -222,8 +222,14 @@ class Map3D extends React.Component {
                 ...layer,
                 visibility: prevOptions?.visibility ?? false,
                 opacity: prevOptions?.opacity ?? 255,
-                extrusionHeight: prevOptions?.extrusionHeight ?? (['vector', 'wfs'].includes(layer.type) ? 0 : undefined)
+                extrusionHeight: prevOptions?.extrusionHeight ?? (['vector', 'wfs'].includes(layer.type) ? 0 : undefined),
+                fields: prevOptions?.fields ?? undefined
             };
+            if (colorLayers[layer.uuid].fields === undefined && layerCreator.getFields) {
+                layerCreator.getFields(layer).then(fields => {
+                    this.updateColorLayer(layer.uuid, {fields});
+                });
+            }
             return colorLayers;
         }, {});
     };
@@ -244,16 +250,16 @@ class Map3D extends React.Component {
             mapLayer.visible = options.visibility;
             mapLayer.opacity = options.opacity / 255;
             layerBelow = mapLayer;
-            if (options.extrusionHeight > 0) {
+            if (options.extrusionHeight !== 0) {
                 this.createUpdateExtrudedLayer(mapLayer, options, options.features !== prevOptions?.features);
-            } else if (prevOptions?.extrusionHeight > 0) {
+            } else if (prevOptions?.extrusionHeight !== 0) {
                 this.removeExtrudedLayer(options.uuid);
             }
         });
         // Remove old layers
         Object.entries(prevColorLayers).forEach(([layerId, options]) => {
             if (!(layerId in colorLayers)) {
-                if (options.extrusionHeight) {
+                if (options.extrusionHeight !== 0) {
                     this.removeExtrudedLayer(options.uuid);
                 }
                 this.removeLayer(layerId);
@@ -283,15 +289,22 @@ class Map3D extends React.Component {
             obj = new FeatureCollection({
                 source: mapLayer.source.source,
                 extent: extent,
+                minLevel: 1,
+                maxLevel: 1,
+                ignoreZ: true,
                 elevation: (feature) => {
                     let coordinates = feature.getGeometry().getCoordinates();
                     while (Array.isArray(coordinates[0])) {
                         coordinates = coordinates[0];
                     }
-                    return coordinates[2] || this.getTerrainHeightFromMap(coordinates) || 0;
+                    return this.getTerrainHeightFromMap(coordinates) ?? 0;
                 },
-                extrusionOffset: () => {
-                    return obj.userData.extrusionHeight;
+                extrusionOffset: (feature) => {
+                    if (typeof obj.userData.extrusionHeight === "string") {
+                        return parseFloat(feature.getProperties()[obj.userData.extrusionHeight]) || 0;
+                    } else {
+                        return obj.userData.extrusionHeight;
+                    }
                 },
                 style: (feature) => {
                     return obj.userData.featureStyles?.[feature.getId()] ?? {
@@ -314,10 +327,6 @@ class Map3D extends React.Component {
                 }
             }
         }), {});
-        obj.traverse(mesh => {
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-        });
         obj.opacity = mapLayer.opacity;
         obj.visible = mapLayer.visible;
         obj.updateStyles();

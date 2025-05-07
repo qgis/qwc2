@@ -297,6 +297,7 @@
       "zoomtolayer": "Zoom to layer"
     },
     "layertree3d": {
+      "customheight": "Value",
       "import": "Import",
       "importobjects": "Import objects",
       "layers": "Layers",

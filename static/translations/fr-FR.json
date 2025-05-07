@@ -297,6 +297,7 @@
       "zoomtolayer": "Zoomer sur la couche"
     },
     "layertree3d": {
+      "customheight": "Valeur",
       "import": "Importer",
       "importobjects": "Importer objets",
       "layers": "Couches",

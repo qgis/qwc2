@@ -297,6 +297,7 @@
       "zoomtolayer": "Увеличаване на слоя"
     },
     "layertree3d": {
+      "customheight": "",
       "import": "",
       "importobjects": "",
       "layers": "Слоеве",

@@ -8,6 +8,9 @@
 
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import VectorSource from "@giro3d/giro3d/sources/VectorSource.js";
+import axios from 'axios';
+import {tile} from "ol/loadingstrategy.js";
+import {createXYZ} from "ol/tilegrid.js";
 import url from 'url';
 
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
@@ -50,11 +53,46 @@ export default {
                     strokeWidth: 1,
                     strokeDash: [],
                     circleRadius: 5
-                })
+                }),
+                strategy: tile(createXYZ({ tileSize: 512 }))
             })
         });
     },
     update3d: (layer, newOptions, oldOptions, projection) => {
         // pass
+    },
+    getFields: (options) => {
+        return new Promise((resolve, reject) => {
+
+            const typeName = options.version < "2.0.0" ? "typeName" : "typeNames";
+            const urlParts = url.parse(options.url, true);
+            const urlParams = Object.entries(urlParts.query).reduce((res, [key, val]) => ({...res, [key.toUpperCase()]: val}), {});
+            delete urlParts.search;
+            urlParts.query = {
+                ...urlParams,
+                SERVICE: 'WFS',
+                VERSION: options.version,
+                REQUEST: 'DescribeFeatureType',
+                [typeName]: options.name
+            };
+            axios.get(url.format(urlParts)).then(response => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(response.data, "text/xml");
+                const elements = [].slice.call(doc.getElementsByTagName("element"));
+                const fields = elements.reduce((res, element) => {
+                    if (
+                        element.attributes.name &&
+                        element.attributes.name.value !== "id" &&
+                        ["int", "decimal"].includes(element.attributes.type?.value)
+                    ) {
+                        return [...res, element.attributes.name.value];
+                    }
+                    return res;
+                }, []);
+                resolve(fields);
+            }).catch((e) => {
+                reject([]);
+            });
+        });
     }
 };

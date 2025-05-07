@@ -297,6 +297,7 @@
       "zoomtolayer": "レイヤにズーム"
     },
     "layertree3d": {
+      "customheight": "",
       "import": "インポート",
       "importobjects": "オブジェクトをインポート",
       "layers": "レイヤ",

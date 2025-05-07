@@ -297,6 +297,7 @@
       "zoomtolayer": "Zoom a la capa"
     },
     "layertree3d": {
+      "customheight": "",
       "import": "",
       "importobjects": "",
       "layers": "",

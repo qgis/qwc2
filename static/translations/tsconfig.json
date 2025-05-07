@@ -274,6 +274,7 @@
     "layertree.transparency",
     "layertree.visiblefilter",
     "layertree.zoomtolayer",
+    "layertree3d.customheight",
     "layertree3d.import",
     "layertree3d.importobjects",
     "layertree3d.layers",

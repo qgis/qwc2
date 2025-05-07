@@ -104,8 +104,20 @@ export default class LayerTree3D extends React.Component {
                         </div>
                         {entry.extrusionHeight !== undefined ? (
                             <div className="layertree3d-item-optionsmenu-row">
-                                <span>Extrude: </span>
-                                <NumberInput max={500} min={0} onChange={h => updateCallback(entryId, {extrusionHeight: h})} value={entry.extrusionHeight}/>
+                                <span>Extrude:</span>
+                                <>&nbsp;</>
+                                <select
+                                    onChange={ev => updateCallback(entryId, {extrusionHeight: ev.target.value === "__value" ? 0 : ev.target.value})}
+                                    value={typeof entry.extrusionHeight === "string" ? entry.extrusionHeight : "__value"}
+                                >
+                                    <option value="__value">{LocaleUtils.tr("layertree3d.customheight")}</option>
+                                    {(entry.fields || []).map(field => (
+                                        <option key={field} value={field}>{field}</option>
+                                    ))}
+                                </select>
+                                {typeof entry.extrusionHeight !== "string" ? (
+                                    <NumberInput max={500} min={0} onChange={h => updateCallback(entryId, {extrusionHeight: h})} value={entry.extrusionHeight}/>
+                                ) : null}
                             </div>
                         ) : null}
                     </div>

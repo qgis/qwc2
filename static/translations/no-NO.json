@@ -297,6 +297,7 @@
       "zoomtolayer": "Zoom til lag"
     },
     "layertree3d": {
+      "customheight": "",
       "import": "",
       "importobjects": "",
       "layers": "",
