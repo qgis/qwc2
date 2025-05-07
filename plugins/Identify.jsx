@@ -55,6 +55,8 @@ class Identify extends React.Component {
         customExporters: PropTypes.array,
         /** Whether to display a tree overview of results (as opposed to a flat list of results). */
         displayResultTree: PropTypes.bool,
+        /** Whether to enable the aggregated report download button. */
+        enableAggregatedReports: PropTypes.bool,
         /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`) */
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         enabled: PropTypes.bool,
@@ -94,6 +96,7 @@ class Identify extends React.Component {
         theme: PropTypes.object
     };
     static defaultProps = {
+        enableAggregatedReports: true,
         enableExport: true,
         exportGeometry: true,
         clearResultsOnClose: true,
