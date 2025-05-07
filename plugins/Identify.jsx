@@ -374,6 +374,7 @@ class Identify extends React.Component {
                         attributeTransform={this.props.attributeTransform}
                         customExporters={this.props.customExporters}
                         displayResultTree={this.props.displayResultTree}
+                        enableAggregatedReports={this.props.enableAggregatedReports}
                         enableExport={this.props.enableExport}
                         exportGeometry={this.props.exportGeometry}
                         highlightAllResults={this.props.highlightAllResults}
