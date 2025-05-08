@@ -41,7 +41,7 @@ class Share extends React.Component {
         currentTask: PropTypes.string,
         map: PropTypes.object,
         removeMarker: PropTypes.func,
-        /** List of groups for which a permalink may optionally be restricted. */
+        /** List of groups for which a permalink may optionally be restricted (only displayed for a logged-in user). */
         restrictableGroups: PropTypes.array,
         /** Show the map URL. */
         showLink: PropTypes.bool,
@@ -95,6 +95,7 @@ class Share extends React.Component {
         const shareSocials = this.props.showSocials !== false ? <ShareSocials shareTitle={LocaleUtils.tr("share.shareTitle")} shareUrl={shareUrl} showSocials={this.props.showSocials}/> : null;
         const shareLink = this.props.showLink ? <ShareLink shareUrl={shareUrl}/> : null;
         const shareQRCode = this.props.showQRCode ? <ShareQRCode shareUrl={shareUrl}/> : null;
+        const username = ConfigUtils.getConfigProp("username");
         return (
             <div>
                 {this.props.view3dMode !== View3DMode.FULLSCREEN && ConfigUtils.havePlugin("StartupMarker") ? (
@@ -108,7 +109,7 @@ class Share extends React.Component {
                         <div>
                             <button className="button" onClick={this.refreshPermalink}>{LocaleUtils.tr("share.refresh")}</button>
                         </div>
-                        {!isEmpty(this.props.restrictableGroups) ? (
+                        {username && !isEmpty(this.props.restrictableGroups) ? (
                             <div className="share-group-restriction">
                                 <span>{LocaleUtils.tr("share.restricttogroup")}: </span>
                                 <select onChange={ev => this.setState({permittedGroup: ev.target.value})} value={this.state.permittedGroup}>

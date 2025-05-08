@@ -797,7 +797,7 @@ Compact permalinks will be generated if `permalinkServiceUrl` in `config.json` p
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| restrictableGroups | `array` | List of groups for which a permalink may optionally be restricted. | `undefined` |
+| restrictableGroups | `array` | List of groups for which a permalink may optionally be restricted (only displayed for a logged-in user). | `undefined` |
 | showLink | `bool` | Show the map URL. | `true` |
 | showQRCode | `bool` | Show the QR code of the map URL. | `true` |
 | showSocials | `{bool, [string]}` | Show the social buttons. Either `true` or `false`to enable/disable all, or an array of specific buttons to display (possible choices: `email`, `facebook`, `twitter`, `linkedin`, `whatsapp`). | `true` |
