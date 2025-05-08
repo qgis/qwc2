@@ -7,7 +7,7 @@
  */
 
 import axios from 'axios';
-import {applyStyle} from 'ol-mapbox-style';
+import { applyStyle } from 'ol-mapbox-style';
 import ol from 'openlayers';
 
 export default {
@@ -31,16 +31,10 @@ export default {
         if (options.style) {
             axios.get(options.style).then(response => {
                 const glStyle = response.data;
-                if (glStyle.sprite.startsWith(".")) {
-                    glStyle.sprite = new URL(glStyle.sprite, options.style).href;
-                }
-                if (glStyle.glyphs.startsWith(".")) {
-                    glStyle.glyphs = new URL(glStyle.glyphs, options.style).href;
-                }
+                glStyle.sprite?.startsWith(".") && (glStyle.sprite = new URL(glStyle.sprite, options.style).href);
+                glStyle.glyphs?.startsWith(".") && (glStyle.glyphs = new URL(glStyle.glyphs, options.style).href);
                 Object.keys(glStyle.sources).forEach(styleSource => {
-                    if (glStyle.sources[styleSource].url.startsWith(".")) {
-                        glStyle.sources[styleSource].url = new URL(glStyle.sources[styleSource].url, options.style).href;
-                    }
+                    glStyle.sources[styleSource].url?.startsWith(".") && (glStyle.sources[styleSource].url = new URL(glStyle.sources[styleSource].url, options.style).href);
                     const layer = createLayer();
                     applyStyle(layer, glStyle, styleSource, options.styleOptions).then(() => {
                         group.getLayers().push(layer);
