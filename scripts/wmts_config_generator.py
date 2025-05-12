@@ -110,8 +110,10 @@ tileSize = [
     int(getFirstElementValueByTagName(tileMatrix[0], "TileWidth")),
     int(getFirstElementValueByTagName(tileMatrix[0], "TileHeight"))
 ]
+matrixIds = []
 resolutions = []
 for entry in tileMatrix:
+    matrixIds.append(getFirstElementValueByTagName(entry, "ows:Identifier"))
     scaleDenominator = getFirstElementValueByTagName(entry, "ScaleDenominator")
     # 0.00028: assumed pixel width in meters, as per WMTS standard
     resolutions.append(float(scaleDenominator) * 0.00028)
@@ -162,6 +164,7 @@ result = {
     "tileSize": tileSize,
     "style": styleIdentifier,
     "bbox": bbox,
+    "matrixIds": matrixIds,
     "resolutions": resolutions,
     "thumbnail": layerName + ".jpg",
 }
