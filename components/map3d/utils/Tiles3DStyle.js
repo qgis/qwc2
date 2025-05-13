@@ -139,7 +139,8 @@ const Tiles3DStyle = {
                     entry.pos[2] + 10
                 ).applyMatrix4(entry.matrix);
                 tileLabels[batchId] = {pos, label: entry.label};
-                labelObjects.add(createLabelObject(tileLabels[batchId]));
+                tileLabels[batchId].labelObject = createLabelObject(tileLabels[batchId]);
+                labelObjects.add(tileLabels[batchId].labelObject);
             });
             group.userData.tileLabels = tileLabels;
             group.add(labelObjects);

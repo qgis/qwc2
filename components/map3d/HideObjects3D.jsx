@@ -45,7 +45,7 @@ class HideObjects3D extends React.Component {
                     <div>
                         <div className="hideobjects3d-list">
                             {this.state.hiddenObjects.map(entry => (
-                                <div key={entry.object.uuid}
+                                <div key={entry.object.uuid + entry.batchId}
                                     onMouseEnter={() => this.showHighlight(entry)}
                                     onMouseLeave={() => this.hideHighlight(entry)}
                                 >
@@ -149,6 +149,16 @@ class HideObjects3D extends React.Component {
         posAttr.needsUpdate = true;
         this.props.sceneContext.scene.notifyChange();
 
+        // Hide label
+        let rootObject = pick.object;
+        while (!rootObject.batchTable) {
+            rootObject = rootObject.parent;
+        }
+        const pickLabel = rootObject.userData.tileLabels[pickBatchId];
+        if (pickLabel) {
+            pickLabel.labelObject.visible = false;
+        }
+
         // Create highlight geometry
         this.storeHiddenObject(pick, pickPosition, pickNormal, null, pickBatchId);
     };
@@ -205,6 +215,17 @@ class HideObjects3D extends React.Component {
                 }
             });
             posAttr.needsUpdate = true;
+
+            // Restore label
+            let rootObject = entry.object;
+            while (!rootObject.batchTable) {
+                rootObject = rootObject.parent;
+            }
+            const pickLabel = rootObject.userData.tileLabels[entry.batchId];
+            if (pickLabel) {
+                pickLabel.labelObject.visible = true;
+            }
+
         } else {
             entry.object.visible = true;
         }
