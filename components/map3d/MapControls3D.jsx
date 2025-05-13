@@ -117,6 +117,10 @@ class MapControls3D extends React.Component {
         } else if (event.key === "ArrowRight") {
             if (event.ctrlKey) this.tilt(event, -1, 0, true);
             else this.pan(event, -1, 0, true);
+        } else if (event.key === "PageUp") {
+            this.moveCameraHeight(event, +1);
+        } else if (event.key === "PageDown") {
+            this.moveCameraHeight(event, -1);
         }
     };
     home = () => {
@@ -183,6 +187,37 @@ class MapControls3D extends React.Component {
         const element = keyboard ? ev.target : ev.view;
         const event = keyboard ? "keyup" : "mouseup";
         element.addEventListener(event, () => {
+            this.animationInterrupted = true;
+        }, {once: true});
+    };
+    moveCameraHeight = (ev, dir) => {
+        if (!this.state.firstPerson) {
+            return;
+        }
+        const pos = this.props.sceneContext.scene.view.camera.position;
+        this.props.sceneContext.getTerrainHeightFromDTM([pos.x, pos.y]).then(terrHeight => {
+            this.animationInterrupted = false;
+            let lastTimestamp = new Date() / 1000;
+            const animate = () => {
+                if (this.animationInterrupted) {
+                    return;
+                }
+                // Move <delta> distance per second
+                const timestamp = new Date() / 1000;
+                const k = timestamp - lastTimestamp;
+                lastTimestamp = timestamp;
+                const z = this.props.sceneContext.scene.view.camera.position.z;
+                const delta = 0.5 * (z - terrHeight);
+                this.personHeight = Math.max(2, this.personHeight + delta * k * dir);
+                const newZ = terrHeight + this.personHeight;
+                this.props.sceneContext.scene.view.camera.position.z = newZ;
+                this.props.sceneContext.scene.view.controls.target.z = newZ;
+                this.props.sceneContext.scene.notifyChange();
+                requestAnimationFrame(animate);
+            };
+            requestAnimationFrame(animate);
+        });
+        ev.target.addEventListener("keyup", () => {
             this.animationInterrupted = true;
         }, {once: true});
     };
