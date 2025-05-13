@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import {Raycaster, Vector2, Vector3} from 'three';
 import {MapControls} from 'three/addons/controls/MapControls';
 
+import ConfigUtils from '../../utils/ConfigUtils';
 import {UrlParams} from '../../utils/PermaLinkUtils';
 import Icon from '../Icon';
 import {setCenter} from './slices/map3d';
@@ -376,9 +377,13 @@ class MapControls3D extends React.Component {
             this.leaveFirstPerson();
         } else {
             this.props.sceneContext.scene.domElement.addEventListener('click', this.setupFirstPerson, {once: true});
+            const cursor = ConfigUtils.getAssetsPath() + "/img/person.svg";
+            this.props.sceneContext.scene.domElement.style.cursor = `url(${cursor}), pointer`;
         }
     };
     setupFirstPerson = (ev) => {
+        this.props.sceneContext.scene.domElement.style.cursor = '';
+
         const rect = ev.target.getBoundingClientRect();
         const mouseX = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
         const mouseY = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
