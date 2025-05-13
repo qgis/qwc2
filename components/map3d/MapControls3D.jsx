@@ -128,6 +128,7 @@ class MapControls3D extends React.Component {
         const extent = this.props.sceneContext.map.extent;
         const bounds = [extent.west, extent.south, extent.east, extent.north];
         this.setViewToExtent(bounds);
+        this.this.updateUrlParams();
     };
     pan = (ev, dx, dy, keyboard = false) => {
         // Pan faster the heigher one is above the terrain
@@ -156,6 +157,7 @@ class MapControls3D extends React.Component {
         const event = keyboard ? "keyup" : "mouseup";
         element.addEventListener(event, () => {
             this.animationInterrupted = true;
+            this.updateUrlParams();
         }, {once: true});
     };
     tilt = (ev, yaw, az, keyboard = false) => {
@@ -188,6 +190,7 @@ class MapControls3D extends React.Component {
         const event = keyboard ? "keyup" : "mouseup";
         element.addEventListener(event, () => {
             this.animationInterrupted = true;
+            this.updateUrlParams();
         }, {once: true});
     };
     moveCameraHeight = (ev, dir) => {
@@ -219,6 +222,7 @@ class MapControls3D extends React.Component {
         });
         ev.target.addEventListener("keyup", () => {
             this.animationInterrupted = true;
+            this.updateUrlParams();
         }, {once: true});
     };
     resetTilt = () => {
@@ -262,6 +266,7 @@ class MapControls3D extends React.Component {
             };
             requestAnimationFrame(animate);
         }
+        this.updateUrlParams();
     };
     setViewToExtent = (bounds, angle = 0) => {
         if (this.state.firstPerson) {
@@ -352,8 +357,7 @@ class MapControls3D extends React.Component {
             target.lerpVectors(new Vector3(x, y, 0), terrInter, k);
         }
         this.props.setCenter([target.x, target.y, target.z]);
-        const cpos = camera.position;
-        UrlParams.updateParams({v3d: [target.x, target.y, target.z, cpos.x, cpos.y, cpos.z].map(v => v.toFixed(0)).join(",")});
+        this.updateUrlParams();
     };
     stopAnimations = () => {
         this.animationInterrupted = true;
@@ -383,6 +387,7 @@ class MapControls3D extends React.Component {
             return;
         }
         const pos = intersection.point;
+        this.personHeight = 2;
         this.props.sceneContext.getTerrainHeightFromDTM([pos.x, pos.y]).then(z => {
             // Animate from old to new position/target
             const oldPosition = this.props.sceneContext.scene.view.camera.position.clone();
@@ -417,7 +422,7 @@ class MapControls3D extends React.Component {
                     this.controls.maxPolarAngle = 0.8 * Math.PI;
                     this.controls.panSpeed = 600;
                     this.controls.enableZoom = false;
-                    this.setState({firstPerson: true});
+                    this.setState({firstPerson: true}, this.updateUrlParams);
                 }
             };
             requestAnimationFrame(animate);
@@ -432,7 +437,33 @@ class MapControls3D extends React.Component {
             const cameraPos = this.props.sceneContext.scene.view.camera.position;
             const bounds = [cameraPos.x - 1000, cameraPos.y - 1000, cameraPos.x + 1000, cameraPos.y + 1000];
             this.setViewToExtent(bounds);
+            this.updateUrlParams();
         });
+    };
+    updateUrlParams = () => {
+        const tpos = this.props.sceneContext.scene.view.controls.target;
+        const cpos = this.props.sceneContext.scene.view.camera.position;
+        UrlParams.updateParams({v3d: [tpos.x, tpos.y, tpos.z, cpos.x, cpos.y, cpos.z, this.state.firstPerson ? this.personHeight : 0].map(v => v.toFixed(1)).join(",")});
+    };
+    restoreView = (viewState) => {
+        if (viewState.cameraPos && viewState.center) {
+            const cameraPos = this.props.sceneContext.scene.view.camera.position;
+            cameraPos.x = viewState.cameraPos[0];
+            cameraPos.y = viewState.cameraPos[1];
+            cameraPos.z = viewState.cameraPos[2];
+            const controlsTarget = this.props.sceneContext.scene.view.controls.target;
+            controlsTarget.x = viewState.center[0];
+            controlsTarget.y = viewState.center[1];
+            controlsTarget.z = viewState.center[2];
+            this.personHeight = viewState.personHeight;
+            if (this.personHeight > 0) {
+                this.controls.maxPolarAngle = 0.8 * Math.PI;
+                this.controls.panSpeed = 600;
+                this.controls.enableZoom = false;
+                this.setState({firstPerson: true});
+            }
+            this.props.sceneContext.scene.notifyChange();
+        }
     };
 }
 

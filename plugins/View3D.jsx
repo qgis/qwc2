@@ -294,9 +294,10 @@ class View3D extends React.Component {
             };
             if (this.props.startupParams.v3d) {
                 const values = this.props.startupParams.v3d.split(",").map(parseFloat).filter(x => !isNaN(x));
-                if (values.length === 6) {
+                if (values.length >= 6) {
                     state3d.center = [values[0], values[1], values[2]];
                     state3d.cameraPos = [values[3], values[4], values[5]];
+                    state3d.personHeight = values[6] || 0;
                 }
             }
             this.map3dComponentRef.restore3dState(state3d);

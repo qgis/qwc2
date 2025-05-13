@@ -687,7 +687,8 @@ class Map3D extends React.Component {
     setupControls = (instance) => {
         this.setState(state => ({sceneContext: {
             ...state.sceneContext,
-            setViewToExtent: instance?.setViewToExtent
+            setViewToExtent: instance?.setViewToExtent,
+            restoreView: instance?.restoreView
 
         }}), this.props.onMapInitialized);
     };
@@ -840,16 +841,7 @@ class Map3D extends React.Component {
                 this.state.sceneContext.updateColorLayer(item.id, item.options);
             }
         });
-        if (data.cameraPos && data.center) {
-            const cameraPos = this.state.sceneContext.scene.view.camera.position;
-            cameraPos.x = data.cameraPos[0];
-            cameraPos.y = data.cameraPos[1];
-            cameraPos.z = data.cameraPos[2];
-            const controlsTarget = this.state.sceneContext.scene.view.controls.target;
-            controlsTarget.x = data.center[0];
-            controlsTarget.y = data.center[1];
-            controlsTarget.z = data.center[2];
-        }
+        this.state.sceneContext.restoreView(data);
         this.state.sceneContext.scene.notifyChange();
     };
 }
