@@ -10,8 +10,6 @@ import axios from 'axios';
 import deepmerge from 'deepmerge';
 import {XMLParser} from 'fast-xml-parser';
 import isEmpty from 'lodash.isempty';
-import { getWidth } from 'ol/extent';
-import { get as getProjection } from 'ol/proj';
 import ol from 'openlayers';
 import randomColor from 'randomcolor';
 import url from 'url';
