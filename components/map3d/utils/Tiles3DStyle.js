@@ -144,16 +144,6 @@ const Tiles3DStyle = {
             group.userData.tileLabels = tileLabels;
             group.add(labelObjects);
         }
-    },
-    handleTileVisibilityChange(group, visible) {
-        // Re-add labels
-        if (visible && group.userData.tileLabels) {
-            const labelObjects = new Group();
-            Object.values(group.userData.tileLabels).forEach(entry => {
-                labelObjects.add(createLabelObject(entry));
-            });
-            group.add(labelObjects);
-        }
     }
 };
 

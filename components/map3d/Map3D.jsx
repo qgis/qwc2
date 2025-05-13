@@ -640,9 +640,6 @@ class Map3D extends React.Component {
             scene.userData.batchIdAttr = entry.idAttr ?? "id";
             Tiles3DStyle.handleModelLoad(scene, entry);
         });
-        tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
-            Tiles3DStyle.handleTileVisibilityChange(scene, visible);
-        });
         tiles.castShadow = true;
         tiles.receiveShadow = true;
         tiles.userData.layertree = true;
