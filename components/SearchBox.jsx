@@ -121,15 +121,6 @@ class SearchBox extends React.Component {
         if (!this.state.filterOptionsVisible && prevState.filterOptionsVisible) {
             this.searchTextChanged(this.state.searchText);
         }
-        // Select single search result
-        if (this.state.pendingSearches.length === 0 && prevState.pendingSearches.length > 0 && this.state.searchResults.zoomToUniqueResult) {
-            // eslint-disable-next-line no-unused-vars
-            const groupsWithResults = Object.entries(this.state.searchResults).filter(([key, value]) => value.tot_result_count > 0);
-            if (groupsWithResults.length === 1 && groupsWithResults[0][1].tot_result_count === 1) {
-                const group = groupsWithResults[0];
-                this.selectProviderResult(group[1].results[0], group[1].results[0].items[0], group[0]);
-            }
-        }
     }
     renderFilterOptions = () => {
         if (!this.state.filterOptionsVisible) {
@@ -806,37 +797,6 @@ class SearchBox extends React.Component {
         const x = 0.5 * (bbox[0] + bbox[2]);
         const y = 0.5 * (bbox[1] + bbox[3]);
         this.props.zoomToPoint([x, y], zoom, this.props.map.projection);
-    };
-    showFeatureGeometry = (data, scale = undefined, label = "") => {
-        // Zoom to bbox
-        const bbox = CoordinatesUtils.reprojectBbox(data.bbox, data.crs.properties.name, this.props.map.projection);
-        let zoom = 0;
-        if (scale) {
-            zoom = MapUtils.computeZoom(this.props.map.scales, scale);
-        } else {
-            const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
-            zoom = Math.max(0, MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
-        }
-        const x = 0.5 * (bbox[0] + bbox[2]);
-        const y = 0.5 * (bbox[1] + bbox[3]);
-        this.props.zoomToPoint([x, y], zoom, this.props.map.projection);
-
-        // Add result geometry
-        const layer = {
-            id: "searchselection",
-            role: LayerRole.SELECTION
-        };
-        for (const feature of data.features) {
-            feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, data.crs.properties.name, this.props.map.projection);
-        }
-        if (!isEmpty(data.features)) {
-            const styleName = data.features[0].geometry?.type === 'Point' ? 'marker' : 'default';
-            data.features[0].properties = {...data.features[0].properties, label: label};
-            data.features[0].id = 'searchmarker';
-            data.features[0].styleName = styleName;
-            data.features[0].styleOptions = this.props.searchOptions.highlightStyle || {};
-        }
-        this.props.addLayerFeatures(layer, data.features, true);
     };
     openUrl = (url, target, title) => {
         if (target === "iframe") {
