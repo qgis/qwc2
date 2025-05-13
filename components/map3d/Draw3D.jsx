@@ -57,6 +57,7 @@ export default class Draw3D extends React.Component {
         if (drawGroup === undefined) {
             this.addDrawGroup(LocaleUtils.tr("draw3d.drawings"));
         } else {
+            this.props.sceneContext.updateSceneObject(drawGroup[0], {visibility: true});
             this.setState({drawGroupId: drawGroup[0]});
         }
     };
@@ -101,7 +102,7 @@ export default class Draw3D extends React.Component {
                     <div className="redlining-group">
                         <div>{LocaleUtils.tr("redlining.layer")}</div>
                         <div className="controlgroup">
-                            <select onChange={(ev) => this.setState({drawGroupId: ev.target.value})} value={this.state.drawGroupId}>
+                            <select onChange={ev => this.setActiveDrawGroup(ev.target.value)} value={this.state.drawGroupId}>
                                 {drawGroups.map(([objectId, options]) => (
                                     <option key={objectId} value={objectId}>{options.title}</option>
                                 ))}
@@ -153,6 +154,10 @@ export default class Draw3D extends React.Component {
             </TaskBar>
         );
     }
+    setActiveDrawGroup = (drawGroupId) => {
+        this.props.sceneContext.updateSceneObject(drawGroupId, {visibility: true});
+        this.setState({drawGroupId: drawGroupId, selectedObject: null});
+    };
     actionChanged = (data) => {
         if (data.action === "Delete") {
             this.deleteSelectedObject();
