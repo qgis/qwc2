@@ -669,11 +669,13 @@ class SearchBox extends React.Component {
                     }};
                     const newPendingSearches = state.pendingSearches.filter(entry => entry !== provKey);
                     if (isEmpty(newPendingSearches) && uniquePlaceResult) {
-                        // eslint-disable-next-line no-unused-vars
                         const providersWithResults = Object.entries(searchResults).filter(([_, providerResults]) => providerResults.tot_result_count > 0);
                         if (providersWithResults.length === 1 && providersWithResults[0][1].tot_result_count === 1) {
                             const group = providersWithResults[0][1].results[0];
-                            this.selectPlaceResult(providersWithResults[0][0], group, group.items[0]);
+                            // Avoid warning about setState called in setState
+                            setTimeout(() => {
+                                this.selectPlaceResult(providersWithResults[0][0], group, group.items[0]);
+                            }, 0);
                         }
                     }
                     return {
