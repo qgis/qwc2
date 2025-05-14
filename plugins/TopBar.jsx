@@ -76,6 +76,8 @@ class TopBar extends React.Component {
             resultLimit: PropTypes.number,
             /** Whether to collapse search sections by default. */
             sectionsDefaultCollapsed: PropTypes.bool,
+            /** Whether to show a highlight marker in the center of the search result geometry. */
+            showHighlightMarker: PropTypes.bool,
             /** Whether to show the layer tree after selecting a theme result. */
             showLayerAfterChangeTheme: PropTypes.bool,
             /** Whether to show layer results before pkaces in the result menu. */
@@ -94,6 +96,7 @@ class TopBar extends React.Component {
     };
     static defaultProps = {
         searchOptions: {
+            showHighlightMarker: true,
             showResultInSearchText: true
         },
         menuItems: [],
