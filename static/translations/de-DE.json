@@ -129,6 +129,7 @@
       "title": "Cyclomedia Viewer"
     },
     "draw3d": {
+      "clone": "Kopieren",
       "cone": "Kegel",
       "ctrlhint": "Mehrfachselektion mit Ctrl...",
       "cuboid": "Quader",
@@ -329,8 +330,8 @@
       "resetrotation": "Drehung zurücksetzen"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "Ansicht synchronisieren",
+      "lockview": "Mit 2D Ansicht verschieben",
+      "syncview": "Mit 2D Ansicht synchronisieren",
       "terrain": "Gelände",
       "title": "3D Ansicht"
     },

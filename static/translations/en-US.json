@@ -129,6 +129,7 @@
       "title": "Cyclomedia Viewer"
     },
     "draw3d": {
+      "clone": "Clone",
       "cone": "Cone",
       "ctrlhint": "Use Ctrl for multiselection...",
       "cuboid": "Cuboid",
@@ -329,8 +330,8 @@
       "resetrotation": "Reset rotation"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "Synchronize view",
+      "lockview": "Move with 2D view",
+      "syncview": "Synchronize with 2D view",
       "terrain": "Terrain",
       "title": "3D View"
     },

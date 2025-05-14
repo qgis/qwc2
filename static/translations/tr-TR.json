@@ -129,6 +129,7 @@
       "title": "Cyclomedia Görüntüleyici"
     },
     "draw3d": {
+      "clone": "",
       "cone": "Koni",
       "ctrlhint": "",
       "cuboid": "Kübik",

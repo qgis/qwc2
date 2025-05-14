@@ -129,6 +129,7 @@
       "title": "Visualizzatore Cyclomedia"
     },
     "draw3d": {
+      "clone": "Copia",
       "cone": "Cono",
       "ctrlhint": "Ctrl per selezione multipla...",
       "cuboid": "Cuboide",
@@ -329,8 +330,8 @@
       "resetrotation": "Resetta orientamento"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "Sincronizza visuale",
+      "lockview": "Muovi con visuale 2D",
+      "syncview": "Sincronizza con visuale 2D",
       "terrain": "Terreno",
       "title": "Visuale 3D"
     },

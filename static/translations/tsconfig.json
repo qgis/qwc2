@@ -136,6 +136,7 @@
     "cyclomedia.login",
     "cyclomedia.scalehint",
     "cyclomedia.title",
+    "draw3d.clone",
     "draw3d.cone",
     "draw3d.ctrlhint",
     "draw3d.cuboid",

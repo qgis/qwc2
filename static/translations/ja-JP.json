@@ -129,6 +129,7 @@
       "title": "Cyclomedia ビューワ"
     },
     "draw3d": {
+      "clone": "",
       "cone": "円錐",
       "ctrlhint": "",
       "cuboid": "直方体",

@@ -26,6 +26,11 @@ class GroupSelection extends Group {
         super();
         this.isGroupSelection = true;
     }
+    clone() {
+        const clone = super.clone();
+        clone.isGroupSelection = true;
+        return clone;
+    }
     hasObject = (object) => {
         return this.children.indexOf(object) >= 0;
     };
@@ -182,6 +187,7 @@ export default class EditTool3D extends React.Component {
             {key: "rotate", label: LocaleUtils.tr("draw3d.rotate")}
         ];
         const extraButtons = [
+            {key: "clone", tooltip: LocaleUtils.tr("draw3d.clone"), icon: "clone"},
             {key: "NumericInput", tooltip: LocaleUtils.tr("draw3d.numericinput"), icon: "numericinput"}
         ];
         const csgButtons = [
@@ -200,7 +206,7 @@ export default class EditTool3D extends React.Component {
                         <ButtonBar active={this.state.mode} buttons={editButtons} onClick={mode => this.setState({mode})} />
                     </span>
                     <span>
-                        <ButtonBar active={this.state.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={this.toggleNumericInput} />
+                        <ButtonBar active={this.state.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={this.toolButtonClicked} />
                     </span>
                     {this.state.numericInput ? (
                         <NumericInput3D
@@ -233,6 +239,13 @@ export default class EditTool3D extends React.Component {
             ) : null
         ];
     }
+    toolButtonClicked = (key) => {
+        if (key === "NumericInput") {
+            this.toggleNumericInput();
+        } else if (key === "clone") {
+            this.cloneSelectedObject();
+        }
+    };
     selectShapeOnRelease = (ev) => {
         if (ev.button === 0 && !this.transformControls.dragging) {
             const renderer = this.props.sceneContext.scene.renderer;
@@ -369,5 +382,33 @@ export default class EditTool3D extends React.Component {
         this.setState({label: text});
         this.props.selectedObject.userData.label = text;
         this.props.sceneContext.updateObjectLabel(this.props.selectedObject);
+    };
+    cloneSelectedObject = () => {
+        if (this.props.selectedObject) {
+            const clonedObject = this.deepClone(this.props.selectedObject);
+            clonedObject.position.x += 10;
+            clonedObject.position.y += 10;
+            clonedObject.updateMatrixWorld();
+            this.props.selectedObject.parent.add(clonedObject);
+            this.props.objectPicked(clonedObject);
+        }
+    };
+    deepClone = (object) => {
+        const clone = object.clone(false);
+
+        if (object.geometry) {
+            clone.geometry = object.geometry.clone();
+        }
+        if (object.material) {
+            if (Array.isArray(object.material)) {
+                clone.material = object.material.map(mat => mat.clone());
+            } else {
+                clone.material = object.material.clone();
+            }
+        }
+        object.children.forEach(child => {
+            clone.add(this.deepClone(child));
+        });
+        return clone;
     };
 }

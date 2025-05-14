@@ -129,6 +129,7 @@
       "title": "Cyclomedia Viewer"
     },
     "draw3d": {
+      "clone": "",
       "cone": "",
       "ctrlhint": "",
       "cuboid": "",

@@ -129,6 +129,7 @@
       "title": "Titulo"
     },
     "draw3d": {
+      "clone": "",
       "cone": "",
       "ctrlhint": "",
       "cuboid": "",
