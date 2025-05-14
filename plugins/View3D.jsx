@@ -121,7 +121,8 @@ class View3D extends React.Component {
     };
     state = {
         componentLoaded: false,
-        windowDetached: false
+        windowDetached: false,
+        viewsLocked: false
     };
     constructor(props) {
         super(props);
@@ -191,6 +192,7 @@ class View3D extends React.Component {
         if (this.props.view3dMode !== prevProps.view3dMode) {
             if (this.props.view3dMode === View3DMode.FULLSCREEN) {
                 UrlParams.updateParams({v: "3d"});
+                this.setState({viewsLocked: false});
             } else if (this.props.view3dMode === View3DMode.SPLITSCREEN) {
                 UrlParams.updateParams({v: "3d2d"});
             } else {
@@ -205,13 +207,22 @@ class View3D extends React.Component {
         ) {
             this.props.setView3dMode(View3D.DISABLED);
         }
+        // Lock views
+        if (this.state.viewsLocked && this.props.mapBBox !== prevProps.mapBBox) {
+            this.sync2DExtent();
+        }
     }
     render3DWindow = () => {
         if (this.props.display.view3dMode > View3DMode.DISABLED) {
             const extraControls = [{
                 icon: "sync",
-                callback: this.setViewToExtent,
+                callback: this.sync2DExtent,
                 title: LocaleUtils.tr("map3d.syncview")
+            }, {
+                icon: "lock",
+                callback: this.setLockViews,
+                title: LocaleUtils.tr("map3d.lockview"),
+                active: this.state.viewsLocked
             }];
             if (!this.state.windowDetached) {
                 extraControls.push({
@@ -280,10 +291,17 @@ class View3D extends React.Component {
     setRef = (ref) => {
         this.map3dComponentRef = ref;
     };
-    setViewToExtent = () => {
+    sync2DExtent = () => {
         if (this.map3dComponentRef) {
             this.map3dComponentRef.setViewToExtent(this.props.mapBBox.bounds, this.props.mapBBox.rotation);
         }
+    };
+    setLockViews = () => {
+        this.setState(state => ({viewsLocked: !state.viewsLocked}), () => {
+            if (this.state.viewsLocked) {
+                this.sync2DExtent();
+            }
+        });
     };
     setupMap = () => {
         if (this.map3dComponentRef && this.restoreOnComponentLoad) {
@@ -301,10 +319,10 @@ class View3D extends React.Component {
             }
             this.map3dComponentRef.restore3dState(state3d);
             if (!this.props.startupParams.v3d) {
-                this.setViewToExtent();
+                this.sync2DExtent();
             }
         } else {
-            this.setViewToExtent();
+            this.sync2DExtent();
         }
     };
     redrawScene = (ev) => {
