@@ -130,6 +130,7 @@
     },
     "draw3d": {
       "cone": "Cône",
+      "ctrlhint": "Ctrl pour sélection multiple...",
       "cuboid": "Cuboïde",
       "cylinder": "Cylindre",
       "delete": "Effacer",
@@ -328,6 +329,7 @@
       "resetrotation": "Réinitialiser la rotation"
     },
     "map3d": {
+      "lockview": "",
       "syncview": "Synchroniser la vue",
       "terrain": "Terrain",
       "title": "Vue 3D"

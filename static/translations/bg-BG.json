@@ -130,6 +130,7 @@
     },
     "draw3d": {
       "cone": "Конус",
+      "ctrlhint": "",
       "cuboid": "Кубоид",
       "cylinder": "Цилиндър",
       "delete": "Изтриване на",
@@ -328,6 +329,7 @@
       "resetrotation": "Нулиране на въртенето"
     },
     "map3d": {
+      "lockview": "",
       "syncview": "Синхронизиране на изгледа",
       "terrain": "Земя",
       "title": "3D изглед"

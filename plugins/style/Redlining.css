@@ -14,7 +14,6 @@ div.redlining-separator {
 }
 
 div.redlining-group {
-    margin: 0;
     flex: 1 1 auto;
     margin: 0 0.125em;
 }
@@ -98,4 +97,9 @@ div.redlining-marker-combo-entry img {
 div.redlining-message {
     text-align: center;
     font-style: italic;
+}
+
+div.redlining-hinttext {
+    font-size: 90%;
+    text-align: center;
 }

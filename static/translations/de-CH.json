@@ -130,6 +130,7 @@
     },
     "draw3d": {
       "cone": "Kegel",
+      "ctrlhint": "Mehrfachselektion mit Ctrl...",
       "cuboid": "Quader",
       "cylinder": "Zylinder",
       "delete": "Löschen",
@@ -328,6 +329,7 @@
       "resetrotation": "Drehung zurücksetzen"
     },
     "map3d": {
+      "lockview": "",
       "syncview": "Ansicht synchronisieren",
       "terrain": "Gelände",
       "title": "3D Ansicht"

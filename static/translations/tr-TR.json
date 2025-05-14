@@ -130,6 +130,7 @@
     },
     "draw3d": {
       "cone": "Koni",
+      "ctrlhint": "",
       "cuboid": "Kübik",
       "cylinder": "Silindir",
       "delete": "Sil",
@@ -328,6 +329,7 @@
       "resetrotation": "Dönüklüğü sıfırla"
     },
     "map3d": {
+      "lockview": "",
       "syncview": "Görünümü senkronize et",
       "terrain": "Arazi",
       "title": "3 Boyutlu görünüm"

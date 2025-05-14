@@ -130,6 +130,7 @@
     },
     "draw3d": {
       "cone": "円錐",
+      "ctrlhint": "",
       "cuboid": "直方体",
       "cylinder": "円柱",
       "delete": "削除",
@@ -328,6 +329,7 @@
       "resetrotation": "回転をリセット"
     },
     "map3d": {
+      "lockview": "",
       "syncview": "ビューを同期",
       "terrain": "地形",
       "title": "3D ビュー"
