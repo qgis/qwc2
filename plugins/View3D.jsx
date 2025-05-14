@@ -246,15 +246,14 @@ class View3D extends React.Component {
                 >
                     {this.state.componentLoaded ? (
                         <Provider role="body" store={this.store}>
-                            <Map3D
-                                innerRef={this.setRef}
-                                onMapInitialized={this.setupMap}
-                                options={options}
-                                searchProviders={this.props.searchProviders}
-                                theme={this.props.theme} />
-                            {this.props.view3dMode === View3DMode.FULLSCREEN ? (
-                                <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig} />
-                            ) : null}
+                            <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig}>
+                                <Map3D
+                                    innerRef={this.setRef}
+                                    onMapInitialized={this.setupMap}
+                                    options={options}
+                                    searchProviders={this.props.searchProviders}
+                                    theme={this.props.theme} />
+                            </PluginsContainer>
                         </Provider>
                     ) : null}
                 </ResizeableWindow>

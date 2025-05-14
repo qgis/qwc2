@@ -5,3 +5,21 @@ div.PluginsContainer {
     right: 0;
     bottom: 0;
 }
+
+div.map-buttons-container {
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap-reverse;
+    z-index: 2;
+}
+
+div.map-buttons-spacer {
+    display: inline-block;
+    width: 3em;
+    height: 3em;
+}

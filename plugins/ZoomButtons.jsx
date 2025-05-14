@@ -9,17 +9,15 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import {changeZoomLevel, zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
-import Icon from '../components/Icon';
+import MapButton from '../components/MapButton';
 import MapSelection from '../components/MapSelection';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
-import './style/Buttons.css';
 
 /**
  * Map button for zooming the map.
@@ -36,7 +34,6 @@ class ZoomButton extends React.Component {
         /** Enable zoom in or out by box selection. */
         enableZoomByBoxSelection: PropTypes.bool,
         mapCrs: PropTypes.string,
-        mapMargins: PropTypes.object,
         maxZoom: PropTypes.number,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
@@ -78,27 +75,17 @@ class ZoomButton extends React.Component {
         }
         const defaultPosition = (this.props.direction > 0 ? 4 : 3);
         const position = this.props.position >= 0 ? this.props.position : defaultPosition;
-        const right = this.props.mapMargins.right;
-        const bottom = this.props.mapMargins.bottom;
-        const style = {
-            right: 'calc(1.5em + ' + right + 'px)',
-            bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * position) + 'em)'
-        };
         const tooltip = this.props.direction > 0 ? LocaleUtils.tr("tooltip.zoomin") : LocaleUtils.tr("tooltip.zoomout");
-        const classes = classnames({
-            "map-button": true,
-            "map-button-active": this.props.enableZoomByBoxSelection && this.props.currentTask === this.task,
-            "map-button-disabled": this.state.disabled
-        });
+        const active = this.props.enableZoomByBoxSelection && this.props.currentTask === this.task;
         return [(
-            <button className={classes}
+            <MapButton
+                active={active} disabled={this.state.disabled}
+                icon={this.props.direction > 0 ? "plus" : "minus"}
                 key={this.task + "Button"}
                 onClick={this.buttonClicked}
-                style={style}
-                title={tooltip}
-            >
-                <Icon icon={this.props.direction > 0 ? "plus" : "minus"} title={tooltip}/>
-            </button>
+                position={position}
+                tooltip={tooltip}
+            />
         ), (
             this.props.currentTask === this.task ? (
                 <MapSelection
@@ -136,7 +123,6 @@ export const ZoomInPlugin = connect((state) => ({
     maxZoom: state.map.resolutions.length - 1,
     direction: +1,
     mapCrs: state.map.projection,
-    mapMargins: state.windows.mapMargins,
     theme: state.theme.current
 }), {
     changeZoomLevel: changeZoomLevel,

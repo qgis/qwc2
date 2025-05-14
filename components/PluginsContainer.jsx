@@ -17,12 +17,20 @@ import WindowManager from './WindowManager';
 import './style/PluginsContainer.css';
 
 
+export const MapButtonPortalContext = React.createContext(null);
+
+
 class PluginsContainer extends React.Component {
     static propTypes = {
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        mapMargins: PropTypes.object,
         plugins: PropTypes.object,
         pluginsAppConfig: PropTypes.object,
         pluginsConfig: PropTypes.object,
         theme: PropTypes.object
+    };
+    state = {
+        mapButtonsContainerRef: null
     };
     renderPlugins = () => {
         const mode = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
@@ -40,10 +48,24 @@ class PluginsContainer extends React.Component {
         });
     };
     render() {
+        const left = this.props.mapMargins.left;
+        const top = this.props.mapMargins.top;
+        const right = this.props.mapMargins.right;
+        const bottom = this.props.mapMargins.bottom;
+        const buttonContainerStyle = {
+            left: 'calc(1em + ' + left + 'px)',
+            top: 'calc(var(--topbar-height) + ' + top + 'px)',
+            right: 'calc(1em + ' + right + 'px)',
+            bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + 2.5em)'
+        };
         return (
             <div className="PluginsContainer" ref={this.setupTouchEvents}>
-                {this.renderPlugins()}
+                <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
+                    {this.renderPlugins()}
+                    {this.props.children}
+                </MapButtonPortalContext.Provider>
                 <WindowManager />
+                <div className="map-buttons-container" ref={this.setContainerRef} style={buttonContainerStyle} />
             </div>
         );
     }
@@ -85,8 +107,44 @@ class PluginsContainer extends React.Component {
             ev.preventDefault();
         }
     };
+    setContainerRef = (el) => {
+        this.setState({mapButtonsContainerRef: el});
+        if (el) {
+            const resizeObserver = new ResizeObserver(entries => {
+                const contentRectEntry = entries.find(entry => entry.contentRect);
+                if (contentRectEntry) {
+                    const width = contentRectEntry.contentRect.width;
+                    const height = contentRectEntry.contentRect.height;
+                    el.style.setProperty('--buttons-container-width', `${width}px`);
+                    el.style.setProperty('--buttons-container-height', `${height}px`);
+                }
+            });
+            resizeObserver.observe(el);
+            el.recomputeSpacers = () => {
+                const slots = new Set();
+                Array.from(el.childNodes).forEach(child => {
+                    if (child.dataset.spacer) {
+                        el.removeChild(child);
+                    } else {
+                        slots.add(child.dataset.slot);
+                    }
+                });
+                const maxSlot = Math.max(...slots);
+                for (let i = 0; i < maxSlot; ++i) {
+                    if (!slots.has(String(i))) {
+                        const child = document.createElement("div");
+                        child.className = "map-buttons-spacer";
+                        child.dataset.spacer = 1;
+                        child.style.order = i;
+                        el.appendChild(child);
+                    }
+                }
+            };
+        }
+    };
 }
 
 export default connect((state) => ({
+    mapMargins: state.windows.mapMargins,
     theme: state.theme.current
 }))(PluginsContainer);

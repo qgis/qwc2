@@ -1,19 +1,23 @@
-#BackgroundSwitcher {
+div.background-switcher {
     position: absolute;
-    right: 5em;
-    bottom: 3.5em;
-    z-index: 3;
+    right: 100%;
+    bottom: -1em;
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.1s;
     text-align: right;
+    display: flex;
+    width: calc(var(--buttons-container-width) - 4em);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    z-index: 1;
 }
 
-#BackgroundSwitcher.bgswitcher-active {
+div.background-switcher-active {
     transform: scaleX(1);
 }
 
-#BackgroundSwitcher div.background-switcher-item {
+div.background-switcher-item {
     background-color: var(--list-bg-color);
     cursor: pointer;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
@@ -24,33 +28,33 @@
     position: relative;
 }
 
-#BackgroundSwitcher div.background-switcher-item:hover {
+div.background-switcher-item:hover {
     border: 1px solid var(--color-active);
 }
 
-#BackgroundSwitcher div.background-switcher-item:hover div.background-group-menu {
+div.background-switcher-item:hover div.background-switcher-group {
     display: block;
 }
 
-#BackgroundSwitcher div.background-switcher-item-active {
+div.background-switcher-item-active {
     border: 1px solid var(--color-active);
 }
 
-#BackgroundSwitcher div.background-switcher-item-active div.background-layer-title {
+div.background-switcher-item-active div.background-switcher-item-title {
     color: var(--color-active);
 }
 
-#BackgroundSwitcher div.background-layer-thumbnail {
+div.background-switcher-item-thumbnail {
     height: 4em;
 }
 
-#BackgroundSwitcher div.background-layer-thumbnail > img {
+div.background-switcher-item-thumbnail > img {
     width: 100%;
     height: 100%;
 }
 
-#BackgroundSwitcher div.background-layer-title > span:first-child,
-#BackgroundSwitcher div.background-group-menu > div {
+div.background-switcher-item-title > span:first-child,
+div.background-switcher-group > div {
     font-weight: bold;
     font-size: 80%;
     text-align: center;
@@ -60,20 +64,20 @@
     padding: 0.25em;
 }
 
-#BackgroundSwitcher div.background-layer-title {
+div.background-switcher-item-title {
     display: flex;
     align-items: center;
 }
 
-#BackgroundSwitcher div.background-layer-title span:first-child {
+div.background-switcher-item-title span:first-child {
     flex: 1 1 auto;
 }
 
-#BackgroundSwitcher div.background-layer-title span.icon {
+div.background-switcher-item-title span.icon {
     flex: 0 0 auto;
 }
 
-#BackgroundSwitcher div.background-group-menu {
+div.background-switcher-group {
     display: none;
     position: absolute;
     bottom: calc(100% + 1px);
@@ -83,17 +87,17 @@
     clip-path: inset(-8px -8px 0 -8px);
 }
 
-#BackgroundSwitcher div.background-group-menu-item:hover {
+div.background-switcher-group-item:hover {
     background-color: var(--list-item-bg-color-hover);
     color: var(--list-item-text-color-hover);
 }
 
-#BackgroundSwitcher div.background-group-menu-item-active {
+div.background-switcher-group-item-active {
     background-color: var(--list-item-bg-color-active);
     color: var(--list-item-text-color-active);
 }
 
-#BackgroundSwitcher div.background-group-menu-item-active:hover {
+div.background-switcher-group-item-active:hover {
     background-color: var(--list-item-bg-color-active-hover);
     color: var(--list-item-text-color-active-hover);
 }

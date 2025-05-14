@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
-import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
@@ -20,6 +19,7 @@ import {LayerRole, setFilter} from '../actions/layers';
 import {setPermalinkParameters} from '../actions/localConfig';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
+import MapButton from '../components/MapButton';
 import MapSelection from '../components/MapSelection';
 import PickFeature from '../components/PickFeature';
 import SideBar from '../components/SideBar';
@@ -63,7 +63,6 @@ class MapFilter extends React.Component {
             fillColor: PropTypes.array
         }),
         layers: PropTypes.array,
-        mapMargins: PropTypes.object,
         /** The position slot index of the map button, from the bottom (0: bottom slot). Set to -1 to hide the button. */
         position: PropTypes.number,
         setCurrentTask: PropTypes.func,
@@ -287,25 +286,18 @@ class MapFilter extends React.Component {
         let button = null;
         const taskActive = this.props.currentTask === "MapFilter";
         if (this.props.position >= 0) {
-            const right = this.props.mapMargins.right;
-            const bottom = this.props.mapMargins.bottom;
-            const style = {
-                right: 'calc(1.5em + ' + right + 'px)',
-                bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
-            };
             const filterActive = !isEmpty(this.props.filter.filterParams) || !!this.props.filter.filterGeom;
-            const classes = classNames({
-                "map-button": true,
-                "map-button-active": taskActive,
-                "map-button-engaged": filterActive && !this.state.filterInvalid,
-                "filter-map-button-error": filterActive && this.state.filterInvalid
-            });
             const title = LocaleUtils.tr("appmenu.items.MapFilter");
+            const className = filterActive && this.state.filterInvalid ? "filter-map-button-error" : "";
             button = (
-                <button className={classes} key="MapFilterButton" onClick={this.filterMapButtonClicked}
-                    style={style} title={title}>
-                    <Icon icon="filter" />
-                </button>
+                <MapButton
+                    active={taskActive}
+                    className={className}
+                    engaged={filterActive && !this.state.filterInvalid}
+                    icon="filter"
+                    key="MapFilterButton" onClick={this.filterMapButtonClicked}
+                    position={this.props.position}
+                    tooltip={title} />
             );
         }
         const selGeomType = this.state.geomFilter?.picking ? null : this.state.geomFilter?.geomType;
@@ -666,7 +658,6 @@ class MapFilter extends React.Component {
 
 export default connect((state) => ({
     currentTask: state.task.id,
-    mapMargins: state.windows.mapMargins,
     theme: state.theme.current,
     layers: state.layers.flat,
     filter: state.layers.filter,

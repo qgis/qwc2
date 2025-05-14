@@ -13,13 +13,13 @@ import PropTypes from 'prop-types';
 
 import {setView3dMode, View3DMode} from '../../actions/display';
 import Icon from '../Icon';
+import MapButton from '../MapButton';
 
 import './style/View3DSwitcher.css';
 
 
 class View3DSwitcher extends React.Component {
     static propTypes = {
-        mapMargins: PropTypes.object,
         position: PropTypes.number,
         setView3dMode: PropTypes.func,
         switchTo: PropTypes.string,
@@ -29,12 +29,6 @@ class View3DSwitcher extends React.Component {
         expanded: false
     };
     render = () => {
-        const right = this.props.mapMargins.right;
-        const bottom = this.props.mapMargins.bottom;
-        const style = {
-            right: 'calc(1.5em + ' + right + 'px)',
-            bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
-        };
         const buttons = [
             {mode: View3DMode.DISABLED, icon: "2d"},
             {mode: View3DMode.FULLSCREEN, icon: "3d"},
@@ -42,22 +36,24 @@ class View3DSwitcher extends React.Component {
         ];
         const activeButton = buttons.splice(this.props.view3dMode, 1)[0];
         return (
-            <div className={"View3DSwitcher " + (this.state.expanded ? "view3d-switcher-expanded" : "")} style={style}>
-                <button
-                    className={"map-button " + (this.state.expanded ? "map-button-active" : "")}
-                    onClick={() => this.setState(state => ({expanded: !state.expanded}))}
-                >
-                    <Icon icon={activeButton.icon} size="xlarge" />
-                </button>
-                {buttons.map(button => (
-                    <button
-                        className="map-button" key={button.icon}
-                        onClick={() => this.switchMode(button.mode)}
-                    >
-                        <Icon icon={button.icon} size="xlarge" />
-                    </button>
-                ))}
-            </div>
+            <MapButton
+                active={this.state.expanded}
+                icon={activeButton.icon}
+                iconSize="xlarge"
+                onClick={() => this.setState(state => ({expanded: !state.expanded}))}
+                position={this.props.position}
+            >
+                <div className={"view3d-switcher-buttons" + (this.state.expanded ? " view3d-switcher-buttons-expanded" : "")}>
+                    {buttons.map(button => (
+                        <button
+                            className="map-button" key={button.icon}
+                            onClick={() => this.switchMode(button.mode)}
+                        >
+                            <Icon icon={button.icon} size="xlarge" />
+                        </button>
+                    ))}
+                </div>
+            </MapButton>
         );
     };
     switchMode = (mode) => {
@@ -67,7 +63,6 @@ class View3DSwitcher extends React.Component {
 }
 
 export default connect(state => ({
-    mapMargins: state.windows.mapMargins,
     view3dMode: state.display.view3dMode
 }), {
     setView3dMode: setView3dMode

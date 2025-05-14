@@ -1,27 +1,15 @@
-div.View3DSwitcher {
-    position: absolute;
-    height: 3em;
-    width: 3em;
-}
-
-div.View3DSwitcher > button {
-    bottom: 0;
-    right: 0;
+div.view3d-switcher-buttons > button {
     transition: right 0.25s;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
 }
 
-div.View3DSwitcher.view3d-switcher-expanded {
-    width: 11em;
+div.view3d-switcher-buttons-expanded > button:nth-child(1) {
+    right: 3.5em;
 }
 
-div.View3DSwitcher > button:nth-child(1) {
-    z-index: 4;
-}
-
-div.View3DSwitcher.view3d-switcher-expanded > button:nth-child(2) {
-    right: 4em;
-}
-
-div.View3DSwitcher.view3d-switcher-expanded > button:nth-child(3) {
-    right: 8em;
+div.view3d-switcher-buttons-expanded > button:nth-child(2) {
+    right: 7em;
 }

@@ -18,8 +18,6 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from "../utils/LocaleUtils";
 import ThemeUtils from '../utils/ThemeUtils';
 
-import './style/Buttons.css';
-
 /**
  * Generic map button to launch a task.
  */
