@@ -381,7 +381,7 @@ class MapExport extends React.Component {
     genericExport = (params, fileName, formatConfiguration) => {
         // Layer params
         const exportExternalLayers = this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion", null, 3) >= 3;
-        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers, !!formatConfiguration.baseLayer);
+        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers, !!formatConfiguration?.baseLayer);
         Object.assign(params, exportParams);
 
         // Highlight params
