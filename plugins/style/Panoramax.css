@@ -1,15 +1,23 @@
 div.panoramax-body {
-    height: calc(100% + 0.5em);
+    height: 100%;
     position: relative;
     display: flex;
     flex-direction: column;
-    margin: -0.25em;
+    width: 100%;
 }
 
-div.panoramax-body .gvs-psv-tour-arrows{
+div.panoramax-body .pnx-psv-tour-arrows {
     all: unset;
 }
 
-div.panoramax-body .gvs-btn:focus{
+div.panoramax-body .gvs-btn:focus {
     outline: none;
+}
+
+.panoramax-widget {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #333;
+    font-weight: bolder;
+    padding: 10px;
+    border-radius: 5px;
 }

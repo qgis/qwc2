@@ -1,19 +1,12 @@
-/**
- * Copyright 2025 Sourcepole AG
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree.
- */
 
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
-import {addLayer, addLayerFeatures, removeLayer, LayerRole} from '../actions/layers';
-import {setCurrentTask} from '../actions/task';
+import { addLayer, addLayerFeatures, LayerRole, removeLayer } from '../actions/layers';
+import { setCurrentTask } from '../actions/task';
 import MapSelection from '../components/MapSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -22,9 +15,9 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import ResourceRegistry from '../utils/ResourceRegistry';
 
-import './style/Panoramax.css';
+import '@panoramax/web-viewer';
 import '@panoramax/web-viewer/build/index.css';
-
+import './style/Panoramax.css';
 
 /**
  * Panoramax Integration for QWC2.
@@ -71,19 +64,23 @@ class Panoramax extends React.Component {
     state = {
         lon: null,
         lat: null,
-        queryImage: null,
+        queryData: null,
         selectionActive: false,
         selectionGeom: null,
         yaw: null,
-        currentTooltip: ''
+        currentTooltip: '',
+        viewerInitialized: false
     };
     constructor(props) {
         super(props);
         this.viewerRef = React.createRef();
     }
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
     componentDidUpdate(prevProps, prevState) {
         if (!prevProps.active && this.props.active) {
-            this.setState({selectionActive: true});
+            this.setState({ selectionActive: true });
             if (this.props.loadSequencesTiles) {
                 if (this.props.tileMode === "wms" && this.props.wmsUrl) {
                     this.addRecordingsWMS();
@@ -91,35 +88,31 @@ class Panoramax extends React.Component {
                     this.addRecordingsMVT();
                 }
             }
-        } else if ( this.state.selectionGeom &&
-            this.state.selectionGeom !== prevState.selectionGeom) {
+        } else if (this.state.selectionGeom && this.state.selectionGeom !== prevState.selectionGeom) {
             this.queryPoint(this.state.selectionGeom);
-        } else if (this.state.queryImage && !this.viewer && this.state.selectionGeom) {
-            this.initializeViewer(this.state.queryImage);
-        } else if (this.viewer && this.state.queryImage !== prevState.queryImage) {
-            this.viewer.select(null, this.state.queryImage, true);
+        }
+        if (this.state.queryData && !this.state.viewerInitialized && (!prevState.queryData || this.state.queryData !== prevState.queryData)) {
+            this.initializeViewer();
+            this.setState({ viewerInitialized: true });
         }
     }
     componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
         this.onClose();
     }
     onClose = () => {
         this.props.setCurrentTask(null);
         this.props.removeLayer('panoramax-recordings');
         this.props.removeLayer('panoramaxselection');
-        this.setState({selectionGeom: null, queryImage: null, lon: null, lat: null, selectionActive: null, yaw: null, currentTooltip: ''});
-        if (this.viewer) {
-            this.viewer.stopSequence();
-            this.viewer.destroy();
-            delete this.viewer;
-        }
+        this.setState({ selectionGeom: null, queryData: null, lon: null, lat: null, selectionActive: null, yaw: null, currentTooltip: '', viewerInitialized: false });
         ResourceRegistry.removeResource('selected');
+        this.viewer?.select(null, null, true);
     };
     render() {
         if (!this.props.active) {
             return null;
         }
-        const { selectionGeom, queryImage } = this.state;
+        const { selectionGeom, queryData } = this.state;
         return (
             <>
                 {selectionGeom && (
@@ -136,12 +129,33 @@ class Panoramax extends React.Component {
                         title={LocaleUtils.tr("panoramax.title")}
                     >
                         <div className="panoramax-body" role="body">
-                            {!queryImage && !this.viewer ? (
+                            {!queryData ? (
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', textAlign: 'center' }}>
                                     <p>{LocaleUtils.tr("panoramax.notfound")}</p>
                                 </div>
                             ) : (
-                                <div id="viewer" ref={this.viewerRef} style={{ height: '100%' }} />
+                                <pnx-photo-viewer
+                                    currentTooltip=""
+                                    endpoint={`https://${this.props.panoramaxInstance}/api`}
+                                    picture={queryData.queryImage}
+                                    ref={this.viewerRef}
+                                    sequence={queryData.querySequence}
+                                    style={{ width: '100%', height: 'calc(100% + 0.5em)' }}
+                                    widgets={false}
+                                >
+                                    <p className="panoramax-widget" slot="bottom-left">
+                                        {new Date(queryData.queryDate).toLocaleString(undefined, {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit',
+                                            timeZoneName: 'short'
+                                        })}
+                                    </p>
+                                    <p className="panoramax-widget" slot="bottom-right">{queryData.querySource}</p>
+                                </pnx-photo-viewer>
                             )}
                         </div>
                     </ResizeableWindow>
@@ -157,39 +171,30 @@ class Panoramax extends React.Component {
             </>
         );
     }
-    initializeViewer = (image) => {
+    initializeViewer = () => {
         const viewerElement = this.viewerRef.current;
         if (viewerElement) {
-            import('@panoramax/web-viewer').then(PanoViewer => {
-                this.viewer = new PanoViewer.Viewer(
-                    viewerElement,
-                    `https://${this.props.panoramaxInstance}/api`,
+            this.viewer = viewerElement;
+            this.viewer.addEventListener('psv:picture-loading', (event) => {
+                this.setState(
                     {
-                        map: false,
-                        selectedPicture: image
-                    }
+                        lon: event.detail.lon,
+                        lat: event.detail.lat
+                    },
+                    () => this.handlePanoramaxEvent()
                 );
-                this.viewer.addEventListener('psv:picture-loading', (event) => {
-                    this.setState(
-                        {
-                            lon: event.detail.lon,
-                            lat: event.detail.lat
-                        },
-                        () => this.handlePanoramaxEvent()
-                    );
-                });
-                this.viewer.addEventListener('psv:view-rotated', (event) => {
-                    this.setState(
-                        { yaw: event.detail.x },
-                        () => this.handlePanoramaxEvent()
-                    );
-                });
-                this.viewer.addEventListener('psv:picture-loaded', (event) => {
-                    this.setState(
-                        { yaw: event.detail.x },
-                        () => this.handlePanoramaxEvent()
-                    );
-                });
+            });
+            this.viewer.addEventListener('psv:view-rotated', (event) => {
+                this.setState(
+                    { yaw: event.detail.x },
+                    () => this.handlePanoramaxEvent()
+                );
+            });
+            this.viewer.addEventListener('psv:picture-loaded', (event) => {
+                this.setState(
+                    { yaw: event.detail.x },
+                    () => this.handlePanoramaxEvent()
+                );
             });
         }
     };
@@ -213,6 +218,11 @@ class Panoramax extends React.Component {
             }
         };
         this.props.addLayerFeatures(layer, [feature], true);
+    };
+    handleKeyDown = (event) => {
+        if (event.key === 'Escape') {
+            this.onClose();
+        }
     };
     addRecordingsMVT = () => {
         const resolutions = MapUtils.getResolutionsForScales(this.props.theme.scales, this.props.theme.mapCrs);
@@ -245,11 +255,20 @@ class Panoramax extends React.Component {
         const bbox = `${centerX - offset},${centerY - offset},${centerX + offset},${centerY + offset}`;
         axios.get(`https://${this.props.panoramaxInstance}/api/search?bbox=${bbox}`)
             .then(response => {
-
-                this.setState({ queryImage: response.data.features[0].id });
+                this.setState({
+                    queryData: {
+                        queryImage: response.data.features[0].id,
+                        querySequence: response.data.features[0].collection,
+                        querySource: response.data.features[0].providers[0].name,
+                        queryDate: response.data.features[0].properties.datetime
+                    }
+                });
+                if (this.viewer) {
+                    this.viewer.select(response.data.features[0].collection, response.data.features[0].id, true);
+                }
             })
             .catch(() => {
-                this.setState({ queryImage: null });
+                this.setState({ queryData: null });
             });
     };
 }
