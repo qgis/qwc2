@@ -62,6 +62,7 @@ class SearchBox extends React.Component {
             minScaleDenom: PropTypes.number,
             resultLimit: PropTypes.number,
             sectionsDefaultCollapsed: PropTypes.bool,
+            showHighlightMarker: PropTypes.bool,
             showLayerAfterChangeTheme: PropTypes.bool,
             showLayerResultsBeforePlaces: PropTypes.bool,
             showResultInSearchText: PropTypes.bool,
@@ -758,16 +759,17 @@ class SearchBox extends React.Component {
             };
             features.forEach(feature => {
                 feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, response.crs ?? this.props.map.projection, this.props.map.projection);
-                feature.styleName = feature.geometry?.type === 'Point' ? 'marker' : 'default';
+                feature.styleName = feature.geometry?.type === 'Point' && this.props.searchOptions.showHighlightMarker ? 'marker' : 'default';
                 feature.styleOptions = this.props.searchOptions.highlightStyle || {};
                 if (feature.crs?.properties?.name) {
                     feature.crs = CoordinatesUtils.fromOgcUrnCrs(feature.crs.properties.name);
                 }
             });
             // If first feature is not a point(=marker), add a marker
-            if (features[0].styleName !== "marker" && !response.hidemarker) {
+            if (features[0].styleName !== "marker" && !response.hidemarker && this.props.searchOptions.showHighlightMarker) {
+                const center = CoordinatesUtils.reproject(response.center ?? [item.x, item.y], item.crs ?? this.props.map.projection, this.props.map.projection);
                 features.unshift({
-                    geometry: {type: 'Point', coordinates: CoordinatesUtils.reproject(response.center ?? [item.x, item.y], item.crs ?? this.props.map.projection, this.props.map.projection)},
+                    geometry: {type: 'Point', coordinates: center},
                     styleName: 'marker'
                 });
             }
