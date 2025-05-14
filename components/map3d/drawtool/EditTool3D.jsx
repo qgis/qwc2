@@ -48,6 +48,10 @@ class GroupSelection extends Group {
         this.recomputePosition();
     };
     dissolve = () => {
+        if (this.parent === null) {
+            // Group has already been removed from scene
+            return;
+        }
         while (this.children.length) {
             const object = this.children.pop();
             object.material.color.set(object.userData.originalColor);
@@ -117,6 +121,9 @@ export default class EditTool3D extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.selectedObject !== prevProps.selectedObject) {
+            if (prevProps.selectedObject?.isGroupSelection) {
+                prevProps.selectedObject.dissolve();
+            }
             if (prevProps.selectedObject) {
                 this.transformControls.detach();
                 this.clearCsgBackup();
@@ -262,9 +269,16 @@ export default class EditTool3D extends React.Component {
         }
     };
     addRemoveFromSelection = (object) => {
-        if (this.props.selectedObject.isGroupSelection) {
+        if (this.props.selectedObject === object) {
+            this.props.objectPicked(null);
+        } else if (this.props.selectedObject.isGroupSelection) {
             if (this.props.selectedObject.hasObject(object)) {
                 this.props.selectedObject.removeFromSelection(object);
+                if (this.props.selectedObject.children.length === 1) {
+                    const child = this.props.selectedObject.children[0];
+                    this.props.selectedObject.dissolve();
+                    this.props.objectPicked(child);
+                }
             } else {
                 this.props.selectedObject.addToSelection(object);
             }
