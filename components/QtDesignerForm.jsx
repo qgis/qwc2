@@ -390,20 +390,26 @@ class QtDesignerForm extends React.Component {
                 // kvrel__attrname__datatable__keyfield__valuefield
                 // kvrel__reltablename__attrname__datatable__keyfield__valuefield
                 const count = parts.length;
-                const attrname = parts.slice(1, count - 3).join("__");
-                const currentEditConfig = this.props.editConfig[parts[1]];
-                const comboFieldConstraints = currentEditConfig.fields.find(field => field.id === attrname.split("__")[1])?.constraints || {};
-                value = (feature.properties || [])[attrname] ?? "";
+                const attrname = parts.slice(1, count - 3)[parts.slice(1, count - 3).length === 1 ? 0 : 1];
                 const fieldId = parts.slice(1, count - 3).join("__");
-                const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
+                value = (feature.properties || [])[fieldId] ?? "";
                 let filterExpr = null;
-                if (currentEditConfig.fields.find(field => field.id === attrname.split("__")[1])?.filterExpression) {
-                    filterExpr = parseExpression(currentEditConfig.fields.find(field => field.id === attrname.split("__")[1]).filterExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                let currentLayerId = null;
+                if (count === 5) {
+                    currentLayerId = this.props.editLayerId.split(".")[1];
+                } else {
+                    currentLayerId = parts[1];
+                }
+                const currentEditConfig = this.props.editConfig[currentLayerId];
+                const comboFieldConstraints = currentEditConfig.fields.find(field => field.id === attrname)?.constraints || {};
+                const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
+                if (currentEditConfig.fields.find(field => field.id === attrname)?.filterExpression) {
+                    filterExpr = parseExpression(currentEditConfig.fields.find(field => field.id === attrname).filterExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
                 }
                 return (
                     <EditComboField
                         editIface={this.props.iface} fieldId={fieldId} filterExpr={filterExpr} key={fieldId} keyvalrel={keyvalrel}
-                        name={nametransform(attrname)} placeholder={inputConstraints.placeholder}
+                        name={nametransform(fieldId)} placeholder={inputConstraints.placeholder}
                         readOnly={inputConstraints.readOnly || comboFieldConstraints.readOnly}
                         required={inputConstraints.required || comboFieldConstraints.required}
                         style={fontStyle} updateField={updateField} value={value} />
