@@ -243,50 +243,10 @@ export default class StandardApp extends React.Component {
         }
         return (
             <Provider store={StandardApp.store}>
-                <div ref={this.setupTouchEvents}>
-                    <AppContainer appConfig={this.props.appConfig} startupConfig={this.state.startupConfig}/>
-                </div>
+                <AppContainer appConfig={this.props.appConfig} startupConfig={this.state.startupConfig}/>
             </Provider>
         );
     }
-    setupTouchEvents = (el) => {
-        el.addEventListener('touchstart', ev => {
-            this.touchY = ev.targetTouches[0].clientY;
-        }, { passive: false });
-        el.addEventListener('touchmove', this.preventOverscroll, { passive: false });
-    };
-    preventOverscroll = (ev) => {
-        if (ev.touches[0].touchType !== "direct") {
-            // Don't do anything for stylus inputs
-            return;
-        }
-        let scrollEvent = false;
-        let element = ev.target;
-        const direction = ev.targetTouches[0].clientY - this.touchY;
-        this.touchY = ev.targetTouches[0].clientY;
-        while (!scrollEvent && element) {
-            let scrollable = element.scrollHeight > element.clientHeight;
-            // Workaround for resizeable-window having scrollHeight > clientHeight even though it has no scrollbar
-            if (element.classList.contains('resizeable-window')) {
-                scrollable = false;
-            }
-            if (element.type === "range") {
-                // If it is a range element, treat it as a scroll event
-                scrollEvent = true;
-            } else if (scrollable && (element.scrollTop + element.clientHeight < element.scrollHeight) && direction < 0) {
-                // User scrolls down and element is not at end of scroll
-                scrollEvent = true;
-            } else if (scrollable && element.scrollTop > 0 && direction > 0) {
-                // User scrolls up and element is not at start of scroll
-                scrollEvent = true;
-            } else {
-                element = element.parentElement;
-            }
-        }
-        if (!scrollEvent) {
-            ev.preventDefault();
-        }
-    };
     init = () => {
         // Save initial params and clear URL
         const initialParams = UrlParams.getParams();
