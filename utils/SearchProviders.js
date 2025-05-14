@@ -266,7 +266,8 @@ class QgisSearch {
                     y: 0.5 * (feature.bbox[1] + feature.bbox[3]),
                     crs: feature.crs,
                     bbox: feature.bbox,
-                    geometry: feature.geometry
+                    geometry: feature.geometry,
+                    layername: layername
                 };
             });
             results.push(

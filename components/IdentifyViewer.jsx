@@ -18,7 +18,7 @@ import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
-import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
+import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
 import {openExternalUrl} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -159,6 +159,7 @@ class IdentifyViewer extends React.Component {
         addLayerFeatures: PropTypes.func,
         attributeCalculator: PropTypes.func,
         attributeTransform: PropTypes.func,
+        changeLayerProperty: PropTypes.func,
         collapsible: PropTypes.bool,
         customExporters: PropTypes.array,
         displayResultTree: PropTypes.bool,
@@ -492,7 +493,7 @@ class IdentifyViewer extends React.Component {
         }
         let zoomToFeatureButton = null;
         if (result.bbox && result.crs) {
-            zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.props.zoomToExtent(result.bbox, result.crs)} />);
+            zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.zoomToResult(result)} />);
         }
         const key = result + ":" + result.id;
         const expanded = this.state.expandedResults[key];
@@ -780,6 +781,17 @@ class IdentifyViewer extends React.Component {
         this.props.openExternalUrl(ev.target.href, ev.target.target, {docked: this.props.iframeDialogsInitiallyDocked});
         ev.preventDefault();
     };
+    zoomToResult = (result) => {
+        this.props.zoomToExtent(result.bbox, result.crs);
+        const path = [];
+        let sublayer = null;
+        const layer = this.props.layers.find(l => {
+            return l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', result.layername, path));
+        });
+        if (layer && sublayer) {
+            this.props.changeLayerProperty(layer.uuid, "visibility", true, path);
+        }
+    };
 }
 
 const selector = (state) => ({
@@ -790,6 +802,7 @@ const selector = (state) => ({
 
 export default connect(selector, {
     addLayerFeatures: addLayerFeatures,
+    changeLayerProperty: changeLayerProperty,
     removeLayer: removeLayer,
     setActiveLayerInfo: setActiveLayerInfo,
     openExternalUrl: openExternalUrl,

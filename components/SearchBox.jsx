@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 import {v1 as uuidv1} from 'uuid';
 
-import {LayerRole, addLayerFeatures, addThemeSublayer, removeLayer, addLayer} from '../actions/layers';
+import {LayerRole, addLayerFeatures, addThemeSublayer, changeLayerProperty, removeLayer, addLayer} from '../actions/layers';
 import {logAction} from '../actions/logging';
 import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
@@ -49,6 +49,7 @@ class SearchBox extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         addThemeSublayer: PropTypes.func,
+        changeLayerProperty: PropTypes.func,
         layers: PropTypes.array,
         logAction: PropTypes.func,
         map: PropTypes.object,
@@ -436,6 +437,19 @@ class SearchBox extends React.Component {
         }
         this.props.logAction("SEARCH_TEXT", {searchText: this.state.searchText});
         this.props.logAction("SEARCH_RESULT_SELECTED", {place: resultText});
+
+        // Enable layer
+        if (result.layername) {
+            const path = [];
+            let sublayer = null;
+            const layer = this.props.layers.find(l => {
+                return l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', result.layername, path));
+            });
+            if (layer && sublayer) {
+                this.props.changeLayerProperty(layer.uuid, "visibility", true, path);
+            }
+        }
+
     };
     selectThemeLayerResult = (provider, group, result) => {
         if (result.layer) {
@@ -823,6 +837,7 @@ export default connect(
         addThemeSublayer: addThemeSublayer,
         addLayer: addLayer,
         addLayerFeatures: addLayerFeatures,
+        changeLayerProperty: changeLayerProperty,
         removeLayer: removeLayer,
         setCurrentTask: setCurrentTask,
         zoomToExtent: zoomToExtent,
