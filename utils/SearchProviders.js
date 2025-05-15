@@ -97,8 +97,8 @@ class NominatimSearch {
             'limit': 20,
             'format': 'json',
             'accept-language': searchParams.lang,
-            ...viewboxParams,
-            ...(searchParams.cfgParams || {})
+            ...(searchParams.cfgParams || {}),
+            ...viewboxParams
         }}).then(response => {
             const locale = searchParams.lang;
             if (NominatimSearch.TRANSLATIONS[locale] === undefined) {
