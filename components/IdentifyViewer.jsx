@@ -542,7 +542,7 @@ class IdentifyViewer extends React.Component {
                                 {Object.keys(this.state.resultTree).sort().map(
                                     layer => (
                                         <option key={layer} value={layer}>
-                                            {layer}
+                                            {this.state.resultTree[layer]?.[0]?.layertitle || layer}
                                         </option>
                                     ))}
                             </select>
