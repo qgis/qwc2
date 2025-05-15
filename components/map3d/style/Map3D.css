@@ -1,6 +1,5 @@
 div.map3d-body {
-    margin: -0.25em;
-    height: calc(100% + 0.5em);
+    height: 100%;
     position: relative;
 }
 
