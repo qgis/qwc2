@@ -19,7 +19,7 @@ span.bookmark-actions-spacer {
     flex: 1 1 auto;
 }
 
-span.bookmark-actions > button:not(:disabled) > span.icon-trash {
+div.bookmark-actions > button:not(:disabled) > span.icon-trash {
     color: red;
 }
 
