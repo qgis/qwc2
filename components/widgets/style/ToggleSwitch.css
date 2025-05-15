@@ -6,6 +6,7 @@ div.ToggleSwitch {
     overflow: hidden;
     border: 1px solid var(--border-color);
     align-items: center;
+    cursor: pointer;
 }
 
 div.ToggleSwitch.toggle-switch-active {

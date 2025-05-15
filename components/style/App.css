@@ -161,7 +161,7 @@ button.button:not(:disabled):active > * {
 }
 
 button.button > span:not(.icon) {
-    margin: 0 0.5em;
+    margin: 0 0.25em;
 }
 
 button.button > div.spinner {
@@ -172,6 +172,11 @@ button.button > div.spinner {
 div.controlgroup {
     display: flex;
     align-items: center;
+}
+
+div.controlgroup > .controlgroup-fillitem {
+    flex: 1 1 auto;
+    width: 0;
 }
 
 div.controlgroup > *:not(:last-child):not(span) {

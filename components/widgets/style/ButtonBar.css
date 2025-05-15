@@ -1,12 +1,7 @@
 div.ButtonBar {
     position: relative;
     display: flex;
-    margin: 0.25em 0;
     flex-wrap: wrap;
-}
-
-div.buttonbar-fill {
-    width: 100%;
 }
 
 div.ButtonBar.buttonbar-disabled:before {

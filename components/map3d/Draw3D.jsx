@@ -98,8 +98,8 @@ export default class Draw3D extends React.Component {
         const drawGroups = Object.entries(this.props.sceneContext.sceneObjects).filter(([key, entry]) => entry.drawGroup === true);
         return (
             <div>
-                <div className="redlining-buttongroups">
-                    <div className="redlining-group">
+                <div className="redlining-controlsbar">
+                    <div className="redlining-groupcontrol">
                         <div>{LocaleUtils.tr("redlining.layer")}</div>
                         <div className="controlgroup">
                             <select onChange={ev => this.setActiveDrawGroup(ev.target.value)} value={this.state.drawGroupId}>
@@ -110,13 +110,11 @@ export default class Draw3D extends React.Component {
                             <button className="button" onClick={this.createDrawGroup}><Icon icon="plus" /></button>
                         </div>
                     </div>
-                    <div className="redlining-group">
+                    <div className="redlining-groupcontrol">
                         <div>{LocaleUtils.tr("redlining.draw")}</div>
-                        <span>
-                            <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
-                        </span>
+                        <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
                     </div>
-                    <div className="redlining-group">
+                    <div className="redlining-groupcontrol">
                         <div>{LocaleUtils.tr("redlining.edit")}</div>
                         <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                     </div>

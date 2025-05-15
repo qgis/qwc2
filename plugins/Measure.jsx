@@ -117,8 +117,8 @@ class Measure extends React.Component {
             text = MeasureUtils.getFormattedBearingValue(this.props.measureState.bearing);
         }
         return (
-            <div className="controlgroup">
-                <input className="measure-result" readOnly type="text" value={text} />
+            <div className="measure-result controlgroup">
+                <input className="measure-result-field" readOnly type="text" value={text} />
                 {unitSelector}
                 <CopyButton text={text} />
             </div>
@@ -126,10 +126,10 @@ class Measure extends React.Component {
     };
     renderBody = () => {
         return (
-            <span>
+            <div className="measure-body">
                 {this.renderModeSwitcher()}
                 {this.renderResult()}
-            </span>
+            </div>
         );
     };
     render() {

@@ -198,16 +198,16 @@ export default class EditTool3D extends React.Component {
         return [
             (
                 <div className="redlining-controlsbar" key="BasicControls">
-                    <span>
+                    <div className="redlining-control">
                         <Icon className="redlining-control-icon" icon="pen" size="large" />
                         <ColorButton alpha={false} color={this.props.color} onColorChanged={this.props.colorChanged} />
-                    </span>
-                    <span>
+                    </div>
+                    <div className="redlining-control">
                         <ButtonBar active={this.state.mode} buttons={editButtons} onClick={mode => this.setState({mode})} />
-                    </span>
-                    <span>
+                    </div>
+                    <div className="redlining-control">
                         <ButtonBar active={this.state.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={this.toolButtonClicked} />
-                    </span>
+                    </div>
                     {this.state.numericInput ? (
                         <NumericInput3D
                             sceneContext={this.props.sceneContext} selectedObject={this.props.selectedObject}
@@ -217,24 +217,30 @@ export default class EditTool3D extends React.Component {
                 </div>
             ),
             this.state.selectCount === 0 ? (
-                <div className="redlining-hinttext" key="CtrlHint">
-                    <i>{LocaleUtils.tr("draw3d.ctrlhint")}</i>
+                <div className="redlining-message" key="CtrlHint">
+                    {LocaleUtils.tr("draw3d.ctrlhint")}
                 </div>
             ) : null,
             this.state.selectCount === 1 ? (
-                <div className="redlining-controlsbar draw3d-label-controls" key="Label">
-                    <span>{LocaleUtils.tr("draw3d.label")}: </span>
-                    <TextInput onChange={this.setLabel} value={this.state.label} />
+                <div className="redlining-controlsbar" key="Label">
+                    <div className="redlining-control redlining-control-fill controlgroup">
+                        <span>{LocaleUtils.tr("draw3d.label")}: </span>
+                        <TextInput className="controlgroup-fillitem" onChange={this.setLabel} value={this.state.label} />
+                    </div>
                 </div>
             ) : null,
             this.state.selectCount === 2 ? (
                 <div className="redlining-controlsbar" key="CSGControls">
-                    <ButtonBar buttons={csgButtons} className="buttonbar-fill" onClick={this.applyCsgOperation} />
+                    <div className="redlining-control redlining-control-fill">
+                        <ButtonBar buttons={csgButtons} onClick={this.applyCsgOperation} />
+                    </div>
                 </div>
             ) : null,
             this.state.csgBackup ? (
                 <div className="redlining-controlsbar" key="CSGControls">
-                    <ButtonBar buttons={[{key: "undo", label: LocaleUtils.tr("draw3d.undoBool")}]} className="buttonbar-fill" onClick={this.undoCsgOperation} />
+                    <div className="redlining-control redlining-control-fill">
+                        <ButtonBar buttons={[{key: "undo", label: LocaleUtils.tr("draw3d.undoBool")}]} onClick={this.undoCsgOperation} />
+                    </div>
                 </div>
             ) : null
         ];

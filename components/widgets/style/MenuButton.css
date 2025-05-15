@@ -1,6 +1,7 @@
 div.menubutton {
     display: inline-flex;
     align-items: center;
+    height: 2em;
 }
 
 div.menubutton-button {

@@ -162,8 +162,8 @@ export default class Measure3D extends React.Component {
             );
         }
         return (
-            <div className="controlgroup">
-                <input className="measure-result" readOnly type="text" value={text} />
+            <div className="measure-result controlgroup">
+                <input className="measure-result-field" readOnly type="text" value={text} />
                 {unitSelector}
                 <CopyButton text={text} />
             </div>
@@ -175,7 +175,7 @@ export default class Measure3D extends React.Component {
                 <TaskBar key="TaskBar" onHide={this.onHide} onShow={this.onShow} task="Measure3D">
                     {() => ({
                         body: (
-                            <div>
+                            <div className="measure-body">
                                 {this.renderModeSwitcher()}
                                 {this.renderResult()}
                             </div>

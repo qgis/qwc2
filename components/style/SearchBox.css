@@ -132,7 +132,6 @@ div.searchbox-filter-options {
     border-right: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
     box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
-    padding: 0.25em;
 }
 
 div.searchbox-filter-options > table {
@@ -140,7 +139,7 @@ div.searchbox-filter-options > table {
 }
 
 div.searchbox-filter-options > table td {
-    padding: 0.125em 0.25em;
+    padding: 0.25em;
     white-space: nowrap;
 }
 

@@ -48,16 +48,16 @@ export default class CreateTool3D extends React.Component {
     render() {
         return (
             <div className="redlining-controlsbar">
-                <span>
+                <div className="redlining-control">
                     <Icon className="redlining-control-icon" icon="pen" size="large" />
                     <ColorButton alpha={false} color={this.props.color} onColorChanged={this.props.colorChanged} />
-                </span>
-                <span>
+                </div>
+                <div className="redlining-control">
                     <span>{LocaleUtils.tr("redlining.size")}:&nbsp;</span>
                     <NumberInput max={99} min={1} mobile
                         onChange={this.props.baseSizeChanged}
                         value={this.props.baseSize}/>
-                </span>
+                </div>
             </div>
         );
     }

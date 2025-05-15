@@ -29,6 +29,10 @@
     padding: 0.25em;
 }
 
+#MapFilter div.map-filter-entry-body > div:not(:last-child) {
+    margin-bottom: 0.25em;
+}
+
 #MapFilter div.map-filter-invalid-warning {
     background-color: orange;
     display: flex;
@@ -59,7 +63,7 @@
 }
 
 #MapFilter div.map-filter-add-custom {
-    padding: 0.25em;
+    margin: 0 0.25em 0.25em 0.25em;
 }
 
 #MapFilter div.map-filter-custom-entry-titlebar {

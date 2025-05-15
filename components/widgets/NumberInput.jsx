@@ -69,7 +69,7 @@ export default class NumberInput extends React.Component {
             (this.props.max || 0).toFixed(this.props.decimals).length
         )) + "ch";
         const style = {
-            width: `calc(${paddingLength} + ${prefixSuffixLength} + ${numberLength})`
+            minWidth: `calc(${paddingLength} + ${prefixSuffixLength} + ${numberLength})`
         };
         const step = this.props.step ?? Math.pow(10, -this.props.decimals);
         const plusIcon = this.props.mobile ? "plus" : "chevron-up";

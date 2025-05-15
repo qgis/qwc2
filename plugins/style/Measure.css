@@ -1,12 +1,8 @@
-div.measure-body {
+div.measure-result {
     margin-top: 0.25em;
-    white-space: nowrap;
-    overflow: visible;
-    min-width: 17.5em;
-    display: flex;
 }
 
-input.measure-result {
+input.measure-result-field {
     flex: 1 1 auto;
     text-align: center;
     field-sizing: content;

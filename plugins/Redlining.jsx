@@ -201,32 +201,32 @@ class Redlining extends React.Component {
 
         return (
             <div>
-                <div className="redlining-buttongroups">
-                    <div className="redlining-group">
+                <div className="redlining-controlsbar">
+                    <div className="redlining-groupcontrol">
                         <div>{LocaleUtils.tr("redlining.layer")}</div>
                         <VectorLayerPicker
                             addLayer={this.props.addLayer} layers={vectorLayers}
                             onChange={this.changeRedliningLayer} value={this.props.redlining.layer} />
                     </div>
-                    <div className="redlining-group">
+                    <div className="redlining-groupcontrol">
                         <div>{LocaleUtils.tr("redlining.draw")}</div>
-                        <span>
+                        <div className="controlgroup">
                             <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
                             {this.props.redlining.action === "Draw" && (this.props.redlining.geomType === "LineString" || this.props.redlining.geomType === "Polygon") ?
                                 <ButtonBar active={activeFreeHand} buttons={freehandButtons} onClick={(key, data) => this.actionChanged(data)} /> : null
                             }
-                        </span>
+                        </div>
                     </div>
-                    <div className="redlining-group">
+                    <div className="redlining-groupcontrol">
                         <div>{LocaleUtils.tr("redlining.edit")}</div>
                         <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                     </div>
-                    <div className="redlining-group">
+                    <div className="redlining-groupcontrol">
                         <div>&nbsp;</div>
                         <ButtonBar active={this.props.redlining.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={() => this.props.changeRedliningState({numericInput: !this.props.redlining.numericInput})} />
                     </div>
                     {toolEnabled("Export") ? (
-                        <div className="redlining-group">
+                        <div className="redlining-groupcontrol">
                             <div>&nbsp;</div>
                             <MenuButton className="redlining-export-menu" disabled={!haveLayer} menuIcon="export" onActivate={this.export} tooltip={LocaleUtils.tr("redlining.export")}>
                                 <div className="redlining-export-menu-entry" key="GeoJSON" value="geojson">GeoJSON</div>
@@ -291,85 +291,91 @@ class Redlining extends React.Component {
 
         return (
             <div className="redlining-controlsbar">
-                <span>
+                <div className="redlining-control">
                     <Icon className="redlining-control-icon" icon="pen" size="large" />
                     {this.props.redlining.geomType === 'Text' || this.props.redlining.selectedFeature?.shape === 'Text' ? (
                         <ColorButton color={this.props.redlining.style.textOutlineColor} defaultColors={this.props.predefinedBorderColors} onColorChanged={(color) => this.updateRedliningStyle({textOutlineColor: color})} />
                     ) : (
                         <ColorButton color={this.props.redlining.style.borderColor} defaultColors={this.props.predefinedBorderColors} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
                     )}
-                </span>
+                </div>
                 {this.props.redlining.geomType === 'LineString' ? null : (
-                    <span>
+                    <div className="redlining-control">
                         <Icon className="redlining-control-icon" icon="fill" size="large" />
                         {this.props.redlining.geomType === 'Text' || this.props.redlining.selectedFeature?.shape === 'Text' ? (
                             <ColorButton color={this.props.redlining.style.textFillColor} defaultColors={this.props.predefinedFillColors} onColorChanged={(color) => this.updateRedliningStyle({textFillColor: color})} />
                         ) : (
                             <ColorButton color={this.props.redlining.style.fillColor} defaultColors={this.props.predefinedFillColors} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />
                         )}
-                    </span>
+                    </div>
                 )}
-                <span>
+                <div className="redlining-control">
                     <span>{sizeLabel}:&nbsp;</span>
                     <NumberInput max={99} min={1} mobile
                         onChange={(nr) => this.updateRedliningStyle({size: nr})}
                         value={this.props.redlining.style.size}/>
-                </span>
+                </div>
                 {this.props.redlining.geomType === 'LineString' ? (
-                    <span>
+                    <div className="redlining-control">
                         <span>{LocaleUtils.tr("redlining.markers")}:&nbsp;</span>
-                        <ComboBox className="redlining-marker-combo" onChange={value => this.updateRedliningStyle({headmarker: value})} value={this.props.redlining.style.headmarker || ""}>
-                            <div className="redlining-marker-combo-entry" value="" />
-                            {Object.entries(END_MARKERS).map(([key, params]) => (
-                                <div className="redlining-marker-combo-entry" key={key} value={key}>
-                                    <img src={params.src} style={{transform: 'rotate(' + params.baserotation + 'deg)'}}/>
-                                </div>
-                            ))}
-                        </ComboBox>
-                        <ComboBox className="redlining-marker-combo" onChange={value => this.updateRedliningStyle({tailmarker: value})} value={this.props.redlining.style.tailmarker || ""}>
-                            <div className="redlining-marker-combo-entry" value="" />
-                            {Object.entries(END_MARKERS).map(([key, params]) => (
-                                <div className="redlining-marker-combo-entry" key={key} value={key}>
-                                    <img src={params.src} style={{transform: 'rotate(' + (180 + params.baserotation) + 'deg)'}}/>
-                                </div>
-                            ))}
-                        </ComboBox>
-                    </span>
+                        <div className="controlgroup">
+                            <ComboBox className="redlining-marker-combo" onChange={value => this.updateRedliningStyle({headmarker: value})} value={this.props.redlining.style.headmarker || ""}>
+                                <div className="redlining-marker-combo-entry" value="" />
+                                {Object.entries(END_MARKERS).map(([key, params]) => (
+                                    <div className="redlining-marker-combo-entry" key={key} value={key}>
+                                        <img src={params.src} style={{transform: 'rotate(' + params.baserotation + 'deg)'}}/>
+                                    </div>
+                                ))}
+                            </ComboBox>
+                            <ComboBox className="redlining-marker-combo" onChange={value => this.updateRedliningStyle({tailmarker: value})} value={this.props.redlining.style.tailmarker || ""}>
+                                <div className="redlining-marker-combo-entry" value="" />
+                                {Object.entries(END_MARKERS).map(([key, params]) => (
+                                    <div className="redlining-marker-combo-entry" key={key} value={key}>
+                                        <img src={params.src} style={{transform: 'rotate(' + (180 + params.baserotation) + 'deg)'}}/>
+                                    </div>
+                                ))}
+                            </ComboBox>
+                        </div>
+                    </div>
                 ) : null}
-                {this.props.redlining.geomType !== 'Text' && this.props.allowGeometryLabels ? (
-                    <button
-                        className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
-                        onClick={() => this.props.changeRedliningState({measurements: !this.props.redlining.measurements, style: {...this.props.redlining.style, text: ''}})}
-                        title={LocaleUtils.tr("redlining.measurements")}
-                    >
-                        <Icon icon="measure" />
-                    </button>
-                ) : null}
-                {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) && !this.props.redlining.measurements ? (
-                    <input className="redlining-label" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
-                ) : null}
-                {this.props.redlining.measurements && ['LineString', 'Circle'].includes(this.props.redlining.geomType) ? (
-                    <select className="redlining-unit" onChange={ev => this.props.changeRedliningState({lenUnit: ev.target.value})} value={this.props.redlining.lenUnit}>
-                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
-                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
-                        <option value="m">m</option>
-                        <option value="km">km</option>
-                        <option value="ft">ft</option>
-                        <option value="mi">mi</option>
-                    </select>
-                ) : null}
-                {this.props.redlining.measurements && ['Polygon', 'Ellipse', 'Square', 'Box'].includes(this.props.redlining.geomType) ? (
-                    <select className="redlining-unit" onChange={ev => this.props.changeRedliningState({areaUnit: ev.target.value})} value={this.props.redlining.areaUnit}>
-                        <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
-                        <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
-                        <option value="sqm">m&#178;</option>
-                        <option value="ha">ha</option>
-                        <option value="sqkm">km&#178;</option>
-                        <option value="sqft">ft&#178;</option>
-                        <option value="acre">acre</option>
-                        <option value="sqmi">mi&#178;</option>
-                    </select>
-                ) : null}
+                <div className="redlining-control redlining-control-fill">
+                    <div className="controlgroup">
+                        {this.props.redlining.geomType !== 'Text' && this.props.allowGeometryLabels ? (
+                            <button
+                                className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
+                                onClick={() => this.props.changeRedliningState({measurements: !this.props.redlining.measurements, style: {...this.props.redlining.style, text: ''}})}
+                                title={LocaleUtils.tr("redlining.measurements")}
+                            >
+                                <Icon icon="measure" />
+                            </button>
+                        ) : null}
+                        {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) && !this.props.redlining.measurements ? (
+                            <input className="controlgroup-fillitem" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
+                        ) : null}
+                        {this.props.redlining.measurements && ['LineString', 'Circle'].includes(this.props.redlining.geomType) ? (
+                            <select className="controlgroup-fillitem" onChange={ev => this.props.changeRedliningState({lenUnit: ev.target.value})} value={this.props.redlining.lenUnit}>
+                                <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                                <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
+                                <option value="m">m</option>
+                                <option value="km">km</option>
+                                <option value="ft">ft</option>
+                                <option value="mi">mi</option>
+                            </select>
+                        ) : null}
+                        {this.props.redlining.measurements && ['Polygon', 'Ellipse', 'Square', 'Box'].includes(this.props.redlining.geomType) ? (
+                            <select className="controlgroup-fillitem" onChange={ev => this.props.changeRedliningState({areaUnit: ev.target.value})} value={this.props.redlining.areaUnit}>
+                                <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
+                                <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
+                                <option value="sqm">m&#178;</option>
+                                <option value="ha">ha</option>
+                                <option value="sqkm">km&#178;</option>
+                                <option value="sqft">ft&#178;</option>
+                                <option value="acre">acre</option>
+                                <option value="sqmi">mi&#178;</option>
+                            </select>
+                        ) : null}
+                    </div>
+                </div>
             </div>
         );
     };

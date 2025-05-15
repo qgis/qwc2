@@ -11,6 +11,7 @@ div.inftimeline-toolbar {
     font-size: 75%;
     align-items: center;
     flex: 0 0 auto;
+    margin: 0.25em 0;
 }
 
 div.inftimeline-toolbar-block {

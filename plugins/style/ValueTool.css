@@ -1,3 +1,7 @@
+div.valuetool-body > div.ButtonBar {
+    margin-bottom: 0.25em;
+}
+
 table.valuetool-table,
 table.valuetool-table-selection {
     background-color: var(--list-bg-color);

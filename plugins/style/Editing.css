@@ -15,6 +15,10 @@
     padding: 0.25em;
 }
 
+#Editing div.editing-body > div:not(:last-child) {
+    margin-bottom: 0.25em;
+}
+
 #Editing div.editing-body > div.editing-layer-selection,
 #Editing div.editing-body > div.editing-feature-selection,
 #Editing div.editing-body > div.ButtonBar {
@@ -22,7 +26,7 @@
 }
 
 #Editing div.editing-body > div.AttributeForm {
-    margin-top: 0.5em;
+    margin-top: 0.25em;
     padding-top: 0.5em;
     border-top: 1px solid var(--border-color);
     flex: 1 1 auto;
