@@ -1,9 +1,6 @@
-div.draw3d-numeric-input-body {
-    font-size: 90%;
-}
-
 div.draw3d-numeric-input-body > table {
     width: 100%;
+    font-size: 90%;
 }
 
 
