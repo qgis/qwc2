@@ -62,10 +62,8 @@ class MapControls3D extends React.Component {
         const sceneElement = this.props.sceneContext.scene.domElement;
         sceneElement.addEventListener('keydown', this.keyHandler);
         this.controls.removeEventListener('change', this.updateControlsTarget);
-        this.props.sceneContext.scene.view.setControls(null);
-        this.controls.dispose();
-        this.controls = null;
         this.props.sceneContext.scene.domElement.removeEventListener('dblclick', this.switchToFirstPersonView);
+        // Don't explicitly remove controls from the view, they will be removed with the instance
     }
     render() {
         const firstPersonButtonClasses = classNames({
