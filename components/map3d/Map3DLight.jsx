@@ -117,12 +117,18 @@ export default class Map3DLight extends React.Component {
     }
     renderBody = () => {
         const lightParams = this.state.lightParams;
-        const dateFormatter = (day) => {
-            const date = new Date(new Date().getFullYear(), 0, day);
-            return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+        const dateValue = new Date(new Date().getFullYear(), 0, 1 + lightParams.day).toISOString().split("T")[0];
+        const dateToDay = (date) => {
+            const d = new Date(date + "T00:00:00");
+            return (d - new Date(d.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24);
         };
-        const timeFormatter = (time) => {
-            return `${String(Math.trunc(time / 60)).padStart(2, '0')}:${String(time % 60).padStart(2, '0')}`;
+        const isLeapYear = (year) => (new Date(year, 1, 29).getDate() === 29);
+
+        const timeValue = `${String(Math.trunc(lightParams.time / 60)).padStart(2, '0')}:${String(lightParams.time % 60).padStart(2, '0')}`;
+        const timeToMin = (time) => {
+            const parts = time.split(":");
+            return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
         };
         return (
             <div className="maplight3d-body">
@@ -133,7 +139,10 @@ export default class Map3DLight extends React.Component {
                             <td>
                                 <div className="map3d-animation-slider">
                                     <Icon icon={this.state.dayAnimation ? "square" : "triangle-right"} onClick={this.toggleDayAnimation} />
-                                    {this.renderSlider('day', 1, 365, 1, dateFormatter)}
+                                    <div className="maplight3d-slider">
+                                        <input max={365 + isLeapYear()} min={1} onChange={ev => this.updateLightParams("day", parseInt(ev.target.value, 10))} step={1} type="range" value={lightParams.day} />
+                                        <input onChange={ev => dateToDay(ev.target.value)} type="date" value={dateValue} />
+                                    </div>
                                     <Icon
                                         className={this.state.dayAnimationSettings ? "map3d-animation-settings-active" : ""}
                                         icon="cog"
@@ -156,7 +165,10 @@ export default class Map3DLight extends React.Component {
                             <td>
                                 <div className="map3d-animation-slider">
                                     <Icon icon={this.state.timeAnimation ? "square" : "triangle-right"} onClick={this.toggleTimeAnimation} />
-                                    {this.renderSlider('time', 0, 1439, 1, timeFormatter)}
+                                    <div className="maplight3d-slider">
+                                        <input max={1439} min={0} onChange={ev => this.updateLightParams("time", parseInt(ev.target.value, 10))} step={1} type="range" value={lightParams.time} />
+                                        <input onChange={ev => timeToMin(ev.target.value)} type="time" value={timeValue} />
+                                    </div>
                                     <Icon
                                         className={this.state.timeAnimationSettings ? "map3d-animation-settings-active" : ""}
                                         icon="cog"

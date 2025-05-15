@@ -16,6 +16,7 @@
 
 div.map3d-animation-slider {
     display: flex;
+    align-items: flex-end;
 }
 
 div.map3d-animation-slider > span.icon {
@@ -52,14 +53,21 @@ div.maplight3d-slider {
     padding: 0 1em;
 }
 
-div.maplight3d-slider > input {
-    margin-top: -0.5em;
-    margin-bottom: 0.5em;
+div.maplight3d-slider > input[type=range] {
+    margin-top: -0.25em;
     width: 100%;
     outline: none;
 }
 
+div.maplight3d-slider > input[type=time],
+div.maplight3d-slider > input[type=date] {
+    margin-top: -0.5em;
+    font-size: 80%;
+    text-align: center;
+}
+
 div.maplight3d-slider-label {
+    margin-top: 0.5em;
     position: relative;
     pointer-events: none;
 }
