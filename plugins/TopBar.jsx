@@ -141,7 +141,7 @@ class TopBar extends React.Component {
             logoEl = (<a href={this.props.logoUrl} rel="noreferrer" target="_blank">{logoEl}</a>);
         }
         // Convert legacy minScale option to minScaleDenom
-        const searchOptions = {...this.props.searchOptions};
+        const searchOptions = {...TopBar.defaultProps.searchOptions, ...this.props.searchOptions};
         searchOptions.minScaleDenom = searchOptions.minScaleDenom || searchOptions.minScale;
         delete searchOptions.minScale;
         // Menu compact only available for desktop client
