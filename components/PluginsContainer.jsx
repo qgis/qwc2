@@ -70,10 +70,12 @@ class PluginsContainer extends React.Component {
         );
     }
     setupTouchEvents = (el) => {
-        el.addEventListener('touchstart', ev => {
-            this.touchY = ev.targetTouches[0].clientY;
-        }, { passive: false });
-        el.addEventListener('touchmove', this.preventOverscroll, { passive: false });
+        if (el) {
+            el.addEventListener('touchstart', ev => {
+                this.touchY = ev.targetTouches[0].clientY;
+            }, { passive: false });
+            el.addEventListener('touchmove', this.preventOverscroll, { passive: false });
+        }
     };
     preventOverscroll = (ev) => {
         if (ev.touches[0].touchType !== "direct") {
