@@ -57,7 +57,6 @@ const vFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEd
 class QtDesignerForm extends React.Component {
     static propTypes = {
         addRelationRecord: PropTypes.func,
-        editConfig: PropTypes.object,
         editLayerId: PropTypes.string,
         editRelationRecord: PropTypes.func,
         feature: PropTypes.object,
@@ -391,14 +390,13 @@ class QtDesignerForm extends React.Component {
                 // kvrel__reltablename__attrname__datatable__keyfield__valuefield
                 const count = parts.length;
                 const attrname = parts.slice(1, count - 3).join("__");
-                const currentEditConfig = this.props.editConfig[parts[1]];
-                const comboFieldConstraints = currentEditConfig.fields.find(field => field.id === attrname.split("__")[1])?.constraints || {};
+                const comboFieldConstraints = this.props.fields[attrname]?.constraints || {};
                 value = (feature.properties || [])[attrname] ?? "";
                 const fieldId = parts.slice(1, count - 3).join("__");
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
-                if (currentEditConfig.fields.find(field => field.id === attrname.split("__")[1])?.filterExpression) {
-                    filterExpr = parseExpression(currentEditConfig.fields.find(field => field.id === attrname.split("__")[1]).filterExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                if (this.props.fields[attrname]?.filterExpression) {
+                    filterExpr = parseExpression(this.props.fields[attrname].filterExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
                 }
                 return (
                     <EditComboField
