@@ -123,7 +123,6 @@ class MapControls3D extends React.Component {
         }
     };
     home = () => {
-        this.leaveFirstPerson();
         const extent = this.props.sceneContext.map.extent;
         const bounds = [extent.west, extent.south, extent.east, extent.north];
         this.setViewToExtent(bounds);
@@ -268,9 +267,7 @@ class MapControls3D extends React.Component {
         this.updateUrlParams();
     };
     setViewToExtent = (bounds, angle = 0) => {
-        if (this.state.firstPerson) {
-            this.leaveFirstPerson();
-        }
+        this.leaveFirstPerson();
 
         const center = {
             x: 0.5 * (bounds[0] + bounds[2]),
@@ -432,16 +429,18 @@ class MapControls3D extends React.Component {
         });
     };
     leaveFirstPerson = () => {
-        this.controls.maxPolarAngle = Math.PI * 0.5;
-        this.controls.panSpeed = 1;
-        this.controls.enableZoom = true;
+        if (this.state.firstPerson) {
+            this.controls.maxPolarAngle = Math.PI * 0.5;
+            this.controls.panSpeed = 1;
+            this.controls.enableZoom = true;
 
-        this.setState({firstPerson: false}, () => {
-            const cameraPos = this.props.sceneContext.scene.view.camera.position;
-            const bounds = [cameraPos.x - 1000, cameraPos.y - 1000, cameraPos.x + 1000, cameraPos.y + 1000];
-            this.setViewToExtent(bounds);
-            this.updateUrlParams();
-        });
+            this.setState({firstPerson: false}, () => {
+                const cameraPos = this.props.sceneContext.scene.view.camera.position;
+                const bounds = [cameraPos.x - 1000, cameraPos.y - 1000, cameraPos.x + 1000, cameraPos.y + 1000];
+                this.setViewToExtent(bounds);
+                this.updateUrlParams();
+            });
+        }
     };
     updateUrlParams = () => {
         const tpos = this.props.sceneContext.scene.view.controls.target;
