@@ -14,13 +14,14 @@ import {createSelector} from 'reselect';
 
 import * as displayExports from '../actions/display';
 import {setView3dMode, View3DMode} from '../actions/display';
+import * as layersExports from '../actions/layers';
+import * as mapExports from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import * as themeExports from '../actions/theme';
 import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import StandardApp from '../components/StandardApp';
 import View3DSwitcher from '../components/map3d/View3DSwitcher';
-import map3dReducer from '../components/map3d/slices/map3d';
 import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
@@ -90,10 +91,9 @@ class View3D extends React.Component {
         }),
         layers: PropTypes.object,
         localConfig: PropTypes.object,
-        mapBBox: PropTypes.object,
+        map: PropTypes.object,
         plugins: PropTypes.object,
         pluginsConfig: PropTypes.object,
-        projection: PropTypes.string,
         /** Minimum scale denominator when zooming to search result. */
         searchMinScaleDenom: PropTypes.number,
         searchProviders: PropTypes.object,
@@ -145,12 +145,15 @@ class View3D extends React.Component {
             }
         };
         const displayActions = Object.values(displayExports).filter(x => typeof(x) === 'string');
+        const layersActions = Object.values(layersExports).filter(x => typeof(x) === 'string');
+        const mapActions = Object.values(mapExports).filter(x => typeof(x) === 'string');
         const themeActions = Object.values(themeExports).filter(x => typeof(x) === 'string');
         const display = forwardReducer("display", displayActions, "SYNC_DISPLAY_FROM_PARENT_STORE");
-        const layers = forwardReducer("layers", [], "SYNC_LAYERS_FROM_PARENT_STORE");
+        const layers = forwardReducer("layers", layersActions, "SYNC_LAYERS_FROM_PARENT_STORE");
+        const map = forwardReducer("map", mapActions, "SYNC_MAP_FROM_PARENT_STORE");
         const localConfig = forwardReducer("localConfig", [], "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE");
         const theme = forwardReducer("theme", themeActions, "SYNC_THEME_FROM_PARENT_STORE");
-        this.store = createStore({display, layers, localConfig, map: map3dReducer, theme, task, windows});
+        this.store = createStore({display, layers, localConfig, map, theme, task, windows});
     }
     componentDidMount() {
         if (this.props.startupParams.v === "3d") {
@@ -189,6 +192,9 @@ class View3D extends React.Component {
         if (this.props.layers !== prevProps.layers) {
             this.store.dispatch({type: "SYNC_LAYERS_FROM_PARENT_STORE", layers: this.props.layers});
         }
+        if (this.props.map !== prevProps.map) {
+            this.store.dispatch({type: "SYNC_MAP_FROM_PARENT_STORE", map: this.props.map});
+        }
         if (this.props.view3dMode !== prevProps.view3dMode) {
             if (this.props.view3dMode === View3DMode.FULLSCREEN) {
                 UrlParams.updateParams({v: "3d"});
@@ -208,7 +214,7 @@ class View3D extends React.Component {
             this.props.setView3dMode(View3D.DISABLED);
         }
         // Lock views
-        if (this.state.viewsLocked && this.props.mapBBox !== prevProps.mapBBox) {
+        if (this.state.viewsLocked && this.props.map.bbox !== prevProps.map.bbox) {
             this.sync2DExtent();
         }
     }
@@ -293,7 +299,7 @@ class View3D extends React.Component {
     };
     sync2DExtent = () => {
         if (this.map3dComponentRef) {
-            this.map3dComponentRef.setViewToExtent(this.props.mapBBox.bounds, this.props.mapBBox.rotation);
+            this.map3dComponentRef.setViewToExtent(this.props.map.bbox.bounds, this.props.map.bbox.rotation);
         }
     };
     setLockViews = () => {
@@ -336,8 +342,7 @@ export default connect(
     createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
         enabled: state.task.id === 'View3D',
         display: state.display,
-        mapBBox: state.map.bbox,
-        projection: state.map.projection,
+        map: state.map,
         layers: state.layers,
         pluginsConfig: state.localConfig.plugins,
         theme: state.theme,
