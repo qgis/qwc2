@@ -127,7 +127,7 @@ class MapControls3D extends React.Component {
         const extent = this.props.sceneContext.map.extent;
         const bounds = [extent.west, extent.south, extent.east, extent.north];
         this.setViewToExtent(bounds);
-        this.this.updateUrlParams();
+        this.updateUrlParams();
     };
     pan = (ev, dx, dy, keyboard = false) => {
         // Pan faster the heigher one is above the terrain
