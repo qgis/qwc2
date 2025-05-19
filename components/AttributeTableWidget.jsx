@@ -422,7 +422,7 @@ class AttributeTableWidget extends React.Component {
             let filterExpr = null;
             if (field.filterExpression) {
                 const mapPrefix = (currentEditConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-                filterExpr = parseExpression(field.filterExpression, feature, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                filterExpr = parseExpression(field.filterExpression, feature, this.editLayerId(this.state.selectedLayer), this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
             }
             input = (
                 <EditComboField

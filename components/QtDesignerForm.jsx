@@ -309,7 +309,7 @@ class QtDesignerForm extends React.Component {
             );
         } else if (widget.class === "QGroupBox") {
             if (widget.property.visibilityExpression) {
-                const exprResult = parseExpression(widget.property.visibilityExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                const exprResult = parseExpression(widget.property.visibilityExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
                 if (exprResult === false || exprResult === 0) {
                     return null;
                 }
@@ -396,7 +396,7 @@ class QtDesignerForm extends React.Component {
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
                 if (this.props.fields[attrname]?.filterExpression) {
-                    filterExpr = parseExpression(this.props.fields[attrname].filterExpression, feature, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                    filterExpr = parseExpression(this.props.fields[attrname].filterExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
                 }
                 return (
                     <EditComboField

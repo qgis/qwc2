@@ -16,7 +16,9 @@ global.qwc2ExpressionParserContext = {
     getFeature: (layerName, attr, value) => {
         return {"type":"Feature","id":210000,"geometry":null,"properties":{"id":2,"label":"ABLAGERUNGEN","code":"DBC","listnr":21,"grpcode":0,"numcode":0,"q1":null,"q1suff":null,"q2":null,"q2suff":null,"qsr":null,"z1":null,"z2":null,"l1":2,"l2":null,"lastlevel":null,"level":1,"tooltip":"Ablagerungen an der Schachtsohle oder an Auftritten.","id2":210000},"__version__":1711648978811};
     },
-    asFilter: false
+    asFilter: false,
+    username: "testuser",
+    layer: "layername"
 };
 
 // Create a Parser object from our grammar.
@@ -33,6 +35,7 @@ const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 // parser.feed('"listnr" =current_value(\'listnr\') and  "grpcode" >0 and "numcode" = 0')
 // parser.feed(' "listnr" =current_value(\'listnr\') and "grpcode" =  current_value(\'grpcode\') and "numcode" >0 and "foo" = ((1<2) = true)')
 // parser.feed("if(3>2, 3, 4)")
-parser.feed("nullif('a', 'b')")
+// parser.feed("nullif('a', 'b')")
+parser.feed("@user_account_name")
 
 console.log(JSON.stringify(parser.results));

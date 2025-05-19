@@ -8,6 +8,8 @@
 
 import nearley from 'nearley';
 
+import ConfigUtils from './ConfigUtils';
+import LocaleUtils from './LocaleUtils';
 import grammar from './expr_grammar/grammar';
 
 
@@ -42,14 +44,19 @@ export class ExpressionFeatureCache {
     };
 }
 
-export function parseExpression(expr, feature, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
+export function parseExpression(expr, feature, dataset, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     const promises = [];
 
     window.qwc2ExpressionParserContext = {
         feature: feature,
         getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, mapPrefix + layerName, mapCrs, attr, value, promises),
-        asFilter: asFilter
+        asFilter: asFilter,
+        username: ConfigUtils.getConfigProp("username"),
+        layer: dataset.startsWith(mapPrefix) ? dataset.substr(mapPrefix.length) : dataset,
+        projection: mapCrs,
+        mapPrefix: mapPrefix,
+        lang: LocaleUtils.lang()
     };
     let result = null;
     try {
@@ -62,7 +69,7 @@ export function parseExpression(expr, feature, editIface, mapPrefix, mapCrs, ree
     delete window.qwc2ExpressionParserContext;
     if (promises.length > 0) {
         // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
-        Promise.all(promises).then(() => parseExpression(expr, feature, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter, true));
+        Promise.all(promises).then(() => parseExpression(expr, feature, dataset, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter, true));
         return null;
     } else {
         if (reevaluate) {
@@ -75,13 +82,18 @@ export function parseExpression(expr, feature, editIface, mapPrefix, mapCrs, ree
     }
 }
 
-export function parseExpressionsAsync(expressions, feature, editIface, mapPrefix, mapCrs, asFilter) {
+export function parseExpressionsAsync(expressions, feature, dataset, editIface, mapPrefix, mapCrs, asFilter) {
     const promises = [];
     return new Promise((resolve) => {
         window.qwc2ExpressionParserContext = {
             feature: feature,
             getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, mapPrefix + layerName, mapCrs, attr, value, promises),
-            asFilter: asFilter
+            asFilter: asFilter,
+            username: ConfigUtils.getConfigProp("username"),
+            layer: dataset.startsWith(mapPrefix) ? dataset.substr(mapPrefix.length) : dataset,
+            projection: mapCrs,
+            mapPrefix: mapPrefix,
+            lang: LocaleUtils.lang()
         };
         const results = Object.entries(expressions).reduce((res, [key, expr]) => {
             const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
@@ -97,7 +109,7 @@ export function parseExpressionsAsync(expressions, feature, editIface, mapPrefix
         delete window.qwc2ExpressionParserContext;
         if (promises.length > 0) {
             // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
-            Promise.all(promises).then(parseExpressionsAsync(expressions, feature, editIface, mapPrefix, mapCrs, asFilter).then(resolve(results)));
+            Promise.all(promises).then(parseExpressionsAsync(expressions, feature, dataset, editIface, mapPrefix, mapCrs, asFilter).then(resolve(results)));
         } else {
             resolve(results);
         }
@@ -123,7 +135,7 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
         return res;
     }, {});
     ExpressionFeatureCache.clear();
-    parseExpressionsAsync(defaultFieldExpressions, feature, editIface, mapPrefix, mapCrs).then(result => {
+    parseExpressionsAsync(defaultFieldExpressions, feature, editConfig.editDataset, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
             if (field.id in result && field.type === "date") {
