@@ -13,6 +13,8 @@ import { v5 as uuidv5 } from 'uuid';
 
 import LocaleUtils from '../utils/LocaleUtils';
 
+import './style/EditComboField.css';
+
 const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
 
 export class KeyValCache {
@@ -64,6 +66,7 @@ export default class EditComboField extends React.Component {
         fieldId: PropTypes.string,
         filterExpr: PropTypes.array,
         keyvalrel: PropTypes.string,
+        multiSelect: PropTypes.bool,
         name: PropTypes.string,
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
@@ -109,6 +112,45 @@ export default class EditComboField extends React.Component {
         return false;
     };
     render() {
+        if (this.props.multiSelect) {
+            return this.renderMultiSelect();
+        } else {
+            return this.renderComboSelect();
+        }
+    }
+    renderMultiSelect = () => {
+        let items = new Set();
+        try {
+            items = new Set(JSON.parse('[' + this.props.value.slice(1, -1) + ']'));
+        } catch (e) {
+            // pass
+        }
+        const serializeValue = (value, enabled) => {
+            if (enabled) {
+                return '{' + JSON.stringify([...items].concat([value])).slice(1, -1) + '}';
+            } else {
+                return '{' + JSON.stringify([...items].filter(x => x !== value)).slice(1, -1) + '}';
+            }
+        };
+        return (
+            <div className="edit-multi-select">
+                {this.state.values.map((item, index) => {
+                    const {value, label} = this.itemValueLabel(item);
+                    return (
+                        <div key={this.props.fieldId + index}>
+                            <label>
+                                <input
+                                    checked={items.has(value)}
+                                    onChange={(ev) => this.props.updateField(this.props.fieldId, serializeValue(value, ev.target.checked))}
+                                    type="checkbox"
+                                />{label}</label>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+    renderComboSelect = () => {
         return (
             <select disabled={this.props.readOnly} name={this.props.name}
                 onChange={ev => this.props.updateField(this.props.fieldId, ev.target.selectedIndex === 0 && this.state.showPlaceholder ? null : ev.target.value)}
@@ -120,19 +162,23 @@ export default class EditComboField extends React.Component {
                     </option>
                 ) : null}
                 {this.state.values.map((item, index) => {
-                    let optValue = "";
-                    let label = "";
-                    if (typeof(item) === 'string') {
-                        optValue = label = item;
-                    } else {
-                        optValue = item.value;
-                        label = item.label;
-                    }
+                    const {value, label} = this.itemValueLabel(item);
                     return (
-                        <option key={this.props.fieldId + index} value={String(optValue)}>{label}</option>
+                        <option key={this.props.fieldId + index} value={String(value)}>{label}</option>
                     );
                 })}
             </select>
         );
+    };
+    itemValueLabel = (item) => {
+        let value = "";
+        let label = "";
+        if (typeof(item) === 'string') {
+            value = label = item;
+        } else {
+            value = item.value;
+            label = item.label;
+        }
+        return {value, label};
     }
 }
