@@ -67,7 +67,7 @@ P6 -> "-" _ P6                     {% function(d) { return -d[2]; } %}
     | "(" _ P0 _ ")"               {% function(d) { return d[2]; } %}
     | N                            {% id %}
 
-# A number or a function of a number
+# A number or a function of a number, a variable or a constant
 N -> float                         {% id %}
     | sqstring                     {% id %}
     | dqstring                     {% function(d) { return asFilter(d) ? d[0] : window.qwc2ExpressionParserContext.feature.properties?.[d[0]] ?? null; } %}
@@ -98,6 +98,17 @@ N -> float                         {% id %}
     | "NULL"i                      {% function(d) { return null; } %}
     | "FALSE"i                     {% function(d) { return false; } %}
     | "TRUE"i                      {% function(d) { return true; } %}
+    | "@feature"                   {% function(d) { return window.qwc2ExpressionParserContext.feature; } %}
+    | "@geometry"                  {% function(d) { return window.qwc2ExpressionParserContext.feature?.geometry; } %}
+    | "@id"                        {% function(d) { return window.qwc2ExpressionParserContext.feature?.id; } %}
+    | "@layer"                     {% function(d) { return window.qwc2ExpressionParserContext.layer; } %}
+    | "@layer_name"                {% function(d) { return window.qwc2ExpressionParserContext.layer; } %}
+    | "@layer_crs"                 {% function(d) { return window.qwc2ExpressionParserContext.projection; } %}
+    | "@project_basename"          {% function(d) { return window.qwc2ExpressionParserContext.mapPrefix; } %}
+    | "@project_crs"               {% function(d) { return window.qwc2ExpressionParserContext.projection; } %}
+    | "@qgis_locale"               {% function(d) { return window.qwc2ExpressionParserContext.lang; } %}
+    | "@user_account_name"         {% function(d) { return window.qwc2ExpressionParserContext.username; } %}
+    | "@cloud_username"            {% function(d) { return window.qwc2ExpressionParserContext.username; } %}
 
 var_args -> P0                     {% function(d) { return [d[0]]; } %}
 var_args -> var_args _ "," _ P0    {% function(d) { return [...d[0], d[4]]; } %}

@@ -32,7 +32,7 @@ div.number-input:not(.number-input-disabled) > span.icon:hover {
 
 /** Normal **/
 div.number-input-normal > input {
-    padding-right: 1.5em;
+    padding-right: 1.5em!important;
 }
 
 div.number-input > span.icon-chevron-up,

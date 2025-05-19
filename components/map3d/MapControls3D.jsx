@@ -17,7 +17,6 @@ import {MapControls} from 'three/addons/controls/MapControls';
 import ConfigUtils from '../../utils/ConfigUtils';
 import {UrlParams} from '../../utils/PermaLinkUtils';
 import Icon from '../Icon';
-import {setCenter} from './slices/map3d';
 
 import './style/MapControls3D.css';
 
@@ -26,8 +25,7 @@ class MapControls3D extends React.Component {
     static propTypes = {
         currentTask: PropTypes.string,
         onControlsSet: PropTypes.func,
-        sceneContext: PropTypes.object,
-        setCenter: PropTypes.func
+        sceneContext: PropTypes.object
     };
     constructor(props) {
         super(props);
@@ -123,11 +121,10 @@ class MapControls3D extends React.Component {
         }
     };
     home = () => {
-        this.leaveFirstPerson();
         const extent = this.props.sceneContext.map.extent;
         const bounds = [extent.west, extent.south, extent.east, extent.north];
         this.setViewToExtent(bounds);
-        this.this.updateUrlParams();
+        this.updateUrlParams();
     };
     pan = (ev, dx, dy, keyboard = false) => {
         // Pan faster the heigher one is above the terrain
@@ -268,9 +265,7 @@ class MapControls3D extends React.Component {
         this.updateUrlParams();
     };
     setViewToExtent = (bounds, angle = 0) => {
-        if (this.state.firstPerson) {
-            this.leaveFirstPerson();
-        }
+        this.leaveFirstPerson();
 
         const center = {
             x: 0.5 * (bounds[0] + bounds[2]),
@@ -355,7 +350,6 @@ class MapControls3D extends React.Component {
             const k = Math.max(0, 1 - (cameraHeight - terrInter.z) / terrInter.z);
             target.lerpVectors(new Vector3(x, y, 0), terrInter, k);
         }
-        this.props.setCenter([target.x, target.y, target.z]);
         this.updateUrlParams();
     };
     stopAnimations = () => {
@@ -432,16 +426,18 @@ class MapControls3D extends React.Component {
         });
     };
     leaveFirstPerson = () => {
-        this.controls.maxPolarAngle = Math.PI * 0.5;
-        this.controls.panSpeed = 1;
-        this.controls.enableZoom = true;
+        if (this.state.firstPerson) {
+            this.controls.maxPolarAngle = Math.PI * 0.5;
+            this.controls.panSpeed = 1;
+            this.controls.enableZoom = true;
 
-        this.setState({firstPerson: false}, () => {
-            const cameraPos = this.props.sceneContext.scene.view.camera.position;
-            const bounds = [cameraPos.x - 1000, cameraPos.y - 1000, cameraPos.x + 1000, cameraPos.y + 1000];
-            this.setViewToExtent(bounds);
-            this.updateUrlParams();
-        });
+            this.setState({firstPerson: false}, () => {
+                const cameraPos = this.props.sceneContext.scene.view.camera.position;
+                const bounds = [cameraPos.x - 1000, cameraPos.y - 1000, cameraPos.x + 1000, cameraPos.y + 1000];
+                this.setViewToExtent(bounds);
+                this.updateUrlParams();
+            });
+        }
     };
     updateUrlParams = () => {
         const tpos = this.props.sceneContext.scene.view.controls.target;
@@ -473,6 +469,4 @@ class MapControls3D extends React.Component {
 export default connect((state) => ({
     currentTask: state.task.id
 }), {
-    setCenter: setCenter
-
 })(MapControls3D);

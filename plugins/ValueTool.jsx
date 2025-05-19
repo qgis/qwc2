@@ -300,7 +300,7 @@ class ValueTool extends React.Component {
                 layerActive = (sublayer) => sublayer.visibility;
             }
             const queryLayers = LayerUtils.getSublayerNames(layer, true, (sublayer) => {
-                return layerActive(sublayer) && sublayer.geometryType === null
+                return layerActive(sublayer) && sublayer.geometryType === null;
             });
             if (isEmpty(queryLayers)) {
                 return;
