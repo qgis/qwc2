@@ -507,7 +507,7 @@ class IdentifyViewer extends React.Component {
                     )}
                     <span>{(this.props.showLayerTitles ? (result.layertitle + ": ") : "") + result.displayname}</span>
                     {zoomToFeatureButton}
-                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(result)} />
+                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer)} />
                 </div>
                 {this.props.collapsible && !expanded ? null : (
                     <div className="identify-result-container">
@@ -729,19 +729,9 @@ class IdentifyViewer extends React.Component {
             this.setState({generatingReport: false});
         });
     };
-    showLayerInfo = (result) => {
-        let match = null;
-        // Search matching layer by technical name
-        for (const name of [result.layername, result.layerinfo]) {
-            match = LayerUtils.searchLayer(this.props.layers, 'name', name);
-            if (match) {
-                break;
-            }
-        }
-        if (!match) {
-            // Search matching layer by title
-            match = LayerUtils.searchLayer(this.props.layers, 'title', result.layertitle);
-        }
+    showLayerInfo = (layer) => {
+        const [layerUrl, layerName] = layer.split('#');
+        const match = LayerUtils.searchLayer(this.props.layers, layerUrl, layerName);
         if (match) {
             this.props.setActiveLayerInfo(match.layer, match.sublayer);
         }

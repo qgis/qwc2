@@ -570,16 +570,17 @@ const LayerUtils = {
         }
         return null;
     },
-    searchLayer(layers, key, value, roles = [LayerRole.THEME, LayerRole.USERLAYER]) {
-        for (const layer of layers) {
-            if (roles.includes(layer.role)) {
-                const matchsublayer = LayerUtils.searchSubLayer(layer, key, value);
-                if (matchsublayer) {
-                    return {layer: layer, sublayer: matchsublayer};
-                }
+    searchLayer(layers, layerUrl, layerName) {
+        let match = null;
+        layers.find(layer => {
+            let sublayer = null;
+            if (layer.url === layerUrl && (sublayer = LayerUtils.searchSubLayer(layer, 'name', layerName))) {
+                match = {layer, sublayer};
+                return true;
             }
-        }
-        return null;
+            return false;
+        });
+        return match;
     },
     sublayerVisible(layer, sublayerpath) {
         let visible = layer.visibility !== false;
