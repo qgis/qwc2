@@ -27,7 +27,6 @@ import {
     REMOVE_ALL_LAYERS,
     REPLACE_PLACEHOLDER_LAYER,
     SET_SWIPE,
-    SET_LAYERS,
     SET_FILTER
 } from '../actions/layers';
 import LayerUtils from '../utils/LayerUtils';
@@ -338,9 +337,6 @@ export default function layers(state = defaultState, action) {
     }
     case SET_SWIPE: {
         return {...state, swipe: action.swipe};
-    }
-    case SET_LAYERS: {
-        return {...state, flat: action.layers};
     }
     case SET_FILTER: {
         const filter = {
