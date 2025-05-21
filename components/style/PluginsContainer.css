@@ -16,10 +16,11 @@ div.map-buttons-container {
     justify-content: flex-start;
     flex-wrap: wrap-reverse;
     z-index: 2;
+    overflow: hidden;
 }
 
 div.map-buttons-spacer {
     display: inline-block;
-    width: 3em;
-    height: 3em;
+    width: 4em;
+    height: 4em;
 }
