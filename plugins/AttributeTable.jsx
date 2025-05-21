@@ -43,7 +43,7 @@ class AttributeTable extends React.Component {
         showLimitToExtent: PropTypes.bool,
         taskData: PropTypes.object,
         /** The zoom level for zooming to point features. */
-        zoomLevel: PropTypes.number,
+        zoomLevel: PropTypes.number
     };
     static defaultProps = {
         zoomLevel: 1000,
