@@ -288,7 +288,7 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case REMOVE_ALL_LAYERS: {
-        return {...state, flat: [], swipe: null};
+        return defaultState;
     }
     case REORDER_LAYER: {
         const newLayers = LayerUtils.reorderLayer(
