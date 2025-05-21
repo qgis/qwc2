@@ -272,11 +272,7 @@ export default function layers(state = defaultState, action) {
             const newLayers = state.flat.slice(0);
             newLayers[themeLayerIdx] = LayerUtils.mergeSubLayers(state.flat[themeLayerIdx], action.layer);
             newLayers[themeLayerIdx].visibility = true;
-            for (const lyr of newLayers) {
-                if (lyr.type === "wms") {
-                    Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr, state.filter));
-                }
-            }
+            Object.assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx], state.filter));
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
             return {...state, flat: newLayers};
         }
