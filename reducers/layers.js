@@ -312,11 +312,13 @@ export default function layers(state = defaultState, action) {
                         ...layer,
                         ...action.layer,
                         role: layer.role,
-                        id: layer.id,
-                        // keep original title and attribution
-                        title: layer.title || action.layer.title,
-                        attribution: layer.attribution || action.layer.attribution
+                        id: layer.id
                     };
+                    // For background layers, preserve any custom title/attribution
+                    if (layer.role === LayerRole.BACKGROUND) {
+                        newLayer.title = layer.title || action.layer.title;
+                        newLayer.attribution = layer.attribution || action.layer.attribution;
+                    }
                     delete newLayer.loading;
                     if (newLayer.type === "wms") {
                         Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer, state.filter));
