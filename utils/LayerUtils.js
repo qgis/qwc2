@@ -196,17 +196,17 @@ const LayerUtils = {
                 STYLES: styles.join(","),
                 ...layer.dimensionValues
             };
-            if (filter.filterParams) {
-                newParams.FILTER = Object.entries(filter.filterParams).reduce((res, [layername, filters]) => {
-                    if (!layerNames.includes(layername)) {
-                        return res;
-                    }
-                    return [...res, layername + ":" + filters.map(expr => Array.isArray(expr) ? LayerUtils.formatFilterExpr(expr) : "AND").join(" ")];
-                }, []).join(";");
-            }
-            if (filter.filterGeom) {
-                newParams.FILTER_GEOM = VectorLayerUtils.geoJSONGeomToWkt(filter.filterGeom);
-            }
+        }
+        if (filter.filterParams) {
+            newParams.FILTER = Object.entries(filter.filterParams).reduce((res, [layername, filters]) => {
+                if (!newParams.LAYERS.split(",").includes(layername)) {
+                    return res;
+                }
+                return [...res, layername + ":" + filters.map(expr => Array.isArray(expr) ? LayerUtils.formatFilterExpr(expr) : "AND").join(" ")];
+            }, []).join(";");
+        }
+        if (filter.filterGeom) {
+            newParams.FILTER_GEOM = VectorLayerUtils.geoJSONGeomToWkt(filter.filterGeom);
         }
 
         return {
