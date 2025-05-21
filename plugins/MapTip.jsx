@@ -122,7 +122,7 @@ class MapTip extends React.Component {
             if (!isEmpty(layer.drawingOrder)) {
                 queryLayers = layer.drawingOrder.slice(0).reverse().filter(entry => layer.queryLayers.includes(entry));
             }
-            layerOrder.push(layer.uuid);
+            layerOrder.push(layer.id);
             const request = IdentifyUtils.buildRequest(layer, queryLayers.join(","), this.state.mousePos.coordinate, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
                 if (this.reqId === reqId) {
@@ -143,7 +143,7 @@ class MapTip extends React.Component {
                     }
                     this.setState((state) => ({
                         pos: pos,
-                        maptips: {...state.maptips, [layer.uuid]: mapTips}
+                        maptips: {...state.maptips, [layer.id]: mapTips}
                     }));
                 }
             });

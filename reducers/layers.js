@@ -56,7 +56,7 @@ export default function layers(state = defaultState, action) {
         };
     }
     case CHANGE_LAYER_PROPERTY: {
-        const targetLayer = state.flat.find((layer) => {return layer.uuid === action.layerUuid; });
+        const targetLayer = state.flat.find((layer) => {return layer.id === action.layerId; });
         if (!targetLayer) {
             return state;
         }
@@ -72,7 +72,7 @@ export default function layers(state = defaultState, action) {
         }
 
         const newLayers = (state.flat || []).map((layer) => {
-            if (layer.uuid === action.layerUuid) {
+            if (layer.id === action.layerId) {
 
                 const {newlayer, newsublayer} = LayerUtils.cloneLayer(layer, action.sublayerpath || []);
                 newsublayer[action.property] = action.newvalue;
@@ -109,8 +109,13 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case SET_LAYER_DIMENSIONS: {
+        // Set dimensions for all layers with the same URL (i.e. if a WMS is split)
+        const layerUrl = state.flat.find(layer => layer.id === action.layerId)?.url;
+        if (!layerUrl) {
+            return "";
+        }
         const newLayers = (state.flat || []).map((layer) => {
-            if (layer.id === action.layerId) {
+            if (layer.url === layerUrl) {
                 const newLayer = {...layer, dimensionValues: action.dimensions};
                 Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer, state.filter));
                 return newLayer;
@@ -132,7 +137,6 @@ export default function layers(state = defaultState, action) {
             opacity: action.layer.opacity ?? 255,
             layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
         };
-        LayerUtils.addUUIDs(newLayer);
         if (action.beforename) {
             newLayers = LayerUtils.insertLayer(newLayers, newLayer, "name", action.beforename);
         } else {
@@ -209,7 +213,6 @@ export default function layers(state = defaultState, action) {
                 id: layerId,
                 type: 'vector',
                 name: action.layer.name || layerId,
-                uuid: uuidv4(),
                 features: newFeatures,
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
@@ -314,13 +317,11 @@ export default function layers(state = defaultState, action) {
                         ...action.layer,
                         role: layer.role,
                         id: layer.id,
-                        uuid: layer.uuid,
                         // keep original title and attribution
                         title: layer.title || action.layer.title,
                         attribution: layer.attribution || action.layer.attribution
                     };
                     delete newLayer.loading;
-                    LayerUtils.addUUIDs(newLayer);
                     if (newLayer.type === "wms") {
                         Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer, state.filter));
                     }

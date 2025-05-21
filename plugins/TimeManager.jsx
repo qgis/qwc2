@@ -248,15 +248,15 @@ class TimeManager extends React.Component {
                 if (layer.type === "wms") {
                     const layertimeData = LayerUtils.getTimeDimensionValues(layer);
                     if (layertimeData.names.size > 0) {
-                        timeData.layerDimensions[layer.uuid] = [...layertimeData.names];
+                        timeData.layerDimensions[layer.id] = [...layertimeData.names];
                         layertimeData.values.forEach(x => timeData.values.add(x));
-                        timeData.attributes[layer.uuid] = {
-                            ...timeData.attributes[layer.uuid],
+                        timeData.attributes[layer.id] = {
+                            ...timeData.attributes[layer.id],
                             ...layertimeData.attributes
                         };
                         // Filter time dimension from layer - object cache in updateTimeFeatures below should query all objects regardless of time
                         const layerNoTimeDims = {...layer};
-                        const layerDimsUC = timeData.layerDimensions[layer.uuid].map(name => name.toUpperCase());
+                        const layerDimsUC = timeData.layerDimensions[layer.id].map(name => name.toUpperCase());
                         layerNoTimeDims.dimensionValues = Object.entries(layerNoTimeDims.dimensionValues || {}).reduce((res, [key, value]) => {
                             if (layerDimsUC.includes(key)) {
                                 return res;
@@ -608,7 +608,7 @@ class TimeManager extends React.Component {
     updateLayerTimeDimensions = (timeData, currentTimestamp) => {
         const currentTime = this.state.timeEnabled ? new Date(currentTimestamp).toISOString() : undefined;
         timeData.layers.forEach(layer => {
-            const dimensions = timeData.layerDimensions[layer.uuid].reduce((res, dimension) => {
+            const dimensions = timeData.layerDimensions[layer.id].reduce((res, dimension) => {
                 res[dimension.toUpperCase()] = currentTime;
                 return res;
             }, {...(layer.dimensionValues || {})});
@@ -658,7 +658,7 @@ class TimeManager extends React.Component {
         let pending = 0;
         const reqUUID = uuidv1();
         timeData.layers.forEach(layer => {
-            const sublayerattrs = timeData.attributes[layer.uuid];
+            const sublayerattrs = timeData.attributes[layer.id];
             const queryLayers = Object.keys(sublayerattrs).join(",");
             const options = {
                 GEOMCENTROID: true,
@@ -775,7 +775,7 @@ const layerVisiblitiesSelector = createSelector([
 ], (layers) => {
     return layers.filter(layer => layer.type === "wms").reduce((res, layer) => ({
         ...res,
-        [layer.uuid]: LayerUtils.computeLayerVisibility(layer)
+        [layer.id]: LayerUtils.computeLayerVisibility(layer)
     }), {});
 });
 

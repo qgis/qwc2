@@ -113,7 +113,7 @@ class MapPlugin extends React.Component {
                             // Add new renderlayer
                             renderLayers.push({
                                 ...layer,
-                                uuid: layer.uuid + "-" + i,
+                                uuid: layer.id + "-" + i,
                                 params: {
                                     ...layer.params,
                                     LAYERS: sublayers[i],
@@ -154,7 +154,7 @@ class MapPlugin extends React.Component {
                             if (j > 0) {
                                 newLayers.push({
                                     ...layer,
-                                    uuid: layer.uuid + ":0",
+                                    id: layer.id + ":0",
                                     params: {
                                         LAYERS: paramLayers.slice(0, j).join(","),
                                         OPACITIES: paramOpacities.slice(0, j).join(","),
@@ -164,7 +164,7 @@ class MapPlugin extends React.Component {
                             }
                             swipeLayer = {
                                 ...layer,
-                                uuid: layer.uuid + ":1",
+                                id: layer.id + ":1",
                                 params: {
                                     LAYERS: paramLayers[j],
                                     OPACITIES: paramOpacities[j],
@@ -175,7 +175,7 @@ class MapPlugin extends React.Component {
                             if (j < paramLayers.length - 1) {
                                 newLayers.push({
                                     ...layer,
-                                    uuid: layer.uuid + ":2",
+                                    id: layer.id + ":2",
                                     params: {
                                         LAYERS: paramLayers.slice(j + 1).join(","),
                                         OPACITIES: paramOpacities.slice(j + 1).join(","),
@@ -209,7 +209,7 @@ class MapPlugin extends React.Component {
             ++zIndex;
             const swipe = this.props.swipe !== null && layer === this.state.swipeLayer;
             return (
-                <OlLayer key={layer.uuid} options={layer} swipe={swipe ? this.props.swipe : null} zIndex={layer.zIndex ?? zIndex} />
+                <OlLayer key={layer.id} options={layer} swipe={swipe ? this.props.swipe : null} zIndex={layer.zIndex ?? zIndex} />
             );
         });
     };

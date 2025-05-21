@@ -789,7 +789,7 @@ class IdentifyViewer extends React.Component {
             return l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', result.layername, path));
         });
         if (layer && sublayer) {
-            this.props.changeLayerProperty(layer.uuid, "visibility", true, path);
+            this.props.changeLayerProperty(layer.id, "visibility", true, path);
         }
     };
 }

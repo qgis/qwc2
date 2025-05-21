@@ -110,10 +110,10 @@ export function addThemeSublayer(layer) {
 }
 
 // recurseDirection: null (don't recurse), 'parents', 'children', 'both'
-export function changeLayerProperty(layerUuid, property, newvalue, sublayerpath = [], recurseDirection = null) {
+export function changeLayerProperty(layerId, property, newvalue, sublayerpath = [], recurseDirection = null) {
     return {
         type: CHANGE_LAYER_PROPERTY,
-        layerUuid,
+        layerId,
         property,
         newvalue,
         sublayerpath,

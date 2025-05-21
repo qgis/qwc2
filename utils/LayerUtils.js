@@ -96,7 +96,6 @@ const LayerUtils = {
             type: "separator",
             title: title,
             role: LayerRole.USERLAYER,
-            uuid: uuidv4(),
             id: uuidv4()
         }]);
     },
@@ -116,8 +115,7 @@ const LayerUtils = {
             name: layerConfig.name,
             title: layerConfig.name,
             role: LayerRole.USERLAYER,
-            loading: true,
-            uuid: uuidv4()
+            loading: true
         }]);
     },
     insertPermalinkLayers(exploded, layers) {
@@ -233,17 +231,6 @@ const LayerUtils = {
             return "( " + expr.map(entry => Array.isArray(entry) ? this.formatFilterExpr(entry) : entry.toUpperCase()).join(" ") + " )";
         }
     },
-    addUUIDs(group, usedUUIDs = new Set()) {
-        group.uuid = !group.uuid || usedUUIDs.has(group.uuid) ? uuidv4() : group.uuid;
-        usedUUIDs.add(group.uuid);
-        if (!isEmpty(group.sublayers)) {
-            Object.assign(group, {sublayers: group.sublayers.slice(0)});
-            for (let i = 0; i < group.sublayers.length; ++i) {
-                group.sublayers[i] = {...group.sublayers[i]};
-                LayerUtils.addUUIDs(group.sublayers[i], usedUUIDs);
-            }
-        }
-    },
     buildWMSLayerUrlParam(layers) {
         const layernames = [];
         const opacities = [];
@@ -342,7 +329,7 @@ const LayerUtils = {
         // Explode layers (one entry for every single sublayer)
         let exploded = LayerUtils.explodeLayers(fglayers);
         // Remove matching entries
-        exploded = exploded.filter(entry => entry.layer.uuid !== layer.uuid || !LayerUtils.pathEqualOrBelow(sublayerpath, entry.path));
+        exploded = exploded.filter(entry => entry.layer.id !== layer.id || !LayerUtils.pathEqualOrBelow(sublayerpath, entry.path));
         // Re-assemble layers
         const newlayers = LayerUtils.implodeLayers(exploded);
         // Ensure theme layer is never removed
@@ -383,7 +370,7 @@ const LayerUtils = {
         // Find entry to move
         if (movelayer) {
             const indices = exploded.reduce((result, entry, index) => {
-                if (entry.layer.uuid === movelayer.uuid && LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)) {
+                if (entry.layer.id === movelayer.id && LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)) {
                     return [...result, index];
                 }
                 return result;
@@ -458,7 +445,7 @@ const LayerUtils = {
                 LayerUtils.explodeSublayers(layer, parent.sublayers[idx], exploded, path);
             } else {
                 // Reduced layer with one single sublayer per level, up to leaf
-                const redLayer = {...layer};
+                const redLayer = {...layer, id: uuidv4()};
                 let group = redLayer;
                 for (const jdx of path) {
                     group.sublayers = [{...group.sublayers[jdx]}];
@@ -470,7 +457,6 @@ const LayerUtils = {
     },
     implodeLayers(exploded) {
         const newlayers = [];
-        const usedLayerUUids = new Set();
 
         // Merge all possible items of an exploded layer array
         for (const entry of exploded) {
@@ -479,7 +465,7 @@ const LayerUtils = {
             // Attempt to merge with previous if possible
             let target = newlayers.length > 0 ? newlayers[newlayers.length - 1] : null;
             let source = layer;
-            if (target && target.sublayers && target.id === layer.id) {
+            if (target && target.sublayers && target.url === layer.url) {
                 let innertarget = target.sublayers[target.sublayers.length - 1];
                 let innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
                 while (innertarget && innertarget.sublayers && innertarget.name === innersource.name) {
@@ -489,10 +475,8 @@ const LayerUtils = {
                     innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
                 }
                 target.sublayers.push(source.sublayers[0]);
-                LayerUtils.addUUIDs(source.sublayers[0], usedLayerUUids);
             } else {
                 newlayers.push(layer);
-                LayerUtils.addUUIDs(layer, usedLayerUUids);
             }
         }
         // Ensure mutually exclusive groups have exactly one visible layer
@@ -538,7 +522,6 @@ const LayerUtils = {
         addlayer = {...baselayer, sublayers: addlayer.sublayers};
         addlayer.externalLayerMap = {...addlayer.externalLayerMap};
         LayerUtils.extractExternalLayersFromSublayers(addlayer, addlayer);
-        LayerUtils.addUUIDs(addlayer);
         if (isEmpty(addlayer.sublayers)) {
             return {...baselayer};
         }
@@ -709,7 +692,7 @@ const LayerUtils = {
     },
     completeExternalLayer(externalLayer, sublayer, mapCrs) {
         externalLayer.title = externalLayer.title || (sublayer || {}).title || externalLayer.name;
-        externalLayer.uuid = uuidv4();
+        externalLayer.id = uuidv4();
         if (externalLayer.type === "wms" || externalLayer.params) {
             externalLayer.version = externalLayer.version || "1.3.0";
             externalLayer.featureInfoUrl = externalLayer.featureInfoUrl || externalLayer.url;

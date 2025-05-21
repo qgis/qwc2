@@ -443,7 +443,6 @@ class Cyclomedia extends React.Component {
     };
     addRecordingsWFS = () => {
         const layer = {
-            uuid: 'cyclomedia-recordings',
             id: 'cyclomedia-recordings',
             type: 'wfs',
             loader: (vectorSource, extent, resolution, projection, success, failure) => {

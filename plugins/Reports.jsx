@@ -147,7 +147,7 @@ class Reports extends React.Component {
                 const oldvisibility = sublayer.visibility;
                 if (oldvisibility !== visibility && visibility !== null) {
                     const recurseDirection = !oldvisibility ? "both" : "children";
-                    this.props.changeLayerProperty(layer.uuid, "visibility", visibility, path, recurseDirection);
+                    this.props.changeLayerProperty(layer.id, "visibility", visibility, path, recurseDirection);
                 }
                 return oldvisibility;
             }

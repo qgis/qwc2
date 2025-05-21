@@ -71,10 +71,10 @@ class SnappingSupport extends React.Component {
         } else if (this.state.drawing && this.props.layers !== prevProps.layers) {
             const layersChanged = this.props.layers.find(layer => {
                 if (layer.role === LayerRole.THEME) {
-                    const prev = prevProps.layers.find(prevLayer => layer.uuid === prevLayer.uuid);
+                    const prev = prevProps.layers.find(prevLayer => layer.id === prevLayer.id);
                     return !prev || layer.rev !== prev.rev;
                 } else if (layer.role === LayerRole.USERLAYER && layer.type === 'vector') {
-                    const prev = prevProps.layers.find(prevLayer => layer.uuid === prevLayer.uuid);
+                    const prev = prevProps.layers.find(prevLayer => layer.id === prevLayer.id);
                     return !prev || prev.features !== layer.features;
                 }
                 return false;

@@ -217,17 +217,17 @@ class Map3D extends React.Component {
             if (!layerCreator || !layerCreator.create3d) {
                 return colorLayers;
             }
-            const prevOptions = prevColorLayers[layer.uuid];
-            colorLayers[layer.uuid] = {
+            const prevOptions = prevColorLayers[layer.id];
+            colorLayers[layer.id] = {
                 ...layer,
                 visibility: prevOptions?.visibility ?? false,
                 opacity: prevOptions?.opacity ?? 255,
                 extrusionHeight: prevOptions?.extrusionHeight ?? (['vector', 'wfs'].includes(layer.type) ? 0 : undefined),
                 fields: prevOptions?.fields ?? undefined
             };
-            if (colorLayers[layer.uuid].fields === undefined && layerCreator.getFields) {
+            if (colorLayers[layer.id].fields === undefined && layerCreator.getFields) {
                 layerCreator.getFields(layer).then(fields => {
-                    this.updateColorLayer(layer.uuid, {fields});
+                    this.updateColorLayer(layer.id, {fields});
                 });
             }
             return colorLayers;
@@ -253,14 +253,14 @@ class Map3D extends React.Component {
             if (options.extrusionHeight !== 0) {
                 this.createUpdateExtrudedLayer(mapLayer, options, options.features !== prevOptions?.features);
             } else if (prevOptions?.extrusionHeight !== 0) {
-                this.removeExtrudedLayer(options.uuid);
+                this.removeExtrudedLayer(options.id);
             }
         });
         // Remove old layers
         Object.entries(prevColorLayers).forEach(([layerId, options]) => {
             if (!(layerId in colorLayers)) {
                 if (options.extrusionHeight !== 0) {
-                    this.removeExtrudedLayer(options.uuid);
+                    this.removeExtrudedLayer(options.id);
                 }
                 this.removeLayer(layerId);
             }
@@ -270,7 +270,7 @@ class Map3D extends React.Component {
     createUpdateExtrudedLayer = (mapLayer, options, forceCreate = false) => {
         const bounds = options.bbox.bounds;
         const extent = new Extent(options.bbox.crs, bounds[0], bounds[2], bounds[1], bounds[3]);
-        const objId = options.uuid + ":extruded";
+        const objId = options.id + ":extruded";
         const makeColor = (c) => {
             if (Array.isArray(c)) {
                 return ((c[0] << 16) | (c[1] << 8) | c[2]);

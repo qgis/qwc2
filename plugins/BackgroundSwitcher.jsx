@@ -163,6 +163,6 @@ const selector = (state) => ({
 
 export default connect(selector, {
     changeLayerVisibility: (layer, visibility) => {
-        return changeLayerProperty(layer.uuid, "visibility", visibility);
+        return changeLayerProperty(layer.id, "visibility", visibility);
     }
 })(BackgroundSwitcher);
