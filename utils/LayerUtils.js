@@ -731,7 +731,8 @@ const LayerUtils = {
             CRS: map.projection,
             SRS: map.projection,
             SLD_VERSION: "1.1.0",
-            WIDTH: 200
+            WIDTH: 200,
+            HEIGHT: 200
         };
         if (extraLegendParameters) {
             Object.assign(requestParams, Object.fromEntries(extraLegendParameters.split("&").map(entry => entry.split("="))));
