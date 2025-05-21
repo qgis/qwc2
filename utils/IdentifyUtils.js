@@ -284,13 +284,15 @@ const IdentifyUtils = {
             const displayfield = layerEl.attributes.displayfield ? layerEl.attributes.displayfield.value : null;
             let layername = "";
             let layertitle = "";
-            if (featureInfoReturnsLayerName) {
-                layername = layerEl.attributes.name.value;
-                const match = LayerUtils.searchLayer(mapLayers, 'name', layername);
-                layertitle = match ? match.sublayer.title : layername;
-            } else {
+            if (layerEl.attributes.layername) {
+                layername = layerEl.attributes.layername.value;
                 layertitle = layerEl.attributes.name.value;
-                layername = layerEl.attributes.layername ? layerEl.attributes.layername.value : layertitle;
+            } else if (featureInfoReturnsLayerName) {
+                layername = layerEl.attributes.name.value;
+                layertitle = LayerUtils.searchSubLayer(layer, 'name', layername)?.title ?? layername;
+            } else {
+                layertitle = layerEl.attributes.layername.value;
+                layername = LayerUtils.searchSubLayer(layer, 'title', layertitle)?.name ?? layertitle;
             }
 
             const layerinfo = layerEl.attributes.layerinfo ? layerEl.attributes.layerinfo.value : null;
