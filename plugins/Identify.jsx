@@ -275,7 +275,7 @@ class Identify extends React.Component {
         this.setState({ radiusUnits: ev.target.value });
     };
     parseResult = (response, layer, format, clickPoint) => {
-        const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection, this.props.featureInfoReturnsLayerName, this.props.layers);
+        const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection, this.props.featureInfoReturnsLayerName);
         // Merge with previous
         this.setState((state) => {
             const identifyResults = { ...state.identifyResults };

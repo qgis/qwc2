@@ -113,7 +113,7 @@ class PickFeature extends React.Component {
         if (this.state.reqId !== reqId) {
             return;
         }
-        const result = IdentifyUtils.parseResponse(response, layer, infoFormat, this.state.clickPos, this.props.map.projection, false, this.props.layers);
+        const result = IdentifyUtils.parseResponse(response, layer, infoFormat, this.state.clickPos, this.props.map.projection, false);
         if (this.props.featureFilter) {
             Object.entries(result).forEach(([layername, features]) => {
                 result[layername] = features.filter(this.props.featureFilter);

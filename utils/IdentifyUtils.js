@@ -175,20 +175,20 @@ const IdentifyUtils = {
             });
         }
     },
-    parseResponse(response, layer, format, clickPoint, projection, featureInfoReturnsLayerName, layers) {
+    parseResponse(response, layer, format, clickPoint, projection, featureInfoReturnsLayerName) {
         const decimals = CoordinatesUtils.getPrecision(projection);
         const posstr = clickPoint ? clickPoint[0].toFixed(decimals) + ", " + clickPoint[1].toFixed(decimals) : "";
         let results = {};
         if (["application/json", "application/geojson", "application/geo+json", "GeoJSON"].includes(format)) {
             results = IdentifyUtils.parseGeoJSONResponse(response, projection, layer);
         } else if (format === "text/xml") {
-            results = IdentifyUtils.parseXmlResponse(response, projection, posstr, featureInfoReturnsLayerName, layers);
+            results = IdentifyUtils.parseXmlResponse(response, projection, layer, posstr, featureInfoReturnsLayerName);
         } else if (format === "application/vnd.ogc.gml") {
-            results = IdentifyUtils.parseGmlResponse(response, projection, posstr, layer);
+            results = IdentifyUtils.parseGmlResponse(response, projection, layer, posstr);
         } else if (format.startsWith("text/xml;subtype=gml/3.1") || format.startsWith("text/xml;subtype=gml/3.0")) {
-            results = IdentifyUtils.parseGml3Response(response, projection, posstr, layer);
+            results = IdentifyUtils.parseGml3Response(response, projection, layer);
         } else if (format.startsWith("text/xml;subtype=gml/3.2")) {
-            results = IdentifyUtils.parseGml32Response(response, projection, posstr, layer);
+            results = IdentifyUtils.parseGml32Response(response, projection, layer);
         } else if (format === "text/plain") {
             results[layer.name] = [{type: "text", text: response, id: posstr, layername: layer.name, layertitle: layer.title}];
         } else if (format === "text/html") {
@@ -272,36 +272,36 @@ const IdentifyUtils = {
         }
         return featureResult;
     },
-    parseXmlResponse(response, geometrycrs, posstr = null, featureInfoReturnsLayerName = false, mapLayers = null) {
+    parseXmlResponse(response, geometrycrs, layer, posstr = null, featureInfoReturnsLayerName = false, mapLayers = null) {
         const parser = new DOMParser();
 
         const doc = parser.parseFromString(response, "text/xml");
-        const layers = [].slice.call(doc.firstChild.getElementsByTagName("Layer"));
+        const layersEl = [].slice.call(doc.firstChild.getElementsByTagName("Layer"));
         const result = {};
         let idcounter = 0;
-        for (const layer of layers) {
-            const featurereport = layer.attributes.featurereport ? layer.attributes.featurereport.value : null;
-            const displayfield = layer.attributes.displayfield ? layer.attributes.displayfield.value : null;
+        for (const layerEl of layersEl) {
+            const featurereport = layerEl.attributes.featurereport ? layerEl.attributes.featurereport.value : null;
+            const displayfield = layerEl.attributes.displayfield ? layerEl.attributes.displayfield.value : null;
             let layername = "";
             let layertitle = "";
             if (featureInfoReturnsLayerName) {
-                layername = layer.attributes.name.value;
+                layername = layerEl.attributes.name.value;
                 const match = LayerUtils.searchLayer(mapLayers, 'name', layername);
                 layertitle = match ? match.sublayer.title : layername;
             } else {
-                layertitle = layer.attributes.name.value;
-                layername = layer.attributes.layername ? layer.attributes.layername.value : layertitle;
+                layertitle = layerEl.attributes.name.value;
+                layername = layerEl.attributes.layername ? layerEl.attributes.layername.value : layertitle;
             }
 
-            const layerinfo = layer.attributes.layerinfo ? layer.attributes.layerinfo.value : null;
-            const features = [].slice.call(layer.getElementsByTagName("Feature"));
+            const layerinfo = layerEl.attributes.layerinfo ? layerEl.attributes.layerinfo.value : null;
+            const features = [].slice.call(layerEl.getElementsByTagName("Feature"));
             if (features.length > 0) {
                 result[layername] = features.map(feature => this.parseXmlFeature(feature, geometrycrs, feature.attributes.id.value, featurereport, displayfield, layername, layertitle, layerinfo));
             } else {
-                const attributes = [].slice.call(layer.getElementsByTagName("Attribute"));
+                const attributes = [].slice.call(layerEl.getElementsByTagName("Attribute"));
                 if (attributes.length > 0) {
                     const id = posstr || "" + (idcounter++);
-                    result[layername] = [this.parseXmlFeature(layer, geometrycrs, id, featurereport, displayfield, layername, layertitle, layerinfo)];
+                    result[layername] = [this.parseXmlFeature(layerEl, geometrycrs, id, featurereport, displayfield, layername, layertitle, layerinfo)];
                 }
             }
         }
@@ -330,7 +330,7 @@ const IdentifyUtils = {
         });
         return result;
     },
-    parseGmlResponse(response, geometrycrs, posstr, layer) {
+    parseGmlResponse(response, geometrycrs, layer, posstr) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(response, "text/xml");
         const result = {};
@@ -361,14 +361,14 @@ const IdentifyUtils = {
         }
         return result;
     },
-    parseGml3Response(response, geometrycrs, posstr, layer) {
+    parseGml3Response(response, geometrycrs, layer) {
         const fmtGml3 = new ol.format.GML3();
         const fmtGeoJson =  new ol.format.GeoJSON();
         return {
             [layer.name]: fmtGeoJson.writeFeaturesObject(fmtGml3.readFeatures(response))?.features ?? []
         };
     },
-    parseGml32Response(response, geometrycrs, posstr, layer) {
+    parseGml32Response(response, geometrycrs, layer) {
         const fmtGml32 = new ol.format.GML32();
         const fmtGeoJson =  new ol.format.GeoJSON();
         return {
