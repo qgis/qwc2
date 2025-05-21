@@ -214,16 +214,18 @@ class Reports extends React.Component {
         } else {
             featureIds = this.state.reportFeatures.map(feature => feature.id).join(",");
         }
-        const params = {
-            feature: featureIds,
-            crs: this.props.map.projection
-        };
         this.setState({generatingReport: true});
         const [layername, idx] = this.state.selectedReport.split("::");
-        const template = this.state.reports[layername][idx].template;
-        const url = serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
-        axios.get(url, {responseType: "arraybuffer"}).then(response => {
-            FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), layername + ".pdf");
+        const report = this.state.reports[layername][idx];
+        const params = {
+            feature: featureIds,
+            crs: this.props.map.projection,
+            single_report: report.single_report || false
+        };
+        const url = serviceUrl + "/" + report.template;
+        axios.get(url, {responseType: "arraybuffer", params}).then(response => {
+            const filename = (report.filename || report.title.replace(" ", "_")) + "." + (report.format || "pdf");
+            FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), filename);
             this.setState({generatingReport: false});
         }).catch(() => {
             /* eslint-disable-next-line */

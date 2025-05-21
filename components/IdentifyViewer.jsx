@@ -453,7 +453,7 @@ class IdentifyViewer extends React.Component {
                 rows.push(
                     <tr key={"__featurereport" + idx}>
                         <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{LocaleUtils.tr("identify.featureReport") + ": " + report.title}</i></td>
-                        <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(report.template, result)}>{LocaleUtils.tr("identify.link")}</a></td>
+                        <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(report, result)}>{LocaleUtils.tr("identify.link")}</a></td>
                     </tr>
                 );
             });
@@ -481,7 +481,7 @@ class IdentifyViewer extends React.Component {
                                     <i>{LocaleUtils.tr("identify.featureReport") + ": " + report.title}</i>
                                 </td>
                                 <td className={"identify-attr-value " + this.props.longAttributesDisplay}>
-                                    <a href={this.getFeatureReportUrl(report.template, result)} rel="noreferrer" target="_blank">
+                                    <a href={this.getFeatureReportUrl(report, result)} rel="noreferrer" target="_blank">
                                         {LocaleUtils.tr("identify.link")}
                                     </a>
                                 </td>
@@ -695,15 +695,18 @@ class IdentifyViewer extends React.Component {
         });
         return reports[layer] || null;
     };
-    getFeatureReportUrl = (template, result) => {
+    getFeatureReportUrl = (report, result) => {
         const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         const params = {
             feature: result.id,
             x: result.clickPos[0],
             y: result.clickPos[1],
-            crs: this.props.mapcrs
+            crs: this.props.mapcrs,
+            single_report: report.single_report || false
         };
-        return serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
+        const path = "/" + report.template + "." + (report.format || "pdf");
+        const query = Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
+        return serviceUrl + path + "?" + query;
     };
     downloadAggregatedReport = () => {
         const [layername, idx] = this.state.selectedAggregatedReport.split("::");
@@ -714,12 +717,14 @@ class IdentifyViewer extends React.Component {
             feature: results.map(result => result.id).join(","),
             x: results[0].clickPos[0],
             y: results[0].clickPos[1],
-            crs: this.props.mapcrs
+            crs: this.props.mapcrs,
+            single_report: report.single_report || false
         };
         this.setState({generatingReport: true});
-        const url = serviceUrl + "/" + report.template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
-        axios.get(url, {responseType: "arraybuffer"}).then(response => {
-            FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), layername + ".pdf");
+        const url = serviceUrl + "/" + report.template;
+        axios.get(url, {params, responseType: "arraybuffer"}).then(response => {
+            const filename = (report.filename || report.title.replace(" ", "_")) + "." + (report.format || "pdf");
+            FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), filename);
             this.setState({generatingReport: false});
         }).catch(() => {
             /* eslint-disable-next-line */
