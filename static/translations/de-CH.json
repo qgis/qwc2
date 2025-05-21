@@ -242,7 +242,7 @@
       "noresults": "Keine Resultate an der ausgewählten Position",
       "querying": "Objekte werden abgefragt...",
       "reportfail": "Bericht konnt nicht erstellt werden",
-      "selectlayer": "Ebene auswählen",
+      "selectreport": "Bericht auswählen...",
       "title": "Objektinformationen"
     },
     "imageeditor": {

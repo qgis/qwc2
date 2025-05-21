@@ -1050,6 +1050,39 @@ const LayerUtils = {
             }
         });
         return refreshInterval;
+    },
+    collectFeatureReports(layers) {
+        if (!ConfigUtils.getConfigProp("documentServiceUrl")) {
+            return {};
+        }
+        let reports = {};
+        const collectLayerReports = (toplayer, layer) => {
+            if (layer.sublayers) {
+                for (const sublayer of layer.sublayers) {
+                    reports = {...reports, ...collectLayerReports(toplayer, sublayer)};
+                }
+            } else if (layer.featureReport) {
+                const key = toplayer.url + "#" + layer.name;
+                if (Array.isArray(layer.featureReport)) {
+                    reports[key] = layer.featureReport.map(report => ({
+                        title: report.title,
+                        template: report.template
+                    }));
+                } else {
+                    reports[key] = [{
+                        title: layer.title,
+                        template: layer.featureReport
+                    }];
+                }
+            }
+            return reports;
+        };
+        layers.forEach(layer => {
+            if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
+                collectLayerReports(layer, layer);
+            }
+        });
+        return reports;
     }
 };
 

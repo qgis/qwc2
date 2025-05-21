@@ -242,7 +242,7 @@
       "noresults": "Для выбранной точки нет доступной информации",
       "querying": "Выполняется запрос...",
       "reportfail": "",
-      "selectlayer": "",
+      "selectreport": "",
       "title": "Информация об объекте"
     },
     "imageeditor": {

@@ -52,7 +52,7 @@ class Reports extends React.Component {
     };
     static defaultState = {
         reports: {},
-        selectedReportLayer: '',
+        selectedReport: '',
         reportFeatures: [],
         featureSelectionMode: '',
         featureSelectionPolygon: null,
@@ -87,19 +87,21 @@ class Reports extends React.Component {
                 <div>
                     <ComboBox
                         className="reports-filter-combo" filterable
-                        onChange={this.setReportLayer}
+                        onChange={this.setSelectedReport}
                         placeholder={LocaleUtils.tr("reports.selectlayer")}
-                        value={this.state.selectedReportLayer}
+                        value={this.state.selectedReport}
                     >
-                        {Object.entries(this.state.reports).map(([layername, entry]) => (
-                            <div key={layername} title={entry.title} value={layername}>{entry.title}</div>
-                        ))}
+                        {Object.entries(this.state.reports).map(([layername, reports]) => {
+                            return reports.map((report, idx) => (
+                                <div key={layername + "::" + idx} title={report.title} value={layername + "::" + idx}>{report.title}</div>
+                            ));
+                        })}
                     </ComboBox>
                 </div>
                 <div>
                     <ButtonBar
                         active={this.state.featureSelectionMode} buttons={pickButtons}
-                        disabled={!this.state.selectedReportLayer} onClick={this.setPickMode}
+                        disabled={!this.state.selectedReport} onClick={this.setPickMode}
                     />
                 </div>
                 <div>
@@ -116,6 +118,7 @@ class Reports extends React.Component {
         );
     };
     render() {
+        const [layerUrl, layerName] = this.state.selectedReport.split(/(?:::|#)/);
         return [(
             <SideBar icon="report" id="Reports" key="Reports" onHide={this.onHide} onShow={this.onShow} side={this.props.side}
                 title={LocaleUtils.tr("appmenu.items.Reports")} width="20em">
@@ -124,8 +127,8 @@ class Reports extends React.Component {
                 })}
             </SideBar>
         ),
-        this.state.featureSelectionMode === "Pick" && this.state.selectedReportLayer ? (
-            <PickFeature featurePicked={this.selectReportFeature} key="FeaturePicker" layer={this.state.selectedReportLayer} />
+        this.state.featureSelectionMode === "Pick" && this.state.selectedReport ? (
+            <PickFeature featurePicked={this.selectReportFeature} key="FeaturePicker" layerFilter={{url: layerUrl, name: layerName}} />
         ) : null,
         this.state.featureSelectionMode === "Region" ? (
             <MapSelection
@@ -138,48 +141,24 @@ class Reports extends React.Component {
         ) : null
         ];
     }
-    setLayerVisibility = (selectedLayer, visibility) => {
-        if (selectedLayer !== null) {
-            const path = [];
-            let sublayer = null;
-            const layer = this.props.layers.find(l => (l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', selectedLayer, path))));
-            if (layer && sublayer) {
-                const oldvisibility = sublayer.visibility;
-                if (oldvisibility !== visibility && visibility !== null) {
-                    const recurseDirection = !oldvisibility ? "both" : "children";
-                    this.props.changeLayerProperty(layer.id, "visibility", visibility, path, recurseDirection);
-                }
-                return oldvisibility;
-            }
+    setLayerVisible = (layerUrl, layerName) => {
+        const path = [];
+        let sublayer = null;
+        const layer = this.props.layers.find(l => (l.url === layerUrl && (sublayer = LayerUtils.searchSubLayer(l, 'name', layerName, path))));
+        if (layer && sublayer) {
+            this.props.changeLayerProperty(layer.id, "visibility", true, path, "parents");
         }
-        return null;
     };
-    setReportLayer = (layer) => {
-        this.setLayerVisibility(layer, true);
-        this.setState({selectedReportLayer: layer, reportFeatures: []});
+    setSelectedReport = (key) => {
+        const [layerUrl, layerName] = key.split(/(?:::|#)/);
+        this.setLayerVisible(layerUrl, layerName);
+        this.setState({selectedReport: key, reportFeatures: []});
     };
     setPickMode = (mode) => {
         this.setState({featureSelectionMode: mode, reportFeatures: [], featureSelectionPolygon: null});
     };
-    collectFeatureReportTemplates = (entry) => {
-        let reports = {};
-        if (entry.sublayers) {
-            for (const sublayer of entry.sublayers) {
-                reports = {...reports, ...this.collectFeatureReportTemplates(sublayer)};
-            }
-        } else if (entry.featureReport) {
-            reports[entry.name] = {
-                title: entry.title,
-                template: entry.featureReport
-            };
-        }
-        return reports;
-    };
     onShow = () => {
-        let reports = {};
-        this.props.layers.filter(l => l.role === LayerRole.THEME).forEach(themeLayer => {
-            reports = {...reports, ...this.collectFeatureReportTemplates(themeLayer)};
-        });
+        const reports = LayerUtils.collectFeatureReports(this.props.layers);
         this.setState({reports, featureSelectionMode: 'Pick'});
     };
     onHide = () => {
@@ -217,12 +196,13 @@ class Reports extends React.Component {
 
         const filter = VectorLayerUtils.geoJSONGeomToWkt(geom);
         const params = {feature_count: 100};
-        const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
-        const request = IdentifyUtils.buildFilterRequest(layer, this.state.selectedReportLayer, filter, this.props.map, params);
+        const [layerUrl, layerName] = this.state.selectedReport.split(/(?:::|#)/);
+        const layer = this.props.layers.find(l => l.url === layerUrl);
+        const request = IdentifyUtils.buildFilterRequest(layer, layerName, filter, this.props.map, params);
         IdentifyUtils.sendRequest(request, (response) => {
             if (response) {
                 const result = IdentifyUtils.parseResponse(response, layer, request.params.info_format, center, this.props.map.projection);
-                this.setState((state) => ({reportFeatures: result[state.selectedReportLayer]}));
+                this.setState((state) => ({reportFeatures: result[layerName]}));
             }
         });
     };
@@ -239,10 +219,11 @@ class Reports extends React.Component {
             crs: this.props.map.projection
         };
         this.setState({generatingReport: true});
-        const template = this.state.reports[this.state.selectedReportLayer].template;
+        const [layername, idx] = this.state.selectedReport.split("::");
+        const template = this.state.reports[layername][idx].template;
         const url = serviceUrl + "/" + template + "?" + Object.keys(params).map(key => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])).join("&");
         axios.get(url, {responseType: "arraybuffer"}).then(response => {
-            FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), this.state.selectedReportLayer + ".pdf");
+            FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), layername + ".pdf");
             this.setState({generatingReport: false});
         }).catch(() => {
             /* eslint-disable-next-line */

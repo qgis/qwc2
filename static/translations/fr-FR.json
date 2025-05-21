@@ -242,7 +242,7 @@
       "noresults": "Pas de résultats pour la position sélectionnée",
       "querying": "Identification en cours...",
       "reportfail": "Le rapport n'a pas été généré",
-      "selectlayer": "Sélectionner la couche...",
+      "selectreport": "Selectionner rapport...",
       "title": "Informations sur l'objet"
     },
     "imageeditor": {

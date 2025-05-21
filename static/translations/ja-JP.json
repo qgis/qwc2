@@ -242,7 +242,7 @@
       "noresults": "選択された点には情報がありません",
       "querying": "検索中...",
       "reportfail": "レポートを生成することが出来ませんでした",
-      "selectlayer": "レイヤを選択...",
+      "selectreport": "",
       "title": "地物情報"
     },
     "imageeditor": {

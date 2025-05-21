@@ -242,7 +242,7 @@
       "noresults": "No information available for the selected point",
       "querying": "Querying...",
       "reportfail": "Failed to generate report",
-      "selectlayer": "Select layer...",
+      "selectreport": "Select report..",
       "title": "Feature Info"
     },
     "imageeditor": {

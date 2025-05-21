@@ -15,7 +15,6 @@ import {v1 as uuidv1} from 'uuid';
 
 import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
 import IdentifyUtils from '../utils/IdentifyUtils';
-import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -45,7 +44,10 @@ class PickFeature extends React.Component {
             fillColor: PropTypes.array
         }),
         /** Optional: Restrict pick to specified layer name */
-        layer: PropTypes.string,
+        layerFilter: PropTypes.shape({
+            url: PropTypes.string,
+            name: PropTypes.string
+        }),
         layers: PropTypes.array,
         map: PropTypes.object,
         /** Pick geometry type: Point, Polygon, ... (default: Point) */
@@ -73,8 +75,8 @@ class PickFeature extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.state.pickGeom && this.state.pickGeom !== prevState.pickGeom) {
             let queryLayers = [];
-            if (this.props.layer) {
-                queryLayers = [this.props.layers.find((l) => l.role === LayerRole.THEME && LayerUtils.searchSubLayer(l, 'name', this.props.layer))].filter(Boolean);
+            if (this.props.layerFilter) {
+                queryLayers = [this.props.layers.find((l) => l.url === this.props.layerFilter.url)].filter(Boolean);
             } else {
                 queryLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             }
@@ -95,10 +97,10 @@ class PickFeature extends React.Component {
                     queryLayers.forEach(layer => {
                         let request = null;
                         if (this.props.pickGeomType === 'Point') {
-                            request = IdentifyUtils.buildRequest(layer, this.props.layer || layer.queryLayers.join(","), state.pickGeom.coordinates, this.props.map);
+                            request = IdentifyUtils.buildRequest(layer, this.props.layerFilter?.name || layer.queryLayers.join(","), state.pickGeom.coordinates, this.props.map);
                         } else if (this.props.pickGeomType === 'Polygon') {
                             const filter = VectorLayerUtils.geoJSONGeomToWkt(this.state.pickGeom);
-                            request = IdentifyUtils.buildFilterRequest(layer, this.props.layer || layer.queryLayers.join(","), filter, this.props.map);
+                            request = IdentifyUtils.buildFilterRequest(layer, this.props.layerFilter?.name || layer.queryLayers.join(","), filter, this.props.map);
                         } else {
                             return;
                         }

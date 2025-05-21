@@ -242,7 +242,7 @@
       "noresults": "Valitulla pisteellä ei ole informaatiota",
       "querying": "Kysely käynnissä...",
       "reportfail": "",
-      "selectlayer": "",
+      "selectreport": "",
       "title": "Ominaisuustiedot"
     },
     "imageeditor": {

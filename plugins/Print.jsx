@@ -560,7 +560,7 @@ class Print extends React.Component {
                 <PickFeature
                     featurePicked={this.selectAtlasFeature}
                     key="FeaturePicker"
-                    layer={this.state.layout.atlasCoverageLayer}
+                    layerFilter={{url: this.props.theme.url, name: this.state.layout.atlasCoverageLayer}}
                 />
             ) : null
         ];
