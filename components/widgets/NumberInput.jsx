@@ -21,6 +21,7 @@ export default class NumberInput extends React.Component {
         className: PropTypes.string,
         decimals: PropTypes.number,
         disabled: PropTypes.bool,
+        fitParent: PropTypes.bool,
         max: PropTypes.number,
         min: PropTypes.number,
         mobile: PropTypes.bool,
@@ -62,15 +63,16 @@ export default class NumberInput extends React.Component {
             "number-input-disabled": this.props.disabled || this.props.readOnly,
             "number-input-invalid": this.props.required && !this.state.value
         });
-        const paddingLength = (this.props.mobile ? 4 : 1.5) + 'em';
-        const prefixSuffixLength = (this.props.prefix.length + this.props.suffix.length) + 'ch';
-        const numberLength = (2 + Math.max(
-            (this.props.min || 0).toFixed(this.props.decimals).length,
-            (this.props.max || 0).toFixed(this.props.decimals).length
-        )) + "ch";
-        const style = {
-            minWidth: `calc(${paddingLength} + ${prefixSuffixLength} + ${numberLength})`
-        };
+        const style = {};
+        if (!this.props.fitParent) {
+            const paddingLength = (this.props.mobile ? 4 : 1.5) + 'em';
+            const prefixSuffixLength = (this.props.prefix.length + this.props.suffix.length) + 'ch';
+            const numberLength = (2 + Math.max(
+                (this.props.min || 0).toFixed(this.props.decimals).length,
+                (this.props.max || 0).toFixed(this.props.decimals).length
+            )) + "ch";
+            style.minWidth = `calc(${paddingLength} + ${prefixSuffixLength} + ${numberLength})`;
+        }
         const step = this.props.step ?? Math.pow(10, -this.props.decimals);
         const plusIcon = this.props.mobile ? "plus" : "chevron-up";
         const minusIcon = this.props.mobile ? "minus" : "chevron-down";

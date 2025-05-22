@@ -434,7 +434,7 @@ class AttributeTableWidget extends React.Component {
             const precision = constraints.prec ?? 0;
             const step = constraints.step ?? 1;
             input = (
-                <NumberInput decimals={precision} disabled={disabled} max={constraints.max} min={constraints.min}
+                <NumberInput decimals={precision} disabled={disabled} fitParent max={constraints.max} min={constraints.min}
                     name={field.id} onChange={v => updateField(field.id, v, true)}
                     readOnly={constraints.readOnly} required={constraints.required} step={step} value={value} />
             );
