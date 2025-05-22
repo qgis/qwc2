@@ -573,7 +573,8 @@ class LayerTree extends React.Component {
         }
         let serviceInfoIcon = null;
         if (this.props.enableServiceInfo) {
-            serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}/>);
+            const serviceInfoTooltip = LocaleUtils.tr("serviceinfo.title");
+            serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)} title={serviceInfoTooltip} />);
         }
 
         let extraTitlebarContent = null;
