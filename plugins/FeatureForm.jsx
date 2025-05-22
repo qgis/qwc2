@@ -215,7 +215,7 @@ class FeatureForm extends React.Component {
                             </div>
                         ) : null}
                         {this.props.editContext.feature ? (
-                            <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} />
+                            <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} onCommit={this.updatePickedFeatures} />
                         ) : null}
                     </div>
                 );
@@ -252,6 +252,14 @@ class FeatureForm extends React.Component {
         if (!this.props.editContext.changed) {
             this.setState(FeatureForm.defaultState);
         }
+    };
+    updatePickedFeatures = (newfeature) => {
+        this.setState(state => ({
+            pickedFeatures: Object.entries(state.pickedFeatures).reduce((res, [key, feature]) => {
+                res[key] = feature.id === newfeature.id ? newfeature : feature;
+                return res;
+            }, {})
+        }));
     };
 }
 

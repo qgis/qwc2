@@ -191,7 +191,7 @@ class Editing extends React.Component {
         let attributeForm = null;
         if (this.props.editContext.feature && (this.props.editContext.action === "Pick" || this.props.editContext.feature.geometry)) {
             attributeForm = (
-                <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} />
+                <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} onCommit={this.updatePickedFeatures} />
             );
         }
         const themeSublayers = this.props.layers.reduce((accum, layer) => {
@@ -339,6 +339,15 @@ class Editing extends React.Component {
             this.props.setEditContext('Editing', {action: pickActive ? null : "Draw"});
             return {drawPick: pickActive};
         });
+    };
+    updatePickedFeatures = (newfeature) => {
+        if (this.state.pickedFeatures) {
+            this.setState(state => ({
+                pickedFeatures: state.pickedFeatures.map(feature => {
+                    return feature.id === newfeature.id ? newfeature : feature;
+                })
+            }));
+        }
     };
 }
 
