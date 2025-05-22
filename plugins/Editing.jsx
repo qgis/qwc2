@@ -169,7 +169,7 @@ class Editing extends React.Component {
         }
 
         let featureSelection = null;
-        if (this.state.pickedFeatures) {
+        if (this.state.pickedFeatures && this.state.pickedFeatures.length > 1) {
             const featureText = LocaleUtils.tr("editing.feature");
             featureSelection = (
                 <div className="editing-feature-selection">
