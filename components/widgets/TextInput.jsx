@@ -75,7 +75,8 @@ export default class TextInput extends React.Component {
         const wrapperClassName = classNames({
             "TextInput": true,
             "text-input-wrapper": true,
-            "text-input-wrapper-multiline": this.props.multiline
+            "text-input-wrapper-multiline": this.props.multiline,
+            "text-input-wrapper-focused": this.state.focus
         });
         const preClassName = classNames({
             "text-input": true,
@@ -83,6 +84,13 @@ export default class TextInput extends React.Component {
             "text-input-readonly": this.props.readOnly || !this.state.curValue,
             "text-input-invalid": this.props.required && !this.state.curValue
         });
+        const showClear = this.state.focus && !this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue;
+        const style = {
+            ...this.props.style
+        };
+        if (showClear) {
+            style.marginRight = '1.5em';
+        }
         return (
             <div className={wrapperClassName + " " + (this.props.className || "")} ref={this.storeInitialHeight}>
                 {this.props.name ? (
@@ -109,7 +117,7 @@ export default class TextInput extends React.Component {
                     onMouseLeave={this.onMouseLeave}
                     onMouseMove={this.onMouseMove}
                     ref={el => {this.input = el;}}
-                    style={this.props.style}
+                    style={style}
                 />
                 {!this.state.curValue ? (
                     <div className="text-input-placeholder">{this.props.placeholder}</div>
@@ -119,7 +127,7 @@ export default class TextInput extends React.Component {
                         className="text-input-resize-handle"
                         onMouseDown={this.startResize} />
                 ) : null}
-                {this.state.focus && !this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue ? (
+                {showClear ? (
                     <div className="text-input-clear-icon">
                         <Icon icon="clear" onClick={this.clear} onMouseDown={MiscUtils.killEvent} />
                     </div>

@@ -4,6 +4,11 @@ div.text-input-wrapper {
     background-color: var(--input-bg-color);
     color: var(--text-color);
     min-height: 2em;
+    display: flex;
+}
+
+div.text-input-wrapper-focused {
+    outline: var(--focus-outline);
 }
 
 textarea.text-input-form-el {
@@ -27,6 +32,14 @@ pre.text-input {
     text-align: left;
     height: 100%;
     min-height: calc(2em - 2px);
+    white-space: nowrap;
+    outline: none;
+    width: 0;
+    flex: 1 1 auto;
+}
+
+
+text-input-wrapper-multiline > pre.text-input {
     white-space: pre-wrap;
 }
 
