@@ -1,5 +1,10 @@
-import {remove as removeDiacritics} from 'diacritics';
-
+/**
+ * Copyright 2025 Sourcepole AG
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 const END_MARKERS = {
     SECTION: 'ENDSEC',
@@ -192,12 +197,6 @@ export function mergeDxf(documents) {
 
     // Update layer count
     mergedLayers.values.find(tuple => tuple[0] === "70")[1] = String(mergedLayers.children.length);
-
-    // Replace special characters in layer name
-    mergedLayers.children.forEach(child => {
-        const nameTuple = child.values.find(tuple => tuple[0] === "2");
-        nameTuple[1] = removeDiacritics(nameTuple[1]).replace(/\W/g, '_');
-    });
 
     return documents[0];
 }
