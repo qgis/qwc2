@@ -172,6 +172,7 @@
     "editing.discard",
     "editing.draw",
     "editing.feature",
+    "editing.geomnonzeroz",
     "editing.geomreadonly",
     "editing.invalidform",
     "editing.maximize",

@@ -567,6 +567,13 @@ class AttributeTableWidget extends React.Component {
                 properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
             }
         };
+        // Omit geometry if it is read-only
+        const editConfig = this.props.theme.editConfig || {};
+        const currentEditConfig = editConfig[this.state.loadedLayer];
+        const canEditGeometry = ['Point', 'LineString', 'Polygon'].includes((currentEditConfig.geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
+        if (!canEditGeometry) {
+            delete feature.geometry;
+        }
         const featureData = new FormData();
         featureData.set('feature', JSON.stringify(feature));
         Object.entries(this.changedFiles).forEach(([key, value]) => featureData.set('file:' + key, value));

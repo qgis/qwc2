@@ -138,10 +138,16 @@ class AttributeForm extends React.Component {
         if (captchaRequired && (this.props.editContext.changed || this.state.deleteClicked)) {
             captchaButton = (<ReCaptchaWidget onChange={value => this.setState({captchaResponse: value})} sitekey={ConfigUtils.getConfigProp("editServiceCaptchaSiteKey")} />);
         }
+        let readOnlyMsg = null;
+        if (!readOnly && this.props.editContext.geomReadOnly) {
+            readOnlyMsg = LocaleUtils.tr("editing.geomreadonly");
+        } else if (!readOnly && this.props.editContext.geomNonZeroZ) {
+            readOnlyMsg = LocaleUtils.tr("editing.geomnonzeroz");
+        }
         return (
             <div className="AttributeForm">
-                {this.props.editContext.geomReadOnly && !readOnly ? (
-                    <div className="attrib-form-geom-readonly">{LocaleUtils.tr("editing.geomreadonly")}</div>
+                {readOnlyMsg ? (
+                    <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
                 <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
                     {this.props.editConfig.form ? (
@@ -427,6 +433,10 @@ class AttributeForm extends React.Component {
                 properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
             }
         };
+        // Omit geometry if it is read-only
+        if (this.props.editContext.geomReadOnly) {
+            delete feature.geometry;
+        }
 
         const curConfig = this.props.editConfig;
         const mapPrefix = this.editMapPrefix();

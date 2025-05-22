@@ -102,13 +102,14 @@ class FeatureForm extends React.Component {
             const feature = this.state.pickedFeatures ? this.state.pickedFeatures[this.state.selectedFeature] : null;
             const curLayerId = this.state.selectedFeature.split("::")[0];
             const curConfig = this.props.theme.editConfig[curLayerId] || {};
+            const canEditGeometry = ['Point', 'LineString', 'Polygon'].includes((curConfig.geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
             const editPermissions = curConfig.permissions || {};
             this.props.setEditContext('FeatureForm', {
                 action: 'Pick',
                 feature: feature,
                 changed: false,
                 geomType: curConfig.geomType || null,
-                geomReadOnly: editPermissions.updatable === false
+                geomReadOnly: editPermissions.updatable === false || !canEditGeometry
             });
         }
         if (!this.props.enabled && prevProps.enabled) {
