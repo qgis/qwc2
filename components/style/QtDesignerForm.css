@@ -1,5 +1,6 @@
 div.qt-designer-form {
     overflow: auto;
+    margin-bottom: 0.25em;
 }
 
 div.qt-designer-form textarea {
