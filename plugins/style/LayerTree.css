@@ -1,10 +1,53 @@
-#LayerTree span.layertree-tree-visibility {
-    margin: 0 0.5em;
-    color: var(--titlebar-bg-color);
+#LayerTree span.layertree-visibility-button {
+    padding: 0.25em 1em 0.25em 0.25em;
+    position: relative;
+    display: inline-flex;
+    align-items: start;
+    justify-content: center;
+    cursor: pointer;
 }
 
-#LayerTree span.layertree-tree-visibility:before {
+#LayerTree span.layertree-visibility-button:hover,
+#LayerTree span.layertree-visibility-button-active {
+    color: var(--titlebar-bg-color);
     background-color: var(--titlebar-text-color);
+}
+
+#LayerTree span.layertree-visibility-button > span.icon-chevron-down {
+    position: absolute;
+    bottom: -1px;
+    right: 0;
+    font-size: 80%;
+}
+
+#LayerTree div.layertree-visibility-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    border: 1px solid var(--border-color);
+    background-color: var(--list-bg-color);
+    color: var(--text-color);
+    cursor: default;
+}
+
+#LayerTree div.layertree-visibility-menu > div {
+    white-space: nowrap;
+    padding: 0.25em 1em 0.25em 0.5em;
+    display: flex;
+    align-items: start;
+}
+
+#LayerTree div.layertree-visibility-menu > div:hover {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
+}
+
+#LayerTree div.layertree-visibility-menu > div > span.icon {
+    margin-right: 0.5em;
+}
+
+#LayerTree div.layertree-visibility-menu > div:nth-child(3) {
+    border-top: 1px solid var(--border-color);
 }
 
 #LayerTree span.layertree-print-legend,

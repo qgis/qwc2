@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Compara il primo livello",
       "deletealllayers": "Rimuovi tutti i livelli",
+      "hidealllayers": "Nascondi tutti i livelli",
       "importlayer": "Importa livello",
       "maptip": "Attiva maptip",
       "printlegend": "Stampa legenda",

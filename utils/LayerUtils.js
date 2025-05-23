@@ -1083,6 +1083,53 @@ const LayerUtils = {
             }
         });
         return reports;
+    },
+    computeVisbilityPreset(layer) {
+        const result = {};
+        if (layer.sublayers) {
+            layer.sublayers.forEach(sublayer =>
+                Object.assign(result, LayerUtils.computeVisbilityPreset(sublayer))
+            );
+        } else if (layer.visibility) {
+            result[layer.name] = layer.style;
+        }
+        return result;
+    },
+    getActiveVisibilityPreset(layers, presets) {
+        if (isEmpty(presets)) {
+            return null;
+        }
+        const result = {};
+        layers.forEach(layer => {
+            if (layer.role === LayerRole.THEME) {
+                Object.assign(result, LayerUtils.computeVisbilityPreset(layer));
+            }
+        });
+
+        for (const [name, preset] of Object.entries(presets)) {
+            if (isEqual(preset, result)) {
+                return name;
+            }
+        }
+        return null;
+    },
+    applyVisibilityPreset(layer, preset) {
+        const newLayer = {...layer};
+        if (newLayer.sublayers) {
+            let haveVisibileSublayer = false;
+            newLayer.sublayers = newLayer.sublayers.map(sublayer => {
+                const newSublayer = LayerUtils.applyVisibilityPreset(sublayer, preset);
+                haveVisibileSublayer ||= (newSublayer.visibility === true);
+                return newSublayer;
+            });
+            newLayer.visibility = haveVisibileSublayer;
+        } else if (newLayer.name in preset) {
+            newLayer.visibility = true;
+            newLayer.style = preset[newLayer.name];
+        } else {
+            newLayer.visibility = false;
+        }
+        return newLayer;
     }
 };
 

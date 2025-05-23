@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Összehasonlítás a felső fóliával",
       "deletealllayers": "",
+      "hidealllayers": "",
       "importlayer": "Fólia importálása",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",

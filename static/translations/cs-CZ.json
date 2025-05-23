@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Porovnat vrchní vrstvy",
       "deletealllayers": "Odstranit všechny vrstvy",
+      "hidealllayers": "",
       "importlayer": "Importovat vrstvu",
       "maptip": "Zobrazovat bubliny nad mapou",
       "printlegend": "Tisk legendy",

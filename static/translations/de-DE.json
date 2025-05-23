@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Oberste Ebene vergleichen",
       "deletealllayers": "Alle Ebenen entfernen",
+      "hidealllayers": "Alle Ebenen ausblenden",
       "importlayer": "Ebene importieren",
       "maptip": "Kartentipps anzeigen",
       "printlegend": "Legende drucken",

@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Compare top layer",
       "deletealllayers": "Remove all layers",
+      "hidealllayers": "Hide all layers",
       "importlayer": "Import layer",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",

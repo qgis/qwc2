@@ -269,6 +269,7 @@
     "layerinfo.title",
     "layertree.compare",
     "layertree.deletealllayers",
+    "layertree.hidealllayers",
     "layertree.importlayer",
     "layertree.maptip",
     "layertree.printlegend",

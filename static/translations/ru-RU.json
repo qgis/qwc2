@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Сравнить верхний слой",
       "deletealllayers": "",
+      "hidealllayers": "",
       "importlayer": "Импортировать слой",
       "maptip": "Показывать подписи",
       "printlegend": "Распечатать легенду",

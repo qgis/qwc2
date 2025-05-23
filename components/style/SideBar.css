@@ -71,6 +71,7 @@ div.sidebar span.sidebar-titlebar-icon {
 div.sidebar span.sidebar-titlebar-title {
     font-weight: bold;
     flex: 0 0 auto;
+    margin-right: 0.25em;
 }
 
 div.sidebar span.sidebar-titlebar-spacer {

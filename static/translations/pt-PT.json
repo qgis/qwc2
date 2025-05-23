@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Comparar com a Camada Superior",
       "deletealllayers": "Remover Todas as Camadas",
+      "hidealllayers": "",
       "importlayer": "Importar Camada",
       "maptip": "Mostrar Dicas de Mapa das Camadas",
       "printlegend": "Legenda de Impressão",

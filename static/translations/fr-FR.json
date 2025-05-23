@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Comparer",
       "deletealllayers": "Supprimer toutes les couches",
+      "hidealllayers": "Cacher toutes les couches",
       "importlayer": "Importer une couche",
       "maptip": "Afficher les infobulles",
       "printlegend": "Imprimer la légende",

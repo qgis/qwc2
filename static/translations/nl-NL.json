@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Vergelijk bovenste laag",
       "deletealllayers": "Verwijder alle lagen",
+      "hidealllayers": "",
       "importlayer": "Importeer laag",
       "maptip": "Toon kaarttips voor de laag",
       "printlegend": "Print legenda",

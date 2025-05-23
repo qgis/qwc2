@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Сравнете горния слой",
       "deletealllayers": "Премахване на всички слоеве",
+      "hidealllayers": "",
       "importlayer": "Импортиране на слой",
       "maptip": "Показване на съвети за картата на слоевете",
       "printlegend": "Легенда за печат",

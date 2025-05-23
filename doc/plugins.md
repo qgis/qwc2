@@ -486,7 +486,6 @@ with containing a container element with id=legendcontainer.
 | bboxDependentLegend | `{bool, string}` | Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `false` |
 | enableLegendPrint | `bool` | Whether to enable the legend print functionality. | `true` |
 | enableServiceInfo | `bool` | Whether to display a service info button to display the WMS service metadata. | `true` |
-| enableVisibleFilter | `bool` | Whether to display a button to filter invisible layers from the layertree. | `true` |
 | extraLegendParameters | `string` | Additional parameters to pass to the GetLegendGraphics request. | `undefined` |
 | fallbackDrag | `bool` | Whether to use the fallback logic for drag-and-drop. | `undefined` |
 | flattenGroups | `bool` | Whether to display a flat layer tree, omitting any groups. | `false` |
@@ -500,7 +499,6 @@ with containing a container element with id=legendcontainer.
 | showLegendIcons | `bool` | Whether to display legend icons. | `true` |
 | showQueryableIcon | `bool` | Whether to display the queryable icon to indicate that a layer is identifyable. | `true` |
 | showRootEntry | `bool` | Whether to display the root entry of the layertree. | `true` |
-| showToggleAllLayersCheckbox | `bool` | Whether to display a checkbox to toggle all layers. | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | templatePath | `string` | Template location for the legend print functionality | `":/templates/legendprint.html"` |
 | width | `string` | The initial width of the layertree, as a CSS width string. | `"25em"` |
@@ -524,7 +522,7 @@ The main map component.
 | mapOptions | `{`<br />`  zoomDuration: number,`<br />`  enableRotation: bool,`<br />`  rotation: number,`<br />`  panStepSize: number,`<br />`  panPageSize: number,`<br />`  constrainExtent: bool,`<br />`  kineticPanParams: object,`<br />`}` | Zoom duration in ms, rotation in degrees, panStepSize and panPageSize as fraction of map width/height. | `{}` |
 | showLoading | `bool` | Whether to display the loading spinner when layers are loading. | `true` |
 | swipeGeometryTypeBlacklist | `[string]` | A list of layer geometry types to ignore when determining the top-most layer to compare. | `[]` |
-| swipeLayerNameBlacklist | `[string]` | A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a whildcard character. | `[]` |
+| swipeLayerNameBlacklist | `[string]` | A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a wildcard character. | `[]` |
 | toolsOptions | `object` | Map tool configuraiton options. Refer to the sample config.json. | `{}` |
 
 MapComparePlugin<a name="mapcompareplugin"></a>
@@ -877,7 +875,7 @@ Top bar, containing the logo, searchbar, task buttons and app menu.
 | logoSrc | `string` | The logo image URL if a different source than the default `assets/img/logo.<ext>` and `assets/img/logo-mobile.<ext>` is desired. | `undefined` |
 | logoUrl | `string` | The hyperlink to open when the logo is clicked. | `undefined` |
 | menuItems | `array` | The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. | `[]` |
-| searchOptions | `{`<br />`  allowSearchFilters: bool,`<br />`  hideResultLabels: bool,`<br />`  highlightStyle: {`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`},`<br />`  minScaleDenom: number,`<br />`  resultLimit: number,`<br />`  sectionsDefaultCollapsed: bool,`<br />`  showHighlightMarker: bool,`<br />`  showLayerAfterChangeTheme: bool,`<br />`  showLayerResultsBeforePlaces: bool,`<br />`  showResultInSearchText: bool,`<br />`  zoomToLayers: bool,`<br />`}` | Options passed down to the search component. | `{`<br />`    showHighlightMarker: true`<br />`    showResultInSearchText: true`<br />`}` |
+| searchOptions | `{`<br />`  allowSearchFilters: bool,`<br />`  hideResultLabels: bool,`<br />`  highlightStyle: {`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`},`<br />`  minScaleDenom: number,`<br />`  resultLimit: number,`<br />`  sectionsDefaultCollapsed: bool,`<br />`  showHighlightMarker: bool,`<br />`  showLayerAfterChangeTheme: bool,`<br />`  showLayerResultsBeforePlaces: bool,`<br />`  showResultInSearchText: bool,`<br />`  zoomToLayers: bool,`<br />`}` | Options passed down to the search component. | `{`<br />`    showHighlightMarker: true,`<br />`    showResultInSearchText: true`<br />`}` |
 | toolbarItems | `array` | The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. | `[]` |
 | toolbarItemsShortcutPrefix | `string` | The keyboard shortcut prefix for triggering toolbar tasks. I.e. alt+shift. The task are then triggered by <prefix>+{1,2,3,...} for the 1st, 2nd, 3rd... toolbar icon. | `undefined` |
 

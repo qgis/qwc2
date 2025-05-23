@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Sammenlign øverste lag",
       "deletealllayers": "Slett alle lag",
+      "hidealllayers": "",
       "importlayer": "Importer lag",
       "maptip": "Vis karttips for lag",
       "printlegend": "Skriv ut tegnforklaring",

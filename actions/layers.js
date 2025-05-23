@@ -28,6 +28,7 @@ export const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
 export const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
 export const SET_SWIPE = 'SET_SWIPE';
 export const SET_FILTER = 'SET_FILTER';
+export const SET_THEME_LAYERS_VISIBILITY_PRESET = 'SET_THEME_LAYERS_VISIBILITY_PRESET';
 
 
 export const LayerRole = {
@@ -196,3 +197,10 @@ export function setFilter(filter, filterGeom, timeRange) {
         timeRange
     };
 }
+
+export function setThemeLayersVisibilityPreset(preset) {
+    return {
+        type: SET_THEME_LAYERS_VISIBILITY_PRESET,
+        preset: preset
+    };
+};

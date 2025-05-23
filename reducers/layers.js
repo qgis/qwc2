@@ -27,7 +27,8 @@ import {
     REMOVE_ALL_LAYERS,
     REPLACE_PLACEHOLDER_LAYER,
     SET_SWIPE,
-    SET_FILTER
+    SET_FILTER,
+    SET_THEME_LAYERS_VISIBILITY_PRESET
 } from '../actions/layers';
 import LayerUtils from '../utils/LayerUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
@@ -350,6 +351,18 @@ export default function layers(state = defaultState, action) {
             return layer;
         });
         return {...state, flat: newLayers, filter: filter};
+    }
+    case SET_THEME_LAYERS_VISIBILITY_PRESET: {
+        const newLayers = state.flat.map(layer => {
+            if (layer.role === LayerRole.THEME) {
+                const newLayer = LayerUtils.applyVisibilityPreset(layer, action.preset);
+                return {...newLayer, ...LayerUtils.buildWMSLayerParams(newLayer, state.filter)};
+            } else {
+                return layer;
+            }
+        });
+        UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
+        return {...state, flat: newLayers};
     }
     default:
         return state;

@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Comparar con la capa superior",
       "deletealllayers": "Remover todas las capas",
+      "hidealllayers": "",
       "importlayer": "Importar capa",
       "maptip": "Mostrar sugerencias de capas en el mapa",
       "printlegend": "Imprimir leyenda",

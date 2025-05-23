@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "トップ・レイヤを比較",
       "deletealllayers": "全てのレイヤを削除",
+      "hidealllayers": "",
       "importlayer": "レイヤをインポート",
       "maptip": "レイヤのマップ・チップを表示",
       "printlegend": "凡例を印刷",

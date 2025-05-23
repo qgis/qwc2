@@ -290,6 +290,7 @@
     "layertree": {
       "compare": "Jämför översta lagret",
       "deletealllayers": "Ta bort alla lager",
+      "hidealllayers": "",
       "importlayer": "Importera lager",
       "maptip": "Visa karttips för lager",
       "printlegend": "Skriv ut teckenförklaring",
