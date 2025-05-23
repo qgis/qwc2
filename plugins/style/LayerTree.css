@@ -46,7 +46,7 @@
     margin-right: 0.5em;
 }
 
-#LayerTree div.layertree-visibility-menu > div:nth-child(3) {
+#LayerTree div.layertree-visibility-menu-sep:not(:first-child) {
     border-top: 1px solid var(--border-color);
 }
 

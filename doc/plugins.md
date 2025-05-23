@@ -486,6 +486,7 @@ with containing a container element with id=legendcontainer.
 | bboxDependentLegend | `{bool, string}` | Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `false` |
 | enableLegendPrint | `bool` | Whether to enable the legend print functionality. | `true` |
 | enableServiceInfo | `bool` | Whether to display a service info button to display the WMS service metadata. | `true` |
+| enableVisibleFilter | `bool` | Whether to display a button to filter invisible layers from the layertree. | `true` |
 | extraLegendParameters | `string` | Additional parameters to pass to the GetLegendGraphics request. | `undefined` |
 | fallbackDrag | `bool` | Whether to use the fallback logic for drag-and-drop. | `undefined` |
 | flattenGroups | `bool` | Whether to display a flat layer tree, omitting any groups. | `false` |
@@ -499,6 +500,7 @@ with containing a container element with id=legendcontainer.
 | showLegendIcons | `bool` | Whether to display legend icons. | `true` |
 | showQueryableIcon | `bool` | Whether to display the queryable icon to indicate that a layer is identifyable. | `true` |
 | showRootEntry | `bool` | Whether to display the root entry of the layertree. | `true` |
+| showToggleAllLayersCheckbox | `bool` | Whether to display a checkbox to toggle all layers. | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | templatePath | `string` | Template location for the legend print functionality | `":/templates/legendprint.html"` |
 | width | `string` | The initial width of the layertree, as a CSS width string. | `"25em"` |

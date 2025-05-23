@@ -63,6 +63,8 @@ class LayerTree extends React.Component {
         enableLegendPrint: PropTypes.bool,
         /** Whether to display a service info button to display the WMS service metadata. */
         enableServiceInfo: PropTypes.bool,
+        /** Whether to display a button to filter invisible layers from the layertree. */
+        enableVisibleFilter: PropTypes.bool,
         /** Additional parameters to pass to the GetLegendGraphics request. */
         extraLegendParameters: PropTypes.string,
         /** Whether to use the fallback logic for drag-and-drop. */
@@ -109,6 +111,8 @@ class LayerTree extends React.Component {
         showQueryableIcon: PropTypes.bool,
         /** Whether to display the root entry of the layertree. */
         showRootEntry: PropTypes.bool,
+        /** Whether to display a checkbox to toggle all layers. */
+        showToggleAllLayersCheckbox: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         swipe: PropTypes.number,
@@ -144,8 +148,10 @@ class LayerTree extends React.Component {
         onlyGroups: false,
         width: "25em",
         enableLegendPrint: true,
+        enableVisibleFilter: true,
         enableServiceInfo: true,
         infoInSettings: true,
+        showToggleAllLayersCheckbox: true,
         transparencyIcon: true,
         side: 'right',
         templatePath: ":/templates/legendprint.html"
@@ -597,6 +603,9 @@ class LayerTree extends React.Component {
         );
     }
     renderVisibilityButton = () => {
+        if (!this.props.showToggleAllLayersCheckbox && !this.props.enableVisibleFilter && isEmpty(this.props.theme.visibilityPresets)) {
+            return null;
+        }
         let vis = 0;
         let count = 0;
         for (const layer of this.props.layers) {
@@ -616,14 +625,18 @@ class LayerTree extends React.Component {
                 <Icon icon="chevron-down" />
                 {this.state.visibilityMenu ? (
                     <div className="layertree-visibility-menu">
-                        <div onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
-                            <Icon icon={vis === 0 ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.hidealllayers")}
-                        </div>
-                        <div onClick={() => this.setState((state) => ({filterinvisiblelayers: !state.filterinvisiblelayers}))}>
-                            <Icon icon={this.state.filterinvisiblelayers ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.visiblefilter")}
-                        </div>
-                        {Object.entries(this.props.theme.visibilityPresets || {}).map(([name, preset]) => (
-                            <div key={name} onClick={() => this.props.setThemeLayersVisibilityPreset(preset)}>
+                        {this.props.showToggleAllLayersCheckbox ? (
+                            <div onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
+                                <Icon icon={vis === 0 ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.hidealllayers")}
+                            </div>
+                        ) : null}
+                        {this.props.enableVisibleFilter ? (
+                            <div onClick={() => this.setState((state) => ({filterinvisiblelayers: !state.filterinvisiblelayers}))}>
+                                <Icon icon={this.state.filterinvisiblelayers ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.visiblefilter")}
+                            </div>
+                        ) : null}
+                        {Object.entries(this.props.theme.visibilityPresets || {}).map(([name, preset], idx) => (
+                            <div className={idx === 0 ? "layertree-visibility-menu-sep" : ""} key={name} onClick={() => this.props.setThemeLayersVisibilityPreset(preset)}>
                                 <Icon icon={this.state.activePreset === name ? "radio_checked" : "radio_unchecked"} /> {name}
                             </div>
                         ))}
