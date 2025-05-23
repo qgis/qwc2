@@ -47,7 +47,7 @@ class MapPlugin extends React.Component {
         swipe: PropTypes.number,
         /** A list of layer geometry types to ignore when determining the top-most layer to compare. */
         swipeGeometryTypeBlacklist: PropTypes.arrayOf(PropTypes.string),
-        /** A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a whildcard character. */
+        /** A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a wildcard character. */
         swipeLayerNameBlacklist: PropTypes.arrayOf(PropTypes.string),
         theme: PropTypes.object,
         tools: PropTypes.object,
