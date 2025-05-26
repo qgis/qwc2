@@ -440,7 +440,7 @@ class LayerTree extends React.Component {
     renderLayerTree = (layers) => {
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         const haveGroups = !flattenGroups && layers.find(layer => {
-            if (!this.props.showRootEntry) {
+            if (layer.role === LayerRole.THEME && !this.props.showRootEntry) {
                 return (layer.sublayers || []).find(sublayer => !isEmpty(sublayer.sublayers));
             } else {
                 return !isEmpty(layer.sublayers);
@@ -449,7 +449,7 @@ class LayerTree extends React.Component {
         return layers.map(layer => {
             if (isEmpty(layer.sublayers) && layer.role !== LayerRole.THEME) {
                 return this.renderLayer(layer, layer, [], layer.visibility, false, !haveGroups);
-            } else if (this.props.showRootEntry) {
+            } else if (this.props.showRootEntry || layer.role !== LayerRole.THEME) {
                 return this.renderLayerGroup(layer, layer, [], layer.visibility);
             } else {
                 return layer.sublayers.map((sublayer, idx) => {
