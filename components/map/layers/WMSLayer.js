@@ -60,7 +60,11 @@ export function wmsToOpenlayersOptions(options) {
     };
 }
 
-export function getClientSideOpacity(queryParameters) {
+export function getClientSideOpacity(options, queryParameters) {
+    // If no OPACITIES in WMS params, just return options.opacity
+    if (!queryParameters.OPACITIES) {
+        return (options.opacity ?? 255) / 255;
+    }
     // If WMS parameters contain only one opacity value, set opacity client side (as some WMS servers don't support opacity)
     const opacities = (queryParameters.OPACITIES ?? "255").split(",");
     if (opacities.length === 1) {
@@ -73,7 +77,7 @@ export function getClientSideOpacity(queryParameters) {
 export default {
     create: (options, map) => {
         const queryParameters = {...wmsToOpenlayersOptions(options), __t: +new Date()};
-        const clientSideOpacity = getClientSideOpacity(queryParameters);
+        const clientSideOpacity = getClientSideOpacity(options, queryParameters);
         if (queryParameters.TILED && !options.bbox) {
             /* eslint-disable-next-line */
             console.warn("Tiled WMS requested without specifying bounding box, falling back to non-tiled.");
@@ -126,9 +130,9 @@ export default {
         if (oldOptions && layer?.getSource()?.updateParams) {
             let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
             const oldParams = wmsToOpenlayersOptions(oldOptions);
-            getClientSideOpacity(oldParams);
+            getClientSideOpacity(oldOptions, oldParams);
             const newParams = wmsToOpenlayersOptions(newOptions);
-            const clientSideOpacity = getClientSideOpacity(newParams);
+            const clientSideOpacity = getClientSideOpacity(newOptions, newParams);
             Object.keys(oldParams).forEach(key => {
                 if (!(key in newParams)) {
                     newParams[key] = undefined;
