@@ -9,11 +9,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
-import Icon from '../components/Icon';
+import MapButton from '../components/MapButton';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from "../utils/LocaleUtils";
 import ThemeUtils from '../utils/ThemeUtils';
@@ -26,7 +25,6 @@ class TaskButton extends React.Component {
         currentTask: PropTypes.string,
         /** The icon name.  */
         icon: PropTypes.string,
-        mapMargins: PropTypes.object,
         /** The task mode. */
         mode: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
@@ -47,22 +45,10 @@ class TaskButton extends React.Component {
         if (!ThemeUtils.themeFlagsAllowed(this.props.theme, this.props.themeFlagWhitelist, this.props.themeFlagBlacklist)) {
             return null;
         }
-        const right = this.props.mapMargins.right;
-        const bottom = this.props.mapMargins.bottom;
-        const style = {
-            right: 'calc(1.5em + ' + right + 'px)',
-            bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + ' + (3 + 4 * this.props.position) + 'em)'
-        };
-        const classes = classnames({
-            "map-button": true,
-            "map-button-active": this.props.currentTask === this.props.task
-        });
         const title = LocaleUtils.tr("appmenu.items." + this.props.task + (this.props.mode || ""));
         return (
-            <button className={classes} onClick={this.buttonClicked}
-                style={style} title={title}>
-                <Icon icon={this.props.icon} />
-            </button>
+            <MapButton icon={this.props.icon} onClick={this.buttonClicked}
+                position={this.props.position} tooltip={title} />
         );
     }
     buttonClicked = () => {
@@ -73,7 +59,6 @@ class TaskButton extends React.Component {
 
 const selector = (state) => ({
     currentTask: state.task.id,
-    mapMargins: state.windows.mapMargins,
     theme: state.theme.current
 });
 
