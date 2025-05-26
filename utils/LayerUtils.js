@@ -447,7 +447,7 @@ const LayerUtils = {
                 LayerUtils.explodeSublayers(layer, parent.sublayers[idx], exploded, path);
             } else {
                 // Reduced layer with one single sublayer per level, up to leaf
-                const redLayer = {...layer, id: uuidv4()};
+                const redLayer = {...layer};
                 let group = redLayer;
                 for (const jdx of path) {
                     group.sublayers = [{...group.sublayers[jdx]}];
@@ -459,6 +459,7 @@ const LayerUtils = {
     },
     implodeLayers(exploded) {
         const newlayers = [];
+        const usedIds = new Set();
 
         // Merge all possible items of an exploded layer array
         for (const entry of exploded) {
@@ -478,7 +479,11 @@ const LayerUtils = {
                 }
                 target.sublayers.push(source.sublayers[0]);
             } else {
-                newlayers.push(layer);
+                if (usedIds.has(layer.id)) {
+                    newlayers.push({...layer, id: uuidv4()});
+                } else {
+                    newlayers.push(layer);
+                }
             }
         }
         // Ensure mutually exclusive groups have exactly one visible layer
