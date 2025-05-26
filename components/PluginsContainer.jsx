@@ -56,7 +56,7 @@ class PluginsContainer extends React.Component {
             left: 'calc(1em + ' + left + 'px)',
             top: 'calc(var(--topbar-height) + ' + top + 'px)',
             right: 'calc(1em + ' + right + 'px)',
-            bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px + 2.5em)'
+            bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px)'
         };
         return (
             <div className="PluginsContainer" ref={this.setupTouchEvents}>
