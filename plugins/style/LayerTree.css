@@ -21,9 +21,9 @@
 }
 
 #LayerTree div.layertree-visibility-menu {
+    z-index: 1;
     position: absolute;
     top: 100%;
-    left: 0;
     border: 1px solid var(--border-color);
     background-color: var(--list-bg-color);
     color: var(--text-color);

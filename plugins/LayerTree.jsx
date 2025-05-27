@@ -619,12 +619,18 @@ class LayerTree extends React.Component {
             "layertree-visibility-button": true,
             "layertree-visibility-button-active": this.state.visibilityMenu
         });
+        const style = {};
+        if (this.props.side === 'left') {
+            style.left = 0;
+        } else {
+            style.right = 0;
+        }
         return (
             <span className={buttonClasses} onClick={() => this.setState(state => ({visibilityMenu: !state.visibilityMenu}))}>
                 <Icon icon="eye"/>
                 <Icon icon="chevron-down" />
                 {this.state.visibilityMenu ? (
-                    <div className="layertree-visibility-menu">
+                    <div className="layertree-visibility-menu" style={style}>
                         {this.props.showToggleAllLayersCheckbox ? (
                             <div onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
                                 <Icon icon={vis === 0 ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.hidealllayers")}
