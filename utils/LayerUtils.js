@@ -140,8 +140,7 @@ const LayerUtils = {
             } else {
                 layerNames.push(sublayer.name);
                 opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
-                // Only specify style if more than one style choice exists
-                styles.push(Object.keys(sublayer.styles || {}).length > 1 ? (sublayer.style || "") : "");
+                styles.push(sublayer.style || "");
                 if (sublayer.queryable && !sublayer.omitFromQueryLayers) {
                     queryable.push(sublayer.name);
                 }
