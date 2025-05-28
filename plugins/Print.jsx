@@ -86,9 +86,7 @@ class Print extends React.Component {
         /** All layouts with this prefix will not be displayed in the print layoutlist */
         hidePrintlayoutPrefix: PropTypes.string,
         /** Alphabetical order for print layouts: asc or desc */
-        sortPrintlayouts: PropTypes.string,
-        /** The default layout to display first */
-        defaultPrintlayout: PropTypes.string
+        sortPrintlayouts: PropTypes.string
     };
     static defaultProps = {
         defaultDpi: 300,
@@ -103,8 +101,7 @@ class Print extends React.Component {
         printMapHighlights: true,
         scaleFactor: 1.9, // Experimentally determined...
         side: 'right',
-        sortPrintlayouts: 'desc',
-        defaultPrintlayout: ''
+        sortPrintlayouts: 'desc'
     };
     state = {
         center: null,
@@ -154,7 +151,7 @@ class Print extends React.Component {
                         return b.name.split('/').pop().localeCompare(a.name.split('/').pop(), undefined, {numeric: true});
                     });
                 }
-                const layout = layouts.find(l => l.default || l.name == this.props.defaultPrintlayout) || layouts[0];
+                const layout = layouts.find(l => l.default) || layouts[0];
                 this.setState({layouts: layouts, layout: layout, atlasFeatures: []});
             } else {
                 this.setState({layouts: [], layout: null, atlasFeatures: []});
