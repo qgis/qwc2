@@ -53,6 +53,7 @@
         "Redlining": "Linha de demarcação",
         "Routing": "Roteamento",
         "Tools": "Ferramentas de mapa",
+        "TourGuide": "",
         "TimeManager": "Gerenciador de tempo",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Mostrar mapa inteiro",
       "zoomin": "Mais zoom",
       "zoomout": "Reduzir o zoom"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

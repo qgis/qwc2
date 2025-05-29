@@ -53,6 +53,7 @@
         "Redlining": "Línia de demarcació",
         "Routing": "Routing",
         "Tools": "Eines de Mapa",
+        "TourGuide": "",
         "TimeManager": "Gestor de Temps",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Mostrar tot el mapa",
       "zoomin": "Apropar",
       "zoomout": "Allunyar"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

@@ -53,6 +53,7 @@
         "Redlining": "スケッチ",
         "Routing": "ルート探索",
         "Tools": "地図ツール",
+        "TourGuide": "",
         "TimeManager": "タイム・マネージャ",
         "View3D": "3D 表示"
       },
@@ -680,6 +681,11 @@
       "home": "地図の初期領域を表示",
       "zoomin": "ズーム・イン",
       "zoomout": "ズーム・アウト"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

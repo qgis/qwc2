@@ -53,6 +53,7 @@
         "Redlining": "Serbest Çizim",
         "Routing": "Navigasyon",
         "Tools": "Harita Araçları",
+        "TourGuide": "",
         "TimeManager": "Zaman Yöneticisi",
         "View3D": "3 Boyutlu Görünüm"
       },
@@ -680,6 +681,11 @@
       "home": "Haritanın tamamını göster",
       "zoomin": "Yaklaş",
       "zoomout": "Uzaklaş"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",
