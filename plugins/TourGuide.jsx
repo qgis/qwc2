@@ -70,6 +70,7 @@ class TourGuide extends React.Component {
                 );
             })
             .catch((err) => {
+                /* eslint-disable-next-line */
                 console.error("Failed to load tour guide:", err);
             });
     }
@@ -86,7 +87,6 @@ class TourGuide extends React.Component {
           direction === "next"
               ? currentRawStep?.onNextClick
               : currentRawStep?.onPrevClick;
-        console.log(actionNames);
         if (Array.isArray(actionNames)) {
             actionNames.forEach(actionName => this.runCustomAction(actionName));
         } else if (actionNames) {
@@ -117,6 +117,7 @@ class TourGuide extends React.Component {
             if (submenu) {
                 submenu.classList.add("appmenu-submenu-expanded");
             } else {
+                /* eslint-disable-next-line */
                 console.warn(`Submenu with icon-${submenuName} not found.`);
             }
             return;
@@ -129,6 +130,7 @@ class TourGuide extends React.Component {
             if (submenu) {
                 submenu.classList.remove("appmenu-submenu-expanded");
             } else {
+                /* eslint-disable-next-line */
                 console.warn(`Submenu with icon-${submenuName} not found.`);
             }
             return;
@@ -141,6 +143,7 @@ class TourGuide extends React.Component {
             document.querySelector(".AppMenu")?.classList.remove("appmenu-visible");
             break;
         default:
+            /* eslint-disable-next-line */
             console.warn("Unknown action:", actionName);
         }
     };
