@@ -1,57 +1,72 @@
 [
   {
     "selector": "null-1",
-    "content": "<h1 style=\"text-align: center;\">Welcome to the tour guide!</h1><p>This will help you get familiar with the main features of Qgis Web Client. You can press the nest button to start the tour or close it at any time using the cross icon at the top right of this windows.</p>"
+    "title": "Welcome to the tour guide!",
+    "content": "This will help you get familiar with the main features of Qgis Web Client. You can press the next button to start the tour or close it at any time using the cross icon at the top right of this windows."
   },
   {
     "selector": ".searchbox-field",
-    "content": "<h1 style=\"text-align: center;\">Search Bar</h1><p>This is the search bar. It allows you to search for various types of information, such as themes, addresses, and administrative boundaries, based on data provided by OpenStreetMap.</p><p>Depending on the search providers configured in your client, you may also be able to find additional information related to your project data and other details provided by various APIs.</p>"
+    "title": "Search Bar",
+    "content": "This is the search bar. It allows you to search for various types of information, such as themes, addresses, and administrative boundaries, based on data provided by OpenStreetMap. Depending on the search providers configured in your client, you may also be able to find additional information related to your project data and other details provided by various APIs."
   },
   {
     "selector": ".Toolbar",
-    "content": "<h1 style=\"text-align: center;\">Top Bar</h1><p>The top bar toolbar is a configurable interface managed by the administrator. It hosts many tools available in the QGIS Web Client. Typically, you will find the most frequently used tools here, such as printing and measuring.</p>"
+    "title": "Top Bar",
+    "content": "The top bar toolbar is a configurable interface managed by the administrator. It hosts many tools available in the QGIS Web Client. Typically, you will find the most frequently used tools here, such as printing and measuring."
   },
   {
     "selector": "button[title='Switch background']",
-    "content": "<h1 style=\"text-align: center;\">Background Switcher</h1><p>This module allows you to change the map background. New backgrounds can be configured in the theme configuration file.</p>",
+    "title": "Background Switcher",
+    "content": "This module allows you to change the map background. New backgrounds can be configured in the theme configuration file.",
     "side": "top"
   },
   {
     "selector": ".AppMenu",
-    "content": "<h1 style=\"text-align: center;\">Map & Tools</h1><p>This is the main menu where most of the tools and information about the tools, maps, and themes used by the QGIS web client can be found.</p>",
+    "title": "Map & Tools",
+    "content": "This is the main menu where most of the tools and information about the tools, maps, and themes used by the QGIS web client can be found.",
     "onNextClick": "openMenu"
   },
   {
-    "selector": ".appmenu-leaf:has(.icon-themes)",
-    "content": "<h1 style=\"text-align: center;\">Theme Menu</h1><p>This menu contains all the maps available in the QGIS Web Client. It allows you to switch between different datasets and maps.</p>",
+    "selector": ".appmenu-leaf:nth-of-type(3)",
+    "title": "Theme Menu",
+    "content": "This menu contains all the maps available in the QGIS Web Client. It allows you to switch between different datasets and maps.",
     "onPrevClick": "closeMenu"
   },
   {
     "selector": ".appmenu-leaf:has(.icon-layers)",
-    "content": "<h1 style=\"text-align: center;\">Layer Menu</h1><p>This menu contains the layers available on the current map and allows you to perform various operations with them.</p>",
+    "title": "Layer Menu",
+    "content": "This menu contains the layers available on the current map and allows you to perform various operations with them.",
     "onNextClick": ["closeMenu", "setTask:LayerTree"]
   },
   {
     "selector": ".layertree-item-checkbox",
-    "content": "<p>You can disable a layer by using this checkbox</p>",
+    "content": "You can disable a layer by using this checkbox",
     "onPrevClick": ["openMenu", "setTask:null"]
   },
   {
     "selector": ".layertree-item-remove",
     "content": "<p>Or remove a layer by clicking on this icon</p>",
-    "onNextClick": ["setTask:null", "openMenu", "openSubMenu:tools"]
+    "onNextClick": ["setTask:null", "openMenu"]
   },
   {
     "selector": ".appmenu-submenu:has(.icon-tools)",
-    "content": "<h1 style=\"text-align: center;\">Tools Menu</h1><p>This menu contains various tools that complement the map, such as routing and the time manager.</p>",
+    "title": "Tools Menu",
+    "content": "This menu contains various tools that complement the map, such as routing and the time manager.",
     "onPrevClick": ["setTask:LayerTree", "closeMenu", "closeSubMenu:tools"],
-    "onNextClick": ["closeSubMenu:tools", "closeMenu"]
+    "onNextClick": ["openSubMenu:tools"]
+  },
+  {
+    "selector": ".appmenu-submenu:has(.icon-tools) ul",
+    "title": "Tools List",
+    "content": "All the tools are listed here. Feel free to explore and try them out!",
+    "onPrevClick": ["closeSubMenu:tools"],
+    "onNextClick": ["closeSubMenu:tools", "closeMenu"],
+    "disableActiveInteraction": true
   },
   {
     "selector": "null-2",
-    "content": "<h1 style=\"text-align: center;\">Thank You for Using the Tour Guide</h1><p>The tour is now complete. If you need further assistance, please consult the <a href=\"https://qwc-services.github.io/master/UserGuide/\" target=\"_blank\" rel=\"noopener noreferrer\">documentation</a>.</p>",
-    "onPrevClick": ["openMenu", "openSubMenu:tools"],
-    "side": "top",
-    "align": "center"
+    "title": "Thank You for Using the Tour Guide",
+    "content": "The tour is now complete. If you need further assistance, please consult the <a href=\"https://qwc-services.github.io/master/UserGuide/\" target=\"_blank\" rel=\"noopener noreferrer\">documentation</a>.",
+    "onPrevClick": ["openMenu", "openSubMenu:tools"]
   }
 ]

@@ -34,11 +34,12 @@ class TourGuide extends React.Component {
                 const steps = data.map((step) => ({
                     element: step.selector,
                     popover: {
-                        title: "",
+                        title: step.title,
                         description: step.content,
                         side: step.side,
                         align: step.align
-                    }
+                    },
+                    disableActiveInteraction: step.disableActiveInteraction
                 }));
                 const driverObj = driver({
                     popoverClass: 'driverjs-theme',
