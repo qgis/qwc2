@@ -33,12 +33,12 @@
 }
 
 .driver-popover.driverjs-theme .driver-popover-close-btn {
-    background-color: #f8f8f8;
+    background: none;
     border: none;
 }
 
 .driver-popover.driverjs-theme .driver-popover-close-btn:hover {
-    background-color: #f8f8f8;
+    background: none;
     color: black;
 }
 
