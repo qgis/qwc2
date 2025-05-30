@@ -53,6 +53,7 @@
         "Redlining": "Redlining",
         "Routing": "Маршрутизиране",
         "Tools": "Инструменти за карта",
+        "TourGuide": "",
         "TimeManager": "Мениджър на времето",
         "View3D": "3D изглед"
       },
@@ -680,6 +681,11 @@
       "home": "Покажи цялата карта",
       "zoomin": "Увеличаване на мащаба",
       "zoomout": "Увеличаване на мащаба"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

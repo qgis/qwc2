@@ -53,6 +53,7 @@
         "Redlining": "Evidențiere",
         "Routing": "Traseu",
         "Tools": "Unelte hartă",
+        "TourGuide": "",
         "TimeManager": "Informații temporale",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Arată toată harta",
       "zoomin": "Mărire",
       "zoomout": "Micșorare"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

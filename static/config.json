@@ -349,6 +349,7 @@
               {"key": "Routing", "icon": "routing"}
             ]},
             {"key": "Print", "icon": "print", "shortcut": "alt+shift+p"},
+            {"key": "TourGuide", "icon": "info"},
             {"key": "Help", "icon": "info", "shortcut": "alt+shift+h"},
             {"key": "Settings", "icon": "cog"},
             {"title": "Homepage", "icon": "link", "url": "https://qwc-services.github.io/", "target": "iframe"}
@@ -372,6 +373,12 @@
           "logoUrl": "/",
           "appMenuShortcut": "alt+shift+m",
           "toolbarItemsShortcutPrefix": "alt+shift"
+        }
+      },
+      {
+        "name": "TourGuide",
+        "cfg": {
+          "tourGuideUrl": "tourGuide.json"
         }
       },
       {

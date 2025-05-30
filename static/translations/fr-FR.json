@@ -53,6 +53,7 @@
         "Redlining": "Dessiner",
         "Routing": "Routage",
         "Tools": "Outils",
+        "TourGuide": "Visite Guidée",
         "TimeManager": "Ligne du temps",
         "View3D": "Vue 3D"
       },
@@ -680,6 +681,11 @@
       "home": "Afficher toute la carte",
       "zoomin": "Zoomer",
       "zoomout": "Dézoomer"
+    },
+    "tourguide": {
+      "done": "Terminé",
+      "next": "Suivant",
+      "previous": "Précédent"
     },
     "valuetool": {
       "all": "Tous",

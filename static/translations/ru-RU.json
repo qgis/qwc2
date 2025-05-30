@@ -53,6 +53,7 @@
         "Redlining": "Обводка",
         "Routing": "",
         "Tools": "Средства картографии",
+        "TourGuide": "",
         "TimeManager": "",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Показать всю карту",
       "zoomin": "Увеличить",
       "zoomout": "Уменьшить"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

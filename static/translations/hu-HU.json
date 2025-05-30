@@ -53,6 +53,7 @@
         "Redlining": "Vázlat",
         "Routing": "",
         "Tools": "Térkép eszközök",
+        "TourGuide": "",
         "TimeManager": "",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "",
       "zoomin": "",
       "zoomout": ""
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

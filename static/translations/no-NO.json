@@ -53,6 +53,7 @@
         "Redlining": "Redlining",
         "Routing": "",
         "Tools": "Kartverktøy",
+        "TourGuide": "",
         "TimeManager": "",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Vis hele kartet",
       "zoomin": "Zoom inn",
       "zoomout": "Zoom ut"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

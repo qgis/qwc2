@@ -53,6 +53,7 @@
         "Redlining": "Omat merkinnät",
         "Routing": "",
         "Tools": "Karttatyökalut",
+        "TourGuide": "",
         "TimeManager": "",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Näytä koko kartta",
       "zoomin": "Zoomaa sisään",
       "zoomout": "Zoomaa ulos"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

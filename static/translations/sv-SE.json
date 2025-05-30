@@ -53,6 +53,7 @@
         "Redlining": "Rita",
         "Routing": "",
         "Tools": "Kartverktyg",
+        "TourGuide": "",
         "TimeManager": "",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Visa hela kartan",
       "zoomin": "Zooma in",
       "zoomout": "Zooma ut"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",

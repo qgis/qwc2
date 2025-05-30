@@ -53,6 +53,7 @@
         "Redlining": "Redlining",
         "Routing": "",
         "Tools": "Narzędzia Mapy",
+        "TourGuide": "",
         "TimeManager": "",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Pokaż całą mapę",
       "zoomin": "Przybliż",
       "zoomout": "Oddal"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",
