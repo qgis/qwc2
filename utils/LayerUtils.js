@@ -266,7 +266,7 @@ const LayerUtils = {
             if (opacities[idx] < 255) {
                 param += "[" + (100 - Math.round(opacities[idx] / 255 * 100)) + "]";
             }
-            if (styles[idx]) {
+            if (styles[idx] && styles[idx] !== "default") {
                 param += "{" + styles[idx] + "}";
             }
             if (visibilities[idx] === 0 || visibilities[idx] === false) {
