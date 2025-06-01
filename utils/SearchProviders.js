@@ -254,6 +254,11 @@ class QgisSearch {
         const results = [];
         Object.entries(features).forEach(([layername, layerfeatures]) => {
             const items = layerfeatures.map(feature => {
+                if (!feature.bbox || !feature.geometry) {
+                    /* eslint-disable-next-line */
+                    console.warn("Skipping result without geometry");
+                    return null;
+                }
                 const values = {
                     ...feature.properties,
                     id: feature.id,
@@ -269,7 +274,7 @@ class QgisSearch {
                     geometry: feature.geometry,
                     layername: layername
                 };
-            });
+            }).filter(Boolean);
             results.push(
                 {
                     id: "qgis." + layername,
