@@ -53,6 +53,7 @@
         "Redlining": "Připomínkování",
         "Routing": "Trasy",
         "Tools": "Nástroje mapy",
+        "TourGuide": "",
         "TimeManager": "",
         "View3D": ""
       },
@@ -680,6 +681,11 @@
       "home": "Výchozí zobrazení mapy",
       "zoomin": "Přiblížit",
       "zoomout": "Oddálit"
+    },
+    "tourguide": {
+      "done": "",
+      "next": "",
+      "previous": ""
     },
     "valuetool": {
       "all": "",
