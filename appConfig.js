@@ -57,7 +57,7 @@ import TopBarPlugin from './plugins/TopBar';
 import TourGuidePlugin from './plugins/TourGuide';
 import ValueToolPlugin from './plugins/ValueTool';
 import View3DPlugin from './plugins/View3D';
-import { ZoomInPlugin, ZoomOutPlugin } from './plugins/ZoomButtons';
+import {ZoomInPlugin, ZoomOutPlugin} from './plugins/ZoomButtons';
 import EditingSupport from './plugins/map/EditingSupport';
 import LocateSupport from './plugins/map/LocateSupport';
 import MeasurementSupport from './plugins/map/MeasurementSupport';
