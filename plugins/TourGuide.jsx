@@ -1,14 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { driver } from "driver.js";
 import PropTypes from "prop-types";
 
 import { setCurrentTask } from "../actions/task";
 import LocaleUtils from '../utils/LocaleUtils';
-
-import "driver.js/dist/driver.css";
-import './style/TourGuide.css';
 
 class TourGuide extends React.Component {
     static propTypes = {
@@ -27,7 +23,6 @@ class TourGuide extends React.Component {
         rawStepData: []
     };
     componentDidMount() {
-        this.props.setCurrentTask(null);
         fetch(this.props.tourGuideUrl)
             .then((response) => response.json())
             .then((data) => {
@@ -41,44 +36,50 @@ class TourGuide extends React.Component {
                     },
                     disableActiveInteraction: step.disableActiveInteraction
                 }));
-                const driverObj = driver({
-                    popoverClass: 'driverjs-theme',
-                    nextBtnText: LocaleUtils.tr("tourguide.next") + ' →',
-                    prevBtnText: '← ' + LocaleUtils.tr("tourguide.previous"),
-                    doneBtnText: LocaleUtils.tr("tourguide.done"),
-                    progressText: `{{current}} / {{total}}`,
-                    showProgress: true,
-                    steps,
-                    onNextClick: () => this.handleClick(driverObj, "next"),
-                    onPrevClick: () => this.handleClick(driverObj, "prev"),
-                    onDestroyed: () => {
-                        document.querySelectorAll(".AppMenu .appmenu-submenu").forEach(submenu => submenu.classList.remove("appmenu-submenu-expanded"));
-                        document.querySelector(".AppMenu")?.classList.remove("appmenu-visible");
-                        this.props.setCurrentTask(null);
-                    },
-                    onHighlightStarted: (_, step) => {
-                        const index = steps.findIndex((s) => s.element === step.element);
-                        this.setState({ currentStepIndex: index });
-                    }
-                });
-                this.setState(
-                    { tourSteps: steps, driverObj, rawStepData: data },
-                    () => {
-                        if (this.props.active) {
-                            this.startTour();
-                        }
-                    },
-                );
+                this.setState({ tourSteps: steps, rawStepData: data });
             })
             .catch((err) => {
                 /* eslint-disable-next-line */
-                console.error("Failed to load tour guide:", err);
+                console.error("Failed to fetch tour guide data:", err);
             });
     }
     componentDidUpdate(prevProps) {
-        if (this.props.active && !prevProps.active && this.state.driverObj) {
-            this.props.setCurrentTask(null);
-            this.startTour();
+        if (this.props.active && !prevProps.active && this.state.tourSteps) {
+            const { tourSteps } = this.state;
+            import("driver.js/dist/driver.css");
+            import("./style/TourGuide.css");
+            import("driver.js")
+                .then((module) => {
+                    const { driver } = module;
+                    const driverObj = driver({
+                        popoverClass: 'driverjs-theme',
+                        nextBtnText: LocaleUtils.tr("tourguide.next") + ' →',
+                        prevBtnText: '← ' + LocaleUtils.tr("tourguide.previous"),
+                        doneBtnText: LocaleUtils.tr("tourguide.done"),
+                        progressText: `{{current}} / {{total}}`,
+                        showProgress: true,
+                        steps: tourSteps,
+                        onNextClick: () => this.handleClick(driverObj, "next"),
+                        onPrevClick: () => this.handleClick(driverObj, "prev"),
+                        onDestroyed: () => {
+                            document.querySelectorAll(".AppMenu .appmenu-submenu").forEach(submenu => submenu.classList.remove("appmenu-submenu-expanded"));
+                            document.querySelector(".AppMenu")?.classList.remove("appmenu-visible");
+                            this.props.setCurrentTask(null);
+                        },
+                        onHighlightStarted: (_, step) => {
+                            const index = tourSteps.findIndex((s) => s.element === step.element);
+                            this.setState({ currentStepIndex: index });
+                        }
+                    });
+                    this.setState({ driverObj }, () => {
+                        this.startTour();
+                        this.props.setCurrentTask(null);
+                    });
+                })
+                .catch((err) => {
+                    /* eslint-disable-next-line */
+                    console.error("Failed to load Driver.js:", err);
+                });
         }
     }
     handleClick = (driverObj, direction) => {
