@@ -17,6 +17,7 @@ import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/LayerCatalog.css';
 
@@ -96,7 +97,7 @@ class LayerCatalog extends React.Component {
     };
     componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active && this.props.catalogUrl) {
-            axios.get(this.props.catalogUrl).then(this.setCatalog).catch(e => {
+            axios.get(MiscUtils.resolveAssetsPath(this.props.catalogUrl)).then(this.setCatalog).catch(e => {
                 this.setState({catalog: []});
                 // eslint-disable-next-line
                 console.warn("Failed to load catalog: " + e);

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 import { setCurrentTask } from "../actions/task";
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from "../utils/MiscUtils";
 
 class TourGuide extends React.Component {
     static propTypes = {
@@ -14,7 +15,7 @@ class TourGuide extends React.Component {
         tourGuideUrl: PropTypes.string
     };
     static defaultProps = {
-        tourGuideUrl: "/tourguide.json"
+        tourGuideUrl: ":/tourguide.json"
     };
     state = {
         tourSteps: [],
@@ -23,7 +24,7 @@ class TourGuide extends React.Component {
         rawStepData: []
     };
     componentDidMount() {
-        fetch(this.props.tourGuideUrl)
+        fetch(MiscUtils.resolveAssetsPath(this.props.tourGuideUrl))
             .then((response) => response.json())
             .then((data) => {
                 const steps = data.map((step) => ({
