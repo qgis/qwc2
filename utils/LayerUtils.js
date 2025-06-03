@@ -823,15 +823,19 @@ const LayerUtils = {
                 params[identifier + ":crs"] = printCrs;
                 params[identifier + ":dpiMode"] = "7";
                 params[identifier + ":contextualWMSLegend"] = "0";
-                // If only one layer is request, request external layer with full opacity
+                // If only one layer is requested, request external layer with full opacity
                 // and control opacity at QGIS server level (helps preserving opacity if external server does not support OPACITIES)
-                const opacities = layer.params.OPACITIES.split(",");
-                if (opacities.length === 1) {
-                    params.OPACITIES.push(opacities[0]);
-                    params[identifier + ":opacities"] = "255";
+                if (layer.params.OPACITIES) {
+                    const opacities = layer.params.OPACITIES.split(",");
+                    if (opacities.length === 1) {
+                        params.OPACITIES.push(opacities[0]);
+                        params[identifier + ":opacities"] = "255";
+                    } else {
+                        params.OPACITIES.push("255");
+                        params[identifier + ":opacities"] = layer.params.OPACITIES;
+                    }
                 } else {
-                    params.OPACITIES.push("255");
-                    params[identifier + ":opacities"] = layer.params.OPACITIES;
+                    params.OPACITIES.push(layer.opacity || "255");
                 }
                 if (layer.url.includes("?")) {
                     params[identifier + ":IgnoreGetMapUrl"] = "1";
