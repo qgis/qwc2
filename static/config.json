@@ -286,6 +286,9 @@
         }
       },
       {
+        "name": "Panoramax"
+      },
+      {
         "name": "Portal",
         "cfg": {
           "logo": "logo.svg",
