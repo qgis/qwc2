@@ -25,7 +25,7 @@ export const SearchResultType = {
 
 function coordinatesSearch(text, searchParams, callback) {
     const displaycrs = searchParams.displaycrs || "EPSG:4326";
-    const matches = text.match(/^\s*([+-]?\d+\.?\d*)[,\s]\s*([+-]?\d+\.?\d*)\s*$/);
+    const matches = text.replace(/'/g, "").match(/^\s*([+-]?\d+\.?\d*)[,\s]\s*([+-]?\d+\.?\d*)\s*$/);
     const items = [];
     if (matches && matches.length >= 3) {
         const x = parseFloat(matches[1]);
