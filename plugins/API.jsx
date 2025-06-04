@@ -320,21 +320,30 @@ class API extends React.Component {
     removeIdentifyExporter = (name) => {
         delete window.qwc2.__identifyExportes[name];
     };
-    /*
+    /**
      * Convenience method for adding an external layer.
      *
      * * `resource`: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
-     * * `beforeLayerName`: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
-     * * `sublayers`: Whether to import the sublayer structure (`true`) or just a flat layer (`false`).
+     * * `options`: An object which may contain the following fields:
+     *     * `beforeLayerName`: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
+     *     * `afterLayerName`: Insert the new layer after the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
+     *     * `sublayers`: Whether to import the sublayer structure (`true`) or just a flat layer (`false`).
      */
-    addExternalLayer = (resource, beforeLayerName = null, sublayers = true) => {
+    addExternalLayer = (resource, optionsOrBeforeLayerName = null, sublayers = true) => {
+        let options = {};
+        if (typeof optionsOrBeforeLayerName !== 'object') {
+            options.beforeLayerName = optionsOrBeforeLayerName;
+            options.sublayers = sublayers;
+        } else {
+            options = optionsOrBeforeLayerName;
+        }
         const params = LayerUtils.splitLayerUrlParam(resource);
         ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
             if (layer) {
                 if (sublayers === false) {
                     layer.sublayers = null;
                 }
-                this.props.addLayer(layer, null, beforeLayerName);
+                this.props.addLayer(layer, null, options);
             }
         });
     };

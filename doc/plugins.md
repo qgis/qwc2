@@ -156,6 +156,16 @@ Remove identify exporter
 
 * `name`: The identifier
 
+**addExternalLayer(resource,optionsOrBeforeLayerName,sublayers)**
+
+Convenience method for adding an external layer.
+
+* `resource`: An external resource of the form `wms:<service_url>#<layername>` or `wmts:<capabilities_url>#<layername>`.
+* `options`: An object which may contain the following fields:
+    * `beforeLayerName`: Insert the new layer before the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
+    * `afterLayerName`: Insert the new layer after the layer with the specified name. If `null` or the layer does not exist, the layer is inserted on top.
+    * `sublayers`: Whether to import the sublayer structure (`true`) or just a flat layer (`false`).
+
 **drawScratch(geomType,message,drawMultiple,callback,style)**
 
 Deprecated, use `window.qwc2.drawGeometry` instead.

@@ -138,8 +138,12 @@ export default function layers(state = defaultState, action) {
             opacity: action.layer.opacity ?? 255,
             layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
         };
-        if (action.beforename) {
-            newLayers = LayerUtils.insertLayer(newLayers, newLayer, "name", action.beforename);
+        if (action.options?.beforeLayerName || action.options?.afterLayerName) {
+            newLayers = LayerUtils.insertLayer(
+                newLayers, newLayer, "name",
+                action.options.beforeLayerName || action.options.afterLayerName,
+                action.options.afterLayerName ? true : false
+            );
         } else {
             let inspos = 0;
             if (action.pos === null) {

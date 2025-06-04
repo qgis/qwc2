@@ -40,12 +40,12 @@ export const LayerRole = {
 };
 
 
-export function addLayer(layer, pos = null, beforename = null) {
+export function addLayer(layer, pos = null, options = null) {
     return {
         type: ADD_LAYER,
         layer,
         pos,
-        beforename
+        options
     };
 }
 

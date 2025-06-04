@@ -496,12 +496,17 @@ const LayerUtils = {
         }
         return newlayers;
     },
-    insertLayer(layers, newlayer, beforeattr, beforeval) {
+    insertLayer(layers, newlayer, attr, val, after = false) {
         const exploded = LayerUtils.explodeLayers(layers);
         const explodedAdd = LayerUtils.explodeLayers([newlayer]);
-        const index = exploded.findIndex(entry => entry.sublayer[beforeattr] === beforeval);
+        let index = exploded.findIndex(entry => entry.sublayer[attr] === val);
         if (index !== -1) {
+            if (after) {
+                index += 1;
+            }
             exploded.splice(index, 0, ...explodedAdd);
+        } else {
+            exploded.unshift(...explodedAdd);
         }
         return LayerUtils.implodeLayers(exploded);
     },
