@@ -14,9 +14,6 @@ class TourGuide extends React.Component {
         /** Url of the Tourguide JSON configuration. */
         tourGuideUrl: PropTypes.string
     };
-    static defaultProps = {
-        tourGuideUrl: ":/tourguide.json"
-    };
     state = {
         tourSteps: [],
         driverObj: null,
@@ -24,6 +21,9 @@ class TourGuide extends React.Component {
         rawStepData: []
     };
     componentDidMount() {
+        if (!this.props.tourGuideUrl) {
+            return;
+        }
         fetch(MiscUtils.resolveAssetsPath(this.props.tourGuideUrl))
             .then((response) => response.json())
             .then((data) => {
