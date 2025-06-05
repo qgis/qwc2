@@ -394,7 +394,9 @@ export class FulltextSearch {
         const quot = typeof(resultItem.id) === 'string' ? '"' : '';
         const filter = `[["${resultItem.id_field_name}","=", ${quot}${resultItem.id}${quot}]]`;
         axios.get(dataServiceUrl.replace(/\/?$/, "/") + resultItem.dataproduct_id + "/?filter=" + filter).then(response => {
-            callback({feature: response.data, crs: response.data.crs.properties.name});
+            const bbox = response.data.bbox;
+            const center = bbox ? [0.5 * (bbox[0] + bbox[2]), 0.5 * (bbox[1] + bbox[3])] : null;
+            callback({bbox, center, feature: response.data, crs: response.data.crs.properties.name});
         }).catch(() => {
             callback(null);
         });
