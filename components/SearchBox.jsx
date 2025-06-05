@@ -764,24 +764,29 @@ class SearchBox extends React.Component {
         this.props.setCurrentTask('LayerTree');
     };
     showResultGeometry = (item, response, scale = undefined) => {
-        if (response?.feature) {
-            const features = response.feature.features ?? [response.feature];
-
-            const layer = {
-                id: "searchselection",
-                role: LayerRole.SELECTION
-            };
-            features.forEach(feature => {
-                feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, response.crs ?? this.props.map.projection, this.props.map.projection);
-                feature.styleName = feature.geometry?.type === 'Point' && this.props.searchOptions.showHighlightMarker ? 'marker' : 'default';
-                feature.styleOptions = this.props.searchOptions.highlightStyle || {};
-                if (feature.crs?.properties?.name) {
-                    feature.crs = CoordinatesUtils.fromOgcUrnCrs(feature.crs.properties.name);
+        const mapCrs = this.props.map.projection;
+        const feature = response?.geometry ? {type: "Feature", geometry: response.geometry} : response?.feature;
+        const layer = {
+            id: "searchselection",
+            role: LayerRole.SELECTION
+        };
+        if (feature) {
+            const features = feature.features ?? [feature];
+            features.forEach(feat => {
+                feat.geometry = VectorLayerUtils.reprojectGeometry(feat.geometry, response.crs ?? mapCrs, mapCrs);
+                feat.styleName = feat.geometry?.type === 'Point' && this.props.searchOptions.showHighlightMarker ? 'marker' : 'default';
+                feat.styleOptions = this.props.searchOptions.highlightStyle || {};
+                if (feat.crs?.properties?.name) {
+                    feat.crs = CoordinatesUtils.fromOgcUrnCrs(feat.crs.properties.name);
                 }
             });
             // If first feature is not a point(=marker), add a marker
             if (features[0].styleName !== "marker" && !response.hidemarker && this.props.searchOptions.showHighlightMarker) {
-                const center = CoordinatesUtils.reproject(response.center ?? [item.x, item.y], item.crs ?? this.props.map.projection, this.props.map.projection);
+                const center = response.center ? CoordinatesUtils.reproject(
+                    response.center, response.crs ?? mapCrs, mapCrs
+                ) : CoordinatesUtils.reproject(
+                    [item.x, item.y], item.crs ?? mapCrs, mapCrs
+                );
                 features.unshift({
                     geometry: {type: 'Point', coordinates: center},
                     styleName: 'marker'
@@ -795,9 +800,24 @@ class SearchBox extends React.Component {
             // Mark first feature as searchmarker
             features[0].id = 'searchmarker';
             this.props.addLayerFeatures(layer, features, true);
+        } else {
+            const center = CoordinatesUtils.reproject([item.x, item.y], item.crs ?? mapCrs, mapCrs);
+            const marker = {
+                type: "Feature",
+                geometry: {type: "Point", coordinates: center},
+                styleName: 'marker'
+            };
+            if (!this.props.searchOptions.hideResultLabels) {
+                const label = (item.label ?? item.text ?? '').replace(/<\/?\w+\s*\/?>/g, '');
+                marker.properties = {label: label};
+            }
+            this.props.addLayerFeatures(layer, [marker], true);
         }
-        let bbox = response.bbox ?? item.bbox ?? [item.x, item.y, item.x, item.y];
-        bbox = CoordinatesUtils.reprojectBbox(bbox, item.crs ?? this.props.map.projection, this.props.map.projection);
+        const bbox = response?.bbox ? CoordinatesUtils.reprojectBbox(
+            response.bbox, response.crs ?? mapCrs, mapCrs
+        ) : CoordinatesUtils.reprojectBbox(
+            item.bbox ?? [item.x, item.y, item.x, item.y], item.crs ?? mapCrs, mapCrs
+        );
         this.zoomToResultBBox(bbox, scale);
     };
     zoomToResultBBox = (bbox, scale) => {
