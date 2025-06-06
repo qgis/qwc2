@@ -15,6 +15,10 @@ import LocaleUtils from './LocaleUtils';
 
 const MeasureUtils = {
     getFormattedBearingValue(azimuth) {
+        const format = (ConfigUtils.getConfigProp("bearingFormat") || "bearing");
+        if (format === "azimuth") {
+            return azimuth.toFixed(2) + "°";
+        }
         let bearing = "";
         if (azimuth >= 0 && azimuth < 90) {
             bearing = "N " + this.degToDms(azimuth) + " E";
