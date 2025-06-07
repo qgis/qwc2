@@ -14,18 +14,46 @@ import CoordinatesUtils from "./CoordinatesUtils";
 import LocaleUtils from './LocaleUtils';
 
 const MeasureUtils = {
-    getFormattedBearingValue(azimuth) {
-        let bearing = "";
-        if (azimuth >= 0 && azimuth < 90) {
-            bearing = "N " + this.degToDms(azimuth) + " E";
-        } else if (azimuth > 90 && azimuth <= 180) {
-            bearing = "S " + this.degToDms(180.0 - azimuth) + " E";
-        } else if (azimuth > 180 && azimuth < 270) {
-            bearing = "S " + this.degToDms(azimuth - 180.0 ) + " W";
-        } else if (azimuth >= 270 && azimuth <= 360) {
-            bearing = "N " + this.degToDms(360 - azimuth ) + " W";
+    getFormattedBearingValue(azimuth = 0) {
+        const format = ConfigUtils.getConfigProp("bearingFormat") || "bearing";
+        const precision = ConfigUtils.getConfigProp("bearingPrecision") || 0;
+        const roundToPrecision = (val) => {
+            return Math.round((val + Number.EPSILON) * 10 ** precision) / 10 ** precision;
+        };
+        const normalizedAzimuth = ((azimuth % 360) + 360) % 360;
+        if (format === "bearing") {
+            let bearing = "";
+            if (normalizedAzimuth >= 0 && normalizedAzimuth < 90) {
+                bearing = `N ${this.degToDms(normalizedAzimuth)} E`;
+            } else if (normalizedAzimuth > 90 && normalizedAzimuth <= 180) {
+                bearing = `S ${this.degToDms(180 - normalizedAzimuth)} E`;
+            } else if (normalizedAzimuth > 180 && normalizedAzimuth < 270) {
+                bearing = `S ${this.degToDms(normalizedAzimuth - 180)} W`;
+            } else if (normalizedAzimuth >= 270 && normalizedAzimuth <= 360) {
+                bearing = `N ${this.degToDms(360 - normalizedAzimuth)} W`;
+            }
+            return bearing;
         }
-        return bearing;
+        if (format === "azimuth") {
+            return `${roundToPrecision(normalizedAzimuth)}°`;
+        }
+        if (format === "azimuth180") {
+            if (normalizedAzimuth <= 180) {
+                return `${roundToPrecision(normalizedAzimuth)}°`;
+            } else {
+                return `${roundToPrecision(normalizedAzimuth - 360)}°`;
+            }
+        }
+        if (format === "bearingEW") {
+            if (normalizedAzimuth < 180) {
+                return `${roundToPrecision(normalizedAzimuth)}°E`;
+            } else if (normalizedAzimuth > 180) {
+                return `${roundToPrecision((360 - normalizedAzimuth))}°W`;
+            } else {
+                return "180°";
+            }
+        }
+        return `${roundToPrecision(normalizedAzimuth)}°`;
     },
     formatDuration(valueSeconds) {
         return new Date(valueSeconds * 1000).toISOString().slice(11, 19);
