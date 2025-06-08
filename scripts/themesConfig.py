@@ -489,6 +489,10 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["mapCrs"] = configItem["mapCrs"]
         else:
             resultItem["mapCrs"] = result["themes"]["defaultMapCrs"]
+        if "defaultDisplayCrs" in configItem:
+            resultItem["defaultDisplayCrs"] = configItem["defaultDisplayCrs"]
+        else:
+            resultItem["defaultDisplayCrs"] = result["themes"]["defaultDisplayCrs"]
         if printTemplates:
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder
@@ -605,7 +609,6 @@ def genThemes(themesConfig):
             config = json.load(fh)
     except:
         return {"error": "Failed to read themesConfig.json"}
-
     result = {
         "themes": {
             "title": "root",
@@ -623,7 +626,8 @@ def genThemes(themesConfig):
             "themeInfoLinks": config["themes"]["themeInfoLinks"] if "themeInfoLinks" in config["themes"] else [],
             "externalLayers": config["themes"]["externalLayers"] if "externalLayers" in config["themes"] else [],
             "backgroundLayers": list(map(reformatAttribution, config["themes"]["backgroundLayers"])),
-            "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None
+            "defaultWMSVersion": config["defaultWMSVersion"] if "defaultWMSVersion" in config else None,
+            "defaultDisplayCrs": config["defaultDisplayCrs"] if "defaultDisplayCrs" in config else None
             }
     }
     groupCounter = 0
