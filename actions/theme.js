@@ -170,9 +170,10 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
             printResolutions: theme.printResolutions || themes.defaultPrintResolutions || undefined,
             printGrid: theme.printGrid || themes.defaultPrintGrid || undefined,
             searchProviders: theme.searchProviders || themes.defaultSearchProviders || undefined,
-            backgroundLayers: theme.backgroundLayers || themes.defaultBackgroundLayers || []
-        };
-
+            backgroundLayers: theme.backgroundLayers || themes.defaultBackgroundLayers || [],
+            defaultDisplayCrs: theme.defaultDisplayCrs || themes.defaultDisplayCrs || undefined
+        }
+        
         // Preserve extent if desired and possible
         if (getState().display.view3dMode !== View3DMode.FULLSCREEN) {
             const curCrs = getState().map.projection;
@@ -193,8 +194,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         }
 
         // Reconfigure map
-        dispatch(configureMap(theme.mapCrs, theme.scales, initialView || theme.initialBbox));
-
+        dispatch(configureMap(theme.mapCrs, theme.scales, initialView || theme.initialBbox, theme.defaultDisplayCrs));
         let layerConfigs = layerParams ? layerParams.map(param => LayerUtils.splitLayerUrlParam(param)) : null;
         if (layerConfigs) {
             layerConfigs = LayerUtils.replaceLayerGroups(layerConfigs, theme);

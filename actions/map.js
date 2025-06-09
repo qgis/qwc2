@@ -43,12 +43,13 @@ export function changeMapView(center, zoom, bbox, size, mapStateSource, projecti
  *             or
  *               {bounds: [xmin, ymin, xmax, ymax], crs: ...}
  */
-export function configureMap(crs, scales, view) {
+export function configureMap(crs, scales, view, defaultdisplaycrs) {
     return {
         type: CONFIGURE_MAP,
         crs,
         scales,
-        view
+        view,
+        defaultdisplaycrs
     };
 }
 

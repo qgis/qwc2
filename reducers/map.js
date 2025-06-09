@@ -89,7 +89,7 @@ export default function map(state = defaultState, action) {
             center: center,
             zoom: zoom,
             projection: action.crs,
-            displayCrs: action.crs,
+            displayCrs: action.defaultdisplaycrs ?? action.crs,
             scales: action.scales,
             resolutions: resolutions
         };

@@ -479,6 +479,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.searchProviders = configItem.searchProviders;
             resultItem.additionalMouseCrs = configItem.additionalMouseCrs;
             resultItem.mapCrs = configItem.mapCrs || result.themes.defaultMapCrs;
+            resultItem.defaultDisplayCrs = configItem.defaultDisplayCrs;
             if (printTemplates.length > 0) {
                 resultItem.print = printTemplates;
             }
@@ -599,6 +600,7 @@ function genThemes(themesConfig) {
             items: [],
             defaultTheme: config.defaultTheme,
             defaultMapCrs: config.defaultMapCrs || 'EPSG:3857',
+            defaultDisplayCrs: config.defaultDisplayCrs,
             defaultScales: config.defaultScales,
             defaultPrintScales: config.defaultPrintScales,
             defaultPrintResolutions: config.defaultPrintResolutions,
