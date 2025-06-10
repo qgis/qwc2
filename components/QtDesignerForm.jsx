@@ -396,11 +396,10 @@ class QtDesignerForm extends React.Component {
                 value = (feature.properties || [])[fieldId] ?? "";
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
-                const currentLayerId = isRelAttr ? parts[1] : this.props.editLayerId.split(".")[1];
-                const currentEditConfig = this.props.editConfig[currentLayerId];
-                const comboFieldConstraints = currentEditConfig.fields.find(field => field.id === attrname)?.constraints || {};
-                if (currentEditConfig.fields.find(field => field.id === attrname)?.filterExpression) {
-                    filterExpr = parseExpression(currentEditConfig.fields.find(field => field.id === attrname).filterExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                const field = isRelAttr ? this.props.editConfig[parts[1]]?.fields?.find?.(f => f.id === attrname) : this.props.fields[fieldId];
+                const comboFieldConstraints = field?.constraints || {};
+                if (field?.filterExpression) {
+                    filterExpr = parseExpression(field.filterExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
                 }
                 return (
                     <EditComboField
