@@ -14,6 +14,9 @@ class TourGuide extends React.Component {
         /** Url of the Tourguide JSON configuration. */
         tourGuideUrl: PropTypes.string
     };
+    static defaultProps = {
+        tourGuideUrl: ":/tourguide.json"
+    };
     state = {
         tourSteps: [],
         driverObj: null,
