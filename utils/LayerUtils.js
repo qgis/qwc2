@@ -1138,6 +1138,9 @@ const LayerUtils = {
                 return newSublayer;
             });
             newLayer.visibility = haveVisibileSublayer;
+            if(newLayer.name in preset) {
+                newLayer.visibility = true;
+            }
         } else if (newLayer.name in preset) {
             newLayer.visibility = true;
             newLayer.style = preset[newLayer.name];
