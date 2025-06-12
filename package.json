@@ -17,7 +17,7 @@
     ],
     "dependencies": {
         "@furkot/webfonts-generator": "^2.0.2",
-        "@giro3d/giro3d": "^0.42.4",
+        "@giro3d/giro3d": "^0.43.0",
         "@kayahr/text-encoding": "^2.0.0",
         "@loaders.gl/core": "^4.3.3",
         "@loaders.gl/shapefile": "^4.3.3",
