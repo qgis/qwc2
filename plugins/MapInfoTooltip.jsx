@@ -85,7 +85,7 @@ class MapInfoTooltip extends React.Component {
         } else {
             const oldPoint = prevProps.map.click;
             if (!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
-                this.setState({point: newPoint, elevation: null});
+                this.setState({point: newPoint, elevation: null, extraInfo: null});
                 const pos = newPoint.coordinate;
                 const crs = this.props.map.projection;
                 getElevationInterface().getElevation(pos, crs).then(elevation => {
