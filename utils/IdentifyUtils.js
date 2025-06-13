@@ -132,12 +132,8 @@ const IdentifyUtils = {
         return identifyRequestParams(layer, queryLayers, map.projection, params);
     },
     buildFilterRequest(layer, queryLayers, filterGeom, map, options = {}) {
-        const size = [101, 101];
         const params = {
-            height: size[0],
-            width: size[1],
             feature_count: 100,
-            bbox: map.bbox.bounds.join(","),
             FILTER_GEOM: filterGeom,
             ...options
         };
