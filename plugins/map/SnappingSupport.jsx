@@ -249,7 +249,7 @@ class SnappingSupport extends React.Component {
             ]]
         });
         const options = {
-            LAYERATTRIBS: JSON.stringify([]),
+            LAYERATTRIBS: JSON.stringify(snapLayers.reduce((res, key) => ({...res, [key]: []}), {}) ),
             with_htmlcontent: false,
             with_bbox: false,
             feature_count: snappingConfig.featureCount || 500
