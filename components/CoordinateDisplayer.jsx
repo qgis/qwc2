@@ -18,7 +18,7 @@ export default class CoordinateDisplayer extends React.Component {
     static propTypes = {
         className: PropTypes.string,
         displayCrs: PropTypes.string,
-        mapCrs: PropTypes.string
+        mapCrs: PropTypes.string,
     };
     state = {
         mousePos: []
@@ -31,16 +31,18 @@ export default class CoordinateDisplayer extends React.Component {
     }
     render() {
         let value = "";
-        const coo = CoordinatesUtils.reproject(this.state.mousePos, this.props.mapCrs, this.props.displayCrs);
-        if (!isNaN(coo[0]) && !isNaN(coo[1])) {
-            const decimals = CoordinatesUtils.getPrecision(this.props.displayCrs);
-            value = LocaleUtils.toLocaleFixed(coo[0], decimals) + " " + LocaleUtils.toLocaleFixed(coo[1], decimals);
+        if (this.state.mousePos.length === 2) {
+            value = CoordinatesUtils.getFormattedCoordinate(
+                this.state.mousePos,
+                this.props.mapCrs,
+                this.props.displayCrs
+            );
         }
         return (
-            <input className={this.props.className} readOnly="readOnly" type="text" value={value}/>
+            <input className={this.props.className} readOnly type="text" value={value} />
         );
     }
     getMapMousePos = (ev) => {
-        this.setState({mousePos: ev.coordinate});
+        this.setState({ mousePos: ev.coordinate });
     };
 }
