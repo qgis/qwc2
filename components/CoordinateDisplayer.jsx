@@ -18,7 +18,7 @@ export default class CoordinateDisplayer extends React.Component {
     static propTypes = {
         className: PropTypes.string,
         displayCrs: PropTypes.string,
-        mapCrs: PropTypes.string,
+        mapCrs: PropTypes.string
     };
     state = {
         mousePos: []

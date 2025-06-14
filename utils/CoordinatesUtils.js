@@ -25,7 +25,7 @@ const CoordinatesUtils = {
         const crsList = {};
         for (const a in Proj4js.defs) {
             if (Object.prototype.hasOwnProperty.call(Proj4js.defs, a)) {
-                crsList[a] = {label: crsLabels[a] || a};
+                crsList[a] = { label: crsLabels[a] || a };
             }
         }
         return crsList;
@@ -36,10 +36,10 @@ const CoordinatesUtils = {
     },
     getPrecision(projection) {
         const precisions = ConfigUtils.getConfigProp("projections").reduce((res, entry) => (
-            {...res, [entry.code]: entry.precision ?? 0}
+            { ...res, [entry.code]: entry.precision ?? 0 }
         ), {});
         return precisions[projection] ?? (CoordinatesUtils.getUnits(projection) === 'degrees' ? 4 : 0);
-    },    
+    },
     getFormat(projection) {
         const formats = ConfigUtils.getConfigProp("projections").reduce((res, entry) => (
             { ...res, [entry.code]: entry.format ?? 'decimal' }
@@ -104,7 +104,7 @@ const CoordinatesUtils = {
         const dLon = lon2 - lon1;
         const y = Math.sin(dLon) * Math.cos(lat2);
         const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-        const azimuth = (((Math.atan2(y, x) * 180.0 / Math.PI) + 360 ) % 360 );
+        const azimuth = (((Math.atan2(y, x) * 180.0 / Math.PI) + 360) % 360);
 
         return azimuth;
     },
@@ -160,15 +160,17 @@ const CoordinatesUtils = {
         if (srcCrs && dstCrs && srcCrs !== dstCrs) {
             coo = CoordinatesUtils.reproject(coo, srcCrs, dstCrs);
         }
-        if (swapLonLat) coo = [coo[1], coo[0]];
-        const toDMS = (coord, decimals) => {
+        if (swapLonLat) {
+            coo = [coo[1], coo[0]];
+        }
+        const toDMS = (coord) => {
             const deg = Math.floor(Math.abs(coord));
             const minFull = (Math.abs(coord) - deg) * 60;
             const min = Math.floor(minFull);
             const sec = ((minFull - min) * 60).toFixed(decimals);
-            return `${deg}° ${min}' ${sec}\"`;
+            return `${deg}° ${min}' ${sec}"`;
         };
-        const toDM = (coord, decimals) => {
+        const toDM = (coord) => {
             const deg = Math.floor(Math.abs(coord));
             const min = ((Math.abs(coord) - deg) * 60).toFixed(decimals);
             return `${deg}° ${min}'`;
@@ -176,7 +178,11 @@ const CoordinatesUtils = {
         const formatCoordinate = (value, isLat) => {
             let direction = '';
             if (addDirection !== 'none') {
-                direction = isLat ? (value >= 0 ? 'N' : 'S') : (value >= 0 ? 'E' : 'W');
+                if (isLat) {
+                    direction = value >= 0 ? 'N' : 'S';
+                } else {
+                    direction = value >= 0 ? 'E' : 'W';
+                }
             }
             let formatted;
             switch (format) {
