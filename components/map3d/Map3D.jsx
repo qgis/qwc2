@@ -182,7 +182,7 @@ class Map3D extends React.Component {
         }
         // Update scene objects
         if (this.state.sceneContext.sceneObjects !== prevState.sceneContext.sceneObjects) {
-            this.applySceneObjectUpdates(this.state.sceneContext.sceneObjects);
+            this.applySceneObjectUpdates(this.state.sceneContext.sceneObjects, prevState.sceneContext.sceneObjects);
         }
     }
     applyBaseLayer = () => {
@@ -339,22 +339,25 @@ class Map3D extends React.Component {
         }
         this.instance.notifyChange();
     };
-    applySceneObjectUpdates = (sceneObjects) => {
+    applySceneObjectUpdates = (sceneObjects, prevSceneObjects) => {
         Object.entries(sceneObjects).forEach(([objectId, options]) => {
+            const prevOptions = prevSceneObjects?.[objectId];
             const object = this.objectMap[objectId];
-            object.visible = options.visibility && options.opacity > 0;
-            if (object.opacity !== undefined) {
-                object.opacity = options.opacity / 255;
-            } else {
-                object.traverse(child => {
-                    if (child instanceof Mesh) {
-                        child.material.transparent = options.opacity < 255;
-                        child.material.opacity = options.opacity / 255;
-                        child.material.needsUpdate = true;
-                    }
-                });
+            if (options.opacity !== prevOptions?.opacity || options.visibility !== prevOptions?.visibility) {
+                object.visible = options.visibility && options.opacity > 0;
+                if (object.opacity !== undefined) {
+                    object.opacity = options.opacity / 255;
+                } else {
+                    object.traverse(child => {
+                        if (child instanceof Mesh) {
+                            child.material.transparent = options.opacity < 255;
+                            child.material.opacity = options.opacity / 255;
+                            child.material.needsUpdate = true;
+                        }
+                    });
+                }
+                this.instance.notifyChange(object);
             }
-            this.instance.notifyChange(object);
         });
     };
     updateObjectLabel = (sceneObject) => {
