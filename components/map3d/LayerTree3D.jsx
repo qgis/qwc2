@@ -9,6 +9,7 @@
 import React from 'react';
 
 import classNames from 'classnames';
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {Box3, Group} from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
@@ -30,6 +31,7 @@ export default class LayerTree3D extends React.Component {
         sceneContext: PropTypes.object
     };
     state = {
+        activestylemenu: null,
         activemenu: null,
         importvisible: false,
         selectedfile: null,
@@ -76,6 +78,10 @@ export default class LayerTree3D extends React.Component {
             "layertree3d-item": true,
             "layertree3d-item-disabled": !entry.visibility
         });
+        const styleMenuClasses = classNames({
+            "layertree3d-item-menubutton": true,
+            "layertree3d-item-menubutton-active": this.state.activestylemenu === entryId
+        });
         const optMenuClasses = classNames({
             "layertree3d-item-menubutton": true,
             "layertree3d-item-menubutton-active": this.state.activemenu === entryId
@@ -88,6 +94,9 @@ export default class LayerTree3D extends React.Component {
                         onClick={() => updateCallback(entryId, {visibility: !entry.visibility})}
                     />
                     <span className="layertree3d-item-title" title={entry.title ?? entryId}>{entry.title ?? entryId}</span>
+                    {!isEmpty(entry.styles) ? (
+                        <Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(entryId)}/>
+                    ) : null}
                     {entry.drawGroup ? (<Icon className="layertree3d-item-remove" icon="trash" onClick={() => this.props.sceneContext.removeSceneObject(entryId)} />) : null}
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(entryId)}/>
                 </div>
@@ -122,6 +131,16 @@ export default class LayerTree3D extends React.Component {
                         ) : null}
                     </div>
                 ) : null}
+                {this.state.activestylemenu === entryId ? (
+                    <div className="layertree3d-item-stylemenu">
+                        {Object.keys(entry.styles).map(name => (
+                            <div key={name} onClick={() => updateCallback(entryId, {style: name})}>
+                                <Icon icon={entry.style === name ? "radio_checked" : "radio_unchecked"} />
+                                <div>{name}</div>
+                            </div>
+                        ))}
+                    </div>
+                ) : null}
             </div>
         );
     };
@@ -142,6 +161,9 @@ export default class LayerTree3D extends React.Component {
                 </div>
             </div>
         );
+    };
+    layerStyleMenuToggled = (entryId) => {
+        this.setState((state) => ({activestylemenu: state.activestylemenu === entryId ? null : entryId}));
     };
     layerMenuToggled = (entryId) => {
         this.setState((state) => ({activemenu: state.activemenu === entryId ? null : entryId}));

@@ -68,6 +68,28 @@
     color: white;
 }
 
+#LayerTree3D div.layertree3d-item-stylemenu {
+    margin-left: 1em;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg-color);
+}
+
+#LayerTree3D div.layertree3d-item-stylemenu > div {
+    padding: 0.25em;
+    display: flex;
+    align-items: center;
+}
+
+#LayerTree3D div.layertree3d-item-stylemenu > div > span.icon {
+    margin-right: 0.25em;
+}
+
+#LayerTree3D div.layertree3d-item-stylemenu > div > div {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 #LayerTree3D div.layertree3d-item-optionsmenu {
     border: 1px solid var(--border-color);
     background-color: var(--input-bg-color);

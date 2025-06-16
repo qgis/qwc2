@@ -49,7 +49,7 @@ function batchLabel(batchId, batchAttr, config) {
 }
 
 const Tiles3DStyle = {
-    handleModelLoad(group, config) {
+    applyTileStyle(group, config) {
         const batchColorCache = {};
         const batchLabelCache = {};
         const labels = {};
@@ -109,7 +109,8 @@ const Tiles3DStyle = {
                     }
                 });
 
-                if (haveColor) {
+                // NOTE: Also update color buffers if they were previously colored
+                if (haveColor || group.userData.haveColor) {
                     if (haveAlpha) {
                         c.geometry.setAttribute('color', new Float32BufferAttribute(rgbaColors, 4));
                     } else {
@@ -125,10 +126,22 @@ const Tiles3DStyle = {
                     }
                     c.material.vertexColors = true;
                     c.material.transparent = haveAlpha;
+                    group.userData.haveColor = haveColor;
                 }
             }
         });
 
+        // Clear previous labels
+        if (group.userData.labelGroup) {
+            group.remove(group.children.find(child => child.uuid === group.userData.labelGroup));
+            // Explicitly remove label DOM elements
+            Object.values(group.userData.tileLabels).forEach(entry => {
+                entry.labelObject.element.parentNode.removeChild(entry.labelObject.element);
+            });
+            delete group.userData.tileLabels;
+            delete group.userData.labelGroup;
+        }
+        // Add new labels
         if (!isEmpty(labels)) {
             const tileLabels = {};
             const labelObjects = new Group();
@@ -143,6 +156,7 @@ const Tiles3DStyle = {
                 labelObjects.add(tileLabels[batchId].labelObject);
             });
             group.userData.tileLabels = tileLabels;
+            group.userData.labelGroup = labelObjects.uuid;
             group.add(labelObjects);
         }
     }

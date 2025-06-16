@@ -140,6 +140,7 @@ class Map3D extends React.Component {
         this.map = null;
         this.sceneObjectGroup = null;
         this.objectMap = {};
+        this.tilesetStyles = {};
         this.state.sceneContext.addLayer = this.addLayer;
         this.state.sceneContext.getLayer = this.getLayer;
         this.state.sceneContext.removeLayer = this.removeLayer;
@@ -356,6 +357,15 @@ class Map3D extends React.Component {
                         }
                     });
                 }
+                this.instance.notifyChange(object);
+            }
+            if (options.style !== prevOptions?.style) {
+                this.loadTilesetStyle(objectId, options);
+            }
+            if (options.tilesetStyle !== prevOptions?.tilesetStyle) {
+                object.tiles.group.children.forEach(group => {
+                    Tiles3DStyle.applyTileStyle(group, options);
+                });
                 this.instance.notifyChange(object);
             }
         });
@@ -596,23 +606,37 @@ class Map3D extends React.Component {
         const colorLayers = this.collectColorLayers([]);
 
         // Add 3d tiles
-        this.objectMap = {};
         const sceneObjects = {};
+        this.objectMap = {};
         (this.props.theme.map3d?.tiles3d || []).forEach(entry => {
-            if (entry.tilesetStyleUrl) {
-                axios.get(MiscUtils.resolveAssetsPath(entry.tilesetStyleUrl)).then(response => {
-                    this.add3dTiles({...entry, tilesetStyle: response.data});
-                }).catch(() => {
-                    /* eslint-disable-next-line */
-                    console.warn("Failed to load tilset style");
-                    this.add3dTiles(entry);
-                });
-            } else {
-                // Delay one cycle, to ensure setState below executed
-                setTimeout(() => {
-                    this.add3dTiles(entry);
-                }, 0);
-            }
+            const tiles = new Tiles3D({
+                url: MiscUtils.resolveAssetsPath(entry.url),
+                errorTarget: 32
+            });
+            tiles.tiles.addEventListener('load-model', ({scene}) => {
+                scene.userData.tilesetName = entry.name;
+                scene.userData.batchIdAttr = entry.idAttr ?? "id";
+                Tiles3DStyle.applyTileStyle(scene, this.state.sceneContext.sceneObjects[entry.name]);
+            });
+            tiles.castShadow = true;
+            tiles.receiveShadow = true;
+            tiles.userData.layertree = true;
+            this.instance.add(tiles);
+            this.objectMap[entry.name] = tiles;
+
+            sceneObjects[entry.name] = {
+                visibility: true,
+                opacity: 255,
+                layertree: true,
+                title: entry.title ?? entry.name,
+                styles: entry.styles,
+                style: entry.style || Object.keys(entry.styles)[0] || "",
+                tilesetStyle: null,
+                idAttr: entry.idAttr,
+                colorAttr: entry.colorAttr,
+                alphaAttr: entry.alphaAttr,
+                labelAttr: entry.labelAttr
+            };
         });
 
         this.setState(state => ({
@@ -635,31 +659,23 @@ class Map3D extends React.Component {
             this.inspector = new Inspector(this.container.previousElementSibling, this.instance);
         }
     };
-    add3dTiles = (entry) => {
-        const tiles = new Tiles3D({
-            url: MiscUtils.resolveAssetsPath(entry.url),
-            errorTarget: 32
-        });
-        tiles.tiles.addEventListener('load-model', ({scene}) => {
-            scene.userData.tilesetName = entry.name;
-            scene.userData.batchIdAttr = entry.idAttr ?? "id";
-            Tiles3DStyle.handleModelLoad(scene, entry);
-        });
-        tiles.castShadow = true;
-        tiles.receiveShadow = true;
-        tiles.userData.layertree = true;
-        this.instance.add(tiles);
-        this.objectMap[entry.name] = tiles;
-
-        this.setState((state) => {
-            const objectState = {visibility: true, opacity: 255, layertree: true, title: entry.title ?? entry.name};
-            return {
-                sceneContext: {
-                    ...state.sceneContext,
-                    sceneObjects: {...state.sceneContext.sceneObjects, [entry.name]: objectState}
-                }
-            };
-        });
+    loadTilesetStyle = (objectId, options) => {
+        const url = options.styles[options.style];
+        if (this.tilesetStyles[url]) {
+            this.updateSceneObject(objectId, {tilesetStyle: this.tilesetStyles[url]});
+        } else if (url) {
+            const fullUrl = MiscUtils.resolveAssetsPath(url);
+            axios.get(fullUrl).then(response => {
+                this.tilesetStyles[url] = response.data;
+                this.updateSceneObject(objectId, {tilesetStyle: this.tilesetStyles[url]});
+            }).catch(() => {
+                this.tilesetStyles[url] = {};
+                this.updateSceneObject(objectId, {tilesetStyle: this.tilesetStyles[url]});
+            });
+        } else {
+            this.tilesetStyles[url] = null;
+            this.updateSceneObject(objectId, {tilesetStyle: this.tilesetStyles[url]});
+        }
     };
     disposeInstance = () => {
         if (this.inspector) {
