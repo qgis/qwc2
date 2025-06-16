@@ -414,6 +414,7 @@ class Map3D extends React.Component {
     addSceneObject = (objectId, object, options = {}) => {
         this.sceneObjectGroup.add(object);
         this.objectMap[objectId] = object;
+        this.instance.notifyChange(object);
         this.setState((state) => {
             const objectState = {
                 visibility: true,
@@ -441,6 +442,7 @@ class Map3D extends React.Component {
         });
         this.sceneObjectGroup.remove(this.objectMap[objectId]);
         delete this.objectMap[objectId];
+        this.instance.notifyChange();
         this.setState((state) => {
             const newSceneObjects = {...state.sceneContext.sceneObjects};
             delete newSceneObjects[objectId];
