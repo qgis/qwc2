@@ -221,7 +221,7 @@ class HideObjects3D extends React.Component {
             while (!rootObject.batchTable) {
                 rootObject = rootObject.parent;
             }
-            const pickLabel = rootObject.userData.tileLabels[entry.batchId];
+            const pickLabel = rootObject.userData.tileLabels?.[entry.batchId];
             if (pickLabel) {
                 pickLabel.labelObject.visible = true;
             }
