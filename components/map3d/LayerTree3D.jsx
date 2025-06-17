@@ -94,7 +94,7 @@ export default class LayerTree3D extends React.Component {
                         onClick={() => updateCallback(entryId, {visibility: !entry.visibility})}
                     />
                     <span className="layertree3d-item-title" title={entry.title ?? entryId}>{entry.title ?? entryId}</span>
-                    {!isEmpty(entry.styles) ? (
+                    {!Object.keys(entry.styles || {}).length > 1 ? (
                         <Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(entryId)}/>
                     ) : null}
                     {entry.drawGroup ? (<Icon className="layertree3d-item-remove" icon="trash" onClick={() => this.props.sceneContext.removeSceneObject(entryId)} />) : null}
