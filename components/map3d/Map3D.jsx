@@ -630,7 +630,7 @@ class Map3D extends React.Component {
                 layertree: true,
                 title: entry.title ?? entry.name,
                 styles: entry.styles,
-                style: entry.style || Object.keys(entry.styles)[0] || "",
+                style: entry.style || Object.keys(entry.styles || {})[0] || null,
                 tilesetStyle: null,
                 idAttr: entry.idAttr,
                 colorAttr: entry.colorAttr,
@@ -660,7 +660,7 @@ class Map3D extends React.Component {
         }
     };
     loadTilesetStyle = (objectId, options) => {
-        const url = options.styles[options.style];
+        const url = options.styles?.[options.style];
         if (this.tilesetStyles[url]) {
             this.updateSceneObject(objectId, {tilesetStyle: this.tilesetStyles[url]});
         } else if (url) {
