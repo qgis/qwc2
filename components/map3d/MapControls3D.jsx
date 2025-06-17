@@ -24,6 +24,7 @@ import './style/MapControls3D.css';
 class MapControls3D extends React.Component {
     static propTypes = {
         currentTask: PropTypes.string,
+        onCameraChanged: PropTypes.func,
         onControlsSet: PropTypes.func,
         sceneContext: PropTypes.object
     };
@@ -443,6 +444,7 @@ class MapControls3D extends React.Component {
         const tpos = this.props.sceneContext.scene.view.controls.target;
         const cpos = this.props.sceneContext.scene.view.camera.position;
         UrlParams.updateParams({v3d: [tpos.x, tpos.y, tpos.z, cpos.x, cpos.y, cpos.z, this.state.firstPerson ? this.personHeight : 0].map(v => v.toFixed(1)).join(",")});
+        this.props.onCameraChanged([tpos.x, tpos.y, tpos.z]);
     };
     restoreView = (viewState) => {
         if (viewState.cameraPos && viewState.center) {

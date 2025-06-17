@@ -79,7 +79,9 @@ class Map3D extends React.Component {
     static propTypes = {
         innerRef: PropTypes.func,
         layers: PropTypes.array,
+        mapFocusChange: PropTypes.func,
         mapMargins: PropTypes.object,
+        onCameraChanged: PropTypes.func,
         onMapInitialized: PropTypes.func,
         options: PropTypes.object,
         searchProviders: PropTypes.object,
@@ -494,11 +496,11 @@ class Map3D extends React.Component {
         return (
             <div className="map3d-body">
                 <div className="map3d-inspector" />
-                <div className="map3d-map" onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
+                <div className="map3d-map" onBlur={() => this.props.mapFocusChange(false)} onFocus={() => this.props.mapFocusChange(true)} onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
                 <View3DSwitcher position={2} />
                 {this.state.sceneContext.scene ? (
                     <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
-                        <MapControls3D onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
+                        <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
                         <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} mapMargins={this.props.mapMargins} />
                         <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                         <LayerTree3D sceneContext={this.state.sceneContext} />

@@ -15,6 +15,7 @@ import {createSelector} from 'reselect';
 import * as displayExports from '../actions/display';
 import {setView3dMode, View3DMode} from '../actions/display';
 import * as layersExports from '../actions/layers';
+import {panTo} from '../actions/map';
 import * as mapExports from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import * as themeExports from '../actions/theme';
@@ -94,6 +95,7 @@ class View3D extends React.Component {
         layers: PropTypes.object,
         localConfig: PropTypes.object,
         map: PropTypes.object,
+        panTo: PropTypes.func,
         plugins: PropTypes.object,
         pluginsConfig: PropTypes.object,
         /** Minimum scale denominator when zooming to search result. */
@@ -130,6 +132,7 @@ class View3D extends React.Component {
         super(props);
         this.map3dComponent = null;
         this.map3dComponentRef = null;
+        this.map3dFocused = false;
         // Subset of 2d reducers
         const {
             task,
@@ -216,7 +219,7 @@ class View3D extends React.Component {
             this.props.setView3dMode(View3D.DISABLED);
         }
         // Lock views
-        if (this.state.viewsLocked && this.props.map.bbox !== prevProps.map.bbox) {
+        if (this.state.viewsLocked && this.props.map.bbox !== prevProps.map.bbox && !this.map3dFocused) {
             this.sync2DExtent();
         }
     }
@@ -258,6 +261,7 @@ class View3D extends React.Component {
                     maximizeable={false}
                     onClose={this.onClose}
                     onExternalWindowResized={this.redrawScene}
+                    onFocusChanged={this.windowFocusChanged}
                     onGeometryChanged={this.onGeometryChanged}
                     splitScreenWhenDocked
                     splitTopAndBottomBar
@@ -268,6 +272,8 @@ class View3D extends React.Component {
                             <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig}>
                                 <Map3D
                                     innerRef={this.setRef}
+                                    mapFocusChange={focus => { this.map3dFocused = focus; }}
+                                    onCameraChanged={this.onCameraChanged}
                                     onMapInitialized={this.setupMap}
                                     options={options}
                                     searchProviders={this.props.searchProviders}
@@ -295,6 +301,11 @@ class View3D extends React.Component {
             this.props.setView3dMode(View3DMode.FULLSCREEN);
         }
         this.setState({windowDetached: geometry.detached});
+    };
+    onCameraChanged = (center) => {
+        if (this.state.viewsLocked && this.map3dFocused) {
+            this.props.panTo(center, this.props.theme.mapCrs);
+        }
     };
     setRef = (ref) => {
         this.map3dComponentRef = ref;
@@ -354,6 +365,7 @@ export default connect(
         startupState: state.localConfig.startupState,
         searchProviders
     })), {
+        panTo: panTo,
         setCurrentTask: setCurrentTask,
         setView3dMode: setView3dMode
     }
