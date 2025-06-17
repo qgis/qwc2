@@ -368,12 +368,7 @@ class RedliningSupport extends React.Component {
                 } else {
                     currentEditInteraction = this.setupModifyInteraction(selectInteraction.getFeatures().getArray());
                 }
-            }/* else { // FIXME NECESSARY?
-                this.props.changeRedliningState({
-                    geomType: this.props.redlining.action === 'PickDraw' ? this.props.redlining.geomType : null,
-                    selectedFeature: null
-                });
-            }*/
+            }
         }, this);
         if (this.props.redlining.action === 'PickDraw') {
             this.props.map.on('click', this.maybeEnterTemporaryDrawMode);
