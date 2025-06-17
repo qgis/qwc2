@@ -293,7 +293,7 @@ class Redlining extends React.Component {
             <div className="redlining-controlsbar">
                 <div className="redlining-control">
                     <Icon className="redlining-control-icon" icon="pen" size="large" />
-                    {this.props.redlining.geomType === 'Text' || this.props.redlining.selectedFeature?.shape === 'Text' ? (
+                    {this.props.redlining.geomType === 'Text' ? (
                         <ColorButton color={this.props.redlining.style.textOutlineColor} defaultColors={this.props.predefinedBorderColors} onColorChanged={(color) => this.updateRedliningStyle({textOutlineColor: color})} />
                     ) : (
                         <ColorButton color={this.props.redlining.style.borderColor} defaultColors={this.props.predefinedBorderColors} onColorChanged={(color) => this.updateRedliningStyle({borderColor: color})} />
@@ -302,7 +302,7 @@ class Redlining extends React.Component {
                 {this.props.redlining.geomType === 'LineString' ? null : (
                     <div className="redlining-control">
                         <Icon className="redlining-control-icon" icon="fill" size="large" />
-                        {this.props.redlining.geomType === 'Text' || this.props.redlining.selectedFeature?.shape === 'Text' ? (
+                        {this.props.redlining.geomType === 'Text' ? (
                             <ColorButton color={this.props.redlining.style.textFillColor} defaultColors={this.props.predefinedFillColors} onColorChanged={(color) => this.updateRedliningStyle({textFillColor: color})} />
                         ) : (
                             <ColorButton color={this.props.redlining.style.fillColor} defaultColors={this.props.predefinedFillColors} onColorChanged={(color) => this.updateRedliningStyle({fillColor: color})} />

@@ -100,7 +100,7 @@ class RedliningSupport extends React.Component {
         const recreateInteraction = (
             this.props.redlining.action !== prevProps.redlining.action ||
             this.props.redlining.layer !== prevProps.redlining.layer ||
-            this.props.redlining.geomType !== prevProps.redlining.geomType ||
+            (['Draw', 'PickDraw'].includes(this.props.redlining.action) && this.props.redlining.geomType !== prevProps.redlining.geomType) ||
             this.props.redlining.freehand !== prevProps.redlining.freehand ||
             this.props.redlining.drawMultiple !== prevProps.redlining.drawMultiple
         );
@@ -152,7 +152,7 @@ class RedliningSupport extends React.Component {
             } else {
                 this.currentFeature.getGeometry().setCoordinates(feature.geometry.coordinates);
             }
-            this.props.changeRedliningState({selectedFeature: feature});
+            this.props.changeRedliningState({selectedFeature: feature, geomType: feature.shape});
         }
     };
     styleOptions = (styleProps, isText) => {
@@ -212,10 +212,12 @@ class RedliningSupport extends React.Component {
             this.currentFeature.setGeometry(new ol.geom.Circle(circleParams.center, circleParams.radius));
         }
         const measurements = this.currentFeature.get('measurements');
+        const featureObj = this.currentFeatureObject();
         const newRedliningState = {
             style: this.styleProps(this.currentFeature),
             measurements: !!this.currentFeature.get('measurements'),
-            selectedFeature: this.currentFeatureObject()
+            selectedFeature: featureObj,
+            geomType: featureObj?.shape ?? this.props.redlining.geomType
         };
         if (measurements) {
             newRedliningState.lenUnit = measurements.lenUnit;
@@ -465,9 +467,7 @@ class RedliningSupport extends React.Component {
                 return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
             }
         });
-        modifyInteraction.on('modifyend', () => {
-            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
-        });
+        modifyInteraction.on('modifyend', this.updateSelectedFeature);
         this.props.map.addInteraction(modifyInteraction);
         this.interactions.push(modifyInteraction);
         return modifyInteraction;
@@ -484,19 +484,17 @@ class RedliningSupport extends React.Component {
                 this.currentFeature.set('rotation', -e.angle);
             }
         });
-        transformInteraction.on('rotateend', (e) => {
-            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
-        });
-        transformInteraction.on('translateend', () => {
-            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
-        });
-        transformInteraction.on('scaleend', () => {
-            this.props.changeRedliningState({selectedFeature: this.currentFeatureObject()});
-        });
+        transformInteraction.on('rotateend', this.updateSelectedFeature);
+        transformInteraction.on('translateend', this.updateSelectedFeature);
+        transformInteraction.on('scaleend', this.updateSelectedFeature);
         this.props.map.addInteraction(transformInteraction);
         this.interactions.push(transformInteraction);
         transformInteraction.setSelection(new ol.Collection(selectedFeatures));
         return transformInteraction;
+    };
+    updateSelectedFeature = () => {
+        const featureObj = this.currentFeatureObject();
+        this.props.changeRedliningState({selectedFeature: featureObj, geomType: featureObj?.shape ?? this.props.redlining.geomType});
     };
     triggerDelete = () => {
         this.props.changeRedliningState({action: "Delete"});
