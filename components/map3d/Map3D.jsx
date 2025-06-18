@@ -49,6 +49,7 @@ import OverviewMap3D from './OverviewMap3D';
 import TopBar3D from './TopBar3D';
 import View3DSwitcher from './View3DSwitcher';
 import LayerRegistry from './layers/index';
+import {importGltf} from './utils/MiscUtils3D';
 import Tiles3DStyle from './utils/Tiles3DStyle';
 
 import './style/Map3D.css';
@@ -581,9 +582,9 @@ class Map3D extends React.Component {
         // Collect color layers
         const colorLayers = this.collectColorLayers([]);
 
-        // Add 3d tiles
         const sceneObjects = {};
         this.objectMap = {};
+        // Add 3d tiles
         (this.props.theme.map3d?.tiles3d || []).forEach(entry => {
             const tiles = new Tiles3D({
                 url: MiscUtils.resolveAssetsPath(entry.url),
@@ -613,6 +614,11 @@ class Map3D extends React.Component {
                 alphaAttr: entry.alphaAttr,
                 labelAttr: entry.labelAttr
             };
+        });
+
+        // Add other objects
+        (this.props.theme.map3d?.objects3d || []).forEach(entry => {
+            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.name, this.state.sceneContext);
         });
 
         this.setState(state => ({

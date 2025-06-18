@@ -54,6 +54,13 @@ import {UrlParams} from '../utils/PermaLinkUtils';
  *              "alphaAttr": "<tile_batch_attr>",
  *              "labelAttr": "<tile_batch_attr>",
  *          }
+ *     ],
+ *     "objects3d": [
+ *         {
+ *              "name": "<name>",
+ *              "url": "<url_to_file.gltf>",
+ *              "title": "<title>"
+ *         }
  *     ]
  * }
  * ```
@@ -61,12 +68,14 @@ import {UrlParams} from '../utils/PermaLinkUtils';
  *
  * - The DTM should be a cloud optimized GeoTIFF.
  * - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`.
- * - `idAttr`: Batch table attribute which stores the batch object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
- * - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.
- * - `style`: optional, tileset style enabled by default.
- * - `colorAttr`: optional, batch table attribute which stores the batch color, as a 0xRRGGBB integer.
- * - `alphaAttr`: optional, batch table attribute which stores the batch alpha (transparency), as a [0, 255] integer.
- * - `labelAttr`: optional, batch table attribute which stores the batch label, displayed above the geometry.
+ * - The `tiles3d` entry contains an optional list of 3d tiles to add to the scene, with:
+ *   - `idAttr`: Batch table attribute which stores the batch object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
+ *   - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.
+ *   - `style`: optional, tileset style enabled by default.
+ *   - `colorAttr`: optional, batch table attribute which stores the batch color, as a 0xRRGGBB integer.
+ *   - `alphaAttr`: optional, batch table attribute which stores the batch alpha (transparency), as a [0, 255] integer.
+ *   - `labelAttr`: optional, batch table attribute which stores the batch label, displayed above the geometry.
+ * - The `objects3d` entry contains an optional list of GLTF objects to add to the scene.
  *
  * The tileset style JSON is shaped as follows:
  * ```
