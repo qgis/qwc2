@@ -9,19 +9,16 @@
 import React from 'react';
 
 import classNames from 'classnames';
-import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {Box3, Group} from 'three';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
-import {v4 as uuidv4} from 'uuid';
+import {Box3} from 'three';
 
-import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
 import FileSelector from '../widgets/FileSelector';
 import NumberInput from '../widgets/NumberInput';
 import Spinner from '../widgets/Spinner';
+import {importGltf} from './utils/MiscUtils3D';
 
 import './style/LayerTree3D.css';
 
@@ -189,34 +186,7 @@ export default class LayerTree3D extends React.Component {
         const file = this.state.selectedfile;
         const reader = new FileReader();
         reader.onload = (ev) => {
-            const loader = new GLTFLoader();
-            loader.parse(ev.target.result, ConfigUtils.getAssetsPath(), (gltf) => {
-                // GLTF is Y-UP, we need Z-UP
-                gltf.scene.rotation.x = Math.PI / 2;
-                gltf.scene.updateMatrixWorld();
-
-                const objectId = uuidv4();
-                const options = {
-                    drawGroup: true,
-                    layertree: true,
-                    title: file.name
-                };
-                const group = new Group();
-                group.add(gltf.scene);
-                gltf.scene.traverse(c => {
-                    if (c.geometry) {
-                        c.castShadow = true;
-                        c.receiveShadow = true;
-                    }
-                    if (c.userData.label) {
-                        this.props.sceneContext.updateObjectLabel(c);
-                    }
-                });
-                this.props.sceneContext.addSceneObject(objectId, group, options);
-            }, (err) => {
-                /* eslint-disable-next-line */
-                console.warn(err);
-            });
+            importGltf(ev.target.result, file.name, this.props.sceneContext);
             this.setState({selectedfile: null, importing: false});
         };
         reader.readAsArrayBuffer(this.state.selectedfile);

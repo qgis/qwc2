@@ -25,7 +25,6 @@ import PropTypes from 'prop-types';
 import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh} from 'three';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
-import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
@@ -123,7 +122,6 @@ class Map3D extends React.Component {
             getSceneObject: (objectId) => {},
             removeSceneObject: (objectId) => {},
             updateSceneObject: (objectId, options) => {},
-            updateObjectLabel: (object) => {},
 
             getMap: () => {},
 
@@ -151,7 +149,6 @@ class Map3D extends React.Component {
         this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
-        this.state.sceneContext.updateObjectLabel = this.updateObjectLabel;
         this.state.sceneContext.getMap = this.getMap;
         this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
         this.state.sceneContext.getTerrainHeightFromMap = this.getTerrainHeightFromMap;
@@ -371,29 +368,6 @@ class Map3D extends React.Component {
                 this.instance.notifyChange(object);
             }
         });
-    };
-    updateObjectLabel = (sceneObject) => {
-        let labelObject = sceneObject.children.find(child => child.isCSS2DObject);
-        if (sceneObject.userData.label) {
-            if (!labelObject) {
-                const labelEl = document.createElement("span");
-                labelEl.className = "map3d-object-label";
-                labelObject = new CSS2DObject(labelEl);
-                labelObject.updateMatrixWorld();
-                sceneObject.add(labelObject);
-                labelObject.userData.removeCallback = () => {
-                    // Explicitly remove label DOM element
-                    labelEl.parentNode.removeChild(labelEl);
-                };
-                sceneObject.addEventListener('removed', labelObject.userData.removeCallback);
-                sceneObject.updateMatrixWorld();
-            }
-            labelObject.element.textContent = sceneObject.userData.label;
-        } else if (labelObject) {
-            sceneObject.removeEventListener('removed', labelObject.userData.removeCallback);
-            sceneObject.remove(labelObject);
-        }
-        this.instance.notifyChange(sceneObject);
     };
     addLayer = (layerId, layer) => {
         layer.userData.layerId = layerId;

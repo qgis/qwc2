@@ -18,6 +18,7 @@ import Icon from '../../Icon';
 import ButtonBar from '../../widgets/ButtonBar';
 import ColorButton from '../../widgets/ColorButton';
 import TextInput from '../../widgets/TextInput';
+import {updateObjectLabel} from '../utils/MiscUtils3D';
 import NumericInput3D from './NumericInput3D';
 
 
@@ -387,7 +388,8 @@ export default class EditTool3D extends React.Component {
     setLabel = (text) => {
         this.setState({label: text});
         this.props.selectedObject.userData.label = text;
-        this.props.sceneContext.updateObjectLabel(this.props.selectedObject);
+        updateObjectLabel(this.props.selectedObject);
+        this.props.sceneContext.scene.notifyChange(this.props.selectedObject);
     };
     cloneSelectedObject = () => {
         if (this.props.selectedObject) {
