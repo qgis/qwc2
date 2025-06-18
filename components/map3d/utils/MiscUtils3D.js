@@ -35,7 +35,6 @@ export function updateObjectLabel(sceneObject) {
         sceneObject.removeEventListener('removed', labelObject.userData.removeCallback);
         sceneObject.remove(labelObject);
     }
-    this.instance.notifyChange(sceneObject);
 }
 
 export function importGltf(dataOrUrl, name, sceneContext) {
