@@ -31,7 +31,7 @@ function batchColor(batchId, batchAttr, config) {
 
 function batchLabel(batchId, batchAttr, config) {
     if ((config.tilesetStyle?.[batchId]?.label ?? null) !== null) {
-        return config.tilesetStyle[batchId].label;
+        return {text: config.tilesetStyle[batchId].label, offset: config.tilesetStyle[batchId].labelOffset ?? 80};
     } else if (config.labelAttr) {
         return batchAttr[config.labelAttr];
     } else {
@@ -84,7 +84,8 @@ const Tiles3DStyle = {
                         let entry = labels[batchIdx];
                         if (!entry) {
                             entry = labels[batchIdx] = {
-                                label: label,
+                                label: label.text,
+                                labelOffset: label.offset,
                                 pos: pos,
                                 ymax: pos[1],
                                 count: 1,
@@ -147,8 +148,8 @@ const Tiles3DStyle = {
                     entry.ymax,
                     entry.pos[2] / entry.count
                 ).applyMatrix4(entry.matrix);
-                tileLabels[batchId] = {pos, label: entry.label};
-                tileLabels[batchId].labelObject = createLabelObject(entry.label, pos, sceneContext, 0, 80 + (maxpos.y - pos.y));
+                tileLabels[batchId] = {pos, label: entry.label, labelOffset: entry.labelOffset};
+                tileLabels[batchId].labelObject = createLabelObject(entry.label, pos, sceneContext, 0, entry.labelOffset + (maxpos.y - pos.y));
                 labelObjects.add(tileLabels[batchId].labelObject);
             });
             group.userData.tileLabels = tileLabels;

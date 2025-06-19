@@ -954,10 +954,16 @@ The tileset style JSON is shaped as follows:
 {
     "<object_id>": {
         "label": "<label>",
+        "labelOffset": <offset>,
         "color": "<css RGB(A) color string>"
     }
 }
 ```
+Where:
+
+- `label` is an optional string with which to label the object.
+- `labelOffset` is an optional number which represents the vertical offset between the object top and the label. Defaults to 80.
+- `color` is an optional CSS color string which defines the object color.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|

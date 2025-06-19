@@ -279,9 +279,10 @@ class ExportObjects3D extends React.Component {
                         const batchAttrs = batchTableObject.batchTable.getDataFromId(batchId);
                         Object.assign(mesh.userData, batchAttrs);
                         // Add label
-                        const label = batchTableObject.userData.tileLabels?.[batchId];
-                        if (label) {
-                            mesh.userData.label = label;
+                        const labelEntry = batchTableObject.userData.tileLabels?.[batchId];
+                        if (labelEntry) {
+                            mesh.userData.label = labelEntry.label;
+                            mesh.userData.labelOffset = labelEntry.labelOffset;
                         }
 
                         exportGroup.add(mesh);
