@@ -22,6 +22,7 @@ div.map-buttons-container {
 
 div.map-buttons-spacer {
     display: inline-block;
-    width: 4em;
-    height: 4em;
+    width: 1em;
+    max-height: 4em;
+    flex: 1 1 auto;
 }
