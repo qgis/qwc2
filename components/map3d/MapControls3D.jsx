@@ -55,6 +55,7 @@ class MapControls3D extends React.Component {
 
         sceneElement.addEventListener('dblclick', this.switchToFirstPersonView);
         this.props.onControlsSet(this);
+        this.updateUrlParams();
     }
     componentWillUnmount() {
         this.animationInterrupted = true;
