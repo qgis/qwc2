@@ -71,7 +71,8 @@ export const UrlParams = {
         }
     },
     clear() {
-        this.updateParams({k: undefined, t: undefined, l: undefined, bl: undefined, bk: undefined, c: undefined, s: undefined, e: undefined, crs: undefined, st: undefined, sp: undefined, f: undefined, v3d: undefined}, true);
+        const clearKeys = ['k', 't', 'l', 'bl', 'bk', 'c', 's', 'e', 'crs', 'st', 'sp', 'f', 'v', 'v3d', 'bl3d'];
+        this.updateParams(clearKeys.reduce((res, key) => ({...res, [key]: undefined}), {}), true);
     },
     getFullUrl() {
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {

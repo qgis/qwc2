@@ -208,6 +208,7 @@ class Map3D extends React.Component {
                 ))
             }
         }));
+        UrlParams.updateParams({bl3d: visibility ? layer.name : ''});
     };
     collectColorLayers = (prevColorLayers) => {
         return this.props.layers.reduce((colorLayers, layer) => {
@@ -855,6 +856,14 @@ class Map3D extends React.Component {
             }
         });
         this.state.sceneContext.restoreView(data);
+        if (data.baselayer !== undefined) {
+            this.setState(state => ({
+                sceneContext: {
+                    ...state.sceneContext,
+                    baseLayers: state.sceneContext.baseLayers.map(l => ({...l, visibility: l.name === data.baselayer}))
+                }
+            }));
+        }
         this.state.sceneContext.scene.notifyChange();
     };
 }

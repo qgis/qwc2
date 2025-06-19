@@ -351,6 +351,9 @@ class View3D extends React.Component {
                     state3d.personHeight = values[6] || 0;
                 }
             }
+            if (this.props.startupParams.bl3d !== undefined) {
+                state3d.baselayer = this.props.startupParams.bl3d;
+            }
             this.map3dComponentRef.restore3dState(state3d);
             if (!this.props.startupParams.v3d) {
                 this.sync2DExtent();
