@@ -225,7 +225,7 @@ export default class EditTool3D extends React.Component {
             this.state.selectCount === 1 ? (
                 <div className="redlining-controlsbar" key="Label">
                     <div className="redlining-control redlining-control-fill controlgroup">
-                        <span>{LocaleUtils.tr("draw3d.label")}: </span>
+                        <span>{LocaleUtils.tr("draw3d.label")}:&nbsp;</span>
                         <TextInput className="controlgroup-fillitem" onChange={this.setLabel} value={this.state.label} />
                     </div>
                 </div>
