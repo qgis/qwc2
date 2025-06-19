@@ -88,7 +88,7 @@ export function importGltf(dataOrUrl, name, sceneContext) {
         sceneContext.addSceneObject(objectId, group, options);
     };
     if (typeof dataOrUrl === 'string') {
-        loader.load(dataOrUrl, processor, (err) => {
+        loader.load(dataOrUrl, processor, () => {}, (err) => {
             /* eslint-disable-next-line */
             console.warn(err);
         });
