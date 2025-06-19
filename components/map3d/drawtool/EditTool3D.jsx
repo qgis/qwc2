@@ -345,7 +345,7 @@ export default class EditTool3D extends React.Component {
     };
     applyCsgOperation = (operation) => {
         let result = null;
-        const children = [...this.props.selectedObject.children];
+        const children = [...this.props.selectedObject.children].reverse();
         if (operation === "union") {
             result = CSG.union(...children);
         } else if (operation === "subtract") {
