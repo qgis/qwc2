@@ -595,10 +595,18 @@ class Map3D extends React.Component {
                 url: MiscUtils.resolveAssetsPath(entry.url),
                 errorTarget: 32
             });
+            // Apply style when loading tile
             tiles.tiles.addEventListener('load-model', ({scene}) => {
                 scene.userData.tilesetName = entry.name;
                 scene.userData.batchIdAttr = entry.idAttr ?? "id";
-                Tiles3DStyle.applyTileStyle(scene, this.state.sceneContext.sceneObjects[entry.name]);
+                Tiles3DStyle.applyTileStyle(scene, this.state.sceneContext.sceneObjects[entry.name], this.state.sceneContext);
+            });
+            // Show/hide labels when tile visibility changes
+            tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
+                Object.values(scene.userData.tileLabels || {}).forEach(label => {
+                    label.labelObject.visible = visible;
+                    label.labelObject.element.style.display = visible ? 'initial' : 'none';
+                });
             });
             tiles.castShadow = true;
             tiles.receiveShadow = true;
