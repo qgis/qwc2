@@ -33,7 +33,6 @@ class ExportObjects3D extends React.Component {
     };
     state = {
         selectedFormat: "model/gltf+json",
-        minimized: false,
         exporting: false,
         exportPolygon: null
     };
@@ -65,6 +64,7 @@ class ExportObjects3D extends React.Component {
         this.measureTool = null;
         this.props.sceneContext.map.removeLayer(this.drawLayer, {dispose: true});
         this.drawLayer = null;
+        this.setState({exporting: false, exportPolygon: null});
     };
     formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value});
