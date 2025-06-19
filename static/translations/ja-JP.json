@@ -341,6 +341,7 @@
     "mapexport": {
       "configuration": "構成",
       "format": "形式",
+      "projection": "",
       "resolution": "解像度",
       "scale": "縮尺",
       "size": "サイズ",

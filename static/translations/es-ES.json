@@ -341,6 +341,7 @@
     "mapexport": {
       "configuration": "",
       "format": "Formato:",
+      "projection": "",
       "resolution": "Resolución:",
       "scale": "",
       "size": "",

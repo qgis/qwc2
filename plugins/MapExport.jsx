@@ -59,14 +59,16 @@ class MapExport extends React.Component {
          *  `labelMsgId` is a translation string message id for the combo label. If not defined, `name` will be displayed.
          *  `extraQuery` will be appended to the query string (replacing any existing parameters).
          *  `formatOptions` will be passed as FORMAT_OPTIONS.
-         *  `baseLayer` will be appended to the LAYERS instead of the background layer. */
+         *  `baseLayer` will be appended to the LAYERS instead of the background layer.
+         *  `projections` is a list of export projections. If empty, the map projection is automatically used. */
         formatConfiguration: PropTypes.shape({
             format: PropTypes.arrayOf(PropTypes.shape({
                 name: PropTypes.string,
                 labelMsgId: PropTypes.string,
                 extraQuery: PropTypes.string,
                 formatOptions: PropTypes.string,
-                baseLayer: PropTypes.string
+                baseLayer: PropTypes.string,
+                projections: PropTypes.array
             }))
         }),
         layers: PropTypes.array,
@@ -101,6 +103,7 @@ class MapExport extends React.Component {
         availableFormats: [],
         selectedFormat: null,
         selectedFormatConfiguration: '',
+        exportProjection: null,
         scale: null,
         pageSize: null,
         dpi: 96
@@ -112,11 +115,28 @@ class MapExport extends React.Component {
     }
     changeFormat = (ev) => {
         const selectedFormat = ev.target.value;
-        const selectedFormatConfiguration = ((this.props.formatConfiguration?.[selectedFormat] || [])[0] || {}).name;
+        const formatConfigurations = this.props.formatConfiguration?.[selectedFormat.split(";")[0]] || [];
         this.setState({
             selectedFormat: selectedFormat,
-            selectedFormatConfiguration: selectedFormatConfiguration
+            selectedFormatConfiguration: formatConfigurations[0]?.name,
+            exportProjection: this.getExportProjection(formatConfigurations[0]?.projections)
         });
+    };
+    setSelectedFormatConfiguration = (ev) => {
+        const selectedFormatConfiguration = ev.target.value;
+        const formatConfigurations = this.props.formatConfiguration?.[this.state.selectedFormat.split(";")[0]] || [];
+        const formatConfiguration = formatConfigurations.find(entry => entry.name === selectedFormatConfiguration);
+        this.setState({
+            selectedFormatConfiguration: selectedFormatConfiguration,
+            exportProjection: this.getExportProjection(formatConfiguration.projections)
+        });
+    };
+    getExportProjection = (projections) => {
+        if (isEmpty(projections)) {
+            return this.props.map.projection;
+        } else {
+            return projections.indexOf(this.props.map.projection) !== -1 ? this.props.map.projection : projections[0];
+        }
     };
     changeScale = (value) => {
         this.setState({scale: Math.max(1, parseInt(value, 10) || 0)});
@@ -139,7 +159,8 @@ class MapExport extends React.Component {
             "application/dxf": "DXF",
             "application/pdf": "GeoPDF"
         };
-        const formatConfiguration = this.props.formatConfiguration?.[this.state.selectedFormat.split(";")[0]] || [];
+        const formatConfigurations = this.props.formatConfiguration?.[this.state.selectedFormat.split(";")[0]] || [];
+        const formatConfiguration = formatConfigurations.find(entry => entry.name === this.state.selectedFormatConfiguration);
 
         let scaleChooser = null;
         if (!isEmpty(this.props.allowedScales)) {
@@ -168,12 +189,12 @@ class MapExport extends React.Component {
                                     </select>
                                 </td>
                             </tr>
-                            {formatConfiguration.length > 1 ? (
+                            {formatConfigurations.length > 1 ? (
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.configuration")}</td>
                                     <td>
-                                        <select onChange={(ev) => this.setState({selectedFormatConfiguration: ev.target.value})} value={this.state.selectedFormatConfiguration}>
-                                            {formatConfiguration.map(config => {
+                                        <select onChange={this.setSelectedFormatConfiguration} value={this.state.selectedFormatConfiguration}>
+                                            {formatConfigurations.map(config => {
                                                 return (<option key={config.name} value={config.name}>{config.labelMsgId ? LocaleUtils.tr(config.labelMsgId) : config.name}</option>);
                                             })}
                                         </select>
@@ -209,6 +230,18 @@ class MapExport extends React.Component {
                                             {this.props.dpis.map(dpi => {
                                                 return (<option key={dpi + "dpi"} value={dpi}>{dpi + " dpi"}</option>);
                                             })}
+                                        </select>
+                                    </td>
+                                </tr>
+                            ) : null}
+                            {(formatConfiguration.projections || []).length > 1 ? (
+                                <tr>
+                                    <td>{LocaleUtils.tr("mapexport.projection")}</td>
+                                    <td>
+                                        <select onChange={ev => this.setState({exportProjection: ev.target.value})} value={this.state.exportProjection}>
+                                            {formatConfiguration.projections.map(proj => (
+                                                <option key={proj} value={proj}>{proj}</option>
+                                            ))}
                                         </select>
                                     </td>
                                 </tr>
@@ -275,12 +308,13 @@ class MapExport extends React.Component {
             availableFormats = availableFormats.filter(fmt => this.props.allowedFormats.includes(fmt));
         }
         const selectedFormat = this.props.defaultFormat && availableFormats.includes(this.props.defaultFormat) ? this.props.defaultFormat : availableFormats[0];
-        const selectedFormatConfiguration = ((this.props.formatConfiguration?.[selectedFormat] || [])[0] || {}).name;
+        const formatConfigurations = this.props.formatConfiguration?.[selectedFormat.split(";")[0]] || [];
         this.setState({
             scale: scale,
             availableFormats: availableFormats,
             selectedFormat: selectedFormat,
-            selectedFormatConfiguration: selectedFormatConfiguration
+            selectedFormatConfiguration: formatConfigurations[0]?.name,
+            exportProjection: this.getExportProjection(formatConfigurations[0]?.projections)
         });
         this.props.setSnappingConfig(false, false);
     };
@@ -307,8 +341,8 @@ class MapExport extends React.Component {
         const formatConfiguration = (this.props.formatConfiguration?.[format] || []).find(entry => entry.name === this.state.selectedFormatConfiguration);
 
         const version = this.props.theme.version;
-        const crs = this.props.map.projection;
-        const extent = this.state.extents.at(0) ?? [0, 0, 0, 0];
+        const crs = this.state.exportProjection;
+        const extent = CoordinatesUtils.reprojectBbox(this.state.extents.at(0) ?? [0, 0, 0, 0], this.props.map.projection, crs);
         const formattedExtent = (CoordinatesUtils.getAxisOrder(crs).substring(0, 2) === 'ne' && version === '1.3.0') ?
             extent[1] + "," + extent[0] + "," + extent[3] + "," + extent[2] :
             extent.join(',');
@@ -338,7 +372,7 @@ class MapExport extends React.Component {
         params.DPI = this.state.dpi;
         params.TRANSPARENT = true;
         params.TILED = false;
-        params.CRS = this.props.map.projection;
+        params.CRS = crs;
         params.BBOX = formattedExtent;
         params.WIDTH = width;
         params.HEIGHT = height;
@@ -381,11 +415,11 @@ class MapExport extends React.Component {
     genericExport = (params, fileName, formatConfiguration) => {
         // Layer params
         const exportExternalLayers = this.props.exportExternalLayers && ConfigUtils.getConfigProp("qgisServerVersion", null, 3) >= 3;
-        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.props.map.projection, exportExternalLayers, !!formatConfiguration?.baseLayer);
+        const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, this.state.scale, this.state.exportProjection, exportExternalLayers, !!formatConfiguration?.baseLayer);
         Object.assign(params, exportParams);
 
         // Highlight params
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.props.map.projection, this.state.scale, this.state.dpi);
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.state.exportProjection, this.state.scale, this.state.dpi);
         params.HIGHLIGHT_GEOM = highlightParams.geoms.join(";");
         params.HIGHLIGHT_SYMBOL = highlightParams.styles.join(";");
         params.HIGHLIGHT_LABELSTRING = highlightParams.labels.join(";");

@@ -306,6 +306,7 @@
     "map3d.title",
     "mapexport.configuration",
     "mapexport.format",
+    "mapexport.projection",
     "mapexport.resolution",
     "mapexport.scale",
     "mapexport.size",

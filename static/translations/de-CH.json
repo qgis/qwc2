@@ -341,6 +341,7 @@
     "mapexport": {
       "configuration": "Konfiguration",
       "format": "Format",
+      "projection": "Projektion",
       "resolution": "Auflösung",
       "scale": "Massstab",
       "size": "Dimensionen",

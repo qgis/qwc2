@@ -341,6 +341,7 @@
     "mapexport": {
       "configuration": "",
       "format": "Formátum:",
+      "projection": "",
       "resolution": "Felbontás:",
       "scale": "",
       "size": "",
