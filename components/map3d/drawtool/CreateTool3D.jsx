@@ -10,7 +10,7 @@ import React from 'react';
 
 import {default as GiroShape} from '@giro3d/giro3d/entities/Shape';
 import PropTypes from 'prop-types';
-import {BoxGeometry, Color, ConeGeometry, CylinderGeometry, DoubleSide, ExtrudeGeometry, Mesh, MeshStandardMaterial, Shape, SphereGeometry} from 'three';
+import {BoxGeometry, Color, ConeGeometry, CylinderGeometry, DoubleSide, ExtrudeGeometry, Mesh, MeshStandardMaterial, Shape, SphereGeometry, Vector3} from 'three';
 
 import LocaleUtils from '../../../utils/LocaleUtils';
 import Icon from '../../Icon';
@@ -119,8 +119,8 @@ export default class CreateTool3D extends React.Component {
             mesh.castShadow = true;
             mesh.receiveShadow = true;
             drawGroup.add(mesh);
-            mesh.position.copy(this.drawCursor.points[0]);
-            mesh.position.z += 0.5 * s;
+            const pos = this.drawCursor.points[0];
+            mesh.position.copy(new Vector3(Math.round(pos.x), Math.round(pos.y), Math.floor(pos.z + 0.5 * s)));
             mesh.updateMatrixWorld();
             this.props.sceneContext.scene.notifyChange();
             this.props.objectCreated(mesh);

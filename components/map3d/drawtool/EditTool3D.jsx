@@ -107,6 +107,9 @@ export default class EditTool3D extends React.Component {
         this.transformControls = new TransformControls( camera, renderer.domElement );
         this.props.sceneContext.scene.add(this.transformControls.getHelper());
         this.transformControls.setMode(this.state.mode);
+        this.transformControls.setScaleSnap(1);
+        this.transformControls.setTranslationSnap(1);
+        this.transformControls.setRotationSnap(5 / 180 * Math.PI);
         this.transformControls.addEventListener('change', this.toolChanged);
         this.transformControls.addEventListener('mouseUp', this.toolChanged);
         this.transformControls.addEventListener('mouseUp', this.clearCsgBackup);
