@@ -19,7 +19,6 @@ import ButtonBar from '../widgets/ButtonBar';
 import CreateTool3D from './drawtool/CreateTool3D';
 import EditTool3D from './drawtool/EditTool3D';
 
-import './style/Draw3D.css';
 
 export default class Draw3D extends React.Component {
     static propTypes = {

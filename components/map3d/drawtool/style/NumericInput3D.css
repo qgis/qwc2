@@ -2,3 +2,7 @@ div.draw3d-numeric-input-body > table {
     width: 100%;
     font-size: 90%;
 }
+
+td.draw3d-numeric-input-comment {
+    line-height: 2em;
+}
