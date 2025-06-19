@@ -9,18 +9,9 @@
 import isEmpty from "lodash.isempty";
 import parseCssColor from 'parse-css-color';
 import {Float32BufferAttribute, Group, Vector3} from "three";
-import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 
+import {createLabelObject} from "./MiscUtils3D";
 
-function createLabelObject(entry) {
-    const labelEl = document.createElement("span");
-    labelEl.innerText = entry.label;
-    labelEl.className = "map3d-object-label";
-    const label = new CSS2DObject(labelEl);
-    label.position.copy(entry.pos);
-    label.updateMatrixWorld();
-    return label;
-}
 
 function batchColor(batchId, batchAttr, config) {
     if ((config.tilesetStyle?.[batchId]?.color ?? null) !== null) {
@@ -49,7 +40,7 @@ function batchLabel(batchId, batchAttr, config) {
 }
 
 const Tiles3DStyle = {
-    applyTileStyle(group, config) {
+    applyTileStyle(group, config, sceneContext) {
         const batchColorCache = {};
         const batchLabelCache = {};
         const labels = {};
@@ -95,15 +86,15 @@ const Tiles3DStyle = {
                             entry = labels[batchIdx] = {
                                 label: label,
                                 pos: pos,
+                                ymax: pos[1],
                                 count: 1,
                                 matrix: c.matrixWorld
                             };
                         } else {
                             entry.pos[0] += pos[0];
                             entry.pos[1] += pos[1];
-                            entry.pos[2] = Math.max(
-                                entry.pos[2], pos[2]
-                            );
+                            entry.pos[2] += pos[2];
+                            entry.ymax = Math.max(entry.ymax, pos[1]);
                             ++entry.count;
                         }
                     }
@@ -149,10 +140,15 @@ const Tiles3DStyle = {
                 const pos = new Vector3(
                     entry.pos[0] / entry.count,
                     entry.pos[1] / entry.count,
-                    entry.pos[2] + 10
+                    entry.pos[2] / entry.count
+                ).applyMatrix4(entry.matrix);
+                const maxpos = new Vector3(
+                    entry.pos[0] / entry.count,
+                    entry.ymax,
+                    entry.pos[2] / entry.count
                 ).applyMatrix4(entry.matrix);
                 tileLabels[batchId] = {pos, label: entry.label};
-                tileLabels[batchId].labelObject = createLabelObject(tileLabels[batchId]);
+                tileLabels[batchId].labelObject = createLabelObject(entry.label, pos, sceneContext, 0, 80 + (maxpos.y - pos.y));
                 labelObjects.add(tileLabels[batchId].labelObject);
             });
             group.userData.tileLabels = tileLabels;

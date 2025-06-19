@@ -212,6 +212,10 @@ class ExportObjects3D extends React.Component {
                     return;
                 }
                 const batchidAttr = c.geometry.getAttribute( '_batchid' );
+                if (!batchidAttr) {
+                    // Not a tile
+                    return;
+                }
                 const posAttr = c.geometry.getAttribute('position');
                 const norAttr = c.geometry.getAttribute('normal');
                 const colAttr = c.geometry.getAttribute('color');

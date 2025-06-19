@@ -388,7 +388,7 @@ export default class EditTool3D extends React.Component {
     setLabel = (text) => {
         this.setState({label: text});
         this.props.selectedObject.userData.label = text;
-        updateObjectLabel(this.props.selectedObject);
+        updateObjectLabel(this.props.selectedObject, this.props.sceneContext);
         this.props.sceneContext.scene.notifyChange(this.props.selectedObject);
     };
     cloneSelectedObject = () => {
