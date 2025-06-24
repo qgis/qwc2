@@ -287,7 +287,7 @@ const IdentifyUtils = {
                 layername = layerEl.attributes.name.value;
                 layertitle = LayerUtils.searchSubLayer(layer, 'name', layername)?.title ?? layername;
             } else {
-                layertitle = layerEl.attributes.layername.value;
+                layertitle = layerEl.attributes.name.value;
                 layername = LayerUtils.searchSubLayer(layer, 'title', layertitle)?.name ?? layertitle;
             }
 
