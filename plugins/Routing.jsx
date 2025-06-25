@@ -89,11 +89,11 @@ class Routing extends React.Component {
         units: {
             time: {
                 min: 1,
-                s: 60,
+                s: 60
             },
             distance: {
                 km: 1,
-                m: 1000,
+                m: 1000
             }
         },
         zoomAuto: true
