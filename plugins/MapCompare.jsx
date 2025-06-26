@@ -7,12 +7,14 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
 import {setSwipe} from '../actions/layers';
 import Icon from '../components/Icon';
+import {MapContainerPortalContext} from '../components/PluginsContainer';
 
 import './style/MapCompare.css';
 
@@ -22,11 +24,8 @@ import './style/MapCompare.css';
  * Activated through a checkbox in the LayerTree.
  */
 class MapComparePlugin extends React.Component {
-    constructor(props) {
-        super(props);
-        this.clickOffset = 0;
-        this.el = null;
-    }
+    static contextType = MapContainerPortalContext;
+
     static propTypes = {
         setSwipe: PropTypes.func,
         swipe: PropTypes.number
@@ -35,49 +34,33 @@ class MapComparePlugin extends React.Component {
         if (this.props.swipe === null) {
             return null;
         }
-        const style = {left: this.props.swipe + "%"};
-        return (
-            <div id="MapCompare" onMouseDown={this.mouseDragStart} onTouchMove={this.touchDrag} onTouchStart={this.touchDragStart} ref={el => { this.el = el; }} style={style}>
+        const style = {
+            left: this.props.swipe + "%"
+        };
+        return ReactDOM.createPortal((
+            <div id="MapCompare" onPointerDown={this.startDragHandle} style={style} >
                 <span className="map-compare-handle">
                     <Icon className="map-compare-handle-icon" icon="triangle-left" />
                     <Icon className="map-compare-handle-icon" icon="triangle-right" />
                 </span>
             </div>
-        );
+        ), this.context);
     }
-    mouseDragStart = (ev) => {
-        if (this.el) {
-            const rect = this.el.getBoundingClientRect();
-            this.clickOffset = ev.clientX - rect.left;
-            document.addEventListener("mousemove", this.mouseDrag);
-            document.addEventListener("mouseup", this.mouseDragEnd);
-        }
-        ev.preventDefault();
-        ev.stopPropagation();
-    };
-    mouseDrag = (ev) => {
-        let perc = (ev.clientX - this.clickOffset) / document.body.clientWidth * 100;
-        perc = Math.min(100, Math.max(0, perc));
-        this.props.setSwipe(perc);
-        ev.preventDefault();
-        ev.stopPropagation();
-    };
-    mouseDragEnd = (ev) => {
-        document.removeEventListener("mousemove", this.mouseDrag);
-        document.removeEventListener("mouseup", this.mouseDragEnd);
-        ev.preventDefault();
-        ev.stopPropagation();
-    };
-    touchDragStart = (ev) => {
-        if (this.el) {
-            const rect = this.el.getBoundingClientRect();
-            this.clickOffset = ev.touches[0].clientX - rect.left;
-        }
-    };
-    touchDrag = (ev) => {
-        let perc = (ev.touches[0].clientX - this.clickOffset) / document.body.clientWidth * 100;
-        perc = Math.min(100, Math.max(0, perc));
-        this.props.setSwipe(perc);
+    startDragHandle = (ev) => {
+        const rect = ev.currentTarget.getBoundingClientRect();
+        const parentRect = ev.currentTarget.parentElement.getBoundingClientRect();
+        const clickOffset = ev.clientX - rect.left;
+        const moveHandle = (ev2) => {
+            let perc = (ev2.clientX - clickOffset - parentRect.left) / parentRect.width * 100;
+            perc = Math.min(100, Math.max(0, perc));
+            this.props.setSwipe(perc);
+        };
+        ev.view.document.body.style.userSelect = 'none';
+        ev.view.addEventListener("pointermove", moveHandle);
+        ev.view.addEventListener("pointerup", () => {
+            ev.view.document.body.style.userSelect = '';
+            ev.view.removeEventListener("pointermove", moveHandle);
+        }, {once: true});
     };
 }
 

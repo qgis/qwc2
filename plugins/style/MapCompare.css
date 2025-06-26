@@ -1,19 +1,20 @@
 #MapCompare {
-    position: fixed;
+    touch-action: none;
+    position: absolute;
     background-color: var(--map-button-bg-color);
     width: 0.25em;
-    height: 100%;
     margin-left: -0.125em;
     top: 0;
+    bottom: 0;
     cursor: ew-resize;
+    display: flex;
+    align-items: center;
 }
 
 #MapCompare span.map-compare-handle {
-    position: absolute;
-    top: calc(50% - 3em);
     height: 3em;
     width: 3em;
-    left: -1.375em;
+    margin-left: -1.375em;
     background-color: var(--map-button-bg-color);
     display: flex;
     align-items: center;
