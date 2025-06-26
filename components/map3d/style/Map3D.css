@@ -34,6 +34,9 @@ div.map3d-inspector {
     z-index: 1000;
     left: 0;
     top: var(--topbar-height);
+    max-height: calc(100vh - var(--topbar-height) - var(--bottombar-height));
+    max-height: calc(var(--vh, 1vh) * 100 - var(--topbar-height) - var(--bottombar-height));
+    overflow-y: auto;
 }
 
 div.map3d-inspector input {
