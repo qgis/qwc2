@@ -30,6 +30,7 @@ export default class OrbitControls3D extends MapControls {
         this.enabled = true;
         super.connect();
         this.listenToKeyEvents(this.domElement);
+        this.domElement.addEventListener('pointerdown', this.stopAnimations);
         this.addEventListener('change', this.updateControlsTarget);
         this.object.near = 2;
         this.sceneContext.scene.view.setControls(this);
@@ -39,6 +40,7 @@ export default class OrbitControls3D extends MapControls {
         super.disconnect();
         this.enabled = false;
         this.sceneContext.scene.view.setControls(null);
+        this.domElement.addEventListener('pointerdown', this.stopAnimations);
         this.removeEventListener('change', this.updateControlsTarget);
     }
     updateControlsTarget = () => {
@@ -123,4 +125,7 @@ export default class OrbitControls3D extends MapControls {
         };
         requestAnimationFrame(animate);
     }
+    stopAnimations = () => {
+        this.animationId = null;
+    };
 }

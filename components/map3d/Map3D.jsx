@@ -487,7 +487,7 @@ class Map3D extends React.Component {
         return (
             <div className="map3d-body">
                 <div className="map3d-inspector" />
-                <div className="map3d-map" onBlur={() => this.props.mapFocusChange(false)} onFocus={() => this.props.mapFocusChange(true)} onMouseDown={this.stopAnimations} ref={this.setupContainer} style={style} />
+                <div className="map3d-map" onBlur={() => this.props.mapFocusChange(false)} onFocus={() => this.props.mapFocusChange(true)} ref={this.setupContainer} style={style} />
                 <View3DSwitcher position={2} />
                 {this.state.sceneContext.scene ? (
                     <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
