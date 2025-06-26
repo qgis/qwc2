@@ -6,6 +6,10 @@ div.PluginsContainer {
     bottom: 0;
 }
 
+div.map-container {
+    position: absolute;
+}
+
 div.map-buttons-container {
     position: absolute;
     pointer-events: none;
@@ -17,7 +21,7 @@ div.map-buttons-container {
     flex-wrap: wrap-reverse;
     z-index: 2;
     overflow: hidden;
-    padding-bottom: 2.5em;
+    padding: 0 1em 2.5em 1em;
 }
 
 div.map-buttons-spacer {
