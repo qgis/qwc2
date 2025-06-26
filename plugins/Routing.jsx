@@ -69,6 +69,7 @@ class Routing extends React.Component {
         showPinLabels: PropTypes.bool,
         task: PropTypes.object,
         theme: PropTypes.object,
+        /** Set of units for isochrone time/distance intervals to use. */
         units: PropTypes.object,
         /** Automatically zoom to the extent of the route */
         zoomAuto: PropTypes.bool,
