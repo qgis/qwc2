@@ -36,6 +36,7 @@ class MapTip extends React.Component {
         layerFeatureCount: PropTypes.number,
         layers: PropTypes.array,
         map: PropTypes.object,
+        mapMargins: PropTypes.object,
         mapTipsEnabled: PropTypes.bool,
         /** The maximum height of the maptip popop bubble, as a CSS string. */
         maxHeight: PropTypes.string,
@@ -160,8 +161,8 @@ class MapTip extends React.Component {
                 maxWidth: this.props.maxWidth
             };
             const bufferPos = {
-                left: (this.state.pos[0] - 8) + "px",
-                top: (this.state.pos[1] - 8) + "px"
+                left: this.props.mapMargins.left + (this.state.pos[0] - 8) + "px",
+                top: this.props.mapMargins.top + (this.state.pos[1] - 8) + "px"
             };
             return [(
                 <div id="MapTipPointerBuffer" key="MapTipPointerBuffer" style={bufferPos} />
@@ -204,8 +205,8 @@ class MapTip extends React.Component {
     };
     positionMapTip = (el) => {
         if (el) {
-            let x = this.state.pos[0];
-            let y = this.state.pos[1];
+            let x = this.props.mapMargins.left + this.state.pos[0];
+            let y = this.props.mapMargins.top + this.state.pos[1];
             const bbox = el.getBoundingClientRect();
             if (x + bbox.width > window.innerWidth) {
                 x -= bbox.width;
@@ -221,6 +222,7 @@ class MapTip extends React.Component {
 
 export default connect((state) => ({
     mapTipsEnabled: state.map.maptips && state.task.identifyEnabled,
+    mapMargins: state.windows.mapMargins,
     layers: state.layers.flat,
     map: state.map
 }), {
