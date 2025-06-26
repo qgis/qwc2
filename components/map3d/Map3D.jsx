@@ -108,7 +108,8 @@ class Map3D extends React.Component {
         dtmCrs: null,
         baseLayers: [],
         colorLayers: {},
-        sceneObjects: {}
+        sceneObjects: {},
+        collisionObjects: []
     };
     state = {
         sceneContext: {
@@ -129,7 +130,7 @@ class Map3D extends React.Component {
             setViewToExtent: (bounds, angle) => {},
             getTerrainHeightFromDTM: (scenePos) => {},
             getTerrainHeightFromMap: (scenePos) => {},
-            getSceneIntersection: (x, y) => {}
+            getSceneIntersection: (x, y, objects) => {}
         },
         sceneId: null
     };
@@ -184,6 +185,20 @@ class Map3D extends React.Component {
         // Update scene objects
         if (this.state.sceneContext.sceneObjects !== prevState.sceneContext.sceneObjects) {
             this.applySceneObjectUpdates(this.state.sceneContext.sceneObjects, prevState.sceneContext.sceneObjects);
+
+            // Update collision objects
+            this.setState(state => ({
+                sceneContext: {
+                    ...state.sceneContext,
+                    collisionObjects: Object.entries(state.sceneContext.sceneObjects).map(([objId, options]) => {
+                        if (options.layertree && options.visibility) {
+                            const obj = this.objectMap[objId];
+                            return obj.tiles?.group ?? obj;
+                        }
+                        return null;
+                    }).filter(Boolean)
+                }
+            }));
         }
     }
     applyBaseLayer = () => {
@@ -767,14 +782,7 @@ class Map3D extends React.Component {
         const camera = this.instance.view.camera;
         raycaster.setFromCamera(new Vector2(x, y), camera);
         // Query object intersection
-        const intersectionObjects = objects ? Object.entries(this.state.sceneContext.sceneObjects).map(([objId, options]) => {
-            if (options.layertree && options.visibility) {
-                const obj = this.objectMap[objId];
-                return obj.tiles?.group ?? obj;
-            }
-            return null;
-        }).filter(Boolean) : null;
-        const objInter = objects ? raycaster.intersectObjects(intersectionObjects, true)[0] : undefined;
+        const objInter = objects ? raycaster.intersectObjects(this.state.sceneContext.collisionObjects, true)[0] : undefined;
         // Query highest resolution terrain tile (i.e. tile with no children)
         const terrInter = raycaster.intersectObjects([this.map.object3d]).filter(result => result.object.children.length === 0)[0];
         // Return closest result
@@ -812,7 +820,7 @@ class Map3D extends React.Component {
         }).filter(Boolean);
         return new Promise(resolve => {
             Promise.all(promises).then(objects => {
-                const cameraPos = this.state.sceneContext.scene.view.camera.position;
+                const camera = this.state.sceneContext.scene.view.camera.position;
                 const target = this.state.sceneContext.scene.view.controls.target;
                 const layers = Object.entries(this.state.sceneContext.colorLayers).map(([layerId, options]) => ({
                     id: layerId, options: {
@@ -824,8 +832,9 @@ class Map3D extends React.Component {
                 resolve({
                     objects: objects,
                     colorLayers: layers,
-                    cameraPos: [cameraPos.x, cameraPos.y, cameraPos.z],
-                    center: [target.x, target.y, target.z]
+                    personHeight: this.state.sceneContext.scene.view.controls.personHeight ?? 0,
+                    camera: [camera.x, camera.y, camera.z],
+                    target: [target.x, target.y, target.z]
                 });
             });
         });
