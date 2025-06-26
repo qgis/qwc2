@@ -234,7 +234,7 @@ class MapExport extends React.Component {
                                     </td>
                                 </tr>
                             ) : null}
-                            {(formatConfiguration.projections || []).length > 1 ? (
+                            {(formatConfiguration?.projections || []).length > 1 ? (
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.projection")}</td>
                                     <td>
