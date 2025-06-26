@@ -7,12 +7,14 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 import url from 'url';
 
 import Icon from '../components/Icon';
+import {MapContainerPortalContext} from '../components/PluginsContainer';
 import ConfigUtils from '../utils/ConfigUtils';
 
 import './style/Authentication.css';
@@ -23,6 +25,7 @@ import './style/Authentication.css';
  * Invokes the the authentication service specified by `authServiceUrl` in `config.json`.
  */
 class Authentication extends React.Component {
+    static contextType = MapContainerPortalContext;
     static availableIn3D = true;
 
     static propTypes = {
@@ -32,7 +35,6 @@ class Authentication extends React.Component {
         idleTimeout: PropTypes.number,
         /** An URL to redirect to on logout, instead of the viewer URL. */
         logoutTargetUrl: PropTypes.string,
-        mapMargins: PropTypes.object,
         /** Whether authentication is required, i.e. the viewer automatically redirects to the login page if no user is authenticated. */
         requireLogin: PropTypes.bool,
         /** Whether to display the currently logged in user below the application menu button. */
@@ -92,23 +94,19 @@ class Authentication extends React.Component {
             return null;
         }
         const username = ConfigUtils.getConfigProp("username");
-        const style = {
-            right: this.props.mapMargins.right
-        };
         if (!username) {
             return null;
         }
-        return (
-            <div className="login-user" style={style}>
+        return ReactDOM.createPortal((
+            <div className="login-user">
                 <Icon icon="login" />
                 <span>{username}</span>
             </div>
-        );
+        ), this.context);
     }
 }
 
 export default connect(state => ({
-    mapMargins: state.windows.mapMargins,
     task: state.task
 }), {
 })(Authentication);
