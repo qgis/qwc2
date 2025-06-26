@@ -776,6 +776,7 @@ Requites `routingServiceUrl` in `config.json` pointing to a Valhalla routing ser
 | enabledProviders | `[string]` | List of search providers to use for routing location search. | `["coordinates", "nominatim"]` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'left'`<br />`}` |
 | showPinLabels | `bool` | Whether to label the routing waypoint pins with the route point number. | `true` |
+| units | `object` | Set of units for isochrone time/distance intervals to use. | `{`<br />`    time: {`<br />`        min: 1,`<br />`        s: 60`<br />`    },`<br />`    distance: {`<br />`        km: 1,`<br />`        m: 1000`<br />`    }`<br />`}` |
 | zoomAuto | `bool` | Automatically zoom to the extent of the route | `true` |
 
 ScratchDrawing<a name="scratchdrawing"></a>

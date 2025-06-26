@@ -69,6 +69,8 @@ class Routing extends React.Component {
         showPinLabels: PropTypes.bool,
         task: PropTypes.object,
         theme: PropTypes.object,
+        /** Set of units for isochrone time/distance intervals to use. */
+        units: PropTypes.object,
         /** Automatically zoom to the extent of the route */
         zoomAuto: PropTypes.bool,
         zoomToExtent: PropTypes.func
@@ -85,6 +87,16 @@ class Routing extends React.Component {
             side: 'left'
         },
         showPinLabels: true,
+        units: {
+            time: {
+                min: 1,
+                s: 60
+            },
+            distance: {
+                km: 1,
+                m: 1000
+            }
+        },
         zoomAuto: true
     };
     state = {
@@ -137,6 +149,10 @@ class Routing extends React.Component {
                 {text: '', pos: null, crs: null}
             ],
             mode: 'time',
+            units: {
+                time: 'min',
+                distance: 'km'
+            },
             intervals: '5, 10',
             result: null
         },
@@ -496,7 +512,22 @@ class Routing extends React.Component {
                                 <td>
                                     <input className={isoConfig.intervals && !intervalValid ? "routing-input-invalid" : ""} onChange={(ev) => this.updateIsoConfig({intervals: ev.target.value})} placeholder="5, 10, 15" type="text" value={isoConfig.intervals} />
                                 </td>
-                                <td>{isoConfig.mode === "time" ? "min" : "km"}</td>
+                                <td>
+                                    <select onChange={ev => {
+                                        this.setState((state) => ({
+                                            isoConfig: {
+                                                ...state.isoConfig,
+                                                units: {
+                                                    ...state.isoConfig.units,
+                                                    [state.isoConfig.mode]: ev.target.value
+                                                }
+                                            }
+                                        }));
+                                        this.recomputeIfNeeded();
+                                    }} value={isoConfig.units[isoConfig.mode]}>
+                                        {Object.keys(this.props.units[isoConfig.mode]).map(unit => <option key={unit} value={unit}>{unit}</option>)}
+                                    </select>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -789,9 +820,10 @@ class Routing extends React.Component {
         });
         this.props.removeLayer("routinggeometries");
         this.updateIsoConfig({busy: true, result: null}, false);
+        const unitsFactor = this.props.units[this.state.isoConfig.mode][this.state.isoConfig.units[this.state.isoConfig.mode]];
         const contourOptions = {
             mode: this.state.isoConfig.mode,
-            intervals: this.state.isoConfig.intervals.split(",").map(entry => parseInt(entry.trim(), 10)).sort()
+            intervals: this.state.isoConfig.intervals.split(",").map(entry => parseInt(entry.trim(), 10) / unitsFactor).sort()
         };
         RoutingInterface.computeIsochrone(this.state.mode, locations, contourOptions, this.state.settings[this.state.mode], (success, result) => {
             if (success) {
