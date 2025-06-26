@@ -359,13 +359,13 @@ class AttributeTableWidget extends React.Component {
     renderColumnResizeHandle = (col, pos) => {
         return (
             <span className={"attribtable-table-" + pos + "draghandle"}
-                onMouseDown={(ev) => this.resizeTable(ev, col, true)} />
+                onPointerDown={(ev) => this.resizeTable(ev, col, true)} />
         );
     };
     renderRowResizeHandle = (row, pos) => {
         return (
             <span className={"attribtable-table-" + pos + "draghandle"}
-                onMouseDown={(ev) => this.resizeTable(ev, row, false)} />
+                onPointerDown={(ev) => this.resizeTable(ev, row, false)} />
         );
     };
     changeSelectedLayer = (value) => {
@@ -752,10 +752,10 @@ class AttributeTableWidget extends React.Component {
             eventShield.className = '__event_shield';
             ev.view.document.body.appendChild(eventShield);
             ev.view.document.body.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
-            ev.view.addEventListener("mousemove", resizeDo);
-            ev.view.addEventListener("mouseup", (event) => {
+            ev.view.addEventListener("pointermove", resizeDo);
+            ev.view.addEventListener("pointerup", (event) => {
                 event.view.document.body.removeChild(eventShield);
-                event.view.removeEventListener("mousemove", resizeDo);
+                event.view.removeEventListener("pointermove", resizeDo);
                 event.view.document.body.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
             }, {once: true});
         }

@@ -125,7 +125,7 @@ export default class TextInput extends React.Component {
                 {this.props.multiline ? (
                     <div
                         className="text-input-resize-handle"
-                        onMouseDown={this.startResize} />
+                        onPointerDown={this.startResize} />
                 ) : null}
                 {showClear ? (
                     <div className="text-input-clear-icon">
@@ -261,10 +261,10 @@ export default class TextInput extends React.Component {
             container.style.height = Math.max(this.initialHeight, (startHeight + (event.clientY - startMouseY))) + 'px';
         };
         document.body.style.userSelect = 'none';
-        ev.view.addEventListener("mousemove", resizeInput);
-        ev.view.addEventListener("mouseup", () => {
+        ev.view.addEventListener("pointermove", resizeInput);
+        ev.view.addEventListener("pointerup", () => {
             document.body.style.userSelect = '';
-            ev.view.removeEventListener("mousemove", resizeInput);
+            ev.view.removeEventListener("pointermove", resizeInput);
         }, {once: true});
     };
 }

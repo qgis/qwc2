@@ -30,7 +30,7 @@ class Identify3D extends React.Component {
         pickAttrs: null
     };
     componentDidMount() {
-        this.props.sceneContext.scene.viewport.addEventListener('mousedown', this.identifyOnRelease);
+        this.props.sceneContext.scene.viewport.addEventListener('pointerdown', this.identifyOnRelease);
     }
     componentDidUpdate(prevProps) {
         if (!this.props.identifyEnabled && prevProps.identifyEnabled) {
@@ -77,9 +77,9 @@ class Identify3D extends React.Component {
         if (ev.button !== 0) {
             return;
         }
-        ev.view.addEventListener('mouseup', this.identify, {once: true});
-        ev.view.addEventListener('mousemove', () => {
-            ev.view.removeEventListener('mouseup', this.identify);
+        ev.view.addEventListener('pointerup', this.identify, {once: true});
+        ev.view.addEventListener('pointermove', () => {
+            ev.view.removeEventListener('pointerup', this.identify);
         }, {once: true});
     };
     identify = (ev) => {

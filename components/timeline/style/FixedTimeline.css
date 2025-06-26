@@ -21,6 +21,7 @@ div.fixtimeline-slider {
 
 button.fixtimeline-pan-left,
 button.fixtimeline-pan-right {
+    touch-action: none;
     position: absolute;
     bottom: 0;
     top: 0;

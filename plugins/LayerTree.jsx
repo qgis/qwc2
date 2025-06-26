@@ -402,7 +402,7 @@ class LayerTree extends React.Component {
             attrTableButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("AttributeTable", null, null, {layer: sublayer.name})} />);
         }
         return (
-            <div className="layertree-item-optionsmenu" onMouseDown={this.preventLayerTreeItemDrag} style={{marginRight: (marginRight * 1.75) + 'em'}}>
+            <div className="layertree-item-optionsmenu" onPointerDown={this.preventLayerTreeItemDrag} style={{marginRight: (marginRight * 1.75) + 'em'}}>
                 {zoomToLayerButton}
                 {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
                 <input className="layertree-item-transparency-slider" max="255" min="0"
@@ -432,7 +432,7 @@ class LayerTree extends React.Component {
         const draggableEl = ev.currentTarget.parentNode;
         if (draggableEl.draggable) {
             draggableEl.draggable = false;
-            document.addEventListener('mouseup', () => {
+            document.addEventListener('pointerup', () => {
                 draggableEl.draggable = true;
             }, {once: true});
         }

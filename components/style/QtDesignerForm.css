@@ -89,6 +89,7 @@ div.qt-designer-widget-relation {
 }
 
 div.qt-designer-widget-relation-resize-handle {
+    touch-action: none;
     position: absolute;
     right: -0.25em;
     bottom: -0.25em;

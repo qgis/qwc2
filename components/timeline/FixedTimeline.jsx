@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
+import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
 import ButtonBar from '../widgets/ButtonBar';
 import Input from '../widgets/Input';
@@ -67,13 +68,13 @@ export default class FixedTimeline extends React.Component {
                     <div><Input onChange={this.props.setEndTime} type="date" value={this.props.endTime.format('YYYY-MM-DD')} /></div>
                 </div>
                 <div className="fixtimeline-slider">
-                    <button className="button fixtimeline-pan-left" disabled={this.props.startTime.isSame(this.props.dataStartTime)} onMouseDown={() => this.startPan(-1)}>
+                    <button className="button fixtimeline-pan-left" disabled={this.props.startTime.isSame(this.props.dataStartTime)} onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.startPan(-1)}>
                         <Icon icon="chevron-left" />
                     </button>
                     <div className="fixtimeline-ticks" ref={this.setTicksContainerRef}>
                         {this.renderTicks()}
                     </div>
-                    <button className="button fixtimeline-pan-right" disabled={this.props.endTime.isSame(this.props.dataEndTime)} onMouseDown={() => this.startPan(1)}>
+                    <button className="button fixtimeline-pan-right" disabled={this.props.endTime.isSame(this.props.dataEndTime)} onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.startPan(1)}>
                         <Icon icon="chevron-right" />
                     </button>
                 </div>
@@ -125,7 +126,7 @@ export default class FixedTimeline extends React.Component {
                 this.pan(dir);
             }, 50);
         }, 250);
-        document.addEventListener("mouseup", () => {
+        document.addEventListener("pointerup", () => {
             clearInterval(panInterval);
             clearTimeout(panTimeout);
         }, {once: true, capture: true});

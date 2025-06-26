@@ -85,7 +85,7 @@ class TimelineFeaturesSlider extends React.Component {
         };
         return (
             <div className="timeline-slider-container">
-                <div className="timeline-slider" onMouseDown={this.pickCurrentTimestamp}>
+                <div className="timeline-slider" onPointerDown={this.pickCurrentTimestamp}>
                     {this.props.displayMode === "features" ? this.renderTimeFeatures(sliderGeom) : null}
                     {this.props.displayMode === "layers" ? this.renderTimeLayers(sliderGeom) : null}
                     {this.renderGradient(sliderGeom)}
@@ -174,13 +174,13 @@ class TimelineFeaturesSlider extends React.Component {
                 time: newTimestamp
             }});
         };
-        document.addEventListener("mousemove", computeTimestamp);
-        document.addEventListener("mouseup", () => {
+        document.addEventListener("pointermove", computeTimestamp);
+        document.addEventListener("pointerup", () => {
             if (this.state.currentTimestampDrag) {
                 this.props.timestampChanged(+this.state.currentTimestampDrag.time);
                 this.setState({currentTimestampDrag: null});
             }
-            document.removeEventListener("mousemove", computeTimestamp);
+            document.removeEventListener("pointermove", computeTimestamp);
         }, {once: true, capture: true});
         computeTimestamp(event);
     };

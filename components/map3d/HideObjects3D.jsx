@@ -29,7 +29,7 @@ class HideObjects3D extends React.Component {
         hiddenObjects: []
     };
     componentDidMount() {
-        this.props.sceneContext.scene.viewport.addEventListener('mousedown', this.pickOnRelease);
+        this.props.sceneContext.scene.viewport.addEventListener('pointerdown', this.pickOnRelease);
     }
     componentDidUpdate(prevProps) {
         if (this.props.sceneContext.scene !== prevProps.sceneContext?.scene) {
@@ -83,9 +83,9 @@ class HideObjects3D extends React.Component {
         if (ev.button !== 0) {
             return;
         }
-        ev.view.addEventListener('mouseup', this.pick, {once: true});
-        ev.view.addEventListener('mousemove', () => {
-            ev.view.removeEventListener('mouseup', this.pick);
+        ev.view.addEventListener('pointerup', this.pick, {once: true});
+        ev.view.addEventListener('pointermove', () => {
+            ev.view.removeEventListener('pointerup', this.pick);
         }, {once: true});
     };
     pick = (ev) => {

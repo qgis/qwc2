@@ -72,6 +72,7 @@ div.inftimeline-ticks > span.inftimeline-tick {
 
 button.inftimeline-pan-left,
 button.inftimeline-pan-right {
+    touch-action: none;
     position: absolute;
     bottom: 0;
     top: 0;

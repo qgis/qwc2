@@ -12,6 +12,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
 import ConfigUtils from '../utils/ConfigUtils';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/Icon.css';
 
@@ -23,6 +24,7 @@ export default class Icon extends React.Component {
         onClick: PropTypes.func,
         onMouseDown: PropTypes.func,
         onMouseUp: PropTypes.func,
+        onPointerDown: PropTypes.func,
         size: PropTypes.string,
         title: PropTypes.string
     };
@@ -34,7 +36,7 @@ export default class Icon extends React.Component {
         const classes = classnames({
             icon: true,
             icon_disabled: this.props.disabled,
-            icon_clickable: !!this.props.onClick || !!this.props.onMouseDown,
+            icon_clickable: !!this.props.onClick || !!this.props.onMouseDown || !!this.props.onPointerDown,
             ["icon-" + this.props.icon]: true,
             ["icon_" + this.props.size]: !!this.props.size,
             [this.props.className]: !!this.props.className
@@ -44,14 +46,18 @@ export default class Icon extends React.Component {
             const src = assetsPath + this.props.icon.substr(1);
             return (
                 <img alt={this.props.title} className={classes} onClick={this.props.disabled ? null : this.props.onClick}
+                    onContextMenu={MiscUtils.killEvent}
                     onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
+                    onPointerDown={this.props.onPointerDown}
                     src={src} title={this.props.title || undefined}
                 />
             );
         } else {
             return (
                 <span className={classes} onClick={this.props.disabled ? null : this.props.onClick}
+                    onContextMenu={MiscUtils.killEvent}
                     onMouseDown={this.props.onMouseDown} onMouseUp={this.props.onMouseUp}
+                    onPointerDown={this.props.onPointerDown}
                     title={this.props.title || undefined}
                 />
             );

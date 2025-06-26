@@ -76,6 +76,7 @@ div.text-input-placeholder {
 }
 
 div.text-input-resize-handle {
+    touch-action: none;
     position: absolute;
     right: 0;
     bottom: 0;

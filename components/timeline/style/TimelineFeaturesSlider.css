@@ -8,6 +8,7 @@ div.timeline-slider-container {
 }
 
 div.timeline-slider {
+    touch-action: none;
     flex: 1 1 auto;
     background-color: white;
     height: 35px;

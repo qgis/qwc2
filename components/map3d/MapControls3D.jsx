@@ -68,26 +68,26 @@ class MapControls3D extends React.Component {
         return [(
             <div className="map3d-nav-pan" key="MapPanWidget">
                 <span />
-                <Icon icon="chevron-up" onMouseDown={(ev) => this.pan(ev, 0, 1)} />
+                <Icon icon="chevron-up" onPointerDown={(ev) => this.pan(ev, 0, 1)} />
                 <span />
-                <Icon icon="chevron-left" onMouseDown={(ev) => this.pan(ev, -1, 0)} />
+                <Icon icon="chevron-left" onPointerDown={(ev) => this.pan(ev, -1, 0)} />
                 <Icon icon="home" onClick={() => this.home()} />
-                <Icon icon="chevron-right" onMouseDown={(ev) => this.pan(ev, 1, 0)} />
+                <Icon icon="chevron-right" onPointerDown={(ev) => this.pan(ev, 1, 0)} />
                 <span />
-                <Icon icon="chevron-down" onMouseDown={(ev) => this.pan(ev, 0, -1)} />
+                <Icon icon="chevron-down" onPointerDown={(ev) => this.pan(ev, 0, -1)} />
                 <span />
             </div>
         ),
         (
             <div className="map3d-nav-rotate" key="MapRotateWidget">
                 <span />
-                <Icon icon="tilt-up" onMouseDown={(ev) => this.tilt(ev, 0, 0.1)} />
+                <Icon icon="tilt-up" onPointerDown={(ev) => this.tilt(ev, 0, 0.1)} />
                 <span />
-                <Icon icon="tilt-left" onMouseDown={(ev) => this.tilt(ev, 0.1, 0)} />
+                <Icon icon="tilt-left" onPointerDown={(ev) => this.tilt(ev, 0.1, 0)} />
                 <Icon icon="point" onClick={() => this.resetTilt()} />
-                <Icon icon="tilt-right" onMouseDown={(ev) => this.tilt(ev, -0.1, 0)} />
+                <Icon icon="tilt-right" onPointerDown={(ev) => this.tilt(ev, -0.1, 0)} />
                 <span />
-                <Icon icon="tilt-down" onMouseDown={(ev) => this.tilt(ev, 0, -0.1)} />
+                <Icon icon="tilt-down" onPointerDown={(ev) => this.tilt(ev, 0, -0.1)} />
                 <span />
             </div>
         ), (
@@ -172,7 +172,7 @@ class MapControls3D extends React.Component {
         const panInterval = setInterval(() => {
             this.props.sceneContext.scene.view.controls.panView(dx, dy);
         }, 50);
-        ev.view.addEventListener('mouseup', () => {
+        ev.view.addEventListener('pointerup', () => {
             clearInterval(panInterval);
         }, {once: true});
     };
@@ -180,7 +180,7 @@ class MapControls3D extends React.Component {
         const tiltInterval = setInterval(() => {
             this.props.sceneContext.scene.view.controls.tiltView(azimuth, polar);
         }, 50);
-        ev.view.addEventListener('mouseup', () => {
+        ev.view.addEventListener('pointerup', () => {
             clearInterval(tiltInterval);
         }, {once: true});
     };

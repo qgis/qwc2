@@ -272,6 +272,7 @@ img.layertree-item-legend-tooltip {
 }
 
 #LayerTree div.layertree-item-optionsmenu {
+    touch-action: none;
     margin-left: 1em;
     height: 1.75em;
     display: flex;

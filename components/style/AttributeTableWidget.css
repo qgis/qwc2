@@ -111,6 +111,7 @@ table.attribtable-table td:first-child {
 
 span.attribtable-table-ldraghandle,
 span.attribtable-table-rdraghandle {
+    touch-action: none;
     display: block;
     position: absolute;
     width: 4px;
@@ -129,6 +130,7 @@ span.attribtable-table-rdraghandle {
 
 span.attribtable-table-tdraghandle,
 span.attribtable-table-bdraghandle {
+    touch-action: none;
     display: block;
     position: absolute;
     height: 4px;

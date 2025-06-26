@@ -28,6 +28,7 @@ div.sidebar-left:not(.sidebar-open) {
 }
 
 div.sidebar-resize-handle {
+    touch-action: none;
     position: absolute;
     width: 6px;
     top: 0;
@@ -45,6 +46,7 @@ div.sidebar-resize-handle-right {
 }
 
 div.sidebar-resize-handle-bottom {
+    touch-action: none;
     position: absolute;
     height: 6px;
     left: 0;

@@ -113,7 +113,7 @@ class SideBar extends React.Component {
             <div>
                 <Swipeable delta={30} onSwipedRight={this.closeClicked}>
                     <div className={`${classes} ${this.props.extraClasses}`} id={this.props.id} ref={this.setRef} style={style}>
-                        <div className={"sidebar-resize-handle sidebar-resize-handle-" + this.props.side} onMouseDown={this.startSidebarResize}/>
+                        <div className={"sidebar-resize-handle sidebar-resize-handle-" + this.props.side} onPointerDown={this.startSidebarResize}/>
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}
                             <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
@@ -126,7 +126,7 @@ class SideBar extends React.Component {
                             {body}
                         </div>
                         {this.props.heightResizeable ? (
-                            <div className="sidebar-resize-handle-bottom" onMouseDown={this.startSidebarBottomResize}/>
+                            <div className="sidebar-resize-handle-bottom" onPointerDown={this.startSidebarBottomResize}/>
                         ) : null}
                     </div>
                 </Swipeable>
@@ -145,10 +145,10 @@ class SideBar extends React.Component {
             this.sidebar.style.width = (startWidth + sign * (startMouseX - event.clientX)) + 'px';
         };
         ev.view.document.body.style.userSelect = 'none';
-        ev.view.addEventListener("mousemove", resizeSidebar);
-        ev.view.addEventListener("mouseup", () => {
+        ev.view.addEventListener("pointermove", resizeSidebar);
+        ev.view.addEventListener("pointerup", () => {
             ev.view.document.body.style.userSelect = '';
-            ev.view.removeEventListener("mousemove", resizeSidebar);
+            ev.view.removeEventListener("pointermove", resizeSidebar);
         }, {once: true});
     };
     startSidebarBottomResize = (ev) => {
@@ -158,10 +158,10 @@ class SideBar extends React.Component {
             this.sidebar.style.height = Math.max(64, (startHeight + (event.clientY - startMouseY))) + 'px';
         };
         ev.view.document.body.style.userSelect = 'none';
-        ev.view.addEventListener("mousemove", resizeSidebar);
-        ev.view.addEventListener("mouseup", () => {
+        ev.view.addEventListener("pointermove", resizeSidebar);
+        ev.view.addEventListener("pointerup", () => {
             ev.view.document.body.style.userSelect = '';
-            ev.view.removeEventListener("mousemove", resizeSidebar);
+            ev.view.removeEventListener("pointermove", resizeSidebar);
         }, {once: true});
     };
 }

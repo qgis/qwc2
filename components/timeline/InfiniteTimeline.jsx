@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
+import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
 import ButtonBar from '../widgets/ButtonBar';
 import NumberInput from '../widgets/NumberInput';
@@ -70,13 +71,13 @@ export default class InfiniteTimeline extends React.Component {
                     <div className="inftimeline-toolbar-spacer" />
                 </div>
                 <div className="inftimeline-clip">
-                    <button className="button inftimeline-pan-left" onMouseDown={() => this.pan(-20)}>
+                    <button className="button inftimeline-pan-left" onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.pan(-20)}>
                         <Icon icon="chevron-left" />
                     </button>
                     <div className="inftimeline-ticks">
                         {this.renderTicks()}
                     </div>
-                    <button className="button inftimeline-pan-right" onMouseDown={() => this.pan(20)}>
+                    <button className="button inftimeline-pan-right" onContextMenu={MiscUtils.killEvent} onPointerDown={() => this.pan(20)}>
                         <Icon icon="chevron-right" />
                     </button>
                 </div>
@@ -207,7 +208,7 @@ export default class InfiniteTimeline extends React.Component {
                 this.setState((state) => ({panOffset: state.panOffset + offset}));
             }, 50);
         }, 250);
-        document.addEventListener("mouseup", () => {
+        document.addEventListener("pointerup", () => {
             clearInterval(panInterval);
             clearTimeout(panTimeout);
         }, {once: true, capture: true});
