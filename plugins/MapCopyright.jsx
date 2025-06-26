@@ -7,11 +7,13 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import {MapContainerPortalContext} from '../components/PluginsContainer';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
@@ -22,10 +24,11 @@ import './style/MapCopyright.css';
  * Displays layer attributions in the bottom right corner of the map.
  */
 class MapCopyright extends React.Component {
+    static contextType = MapContainerPortalContext;
+
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
-        mapMargins: PropTypes.object,
         /** Whether to prepend the layer name to the attribution string. */
         prefixCopyrightsWithLayerNames: PropTypes.bool,
         /** Whether to only display the attribution of the theme, omitting external layers. */
@@ -54,17 +57,11 @@ class MapCopyright extends React.Component {
         if (isEmpty(copyrights)) {
             return null;
         }
-        const right = this.props.mapMargins.right;
-        const bottom = this.props.mapMargins.bottom;
-        const style = {
-            right: 'calc(0.25em + ' + right + 'px)',
-            bottom: 'calc(var(--bottombar-height) + 0.25em + ' + bottom + 'px)'
-        };
-        return (
-            <div id="MapCopyright" style={style}>
+        return ReactDOM.createPortal((
+            <div id="MapCopyright">
                 {copyrights}
             </div>
-        );
+        ), this.context);
     }
     layerNames = (layers) => {
         if (!this.props.prefixCopyrightsWithLayerNames) {
@@ -77,8 +74,7 @@ class MapCopyright extends React.Component {
 
 const selector = (state) => ({
     layers: state.layers.flat,
-    map: state.map,
-    mapMargins: state.windows.mapMargins
+    map: state.map
 });
 
 export default connect(selector, {})(MapCopyright);

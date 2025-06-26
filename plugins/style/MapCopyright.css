@@ -1,5 +1,8 @@
 #MapCopyright {
     position: absolute;
+    right: 0.25em;
+    bottom: 0.25em;
+    z-index: 1;
     background-color: var(--panel-bg-color);
     color: var(--panel-text-color);
     box-shadow: 0 0 4px rgba(136, 136, 136, 0.5);
