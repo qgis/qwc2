@@ -874,6 +874,7 @@ class Map3D extends React.Component {
                     baseLayers: state.sceneContext.baseLayers.map(l => ({...l, visibility: l.name === data.baselayer}))
                 }
             }));
+            UrlParams.updateParams({bl3d: data.baselayer});
         }
         this.state.sceneContext.scene.notifyChange();
     };
