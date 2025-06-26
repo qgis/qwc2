@@ -60,12 +60,13 @@ class PluginsContainer extends React.Component {
             right: 'calc(' + right + 'px)',
             bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px)'
         };
+        const haveRefs = this.state.mapButtonsContainerRef && this.state.mapContainerRef;
         return (
             <div className="PluginsContainer" ref={this.setupTouchEvents}>
                 <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
                     <MapContainerPortalContext.Provider value={this.state.mapContainerRef}>
-                        {this.renderPlugins()}
-                        {this.props.children}
+                        {haveRefs ? this.renderPlugins() : null}
+                        {haveRefs ? this.props.children : null}
                     </MapContainerPortalContext.Provider>
                 </MapButtonPortalContext.Provider>
                 <WindowManager />
