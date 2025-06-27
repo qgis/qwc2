@@ -49,7 +49,6 @@ class TopBar extends React.Component {
         logoSrc: PropTypes.string,
         /** The hyperlink to open when the logo is clicked. */
         logoUrl: PropTypes.string,
-        mapMargins: PropTypes.object,
         /** The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
@@ -92,7 +91,8 @@ class TopBar extends React.Component {
         /** The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         toolbarItems: PropTypes.array,
         /** The keyboard shortcut prefix for triggering toolbar tasks. I.e. alt+shift. The task are then triggered by <prefix>+{1,2,3,...} for the 1st, 2nd, 3rd... toolbar icon. */
-        toolbarItemsShortcutPrefix: PropTypes.string
+        toolbarItemsShortcutPrefix: PropTypes.string,
+        windowMargins: PropTypes.object
     };
     static defaultProps = {
         searchOptions: {
@@ -150,9 +150,9 @@ class TopBar extends React.Component {
         const keepMenuOpen = menuCompact;
         // Menu should be visible on startup when appMenu is in compact mode (Visible on Hover)
         const showOnStartup = this.props.appMenuVisibleOnStartup || menuCompact;
-        const style = this.props.mapMargins.splitTopAndBottomBar ? {
-            marginLeft: this.props.mapMargins.left + 'px',
-            marginRight: this.props.mapMargins.right + 'px'
+        const style = this.props.windowMargins.splitTopAndBottomBar ? {
+            marginLeft: this.props.windowMargins.left + 'px',
+            marginRight: this.props.windowMargins.right + 'px'
         } : {};
         return (
             <Swipeable
@@ -237,7 +237,7 @@ export default (components) => {
         fullscreen: state.display.fullscreen,
         components: components,
         currentTheme: state.theme.current,
-        mapMargins: state.windows.mapMargins
+        windowMargins: state.windows.windowMargins
     }), {
         toggleFullscreen: toggleFullscreen,
         openExternalUrl: openExternalUrl,
