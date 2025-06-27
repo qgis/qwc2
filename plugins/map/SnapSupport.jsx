@@ -52,10 +52,10 @@ class SnapSupport extends React.Component {
         this.curPos = null;
     }
     componentDidMount() {
-        MapUtils.getHook(MapUtils.GET_MAP).on('pointermove', this.getMapMousePos);
+        MapUtils.getHook(MapUtils.ADD_POINTER_MOVE_LISTENER)(this.getMapMousePos);
     }
     componentWillUnmount() {
-        MapUtils.getHook(MapUtils.GET_MAP).un('pointermove', this.getMapMousePos);
+        MapUtils.getHook(MapUtils.REMOVE_POINTER_MOVE_LISTENER)(this.getMapMousePos);
     }
     componentDidUpdate(prevProps) {
         if (this.props.drawing && this.state.mousePos &&

@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
@@ -14,6 +15,7 @@ import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
+import {MapContainerPortalContext} from '../components/PluginsContainer';
 import CopyButton from '../components/widgets/CopyButton';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -53,13 +55,13 @@ import './style/MapInfoTooltip.css';
  * ```
  */
 class MapInfoTooltip extends React.Component {
+    static contextType = MapContainerPortalContext;
     static propTypes = {
         /** The number of decimal places to display for elevation values. */
         elevationPrecision: PropTypes.number,
         enabled: PropTypes.bool,
         includeWGS84: PropTypes.bool,
         map: PropTypes.object,
-        mapMargins: PropTypes.object,
         /** Additional plugin components for the map info tooltip. */
         plugins: PropTypes.array,
         setCurrentTask: PropTypes.func
@@ -140,8 +142,8 @@ class MapInfoTooltip extends React.Component {
         const title = LocaleUtils.tr("mapinfotooltip.title");
         const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.point.coordinate);
         const style = {
-            left: (this.props.mapMargins.left + pixel[0]) + "px",
-            top: (this.props.mapMargins.top + pixel[1]) + "px"
+            left: (pixel[0]) + "px",
+            top: (pixel[1]) + "px"
         };
         const text = info.map(entry => entry.join(": ")).join("\n");
         let routingButtons = null;
@@ -179,7 +181,7 @@ class MapInfoTooltip extends React.Component {
                 </table>
             );
         }
-        return (
+        return ReactDOM.createPortal((
             <div className="mapinfotooltip" style={style}>
                 <div className="mapinfotooltip-window">
                     <div className="mapinfotooltip-titlebar">
@@ -203,13 +205,12 @@ class MapInfoTooltip extends React.Component {
                     </div>
                 </div>
             </div>
-        );
+        ), this.context);
     }
 }
 
 export default (plugins) => {
     return connect((state) => ({
-        mapMargins: state.windows.mapMargins,
         enabled: state.task.identifyEnabled,
         map: state.map,
         plugins: plugins

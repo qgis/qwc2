@@ -35,7 +35,6 @@ class OlMap extends React.Component {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         fullExtent: PropTypes.object,
         id: PropTypes.string,
-        mapMargins: PropTypes.object,
         mapOptions: PropTypes.object,
         mapStateSource: PropTypes.string,
         onClick: PropTypes.func,
@@ -46,6 +45,7 @@ class OlMap extends React.Component {
         projection: PropTypes.string,
         resolutions: PropTypes.array,
         setCurrentTask: PropTypes.func,
+        topbarHeight: PropTypes.number,
         unsetTaskOnMapClick: PropTypes.bool,
         zoom: PropTypes.number.isRequired
     };
@@ -65,6 +65,7 @@ class OlMap extends React.Component {
     constructor(props) {
         super(props);
         this.ignoreNextClick = false;
+        this.callbackMap = {};
         this.state.mapOptions = {
             ...OlMap.defaultProps.mapOptions,
             ...props.mapOptions
@@ -248,19 +249,7 @@ class OlMap extends React.Component {
                 projection: this.props.projection
             }) : null;
         });
-
-        const style = {
-            left: this.props.mapMargins.left,
-            right: this.props.mapMargins.right,
-            top: this.props.mapMargins.top,
-            bottom: this.props.mapMargins.bottom
-        };
-
-        return (
-            <div id={this.props.id} key="map" style={style} tabIndex="0">
-                {children}
-            </div>
-        );
+        return children;
     }
     onClick = (button, event, pixel) => {
         if (this.ignoreNextClick) {
@@ -286,10 +275,11 @@ class OlMap extends React.Component {
                 /* pass */
             }
         }, {hitTolerance: 5});
+        const evpixel = this.map.getEventPixel(event);
         const data = {
             ts: +new Date(),
             coordinate: this.map.getEventCoordinate(event),
-            pixel: this.map.getEventPixel(event),
+            pixel: [evpixel[0], evpixel[1] - this.props.topbarHeight],
             features: features,
             modifiers: {
                 alt: event.altKey,
@@ -331,10 +321,11 @@ class OlMap extends React.Component {
     registerHooks = () => {
         MapUtils.registerHook(MapUtils.GET_MAP, this.map);
         MapUtils.registerHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK, (pos) => {
-            return this.map.getPixelFromCoordinate(pos);
+            const pixel = this.map.getPixelFromCoordinate(pos);
+            return [pixel[0], pixel[1] - this.props.topbarHeight];
         });
         MapUtils.registerHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK, (pixel) => {
-            return this.map.getCoordinateFromPixel(pixel);
+            return this.map.getCoordinateFromPixel([pixel[0], pixel[1] + this.props.topbarHeight]);
         });
         MapUtils.registerHook(MapUtils.GET_SNAPPED_COORDINATES_FROM_PIXEL_HOOK, (pixel) => {
             return this.map.getCoordinateFromPixel(pixel);
@@ -342,12 +333,23 @@ class OlMap extends React.Component {
         MapUtils.registerHook(MapUtils.GET_NATIVE_LAYER, (id) => {
             return this.map.getLayers().getArray().find(layer => layer.get('id') === id);
         });
+        MapUtils.registerHook(MapUtils.ADD_POINTER_MOVE_LISTENER, (callback) => {
+            this.callbackMap[callback] = (event) => {
+                const pixel = [...event.pixel];
+                callback({coordinate: event.coordinate, pixel: [pixel[0], pixel[1] - this.props.topbarHeight]});
+            };
+            this.map.on('pointermove', this.callbackMap[callback]);
+        });
+        MapUtils.registerHook(MapUtils.REMOVE_POINTER_MOVE_LISTENER, (callback) => {
+            this.map.un('pointermove', this.callbackMap[callback]);
+            delete this.callbackMap[callback];
+        });
     };
 }
 
 export default connect((state) => ({
-    mapMargins: state.windows.mapMargins,
-    unsetTaskOnMapClick: state.task.unsetOnMapClick
+    unsetTaskOnMapClick: state.task.unsetOnMapClick,
+    topbarHeight: state.windows.topbarHeight
 }), {
     onMapViewChanges: changeMapView,
     onClick: clickOnMap,

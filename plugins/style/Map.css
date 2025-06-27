@@ -1,5 +1,9 @@
-div#map {
+div.map-contents {
     position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(-1 * var(--topbar-height));
+    bottom: calc(-1 * var(--bottombar-height));
 }
 
 /* Move and re-style rotation reset button */

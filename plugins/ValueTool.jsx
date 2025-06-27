@@ -78,9 +78,9 @@ class ValueTool extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (this.props.enabled && !prevProps.enabled) {
-            MapUtils.getHook(MapUtils.GET_MAP).on('pointermove', this.scheduleQueryValues);
+            MapUtils.getHook(MapUtils.ADD_POINTER_MOVE_LISTENER)(this.scheduleQueryValues);
         } else if (!this.props.enabled && prevProps.enabled) {
-            MapUtils.getHook(MapUtils.GET_MAP).un('pointermove', this.scheduleQueryValues);
+            MapUtils.getHook(MapUtils.REMOVE_POINTER_MOVE_LISTENER)(this.scheduleQueryValues);
             clearTimeout(this.queryTimeout);
             this.queryTimeout = null;
             this.setState(ValueTool.defaultState);

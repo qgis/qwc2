@@ -24,10 +24,10 @@ export default class CoordinateDisplayer extends React.Component {
         mousePos: []
     };
     componentDidMount() {
-        MapUtils.getHook(MapUtils.GET_MAP).on('pointermove', this.getMapMousePos);
+        MapUtils.getHook(MapUtils.ADD_POINTER_MOVE_LISTENER)(this.getMapMousePos);
     }
     componentWillUnmount() {
-        MapUtils.getHook(MapUtils.GET_MAP).un('pointermove', this.getMapMousePos);
+        MapUtils.getHook(MapUtils.REMOVE_POINTER_MOVE_LISTENER)(this.getMapMousePos);
     }
     render() {
         let value = "";
