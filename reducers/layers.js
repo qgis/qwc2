@@ -323,7 +323,7 @@ export default function layers(state = defaultState, action) {
                     if (layer.role === LayerRole.BACKGROUND) {
                         newLayer.title = layer.title || action.layer.title;
                         newLayer.attribution = layer.attribution || action.layer.attribution;
-                        newLayer.opacity = layer.opacity || action.layer.opacity
+                        newLayer.opacity = layer.opacity || action.layer.opacity;
                     }
                     delete newLayer.loading;
                     if (newLayer.type === "wms") {
