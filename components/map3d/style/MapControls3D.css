@@ -21,7 +21,7 @@ div.map3d-nav-rotate > span {
 }
 
 div.map3d-nav-pan {
-    top: 4.5em;
+    top: 5.5em;
 }
 
 div.map3d-nav-pan > span.icon-home {
@@ -29,7 +29,7 @@ div.map3d-nav-pan > span.icon-home {
 }
 
 div.map3d-nav-rotate {
-    top: 9em;
+    top: 10em;
 }
 
 div.map3d-firstperson-button {
@@ -37,7 +37,7 @@ div.map3d-firstperson-button {
     width: 2em;
     height: 2em;
     right: 2em;
-    top: 13.5em;
+    top: 14.5em;
     z-index: 1;
     display: flex;
     align-items: center;

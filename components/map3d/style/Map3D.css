@@ -1,8 +1,3 @@
-div.map3d-body {
-    height: 100%;
-    position: relative;
-}
-
 div.map3d-titlebar {
     flex: 0 0 3.25em;
     display: flex;
@@ -24,9 +19,9 @@ div.map3d-titlebar > span.icon-remove {
 div.map3d-map {
     position: absolute;
     left: 0;
-    top: 0;
     right: 0;
-    bottom: 0;
+    top: calc(-1 * var(--topbar-height));
+    bottom: calc(-1 * var(--bottombar-height));
 }
 
 div.map3d-inspector {
@@ -34,8 +29,7 @@ div.map3d-inspector {
     z-index: 1000;
     left: 0;
     top: var(--topbar-height);
-    max-height: calc(100vh - var(--topbar-height) - var(--bottombar-height));
-    max-height: calc(var(--vh, 1vh) * 100 - var(--topbar-height) - var(--bottombar-height));
+    max-height: calc(100% - var(--topbar-height) - var(--bottombar-height));
     overflow-y: auto;
 }
 

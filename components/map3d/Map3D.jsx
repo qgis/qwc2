@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import Instance from '@giro3d/giro3d/core/Instance.js';
@@ -34,6 +35,7 @@ import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
+import {MapContainerPortalContext} from '../PluginsContainer';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
@@ -76,11 +78,11 @@ class UnloadWrapper extends React.Component {
 }
 
 class Map3D extends React.Component {
+    static contextType = MapContainerPortalContext;
     static propTypes = {
         innerRef: PropTypes.func,
         layers: PropTypes.array,
         mapFocusChange: PropTypes.func,
-        mapMargins: PropTypes.object,
         onCameraChanged: PropTypes.func,
         onMapInitialized: PropTypes.func,
         options: PropTypes.object,
@@ -478,37 +480,30 @@ class Map3D extends React.Component {
     };
     render() {
         const baseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true);
-        const style = {
-            marginTop: this.props.mapMargins.top,
-            marginRight: this.props.mapMargins.right,
-            marginBottom: this.props.mapMargins.bottom,
-            marginLeft: this.props.mapMargins.left
-        };
-        return (
-            <div className="map3d-body">
-                <div className="map3d-inspector" />
-                <div className="map3d-map" onBlur={() => this.props.mapFocusChange(false)} onFocus={() => this.props.mapFocusChange(true)} ref={this.setupContainer} style={style} />
-                <View3DSwitcher position={2} />
-                {this.state.sceneContext.scene ? (
-                    <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
-                        <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
-                        <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} mapMargins={this.props.mapMargins} />
-                        <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
-                        <LayerTree3D sceneContext={this.state.sceneContext} />
-                        <BottomBar3D sceneContext={this.state.sceneContext} />
-                        <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
-                        <Map3DLight sceneContext={this.state.sceneContext} />
-                        <Measure3D sceneContext={this.state.sceneContext} />
-                        <Identify3D sceneContext={this.state.sceneContext} tileInfoServiceUrl={this.props.options.tileInfoServiceUrl} />
-                        <Compare3D sceneContext={this.state.sceneContext} />
-                        <Draw3D sceneContext={this.state.sceneContext} />
-                        <MapExport3D sceneContext={this.state.sceneContext} />
-                        <ExportObjects3D sceneContext={this.state.sceneContext} />
-                        <HideObjects3D sceneContext={this.state.sceneContext} />
-                    </UnloadWrapper>
-                ) : null}
-            </div>
-        );
+        return [
+            ReactDOM.createPortal((
+                <div className="map3d-map" key="Map3D" onBlur={() => this.props.mapFocusChange(false)} onFocus={() => this.props.mapFocusChange(true)} ref={this.setupContainer} />
+            ), this.context),
+            this.state.sceneContext.scene ? (
+                <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
+                    <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
+                    <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
+                    <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
+                    <LayerTree3D sceneContext={this.state.sceneContext} />
+                    <BottomBar3D sceneContext={this.state.sceneContext} />
+                    <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
+                    <Map3DLight sceneContext={this.state.sceneContext} />
+                    <Measure3D sceneContext={this.state.sceneContext} />
+                    <Identify3D sceneContext={this.state.sceneContext} tileInfoServiceUrl={this.props.options.tileInfoServiceUrl} />
+                    <Compare3D sceneContext={this.state.sceneContext} />
+                    <Draw3D sceneContext={this.state.sceneContext} />
+                    <MapExport3D sceneContext={this.state.sceneContext} />
+                    <ExportObjects3D sceneContext={this.state.sceneContext} />
+                    <HideObjects3D sceneContext={this.state.sceneContext} />
+                    <View3DSwitcher position={2} />
+                </UnloadWrapper>
+            ) : null
+        ];
     }
     setupContainer = (el) => {
         if (el) {
@@ -667,7 +662,10 @@ class Map3D extends React.Component {
 
         // Inspector
         if (["1", "true"].includes((UrlParams.getParam("inspector") || "").toLowerCase())) {
-            this.inspector = new Inspector(this.container.previousElementSibling, this.instance);
+            const inspectorContainer = document.createElement("div");
+            inspectorContainer.className = 'map3d-inspector';
+            this.container.appendChild(inspectorContainer);
+            this.inspector = new Inspector(inspectorContainer, this.instance);
         }
     };
     loadTilesetStyle = (objectId, options) => {
@@ -881,7 +879,6 @@ class Map3D extends React.Component {
 }
 
 export default connect((state) => ({
-    mapMargins: state.windows.mapMargins,
     theme: state.theme.current,
     layers: state.layers.flat
 }), {
