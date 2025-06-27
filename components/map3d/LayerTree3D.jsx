@@ -9,6 +9,7 @@
 import React from 'react';
 
 import classNames from 'classnames';
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {Box3} from 'three';
 
@@ -52,16 +53,18 @@ export default class LayerTree3D extends React.Component {
         const sceneContext = this.props.sceneContext;
         return (
             <div>
-                <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.objects")}</div>
-                {Object.entries(sceneContext.sceneObjects).map(([objectId, entry]) => {
-                    return this.renderLayerEntry(objectId, entry, sceneContext.updateSceneObject, true);
-                })}
-                <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.layers")}</div>
-                {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
-                    return this.renderLayerEntry(layerId, entry, sceneContext.updateColorLayer, false);
-                })}
-                <div className="layertree3d-option" onClick={() => this.setState(state => ({importvisible: !state.importvisible}))}>
-                    <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
+                <div className="layertree3d-layers">
+                    <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.objects")}</div>
+                    {Object.entries(sceneContext.sceneObjects).map(([objectId, entry]) => {
+                        return this.renderLayerEntry(objectId, entry, sceneContext.updateSceneObject, true);
+                    })}
+                    <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.layers")}</div>
+                    {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
+                        return this.renderLayerEntry(layerId, entry, sceneContext.updateColorLayer, false);
+                    })}
+                    <div className="layertree3d-option" onClick={() => this.setState(state => ({importvisible: !state.importvisible}))}>
+                        <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
+                    </div>
                 </div>
                 {this.state.importvisible ? this.renderImportForm() : null}
             </div>
@@ -136,6 +139,50 @@ export default class LayerTree3D extends React.Component {
                                 <div>{name}</div>
                             </div>
                         ))}
+                    </div>
+                ) : null}
+                {!isEmpty(entry.sublayers) ? (
+                    <div className="layertree3d-item-sublayers">
+                        {entry.sublayers.map((sublayer, idx) => this.renderSublayer(sublayer, entryId, updateCallback, [idx], entry.visibility))}
+                    </div>
+                ) : null}
+            </div>
+        );
+    };
+    renderSublayer = (sublayer, entryId, updateCallback, path, parentVisible) => {
+        const key = entryId + ":" + path.join(":");
+        const classes = classNames({
+            "layertree3d-item": true,
+            "layertree3d-item-disabled": !parentVisible || !sublayer.visibility
+        });
+        const optMenuClasses = classNames({
+            "layertree3d-item-menubutton": true,
+            "layertree3d-item-menubutton-active": this.state.activemenu === key
+        });
+        return (
+            <div className="layertree3d-item-container" key={key}>
+                <div className={classes}>
+                    <Icon className="layertree3d-item-checkbox"
+                        icon={sublayer.visibility ? "checked" : "unchecked"}
+                        onClick={() => updateCallback(entryId, {visibility: !sublayer.visibility}, path)}
+                        sublayer="layertree3d-item-checkbox"
+                    />
+                    <span className="layertree3d-item-title" title={sublayer.title}>{sublayer.title}</span>
+                    <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(key)}/>
+                </div>
+                {this.state.activemenu === key ? (
+                    <div className="layertree3d-item-optionsmenu">
+                        <div className="layertree3d-item-optionsmenu-row">
+                            <Icon icon="transparency" />
+                            <input className="layertree3d-item-transparency-slider" max="255" min="0"
+                                onChange={(ev) => updateCallback(entryId, {opacity: parseInt(ev.target.value, 10)}, path)}
+                                step="1" type="range" value={sublayer.opacity} />
+                        </div>
+                    </div>
+                ) : null}
+                {!isEmpty(sublayer.sublayers) ? (
+                    <div className="layertree3d-item-sublayers">
+                        {sublayer.sublayers.map((child, idx) => this.renderSublayer(child, entryId, updateCallback, [...path, idx], parentVisible && sublayer.visibility))}
                     </div>
                 ) : null}
             </div>

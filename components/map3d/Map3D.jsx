@@ -33,6 +33,7 @@ import {setCurrentTask} from '../../actions/task';
 import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import LayerUtils from '../../utils/LayerUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
 import {MapContainerPortalContext} from '../PluginsContainer';
@@ -120,7 +121,7 @@ class Map3D extends React.Component {
             addLayer: (layer) => {},
             getLayer: (layerId) => {},
             removeLayer: (layerId) => {},
-            updateColorLayer: (layerId, options) => {},
+            updateColorLayer: (layerId, options, path) => {},
 
             addSceneObject: (objectId, object, options = {}) => {},
             getSceneObject: (objectId) => {},
@@ -237,13 +238,30 @@ class Map3D extends React.Component {
                 return colorLayers;
             }
             const prevOptions = prevColorLayers[layer.id];
+            const preserveSublayerOptions = (entry, prevEntry) => {
+                return entry.sublayers?.map?.(child => {
+                    const prevChild = prevEntry?.sublayers?.find?.(x => x.name === child.name);
+                    if (prevChild?.name === child.name) {
+                        return {
+                            ...child,
+                            visibility: prevChild.visibility,
+                            opacity: prevChild.opacity,
+                            sublayers: preserveSublayerOptions(child, prevChild)
+                        };
+                    } else {
+                        return child;
+                    }
+                });
+            };
             colorLayers[layer.id] = {
                 ...layer,
                 visibility: prevOptions?.visibility ?? false,
                 opacity: prevOptions?.opacity ?? 255,
                 extrusionHeight: prevOptions?.extrusionHeight ?? (['vector', 'wfs'].includes(layer.type) ? 0 : undefined),
-                fields: prevOptions?.fields ?? undefined
+                fields: prevOptions?.fields ?? undefined,
+                sublayers: preserveSublayerOptions(layer, prevOptions)
             };
+            Object.assign(colorLayers[layer.id], LayerUtils.buildWMSLayerParams(colorLayers[layer.id]));
             if (colorLayers[layer.id].fields === undefined && layerCreator.getFields) {
                 layerCreator.getFields(layer).then(fields => {
                     this.updateColorLayer(layer.id, {fields});
@@ -400,17 +418,25 @@ class Map3D extends React.Component {
             this.map.removeLayer(layer, {dispose: true});
         });
     };
-    updateColorLayer = (layerId, options) => {
+    updateColorLayer = (layerId, options, path = []) => {
         this.setState((state) => {
+            const entry = {
+                ...state.sceneContext.colorLayers[layerId]
+            };
+            let subentry = entry;
+            path.forEach(idx => {
+                subentry.sublayers = [...subentry.sublayers];
+                subentry.sublayers[idx] = {...subentry.sublayers[idx]};
+                subentry = subentry.sublayers[idx];
+            });
+            Object.assign(subentry, options);
+            Object.assign(entry, LayerUtils.buildWMSLayerParams(entry));
             return {
                 sceneContext: {
                     ...state.sceneContext,
                     colorLayers: {
                         ...state.sceneContext.colorLayers,
-                        [layerId]: {
-                            ...state.sceneContext.colorLayers[layerId],
-                            ...options
-                        }
+                        [layerId]: entry
                     }
                 }
             };
