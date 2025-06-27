@@ -138,7 +138,6 @@ export const ZoomOutPlugin = connect((state) => ({
     maxZoom: state.map.resolutions.length - 1,
     direction: -1,
     mapCrs: state.map.projection,
-    mapMargins: state.windows.mapMargins,
     theme: state.theme.current
 }), {
     changeZoomLevel: changeZoomLevel,
