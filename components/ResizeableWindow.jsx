@@ -52,7 +52,6 @@ class ResizeableWindow extends React.Component {
         maxHeight: PropTypes.number,
         maxWidth: PropTypes.number,
         maximizeable: PropTypes.bool,
-        menuMargins: PropTypes.object,
         minHeight: PropTypes.number,
         minWidth: PropTypes.number,
         minimizeable: PropTypes.bool,
@@ -245,8 +244,8 @@ class ResizeableWindow extends React.Component {
         const marginLeft = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.left : 0;
         const marginRight = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.right : 0;
         const containerStyle = {
-            left: (marginLeft + this.props.menuMargins.left) + 'px',
-            right: (marginRight + this.props.menuMargins.right) + 'px',
+            left: marginLeft + 'px',
+            right: marginRight + 'px',
             top: splitTopAndBottomBar ? 0 : this.props.topbarHeight + 'px',
             bottom: splitTopAndBottomBar ? 0 : this.props.bottombarHeight + 'px',
             zIndex: splitTopAndBottomBar ? 110 : this.props.baseZIndex + this.props.windowStacking.findIndex(item => item === this.id)
@@ -542,8 +541,7 @@ export default connect((state) => ({
     windowStacking: state.windows.stacking,
     topbarHeight: state.windows.topbarHeight,
     bottombarHeight: state.windows.bottombarHeight,
-    mapMargins: state.windows.mapMargins,
-    menuMargins: state.windows.menuMargins
+    mapMargins: state.windows.mapMargins
 }), {
     raiseWindow: raiseWindow,
     registerWindow: registerWindow,
