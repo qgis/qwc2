@@ -177,11 +177,12 @@ class Compare3D extends React.Component {
         }, {once: true});
     };
     centerArrowsInView = () => {
-        const cameraTarget = this.props.sceneContext.scene.view.controls.target.clone();
+        const inter = this.props.sceneContext.getSceneIntersection(0, 0);
+        const center = inter?.point ?? this.props.sceneContext.scene.view.controls.target.clone();
         const alpha = this.state.planeA / 180 * Math.PI;
         const dir = new Vector3(Math.cos(alpha), -Math.sin(alpha), 0);
         const curPos = new Vector3(this.state.planeX, this.state.planeY, 0);
-        const newPos = curPos.add(dir.multiplyScalar(cameraTarget.sub(curPos).dot(dir)));
+        const newPos = curPos.add(dir.multiplyScalar(center.sub(curPos).dot(dir)));
         this.setState({planeX: newPos.x, planeY: newPos.y});
         this.positionArrows(newPos.x, newPos.y, this.state.planeA);
     };
