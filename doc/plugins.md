@@ -53,7 +53,6 @@ Plugin reference
 * [MeasurementSupport](#measurementsupport)
 * [OverviewMap](#overviewmap)
 * [RedliningSupport](#redliningsupport)
-* [ScaleBarSupport](#scalebarsupport)
 * [SnappingSupport](#snappingsupport)
 
 ---
@@ -248,7 +247,9 @@ Bottom bar, displaying mouse coordinate, scale, etc.
 |----------|------|-------------|---------------|
 | additionalBottomBarLinks | `[{`<br />`  label: string,`<br />`  labelMsgId: string,`<br />`  url: string,`<br />`  urlTarget: string,`<br />`  icon: string,`<br />`}]` | Additional bottombar links | `undefined` |
 | displayCoordinates | `bool` | Whether to display the coordinates in the bottom bar. | `true` |
+| displayScalebar | `bool` | Whether to display the scalebar in the bottom bar. | `true` |
 | displayScales | `bool` | Whether to display the scale in the bottom bar. | `true` |
+| scalebarOptions | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) | `undefined` |
 | termsUrl | `string` | The URL of the terms label anchor. | `undefined` |
 | termsUrlIcon | `string` | Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. | `undefined` |
 | termsUrlTarget | `string` | The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. | `undefined` |
@@ -1009,14 +1010,6 @@ Overview map support for the map component.
 RedliningSupport<a name="redliningsupport"></a>
 ----------------------------------------------------------------
 Redlining support for the map component.
-
-ScaleBarSupport<a name="scalebarsupport"></a>
-----------------------------------------------------------------
-Scalebar support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) | `undefined` |
 
 SnappingSupport<a name="snappingsupport"></a>
 ----------------------------------------------------------------

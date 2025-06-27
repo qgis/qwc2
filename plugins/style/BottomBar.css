@@ -19,6 +19,17 @@
     margin: 0 0.5em;
 }
 
+#BottomBar div.bottombar-scalebar > div.ol-scale-line {
+    margin-left: -2px;
+    margin-bottom: -2px;
+    background-color: transparent;
+}
+
+#BottomBar div.bottombar-scalebar > div.ol-scale-line > div.ol-scale-line-inner {
+    color: var(--panel-text-color);
+    border-color: var(--panel-text-color);
+}
+
 #BottomBar input.bottombar-mousepos {
     width: 20ch;
     text-align: center;

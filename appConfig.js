@@ -63,7 +63,6 @@ import LocateSupport from './plugins/map/LocateSupport';
 import MeasurementSupport from './plugins/map/MeasurementSupport';
 import OverviewSupport from './plugins/map/OverviewSupport';
 import RedliningSupport from './plugins/map/RedliningSupport';
-import ScaleBarSupport from './plugins/map/ScaleBarSupport';
 import SnappingSupport from './plugins/map/SnappingSupport';
 import BufferSupport from './plugins/redlining/RedliningBufferSupport';
 import defaultLocaleData from './static/translations/en-US.json';
@@ -82,7 +81,6 @@ export default {
                 LocateSupport: LocateSupport,
                 OverviewSupport: OverviewSupport,
                 RedliningSupport: RedliningSupport,
-                ScaleBarSupport: ScaleBarSupport,
                 SnappingSupport: SnappingSupport
             }),
             APIPlugin: APIPlugin,

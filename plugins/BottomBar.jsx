@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import {changeZoomLevel, setDisplayCrs} from '../actions/map';
@@ -39,12 +40,16 @@ class BottomBar extends React.Component {
         changeZoomLevel: PropTypes.func,
         /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
+        /** Whether to display the scalebar in the bottom bar. */
+        displayScalebar: PropTypes.bool,
         /** Whether to display the scale in the bottom bar. */
         displayScales: PropTypes.bool,
         fullscreen: PropTypes.bool,
         map: PropTypes.object,
         mapMargins: PropTypes.object,
         openExternalUrl: PropTypes.func,
+        /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) */
+        scalebarOptions: PropTypes.object,
         setBottombarHeight: PropTypes.func,
         setDisplayCrs: PropTypes.func,
         /** The URL of the terms label anchor. */
@@ -62,11 +67,17 @@ class BottomBar extends React.Component {
     };
     static defaultProps = {
         displayCoordinates: true,
+        displayScalebar: true,
         displayScales: true
     };
     state = {
         scale: 0
     };
+    componentWillUnmount() {
+        if (this.scalebar) {
+            MapUtils.getHook(MapUtils.GET_MAP)?.removeControl?.(this.scalebar);
+        }
+    }
     componentDidUpdate(prevProps) {
         if (this.props.map !== prevProps.map) {
             this.setState({scale: Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom))});
@@ -101,6 +112,10 @@ class BottomBar extends React.Component {
         const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, value]) => {
             return enabledMouseCrs.includes(key);
         }));
+        let scalebar = null;
+        if (this.props.displayScalebar) {
+            scalebar = (<div className="bottombar-scalebar" ref={this.initScaleBar} />);
+        }
         let coordinates = null;
         if (this.props.displayCoordinates) {
             coordinates = (
@@ -143,6 +158,7 @@ class BottomBar extends React.Component {
 
         return (
             <div id="BottomBar" ref={this.storeHeight}  style={style}>
+                {scalebar}
                 <span className="bottombar-spacer" />
                 {coordinates}
                 {scales}
@@ -153,6 +169,15 @@ class BottomBar extends React.Component {
             </div>
         );
     }
+    initScaleBar = (el) => {
+        this.scalebar = new ol.control.ScaleLine({
+            target: el,
+            minWidth: 64,
+            units: 'metric',
+            ...this.props.scalebarOptions
+        });
+        MapUtils.getHook(MapUtils.GET_MAP).addControl(this.scalebar);
+    };
     openUrl = (ev, url, target, title, icon) => {
         if (target === "iframe") {
             target = ":iframedialog:externallinkiframe";
