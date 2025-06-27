@@ -4,26 +4,22 @@
 }
 
 div.overview-map {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     right: 0;
-    z-index: 101;
+    z-index: 103;
 }
 
 div.overview-map > button {
     font-size: initial!important;
     right: 0.25em;
     bottom: 0.25em;
-    width: 1.375em;
-    height: 1.375em;
     position: absolute;
     color: var(--map-button-text-color)!important;
     background-color: var(--map-button-bg-color)!important;
     border: 0!important;
     outline: 0;
-    z-index: 101;
     border-radius: 2px;
-    font-weight: bold;
 }
 
 div.overview-map > div.ol-overviewmap-map {

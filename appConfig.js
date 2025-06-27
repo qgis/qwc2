@@ -39,6 +39,7 @@ import MapLegendPlugin from './plugins/MapLegend';
 import MapTipPlugin from './plugins/MapTip';
 import MeasurePlugin from './plugins/Measure';
 import NewsPopupPlugin from './plugins/NewsPopup';
+import OverviewMapPlugin from './plugins/OverviewMap';
 import PanoramaxPlugin from './plugins/Panoramax';
 import PortalPlugin from './plugins/Portal';
 import PrintPlugin from './plugins/Print';
@@ -61,7 +62,6 @@ import {ZoomInPlugin, ZoomOutPlugin} from './plugins/ZoomButtons';
 import EditingSupport from './plugins/map/EditingSupport';
 import LocateSupport from './plugins/map/LocateSupport';
 import MeasurementSupport from './plugins/map/MeasurementSupport';
-import OverviewSupport from './plugins/map/OverviewSupport';
 import RedliningSupport from './plugins/map/RedliningSupport';
 import SnappingSupport from './plugins/map/SnappingSupport';
 import BufferSupport from './plugins/redlining/RedliningBufferSupport';
@@ -79,7 +79,6 @@ export default {
                 EditingSupport: EditingSupport,
                 MeasurementSupport: MeasurementSupport,
                 LocateSupport: LocateSupport,
-                OverviewSupport: OverviewSupport,
                 RedliningSupport: RedliningSupport,
                 SnappingSupport: SnappingSupport
             }),
@@ -110,6 +109,7 @@ export default {
             MapTipPlugin: MapTipPlugin,
             MeasurePlugin: MeasurePlugin,
             NewsPopupPlugin: NewsPopupPlugin,
+            OverviewMapPlugin: OverviewMapPlugin,
             PanoramaxPlugin: PanoramaxPlugin,
             PortalPlugin: PortalPlugin,
             PrintPlugin: PrintPlugin,

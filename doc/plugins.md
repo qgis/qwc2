@@ -30,6 +30,7 @@ Plugin reference
 * [MapTip](#maptip)
 * [Measure](#measure)
 * [NewsPopup](#newspopup)
+* [OverviewMap](#overviewmap)
 * [Panoramax](#panoramax)
 * [Portal](#portal)
 * [Print](#print)
@@ -51,7 +52,6 @@ Plugin reference
 * [EditingSupport](#editingsupport)
 * [LocateSupport](#locatesupport)
 * [MeasurementSupport](#measurementsupport)
-* [OverviewMap](#overviewmap)
 * [RedliningSupport](#redliningsupport)
 * [SnappingSupport](#snappingsupport)
 
@@ -679,6 +679,14 @@ revision is published (specified via newsRev prop).
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 | sidebarWidth | `string` | The default width of the sidebar, as a CSS width string. | `undefined` |
 
+OverviewMap<a name="overviewmap"></a>
+----------------------------------------------------------------
+Overview map support for the map component.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.<br /> Additionally, you can specify:<br /> - `layer`: Custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).<br /> - `viewOptions`: Options for the OverviewMap View, see [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_View.html). | `{}` |
+
 Panoramax<a name="panoramax"></a>
 ----------------------------------------------------------------
 Panoramax Integration for QWC2.
@@ -998,14 +1006,6 @@ GPS locate support for the map component.
 MeasurementSupport<a name="measurementsupport"></a>
 ----------------------------------------------------------------
 Measurement support for the map component.
-
-OverviewMap<a name="overviewmap"></a>
-----------------------------------------------------------------
-Overview map support for the map component.
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| options | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.<br /> Additionally, you can specify:<br /> - `layer`: Custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).<br /> - `viewOptions`: Options for the OverviewMap View, see [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_View.html). | `{}` |
 
 RedliningSupport<a name="redliningsupport"></a>
 ----------------------------------------------------------------

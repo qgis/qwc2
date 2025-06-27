@@ -14,10 +14,11 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
-import {LayerRole} from '../../actions/layers';
-import OlLayer from '../../components/map/OlLayer';
+import {LayerRole} from '../actions/layers';
+import OlLayer from '../components/map/OlLayer';
+import MapUtils from '../utils/MapUtils';
 
-import './style/OverviewSupport.css';
+import './style/OverviewMap.css';
 
 /**
  * Overview map support for the map component.
@@ -27,7 +28,6 @@ class OverviewMap extends React.Component {
         backgroundLayer: PropTypes.object,
         center: PropTypes.array,
         layers: PropTypes.array,
-        map: PropTypes.object,
         /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_OverviewMap-OverviewMap.html) for general options.
          *  Additionally, you can specify:
          *  - `layer`: Custom overview layer, in the same form as background layer definitions (`{type: "<wms|wmts>", "url": ...}`).
@@ -39,17 +39,18 @@ class OverviewMap extends React.Component {
         themes: PropTypes.object,
         zoom: PropTypes.number
     };
+    static defaultProps = {
+        options: {}
+    };
     state = {
         overviewView: null,
         overviewLayer: null
     };
-    static defaultProps = {
-        options: {}
+    componentWillUnmount = () => {
+        if (this.overview) {
+            MapUtils.getHook(MapUtils.GET_MAP)?.removeControl?.(this.overview);
+        }
     };
-    constructor(props) {
-        super(props);
-        this.overview = null;
-    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             this.setupView();
@@ -93,7 +94,7 @@ class OverviewMap extends React.Component {
 
             this.overview = new ol.control.OverviewMap(opt);
             this.overview.setTarget(el);
-            this.props.map.addControl(this.overview);
+            MapUtils.getHook(MapUtils.GET_MAP).addControl(this.overview);
             this.setupView();
         }
     };
@@ -108,20 +109,14 @@ class OverviewMap extends React.Component {
 
         this.setState({overviewView: overviewView, overviewLayer: null});
     };
-    componentWillUnmount = () => {
-        if (this.overview) {
-            this.props.map.removeControl(this.overview);
-        }
-    };
     render() {
-        return [
-            (
-                <div key="OverviewMap" ref={this.initOverviewMap} />
-            ),
-            this.state.overviewLayer ? (
-                <OlLayer key={this.state.overviewLayer.id} map={this.overview.getOverviewMap()} options={this.state.overviewLayer} projection={this.props.projection} />
-            ) : null
-        ];
+        return (
+            <div ref={this.initOverviewMap}>
+                {this.state.overviewLayer ? (
+                    <OlLayer key={this.state.overviewLayer.id} map={this.overview.getOverviewMap()} options={this.state.overviewLayer} projection={this.props.projection} />
+                ) : null}
+            </div>
+        );
     }
 }
 
