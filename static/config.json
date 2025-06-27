@@ -97,7 +97,9 @@
       {
         "name": "BottomBar",
         "cfg": {
-          "viewertitleUrl": "https://qwc-services.github.io/",
+          "scalebarOptions": {
+            "units": "metric"
+          },
           "termsUrl": "https://qwc-services.github.io/",
           "viewertitleUrlTarget": "_blank"
         }
@@ -200,16 +202,10 @@
             "constrainExtent": false
           },
           "toolsOptions": {
-            "OverviewSupport": {
-              "tipLabel": "Overview"
-            },
             "LocateSupport": {
               "keepCurrentZoomLevel": true,
               "stopFollowingOnDrag": true,
               "startupMode": "DISABLED"
-            },
-            "ScaleBarSupport": {
-              "units": "metric"
             }
           },
           "swipeGeometryTypeBlacklist": [],
