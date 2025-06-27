@@ -121,7 +121,7 @@ export default function windows(state = defaultState, action) {
             bottom: splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0),
             left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0),
             top: splitWindows.filter(entry => entry.side === 'top').reduce((res, e) => Math.max(e.size, res), 0),
-            splitTopAndBottomBar: splitWindows.find(x => x.splitTopAndBottomBar === true)
+            splitTopAndBottomBar: splitWindows.find(x => x.splitTopAndBottomBar === true) !== undefined
         };
         return {
             ...state,
