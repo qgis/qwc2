@@ -2,7 +2,6 @@ div.taskbar-container {
     position: absolute;
     left: 0;
     right: 0;
-    top: var(--topbar-height);
     display: flex;
     justify-content: center;
     pointer-events: none;

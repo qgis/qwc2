@@ -7,22 +7,23 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
+import {MapContainerPortalContext} from '../components/PluginsContainer';
 import Icon from './Icon';
 
 import './style/TaskBar.css';
 
 
 class TaskBar extends React.Component {
+    static contextType = MapContainerPortalContext;
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
-        mapMargins: PropTypes.object,
-        menuMargins: PropTypes.object,
         onHide: PropTypes.func,
         onShow: PropTypes.func,
         setCurrentTask: PropTypes.func,
@@ -59,13 +60,9 @@ class TaskBar extends React.Component {
         if (this.props.currentTask.id !== this.props.task) {
             return null;
         }
-        const containerStyle = {
-            left: (this.props.menuMargins.left + this.props.mapMargins.left) +  'px',
-            right: (this.props.menuMargins.right + this.props.mapMargins.right) + 'px'
-        };
-        return (
+        return ReactDOM.createPortal((
             <div>
-                <div className="taskbar-container" style={containerStyle}>
+                <div className="taskbar-container">
                     <div className={"taskbar " + this.props.task}>
                         <div className="body">
                             {this.renderRole("body")}
@@ -79,15 +76,13 @@ class TaskBar extends React.Component {
                 </div>
                 {this.renderRole("extra")}
             </div>
-        );
+        ), this.context);
     }
 }
 
 
 export default connect((state) => ({
-    currentTask: state.task,
-    mapMargins: state.windows.mapMargins,
-    menuMargins: state.windows.menuMargins
+    currentTask: state.task
 }), {
     setCurrentTask: setCurrentTask,
     setCurrentTaskBlocked: setCurrentTaskBlocked
