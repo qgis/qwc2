@@ -107,6 +107,7 @@ export default class EditTool3D extends React.Component {
         this.transformControls = new TransformControls( camera, renderer.domElement );
         this.props.sceneContext.scene.add(this.transformControls.getHelper());
         this.transformControls.setMode(this.state.mode);
+        this.transformControls.setSpace(this.state.mode === 'rotate' ? 'local' : 'world');
         this.transformControls.setTranslationSnap(1);
         this.transformControls.setRotationSnap(5 / 180 * Math.PI);
         this.transformControls.addEventListener('change', this.toolChanged);
@@ -157,6 +158,7 @@ export default class EditTool3D extends React.Component {
         }
         if (this.state.mode !== prevState.mode) {
             this.transformControls.setMode(this.state.mode);
+            this.transformControls.setSpace(this.state.mode === 'rotate' ? 'local' : 'world');
             this.transformControls.getHelper().updateMatrixWorld();
             this.props.sceneContext.scene.notifyChange();
         }
