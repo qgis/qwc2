@@ -17,7 +17,6 @@ import {setView3dMode, View3DMode} from '../actions/display';
 import * as layersExports from '../actions/layers';
 import {panTo} from '../actions/map';
 import * as mapExports from '../actions/map';
-import {setCurrentTask} from '../actions/task';
 import * as themeExports from '../actions/theme';
 import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
@@ -101,7 +100,6 @@ class View3D extends React.Component {
         /** The position slot index of the 3d switch map button, from the bottom (0: bottom slot). */
         buttonPosition: PropTypes.number,
         display: PropTypes.object,
-        enabled: PropTypes.bool,
         /** Default window geometry. */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -119,7 +117,6 @@ class View3D extends React.Component {
         /** Minimum scale denominator when zooming to search result. */
         searchMinScaleDenom: PropTypes.number,
         searchProviders: PropTypes.object,
-        setCurrentTask: PropTypes.func,
         setView3dMode: PropTypes.func,
         startupParams: PropTypes.object,
         startupState: PropTypes.object,
@@ -205,10 +202,7 @@ class View3D extends React.Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.enabled && !prevProps.enabled) {
-            this.setState({mode: View3DMode.FULLSCREEN});
-            this.props.setCurrentTask(null);
-        } else if (this.props.display.view3dMode !== View3DMode.DISABLED && prevProps.display.view3dMode === View3DMode.DISABLED) {
+        if (this.props.view3dMode !== View3DMode.DISABLED && prevProps.view3dMode === View3DMode.DISABLED) {
             import('../components/map3d/Map3D').then(component => {
                 this.map3dComponent = component.default;
                 this.map3dComponentRef = null;
@@ -391,7 +385,6 @@ class View3D extends React.Component {
 
 export default connect(
     createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
-        enabled: state.task.id === 'View3D',
         display: state.display,
         map: state.map,
         layers: state.layers,
@@ -404,7 +397,6 @@ export default connect(
         searchProviders
     })), {
         panTo: panTo,
-        setCurrentTask: setCurrentTask,
         setView3dMode: setView3dMode
     }
 )(View3D);
