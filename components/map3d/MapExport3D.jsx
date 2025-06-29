@@ -14,6 +14,7 @@ import FileSaver from 'file-saver';
 import formDataEntries from 'formdata-json';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {SRGBColorSpace, Vector2, WebGLRenderTarget} from 'three';
 import utif from 'utif';
 
 import {setCurrentTask} from '../../actions/task';
@@ -21,6 +22,7 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
+import NumberInput from '../widgets/NumberInput';
 import Spinner from '../widgets/Spinner';
 
 import './../../plugins/style/MapExport.css';
@@ -43,7 +45,9 @@ class MapExport3D extends React.Component {
         y: 0,
         width: 0,
         height: 0,
-        exporting: false
+        exporting: false,
+        exportScaleFactor: 100,
+        exportDpi: 300
     };
     onShow = () => {
         if (!isEmpty(this.props.theme?.print)) {
@@ -51,10 +55,14 @@ class MapExport3D extends React.Component {
                 return a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
             });
             const layout = layouts.find(l => l.default) || layouts[0];
-            this.setState({layouts: layouts, layout: layout});
+            const exportDpi = this.props.theme.printResolutions?.find(x => x === 300) ?? this.props.theme.printResolutions?.[0] ?? 300;
+            this.setState({layouts: layouts, layout: layout, exportDpi: exportDpi});
         } else {
             this.setState({layouts: [], layout: ""});
         }
+    };
+    onHide = () => {
+        this.setState({exporting: false, x: 0, y: 0, width: 0, height: 0});
     };
     formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value});
@@ -74,6 +82,34 @@ class MapExport3D extends React.Component {
             this.state.selectedFormat === "application/pdf" && !this.state.layout
         );
         const mapName = this.state.layout?.map?.name || "";
+
+        let resolutionChooser = null;
+        if (this.state.selectedFormat === 'application/pdf') {
+            if (!isEmpty(this.props.theme.printResolutions)) {
+                resolutionChooser = (
+                    <select onChange={(ev) => this.setState({exportDpi: ev.target.value})} value={this.state.exportDpi}>
+                        {this.props.theme.printResolutions.map(res => (
+                            <option key={res} value={res}>{res} dpi</option>
+                        ))}
+                    </select>
+                );
+            } else {
+                resolutionChooser = (
+                    <NumberInput decimals={0} max={500} min={50}
+                        onChange={val => this.setState({exportDpi: val})}
+                        suffix=" dpi" value={this.state.exportDpi} />
+                );
+            }
+        } else {
+            resolutionChooser = (
+                <select onChange={(ev) => this.setState({exportScaleFactor: ev.target.value})} value={this.state.exportScaleFactor}>
+                    {[100, 150, 200, 250, 300, 350, 400, 450, 500].map(res => (
+                        <option key={res} value={res}>{res}%</option>
+                    ))}
+                </select>
+            );
+        }
+
         return (
             <div className="mapexport-body">
                 <form onSubmit={this.export}>
@@ -101,6 +137,12 @@ class MapExport3D extends React.Component {
                                     </td>
                                 </tr>
                             ) : null}
+                            <tr>
+                                <td>{LocaleUtils.tr("mapexport.resolution")}</td>
+                                <td>
+                                    {resolutionChooser}
+                                </td>
+                            </tr>
                             {this.state.selectedFormat === 'application/pdf' ? (this.state.layout?.labels || []).map(label => {
                                 // Omit labels which start with __
                                 if (label.startsWith("__")) {
@@ -213,37 +255,87 @@ class MapExport3D extends React.Component {
             }, {once: true});
         }
     };
+    takeScreenshot = (scale, window) => {
+        const renderer = this.props.sceneContext.scene.renderer;
+        const scene = this.props.sceneContext.scene.scene;
+        const camera = this.props.sceneContext.scene.view.camera;
+
+        const originalSize = renderer.getSize(new Vector2());
+        const originalRenderTarget = renderer.getRenderTarget();
+
+        const renderWidth = Math.round(originalSize.x * scale);
+        const renderHeight = Math.round(originalSize.y * scale);
+
+        const winX = Math.round(window.x * scale);
+        const winY = Math.round(window.y * scale);
+        const winWidth = Math.round(window.width * scale);
+        const winHeight = Math.round(window.height * scale);
+
+        // Render to high-resolution offscreen target
+        const renderTarget = new WebGLRenderTarget(renderWidth, renderHeight, {
+            colorSpace: SRGBColorSpace
+        });
+        renderer.setSize(renderWidth, renderHeight);
+        renderer.setPixelRatio(1); // important! avoid devicePixelRatio scaling
+        renderer.setRenderTarget(renderTarget);
+        renderer.render(scene, camera);
+        renderer.setRenderTarget(null);
+
+        // Read the pixels from the render target and write to offscreen canvas
+        const readBuffer = new Uint8Array(renderWidth * renderHeight * 4);
+        renderer.readRenderTargetPixels(renderTarget, 0, 0, renderWidth, renderHeight, readBuffer);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = winWidth;
+        canvas.height = winHeight;
+        const context = canvas.getContext('2d');
+        const imageData = context.createImageData(winWidth, winHeight);
+        for (let y = 0; y < winHeight; y++) {
+            const srcRow = (winX + (renderHeight - 1 - winY - y) * renderWidth) * 4;
+            const destRow = (y * winWidth) * 4;
+            imageData.data.set(readBuffer.subarray(srcRow, srcRow + winWidth * 4), destRow);
+        }
+        context.putImageData(imageData, 0, 0);
+
+        // Restore original renderer target
+        renderer.setSize(originalSize.x, originalSize.y);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setRenderTarget(originalRenderTarget);
+        renderer.render(scene, camera);
+
+        return {canvas, imageData};
+    };
     export = (ev) => {
         ev.preventDefault();
+        if (this.state.width <= 0 || this.state.height <= 0) {
+            return;
+        }
         const form = ev.target;
+
+        let exportScale = this.state.exportScaleFactor / 100;
+        if (this.state.selectedFormat === "application/pdf") {
+            const mapWidthMM = this.state.layout.map.width;
+            const exportWidthPx = this.state.width;
+            exportScale = Math.min(5, this.state.exportDpi / (exportWidthPx * 25.4 / mapWidthMM));
+        }
+
         this.setState({exporting: true});
-        const {x, y, width, height} = this.state;
-        if (width > 0 && height > 0) {
-            const data = this.props.sceneContext.scene.renderer.domElement.toDataURL('image/png');
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const img = new Image();
-            img.src = data;
-            img.onload = () => {
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(img, -x, -y);
-                if (this.state.selectedFormat === "application/pdf") {
-                    canvas.toBlob((blob) => {
-                        blob.arrayBuffer().then(imgBuffer => this.exportToPdf(form, imgBuffer));
-                    }, "image/png");
-                } else if (this.state.selectedFormat === "image/tiff") {
-                    const imageData = ctx.getImageData(0, 0, width, height);
-                    const blob = new Blob([utif.encodeImage(imageData.data, width, height)], { type: "image/tiff" });
-                    FileSaver.saveAs(blob, "export." + this.state.selectedFormat.replace(/.*\//, ''));
-                    this.setState({exporting: false});
-                } else {
-                    canvas.toBlob((blob) => {
-                        FileSaver.saveAs(blob, "export." + this.state.selectedFormat.replace(/.*\//, ''));
-                        this.setState({exporting: false});
-                    }, this.state.selectedFormat);
-                }
-            };
+        const {canvas, context} = this.takeScreenshot(exportScale, this.state);
+
+        if (this.state.selectedFormat === "application/pdf") {
+            canvas.toBlob((blob) => {
+                blob.arrayBuffer().then(imgBuffer => this.exportToPdf(form, imgBuffer));
+            }, "image/png");
+        } else if (this.state.selectedFormat === "image/tiff") {
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const blob = new Blob([utif.encodeImage(imageData.data, canvas.width, canvas.height)], { type: "image/tiff" });
+            FileSaver.saveAs(blob, "export." + this.state.selectedFormat.replace(/.*\//, ''));
+            this.setState({exporting: false});
+        } else {
+            canvas.toBlob((blob) => {
+                FileSaver.saveAs(blob, "export." + this.state.selectedFormat.replace(/.*\//, ''));
+                this.setState({exporting: false});
+            }, this.state.selectedFormat);
         }
     };
     async exportToPdf(form, imgBuffer) {
