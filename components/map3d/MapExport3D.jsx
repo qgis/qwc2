@@ -36,7 +36,7 @@ class MapExport3D extends React.Component {
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object
     };
-    state = {
+    static defaultState = {
         minimized: false,
         layouts: [],
         selectedFormat: 'image/jpeg',
@@ -45,31 +45,44 @@ class MapExport3D extends React.Component {
         y: 0,
         width: 0,
         height: 0,
+        frameRatio: null,
         exporting: false,
         exportScaleFactor: 100,
         exportDpi: 300
     };
+    state = MapExport3D.defaultState;
     onShow = () => {
         if (!isEmpty(this.props.theme?.print)) {
             const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
                 return a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
             });
-            const layout = layouts.find(l => l.default) || layouts[0];
             const exportDpi = this.props.theme.printResolutions?.find(x => x === 300) ?? this.props.theme.printResolutions?.[0] ?? 300;
-            this.setState({layouts: layouts, layout: layout, exportDpi: exportDpi});
+            this.setState({layouts: layouts, exportDpi: exportDpi});
         } else {
-            this.setState({layouts: [], layout: ""});
+            this.setState({layouts: []});
         }
     };
     onHide = () => {
-        this.setState({exporting: false, x: 0, y: 0, width: 0, height: 0});
+        this.setState(MapExport3D.defaultState);
     };
     formatChanged = (ev) => {
-        this.setState({selectedFormat: ev.target.value});
+        let layout = '';
+        let frameRatio = null;
+        if (ev.target.value === "application/pdf") {
+            layout = this.state.layouts.find(l => l.default) || this.state.layouts[0];
+            frameRatio = layout.map.height / layout.map.width;
+        }
+        this.setState(state => ({
+            selectedFormat: ev.target.value, layout, frameRatio,
+            height: frameRatio ? Math.round(state.width * frameRatio) : state.height
+        }));
     };
     layoutChanged = (ev) => {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);
-        this.setState({layout: layout});
+        const frameRatio = layout.map.height / layout.map.width;
+        this.setState(state => ({
+            layout: layout, frameRatio, height: Math.round(state.width * frameRatio)
+        }));
     };
     renderBody = () => {
         const formatMap = {
@@ -89,7 +102,7 @@ class MapExport3D extends React.Component {
                 resolutionChooser = (
                     <select onChange={(ev) => this.setState({exportDpi: ev.target.value})} value={this.state.exportDpi}>
                         {this.props.theme.printResolutions.map(res => (
-                            <option key={res} value={res}>{res} dpi</option>
+                            <option disabled={isEmpty(this.state.layouts)} key={res} value={res}>{res} dpi</option>
                         ))}
                     </select>
                 );
@@ -237,12 +250,11 @@ class MapExport3D extends React.Component {
                 width: 0,
                 height: 0
             });
-            const constrainRatio = this.state.selectedFormat === "application/pdf" && this.state.layout;
-            const ratio = constrainRatio ? this.state.layout.map.height / this.state.layout.map.width : null;
             const onMouseMove = (event) => {
                 this.setState((state) => {
+                    const ratio = this.state.frameRatio;
                     const width = Math.round(Math.max(0, Math.round(event.clientX - rect.left) - state.x));
-                    const height = constrainRatio ? Math.round(width * ratio) : Math.round(Math.max(0, Math.round(event.clientY - rect.top) - state.y));
+                    const height = ratio ? Math.round(width * ratio) : Math.round(Math.max(0, Math.round(event.clientY - rect.top) - state.y));
                     return {
                         width: width,
                         height: height
