@@ -714,6 +714,9 @@
       "none": "Geen",
       "prompt": "Voer de naam van de laag in"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Sluiten",
       "detach": "",

@@ -714,6 +714,9 @@
       "none": "Yok",
       "prompt": "Katman adı giriniz"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Kapat",
       "detach": "Çöz",

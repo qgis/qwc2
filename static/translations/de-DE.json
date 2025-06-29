@@ -714,6 +714,9 @@
       "none": "Keine",
       "prompt": "Ebenenname eingeben"
     },
+    "view3d": {
+      "storingstate": "3D Ansicht wird gespeichert..."
+    },
     "window": {
       "close": "Schließen",
       "detach": "Abkoppeln",

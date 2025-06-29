@@ -714,6 +714,9 @@
       "none": "Няма",
       "prompt": "Въведете името на слоя"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Затвори",
       "detach": "Отделяне на",

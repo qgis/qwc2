@@ -714,6 +714,9 @@
       "none": "",
       "prompt": "Nom de la capa"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Tancar",
       "detach": "",

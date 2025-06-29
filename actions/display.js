@@ -17,7 +17,8 @@ export const SET_VIEW_3D_MODE = 'SET_VIEW_3D_MODE';
 export const View3DMode = {
     DISABLED: 0,
     FULLSCREEN: 1,
-    SPLITSCREEN: 2
+    SPLITSCREEN: 2,
+    DISABLING: 3
 };
 
 

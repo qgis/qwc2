@@ -23,11 +23,14 @@ import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import StandardApp from '../components/StandardApp';
 import View3DSwitcher from '../components/map3d/View3DSwitcher';
+import Spinner from '../components/widgets/Spinner';
 import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
+
+import './style/View3D.css';
 
 
 /**
@@ -141,7 +144,8 @@ class View3D extends React.Component {
     state = {
         componentLoaded: false,
         windowDetached: false,
-        viewsLocked: false
+        viewsLocked: false,
+        storedState: null
     };
     constructor(props) {
         super(props);
@@ -174,14 +178,30 @@ class View3D extends React.Component {
         const localConfig = forwardReducer("localConfig", [], "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE");
         const theme = forwardReducer("theme", themeActions, "SYNC_THEME_FROM_PARENT_STORE");
         this.store = createStore({display, layers, localConfig, map, theme, task, windows});
+
+        // Set stored state
+        const storedState = {
+            ...props.startupState.map3d
+        };
+        if (props.startupParams.v3d) {
+            const values = props.startupParams.v3d.split(",").map(parseFloat).filter(x => !isNaN(x));
+            if (values.length >= 6) {
+                storedState.camera = [values[0], values[1], values[2]];
+                storedState.target = [values[3], values[4], values[5]];
+                storedState.personHeight = values[6] ?? 0;
+            }
+        }
+        if (props.startupParams.bl3d !== undefined) {
+            storedState.baselayer = props.startupParams.bl3d;
+        }
+
+        this.state.storedState = storedState;
     }
     componentDidMount() {
         if (this.props.startupParams.v === "3d") {
             this.props.setView3dMode(View3DMode.FULLSCREEN);
-            this.restoreOnComponentLoad = true;
         } else if (this.props.startupParams.v === "3d2d") {
             this.props.setView3dMode(View3DMode.SPLITSCREEN);
-            this.restoreOnComponentLoad = true;
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -194,7 +214,12 @@ class View3D extends React.Component {
                 this.map3dComponentRef = null;
                 this.setState({componentLoaded: true});
             });
-        } else if (this.props.display.view3dMode === View3DMode.DISABLED && prevProps.display.view3dMode !== View3DMode.DISABLED) {
+        } else if (this.props.view3dMode === View3DMode.DISABLING && prevProps.view3dMode !== View3DMode.DISABLING) {
+            this.map3dComponentRef.store3dState().then(storedState => {
+                this.setState({storedState});
+                this.props.setView3dMode(View3DMode.DISABLED);
+            });
+        } else if (this.props.view3dMode === View3DMode.DISABLED && prevProps.view3dMode !== View3DMode.DISABLED) {
             this.map3dComponent = null;
             this.map3dComponentRef = null;
             this.setState({componentLoaded: false});
@@ -237,9 +262,13 @@ class View3D extends React.Component {
         if (this.state.viewsLocked && this.props.map.bbox !== prevProps.map.bbox && !this.map3dFocused) {
             this.sync2DExtent();
         }
+        // Clear stored state when switching away from a theme
+        if (prevProps.theme.current && this.props.theme.current !== prevProps.theme.current) {
+            this.setState({storedState: null});
+        }
     }
     render3DWindow = () => {
-        if (this.props.display.view3dMode > View3DMode.DISABLED) {
+        if (this.props.view3dMode > View3DMode.DISABLED) {
             const extraControls = [{
                 icon: "sync",
                 callback: this.sync2DExtent,
@@ -265,7 +294,7 @@ class View3D extends React.Component {
             return (
                 <ResizeableWindow
                     extraControls={extraControls}
-                    fullscreen={this.props.display.view3dMode === View3DMode.FULLSCREEN}
+                    fullscreen={this.props.view3dMode === View3DMode.FULLSCREEN}
                     icon="map3d"
                     initialHeight={this.props.geometry.initialHeight}
                     initialWidth={this.props.geometry.initialWidth}
@@ -293,6 +322,13 @@ class View3D extends React.Component {
                                     options={options}
                                     searchProviders={this.props.searchProviders}
                                     theme={this.props.theme} />
+                                {
+                                    this.props.view3dMode === View3DMode.DISABLING ? (
+                                        <div className="view3d-busy-overlay">
+                                            <Spinner /><span>{LocaleUtils.tr("view3d.storingstate")}</span>
+                                        </div>
+                                    ) : null
+                                }
                             </PluginsContainer>
                         </Provider>
                     ) : null}
@@ -312,7 +348,7 @@ class View3D extends React.Component {
         UrlParams.updateParams({v3d: undefined});
     };
     onGeometryChanged = (geometry) => {
-        if (geometry.maximized && this.props.display.view3dMode !== View3DMode.FULLSCREEN) {
+        if (geometry.maximized && this.props.view3dMode !== View3DMode.FULLSCREEN) {
             this.props.setView3dMode(View3DMode.FULLSCREEN);
         }
         this.setState({windowDetached: geometry.detached});
@@ -338,28 +374,12 @@ class View3D extends React.Component {
         });
     };
     setupMap = () => {
-        if (this.map3dComponentRef && this.restoreOnComponentLoad) {
-            this.restoreOnComponentLoad = false;
-            const state3d = {
-                ...this.props.startupState.map3d
-            };
-            if (this.props.startupParams.v3d) {
-                const values = this.props.startupParams.v3d.split(",").map(parseFloat).filter(x => !isNaN(x));
-                if (values.length >= 6) {
-                    state3d.camera = [values[0], values[1], values[2]];
-                    state3d.target = [values[3], values[4], values[5]];
-                    state3d.personHeight = values[6] ?? 0;
-                }
-            }
-            if (this.props.startupParams.bl3d !== undefined) {
-                state3d.baselayer = this.props.startupParams.bl3d;
-            }
-            this.map3dComponentRef.restore3dState(state3d);
-            if (!this.props.startupParams.v3d) {
+        if (this.map3dComponentRef) {
+            if (this.state.storedState) {
+                this.map3dComponentRef.restore3dState(this.state.storedState);
+            } else {
                 this.sync2DExtent();
             }
-        } else {
-            this.sync2DExtent();
         }
     };
     redrawScene = (ev) => {

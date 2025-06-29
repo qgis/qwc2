@@ -614,6 +614,7 @@
     "valuetool.ymin",
     "vectorlayerpicker.none",
     "vectorlayerpicker.prompt",
+    "view3d.storingstate",
     "window.close",
     "window.detach",
     "window.dock",

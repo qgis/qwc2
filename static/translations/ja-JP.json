@@ -714,6 +714,9 @@
       "none": "無し",
       "prompt": "レイヤ名を入力"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "閉じる",
       "detach": "切り離す",

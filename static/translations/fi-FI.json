@@ -714,6 +714,9 @@
       "none": "",
       "prompt": "Syötä tason nimi"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Sulje",
       "detach": "",

@@ -714,6 +714,9 @@
       "none": "Nessuno",
       "prompt": "Nome del layer"
     },
+    "view3d": {
+      "storingstate": "Salvando vista 3D..."
+    },
     "window": {
       "close": "Chiudi",
       "detach": "Staccare",

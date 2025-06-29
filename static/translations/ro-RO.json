@@ -714,6 +714,9 @@
       "none": "Niciunul",
       "prompt": "Introdu numele stratului"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Închide",
       "detach": "",

@@ -714,6 +714,9 @@
       "none": "",
       "prompt": ""
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Lukk",
       "detach": "",

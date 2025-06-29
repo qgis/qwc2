@@ -714,6 +714,9 @@
       "none": "",
       "prompt": "Ingrese nombre de la capa"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Cerrar",
       "detach": "",

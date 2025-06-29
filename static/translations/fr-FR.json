@@ -714,6 +714,9 @@
       "none": "Aucune",
       "prompt": "Entrez le nom de la couche"
     },
+    "view3d": {
+      "storingstate": "Enregistrement de la vue 3D..."
+    },
     "window": {
       "close": "Fermer",
       "detach": "Détacher",

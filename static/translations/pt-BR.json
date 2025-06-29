@@ -714,6 +714,9 @@
       "none": "",
       "prompt": "Insira o nome da camada"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Fechar",
       "detach": "",

@@ -714,6 +714,9 @@
       "none": "None",
       "prompt": "Enter layer name"
     },
+    "view3d": {
+      "storingstate": "Storing 3D state..."
+    },
     "window": {
       "close": "Close",
       "detach": "Detach",

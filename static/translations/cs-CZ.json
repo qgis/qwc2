@@ -714,6 +714,9 @@
       "none": "Žádná",
       "prompt": "Zadejte název vrstvy"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Zavřít",
       "detach": "",

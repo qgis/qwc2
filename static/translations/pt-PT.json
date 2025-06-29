@@ -714,6 +714,9 @@
       "none": "Nenhum",
       "prompt": "Insira o Nome da Camada"
     },
+    "view3d": {
+      "storingstate": ""
+    },
     "window": {
       "close": "Fechar",
       "detach": "",
