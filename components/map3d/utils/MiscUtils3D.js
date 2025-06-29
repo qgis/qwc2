@@ -61,7 +61,7 @@ export function updateObjectLabel(sceneObject, sceneContext) {
     }
 }
 
-export function importGltf(dataOrUrl, name, sceneContext) {
+export function importGltf(dataOrUrl, name, sceneContext, drawGroup = true) {
     const loader = new GLTFLoader();
     const processor = (gltf) => {
         // GLTF is Y-UP, we need Z-UP
@@ -70,7 +70,7 @@ export function importGltf(dataOrUrl, name, sceneContext) {
 
         const objectId = uuidv4();
         const options = {
-            drawGroup: true,
+            drawGroup: drawGroup,
             layertree: true,
             title: name
         };
