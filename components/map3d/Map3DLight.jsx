@@ -18,6 +18,7 @@ import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
+import Input from '../widgets/Input';
 import NumberInput from '../widgets/NumberInput';
 import ToggleSwitch from '../widgets/ToggleSwitch';
 
@@ -141,7 +142,7 @@ export default class Map3DLight extends React.Component {
                                     <Icon icon={this.state.dayAnimation ? "square" : "triangle-right"} onClick={this.toggleDayAnimation} />
                                     <div className="maplight3d-slider">
                                         <input max={365 + isLeapYear()} min={1} onChange={ev => this.updateLightParams("day", parseInt(ev.target.value, 10))} step={1} type="range" value={lightParams.day} />
-                                        <input onChange={ev => dateToDay(ev.target.value)} type="date" value={dateValue} />
+                                        <Input onChange={value => this.updateLightParams("day", dateToDay(value))} type="date" value={dateValue} />
                                     </div>
                                     <Icon
                                         className={this.state.dayAnimationSettings ? "map3d-animation-settings-active" : ""}
@@ -167,7 +168,7 @@ export default class Map3DLight extends React.Component {
                                     <Icon icon={this.state.timeAnimation ? "square" : "triangle-right"} onClick={this.toggleTimeAnimation} />
                                     <div className="maplight3d-slider">
                                         <input max={1439} min={0} onChange={ev => this.updateLightParams("time", parseInt(ev.target.value, 10))} step={1} type="range" value={lightParams.time} />
-                                        <input onChange={ev => timeToMin(ev.target.value)} type="time" value={timeValue} />
+                                        <Input onChange={value => this.updateLightParams("time", timeToMin(value))} type="time" value={timeValue} />
                                     </div>
                                     <Icon
                                         className={this.state.timeAnimationSettings ? "map3d-animation-settings-active" : ""}
