@@ -21,7 +21,7 @@ div.map-buttons-container {
     flex-wrap: wrap-reverse;
     z-index: 2;
     overflow: hidden;
-    padding: 0 1em 2.5em 1em;
+    padding: 1.5em 1em 2.5em 1em;
 }
 
 div.map-buttons-spacer {
