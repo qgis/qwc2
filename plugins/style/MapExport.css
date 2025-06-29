@@ -32,6 +32,7 @@ div.MapExport table.options-table td:nth-child(2) > * {
 
 div.MapExport table.options-table textarea {
     resize: vertical;
+    min-height: 2em;
 }
 
 div.MapExport div.button-bar {

@@ -38,6 +38,7 @@
 
 #Print table.options-table textarea {
     resize: vertical;
+    min-height: 2em;
 }
 
 #Print div.button-bar {
