@@ -26,6 +26,7 @@ div.map3d-animation-slider > span.icon {
 
 div.map3d-animation-slider > div.maplight3d-slider {
     padding: 0 0.25em;
+    flex: 1 1 auto;
 }
 
 div.map3d-animation-slider > span.map3d-animation-settings-active {
