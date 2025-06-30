@@ -35,7 +35,8 @@ class SideBar extends React.Component {
         setCurrentTask: PropTypes.func,
         side: PropTypes.string,
         title: PropTypes.string,
-        width: PropTypes.string
+        width: PropTypes.string,
+        windowMargins: PropTypes.object
     };
     static defaultProps = {
         extraClasses: '',
@@ -86,7 +87,8 @@ class SideBar extends React.Component {
         const style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
-            zIndex: visible ? 5 : 4
+            zIndex: visible ? 5 : 4,
+            maxWidth: 'calc(100vw - ' + this.props.windowMargins.left + 'px - ' + this.props.windowMargins.right + 'px)'
         };
         const isLeftSide = this.props.side === "left";
         if (isLeftSide) {
@@ -169,7 +171,8 @@ class SideBar extends React.Component {
 
 export default connect((state) => ({
     currentTask: state.task,
-    menuMargins: state.windows.menuMargins
+    menuMargins: state.windows.menuMargins,
+    windowMargins: state.windows.windowMargins
 }), {
     setCurrentTask: setCurrentTask
 })(SideBar);
