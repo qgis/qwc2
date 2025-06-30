@@ -376,13 +376,12 @@
       "windowtitle": "Lejant"
     },
     "maplight3d": {
-      "ambientLightIntensity": "",
       "animationstep": "",
       "date": "",
       "dayspersec": "",
-      "directionalLightIntensity": "",
       "helpersVisible": "",
       "minspersec": "",
+      "moonLightIntensity": "",
       "normalBias": "",
       "shadowBias": "",
       "shadowMapSize": "",
@@ -392,6 +391,7 @@
       "shadowintensity": "",
       "shadows": "",
       "showadvanced": "",
+      "sunLightIntensity": "",
       "time": "",
       "zFactor": ""
     },

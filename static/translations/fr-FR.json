@@ -376,13 +376,12 @@
       "windowtitle": "Légende"
     },
     "maplight3d": {
-      "ambientLightIntensity": "Intensité lumineuse ambiante",
       "animationstep": "Pas d'animation",
       "date": "Date",
       "dayspersec": "jours / sec",
-      "directionalLightIntensity": "Intensité lumineuse directionnelle",
       "helpersVisible": "Montrer les aides",
       "minspersec": "minutes / sec",
+      "moonLightIntensity": "Intensité lune",
       "normalBias": "Bias normal",
       "shadowBias": "Bias de l'ombre",
       "shadowMapSize": "Taille texture d'ombre",
@@ -392,6 +391,7 @@
       "shadowintensity": "Intensité de l'ombre",
       "shadows": "Activer les ombres",
       "showadvanced": "Paramètres avancés",
+      "sunLightIntensity": "Intensité soleil",
       "time": "Heure",
       "zFactor": "Facteur z"
     },

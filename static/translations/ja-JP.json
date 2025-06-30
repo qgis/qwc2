@@ -376,13 +376,12 @@
       "windowtitle": "凡例"
     },
     "maplight3d": {
-      "ambientLightIntensity": "環境光強度",
       "animationstep": "アニメーション・ステップ",
       "date": "日付",
       "dayspersec": "日数 / 秒",
-      "directionalLightIntensity": "平行光源強度",
       "helpersVisible": "補助オブジェクト表示",
       "minspersec": "分 / 秒",
+      "moonLightIntensity": "",
       "normalBias": "ノーマル・バイアス",
       "shadowBias": "シャドウ・バイアス",
       "shadowMapSize": "シャドウ・マップ・サイズ",
@@ -392,6 +391,7 @@
       "shadowintensity": "影の強度",
       "shadows": "シャドウを有効化",
       "showadvanced": "詳細設定を表示",
+      "sunLightIntensity": "",
       "time": "時刻",
       "zFactor": "Zファクター"
     },

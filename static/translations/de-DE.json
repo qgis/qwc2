@@ -376,13 +376,12 @@
       "windowtitle": "Legende"
     },
     "maplight3d": {
-      "ambientLightIntensity": "Intensität Umgebungslichts",
       "animationstep": "Animationsschritt",
       "date": "Datum",
       "dayspersec": "Tage / Sek",
-      "directionalLightIntensity": "Intensität gerichtetes Licht",
       "helpersVisible": "Hilfen anzeigen",
       "minspersec": "Min / Sek",
+      "moonLightIntensity": "Mondlichtintensität",
       "normalBias": "Normal-Verzerrung",
       "shadowBias": "Schatten-Verzerrung",
       "shadowMapSize": "Größe der Schattentextur",
@@ -392,6 +391,7 @@
       "shadowintensity": "Schattenintensität",
       "shadows": "Schatten aktivieren",
       "showadvanced": "Erweitert anzeigen",
+      "sunLightIntensity": "Sonnenlichtintensität",
       "time": "Zeit",
       "zFactor": "Z-Faktor"
     },

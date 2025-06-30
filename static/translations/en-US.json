@@ -376,13 +376,12 @@
       "windowtitle": "Legend"
     },
     "maplight3d": {
-      "ambientLightIntensity": "Ambient light intensity",
       "animationstep": "Animation step",
       "date": "Date",
       "dayspersec": "days / second",
-      "directionalLightIntensity": "Directional light intensity",
       "helpersVisible": "Show helpers",
       "minspersec": "mins / second",
+      "moonLightIntensity": "Moonlight intensity",
       "normalBias": "Normal bias",
       "shadowBias": "Shadow bias",
       "shadowMapSize": "Shadowmap size",
@@ -392,6 +391,7 @@
       "shadowintensity": "Shadow intensity",
       "shadows": "Enable shadows",
       "showadvanced": "Show advanced",
+      "sunLightIntensity": "Sunlight intensity",
       "time": "Time",
       "zFactor": "Z-factor"
     },
