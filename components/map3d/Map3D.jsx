@@ -518,7 +518,7 @@ class Map3D extends React.Component {
                     <LayerTree3D sceneContext={this.state.sceneContext} />
                     <BottomBar3D sceneContext={this.state.sceneContext} />
                     <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
-                    <Map3DLight sceneContext={this.state.sceneContext} />
+                    <Map3DLight options={this.props.options} sceneContext={this.state.sceneContext} />
                     <Measure3D sceneContext={this.state.sceneContext} />
                     <Identify3D sceneContext={this.state.sceneContext} tileInfoServiceUrl={this.props.options.tileInfoServiceUrl} />
                     <Compare3D sceneContext={this.state.sceneContext} />

@@ -978,6 +978,8 @@ Where:
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | buttonPosition | `number` | The position slot index of the 3d switch map button, from the bottom (0: bottom slot). | `6` |
+| defaultDay | `number` | Default viewer day (1-365) | `182` |
+| defaultTime | `string` | Default viewer time (00:00-23:59) | `'12:00'` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
 | searchMinScaleDenom | `number` | Minimum scale denominator when zooming to search result. | `1000` |
 | tileInfoServiceUrl | `string` | URL to service for querying additional tile information.<br />Can contain the `{tileset}` and `{objectid}` placeholders.<br />Expected to return a JSON dict with attributes. | `undefined` |

@@ -99,6 +99,10 @@ class View3D extends React.Component {
     static propTypes = {
         /** The position slot index of the 3d switch map button, from the bottom (0: bottom slot). */
         buttonPosition: PropTypes.number,
+        /** Default viewer day (1-365) */
+        defaultDay: PropTypes.number,
+        /** Default viewer time (00:00-23:59) */
+        defaultTime: PropTypes.string,
         display: PropTypes.object,
         /** Default window geometry. */
         geometry: PropTypes.shape({
@@ -136,6 +140,8 @@ class View3D extends React.Component {
             initialY: 0,
             initiallyDocked: true
         },
+        defaultDay: 182,
+        defaultTime: '12:00',
         searchMinScaleDenom: 1000
     };
     state = {
@@ -282,6 +288,8 @@ class View3D extends React.Component {
             }
             const Map3D = this.map3dComponent;
             const options = {
+                defaultDay: this.props.defaultDay,
+                defaultTime: this.props.defaultTime,
                 searchMinScaleDenom: this.props.searchMinScaleDenom,
                 tileInfoServiceUrl: this.props.tileInfoServiceUrl
             };
