@@ -363,23 +363,20 @@ export default class Measure3D extends React.Component {
             len2d += Math.sqrt((v1.x - v0.x) * (v1.x - v0.x) + (v1.y - v0.y) * (v1.y - v0.y));
         }
         const nSamples = Math.min(this.props.maxSampleCount, Math.round(len2d / this.props.minMeasureLength));
-
-        const points = path.getSpacedPoints(nSamples - 1).map(p => [p.x, p.y]);
-        this.props.sceneContext.getTerrainHeightFromDTM(points).then(elevations => {
-            const line3d = points.map((p, i) => [p[0], p[1], elevations[i], 0]);
-            let len3d = 0;
-            for (let i = 1; i < nSamples; ++i) {
-                const dx = line3d[i][0] - line3d[i - 1][0];
-                const dy = line3d[i][1] - line3d[i - 1][1];
-                const dz = line3d[i][2] - line3d[i - 1][2];
-                len3d += Math.sqrt(dx * dx + dy * dy + dz * dz);
-                line3d[i][3] = len3d; // Also store incremental length for height profie
-            }
-            this.setState({result: {length: len3d, profile: line3d}});
-
-            // Setup for next measurement
-            this.restart();
-        });
+        const points = path.getSpacedPoints(nSamples - 1);
+        const line3d = new Array(nSamples);
+        line3d[0] = [points[0].x, points[0].y, this.getElevation([points[0].x, points[0].y]), 0];
+        let len3d = 0;
+        for (let i = 1; i < nSamples; ++i) {
+            line3d[i] = [points[i].x, points[i].y, this.getElevation([points[i].x, points[i].y]), 0];
+            const dx = line3d[i][0] - line3d[i - 1][0];
+            const dy = line3d[i][1] - line3d[i - 1][1];
+            const dz = line3d[i][2] - line3d[i - 1][2];
+            len3d += Math.sqrt(dx * dx + dy * dy + dz * dz);
+            line3d[i][3] = len3d; // Also store incremental length for height profie
+        }
+        this.setState({result: {length: len3d, profile: line3d}});
+        this.restart();
     };
     measureArea = (polygon) => {
         if (polygon === null) {
