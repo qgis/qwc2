@@ -24,6 +24,7 @@ export const MapContainerPortalContext = React.createContext(null);
 class PluginsContainer extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        className: PropTypes.string,
         mapMargins: PropTypes.object,
         plugins: PropTypes.object,
         pluginsAppConfig: PropTypes.object,
@@ -62,7 +63,7 @@ class PluginsContainer extends React.Component {
         };
         const haveRefs = this.state.mapButtonsContainerRef && this.state.mapContainerRef;
         return (
-            <div className="PluginsContainer" ref={this.setupTouchEvents}>
+            <div className={"plugins-container " + this.props.className} ref={this.setupTouchEvents}>
                 <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
                     <MapContainerPortalContext.Provider value={this.state.mapContainerRef}>
                         {haveRefs ? this.renderPlugins() : null}
