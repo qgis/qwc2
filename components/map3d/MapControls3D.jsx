@@ -30,6 +30,7 @@ class MapControls3D extends React.Component {
         sceneContext: PropTypes.object
     };
     state = {
+        pickingFirstPerson: false,
         firstPerson: false
     };
     componentDidMount() {
@@ -110,10 +111,15 @@ class MapControls3D extends React.Component {
     toggleFirstPersonControls = () => {
         if (this.state.firstPerson) {
             this.leaveFirstPerson();
+        } else if (this.state.pickingFirstPerson) {
+            this.props.sceneContext.scene.domElement.removeEventListener('click', this.setupFirstPerson);
+            this.props.sceneContext.scene.domElement.style.cursor = '';
+            this.setState({pickingFirstPerson: false});
         } else {
             this.props.sceneContext.scene.domElement.addEventListener('click', this.setupFirstPerson, {once: true});
             const cursor = ConfigUtils.getAssetsPath() + "/img/person.svg";
             this.props.sceneContext.scene.domElement.style.cursor = `url(${cursor}), pointer`;
+            this.setState({pickingFirstPerson: true});
         }
     };
     setupFirstPerson = (ev) => {
@@ -134,7 +140,7 @@ class MapControls3D extends React.Component {
                 this.controls.disconnect();
                 this.fpcontrols.connect(this.props.sceneContext);
                 this.fpcontrols.setView(camerapos, new Vector3(0, 1, 0));
-                this.setState({firstPerson: true});
+                this.setState({firstPerson: true, pickingFirstPerson: false});
             });
         });
     };
