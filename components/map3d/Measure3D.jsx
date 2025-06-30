@@ -415,8 +415,8 @@ export default class Measure3D extends React.Component {
         const deltaY = (bbox[3] - bbox[1]) / numY;
         let area = 0;
         const elevationCache = new Array(numX * numY);
-        for (let iX = 0; iX < numX - 1; ++iX) {
-            for (let iY = 0; iY < numY - 1; ++iY) {
+        for (let iX = 0; iX < numX; ++iX) {
+            for (let iY = 0; iY < numY; ++iY) {
                 // If quad center lies in polygon, consider it
                 const p = [bbox[0] + iX * deltaX, bbox[1] + iY * deltaY];
                 const c = [p[0] + 0.5 * deltaX, p[1] + 0.5 * deltaY];
