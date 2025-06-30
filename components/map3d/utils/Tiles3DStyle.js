@@ -54,6 +54,9 @@ const Tiles3DStyle = {
                 const rgbColors = [];
                 let haveColor = false;
                 let haveAlpha = false;
+                if (!batchidxAttr) {
+                    return;
+                }
 
                 batchidxAttr.array.forEach((batchIdx, idx) => {
                     const batchAttr = group.batchTable.getDataFromId(batchIdx);
