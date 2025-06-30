@@ -76,6 +76,15 @@ export default class OrbitControls3D extends MapControls {
             this.update();
         }
     }
+    zoomView(delta) {
+        if (delta > 0) {
+            this._dollyIn(this._getZoomScale(-delta * 10));
+            this.update();
+        } else if (delta < 0) {
+            this._dollyOut(this._getZoomScale(-delta * 10));
+            this.update();
+        }
+    }
     animateTo(camerapos, target, azimuth, callback = null) {
         const oldPosition = this.object.position.clone();
         const oldTarget = this.target.clone();

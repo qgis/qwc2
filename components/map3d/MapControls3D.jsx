@@ -65,36 +65,41 @@ class MapControls3D extends React.Component {
             "map3d-firstperson-button": true,
             "map3d-firstperson-button-active": this.state.firstPerson
         });
-        return [(
-            <div className="map3d-nav-pan" key="MapPanWidget">
-                <span />
-                <Icon icon="chevron-up" onPointerDown={(ev) => this.pan(ev, 0, 1)} />
-                <span />
-                <Icon icon="chevron-left" onPointerDown={(ev) => this.pan(ev, -1, 0)} />
-                <Icon icon="home" onClick={() => this.home()} />
-                <Icon icon="chevron-right" onPointerDown={(ev) => this.pan(ev, 1, 0)} />
-                <span />
-                <Icon icon="chevron-down" onPointerDown={(ev) => this.pan(ev, 0, -1)} />
-                <span />
+        return (
+            <div className="map3d-nav">
+                <div className="map3d-nav-pan" key="MapPanWidget">
+                    <span />
+                    <Icon icon="chevron-up" onPointerDown={(ev) => this.pan(ev, 0, 1)} />
+                    <span />
+                    <Icon icon="chevron-left" onPointerDown={(ev) => this.pan(ev, -1, 0)} />
+                    <Icon icon="home" onClick={() => this.home()} />
+                    <Icon icon="chevron-right" onPointerDown={(ev) => this.pan(ev, 1, 0)} />
+                    <span />
+                    <Icon icon="chevron-down" onPointerDown={(ev) => this.pan(ev, 0, -1)} />
+                    <span />
+                </div>
+                <div className="map3d-nav-rotate" key="MapRotateWidget">
+                    <span />
+                    <Icon icon="tilt-up" onPointerDown={(ev) => this.tilt(ev, 0, 0.1)} />
+                    <span />
+                    <Icon icon="tilt-left" onPointerDown={(ev) => this.tilt(ev, 0.1, 0)} />
+                    <Icon icon="point" onClick={() => this.resetTilt()} />
+                    <Icon icon="tilt-right" onPointerDown={(ev) => this.tilt(ev, -0.1, 0)} />
+                    <span />
+                    <Icon icon="tilt-down" onPointerDown={(ev) => this.tilt(ev, 0, -0.1)} />
+                    <span />
+                </div>
+                {!this.state.firstPerson ? (
+                    <div className="map3d-nav-zoom">
+                        <div onPointerDown={(ev) => this.zoom(ev, +1)}><Icon icon="plus" /></div>
+                        <div onPointerDown={(ev) => this.zoom(ev, -1)}><Icon icon="minus" /></div>
+                    </div>
+                ) : null}
+                <div className={firstPersonButtonClasses} key="FirstPersonButton" onClick={this.toggleFirstPersonControls}>
+                    <Icon icon="person" />
+                </div>
             </div>
-        ),
-        (
-            <div className="map3d-nav-rotate" key="MapRotateWidget">
-                <span />
-                <Icon icon="tilt-up" onPointerDown={(ev) => this.tilt(ev, 0, 0.1)} />
-                <span />
-                <Icon icon="tilt-left" onPointerDown={(ev) => this.tilt(ev, 0.1, 0)} />
-                <Icon icon="point" onClick={() => this.resetTilt()} />
-                <Icon icon="tilt-right" onPointerDown={(ev) => this.tilt(ev, -0.1, 0)} />
-                <span />
-                <Icon icon="tilt-down" onPointerDown={(ev) => this.tilt(ev, 0, -0.1)} />
-                <span />
-            </div>
-        ), (
-            <div className={firstPersonButtonClasses} key="FirstPersonButton" onClick={this.toggleFirstPersonControls}>
-                <Icon icon="person" />
-            </div>
-        )];
+        );
     }
     switchToFirstPersonView = (ev) => {
         // Don't do anything if a task is set, may interfere
@@ -195,6 +200,14 @@ class MapControls3D extends React.Component {
             const newcamerapos = new Vector3(target.x, target.y, target.distanceTo(camerapos));
             this.controls.animateTo(newcamerapos, target, 0);
         }
+    };
+    zoom = (ev, delta) => {
+        const zoomInterval = setInterval(() => {
+            this.props.sceneContext.scene.view.controls.zoomView(delta);
+        }, 50);
+        ev.view.addEventListener('pointerup', () => {
+            clearInterval(zoomInterval);
+        }, {once: true});
     };
     updateUrlParams = () => {
         const cpos = this.props.sceneContext.scene.view.camera.position;
