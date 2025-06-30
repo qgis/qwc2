@@ -207,7 +207,7 @@ class ExportObjects3D extends React.Component {
     addTileToExportGroup = (tiles, exportGroup, selectionBox) => {
         tiles.group.traverse( c => {
             if (c.geometry) {
-                const bbox = c.geometry.boundingBox.applyMatrix4(c.matrixWorld);
+                const bbox = c.geometry.boundingBox.clone().applyMatrix4(c.matrixWorld);
                 if (!selectionBox.intersectsBox(bbox)) {
                     return;
                 }
