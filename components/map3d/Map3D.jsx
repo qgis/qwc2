@@ -506,6 +506,7 @@ class Map3D extends React.Component {
     };
     render() {
         const baseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true);
+        const overviewLayer = this.state.sceneContext.baseLayers.find(l => l.overview === true) ?? baseLayer;
         return [
             ReactDOM.createPortal((
                 <div className="map3d-map" key="Map3D" onBlur={() => this.props.mapFocusChange(false)} onFocus={() => this.props.mapFocusChange(true)} ref={this.setupContainer} />
@@ -517,7 +518,7 @@ class Map3D extends React.Component {
                     <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                     <LayerTree3D sceneContext={this.state.sceneContext} />
                     <BottomBar3D sceneContext={this.state.sceneContext} />
-                    <OverviewMap3D baseLayer={baseLayer} sceneContext={this.state.sceneContext} />
+                    <OverviewMap3D baseLayer={overviewLayer} sceneContext={this.state.sceneContext} />
                     <Map3DLight options={this.props.options} sceneContext={this.state.sceneContext} />
                     <Measure3D sceneContext={this.state.sceneContext} />
                     <Identify3D sceneContext={this.state.sceneContext} tileInfoServiceUrl={this.props.options.tileInfoServiceUrl} />
@@ -610,7 +611,8 @@ class Map3D extends React.Component {
         const baseLayers = (this.props.theme.map3d?.basemaps || []).map(e => {
             const baseLayer = {
                 ...this.props.layers.find(bl => bl.name === e.name),
-                visibility: e.visibility === true
+                visibility: e.visibility === true,
+                overview: e.overview === true
             };
             if (baseLayer.visibility) {
                 visibleBaseLayer = baseLayer;

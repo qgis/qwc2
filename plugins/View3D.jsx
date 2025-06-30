@@ -40,7 +40,7 @@ import './style/View3D.css';
  * "map3d": {
  *     "dtm": {"url": "<url_to_dtm.tif>", "crs": "<dtm_epsg_code>},
  *     "basemaps": [
- *          {"name": "<name_of_background_layer>", "visibility": true},
+ *          {"name": "<name_of_background_layer>", "visibility": true, "overview": true},
  *          {"name": "<name_of_background_layer>"},
  *          ...
  *     ],
@@ -69,7 +69,9 @@ import './style/View3D.css';
  * Where:
  *
  * - The DTM should be a cloud optimized GeoTIFF.
- * - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`.
+ * - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`. Additionally:
+ *   - `visibility` controls the initially visibile background layer
+ *   - `overview: true` controls the name of background layer to display in the overview map. If no background layer is marked with `overview: true`, the currently visibile background layer id dipslayed in the overview map.
  * - The `tiles3d` entry contains an optional list of 3d tiles to add to the scene, with:
  *   - `idAttr`: Batch table attribute which stores the batch object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
  *   - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.

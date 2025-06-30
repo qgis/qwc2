@@ -106,7 +106,10 @@ export default class OverviewMap3D extends React.Component {
                 </div>
             ),
             this.map && this.props.baseLayer ? (
-                <OlLayer key={this.props.baseLayer.name} map={this.map} options={this.props.baseLayer} projection={this.props.sceneContext.mapCrs} />
+                <OlLayer
+                    key={this.props.baseLayer.name} map={this.map}
+                    options={{...this.props.baseLayer, visibility: true}} projection={this.props.sceneContext.mapCrs}
+                />
             ) : null
         ];
     }
