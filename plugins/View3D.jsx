@@ -317,7 +317,7 @@ class View3D extends React.Component {
                 >
                     {this.state.componentLoaded ? (
                         <Provider role="body" store={this.store}>
-                            <PluginsContainer plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig}>
+                            <PluginsContainer className="plugins-container-3d" plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig}>
                                 <Map3D
                                     innerRef={this.setRef}
                                     mapFocusChange={focus => { this.map3dFocused = focus; }}

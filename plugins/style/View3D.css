@@ -16,3 +16,7 @@ div.view3d-busy-overlay > div.spinner {
     height: 4em;
     margin-right: 1em;
 }
+
+div.plugins-container-3d > div.map-buttons-container {
+    padding-top: 18em;
+}
