@@ -37,7 +37,7 @@ export default class Measure3D extends React.Component {
     };
     static defaultProps = {
         maxSampleCount: 500,
-        minMeasureLength: 5
+        minMeasureLength: 1
     };
     state = {
         mode: null,
