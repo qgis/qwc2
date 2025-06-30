@@ -764,6 +764,10 @@ class Map3D extends React.Component {
             dtmExt[3] = Math.max(dtmExt[3], p[1]);
         });
         return new Promise((resolve) => {
+            if (!this.state.sceneContext.dtmUrl) {
+                resolve(returnArray ? scenePos.map(x => 0) : 0);
+                return;
+            }
             fromUrl(this.state.sceneContext.dtmUrl).then(tiff => {
 
                 tiff.getImage().then(image => {
