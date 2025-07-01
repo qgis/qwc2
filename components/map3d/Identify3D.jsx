@@ -23,8 +23,7 @@ import '../style/IdentifyViewer.css';
 class Identify3D extends React.Component {
     static propTypes = {
         identifyEnabled: PropTypes.bool,
-        sceneContext: PropTypes.object,
-        tileInfoServiceUrl: PropTypes.string
+        sceneContext: PropTypes.object
     };
     state = {
         pickAttrs: null
@@ -149,8 +148,8 @@ class Identify3D extends React.Component {
         }
         const batchTable = batchTableObject.batchTable;
         const batchAttrs = batchTable.getDataFromId(pickBatchId);
-        if (this.props.tileInfoServiceUrl) {
-            const url = this.props.tileInfoServiceUrl.replace(
+        if (this.props.sceneContext.options.tileInfoServiceUrl) {
+            const url = this.props.sceneContext.options.tileInfoServiceUrl.replace(
                 '{tileset}', batchTableObject.userData.tilesetName
             ).replace(
                 '{objectid}', batchAttrs[batchTableObject.userData.batchIdAttr]

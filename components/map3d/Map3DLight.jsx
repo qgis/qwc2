@@ -27,7 +27,6 @@ import './style/Map3DLight.css';
 
 export default class Map3DLight extends React.Component {
     static propTypes = {
-        options: PropTypes.object,
         sceneContext: PropTypes.object
     };
     state = {
@@ -59,8 +58,8 @@ export default class Map3DLight extends React.Component {
     };
     constructor(props) {
         super(props);
-        this.state.lightParams.day = props.options.defaultDay;
-        const parts = props.options.defaultTime.split(":").slice(0, 2).map(Number);
+        this.state.lightParams.day = props.sceneContext.options.defaultDay;
+        const parts = props.sceneContext.options.defaultTime.split(":").slice(0, 2).map(Number);
         this.state.lightParams.time = parts[0] * 60 + parts[1];
     }
     componentDidMount() {

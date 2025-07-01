@@ -98,9 +98,6 @@ class Map3D extends React.Component {
             initialX: 0,
             initialY: 0,
             initiallyDocked: true
-        },
-        options: {
-            searchMinScaleDenom: 1000
         }
     };
     static defaultSceneState = {
@@ -146,6 +143,7 @@ class Map3D extends React.Component {
         this.sceneObjectGroup = null;
         this.objectMap = {};
         this.tilesetStyles = {};
+        this.state.sceneContext.options = this.props.options;
         this.state.sceneContext.addLayer = this.addLayer;
         this.state.sceneContext.getLayer = this.getLayer;
         this.state.sceneContext.removeLayer = this.removeLayer;
@@ -515,13 +513,13 @@ class Map3D extends React.Component {
                 <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
                     <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
                     <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
-                    <TopBar3D options={this.props.options} sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
+                    <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                     <LayerTree3D sceneContext={this.state.sceneContext} />
                     <BottomBar3D sceneContext={this.state.sceneContext} />
                     <OverviewMap3D baseLayer={overviewLayer} sceneContext={this.state.sceneContext} />
-                    <Map3DLight options={this.props.options} sceneContext={this.state.sceneContext} />
+                    <Map3DLight sceneContext={this.state.sceneContext} />
                     <Measure3D sceneContext={this.state.sceneContext} />
-                    <Identify3D sceneContext={this.state.sceneContext} tileInfoServiceUrl={this.props.options.tileInfoServiceUrl} />
+                    <Identify3D sceneContext={this.state.sceneContext} />
                     <Compare3D sceneContext={this.state.sceneContext} />
                     <Draw3D sceneContext={this.state.sceneContext} />
                     <MapExport3D sceneContext={this.state.sceneContext} />
