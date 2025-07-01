@@ -53,7 +53,7 @@
         "Redlining": "Strumenti di disegno",
         "Routing": "Routing",
         "Tools": "Strumenti",
-        "TourGuide": "",
+        "TourGuide": "Guida introduttiva",
         "TimeManager": "Linea temporale",
         "View3D": "Vista 3D"
       },
@@ -686,9 +686,9 @@
       "zoomout": "Rimpicciolisci"
     },
     "tourguide": {
-      "done": "",
-      "next": "",
-      "previous": ""
+      "done": "Finito",
+      "next": "Avanti",
+      "previous": "Indietro"
     },
     "valuetool": {
       "all": "Tutte",
