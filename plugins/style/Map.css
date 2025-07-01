@@ -33,7 +33,7 @@ span.map-loading-indicator {
     background-color: var(--panel-bg-color);
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
     position: absolute;
-    bottom: 2.7em;
+    bottom: 0.25em;
     left: 0.25em;
     padding: 0.25em;
     border-radius: 0.25em;
