@@ -207,6 +207,14 @@ class TransformControls extends Controls {
 		defineProperty( 'scaleFromEdge', false );
 
 		/**
+		 * Whether to allow negative scales.
+		 * @name TransformControls#allowNegativeScales
+		 * @type {boolean}
+		 * @default true
+		 */
+		defineProperty( 'allowNegativeScales', true );
+
+		/**
 		 * Defines in which coordinate space transformations should be performed.
 		 *
 		 * @name TransformControls#space
@@ -638,6 +646,11 @@ class TransformControls extends Controls {
 			}
 
 			// Apply scale
+			if ( !this.allowNegativeScales && (
+				_tempVector2.x < 0 || _tempVector2.y < 0 || _tempVector2.z < 0
+			) ) {
+				return;
+			}
 
 			object.scale.copy( this._scaleStart ).multiply( _tempVector2 );
 
