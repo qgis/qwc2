@@ -34,7 +34,6 @@ Plugin reference
 * [Panoramax](#panoramax)
 * [Portal](#portal)
 * [Print](#print)
-* [ProcessNotifications](#processnotifications)
 * [Redlining](#redlining)
 * [Reports](#reports)
 * [Routing](#routing)
@@ -733,12 +732,6 @@ Uses the print layouts defined in the QGIS project.
 | printMapHighlights | `bool` | Whether to print highlights on the map, e.g. selected features or redlining. | `true` |
 | scaleFactor | `number` | Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint. | `1.9` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
-
-ProcessNotifications<a name="processnotifications"></a>
-----------------------------------------------------------------
-Adds support for displaying notifications of background processes.
-
-Only useful for third-party plugins which use this functionality.
 
 Redlining<a name="redlining"></a>
 ----------------------------------------------------------------

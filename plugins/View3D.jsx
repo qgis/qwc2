@@ -161,6 +161,7 @@ class View3D extends React.Component {
         this.map3dFocused = false;
         // Subset of 2d reducers
         const {
+            processNotifications,
             task,
             windows
         } = ReducerIndex.reducers;
@@ -184,7 +185,7 @@ class View3D extends React.Component {
         const map = forwardReducer("map", mapActions, "SYNC_MAP_FROM_PARENT_STORE");
         const localConfig = forwardReducer("localConfig", [], "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE");
         const theme = forwardReducer("theme", themeActions, "SYNC_THEME_FROM_PARENT_STORE");
-        this.store = createStore({display, layers, localConfig, map, theme, task, windows});
+        this.store = createStore({display, layers, localConfig, map, processNotifications, theme, task, windows});
 
         // Set stored state
         const storedState = {

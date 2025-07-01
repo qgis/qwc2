@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ConfigUtils from '../utils/ConfigUtils';
+import ProcessNotifications from './ProcessNotifications';
 import WindowManager from './WindowManager';
 
 import './style/PluginsContainer.css';
@@ -71,7 +72,9 @@ class PluginsContainer extends React.Component {
                     </MapContainerPortalContext.Provider>
                 </MapButtonPortalContext.Provider>
                 <WindowManager />
-                <div className="map-container" ref={this.setOverlayContainerRef} style={mapContainerStyle} />
+                <div className="map-container" ref={this.setOverlayContainerRef} style={mapContainerStyle}>
+                    <ProcessNotifications />
+                </div>
                 <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
             </div>
         );

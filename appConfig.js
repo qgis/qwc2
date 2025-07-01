@@ -43,7 +43,6 @@ import OverviewMapPlugin from './plugins/OverviewMap';
 import PanoramaxPlugin from './plugins/Panoramax';
 import PortalPlugin from './plugins/Portal';
 import PrintPlugin from './plugins/Print';
-import ProcessNotificationsPlugin from './plugins/ProcessNotifications';
 import RedliningPlugin from './plugins/Redlining';
 import ReportsPlugin from './plugins/Reports';
 import RoutingPlugin from './plugins/Routing';
@@ -113,7 +112,6 @@ export default {
             PanoramaxPlugin: PanoramaxPlugin,
             PortalPlugin: PortalPlugin,
             PrintPlugin: PrintPlugin,
-            ProcessNotificationsPlugin: ProcessNotificationsPlugin,
             RedliningPlugin: RedliningPlugin({
                 BufferSupport: BufferSupport
             }),
