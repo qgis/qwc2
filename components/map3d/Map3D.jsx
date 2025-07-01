@@ -506,13 +506,18 @@ class Map3D extends React.Component {
         return this.objectMap[objectId];
     };
     removeSceneObject = (objectId, callback = undefined) => {
-        if (!this.objectMap[objectId]) {
+        const object = this.objectMap[objectId];
+        if (!object) {
             return;
         }
-        this.objectMap[objectId].traverse(child => {
+        object.traverse(child => {
             child.dispatchEvent({ type: 'removed' });
         });
-        this.sceneObjectGroup.remove(this.objectMap[objectId]);
+        if (object.tiles) {
+            this.instance.remove(object);
+        } else {
+            this.sceneObjectGroup.remove(object);
+        }
         delete this.objectMap[objectId];
         this.instance.notifyChange();
         this.setState((state) => {

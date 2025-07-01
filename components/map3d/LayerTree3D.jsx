@@ -93,7 +93,7 @@ export default class LayerTree3D extends React.Component {
                     {!Object.keys(entry.styles || {}).length > 1 ? (
                         <Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(entryId)}/>
                     ) : null}
-                    {entry.drawGroup ? (<Icon className="layertree3d-item-remove" icon="trash" onClick={() => this.props.sceneContext.removeSceneObject(entryId)} />) : null}
+                    {entry.drawGroup || entry.imported ? (<Icon className="layertree3d-item-remove" icon="trash" onClick={() => this.props.sceneContext.removeSceneObject(entryId)} />) : null}
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(entryId)}/>
                 </div>
                 {this.state.activemenu === entryId ? (
