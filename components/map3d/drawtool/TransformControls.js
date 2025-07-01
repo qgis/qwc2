@@ -1,5 +1,4 @@
 import {
-    Box3,
 	BoxGeometry,
 	BufferGeometry,
 	Controls,
@@ -199,7 +198,7 @@ class TransformControls extends Controls {
 
 		/**
 		 * Whether to scale the object from the pulled edge, and not around the center.
-         * Only applies to simple objects (not groups of objects).
+		 * Only applies to simple objects (not groups of objects).
 		 *
 		 * @name TransformControls#scaleFromEdge
 		 * @type {boolean}
@@ -456,12 +455,12 @@ class TransformControls extends Controls {
 
 				this.pointStart.copy( planeIntersect.point ).sub( this.worldPositionStart );
 
-                if ( this.object.geometry ) {
+				if ( this.object.geometry ) {
 
-				    this.object.geometry.computeBoundingBox();
-				    this._bbox = this.object.geometry.boundingBox.clone();
+					this.object.geometry.computeBoundingBox();
+					this._bbox = this.object.geometry.boundingBox.clone();
 
-                }
+				}
 
 			}
 
@@ -794,7 +793,7 @@ class TransformControls extends Controls {
 
 		this.dragging = false;
 		this.axis = null;
-        this._bbox = null;
+		this._bbox = null;
 
 	}
 
