@@ -253,6 +253,10 @@
       "confirmclose": "Fermer sans enregistrer?",
       "title": "Traitement des images"
     },
+    "import3d": {
+      "importing": "Importation de {0}...",
+      "noprocessesserver": "Aucun service d'importation configuré"
+    },
     "importlayer": {
       "addfailed": "La couche n'a pas pu être ajoutée",
       "addlayer": "Ajouter une couche",

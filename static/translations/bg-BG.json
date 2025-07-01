@@ -253,6 +253,10 @@
       "confirmclose": "Затворете, без да запазвате?",
       "title": "Редактор на изображения"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "Не успя да добави слой.",
       "addlayer": "Добавяне на слой",

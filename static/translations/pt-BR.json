@@ -253,6 +253,10 @@
       "confirmclose": "Confirmar fechamento",
       "title": "Título"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "Falha ao adicionar",
       "addlayer": "Adicionar camada",

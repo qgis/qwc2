@@ -253,6 +253,10 @@
       "confirmclose": "",
       "title": ""
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "",
       "addlayer": "Добавить слой",

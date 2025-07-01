@@ -253,6 +253,10 @@
       "confirmclose": "Chiudere senza salvare?",
       "title": "Editor immagine"
     },
+    "import3d": {
+      "importing": "Importando {0}...",
+      "noprocessesserver": "Servizio di importazione non configurato"
+    },
     "importlayer": {
       "addfailed": "Impossibile aggiungere il livello",
       "addlayer": "Aggiungi livello",

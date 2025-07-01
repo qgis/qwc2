@@ -253,6 +253,10 @@
       "confirmclose": "Close without saving?",
       "title": "Image editor"
     },
+    "import3d": {
+      "importing": "Importing {0}...",
+      "noprocessesserver": "No import service configured"
+    },
     "importlayer": {
       "addfailed": "Failed to add layer.",
       "addlayer": "Add layer",

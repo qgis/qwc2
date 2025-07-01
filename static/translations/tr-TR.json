@@ -253,6 +253,10 @@
       "confirmclose": "Kaydetmeden kapat",
       "title": "Resim editörü"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "Katman ekleme başarısız",
       "addlayer": "Katman ekle",

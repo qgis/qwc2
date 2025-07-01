@@ -253,6 +253,10 @@
       "confirmclose": "Schließen, ohne zu speichern?",
       "title": "Bildbearbeitung"
     },
+    "import3d": {
+      "importing": "Wird importiert: {0}...",
+      "noprocessesserver": "Kein Importservice konfiguriert"
+    },
     "importlayer": {
       "addfailed": "Die Ebene konnte nicht hinzugefügt werden",
       "addlayer": "Ebene hinzufügen",

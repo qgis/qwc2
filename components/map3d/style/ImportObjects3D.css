@@ -1,0 +1,21 @@
+
+div.importobjects3d-widget {
+    padding: 0 0.5em 0.5em 0.5em;
+}
+
+div.importobjects3d-widget > div > * {
+    width: 100%;
+}
+
+div.importobjects3d-widget > div > button {
+    margin-top: 0.25em;
+    width: 100%;
+}
+
+div.importobjects3d-widget > div > button > div.spinner {
+    width: 1.5em;
+    height: 1.5em;
+    margin-right: 0.25em;
+    display: inline-block;
+    flex: 0 0 auto;
+}

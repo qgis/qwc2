@@ -98,6 +98,8 @@ import './style/View3D.css';
  * - `label` is an optional string with which to label the object.
  * - `labelOffset` is an optional number which represents the vertical offset between the object top and the label. Defaults to 80.
  * - `color` is an optional CSS color string which defines the object color.
+ *
+ * To import scene objects in formats other than GLTF, a `ogcProcessesUrl` in `config.json` needs to point to a BBOX OGC processes server.
  */
 class View3D extends React.Component {
     static propTypes = {
@@ -116,6 +118,8 @@ class View3D extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
+        /** Base URL of imported tile sets. */
+        importedTilesBaseUrl: PropTypes.string,
         layers: PropTypes.object,
         localConfig: PropTypes.object,
         map: PropTypes.object,
@@ -146,7 +150,8 @@ class View3D extends React.Component {
         },
         defaultDay: 182,
         defaultTime: '12:00',
-        searchMinScaleDenom: 1000
+        searchMinScaleDenom: 1000,
+        importedTilesBaseUrl: ':/'
     };
     state = {
         componentLoaded: false,
@@ -296,7 +301,8 @@ class View3D extends React.Component {
                 defaultDay: this.props.defaultDay,
                 defaultTime: this.props.defaultTime,
                 searchMinScaleDenom: this.props.searchMinScaleDenom,
-                tileInfoServiceUrl: this.props.tileInfoServiceUrl
+                tileInfoServiceUrl: this.props.tileInfoServiceUrl,
+                importedTilesBaseUrl: this.props.importedTilesBaseUrl
             };
             return (
                 <ResizeableWindow

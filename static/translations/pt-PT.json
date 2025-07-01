@@ -253,6 +253,10 @@
       "confirmclose": "Confirmar Fechar",
       "title": "Editor de Imagens"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "Falha ao Adicionar",
       "addlayer": "Adicionar Camada",

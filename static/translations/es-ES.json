@@ -253,6 +253,10 @@
       "confirmclose": "Cerrar sin guardar?",
       "title": "Editor de imágenes"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "Error al añadir capa",
       "addlayer": "Agregar capa",

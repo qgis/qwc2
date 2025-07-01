@@ -16,10 +16,8 @@ import {Box3} from 'three';
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
-import FileSelector from '../widgets/FileSelector';
 import NumberInput from '../widgets/NumberInput';
-import Spinner from '../widgets/Spinner';
-import {importGltf} from './utils/MiscUtils3D';
+import ImportObjects3D from './ImportObjects3D';
 
 import './style/LayerTree3D.css';
 
@@ -31,9 +29,7 @@ export default class LayerTree3D extends React.Component {
     state = {
         activestylemenu: null,
         activemenu: null,
-        importvisible: false,
-        selectedfile: null,
-        importing: false
+        importvisible: false
     };
     render() {
         return (
@@ -66,7 +62,7 @@ export default class LayerTree3D extends React.Component {
                         <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
                     </div>
                 </div>
-                {this.state.importvisible ? this.renderImportForm() : null}
+                {this.state.importvisible ? (<ImportObjects3D sceneContext={this.props.sceneContext} />) : null}
             </div>
         );
     };
@@ -188,24 +184,6 @@ export default class LayerTree3D extends React.Component {
             </div>
         );
     };
-    renderImportForm = () => {
-        return (
-            <div className="layertree3d-import-widget">
-                <div>
-                    <FileSelector
-                        accept=".gltf" file={this.state.selectedfile}
-                        onFileSelected={file => this.setState({selectedfile: file})}
-                        title={LocaleUtils.tr("layertree3d.supportedformats")} />
-                </div>
-                <div>
-                    <button className="button importlayer-addbutton" disabled={this.state.selectedfile === null || this.state.importing} onClick={this.importFile} type="button">
-                        {this.state.importing ? (<Spinner />) : null}
-                        {LocaleUtils.tr("layertree3d.import")}
-                    </button>
-                </div>
-            </div>
-        );
-    };
     layerStyleMenuToggled = (entryId) => {
         this.setState((state) => ({activestylemenu: state.activestylemenu === entryId ? null : entryId}));
     };
@@ -224,18 +202,5 @@ export default class LayerTree3D extends React.Component {
             const bounds = [bbox.min.x, bbox.min.y, bbox.max.x, bbox.max.y];
             this.props.sceneContext.setViewToExtent(bounds, 0);
         }
-    };
-    importFile = () => {
-        if (!this.state.selectedfile) {
-            return;
-        }
-        this.setState({importing: true});
-        const file = this.state.selectedfile;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            importGltf(ev.target.result, file.name, this.props.sceneContext);
-            this.setState({selectedfile: null, importing: false});
-        };
-        reader.readAsArrayBuffer(this.state.selectedfile);
     };
 }

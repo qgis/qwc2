@@ -253,6 +253,10 @@
       "confirmclose": "Închideți fără să salvați modificările?",
       "title": "Editor de imagine"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "Adăugarea stratului a eșuat",
       "addlayer": "Adaugă strat",

@@ -241,6 +241,8 @@
     "identify.title",
     "imageeditor.confirmclose",
     "imageeditor.title",
+    "import3d.importing",
+    "import3d.noprocessesserver",
     "importlayer.addfailed",
     "importlayer.addlayer",
     "importlayer.asgroup",

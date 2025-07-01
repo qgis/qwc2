@@ -253,6 +253,10 @@
       "confirmclose": "保存せずに閉じますか?",
       "title": "イメージ・エディタ"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "レイヤを追加できませんでした。",
       "addlayer": "レイヤを追加",

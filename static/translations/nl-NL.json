@@ -253,6 +253,10 @@
       "confirmclose": "Sluiten zonder op te slaan?",
       "title": "Image editor"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "Toevoegen van laag mislukt",
       "addlayer": "Laag toevoegen",

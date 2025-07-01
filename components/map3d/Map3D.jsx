@@ -120,6 +120,7 @@ class Map3D extends React.Component {
             removeLayer: (layerId) => {},
             updateColorLayer: (layerId, options, path) => {},
 
+            add3dTiles: (url, options) => {},
             addSceneObject: (objectId, object, options = {}) => {},
             getSceneObject: (objectId) => {},
             removeSceneObject: (objectId) => {},
@@ -148,6 +149,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.getLayer = this.getLayer;
         this.state.sceneContext.removeLayer = this.removeLayer;
         this.state.sceneContext.updateColorLayer = this.updateColorLayer;
+        this.state.sceneContext.add3dTiles = this.add3dTiles;
         this.state.sceneContext.addSceneObject = this.addSceneObject;
         this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
@@ -436,6 +438,47 @@ class Map3D extends React.Component {
                         ...state.sceneContext.colorLayers,
                         [layerId]: entry
                     }
+                }
+            };
+        });
+    };
+    add3dTiles = (url, name, options = {}) => {
+        const tiles = new Tiles3D({
+            url: MiscUtils.resolveAssetsPath(url),
+            errorTarget: 32
+        });
+        // Apply style when loading tile
+        tiles.tiles.addEventListener('load-model', ({scene}) => {
+            scene.userData.tilesetName = name;
+            scene.userData.batchIdAttr = "id";
+            Tiles3DStyle.applyTileStyle(scene, this.state.sceneContext.sceneObjects[name], this.state.sceneContext);
+        });
+        // Show/hide labels when tile visibility changes
+        tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
+            Object.values(scene.userData.tileLabels || {}).forEach(label => {
+                label.labelObject.visible = visible;
+                label.labelObject.element.style.display = visible ? 'initial' : 'none';
+            });
+        });
+        tiles.castShadow = true;
+        tiles.receiveShadow = true;
+        tiles.userData.layertree = true;
+        this.instance.add(tiles);
+        this.objectMap[name] = tiles;
+
+        this.setState((state) => {
+            const objectState = {
+                imported: true,
+                visibility: true,
+                opacity: 255,
+                layertree: true,
+                title: name,
+                ...options
+            };
+            return {
+                sceneContext: {
+                    ...state.sceneContext,
+                    sceneObjects: {...state.sceneContext.sceneObjects, [name]: objectState}
                 }
             };
         });

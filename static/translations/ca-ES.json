@@ -253,6 +253,10 @@
       "confirmclose": "Tancar sense guardar?",
       "title": "Editor d'imatges"
     },
+    "import3d": {
+      "importing": "",
+      "noprocessesserver": ""
+    },
     "importlayer": {
       "addfailed": "Error a l'afegir capa",
       "addlayer": "Afegir capa",

@@ -142,11 +142,3 @@
 #LayerTree3D div.layertree3d-option > span {
     cursor: pointer;
 }
-
-#LayerTree3D div.layertree3d-import-widget > div {
-    padding: 0 0.5em 0.5em 0.5em;
-}
-
-#LayerTree3D div.layertree3d-import-widget > div > * {
-    width: 100%;
-}
