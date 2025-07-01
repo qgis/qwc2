@@ -404,7 +404,7 @@ def getTheme(config, configItem, result, resultItem):
 
         # update theme config
         resultItem["url"] = configItem["url"]
-        resultItem["id"] = uniqueThemeId(wmsName)
+        resultItem["id"] = uniqueThemeId(configItem.get("id", wmsName))
         resultItem["name"] = getChildElementValue(topLayer, "Name")
         resultItem["title"] = wmsTitle
         resultItem["description"] = configItem["description"] if "description" in configItem else ""

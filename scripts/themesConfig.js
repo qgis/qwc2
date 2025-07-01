@@ -422,7 +422,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
 
             // update theme config
             resultItem.url = configItem.url;
-            resultItem.id = uniqueThemeId(wmsName);
+            resultItem.id = uniqueThemeId(configItem.id || wmsName);
             resultItem.name = topLayer.Name;
             resultItem.title = wmsTitle;
             resultItem.description = configItem.description || "";
