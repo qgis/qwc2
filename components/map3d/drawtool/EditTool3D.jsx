@@ -10,7 +10,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 import {Color, Group, Vector3} from 'three';
-import {TransformControls} from 'three/addons/controls/TransformControls';
+// import {TransformControls} from 'three/addons/controls/TransformControls';
 import {CSG} from 'three-csg-ts';
 
 import LocaleUtils from '../../../utils/LocaleUtils';
@@ -20,6 +20,9 @@ import ColorButton from '../../widgets/ColorButton';
 import TextInput from '../../widgets/TextInput';
 import {updateObjectLabel} from '../utils/MiscUtils3D';
 import NumericInput3D from './NumericInput3D';
+// Temporary downstream copy of three/addons/controls/TransformControls
+// See https://github.com/mrdoob/three.js/pull/31346
+import {TransformControls} from './TransformControls';
 
 
 class GroupSelection extends Group {
@@ -109,6 +112,7 @@ export default class EditTool3D extends React.Component {
         this.transformControls.setMode(this.state.mode);
         this.transformControls.setSpace(this.state.mode === 'rotate' ? 'local' : 'world');
         this.transformControls.setTranslationSnap(1);
+        this.transformControls.scaleFromEdge = true;
         this.transformControls.setRotationSnap(5 / 180 * Math.PI);
         this.transformControls.addEventListener('change', this.toolChanged);
         this.transformControls.addEventListener('mouseUp', this.toolChanged);
