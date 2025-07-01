@@ -138,17 +138,17 @@ export default function windows(state = defaultState, action) {
         return {...state, menuMargins: menuMargins, mapMargins: computeMapMargins(state.windowMargins, menuMargins)};
     }
     case SET_TOPBAR_HEIGHT: {
+        document.querySelector(':root').style.setProperty('--topbar-height', action.height + 'px');
         if (action.height <= 0) {
             return state;
         }
-        document.querySelector(':root').style.setProperty('--topbar-height', action.height + 'px');
         return {...state, topbarHeight: action.height};
     }
     case SET_BOTTOMBAR_HEIGHT: {
+        document.querySelector(':root').style.setProperty('--bottombar-height', action.height + 'px');
         if (action.height <= 0) {
             return state;
         }
-        document.querySelector(':root').style.setProperty('--bottombar-height', action.height + 'px');
         return {...state, bottombarHeight: action.height};
     }
     default:
