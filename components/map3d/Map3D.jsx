@@ -658,6 +658,7 @@ class Map3D extends React.Component {
                 opacity: 255,
                 layertree: true,
                 title: entry.title ?? entry.name,
+                baseColor: entry.baseColor,
                 styles: entry.styles,
                 style: entry.style || Object.keys(entry.styles || {})[0] || null,
                 tilesetStyle: null,

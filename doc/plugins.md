@@ -929,6 +929,7 @@ To add a 3D View to a theme, add the following configuration block to a theme it
              "name": "<name>",
              "url": "<url_to_tileset.json>",
              "title": "<title>",
+             "baseColor": "<css RGB(A) color string>",
              "idAttr": "<tile_batch_attr>",
              "styles": {"<styleName>", "<url_to_tilesetStyle.json>", ...},
              "style": "<styleName>",
@@ -953,7 +954,8 @@ Where:
   - `visibility` controls the initially visibile background layer
   - `overview: true` controls the name of background layer to display in the overview map. If no background layer is marked with `overview: true`, the currently visibile background layer id dipslayed in the overview map.
 - The `tiles3d` entry contains an optional list of 3d tiles to add to the scene, with:
-  - `idAttr`: Batch table attribute which stores the batch object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
+  - `baseColor`: the base color for the tile objects, defaults to white.
+  - `idAttr`: batch table attribute which stores the batch object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
   - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.
   - `style`: optional, tileset style enabled by default.
   - `colorAttr`: optional, batch table attribute which stores the batch color, as a 0xRRGGBB integer.

@@ -49,13 +49,21 @@ const Tiles3DStyle = {
         group.traverse(c => {
             if (c.geometry) {
                 const batchidxAttr = c.geometry.getAttribute( '_batchid' );
+                if (!batchidxAttr) {
+                    return;
+                }
+
                 const batchPosAttr = c.geometry.getAttribute('position');
                 const rgbaColors = [];
                 const rgbColors = [];
                 let haveColor = false;
                 let haveAlpha = false;
-                if (!batchidxAttr) {
-                    return;
+                let baseColor = [1, 1, 1, 1];
+                if (config.baseColor) {
+                    const color = parseCssColor(config.baseColor ?? 'white');
+                    baseColor = [...color.values.map(x => x / 255), color.alpha];
+                    haveAlpha |= color[3] < 1;
+                    haveColor = true;
                 }
 
                 batchidxAttr.array.forEach((batchIdx, idx) => {
@@ -73,8 +81,8 @@ const Tiles3DStyle = {
                         rgbaColors.push(...color);
                         rgbColors.push(...color.slice(0, 3));
                     } else {
-                        rgbaColors.push(...[1, 1, 1, 1]);
-                        rgbColors.push(...[1, 1, 1]);
+                        rgbaColors.push(...baseColor);
+                        rgbColors.push(...baseColor.slice(0, 3));
                     }
 
                     // Handle label
