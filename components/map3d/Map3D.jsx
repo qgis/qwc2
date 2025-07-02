@@ -23,7 +23,7 @@ import axios from 'axios';
 import {fromUrl} from "geotiff";
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh, Box3, Vector3} from 'three';
+import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh, Box3, Vector3, Matrix4} from 'three';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {v4 as uuidv4} from 'uuid';
@@ -53,7 +53,7 @@ import OverviewMap3D from './OverviewMap3D';
 import TopBar3D from './TopBar3D';
 import View3DSwitcher from './View3DSwitcher';
 import LayerRegistry from './layers/index';
-import {importGltf} from './utils/MiscUtils3D';
+import {importGltf, updateObjectLabel} from './utils/MiscUtils3D';
 import Tiles3DStyle from './utils/Tiles3DStyle';
 
 import './style/Map3D.css';
@@ -445,10 +445,9 @@ class Map3D extends React.Component {
             };
         });
     };
-    add3dTiles = (url, name, options = {}, showEditTool = false) => {
+    add3dTiles = (url, name, options = {}, showEditTool = false, matrix = null, label = null) => {
         const tiles = new Tiles3D({
-            url: MiscUtils.resolveAssetsPath(url),
-            errorTarget: 32
+            url: MiscUtils.resolveAssetsPath(url)
         });
         // Recenter tile group
         tiles.tiles.addEventListener('load-tile-set', ({tileSet}) => {
@@ -458,8 +457,16 @@ class Map3D extends React.Component {
                 const center = bbox.getCenter(new Vector3());
 
                 tiles.tiles.group.position.sub(center);
-                tiles.tiles.group.parent.position.copy(center);
+                if (matrix) {
+                    tiles.tiles.group.parent.applyMatrix4(matrix);
+                } else {
+                    tiles.tiles.group.parent.position.copy(center);
+                }
                 tiles.tiles.group.parent.updateMatrixWorld(true);
+                if (label) {
+                    tiles.tiles.group.parent.userData.label = label;
+                    updateObjectLabel(tiles.tiles.group.parent, this.state.sceneContext);
+                }
             }
             this.instance.notifyChange(tiles);
             if (showEditTool) {
@@ -930,11 +937,16 @@ class Map3D extends React.Component {
                 return null;
             }
             return new Promise(resolve => {
+                const object = this.state.sceneContext.getSceneObject(objectId);
                 if (entry.drawGroup) {
                     const exporter = new GLTFExporter();
-                    exporter.parse(this.state.sceneContext.getSceneObject(objectId), (result) => {
+                    exporter.parse(object, (result) => {
                         resolve({id: objectId, options: entry, data: result});
                     });
+                } else if (entry.imported && object.tiles) {
+                    const container = object.tiles.group.parent;
+                    const tileset = {matrix: container.matrix.elements, label: container.userData.label, url: object.tiles.rootURL};
+                    resolve({id: objectId, options: entry, tileset: tileset});
                 } else {
                     resolve({id: objectId, options: entry});
                 }
@@ -969,14 +981,17 @@ class Map3D extends React.Component {
             if (item.data) {
                 const loader = new GLTFLoader();
                 loader.parse(item.data, ConfigUtils.getAssetsPath(), (gltf) => {
-                    gltf.scene.traverse(obj => {
-                        if (obj.isMesh) {
-                            obj.castShadow = true;
-                            obj.receiveShadow = true;
+                    gltf.scene.traverse(c => {
+                        if (c.isMesh) {
+                            c.castShadow = true;
+                            c.receiveShadow = true;
                         }
+                        updateObjectLabel(c, this.state.sceneContext);
                     });
                     this.state.sceneContext.addSceneObject(item.id, gltf.scene, item.options);
                 });
+            } else if (item.tileset) {
+                this.add3dTiles(item.tileset.url, item.id, item.options, false, new Matrix4().fromArray(item.tileset.matrix), item.tileset.label);
             } else if (item.id in this.state.sceneContext.sceneObjects) {
                 this.state.sceneContext.updateSceneObject(item.id, item.options);
             }
