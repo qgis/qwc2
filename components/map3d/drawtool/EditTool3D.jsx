@@ -79,11 +79,10 @@ class GroupSelection extends Group {
             });
             center.divideScalar(this.children.length);
             this.position.copy(center);
-            this.updateMatrixWorld();
             this.children.forEach(child => {
                 child.position.sub(this.position);
-                child.updateMatrixWorld();
             });
+            this.updateMatrixWorld(true);
         }
     };
 }
