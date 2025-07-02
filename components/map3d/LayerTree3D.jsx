@@ -195,8 +195,8 @@ class LayerTree3D extends React.Component {
     zoomToObject = (objectId) => {
         const obj = this.props.sceneContext.getSceneObject(objectId);
         const bbox = new Box3();
-        if (obj?.tiles?.root) {
-            obj.tiles.root.cached.boundingVolume.getAABB(bbox);
+        if (obj?.tiles) {
+            obj.tiles.getBoundingBox(bbox);
         } else {
             bbox.setFromObject(obj);
         }
