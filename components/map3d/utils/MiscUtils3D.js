@@ -61,7 +61,7 @@ export function updateObjectLabel(sceneObject, sceneContext) {
     }
 }
 
-export function importGltf(dataOrUrl, name, sceneContext, drawGroup = true) {
+export function importGltf(dataOrUrl, name, sceneContext, options = {}) {
     const loader = new GLTFLoader();
     const processor = (gltf) => {
         // GLTF is Y-UP, we need Z-UP
@@ -69,10 +69,10 @@ export function importGltf(dataOrUrl, name, sceneContext, drawGroup = true) {
         gltf.scene.updateMatrixWorld();
 
         const objectId = uuidv4();
-        const options = {
-            drawGroup: drawGroup,
+        options = {
             layertree: true,
-            title: name
+            title: name,
+            ...options
         };
         const group = new Group();
         group.add(gltf.scene);
