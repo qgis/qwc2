@@ -41,7 +41,7 @@ export function updateObjectLabel(sceneObject, sceneContext) {
     let labelObject = sceneObject.children.find(child => child.isCSS2DObject);
     if (sceneObject.userData.label) {
         if (!labelObject) {
-            labelObject = createLabelObject(sceneObject.userData.label, new Vector3(0, 0, 0), sceneContext, sceneObject.userData.labelOffset ?? 80);
+            labelObject = createLabelObject(sceneObject.userData.label, new Vector3(0, 0, 0), sceneContext, sceneObject.userData.labelOffset ?? 50);
             sceneObject.add(labelObject);
             sceneObject.updateMatrixWorld();
             labelObject.userData.removeCallback = () => {
