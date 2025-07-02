@@ -101,7 +101,7 @@ class LayerTree3D extends React.Component {
                     <div className="layertree3d-item-optionsmenu">
                         <div className="layertree3d-item-optionsmenu-row">
                             {isObject ? (
-                                <Icon icon="zoom" onClick={() => this.zoomToObject(entryId)} title={LocaleUtils.tr("layertree3d.zoomtoobject")} />
+                                <Icon icon="zoom" onClick={() => this.props.sceneContext.zoomToObject(entryId)} title={LocaleUtils.tr("layertree3d.zoomtoobject")} />
                             ) : null}
                             {entry.imported ? (<Icon icon="draw" onClick={() => this.editObject(entryId)} />) : null}
                             <Icon icon="transparency" />
@@ -191,19 +191,6 @@ class LayerTree3D extends React.Component {
     };
     layerMenuToggled = (entryId) => {
         this.setState((state) => ({activemenu: state.activemenu === entryId ? null : entryId}));
-    };
-    zoomToObject = (objectId) => {
-        const obj = this.props.sceneContext.getSceneObject(objectId);
-        const bbox = new Box3();
-        if (obj?.tiles) {
-            obj.tiles.getBoundingBox(bbox);
-        } else {
-            bbox.setFromObject(obj);
-        }
-        if (!bbox.isEmpty()) {
-            const bounds = [bbox.min.x, bbox.min.y, bbox.max.x, bbox.max.y];
-            this.props.sceneContext.setViewToExtent(bounds, 0);
-        }
     };
     editObject = (objectId) => {
         this.props.setCurrentTask("EditDataset3D", null, null, {objectId});

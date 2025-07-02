@@ -126,6 +126,7 @@ class Map3D extends React.Component {
             getSceneObject: (objectId) => {},
             removeSceneObject: (objectId) => {},
             updateSceneObject: (objectId, options) => {},
+            zoomToObject: (objectId) => {},
 
             getMap: () => {},
 
@@ -155,6 +156,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
+        this.state.sceneContext.zoomToObject = this.zoomToObject;
         this.state.sceneContext.getMap = this.getMap;
         this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
         this.state.sceneContext.getTerrainHeightFromMap = this.getTerrainHeightFromMap;
@@ -567,6 +569,24 @@ class Map3D extends React.Component {
                 }
             };
         });
+    };
+    zoomToObject = (objectId, margin = 20) => {
+        const obj = this.state.sceneContext.getSceneObject(objectId);
+        const bbox = new Box3();
+        if (obj?.tiles) {
+            obj.tiles.getBoundingBox(bbox);
+        } else {
+            bbox.setFromObject(obj);
+        }
+        if (!bbox.isEmpty()) {
+            const bounds = [
+                bbox.min.x - margin,
+                bbox.min.y - margin,
+                bbox.max.x + margin,
+                bbox.max.y + margin
+            ];
+            this.state.sceneContext.setViewToExtent(bounds, 0);
+        }
     };
     getMap = () => {
         return this.map;
