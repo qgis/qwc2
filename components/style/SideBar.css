@@ -21,10 +21,12 @@ div.sidebar-left {
 
 div.sidebar-right:not(.sidebar-open) {
     transform: translateX(100%) translateX(8px);
+    pointer-events: none;
 }
 
 div.sidebar-left:not(.sidebar-open) {
     transform: translateX(-100%) translateX(-8px);
+    pointer-events: none;
 }
 
 div.sidebar-resize-handle {
