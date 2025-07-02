@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {BufferGeometry, Group, Mesh, Vector2, Vector3} from 'three';
+import {Box3, BufferGeometry, Group, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
@@ -85,6 +85,14 @@ export function importGltf(dataOrUrl, name, sceneContext, drawGroup = true) {
                 updateObjectLabel(c, sceneContext);
             }
         });
+        // Center group on object
+        const bbox = new Box3();
+        bbox.setFromObject(group);
+        const center = bbox.getCenter(new Vector3());
+        gltf.scene.position.sub(center);
+        group.position.copy(center);
+        group.updateMatrixWorld(true);
+
         sceneContext.addSceneObject(objectId, group, options);
     };
     if (typeof dataOrUrl === 'string') {
