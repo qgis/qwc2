@@ -66,7 +66,7 @@ export function importGltf(dataOrUrl, name, sceneContext, options = {}) {
     const processor = (gltf) => {
         // GLTF is Y-UP, we need Z-UP
         gltf.scene.rotation.x = Math.PI / 2;
-        gltf.scene.updateMatrixWorld();
+        gltf.scene.updateMatrixWorld(true);
 
         const objectId = uuidv4();
         options = {
@@ -74,26 +74,25 @@ export function importGltf(dataOrUrl, name, sceneContext, options = {}) {
             title: name,
             ...options
         };
-        const group = new Group();
-        group.add(gltf.scene);
         gltf.scene.traverse(c => {
             if (c.geometry) {
                 c.castShadow = true;
                 c.receiveShadow = true;
             }
-            if (c.userData.label) {
-                updateObjectLabel(c, sceneContext);
-            }
+            updateObjectLabel(c, sceneContext);
         });
         // Center group on object
-        const bbox = new Box3();
-        bbox.setFromObject(group);
+        const bbox = new Box3().setFromObject(gltf.scene);
         const center = bbox.getCenter(new Vector3());
-        gltf.scene.position.sub(center);
-        group.position.copy(center);
-        group.updateMatrixWorld(true);
-
-        sceneContext.addSceneObject(objectId, group, options);
+        const offset = new Vector3().subVectors(center, gltf.scene.position).applyQuaternion(
+            gltf.scene.quaternion.clone().invert()
+        );
+        gltf.scene.children.forEach(child => {
+            child.position.sub(offset);
+        });
+        gltf.scene.position.copy(center);
+        gltf.scene.updateMatrixWorld(true);
+        sceneContext.addSceneObject(objectId, gltf.scene, options);
     };
     if (typeof dataOrUrl === 'string') {
         loader.load(dataOrUrl, processor, () => {}, (err) => {
