@@ -65,15 +65,28 @@ For example:
 
 ```
 window.addEventListener("QWC2ApiReady", () => {
-     const {React} = window.qwc2.libs;
+    const {React, PropTypes, connect} = window.qwc2.libs;
+    const {TaskBar} = window.qwc2.components;
 
-     class MyPlugin extends React.Component {
-         render() {
-             return React.createElement("div", {}, "Hello World");
-         }
-     }
+    class CurrentTheme extends React.Component {
+        static propTypes = {
+            theme: PropTypes.object
+        };
+        render() {
+            return React.createElement(TaskBar, {task: "CurrentTheme"},
+                React.createElement(
+                    'span', {role: 'body'},
+                    `Current theme: ${this.props.theme?.title}`
+                )
+            );
+        }
+    }
 
-     window.qwc2.addPlugin("MyPlugin", MyPlugin);
+    const CurrentThemePlugin = connect(state => ({
+        theme: state.theme.current
+    }))(CurrentTheme);
+
+    window.qwc2.addPlugin("CurrentThemePlugin", CurrentThemePlugin);
 });
 ```
 
