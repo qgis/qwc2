@@ -61,7 +61,7 @@ Exposes an API for interacting with QWC2 via `window.qwc2`.
 
 You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
 
-For example:
+Here is an example of a custom plugin:
 
 ```
 window.addEventListener("QWC2ApiReady", () => {
@@ -90,9 +90,21 @@ window.addEventListener("QWC2ApiReady", () => {
 });
 ```
 
-Note: You can also write the plugin in JSX syntax, and transpile to plain JS using babel.
+*Note*: You can also write the plugin in JSX syntax, and transpile to plain JS using babel.
 
-All following action functions are available:
+To load custom plugins in QWC:
+
+- Include the custom plugin code in `index.html`, i.e.
+
+      <script type="text/javascript" src="assets/js/currenttheme.js" ></script>
+
+- Enable the plugin in the plugins block of `config.json`
+
+      {
+          "name": "CurrentTheme"
+      }
+
+The following action functions are exposed in the API:
 
 - [display](https://github.com/qgis/qwc2/blob/master/actions/display.js)
 - [editing](https://github.com/qgis/qwc2/blob/master/actions/editing.js)
@@ -105,7 +117,18 @@ All following action functions are available:
 
 I.e. `setCurrentTask` is available via `window.qwc2.setCurrentTask`.
 
-Some of the core libraries (React, axios, ol, ...) are accessible via `window.qwc2.libs`.
+The following core libraries are accessible via `window.qwc2.libs`:
+
+- `axios`
+- `React`
+- `ReactDOM`
+- `PropTypes`
+- `connect`
+- `ol`
+- `uuid`
+- `url`
+
+The QWC shared components are acessible via `window.qwc2.components`, i.e. `window.qwc2.components.SideBar`.
 
 In addition, the following methods are available on `window.qwc2`:
 

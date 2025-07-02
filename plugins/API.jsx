@@ -7,11 +7,13 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
+import url from 'url';
 import * as uuid from 'uuid';
 
 import * as displayActions from '../actions/display';
@@ -99,7 +101,7 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  *
  * You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
  *
- * For example:
+ * Here is an example of a custom plugin:
  *
  * ```
  * window.addEventListener("QWC2ApiReady", () => {
@@ -128,9 +130,21 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  * });
  * ```
  *
- * Note: You can also write the plugin in JSX syntax, and transpile to plain JS using babel.
+ * *Note*: You can also write the plugin in JSX syntax, and transpile to plain JS using babel.
  *
- * All following action functions are available:
+ * To load custom plugins in QWC:
+ *
+ * - Include the custom plugin code in `index.html`, i.e.
+ *
+ *       <script type="text/javascript" src="assets/js/currenttheme.js" ></script>
+ *
+ * - Enable the plugin in the plugins block of `config.json`
+ *
+ *       {
+ *           "name": "CurrentTheme"
+ *       }
+ *
+ * The following action functions are exposed in the API:
  *
  * - [display](https://github.com/qgis/qwc2/blob/master/actions/display.js)
  * - [editing](https://github.com/qgis/qwc2/blob/master/actions/editing.js)
@@ -143,7 +157,18 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  *
  * I.e. `setCurrentTask` is available via `window.qwc2.setCurrentTask`.
  *
- * Some of the core libraries (React, axios, ol, ...) are accessible via `window.qwc2.libs`.
+ * The following core libraries are accessible via `window.qwc2.libs`:
+ *
+ * - `axios`
+ * - `React`
+ * - `ReactDOM`
+ * - `PropTypes`
+ * - `connect`
+ * - `ol`
+ * - `uuid`
+ * - `url`
+ *
+ * The QWC shared components are acessible via `window.qwc2.components`, i.e. `window.qwc2.components.SideBar`.
  *
  * In addition, the following methods are available on `window.qwc2`:
  */
@@ -183,9 +208,11 @@ class API extends React.Component {
         window.qwc2.libs = {};
         window.qwc2.libs.axios = axios;
         window.qwc2.libs.React = React;
+        window.qwc2.libs.ReactDOM = ReactDOM;
         window.qwc2.libs.PropTypes = PropTypes;
         window.qwc2.libs.connect = connect;
         window.qwc2.libs.ol = ol;
+        window.qwc2.libs.url = url;
         window.qwc2.libs.uuid = uuid;
 
         window.qwc2.components = {};
