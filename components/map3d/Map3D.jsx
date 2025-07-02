@@ -40,6 +40,7 @@ import {MapContainerPortalContext} from '../PluginsContainer';
 import BottomBar3D from './BottomBar3D';
 import Compare3D from './Compare3D';
 import Draw3D from './Draw3D';
+import EditDataset3D from './EditDataset3D';
 import ExportObjects3D from './ExportObjects3D';
 import HideObjects3D from './HideObjects3D';
 import Identify3D from './Identify3D';
@@ -442,7 +443,7 @@ class Map3D extends React.Component {
             };
         });
     };
-    add3dTiles = (url, name, options = {}) => {
+    add3dTiles = (url, name, options = {}, showEditTool = false) => {
         const tiles = new Tiles3D({
             url: MiscUtils.resolveAssetsPath(url),
             errorTarget: 32
@@ -459,6 +460,9 @@ class Map3D extends React.Component {
                 tiles.tiles.group.parent.updateMatrixWorld(true);
             }
             this.instance.notifyChange(tiles);
+            if (showEditTool) {
+                this.props.setCurrentTask("EditDataset3D", null, null, {objectId: name});
+            }
         });
 
         // Apply style when loading tile
@@ -574,19 +578,21 @@ class Map3D extends React.Component {
             this.state.sceneContext.scene ? (
                 <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
                     <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
+
                     <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
-                    <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
-                    <LayerTree3D sceneContext={this.state.sceneContext} />
                     <BottomBar3D sceneContext={this.state.sceneContext} />
-                    <OverviewMap3D baseLayer={overviewLayer} sceneContext={this.state.sceneContext} />
-                    <Map3DLight sceneContext={this.state.sceneContext} />
-                    <Measure3D sceneContext={this.state.sceneContext} />
-                    <Identify3D sceneContext={this.state.sceneContext} />
                     <Compare3D sceneContext={this.state.sceneContext} />
                     <Draw3D sceneContext={this.state.sceneContext} />
-                    <MapExport3D sceneContext={this.state.sceneContext} />
+                    <EditDataset3D sceneContext={this.state.sceneContext} />
                     <ExportObjects3D sceneContext={this.state.sceneContext} />
                     <HideObjects3D sceneContext={this.state.sceneContext} />
+                    <Identify3D sceneContext={this.state.sceneContext} />
+                    <LayerTree3D sceneContext={this.state.sceneContext} />
+                    <Map3DLight sceneContext={this.state.sceneContext} />
+                    <MapExport3D sceneContext={this.state.sceneContext} />
+                    <Measure3D sceneContext={this.state.sceneContext} />
+                    <OverviewMap3D baseLayer={overviewLayer} sceneContext={this.state.sceneContext} />
+                    <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                     <View3DSwitcher position={2} />
                 </UnloadWrapper>
             ) : null

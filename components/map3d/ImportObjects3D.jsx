@@ -69,7 +69,8 @@ class ImportObjects3D extends React.Component {
         const reader = new FileReader();
         reader.onload = (ev) => {
             importGltf(ev.target.result, file.name, this.props.sceneContext, {
-                drawGroup: true
+                drawGroup: true,
+                imported: true
             });
             this.setState({selectedfile: null, importing: false});
             this.props.processFinished(taskid, true);
@@ -101,7 +102,7 @@ class ImportObjects3D extends React.Component {
         }
         axios.post(ogcProcessesUrl.replace(/\/$/, '') + '/modelimport/execution_multipart', formData, {headers}).then(response => {
             const tilesetUrl = this.props.sceneContext.options.importedTilesBaseUrl + response.data.result.value;
-            this.props.sceneContext.add3dTiles(tilesetUrl, taskid, {title: file.name});
+            this.props.sceneContext.add3dTiles(tilesetUrl, taskid, {title: file.name}, true);
             this.setState({selectedfile: null, importing: false});
             this.props.processFinished(taskid, true);
         }).catch(err => {

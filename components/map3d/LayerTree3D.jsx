@@ -7,12 +7,14 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
 import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {Box3} from 'three';
 
+import {setCurrentTask} from '../../actions/task';
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
@@ -22,9 +24,10 @@ import ImportObjects3D from './ImportObjects3D';
 import './style/LayerTree3D.css';
 
 
-export default class LayerTree3D extends React.Component {
+class LayerTree3D extends React.Component {
     static propTypes = {
-        sceneContext: PropTypes.object
+        sceneContext: PropTypes.object,
+        setCurrentTask: PropTypes.func
     };
     state = {
         activestylemenu: null,
@@ -100,6 +103,7 @@ export default class LayerTree3D extends React.Component {
                             {isObject ? (
                                 <Icon icon="zoom" onClick={() => this.zoomToObject(entryId)} title={LocaleUtils.tr("layertree3d.zoomtoobject")} />
                             ) : null}
+                            {entry.imported ? (<Icon icon="draw" onClick={() => this.editObject(entryId)} />) : null}
                             <Icon icon="transparency" />
                             <input className="layertree3d-item-transparency-slider" max="255" min="0"
                                 onChange={(ev) => updateCallback(entryId, {opacity: parseInt(ev.target.value, 10)})}
@@ -201,4 +205,11 @@ export default class LayerTree3D extends React.Component {
             this.props.sceneContext.setViewToExtent(bounds, 0);
         }
     };
+    editObject = (objectId) => {
+        this.props.setCurrentTask("EditDataset3D", null, null, {objectId});
+    };
 }
+
+export default connect((state) => ({}), {
+    setCurrentTask: setCurrentTask
+})(LayerTree3D);
