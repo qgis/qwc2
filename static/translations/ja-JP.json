@@ -53,7 +53,7 @@
         "Redlining": "スケッチ",
         "Routing": "ルート探索",
         "Tools": "地図ツール",
-        "TourGuide": "",
+        "TourGuide": "ツアー・ガイド",
         "TimeManager": "タイム・マネージャ",
         "View3D": "3D 表示"
       },
@@ -130,15 +130,15 @@
       "title": "Cyclomedia ビューワ"
     },
     "draw3d": {
-      "clone": "",
+      "clone": "クローン",
       "cone": "円錐",
-      "ctrlhint": "",
+      "ctrlhint": "Ctrl を使うと複数選択できます",
       "cuboid": "直方体",
       "cylinder": "円柱",
       "delete": "削除",
       "drawings": "作図",
       "intersect": "交差",
-      "label": "",
+      "label": "ラベル",
       "newgroupprompt": "新しい作図グループ",
       "numericinput": "数値入力",
       "pick": "選択",
@@ -147,11 +147,11 @@
       "rotate": "回転",
       "rotation": "回転角",
       "scale": "スケール",
-      "sizeunavailable": "",
+      "sizeunavailable": "回転されるオブジェクトのためのサイズがありません",
       "sphere": "球体",
       "subtract": "差分",
       "thescale": "スケール",
-      "thesize": "",
+      "thesize": "サイズ",
       "translate": "移動",
       "undoBool": "ブーリアン操作を取り消し",
       "union": "合成（和）",
@@ -171,7 +171,7 @@
       "draw": "作図",
       "feature": "地物",
       "geomnonzeroz": "ジオメトリが 0 でない Z 値を含んでいるため、リード・オンリーです。",
-      "geomreadonly": "",
+      "geomreadonly": "ジオメトリがリード・オンリーです。",
       "invalidform": "無効なフォーム",
       "maximize": "最大化",
       "minimize": "最小化",
@@ -246,7 +246,7 @@
       "noresults": "選択された点には情報がありません",
       "querying": "検索中...",
       "reportfail": "レポートを生成することが出来ませんでした",
-      "selectreport": "",
+      "selectreport": "レポートを選択...",
       "title": "地物情報"
     },
     "imageeditor": {
@@ -254,8 +254,8 @@
       "title": "イメージ・エディタ"
     },
     "import3d": {
-      "importing": "",
-      "noprocessesserver": ""
+      "importing": "{0} をインポートしています...",
+      "noprocessesserver": "インポート・サービスが構成されていません"
     },
     "importlayer": {
       "addfailed": "レイヤを追加できませんでした。",
@@ -297,7 +297,7 @@
     "layertree": {
       "compare": "トップ・レイヤを比較",
       "deletealllayers": "全てのレイヤを削除",
-      "hidealllayers": "",
+      "hidealllayers": "全てのレイヤを非表示",
       "importlayer": "レイヤをインポート",
       "maptip": "レイヤのマップ・チップを表示",
       "printlegend": "凡例を印刷",
@@ -308,12 +308,12 @@
       "zoomtolayer": "レイヤにズーム"
     },
     "layertree3d": {
-      "customheight": "",
+      "customheight": "値",
       "import": "インポート",
       "importobjects": "オブジェクトをインポート",
       "layers": "レイヤ",
       "objects": "オブジェクト",
-      "supportedformats": "サポートされている形式",
+      "supportedformats": "サポートされている形式: GLTF",
       "zoomtoobject": "オブジェクトにズーム"
     },
     "linkfeatureform": {
@@ -339,15 +339,15 @@
       "resetrotation": "回転をリセット"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "ビューを同期",
+      "lockview": "2D ビューとともに移動",
+      "syncview": "2D ビューと同期",
       "terrain": "地形",
       "title": "3D ビュー"
     },
     "mapexport": {
       "configuration": "構成",
       "format": "形式",
-      "projection": "",
+      "projection": "投影",
       "resolution": "解像度",
       "scale": "縮尺",
       "size": "サイズ",
@@ -385,7 +385,7 @@
       "dayspersec": "日数 / 秒",
       "helpersVisible": "補助オブジェクト表示",
       "minspersec": "分 / 秒",
-      "moonLightIntensity": "",
+      "moonLightIntensity": "月光強度",
       "normalBias": "ノーマル・バイアス",
       "shadowBias": "シャドウ・バイアス",
       "shadowMapSize": "シャドウ・マップ・サイズ",
@@ -395,16 +395,16 @@
       "shadowintensity": "影の強度",
       "shadows": "シャドウを有効化",
       "showadvanced": "詳細設定を表示",
-      "sunLightIntensity": "",
+      "sunLightIntensity": "陽光強度",
       "time": "時刻",
       "zFactor": "Zファクター"
     },
     "measureComponent": {
       "absolute": "m (海抜)",
-      "areaLabel": "領域",
+      "areaLabel": "面積",
       "bearingLabel": "方角",
       "ground": "m (地上高)",
-      "heightDiffLabel": "",
+      "heightDiffLabel": "高度差",
       "imperial": "ヤード・ポンド法",
       "lengthLabel": "長さ",
       "metric": "メートル法",
@@ -555,7 +555,7 @@
       "all": "全て",
       "circleradius": "円の半径",
       "clearfilter": "クリア",
-      "coordinates": "",
+      "coordinates": "座標",
       "existinglayer": "レイヤは既に地図の中に存在します",
       "filter": "検索を詳細化",
       "layers": "レイヤ",
@@ -690,9 +690,9 @@
       "zoomout": "ズーム・アウト"
     },
     "tourguide": {
-      "done": "",
-      "next": "",
-      "previous": ""
+      "done": "完了",
+      "next": "次へ",
+      "previous": "前へ"
     },
     "valuetool": {
       "all": "",
@@ -733,9 +733,9 @@
       "unminimize": "元のサイズに戻す"
     },
     "colorschemes": {
-      "default": "",
-      "dark": "",
-      "highcontrast": ""
+      "default": "デフォルト",
+      "dark": "ダーク",
+      "highcontrast": "ハイ・コントラスト"
     }
   }
 }
