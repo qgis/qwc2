@@ -23,7 +23,7 @@ import axios from 'axios';
 import {fromUrl} from "geotiff";
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh} from 'three';
+import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh, Box3, Vector3} from 'three';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {v4 as uuidv4} from 'uuid';
@@ -447,6 +447,20 @@ class Map3D extends React.Component {
             url: MiscUtils.resolveAssetsPath(url),
             errorTarget: 32
         });
+        // Recenter tile group
+        tiles.tiles.addEventListener('load-tile-set', ({tileSet}) => {
+            if (tileSet.root.parent === null) {
+                const bbox = new Box3();
+                tiles.tiles.getBoundingBox(bbox);
+                const center = bbox.getCenter(new Vector3());
+
+                tiles.tiles.group.position.sub(center);
+                tiles.tiles.group.parent.position.copy(center);
+                tiles.tiles.group.parent.updateMatrixWorld(true);
+            }
+            this.instance.notifyChange(tiles);
+        });
+
         // Apply style when loading tile
         tiles.tiles.addEventListener('load-model', ({scene}) => {
             scene.userData.tilesetName = name;
