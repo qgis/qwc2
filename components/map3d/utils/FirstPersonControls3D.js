@@ -22,6 +22,7 @@ export default class FirstPersonControls3D extends Controls {
         this.personHeight = 3;
 
         this.sceneContext = null;
+        this.enabled = false;
         this.yaw = 0;
         this.pitch = 0;
         this.lookAt = new Vector3(0, 1, 0);
@@ -58,8 +59,10 @@ export default class FirstPersonControls3D extends Controls {
 
         this.object.near = 0.1;
         this.sceneContext.scene.view.setControls(this);
+        this.enabled = true;
     }
     disconnect() {
+        this.enabled = false;
         this.sceneContext.scene.view.setControls(null);
 
         this.domElement.removeEventListener('pointerdown', this._onPointerDown);
@@ -246,6 +249,9 @@ export default class FirstPersonControls3D extends Controls {
         this._keyboardNavInterval = null;
     };
     _onPointerDown = (event) => {
+        if (!this.enabled) {
+            return;
+        }
         if (this._pointers.length === 0) {
             this.domElement.setPointerCapture(event.pointerId);
             this.domElement.addEventListener('pointermove', this._onPointerMove);
