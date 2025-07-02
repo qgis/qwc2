@@ -113,16 +113,14 @@ export default class Map3DLight extends React.Component {
     };
     render() {
         return (
-            <div>
-                <SideBar icon="light" id="MapLight3D" onHide={this.onHide}
-                    title={LocaleUtils.tr("appmenu.items.MapLight3D")}
-                    width="25em"
-                >
-                    {() => ({
-                        body: this.renderBody()
-                    })}
-                </SideBar>
-            </div>
+            <SideBar icon="light" id="MapLight3D" onHide={this.onHide}
+                title={LocaleUtils.tr("appmenu.items.MapLight3D")}
+                width="25em"
+            >
+                {() => ({
+                    body: this.renderBody()
+                })}
+            </SideBar>
         );
     }
     renderBody = () => {

@@ -201,16 +201,14 @@ class Compare3D extends React.Component {
     };
     render() {
         return (
-            <div>
-                <SideBar icon="layers" id="Compare3D"
-                    title={LocaleUtils.tr("appmenu.items.Compare3D")}
-                    width="20em"
-                >
-                    {() => ({
-                        body: this.renderBody()
-                    })}
-                </SideBar>
-            </div>
+            <SideBar icon="layers" id="Compare3D"
+                title={LocaleUtils.tr("appmenu.items.Compare3D")}
+                width="20em"
+            >
+                {() => ({
+                    body: this.renderBody()
+                })}
+            </SideBar>
         );
     }
     renderBody = () => {
