@@ -528,8 +528,11 @@ class Map3D extends React.Component {
         if (!object) {
             return;
         }
-        object.traverse(child => {
-            child.dispatchEvent({ type: 'removed' });
+        // Ensure labels are removed
+        object.traverse(c => {
+            if (c.isCSS2DObject) {
+                c.element.parentNode.removeChild(c.element);
+            }
         });
         if (object.tiles) {
             this.instance.remove(object);
