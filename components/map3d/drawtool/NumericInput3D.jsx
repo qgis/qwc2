@@ -15,6 +15,7 @@ import {Box3} from 'three';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import LocaleUtils from '../../../utils/LocaleUtils';
 import ResizeableWindow from '../../ResizeableWindow';
+import ButtonBar from '../../widgets/ButtonBar';
 import NumberInput from '../../widgets/NumberInput';
 
 import './style/NumericInput3D.css';
@@ -31,7 +32,8 @@ export default class NumericInput3D extends React.Component {
         pos: [0, 0, 0],
         rot: [0, 0, 0],
         scale: [1, 1, 1],
-        size: null
+        size: null,
+        anchors: ['center', 'center', 'begin']
     };
     constructor(props) {
         super(props);
@@ -58,8 +60,18 @@ export default class NumericInput3D extends React.Component {
         const size = this.state.size;
         const disabled = !this.props.selectedObject;
         const unit = CoordinatesUtils.getUnits(this.props.sceneContext.mapCrs);
+        const hanchors = [
+            {key: 'begin', icon: 'after'},
+            {key: 'center', icon: 'middle_h'},
+            {key: 'end', icon: 'before'}
+        ];
+        const vanchors = [
+            {key: 'begin', icon: 'above'},
+            {key: 'center', icon: 'middle_v'},
+            {key: 'end', icon: 'below'}
+        ];
         const contents = (
-            <ResizeableWindow fitHeight icon="numericinput" initialWidth={300} initialX={-1}
+            <ResizeableWindow fitHeight icon="numericinput" initialWidth={350} initialX={-1}
                 onClose={this.props.toggleNumericInput} scrollable title={LocaleUtils.tr("draw3d.numericinput")} >
                 <div className="draw3d-numeric-input-body" role="body">
                     <table>
@@ -94,6 +106,14 @@ export default class NumericInput3D extends React.Component {
                                     <td className="draw3d-numeric-input-comment" colSpan="4"><i>{LocaleUtils.tr("draw3d.sizeunavailable")}</i></td>
                                 </tr>
                             )}
+                            {size ? (
+                                <tr>
+                                    <td />
+                                    <td><ButtonBar active={this.state.anchors[0]} buttons={hanchors} onClick={x => this.setAnchor(0, x)} /></td>
+                                    <td><ButtonBar active={this.state.anchors[1]} buttons={hanchors} onClick={y => this.setAnchor(0, y)} /></td>
+                                    <td><ButtonBar active={this.state.anchors[2]} buttons={vanchors} onClick={z => this.setAnchor(0, z)} /></td>
+                                </tr>
+                            ) : null}
                         </tbody>
                     </table>
                 </div>
@@ -154,8 +174,21 @@ export default class NumericInput3D extends React.Component {
         const scaleDiff = value / this.state.size[idx];
         const newScale = [...this.state.scale];
         newScale[idx] = newScale[idx] * scaleDiff;
+        // Offset for anchor
+        const newPos = [...this.state.pos];
+        if (this.state.anchors[idx] === 'begin') {
+            newPos[idx] += 0.5 * (value - this.state.size[idx]);
+        } else if (this.state.anchors[idx] === 'end') {
+            newPos[idx] -= 0.5 * (value - this.state.size[idx]);
+        }
         this.props.selectedObject.scale.set(...newScale);
+        this.props.selectedObject.position.set(...newPos);
         this.update();
+    };
+    setAnchor = (idx, value) => {
+        this.setState(state => ({
+            anchors: [...state.anchors.slice(0, idx), value, ...state.anchors.slice(idx + 1)]
+        }));
     };
     update = () => {
         this.props.selectedObject.updateMatrixWorld();
