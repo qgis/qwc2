@@ -3,6 +3,18 @@ div.draw3d-numeric-input-body > table {
     font-size: 90%;
 }
 
+div.draw3d-numeric-input-body > table td:nth-child(2) {
+    background-color: #fe2a3b;
+}
+
+div.draw3d-numeric-input-body > table td:nth-child(3) {
+    background-color: #07fe60;
+}
+
+div.draw3d-numeric-input-body > table td:nth-child(4) {
+    background-color: #170eed;
+}
+
 td.draw3d-numeric-input-comment {
     line-height: 2em;
 }
