@@ -25,6 +25,10 @@ let config = {
     }
 };
 
+const sessionConfig = {
+
+};
+
 export default {
     getDefaults() {
         return config;
@@ -66,5 +70,11 @@ export default {
     },
     getPluginConfig(name) {
         return config.plugins[config.isMobile ? "mobile" : "desktop"].find(entry => entry.name === name) || {};
+    },
+    setSessionConfig(name, value) {
+        sessionConfig[name] = value;
+    },
+    getSessionConfig(name) {
+        return sessionConfig[name];
     }
 };
