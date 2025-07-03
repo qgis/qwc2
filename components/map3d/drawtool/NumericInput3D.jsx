@@ -101,11 +101,7 @@ export default class NumericInput3D extends React.Component {
                                     <td><NumberInput decimals={1} disabled={disabled} onChange={y => this.updateSize(1, y)} value={size[1]} /></td>
                                     <td><NumberInput decimals={1} disabled={disabled} onChange={z => this.updateSize(2, z)} value={size[2]} /></td>
                                 </tr>
-                            ) : (
-                                <tr>
-                                    <td className="draw3d-numeric-input-comment" colSpan="4"><i>{LocaleUtils.tr("draw3d.sizeunavailable")}</i></td>
-                                </tr>
-                            )}
+                            ) : null}
                             {size ? (
                                 <tr>
                                     <td />
