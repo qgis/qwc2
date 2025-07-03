@@ -301,6 +301,12 @@ class QtDesignerForm extends React.Component {
             const linetype = widget.property?.orientation === "Qt::Vertical" ? "vline" : "hline";
             return (<div className={"qt-designer-form-" + linetype} />);
         } else if (widget.class === "QFrame") {
+            if (widget.property.visibilityExpression) {
+                const exprResult = parseExpression(widget.property.visibilityExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                if (exprResult === false || exprResult === 0) {
+                    return null;
+                }
+            }
             return (
                 <div className="qt-designer-form-container">
                     <div className="qt-designer-form-frame">
