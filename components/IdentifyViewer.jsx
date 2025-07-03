@@ -19,12 +19,13 @@ import PropTypes from 'prop-types';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
-import {zoomToExtent} from '../actions/map';
+import {zoomToPoint} from '../actions/map';
 import {openExternalUrl} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
@@ -171,7 +172,7 @@ class IdentifyViewer extends React.Component {
         iframeDialogsInitiallyDocked: PropTypes.bool,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
-        mapcrs: PropTypes.string,
+        map: PropTypes.object,
         openExternalUrl: PropTypes.func,
         removeLayer: PropTypes.func,
         replaceImageUrls: PropTypes.bool,
@@ -179,7 +180,7 @@ class IdentifyViewer extends React.Component {
         showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
         theme: PropTypes.object,
-        zoomToExtent: PropTypes.func
+        zoomToPoint: PropTypes.func
     };
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
@@ -701,7 +702,7 @@ class IdentifyViewer extends React.Component {
             feature: result.id,
             x: result.clickPos[0],
             y: result.clickPos[1],
-            crs: this.props.mapcrs,
+            crs: this.props.map.projection,
             single_report: report.single_report || false
         };
         const path = "/" + report.template + "." + (report.format || "pdf");
@@ -717,7 +718,7 @@ class IdentifyViewer extends React.Component {
             feature: results.map(result => result.id).join(","),
             x: results[0].clickPos[0],
             y: results[0].clickPos[1],
-            crs: this.props.mapcrs,
+            crs: this.props.map.projection,
             single_report: report.single_report || false
         };
         this.setState({generatingReport: true});
@@ -775,7 +776,18 @@ class IdentifyViewer extends React.Component {
         ev.preventDefault();
     };
     zoomToResult = (result) => {
-        this.props.zoomToExtent(result.bbox, result.crs);
+        let zoom = 0;
+        const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
+        if (result.bbox[0] !== result.bbox[2] && result.bbox[1] !== result.bbox[3]) {
+            zoom = Math.max(0, MapUtils.getZoomForExtent(result.bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
+        } else {
+            zoom = maxZoom;
+        }
+
+        const x = 0.5 * (result.bbox[0] + result.bbox[2]);
+        const y = 0.5 * (result.bbox[1] + result.bbox[3]);
+        this.props.zoomToPoint([x, y], zoom, this.props.map.projection);
+
         const path = [];
         let sublayer = null;
         const layer = this.props.layers.find(l => {
@@ -790,7 +802,7 @@ class IdentifyViewer extends React.Component {
 const selector = (state) => ({
     theme: state.theme.current,
     layers: state.layers.flat,
-    mapcrs: state.map.projection
+    map: state.map
 });
 
 export default connect(selector, {
@@ -799,5 +811,5 @@ export default connect(selector, {
     removeLayer: removeLayer,
     setActiveLayerInfo: setActiveLayerInfo,
     openExternalUrl: openExternalUrl,
-    zoomToExtent: zoomToExtent
+    zoomToPoint: zoomToPoint
 })(IdentifyViewer);
