@@ -41,7 +41,7 @@ export default class OrbitControls3D extends MapControls {
         super.disconnect();
         this.enabled = false;
         this.sceneContext.scene.view.setControls(null);
-        this.domElement.addEventListener('pointerdown', this.stopAnimations);
+        this.domElement.removeEventListener('pointerdown', this.stopAnimations);
         this.domElement.removeEventListener('wheel', this.stopAnimations);
         this.removeEventListener('change', this.updateControlsTarget);
     }
