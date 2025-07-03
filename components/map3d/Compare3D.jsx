@@ -102,6 +102,7 @@ class Compare3D extends React.Component {
                 object.traverse(child => {
                     if (child.material) {
                         child.material.clippingPlanes = planes;
+                        child.material.clipShadows = true;
                     }
                 });
             }
@@ -119,6 +120,7 @@ class Compare3D extends React.Component {
                 object.traverse(child => {
                     if (child.material) {
                         child.material.clippingPlanes = [];
+                        child.material.clipShadows = false;
                     }
                 });
             }
