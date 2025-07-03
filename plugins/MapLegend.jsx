@@ -171,7 +171,7 @@ class MapLegend extends React.Component {
                 <div className="map-legend-legend-entry" key={sublayer.name}>
                     <div>
                         {this.props.addLayerTitles && !sublayer.category_sublayer ? (<div className="map-legend-entry-title">{sublayer.title || sublayer.name}</div>) : null}
-                        <div><Image src={request} /></div>
+                        <div className="map-legend-entry-image"><Image src={request} /></div>
                     </div>
                 </div>) : null;
         }
