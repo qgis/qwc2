@@ -50,7 +50,7 @@ export default class SearchField3D extends React.Component {
         const mapCrs = sceneContext.mapCrs;
         const scenePos = CoordinatesUtils.reproject([result.x, result.y], result.crs ?? mapCrs, mapCrs);
 
-        // Add higlight geometry
+        // Add highlight geometry
         if (result.feature && result.feature?.geometry?.type !== "Point") {
             const format = new ol.format.GeoJSON();
             const olFeatures = format.readFeatures(result.feature, {
