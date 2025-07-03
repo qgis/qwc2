@@ -175,7 +175,7 @@ export default class SearchWidget extends React.Component {
         } else {
             this.props.resultSelected({
                 ...item,
-                feature: item.geomety ? {type: "Feature", geometry: item.geometry} : null
+                feature: item.geometry ? {type: "Feature", geometry: item.geometry} : null
             });
         }
         if (this.input) {
