@@ -131,7 +131,7 @@ export default class SearchField3D extends React.Component {
                 searchMarker.addEventListener('removed', () => {
                     sceneContext.scene.view.controls.removeEventListener('change', scaleSearchMarker);
                     // The label DOM element is not removed when the searchMarker group is removed from the instance
-                    labelEl.parentNode.removeChild(labelEl);
+                    labelEl.parentNode?.removeChild?.(labelEl);
                 });
             });
         });

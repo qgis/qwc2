@@ -46,7 +46,7 @@ export function updateObjectLabel(sceneObject, sceneContext) {
             sceneObject.updateMatrixWorld();
             labelObject.userData.removeCallback = () => {
                 // Explicitly remove label DOM element
-                labelObject.element.parentNode.removeChild(labelObject.element);
+                labelObject.element.parentNode?.removeChild?.(labelObject.element);
             };
             sceneObject.addEventListener('removed', labelObject.userData.removeCallback);
         } else {
