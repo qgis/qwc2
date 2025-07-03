@@ -97,7 +97,8 @@ class TopBar extends React.Component {
     static defaultProps = {
         searchOptions: {
             showHighlightMarker: true,
-            showResultInSearchText: true
+            showResultInSearchText: true,
+            minScaleDenom: 1000
         },
         menuItems: [],
         toolbarItems: [],
