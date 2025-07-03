@@ -77,6 +77,14 @@ class Compare3D extends React.Component {
         } else if (!this.state.enabled && prevState.enabled) {
             this.clearClippingPlane();
         }
+        if (this.props.sceneContext.sceneObjects !== prevProps.sceneContext.sceneObjects) {
+            const sceneObjects = this.props.sceneContext.sceneObjects;
+            this.setState(state => ({
+                clippedObjects: Object.fromEntries(
+                    Object.entries(state.clippedObjects).filter(([objectId, entry]) => objectId in sceneObjects)
+                )
+            }));
+        }
     }
     updateClippingPlane = () => {
         const point = new Vector3(this.state.planeX, this.state.planeY, 0);
