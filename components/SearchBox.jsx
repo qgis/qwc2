@@ -422,7 +422,9 @@ class SearchBox extends React.Component {
             });
         }
         this.updateRecentSearches();
-        if (this.props.searchProviders[provider].getResultGeometry) {
+        if (result.geometry) {
+            this.showResultGeometry(result, {feature: {type: "Feature", geometry: result.geometry}, crs: result.crs});
+        } else if (this.props.searchProviders[provider].getResultGeometry) {
             this.props.searchProviders[provider].getResultGeometry(result, (response) => { this.showResultGeometry(result, response); }, axios);
         } else {
             // Display marker
