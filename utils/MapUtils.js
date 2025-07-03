@@ -103,14 +103,11 @@ const MapUtils = {
         const yResolution = Math.abs(hExtent / mapSize.height);
         const extentResolution = Math.max(xResolution, yResolution);
 
+        const zoom = this.computeZoom(resolutions, extentResolution);
         if (ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
-            return Math.max(minZoom, Math.min(this.computeZoom(resolutions, extentResolution), maxZoom));
+            return Math.max(minZoom, Math.min(zoom, maxZoom));
         } else {
-            const calc = resolutions.reduce((previous, resolution, index) => {
-                const diff = Math.abs(resolution - extentResolution);
-                return diff > previous.diff ? previous : {diff: diff, zoom: index};
-            }, {diff: Number.POSITIVE_INFINITY, zoom: 0});
-            return Math.max(minZoom, Math.min(calc.zoom, maxZoom));
+            return Math.max(minZoom, Math.min(Math.round(zoom), maxZoom));
         }
     },
     /**
