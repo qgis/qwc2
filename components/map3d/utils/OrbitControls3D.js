@@ -78,10 +78,10 @@ export default class OrbitControls3D extends MapControls {
     }
     zoomView(delta) {
         if (delta > 0) {
-            this._dollyIn(this._getZoomScale(-delta * 10));
+            this._dollyIn(this._getZoomScale(-delta));
             this.update();
         } else if (delta < 0) {
-            this._dollyOut(this._getZoomScale(-delta * 10));
+            this._dollyOut(this._getZoomScale(-delta));
             this.update();
         }
     }

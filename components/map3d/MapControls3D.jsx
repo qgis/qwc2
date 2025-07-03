@@ -209,7 +209,10 @@ class MapControls3D extends React.Component {
     };
     zoom = (ev, delta) => {
         const zoomInterval = setInterval(() => {
-            this.props.sceneContext.scene.view.controls.zoomView(delta);
+            const camerapos = this.props.sceneContext.scene.view.camera.position;
+            const target = this.controls.target;
+            const k = Math.min(150, Math.sqrt(target.distanceTo(camerapos)));
+            this.props.sceneContext.scene.view.controls.zoomView(delta * k);
         }, 50);
         ev.view.addEventListener('pointerup', () => {
             clearInterval(zoomInterval);
