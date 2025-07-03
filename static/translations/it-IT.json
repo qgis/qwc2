@@ -339,7 +339,7 @@
       "resetrotation": "Resetta orientamento"
     },
     "map3d": {
-      "lockview": "Muovi con visuale 2D",
+      "lockview": "Auto-sincronizzazione delle viste 2D/3D",
       "syncview": "Sincronizza con visuale 2D",
       "terrain": "Terreno",
       "title": "Visuale 3D"

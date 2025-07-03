@@ -339,7 +339,7 @@
       "resetrotation": "Drehung zurücksetzen"
     },
     "map3d": {
-      "lockview": "Mit 2D Ansicht verschieben",
+      "lockview": "2D/3D Ansichten automatisch synchronisieren",
       "syncview": "Mit 2D Ansicht synchronisieren",
       "terrain": "Gelände",
       "title": "3D Ansicht"
