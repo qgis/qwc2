@@ -72,7 +72,6 @@ export default class Map3DLight extends React.Component {
             this.props.sceneContext.addSceneObject("__ambientLight", ambientLight);
 
             const sunLight = new DirectionalLight(0xffffff, this.state.sunLightIntensity);
-            sunLight.castShadow = true;
             this.props.sceneContext.addSceneObject("__sunLight", sunLight);
 
             const moonLight = new DirectionalLight(0xffffff, this.state.moonLightIntensity);
@@ -307,23 +306,31 @@ export default class Map3DLight extends React.Component {
     updateLightParams = (key, value) => {
         this.setState(state => ({lightParams: {...state.lightParams, [key]: value}}));
     };
-    computeShadowVolume = (directionalLight, lightParams) => {
+    configureShadows = (sunLight, lightParams, shadowIntensityK) => {
         if (!lightParams.shadowsEnabled) {
             this.props.sceneContext.scene.renderer.shadowMap.enabled = false;
+            sunLight.castShadow = false;
             return;
         }
         const cameraHeight = this.props.sceneContext.scene.view.camera.position.z;
         const targetHeight = this.props.sceneContext.scene.view.controls.target.z;
         const volumeSize = Math.min(20000, Math.max(1000, cameraHeight - targetHeight));
 
-        directionalLight.shadow.camera.top = volumeSize;
-        directionalLight.shadow.camera.bottom = -volumeSize;
-        directionalLight.shadow.camera.left = -volumeSize;
-        directionalLight.shadow.camera.right = volumeSize;
-        directionalLight.shadow.camera.near = lightParams.shadowVolumeNear;
-        directionalLight.shadow.camera.far = lightParams.shadowVolumeFar;
+        sunLight.shadow.camera.top = volumeSize;
+        sunLight.shadow.camera.bottom = -volumeSize;
+        sunLight.shadow.camera.left = -volumeSize;
+        sunLight.shadow.camera.right = volumeSize;
+        sunLight.shadow.camera.near = lightParams.shadowVolumeNear;
+        sunLight.shadow.camera.far = lightParams.shadowVolumeFar;
+        sunLight.shadow.camera.updateProjectionMatrix();
+
+        sunLight.shadow.mapSize.set(lightParams.shadowMapSize, lightParams.shadowMapSize);
+        sunLight.shadow.bias = lightParams.shadowBias;
+        sunLight.shadow.normalBias = lightParams.normalBias;
+        sunLight.shadow.intensity = lightParams.shadowIntensity * shadowIntensityK;
 
         this.props.sceneContext.scene.renderer.shadowMap.enabled = true;
+        sunLight.castShadow = true;
     };
     setLighting = () => {
         const sceneContext = this.props.sceneContext;
@@ -379,17 +386,11 @@ export default class Map3DLight extends React.Component {
         sunLight.position.copy(sunLocalPos);
         sunLight.intensity = lightParams.sunLightIntensity * sunLightIntensityK;
         sunLight.color = sunColor;
-        sunLight.shadow.mapSize.set(lightParams.shadowMapSize, lightParams.shadowMapSize);
-        sunLight.shadow.bias = lightParams.shadowBias;
-        sunLight.shadow.normalBias = lightParams.normalBias;
-        sunLight.shadow.intensity = lightParams.shadowIntensity * shadowIntensityK;
         sunLight.target.position.copy(lightTarget);
-        this.computeShadowVolume(sunLight, lightParams);
         sunLight.updateMatrixWorld(true);
         sunLight.target.updateMatrixWorld(true);
-        sunLight.shadow.updateMatrices(sunLight);
-        sunLight.shadow.camera.updateProjectionMatrix();
-        sunLight.shadow.camera.updateMatrix();
+
+        this.configureShadows(sunLight, lightParams, shadowIntensityK);
 
         // NOTE: just a top-down light
         moonLight.position.set(lightTarget.x, lightTarget.y, 8000);
