@@ -224,14 +224,14 @@ class MapControls3D extends React.Component {
         const cpos = this.props.sceneContext.scene.view.camera.position;
         const tpos = this.controls.target;
         UrlParams.updateParams({v3d: [cpos.x, cpos.y, cpos.z, tpos.x, tpos.y, tpos.z, 0].map(v => v.toFixed(1)).join(",")});
-        this.props.onCameraChanged([tpos.x, tpos.y, tpos.z]);
+        this.props.onCameraChanged([tpos.x, tpos.y, tpos.z], [cpos.x, cpos.y, cpos.z], CAMERA_FOV);
     };
     updateFpUrlParams = () => {
         const cpos = this.fpcontrols.target;
         const lkat = this.fpcontrols.lookAt;
         const h = this.fpcontrols.personHeight;
         UrlParams.updateParams({v3d: [cpos.x, cpos.y, cpos.z, lkat.x, lkat.y, lkat.z, h].map(v => v.toFixed(1)).join(",")});
-        this.props.onCameraChanged([cpos.x, cpos.y, cpos.z]);
+        this.props.onCameraChanged([cpos.x, cpos.y, cpos.z], null);
     };
     restoreView = (viewState) => {
         if (viewState.camera && viewState.target) {

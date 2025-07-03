@@ -15,7 +15,7 @@ import {createSelector} from 'reselect';
 import * as displayExports from '../actions/display';
 import {setView3dMode, View3DMode} from '../actions/display';
 import * as layersExports from '../actions/layers';
-import {panTo} from '../actions/map';
+import {panTo, zoomToPoint} from '../actions/map';
 import * as mapExports from '../actions/map';
 import * as themeExports from '../actions/theme';
 import PluginsContainer from '../components/PluginsContainer';
@@ -27,6 +27,7 @@ import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
 import './style/View3D.css';
@@ -137,7 +138,8 @@ class View3D extends React.Component {
          * Can contain the `{tileset}` and `{objectid}` placeholders.
          * Expected to return a JSON dict with attributes.*/
         tileInfoServiceUrl: PropTypes.string,
-        view3dMode: PropTypes.number
+        view3dMode: PropTypes.number,
+        zoomToPoint: PropTypes.func
     };
     static defaultProps = {
         buttonPosition: 6,
@@ -366,9 +368,24 @@ class View3D extends React.Component {
         }
         this.setState({windowDetached: geometry.detached});
     };
-    onCameraChanged = (center) => {
+    onCameraChanged = (center, camera, fov) => {
         if (this.state.viewsLocked && this.map3dFocused) {
-            this.props.panTo(center, this.props.theme.mapCrs);
+            let rotation = undefined;
+            if (camera) {
+                rotation = Math.atan2(center[1] - camera[1], center[0] - camera[0]) - 0.5 * Math.PI;
+                const distance = Math.sqrt(
+                    (camera[0] - center[0]) * (camera[0] - center[0]) +
+                    (camera[1] - center[1]) * (camera[1] - center[1]) +
+                    (camera[2] - center[2]) * (camera[2] - center[2])
+                );
+                const fovrad = fov / 180 * Math.PI;
+                const bboxWidth = distance * (2 * Math.tan(fovrad / 2));
+                const bbox = [-0.5 * bboxWidth, 0, 0.5 * bboxWidth, 0];
+                const zoom = MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, this.props.map.scales.length - 1);
+                this.props.zoomToPoint(center.slice(0, 2), zoom, this.props.theme.mapCrs, rotation);
+            } else {
+                this.props.panTo(center.slice(0, 2), this.props.theme.mapCrs, rotation);
+            }
         }
     };
     setRef = (ref) => {
@@ -416,6 +433,7 @@ export default connect(
         searchProviders
     })), {
         panTo: panTo,
+        zoomToPoint: zoomToPoint,
         setView3dMode: setView3dMode
     }
 )(View3D);
