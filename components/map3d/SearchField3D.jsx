@@ -67,10 +67,7 @@ export default class SearchField3D extends React.Component {
         }
 
         // Zoom to bounds
-        let bounds = result.feature ? VectorLayerUtils.computeFeatureBBox(result.feature) : [
-            scenePos[0], scenePos[1],
-            scenePos[0], scenePos[1]
-        ];
+        let bounds = result.feature ? VectorLayerUtils.computeFeatureBBox(result.feature) : CoordinatesUtils.reprojectBbox(result.bbox, result.crs ?? mapCrs, mapCrs);
         // Adjust bounds so that we do not zoom further than 1:searchMinScaleDenom
         const bbWidth = bounds[2] - bounds[0];
         const bbHeight = bounds[3] - bounds[1];
