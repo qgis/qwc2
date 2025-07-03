@@ -15,6 +15,7 @@ import {createSelector} from 'reselect';
 import * as displayExports from '../actions/display';
 import {setView3dMode, View3DMode} from '../actions/display';
 import * as layersExports from '../actions/layers';
+import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {panTo, zoomToPoint} from '../actions/map';
 import * as mapExports from '../actions/map';
 import * as themeExports from '../actions/theme';
@@ -29,6 +30,7 @@ import {createStore} from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
+import personIcon from '../utils/img/person.png';
 
 import './style/View3D.css';
 
@@ -104,6 +106,7 @@ import './style/View3D.css';
  */
 class View3D extends React.Component {
     static propTypes = {
+        addLayerFeatures: PropTypes.func,
         /** The position slot index of the 3d switch map button, from the bottom (0: bottom slot). */
         buttonPosition: PropTypes.number,
         /** Default viewer day (1-365) */
@@ -127,6 +130,7 @@ class View3D extends React.Component {
         panTo: PropTypes.func,
         plugins: PropTypes.object,
         pluginsConfig: PropTypes.object,
+        removeLayer: PropTypes.func,
         /** Minimum scale denominator when zooming to search result. */
         searchMinScaleDenom: PropTypes.number,
         searchProviders: PropTypes.object,
@@ -166,6 +170,7 @@ class View3D extends React.Component {
         this.map3dComponent = null;
         this.map3dComponentRef = null;
         this.map3dFocused = false;
+        this.firstPersonMarker = true;
         // Subset of 2d reducers
         const {
             processNotifications,
@@ -235,6 +240,10 @@ class View3D extends React.Component {
             this.map3dComponent = null;
             this.map3dComponentRef = null;
             this.setState({componentLoaded: false});
+            if (this.firstPersonMarker) {
+                this.props.removeLayer("view3d-firstperson-marker");
+                this.firstPersonMarker = false;
+            }
         }
         // Sync parts of parent store
         if (this.props.display !== prevProps.display) {
@@ -369,6 +378,7 @@ class View3D extends React.Component {
         this.setState({windowDetached: geometry.detached});
     };
     onCameraChanged = (center, camera, fov) => {
+        // Note: If camera pos is NULL, we are in first-person-view
         if (this.state.viewsLocked && this.map3dFocused) {
             let rotation = undefined;
             if (camera) {
@@ -383,9 +393,35 @@ class View3D extends React.Component {
                 const bbox = [-0.5 * bboxWidth, 0, 0.5 * bboxWidth, 0];
                 const zoom = MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, this.props.map.scales.length - 1);
                 this.props.zoomToPoint(center.slice(0, 2), zoom, this.props.theme.mapCrs, rotation);
+                if (this.firstPersonMarker) {
+                    this.props.removeLayer("view3d-firstperson-cone");
+                    this.firstPersonMarker = false;
+                }
             } else {
                 this.props.panTo(center.slice(0, 2), this.props.theme.mapCrs, rotation);
+
+                const feature = {
+                    geometry: {
+                        type: 'Point',
+                        coordinates: center.slice(0, 2)
+                    },
+                    crs: this.props.theme.mapCrs,
+                    styleName: 'marker',
+                    styleOptions: {
+                        iconSrc: personIcon
+                    }
+                };
+                const layer = {
+                    id: "view3d-firstperson-marker",
+                    role: LayerRole.MARKER
+                };
+                this.props.addLayerFeatures(layer, [feature], true);
+                this.firstPersonMarker = true;
+
             }
+        } else if (this.firstPersonMarker) {
+            this.props.removeLayer("view3d-firstperson-marker");
+            this.firstPersonMarker = false;
         }
     };
     setRef = (ref) => {
@@ -397,11 +433,11 @@ class View3D extends React.Component {
         }
     };
     setLockViews = () => {
-        this.setState(state => ({viewsLocked: !state.viewsLocked}), () => {
-            if (this.state.viewsLocked) {
-                this.sync2DExtent();
-            }
-        });
+        this.setState(state => ({viewsLocked: !state.viewsLocked}));
+        if (this.firstPersonMarker) {
+            this.props.removeLayer("view3d-firstperson-marker");
+            this.firstPersonMarker = false;
+        }
     };
     setupMap = () => {
         if (this.map3dComponentRef) {
@@ -432,6 +468,8 @@ export default connect(
         startupState: state.localConfig.startupState,
         searchProviders
     })), {
+        addLayerFeatures: addLayerFeatures,
+        removeLayer: removeLayer,
         panTo: panTo,
         zoomToPoint: zoomToPoint,
         setView3dMode: setView3dMode
