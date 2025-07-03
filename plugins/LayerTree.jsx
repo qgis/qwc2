@@ -752,7 +752,7 @@ class LayerTree extends React.Component {
         } else {
             if (sublayer.visibility && LayerUtils.layerScaleInRange(sublayer, this.props.mapScale)) {
                 const request = LayerUtils.getLegendUrl(layer, {name: sublayer.name}, this.props.mapScale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
-                body = request ? '<div class="legend-entry"><img src="' + request + '" /></div>' : "";
+                body = request ? '<div class="legend-entry"><img src="' + request + '" style="max-width: 100%"/></div>' : "";
             }
         }
         return body;
