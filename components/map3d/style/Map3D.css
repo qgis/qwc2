@@ -45,3 +45,13 @@ span.map3d-object-label {
     padding: 0.25em 0.5em;
     border-radius: 8px;
 }
+
+span.map3d-search-label {
+    background-color: rgba(41, 120, 180, 0.75);
+    border: 1px solid white;
+    color: white;
+    font-weight: bold;
+    padding: 0.25em 0.5em;
+    border-radius: 8px;
+    margin-top: -3em;
+}
