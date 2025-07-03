@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/NewsPopup.css';
@@ -49,7 +50,7 @@ class NewsPopup extends React.Component {
     constructor(props) {
         super(props);
         const show = props.newsDocument && !!props.newsRev && !document.cookie.split(';').some((item) => item.includes('newsrev=' + props.newsRev));
-        if (show) {
+        if (show && !ConfigUtils.getSessionConfig("newsPopupShown")) {
             if (props.showInSidebar) {
                 props.setCurrentTask("NewsPopup");
             } else {
@@ -91,6 +92,7 @@ class NewsPopup extends React.Component {
         );
     };
     closeDialog = () => {
+        ConfigUtils.setSessionConfig("newsPopupShown", true);
         if (this.state.dontShowAgain) {
             const days = 365;
             const d = new Date();
