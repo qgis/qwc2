@@ -24,7 +24,7 @@
         "MapFilter": "Filtro de mapa",
         "MapLight3D": "Luz y sombras",
         "Print": "Imprimir",
-        "Reports": "",
+        "Reports": "Informes",
         "Settings": "Opciones",
         "Share": "Compartir enlace",
         "ThemeSwitcher": "Tema",
@@ -98,7 +98,7 @@
       "removefailed": "Error al eliminar el marcador",
       "savefailed": "Error al actualizar el marcador",
       "update": "Actualizar marcador",
-      "zoomToExtent": ""
+      "zoomToExtent": "Zoom a la extensión"
     },
     "bottombar": {
       "mousepos_label": "Coordenadas",
@@ -297,7 +297,7 @@
     "layertree": {
       "compare": "Comparar con la capa superior",
       "deletealllayers": "Remover todas las capas",
-      "hidealllayers": "",
+      "hidealllayers": "Ocultar todas las capas",
       "importlayer": "Importar capa",
       "maptip": "Mostrar sugerencias de capas en el mapa",
       "printlegend": "Imprimir leyenda",
@@ -308,13 +308,13 @@
       "zoomtolayer": "Zoom a la capa"
     },
     "layertree3d": {
-      "customheight": "",
-      "import": "",
-      "importobjects": "",
-      "layers": "",
-      "objects": "",
-      "supportedformats": "",
-      "zoomtoobject": ""
+      "customheight": "Valor",
+      "import": "Importar",
+      "importobjects": "Importar objetos",
+      "layers": "Capas",
+      "objects": "Objetos",
+      "supportedformats": "Formatos soportados: GLTF",
+      "zoomtoobject": "Zoom al objeto"
     },
     "linkfeatureform": {
       "cancel": "Cancelar",
@@ -339,10 +339,10 @@
       "resetrotation": "Reiniciar rotación"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "",
-      "terrain": "",
-      "title": ""
+      "lockview": "Mover con la vista 2D",
+      "syncview": "Sincronizar con la vista 2D",
+      "terrain": "Terreno",
+      "title": "Vista 3D"
     },
     "mapexport": {
       "configuration": "Configuración",
@@ -482,7 +482,7 @@
       "draw": "Dibujar",
       "edit": "Editar",
       "ellipse": "Elipse",
-      "export": "",
+      "export": "Exportar",
       "freehand": "Dibujo a mano alzada",
       "label": "Etiqueta",
       "layer": "Capa",
@@ -490,7 +490,7 @@
       "line": "Línea",
       "markers": "Marcadores",
       "measurements": "Mostrar mediciones",
-      "numericinput": "",
+      "numericinput": "Entrada numérica",
       "pick": "Elegir",
       "point": "Punto",
       "polygon": "Polígono",
@@ -498,7 +498,7 @@
       "size": "Tamaño",
       "square": "Cuadrado",
       "text": "Texto",
-      "transform": "",
+      "transform": "Transformar",
       "width": "Ancho"
     },
     "reports": {
@@ -553,25 +553,25 @@
     },
     "search": {
       "all": "Todo",
-      "circleradius": "",
-      "clearfilter": "",
-      "coordinates": "",
+      "circleradius": "Radio del círculo",
+      "clearfilter": "Limpiar filtro",
+      "coordinates": "Coordenadas",
       "existinglayer": "La capa ya existe en el mapa",
       "filter": "Refinar búsqueda",
-      "layers": "",
-      "limittoarea": "",
+      "layers": "Capas",
+      "limittoarea": "Limitar al área",
       "more": "{0} más resultados",
       "nodescription": "No hay descripción disponible",
-      "none": "",
+      "none": "Ninguno",
       "noresults": "Sin resultados",
       "placeholder": "Busque un lugar o agregue mapa",
-      "places": "",
+      "places": "Lugares",
       "providerselection": "Proveedores de búsqueda",
       "recent": "Búsquedas recientes",
       "search": "Buscar",
-      "themelayers": "",
+      "themelayers": "Capas del tema",
       "themes": "Temas",
-      "unknownmore": ""
+      "unknownmore": "Más resultados"
     },
     "serviceinfo": {
       "abstract": "Resumen",
@@ -585,43 +585,43 @@
       "title": "Información del tema"
     },
     "settings": {
-      "bookmarks": "",
+      "bookmarks": "Marcadores",
       "colorscheme": "Tema",
       "confirmlang": "La aplicación se reiniciará para cambiar de idioma. Quiere continuar?",
       "default": "Predeterminado",
-      "defaulttheme": "",
-      "defaultthemefailed": "",
+      "defaulttheme": "Tema predeterminado",
+      "defaultthemefailed": "No se pudo establecer el tema predeterminado: {0}",
       "language": "Idioma",
       "systemlang": "Idioma del sistema",
-      "themes": ""
+      "themes": "Temas"
     },
     "share": {
       "QRCodeLinkTitle": "Código QR",
       "directLinkTitle": "Vía un vínculo directo",
-      "expires": "",
-      "norestriction": "",
+      "expires": "Este enlace permanente es válido hasta {0}.",
+      "norestriction": "Sin restricción",
       "refresh": "Generar un enlace permanente",
-      "restricttogroup": "",
+      "restricttogroup": "Restringir al grupo",
       "shareTitle": "QWC2",
       "showpin": "Mostrar pin",
       "socialIntro": "En tu red social favorita"
     },
     "snapping": {
-      "edge": "",
+      "edge": "Ajustar a los bordes",
       "loading": "Cargando geometrías de snapping...",
       "snappingenabled": "Snapping",
-      "vertex": ""
+      "vertex": "Ajustar a los vértices"
     },
     "themelayerslist": {
       "addlayer": "Agregar capa",
       "addlayerstotheme": "Agregar capas al mapa actual",
       "addselectedlayers": "Agregar capa(s) seleccionada(s)",
-      "existinglayers": ""
+      "existinglayers": "Las siguientes capas ya existen en el mapa"
     },
     "themeswitcher": {
       "addlayerstotheme": "Agregar capas al mapa actual",
       "addtotheme": "Agregar al actual tema",
-      "changedefaulttheme": "",
+      "changedefaulttheme": "Seleccionar este tema como tema predeterminado",
       "confirmswitch": "Las capas sin tema se perderán al cambiar de tema. Continuar?",
       "filter": "Filtrar...",
       "match": {
@@ -634,18 +634,18 @@
     },
     "timemanager": {
       "animationinterval": "Intervalo de la animación",
-      "classify": "",
-      "classifynone": "",
-      "displayfeatures": "",
-      "displaylayers": "",
-      "displayminimal": "",
-      "edit": "",
+      "classify": "Atributo de clasificación",
+      "classifynone": "Ninguno",
+      "displayfeatures": "Línea de tiempo con elementos",
+      "displaylayers": "Línea de tiempo con capas",
+      "displayminimal": "Solo línea de tiempo",
+      "edit": "Editar",
       "endtime": "Final",
-      "filterwarning": "",
+      "filterwarning": "Filtros de mapa activos",
       "future": "Futuro",
-      "group": "",
-      "groupnone": "",
-      "home": "",
+      "group": "Atributo de agrupación",
+      "groupnone": "Ninguno",
+      "home": "Restablecer línea de tiempo",
       "loading": "Cargando...",
       "loop": "Bucle",
       "markers": "Marcadores",
@@ -661,10 +661,10 @@
       "stepsize": "Tamaño del salto",
       "stop": "Parar",
       "timeline": "Linea temporal",
-      "timeline_fixed": "",
-      "timeline_infinite": "",
-      "timelinedisplay": "",
-      "timelinescale": "",
+      "timeline_fixed": "Fijo",
+      "timeline_infinite": "Infinito",
+      "timelinedisplay": "Visualización",
+      "timelinescale": "Escala temporal (no lineal)",
       "title": "Gestor de tiempo",
       "toggle": "Navegación temporal",
       "unit": {
@@ -678,8 +678,8 @@
         "seconds": "segundos",
         "years": "años"
       },
-      "zoomin": "",
-      "zoomout": ""
+      "zoomin": "Acercar",
+      "zoomout": "Alejar"
     },
     "tooltip": {
       "background": "Cambiar fondo",
@@ -690,9 +690,9 @@
       "zoomout": "Alejarse"
     },
     "tourguide": {
-      "done": "",
-      "next": "",
-      "previous": ""
+      "done": "Hecho",
+      "next": "Siguiente",
+      "previous": "Anterior"
     },
     "valuetool": {
       "all": "Todo",

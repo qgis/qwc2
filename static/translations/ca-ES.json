@@ -24,7 +24,7 @@
         "MapFilter": "Filtre de mapa",
         "MapLight3D": "Llum i ombres",
         "Print": "Imprimir",
-        "Reports": "",
+        "Reports": "Informes",
         "Settings": "Opcions",
         "Share": "Compartir link",
         "ThemeSwitcher": "Tema",
@@ -297,7 +297,7 @@
     "layertree": {
       "compare": "Comparar amb la capa superior",
       "deletealllayers": "Eliminar todas las capas",
-      "hidealllayers": "",
+      "hidealllayers": "Ocultar totes les capes",
       "importlayer": "Importar capa",
       "maptip": "Mostrar suggerències de capes en el mapa",
       "printlegend": "Imprimir llegenda",
@@ -308,13 +308,13 @@
       "zoomtolayer": "Zoom a la capa"
     },
     "layertree3d": {
-      "customheight": "",
-      "import": "",
-      "importobjects": "",
-      "layers": "",
-      "objects": "",
-      "supportedformats": "",
-      "zoomtoobject": ""
+      "customheight": "Valor",
+      "import": "Importar",
+      "importobjects": "Importar objectes",
+      "layers": "Capes",
+      "objects": "Objectes",
+      "supportedformats": "Formats suportats: GLTF",
+      "zoomtoobject": "Zoom a l'objecte"
     },
     "linkfeatureform": {
       "cancel": "Cancel·lar",
@@ -339,10 +339,10 @@
       "resetrotation": "Reiniciar rotació"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "",
-      "terrain": "",
-      "title": ""
+      "lockview": "Moure amb la vista 2D",
+      "syncview": "Sincronitzar amb la vista 2D",
+      "terrain": "Terreny",
+      "title": "Vista 3D"
     },
     "mapexport": {
       "configuration": "Configuració",
@@ -482,7 +482,7 @@
       "draw": "Dibuixar",
       "edit": "Editar",
       "ellipse": "El·lipse",
-      "export": "",
+      "export": "Exportar",
       "freehand": "Dibuix a ma alçada",
       "label": "Etiqueta",
       "layer": "Capa",
@@ -553,25 +553,25 @@
     },
     "search": {
       "all": "Tot",
-      "circleradius": "",
-      "clearfilter": "",
-      "coordinates": "",
+      "circleradius": "Radi del cercle",
+      "clearfilter": "Netejar filtre",
+      "coordinates": "Coordenades",
       "existinglayer": "La capa ja existeix en el mapa",
       "filter": "Refinar búsqueda",
-      "layers": "",
-      "limittoarea": "",
+      "layers": "Capes",
+      "limittoarea": "Limitar a l'àrea",
       "more": "{0} més resultats",
       "nodescription": "No hi ha descripció disponible",
-      "none": "",
+      "none": "Cap",
       "noresults": "Cap resultat",
       "placeholder": "Cerqui un lloc o afegueixi mapa",
-      "places": "",
+      "places": "Llocs",
       "providerselection": "Proveidor",
       "recent": "Cerques recents",
       "search": "Buscar",
-      "themelayers": "",
+      "themelayers": "Capes del tema",
       "themes": "Temes",
-      "unknownmore": ""
+      "unknownmore": "Més resultats"
     },
     "serviceinfo": {
       "abstract": "Resum",
@@ -585,43 +585,43 @@
       "title": "Informació del tema"
     },
     "settings": {
-      "bookmarks": "",
+      "bookmarks": "Marcadors",
       "colorscheme": "Tema",
       "confirmlang": "L'aplicació es reiniciarà per canviar l'idioma. Vol continuar?",
       "default": "Per defecte",
-      "defaulttheme": "",
-      "defaultthemefailed": "",
+      "defaulttheme": "Tema per defecte",
+      "defaultthemefailed": "No s'ha pogut establir el tema per defecte: {0}",
       "language": "Idioma",
       "systemlang": "Idioma del sistema",
-      "themes": ""
+      "themes": "Temes"
     },
     "share": {
       "QRCodeLinkTitle": "Codi QR",
       "directLinkTitle": "Via link",
-      "expires": "",
-      "norestriction": "",
+      "expires": "Aquest enllaç permanent és vàlid fins a {0}.",
+      "norestriction": "Sense restricció",
       "refresh": "Generar l'enllaç permanent",
-      "restricttogroup": "",
+      "restricttogroup": "Restringir al grup",
       "shareTitle": "QWC2",
       "showpin": "Mostrar el pin",
       "socialIntro": "En la teva xarxa social preferida"
     },
     "snapping": {
-      "edge": "",
+      "edge": "Ajustar a les vores",
       "loading": "Carregant geometries de snapping",
       "snappingenabled": "Snapping",
-      "vertex": ""
+      "vertex": "Ajustar als vèrtexs"
     },
     "themelayerslist": {
       "addlayer": "Afegir capa",
       "addlayerstotheme": "Afegir capa al mapa actual",
       "addselectedlayers": "Afegir capa(s) seleccionada(s)",
-      "existinglayers": ""
+      "existinglayers": "Les següents capes ja existeixen al mapa"
     },
     "themeswitcher": {
       "addlayerstotheme": "Afegir capes al mapa actual",
       "addtotheme": "Afegir al actual tema",
-      "changedefaulttheme": "",
+      "changedefaulttheme": "Seleccionar aquest tema com a tema per defecte",
       "confirmswitch": "Confirmar canvi",
       "filter": "Filtrant...",
       "match": {
@@ -634,18 +634,18 @@
     },
     "timemanager": {
       "animationinterval": "Interval d'animació",
-      "classify": "",
-      "classifynone": "",
-      "displayfeatures": "",
-      "displaylayers": "",
-      "displayminimal": "",
-      "edit": "",
+      "classify": "Atribut de classificació",
+      "classifynone": "Cap",
+      "displayfeatures": "Línia temporal amb elements",
+      "displaylayers": "Línia temporal amb capes",
+      "displayminimal": "Només línia temporal",
+      "edit": "Editar",
       "endtime": "Final",
-      "filterwarning": "",
+      "filterwarning": "Hi ha filtres de mapa actius",
       "future": "Futur",
-      "group": "",
-      "groupnone": "",
-      "home": "",
+      "group": "Atribut d'agrupació",
+      "groupnone": "Cap",
+      "home": "Restablir línia temporal",
       "loading": "Carregant...",
       "loop": "Bucle",
       "markers": "Marcadors",
@@ -661,10 +661,10 @@
       "stepsize": "Mida del salt",
       "stop": "Parar",
       "timeline": "Línia temporal",
-      "timeline_fixed": "",
-      "timeline_infinite": "",
-      "timelinedisplay": "",
-      "timelinescale": "",
+      "timeline_fixed": "Fixat",
+      "timeline_infinite": "Infinit",
+      "timelinedisplay": "Visualització",
+      "timelinescale": "Escala temporal (no lineal)",
       "title": "Gestor de temps",
       "toggle": "Navegació temporal",
       "unit": {
@@ -678,8 +678,8 @@
         "seconds": "segons",
         "years": "anys"
       },
-      "zoomin": "",
-      "zoomout": ""
+      "zoomin": "Apropar",
+      "zoomout": "Allunyar"
     },
     "tooltip": {
       "background": "Canvi de fons",
@@ -690,9 +690,9 @@
       "zoomout": "Allunyar"
     },
     "tourguide": {
-      "done": "",
-      "next": "",
-      "previous": ""
+      "done": "Fet",
+      "next": "Següent",
+      "previous": "Anterior"
     },
     "valuetool": {
       "all": "Tot",
