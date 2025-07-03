@@ -104,7 +104,11 @@ export default function map(state = defaultState, action) {
         const newState = {
             ...state,
             center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
-            zoom: action.zoom
+            zoom: action.zoom,
+            bbox: {
+                ...state.bbox,
+                rotation: action.rotation ?? state.bbox.rotation
+            }
         };
         MapUtils.updateMapUrlParams(newState);
         return newState;
@@ -112,7 +116,11 @@ export default function map(state = defaultState, action) {
     case PAN_TO: {
         const newState = {
             ...state,
-            center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection)
+            center: CoordinatesUtils.reproject(action.pos, action.crs || state.projection, state.projection),
+            bbox: {
+                ...state.bbox,
+                rotation: action.rotation ?? state.bbox.rotation
+            }
         };
         MapUtils.updateMapUrlParams(newState);
         return newState;
