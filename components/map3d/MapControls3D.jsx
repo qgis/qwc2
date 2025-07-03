@@ -21,6 +21,8 @@ import OrbitControls3D from './utils/OrbitControls3D';
 
 import './style/MapControls3D.css';
 
+// FIXME: camera.fov is 30, but in reality seems to be 50 (as would be the threejs default)
+const CAMERA_FOV = 50;
 
 class MapControls3D extends React.Component {
     static propTypes = {
@@ -172,7 +174,7 @@ class MapControls3D extends React.Component {
         center.z = this.props.sceneContext.getTerrainHeightFromMap([center.x, center.y]) ?? 0;
 
         // Camera height to width bbox width
-        const fov = 35 / 180 * Math.PI;
+        const fov = CAMERA_FOV / 180 * Math.PI;
         const cameraHeight = (bounds[2] - bounds[0]) / (2 * Math.tan(fov / 2));
 
         const camerapos = new Vector3(center.x, center.y, center.z + cameraHeight);
