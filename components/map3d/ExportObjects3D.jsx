@@ -169,12 +169,13 @@ class ExportObjects3D extends React.Component {
     };
     exportArea = (ev) => {
         ev.preventDefault();
+        this.setState({exporting: true});
         if (this.state.selectedFormat === "model/gltf+json") {
-            this.exportToGltf();
+            // Delay one loop to ensure exporting: true is set
+            setTimeout(this.exportToGltf, 0);
         }
     };
     exportToGltf = () => {
-        this.setState({exporting: true});
         const bbox = VectorLayerUtils.computeFeatureBBox({type: "Polygon", coordinates: this.state.exportPolygon});
         // Create a bounding box in world space
         const selectionBox = new Box3().setFromPoints([
