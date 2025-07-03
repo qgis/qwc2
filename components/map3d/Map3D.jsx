@@ -84,7 +84,6 @@ class Map3D extends React.Component {
     static propTypes = {
         innerRef: PropTypes.func,
         layers: PropTypes.array,
-        mapFocusChange: PropTypes.func,
         onCameraChanged: PropTypes.func,
         onMapInitialized: PropTypes.func,
         options: PropTypes.object,
@@ -604,7 +603,7 @@ class Map3D extends React.Component {
         const overviewLayer = this.state.sceneContext.baseLayers.find(l => l.overview === true) ?? baseLayer;
         return [
             ReactDOM.createPortal((
-                <div className="map3d-map" key="Map3D" onBlur={() => this.props.mapFocusChange(false)} onFocus={() => this.props.mapFocusChange(true)} ref={this.setupContainer} />
+                <div className="map3d-map" id="map3d" key="Map3D" ref={this.setupContainer} />
             ), this.context),
             this.state.sceneContext.scene ? (
                 <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>

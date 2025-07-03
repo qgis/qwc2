@@ -169,7 +169,7 @@ class View3D extends React.Component {
         super(props);
         this.map3dComponent = null;
         this.map3dComponentRef = null;
-        this.map3dFocused = false;
+        this.focusedMap = null;
         this.firstPersonMarker = true;
         // Subset of 2d reducers
         const {
@@ -223,6 +223,10 @@ class View3D extends React.Component {
         } else if (this.props.startupParams.v === "3d2d") {
             this.props.setView3dMode(View3DMode.SPLITSCREEN);
         }
+        window.addEventListener('focus', this.trackFocus, true);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('focus', this.trackFocus);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.view3dMode !== View3DMode.DISABLED && prevProps.view3dMode === View3DMode.DISABLED) {
@@ -280,7 +284,7 @@ class View3D extends React.Component {
             this.props.setView3dMode(View3D.DISABLED);
         }
         // Lock views
-        if (this.state.viewsLocked && this.props.map.bbox !== prevProps.map.bbox && !this.map3dFocused) {
+        if (this.state.viewsLocked && this.props.map.bbox !== prevProps.map.bbox && this.focusedMap === "map") {
             this.sync2DExtent();
         }
         // Clear stored state when switching away from a theme
@@ -340,7 +344,6 @@ class View3D extends React.Component {
                             <PluginsContainer className="plugins-container-3d" plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig}>
                                 <Map3D
                                     innerRef={this.setRef}
-                                    mapFocusChange={focus => { this.map3dFocused = focus; }}
                                     onCameraChanged={this.onCameraChanged}
                                     onMapInitialized={this.setupMap}
                                     options={options}
@@ -379,7 +382,7 @@ class View3D extends React.Component {
     };
     onCameraChanged = (center, camera, fov) => {
         // Note: If camera pos is NULL, we are in first-person-view
-        if (this.state.viewsLocked && this.map3dFocused) {
+        if (this.state.viewsLocked && this.focusedMap === "map3d") {
             let rotation = undefined;
             if (camera) {
                 rotation = Math.atan2(center[1] - camera[1], center[0] - camera[0]) - 0.5 * Math.PI;
@@ -451,6 +454,17 @@ class View3D extends React.Component {
     redrawScene = (ev) => {
         if (this.map3dComponentRef) {
             this.map3dComponentRef.redrawScene(ev);
+        }
+    };
+    trackFocus = (ev) => {
+        const mapEl = document.getElementById("map");
+        const map3dEl = document.getElementById("map3d");
+        if (mapEl?.contains?.(document.activeElement)) {
+            this.focusedMap = "map";
+        } else if (map3dEl?.contains?.(document.activeElement)) {
+            this.focusedMap = "map3d";
+        } else {
+            this.focusedMap = null;
         }
     };
 }
