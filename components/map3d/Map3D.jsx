@@ -58,6 +58,7 @@ import Tiles3DStyle from './utils/Tiles3DStyle';
 
 import './style/Map3D.css';
 
+// Ensures unUnload is called *after* all other children have unmounted
 class UnloadWrapper extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
@@ -607,23 +608,23 @@ class Map3D extends React.Component {
             ), this.context),
             this.state.sceneContext.scene ? (
                 <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
-                    <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext} />
-
-                    <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
-                    <BottomBar3D sceneContext={this.state.sceneContext} />
-                    <Compare3D sceneContext={this.state.sceneContext} />
-                    <Draw3D sceneContext={this.state.sceneContext} />
-                    <EditDataset3D sceneContext={this.state.sceneContext} />
-                    <ExportObjects3D sceneContext={this.state.sceneContext} />
-                    <HideObjects3D sceneContext={this.state.sceneContext} />
-                    <Identify3D sceneContext={this.state.sceneContext} />
-                    <LayerTree3D sceneContext={this.state.sceneContext} />
-                    <Map3DLight sceneContext={this.state.sceneContext} />
-                    <MapExport3D sceneContext={this.state.sceneContext} />
-                    <Measure3D sceneContext={this.state.sceneContext} />
-                    <OverviewMap3D baseLayer={overviewLayer} sceneContext={this.state.sceneContext} />
-                    <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
-                    <View3DSwitcher position={2} />
+                    <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext}>
+                        <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
+                        <BottomBar3D sceneContext={this.state.sceneContext} />
+                        <Compare3D sceneContext={this.state.sceneContext} />
+                        <Draw3D sceneContext={this.state.sceneContext} />
+                        <EditDataset3D sceneContext={this.state.sceneContext} />
+                        <ExportObjects3D sceneContext={this.state.sceneContext} />
+                        <HideObjects3D sceneContext={this.state.sceneContext} />
+                        <Identify3D sceneContext={this.state.sceneContext} />
+                        <LayerTree3D sceneContext={this.state.sceneContext} />
+                        <Map3DLight sceneContext={this.state.sceneContext} />
+                        <MapExport3D sceneContext={this.state.sceneContext} />
+                        <Measure3D sceneContext={this.state.sceneContext} />
+                        <OverviewMap3D baseLayer={overviewLayer} sceneContext={this.state.sceneContext} />
+                        <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
+                        <View3DSwitcher position={2} />
+                    </MapControls3D>
                 </UnloadWrapper>
             ) : null
         ];

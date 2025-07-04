@@ -26,6 +26,7 @@ const CAMERA_FOV = 50;
 
 class MapControls3D extends React.Component {
     static propTypes = {
+        children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.string,
         onCameraChanged: PropTypes.func,
         onControlsSet: PropTypes.func,
@@ -35,74 +36,81 @@ class MapControls3D extends React.Component {
         pickingFirstPerson: false,
         firstPerson: false
     };
-    componentDidMount() {
-        const sceneElement = this.props.sceneContext.scene.domElement;
+    constructor(props) {
+        super(props);
+        const sceneElement = props.sceneContext.scene.domElement;
         sceneElement.tabIndex = 0;
 
-        this.controls = new OrbitControls3D(this.props.sceneContext.scene.view.camera);
-        this.fpcontrols = new FirstPersonControls3D(this.props.sceneContext.scene.view.camera);
-        this.controls.connect(this.props.sceneContext);
+        this.controls = new OrbitControls3D(props.sceneContext.scene.view.camera);
+        this.fpcontrols = new FirstPersonControls3D(props.sceneContext.scene.view.camera);
+        this.controls.connect(props.sceneContext);
 
-        const targetPos = this.props.sceneContext.scene.view.camera.position.clone();
+        const targetPos = props.sceneContext.scene.view.camera.position.clone();
         targetPos.z = 0;
         this.controls.target = targetPos;
         this.controls.addEventListener('change', this.updateUrlParams);
         this.fpcontrols.addEventListener('change', this.updateFpUrlParams);
 
         sceneElement.addEventListener('dblclick', this.switchToFirstPersonView);
-        this.props.onControlsSet(this);
+        props.onControlsSet(this);
         this.updateUrlParams();
     }
-    componentWillUnmount() {
-        this.controls.removeEventListener('change', this.updateControlsTarget);
-        this.fpcontrols.removeEventListener('change', this.updateFpUrlParams);
-        if (this.state.firstPerson) {
-            this.fpcontrols.disconnect();
-        } else {
-            this.controls.disconnect();
+    unload = (el) => {
+        // componentWillUnmount is called too early, so do cleanup when the element is actually removed
+        if (!el) {
+            this.controls.removeEventListener('change', this.updateControlsTarget);
+            this.fpcontrols.removeEventListener('change', this.updateFpUrlParams);
+            if (this.state.firstPerson) {
+                this.fpcontrols.disconnect();
+            } else {
+                this.controls.disconnect();
+            }
+            this.props.sceneContext.scene.domElement.removeEventListener('dblclick', this.switchToFirstPersonView);
         }
-        this.props.sceneContext.scene.domElement.removeEventListener('dblclick', this.switchToFirstPersonView);
-    }
+    };
     render() {
         const firstPersonButtonClasses = classNames({
             "map3d-firstperson-button": true,
             "map3d-firstperson-button-active": this.state.firstPerson
         });
-        return (
-            <div className="map3d-nav">
-                <div className="map3d-nav-pan" key="MapPanWidget">
-                    <span />
-                    <Icon icon="chevron-up" onPointerDown={(ev) => this.pan(ev, 0, 1)} />
-                    <span />
-                    <Icon icon="chevron-left" onPointerDown={(ev) => this.pan(ev, -1, 0)} />
-                    <Icon icon="home" onClick={() => this.home()} />
-                    <Icon icon="chevron-right" onPointerDown={(ev) => this.pan(ev, 1, 0)} />
-                    <span />
-                    <Icon icon="chevron-down" onPointerDown={(ev) => this.pan(ev, 0, -1)} />
-                    <span />
-                </div>
-                <div className="map3d-nav-rotate" key="MapRotateWidget">
-                    <span />
-                    <Icon icon="tilt-up" onPointerDown={(ev) => this.tilt(ev, 0, 0.1)} />
-                    <span />
-                    <Icon icon="tilt-left" onPointerDown={(ev) => this.tilt(ev, 0.1, 0)} />
-                    <Icon icon="point" onClick={() => this.resetTilt()} />
-                    <Icon icon="tilt-right" onPointerDown={(ev) => this.tilt(ev, -0.1, 0)} />
-                    <span />
-                    <Icon icon="tilt-down" onPointerDown={(ev) => this.tilt(ev, 0, -0.1)} />
-                    <span />
-                </div>
-                {!this.state.firstPerson ? (
-                    <div className="map3d-nav-zoom">
-                        <div onPointerDown={(ev) => this.zoom(ev, +1)}><Icon icon="plus" /></div>
-                        <div onPointerDown={(ev) => this.zoom(ev, -1)}><Icon icon="minus" /></div>
+        return [
+            this.props.children,
+            (
+                <div className="map3d-nav" key="MapControls3D" ref={this.unload}>
+                    <div className="map3d-nav-pan" key="MapPanWidget">
+                        <span />
+                        <Icon icon="chevron-up" onPointerDown={(ev) => this.pan(ev, 0, 1)} />
+                        <span />
+                        <Icon icon="chevron-left" onPointerDown={(ev) => this.pan(ev, -1, 0)} />
+                        <Icon icon="home" onClick={() => this.home()} />
+                        <Icon icon="chevron-right" onPointerDown={(ev) => this.pan(ev, 1, 0)} />
+                        <span />
+                        <Icon icon="chevron-down" onPointerDown={(ev) => this.pan(ev, 0, -1)} />
+                        <span />
                     </div>
-                ) : null}
-                <div className={firstPersonButtonClasses} key="FirstPersonButton" onClick={this.toggleFirstPersonControls}>
-                    <Icon icon="person" />
+                    <div className="map3d-nav-rotate" key="MapRotateWidget">
+                        <span />
+                        <Icon icon="tilt-up" onPointerDown={(ev) => this.tilt(ev, 0, 0.1)} />
+                        <span />
+                        <Icon icon="tilt-left" onPointerDown={(ev) => this.tilt(ev, 0.1, 0)} />
+                        <Icon icon="point" onClick={() => this.resetTilt()} />
+                        <Icon icon="tilt-right" onPointerDown={(ev) => this.tilt(ev, -0.1, 0)} />
+                        <span />
+                        <Icon icon="tilt-down" onPointerDown={(ev) => this.tilt(ev, 0, -0.1)} />
+                        <span />
+                    </div>
+                    {!this.state.firstPerson ? (
+                        <div className="map3d-nav-zoom">
+                            <div onPointerDown={(ev) => this.zoom(ev, +1)}><Icon icon="plus" /></div>
+                            <div onPointerDown={(ev) => this.zoom(ev, -1)}><Icon icon="minus" /></div>
+                        </div>
+                    ) : null}
+                    <div className={firstPersonButtonClasses} key="FirstPersonButton" onClick={this.toggleFirstPersonControls}>
+                        <Icon icon="person" />
+                    </div>
                 </div>
-            </div>
-        );
+            )
+        ];
     }
     switchToFirstPersonView = (ev) => {
         // Don't do anything if a task is set, may interfere
