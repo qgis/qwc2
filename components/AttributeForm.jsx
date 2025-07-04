@@ -392,11 +392,13 @@ class AttributeForm extends React.Component {
             let valid = true;
             Object.entries(result).forEach(([key, value]) => {
                 const element = this.form.elements.namedItem(key);
-                if (value === false) {
-                    valid = false;
-                    element.setCustomValidity(this.props.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation"));
-                } else {
-                    element.setCustomValidity("");
+                if (element) {
+                    if (value === false) {
+                        valid = false;
+                        element.setCustomValidity(this.props.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation"));
+                    } else {
+                        element.setCustomValidity("");
+                    }
                 }
             });
             if (!valid) {
