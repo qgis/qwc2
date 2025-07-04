@@ -330,17 +330,21 @@ class QtDesignerForm extends React.Component {
                 </div>
             );
         } else if (widget.class === "QTabWidget") {
-            if (isEmpty(widget.widget)) {
+            const tabwidgets = (widget.widget || []).filter(child => {
+                const exprResult = parseExpression(child.property.visibilityExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                return exprResult !== false && exprResult !== 0;
+            });
+            if (isEmpty(tabwidgets)) {
                 return null;
             }
-            const activetab = this.state.activetabs[widget.name] || widget.widget[0].name;
-            const tabs = widget.widget.map(tab => ({key: tab.name, label: tab.attribute.title}));
+            const activetab = this.state.activetabs[widget.name] || tabwidgets[0].name;
+            const tabs = tabwidgets.map(tab => ({key: tab.name, label: tab.attribute.title}));
             return (
                 <div className="qt-designer-form-container">
                     <ButtonBar active={activetab} buttons={tabs} className="qt-designer-form-tabbar"
                         onClick={(key) => this.setState((state) => ({activetabs: {...state.activetabs, [widget.name]: key}}))} />
                     <div className="qt-designer-form-frame">
-                        {widget.widget.filter(child => child.layout).map(child => (
+                        {tabwidgets.filter(child => child.layout).map(child => (
                             this.renderLayout(child.layout, feature, dataset, updateField, nametransform, child.name === activetab)
                         ))}
                     </div>
