@@ -373,8 +373,8 @@ export default class Map3DLight extends React.Component {
         let sunColor = noonColor;
         let ambientIntensity = 0;
         let shadowIntensityK = 0;
-        const sunLightIntensityK = Math.min(1, (98 - Math.min(98, zenith)) / 6);
-        const moonLightIntensityK = 1 - Math.min(1, (90 - Math.min(90, zenith)) / 6);
+        const sunLightIntensityK = Math.min(1, (98 - Math.min(98, zenith)) / 16);
+        const moonLightIntensityK = 1 - Math.min(1, (90 - Math.min(90, zenith)) / 16);
         if (zenith < 90) {
             const k = Math.pow(zenith / 90, 3);
             sunColor = lerpColor(noonColor, horizonColor, k);
