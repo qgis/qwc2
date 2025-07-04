@@ -86,6 +86,11 @@ class FeatureForm extends React.Component {
         super(props);
         this.state = FeatureForm.defaultState;
     }
+    componentDidMount() {
+        if (this.props.enabled) {
+            this.props.setEditContext('FeatureForm', {action: 'Pick'});
+        }
+    }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && !prevProps.enabled) {
