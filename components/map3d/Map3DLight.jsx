@@ -136,7 +136,7 @@ export default class Map3DLight extends React.Component {
         };
         const isLeapYear = (year) => (new Date(year, 1, 29).getDate() === 29);
 
-        const timeValue = `${String(Math.trunc(lightParams.time / 60)).padStart(2, '0')}:${String(lightParams.time % 60).padStart(2, '0')}`;
+        const timeValue = `${String(Math.trunc(lightParams.time / 60)).padStart(2, '0')}:${String(Math.floor(lightParams.time % 60)).padStart(2, '0')}`;
         const timeToMin = (time) => {
             const parts = time.split(":");
             return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
