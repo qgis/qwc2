@@ -123,6 +123,9 @@ class Identify3D extends React.Component {
     };
     identifyTilePick = (pick) => {
         const batchidAttr = pick.object.geometry.getAttribute( '_batchid' );
+        if (!batchidAttr) {
+            return;
+        }
         const posAttr = pick.object.geometry.getAttribute('position');
         const norAttr = pick.object.geometry.getAttribute('normal');
 
