@@ -474,18 +474,22 @@ class Map3D extends React.Component {
                 this.props.setCurrentTask("EditDataset3D", null, null, {objectId: name});
             }
         });
+        tiles.tiles.addEventListener('needs-update', () => {
+            this.instance.notifyChange(tiles);
+        });
 
         // Apply style when loading tile
         tiles.tiles.addEventListener('load-model', ({scene}) => {
             scene.userData.tilesetName = name;
             scene.userData.batchIdAttr = "id";
             Tiles3DStyle.applyTileStyle(scene, this.state.sceneContext.sceneObjects[name], this.state.sceneContext);
+            this.instance.notifyChange(tiles);
         });
         // Show/hide labels when tile visibility changes
         tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
-            Object.values(scene.userData.tileLabels || {}).forEach(label => {
-                label.labelObject.visible = visible;
-                label.labelObject.element.style.display = visible ? 'initial' : 'none';
+            Object.values(scene.userData.tileLabels || {}).forEach(l => {
+                l.labelObject.visible = visible;
+                l.labelObject.element.style.display = visible ? 'initial' : 'none';
             });
         });
         tiles.castShadow = true;
@@ -731,11 +735,18 @@ class Map3D extends React.Component {
                 url: MiscUtils.resolveAssetsPath(entry.url),
                 errorTarget: 32
             });
+            tiles.tiles.addEventListener('load-tile-set', () => {
+                this.instance.notifyChange(tiles);
+            });
+            tiles.tiles.addEventListener('needs-update', () => {
+                this.instance.notifyChange(tiles);
+            });
             // Apply style when loading tile
             tiles.tiles.addEventListener('load-model', ({scene}) => {
                 scene.userData.tilesetName = entry.name;
                 scene.userData.batchIdAttr = entry.idAttr ?? "id";
                 Tiles3DStyle.applyTileStyle(scene, this.state.sceneContext.sceneObjects[entry.name], this.state.sceneContext);
+                this.instance.notifyChange(tiles);
             });
             // Show/hide labels when tile visibility changes
             tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
