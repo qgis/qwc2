@@ -35,7 +35,7 @@ export default class Map3DLight extends React.Component {
             day: 182,
             time: 720,
             helpersVisible: false,
-            moonLightIntensity: 0.06,
+            moonLightIntensity: 0.02,
             sunLightIntensity: 3.5,
             zFactor: 1,
             lightElevationLayersOnly: false,
@@ -105,6 +105,10 @@ export default class Map3DLight extends React.Component {
     }
     componentWillUnmount() {
         clearInterval(this.lightPositionInterval);
+        this.props.sceneContext.removeSceneObject("__sunLight");
+        this.props.sceneContext.removeSceneObject("__moonLight");
+        this.props.sceneContext.removeSceneObject("__sunLightHelper");
+        this.props.sceneContext.removeSceneObject("__shadowCameraHelper");
     }
     onHide = () => {
         clearInterval(this.animationInterval);
@@ -347,11 +351,11 @@ export default class Map3DLight extends React.Component {
         const date = new Date(new Date().getFullYear(), 0, lightParams.day, Math.trunc(lightParams.time / 60), lightParams.time % 60);
         const latlon = CoordinatesUtils.reproject([lightTarget.x, lightTarget.y], sceneContext.mapCrs, 'EPSG:4326');
         const sunPos = suncalc.getPosition(date, latlon[1], latlon[0]);
-        const zenith = Math.min(90, 90 - sunPos.altitude / Math.PI * 180);
+        const zenith = 90 - sunPos.altitude / Math.PI * 180;
         const azimuth = 180 + sunPos.azimuth / Math.PI * 180;
         const sunLocalPos = Sun.getLocalPosition({
             point: lightTarget,
-            zenith: zenith,
+            zenith: Math.min(90, zenith),
             azimuth: azimuth,
             distance: lightParams.sunDistance
         });
@@ -359,23 +363,35 @@ export default class Map3DLight extends React.Component {
         // Compute dynamic params
         const noonColor = { r: 1.0, g: 0.98, b: 0.98 };
         const horizonColor = { r: 1.0, g: 0.5, b: 0.3 };
+        const duskColor = { r: 0.15, g: 0.22, b: 0.35 };
 
-        const fade = Math.pow(zenith / 90, 3);
-        const sunColor = {
-            r: (1 - fade) * noonColor.r + fade * horizonColor.r,
-            g: (1 - fade) * noonColor.g + fade * horizonColor.g,
-            b: (1 - fade) * noonColor.b + fade * horizonColor.b
-        };
-        const ambientIntensity = (1 - zenith / 90) * 1.5;
-        const shadowIntensityK = (1 - fade) * 0.9 + 0.2 * fade;
-        const sunLightIntensityK = Math.min(1, (90 - zenith) / 3);
+        const lerpColor = (a, b, t) => ({
+            r: (1 - t) * a.r + t * b.r,
+            g: (1 - t) * a.g + t * b.g,
+            b: (1 - t) * a.b + t * b.b
+        });
+        let sunColor = noonColor;
+        let ambientIntensity = 0;
+        let shadowIntensityK = 0;
+        const sunLightIntensityK = Math.min(1, (98 - Math.min(98, zenith)) / 6);
+        const moonLightIntensityK = 1 - Math.min(1, (90 - Math.min(90, zenith)) / 6);
+        if (zenith < 90) {
+            const k = Math.pow(zenith / 90, 3);
+            sunColor = lerpColor(noonColor, horizonColor, k);
+            ambientIntensity = (1 - zenith / 90) * 1.5;
+            shadowIntensityK = (1 - k) * 0.9 + 0.2 * k;
+        } else if (zenith < 102) {
+            const k = (zenith - 90) / 12;
+            sunColor = lerpColor(horizonColor, duskColor, k);
+            shadowIntensityK = 0.2 * (1 - k);
+        }
 
         // Set lighting params
         sceneContext.map.lighting.enabled = true;
         sceneContext.map.lighting.mode = lightParams.shadowsEnabled ? MapLightingMode.LightBased : MapLightingMode.Hillshade;
         sceneContext.map.lighting.elevationLayersOnly = lightParams.lightElevationLayersOnly;
         sceneContext.map.lighting.hillshadeAzimuth = azimuth;
-        sceneContext.map.lighting.hillshadeZenith = zenith;
+        sceneContext.map.lighting.hillshadeZenith = Math.min(90, zenith);
         sceneContext.map.lighting.zFactor = lightParams.zFactor;
         sceneContext.scene.notifyChange(sceneContext.map);
 
@@ -394,7 +410,7 @@ export default class Map3DLight extends React.Component {
 
         // NOTE: just a top-down light
         moonLight.position.set(lightTarget.x, lightTarget.y, 8000);
-        moonLight.intensity = lightParams.moonLightIntensity * (1 - sunLightIntensityK);
+        moonLight.intensity = lightParams.moonLightIntensity * moonLightIntensityK;
         moonLight.target.position.copy(lightTarget);
         moonLight.updateMatrixWorld(true);
         moonLight.target.updateMatrixWorld(true);
