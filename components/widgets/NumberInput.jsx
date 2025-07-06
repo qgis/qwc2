@@ -79,6 +79,7 @@ export default class NumberInput extends React.Component {
         return (
             <div className={className + " " + this.props.className}>
                 <input disabled={this.props.disabled}
+                    inputMode="numeric"
                     onBlur={this.commit} onChange={this.onChange}
                     onFocus={this.setupSelectionListener}
                     onKeyDown={this.onKeyDown} placeholder={this.props.placeholder}
