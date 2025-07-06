@@ -16,7 +16,7 @@ export default class FirstPersonControls3D extends Controls {
 
         // Step sizes
         this.keyPanStep = 1.5;
-        this.keyRotateStep = 2 / 180 * Math.PI;
+        this.keyRotateStep = 4 / 180 * Math.PI;
         this.mousePanSpeed = 0.1;
         this.mouseRotateSpeed = 10 / 180 * Math.PI;
         this.personHeight = 3;
