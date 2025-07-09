@@ -136,13 +136,13 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  *
  * - Include the custom plugin code in `index.html`, i.e.
  *
- *       <script type="text/javascript" src="assets/js/currenttheme.js" ></script>
+ *         <script type="text/javascript" src="assets/js/currenttheme.js" ></script>
  *
  * - Enable the plugin in the plugins block of `config.json`
  *
- *       {
- *           "name": "CurrentTheme"
- *       }
+ *         {
+ *             "name": "CurrentTheme"
+ *         }
  *
  * The following action functions are exposed in the API:
  *
