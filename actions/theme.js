@@ -172,8 +172,8 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
             searchProviders: theme.searchProviders || themes.defaultSearchProviders || undefined,
             backgroundLayers: theme.backgroundLayers || themes.defaultBackgroundLayers || [],
             defaultDisplayCrs: theme.defaultDisplayCrs || themes.defaultDisplayCrs || undefined
-        }
-        
+        };
+
         // Preserve extent if desired and possible
         if (getState().display.view3dMode !== View3DMode.FULLSCREEN) {
             const curCrs = getState().map.projection;
