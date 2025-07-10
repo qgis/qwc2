@@ -83,10 +83,13 @@ class ImportObjects3D extends React.Component {
     };
     importTo3DTiles = (file, taskid) => {
         const target = this.props.sceneContext.scene.view.controls.target;
+        const height = this.sceneContext.getTerrainHeightFromMap([
+            target.x, target.y
+        ]);
         const formData = new FormData();
         const jsonBlob = new Blob([
             JSON.stringify({
-                inputs: [String(target.x), String(target.y), String(target.z), this.props.sceneContext.mapCrs]
+                inputs: [String(target.x), String(target.y), String(height), this.props.sceneContext.mapCrs]
             })
         ], {type: 'application/json'});
         formData.set('json', jsonBlob);
