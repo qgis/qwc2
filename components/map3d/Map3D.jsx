@@ -403,7 +403,7 @@ class Map3D extends React.Component {
             }
             if (options.tilesetStyle !== prevOptions?.tilesetStyle) {
                 object.tiles.group.children.forEach(group => {
-                    Tiles3DStyle.applyTileStyle(group, options);
+                    Tiles3DStyle.applyTileStyle(group, options, this.state.sceneContext);
                 });
                 this.instance.notifyChange(object);
             }
