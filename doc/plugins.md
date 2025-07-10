@@ -944,7 +944,7 @@ View3D<a name="view3d"></a>
 ----------------------------------------------------------------
 Displays a 3D map view.
 
-## Configuration
+### Configuration
 
 To add a 3D View to a theme, add the following configuration block to a theme item in `themesConfig.json`:
 ```
@@ -995,7 +995,7 @@ Where:
 - The `objects3d` entry contains an optional list of GLTF objects to add to the scene.
 
 
-## Styling
+### Styling
 
 The tileset style JSON is a [3D Tiles stylesheet](https://github.com/CesiumGS/3d-tiles/tree/main/specification/Styling),
 of which currently the `color` section is supported, and which may in addition also contain a `batchstyles` section as follows:
@@ -1024,7 +1024,7 @@ Where:
 - The color declarations in the `batchstyles` section override any color resulting from a color expression in the `color` section.
 - You must ensure that your 3D tiles batch table contains all batch attributes which are referenced as variables in a color expression!
 
-## Import
+### Import
 
 To import scene objects in formats other than GLTF, a `ogcProcessesUrl` in `config.json` needs to point to a BBOX OGC processes server.
 
