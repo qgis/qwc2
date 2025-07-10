@@ -83,7 +83,7 @@ class ImportObjects3D extends React.Component {
     };
     importTo3DTiles = (file, taskid) => {
         const target = this.props.sceneContext.scene.view.controls.target;
-        const height = this.sceneContext.getTerrainHeightFromMap([
+        const height = this.props.sceneContext.getTerrainHeightFromMap([
             target.x, target.y
         ]);
         const formData = new FormData();
