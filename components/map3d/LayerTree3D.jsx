@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {Box3} from 'three';
 
 import {setCurrentTask} from '../../actions/task';
 import LocaleUtils from '../../utils/LocaleUtils';

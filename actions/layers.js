@@ -203,4 +203,4 @@ export function setThemeLayersVisibilityPreset(preset) {
         type: SET_THEME_LAYERS_VISIBILITY_PRESET,
         preset: preset
     };
-};
+}
