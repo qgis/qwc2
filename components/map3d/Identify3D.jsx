@@ -159,6 +159,7 @@ class Identify3D extends React.Component {
             );
             axios.get(url).then(response => {
                 this.setState({pickAttrs: {
+                    ...batchAttrs,
                     ...response.data
                 }});
             }).catch(() => {
