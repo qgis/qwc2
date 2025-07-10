@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Box3, BufferGeometry, Group, Mesh, Vector2, Vector3} from 'three';
+import {Box3, BufferGeometry, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
