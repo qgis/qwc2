@@ -483,6 +483,7 @@ const LayerUtils = {
                 } else {
                     newlayers.push(layer);
                 }
+                usedIds.add(layer.id);
             }
         }
         // Ensure mutually exclusive groups have exactly one visible layer
