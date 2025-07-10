@@ -95,4 +95,4 @@ pluginData.forEach(plugin => {
 
 fs.writeFileSync(__dirname + '/../doc/plugins.md', output);
 /* eslint-disable-next-line */
-console.log("Plugin documentation written to doc/src/plugins.md!");
+console.log("Plugin documentation written to doc/plugins.md!");
