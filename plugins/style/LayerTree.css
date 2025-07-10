@@ -310,6 +310,7 @@ img.layertree-item-legend-tooltip {
 
 #LayerTree div.layertree-item-stylemenu > div > span.icon {
     margin-right: 0.25em;
+    cursor: pointer;
 }
 
 #LayerTree div.layertree-item-stylemenu > div > div {

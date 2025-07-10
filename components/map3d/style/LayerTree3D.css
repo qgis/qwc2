@@ -86,6 +86,7 @@
 
 #LayerTree3D div.layertree3d-item-stylemenu > div > span.icon {
     margin-right: 0.25em;
+    cursor: pointer;
 }
 
 #LayerTree3D div.layertree3d-item-stylemenu > div > div {
