@@ -38,7 +38,7 @@ class ImportObjects3D extends React.Component {
             <div className="importobjects3d-widget">
                 <div>
                     <FileSelector
-                        accept=".gltf,.ifc,.gml,.citygml,.cityjson,.3dxf" file={this.state.selectedfile}
+                        accept=".gltf,.ifc,.gml,.citygml,.cityjson,.gpkg" file={this.state.selectedfile}
                         onFileSelected={file => this.setState({selectedfile: file})}
                         title={LocaleUtils.tr("layertree3d.supportedformats")} />
                 </div>
