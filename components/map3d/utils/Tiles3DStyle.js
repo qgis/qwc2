@@ -6,20 +6,46 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {Parser as ExprParser} from 'expr-eval';
 import isEmpty from "lodash.isempty";
 import parseCssColor from 'parse-css-color';
 import {Float32BufferAttribute, Group, Vector3} from "three";
 
+import MiscUtils from '../../../utils/MiscUtils';
 import {createLabelObject} from "./MiscUtils3D";
 
 
-function batchColor(batchId, batchAttr, config) {
-    if ((config.tilesetStyle?.[batchId]?.color ?? null) !== null) {
-        const color = parseCssColor(config.tilesetStyle[batchId].color);
+const styleExpressionParser = new ExprParser();
+styleExpressionParser.functions.color = (name, alpha = 1) => {
+    const color = parseCssColor(name);
+    return [...color.values.map(c => c / 255), alpha];
+};
+styleExpressionParser.functions.rgb = (r, g, b) => ([r / 255, g / 255, g / 255, 1]);
+styleExpressionParser.functions.rgba = (r, g, b, a) => ([r / 255, g / 255, g / 255, a]);
+styleExpressionParser.functions.hsl = (h, s, l) => ([...MiscUtils.hslToRgb(h, s, l), 1]);
+styleExpressionParser.functions.hsla = (h, s, l, a) => ([...MiscUtils.hslToRgb(h, s, l), a]);
+
+
+function batchColor(batchId, batchAttr, context) {
+    if ((context.batchStyles?.[batchId]?.color ?? null) !== null) {
+        const color = parseCssColor(context.batchStyles[batchId].color);
         return [...color.values.map(c => c / 255), color.alpha];
-    } else if (batchAttr[config.colorAttr]) {
-        const color = batchAttr[config.colorAttr];
-        const alpha = config.alphaAttr ? batchAttr[config.alphaAttr] ?? 255 : 255;
+    } else if (context.colorExpressions.length) {
+        try {
+            for (let i = 0; i < context.colorExpressions.length; ++i) {
+                const condition = context.colorExpressions[i][0].evaluate(batchAttr);
+                if (condition) {
+                    return context.colorExpressions[i][1].evaluate(batchAttr);
+                }
+            }
+        } catch (e) {
+            /* eslint-disable-next-line */
+            console.warn("Failed to parse color expression: " + String(e));
+        }
+        return null;
+    } else if (batchAttr[context.colorAttr]) {
+        const color = batchAttr[context.colorAttr];
+        const alpha = context.alphaAttr ? batchAttr[context.alphaAttr] ?? 255 : 255;
         const r = ((color >> 16) & 0xff) / 255;
         const g = ((color >> 8) & 0xff) / 255;
         const b = (color & 0xff) / 255;
@@ -29,11 +55,11 @@ function batchColor(batchId, batchAttr, config) {
     }
 }
 
-function batchLabel(batchId, batchAttr, config) {
-    if ((config.tilesetStyle?.[batchId]?.label ?? null) !== null) {
-        return {text: config.tilesetStyle[batchId].label, offset: config.tilesetStyle[batchId].labelOffset ?? 80};
-    } else if (config.labelAttr) {
-        return batchAttr[config.labelAttr];
+function batchLabel(batchId, batchAttr, context) {
+    if ((context.batchStyles?.[batchId]?.label ?? null) !== null) {
+        return {text: context.batchStyles[batchId].label, offset: context.batchStyles[batchId].labelOffset ?? 80};
+    } else if (context.labelAttr) {
+        return batchAttr[context.labelAttr];
     } else {
         return null;
     }
@@ -46,6 +72,35 @@ const Tiles3DStyle = {
         const labels = {};
         const idAttr = config.idAttr ?? "id";
 
+        const context = {
+            colorExpressions: [],
+            batchStyles: config.tilesetStyle?.batchstyles,
+            colorAttr: config.colorAttr,
+            alphaAttr: config.alphaAttr,
+            labelAttr: config.labelAttr
+        };
+        let baseColor = [1, 1, 1, 1];
+        let customBaseColor = false;
+        if (config.baseColor) {
+            const color = parseCssColor(config.baseColor);
+            baseColor = [...color.values.map(x => x / 255), color.alpha];
+            customBaseColor = true;
+        }
+        const colorRules = config.tilesetStyle?.color;
+        const parseExpr = (expr) => {
+            const cleanExpr = expr.replace(/\$\{(\w+)\}/g, '$1').replaceAll('===', '==').replaceAll('!==', '==');
+            return styleExpressionParser.parse(cleanExpr);
+        };
+        if (colorRules?.conditions) {
+            colorRules?.conditions.map(cond => {
+                context.colorExpressions.push([
+                    parseExpr(cond[0]), parseExpr(cond[1])
+                ]);
+            });
+        } else if (typeof(colorRules) === "string") {
+            context.colorExpressions.push([parseExpr("true"), parseExpr(colorRules)]);
+        }
+
         group.traverse(c => {
             if (c.geometry) {
                 const batchidxAttr = c.geometry.getAttribute( '_batchid' );
@@ -56,15 +111,8 @@ const Tiles3DStyle = {
                 const batchPosAttr = c.geometry.getAttribute('position');
                 const rgbaColors = [];
                 const rgbColors = [];
-                let haveColor = false;
-                let haveAlpha = false;
-                let baseColor = [1, 1, 1, 1];
-                if (config.baseColor) {
-                    const color = parseCssColor(config.baseColor ?? 'white');
-                    baseColor = [...color.values.map(x => x / 255), color.alpha];
-                    haveAlpha |= color[3] < 1;
-                    haveColor = true;
-                }
+                let haveColor = customBaseColor;
+                let haveAlpha = baseColor[3] < 1;
 
                 batchidxAttr.array.forEach((batchIdx, idx) => {
                     const batchAttr = group.batchTable.getDataFromId(batchIdx);
@@ -73,7 +121,7 @@ const Tiles3DStyle = {
                     // Handle color
                     let color = batchColorCache[batchIdx];
                     if (color === undefined) {
-                        color = batchColorCache[batchIdx] = batchColor(batchId, batchAttr, config);
+                        color = batchColorCache[batchIdx] = batchColor(batchId, batchAttr, context);
                     }
                     if (color) {
                         haveColor = true;
@@ -88,7 +136,7 @@ const Tiles3DStyle = {
                     // Handle label
                     let label = batchLabelCache[batchIdx];
                     if (label === undefined) {
-                        label = batchLabelCache[batchIdx] = batchLabel(batchId, batchAttr, config);
+                        label = batchLabelCache[batchIdx] = batchLabel(batchId, batchAttr, context);
                     }
                     if (label) {
                         const pos = batchPosAttr.array.slice(3 * idx, 3 * idx + 3);
