@@ -115,7 +115,6 @@ class MapPlugin extends React.Component {
                             // Add new renderlayer
                             renderLayers.push({
                                 ...layer,
-                                uuid: layer.id + "-" + i,
                                 params: {
                                     ...layer.params,
                                     LAYERS: sublayers[i],
