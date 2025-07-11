@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 
 export default class Input extends React.Component {
     static propTypes = {
+        allowEmpty: PropTypes.bool,
         className: PropTypes.string,
         disabled: PropTypes.bool,
         onChange: PropTypes.func,
@@ -19,6 +20,9 @@ export default class Input extends React.Component {
         required: PropTypes.bool,
         type: PropTypes.string,
         value: PropTypes.string
+    };
+    static defaultProps = {
+        allowEmpty: true
     };
     state = {
         value: "",
@@ -56,8 +60,12 @@ export default class Input extends React.Component {
     };
     commit = () => {
         if (this.state.changed) {
-            this.setState((state) => ({value: state.curValue}));
-            this.props.onChange(this.state.curValue);
+            this.setState(state => {
+                const newValue = state.curValue === "" && !this.props.allowEmpty ? this.props.value : state.curValue;
+                return {value: newValue, curValue: newValue, changed: false};
+            }, () => {
+                this.props.onChange(this.state.value);
+            });
         }
     };
 }
