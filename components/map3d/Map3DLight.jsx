@@ -152,7 +152,7 @@ export default class Map3DLight extends React.Component {
                                     <Icon icon={this.state.dayAnimation ? "square" : "triangle-right"} onClick={this.toggleDayAnimation} />
                                     <div className="maplight3d-slider">
                                         <input max={365 + isLeapYear()} min={1} onChange={ev => this.updateLightParams("day", parseInt(ev.target.value, 10))} step={1} type="range" value={lightParams.day} />
-                                        <Input onChange={value => this.updateLightParams("day", dateToDay(value))} type="date" value={dateValue} />
+                                        <Input allowEmpty={false} onChange={value => this.updateLightParams("day", dateToDay(value))} type="date" value={dateValue} />
                                     </div>
                                     <Icon
                                         className={this.state.dayAnimationSettings ? "map3d-animation-settings-active" : ""}
@@ -178,7 +178,7 @@ export default class Map3DLight extends React.Component {
                                     <Icon icon={this.state.timeAnimation ? "square" : "triangle-right"} onClick={this.toggleTimeAnimation} />
                                     <div className="maplight3d-slider">
                                         <input max={1439} min={0} onChange={ev => this.updateLightParams("time", parseInt(ev.target.value, 10))} step={1} type="range" value={lightParams.time} />
-                                        <Input onChange={value => this.updateLightParams("time", timeToMin(value))} type="time" value={timeValue} />
+                                        <Input allowEmpty={false} onChange={value => this.updateLightParams("time", timeToMin(value))} type="time" value={timeValue} />
                                     </div>
                                     <Icon
                                         className={this.state.timeAnimationSettings ? "map3d-animation-settings-active" : ""}
