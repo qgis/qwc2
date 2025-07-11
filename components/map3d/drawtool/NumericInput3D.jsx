@@ -90,16 +90,16 @@ export default class NumericInput3D extends React.Component {
                             </tr>
                             <tr>
                                 <td>{LocaleUtils.tr("draw3d.thescale")}</td>
-                                <td><NumberInput decimals={1} disabled={disabled} onChange={x => this.updateScale(0, x)} value={scale[0]} /></td>
-                                <td><NumberInput decimals={1} disabled={disabled} onChange={y => this.updateScale(1, y)} value={scale[1]} /></td>
-                                <td><NumberInput decimals={1} disabled={disabled} onChange={z => this.updateScale(2, z)} value={scale[2]} /></td>
+                                <td><NumberInput decimals={1} disabled={disabled} min={0.1} onChange={x => this.updateScale(0, x)} value={scale[0]} /></td>
+                                <td><NumberInput decimals={1} disabled={disabled} min={0.1} onChange={y => this.updateScale(1, y)} value={scale[1]} /></td>
+                                <td><NumberInput decimals={1} disabled={disabled} min={0.1} onChange={z => this.updateScale(2, z)} value={scale[2]} /></td>
                             </tr>
                             {size ? (
                                 <tr>
                                     <td>{LocaleUtils.tr("draw3d.thesize")} [{unit}]</td>
-                                    <td><NumberInput decimals={1} disabled={disabled} onChange={x => this.updateSize(0, x)} value={size[0]} /></td>
-                                    <td><NumberInput decimals={1} disabled={disabled} onChange={y => this.updateSize(1, y)} value={size[1]} /></td>
-                                    <td><NumberInput decimals={1} disabled={disabled} onChange={z => this.updateSize(2, z)} value={size[2]} /></td>
+                                    <td><NumberInput decimals={1} disabled={disabled} min={0.1} onChange={x => this.updateSize(0, x)} value={size[0]} /></td>
+                                    <td><NumberInput decimals={1} disabled={disabled} min={0.1} onChange={y => this.updateSize(1, y)} value={size[1]} /></td>
+                                    <td><NumberInput decimals={1} disabled={disabled} min={0.1} onChange={z => this.updateSize(2, z)} value={size[2]} /></td>
                                 </tr>
                             ) : null}
                             {size ? (
