@@ -41,7 +41,7 @@ export default class NumericInput3D extends React.Component {
         this.props.sceneContext.scene.viewport.parentElement.appendChild(this.el);
     }
     componentDidMount() {
-        this.props.transformControls.addEventListener('change', this.updateStateFromObject);
+        this.props.transformControls.addEventListener('objectChange', this.updateStateFromObject);
         this.updateStateFromObject();
     }
     componentDidUpdate(prevProps) {
@@ -51,7 +51,7 @@ export default class NumericInput3D extends React.Component {
     }
     componentWillUnmount() {
         this.props.sceneContext.scene.viewport.parentElement.removeChild(this.el);
-        this.props.transformControls.removeEventListener('change', this.updateStateFromObject);
+        this.props.transformControls.removeEventListener('objectChange', this.updateStateFromObject);
     }
     render() {
         const pos = this.state.pos;
