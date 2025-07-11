@@ -319,8 +319,9 @@ export default function layers(state = defaultState, action) {
                         role: layer.role,
                         id: layer.id
                     };
-                    // For background layers, preserve any custom title/attribution/opacity
+                    // For background layers, preserve any custom name/title/attribution/opacity
                     if (layer.role === LayerRole.BACKGROUND) {
+                        newLayer.name = layer.name || action.layer.name;
                         newLayer.title = layer.title || action.layer.title;
                         newLayer.attribution = layer.attribution || action.layer.attribution;
                         newLayer.opacity = layer.opacity || action.layer.opacity;
