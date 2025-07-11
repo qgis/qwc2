@@ -8,10 +8,11 @@
     bottom: 0;
     cursor: ew-resize;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
-#MapCompare span.map-compare-handle {
+#MapCompare div.map-compare-handle {
     height: 3em;
     width: 3em;
     margin-left: -1.375em;

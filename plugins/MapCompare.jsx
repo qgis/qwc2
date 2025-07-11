@@ -39,10 +39,10 @@ class MapComparePlugin extends React.Component {
         };
         return ReactDOM.createPortal((
             <div id="MapCompare" onPointerDown={this.startDragHandle} style={style} >
-                <span className="map-compare-handle">
+                <div className="map-compare-handle">
                     <Icon className="map-compare-handle-icon" icon="triangle-left" />
                     <Icon className="map-compare-handle-icon" icon="triangle-right" />
-                </span>
+                </div>
             </div>
         ), this.context);
     }
