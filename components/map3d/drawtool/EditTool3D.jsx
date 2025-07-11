@@ -434,7 +434,7 @@ export default class EditTool3D extends React.Component {
         const {mode, object} = control;
         if (mode === 'scale') {
             // Block zero or negative scales
-            object.scale.max(new Vector3(1E-4, 1E-4, 1E-4));
+            object.scale.max(new Vector3(0.1, 0.1, 0.1));
             const offset = new Vector3();
             if (this._bbox) {
                 if (control.pointStart.x > 0) {
