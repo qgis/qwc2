@@ -131,8 +131,8 @@ export default class Map3DLight extends React.Component {
 
         const dateValue = new Date(new Date().getFullYear(), 0, 1 + lightParams.day).toISOString().split("T")[0];
         const dateToDay = (date) => {
-            const d = new Date(date + "T00:00:00");
-            return (d - new Date(d.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24);
+            const d = new Date(date);
+            return 1 + (d - new Date(Date.UTC(d.getUTCFullYear(), 0, 1))) / (1000 * 60 * 60 * 24);
         };
         const isLeapYear = (year) => (new Date(year, 1, 29).getDate() === 29);
 
