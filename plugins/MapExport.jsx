@@ -52,7 +52,7 @@ class MapExport extends React.Component {
         dpis: PropTypes.arrayOf(PropTypes.number),
         /** Whether to include external layers in the image. Requires QGIS Server 3.x! */
         exportExternalLayers: PropTypes.bool,
-        /** Template for the name of the generated files when downloading. Can contain the placeholders `{username}`, `{tenant}`, `{theme}`, `{timestamp}`. */
+        /** Template for the name of the generated files when downloading. Can contain the placeholders `{username}`, `{tenant}`, `{theme}`, `{themeTitle}`, `{timestamp}`. */
         fileNameTemplate: PropTypes.string,
         /** Custom export configuration per format.
          *  If more than one configuration per format is provided, a selection combo will be displayed.
@@ -359,6 +359,7 @@ class MapExport extends React.Component {
             .replace("{username}", ConfigUtils.getConfigProp("username", null, ""))
             .replace("{tenant}", ConfigUtils.getConfigProp("tenant", null, ""))
             .replace("{theme}", this.props.theme.id)
+            .replace("{themeTitle}", this.props.theme.title || "")
             .replace("{timestamp}", timestamp) + "." + ext;
 
 
