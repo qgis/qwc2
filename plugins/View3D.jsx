@@ -391,8 +391,7 @@ class View3D extends React.Component {
         return [button, this.render3DWindow()];
     }
     onClose = () => {
-        this.props.setView3dMode(View3DMode.DISABLED);
-        UrlParams.updateParams({v3d: undefined});
+        this.props.setView3dMode(View3DMode.DISABLING);
     };
     onGeometryChanged = (geometry) => {
         if (geometry.maximized && this.props.view3dMode !== View3DMode.FULLSCREEN) {
