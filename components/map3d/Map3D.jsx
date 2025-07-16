@@ -978,6 +978,7 @@ class Map3D extends React.Component {
                 resolve({
                     objects: objects,
                     colorLayers: layers,
+                    baseLayer: this.state.sceneContext.baseLayers.find(layer => layer.visibility === true)?.name || "",
                     personHeight: this.state.sceneContext.scene.view.controls.personHeight ?? 0,
                     camera: [camera.x, camera.y, camera.z],
                     target: [target.x, target.y, target.z]
@@ -1014,14 +1015,14 @@ class Map3D extends React.Component {
             }
         });
         this.state.sceneContext.restoreView(data);
-        if (data.baselayer !== undefined) {
+        if (data.baseLayer !== undefined) {
             this.setState(state => ({
                 sceneContext: {
                     ...state.sceneContext,
-                    baseLayers: state.sceneContext.baseLayers.map(l => ({...l, visibility: l.name === data.baselayer}))
+                    baseLayers: state.sceneContext.baseLayers.map(l => ({...l, visibility: l.name === data.baseLayer}))
                 }
             }));
-            UrlParams.updateParams({bl3d: data.baselayer});
+            UrlParams.updateParams({bl3d: data.baseLayer});
         }
         this.state.sceneContext.scene.notifyChange();
     };
