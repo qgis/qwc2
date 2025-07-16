@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect, Provider} from 'react-redux';
 
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 
@@ -462,7 +463,7 @@ class View3D extends React.Component {
     };
     setupMap = () => {
         if (this.map3dComponentRef) {
-            if (this.state.storedState) {
+            if (!isEmpty(this.state.storedState)) {
                 this.map3dComponentRef.restore3dState(this.state.storedState);
             } else {
                 this.sync2DExtent();
