@@ -129,7 +129,7 @@ class MapTip extends React.Component {
             const request = IdentifyUtils.buildRequest(layer, queryLayers.join(","), this.state.mousePos.coordinate, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
                 if (this.reqId === reqId) {
-                    const result = IdentifyUtils.parseXmlResponse(response || "", this.props.map.projection);
+                    const result = IdentifyUtils.parseXmlResponse(response || "", this.props.map.projection, layer);
                     const mapTips = [];
                     const features = [];
                     for (const sublayer of request.params.layers.split(",")) {
