@@ -269,19 +269,19 @@ class HeightProfile extends React.Component {
         const reqId = uuidv1();
         this.setState({reqId: reqId});
         const totLength = this.props.measurement.length;
-        getElevationInterface().getProfile(coordinates, distances, projection, this.props.samples).then(elevations => {
+        getElevationInterface().getProfile(coordinates, distances, projection, this.props.samples).then(response => {
             // Request changed
             if (this.state.reqId !== reqId) {
                 return;
             }
 
-            let elevationsList = elevations.list;
+            let elevationsList = response.list;
             if (!elevationsList) {
-                elevationsList = [{elevations: elevations, dataset: null}];
+                elevationsList = [{elevations: response, dataset: null}];
             }
 
-            const data = elevationsList.map((data, idx) => {
-                const elevations = data.elevations;
+            const data = elevationsList.map((entry, index) => {
+                const elevations = entry.elevations;
 
                 // Compute x-axis distances and get node points
                 const nodes = [];
@@ -301,14 +301,14 @@ class HeightProfile extends React.Component {
                 nodes.push({x: x[x.length - 1], y: y[y.length - 1]});
 
                 return {
-                    dataset: data.dataset,
+                    dataset: entry.dataset,
                     x: x,
                     y: elevations,
                     maxY: Math.max(...elevations),
                     totLength: totLength,
                     nodes: nodes
                 };
-            })
+            });
 
             this.setState((prevState) => ({
                 reqId: null, data: data,
@@ -316,7 +316,6 @@ class HeightProfile extends React.Component {
             }));
             this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: this.pickPositionCallback});
         }).catch((error) => {
-            console.info("Error querying elevations:", typeof(error));
             this.setState({reqId: null, data: error ? {error} : {}});
         });
     }
@@ -369,13 +368,13 @@ class HeightProfile extends React.Component {
         const heightStr = LocaleUtils.tr("heightprofile.height");
         const aslStr = LocaleUtils.tr("heightprofile.asl");
 
-        const selected_ds = this.state.data[this.state.selectedDatasetIndex];
+        const selectedDataset = this.state.data[this.state.selectedDatasetIndex];
 
         const data = {
-            labels: selected_ds.x,
+            labels: selectedDataset.x,
             datasets: [
                 {
-                    data: selected_ds.y,
+                    data: selectedDataset.y,
                     fill: true,
                     backgroundColor: "rgba(255,0,0,0.5)",
                     borderColor: "rgb(255,0,0)",
@@ -385,7 +384,7 @@ class HeightProfile extends React.Component {
                 },
                 {
                     type: 'bubble',
-                    data: selected_ds.nodes,
+                    data: selectedDataset.nodes,
                     backgroundColor: 'rgb(255, 255, 255)',
                     borderColor: 'rgb(255, 0, 0)',
                     borderWidth: 2,
@@ -398,8 +397,8 @@ class HeightProfile extends React.Component {
             ]
         };
         // Approx 10 ticks
-        const stepSizeFact = Math.pow(10, Math.ceil(Math.log10(selected_ds.totLength / 10)));
-        const stepSize = Math.round(selected_ds.totLength / (stepSizeFact)) * stepSizeFact / 10;
+        const stepSizeFact = Math.pow(10, Math.ceil(Math.log10(selectedDataset.totLength / 10)));
+        const stepSize = Math.round(selectedDataset.totLength / (stepSizeFact)) * stepSizeFact / 10;
         const prec = this.props.heightProfilePrecision;
         const options = {
             responsive: true,
@@ -435,7 +434,7 @@ class HeightProfile extends React.Component {
                         text: distanceStr + " [m]",
                         padding: 0
                     },
-                    max: Math.ceil(selected_ds.totLength)
+                    max: Math.ceil(selectedDataset.totLength)
                 },
                 y: {
                     ticks: {
@@ -446,21 +445,22 @@ class HeightProfile extends React.Component {
                         display: true,
                         text: heightStr + " [m " + aslStr + "]"
                     },
-                    max: Math.ceil(selected_ds.maxY)
+                    max: Math.ceil(selectedDataset.maxY)
                 }
             },
             onHover: interactive ? (evt, activeEls, chart) => {
                 const chartArea = chart.chartArea;
                 const chartX = Math.min(Math.max(evt.x - chartArea.left), chartArea.width);
-                this.updateMarker(chartX / chartArea.width * selected_ds.totLength);
+                this.updateMarker(chartX / chartArea.width * selectedDataset.totLength);
             } : undefined
         };
 
         let datasetSelector = null;
         if (this.state.data.length > 1) {
             datasetSelector = (
-                <select className="height-profile-dataset-select" value={this.state.selectedDatasetIndex}
+                <select className="height-profile-dataset-select"
                     onChange={(e) => this.setState({selectedDatasetIndex: parseInt(e.target.value, 10)})}
+                    value={this.state.selectedDatasetIndex}
                 >
                     {this.state.data.map((dataset, idx) => (
                         <option key={idx} value={idx}>
