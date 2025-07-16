@@ -21,6 +21,8 @@ const ElevationInterface = {
      * * `crs`: CRS of the query position, as an EPSG string
      *
      * Returns: a promise which resolves to an elevation value (in meteres)
+     *  or an object with a `list` property containing an array of objects with
+     *  `elevation` and `dataset` properties, if multiple datasets are available.
      */
     getElevation(pos, crs) {
         return new Promise((resolve, reject) => {
@@ -30,7 +32,7 @@ const ElevationInterface = {
                 return;
             }
             axios.get(serviceUrl + '/getelevation', {params: {pos: pos.join(","), crs}}).then(response => {
-                resolve(response.data.elevation);
+                resolve(response.data.elevation || { list: response.data.elevation_list });
             }).catch((e) => {
                 reject(String(e));
             });
@@ -45,6 +47,8 @@ const ElevationInterface = {
      * * `samples`: the number of samples
      *
      * Returns a promise which resolves to the elevation values `[z1, z2, ...]`
+     *  or an object with a `list` property containing an array of objects with
+     *  `elevations` and `dataset` properties, if multiple datasets are available.
      */
     getProfile(coordinates, distances, crs, samples) {
         return new Promise((resolve, reject) => {
@@ -54,11 +58,12 @@ const ElevationInterface = {
                 return;
             }
             axios.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection: crs, samples}).then(response => {
-                resolve(response.data.elevations);
+                resolve(response.data.elevations || { list: response.data.elevations_list });
             }).catch((e) => {
+                const error = e.response?.data?.error ? e.response.data.error : e;
                 /* eslint-disable-next-line */
-                console.log("Query failed: " + e);
-                reject(String(e));
+                console.log("Query failed: " + error);
+                reject(String(error));
             });
         });
     }
