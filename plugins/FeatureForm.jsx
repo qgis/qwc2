@@ -19,6 +19,7 @@ import AttributeForm from '../components/AttributeForm';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import EditingInterface from '../utils/EditingInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -67,6 +68,7 @@ class FeatureForm extends React.Component {
         map: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setEditContext: PropTypes.func,
+        startupParams: PropTypes.object,
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -96,7 +98,15 @@ class FeatureForm extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.theme !== prevProps.theme) {
+        if (this.props.enabled && this.props.theme && !prevProps.theme) {
+            const startupParams = this.props.startupParams;
+            const haveIc = ["1", "true"].includes((startupParams.ic || "").toLowerCase());
+            const c = (startupParams.c || "").split(/[;,]/g).map(x => parseFloat(x) || 0);
+            if (haveIc && c.length === 2) {
+                const mapCrs = this.props.theme.mapCrs;
+                this.queryFeatures(CoordinatesUtils.reproject(c, startupParams.crs || mapCrs, mapCrs));
+            }
+        } else if (this.props.theme !== prevProps.theme) {
             this.clearResults();
         } else if (!this.props.enabled && prevProps.enabled) {
             if (this.props.clearResultsOnClose) {
@@ -293,7 +303,8 @@ export default (iface = EditingInterface) => connect((state) => {
         layers: state.layers.flat,
         filter: state.layers.filter,
         map: state.map,
-        theme: state.theme.current
+        theme: state.theme.current,
+        startupParams: state.localConfig.startupParams
     };
 },
 {
