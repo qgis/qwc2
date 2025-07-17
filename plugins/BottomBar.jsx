@@ -122,7 +122,7 @@ class BottomBar extends React.Component {
         if (this.props.displayCoordinates) {
             coordinates = (
                 <div className="controlgroup">
-                    <span>{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
+                    <span className="bottombar-mousepos-label">{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
                     <CoordinateDisplayer className={"bottombar-mousepos"} coordinateFormatter={this.props.coordinateFormatter} displayCrs={this.props.map.displayCrs} mapCrs={this.props.map.projection} />
                     <select onChange={ev => this.props.setDisplayCrs(ev.target.value)} value={this.props.map.displayCrs}>
                         {Object.keys(availableCRS).map(crs =>
@@ -136,7 +136,7 @@ class BottomBar extends React.Component {
         if (this.props.displayScales) {
             scales = (
                 <div>
-                    <span>{LocaleUtils.tr("bottombar.scale_label")}:&nbsp;</span>
+                    <span className="bottombar-scales-label">{LocaleUtils.tr("bottombar.scale_label")}:&nbsp;</span>
                     <InputContainer className="bottombar-scale-combo">
                         <span className="bottombar-scale-combo-prefix" role="prefix"> 1 : </span>
                         <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} role="input" value={Math.round(this.props.map.zoom)}>
