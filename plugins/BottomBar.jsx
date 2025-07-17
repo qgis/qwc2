@@ -38,6 +38,8 @@ class BottomBar extends React.Component {
         })),
         additionalMouseCrs: PropTypes.array,
         changeZoomLevel: PropTypes.func,
+        /** Custom coordinate formatter, as `(coordinate, crs) => string`. */
+        coordinateFormatter: PropTypes.func,
         /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
         /** Whether to display the scalebar in the bottom bar. */
@@ -121,7 +123,7 @@ class BottomBar extends React.Component {
             coordinates = (
                 <div className="controlgroup">
                     <span>{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
-                    <CoordinateDisplayer className={"bottombar-mousepos"} displayCrs={this.props.map.displayCrs} mapCrs={this.props.map.projection} />
+                    <CoordinateDisplayer className={"bottombar-mousepos"} coordinateFormatter={this.props.coordinateFormatter} displayCrs={this.props.map.displayCrs} mapCrs={this.props.map.projection} />
                     <select onChange={ev => this.props.setDisplayCrs(ev.target.value)} value={this.props.map.displayCrs}>
                         {Object.keys(availableCRS).map(crs =>
                             (<option key={crs} value={crs}>{availableCRS[crs].label}</option>)
