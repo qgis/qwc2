@@ -175,19 +175,28 @@ class MapControls3D extends React.Component {
     setViewToExtent = (bounds, angle = 0) => {
         this.leaveFirstPerson();
 
-        const center = {
-            x: 0.5 * (bounds[0] + bounds[2]),
-            y: 0.5 * (bounds[1] + bounds[3])
-        };
-        center.z = this.props.sceneContext.getTerrainHeightFromMap([center.x, center.y]) ?? 0;
-
-        // Camera height to width bbox width
         const fov = CAMERA_FOV / 180 * Math.PI;
         const cameraHeight = (bounds[2] - bounds[0]) / (2 * Math.tan(fov / 2));
 
-        const camerapos = new Vector3(center.x, center.y, center.z + cameraHeight);
-        const target = new Vector3(center.x, center.y, center.z);
-        this.controls.animateTo(camerapos, target, angle);
+        const center = {
+            x: 0.5 * (bounds[0] + bounds[2]),
+            y: 0.5 * (bounds[1] + bounds[3]),
+        };
+        const camerapos = new Vector3(center.x, center.y, cameraHeight);
+        const target = new Vector3(center.x, center.y, 0);
+        const h = this.props.sceneContext.getTerrainHeightFromMap([center.x, center.y]);
+        // Fall back to getTerrainHeightFromDTM if map is not yet loaded
+        if (h === undefined) {
+            this.props.sceneContext.getTerrainHeightFromDTM([center.x, center.y]).then(h2 =>  {
+                camerapos.z += h2;
+                target.z += h2;
+                this.controls.animateTo(camerapos, target, angle);
+            })
+        } else {
+            camerapos.z += h;
+            target.z += h;
+            this.controls.animateTo(camerapos, target, angle);
+        }
     };
     pan = (ev, dx, dy) => {
         const panInterval = setInterval(() => {

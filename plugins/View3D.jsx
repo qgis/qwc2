@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect, Provider} from 'react-redux';
 
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 
@@ -256,6 +257,7 @@ class View3D extends React.Component {
         } else if (this.props.view3dMode === View3DMode.DISABLING && prevProps.view3dMode !== View3DMode.DISABLING) {
             this.map3dComponentRef.store3dState().then(storedState => {
                 this.setState({storedState});
+                UrlParams.updateParams({v3d: undefined, bl3d: undefined});
                 this.props.setView3dMode(View3DMode.DISABLED);
             });
         } else if (this.props.view3dMode === View3DMode.DISABLED && prevProps.view3dMode !== View3DMode.DISABLED) {
@@ -389,8 +391,7 @@ class View3D extends React.Component {
         return [button, this.render3DWindow()];
     }
     onClose = () => {
-        this.props.setView3dMode(View3DMode.DISABLED);
-        UrlParams.updateParams({v3d: undefined});
+        this.props.setView3dMode(View3DMode.DISABLING);
     };
     onGeometryChanged = (geometry) => {
         if (geometry.maximized && this.props.view3dMode !== View3DMode.FULLSCREEN) {
@@ -462,7 +463,7 @@ class View3D extends React.Component {
     };
     setupMap = () => {
         if (this.map3dComponentRef) {
-            if (this.state.storedState) {
+            if (!isEmpty(this.state.storedState)) {
                 this.map3dComponentRef.restore3dState(this.state.storedState);
             } else {
                 this.sync2DExtent();
