@@ -44,6 +44,8 @@ import './style/FeatureForm.css';
 class FeatureForm extends React.Component {
     static propTypes = {
         clearEditContext: PropTypes.func,
+        /** Whether to clear the identify results when exiting the identify tool. */
+        clearResultsOnClose: PropTypes.bool,
         click: PropTypes.object,
         currentEditContext: PropTypes.string,
         editContext: PropTypes.object,
@@ -68,6 +70,7 @@ class FeatureForm extends React.Component {
         theme: PropTypes.object
     };
     static defaultProps = {
+        clearResultsOnClose: true,
         geometry: {
             initialWidth: 320,
             initialHeight: 480,
@@ -93,6 +96,14 @@ class FeatureForm extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        if (this.props.theme !== prevProps.theme) {
+            this.clearResults();
+        } else if (!this.props.enabled && prevProps.enabled) {
+            if (this.props.clearResultsOnClose) {
+                this.clearResults();
+            }
+        }
+
         if (this.props.enabled && !prevProps.enabled) {
             this.props.setEditContext('FeatureForm', {action: 'Pick'});
         }
