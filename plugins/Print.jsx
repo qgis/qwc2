@@ -71,6 +71,10 @@ class Print extends React.Component {
         /** Whether to display the print output in an inline dialog instead triggering a download. */
         inlinePrintOutput: PropTypes.bool,
         layers: PropTypes.array,
+        /** Hide layouts which begin with this prefix. */
+        layoutHidePrefix: PropTypes.string,
+        /** Layout sort order, asc or desc. */
+        layoutSortOrder: PropTypes.string,
         map: PropTypes.object,
         /** Whether to print external layers. Requires QGIS Server 3.x! */
         printExternalLayers: PropTypes.bool,
@@ -91,6 +95,7 @@ class Print extends React.Component {
         displayRotation: true,
         fileNameTemplate: '{theme}_{timestamp}',
         gridInitiallyEnabled: false,
+        layoutSortOrder: 'asc',
         formats: ['application/pdf', 'image/jpeg', 'image/png', 'image/svg'],
         inlinePrintOutput: false,
         printExternalLayers: true,
@@ -133,8 +138,11 @@ class Print extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
-                const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
-                    return a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
+                const sortDir = this.props.layoutSortOrder === "desc" ? -1 : 1;
+                const layouts = this.props.theme.print.filter(l => {
+                    return l.map && !l.name.split('/').pop().startsWith(this.props.layoutHidePrefix);
+                }).sort((a, b) => {
+                    return sortDir * a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
                 });
                 const layout = layouts.find(l => l.default) || layouts[0];
                 this.setState({layouts: layouts, layout: layout, atlasFeatures: []});

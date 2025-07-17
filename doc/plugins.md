@@ -764,6 +764,8 @@ Uses the print layouts defined in the QGIS project.
 | gridInitiallyEnabled | `bool` | Whether the grid is enabled by default. | `false` |
 | hideAutopopulatedFields | `bool` | Whether to hide form fields which contain autopopulated values (i.e. search result label). | `undefined` |
 | inlinePrintOutput | `bool` | Whether to display the print output in an inline dialog instead triggering a download. | `false` |
+| layoutHidePrefix | `string` | Hide layouts which begin with this prefix. | `undefined` |
+| layoutSortOrder | `string` | Layout sort order, asc or desc. | `'asc'` |
 | printExternalLayers | `bool` | Whether to print external layers. Requires QGIS Server 3.x! | `true` |
 | printMapHighlights | `bool` | Whether to print highlights on the map, e.g. selected features or redlining. | `true` |
 | scaleFactor | `number` | Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint. | `1.9` |
