@@ -24,3 +24,8 @@ div.height-profile-error {
     justify-content: center;
     color: red;
 }
+
+.height-profile-dataset-select {
+    position: absolute;
+    right: 0;
+}

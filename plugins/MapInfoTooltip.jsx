@@ -91,8 +91,7 @@ class MapInfoTooltip extends React.Component {
                 const pos = newPoint.coordinate;
                 const crs = this.props.map.projection;
                 getElevationInterface().getElevation(pos, crs).then(elevation => {
-                    const elevationPrecision = this.props.elevationPrecision;
-                    this.setState({elevation: Math.round(elevation * Math.pow(10, elevationPrecision)) / Math.pow(10, elevationPrecision)});
+                    this.setState({elevation: elevation});
                 }).catch(() => {});
                 const mapInfoService = ConfigUtils.getConfigProp("mapInfoService");
                 if (mapInfoService) {
@@ -104,7 +103,7 @@ class MapInfoTooltip extends React.Component {
         }
     }
     clear = () => {
-        this.setState({point: null, height: null, extraInfo: null});
+        this.setState({point: null, elevation: null, extraInfo: null});
     };
     render() {
         if (!this.state.point) {
@@ -130,10 +129,16 @@ class MapInfoTooltip extends React.Component {
         });
 
         if (this.state.elevation) {
-            info.push([
-                LocaleUtils.tr("mapinfotooltip.elevation"),
-                this.state.elevation + " m"
-            ]);
+            let elevs = this.state.elevation.list;
+            if (!elevs) {
+                elevs = [{elevation: this.state.elevation, dataset: null}];
+            }
+            for (const data of elevs) {
+                info.push([
+                    LocaleUtils.tr("mapinfotooltip.elevation") + (data.dataset ? " (" + data.dataset + ")" : ""),
+                    data.elevation.toFixed(this.props.elevationPrecision) + " m"
+                ]);
+            }
         }
 
         if (this.state.extraInfo) {
