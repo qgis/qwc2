@@ -148,7 +148,7 @@ class BottomBar extends React.Component {
                             onBlur={ev => this.setScale(ev.target.value)}
                             onChange={ev => this.setState({scale: ev.target.value})}
                             onKeyUp={ev => { if (ev.key === 'Enter') this.setScale(ev.target.value); } }
-                            role="input" type="text" value={this.state.scale}/>
+                            role="input" type="text" value={LocaleUtils.toLocaleFixed(this.state.scale, 0)}/>
                     </InputContainer>
                 </div>
             );
