@@ -20,6 +20,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import NumberInput from '../components/widgets/NumberInput';
 import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
@@ -93,6 +94,7 @@ class Identify extends React.Component {
         setCurrentTask: PropTypes.func,
         /** Whether to show a layer selector to filter the identify results by layer. */
         showLayerSelector: PropTypes.bool,
+        startupParams: PropTypes.object,
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -128,7 +130,15 @@ class Identify extends React.Component {
         filterGeomModifiers: {}
     };
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.theme !== prevProps.theme) {
+        if (this.props.enabled && this.props.theme && !prevProps.theme) {
+            const startupParams = this.props.startupParams;
+            const haveIc = ["1", "true"].includes((startupParams.ic || "").toLowerCase());
+            const c = (startupParams.c || "").split(/[;,]/g).map(x => parseFloat(x) || 0);
+            if (haveIc && c.length === 2) {
+                const mapCrs = this.props.theme.mapCrs;
+                this.identifyPoint(CoordinatesUtils.reproject(c, startupParams.crs || mapCrs, mapCrs));
+            }
+        } else if (this.props.theme !== prevProps.theme) {
             this.clearResults();
         } else if (!this.props.enabled && prevProps.enabled) {
             if (this.props.clearResultsOnClose) {
@@ -425,7 +435,8 @@ export default connect((state) => {
         layers: state.layers.flat,
         map: state.map,
         selection: state.selection,
-        theme: state.theme.current
+        theme: state.theme.current,
+        startupParams: state.localConfig.startupParams
     };
 }, {
     addLayerFeatures: addLayerFeatures,
