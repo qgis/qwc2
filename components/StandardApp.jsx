@@ -261,19 +261,23 @@ export default class StandardApp extends React.Component {
         }, {});
         ConfigUtils.loadConfiguration(configParams).then((config) => {
             // Merge common config into mobile/desktop config
-            const commonConfig = (config.plugins.common || []).reduce((res, entry) => {
+            const renameTaskButtons = (res, entry) => {
                 const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
                 return {...res, [key]: entry};
-            }, {});
-            config.plugins.desktop = Object.values(deepmerge(commonConfig, config.plugins.desktop.reduce((res, entry) => {
-                const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
-                return {...res, [key]: entry};
-            }, {})));
-            config.plugins.mobile = Object.values(deepmerge(commonConfig, config.plugins.mobile.reduce((res, entry) => {
-                const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
-                return {...res, [key]: entry};
-            }, {})));
+            };
+            const commonConfig = [
+                ...(config.plugins.common || []), ...(window.QWC2PluginConfig?.common || [])
+            ].reduce(renameTaskButtons, {});
+            const desktopConfig = [
+                ...(config.plugins.desktop || []), ...(window.QWC2PluginConfig?.desktop || [])
+            ];
+            const mobileConfig = [
+                ...(config.plugins.mobile || []), ...(window.QWC2PluginConfig?.mobile || [])
+            ];
+            config.plugins.desktop = Object.values(deepmerge(commonConfig, desktopConfig.reduce(renameTaskButtons, {})));
+            config.plugins.mobile = Object.values(deepmerge(commonConfig, mobileConfig.reduce(renameTaskButtons, {})));
             delete config.plugins.common;
+
             // Store whether to show plugin in 2d/3d mode
             const plugins = this.props.appConfig.pluginsDef.plugins;
             config.plugins.mobile.forEach(entry => {
