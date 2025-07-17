@@ -106,7 +106,7 @@ class SnapSupport extends React.Component {
 
         const request = IdentifyUtils.buildRequest(layers, queryLayers, this.state.mousePos.coordinate, this.props.mapObj, options);
         axios.get(request.url, {params: request.params}).then(response => {
-            const results = IdentifyUtils.parseXmlResponse(response.data, this.props.mapObj.projection);
+            const results = IdentifyUtils.parseXmlResponse(response.data, this.props.mapObj.projection, layers);
             const features = [];
             results.forEach(result => {
                 for (const feature of result) {

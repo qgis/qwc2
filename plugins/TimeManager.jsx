@@ -668,7 +668,7 @@ class TimeManager extends React.Component {
             const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, filterGeom, this.props.map, options);
             IdentifyUtils.sendRequest(request, (response) => {
                 if (this.state.timeFeatures && this.state.timeFeatures.reqUUID === reqUUID && response) {
-                    const layerFeatures = IdentifyUtils.parseXmlResponse(response, this.props.map.projection);
+                    const layerFeatures = IdentifyUtils.parseXmlResponse(response, this.props.map.projection, layer);
                     this.setState((state) => ({timeFeatures: {
                         features: {
                             ...state.timeFeatures.features,
