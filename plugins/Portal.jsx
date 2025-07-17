@@ -103,10 +103,11 @@ class Portal extends React.Component {
                         type="text"
                         value={this.state.filter} />
                     <span className="portal-topbar-spacer" />
-                    <AppMenu appMenuClearsTask={false} buttonLabel={LocaleUtils.tr("portal.menulabel")}
-                        keepMenuOpen={this.props.keepMenuOpen} menuItems={this.props.menuItems} onMenuToggled={this.menuToggled}
-                        openExternalUrl={this.openUrl}
-                        showOnStartup={this.props.showMenuOnStartup} />
+                    {this.props.menuItems.length > 0 ? (
+                        <AppMenu appMenuClearsTask={false} buttonLabel={LocaleUtils.tr("portal.menulabel")}
+                            keepMenuOpen={this.props.keepMenuOpen} menuItems={this.props.menuItems} onMenuToggled={this.menuToggled}
+                            openExternalUrl={this.openUrl} showOnStartup={this.props.showMenuOnStartup} />
+                    ) : null}
                 </div>
                 <div className={"portal-body " + (this.state.menuVisible ? "portal-body-menuvisible" : "")}>
                     <ThemeList collapsibleGroups={this.props.collapsibleGroups} dontPreserveSettingsOnSwitch={!preserveSettings} filter={this.state.filter} />
