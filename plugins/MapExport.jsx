@@ -305,7 +305,7 @@ class MapExport extends React.Component {
         }
         let availableFormats = this.props.theme.availableFormats;
         if (!isEmpty(this.props.allowedFormats)) {
-            availableFormats = availableFormats.filter(fmt => this.props.allowedFormats.includes(fmt));
+            availableFormats = this.props.allowedFormats.filter(fmt => availableFormats.includes(fmt));
         }
         const selectedFormat = this.props.defaultFormat && availableFormats.includes(this.props.defaultFormat) ? this.props.defaultFormat : availableFormats[0];
         const formatConfigurations = this.props.formatConfiguration?.[selectedFormat.split(";")[0]] || [];
