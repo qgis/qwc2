@@ -17,7 +17,7 @@ const readJSON = (filename) => {
 // Determine workspaces / dependencies
 const packageJson = readJSON('/package.json');
 const workspaces = packageJson.workspaces || [];
-const qwcDeps = Object.keys(packageJson.dependencies ?? {"qwc2": "0"}).filter(dep => dep.startsWith("qwc"));
+const qwcDeps = Object.keys(packageJson.dependencies ?? {qwc2: "0"}).filter(dep => dep.startsWith("qwc"));
 
 let icons = [];
 for (const workspace of workspaces) {
