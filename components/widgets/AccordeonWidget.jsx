@@ -10,7 +10,6 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
 
 import './style/AccordeonWidget.css';
@@ -32,7 +31,7 @@ export default class AccordeonWidget extends React.Component {
         return (
             <div className="accordeon-section" key={section.key}>
                 <div className="accordeon-section-header" onClick={() => this.toggleSection(section.key)}>
-                    {LocaleUtils.tr(section.title)}
+                    {section.title}
                     <Icon icon={this.state.currentSections.includes(section.key) ? 'collapse' : 'expand'} />
                 </div>
                 {this.state.currentSections.includes(section.key) ? (
