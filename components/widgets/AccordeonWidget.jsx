@@ -21,7 +21,7 @@ export default class AccordeonWidget extends React.Component {
         className: PropTypes.string,
         sections: PropTypes.arrayOf(PropTypes.shape({
             key: PropTypes.string,
-            widget: PropTypes.function,
+            widget: PropTypes.object,
             title: PropTypes.string
         }))
     };
