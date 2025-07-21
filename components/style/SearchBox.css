@@ -68,7 +68,8 @@ div.searchbox-noresults {
     color: var(--text-color-disabled);
 }
 
-div.searchbox-result:hover {
+div.searchbox-result:hover,
+div.searchbox-result.selected {
     background-color: var(--list-item-bg-color-hover);
     color: var(--list-item-text-color-hover);
 }
@@ -156,3 +157,4 @@ div.searchbox-filter-options-geometry > div.combobox {
     flex: 1 1 auto;
     height: 2em;
 }
+

@@ -95,13 +95,16 @@ class SearchBox extends React.Component {
         selectedProvider: "",
         filterRegionName: "",
         filterGeomType: null,
-        filterGeometry: null
+        filterGeometry: null,
+        selectedSearchResult: -1
     };
     constructor(props) {
         super(props);
         this.searchBox = null;
         this.searchTimeout = null;
         this.preventBlur = false;
+        this.selectedResultEl = null;
+        this.resultIndex = 0;
     }
     componentDidUpdate(prevProps, prevState) {
         // Restore highlight from URL as soon as theme is loaded
@@ -218,6 +221,11 @@ class SearchBox extends React.Component {
         if (!this.state.resultsVisible) {
             return false;
         }
+        // Reset result index to zero, and increment it for each result rendered
+        this.resultIndex = 0;
+        // Reset the reference to the selected result
+        this.selectedResultEl = null;
+        // Build the different sections of the search results
         let children = [
             this.renderRecentResults(),
             this.renderFilters(),
@@ -251,11 +259,19 @@ class SearchBox extends React.Component {
                 </div>
                 {!this.isCollapsed("recent") ? (
                     <div className="searchbox-results-section-body">
-                        {recentSearches.map((entry, idx) => (
-                            <div className="searchbox-result" key={"r" + idx} onClick={() => this.searchTextChanged(entry)} onMouseDown={MiscUtils.killEvent}>
-                                {entry}
-                            </div>
-                        ))}
+                        {recentSearches.map((entry, idx) => {
+                            const selected = this.state.selectedSearchResult === this.resultIndex++;
+                            const className = classnames({
+                                "searchbox-result": true,
+                                "selected": selected
+                            });
+                            return (
+                                <div className={className} key={"r" + idx} onClick={() => this.searchTextChanged(entry)} onMouseDown={MiscUtils.killEvent}
+                                    ref={(el) => selected && (this.selectedResultEl = el)}>
+                                    {entry}
+                                </div>
+                            );
+                        })}
                     </div>
                 ) : null}
             </div>
@@ -277,8 +293,15 @@ class SearchBox extends React.Component {
                     {!collapsed ? (
                         <div className="searchbox-results-section-body">
                             {values.map((value, idx) => {
+                                const selected = this.state.selectedSearchResult === this.resultIndex++;
+                                const className = classnames({
+                                    "searchbox-result": true,
+                                    "selected": selected
+                                });
                                 return (
-                                    <div className="searchbox-result" key={"f" + idx} onClick={() => this.searchTextChanged(value, true, provider)} onMouseDown={MiscUtils.killEvent}>
+                                    <div className={className} key={"f" + idx}
+                                        onClick={() => this.searchTextChanged(value, true, provider)} onMouseDown={MiscUtils.killEvent}
+                                        ref={(el) => selected && (this.selectedResultEl = el)}>
                                         <span className="searchbox-result-label">{value}</span>
                                     </div>
                                 );
@@ -356,8 +379,14 @@ class SearchBox extends React.Component {
     };
     renderPlaceResult = (provider, group, result) => {
         const key = provider + ":" + group.id + ":" + result.id;
+        const selected = this.state.selectedSearchResult === this.resultIndex++;
+        const className = classnames({
+            "searchbox-result": true,
+            "selected": selected
+        });
         return (
-            <div className="searchbox-result" key={key} onClick={() => {this.selectPlaceResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+            <div className={className} key={key} onClick={() => {this.selectPlaceResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}
+                 ref={(el) => selected && (this.selectedResultEl = el)}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />) : null}
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.externalLink ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.openUrl(result.externalLink, result.target, result.label ?? result.text);} } /> : null}
@@ -377,9 +406,15 @@ class SearchBox extends React.Component {
             icon = (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />);
         }
         const selectResult = result.theme ? this.selectThemeResult : this.selectThemeLayerResult;
+        const selected = this.state.selectedSearchResult === this.resultIndex++;
+        const className = classnames({
+            "searchbox-result": true,
+            "selected": selected
+        });
         return (
             <div key={key}>
-                <div className="searchbox-result" onClick={() => {selectResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+                <div className={className} onClick={() => {selectResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}
+                     ref={(el) => selected && (this.selectedResultEl = el)}>
                     {icon}
                     {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
                     <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
@@ -399,8 +434,15 @@ class SearchBox extends React.Component {
     };
     renderThemeResult = (provider, group, result) => {
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
+        const key = provider + ":" + group.id + ":" + result.id;
+        const selected = this.state.selectedSearchResult === this.resultIndex++;
+        const className = classnames({
+            "searchbox-result": true,
+            "selected": selected
+        });
         return (
-            <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => {this.selectThemeResult(provider, group, result); this.blur();}} onMouseDown={MiscUtils.killEvent}>
+            <div className={className} key={key} onClick={() => {this.selectThemeResult(provider, group, result); this.blur();}} onMouseDown={MiscUtils.killEvent}
+                 ref={(el) => selected && (this.selectedResultEl = el)}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />) : null}
                 <Icon className="searchbox-result-openicon" icon="open" />
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
@@ -571,10 +613,9 @@ class SearchBox extends React.Component {
                     <InputContainer className="searchbox-field">
                         <Icon icon="search" role="prefix" />
                         <input onBlur={this.onBlur} onChange={ev => this.searchTextChanged(ev.target.value)}
-                            onFocus={this.onFocus}
+                            onFocus={this.onFocus} onKeyDown={this.onKeyDown}
                             placeholder={placeholder} ref={el => { this.searchBox = el; }}
-                            role="input"
-                            type="text" value={this.state.searchText} />
+                            role="input" type="text" value={this.state.searchText} />
                         {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="clear" onClick={this.clear} role="suffix" />)}
                     </InputContainer>
                     {this.props.searchOptions.allowSearchFilters ? (
@@ -604,13 +645,30 @@ class SearchBox extends React.Component {
         if (this.props.layers.find(layer => layer.id === 'searchselection')) {
             this.props.removeLayer('searchselection');
         }
-        const newState = {searchText: text, expandedLayerGroup: null, activeLayerInfo: null, pendingSearches: [], searchSession: null};
+        const newState = {searchText: text, expandedLayerGroup: null, activeLayerInfo: null, pendingSearches: [], searchSession: null, selectedSearchResult: -1};
         if (expandSections) {
             newState.collapsedSections = {};
         }
         this.setState(newState);
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => this.startSearch(provider), 250);
+    };
+    onKeyDown = (ev) => {
+        if (ev.key === 'Enter' && this.selectedResultEl !== null) {
+            this.selectedResultEl.click();
+        }
+        if (ev.key === 'ArrowDown') {
+            ev.preventDefault();
+            this.setState((state) => ({
+                selectedSearchResult: Math.min(this.resultIndex - 1, state.selectedSearchResult + 1)
+            }));
+        }
+        if (ev.key === 'ArrowUp') {
+            ev.preventDefault();
+            this.setState((state) => ({
+                selectedSearchResult: Math.max(0, state.selectedSearchResult - 1)
+            }));
+        }
     };
     onFocus = () => {
         this.setState({resultsVisible: true});
@@ -634,7 +692,7 @@ class SearchBox extends React.Component {
     clear = () => {
         this.props.setCurrentSearchResult(null);
         this.blur();
-        this.setState({searchText: '', searchResults: {}, selectedProvider: '', filterRegionName: "", filterGeometry: null});
+        this.setState({searchText: '', searchResults: {}, selectedProvider: '', filterRegionName: "", filterGeometry: null, selectedSearchResult: -1});
         this.props.removeLayer('searchselection');
         UrlParams.updateParams({hp: undefined, hf: undefined, st: undefined});
     };
