@@ -28,10 +28,11 @@ import './style/BottomBar.css';
  */
 class BottomBar extends React.Component {
     static propTypes = {
-        /** Additional bottombar links */
+        /** Additional bottombar links.`side` can be `left` or `right` (default). */
         additionalBottomBarLinks: PropTypes.arrayOf(PropTypes.shape({
             label: PropTypes.string,
             labelMsgId: PropTypes.string,
+            side: PropTypes.string,
             url: PropTypes.string,
             urlTarget: PropTypes.string,
             icon: PropTypes.string
@@ -90,24 +91,15 @@ class BottomBar extends React.Component {
             return null;
         }
 
-        const bottomLinks = (this.props.additionalBottomBarLinks || []).map(entry => (
-            <a href={entry.url} key={entry.labelMsgId ?? entry.label} onClick={(ev) => this.openUrl(ev, entry.url, entry.urlTarget, entry.labelMsgId ? LocaleUtils.tr(entry.labelMsgId) : entry.label, entry.icon)}>
-                <span className="extra_label">{entry.labelMsgId ? LocaleUtils.tr(entry.labelMsgId) : entry.label}</span>
-            </a>
-        ));
+        const leftBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side === "left").map(this.renderLink);
+        const rightBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side !== "left").map(this.renderLink);
         if (this.props.viewertitleUrl) {
-            bottomLinks.push((
-                <a href={this.props.viewertitleUrl} key="viewertitle" onClick={(ev) => this.openUrl(ev, this.props.viewertitleUrl, this.props.viewertitleUrlTarget, LocaleUtils.tr("bottombar.viewertitle_label"), this.props.viewertitleUrlIcon)}>
-                    <span className="viewertitle_label">{LocaleUtils.tr("bottombar.viewertitle_label")}</span>
-                </a>
-            ));
+            const entry = {url: this.props.viewertitleUrl, urlTarget: this.props.viewertitleUrlTarget, label: LocaleUtils.tr("bottombar.viewertitle_label"), icon: this.props.viewertitleUrlIcon};
+            rightBottomLinks.push(this.renderLink(entry));
         }
         if (this.props.termsUrl) {
-            bottomLinks.push((
-                <a href={this.props.termsUrl} key="terms" onClick={(ev) => this.openUrl(ev, this.props.termsUrl, this.props.termsUrlTarget, LocaleUtils.tr("bottombar.terms_label"), this.props.termsUrlIcon)}>
-                    <span className="terms_label">{LocaleUtils.tr("bottombar.terms_label")}</span>
-                </a>
-            ));
+            const entry = {url: this.props.termsUrl, urlTarget: this.props.termsUrlTarget, label: LocaleUtils.tr("bottombar.terms_label"), icon: this.props.termsUrlIcon};
+            rightBottomLinks.push(this.renderLink(entry));
         }
         const enabledMouseCrs = [...this.props.additionalMouseCrs || [], this.props.map.projection, "EPSG:4326"];
         // eslint-disable-next-line no-unused-vars
@@ -161,16 +153,26 @@ class BottomBar extends React.Component {
         return (
             <div id="BottomBar" ref={this.storeHeight}  style={style}>
                 {scalebar}
+                <span className="bottombar-links">
+                    {leftBottomLinks}
+                </span>
                 <span className="bottombar-spacer" />
                 {coordinates}
                 {scales}
                 <span className="bottombar-spacer" />
                 <span className="bottombar-links">
-                    {bottomLinks}
+                    {rightBottomLinks}
                 </span>
             </div>
         );
     }
+    renderLink = (entry) => {
+        return (
+            <a href={entry.url} key={entry.labelMsgId ?? entry.label} onClick={(ev) => this.openUrl(ev, entry.url, entry.urlTarget, entry.labelMsgId ? LocaleUtils.tr(entry.labelMsgId) : entry.label, entry.icon)}>
+                <span className="extra_label">{entry.labelMsgId ? LocaleUtils.tr(entry.labelMsgId) : entry.label}</span>
+            </a>
+        );
+    };
     initScaleBar = (el) => {
         this.scalebar = new ol.control.ScaleLine({
             target: el,
