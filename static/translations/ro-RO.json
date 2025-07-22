@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Hărți tematice",
         "AttributeTable": "Tabela de atribute",
         "AuthenticationLogin": "Conectează-te",
-        "AuthenticationLogout": "Deconectează-te",
+        "AuthenticationLogout": "Deconectează-te - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "",
         "FeatureForm": "Editare atribute",

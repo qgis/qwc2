@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabla de Atributos",
         "AuthenticationLogin": "Inicio de sesión",
-        "AuthenticationLogout": "Cierre de sesión",
+        "AuthenticationLogout": "Cierre de sesión - {0}",
         "Cyclomedia": "Visor Cyclomedia",
         "Draw3D": "Dibujar",
         "FeatureForm": "Formulario de Elemento",

@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Theme",
         "AttributeTable": "Attribute Table",
         "AuthenticationLogin": "Login",
-        "AuthenticationLogout": "Logout",
+        "AuthenticationLogout": "Logout - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Draw",
         "FeatureForm": "Feature Form",

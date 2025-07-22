@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Kaartselectie",
         "AttributeTable": "Attributentabel",
         "AuthenticationLogin": "Inloggen",
-        "AuthenticationLogout": "Uitloggen",
+        "AuthenticationLogout": "Uitloggen - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "",
         "FeatureForm": "Objectgegevens",
