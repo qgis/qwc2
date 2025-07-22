@@ -12,22 +12,30 @@
     font-size: 75%;
     display: flex;
     align-items: center;
-    padding-left: 125px;
 }
 
 #BottomBar > * {
     margin: 0 0.5em;
 }
 
-#BottomBar div.bottombar-scalebar > div.ol-scale-line {
-    margin-left: -2px;
-    margin-bottom: -2px;
-    background-color: transparent;
+#BottomBar div.bottombar-scalebar-container {
+    min-width: 125px;
 }
 
-#BottomBar div.bottombar-scalebar > div.ol-scale-line > div.ol-scale-line-inner {
+#BottomBar div.bottombar-scalebar {
+    display: inline-block;
     color: var(--panel-text-color);
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(3px);
+    border-radius: 5px;
+    padding: 0.5em;
+}
+
+#BottomBar div.bottombar-scalebar-inner {
     border-color: var(--panel-text-color);
+    border-style: solid;
+    border-width: 0 1px 1px 1px;
 }
 
 #BottomBar input.bottombar-mousepos {

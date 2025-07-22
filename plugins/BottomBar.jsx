@@ -108,7 +108,7 @@ class BottomBar extends React.Component {
         }));
         let scalebar = null;
         if (this.props.displayScalebar) {
-            scalebar = (<div className="bottombar-scalebar" ref={this.initScaleBar} />);
+            scalebar = (<div className="bottombar-scalebar-container" ref={this.initScaleBar} />);
         }
         let coordinates = null;
         if (this.props.displayCoordinates) {
@@ -175,6 +175,7 @@ class BottomBar extends React.Component {
     };
     initScaleBar = (el) => {
         this.scalebar = new ol.control.ScaleLine({
+            className: 'bottombar-scalebar',
             target: el,
             minWidth: 64,
             units: 'metric',
