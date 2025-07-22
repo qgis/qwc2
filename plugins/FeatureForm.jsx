@@ -169,9 +169,8 @@ class FeatureForm extends React.Component {
             }
             const layerOrder = layer.params.LAYERS.split(",");
             ++pendingRequests;
-            const editDataset = editConfig.editDataset || layerId;
             const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-            this.props.iface.getFeature(editDataset, pos, this.props.map.projection, scale, 96, (featureCollection) => {
+            this.props.iface.getFeature(editConfig, pos, this.props.map.projection, scale, 96, (featureCollection) => {
                 if (featureCollection && !isEmpty(featureCollection.features)) {
                     this.setState((state) => {
                         const newPickedFeatures = Object.fromEntries(Object.entries({

@@ -57,7 +57,7 @@ const vFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEd
 class QtDesignerForm extends React.Component {
     static propTypes = {
         addRelationRecord: PropTypes.func,
-        editConfig: PropTypes.object,
+        editConfigs: PropTypes.object,
         editLayerId: PropTypes.string,
         editRelationRecord: PropTypes.func,
         feature: PropTypes.object,
@@ -186,7 +186,7 @@ class QtDesignerForm extends React.Component {
                 {layout.item.sort((a, b) => (sortKey(a) - sortKey(b))).map((item, idx) => {
                     let child = null;
                     if (item.widget) {
-                        child = this.renderWidget(item.widget, feature, dataset, updateField, nametransform);
+                        child = this.renderWidget(item.widget, feature, dataset, this.props.fields, updateField, nametransform, false);
                     } else if (item.layout) {
                         child = this.renderLayout(item.layout, feature, dataset, updateField, nametransform);
                     } else if (item.spacer) {
@@ -248,14 +248,16 @@ class QtDesignerForm extends React.Component {
         }
         return rows;
     };
-    renderWidget = (widget, feature, dataset, updateField, nametransform = (name) => name, disabled = false) => {
+    renderWidget = (widget, feature, dataset, fields, updateField, nametransform = (name) => name, isRelWidget, disabled = false) => {
         let value = (feature.properties || {})[widget.name] ?? "";
         const prop = widget.property || {};
         if (String(prop.visible) === "false") {
             return null;
         }
         const attr = widget.attribute || {};
-        const fieldConstraints = this.props.fields[widget.name]?.constraints || {};
+        const fieldname = widget.name.replace(/kvrel__/, '').split("__")[isRelWidget ? 1 : 0];
+        const field = fields[fieldname];
+        const fieldConstraints = field?.constraints || {};
         const inputConstraints = {};
         inputConstraints.readOnly = this.props.readOnly || String(prop.readOnly) === "true" || String(prop.enabled) === "false" || fieldConstraints.readOnly === true || disabled;
         inputConstraints.required = !inputConstraints.readOnly && (String(prop.required) === "true" || String(fieldConstraints.required) === "true");
@@ -400,14 +402,10 @@ class QtDesignerForm extends React.Component {
                 // kvrel__attrname__datatable__keyfield__valuefield
                 // kvrel__reltablename__attrname__datatable__keyfield__valuefield
                 const count = parts.length;
-                const isRelAttr = count === 6;
-                const attrname = parts[isRelAttr ? 2 : 1];
                 const fieldId = parts.slice(1, count - 3).join("__");
                 value = (feature.properties || [])[fieldId] ?? "";
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
-                const field = isRelAttr ? this.props.editConfig[parts[1]]?.fields?.find?.(f => f.id === attrname) : this.props.fields[fieldId];
-                const comboFieldConstraints = field?.constraints || {};
                 if (field?.filterExpression) {
                     filterExpr = parseExpression(field.filterExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
                 }
@@ -416,8 +414,8 @@ class QtDesignerForm extends React.Component {
                         editIface={this.props.iface} fieldId={fieldId} filterExpr={filterExpr} key={fieldId}
                         keyvalrel={keyvalrel} multiSelect={widget.allowMulti === "true"}
                         name={nametransform(fieldId)} placeholder={inputConstraints.placeholder}
-                        readOnly={inputConstraints.readOnly || comboFieldConstraints.readOnly}
-                        required={inputConstraints.required || comboFieldConstraints.required}
+                        readOnly={inputConstraints.readOnly || fieldConstraints.readOnly}
+                        required={inputConstraints.required || fieldConstraints.required}
                         style={fontStyle} updateField={updateField} value={value} />
                 );
             } else {
@@ -443,7 +441,6 @@ class QtDesignerForm extends React.Component {
             if (widget.class === "QSlider") {
                 return (<input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} step={step} style={fontStyle} type="range" value={value} />);
             } else {
-                value = feature.properties?.[widget.name] ?? null;
                 return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} step={step} style={fontStyle} value={value} />);
             }
         } else if (widget.class === "QDateEdit") {
@@ -545,6 +542,7 @@ class QtDesignerForm extends React.Component {
         const widgetItems = widget.layout.item.filter(item => !item.widget || !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const tableFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
         const columnStyles = widgetItems.map(item => { return item.widget && tableFitWidgets.includes(item.widget.class) ? {width: '1px'} : {}; });
+        const fields = (this.props.editConfigs[tablename]?.fields ?? []).reduce((res, field) => ({...res, [field.id]: field}), {})
         return (
             <div className="qt-designer-widget-relation">
                 <div className="qt-designer-widget-relation-table-container">
@@ -594,7 +592,7 @@ class QtDesignerForm extends React.Component {
                                         </td>
                                         {widgetItems.map((item, widx) => {
                                             if (item.widget) {
-                                                return (<td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, updateField, nametransform, disabled)}</td>);
+                                                return (<td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, fields, updateField, nametransform, true, disabled)}</td>);
                                             } else if (item.spacer) {
                                                 return (<td key={"spacer_" + widx} />);
                                             } else {

@@ -8,6 +8,7 @@
 
 import nearley from 'nearley';
 
+import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
 import grammar from './expr_grammar/grammar';
@@ -16,14 +17,15 @@ import grammar from './expr_grammar/grammar';
 export class ExpressionFeatureCache {
     static store = {};
     static requests = new Set();
-    static get = (editIface, dataset, mapCrs, attr, value, promises) => {
-        const key = dataset + ":" + attr + ":" + value;
+    static get = (editIface, layerName, mapCrs, attr, value, promises) => {
+        const key = layerName + ":" + attr + ":" + value;
         if (key in this.store) {
             return this.store[key];
         } else if (!this.requests.has(key)) {
             this.requests.add(key);
             promises.push(new Promise((accept) => {
-                editIface.getFeatures(dataset, mapCrs, (result) => {
+                const editConfig = StandardApp.store.getState().theme.current.editConfig?.[layerName] ?? {};
+                editIface.getFeatures(editConfig, mapCrs, (result) => {
                     if (this.requests.has(key)) {
                         if ((result?.features || []).length === 1) {
                             this.store[key] = result.features[0];
@@ -50,7 +52,7 @@ export function parseExpression(expr, feature, dataset, editIface, mapPrefix, ma
 
     window.qwc2ExpressionParserContext = {
         feature: feature,
-        getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, mapPrefix + layerName, mapCrs, attr, value, promises),
+        getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, layerName, mapCrs, attr, value, promises),
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
         layer: dataset.startsWith(mapPrefix) ? dataset.substr(mapPrefix.length) : dataset,
@@ -87,7 +89,7 @@ export function parseExpressionsAsync(expressions, feature, dataset, editIface, 
     return new Promise((resolve) => {
         window.qwc2ExpressionParserContext = {
             feature: feature,
-            getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, mapPrefix + layerName, mapCrs, attr, value, promises),
+            getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, layerName, mapCrs, attr, value, promises),
             asFilter: asFilter,
             username: ConfigUtils.getConfigProp("username"),
             layer: dataset.startsWith(mapPrefix) ? dataset.substr(mapPrefix.length) : dataset,
@@ -136,6 +138,27 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
     }, {});
     ExpressionFeatureCache.clear();
     parseExpressionsAsync(defaultFieldExpressions, feature, editConfig.editDataset, editIface, mapPrefix, mapCrs).then(result => {
+        // Adjust values based on field type
+        editConfig.fields.forEach(field => {
+            if (field.id in result && field.type === "date") {
+                result[field.id] = result[field.id].split("T")[0];
+            }
+        });
+        callback({...feature, properties: {...feature.properties, ...result}});
+    });
+}
+
+export function computeExpressionFields(editConfig, feature, editIface, mapCrs, callback) {
+    // Apply default values
+    const fieldExpressions = editConfig.fields.reduce((res, field) => {
+        if (field.expression) {
+            return {...res, [field.id]: field.expression};
+        }
+        return res;
+    }, {});
+    ExpressionFeatureCache.clear();
+    const mapPrefix = (editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+    parseExpressionsAsync(fieldExpressions, feature, editConfig.editDataset, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
             if (field.id in result && field.type === "date") {
