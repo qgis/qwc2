@@ -40,6 +40,9 @@ export default {
                         group.getLayers().push(layer);
                     });
                 });
+            }).catch(e => {
+                /* eslint-disable-next-line */
+                console.warn("Unable to load style " + options.style + ": " + String(e));
             });
         } else {
             group.getLayers().push(createLayer());
