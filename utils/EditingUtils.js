@@ -171,8 +171,9 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
 export function parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter) {
     const promises = [];
     return new Promise((resolve) => {
+        const newfeature = {...feature, properties: {...feature.properties}};
         window.qwc2ExpressionParserContext = {
-            feature: feature,
+            feature: newfeature,
             getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
             representValue: (attr) => representValue(attr, editConfig, editIface, promises),
             asFilter: asFilter,
@@ -186,6 +187,8 @@ export function parseExpressionsAsync(fieldExpressions, feature, editConfig, edi
             const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
             try {
                 parser.feed(expression.replace(/\n/, ' '));
+                // NOTE: include intermediate results in next context feature
+                newfeature.properties[field] = parser.results[0];
                 return {...res, [field]: parser.results[0]};
             } catch (e) {
                 /* eslint-disable-next-line */
@@ -196,10 +199,8 @@ export function parseExpressionsAsync(fieldExpressions, feature, editConfig, edi
         delete window.qwc2ExpressionParserContext;
         if (promises.length > 0) {
             // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
-            // NOTE: include intermediate results in next context feature
-            const newfeatures = {...feature, properties: {...feature.properties, ...results}};
             Promise.all(promises).then(() => {
-                parseExpressionsAsync(fieldExpressions, newfeatures, editConfig, editIface, mapPrefix, mapCrs, asFilter).then(results2 => resolve(results2));
+                parseExpressionsAsync(fieldExpressions, newfeature, editConfig, editIface, mapPrefix, mapCrs, asFilter).then(results2 => resolve(results2));
             });
         } else {
             resolve(results);
