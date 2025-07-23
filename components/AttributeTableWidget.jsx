@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
-import EditComboField, {KeyValCache} from '../components/EditComboField';
+import EditComboField from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import NavBar from '../components/widgets/NavBar';
@@ -26,7 +26,7 @@ import Spinner from '../components/widgets/Spinner';
 import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import {ExpressionFeatureCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
+import {ExpressionFeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -703,7 +703,7 @@ class AttributeTableWidget extends React.Component {
                         return res2;
                     }, {});
                 } else if (field.constraints && field.constraints.keyvalrel) {
-                    res[field.id] = KeyValCache.getSync(field.constraints.keyvalrel).reduce((res2, entry) => {
+                    res[field.id] = KeyValCache.getSync(this.props.iface, field.constraints.keyvalrel).reduce((res2, entry) => {
                         res2[entry.value] = entry.label;
                         return res2;
                     }, {});

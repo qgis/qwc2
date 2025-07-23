@@ -7,12 +7,14 @@
  */
 
 import nearley from 'nearley';
+import {v5 as uuidv5} from 'uuid';
 
 import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
 import grammar from './expr_grammar/grammar';
 
+const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
 
 export class ExpressionFeatureCache {
     static store = {};
@@ -45,6 +47,54 @@ export class ExpressionFeatureCache {
         this.requests = new Set();
     };
 }
+
+export class KeyValCache {
+    static store = {};
+    static requestPromises = {};
+    static get = (editIface, keyvalrel, filterExpr) => {
+        const key = keyvalrel +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
+        if (key in this.store) {
+            return new Promise(resolve => resolve(this.store[key]));
+        } else if (key in this.requestPromises) {
+            return this.requestPromises[key];
+        } else {
+            this.requestPromises[key] = new Promise(resolve => {
+                editIface.getKeyValues(keyvalrel, (result) => {
+                    if (key in this.requestPromises) {
+                        const dataSet = keyvalrel.split(":")[0];
+                        if (result.keyvalues && result.keyvalues[dataSet]) {
+                            const values = result.keyvalues[dataSet].map(entry => ({
+                                value: entry.key, label: entry.value
+                            }));
+                            this.store[key] = values;
+                        } else {
+                            this.store[key] = [];
+                        }
+                        resolve(this.store[key]);
+                        delete this.requestPromises[key];
+                    } else {
+                        resolve([]);
+                    }
+                }, filterExpr ? [filterExpr] : null);
+            });
+            return this.requestPromises[key];
+        }
+    };
+    static getSync = (editIface, keyvalrel, filterExpr, promises = []) => {
+        const key = keyvalrel +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
+        if (key in this.store) {
+            return this.store[key];
+        } else {
+            promises.push(this.get(editIface, keyvalrel, filterExpr));
+            return [];
+        }
+    };
+    static clear = () => {
+        this.store = {};
+        this.requestPromises = {};
+    };
+}
+
 
 export function parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));

@@ -16,10 +16,10 @@ import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
 import ConfigUtils from '../utils/ConfigUtils';
-import {parseExpression, ExpressionFeatureCache} from '../utils/EditingUtils';
+import {parseExpression, ExpressionFeatureCache, KeyValCache} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
-import EditComboField, {KeyValCache} from './EditComboField';
+import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
