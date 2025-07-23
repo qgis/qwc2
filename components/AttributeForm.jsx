@@ -388,12 +388,15 @@ class AttributeForm extends React.Component {
         }, []);
         parseExpressionsAsync(constraintExpressions, feature, this.props.editConfig, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
             let valid = true;
+            const reasons = [];
             Object.entries(result).forEach(([key, value]) => {
                 const element = this.form.elements.namedItem(key);
                 if (element) {
                     if (value === false) {
                         valid = false;
-                        element.setCustomValidity(this.props.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation"));
+                        const reason = this.props.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation");
+                        reasons.push(reason);
+                        element.setCustomValidity(reason);
                     } else {
                         element.setCustomValidity("");
                     }
@@ -402,7 +405,7 @@ class AttributeForm extends React.Component {
             if (!valid) {
                 this.setState({formValid: false});
                 if (invalidCallback) {
-                    invalidCallback();
+                    invalidCallback(reasons);
                 }
             } else {
                 if (validCallback) {
@@ -413,9 +416,9 @@ class AttributeForm extends React.Component {
     };
     onSubmit = (ev) => {
         ev.preventDefault();
-        this.validateFieldConstraints(this.props.editContext.feature, this.doSubmit, () => {
+        this.validateFieldConstraints(this.props.editContext.feature, this.doSubmit, (reasons) => {
             /* eslint-disable-next-line */
-            alert(LocaleUtils.tr("editing.contraintviolation"));
+            alert(LocaleUtils.tr("editing.contraintviolation") + ":\n" + reasons.join("\n"));
         });
     };
     doSubmit = () => {
