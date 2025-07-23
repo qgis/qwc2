@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Themen",
         "AttributeTable": "Attributtabelle",
         "AuthenticationLogin": "Anmelden",
-        "AuthenticationLogout": "Abmelden",
+        "AuthenticationLogout": "Abmelden - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Zeichnen",
         "FeatureForm": "Objektformular",

@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Taula d'atributs",
         "AuthenticationLogin": "Inicio de sessió",
-        "AuthenticationLogout": "Tancament de sessió",
+        "AuthenticationLogout": "Tancament de sessió - {0}",
         "Cyclomedia": "Visor Cyclomedia",
         "Draw3D": "Dibuixar",
         "FeatureForm": "Formulari d'element",

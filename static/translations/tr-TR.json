@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Öznitelik Tablosu",
         "AuthenticationLogin": "Giriş",
-        "AuthenticationLogout": "Çıkış",
+        "AuthenticationLogout": "Çıkış - {0}",
         "Cyclomedia": "Siklomedya",
         "Draw3D": "Çizim",
         "FeatureForm": "Obje Formu",

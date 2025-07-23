@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Téma",
         "AttributeTable": "Atributy",
         "AuthenticationLogin": "Přihlášení",
-        "AuthenticationLogout": "Odhlášení",
+        "AuthenticationLogout": "Odhlášení - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "",
         "FeatureForm": "Editační formulář",

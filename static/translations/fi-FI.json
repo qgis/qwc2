@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Teema",
         "AttributeTable": "",
         "AuthenticationLogin": "Kirjaudu",
-        "AuthenticationLogout": "Kirjaudu ulos",
+        "AuthenticationLogout": "Kirjaudu ulos - {0}",
         "Cyclomedia": "",
         "Draw3D": "",
         "FeatureForm": "",

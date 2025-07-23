@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Тема",
         "AttributeTable": "Таблица на атрибутите",
         "AuthenticationLogin": "Вход",
-        "AuthenticationLogout": "Излизане от системата",
+        "AuthenticationLogout": "Излизане от системата - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Начертайте",
         "FeatureForm": "Формуляр за функция",

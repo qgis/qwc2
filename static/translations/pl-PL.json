@@ -30,7 +30,7 @@
         "ThemeSwitcher": "Motyw",
         "AttributeTable": "",
         "AuthenticationLogin": "Zaloguj",
-        "AuthenticationLogout": "Wyloguj",
+        "AuthenticationLogout": "Wyloguj - {0}",
         "Cyclomedia": "",
         "Draw3D": "",
         "FeatureForm": "",
