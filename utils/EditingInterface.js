@@ -296,16 +296,11 @@ const EditingInterface = {
             })).then(entries => callback(Object.fromEntries(entries)));
         }).catch(() => callback({}));
     },
-    /*
-    keyvalues: <dataset>:<key_column>:<value_column>,<dataset>:<key_column>:<value_column>,...
-    callback: function(result), result is a {"keyvalues": {"<dataset>": [{"key": <key>, "value": <value}, ...]}}
-    filter: the filter expression as [[["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]] (one filter expr per keyvalue entry), or null
-    */
     /**
      * Query key-value-pairs of a key-value-relation
-     * @param {*} keyvalues The keyval string `<keyvaldataset>:<keyfield>:<valuefield>`
-     * @param {*} callback Callback invoked with the key-value pairs, taking `{keyvalues: {<keyvaldataset>: [{key: <key>, value: <value>}]}}` on success and `{}` on failure
-     * @param {*} filter 
+     * @param keyvalues The keyval string `<keyvaldataset>:<keyfield>:<valuefield>`
+     * @param callback Callback invoked with the key-value pairs, taking `{keyvalues: {<keyvaldataset>: [{key: <key>, value: <value>}]}}` on success and `{}` on failure
+     * @param filter An optional filter expression, as `[[["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]]` (one filter expr per keyvalue entry)
      */
     getKeyValues(keyvalues, callback, filter = null) {
         const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl").replace(/\/$/, '');
