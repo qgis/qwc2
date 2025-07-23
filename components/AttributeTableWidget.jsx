@@ -26,7 +26,7 @@ import Spinner from '../components/widgets/Spinner';
 import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import {ExpressionFeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
+import {FeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -377,7 +377,7 @@ class AttributeTableWidget extends React.Component {
             const editConfig = this.props.theme.editConfig || {};
             const currentEditConfig = editConfig[selectedLayer];
             KeyValCache.clear();
-            ExpressionFeatureCache.clear();
+            FeatureCache.clear();
             const bbox = this.state.limitToExtent ? this.props.mapBbox.bounds : null;
             this.props.iface.getFeatures(currentEditConfig, this.props.mapCrs, (result) => {
                 if (result) {

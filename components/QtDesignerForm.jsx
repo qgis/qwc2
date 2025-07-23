@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import {v1 as uuidv1} from 'uuid';
 
 import ConfigUtils from '../utils/ConfigUtils';
-import {parseExpression, ExpressionFeatureCache, KeyValCache} from '../utils/EditingUtils';
+import {parseExpression, FeatureCache, KeyValCache} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import EditComboField from './EditComboField';
@@ -119,7 +119,7 @@ class QtDesignerForm extends React.Component {
     }
     componentWillUnmount() {
         KeyValCache.clear();
-        ExpressionFeatureCache.clear();
+        FeatureCache.clear();
     }
     render() {
         if (this.state.loading) {

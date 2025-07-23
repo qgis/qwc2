@@ -16,31 +16,45 @@ import grammar from './expr_grammar/grammar';
 
 const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
 
-export class ExpressionFeatureCache {
+export class FeatureCache {
     static store = {};
-    static requests = new Set();
-    static get = (editIface, layerName, mapCrs, attr, value, promises) => {
-        const key = layerName + ":" + attr + ":" + value;
+    static requestPromises = {};
+    static get = (editIface, layerName, mapCrs, filterExpr) => {
+        const key = layerName +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
         if (key in this.store) {
-            return this.store[key];
-        } else if (!this.requests.has(key)) {
-            this.requests.add(key);
-            promises.push(new Promise((accept) => {
+            return new Promise(resolve => resolve(this.store[key]));
+        } else if (key in this.requestPromises) {
+            return this.requestPromises[key];
+        } else {
+            this.requestPromises[key] = new Promise(resolve => {
                 const editConfig = StandardApp.store.getState().theme.current.editConfig?.[layerName] ?? {};
                 editIface.getFeatures(editConfig, mapCrs, (result) => {
-                    if (this.requests.has(key)) {
+                    if (key in this.requestPromises) {
                         if ((result?.features || []).length === 1) {
                             this.store[key] = result.features[0];
                         } else {
                             this.store[key] = null;
                         }
-                        this.requests.delete(key);
+                        if (key in this.requestPromises) {
+                            resolve(this.store[key]);
+                            delete this.requestPromises[key];
+                        }
+                    } else {
+                        resolve(null);
                     }
-                    accept();
-                }, null, [[attr, '=', value]]);
-            }));
+                }, null, filterExpr);
+            });
+            return this.requestPromises[key];
         }
-        return null;
+    };
+    static getSync = (editIface, layerName, mapCrs, filterExpr, promises = []) => {
+        const key = layerName +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
+        if (key in this.store) {
+            return this.store[key];
+        } else {
+            promises.push(this.get(editIface, layerName, mapCrs, filterExpr));
+            return null;
+        }
     };
     static clear = () => {
         this.store = {};
@@ -102,7 +116,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
 
     window.qwc2ExpressionParserContext = {
         feature: feature,
-        getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, layerName, mapCrs, attr, value, promises),
+        getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
         layer: editConfig.layerName,
@@ -139,7 +153,7 @@ export function parseExpressionsAsync(expressions, feature, editConfig, editIfac
     return new Promise((resolve) => {
         window.qwc2ExpressionParserContext = {
             feature: feature,
-            getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, layerName, mapCrs, attr, value, promises),
+            getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
             asFilter: asFilter,
             username: ConfigUtils.getConfigProp("username"),
             layer: editConfig.layerName,
@@ -188,7 +202,7 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
         }
         return res;
     }, {});
-    ExpressionFeatureCache.clear();
+    FeatureCache.clear();
     parseExpressionsAsync(defaultFieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
@@ -208,7 +222,7 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
         }
         return res;
     }, {});
-    ExpressionFeatureCache.clear();
+    FeatureCache.clear();
     const mapPrefix = (editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
     parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
