@@ -550,6 +550,7 @@ class Print extends React.Component {
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
         const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState((state) => ({minimized: !state.minimized}))} title={minMaxTooltip}/>);
+        const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
         return [
             (
                 <SideBar extraTitlebarContent={extraTitlebarContent} icon={"print"} id="Print" key="Print"
@@ -568,7 +569,7 @@ class Print extends React.Component {
                 <PickFeature
                     featurePicked={this.selectAtlasFeature}
                     key="FeaturePicker"
-                    layerFilter={{url: this.props.theme.url, name: this.state.layout.atlasCoverageLayer}}
+                    layerFilter={{url: themeLayer?.url, name: this.state.layout.atlasCoverageLayer}}
                 />
             ) : null
         ];

@@ -124,8 +124,7 @@ class Editing extends React.Component {
             if (newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
                 const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
                 const editConfig = this.props.theme.editConfig[this.state.selectedLayer];
-                const editDataset = editConfig.editDataset;
-                this.props.iface.getFeature(editDataset, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
+                this.props.iface.getFeature(editConfig, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
                     const feature = features ? features[0] : null;

@@ -320,9 +320,9 @@ class OlMap extends React.Component {
     };
     registerHooks = () => {
         MapUtils.registerHook(MapUtils.GET_MAP, this.map);
-        MapUtils.registerHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK, (pos) => {
+        MapUtils.registerHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK, (pos, compensateTopbarHeight = true) => {
             const pixel = this.map.getPixelFromCoordinate(pos);
-            return [pixel[0], pixel[1] - this.props.topbarHeight];
+            return [pixel[0], pixel[1] - (compensateTopbarHeight ? this.props.topbarHeight : 0)];
         });
         MapUtils.registerHook(MapUtils.GET_COORDINATES_FROM_PIXEL_HOOK, (pixel) => {
             return this.map.getCoordinateFromPixel([pixel[0], pixel[1] + this.props.topbarHeight]);

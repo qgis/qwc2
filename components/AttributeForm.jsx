@@ -151,7 +151,7 @@ class AttributeForm extends React.Component {
                 ) : null}
                 <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
                     {this.props.editConfig.form ? (
-                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={this.props.theme.editConfig} editLayerId={this.props.editConfig.editDataset}
+                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfigs={this.props.theme.editConfig} editLayerId={this.props.editConfig.editDataset}
                             editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
                             fields={this.fieldsMap(this.props.editConfig.fields)} form={this.props.editConfig.form} iface={this.props.iface}
                             mapCrs={this.props.map.projection} mapPrefix={this.editMapPrefix()} readOnly={readOnly}
@@ -202,7 +202,7 @@ class AttributeForm extends React.Component {
                         return name + ":" + entry.fk;
                     }
                 }).join(",");
-                this.props.iface.getRelations(this.props.editConfig.editDataset, feature.id, relTables, this.props.map.projection, (relationValues => {
+                this.props.iface.getRelations(this.props.editConfig, feature.id, this.props.map.projection, relTables, this.props.theme.editConfig, (relationValues => {
                     const newFeature = {...feature, relationValues: relationValues};
                     callback(newFeature);
                 }));
@@ -333,7 +333,7 @@ class AttributeForm extends React.Component {
                 if (this.props.editContext.action === 'Pick') {
                     // Re-query the original feature
                     this.setState({busy: true});
-                    this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
+                    this.props.iface.getFeatureById(this.props.editConfig, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
                         this.setState({busy: false});
                         if (!isEmpty(this.state.relationTables)) {
                             // Re-load relation values
@@ -453,7 +453,6 @@ class AttributeForm extends React.Component {
         // Collect all values from form fields
         const fieldnames = Array.from(this.form.elements).map(element => element.name).filter(x => x && x !== "g-recaptcha-response");
         fieldnames.forEach(name => {
-            const fieldConfig = (curConfig.fields || []).find(field => field.id === name) || {};
             const element = this.form.elements.namedItem(name);
             if (element) {
                 const parts = name.split("__");
@@ -466,9 +465,17 @@ class AttributeForm extends React.Component {
                     const tablename = parts[0];
                     const datasetname = mapPrefix + tablename;
                     const field = parts.slice(1, parts.length - 1).join("__");
+                    const index = parseInt(parts[parts.length - 1], 10);
 
-                    const nrelFieldConfig = (this.props.theme.editConfig[tablename].fields || []).find(f => f.id === field) || {};
-                    const nrelFieldDataType = nrelFieldConfig.data_type ?? fieldConfig.type;
+                    const nrelFieldConfig = this.props.theme.editConfig[tablename].fields?.find?.(f => f.id === field) ?? {};
+                    const nrelFieldDataType = nrelFieldConfig.data_type;
+
+                    if (nrelFieldConfig.expression) {
+                        // Skip virtual fields
+                        delete relationValues[datasetname].features[index][field];
+                        return;
+                    }
+
                     if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(nrelFieldDataType)) && element.value === "") {
                         // Set empty value to null instead of empty string
                         value = null;
@@ -478,7 +485,6 @@ class AttributeForm extends React.Component {
                         value = null;
                     }
 
-                    const index = parseInt(parts[parts.length - 1], 10);
                     // relationValues for table must exist as rows are either pre-existing or were added
                     if (!(field in relationValues[datasetname].features[index].properties)) {
                         relationValues[datasetname].features[index].defaultedProperties = [
@@ -504,6 +510,13 @@ class AttributeForm extends React.Component {
                         relationValues[datasetname].features[index].properties[field] = "";
                     }
                 } else {
+                    const fieldConfig = (curConfig.fields || []).find(field => field.id === name) || {};
+                    if (fieldConfig.expression) {
+                        // Skip virtual fields
+                        delete feature.properties[name];
+                        return;
+                    }
+
                     const dataType = fieldConfig.data_type ?? fieldConfig.type;
                     if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(dataType)) && element.value === "") {
                         // Set empty value to null instead of empty string
@@ -570,13 +583,13 @@ class AttributeForm extends React.Component {
 
         if (this.props.editContext.action === "Draw") {
             if (this.props.iface.addFeatureMultipart) {
-                this.props.iface.addFeatureMultipart(this.props.editConfig.editDataset, featureData, (success, result) => this.featureCommited(success, result));
+                this.props.iface.addFeatureMultipart(this.props.editConfig, this.props.map.projection, featureData, (success, result) => this.featureCommited(success, result));
             } else {
                 this.props.iface.addFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
             }
         } else if (this.props.editContext.action === "Pick") {
             if (this.props.iface.editFeatureMultipart) {
-                this.props.iface.editFeatureMultipart(this.props.editConfig.editDataset, feature.id, featureData, (success, result) => this.featureCommited(success, result));
+                this.props.iface.editFeatureMultipart(this.props.editConfig, this.props.map.projection, feature.id, featureData, (success, result) => this.featureCommited(success, result));
             } else {
                 this.props.iface.editFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
             }
@@ -610,7 +623,7 @@ class AttributeForm extends React.Component {
                 recaptchaResponse = this.state.captchaResponse;
             }
 
-            this.props.iface.deleteFeature(this.props.editConfig.editDataset, this.props.editContext.feature.id, this.deleteFinished, recaptchaResponse);
+            this.props.iface.deleteFeature(this.props.editConfig, this.props.editContext.feature.id, this.deleteFinished, recaptchaResponse);
         } else {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
