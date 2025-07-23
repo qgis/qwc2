@@ -379,13 +379,13 @@ class AttributeForm extends React.Component {
     validateFieldConstraints = (feature, validCallback = null, invalidCallback = null) => {
         const constraintExpressions = this.props.editConfig.fields.reduce((res, cur) => {
             if (cur.constraints?.expression) {
-                return {
+                return [
                     ...res,
-                    [cur.id]: cur.constraints?.expression
-                };
+                    {field: cur.id, expression: cur.constraints.expression}
+                ];
             }
             return res;
-        }, {});
+        }, []);
         parseExpressionsAsync(constraintExpressions, feature, this.props.editConfig, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
             let valid = true;
             Object.entries(result).forEach(([key, value]) => {

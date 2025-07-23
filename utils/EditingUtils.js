@@ -7,6 +7,7 @@
  */
 
 import nearley from 'nearley';
+import toposort from 'toposort';
 import {v5 as uuidv5} from 'uuid';
 
 import StandardApp from '../components/StandardApp';
@@ -167,7 +168,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
     }
 }
 
-export function parseExpressionsAsync(expressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter) {
+export function parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter) {
     const promises = [];
     return new Promise((resolve) => {
         window.qwc2ExpressionParserContext = {
@@ -181,11 +182,11 @@ export function parseExpressionsAsync(expressions, feature, editConfig, editIfac
             mapPrefix: mapPrefix,
             lang: LocaleUtils.lang()
         };
-        const results = Object.entries(expressions).reduce((res, [key, expr]) => {
+        const results = fieldExpressions.reduce((res, {field, expression}) => {
             const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
             try {
-                parser.feed(expr.replace(/\n/, ' '));
-                return {...res, [key]: parser.results[0]};
+                parser.feed(expression.replace(/\n/, ' '));
+                return {...res, [field]: parser.results[0]};
             } catch (e) {
                 /* eslint-disable-next-line */
                 console.warn("Failed to evaluate expression " + expr.replace(/\n/, ' '));
@@ -195,8 +196,10 @@ export function parseExpressionsAsync(expressions, feature, editConfig, editIfac
         delete window.qwc2ExpressionParserContext;
         if (promises.length > 0) {
             // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
+            // NOTE: include intermediate results in next context feature
+            const newfeatures = {...feature, properties: {...feature.properties, ...results}};
             Promise.all(promises).then(() => {
-                parseExpressionsAsync(expressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter).then(results2 => resolve(results2));
+                parseExpressionsAsync(fieldExpressions, newfeatures, editConfig, editIface, mapPrefix, mapCrs, asFilter).then(results2 => resolve(results2));
             });
         } else {
             resolve(results);
@@ -218,10 +221,10 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
     // Apply default values
     const defaultFieldExpressions = editConfig.fields.reduce((res, field) => {
         if (field.defaultValue) {
-            return {...res, [field.id]: field.defaultValue.replace(/^expr:/, '')};
+            return [...res, {field: field.id, expression: field.defaultValue.replace(/^expr:/, '')}];
         }
         return res;
-    }, {});
+    }, []);
     FeatureCache.clear();
     parseExpressionsAsync(defaultFieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
@@ -235,13 +238,38 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
 }
 
 export function computeExpressionFields(editConfig, feature, editIface, mapCrs, callback) {
-    // Apply default values
-    const fieldExpressions = editConfig.fields.reduce((res, field) => {
+    // Collect field expressions and dependencies
+    const dependencies = {};
+    let fieldExpressions = editConfig.fields.reduce((res, field) => {
         if (field.expression) {
+            const matches = [...field.expression.matchAll(/"([^"]+)"/g)].map(m => m[1]);
+            dependencies[field.id] = [...new Set(matches)]
             return {...res, [field.id]: field.expression};
         }
         return res;
     }, {});
+    // Topologically sort expressions so that fields depending on other fields are evaluated later
+    const edges = [];
+    Object.entries(dependencies).forEach(([parent, children]) => {
+        children.forEach(child => edges.push([child, parent]));
+    });
+    try {
+        const sortededges = toposort(edges);
+        fieldExpressions = sortededges.reduce((res, field) => {
+            if (field in fieldExpressions) {
+                return [...res, {field, expression: fieldExpressions[field]}];
+            } else {
+                return res;
+            }
+        }, []);
+    } catch (e) {
+        /* eslint-disable-next-line */
+        console.warn("Failed to sort expressions, they probably contain cyclic dependencies");
+        fieldExpressions = Object.entries(fieldExpressions).map((res, [field, expression]) => (
+            [...res, {field, expression}]
+        ), {});
+    }
+    // Evaluate expressions
     FeatureCache.clear();
     const mapPrefix = (editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
     parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
