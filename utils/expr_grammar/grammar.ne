@@ -45,9 +45,10 @@ P2 -> P2 _ "<" _ P3                {% function(d) { return asFilter(d) ? [d[0], 
     | P2 _ "<>" _ P3               {% function(d) { return asFilter(d) ? [d[0], "!=", d[4]] : (d[0] != d[4]); } %}
     | P3                           {% id %}
 
-# Priority-3 operators (addition, subtraction)
+# Priority-3 operators (addition, subtraction, concatenation)
 P3 -> P3 _ "+" _ P4                {% function(d) { return d[0] + d[4]; } %}
     | P3 _ "-" _ P4                {% function(d) { return d[0] - d[4]; } %}
+    | P3 _ "||" _ P4               {% function(d) { return d[0] + d[4]; } %}
     | P4                           {% id %}
 
 # Priority-4 operators (multiplication, division)
@@ -93,6 +94,7 @@ N -> float                         {% id %}
     | "attribute" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return d[4]?.properties?.[d[8]] ?? null; } %}
     | "get_feature" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")" {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], d[8], d[12]); } %}
     | "get_feature_by_id" _ "(" _ P0 _ "," _ P0 _ ")"      {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], "id", d[8]); } %}
+    | "represent_value" _ "(" _ dqstring _ ")"             {% function(d) { return window.qwc2ExpressionParserContext.representValue(d[4]); } %}
     | "PI"i                        {% function(d) { return Math.PI; } %}
     | "E"i                         {% function(d) { return Math.E; } %}
     | "NULL"i                      {% function(d) { return null; } %}

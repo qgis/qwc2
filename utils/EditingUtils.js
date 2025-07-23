@@ -110,6 +110,24 @@ export class KeyValCache {
 }
 
 
+function representValue(attr, editConfig, editIface, promises) {
+    // Resolve kvrel
+    const field = (editConfig.fields || []).find(f => f.id === attr);
+    const value = window.qwc2ExpressionParserContext.feature?.properties?.[attr];
+    const keyvalrel = field?.constraints?.keyvalrel;
+    if (!keyvalrel) {
+        return value;
+    }
+    const keyvals = KeyValCache.getSync(editIface, keyvalrel, null, promises).reduce((res, entry) => (
+        {...res, [entry.value]: entry.label}
+    ), {});
+    if (field.constraints.allowMulti) {
+        return '{' + [...new Set(JSON.parse('[' + value.slice(1, -1) + ']'))].map(x => keyvals[x] ?? x).join(", ") + '}';
+    } else {
+        return keyvals[value] ?? value;
+    }
+}
+
 export function parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     const promises = [];
@@ -117,6 +135,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
     window.qwc2ExpressionParserContext = {
         feature: feature,
         getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
+        representValue: (attr) => representValue(attr, editConfig, editIface, promises),
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
         layer: editConfig.layerName,
@@ -154,6 +173,7 @@ export function parseExpressionsAsync(expressions, feature, editConfig, editIfac
         window.qwc2ExpressionParserContext = {
             feature: feature,
             getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
+            representValue: (attr) => representValue(attr, editConfig, editIface, promises),
             asFilter: asFilter,
             username: ConfigUtils.getConfigProp("username"),
             layer: editConfig.layerName,
