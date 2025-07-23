@@ -151,12 +151,13 @@ class AttributeForm extends React.Component {
                 ) : null}
                 <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
                     {this.props.editConfig.form ? (
-                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfigs={this.props.theme.editConfig} editLayerId={this.props.editConfig.editDataset}
-                            editRelationRecord={this.editRelationRecord} feature={this.props.editContext.feature}
-                            fields={this.fieldsMap(this.props.editConfig.fields)} form={this.props.editConfig.form} iface={this.props.iface}
+                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={this.props.editConfig}
+                            editConfigs={this.props.theme.editConfig} editRelationRecord={this.editRelationRecord}
+                            feature={this.props.editContext.feature} iface={this.props.iface}
                             mapCrs={this.props.map.projection} mapPrefix={this.editMapPrefix()} readOnly={readOnly}
-                            removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord} report={this.props.report}
-                            setFormBusy={this.setFormBusy} setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
+                            removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord}
+                            report={this.props.report} setFormBusy={this.setFormBusy}
+                            setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
                         <AutoEditForm editLayerId={this.props.editConfig.editDataset} fields={this.props.editConfig.fields}
@@ -176,9 +177,6 @@ class AttributeForm extends React.Component {
     };
     setFormBusy = (busy) => {
         this.setState({busy: busy});
-    };
-    fieldsMap = (fields) => {
-        return fields.reduce((res, field) => ({...res, [field.id]: field}), {});
     };
     updateField = (key, value) => {
         const newProperties = {...this.props.editContext.feature.properties, [key]: value};
@@ -388,7 +386,7 @@ class AttributeForm extends React.Component {
             }
             return res;
         }, {});
-        parseExpressionsAsync(constraintExpressions, feature, this.props.editConfig.editDataset, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
+        parseExpressionsAsync(constraintExpressions, feature, this.props.editConfig, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
             let valid = true;
             Object.entries(result).forEach(([key, value]) => {
                 const element = this.form.elements.namedItem(key);

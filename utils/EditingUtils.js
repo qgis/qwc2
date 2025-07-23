@@ -46,7 +46,7 @@ export class ExpressionFeatureCache {
     };
 }
 
-export function parseExpression(expr, feature, dataset, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
+export function parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     const promises = [];
 
@@ -55,7 +55,7 @@ export function parseExpression(expr, feature, dataset, editIface, mapPrefix, ma
         getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, layerName, mapCrs, attr, value, promises),
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
-        layer: dataset.startsWith(mapPrefix) ? dataset.substr(mapPrefix.length) : dataset,
+        layer: editConfig.layerName,
         projection: mapCrs,
         mapPrefix: mapPrefix,
         lang: LocaleUtils.lang()
@@ -71,7 +71,7 @@ export function parseExpression(expr, feature, dataset, editIface, mapPrefix, ma
     delete window.qwc2ExpressionParserContext;
     if (promises.length > 0) {
         // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
-        Promise.all(promises).then(() => parseExpression(expr, feature, dataset, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter, true));
+        Promise.all(promises).then(() => parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter, true));
         return null;
     } else {
         if (reevaluate) {
@@ -84,7 +84,7 @@ export function parseExpression(expr, feature, dataset, editIface, mapPrefix, ma
     }
 }
 
-export function parseExpressionsAsync(expressions, feature, dataset, editIface, mapPrefix, mapCrs, asFilter) {
+export function parseExpressionsAsync(expressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter) {
     const promises = [];
     return new Promise((resolve) => {
         window.qwc2ExpressionParserContext = {
@@ -92,7 +92,7 @@ export function parseExpressionsAsync(expressions, feature, dataset, editIface, 
             getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, layerName, mapCrs, attr, value, promises),
             asFilter: asFilter,
             username: ConfigUtils.getConfigProp("username"),
-            layer: dataset.startsWith(mapPrefix) ? dataset.substr(mapPrefix.length) : dataset,
+            layer: editConfig.layerName,
             projection: mapCrs,
             mapPrefix: mapPrefix,
             lang: LocaleUtils.lang()
@@ -111,7 +111,7 @@ export function parseExpressionsAsync(expressions, feature, dataset, editIface, 
         delete window.qwc2ExpressionParserContext;
         if (promises.length > 0) {
             // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
-            Promise.all(promises).then(parseExpressionsAsync(expressions, feature, dataset, editIface, mapPrefix, mapCrs, asFilter).then(resolve(results)));
+            Promise.all(promises).then(parseExpressionsAsync(expressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter).then(resolve(results)));
         } else {
             resolve(results);
         }
@@ -137,7 +137,7 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
         return res;
     }, {});
     ExpressionFeatureCache.clear();
-    parseExpressionsAsync(defaultFieldExpressions, feature, editConfig.editDataset, editIface, mapPrefix, mapCrs).then(result => {
+    parseExpressionsAsync(defaultFieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
             if (field.id in result && field.type === "date") {
@@ -158,7 +158,7 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     }, {});
     ExpressionFeatureCache.clear();
     const mapPrefix = (editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-    parseExpressionsAsync(fieldExpressions, feature, editConfig.editDataset, editIface, mapPrefix, mapCrs).then(result => {
+    parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
             if (field.id in result && field.type === "date") {

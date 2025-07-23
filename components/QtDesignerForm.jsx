@@ -32,7 +32,7 @@ import './style/QtDesignerForm.css';
 
 const FormPreprocessors = {};
 
-/* editLayerId: <mapname>.<datasetname>
+/* editDataset: <mapname>.<layername>
 preprocessor: function(formData, feature, callback)
     formData: {
         fields: { dict of fields },
@@ -42,12 +42,12 @@ preprocessor: function(formData, feature, callback)
     feature: The feature for which the form is being displayed
     callback: function(formData), return the updated formData
 */
-export function registerFormPreprocessor(editLayerId, preprocessor) {
-    FormPreprocessors[editLayerId] = preprocessor;
+export function registerFormPreprocessor(editDataset, preprocessor) {
+    FormPreprocessors[editDataset] = preprocessor;
 }
 
-export function removeFormPreprocessor(editLayerId) {
-    delete FormPreprocessors[editLayerId];
+export function removeFormPreprocessor(editDataset) {
+    delete FormPreprocessors[editDataset];
 }
 
 const hFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
@@ -57,12 +57,11 @@ const vFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEd
 class QtDesignerForm extends React.Component {
     static propTypes = {
         addRelationRecord: PropTypes.func,
+        editConfig: PropTypes.object,
         editConfigs: PropTypes.object,
         editLayerId: PropTypes.string,
         editRelationRecord: PropTypes.func,
         feature: PropTypes.object,
-        fields: PropTypes.object,
-        form: PropTypes.string,
         iface: PropTypes.object,
         locale: PropTypes.string,
         mapCrs: PropTypes.string,
@@ -96,12 +95,12 @@ class QtDesignerForm extends React.Component {
     }
     componentDidUpdate(prevProps) {
         // Query form
-        if (this.props.form !== prevProps.form || this.props.feature.__version__ !== prevProps.feature.__version__) {
+        if (this.props.editConfig.form !== prevProps.editConfig?.form || this.props.feature.__version__ !== prevProps.feature?.__version__) {
             this.setState((state) => ({
                 ...QtDesignerForm.defaultState,
-                activetabs: this.props.form === prevProps.form ? state.activetabs : {}
+                activetabs: this.props.editConfig.form === prevProps.editConfig?.form ? state.activetabs : {}
             }));
-            let url = MiscUtils.resolveAssetsPath(this.props.form);
+            let url = MiscUtils.resolveAssetsPath(this.props.editConfig.form);
             url += (url.includes('?') ? '&' : '?') + "lang=" + this.props.locale;
 
             axios.get(url).then(response => {
@@ -133,14 +132,14 @@ class QtDesignerForm extends React.Component {
             const root = this.state.formData.ui.widget;
             return (
                 <div className={this.props.report ? "qt-designer-report" : "qt-designer-form"}>
-                    {this.renderLayout(root.layout, this.props.feature, this.props.editLayerId, this.props.updateField)}
+                    {this.renderLayout(root.layout, this.props.feature, this.props.editConfig, this.props.updateField)}
                 </div>
             );
         } else {
             return null;
         }
     }
-    renderLayout = (layout, feature, dataset, updateField, nametransform = (name) => name, visible = true) => {
+    renderLayout = (layout, feature, editConfig, updateField, nametransform = (name) => name, visible = true) => {
         let containerClass = "";
         let itemStyle = () => ({});
         let sortKey = (item, idx) => idx;
@@ -181,14 +180,15 @@ class QtDesignerForm extends React.Component {
         if (layout.item.find(item => item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical")) {
             containerStyle.height = '100%';
         }
+        const fields = (this.props.editConfig.fields ?? []).reduce((res, field) => ({...res, [field.id]: field}), {});
         return (
             <div className={containerClass} key={layout.name} style={containerStyle}>
                 {layout.item.sort((a, b) => (sortKey(a) - sortKey(b))).map((item, idx) => {
                     let child = null;
                     if (item.widget) {
-                        child = this.renderWidget(item.widget, feature, dataset, this.props.fields, updateField, nametransform, false);
+                        child = this.renderWidget(item.widget, feature, editConfig, fields, updateField, nametransform, false);
                     } else if (item.layout) {
-                        child = this.renderLayout(item.layout, feature, dataset, updateField, nametransform);
+                        child = this.renderLayout(item.layout, feature, editConfig, updateField, nametransform);
                     } else if (item.spacer) {
                         child = (<div />);
                     } else {
@@ -248,7 +248,7 @@ class QtDesignerForm extends React.Component {
         }
         return rows;
     };
-    renderWidget = (widget, feature, dataset, fields, updateField, nametransform = (name) => name, isRelWidget, disabled = false) => {
+    renderWidget = (widget, feature, editConfig, fields, updateField, nametransform = (name) => name, isRelWidget, disabled = false) => {
         let value = (feature.properties || {})[widget.name] ?? "";
         const prop = widget.property || {};
         if (String(prop.visible) === "false") {
@@ -304,7 +304,7 @@ class QtDesignerForm extends React.Component {
             return (<div className={"qt-designer-form-" + linetype} />);
         } else if (widget.class === "QFrame") {
             if (widget.property.visibilityExpression) {
-                const exprResult = parseExpression(widget.property.visibilityExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                const exprResult = parseExpression(widget.property.visibilityExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
                 if (exprResult === false || exprResult === 0) {
                     return null;
                 }
@@ -312,13 +312,13 @@ class QtDesignerForm extends React.Component {
             return (
                 <div className="qt-designer-form-container">
                     <div className="qt-designer-form-frame">
-                        {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, dataset, updateField, nametransform)}
+                        {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, editConfig, updateField, nametransform)}
                     </div>
                 </div>
             );
         } else if (widget.class === "QGroupBox") {
             if (widget.property.visibilityExpression) {
-                const exprResult = parseExpression(widget.property.visibilityExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                const exprResult = parseExpression(widget.property.visibilityExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
                 if (exprResult === false || exprResult === 0) {
                     return null;
                 }
@@ -327,13 +327,13 @@ class QtDesignerForm extends React.Component {
                 <div className="qt-designer-form-container">
                     <div className="qt-designer-form-frame-title" style={fontStyle}>{prop.title}</div>
                     <div className="qt-designer-form-frame">
-                        {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, dataset, updateField, nametransform)}
+                        {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, editConfig, updateField, nametransform)}
                     </div>
                 </div>
             );
         } else if (widget.class === "QTabWidget") {
             const tabwidgets = (widget.widget || []).filter(child => {
-                const exprResult = parseExpression(child.property.visibilityExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                const exprResult = parseExpression(child.property.visibilityExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
                 return exprResult !== false && exprResult !== 0;
             });
             if (isEmpty(tabwidgets)) {
@@ -347,7 +347,7 @@ class QtDesignerForm extends React.Component {
                         onClick={(key) => this.setState((state) => ({activetabs: {...state.activetabs, [widget.name]: key}}))} />
                     <div className="qt-designer-form-frame">
                         {tabwidgets.filter(child => child.layout).map(child => (
-                            this.renderLayout(child.layout, feature, dataset, updateField, nametransform, child.name === activetab)
+                            this.renderLayout(child.layout, feature, editConfig, updateField, nametransform, child.name === activetab)
                         ))}
                     </div>
                 </div>
@@ -371,7 +371,7 @@ class QtDesignerForm extends React.Component {
                     accept: prop.text || "",
                     required: inputConstraints.required
                 };
-                return (<EditUploadField constraints={constraints} dataset={dataset} disabled={inputConstraints.readOnly} fieldId={fieldId} iface={this.props.iface} name={uploadElName} report={this.props.report} updateField={updateField} value={uploadValue} />);
+                return (<EditUploadField constraints={constraints} dataset={editConfig.editDataset} disabled={inputConstraints.readOnly} fieldId={fieldId} iface={this.props.iface} name={uploadElName} report={this.props.report} updateField={updateField} value={uploadValue} />);
             } else {
                 if (fieldConstraints.prec !== undefined && typeof value === 'number') {
                     value = value.toFixed(fieldConstraints.prec);
@@ -407,7 +407,7 @@ class QtDesignerForm extends React.Component {
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
                 if (field?.filterExpression) {
-                    filterExpr = parseExpression(field.filterExpression, feature, dataset, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                    filterExpr = parseExpression(field.filterExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
                 }
                 return (
                     <EditComboField
@@ -467,7 +467,7 @@ class QtDesignerForm extends React.Component {
             } else if (widget.name.startsWith("ext__")) {
                 return value;
             } else {
-                return this.renderLayout(widget.layout, feature, dataset, updateField, nametransform);
+                return this.renderLayout(widget.layout, feature, editConfig, updateField, nametransform);
             }
         } else if (widget.class === "QPushButton") {
             if (widget.name.startsWith("btn__") && widget.onClick) {
@@ -524,7 +524,7 @@ class QtDesignerForm extends React.Component {
                 }
             }
         } else if (widget.class === "QStackedWidget") {
-            return this.renderLayout(widget.widget[parseInt(widget.property.currentIndex, 10)].layout, feature, dataset, updateField, nametransform);
+            return this.renderLayout(widget.widget[parseInt(widget.property.currentIndex, 10)].layout, feature, editConfig, updateField, nametransform);
         }
         return null;
     };
@@ -537,12 +537,13 @@ class QtDesignerForm extends React.Component {
         const tablename = parts[1];
         const sortcol = parts[3] || null;
         const noreorder = parts[4] || false;
-        const datasetname = this.props.mapPrefix + tablename;
         const headerItems = widget.layout.item.filter(item => item.widget && item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const widgetItems = widget.layout.item.filter(item => !item.widget || !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const tableFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
         const columnStyles = widgetItems.map(item => { return item.widget && tableFitWidgets.includes(item.widget.class) ? {width: '1px'} : {}; });
-        const fields = (this.props.editConfigs[tablename]?.fields ?? []).reduce((res, field) => ({...res, [field.id]: field}), {})
+        const editConfig = this.props.editConfigs[tablename] || {};
+        const relDataset = editConfig.editDataset;
+        const fields = (editConfig.fields ?? []).reduce((res, field) => ({...res, [field.id]: field}), {});
         return (
             <div className="qt-designer-widget-relation">
                 <div className="qt-designer-widget-relation-table-container">
@@ -560,10 +561,10 @@ class QtDesignerForm extends React.Component {
                                     <th />
                                 </tr>
                             ) : null}
-                            {(this.props.feature.relationValues?.[datasetname]?.features || []).map((feature, idx) => {
+                            {(this.props.feature.relationValues?.[relDataset]?.features || []).map((feature, idx) => {
                                 const updateField = (name, value) => {
                                     const fieldname = name.slice(tablename.length + 2); // Strip <tablename>__ prefix
-                                    this.props.updateRelationField(datasetname, idx, fieldname, value);
+                                    this.props.updateRelationField(relDataset, idx, fieldname, value);
                                 };
                                 const nametransform = (name) => (name + "__" + idx);
                                 const status = feature.__status__ || "";
@@ -586,13 +587,17 @@ class QtDesignerForm extends React.Component {
                                 }
                                 const extraClass = status.startsWith("deleted") ? "qt-designer-widget-relation-record-deleted" : "";
                                 return (
-                                    <tr className={"qt-designer-widget-relation-record " + extraClass} key={datasetname + idx}>
+                                    <tr className={"qt-designer-widget-relation-record " + extraClass} key={relDataset + idx}>
                                         <td className="qt-designer-widget-relation-record-icon">
                                             {statusIcon ? (<Icon icon={statusIcon} title={statusText} />) : null}
                                         </td>
                                         {widgetItems.map((item, widx) => {
                                             if (item.widget) {
-                                                return (<td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>{this.renderWidget(item.widget, relFeature, datasetname, fields, updateField, nametransform, true, disabled)}</td>);
+                                                return (
+                                                    <td className="qt-designer-widget-relation-row-widget" key={item.widget.name} style={columnStyles[widx]}>
+                                                        {this.renderWidget(item.widget, relFeature, editConfig, fields, updateField, nametransform, true, disabled)}
+                                                    </td>
+                                                );
                                             } else if (item.spacer) {
                                                 return (<td key={"spacer_" + widx} />);
                                             } else {
@@ -601,14 +606,14 @@ class QtDesignerForm extends React.Component {
                                         })}
                                         {!this.props.readOnly && !disabled && sortcol && !noreorder ? (
                                             <td>
-                                                <Icon icon="chevron-up" onClick={() => this.props.reorderRelationRecord(datasetname, idx, -1)} />
+                                                <Icon icon="chevron-up" onClick={() => this.props.reorderRelationRecord(relDataset, idx, -1)} />
                                                 <br />
-                                                <Icon icon="chevron-down" onClick={() => this.props.reorderRelationRecord(datasetname, idx, 1)} />
+                                                <Icon icon="chevron-down" onClick={() => this.props.reorderRelationRecord(relDataset, idx, 1)} />
                                             </td>
                                         ) : null}
                                         {!this.props.readOnly && !disabled ? (
                                             <td className="qt-designer-widget-relation-record-icon">
-                                                <Icon icon="trash" onClick={() => this.props.removeRelationRecord(datasetname, idx)} />
+                                                <Icon icon="trash" onClick={() => this.props.removeRelationRecord(relDataset, idx)} />
                                             </td>
                                         ) : null}
                                     </tr>
@@ -619,7 +624,7 @@ class QtDesignerForm extends React.Component {
                 </div>
                 {!this.props.readOnly ? (
                     <div className="qt-designer-widget-relation-buttons">
-                        <button className="button qt-designer-widget-relation-add" disabled={!this.props.feature.relationValues} onClick={(ev) => this.addRelationRecord(ev, datasetname)} type="button">{LocaleUtils.tr("editing.add")}</button>
+                        <button className="button qt-designer-widget-relation-add" disabled={!this.props.feature.relationValues} onClick={(ev) => this.addRelationRecord(ev, relDataset)} type="button">{LocaleUtils.tr("editing.add")}</button>
                     </div>
                 ) : null}
                 <div className="qt-designer-widget-relation-resize-handle" onPointerDown={this.startRelationTableResize} />
@@ -679,8 +684,8 @@ class QtDesignerForm extends React.Component {
         json.fields = fields;
         json.buttons = buttons;
         json.nrels = nrels;
-        if (FormPreprocessors[this.props.editLayerId]) {
-            FormPreprocessors[this.props.editLayerId](json, this.props.feature, (formData) => {
+        if (FormPreprocessors[this.props.editConfig.editDataset]) {
+            FormPreprocessors[this.props.editConfig.editDataset](json, this.props.feature, (formData) => {
                 if (this.state.loadingReqId === loadingReqId) {
                     this.setState({formData: formData, loading: false, loadingReqId: null});
                 }
@@ -714,11 +719,12 @@ class QtDesignerForm extends React.Component {
 
         widget.name = widget.name || (":widget_" + counters.widget++);
 
-        if (widget.name in this.props.fields) {
+        const fieldNames = this.props.editConfig.fields.map(field => field.id);
+        if (fieldNames.includes(widget.name)) {
             fields[widget.name] = widget;
         } else if (widget.name.startsWith("kvrel__") || widget.name.startsWith("img__")) {
             const parts = widget.name.split("__");
-            if (parts[1] in this.props.fields) {
+            if (fieldNames.includes(parts[1])) {
                 fields[parts[1]] = widget;
             }
         } else if (widget.name.startsWith("btn__")) {

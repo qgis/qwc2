@@ -409,7 +409,6 @@ class AttributeTableWidget extends React.Component {
             value = "";
         }
         const mapPrefix = (currentEditConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-        const dataset = currentEditConfig.editDataset;
         const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, filteredIndex, fieldid, val, emptynull);
         const constraints = field.constraints || {};
         const disabled = constraints.readOnly || fielddisabled;
@@ -419,7 +418,7 @@ class AttributeTableWidget extends React.Component {
         } else if (constraints.values || constraints.keyvalrel) {
             let filterExpr = null;
             if (field.filterExpression) {
-                filterExpr = parseExpression(field.filterExpression, feature, dataset, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                filterExpr = parseExpression(field.filterExpression, feature, currentEditConfig, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
             }
             input = (
                 <EditComboField
@@ -444,7 +443,7 @@ class AttributeTableWidget extends React.Component {
                     value={value} />
             );
         } else if (field.type === "file") {
-            return (<EditUploadField constraints={constraints} dataset={dataset} disabled={disabled} fieldId={field.id} iface={this.props.iface} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
+            return (<EditUploadField constraints={constraints} dataset={currentEditConfig.editDataset} disabled={disabled} fieldId={field.id} iface={this.props.iface} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
             if ((feature.properties[field.id] ?? null) === null) {
                 value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";

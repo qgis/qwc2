@@ -180,5 +180,5 @@ export default class EditComboField extends React.Component {
             label = item.label;
         }
         return {value, label};
-    }
+    };
 }
