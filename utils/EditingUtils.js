@@ -161,7 +161,9 @@ export function parseExpressionsAsync(expressions, feature, editConfig, editIfac
         delete window.qwc2ExpressionParserContext;
         if (promises.length > 0) {
             // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
-            Promise.all(promises).then(parseExpressionsAsync(expressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter).then(resolve(results)));
+            Promise.all(promises).then(() => {
+                parseExpressionsAsync(expressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter).then(results2 => resolve(results2));
+            });
         } else {
             resolve(results);
         }
