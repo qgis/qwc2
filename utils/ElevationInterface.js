@@ -32,7 +32,7 @@ const ElevationInterface = {
                 return;
             }
             axios.get(serviceUrl + '/getelevation', {params: {pos: pos.join(","), crs}}).then(response => {
-                resolve(response.data.elevation || { list: response.data.elevation_list });
+                resolve(response.data.elevation ?? { list: response.data.elevation_list });
             }).catch((e) => {
                 reject(String(e));
             });
