@@ -49,8 +49,8 @@ P2 -> P2 _ "<" _ P3                {% function(d) { return asFilter(d) ? [d[0], 
     | P2 _ "IS"i _ P3              {% function(d) { return asFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; } %}
     | P2 _ "IS"i _ "NOT"i _ P3     {% function(d) { return asFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; } %}
     | P2 _ "~" _ P3                {% function(d) { return asFilter(d) ? [d[0], "~", d[4]] : new RegExp(d[4]).exec(d[0]) !== null; } %}
-    | P2 _ "LIKE" _ P3             {% function(d) { return asFilter(d) ? [d[0], "~", replaceWildcards(d[4])] : new RegExp(replaceWildcards(d[4])).exec(d[0]) !== null; } %}
-    | P2 _ "ILIKE" _ P3            {% function(d) { return asFilter(d) ? [d[0], "~i", replaceWildcards(d[4])] : new RegExp(replaceWildcards(d[4]), 'i').exec(d[0]) !== null; } %}
+    | P2 _ "LIKE" _ P3             {% function(d) { return asFilter(d) ? [d[0], "LIKE", d[4]] : new RegExp(replaceWildcards(d[4])).exec(d[0]) !== null; } %}
+    | P2 _ "ILIKE" _ P3            {% function(d) { return asFilter(d) ? [d[0], "ILIKE", d[4]] : new RegExp(replaceWildcards(d[4]), 'i').exec(d[0]) !== null; } %}
     | P3                           {% id %}
 
 # Priority-3 operators (addition, subtraction, concatenation)
