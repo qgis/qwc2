@@ -26,6 +26,9 @@ function generateUUID() {
     });
     return '{' + result + '}';
 }
+function replaceWildcards(str) {
+    return "^" + str.replace(/(?<!\\)%/g, '.*').replace(/(?<!\\)_/g, '.{1}') + "$";
+}
 var grammar = {
     Lexer: undefined,
     ParserRules: [
@@ -70,6 +73,16 @@ var grammar = {
     {"name": "P2", "symbols": ["P2", "_", {"literal":"="}, "_", "P3"], "postprocess": function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] == d[4]); }},
     {"name": "P2$string$3", "symbols": [{"literal":"<"}, {"literal":">"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "P2", "symbols": ["P2", "_", "P2$string$3", "_", "P3"], "postprocess": function(d) { return asFilter(d) ? [d[0], "!=", d[4]] : (d[0] != d[4]); }},
+    {"name": "P2$subexpression$1", "symbols": [/[iI]/, /[sS]/], "postprocess": function(d) {return d.join(""); }},
+    {"name": "P2", "symbols": ["P2", "_", "P2$subexpression$1", "_", "P3"], "postprocess": function(d) { return asFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; }},
+    {"name": "P2$subexpression$2", "symbols": [/[iI]/, /[sS]/], "postprocess": function(d) {return d.join(""); }},
+    {"name": "P2$subexpression$3", "symbols": [/[nN]/, /[oO]/, /[tT]/], "postprocess": function(d) {return d.join(""); }},
+    {"name": "P2", "symbols": ["P2", "_", "P2$subexpression$2", "_", "P2$subexpression$3", "_", "P3"], "postprocess": function(d) { return asFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; }},
+    {"name": "P2", "symbols": ["P2", "_", {"literal":"~"}, "_", "P3"], "postprocess": function(d) { return asFilter(d) ? [d[0], "~", d[4]] : new RegExp(d[4]).exec(d[0]) !== null; }},
+    {"name": "P2$string$4", "symbols": [{"literal":"L"}, {"literal":"I"}, {"literal":"K"}, {"literal":"E"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "P2", "symbols": ["P2", "_", "P2$string$4", "_", "P3"], "postprocess": function(d) { return asFilter(d) ? [d[0], "~", replaceWildcards(d[4])] : new RegExp(replaceWildcards(d[4])).exec(d[0]) !== null; }},
+    {"name": "P2$string$5", "symbols": [{"literal":"I"}, {"literal":"L"}, {"literal":"I"}, {"literal":"K"}, {"literal":"E"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "P2", "symbols": ["P2", "_", "P2$string$5", "_", "P3"], "postprocess": function(d) { return asFilter(d) ? [d[0], "~i", replaceWildcards(d[4])] : new RegExp(replaceWildcards(d[4]), 'i').exec(d[0]) !== null; }},
     {"name": "P2", "symbols": ["P3"], "postprocess": id},
     {"name": "P3", "symbols": ["P3", "_", {"literal":"+"}, "_", "P4"], "postprocess": function(d) { return d[0] + d[4]; }},
     {"name": "P3", "symbols": ["P3", "_", {"literal":"-"}, "_", "P4"], "postprocess": function(d) { return d[0] - d[4]; }},
@@ -78,13 +91,11 @@ var grammar = {
     {"name": "P3", "symbols": ["P4"], "postprocess": id},
     {"name": "P4", "symbols": ["P4", "_", {"literal":"*"}, "_", "P5"], "postprocess": function(d) { return d[0] * d[4]; }},
     {"name": "P4", "symbols": ["P4", "_", {"literal":"/"}, "_", "P5"], "postprocess": function(d) { return d[0] / d[4]; }},
+    {"name": "P4$string$1", "symbols": [{"literal":"/"}, {"literal":"/"}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "P4", "symbols": ["P4", "_", "P4$string$1", "_", "P5"], "postprocess": function(d) { return Maht.floor(d[0] / d[4]); }},
+    {"name": "P4", "symbols": ["P4", "_", {"literal":"%"}, "_", "P5"], "postprocess": function(d) { return d[0] % d[4]; }},
     {"name": "P4", "symbols": ["P5"], "postprocess": id},
     {"name": "P5", "symbols": ["P6", "_", {"literal":"^"}, "_", "P5"], "postprocess": function(d) { return Math.pow(d[0], d[4]); }},
-    {"name": "P5$subexpression$1", "symbols": [/[iI]/, /[sS]/], "postprocess": function(d) {return d.join(""); }},
-    {"name": "P5", "symbols": ["P5", "__", "P5$subexpression$1", "__", "P6"], "postprocess": function(d) { return asFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; }},
-    {"name": "P5$subexpression$2", "symbols": [/[iI]/, /[sS]/], "postprocess": function(d) {return d.join(""); }},
-    {"name": "P5$subexpression$3", "symbols": [/[nN]/, /[oO]/, /[tT]/], "postprocess": function(d) {return d.join(""); }},
-    {"name": "P5", "symbols": ["P5", "__", "P5$subexpression$2", "__", "P5$subexpression$3", "__", "P6"], "postprocess": function(d) { return asFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; }},
     {"name": "P5", "symbols": ["P6"], "postprocess": id},
     {"name": "P6", "symbols": [{"literal":"-"}, "_", "P6"], "postprocess": function(d) { return -d[2]; }},
     {"name": "P6", "symbols": [{"literal":"+"}, "_", "P6"], "postprocess": function(d) { return d[2]; }},

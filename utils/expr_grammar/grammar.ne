@@ -24,6 +24,9 @@ function generateUUID() {
     });
     return '{' + result + '}';
 }
+function replaceWildcards(str) {
+    return "^" + str.replace(/(?<!\\)%/g, '.*').replace(/(?<!\\)_/g, '.{1}') + "$";
+}
 %}
 
 main -> _ P0 _                     {% function(d) {return d[1]; } %}
@@ -43,6 +46,11 @@ P2 -> P2 _ "<" _ P3                {% function(d) { return asFilter(d) ? [d[0], 
     | P2 _ "<=" _ P3               {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] <= d[4]); } %}
     | P2 _ "=" _ P3                {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] == d[4]); } %}
     | P2 _ "<>" _ P3               {% function(d) { return asFilter(d) ? [d[0], "!=", d[4]] : (d[0] != d[4]); } %}
+    | P2 _ "IS"i _ P3              {% function(d) { return asFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; } %}
+    | P2 _ "IS"i _ "NOT"i _ P3     {% function(d) { return asFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; } %}
+    | P2 _ "~" _ P3                {% function(d) { return asFilter(d) ? [d[0], "~", d[4]] : new RegExp(d[4]).exec(d[0]) !== null; } %}
+    | P2 _ "LIKE" _ P3             {% function(d) { return asFilter(d) ? [d[0], "~", replaceWildcards(d[4])] : new RegExp(replaceWildcards(d[4])).exec(d[0]) !== null; } %}
+    | P2 _ "ILIKE" _ P3            {% function(d) { return asFilter(d) ? [d[0], "~i", replaceWildcards(d[4])] : new RegExp(replaceWildcards(d[4]), 'i').exec(d[0]) !== null; } %}
     | P3                           {% id %}
 
 # Priority-3 operators (addition, subtraction, concatenation)
@@ -54,12 +62,12 @@ P3 -> P3 _ "+" _ P4                {% function(d) { return d[0] + d[4]; } %}
 # Priority-4 operators (multiplication, division)
 P4 -> P4 _ "*" _ P5                {% function(d) { return d[0] * d[4]; } %}
     | P4 _ "/" _ P5                {% function(d) { return d[0] / d[4]; } %}
+    | P4 _ "//" _ P5               {% function(d) { return Maht.floor(d[0] / d[4]); } %}
+    | P4 _ "%" _ P5                {% function(d) { return d[0] % d[4]; } %}
     | P5                           {% id %}
 
 # Priority-5 operators (exponent, IS, IS NOT)
 P5 -> P6 _ "^" _ P5                {% function(d) { return Math.pow(d[0], d[4]); } %}
-    | P5 __ "IS"i __ P6            {% function(d) { return asFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; } %}
-    | P5 __ "IS"i __ "NOT"i __ P6  {% function(d) { return asFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; } %}
     | P6                           {% id %}
 
 # Priority-6 operators (parenthesis, number, unary operators)
