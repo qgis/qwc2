@@ -87,7 +87,7 @@ class MapInfoTooltip extends React.Component {
         } else {
             const oldPoint = prevProps.map.click;
             if (!oldPoint || oldPoint.pixel[0] !== newPoint.pixel[0] || oldPoint.pixel[1] !== newPoint.pixel[1]) {
-                this.setState({point: newPoint, elevation: null, extraInfo: null});
+                this.setState({point: newPoint, elevation: null});
                 const pos = newPoint.coordinate;
                 const crs = this.props.map.projection;
                 getElevationInterface().getElevation(pos, crs).then(elevation => {
@@ -120,11 +120,10 @@ class MapInfoTooltip extends React.Component {
             projections.push("EPSG:4326");
         }
         projections.map(crs => {
-            const coo = CoordinatesUtils.reproject(this.state.point.coordinate, this.props.map.projection, crs);
-            const decimals = CoordinatesUtils.getPrecision(crs);
+            const coo = CoordinatesUtils.getFormattedCoordinate(this.state.point.coordinate, this.props.map.projection, crs);
             info.push([
                 (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
-                coo.map(x => LocaleUtils.toLocaleFixed(x, decimals)).join(", ")
+                coo
             ]);
         });
 

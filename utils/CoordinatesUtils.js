@@ -25,7 +25,7 @@ const CoordinatesUtils = {
         const crsList = {};
         for (const a in Proj4js.defs) {
             if (Object.prototype.hasOwnProperty.call(Proj4js.defs, a)) {
-                crsList[a] = {label: crsLabels[a] || a};
+                crsList[a] = { label: crsLabels[a] || a };
             }
         }
         return crsList;
@@ -36,9 +36,27 @@ const CoordinatesUtils = {
     },
     getPrecision(projection) {
         const precisions = ConfigUtils.getConfigProp("projections").reduce((res, entry) => (
-            {...res, [entry.code]: entry.precision ?? 0}
+            { ...res, [entry.code]: entry.precision ?? 0 }
         ), {});
         return precisions[projection] ?? (CoordinatesUtils.getUnits(projection) === 'degrees' ? 4 : 0);
+    },
+    getFormat(projection) {
+        const formats = ConfigUtils.getConfigProp("projections").reduce((res, entry) => (
+            { ...res, [entry.code]: entry.format ?? 'decimal' }
+        ), {});
+        return formats[projection];
+    },
+    getAddDirection(projection) {
+        const directions = ConfigUtils.getConfigProp("projections").reduce((res, entry) => (
+            { ...res, [entry.code]: entry.addDirection ?? 'none' }
+        ), {});
+        return directions[projection];
+    },
+    getSwapLonLat(projection) {
+        const swaps = ConfigUtils.getConfigProp("projections").reduce((res, entry) => (
+            { ...res, [entry.code]: entry.swapLonLat ?? false }
+        ), {});
+        return swaps[projection];
     },
     getAxisOrder(projection) {
         const axis = ol.proj.get(projection).getAxisOrientation();
@@ -86,7 +104,7 @@ const CoordinatesUtils = {
         const dLon = lon2 - lon1;
         const y = Math.sin(dLon) * Math.cos(lat2);
         const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-        const azimuth = (((Math.atan2(y, x) * 180.0 / Math.PI) + 360 ) % 360 );
+        const azimuth = (((Math.atan2(y, x) * 180.0 / Math.PI) + 360) % 360);
 
         return azimuth;
     },
@@ -131,14 +149,60 @@ const CoordinatesUtils = {
         const parts = crsStr.split(":");
         return "urn:ogc:def:crs:" + parts[0] + "::" + parts[1];
     },
-    getFormattedCoordinate(coo, srcCrs, dstCrs = null, decimals = -1) {
+    getFormattedCoordinate(coo, srcCrs, dstCrs = null, options = {}) {
+        const {
+            decimals = CoordinatesUtils.getPrecision(dstCrs ?? srcCrs),
+            units = CoordinatesUtils.getUnits(dstCrs ?? srcCrs),
+            format = units !== 'degrees' ? 'decimal' : CoordinatesUtils.getFormat(dstCrs ?? srcCrs),
+            addDirection = CoordinatesUtils.getAddDirection(dstCrs ?? srcCrs),
+            swapLonLat = CoordinatesUtils.getSwapLonLat(dstCrs ?? srcCrs)
+        } = options;
         if (srcCrs && dstCrs && srcCrs !== dstCrs) {
             coo = CoordinatesUtils.reproject(coo, srcCrs, dstCrs);
         }
-        if (decimals < 0) {
-            decimals = CoordinatesUtils.getPrecision(dstCrs ?? srcCrs);
+        if (swapLonLat) {
+            coo = [coo[1], coo[0]];
         }
-        return coo.map(ord => LocaleUtils.toLocaleFixed(ord, decimals)).join(", ");
+        const toDMS = (coord) => {
+            const deg = Math.floor(Math.abs(coord));
+            const minFull = (Math.abs(coord) - deg) * 60;
+            const min = Math.floor(minFull);
+            const sec = ((minFull - min) * 60).toFixed(decimals);
+            return `${deg}° ${min}' ${sec}"`;
+        };
+        const toDM = (coord) => {
+            const deg = Math.floor(Math.abs(coord));
+            const min = ((Math.abs(coord) - deg) * 60).toFixed(decimals);
+            return `${deg}° ${min}'`;
+        };
+        const formatCoordinate = (value, isLat) => {
+            let direction = '';
+            if (addDirection !== 'none') {
+                if (isLat) {
+                    direction = value >= 0 ? 'N' : 'S';
+                } else {
+                    direction = value >= 0 ? 'E' : 'W';
+                }
+            }
+            let formatted;
+            switch (format) {
+            case 'dms':
+                formatted = toDMS(value, decimals);
+                break;
+            case 'dm':
+                formatted = toDM(value, decimals);
+                break;
+            default:
+                formatted = LocaleUtils.toLocaleFixed(Math.abs(value), decimals);
+            }
+            if (addDirection === 'prefix') {
+                return `${direction}${formatted}`;
+            } else if (addDirection === 'suffix') {
+                return `${formatted}${direction}`;
+            }
+            return formatted;
+        };
+        return coo.map((coord, idx) => formatCoordinate(coord, swapLonLat ? idx === 0 : idx === 1)).join(", ");
     }
 };
 

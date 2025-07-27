@@ -40,10 +40,10 @@ export default class CoordinateDisplayer extends React.Component {
             value = LocaleUtils.toLocaleFixed(coo[0], decimals) + " " + LocaleUtils.toLocaleFixed(coo[1], decimals);
         }
         return (
-            <input className={this.props.className} readOnly="readOnly" type="text" value={value}/>
+            <input className={this.props.className} readOnly type="text" value={value} />
         );
     }
     getMapMousePos = (ev) => {
-        this.setState({mousePos: ev.coordinate});
+        this.setState({ mousePos: ev.coordinate });
     };
 }
