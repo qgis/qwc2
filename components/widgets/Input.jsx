@@ -15,11 +15,14 @@ export default class Input extends React.Component {
         allowEmpty: PropTypes.bool,
         className: PropTypes.string,
         disabled: PropTypes.bool,
+        max: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+        min: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         onChange: PropTypes.func,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,
+        step: PropTypes.number,
         type: PropTypes.string,
-        value: PropTypes.string
+        value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     };
     static defaultProps = {
         allowEmpty: true
@@ -30,17 +33,19 @@ export default class Input extends React.Component {
         changed: false
     };
     static getDerivedStateFromProps(nextProps, state) {
-        if (state.value !== nextProps.value) {
-            return {value: nextProps.value, curValue: nextProps.value || "", changed: false};
+        const strValue = String(nextProps.value || "");
+        if (state.value !== strValue) {
+            return {value: strValue, curValue: strValue, changed: false};
         }
         return null;
     }
     render() {
         return (
             <input className={this.props.className} disabled={this.props.disabled}
+                max={this.props.max} min={this.props.min}
                 onBlur={this.onBlur} onChange={this.onChange} onKeyDown={this.onKeyDown}
-                readOnly={this.props.readOnly} required={this.props.required}
-                type={this.props.type} value={this.state.curValue} />
+                onMouseUp={this.onMouseUp} readOnly={this.props.readOnly} required={this.props.required}
+                step={this.props.step} type={this.props.type} value={this.state.curValue} />
         );
     }
     onChange = (ev) => {
@@ -58,13 +63,17 @@ export default class Input extends React.Component {
             this.commit();
         }
     };
+    onMouseUp = (ev) => {
+        if (this.props.type === "range") {
+            this.commit();
+        }
+    };
     commit = () => {
         if (this.state.changed) {
             this.setState(state => {
                 const newValue = state.curValue === "" && !this.props.allowEmpty ? this.props.value : state.curValue;
+                this.props.onChange(newValue);
                 return {value: newValue, curValue: newValue, changed: false};
-            }, () => {
-                this.props.onChange(this.state.value);
             });
         }
     };
