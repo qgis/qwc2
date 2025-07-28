@@ -20,13 +20,13 @@ import utif from 'utif';
 import {setCurrentTask} from '../../actions/task';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import ExportSelection from '../ExportSelection';
 import Icon from '../Icon';
 import SideBar from '../SideBar';
 import NumberInput from '../widgets/NumberInput';
 import Spinner from '../widgets/Spinner';
 
 import './../../plugins/style/MapExport.css';
-import './style/MapExport3D.css';
 
 
 class MapExport3D extends React.Component {
@@ -41,10 +41,7 @@ class MapExport3D extends React.Component {
         layouts: [],
         selectedFormat: 'image/jpeg',
         layout: "",
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
+        frame: null,
         frameRatio: null,
         exporting: false,
         exportScaleFactor: 100,
@@ -52,14 +49,21 @@ class MapExport3D extends React.Component {
     };
     state = MapExport3D.defaultState;
     onShow = () => {
+        const rect = this.props.sceneContext.scene.domElement.getBoundingClientRect();
+        const frame = {
+            x: 0.125 * rect.width,
+            y: 0.125 * rect.height,
+            width: 0.75 * rect.width,
+            height: 0.75 * rect.height
+        };
         if (!isEmpty(this.props.theme?.print)) {
             const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
                 return a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
             });
             const exportDpi = this.props.theme.printResolutions?.find(x => x === 300) ?? this.props.theme.printResolutions?.[0] ?? 300;
-            this.setState({layouts: layouts, exportDpi: exportDpi});
+            this.setState({layouts: layouts, exportDpi: exportDpi, frame: frame});
         } else {
-            this.setState({layouts: []});
+            this.setState({layouts: [], frame: frame});
         }
     };
     onHide = () => {
@@ -73,8 +77,7 @@ class MapExport3D extends React.Component {
             frameRatio = layout.map.height / layout.map.width;
         }
         this.setState(state => ({
-            selectedFormat: ev.target.value, layout, frameRatio,
-            height: frameRatio ? Math.round(state.width * frameRatio) : state.height
+            selectedFormat: ev.target.value, layout, frameRatio
         }));
     };
     layoutChanged = (ev) => {
@@ -195,23 +198,6 @@ class MapExport3D extends React.Component {
             </div>
         );
     };
-    renderExportFrame = () => {
-        const boxStyle = {
-            left: this.state.x + 'px',
-            top: this.state.y + 'px',
-            width: this.state.width + 'px',
-            height: this.state.height + 'px'
-        };
-        return (
-            <div className="mapexport3d-event-container" onPointerDown={this.startSelection}>
-                <div className="mapexport3d-frame" style={boxStyle}>
-                    <span className="mapexport3d-frame-label">
-                        {this.state.width + " x " + this.state.height}
-                    </span>
-                </div>
-            </div>
-        );
-    };
     render() {
         const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
         const minMaxIcon = this.state.minimized ? 'chevron-down' : 'chevron-up';
@@ -224,48 +210,20 @@ class MapExport3D extends React.Component {
             >
                 {() => ({
                     body: this.renderBody(),
-                    extra: this.renderExportFrame()
+                    extra: (
+                        <ExportSelection
+                            frame={this.state.frame} frameRatio={this.state.frameRatio}
+                            mapElement={this.props.sceneContext.scene.domElement}
+                            onFrameChanged={this.onFrameChanged}
+                        />
+                    )
                 })}
             </SideBar>
         );
     }
-    startSelection = (ev) => {
-        if (ev.shiftKey) {
-            const target = ev.currentTarget;
-            const view = ev.view;
-            view.addEventListener('pointerup', () => {
-                target.style.pointerEvents = '';
-                view.document.body.style.userSelect = '';
-            }, {once: true});
-            // Move behind
-            target.style.pointerEvents = 'none';
-            view.document.body.style.userSelect = 'none';
-            this.props.sceneContext.scene.domElement.dispatchEvent(new PointerEvent('pointerdown', ev));
-            return;
-        } else if (ev.button === 0) {
-            const rect = ev.currentTarget.getBoundingClientRect();
-            this.setState({
-                x: Math.round(ev.clientX - rect.left),
-                y: Math.round(ev.clientY - rect.top),
-                width: 0,
-                height: 0
-            });
-            const onMouseMove = (event) => {
-                this.setState((state) => {
-                    const ratio = this.state.frameRatio;
-                    const width = Math.round(Math.max(0, Math.round(event.clientX - rect.left) - state.x));
-                    const height = ratio ? Math.round(width * ratio) : Math.round(Math.max(0, Math.round(event.clientY - rect.top) - state.y));
-                    return {
-                        width: width,
-                        height: height
-                    };
-                });
-            };
-            ev.view.addEventListener('pointermove', onMouseMove);
-            ev.view.addEventListener('pointerup', () => {
-                ev.view.removeEventListener('pointermove', onMouseMove);
-            }, {once: true});
-        }
+    onFrameChanged = (frame) => {
+        const {x, y, width, height} = frame;
+        this.setState({frame: {x, y, width, height}});
     };
     takeScreenshot = (scale, window) => {
         const renderer = this.props.sceneContext.scene.renderer;
@@ -319,7 +277,7 @@ class MapExport3D extends React.Component {
     };
     export = (ev) => {
         ev.preventDefault();
-        if (this.state.width <= 0 || this.state.height <= 0) {
+        if (!this.state.frame || this.state.frame.width <= 0 || this.state.frame.height <= 0) {
             return;
         }
         const form = ev.target;
@@ -332,7 +290,7 @@ class MapExport3D extends React.Component {
         }
 
         this.setState({exporting: true});
-        const {canvas, context} = this.takeScreenshot(exportScale, this.state);
+        const {canvas, context} = this.takeScreenshot(exportScale, this.state.frame);
 
         if (this.state.selectedFormat === "application/pdf") {
             canvas.toBlob((blob) => {
