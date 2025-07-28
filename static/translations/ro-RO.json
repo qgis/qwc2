@@ -26,6 +26,7 @@
         "Print": "Tipărire",
         "Reports": "",
         "Settings": "Setări",
+        "Settings3D": "",
         "Share": "Trimite Link",
         "ThemeSwitcher": "Hărți tematice",
         "AttributeTable": "Tabela de atribute",
@@ -593,6 +594,9 @@
       "language": "Limba",
       "systemlang": "Liba sistemului",
       "themes": ""
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "Cod QR",

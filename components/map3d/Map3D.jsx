@@ -50,6 +50,7 @@ import MapControls3D from './MapControls3D';
 import MapExport3D from './MapExport3D';
 import Measure3D from './Measure3D';
 import OverviewMap3D from './OverviewMap3D';
+import Settings3D from './Settings3D';
 import TopBar3D from './TopBar3D';
 import View3DSwitcher from './View3DSwitcher';
 import LayerRegistry from './layers/index';
@@ -110,7 +111,10 @@ class Map3D extends React.Component {
         baseLayers: [],
         colorLayers: {},
         sceneObjects: {},
-        collisionObjects: []
+        collisionObjects: [],
+        settings: {
+            sceneQuality: 100
+        }
     };
     state = {
         sceneContext: {
@@ -133,7 +137,10 @@ class Map3D extends React.Component {
             setViewToExtent: (bounds, angle) => {},
             getTerrainHeightFromDTM: (scenePos) => {},
             getTerrainHeightFromMap: (scenePos) => {},
-            getSceneIntersection: (x, y, objects) => {}
+            getSceneIntersection: (x, y, objects) => {},
+
+            getSetting: (key) => {},
+            setSetting: (key, value) => {}
         },
         sceneId: null
     };
@@ -146,6 +153,7 @@ class Map3D extends React.Component {
         this.sceneObjectGroup = null;
         this.objectMap = {};
         this.tilesetStyles = {};
+        this.sceneSettings = {};
         this.state.sceneContext.options = this.props.options;
         this.state.sceneContext.addLayer = this.addLayer;
         this.state.sceneContext.getLayer = this.getLayer;
@@ -161,6 +169,8 @@ class Map3D extends React.Component {
         this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
         this.state.sceneContext.getTerrainHeightFromMap = this.getTerrainHeightFromMap;
         this.state.sceneContext.getSceneIntersection = this.getSceneIntersection;
+        this.state.sceneContext.getSetting = this.getSetting;
+        this.state.sceneContext.setSetting = this.setSetting;
         registerPermalinkDataStoreHook("map3d", this.store3dState);
     }
     componentDidMount() {
@@ -205,6 +215,11 @@ class Map3D extends React.Component {
                     }).filter(Boolean)
                 }
             }));
+        }
+        if (this.state.sceneContext.settings.sceneQuality !== prevState.sceneContext.settings.sceneQuality) {
+            const quality = Math.max(20, this.state.sceneContext.settings.sceneQuality);
+            this.map.segments = Math.pow(2, Math.floor(quality / 20));
+            this.instance.notifyChange(this.instance.view.camera);
         }
     }
     applyBaseLayer = () => {
@@ -631,6 +646,7 @@ class Map3D extends React.Component {
                         <MapExport3D sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
                         <OverviewMap3D baseLayer={overviewLayer} sceneContext={this.state.sceneContext} />
+                        <Settings3D sceneContext={this.state.sceneContext} />
                         <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                         <View3DSwitcher position={2} />
                     </MapControls3D>
@@ -809,6 +825,53 @@ class Map3D extends React.Component {
             this.container.appendChild(inspectorContainer);
             this.inspector = new Inspector(inspectorContainer, this.instance);
         }
+
+        this.instance.addEventListener('update-start', () => {
+            const camera = this.instance.view.camera;
+            const quality = this.state.sceneContext.settings.sceneQuality;
+            const isFirstPerson = this.state.sceneContext.scene.view.controls.isFirstPerson;
+            const maxDistance = isFirstPerson ? 200 + 20 * quality : 500 + quality * quality;
+            // Hide scene objects according to scene quality
+            Object.entries(this.state.sceneContext.sceneObjects).forEach(([objId, options]) => {
+                const object = this.objectMap[objId];
+                if (options.layertree && object.isObject3D) {
+                    object.children.forEach(child => {
+                        const distance = camera.position.distanceTo(child.getWorldPosition(new Vector3()));
+                        child.userData.__wasVisible = child.visible;
+                        if (distance > maxDistance) {
+                            child.visible = false;
+                        }
+                    });
+                }
+            });
+        });
+        this.instance.addEventListener('update-end', () => {
+            Object.entries(this.state.sceneContext.sceneObjects).forEach(([objId, options]) => {
+                const object = this.objectMap[objId];
+                if (options.layertree && object.isObject3D) {
+                    object.children.forEach(child => {
+                        child.visible = child.userData.__wasVisible;
+                        delete child.userData.__wasVisible;
+                    });
+                }
+            });
+        });
+        this.instance.addEventListener('before-entity-update', ({entity}) => {
+            if (entity !== this.map) {
+                this.instance.view.camera.userData.__previousFar = this.instance.view.camera.far;
+                const quality = this.state.sceneContext.settings.sceneQuality;
+                const isFirstPerson = this.state.sceneContext.scene.view.controls.isFirstPerson;
+                this.instance.view.camera.far = isFirstPerson ? 200 + 20 * quality : 500 + quality * quality;
+                this.instance.view.camera.updateProjectionMatrix();
+            }
+        });
+        this.instance.addEventListener('after-entity-update', ({entity}) => {
+            if (entity !== this.map) {
+                this.instance.view.camera.far = this.instance.view.camera.userData.__previousFar;
+                delete this.instance.view.camera.userData.__previousFar;
+                this.instance.view.camera.updateProjectionMatrix();
+            }
+        });
     };
     loadTilesetStyle = (objectId, options) => {
         const url = options.styles?.[options.style];
@@ -936,6 +999,19 @@ class Map3D extends React.Component {
             return objInter.distance < terrInter.distance ? objInter : terrInter;
         }
         return objInter ?? terrInter;
+    };
+    getSetting = (key) => {
+        return this.state.sceneContext.settings[key];
+    };
+    setSetting = (key, value) => {
+        this.setState(state => ({
+            sceneContext: {
+                ...state.sceneContext, settings: {
+                    ...state.sceneContext.settings,
+                    [key]: value
+                }
+            }
+        }));
     };
     redrawScene = (ev) => {
         const width = ev.target.innerWidth;

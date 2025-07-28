@@ -26,6 +26,7 @@
         "Print": "Print",
         "Reports": "",
         "Settings": "Instellingen",
+        "Settings3D": "",
         "Share": "Link delen",
         "ThemeSwitcher": "Kaartselectie",
         "AttributeTable": "Attributentabel",
@@ -593,6 +594,9 @@
       "language": "Taal",
       "systemlang": "Systeemtaal",
       "themes": "Kaarten"
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR-code",

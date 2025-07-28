@@ -26,6 +26,7 @@
         "Print": "Skriv ut",
         "Reports": "",
         "Settings": "",
+        "Settings3D": "",
         "Share": "Del lenke",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "",
@@ -593,6 +594,9 @@
       "language": "",
       "systemlang": "",
       "themes": ""
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR kode",

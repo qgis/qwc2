@@ -26,6 +26,7 @@
         "Print": "印刷",
         "Reports": "レポート",
         "Settings": "設定",
+        "Settings3D": "",
         "Share": "リンクを共有",
         "ThemeSwitcher": "テーマ",
         "AttributeTable": "属性テーブル",
@@ -593,6 +594,9 @@
       "language": "言語",
       "systemlang": "システム言語",
       "themes": "テーマ"
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR コード",

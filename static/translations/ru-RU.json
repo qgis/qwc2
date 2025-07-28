@@ -26,6 +26,7 @@
         "Print": "Печать",
         "Reports": "",
         "Settings": "",
+        "Settings3D": "",
         "Share": "Поделиться ссылкой",
         "ThemeSwitcher": "Тема",
         "AttributeTable": "",
@@ -593,6 +594,9 @@
       "language": "",
       "systemlang": "",
       "themes": ""
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR-код",
