@@ -180,7 +180,7 @@ class MapControls3D extends React.Component {
 
         const center = {
             x: 0.5 * (bounds[0] + bounds[2]),
-            y: 0.5 * (bounds[1] + bounds[3]),
+            y: 0.5 * (bounds[1] + bounds[3])
         };
         const camerapos = new Vector3(center.x, center.y, cameraHeight);
         const target = new Vector3(center.x, center.y, 0);
