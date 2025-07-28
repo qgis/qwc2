@@ -20,7 +20,7 @@ export default class ExportSelection extends React.Component {
             x: PropTypes.number,
             y: PropTypes.number,
             width: PropTypes.number,
-            height: PropTypes.number,
+            height: PropTypes.number
         }),
         frameRatio: PropTypes.number,
         mapElement: PropTypes.object,

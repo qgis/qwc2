@@ -191,7 +191,7 @@ class MapControls3D extends React.Component {
                 camerapos.z += h2;
                 target.z += h2;
                 this.controls.animateTo(camerapos, target, angle);
-            })
+            });
         } else {
             camerapos.z += h;
             target.z += h;
