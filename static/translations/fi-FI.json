@@ -26,6 +26,7 @@
         "Print": "Tulosta",
         "Reports": "",
         "Settings": "",
+        "Settings3D": "",
         "Share": "Jaa linkki",
         "ThemeSwitcher": "Teema",
         "AttributeTable": "",
@@ -593,6 +594,9 @@
       "language": "",
       "systemlang": "",
       "themes": ""
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR-koodi",

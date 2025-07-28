@@ -26,6 +26,7 @@
         "Print": "Отпечатване",
         "Reports": "Доклади",
         "Settings": "Настройки",
+        "Settings3D": "",
         "Share": "Споделяне на връзка",
         "ThemeSwitcher": "Тема",
         "AttributeTable": "Таблица на атрибутите",
@@ -593,6 +594,9 @@
       "language": "Език",
       "systemlang": "Език на системата",
       "themes": "Теми"
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR код",

@@ -26,6 +26,7 @@
         "Print": "Drucken",
         "Reports": "Berichte",
         "Settings": "Einstellungen",
+        "Settings3D": "Einstellungen",
         "Share": "Teilen",
         "ThemeSwitcher": "Themen",
         "AttributeTable": "Attributtabelle",
@@ -593,6 +594,9 @@
       "language": "Sprache",
       "systemlang": "Systemsprache",
       "themes": "Themen"
+    },
+    "settings3d": {
+      "quality": "Qualität"
     },
     "share": {
       "QRCodeLinkTitle": "QR Code (Smartphone)",

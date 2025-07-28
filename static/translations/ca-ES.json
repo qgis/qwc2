@@ -26,6 +26,7 @@
         "Print": "Imprimir",
         "Reports": "Informes",
         "Settings": "Opcions",
+        "Settings3D": "",
         "Share": "Compartir link",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Taula d'atributs",
@@ -593,6 +594,9 @@
       "language": "Idioma",
       "systemlang": "Idioma del sistema",
       "themes": "Temes"
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "Codi QR",

@@ -26,6 +26,7 @@
         "Print": "Tisk",
         "Reports": "",
         "Settings": "Nastavení",
+        "Settings3D": "",
         "Share": "Sdílet odkaz",
         "ThemeSwitcher": "Téma",
         "AttributeTable": "Atributy",
@@ -593,6 +594,9 @@
       "language": "Jazyk",
       "systemlang": "Systémový jazyk",
       "themes": ""
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR kód",
