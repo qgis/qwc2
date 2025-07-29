@@ -7,12 +7,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import geotiffLayer from './GeoTIFFLayer3D';
 import vectorLayer from './VectorLayer3D';
 import wfsLayer from './WFSLayer3D';
 import wmsLayer from './WMSLayer3D';
 import wmtsLayer from './WMTSLayer3D';
 
 export default {
+    geotiff: geotiffLayer,
     vector: vectorLayer,
     wfs: wfsLayer,
     wms: wmsLayer,
