@@ -70,7 +70,14 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
 
     // Add background layers for theme
     let haveVisibleBg = false;
-    for (const bgLayer of ThemeUtils.createThemeBackgroundLayers(theme, themes, visibleBgLayer, externalLayers, dispatch, initialTheme)) {
+    const bgLayers = ThemeUtils.createThemeBackgroundLayers(theme.backgroundLayers || [], themes, visibleBgLayer, externalLayers);
+    if (initialTheme && visibleBgLayer) {
+        const visibleLayer = bgLayers.find(entry => entry.visibility)?.name;
+        if (visibleLayer !== visibleBgLayer) {
+            dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
+        }
+    }
+    for (const bgLayer of bgLayers) {
         haveVisibleBg |= bgLayer.visibility;
         dispatch(addLayer(bgLayer));
     }
