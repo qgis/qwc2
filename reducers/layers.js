@@ -309,35 +309,7 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers};
     }
     case REPLACE_PLACEHOLDER_LAYER: {
-        let newLayers = state.flat || [];
-        if (action.layer) {
-            newLayers = newLayers.map(layer => {
-                if (layer.type === 'placeholder' && layer.id === action.id) {
-                    const newLayer = {
-                        ...layer,
-                        ...action.layer,
-                        role: layer.role,
-                        id: layer.id
-                    };
-                    // For background layers, preserve any custom name/title/attribution/opacity
-                    if (layer.role === LayerRole.BACKGROUND) {
-                        newLayer.name = layer.name || action.layer.name;
-                        newLayer.title = layer.title || action.layer.title;
-                        newLayer.attribution = layer.attribution || action.layer.attribution;
-                        newLayer.opacity = layer.opacity || action.layer.opacity;
-                    }
-                    delete newLayer.loading;
-                    if (newLayer.type === "wms") {
-                        Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer, state.filter));
-                    }
-                    return newLayer;
-                } else {
-                    return layer;
-                }
-            });
-        } else {
-            newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.id === action.id));
-        }
+        const newLayers = LayerUtils.replacePlaceholderLayer(state.flat, action.id, action.layer, state.filter);
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers};
     }

@@ -425,6 +425,38 @@ const LayerUtils = {
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
+    replacePlaceholderLayer(layers, layerid, newlayer, filter = {}) {
+        let newLayers = layers;
+        if (newlayer) {
+            newLayers = layers.map(layer => {
+                if (layer.type === 'placeholder' && layer.id === layerid) {
+                    const newLayer = {
+                        ...layer,
+                        ...newlayer,
+                        role: layer.role,
+                        id: layer.id
+                    };
+                    // For background layers, preserve any custom name/title/attribution/opacity
+                    if (layer.role === LayerRole.BACKGROUND) {
+                        newLayer.name = layer.name || newlayer.name;
+                        newLayer.title = layer.title || newlayer.title;
+                        newLayer.attribution = layer.attribution || newlayer.attribution;
+                        newLayer.opacity = layer.opacity || newlayer.opacity;
+                    }
+                    delete newLayer.loading;
+                    if (newLayer.type === "wms") {
+                        Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer, filter));
+                    }
+                    return newLayer;
+                } else {
+                    return layer;
+                }
+            });
+        } else {
+            newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.id === layerid));
+        }
+        return newLayers;
+    },
     explodeLayers(layers) {
         // Return array with one entry for every single sublayer)
         const exploded = [];
