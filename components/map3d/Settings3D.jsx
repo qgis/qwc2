@@ -14,6 +14,8 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import SideBar from '../SideBar';
 import Input from '../widgets/Input';
 
+import './style/Settings3D.css';
+
 
 export default class Settings3D extends React.Component {
     static propTypes = {

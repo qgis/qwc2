@@ -1,0 +1,11 @@
+div.settings3d-body table {
+    width: 100%;
+}
+
+div.settings3d-body table td {
+    padding: 0 0.25em;
+}
+
+div.settings3d-body table td > input {
+    width: 100%;
+}
