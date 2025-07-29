@@ -113,6 +113,9 @@ const LayerUtils = {
             id: id,
             type: "placeholder",
             name: layerConfig.name,
+            opacity: layerConfig.opacity,
+            visibility: layerConfig.visibility,
+            style: layerConfig.style,
             title: layerConfig.name,
             role: LayerRole.USERLAYER,
             loading: true
@@ -433,15 +436,18 @@ const LayerUtils = {
                     const newLayer = {
                         ...layer,
                         ...newlayer,
+                        attribution: layer.attribution ?? newlayer.attribution,
+                        opacity: layer.opacity ?? newlayer.opacity,
+                        visibility: layer.visibility ?? newlayer.visibility,
+                        tristate: layer.tristate ?? newlayer.tristate,
+                        style: layer.style ?? newlayer.style,
                         role: layer.role,
                         id: layer.id
                     };
                     // For background layers, preserve any custom name/title/attribution/opacity
                     if (layer.role === LayerRole.BACKGROUND) {
-                        newLayer.name = layer.name || newlayer.name;
-                        newLayer.title = layer.title || newlayer.title;
-                        newLayer.attribution = layer.attribution || newlayer.attribution;
-                        newLayer.opacity = layer.opacity || newlayer.opacity;
+                        newLayer.name = layer.name ?? newlayer.name;
+                        newLayer.title = layer.title ?? newlayer.title;
                     }
                     delete newLayer.loading;
                     if (newLayer.type === "wms") {
