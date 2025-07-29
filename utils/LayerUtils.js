@@ -27,10 +27,7 @@ const LayerUtils = {
                 entry.sublayer.opacity = layerConfig.opacity;
                 entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
                 entry.sublayer.tristate = layerConfig.tristate;
-                entry.sublayer.style = layerConfig.style;
-                if (!entry.sublayer.style) {
-                    entry.sublayer.style = !isEmpty(entry.sublayer.styles) ? Object.keys(entry.sublayer.styles)[0] : "";
-                }
+                entry.sublayer.style = layerConfig.style || entry.sublayer.style;
             } else {
                 entry.sublayer.visibility = false;
             }
@@ -61,10 +58,7 @@ const LayerUtils = {
                     entry.sublayer.opacity = layerConfig.opacity;
                     entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
                     entry.sublayer.tristate = layerConfig.tristate;
-                    entry.sublayer.style = layerConfig.style;
-                    if (!entry.sublayer.style) {
-                        entry.sublayer.style = !isEmpty(entry.sublayer.styles) ? Object.keys(entry.sublayer.styles)[0] : "";
-                    }
+                    entry.sublayer.style = layerConfig.style || entry.sublayer.style;
                     reordered.push(entry);
                 }
             } else if (layerConfig.type === 'separator') {
