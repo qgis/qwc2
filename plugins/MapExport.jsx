@@ -222,7 +222,7 @@ class MapExport extends React.Component {
                                     </td>
                                 </tr>
                             ) : null}
-                            {this.props.dpis ? (
+                            {this.props.dpis && this.state.selectedFormat !== "application/dxf" ? (
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.resolution")}</td>
                                     <td>
