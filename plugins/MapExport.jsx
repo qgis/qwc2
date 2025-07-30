@@ -57,13 +57,15 @@ class MapExport extends React.Component {
          *  If more than one configuration per format is provided, a selection combo will be displayed.
          *  `extraQuery` will be appended to the query string (replacing any existing parameters).
          *  `formatOptions` will be passed as FORMAT_OPTIONS.
-         *  `baseLayer` will be appended to the LAYERS instead of the background layer. */
+         *  `baseLayer` will be appended to the LAYERS instead of the background layer.
+         *  `serviceUrl` is the address of a custom service to use instead of the layer OWS service url. */
         formatConfiguration: PropTypes.shape({
             format: PropTypes.arrayOf(PropTypes.shape({
                 name: PropTypes.string,
                 extraQuery: PropTypes.string,
                 formatOptions: PropTypes.string,
-                baseLayer: PropTypes.string
+                baseLayer: PropTypes.string,
+                serviceUrl: PropTypes.string
             }))
         }),
         layers: PropTypes.array,
@@ -390,7 +392,7 @@ class MapExport extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: "arraybuffer"
         };
-        axios.post(this.props.theme.url, data, config).then(response => {
+        axios.post(formatConfiguration.serviceUrl ?? this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
 

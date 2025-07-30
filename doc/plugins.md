@@ -553,7 +553,7 @@ Allows exporting a selected portion of the map to a variety of formats.
 | dpis | `[number]` | List of dpis at which to export the map. If empty, the default server dpi is used. | `undefined` |
 | exportExternalLayers | `bool` | Whether to include external layers in the image. Requires QGIS Server 3.x! | `true` |
 | fileNameTemplate | `string` | Template for the name of the generated files when downloading. | `'{theme}_{timestamp}'` |
-| formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `extraQuery` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS instead of the background layer. | `undefined` |
+| formatConfiguration | `{`<br />`  format: [{`<br />`  name: string,`<br />`  extraQuery: string,`<br />`  formatOptions: string,`<br />`  baseLayer: string,`<br />`  serviceUrl: string,`<br />`}],`<br />`}` | Custom export configuration per format.<br /> If more than one configuration per format is provided, a selection combo will be displayed.<br /> `extraQuery` will be appended to the query string (replacing any existing parameters).<br /> `formatOptions` will be passed as FORMAT_OPTIONS.<br /> `baseLayer` will be appended to the LAYERS instead of the background layer.<br /> `serviceUrl` is the address of a custom service to use instead of the layer OWS service url. | `undefined` |
 | pageSizes | `[{`<br />`  name: string,`<br />`  width: number,`<br />`  height: number,`<br />`}]` | List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. | `[]` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
@@ -869,7 +869,6 @@ Displays a 3D map view.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| buttonPosition | `number` | The position slot index of the 3d switch map button, from the bottom (0: bottom slot). | `6` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
 | options | `{`<br />`  searchMinScaleDenom: number,`<br />`}` | Various configuration options | `{`<br />`    searchMinScaleDenom: 1000`<br />`}` |
 
