@@ -54,6 +54,8 @@ class MapExport extends React.Component {
         exportExternalLayers: PropTypes.bool,
         /** Template for the name of the generated files when downloading. Can contain the placeholders `{username}`, `{tenant}`, `{theme}`, `{themeTitle}`, `{timestamp}`. */
         fileNameTemplate: PropTypes.string,
+        /** Formats to force as available even if the map capabilities report otherwise. Useful if a serviceUrl is defined in a format configuration. */
+        forceAvailableFormats: PropTypes.array,
         /** Custom export configuration per format.
          *  If more than one configuration per format is provided, a selection combo will be displayed.
          *  `labelMsgId` is a translation string message id for the combo label. If not defined, `name` will be displayed.
@@ -305,7 +307,12 @@ class MapExport extends React.Component {
             }
             scale = this.props.allowedScales[closestIdx];
         }
-        let availableFormats = this.props.theme.availableFormats;
+        let availableFormats = [...this.props.theme.availableFormats];
+        (this.props.forceAvailableFormats || []).forEach(format => {
+            if (!availableFormats.includes(format)) {
+                availableFormats.push(format);
+            }
+        });
         if (!isEmpty(this.props.allowedFormats)) {
             availableFormats = this.props.allowedFormats.filter(fmt => availableFormats.includes(fmt));
         }
