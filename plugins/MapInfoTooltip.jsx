@@ -120,11 +120,10 @@ class MapInfoTooltip extends React.Component {
             projections.push("EPSG:4326");
         }
         projections.map(crs => {
-            const coo = CoordinatesUtils.reproject(this.state.point.coordinate, this.props.map.projection, crs);
-            const decimals = CoordinatesUtils.getPrecision(crs);
+            const coo = CoordinatesUtils.getFormattedCoordinate(this.state.point.coordinate, this.props.map.projection, crs);
             info.push([
                 (CoordinatesUtils.getAvailableCRS()[crs] || {label: crs}).label,
-                coo.map(x => LocaleUtils.toLocaleFixed(x, decimals)).join(", ")
+                coo
             ]);
         });
 

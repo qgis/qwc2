@@ -40,6 +40,17 @@ const CoordinatesUtils = {
         ), {});
         return precisions[projection] ?? (CoordinatesUtils.getUnits(projection) === 'degrees' ? 4 : 0);
     },
+    getProjectionConfig(projection) {
+        const config = ConfigUtils.getConfigProp("projections").reduce((res, entry) => {
+            res[entry.code] = {
+                format: entry.format ?? 'decimal',
+                addDirection: entry.addDirection ?? 'none',
+                swapLonLat: entry.swapLonLat ?? false
+            };
+            return res;
+        }, {});
+        return config[projection] ?? { format: 'decimal', addDirection: 'none', swapLonLat: false };
+    },
     getAxisOrder(projection) {
         const axis = ol.proj.get(projection).getAxisOrientation();
         return axis || 'enu';
@@ -131,14 +142,68 @@ const CoordinatesUtils = {
         const parts = crsStr.split(":");
         return "urn:ogc:def:crs:" + parts[0] + "::" + parts[1];
     },
-    getFormattedCoordinate(coo, srcCrs, dstCrs = null, decimals = -1) {
+    getFormattedCoordinate(coo, srcCrs, dstCrs = null, options = {}) {
+        const units = CoordinatesUtils.getUnits(dstCrs ?? srcCrs);
+        const decimals = options.decimals ?? CoordinatesUtils.getPrecision(dstCrs ?? srcCrs);
+        const {
+            format,
+            addDirection,
+            swapLonLat
+        } = (() => {
+            const config = CoordinatesUtils.getProjectionConfig(dstCrs ?? srcCrs);
+            return {
+                format: units !== 'degrees' ? 'decimal' : config.format,
+                addDirection: config.addDirection,
+                swapLonLat: config.swapLonLat
+            };
+        })();
+
         if (srcCrs && dstCrs && srcCrs !== dstCrs) {
             coo = CoordinatesUtils.reproject(coo, srcCrs, dstCrs);
         }
-        if (decimals < 0) {
-            decimals = CoordinatesUtils.getPrecision(dstCrs ?? srcCrs);
+        if (swapLonLat) {
+            coo = [coo[1], coo[0]];
         }
-        return coo.map(ord => LocaleUtils.toLocaleFixed(ord, decimals)).join(", ");
+        const toDMS = (coord) => {
+            const deg = Math.floor(Math.abs(coord));
+            const minFull = (Math.abs(coord) - deg) * 60;
+            const min = Math.floor(minFull);
+            const sec = ((minFull - min) * 60).toFixed(decimals);
+            return `${deg}° ${min}' ${sec}"`;
+        };
+        const toDM = (coord) => {
+            const deg = Math.floor(Math.abs(coord));
+            const min = ((Math.abs(coord) - deg) * 60).toFixed(decimals);
+            return `${deg}° ${min}'`;
+        };
+        const formatCoordinate = (value, isLat) => {
+            let direction = '';
+            if (addDirection !== 'none') {
+                if (isLat) {
+                    direction = value >= 0 ? 'N' : 'S';
+                } else {
+                    direction = value >= 0 ? 'E' : 'W';
+                }
+            }
+            let formatted;
+            switch (format) {
+            case 'dms':
+                formatted = toDMS(value, decimals);
+                break;
+            case 'dm':
+                formatted = toDM(value, decimals);
+                break;
+            default:
+                formatted = LocaleUtils.toLocaleFixed(Math.abs(value), decimals);
+            }
+            if (addDirection === 'prefix') {
+                return `${direction}${formatted}`;
+            } else if (addDirection === 'suffix') {
+                return `${formatted}${direction}`;
+            }
+            return formatted;
+        };
+        return coo.map((coord, idx) => formatCoordinate(coord, swapLonLat ? idx === 0 : idx === 1)).join(", ");
     }
 };
 
