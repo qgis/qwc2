@@ -12,6 +12,9 @@ import PropTypes from 'prop-types';
 
 import InputContainer from './InputContainer';
 
+import './style/DateTimeInput.css';
+
+
 export default class DateTimeInput extends React.Component {
     static propTypes = {
         maxDate: PropTypes.string,
@@ -27,7 +30,7 @@ export default class DateTimeInput extends React.Component {
         const parts = (this.props.value || "T").split("T");
         parts[1] = (parts[1] || "").replace(/\.\d+$/, ''); // Strip milliseconds
         return (
-            <InputContainer>
+            <InputContainer className="DateTimeInput">
                 <input
                     max={this.props.maxDate} min={this.props.minDate}
                     onChange={ev => this.valueChanged(ev.target.value, parts[1])}
