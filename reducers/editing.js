@@ -27,6 +27,10 @@ const checkNonZeroZ = (oldState, newState, fallback) => {
     return oldState?.geomNonZeroZ || false;
 };
 
+const checkGeomReadOnly = (geomType) => {
+    return (geomType ?? null) !== null && !['Point', 'LineString', 'Polygon'].includes((geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
+};
+
 export default function editing(state = defaultState, action) {
     switch (action.type) {
     case SET_EDIT_CONTEXT: {
@@ -38,10 +42,11 @@ export default function editing(state = defaultState, action) {
                     feature: null,
                     geomType: null,
                     changed: false,
-                    geomReadOnly: false,
+                    permissions: {},
                     ...state.contexts[action.contextId],
                     ...action.editContext,
                     geomNonZeroZ: checkNonZeroZ(state.contexts[action.contextId], action.editContext),
+                    geomReadOnly: checkGeomReadOnly(action.editContext.geomType ?? state.contexts[action.contextId]?.geomType),
                     id: action.contextId
                 }
             },

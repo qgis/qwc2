@@ -308,14 +308,11 @@ class Editing extends React.Component {
     };
     changeSelectedLayer = (selectedLayer, feature = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        const editPermissions = curConfig ? (curConfig.permissions || {}) : {};
-        const canEditGeometry = ['Point', 'LineString', 'Polygon'].includes((curConfig?.geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
-        const geomReadOnly = editPermissions.updatable === false || !canEditGeometry;
         this.props.setEditContext('Editing', {
             action: "Pick",
             feature: feature,
             geomType: curConfig?.geomType || null,
-            geomReadOnly: geomReadOnly
+            permissions: curConfig?.permissions || {}
         });
 
         let prevLayerVisibility = null;

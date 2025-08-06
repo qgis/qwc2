@@ -135,7 +135,8 @@ class FeatureForm extends React.Component {
                 feature: feature,
                 changed: false,
                 geomType: curConfig.geomType || null,
-                geomReadOnly: editPermissions.updatable === false || !canEditGeometry
+                geomReadOnly: editPermissions.updatable === false || !canEditGeometry,
+                permissions: curConfig?.permissions || {}
             });
         }
         if (!this.props.enabled && prevProps.enabled) {
