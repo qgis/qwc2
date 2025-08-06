@@ -97,6 +97,7 @@ export default class EditComboField extends React.Component {
                             <label>
                                 <input
                                     checked={items.has(value)}
+                                    disabled={this.props.readOnly}
                                     onChange={(ev) => this.props.updateField(this.props.fieldId, serializeValue(value, ev.target.checked))}
                                     type="checkbox"
                                 />{label}</label>
