@@ -34,12 +34,11 @@ class View3DSwitcher extends React.Component {
             {mode: View3DMode.FULLSCREEN, icon: "3d"},
             {mode: View3DMode.SPLITSCREEN, icon: "3d2d"}
         ];
-        const activeButton = buttons.splice(this.props.view3dMode, 1)[0];
         return (
             <MapButton
                 active={this.state.expanded}
                 busy={this.props.view3dMode === View3DMode.DISABLING}
-                icon={activeButton?.icon ?? ""}
+                icon={"view"}
                 iconSize="xlarge"
                 onClick={() => this.setState(state => ({expanded: !state.expanded}))}
                 position={this.props.position}
@@ -47,7 +46,8 @@ class View3DSwitcher extends React.Component {
                 <div className={"view3d-switcher-buttons" + (this.state.expanded ? " view3d-switcher-buttons-expanded" : "")}>
                     {buttons.map(button => (
                         <button
-                            className="map-button" key={button.icon}
+                            className={"map-button" + (button.mode === this.props.view3dMode ? " map-button-active" : "")}
+                            key={button.icon}
                             onClick={() => this.switchMode(button.mode)}
                         >
                             <Icon icon={button.icon} size="xlarge" />

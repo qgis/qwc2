@@ -13,3 +13,7 @@ div.view3d-switcher-buttons-expanded > button:nth-child(1) {
 div.view3d-switcher-buttons-expanded > button:nth-child(2) {
     right: 7em;
 }
+
+div.view3d-switcher-buttons-expanded > button:nth-child(3) {
+    right: 10.5em;
+}
