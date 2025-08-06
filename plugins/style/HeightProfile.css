@@ -26,6 +26,16 @@ div.height-profile-error {
 }
 
 .height-profile-dataset-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
     position: absolute;
     right: 0;
+    bottom: 0;
+}
+
+.height-profile-dataset-select > div {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
 }
