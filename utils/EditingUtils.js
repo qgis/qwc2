@@ -192,7 +192,7 @@ export function parseExpressionsAsync(fieldExpressions, feature, editConfig, edi
                 return {...res, [field]: parser.results[0]};
             } catch (e) {
                 /* eslint-disable-next-line */
-                console.warn("Failed to evaluate expression " + expr.replace(/\n/, ' '));
+                console.warn("Failed to evaluate expression " + expression.replace(/\n/, ' '));
                 return res;
             }
         }, {});
