@@ -12,6 +12,7 @@ ReducerIndex.register("theme", themeReducer);
 
 import isEmpty from 'lodash.isempty';
 
+import {setView3dMode, View3DMode} from '../actions/display';
 import {setCurrentTask} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -21,7 +22,6 @@ import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';
-import {View3DMode} from './display';
 import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} from './layers';
 import {configureMap} from './map';
 import {showNotification, NotificationType} from './windows';
@@ -46,7 +46,7 @@ export function setThemeLayersList(theme) {
     };
 }
 
-export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme) {
+export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialView = null) {
     // Create layer
     const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
     let layers = [themeLayer];
@@ -114,6 +114,16 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         theme: theme,
         layer: themeLayer.id
     });
+    if (initialView === null) {
+        if (theme.startupView === "2d") {
+            dispatch(setView3dMode(View3DMode.DISABLED));
+        } else if (theme.startupView === "3d2d") {
+            dispatch(setView3dMode(View3DMode.SPLITSCREEN));
+        } else if (theme.startupView === "3d") {
+            dispatch(setView3dMode(View3DMode.FULLSCREEN));
+        }
+    }
+
     dispatch({
         type: SWITCHING_THEME,
         switching: false
@@ -125,7 +135,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
     }
 }
 
-export function setCurrentTheme(theme, themes, preserve = true, initialView = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null) {
+export function setCurrentTheme(theme, themes, preserve = true, initialExtent = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null, initialView = null) {
     return (dispatch, getState) => {
         const curLayers = getState().layers?.flat || [];
         const mapCrs = theme.mapCrs || themes.defaultMapCrs || "EPSG:3857";
@@ -184,7 +194,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
         // Preserve extent if desired and possible
         if (getState().display.view3dMode !== View3DMode.FULLSCREEN) {
             const curCrs = getState().map.projection;
-            if (preserve && !initialView && curCrs === theme.mapCrs) {
+            if (preserve && !initialExtent && curCrs === theme.mapCrs) {
                 const curBounds = getState().map.bbox.bounds;
                 if (ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === true) {
                     // If theme bbox (b1) includes current bbox (b2), keep current extent
@@ -192,16 +202,16 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                     const b2 = curBounds;
                     if (b2[0] >= b1[0] && b2[1] >= b1[1] && b2[2] <= b1[2] && b2[3] <= b1[3]) {
                         // theme bbox (b1) includes current bbox (b2)
-                        initialView = {bounds: curBounds, crs: curCrs};
+                        initialExtent = {bounds: curBounds, crs: curCrs};
                     }
                 } else if (ConfigUtils.getConfigProp("preserveExtentOnThemeSwitch", theme) === "force") {
-                    initialView = {bounds: curBounds, crs: curCrs};
+                    initialExtent = {bounds: curBounds, crs: curCrs};
                 }
             }
         }
 
         // Reconfigure map
-        dispatch(configureMap(theme.mapCrs, theme.scales, initialView || theme.initialBbox, theme.defaultDisplayCrs));
+        dispatch(configureMap(theme.mapCrs, theme.scales, initialExtent || theme.initialBbox, theme.defaultDisplayCrs));
         let layerConfigs = layerParams ? layerParams.map(param => LayerUtils.splitLayerUrlParam(param)) : null;
         if (layerConfigs) {
             layerConfigs = LayerUtils.replaceLayerGroups(layerConfigs, theme);
@@ -251,13 +261,13 @@ export function setCurrentTheme(theme, themes, preserve = true, initialView = nu
                         dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
                     }
                 }
-                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
+                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialView);
             });
         } else {
             if (!isEmpty(missingThemeLayers)) {
                 dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", Object.keys(missingThemeLayers).join(", ")), NotificationType.WARN, true));
             }
-            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
+            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialView);
         }
     };
 }
