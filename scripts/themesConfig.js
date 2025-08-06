@@ -281,7 +281,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
     if (configItem.disabled) {
         /* eslint-disable-next-line no-console */
         console.log(`Item ${configItem.url}` + (configItem.title ? ` (${configItem.title})` : "") + " has been disabled");
-        return;
+        return null;
     }
 
     const parsedUrl = urlUtil.parse(urlUtil.resolve(hostFqdn, configItem.url), true);
@@ -572,8 +572,11 @@ const tasks = [];
 function getGroupThemes(config, configGroup, result, resultGroup, proxy, groupCounter) {
     for (const item of configGroup.items) {
         const itemEntry = {};
-        tasks.push(getTheme(config, item, result, itemEntry, proxy));
-        resultGroup.items.push(itemEntry);
+        const task = getTheme(config, item, result, itemEntry, proxy);
+        if (task) {
+            tasks.push(task);
+            resultGroup.items.push(itemEntry);
+        }
     }
 
     if (configGroup.groups !== undefined) {
