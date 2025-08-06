@@ -26,11 +26,12 @@
         "Print": "Imprimir",
         "Reports": "Informes",
         "Settings": "Opciones",
+        "Settings3D": "",
         "Share": "Compartir enlace",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabla de Atributos",
         "AuthenticationLogin": "Inicio de sesión",
-        "AuthenticationLogout": "Cierre de sesión",
+        "AuthenticationLogout": "Cierre de sesión - {0}",
         "Cyclomedia": "Visor Cyclomedia",
         "Draw3D": "Dibujar",
         "FeatureForm": "Formulario de Elemento",
@@ -593,6 +594,9 @@
       "language": "Idioma",
       "systemlang": "Idioma del sistema",
       "themes": "Temas"
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "Código QR",

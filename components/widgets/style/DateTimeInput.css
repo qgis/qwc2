@@ -1,0 +1,7 @@
+div.DateTimeInput > input[type=date] {
+    min-width: 16ch;
+}
+
+div.DateTimeInput > input[type=time] {
+    min-width: 11ch;
+}

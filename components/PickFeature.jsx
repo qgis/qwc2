@@ -92,7 +92,7 @@ class PickFeature extends React.Component {
                             maxY = coordinates[0][i][1];
                         }
                     }
-                    const clickPos = getPixelFromCoordinate([maxX, maxY]);
+                    const clickPos = getPixelFromCoordinate([maxX, maxY], false);
                     const reqId = uuidv1();
                     queryLayers.forEach(layer => {
                         let request = null;

@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
-import EditComboField, {KeyValCache} from '../components/EditComboField';
+import EditComboField from '../components/EditComboField';
 import EditUploadField from '../components/EditUploadField';
 import Icon from '../components/Icon';
 import NavBar from '../components/widgets/NavBar';
@@ -26,7 +26,7 @@ import Spinner from '../components/widgets/Spinner';
 import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import {ExpressionFeatureCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
+import {FeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -374,10 +374,12 @@ class AttributeTableWidget extends React.Component {
     reload = (layerName = null) => {
         this.setState((state) => {
             const selectedLayer = layerName || state.selectedLayer;
+            const editConfig = this.props.theme.editConfig || {};
+            const currentEditConfig = editConfig[selectedLayer];
             KeyValCache.clear();
-            ExpressionFeatureCache.clear();
+            FeatureCache.clear();
             const bbox = this.state.limitToExtent ? this.props.mapBbox.bounds : null;
-            this.props.iface.getFeatures(this.editLayerId(selectedLayer), this.props.mapCrs, (result) => {
+            this.props.iface.getFeatures(currentEditConfig, this.props.mapCrs, (result) => {
                 if (result) {
                     const features = result.features || [];
                     this.setState((state2) => ({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, state2), loadedLayer: selectedLayer}));
@@ -400,18 +402,13 @@ class AttributeTableWidget extends React.Component {
         newState.filteredSortedFeatures = this.filteredSortedFeatures(this.state.features, {...this.state, ...newState});
         this.setState(newState);
     };
-    editLayerId = (layerId) => {
-        if (this.props.theme && this.props.theme.editConfig && this.props.theme.editConfig[layerId]) {
-            return this.props.theme.editConfig[layerId].editDataset || layerId;
-        }
-        return layerId;
-    };
     renderField = (currentEditConfig, field, featureidx, filteredIndex, fielddisabled) => {
         const feature = this.state.features[featureidx];
         let value = feature.properties[field.id];
         if (value === undefined || value === null) {
             value = "";
         }
+        const mapPrefix = (currentEditConfig.editDataset.match(/^[^.]+\./) || [""])[0];
         const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, filteredIndex, fieldid, val, emptynull);
         const constraints = field.constraints || {};
         const disabled = constraints.readOnly || fielddisabled;
@@ -421,8 +418,7 @@ class AttributeTableWidget extends React.Component {
         } else if (constraints.values || constraints.keyvalrel) {
             let filterExpr = null;
             if (field.filterExpression) {
-                const mapPrefix = (currentEditConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-                filterExpr = parseExpression(field.filterExpression, feature, this.editLayerId(this.state.selectedLayer), this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                filterExpr = parseExpression(field.filterExpression, feature, currentEditConfig, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
             }
             input = (
                 <EditComboField
@@ -447,7 +443,7 @@ class AttributeTableWidget extends React.Component {
                     value={value} />
             );
         } else if (field.type === "file") {
-            return (<EditUploadField constraints={constraints} dataset={this.editLayerId(this.state.selectedLayer)} disabled={disabled} fieldId={field.id} iface={this.props.iface} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
+            return (<EditUploadField constraints={constraints} dataset={currentEditConfig.editDataset} disabled={disabled} fieldId={field.id} iface={this.props.iface} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
             if ((feature.properties[field.id] ?? null) === null) {
                 value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
@@ -511,8 +507,11 @@ class AttributeTableWidget extends React.Component {
     deleteSelectedFeatured = () => {
         this.setState((state) => {
             const features = state.filteredSortedFeatures.filter(feature => state.selectedFeatures[feature.id] === true);
+            const selectedLayer = state.selectedLayer;
+            const editConfig = this.props.theme.editConfig || {};
+            const currentEditConfig = editConfig[selectedLayer];
             features.forEach(feature => {
-                this.props.iface.deleteFeature(this.editLayerId(state.selectedLayer), feature.id, (success) => {
+                this.props.iface.deleteFeature(currentEditConfig, feature.id, (success) => {
                     this.setState((state2) => {
                         const newState = {
                             deleteTask: {
@@ -567,9 +566,16 @@ class AttributeTableWidget extends React.Component {
                 properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
             }
         };
-        // Omit geometry if it is read-only
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
+        Object.keys(feature.properties || {}).forEach(name => {
+            const fieldConfig = currentEditConfig.fields?.find?.(f => f.id === name) ?? {};
+            if (fieldConfig.expression) {
+                // Skip virtual fields
+                delete feature.properties[name];
+            }
+        });
+        // Omit geometry if it is read-only
         const canEditGeometry = ['Point', 'LineString', 'Polygon'].includes((currentEditConfig.geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
         if (!canEditGeometry) {
             delete feature.geometry;
@@ -584,12 +590,12 @@ class AttributeTableWidget extends React.Component {
 
         if (this.state.newFeature) {
             this.props.iface.addFeatureMultipart(
-                this.editLayerId(this.state.selectedLayer), featureData,
+                currentEditConfig, this.props.mapCrs, featureData,
                 (success, result) => this.featureCommited(success, result)
             );
         } else {
             this.props.iface.editFeatureMultipart(
-                this.editLayerId(this.state.loadedLayer), feature.id, featureData,
+                currentEditConfig, this.props.mapCrs, feature.id, featureData,
                 (success, result) => this.featureCommited(success, result)
             );
         }
@@ -697,7 +703,7 @@ class AttributeTableWidget extends React.Component {
                         return res2;
                     }, {});
                 } else if (field.constraints && field.constraints.keyvalrel) {
-                    res[field.id] = KeyValCache.getSync(field.constraints.keyvalrel).reduce((res2, entry) => {
+                    res[field.id] = KeyValCache.getSync(this.props.iface, field.constraints.keyvalrel).reduce((res2, entry) => {
                         res2[entry.value] = entry.label;
                         return res2;
                     }, {});

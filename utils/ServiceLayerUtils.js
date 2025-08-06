@@ -490,6 +490,9 @@ const ServiceLayerUtils = {
                         style: layerConfig.style || layer.style,
                         role: LayerRole.USERLAYER
                     };
+                    if (layer.type === "wms") {
+                        layer.params = {LAYERS: layerConfig.name};
+                    }
                     callback(layerConfig.id, layer);
                 } else {
                     // eslint-disable-next-line

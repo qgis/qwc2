@@ -26,11 +26,12 @@
         "Print": "Drucken",
         "Reports": "Berichte",
         "Settings": "Einstellungen",
+        "Settings3D": "Einstellungen",
         "Share": "Teilen",
         "ThemeSwitcher": "Themen",
         "AttributeTable": "Attributtabelle",
         "AuthenticationLogin": "Anmelden",
-        "AuthenticationLogout": "Abmelden",
+        "AuthenticationLogout": "Abmelden - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Zeichnen",
         "FeatureForm": "Objektformular",
@@ -593,6 +594,9 @@
       "language": "Sprache",
       "systemlang": "Systemsprache",
       "themes": "Themen"
+    },
+    "settings3d": {
+      "quality": "Qualität"
     },
     "share": {
       "QRCodeLinkTitle": "QR Code (Smartphone)",

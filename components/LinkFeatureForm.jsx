@@ -49,7 +49,7 @@ class LinkFeatureForm extends React.Component {
             if (this.props.feature) {
                 this.props.setEditContext(this.props.editContextId, {action: 'Pick', feature: this.props.feature, geomType: this.props.editConfig.geomType});
             } else {
-                this.props.iface.getFeatureById(this.props.editConfig.editDataset, this.props.featureId, this.props.map.projection, (result) => {
+                this.props.iface.getFeatureById(this.props.editConfig, this.props.featureId, this.props.map.projection, (result) => {
                     if (result) {
                         this.props.setEditContext(this.props.editContextId, {action: 'Pick', feature: result, geomType: this.props.editConfig.geomType});
                     }
@@ -131,7 +131,7 @@ class LinkFeatureForm extends React.Component {
     }
     childPickQuery = (coordinate) => {
         const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-        this.props.iface.getFeature(this.props.editConfig.editDataset, coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
+        this.props.iface.getFeature(this.props.editConfig, coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
             const features = featureCollection ? featureCollection.features : null;
             if (features && features.length === 1) {
                 if (!this.props.pickFilter) {

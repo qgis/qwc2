@@ -1,0 +1,103 @@
+div.export-selection-container {
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+div.export-selection {
+    pointer-events: initial;
+    position: absolute;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 30000px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: small;
+    user-select: none;
+    cursor: grab;
+}
+
+div.export-selection-resize-top {
+    background-color: #3499cc;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -4px;
+    bottom: 100%;
+    cursor: ns-resize;
+}
+
+div.export-selection-resize-bottom {
+    background-color: #3499cc;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    bottom: -4px;
+    cursor: ns-resize;
+}
+
+div.export-selection-resize-left {
+    background-color: #3499cc;
+    position: absolute;
+    left: -4px;
+    right: 100%;
+    top: 0;
+    bottom: 0;
+    cursor: ew-resize;
+}
+
+div.export-selection-resize-right {
+    background-color: #3499cc;
+    position: absolute;
+    left: 100%;
+    right: -4px;
+    top: 0;
+    bottom: 0;
+    cursor: ew-resize;
+}
+
+div.export-selection-resize-topleft,
+div.export-selection-resize-topright,
+div.export-selection-resize-bottomleft,
+div.export-selection-resize-bottomright {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border: 2px solid #3499cc;
+    border-radius: 6px;
+}
+
+div.export-selection-resize-topleft {
+    left: -8px;
+    top: -8px;
+    cursor: nwse-resize;
+}
+
+div.export-selection-resize-topright {
+    right: -8px;
+    top: -8px;
+    cursor: nesw-resize;
+}
+
+div.export-selection-resize-bottomleft {
+    left: -8px;
+    bottom: -8px;
+    cursor: nesw-resize;
+}
+
+div.export-selection-resize-bottomright {
+    right: -8px;
+    bottom: -8px;
+    cursor: nwse-resize;
+}
+
+span.export-selection-label {
+    padding: 0.25em;
+    background: rgba(255, 255, 255, 0.5);
+}

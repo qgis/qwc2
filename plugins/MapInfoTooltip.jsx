@@ -128,7 +128,7 @@ class MapInfoTooltip extends React.Component {
             ]);
         });
 
-        if (this.state.elevation) {
+        if (this.state.elevation !== undefined && this.state.elevation !== null) {
             let elevs = this.state.elevation.list;
             if (!elevs) {
                 elevs = [{elevation: this.state.elevation, dataset: null}];

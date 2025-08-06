@@ -68,7 +68,7 @@ export default class TextInput extends React.Component {
     }
     setDefaultValue = (value, valueRev, prevValueRef) => {
         if (valueRev > prevValueRef) {
-            this.input.innerHTML = value;
+            this.input.innerHTML = value.replaceAll('\n', this.props.multiline ? '<br />' : '');
         }
     };
     render() {
@@ -105,7 +105,7 @@ export default class TextInput extends React.Component {
                 <pre
                     className={preClassName}
                     contentEditable={!this.props.disabled && !this.props.readOnly}
-                    dangerouslySetInnerHTML={{__html: this.state.value}}
+                    dangerouslySetInnerHTML={{__html: this.state.value.replaceAll('\n', this.props.multiline ? '<br />' : '')}}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
                     onCopy={(ev) => this.onCopy(ev, false)}

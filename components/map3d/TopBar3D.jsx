@@ -44,7 +44,8 @@ class TopBar3D extends React.Component {
             {key: "HideObjects3D", icon: "eye"},
             {key: "MapLight3D", icon: "light"},
             {key: "MapExport3D", icon: "rasterexport"},
-            {key: "ExportObjects3D", icon: "export"}
+            {key: "ExportObjects3D", icon: "export"},
+            {key: "Settings3D", icon: "cog"}
         ];
         if (this.props.view3dMode === View3DMode.FULLSCREEN) {
             this.addGenericMenuItems(menuItems, config.menuItems);

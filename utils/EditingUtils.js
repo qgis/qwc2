@@ -7,36 +7,55 @@
  */
 
 import nearley from 'nearley';
+import toposort from 'toposort';
+import {v5 as uuidv5} from 'uuid';
 
+import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
 import grammar from './expr_grammar/grammar';
 
+const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
 
-export class ExpressionFeatureCache {
+export class FeatureCache {
     static store = {};
-    static requests = new Set();
-    static get = (editIface, dataset, mapCrs, attr, value, promises) => {
-        const key = dataset + ":" + attr + ":" + value;
+    static requestPromises = {};
+    static get = (editIface, layerName, mapCrs, filterExpr) => {
+        const key = layerName +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
         if (key in this.store) {
-            return this.store[key];
-        } else if (!this.requests.has(key)) {
-            this.requests.add(key);
-            promises.push(new Promise((accept) => {
-                editIface.getFeatures(dataset, mapCrs, (result) => {
-                    if (this.requests.has(key)) {
+            return new Promise(resolve => resolve(this.store[key]));
+        } else if (key in this.requestPromises) {
+            return this.requestPromises[key];
+        } else {
+            this.requestPromises[key] = new Promise(resolve => {
+                const editConfig = StandardApp.store.getState().theme.current.editConfig?.[layerName] ?? {};
+                editIface.getFeatures(editConfig, mapCrs, (result) => {
+                    if (key in this.requestPromises) {
                         if ((result?.features || []).length === 1) {
                             this.store[key] = result.features[0];
                         } else {
                             this.store[key] = null;
                         }
-                        this.requests.delete(key);
+                        if (key in this.requestPromises) {
+                            resolve(this.store[key]);
+                            delete this.requestPromises[key];
+                        }
+                    } else {
+                        resolve(null);
                     }
-                    accept();
-                }, null, [[attr, '=', value]]);
-            }));
+                }, null, filterExpr);
+            });
+            return this.requestPromises[key];
         }
-        return null;
+    };
+    static getSync = (editIface, layerName, mapCrs, filterExpr, promises = []) => {
+        const key = layerName +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
+        if (key in this.store) {
+            return this.store[key];
+        } else {
+            promises.push(this.get(editIface, layerName, mapCrs, filterExpr));
+            return null;
+        }
     };
     static clear = () => {
         this.store = {};
@@ -44,16 +63,83 @@ export class ExpressionFeatureCache {
     };
 }
 
-export function parseExpression(expr, feature, dataset, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
+export class KeyValCache {
+    static store = {};
+    static requestPromises = {};
+    static get = (editIface, keyvalrel, filterExpr) => {
+        const key = keyvalrel +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
+        if (key in this.store) {
+            return new Promise(resolve => resolve(this.store[key]));
+        } else if (key in this.requestPromises) {
+            return this.requestPromises[key];
+        } else {
+            this.requestPromises[key] = new Promise(resolve => {
+                editIface.getKeyValues(keyvalrel, (result) => {
+                    if (key in this.requestPromises) {
+                        const dataSet = keyvalrel.split(":")[0];
+                        if (result.keyvalues && result.keyvalues[dataSet]) {
+                            const values = result.keyvalues[dataSet].map(entry => ({
+                                value: entry.key, label: entry.value
+                            }));
+                            this.store[key] = values;
+                        } else {
+                            this.store[key] = [];
+                        }
+                        resolve(this.store[key]);
+                        delete this.requestPromises[key];
+                    } else {
+                        resolve([]);
+                    }
+                }, filterExpr ? [filterExpr] : null);
+            });
+            return this.requestPromises[key];
+        }
+    };
+    static getSync = (editIface, keyvalrel, filterExpr, promises = []) => {
+        const key = keyvalrel +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
+        if (key in this.store) {
+            return this.store[key];
+        } else {
+            promises.push(this.get(editIface, keyvalrel, filterExpr));
+            return [];
+        }
+    };
+    static clear = () => {
+        this.store = {};
+        this.requestPromises = {};
+    };
+}
+
+
+function representValue(attr, editConfig, editIface, promises) {
+    // Resolve kvrel
+    const field = (editConfig.fields || []).find(f => f.id === attr);
+    const value = window.qwc2ExpressionParserContext.feature?.properties?.[attr];
+    const keyvalrel = field?.constraints?.keyvalrel;
+    if (!keyvalrel) {
+        return value;
+    }
+    const keyvals = KeyValCache.getSync(editIface, keyvalrel, null, promises).reduce((res, entry) => (
+        {...res, [entry.value]: entry.label}
+    ), {});
+    if (field.constraints.allowMulti) {
+        return '{' + [...new Set(JSON.parse('[' + value.slice(1, -1) + ']'))].map(x => keyvals[x] ?? x).join(", ") + '}';
+    } else {
+        return keyvals[value] ?? value;
+    }
+}
+
+export function parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     const promises = [];
 
     window.qwc2ExpressionParserContext = {
         feature: feature,
-        getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, mapPrefix + layerName, mapCrs, attr, value, promises),
+        getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
+        representValue: (attr) => representValue(attr, editConfig, editIface, promises),
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
-        layer: dataset.startsWith(mapPrefix) ? dataset.substr(mapPrefix.length) : dataset,
+        layer: editConfig.layerName,
         projection: mapCrs,
         mapPrefix: mapPrefix,
         lang: LocaleUtils.lang()
@@ -69,7 +155,7 @@ export function parseExpression(expr, feature, dataset, editIface, mapPrefix, ma
     delete window.qwc2ExpressionParserContext;
     if (promises.length > 0) {
         // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
-        Promise.all(promises).then(() => parseExpression(expr, feature, dataset, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter, true));
+        Promise.all(promises).then(() => parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter, true));
         return null;
     } else {
         if (reevaluate) {
@@ -82,24 +168,28 @@ export function parseExpression(expr, feature, dataset, editIface, mapPrefix, ma
     }
 }
 
-export function parseExpressionsAsync(expressions, feature, dataset, editIface, mapPrefix, mapCrs, asFilter) {
+export function parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter) {
     const promises = [];
     return new Promise((resolve) => {
+        const newfeature = {...feature, properties: {...feature.properties}};
         window.qwc2ExpressionParserContext = {
-            feature: feature,
-            getFeature: (layerName, attr, value) => ExpressionFeatureCache.get(editIface, mapPrefix + layerName, mapCrs, attr, value, promises),
+            feature: newfeature,
+            getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
+            representValue: (attr) => representValue(attr, editConfig, editIface, promises),
             asFilter: asFilter,
             username: ConfigUtils.getConfigProp("username"),
-            layer: dataset.startsWith(mapPrefix) ? dataset.substr(mapPrefix.length) : dataset,
+            layer: editConfig.layerName,
             projection: mapCrs,
             mapPrefix: mapPrefix,
             lang: LocaleUtils.lang()
         };
-        const results = Object.entries(expressions).reduce((res, [key, expr]) => {
+        const results = fieldExpressions.reduce((res, {field, expression}) => {
             const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
             try {
-                parser.feed(expr.replace(/\n/, ' '));
-                return {...res, [key]: parser.results[0]};
+                parser.feed(expression.replace(/\n/, ' '));
+                // NOTE: include intermediate results in next context feature
+                newfeature.properties[field] = parser.results[0];
+                return {...res, [field]: parser.results[0]};
             } catch (e) {
                 /* eslint-disable-next-line */
                 console.warn("Failed to evaluate expression " + expr.replace(/\n/, ' '));
@@ -109,7 +199,9 @@ export function parseExpressionsAsync(expressions, feature, dataset, editIface, 
         delete window.qwc2ExpressionParserContext;
         if (promises.length > 0) {
             // Expression evaluation is incomplete due to pending feature requests, reevaluate when promises are resolved
-            Promise.all(promises).then(parseExpressionsAsync(expressions, feature, dataset, editIface, mapPrefix, mapCrs, asFilter).then(resolve(results)));
+            Promise.all(promises).then(() => {
+                parseExpressionsAsync(fieldExpressions, newfeature, editConfig, editIface, mapPrefix, mapCrs, asFilter).then(results2 => resolve(results2));
+            });
         } else {
             resolve(results);
         }
@@ -130,12 +222,58 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
     // Apply default values
     const defaultFieldExpressions = editConfig.fields.reduce((res, field) => {
         if (field.defaultValue) {
-            return {...res, [field.id]: field.defaultValue.replace(/^expr:/, '')};
+            return [...res, {field: field.id, expression: field.defaultValue.replace(/^expr:/, '')}];
+        }
+        return res;
+    }, []);
+    FeatureCache.clear();
+    parseExpressionsAsync(defaultFieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
+        // Adjust values based on field type
+        editConfig.fields.forEach(field => {
+            if (field.id in result && field.type === "date") {
+                result[field.id] = result[field.id].split("T")[0];
+            }
+        });
+        callback({...feature, properties: {...feature.properties, ...result}});
+    });
+}
+
+export function computeExpressionFields(editConfig, feature, editIface, mapCrs, callback) {
+    // Collect field expressions and dependencies
+    const dependencies = {};
+    let fieldExpressions = editConfig.fields.reduce((res, field) => {
+        if (field.expression) {
+            const matches = [...field.expression.matchAll(/"([^"]+)"/g)].map(m => m[1]);
+            dependencies[field.id] = [...new Set(matches)];
+            return {...res, [field.id]: field.expression};
         }
         return res;
     }, {});
-    ExpressionFeatureCache.clear();
-    parseExpressionsAsync(defaultFieldExpressions, feature, editConfig.editDataset, editIface, mapPrefix, mapCrs).then(result => {
+    // Topologically sort expressions so that fields depending on other fields are evaluated later
+    const edges = [];
+    Object.entries(dependencies).forEach(([parent, children]) => {
+        children.forEach(child => edges.push([child, parent]));
+    });
+    try {
+        const sortededges = toposort(edges);
+        fieldExpressions = sortededges.reduce((res, field) => {
+            if (field in fieldExpressions) {
+                return [...res, {field, expression: fieldExpressions[field]}];
+            } else {
+                return res;
+            }
+        }, []);
+    } catch (e) {
+        /* eslint-disable-next-line */
+        console.warn("Failed to sort expressions, they probably contain cyclic dependencies");
+        fieldExpressions = Object.entries(fieldExpressions).map((res, [field, expression]) => (
+            [...res, {field, expression}]
+        ), {});
+    }
+    // Evaluate expressions
+    FeatureCache.clear();
+    const mapPrefix = (editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+    parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
             if (field.id in result && field.type === "date") {

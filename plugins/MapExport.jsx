@@ -54,13 +54,16 @@ class MapExport extends React.Component {
         exportExternalLayers: PropTypes.bool,
         /** Template for the name of the generated files when downloading. Can contain the placeholders `{username}`, `{tenant}`, `{theme}`, `{themeTitle}`, `{timestamp}`. */
         fileNameTemplate: PropTypes.string,
+        /** Formats to force as available even if the map capabilities report otherwise. Useful if a serviceUrl is defined in a format configuration. */
+        forceAvailableFormats: PropTypes.array,
         /** Custom export configuration per format.
          *  If more than one configuration per format is provided, a selection combo will be displayed.
          *  `labelMsgId` is a translation string message id for the combo label. If not defined, `name` will be displayed.
          *  `extraQuery` will be appended to the query string (replacing any existing parameters).
          *  `formatOptions` will be passed as FORMAT_OPTIONS.
          *  `baseLayer` will be appended to the LAYERS instead of the background layer.
-         *  `projections` is a list of export projections. If empty, the map projection is automatically used. */
+         *  `projections` is a list of export projections. If empty, the map projection is automatically used.
+         *  `serviceUrl` is the address of a custom service to use instead of the layer OWS service url. */
         formatConfiguration: PropTypes.shape({
             format: PropTypes.arrayOf(PropTypes.shape({
                 name: PropTypes.string,
@@ -68,7 +71,8 @@ class MapExport extends React.Component {
                 extraQuery: PropTypes.string,
                 formatOptions: PropTypes.string,
                 baseLayer: PropTypes.string,
-                projections: PropTypes.array
+                projections: PropTypes.array,
+                serviceUrl: PropTypes.string
             }))
         }),
         layers: PropTypes.array,
@@ -222,7 +226,7 @@ class MapExport extends React.Component {
                                     </td>
                                 </tr>
                             ) : null}
-                            {this.props.dpis ? (
+                            {this.props.dpis && this.state.selectedFormat !== "application/dxf" ? (
                                 <tr>
                                     <td>{LocaleUtils.tr("mapexport.resolution")}</td>
                                     <td>
@@ -303,7 +307,12 @@ class MapExport extends React.Component {
             }
             scale = this.props.allowedScales[closestIdx];
         }
-        let availableFormats = this.props.theme.availableFormats;
+        let availableFormats = [...this.props.theme.availableFormats];
+        (this.props.forceAvailableFormats || []).forEach(format => {
+            if (!availableFormats.includes(format)) {
+                availableFormats.push(format);
+            }
+        });
         if (!isEmpty(this.props.allowedFormats)) {
             availableFormats = this.props.allowedFormats.filter(fmt => availableFormats.includes(fmt));
         }
@@ -408,7 +417,7 @@ class MapExport extends React.Component {
         }
 
         if (this.state.selectedFormat === "application/dxf") {
-            this.dxfExport(params, fileName);
+            this.dxfExport(params, fileName, formatConfiguration);
         } else {
             this.genericExport(params, fileName, formatConfiguration);
         }
@@ -443,7 +452,7 @@ class MapExport extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: "arraybuffer"
         };
-        axios.post(this.props.theme.url, data, config).then(response => {
+        axios.post(formatConfiguration.serviceUrl ?? this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
 
@@ -458,7 +467,7 @@ class MapExport extends React.Component {
             alert('Export failed');
         });
     };
-    dxfExport = (baseParams, fileName) => {
+    dxfExport = (baseParams, fileName, formatConfiguration) => {
         const promises = this.props.layers.filter(
             layer => layer.type === 'wms' && layer.role > LayerRole.BACKGROUND && layer.mapFormats?.includes("application/dxf")
         ).reverse().map(layer => {
@@ -478,7 +487,7 @@ class MapExport extends React.Component {
                 responseType: "arraybuffer"
             };
             return new Promise((resolve, reject) => {
-                axios.post(layer.url, data, config).then(response => {
+                axios.post(formatConfiguration.serviceUrl ?? layer.url, data, config).then(response => {
                     resolve(response);
                 }).catch((e) => {
                     /* eslint-disable-next-line */

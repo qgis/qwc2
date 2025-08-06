@@ -33,11 +33,11 @@ const ThemeUtils = {
         }
         return null;
     },
-    createThemeBackgroundLayers(theme, themes, visibleLayer, externalLayers, dispatch, initialTheme) {
+    createThemeBackgroundLayers(backgroundLayers, themes, visibleLayer, externalLayers) {
         const bgLayers = [];
         let visibleIdx = -1;
         let defaultVisibleIdx = -1;
-        for (const entry of (theme.backgroundLayers || [])) {
+        for (const entry of backgroundLayers) {
             if (!entry.name) {
                 continue;
             }
@@ -93,9 +93,6 @@ const ThemeUtils = {
             bgLayers[visibleIdx].visibility = true;
         } else if (defaultVisibleIdx >= 0 && visibleLayer !== "") {
             bgLayers[defaultVisibleIdx].visibility = true;
-        }
-        if (initialTheme && visibleIdx === -1 && visibleLayer) {
-            dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleLayer), NotificationType.WARN, true));
         }
         return bgLayers;
     },

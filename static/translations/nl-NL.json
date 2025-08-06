@@ -26,11 +26,12 @@
         "Print": "Print",
         "Reports": "",
         "Settings": "Instellingen",
+        "Settings3D": "",
         "Share": "Link delen",
         "ThemeSwitcher": "Kaartselectie",
         "AttributeTable": "Attributentabel",
         "AuthenticationLogin": "Inloggen",
-        "AuthenticationLogout": "Uitloggen",
+        "AuthenticationLogout": "Uitloggen - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "",
         "FeatureForm": "Objectgegevens",
@@ -593,6 +594,9 @@
       "language": "Taal",
       "systemlang": "Systeemtaal",
       "themes": "Kaarten"
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR-code",

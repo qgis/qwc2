@@ -26,11 +26,12 @@
         "Print": "Drukuj",
         "Reports": "",
         "Settings": "",
+        "Settings3D": "",
         "Share": "Udostępnij Link",
         "ThemeSwitcher": "Motyw",
         "AttributeTable": "",
         "AuthenticationLogin": "Zaloguj",
-        "AuthenticationLogout": "Wyloguj",
+        "AuthenticationLogout": "Wyloguj - {0}",
         "Cyclomedia": "",
         "Draw3D": "",
         "FeatureForm": "",
@@ -593,6 +594,9 @@
       "language": "",
       "systemlang": "",
       "themes": ""
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR code",

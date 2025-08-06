@@ -26,6 +26,7 @@
         "Print": "Nyomtatás",
         "Reports": "",
         "Settings": "",
+        "Settings3D": "",
         "Share": "Megosztható link",
         "ThemeSwitcher": "Térkép",
         "AttributeTable": "",
@@ -593,6 +594,9 @@
       "language": "",
       "systemlang": "",
       "themes": ""
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR-kód",

@@ -26,11 +26,12 @@
         "Print": "Print",
         "Reports": "Reports",
         "Settings": "Settings",
+        "Settings3D": "Settings",
         "Share": "Share Link",
         "ThemeSwitcher": "Theme",
         "AttributeTable": "Attribute Table",
         "AuthenticationLogin": "Login",
-        "AuthenticationLogout": "Logout",
+        "AuthenticationLogout": "Logout - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Draw",
         "FeatureForm": "Feature Form",
@@ -593,6 +594,9 @@
       "language": "Language",
       "systemlang": "System language",
       "themes": "Themes"
+    },
+    "settings3d": {
+      "quality": "Quality"
     },
     "share": {
       "QRCodeLinkTitle": "QR Code",

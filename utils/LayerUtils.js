@@ -27,10 +27,7 @@ const LayerUtils = {
                 entry.sublayer.opacity = layerConfig.opacity;
                 entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
                 entry.sublayer.tristate = layerConfig.tristate;
-                entry.sublayer.style = layerConfig.style;
-                if (!entry.sublayer.style) {
-                    entry.sublayer.style = !isEmpty(entry.sublayer.styles) ? Object.keys(entry.sublayer.styles)[0] : "";
-                }
+                entry.sublayer.style = layerConfig.style || entry.sublayer.style;
             } else {
                 entry.sublayer.visibility = false;
             }
@@ -61,10 +58,7 @@ const LayerUtils = {
                     entry.sublayer.opacity = layerConfig.opacity;
                     entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
                     entry.sublayer.tristate = layerConfig.tristate;
-                    entry.sublayer.style = layerConfig.style;
-                    if (!entry.sublayer.style) {
-                        entry.sublayer.style = !isEmpty(entry.sublayer.styles) ? Object.keys(entry.sublayer.styles)[0] : "";
-                    }
+                    entry.sublayer.style = layerConfig.style || entry.sublayer.style;
                     reordered.push(entry);
                 }
             } else if (layerConfig.type === 'separator') {
@@ -113,6 +107,9 @@ const LayerUtils = {
             id: id,
             type: "placeholder",
             name: layerConfig.name,
+            opacity: layerConfig.opacity,
+            visibility: layerConfig.visibility,
+            style: layerConfig.style,
             title: layerConfig.name,
             role: LayerRole.USERLAYER,
             loading: true
@@ -424,6 +421,41 @@ const LayerUtils = {
             ...newlayers,
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
+    },
+    replacePlaceholderLayer(layers, layerid, newlayer, filter = {}) {
+        let newLayers = layers;
+        if (newlayer) {
+            newLayers = layers.map(layer => {
+                if (layer.type === 'placeholder' && layer.id === layerid) {
+                    const newLayer = {
+                        ...layer,
+                        ...newlayer,
+                        attribution: layer.attribution ?? newlayer.attribution,
+                        opacity: layer.opacity ?? newlayer.opacity,
+                        visibility: layer.visibility ?? newlayer.visibility,
+                        tristate: layer.tristate ?? newlayer.tristate,
+                        style: layer.style ?? newlayer.style,
+                        role: layer.role,
+                        id: layer.id
+                    };
+                    // For background layers, preserve any custom name/title/attribution/opacity
+                    if (layer.role === LayerRole.BACKGROUND) {
+                        newLayer.name = layer.name ?? newlayer.name;
+                        newLayer.title = layer.title ?? newlayer.title;
+                    }
+                    delete newLayer.loading;
+                    if (newLayer.type === "wms") {
+                        Object.assign(newLayer, LayerUtils.buildWMSLayerParams(newLayer, filter));
+                    }
+                    return newLayer;
+                } else {
+                    return layer;
+                }
+            });
+        } else {
+            newLayers = newLayers.filter(layer => !(layer.type === 'placeholder' && layer.id === layerid));
+        }
+        return newLayers;
     },
     explodeLayers(layers) {
         // Return array with one entry for every single sublayer)

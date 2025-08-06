@@ -231,7 +231,7 @@ class View3D extends React.Component {
             }
         }
         if (props.startupParams.bl3d !== undefined) {
-            storedState.baselayer = props.startupParams.bl3d;
+            storedState.baseLayer = props.startupParams.bl3d;
         }
 
         this.state.storedState = storedState;

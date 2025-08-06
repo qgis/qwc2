@@ -26,11 +26,12 @@
         "Print": "Отпечатване",
         "Reports": "Доклади",
         "Settings": "Настройки",
+        "Settings3D": "",
         "Share": "Споделяне на връзка",
         "ThemeSwitcher": "Тема",
         "AttributeTable": "Таблица на атрибутите",
         "AuthenticationLogin": "Вход",
-        "AuthenticationLogout": "Излизане от системата",
+        "AuthenticationLogout": "Излизане от системата - {0}",
         "Cyclomedia": "Cyclomedia",
         "Draw3D": "Начертайте",
         "FeatureForm": "Формуляр за функция",
@@ -593,6 +594,9 @@
       "language": "Език",
       "systemlang": "Език на системата",
       "themes": "Теми"
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "QR код",

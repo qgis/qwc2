@@ -26,11 +26,12 @@
         "Print": "Yazdır",
         "Reports": "Raporlar",
         "Settings": "Ayarlar",
+        "Settings3D": "",
         "Share": "Bağlantı Paylaş",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Öznitelik Tablosu",
         "AuthenticationLogin": "Giriş",
-        "AuthenticationLogout": "Çıkış",
+        "AuthenticationLogout": "Çıkış - {0}",
         "Cyclomedia": "Siklomedya",
         "Draw3D": "Çizim",
         "FeatureForm": "Obje Formu",
@@ -593,6 +594,9 @@
       "language": "Dil",
       "systemlang": "Sistem dili",
       "themes": "Temalar"
+    },
+    "settings3d": {
+      "quality": ""
     },
     "share": {
       "QRCodeLinkTitle": "Karekod",

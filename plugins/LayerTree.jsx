@@ -269,7 +269,7 @@ class LayerTree extends React.Component {
                     <span className="layertree-item-title" onClick={() => this.itemVisibilityToggled(layer, path, visibility)} title={group.title}>{group.title}</span>
                     {LayerUtils.hasQueryableSublayers(group) && this.props.allowSelectIdentifyableLayers ? (<Icon className={"layertree-item-identifyable " + identifyableClassName}  icon="info-sign" onClick={() => this.itemOmitQueryableToggled(layer, path, omitqueryable)} />) : null}
                     <span className="layertree-item-spacer" />
-                    {!isEmpty(styles) ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(groupId)}/>) : null}
+                    {Object.keys(styles || {}).length > 1 ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(groupId)}/>) : null}
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(groupId)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
