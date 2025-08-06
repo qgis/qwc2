@@ -272,7 +272,7 @@ const IdentifyUtils = {
         const parser = new DOMParser();
 
         const doc = parser.parseFromString(response, "text/xml");
-        const layersEl = [].slice.call(doc.firstChild.getElementsByTagName("Layer"));
+        const layersEl = [].slice.call(doc.firstChild?.getElementsByTagName?.("Layer") || []);
         const result = {};
         let idcounter = 0;
         for (const layerEl of layersEl) {
