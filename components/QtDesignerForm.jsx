@@ -541,7 +541,11 @@ class QtDesignerForm extends React.Component {
         const widgetItems = widget.layout.item.filter(item => !item.widget || !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const tableFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
         const columnStyles = widgetItems.map(item => { return item.widget && tableFitWidgets.includes(item.widget.class) ? {width: '1px'} : {}; });
-        const editConfig = this.props.editConfigs[tablename] || {};
+        const editConfig = this.props.editConfigs[tablename];
+        if (!editConfig) {
+            // Relation dataset not permitted / no edit config available
+            return null;
+        }
         const relDataset = editConfig.editDataset;
         const fields = (editConfig.fields ?? []).reduce((res, field) => ({...res, [field.id]: field}), {});
         return (
