@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import classnames from 'classnames';
-import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
@@ -110,15 +109,15 @@ class TopBar extends React.Component {
     };
     componentDidMount() {
         this.setState({
-            allowedToolbarItems: this.allowedItems(this.props.toolbarItems),
-            allowedMenuItems: this.allowedItems(this.props.menuItems)
+            allowedToolbarItems: ThemeUtils.allowedItems(this.props.toolbarItems, this.props.currentTheme),
+            allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems, this.props.currentTheme)
         });
     }
     componentDidUpdate(prevProps) {
         if (this.props.currentTheme !== prevProps.currentTheme) {
             this.setState({
-                allowedToolbarItems: this.allowedItems(this.props.toolbarItems),
-                allowedMenuItems: this.allowedItems(this.props.menuItems)
+                allowedToolbarItems: ThemeUtils.allowedItems(this.props.toolbarItems, this.props.currentTheme),
+                allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems, this.props.currentTheme)
             });
         }
     }
@@ -204,32 +203,6 @@ class TopBar extends React.Component {
         if (el) {
             this.props.setTopbarHeight(el.clientHeight);
         }
-    };
-    allowedItems = (items) => {
-        return items.map(item => {
-            if (item.subitems) {
-                const subitems = this.allowedItems(item.subitems);
-                if (!isEmpty(subitems)) {
-                    return {...item, subitems};
-                } else {
-                    return null;
-                }
-            } else if (this.props.currentTheme) {
-                if (!ThemeUtils.themeFlagsAllowed(this.props.currentTheme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
-                    return null;
-                }
-                if (item.themeBlacklist && (item.themeBlacklist.includes(this.props.currentTheme.title) || item.themeBlacklist.includes(this.props.currentTheme.name))) {
-                    return null;
-                }
-                if (item.themeWhitelist && !(item.themeWhitelist.includes(this.props.currentTheme.title) || item.themeWhitelist.includes(this.props.currentTheme.name))) {
-                    return null;
-                }
-                if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
-                    return null;
-                }
-            }
-            return item;
-        }).filter(Boolean);
     };
 }
 
