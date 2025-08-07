@@ -311,7 +311,8 @@ class HeightProfile extends React.Component {
                         nodes: nodes
                     };
                 }
-            }).filter(entry => entry != null );
+                return null;
+            }).filter(entry => entry !== null );
 
             this.setState((prevState) => ({
                 reqId: null, data: data,
@@ -372,7 +373,7 @@ class HeightProfile extends React.Component {
         const aslStr = LocaleUtils.tr("heightprofile.asl");
 
         const { selectedDatasetIndices = [] } = this.state;
-        const datasets = selectedDatasetIndices.flatMap((idx, i) => {
+        const datasets = selectedDatasetIndices.flatMap((idx) => {
             return [
                 {
                     label: this.state.data[idx].dataset,
