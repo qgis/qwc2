@@ -28,6 +28,7 @@ import Spinner from '../components/widgets/Spinner';
 import ReducerIndex from '../reducers/index';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
@@ -339,6 +340,7 @@ class View3D extends React.Component {
                 tileInfoServiceUrl: this.props.tileInfoServiceUrl,
                 importedTilesBaseUrl: this.props.importedTilesBaseUrl
             };
+            const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
             return (
                 <ResizeableWindow
                     extraControls={extraControls}
@@ -361,7 +363,7 @@ class View3D extends React.Component {
                 >
                     {this.state.componentLoaded ? (
                         <Provider role="body" store={this.store}>
-                            <PluginsContainer className="plugins-container-3d" plugins={this.props.plugins} pluginsAppConfig={{}} pluginsConfig={this.props.pluginsConfig}>
+                            <PluginsContainer className="plugins-container-3d" plugins={this.props.plugins} pluginsConfig={this.props.pluginsConfig[device]}>
                                 <Map3D
                                     innerRef={this.setRef}
                                     onCameraChanged={this.onCameraChanged}

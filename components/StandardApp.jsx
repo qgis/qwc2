@@ -178,20 +178,44 @@ class AppContainerComponent extends React.Component {
             ...this.props.appConfig.pluginsDef.plugins,
             ...window.qwc2?.__customPlugins
         };
-        const pluginsConfig = this.props.localConfig.plugins;
-        const appPluginConfig = {...this.props.appConfig.pluginsDef.cfg};
-        // Inject plugins available in 3d view to View3D plugin configuration
-        appPluginConfig.View3DPlugin = {
-            ...appPluginConfig.View3DPlugin,
-            plugins: Object.entries(plugins).reduce((res, [key, plugin]) => {
-                if (plugin.WrappedComponent?.availableIn3D || plugin.availableIn3D) {
-                    return {...res, [key]: plugin};
+        const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+        const plugins2d = {};
+        const plugins3d = {};
+        // Extract 2d and 3d plugins
+        const pluginsConfig = this.props.localConfig.plugins[device].reduce((res, entry) => {
+            const plugin = plugins[entry.name + "Plugin"];
+            if (plugin) {
+                const component = plugin.WrappedComponent ?? plugin;
+                const availableIn2D = component.availableIn2D === true || component.availableIn2D === undefined;
+                const availableIn3D = component.availableIn3D === true;
+                if (availableIn2D) {
+                    plugins2d[entry.name + "Plugin"] = plugin;
                 }
-                return res;
-            }, {})
-        };
+                if (availableIn3D) {
+                    plugins3d[entry.name + "Plugin"] = plugin;
+                }
+                return {
+                    ...res,
+                    [entry.name]: {
+                        ...entry,
+                        availableIn2D: availableIn2D,
+                        availableIn3D: availableIn3D,
+                        cfg: {
+                            ...entry.cfg,
+                            ...this.props.appConfig.pluginsDef.cfg?.[entry.name + "Plugin"]
+                        }
+                    }
+                };
+            }
+            return res;
+        }, {});
+        // Inject plugins available in 3d view to View3D plugin configuration
+        if (pluginsConfig.View3D) {
+            pluginsConfig.View3D.cfg.plugins = plugins3d;
+        }
+
         return (
-            <PluginsContainer plugins={plugins} pluginsAppConfig={appPluginConfig} pluginsConfig={pluginsConfig} />
+            <PluginsContainer plugins={plugins2d} pluginsConfig={Object.values(pluginsConfig)} />
         );
     }
 }
@@ -279,24 +303,6 @@ export default class StandardApp extends React.Component {
             config.plugins.mobile = Object.values(deepmerge(commonConfig, mobileConfig.reduce(renameTaskButtons, {})));
             delete config.plugins.common;
 
-            // Store whether to show plugin in 2d/3d mode
-            const plugins = this.props.appConfig.pluginsDef.plugins;
-            config.plugins.mobile.forEach(entry => {
-                const plugin = plugins[entry.name + "Plugin"];
-                if (plugin) {
-                    const component = plugin.WrappedComponent ?? plugin;
-                    entry.availableIn3D = component.availableIn3D === true;
-                    entry.availableIn2D = component.availableIn2D === true || component.availableIn2D === undefined;
-                }
-            });
-            config.plugins.desktop.forEach(entry => {
-                const plugin = plugins[entry.name + "Plugin"];
-                if (plugin) {
-                    const component = plugin.WrappedComponent ?? plugin;
-                    entry.availableIn3D = component.availableIn3D === true;
-                    entry.availableIn2D = component.availableIn2D === true || component.availableIn2D === undefined;
-                }
-            });
             // Add projections from config
             for (const proj of config.projections || []) {
                 if (Proj4js.defs(proj.code) === undefined) {

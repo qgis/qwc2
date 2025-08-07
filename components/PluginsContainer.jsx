@@ -28,7 +28,6 @@ class PluginsContainer extends React.Component {
         className: PropTypes.string,
         mapMargins: PropTypes.object,
         plugins: PropTypes.object,
-        pluginsAppConfig: PropTypes.object,
         pluginsConfig: PropTypes.object,
         theme: PropTypes.object
     };
@@ -37,18 +36,17 @@ class PluginsContainer extends React.Component {
         mapContainerRef: null
     };
     renderPlugins = () => {
-        const mode = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
-        const pluginsConfig = this.props.pluginsConfig[mode];
+        const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+        const pluginsConfig = this.props.pluginsConfig;
         return pluginsConfig.map((pluginConf, idx) => {
             const Plugin = this.props.plugins[pluginConf.name + "Plugin"];
             if (!Plugin) {
                 return null;
             }
-            const themeDevicePluginConfig = this.props.theme?.config?.[mode]?.plugins?.[pluginConf.name] || {};
+            const themeDevicePluginConfig = this.props.theme?.config?.[device]?.plugins?.[pluginConf.name] || {};
             const themePluginConfig = this.props.theme?.config?.plugins?.[pluginConf.name] || {};
             const cfg = {...(pluginConf.cfg || {}), ...themePluginConfig, ...themeDevicePluginConfig};
-            const appCfg = this.props.pluginsAppConfig[pluginConf.name + "Plugin"] || {};
-            return (<Plugin key={pluginConf.name + idx} {...cfg} {...appCfg} />);
+            return (<Plugin key={pluginConf.name + idx} {...cfg} />);
         });
     };
     render() {
