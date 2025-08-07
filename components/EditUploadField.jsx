@@ -55,9 +55,10 @@ export default class EditUploadField extends React.Component {
         this.disableMediaStream();
     }
     render() {
-        const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
+        const isAttachment = this.props.value.startsWith("attachment:");
+        const fileValue = isAttachment ? this.props.value.replace(/attachment:\/\//, '') : this.props.value;
         const fileType = mime.lookup(fileValue);
-        const fileUrl = this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue);
+        const fileUrl = isAttachment ? this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue) : fileValue;
         const constraints = {
             ...this.props.constraints,
             accept: (this.props.constraints.accept || "").split(",").map(ext => mime.lookup(ext)).join(",")
