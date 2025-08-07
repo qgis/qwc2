@@ -251,12 +251,17 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     }, {});
     // Topologically sort expressions so that fields depending on other fields are evaluated later
     const edges = [];
+    const roots = [];
     Object.entries(dependencies).forEach(([parent, children]) => {
-        children.forEach(child => edges.push([child, parent]));
+        if (children.length > 0) {
+            children.forEach(child => edges.push([child, parent]));
+        } else {
+            roots.push(parent);
+        }
     });
     try {
         const sortededges = toposort(edges);
-        fieldExpressions = sortededges.reduce((res, field) => {
+        fieldExpressions = roots.concat(sortededges).reduce((res, field) => {
             if (field in fieldExpressions) {
                 return [...res, {field, expression: fieldExpressions[field]}];
             } else {
