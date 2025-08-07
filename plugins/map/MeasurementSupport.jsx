@@ -157,7 +157,7 @@ class MeasurementSupport extends React.Component {
             geomType: this.props.measurement.geomType,
             drawing: drawing,
             coordinates: feature.getGeometry().getCoordinates(),
-            ...feature.get('measurements')
+            ...structuredClone(feature.get('measurements'))
         });
     };
     featureStyleFunction = (feature) => {
