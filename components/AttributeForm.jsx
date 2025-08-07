@@ -469,7 +469,7 @@ class AttributeForm extends React.Component {
                     const index = parseInt(parts[parts.length - 1], 10);
 
                     const nrelFieldConfig = this.props.theme.editConfig[tablename].fields?.find?.(f => f.id === field) ?? {};
-                    const nrelFieldDataType = nrelFieldConfig.data_type;
+                    const nrelFieldDataType = nrelFieldConfig.type;
 
                     if (nrelFieldConfig.expression) {
                         // Skip virtual fields
@@ -518,7 +518,7 @@ class AttributeForm extends React.Component {
                         return;
                     }
 
-                    const dataType = fieldConfig.data_type ?? fieldConfig.type;
+                    const dataType = fieldConfig.type;
                     if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(dataType)) && element.value === "") {
                         // Set empty value to null instead of empty string
                         value = null;
