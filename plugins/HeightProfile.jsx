@@ -299,14 +299,15 @@ class HeightProfile extends React.Component {
                 // First and last node
                 nodes.unshift({x: x[0], y: y[0]});
                 nodes.push({x: x[x.length - 1], y: y[y.length - 1]});
+                const nonZeroElevations = elevations.filter(elev => elev !== 0)
 
-                if (!elevations.every(val => val === 0)) {
+                if (nonZeroElevations.length > 0) {
                     return {
                         dataset: entry.dataset || `Dataset ${index + 1}`,
                         x: x,
                         y: elevations,
                         maxY: Math.max(...elevations),
-                        minY: Math.min(...elevations.filter(elev => elev !== 0)),
+                        minY: Math.min(...nonZeroElevations),
                         totLength: totLength,
                         nodes: nodes
                     };
