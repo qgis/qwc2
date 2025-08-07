@@ -317,7 +317,7 @@ class HeightProfile extends React.Component {
 
             this.setState((prevState) => ({
                 reqId: null, data: data,
-                selectedDatasetIndices: prevState.selectedDatasetIndices.every(i => i < data.length) ? prevState.selectedDatasetIndices : [0]
+                selectedDatasetIndices: prevState.selectedDatasetIndices.filter(i => i < data.length) ? prevState.selectedDatasetIndices : [0]
             }));
             this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: this.pickPositionCallback});
         }).catch((error) => {
