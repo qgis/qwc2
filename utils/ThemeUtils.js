@@ -243,6 +243,37 @@ const ThemeUtils = {
             return false;
         }
         return true;
+    },
+    allowedItems(items, theme, filter = null) {
+        return (items || []).map(item => {
+            if (item.subitems) {
+                const subitems = ThemeUtils.allowedItems(item.subitems, items);
+                if (!isEmpty(subitems)) {
+                    return {...item, subitems};
+                } else {
+                    return null;
+                }
+            } else {
+                if (filter && !filter(item)) {
+                    return null;
+                }
+                if (theme) {
+                    if (!ThemeUtils.themeFlagsAllowed(theme, item.themeFlagWhitelist, item. themeFlagBlacklist)) {
+                        return null;
+                    }
+                    if (item.themeBlacklist && (item.themeBlacklist.includes(theme.title) || item.themeBlacklist.includes(theme.name))) {
+                        return null;
+                    }
+                    if (item.themeWhitelist && !(item.themeWhitelist.includes(theme.title) || item.themeWhitelist.includes(theme.name))) {
+                        return null;
+                    }
+                    if (item.requireAuth && !ConfigUtils.getConfigProp("username")) {
+                        return null;
+                    }
+                }
+                return item;
+            }
+        }).filter(Boolean);
     }
 };
 

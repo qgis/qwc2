@@ -90,9 +90,9 @@ class Editing extends React.Component {
     };
     onShow = () => {
         if (this.props.taskData) {
-            this.changeSelectedLayer(this.props.taskData.layer, "Pick", this.props.taskData.feature);
+            this.changeSelectedLayer(this.props.taskData.layer, this.props.taskData.feature);
         } else {
-            this.changeSelectedLayer(this.state.selectedLayer, "Pick");
+            this.changeSelectedLayer(this.state.selectedLayer);
         }
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
     };
@@ -110,7 +110,7 @@ class Editing extends React.Component {
             const layerIds = Object.keys(this.props.theme && this.props.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
             if (!isEmpty(layerIds)) {
                 if (!layerIds.includes(this.state.selectedLayer)) {
-                    this.changeSelectedLayer(layerIds[0], "Pick");
+                    this.changeSelectedLayer(layerIds[0]);
                 }
             } else if (this.state.selectedLayer) {
                 this.changeSelectedLayer(null);
@@ -306,15 +306,14 @@ class Editing extends React.Component {
         }
         return null;
     };
-    changeSelectedLayer = (selectedLayer, action = null, feature = null) => {
+    changeSelectedLayer = (selectedLayer, feature = null) => {
         const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
-        const editPermissions = curConfig ? (curConfig.permissions || {}) : {};
-        const canEditGeometry = ['Point', 'LineString', 'Polygon'].includes((curConfig?.geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
-        const geomReadOnly = editPermissions.updatable === false || !canEditGeometry;
-        if (geomReadOnly) {
-            action = 'Pick';
-        }
-        this.props.setEditContext('Editing', {action: action || (this.state.drawPick ? "Draw" : this.props.editContext.action), feature: feature, geomType: curConfig?.geomType || null, geomReadOnly: geomReadOnly});
+        this.props.setEditContext('Editing', {
+            action: "Pick",
+            feature: feature,
+            geomType: curConfig?.geomType || null,
+            permissions: curConfig?.permissions || {}
+        });
 
         let prevLayerVisibility = null;
         if (this.state.selectedLayer !== null) {

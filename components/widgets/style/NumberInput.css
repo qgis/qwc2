@@ -21,6 +21,11 @@ div.number-input > input {
     text-align: right;
 }
 
+div.number-input > input:read-only {
+    outline: none;
+    caret-color: transparent;
+}
+
 div.number-input-disabled > span.icon {
     color: var(--text-color-disabled);
     cursor: default;

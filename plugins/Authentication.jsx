@@ -63,7 +63,7 @@ class Authentication extends React.Component {
             // "Login" and "Logout" task ids are legacy
             if (task.id === "Login" || (task.id === "Authentication" && task.mode === "Login")) {
                 this.showLogin();
-            } else if (task === "Logout" || (task.id === "Authentication" && task.mode === "Logout")) {
+            } else if (task.id === "Logout" || (task.id === "Authentication" && task.mode === "Logout")) {
                 // logout and redirect to custom logoutTargetUrl or current location if not set
                 window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(this.props.logoutTargetUrl || window.location.href);
             }

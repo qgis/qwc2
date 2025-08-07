@@ -122,7 +122,8 @@ class AppContainerComponent extends React.Component {
 
             if (theme) {
                 // Compute initial view
-                let initialView = null;
+                let initialView = params.v;
+                let initialExtent = null;
                 if (params.c && params.s !== undefined) {
                     const coords = params.c.split(/[;,]/g).map(x => parseFloat(x) || 0);
                     const scales = theme.scales || themes.defaultScales;
@@ -132,13 +133,13 @@ class AppContainerComponent extends React.Component {
                         const bounds = theme.bbox.bounds;
                         // Only accept c if it is within the theme bounds
                         if (bounds[0] <= p[0] && p[0] <= bounds[2] && bounds[1] <= p[1] && p[1] <= bounds[3]) {
-                            initialView = {
+                            initialExtent = {
                                 center: coords,
                                 zoom: zoom,
                                 crs: params.crs || theme.mapCrs
                             };
                         } else {
-                            initialView = {
+                            initialExtent = {
                                 center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
                                 zoom: zoom,
                                 crs: theme.bbox.crs
@@ -148,7 +149,7 @@ class AppContainerComponent extends React.Component {
                 } else if (params.e) {
                     const bounds = params.e.split(/[;,]/g).map(x => parseFloat(x) || 0);
                     if (CoordinatesUtils.isValidExtent(bounds)) {
-                        initialView = {
+                        initialExtent = {
                             bounds: bounds,
                             crs: params.crs || theme.mapCrs
                         };
@@ -158,7 +159,7 @@ class AppContainerComponent extends React.Component {
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
                     layerParams.reverse();
                 }
-                this.props.setCurrentTheme(theme, themes, false, initialView, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
+                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialView);
             }
 
             const task = ConfigUtils.getConfigProp("startupTask");
