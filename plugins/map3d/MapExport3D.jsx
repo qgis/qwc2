@@ -18,18 +18,20 @@ import {SRGBColorSpace, Vector2, WebGLRenderTarget} from 'three';
 import utif from 'utif';
 
 import {setCurrentTask} from '../../actions/task';
+import ExportSelection from '../../components/ExportSelection';
+import Icon from '../../components/Icon';
+import SideBar from '../../components/SideBar';
+import NumberInput from '../../components/widgets/NumberInput';
+import Spinner from '../../components/widgets/Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
-import ExportSelection from '../ExportSelection';
-import Icon from '../Icon';
-import SideBar from '../SideBar';
-import NumberInput from '../widgets/NumberInput';
-import Spinner from '../widgets/Spinner';
 
-import './../../plugins/style/MapExport.css';
+import '../style/MapExport.css';
 
 
 class MapExport3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         hideAutopopulatedFields: PropTypes.bool,
         sceneContext: PropTypes.object,

@@ -13,14 +13,16 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
 
+import Icon from '../../components/Icon';
+import SideBar from '../../components/SideBar';
 import LocaleUtils from '../../utils/LocaleUtils';
-import Icon from '../Icon';
-import SideBar from '../SideBar';
 
 import './style/HideObjects3D.css';
 
 
 class HideObjects3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         enabled: PropTypes.bool,
         sceneContext: PropTypes.object

@@ -14,16 +14,18 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../../actions/task';
+import Icon from '../../components/Icon';
+import SideBar from '../../components/SideBar';
+import ImportObjects3D from '../../components/map3d/ImportObjects3D';
+import NumberInput from '../../components/widgets/NumberInput';
 import LocaleUtils from '../../utils/LocaleUtils';
-import Icon from '../Icon';
-import SideBar from '../SideBar';
-import NumberInput from '../widgets/NumberInput';
-import ImportObjects3D from './ImportObjects3D';
 
 import './style/LayerTree3D.css';
 
 
 class LayerTree3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         sceneContext: PropTypes.object,
         setCurrentTask: PropTypes.func

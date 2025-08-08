@@ -14,13 +14,15 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
 
+import ResizeableWindow from '../../components/ResizeableWindow';
 import LocaleUtils from '../../utils/LocaleUtils';
-import ResizeableWindow from '../ResizeableWindow';
 
-import '../style/IdentifyViewer.css';
+import '../../components/style/IdentifyViewer.css';
 
 
 class Identify3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         identifyEnabled: PropTypes.bool,
         sceneContext: PropTypes.object
@@ -122,7 +124,7 @@ class Identify3D extends React.Component {
         }
     };
     identifyTilePick = (pick) => {
-        const batchidAttr = pick.object.geometry.getAttribute( '_batchid' );
+        const batchidAttr = pick.object.geometry.getAttribute('_batchid');
         if (!batchidAttr) {
             return;
         }

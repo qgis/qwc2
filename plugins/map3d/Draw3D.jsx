@@ -12,15 +12,17 @@ import PropTypes from 'prop-types';
 import {Group} from 'three';
 import {v4 as uuidv4} from 'uuid';
 
+import Icon from '../../components/Icon';
+import TaskBar from '../../components/TaskBar';
+import CreateTool3D from '../../components/map3d/drawtool/CreateTool3D';
+import EditTool3D from '../../components/map3d/drawtool/EditTool3D';
+import ButtonBar from '../../components/widgets/ButtonBar';
 import LocaleUtils from '../../utils/LocaleUtils';
-import Icon from '../Icon';
-import TaskBar from '../TaskBar';
-import ButtonBar from '../widgets/ButtonBar';
-import CreateTool3D from './drawtool/CreateTool3D';
-import EditTool3D from './drawtool/EditTool3D';
 
 
 export default class Draw3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         sceneContext: PropTypes.object
     };

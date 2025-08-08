@@ -10,9 +10,9 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
+import SideBar from '../../components/SideBar';
+import Input from '../../components/widgets/Input';
 import LocaleUtils from '../../utils/LocaleUtils';
-import SideBar from '../SideBar';
-import Input from '../widgets/Input';
 
 import './style/Settings3D.css';
 

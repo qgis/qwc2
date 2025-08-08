@@ -17,19 +17,21 @@ import pointInPolygon from 'point-in-polygon';
 import PropTypes from 'prop-types';
 import {CurvePath, LineCurve, Vector2, Vector3} from 'three';
 
+import TaskBar from '../../components/TaskBar';
+import HeightProfile3D from '../../components/map3d/HeightProfile3D';
+import ButtonBar from '../../components/widgets/ButtonBar';
+import CopyButton from '../../components/widgets/CopyButton';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
-import TaskBar from '../TaskBar';
-import ButtonBar from '../widgets/ButtonBar';
-import CopyButton from '../widgets/CopyButton';
-import HeightProfile3D from './HeightProfile3D';
 
 import '../../plugins/style/Measure.css';
 
 
 export default class Measure3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         maxSampleCount: PropTypes.number,
         minMeasureLength: PropTypes.number,

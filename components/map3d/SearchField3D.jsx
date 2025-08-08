@@ -16,11 +16,11 @@ import {Group} from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {CSS2DObject} from 'three/addons/renderers/CSS2DRenderer';
 
+import pinModel from '../../resources/pin.glb';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import FeatureStyles from '../../utils/FeatureStyles';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import SearchWidget from '../widgets/SearchWidget';
-import pinModel from './models/pin.glb';
 
 
 export default class SearchField3D extends React.Component {

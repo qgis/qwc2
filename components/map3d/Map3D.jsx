@@ -30,28 +30,28 @@ import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
 import {setCurrentTask} from '../../actions/task';
-import {BackgroundSwitcher} from '../../plugins/BackgroundSwitcher';
+import BackgroundSwitcher3D from '../../plugins/map3d/BackgroundSwitcher3D';
+import BottomBar3D from '../../plugins/map3d/BottomBar3D';
+import Compare3D from '../../plugins/map3d/Compare3D';
+import Draw3D from '../../plugins/map3d/Draw3D';
+import ExportObjects3D from '../../plugins/map3d/ExportObjects3D';
+import HideObjects3D from '../../plugins/map3d/HideObjects3D';
+import Identify3D from '../../plugins/map3d/Identify3D';
+import LayerTree3D from '../../plugins/map3d/LayerTree3D';
+import MapExport3D from '../../plugins/map3d/MapExport3D';
+import Measure3D from '../../plugins/map3d/Measure3D';
+import OverviewMap3D from '../../plugins/map3d/OverviewMap3D';
+import Settings3D from '../../plugins/map3d/Settings3D';
+import TopBar3D from '../../plugins/map3d/TopBar3D';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LayerUtils from '../../utils/LayerUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
 import {MapContainerPortalContext} from '../PluginsContainer';
-import BottomBar3D from './BottomBar3D';
-import Compare3D from './Compare3D';
-import Draw3D from './Draw3D';
 import EditDataset3D from './EditDataset3D';
-import ExportObjects3D from './ExportObjects3D';
-import HideObjects3D from './HideObjects3D';
-import Identify3D from './Identify3D';
-import LayerTree3D from './LayerTree3D';
 import Map3DLight from './Map3DLight';
 import MapControls3D from './MapControls3D';
-import MapExport3D from './MapExport3D';
-import Measure3D from './Measure3D';
-import OverviewMap3D from './OverviewMap3D';
-import Settings3D from './Settings3D';
-import TopBar3D from './TopBar3D';
 import View3DSwitcher from './View3DSwitcher';
 import LayerRegistry from './layers/index';
 import {importGltf, updateObjectLabel} from './utils/MiscUtils3D';
@@ -124,6 +124,7 @@ class Map3D extends React.Component {
             getLayer: (layerId) => {},
             removeLayer: (layerId) => {},
             updateColorLayer: (layerId, options, path) => {},
+            setBaseLayer: (layer, visibility) => {},
 
             add3dTiles: (url, options) => {},
             addSceneObject: (objectId, object, options = {}) => {},
@@ -159,6 +160,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.getLayer = this.getLayer;
         this.state.sceneContext.removeLayer = this.removeLayer;
         this.state.sceneContext.updateColorLayer = this.updateColorLayer;
+        this.state.sceneContext.setBaseLayer = this.setBaseLayer;
         this.state.sceneContext.add3dTiles = this.add3dTiles;
         this.state.sceneContext.addSceneObject = this.addSceneObject;
         this.state.sceneContext.getSceneObject = this.getSceneObject;
@@ -624,8 +626,6 @@ class Map3D extends React.Component {
         return this.map;
     };
     render() {
-        const baseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true);
-        const overviewLayer = this.state.sceneContext.baseLayers.find(l => l.overview === true) ?? baseLayer;
         return [
             ReactDOM.createPortal((
                 <div className="map3d-map" id="map3d" key="Map3D" ref={this.setupContainer} />
@@ -633,7 +633,7 @@ class Map3D extends React.Component {
             this.state.sceneContext.scene ? (
                 <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
                     <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext}>
-                        <BackgroundSwitcher changeLayerVisibility={this.setBaseLayer} layers={this.state.sceneContext.baseLayers} />
+                        <BackgroundSwitcher3D sceneContext={this.state.sceneContext} />
                         <BottomBar3D sceneContext={this.state.sceneContext} />
                         <Compare3D sceneContext={this.state.sceneContext} />
                         <Draw3D sceneContext={this.state.sceneContext} />
@@ -645,7 +645,7 @@ class Map3D extends React.Component {
                         <Map3DLight sceneContext={this.state.sceneContext} />
                         <MapExport3D sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
-                        <OverviewMap3D baseLayer={overviewLayer} sceneContext={this.state.sceneContext} />
+                        <OverviewMap3D sceneContext={this.state.sceneContext} />
                         <Settings3D sceneContext={this.state.sceneContext} />
                         <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
                         <View3DSwitcher position={2} />

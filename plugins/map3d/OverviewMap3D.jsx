@@ -12,7 +12,7 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import OlLayer from '../../components/map/OlLayer';
-import viewconeIcon from './img/viewcone.svg';
+import viewconeIcon from '../../resources/viewcone.svg';
 
 import './style/OverviewMap3D.css';
 
@@ -20,8 +20,9 @@ import './style/OverviewMap3D.css';
  * Overview map support for the map component.
 */
 export default class OverviewMap3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
-        baseLayer: PropTypes.object,
         sceneContext: PropTypes.object
     };
     state = {
@@ -96,6 +97,8 @@ export default class OverviewMap3D extends React.Component {
         const style = {
             display: this.state.collapsed ? 'none' : 'initial'
         };
+        const baseLayer = this.props.sceneContext.baseLayers.find(l => l.visibility === true);
+        const overviewLayer = this.props.sceneContext.baseLayers.find(l => l.overview === true) ?? baseLayer;
         return [
             (
                 <div className="overview-map-3d" key="map3d-overview-map">
@@ -105,10 +108,10 @@ export default class OverviewMap3D extends React.Component {
                     </button>
                 </div>
             ),
-            this.map && this.props.baseLayer ? (
+            this.map && overviewLayer ? (
                 <OlLayer
-                    key={this.props.baseLayer.name} map={this.map}
-                    options={{...this.props.baseLayer, visibility: true}} projection={this.props.sceneContext.mapCrs}
+                    key={overviewLayer.name} map={this.map}
+                    options={{...overviewLayer, visibility: true}} projection={this.props.sceneContext.mapCrs}
                 />
             ) : null
         ];

@@ -13,16 +13,18 @@ import PropTypes from 'prop-types';
 import {Group, Plane, Raycaster, Vector2, Vector3} from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 
+import Icon from '../../components/Icon';
+import SideBar from '../../components/SideBar';
+import NumberInput from '../../components/widgets/NumberInput';
+import arrowModel from '../../resources/arrow.glb';
 import LocaleUtils from '../../utils/LocaleUtils';
-import Icon from '../Icon';
-import SideBar from '../SideBar';
-import NumberInput from '../widgets/NumberInput';
-import arrowModel from './models/arrow.glb';
 
 import './style/Compare3D.css';
 
 
 class Compare3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         active: PropTypes.bool,
         sceneContext: PropTypes.object

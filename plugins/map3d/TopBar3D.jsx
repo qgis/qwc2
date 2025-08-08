@@ -14,29 +14,51 @@ import PropTypes from 'prop-types';
 
 import {toggleFullscreen, View3DMode} from '../../actions/display';
 import {openExternalUrl, setTopbarHeight} from '../../actions/windows';
+import AppMenu from '../../components/AppMenu';
+import FullscreenSwitcher from '../../components/FullscreenSwitcher';
+import {Swipeable} from '../../components/Swipeable';
+import Toolbar from '../../components/Toolbar';
+import SearchField3D from '../../components/map3d/SearchField3D';
 import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
-import AppMenu from '../AppMenu';
-import FullscreenSwitcher from '../FullscreenSwitcher';
-import {Swipeable} from '../Swipeable';
-import SearchField3D from './SearchField3D';
+import ThemeUtils from '../../utils/ThemeUtils';
 
 
 class TopBar3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
+        currentTheme: PropTypes.object,
         fullscreen: PropTypes.bool,
+        menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
         sceneContext: PropTypes.object,
         searchProviders: PropTypes.object,
         setTopbarHeight: PropTypes.func,
         toggleFullscreen: PropTypes.func,
+        toolbarItems: PropTypes.array,
         view3dMode: PropTypes.number
     };
     state = {
+        allowedMenuItems: [],
+        allowedToolbarItems: []
     };
-    render() {
-        const config = ConfigUtils.getPluginConfig("TopBar").cfg;
-        const menuItems = [
+    componentDidMount() {
+        this.setState({
+            allowedToolbarItems: ThemeUtils.allowedItems(this.props.toolbarItems, this.props.currentTheme, this.filter2DItems),
+            allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems ?? this.defaultMenuItems(), this.props.currentTheme, this.filter2DItems)
+        });
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.currentTheme !== prevProps.currentTheme || this.props.view3dMode !== prevProps.view3dMode) {
+            this.setState({
+                allowedToolbarItems: ThemeUtils.allowedItems(this.props.toolbarItems, this.props.currentTheme, this.filter2DItems),
+                allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems ?? this.defaultMenuItems(), this.props.currentTheme, this.filter2DItems)
+            });
+        }
+    }
+    defaultMenuItems = () => {
+        return [
             {key: "LayerTree3D", icon: "layers"},
             {key: "Draw3D", icon: "draw"},
             {key: "Measure3D", icon: "measure"},
@@ -46,11 +68,14 @@ class TopBar3D extends React.Component {
             {key: "MapExport3D", icon: "rasterexport"},
             {key: "ExportObjects3D", icon: "export"},
             {key: "Settings3D", icon: "cog"}
-        ];
-        if (this.props.view3dMode === View3DMode.FULLSCREEN) {
-            this.addGenericMenuItems(menuItems, config.menuItems);
-        }
-
+        ].concat(ConfigUtils.getPluginConfig("TopBar")?.cfg?.menuItems);
+    };
+    filter2DItems = (item) => {
+        return true;
+        // return item.url || ConfigUtils.getPluginConfig(item.key)?.availableIn3D;
+    };
+    render() {
+        const config = ConfigUtils.getPluginConfig("TopBar")?.cfg || {};
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
         const isMobile = ConfigUtils.isMobile();
@@ -82,6 +107,9 @@ class TopBar3D extends React.Component {
                         <div className="topbar-search-container">
                             <SearchField3D sceneContext={this.props.sceneContext} searchProviders={this.props.searchProviders} />
                         </div>
+                        <Toolbar
+                            openExternalUrl={this.openUrl}
+                            toolbarItems={this.state.allowedToolbarItems} />
                     </div>
                     <AppMenu
                         appMenuClearsTask={config.appMenuClearsTask}
@@ -89,7 +117,7 @@ class TopBar3D extends React.Component {
                         buttonLabel={LocaleUtils.tr("appmenu.menulabel")}
                         keepMenuOpen={menuCompact}
                         menuCompact={menuCompact}
-                        menuItems={menuItems}
+                        menuItems={this.state.allowedMenuItems}
                         openExternalUrl={this.openUrl}
                         showFilterField={config.appMenuFilterField} />
                     {this.props.view3dMode === View3DMode.FULLSCREEN ? (
@@ -129,6 +157,7 @@ class TopBar3D extends React.Component {
 }
 
 export default connect((state) => ({
+    currentTheme: state.theme.current,
     fullscreen: state.display.fullscreen,
     view3dMode: state.display.view3dMode
 }), {

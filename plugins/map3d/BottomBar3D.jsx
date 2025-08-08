@@ -18,6 +18,8 @@ import './style/BottomBar3D.css';
 
 
 class BottomBar3D extends React.Component {
+    static availableIn3D = true;
+
     static propTypes = {
         sceneContext: PropTypes.object,
         setBottombarHeight: PropTypes.func
