@@ -556,7 +556,7 @@ class HeightProfile extends React.Component {
             this.clearMarkerAndTooltip();
             return;
         }
-        const data = this.state.data[this.state.selectedDatasetIndices[0]];
+        const data = this.state.data[this.state.selectedDatasetIndices[0] ?? 0];
 
         // Find sample index
         const segmentLengths = this.props.measurement.segment_lengths;
