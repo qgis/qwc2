@@ -457,8 +457,8 @@ class HeightProfile extends React.Component {
                         display: true,
                         text: heightStr + " [m " + aslStr + "]"
                     },
-                    max: Math.ceil(Math.max(...selectedDatasetIndices.map(idx => this.state.data[idx]?.maxY ?? 0))),
-                    min: Math.floor(Math.min(...selectedDatasetIndices.map(idx => this.state.data[idx]?.minY ?? 0)))
+                    max: Math.ceil(Math.max(...selectedDatasetIndices.map(idx => this.state.data[idx]?.maxY))),
+                    min: Math.floor(Math.min(...selectedDatasetIndices.map(idx => this.state.data[idx]?.minY)))
                 }
             },
             onHover: interactive ? (evt, activeEls, chart) => {
