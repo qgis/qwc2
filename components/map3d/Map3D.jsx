@@ -651,7 +651,7 @@ class Map3D extends React.Component {
                         <OverviewMap3D sceneContext={this.state.sceneContext} />
                         <Settings3D sceneContext={this.state.sceneContext} />
                         <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
-                        <View3DSwitcher position={2} />
+                        <View3DSwitcher position={1} />
                     </MapControls3D>
                 </UnloadWrapper>
             ) : null
