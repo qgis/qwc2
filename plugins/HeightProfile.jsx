@@ -300,7 +300,7 @@ class HeightProfile extends React.Component {
                 // First and last node
                 nodes.unshift({x: x[0], y: y[0]});
                 nodes.push({x: x[x.length - 1], y: y[y.length - 1]});
-                const nonZeroElevations = elevations.filter(elev => elev !== 0)
+                const nonZeroElevations = elevations.filter(elev => elev !== 0);
 
                 if (nonZeroElevations.length > 0) {
                     return {
