@@ -377,6 +377,7 @@ class HeightProfile extends React.Component {
         const datasets = selectedDatasetIndices.flatMap((idx) => {
             return [
                 {
+                    label: this.state.data[idx].dataset,
                     data: this.state.data[idx].y.map((y, i) => ({ x: this.state.data[idx].x[i], y })),
                     fill: true,
                     backgroundColor: "rgba(255,0,0,0.5)",
