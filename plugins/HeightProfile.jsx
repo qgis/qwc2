@@ -30,6 +30,7 @@ import {v1 as uuidv1} from 'uuid';
 
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
+import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
 import {getElevationInterface} from '../utils/ElevationInterface';
@@ -476,17 +477,16 @@ class HeightProfile extends React.Component {
                     {this.state.data.map((dataset, idx) => {
                         const isSelected = this.state.selectedDatasetIndices?.includes(idx);
                         return (
-                            <div key={`${dataset.dataset || 'unnamed'}-${idx}`} >
-                                <span
-                                    className={`icon icon_clickable ${ isSelected ? 'icon-checked' : 'icon-unchecked' } `} onClick={() => {
-                                        const selected = new Set(this.state.selectedDatasetIndices || []);
-                                        if (isSelected) {
-                                            selected.delete(idx);
-                                        } else {
-                                            selected.add(idx);
-                                        }
-                                        this.setState({ selectedDatasetIndices: Array.from(selected) });
-                                    }}
+                            <div key={`${dataset.dataset}-${idx}`} >
+                                <Icon icon={isSelected ? "checked" : "unchecked"}  onClick={() => {
+                                    const selected = new Set(this.state.selectedDatasetIndices || []);
+                                    if (isSelected) {
+                                        selected.delete(idx);
+                                    } else {
+                                        selected.add(idx);
+                                    }
+                                    this.setState({ selectedDatasetIndices: Array.from(selected) });
+                                }}
                                 />
                                 <span>{dataset.dataset}</span>
                             </div>
