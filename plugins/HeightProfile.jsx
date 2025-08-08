@@ -304,7 +304,7 @@ class HeightProfile extends React.Component {
 
                 if (nonZeroElevations.length > 0) {
                     return {
-                        dataset: entry.dataset || `Dataset ${index + 1}`,
+                        dataset: entry.dataset || `${LocaleUtils.tr("heightprofile.dhmdefaultname")} ${index + 1}`,
                         x: x,
                         y: elevations,
                         maxY: Math.max(...elevations),
