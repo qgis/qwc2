@@ -230,6 +230,7 @@ class Map3D extends React.Component {
     applyBaseLayer = () => {
         const baseLayer = this.state.sceneContext.baseLayers.find(e => e.visibility === true);
         this.removeLayer("__baselayer");
+        UrlParams.updateParams({bl3d: baseLayer?.name ?? ''});
         if (!baseLayer) {
             return;
         }
@@ -254,7 +255,6 @@ class Map3D extends React.Component {
                 ))
             }
         }));
-        UrlParams.updateParams({bl3d: visibility ? layer.name : ''});
     };
     collectColorLayers = (prevColorLayers) => {
         return this.props.layers.reduce((colorLayers, layer) => {
