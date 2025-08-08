@@ -487,7 +487,7 @@ class HeightProfile extends React.Component {
                                         this.setState({ selectedDatasetIndices: Array.from(selected) });
                                     }}
                                 />
-                                <span>{dataset.dataset || "<unnamed>"}</span>
+                                <span>{dataset.dataset}</span>
                             </div>
                         );
                     })}
