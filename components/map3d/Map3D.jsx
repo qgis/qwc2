@@ -833,52 +833,56 @@ class Map3D extends React.Component {
             this.inspector = new Inspector(inspectorContainer, this.instance);
         }
 
-        this.instance.addEventListener('update-start', () => {
-            const camera = this.instance.view.camera;
+        this.instance.addEventListener('update-start', this.instanceOnUpdateStart);
+        this.instance.addEventListener('update-end', this.instanceOnUpdateEnd);
+        this.instance.addEventListener('before-entity-update', this.instanceOnBeforeEntityUpdate);
+        this.instance.addEventListener('after-entity-update', this.instanceOnAfterEntityUpdate);
+    };
+    instanceOnUpdateStart = () => {
+        const camera = this.instance.view.camera;
+        const quality = this.state.sceneContext.settings.sceneQuality;
+        const isFirstPerson = this.state.sceneContext.scene.view.controls.isFirstPerson;
+        const maxDistance = isFirstPerson ? 200 + 20 * quality : 500 + quality * quality;
+        // Hide scene objects according to scene quality
+        Object.entries(this.state.sceneContext.sceneObjects).forEach(([objId, options]) => {
+            const object = this.objectMap[objId];
+            if (options.layertree && object.isObject3D) {
+                object.children.forEach(child => {
+                    const distance = camera.position.distanceTo(child.getWorldPosition(new Vector3()));
+                    child.userData.__wasVisible = child.visible;
+                    if (distance > maxDistance) {
+                        child.visible = false;
+                    }
+                });
+            }
+        });
+    };
+    instanceOnUpdateEnd = () => {
+        Object.entries(this.state.sceneContext.sceneObjects).forEach(([objId, options]) => {
+            const object = this.objectMap[objId];
+            if (options.layertree && object.isObject3D) {
+                object.children.forEach(child => {
+                    child.visible = child.userData.__wasVisible;
+                    delete child.userData.__wasVisible;
+                });
+            }
+        });
+    };
+    instanceOnBeforeEntityUpdate = ({entity}) => {
+        if (entity !== this.map) {
+            this.instance.view.camera.userData.__previousFar = this.instance.view.camera.far;
             const quality = this.state.sceneContext.settings.sceneQuality;
             const isFirstPerson = this.state.sceneContext.scene.view.controls.isFirstPerson;
-            const maxDistance = isFirstPerson ? 200 + 20 * quality : 500 + quality * quality;
-            // Hide scene objects according to scene quality
-            Object.entries(this.state.sceneContext.sceneObjects).forEach(([objId, options]) => {
-                const object = this.objectMap[objId];
-                if (options.layertree && object.isObject3D) {
-                    object.children.forEach(child => {
-                        const distance = camera.position.distanceTo(child.getWorldPosition(new Vector3()));
-                        child.userData.__wasVisible = child.visible;
-                        if (distance > maxDistance) {
-                            child.visible = false;
-                        }
-                    });
-                }
-            });
-        });
-        this.instance.addEventListener('update-end', () => {
-            Object.entries(this.state.sceneContext.sceneObjects).forEach(([objId, options]) => {
-                const object = this.objectMap[objId];
-                if (options.layertree && object.isObject3D) {
-                    object.children.forEach(child => {
-                        child.visible = child.userData.__wasVisible;
-                        delete child.userData.__wasVisible;
-                    });
-                }
-            });
-        });
-        this.instance.addEventListener('before-entity-update', ({entity}) => {
-            if (entity !== this.map) {
-                this.instance.view.camera.userData.__previousFar = this.instance.view.camera.far;
-                const quality = this.state.sceneContext.settings.sceneQuality;
-                const isFirstPerson = this.state.sceneContext.scene.view.controls.isFirstPerson;
-                this.instance.view.camera.far = isFirstPerson ? 200 + 20 * quality : 500 + quality * quality;
-                this.instance.view.camera.updateProjectionMatrix();
-            }
-        });
-        this.instance.addEventListener('after-entity-update', ({entity}) => {
-            if (entity !== this.map) {
-                this.instance.view.camera.far = this.instance.view.camera.userData.__previousFar;
-                delete this.instance.view.camera.userData.__previousFar;
-                this.instance.view.camera.updateProjectionMatrix();
-            }
-        });
+            this.instance.view.camera.far = isFirstPerson ? 200 + 20 * quality : 500 + quality * quality;
+            this.instance.view.camera.updateProjectionMatrix();
+        }
+    };
+    instanceOnAfterEntityUpdate = ({entity}) => {
+        if (entity !== this.map) {
+            this.instance.view.camera.far = this.instance.view.camera.userData.__previousFar;
+            delete this.instance.view.camera.userData.__previousFar;
+            this.instance.view.camera.updateProjectionMatrix();
+        }
     };
     loadTilesetStyle = (objectId, options) => {
         const url = options.styles?.[options.style];
@@ -899,6 +903,10 @@ class Map3D extends React.Component {
         }
     };
     disposeInstance = () => {
+        this.instance.removeEventListener('update-start', this.instanceOnUpdateStart);
+        this.instance.removeEventListener('update-end', this.instanceOnUpdateEnd);
+        this.instance.removeEventListener('before-entity-update', this.instanceOnBeforeEntityUpdate);
+        this.instance.removeEventListener('after-entity-update', this.instanceOnAfterEntityUpdate);
         if (this.inspector) {
             this.inspector.detach();
         }
