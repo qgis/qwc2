@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
+      "dhmdefaultname": "",
       "distance": "Mesafe",
       "drawnodes": "Düğüm noktası çiz",
       "error": "Yükseklik profili hesaplama başarısız",

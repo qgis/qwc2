@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "dM",
+      "dhmdefaultname": "",
       "distance": "Distanța",
       "drawnodes": "",
       "error": "",

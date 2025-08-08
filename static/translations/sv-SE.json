@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "m.ö.h.",
+      "dhmdefaultname": "",
       "distance": "Avstånd",
       "drawnodes": "",
       "error": "",

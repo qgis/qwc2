@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "s/mer",
+      "dhmdefaultname": "Jeu de données",
       "distance": "Distance",
       "drawnodes": "Dessiner des nœuds",
       "error": "Échec du calcul du profil de hauteur",

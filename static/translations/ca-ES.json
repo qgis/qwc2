@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
+      "dhmdefaultname": "",
       "distance": "Distància",
       "drawnodes": "Dibuixar nodes",
       "error": "No s'ha pogut calcular el perfil d'alçada",

@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "ü. NHN",
+      "dhmdefaultname": "Datensatz",
       "distance": "Distanz",
       "drawnodes": "Knoten zeichnen",
       "error": "Fehler beim Berechnen des Höhenprofils",

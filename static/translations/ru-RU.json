@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "над у.м.",
+      "dhmdefaultname": "",
       "distance": "Дистанция",
       "drawnodes": "",
       "error": "",

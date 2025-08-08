@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "NAP",
+      "dhmdefaultname": "",
       "distance": "Afstand",
       "drawnodes": "Nodes tekenen",
       "error": "Hoogteprofiel berekenen mislukt",

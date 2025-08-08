@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
+      "dhmdefaultname": "",
       "distance": "Разстояние",
       "drawnodes": "Рисуване на възли",
       "error": "Неуспешно изчисление на профила на височината",
