@@ -122,7 +122,7 @@ class AppContainerComponent extends React.Component {
 
             if (theme) {
                 // Compute initial view
-                let initialView = params.v;
+                const initialView = params.v;
                 let initialExtent = null;
                 if (params.c && params.s !== undefined) {
                     const coords = params.c.split(/[;,]/g).map(x => parseFloat(x) || 0);
