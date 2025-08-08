@@ -48,6 +48,8 @@ import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LayerUtils from '../../utils/LayerUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
+import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
+import ThemeUtils from '../../utils/ThemeUtils';
 import {MapContainerPortalContext} from '../PluginsContainer';
 import EditDataset3D from './EditDataset3D';
 import Map3DLight from './Map3DLight';
@@ -91,7 +93,8 @@ class Map3D extends React.Component {
         options: PropTypes.object,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        themes: PropTypes.object
     };
     static defaultProps = {
         geometry: {
@@ -729,20 +732,24 @@ class Map3D extends React.Component {
         }
 
         // Collect baselayers
-        let visibleBaseLayer = null;
-        const baseLayers = (this.props.theme.map3d?.basemaps || []).map(e => {
-            const baseLayer = {
-                ...this.props.layers.find(bl => bl.name === e.name),
-                visibility: e.visibility === true,
-                overview: e.overview === true
-            };
-            if (baseLayer.visibility) {
-                visibleBaseLayer = baseLayer;
-            }
-            return baseLayer;
-        });
-        if (visibleBaseLayer) {
-            this.setBaseLayer(visibleBaseLayer, true);
+        const externalLayers = {};
+        const baseLayers = ThemeUtils.createThemeBackgroundLayers(this.props.theme.map3d?.basemaps || [], this.props.themes, null, externalLayers);
+        for (const key of Object.keys(externalLayers)) {
+            const idx = key.indexOf(":");
+            const service = key.slice(0, idx);
+            const serviceUrl = key.slice(idx + 1);
+            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], projection, (id, layer) => {
+                // Don't expose sublayers
+                if (layer) {
+                    layer.sublayers = null;
+                }
+                this.setState(state => ({
+                    sceneContext: {
+                        ...state.sceneContext,
+                        baseLayers: LayerUtils.replacePlaceholderLayer(state.sceneContext.baseLayers, id, layer)
+                    }
+                }));
+            });
         }
 
         // Collect color layers
@@ -1111,6 +1118,7 @@ class Map3D extends React.Component {
 
 export default connect((state) => ({
     theme: state.theme.current,
+    themes: state.theme.themes,
     layers: state.layers.flat
 }), {
     setCurrentTask: setCurrentTask
