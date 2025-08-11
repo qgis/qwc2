@@ -290,7 +290,7 @@ class HeightProfile extends React.Component {
                 let distIdx = 0;
                 const y = elevations;
                 const x = y.map((value, idx, a) => {
-                    const dist = (idx / (a.length - 1) * totLength).toFixed(0);
+                    const dist = (idx / (a.length - 1) * totLength);
                     if (dist >= cumDist) {
                         nodes.push({x: dist, y: y[idx]});
                         cumDist += distances[++distIdx];
