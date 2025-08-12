@@ -27,7 +27,7 @@
         "@turf/buffer": "^6.5.0",
         "@turf/helpers": "^6.5.0",
         "any-date-parser": "^1.5.4",
-        "axios": "^1.7.9",
+        "axios": "^1.11.0",
         "chart.js": "^4.4.7",
         "classnames": "^2.5.1",
         "clone": "^2.1.2",
