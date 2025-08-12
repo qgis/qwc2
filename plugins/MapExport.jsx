@@ -399,7 +399,7 @@ class MapExport extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: "arraybuffer"
         };
-        axios.post(formatConfiguration.serviceUrl ?? this.props.theme.url, data, config).then(response => {
+        axios.post(formatConfiguration?.serviceUrl ?? this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
 
