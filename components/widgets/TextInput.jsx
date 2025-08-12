@@ -9,6 +9,7 @@
 import React from 'react';
 
 import classNames from 'classnames';
+import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -57,7 +58,7 @@ export default class TextInput extends React.Component {
             return {
                 value: nextProps.value,
                 valueRev: state.valueRev + 1,
-                curValue: nextProps.value || "",
+                curValue: DOMPurify.sanitize(nextProps.value || ""),
                 changed: false
             };
         }
@@ -68,7 +69,7 @@ export default class TextInput extends React.Component {
     }
     setDefaultValue = (value, valueRev, prevValueRef) => {
         if (valueRev > prevValueRef) {
-            this.input.innerHTML = value.replaceAll('\n', this.props.multiline ? '<br />' : '');
+            this.input.innerHTML = DOMPurify.sanitize(value.replaceAll('\n', this.props.multiline ? '<br />' : ''));
         }
     };
     render() {
@@ -153,7 +154,7 @@ export default class TextInput extends React.Component {
         this.input.innerHTML = clearValue;
     };
     onChange = (ev) => {
-        let curValue = ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, '');
+        let curValue = DOMPurify.sanitize(ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, ''));
         if (!this.props.multiline) {
             curValue = curValue.replace('\n', '');
         }

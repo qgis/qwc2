@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import classnames from 'classnames';
+import DOMPurify from 'dompurify';
 import isEmpty from 'lodash.isempty';
 import pointInPolygon from 'point-in-polygon';
 import polygonIntersectTest from 'polygon-intersect-test';
@@ -359,7 +360,7 @@ class SearchBox extends React.Component {
         return (
             <div className="searchbox-result" key={key} onClick={() => {this.selectPlaceResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />) : null}
-                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.externalLink ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.openUrl(result.externalLink, result.target, result.label ?? result.text);} } /> : null}
             </div>
         );
@@ -382,13 +383,13 @@ class SearchBox extends React.Component {
                 <div className="searchbox-result" onClick={() => {selectResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                     {icon}
                     {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
-                    <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                    <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                     {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectThemeLayerResult(provider, group, result); this.blur(); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
                     {result.info ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.toggleLayerInfo(provider, group, result, key, parent);} } /> : null}
                 </div>
                 {this.state.activeLayerInfo === key ? (
                     <div className="searchbox-result-abstract"
-                        dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(result.layer?.abstract || "") || LocaleUtils.tr("search.nodescription")}}
+                        dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(DOMPurify.sanitize(result.layer?.abstract || "")) || LocaleUtils.tr("search.nodescription")}}
                     />
                 ) : null}
                 {this.state.expandedLayerGroup === key ? (
@@ -403,7 +404,7 @@ class SearchBox extends React.Component {
             <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => {this.selectThemeResult(provider, group, result); this.blur();}} onMouseDown={MiscUtils.killEvent}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />) : null}
                 <Icon className="searchbox-result-openicon" icon="open" />
-                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: result.text.replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.addThemeLayers(result.layer); this.blur();}} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
             </div>
         );

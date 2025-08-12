@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
 
 import {setActiveServiceInfo} from '../actions/serviceinfo';
@@ -38,7 +39,7 @@ class ServiceInfoWindow extends React.Component {
                 <tr>
                     <td>{title}:</td>
                     {html ? (
-                        <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(content)}} />
+                        <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(DOMPurify.sanitize(content))}} />
                     ) : (<td>{content}</td>)}
                 </tr>
             );

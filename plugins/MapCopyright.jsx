@@ -10,6 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
+import DOMPurify from 'dompurify';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
@@ -51,7 +52,7 @@ class MapCopyright extends React.Component {
             if (value.title) {
                 return (<span key={key}><a href={key} rel="noreferrer" target="_blank">{this.layerNames(value.layers) + value.title}</a></span>);
             } else {
-                return (<span key={key}>{this.layerNames(value.layers)}<span dangerouslySetInnerHTML={{__html: key}} /></span>);
+                return (<span key={key}>{this.layerNames(value.layers)}<span dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(key)}} /></span>);
             }
         });
         if (isEmpty(copyrights)) {
