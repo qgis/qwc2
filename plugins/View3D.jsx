@@ -26,13 +26,13 @@ import StandardApp from '../components/StandardApp';
 import View3DSwitcher from '../components/map3d/View3DSwitcher';
 import Spinner from '../components/widgets/Spinner';
 import ReducerIndex from '../reducers/index';
+import personIcon from '../resources/person.png';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
-import personIcon from '../utils/img/person.png';
 
 import './style/View3D.css';
 
