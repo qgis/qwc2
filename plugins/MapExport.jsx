@@ -452,7 +452,7 @@ class MapExport extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: "arraybuffer"
         };
-        axios.post(formatConfiguration.serviceUrl ?? this.props.theme.url, data, config).then(response => {
+        axios.post(formatConfiguration?.serviceUrl ?? this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
 
@@ -487,7 +487,7 @@ class MapExport extends React.Component {
                 responseType: "arraybuffer"
             };
             return new Promise((resolve, reject) => {
-                axios.post(formatConfiguration.serviceUrl ?? layer.url, data, config).then(response => {
+                axios.post(formatConfiguration?.serviceUrl ?? layer.url, data, config).then(response => {
                     resolve(response);
                 }).catch((e) => {
                     /* eslint-disable-next-line */
