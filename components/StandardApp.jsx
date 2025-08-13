@@ -170,10 +170,6 @@ class AppContainerComponent extends React.Component {
         });
     };
     render() {
-        // Ensure translations and config are loaded
-        if (!this.props.haveLocale || !this.props.localConfig.plugins || !this.props.localConfig.startupParams) {
-            return null;
-        }
         const plugins = {
             ...this.props.appConfig.pluginsDef.plugins,
             ...window.qwc2?.__customPlugins
@@ -243,6 +239,7 @@ export default class StandardApp extends React.Component {
     };
     state = {
         startupConfig: null,
+        haveConfig: false,
         haveLocale: false
     };
     constructor(props) {
@@ -264,7 +261,7 @@ export default class StandardApp extends React.Component {
         document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
     };
     render() {
-        if (!this.state.startupConfig || !this.state.haveLocale) {
+        if (!this.state.startupConfig || !this.state.haveConfig || !this.state.haveLocale) {
             return null;
         }
         return (
@@ -313,6 +310,7 @@ export default class StandardApp extends React.Component {
             }
             olProj4Register(Proj4js);
             StandardApp.store.dispatch(localConfigLoaded(config));
+            this.setState({haveConfig: true});
 
             // Load locale
             const lang = this.props.appConfig.getDefaultLocale?.() ?? initialParams.lang ?? navigator.language;
