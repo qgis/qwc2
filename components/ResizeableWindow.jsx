@@ -244,14 +244,9 @@ class ResizeableWindow extends React.Component {
         const splitTopAndBottomBar = this.props.splitTopAndBottomBar && this.props.splitScreenWhenDocked && (docked || maximized);
         let marginLeft = 0;
         let marginRight = 0;
-        if (this.props.mapMargins.splitTopAndBottomBar) {
-            if (!splitTopAndBottomBar) {
-                marginLeft = this.props.mapMargins.left;
-                marginRight = this.props.mapMargins.right;
-            }
-        } else {
-            marginLeft = this.props.menuMargins.left;
-            marginRight = this.props.menuMargins.right;
+        if (!splitTopAndBottomBar) {
+            marginLeft = this.props.mapMargins.outerLeft + this.props.menuMargins.left;
+            marginRight = this.props.mapMargins.outerRight + this.props.menuMargins.right;
         }
         const containerStyle = {
             left: marginLeft + 'px',

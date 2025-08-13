@@ -35,8 +35,7 @@ class SideBar extends React.Component {
         setCurrentTask: PropTypes.func,
         side: PropTypes.string,
         title: PropTypes.string,
-        width: PropTypes.string,
-        windowMargins: PropTypes.object
+        width: PropTypes.string
     };
     static defaultProps = {
         extraClasses: '',
@@ -84,17 +83,19 @@ class SideBar extends React.Component {
     render() {
         const visible = this.props.currentTask.id === this.props.id;
         const render = visible || this.state.render;
+        const marginLeft = this.props.mapMargins.left + this.props.mapMargins.outerLeft;
+        const marginRight = this.props.mapMargins.right + this.props.mapMargins.outerRight;
         const style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
             zIndex: visible ? 5 : 4,
-            maxWidth: 'calc(100vw - ' + this.props.windowMargins.left + 'px - ' + this.props.windowMargins.right + 'px)'
+            maxWidth: 'calc(100vw - ' + marginLeft + 'px - ' + marginRight + 'px)'
         };
         const isLeftSide = this.props.side === "left";
         if (isLeftSide) {
-            style.left = visible ? this.props.mapMargins.left : 0;
+            style.left = visible ? (this.props.mapMargins.left + this.props.mapMargins.outerLeft) : 0;
         } else {
-            style.right = visible ? this.props.mapMargins.right : 0;
+            style.right = visible ? (this.props.mapMargins.right + this.props.mapMargins.outerRight) : 0;
         }
 
         const classes = classnames({
@@ -171,8 +172,7 @@ class SideBar extends React.Component {
 
 export default connect((state) => ({
     currentTask: state.task,
-    mapMargins: state.windows.mapMargins,
-    windowMargins: state.windows.windowMargins
+    mapMargins: state.windows.mapMargins
 }), {
     setCurrentTask: setCurrentTask
 })(SideBar);

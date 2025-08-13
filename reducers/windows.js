@@ -24,10 +24,7 @@ const defaultState = {
     stacking: [],
     splitScreen: {},
     mapMargins: {
-        left: 0, top: 0, right: 0, bottom: 0
-    },
-    windowMargins: {
-        left: 0, top: 0, right: 0, bottom: 0
+        left: 0, outerLeft: 0, top: 0, right: 0, outerRight: 0, bottom: 0
     },
     menuMargins: {
         left: 0, right: 0
@@ -37,13 +34,21 @@ const defaultState = {
     entries: {}
 };
 
-function computeMapMargins(windowMargins, menuMargins) {
+function computeMapMargins(splitScreen, menuMargins) {
+    const splitWindows = Object.values(splitScreen);
+    const innerSplitWindows = splitWindows.filter(entry => entry.splitTopAndBottomBar !== true);
+    const outerSplitWindows = splitWindows.filter(entry => entry.splitTopAndBottomBar === true);
+    const mapMargins = {
+        right: innerSplitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0) + menuMargins.right,
+        outerRight: outerSplitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0),
+        bottom: splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0),
+        left: innerSplitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0) + menuMargins.left,
+        outerLeft: outerSplitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0),
+        top: splitWindows.filter(entry => entry.side === 'top').reduce((res, e) => Math.max(e.size, res), 0)
+    };
     return {
-        left: windowMargins.left + menuMargins.left,
-        top: windowMargins.top,
-        right: windowMargins.right + menuMargins.right,
-        bottom: windowMargins.bottom,
-        splitTopAndBottomBar: windowMargins.splitTopAndBottomBar
+        mapMargins,
+        splitTopAndBottomBar: outerSplitWindows.length > 0
     };
 }
 
@@ -115,19 +120,10 @@ export default function windows(state = defaultState, action) {
                 splitTopAndBottomBar: action.splitTopAndBottomBar
             };
         }
-        const splitWindows = Object.values(newSplitScreen);
-        const windowMargins = {
-            right: splitWindows.filter(entry => entry.side === 'right').reduce((res, e) => Math.max(e.size, res), 0),
-            bottom: splitWindows.filter(entry => entry.side === 'bottom').reduce((res, e) => Math.max(e.size, res), 0),
-            left: splitWindows.filter(entry => entry.side === 'left').reduce((res, e) => Math.max(e.size, res), 0),
-            top: splitWindows.filter(entry => entry.side === 'top').reduce((res, e) => Math.max(e.size, res), 0),
-            splitTopAndBottomBar: splitWindows.find(x => x.splitTopAndBottomBar === true) !== undefined
-        };
         return {
             ...state,
             splitScreen: newSplitScreen,
-            windowMargins: windowMargins,
-            mapMargins: computeMapMargins(windowMargins, state.menuMargins)
+            ...computeMapMargins(newSplitScreen, state.menuMargins)
         };
     }
     case SET_MENU_MARGIN: {
@@ -135,7 +131,11 @@ export default function windows(state = defaultState, action) {
             right: action.right,
             left: action.left
         };
-        return {...state, menuMargins: menuMargins, mapMargins: computeMapMargins(state.windowMargins, menuMargins)};
+        return {
+            ...state,
+            menuMargins: menuMargins,
+            ...computeMapMargins(state.splitScreen, menuMargins)
+        };
     }
     case SET_TOPBAR_HEIGHT: {
         document.querySelector(':root').style.setProperty('--topbar-height', action.height + 'px');

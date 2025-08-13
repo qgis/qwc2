@@ -49,6 +49,7 @@ class BottomBar extends React.Component {
         displayScales: PropTypes.bool,
         fullscreen: PropTypes.bool,
         map: PropTypes.object,
+        mapMargins: PropTypes.object,
         openExternalUrl: PropTypes.func,
         /** See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) */
         scalebarOptions: PropTypes.object,
@@ -65,8 +66,7 @@ class BottomBar extends React.Component {
         /** Icon of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. */
         viewertitleUrlIcon: PropTypes.string,
         /** The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. */
-        viewertitleUrlTarget: PropTypes.string,
-        windowMargins: PropTypes.object
+        viewertitleUrlTarget: PropTypes.string
     };
     static defaultProps = {
         displayCoordinates: true,
@@ -145,10 +145,10 @@ class BottomBar extends React.Component {
                 </div>
             );
         }
-        const style = this.props.windowMargins.splitTopAndBottomBar ? {
-            marginLeft: this.props.windowMargins.left + 'px',
-            marginRight: this.props.windowMargins.right + 'px'
-        } : {};
+        const style = {
+            marginLeft: this.props.mapMargins.outerLeft + 'px',
+            marginRight: this.props.mapMargins.outerRight + 'px'
+        };
 
         return (
             <div id="BottomBar" ref={this.storeHeight}  style={style}>
@@ -209,7 +209,7 @@ class BottomBar extends React.Component {
 export default connect((state) => ({
     map: state.map,
     fullscreen: state.display?.fullscreen,
-    windowMargins: state.windows.windowMargins,
+    mapMargins: state.windows.mapMargins,
     additionalMouseCrs: state.theme.current?.additionalMouseCrs ?? []
 }), {
     changeZoomLevel: changeZoomLevel,

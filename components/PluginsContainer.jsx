@@ -49,9 +49,9 @@ class PluginsContainer extends React.Component {
         });
     };
     render() {
-        const left = this.props.mapMargins.left;
+        const left = this.props.mapMargins.left + this.props.mapMargins.outerLeft;
         const top = this.props.mapMargins.top;
-        const right = this.props.mapMargins.right;
+        const right = this.props.mapMargins.right + this.props.mapMargins.outerRight;
         const bottom = this.props.mapMargins.bottom;
         const mapContainerStyle = {
             left: 'calc(' + left + 'px)',
