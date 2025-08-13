@@ -7,10 +7,68 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import axios from 'axios';
+import deepmerge from 'deepmerge';
+
 import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 
 const LocaleUtils = {
+    loadLocale(lang, fallbackLangData) {
+        return new Promise(resolve => {
+            let loadLang = null;
+            const availableLanguages = process.env.AvailableLanguages;
+            if (availableLanguages.indexOf(lang) !== -1) {
+                // Exact match: lang-REGION
+                loadLang = lang;
+            } else if (availableLanguages.indexOf(lang.slice(0, 2)) !== -1) {
+                // Exact match: lang
+                loadLang = lang.slice(0, 2);
+            } else {
+                // Try match lang-<OTHER_REGION>
+                loadLang = availableLanguages.find(lc => lc.slice(0, 2) === lang.slice(0, 2));
+            }
+            const config = {
+                headers: {'Content-Type': 'application/json'},
+                data: {}
+            };
+            const translationsPath = ConfigUtils.getTranslationsPath();
+            const resolveLang = (locale, messages) => {
+                if (ConfigUtils.getConfigProp("loadTranslationOverrides")) {
+                    axios.get(translationsPath + '/' + locale + '_overrides.json', config).then(response => {
+                        const overrideMessages = response.data.messages;
+                        resolve({
+                            locale: locale,
+                            messages: deepmerge(messages, overrideMessages)
+                        });
+                    }).catch(() => {
+                        resolve({
+                            locale: locale,
+                            messages: messages
+                        });
+                    });
+                } else {
+                    resolve({
+                        locale: locale,
+                        messages: messages
+                    });
+                }
+            };
+            if (!loadLang) {
+                // eslint-disable-next-line
+                console.warn("No suitable translations available for " + lang + ", defaulting to " + fallbackLangData.locale);
+                resolveLang(fallbackLangData.locale, fallbackLangData.messages);
+            } else {
+                axios.get(translationsPath + '/' + loadLang + '.json', config).then(response => {
+                    resolveLang(loadLang, response.data.messages);
+                }).catch(() => {
+                    // eslint-disable-next-line
+                    console.warn("Failed to load translations for " + loadLang + ", defaulting to " + fallbackLangData.locale);
+                    resolveLang(fallbackLangData.locale, fallbackLangData.messages);
+                });
+            }
+        });
+    },
     tr(key) {
         const state = StandardApp.store.getState();
         const text = key in state.locale.messages ? (state.locale.messages[key] || state.locale.fallbackMessages[key] || key) : key;

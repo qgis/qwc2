@@ -16,7 +16,7 @@ import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
-import {loadLocale} from '../actions/locale';
+import {changeLocale} from '../actions/locale';
 import {setCurrentTask} from '../actions/task';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
 import {NotificationType, showNotification, setBottombarHeight, setTopbarHeight} from '../actions/windows';
@@ -242,7 +242,8 @@ export default class StandardApp extends React.Component {
         appConfig: PropTypes.object
     };
     state = {
-        startupConfig: null
+        startupConfig: null,
+        haveLocale: false
     };
     constructor(props) {
         super(props);
@@ -263,7 +264,7 @@ export default class StandardApp extends React.Component {
         document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01 ) + 'px');
     };
     render() {
-        if (!this.state.startupConfig) {
+        if (!this.state.startupConfig || !this.state.haveLocale) {
             return null;
         }
         return (
@@ -314,8 +315,11 @@ export default class StandardApp extends React.Component {
             StandardApp.store.dispatch(localConfigLoaded(config));
 
             // Load locale
-            const defaultLocale = this.props.appConfig.getDefaultLocale ? this.props.appConfig.getDefaultLocale() : "";
-            StandardApp.store.dispatch(loadLocale(this.props.appConfig.defaultLocaleData, defaultLocale));
+            const lang = this.props.appConfig.getDefaultLocale?.() ?? initialParams.lang ?? navigator.language;
+            LocaleUtils.loadLocale(lang, this.props.appConfig.defaultLocaleData).then(localeData => {
+                StandardApp.store.dispatch(changeLocale(localeData, this.props.appConfig.defaultLocaleData));
+                this.setState({haveLocale: true});
+            });
 
             // Set color scheme
             const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
