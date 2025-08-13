@@ -52,6 +52,7 @@ class ResizeableWindow extends React.Component {
         maxHeight: PropTypes.number,
         maxWidth: PropTypes.number,
         maximizeable: PropTypes.bool,
+        menuMargins: PropTypes.object,
         minHeight: PropTypes.number,
         minWidth: PropTypes.number,
         minimizeable: PropTypes.bool,
@@ -241,8 +242,17 @@ class ResizeableWindow extends React.Component {
         const docked = this.state.geometry?.docked ?? this.props.initiallyDocked;
         const maximized = this.state.geometry?.maximized ?? false;
         const splitTopAndBottomBar = this.props.splitTopAndBottomBar && this.props.splitScreenWhenDocked && (docked || maximized);
-        const marginLeft = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.left : 0;
-        const marginRight = this.props.mapMargins.splitTopAndBottomBar && !splitTopAndBottomBar ? this.props.mapMargins.right : 0;
+        let marginLeft = 0;
+        let marginRight = 0;
+        if (this.props.mapMargins.splitTopAndBottomBar) {
+            if (!splitTopAndBottomBar) {
+                marginLeft = this.props.mapMargins.left;
+                marginRight = this.props.mapMargins.right;
+            }
+        } else {
+            marginLeft = this.props.menuMargins.left;
+            marginRight = this.props.menuMargins.right;
+        }
         const containerStyle = {
             left: marginLeft + 'px',
             right: marginRight + 'px',
@@ -541,7 +551,8 @@ export default connect((state) => ({
     windowStacking: state.windows.stacking,
     topbarHeight: state.windows.topbarHeight,
     bottombarHeight: state.windows.bottombarHeight,
-    mapMargins: state.windows.mapMargins
+    mapMargins: state.windows.mapMargins,
+    menuMargins: state.windows.menuMargins
 }), {
     raiseWindow: raiseWindow,
     registerWindow: registerWindow,
