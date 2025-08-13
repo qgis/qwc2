@@ -40,7 +40,7 @@ import './style/Routing.css';
 /**
  * Compute routes and isochrones.
  *
- * Requites `routingServiceUrl` in `config.json` pointing to a Valhalla routing service.
+ * Requires `routingServiceUrl` in `config.json` pointing to a Valhalla routing service.
  */
 class Routing extends React.Component {
     static propTypes = {
