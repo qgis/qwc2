@@ -28,7 +28,7 @@ class SideBar extends React.Component {
         heightResizeable: PropTypes.bool,
         icon: PropTypes.string,
         id: PropTypes.string.isRequired,
-        menuMargins: PropTypes.object,
+        mapMargins: PropTypes.object,
         minWidth: PropTypes.string,
         onHide: PropTypes.func,
         onShow: PropTypes.func,
@@ -92,9 +92,9 @@ class SideBar extends React.Component {
         };
         const isLeftSide = this.props.side === "left";
         if (isLeftSide) {
-            style.left = visible ? this.props.menuMargins.left : 0;
+            style.left = visible ? this.props.mapMargins.left : 0;
         } else {
-            style.right = visible ? this.props.menuMargins.right : 0;
+            style.right = visible ? this.props.mapMargins.right : 0;
         }
 
         const classes = classnames({
@@ -171,7 +171,7 @@ class SideBar extends React.Component {
 
 export default connect((state) => ({
     currentTask: state.task,
-    menuMargins: state.windows.menuMargins,
+    mapMargins: state.windows.mapMargins,
     windowMargins: state.windows.windowMargins
 }), {
     setCurrentTask: setCurrentTask
