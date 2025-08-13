@@ -257,11 +257,16 @@ class View3D extends React.Component {
                 this.setState({componentLoaded: true});
             });
         } else if (this.props.view3dMode === View3DMode.DISABLING && prevProps.view3dMode !== View3DMode.DISABLING) {
-            this.map3dComponentRef.store3dState().then(storedState => {
-                this.setState({storedState});
+            if (this.map3dComponentRef) {
+                this.map3dComponentRef.store3dState().then(storedState => {
+                    this.setState({storedState});
+                    UrlParams.updateParams({v3d: undefined, bl3d: undefined});
+                    this.props.setView3dMode(View3DMode.DISABLED);
+                });
+            } else {
                 UrlParams.updateParams({v3d: undefined, bl3d: undefined});
                 this.props.setView3dMode(View3DMode.DISABLED);
-            });
+            }
         } else if (this.props.view3dMode === View3DMode.DISABLED && prevProps.view3dMode !== View3DMode.DISABLED) {
             this.map3dComponent = null;
             this.map3dComponentRef = null;
