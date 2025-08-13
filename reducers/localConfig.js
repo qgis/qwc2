@@ -74,7 +74,21 @@ export default function localConfig(state = defaultState, action) {
     case REGISTER_CUSTOM_PLUGIN: {
         return {
             ...state,
-            customPlugins: [...state.customPlugins, ...action.name]
+            customPlugins: [...state.customPlugins, ...action.name],
+            plugins: {
+                desktop: state.plugins.desktop.map(entry => {
+                    if (entry.name === action.name) {
+                        return {...entry, availableIn2D: action.availableIn2D, availableIn3D: action.availableIn3D};
+                    }
+                    return entry;
+                }),
+                mobile: state.plugins.mobile.map(entry => {
+                    if (entry.name === action.name) {
+                        return {...entry, availableIn2D: action.availableIn2D, availableIn3D: action.availableIn3D};
+                    }
+                    return entry;
+                })
+            }
         };
     }
     case UNREGISTER_CUSTOM_PLUGIN: {

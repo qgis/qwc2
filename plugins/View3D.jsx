@@ -33,6 +33,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
+import PluginStore from '../utils/PluginStore';
 
 import './style/View3D.css';
 
@@ -341,6 +342,9 @@ class View3D extends React.Component {
                 importedTilesBaseUrl: this.props.importedTilesBaseUrl
             };
             const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+            const pluginsConfig = this.props.pluginsConfig[device].filter(entry => {
+                return entry.availableIn3D && (!entry.availableIn2D || this.props.view3dMode === View3DMode.FULLSCREEN);
+            });
             return (
                 <ResizeableWindow
                     extraControls={extraControls}
@@ -363,7 +367,7 @@ class View3D extends React.Component {
                 >
                     {this.state.componentLoaded ? (
                         <Provider role="body" store={this.store}>
-                            <PluginsContainer className="plugins-container-3d" plugins={this.props.plugins} pluginsConfig={this.props.pluginsConfig[device]}>
+                            <PluginsContainer className="plugins-container-3d" plugins={PluginStore.getPlugins()} pluginsConfig={pluginsConfig}>
                                 <Map3D
                                     innerRef={this.setRef}
                                     onCameraChanged={this.onCameraChanged}

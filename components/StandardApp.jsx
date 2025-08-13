@@ -28,6 +28,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
+import PluginStore from '../utils/PluginStore';
 import ThemeUtils from '../utils/ThemeUtils';
 import PluginsContainer from './PluginsContainer';
 
@@ -52,6 +53,7 @@ if (CSRF_TOKEN) {
 class AppContainerComponent extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object,
+        customPlugins: PropTypes.array,
         defaultUrlParams: PropTypes.string,
         haveLocale: PropTypes.bool,
         haveMapSize: PropTypes.bool,
@@ -74,20 +76,9 @@ class AppContainerComponent extends React.Component {
         props.setBottombarHeight(0);
     }
     componentDidMount() {
-        window.addEventListener("QWC2ApiReady", () => {
-            // Warn about non-existing plugins
-            const plugins = {
-                ...this.props.appConfig.pluginsDef.plugins,
-                ...window.qwc2?.__customPlugins
-            };
-            const mode = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
-            this.props.localConfig.plugins[mode].filter(entry => !plugins[entry.name + "Plugin"]).forEach(entry => {
-                // eslint-disable-next-line
-                console.warn("Non-existing plugin: " + entry.name);
-            });
-        });
+        this.componentDidUpdate({});
     }
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         // The map component needs to have finished loading before theme initialization can proceed
         if (this.props.haveMapSize && !this.themesLoaded) {
             this.loadThemes();
@@ -170,54 +161,19 @@ class AppContainerComponent extends React.Component {
         });
     };
     render() {
-        const plugins = {
-            ...this.props.appConfig.pluginsDef.plugins,
-            ...window.qwc2?.__customPlugins
-        };
+        // Filter 2D plugins
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
-        const plugins2d = {};
-        const plugins3d = {};
-        // Extract 2d and 3d plugins
-        const pluginsConfig = this.props.localConfig.plugins[device].reduce((res, entry) => {
-            const plugin = plugins[entry.name + "Plugin"];
-            if (plugin) {
-                const component = plugin.WrappedComponent ?? plugin;
-                const availableIn2D = component.availableIn2D === true || component.availableIn2D === undefined;
-                const availableIn3D = component.availableIn3D === true;
-                if (availableIn2D) {
-                    plugins2d[entry.name + "Plugin"] = plugin;
-                }
-                if (availableIn3D) {
-                    plugins3d[entry.name + "Plugin"] = plugin;
-                }
-                return {
-                    ...res,
-                    [entry.name]: {
-                        ...entry,
-                        availableIn2D: availableIn2D,
-                        availableIn3D: availableIn3D,
-                        cfg: {
-                            ...entry.cfg,
-                            ...this.props.appConfig.pluginsDef.cfg?.[entry.name + "Plugin"]
-                        }
-                    }
-                };
-            }
-            return res;
-        }, {});
-        // Inject plugins available in 3d view to View3D plugin configuration
-        if (pluginsConfig.View3D) {
-            pluginsConfig.View3D.cfg.plugins = plugins3d;
-        }
-
+        const pluginsConf = this.props.localConfig.plugins[device].filter(entry => entry.availableIn2D);
         return (
-            <PluginsContainer plugins={plugins2d} pluginsConfig={Object.values(pluginsConfig)} />
+            <PluginsContainer
+                plugins={PluginStore.getPlugins()}
+                pluginsConfig={pluginsConf}
+            />
         );
     }
 }
 
 const AppContainer = connect(state => ({
-    customPlugins: state.localConfig.customPlugins, // Unused, just to ensure component reacts when custom plugins change
     haveLocale: state.locale.current !== null,
     haveMapSize: state.map.size !== null,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
@@ -275,6 +231,9 @@ export default class StandardApp extends React.Component {
         const initialParams = UrlParams.getParams();
         UrlParams.clear();
 
+        // Set builtin plugins
+        PluginStore.setBuiltinPlugins(this.props.appConfig.pluginsDef.plugins);
+
         // Load config.json
         const configParams = Object.entries(initialParams).reduce((res, [key, value]) => {
             if (key.startsWith("config:")) {
@@ -283,9 +242,9 @@ export default class StandardApp extends React.Component {
             return res;
         }, {});
         ConfigUtils.loadConfiguration(configParams).then((config) => {
-            // Merge common config into mobile/desktop config
+            // Merge common config into mobile/desktop config, merge config from appConfig
             const renameTaskButtons = (res, entry) => {
-                const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg || {}).task : "");
+                const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg?.task ?? "") : "");
                 return {...res, [key]: entry};
             };
             const commonConfig = [
@@ -293,12 +252,31 @@ export default class StandardApp extends React.Component {
             ].reduce(renameTaskButtons, {});
             const desktopConfig = [
                 ...(config.plugins.desktop || []), ...(window.QWC2PluginConfig?.desktop || [])
-            ];
+            ].reduce(renameTaskButtons, {});
             const mobileConfig = [
                 ...(config.plugins.mobile || []), ...(window.QWC2PluginConfig?.mobile || [])
-            ];
-            config.plugins.desktop = Object.values(deepmerge(commonConfig, desktopConfig.reduce(renameTaskButtons, {})));
-            config.plugins.mobile = Object.values(deepmerge(commonConfig, mobileConfig.reduce(renameTaskButtons, {})));
+            ].reduce(renameTaskButtons, {});
+
+            const completePluginConfig = (pluginConfig) => {
+                return Object.entries(pluginConfig).map(([key, entry]) => {
+                    const plugin = this.props.appConfig.pluginsDef.plugins[entry.name + "Plugin"];
+                    const component = plugin?.WrappedComponent ?? plugin;
+                    const availableIn2D = component?.availableIn2D ?? true;
+                    const availableIn3D = component?.availableIn3D ?? false;
+                    return {
+                        ...entry,
+                        key,
+                        availableIn2D,
+                        availableIn3D,
+                        cfg: {
+                            ...entry.cfg,
+                            ...this.props.appConfig.pluginsDef.cfg[entry.name + "Plugin"]
+                        }
+                    };
+                });
+            };
+            config.plugins.desktop = completePluginConfig(deepmerge(commonConfig, desktopConfig));
+            config.plugins.mobile = completePluginConfig(deepmerge(commonConfig, mobileConfig));
             delete config.plugins.common;
 
             // Add projections from config

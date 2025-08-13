@@ -44,10 +44,7 @@ class TopBar3D extends React.Component {
         allowedToolbarItems: []
     };
     componentDidMount() {
-        this.setState({
-            allowedToolbarItems: ThemeUtils.allowedItems(this.props.toolbarItems, this.props.currentTheme, this.filter2DItems),
-            allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems ?? this.defaultMenuItems(), this.props.currentTheme, this.filter2DItems)
-        });
+        this.componentDidUpdate({});
     }
     componentDidUpdate(prevProps) {
         if (this.props.currentTheme !== prevProps.currentTheme || this.props.view3dMode !== prevProps.view3dMode) {
@@ -59,20 +56,21 @@ class TopBar3D extends React.Component {
     }
     defaultMenuItems = () => {
         return [
-            {key: "LayerTree3D", icon: "layers"},
-            {key: "Draw3D", icon: "draw"},
-            {key: "Measure3D", icon: "measure"},
-            {key: "Compare3D", icon: "compare"},
-            {key: "HideObjects3D", icon: "eye"},
-            {key: "MapLight3D", icon: "light"},
-            {key: "MapExport3D", icon: "rasterexport"},
-            {key: "ExportObjects3D", icon: "export"},
-            {key: "Settings3D", icon: "cog"}
-        ].concat(ConfigUtils.getPluginConfig("TopBar")?.cfg?.menuItems);
+            {key: "LayerTree3D", icon: "layers", builtIn: true},
+            {key: "Draw3D", icon: "draw", builtIn: true},
+            {key: "Measure3D", icon: "measure", builtIn: true},
+            {key: "Compare3D", icon: "compare", builtIn: true},
+            {key: "HideObjects3D", icon: "eye", builtIn: true},
+            {key: "MapLight3D", icon: "light", builtIn: true},
+            {key: "MapExport3D", icon: "rasterexport", builtIn: true},
+            {key: "ExportObjects3D", icon: "export", builtIn: true},
+            {key: "Settings3D", icon: "cog", builtIn: true}
+        ].concat(ConfigUtils.getPluginConfig("TopBar")?.cfg?.menuItems ?? []);
     };
     filter2DItems = (item) => {
-        return true;
-        // return item.url || ConfigUtils.getPluginConfig(item.key)?.availableIn3D;
+        const pluginConf = ConfigUtils.getPluginConfig(item.key);
+        const isFullScreen = this.props.view3dMode === View3DMode.FULLSCREEN;
+        return item.builtIn || (!pluginConf.name && isFullScreen) || (pluginConf.availableIn3D && (!pluginConf.availableIn2D || isFullScreen));
     };
     render() {
         const config = ConfigUtils.getPluginConfig("TopBar")?.cfg || {};

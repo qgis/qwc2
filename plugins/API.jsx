@@ -92,6 +92,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import * as PermaLinkUtils from '../utils/PermaLinkUtils';
+import PluginStore from '../utils/PluginStore';
 import {SearchResultType} from '../utils/SearchProviders';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -295,9 +296,12 @@ class API extends React.Component {
      * * `translations`: The plugin translation messages: `{"<lang>": {<messages>}, ...}`
      */
     addPlugin = (name, plugin, translations = {}) => {
-        window.qwc2.__customPlugins[name] = plugin;
+        const component = plugin.WrappedComponent ?? plugin;
+        const availableIn2D = component.availableIn2D ?? true;
+        const availableIn3D = component.availableIn3D ?? false;
+        PluginStore.addCustomPlugin(name, plugin);
         window.qwc2.addTranslations(translations);
-        this.props.registerCustomPlugin(name);
+        this.props.registerCustomPlugin(name, availableIn2D, availableIn3D);
     };
     /**
      * Remove custom plugin
@@ -305,8 +309,8 @@ class API extends React.Component {
      * * `name`: The identifier
      */
     removePlugin = (name) => {
+        PluginStore.removeCustomPlugin(name);
         this.props.unregisterCustomPlugin(name);
-        delete window.qwc2.__customPlugins[name];
     };
     /**
      * Add custom attribute calculator
