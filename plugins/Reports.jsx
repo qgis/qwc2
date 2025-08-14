@@ -222,7 +222,7 @@ class Reports extends React.Component {
             crs: this.props.map.projection,
             single_report: report.single_report || false
         };
-        const url = serviceUrl + "/" + report.template;
+        const url = serviceUrl + "/" + report.template + "." + (report.format || "pdf");
         axios.get(url, {responseType: "arraybuffer", params}).then(response => {
             const filename = (report.filename || report.title.replace(" ", "_")) + "." + (report.format || "pdf");
             FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), filename);
