@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
+      "dhmdefaultname": "",
       "distance": "Távolság",
       "drawnodes": "",
       "error": "",

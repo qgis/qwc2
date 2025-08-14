@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
+      "dhmdefaultname": "Dataset",
       "distance": "Distance",
       "drawnodes": "Draw nodes",
       "error": "Failed to compute height profile",

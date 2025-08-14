@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
+      "dhmdefaultname": "",
       "distance": "距離",
       "drawnodes": "ノードを作図",
       "error": "標高プロファイルを計算できませんでした",

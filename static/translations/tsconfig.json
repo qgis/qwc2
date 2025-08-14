@@ -213,6 +213,7 @@
     "geomdigitizer.send",
     "geomdigitizer.wait",
     "heightprofile.asl",
+    "heightprofile.dhmdefaultname",
     "heightprofile.distance",
     "heightprofile.drawnodes",
     "heightprofile.error",

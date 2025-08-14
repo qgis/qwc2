@@ -217,6 +217,7 @@
     },
     "heightprofile": {
       "asl": "s.l.m.",
+      "dhmdefaultname": "Insieme di dati",
       "distance": "Distanza",
       "drawnodes": "Disegna i nodi",
       "error": "Impossibile caricare il profilo di altezza",
