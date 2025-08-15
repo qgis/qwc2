@@ -1111,10 +1111,7 @@ const LayerUtils = {
             } else if (layer.featureReport) {
                 const key = toplayer.url + "#" + layer.name;
                 if (Array.isArray(layer.featureReport)) {
-                    reports[key] = layer.featureReport.map(report => ({
-                        title: report.title,
-                        template: report.template
-                    }));
+                    reports[key] = layer.featureReport;
                 } else {
                     reports[key] = [{
                         title: layer.title,
