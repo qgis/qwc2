@@ -28,6 +28,7 @@ class MapControls3D extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.string,
+        mapMargins: PropTypes.object,
         onCameraChanged: PropTypes.func,
         onControlsSet: PropTypes.func,
         sceneContext: PropTypes.object
@@ -73,10 +74,14 @@ class MapControls3D extends React.Component {
             "map3d-firstperson-button": true,
             "map3d-firstperson-button-active": this.state.firstPerson
         });
+        const navStyle = {
+            marginLeft: this.props.mapMargins.left + this.props.mapMargins.outerLeft,
+            marginRight: this.props.mapMargins.right + this.props.mapMargins.outerRight 
+        };
         return [
             this.props.children,
             (
-                <div className="map3d-nav" key="MapControls3D" ref={this.unload}>
+                <div className="map3d-nav" key="MapControls3D" ref={this.unload} style={navStyle}>
                     <div className="map3d-nav-pan" key="MapPanWidget">
                         <span />
                         <Icon icon="chevron-up" onPointerDown={(ev) => this.pan(ev, 0, 1)} />
@@ -268,6 +273,7 @@ class MapControls3D extends React.Component {
 }
 
 export default connect((state) => ({
-    currentTask: state.task.id
+    currentTask: state.task.id,
+    mapMargins: state.windows.mapMargins
 }), {
 })(MapControls3D);
