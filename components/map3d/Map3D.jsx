@@ -506,7 +506,7 @@ class Map3D extends React.Component {
         // Apply style when loading tile
         tiles.tiles.addEventListener('load-model', ({scene}) => {
             scene.userData.tilesetName = name;
-            scene.userData.batchIdAttr = "id";
+            scene.userData.featureIdAttr = "id";
             Tiles3DStyle.applyTileStyle(scene, this.state.sceneContext.sceneObjects[name], this.state.sceneContext);
             this.instance.notifyChange(tiles);
         });
@@ -772,7 +772,7 @@ class Map3D extends React.Component {
             // Apply style when loading tile
             tiles.tiles.addEventListener('load-model', ({scene}) => {
                 scene.userData.tilesetName = entry.name;
-                scene.userData.batchIdAttr = entry.idAttr ?? "id";
+                scene.userData.featureIdAttr = entry.idAttr ?? "id";
                 Tiles3DStyle.applyTileStyle(scene, this.state.sceneContext.sceneObjects[entry.name], this.state.sceneContext);
                 this.instance.notifyChange(tiles);
             });

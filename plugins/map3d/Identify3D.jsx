@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import {BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
 
 import ResizeableWindow from '../../components/ResizeableWindow';
+import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import '../../components/style/IdentifyViewer.css';
@@ -59,7 +60,7 @@ class Identify3D extends React.Component {
                                     {Object.entries(this.state.pickAttrs).map(([key, value]) => (
                                         <tr key={key}>
                                             <td className="identify-attr-title"><i>{key}</i></td>
-                                            <td className="identify-attr-value">{value}</td>
+                                            <td className="identify-attr-value">{value.toString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -124,51 +125,48 @@ class Identify3D extends React.Component {
         }
     };
     identifyTilePick = (pick) => {
-        const batchidAttr = pick.object.geometry.getAttribute('_batchid');
-        if (!batchidAttr) {
-            return;
-        }
         const posAttr = pick.object.geometry.getAttribute('position');
         const norAttr = pick.object.geometry.getAttribute('normal');
+        const helper = new TileMeshHelper(pick.object);
+        if (!helper.isValid()) {
+            return;
+        }
+        const pickFeatureId = helper.getFeatureId(pick.face);
+        const featureAttrs = helper.getFeatureProperties(pickFeatureId);
 
-        const pickBatchId = batchidAttr.getX(pick.face.a);
-
-        // Extract batch geometry
+        // Extract feature geometry
         const pickPosition = [];
         const pickNormal = [];
-        batchidAttr.array.forEach((batchId, idx) => {
-            if (batchId === pickBatchId) {
-                pickPosition.push(...posAttr.array.slice(3 * idx, 3 * idx + 3));
-                pickNormal.push(...norAttr.array.slice(3 * idx, 3 * idx + 3));
-            }
+        helper.forEachFeatureTriangle(pickFeatureId, (i0, i1, i2) => {
+            pickPosition.push(posAttr.getX(i0), posAttr.getY(i0), posAttr.getZ(i0));
+            pickPosition.push(posAttr.getX(i1), posAttr.getY(i1), posAttr.getZ(i1));
+            pickPosition.push(posAttr.getX(i2), posAttr.getY(i2), posAttr.getZ(i2));
+            pickNormal.push(norAttr.getX(i0), norAttr.getY(i0), norAttr.getZ(i0));
+            pickNormal.push(norAttr.getX(i1), norAttr.getY(i1), norAttr.getZ(i1));
+            pickNormal.push(norAttr.getX(i2), norAttr.getY(i2), norAttr.getZ(i2));
         });
 
         // Add selection object
         this.addHiglightGeometry(pick.object.matrixWorld, pickPosition, pickNormal);
 
-        // Extract attributes from batch table and set pick attrs
-        let batchTableObject = pick.object;
-        while (!batchTableObject.batchTable) {
-            batchTableObject = batchTableObject.parent;
-        }
-        const batchTable = batchTableObject.batchTable;
-        const batchAttrs = batchTable.getDataFromId(pickBatchId);
+        // Gather extra attributes
         if (this.props.sceneContext.options.tileInfoServiceUrl) {
+            const {tilesetName, featureIdAttr} = helper.getTileUserData();
             const url = this.props.sceneContext.options.tileInfoServiceUrl.replace(
-                '{tileset}', batchTableObject.userData.tilesetName
+                '{tileset}', tilesetName
             ).replace(
-                '{objectid}', batchAttrs[batchTableObject.userData.batchIdAttr]
+                '{objectid}', featureAttrs[featureIdAttr]
             );
             axios.get(url).then(response => {
                 this.setState({pickAttrs: {
-                    ...batchAttrs,
+                    ...featureAttrs,
                     ...response.data
                 }});
             }).catch(() => {
-                this.setState({pickAttrs: batchAttrs});
+                this.setState({pickAttrs: featureAttrs});
             });
         } else {
-            this.setState({pickAttrs: batchAttrs});
+            this.setState({pickAttrs: featureAttrs});
         }
     };
     identifyObjectPick = (pick) => {

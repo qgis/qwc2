@@ -11,10 +11,11 @@ import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
+import {BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
 
 import Icon from '../../components/Icon';
 import SideBar from '../../components/SideBar';
+import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import './style/HideObjects3D.css';
@@ -47,7 +48,7 @@ class HideObjects3D extends React.Component {
                     <div>
                         <div className="hideobjects3d-list">
                             {this.state.hiddenObjects.map(entry => (
-                                <div key={entry.object.uuid + entry.batchId}
+                                <div key={entry.object.uuid + entry.featureId}
                                     onMouseEnter={() => this.showHighlight(entry)}
                                     onMouseLeave={() => this.hideHighlight(entry)}
                                 >
@@ -131,38 +132,52 @@ class HideObjects3D extends React.Component {
         }
     };
     hideTilePick = (pick) => {
-        const batchidAttr = pick.object.geometry.getAttribute( '_batchid' );
         const posAttr = pick.object.geometry.getAttribute('position');
         const norAttr = pick.object.geometry.getAttribute('normal');
 
-        const pickBatchId = batchidAttr.getX(pick.face.a);
+        // Ensure geometry is indexed
+        if (!pick.object.geometry.index) {
+            const indices = new Uint32Array(posAttr.count);
+            for (let i = 0; i < posAttr.count; i++) {
+                indices[i] = i;
+            }
+            pick.object.geometry.setIndex(new BufferAttribute(indices, 1));
+        }
+        if (!pick.object.userData.originalIndex) {
+            pick.object.userData.originalIndex = pick.object.geometry.index.array.slice();
+            pick.object.userData.hiddenIds = [];
+        }
 
-        // Extract/shift batch geometry
+        const helper = new TileMeshHelper(pick.object);
+        const pickFeatureId = helper.getFeatureId(pick.face);
+
+        // Extract feature geometry
         const pickPosition = [];
         const pickNormal = [];
-        batchidAttr.array.forEach((batchId, idx) => {
-            if (batchId === pickBatchId) {
-                pickPosition.push(...posAttr.array.slice(3 * idx, 3 * idx + 3));
-                pickNormal.push(...norAttr.array.slice(3 * idx, 3 * idx + 3));
-
-                posAttr.array[3 * idx + 2] -= 100000;
-            }
+        helper.forEachFeatureTriangle(pickFeatureId, (i0, i1, i2) => {
+            pickPosition.push(posAttr.getX(i0), posAttr.getY(i0), posAttr.getZ(i0));
+            pickPosition.push(posAttr.getX(i1), posAttr.getY(i1), posAttr.getZ(i1));
+            pickPosition.push(posAttr.getX(i2), posAttr.getY(i2), posAttr.getZ(i2));
+            pickNormal.push(norAttr.getX(i0), norAttr.getY(i0), norAttr.getZ(i0));
+            pickNormal.push(norAttr.getX(i1), norAttr.getY(i1), norAttr.getZ(i1));
+            pickNormal.push(norAttr.getX(i2), norAttr.getY(i2), norAttr.getZ(i2));
         });
-        posAttr.needsUpdate = true;
-        this.props.sceneContext.scene.notifyChange();
+
+        // Filter indices
+        const filteredIndices = pick.object.geometry.index.array.filter(idx => {
+            return helper.featureIdAttr.getX(idx) !== pickFeatureId;
+        });
+        pick.object.geometry.setIndex(new BufferAttribute(new Uint32Array(filteredIndices), 1));
 
         // Hide label
-        let rootObject = pick.object;
-        while (!rootObject.batchTable) {
-            rootObject = rootObject.parent;
-        }
-        const pickLabel = rootObject.userData.tileLabels?.[pickBatchId];
+        const pickLabel = helper.getTileUserData().tileLabels?.[pickFeatureId];
         if (pickLabel) {
             pickLabel.labelObject.visible = false;
         }
+        this.props.sceneContext.scene.notifyChange();
 
-        // Create highlight geometry
-        this.storeHiddenObject(pick, pickPosition, pickNormal, null, pickBatchId);
+        // Store hidden object metadata
+        this.storeHiddenObject(pick, pickPosition, pickNormal, null, pickFeatureId);
     };
     hideObjectPick = (pick) => {
         pick.object.visible = false;
@@ -175,7 +190,7 @@ class HideObjects3D extends React.Component {
         // Create highlight geometry
         this.storeHiddenObject(pick, posAttr.array, norAttr.array, index);
     };
-    storeHiddenObject = (pick, position, normal, index = null, batchId = null) => {
+    storeHiddenObject = (pick, position, normal, index = null, featureId = null) => {
         const material = new MeshStandardMaterial({color: 0xff0000});
         const geometry = new BufferGeometry();
         geometry.setAttribute('position', new Float32BufferAttribute(position, 3));
@@ -192,7 +207,7 @@ class HideObjects3D extends React.Component {
                 {
                     object: pick.object,
                     isTileObject: pick.isTilePick,
-                    batchId: batchId,
+                    featureId: featureId,
                     highlight: mesh
                 }
             ]
@@ -207,23 +222,17 @@ class HideObjects3D extends React.Component {
     };
     restoreObject = (entry) => {
         if (entry.isTileObject) {
-            const batchidAttr = entry.object.geometry.getAttribute( '_batchid' );
-            const posAttr = entry.object.geometry.getAttribute('position');
+            const helper = new TileMeshHelper(entry.object);
 
-            // Unshift batch geometry
-            batchidAttr.array.forEach((batchId, idx) => {
-                if (batchId === entry.batchId) {
-                    posAttr.array[3 * idx + 2] += 100000;
-                }
-            });
-            posAttr.needsUpdate = true;
+            // Re-add filtered indices
+            const filteredIndices = entry.object.userData.originalIndex.filter(i => helper.featureIdAttr.getX(i) === entry.featureId);
+            const combined = new Uint32Array(entry.object.geometry.index.array.length + filteredIndices.length);
+            combined.set(entry.object.geometry.index.array, 0);
+            combined.set(new Uint32Array(filteredIndices), entry.object.geometry.index.array.length);
+            entry.object.geometry.setIndex(new BufferAttribute(combined, 1));
 
             // Restore label
-            let rootObject = entry.object;
-            while (!rootObject.batchTable) {
-                rootObject = rootObject.parent;
-            }
-            const pickLabel = rootObject.userData.tileLabels?.[entry.batchId];
+            const pickLabel = helper.getTileUserData().tileLabels?.[entry.featureId];
             if (pickLabel) {
                 pickLabel.labelObject.visible = true;
             }

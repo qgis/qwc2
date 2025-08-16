@@ -106,3 +106,79 @@ export function importGltf(dataOrUrl, name, sceneContext, options = {}) {
         });
     }
 }
+
+export class TileMeshHelper {
+    constructor(object) {
+        this.object = object;
+        const {meshFeatures, structuralMetadata} = object.userData;
+        if (meshFeatures && structuralMetadata) {
+            // Get featureId via featureId attribute
+            const featureSetIndex = 0; // usually 0 unless multiple feature sets
+            this.featureSet = meshFeatures.featureIds[featureSetIndex];
+            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_${this.featureSet.attribute}`);
+        } else if ('_batchid' in object.geometry.attributes) {
+            // Get featureId via batchId attribute
+            this.featureSet = null;
+            this.featureIdAttr = object.geometry.getAttribute('_batchid');
+        } else {
+            /* eslint-disable-next-line */
+            console.warn("Cannot determine tile mesh feature index attribute")
+            this.featureIdAttr = null;
+        }
+        this.tileObject = object;
+        while (this.tileObject.parent && !this.tileObject.parent.isTilesGroup) {
+            this.tileObject = this.tileObject.parent;
+        }
+    }
+    isValid() {
+        return this.featureIdAttr !== null;
+    }
+    getFeatureId(face) {
+        return this.featureIdAttr ? this.featureIdAttr.getX(face.a) : null;
+    }
+    getFeatureIdAttr() {
+        return this.featureIdAttr;
+    }
+    getFeatureIds() {
+        const featureIds = new Set();
+        for (let i = 0; i < this.featureIdAttr.count; i++) {
+            featureIds.add(this.featureIdAttr.getX(i));
+        }
+        return featureIds;
+    }
+    getFeatureProperties(featureId) {
+        if (this.object.userData.structuralMetadata) {
+            return this.object.userData.structuralMetadata.getPropertyTableData([this.featureSet.propertyTable], [featureId])[0];
+        } else if (this.tileObject.batchTable) {
+            return this.tileObject.batchTable.getDataFromId(featureId);
+        } else {
+            return {};
+        }
+    }
+    getTileUserData() {
+        return this.tileObject.userData;
+    }
+    forEachFeatureTriangle(featureId, callback) {
+        if (!this.featureIdAttr) {
+            return;
+        } else if (this.object.geometry.index) {
+            // For indexed geometries, index attribute contains a sequence of triangle index triplets
+            const indices = this.object.geometry.index.array;
+            for (let tri = 0; tri < indices.length; tri += 3) {
+                const i0 = indices[tri];
+                if (this.featureIdAttr.getX(i0) === featureId) {
+                    const i1 = indices[tri + 1];
+                    const i2 = indices[tri + 2];
+                    callback(i0, i1, i2);
+                }
+            }
+        } else {
+            // For non-index geometries, the id attribute contains a sequence of triangle vertex indices
+            for (let tri = 0; tri < this.featureIdAttr.count; tri += 3) {
+                if (this.featureIdAttr.getX(tri) === featureId) {
+                    callback(tri, tri + 1, tri + 2);
+                }
+            }
+        }
+    }
+}

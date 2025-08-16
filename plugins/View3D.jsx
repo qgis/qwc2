@@ -58,12 +58,12 @@ import './style/View3D.css';
  *              "url": "<url_to_tileset.json>",
  *              "title": "<title>",
  *              "baseColor": "<css RGB(A) color string>",
- *              "idAttr": "<tile_batch_attr>",
+ *              "idAttr": "<tile_feature_attr>",
  *              "styles": {"<styleName>", "<url_to_tilesetStyle.json>", ...},
  *              "style": "<styleName>",
- *              "colorAttr": "<tile_batch_attr>",
- *              "alphaAttr": "<tile_batch_attr>",
- *              "labelAttr": "<tile_batch_attr>",
+ *              "colorAttr": "<tile_feature_attr>",
+ *              "alphaAttr": "<tile_feature_attr>",
+ *              "labelAttr": "<tile_feature_attr>",
  *          }
  *     ],
  *     "objects3d": [
@@ -82,26 +82,26 @@ import './style/View3D.css';
  *   - `visibility` controls the initially visibile background layer
  *   - `overview: true` controls the name of background layer to display in the overview map. If no background layer is marked with `overview: true`, the currently visibile background layer id dipslayed in the overview map.
  * - The `tiles3d` entry contains an optional list of 3d tiles to add to the scene, with:
- *   - `idAttr`: batch table attribute which stores the batch object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
+ *   - `idAttr`: feature properties table attribute which stores the object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
  *   - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.
  *   - `style`: optional, tileset style enabled by default.
  *   - `baseColor`: the fallback color for the tile objects, defaults to white.
- *   - `colorAttr`: optional, batch table attribute which stores the batch color, as a 0xRRGGBB integer.
- *   - `alphaAttr`: optional, batch table attribute which stores the batch alpha (transparency), as a [0, 255] integer.
- *   - `labelAttr`: optional, batch table attribute which stores the batch label, displayed above the geometry.
+ *   - `colorAttr`: optional, feature properties table attribute which stores the feature color, as a 0xRRGGBB integer.
+ *   - `alphaAttr`: optional, feature properties table attribute which stores the feature alpha (transparency), as a [0, 255] integer.
+ *   - `labelAttr`: optional, feature properties table attribute which stores the feature label, displayed above the geometry.
  * - The `objects3d` entry contains an optional list of GLTF objects to add to the scene.
  *
  *
  * ### Styling
  *
  * The tileset style JSON is a [3D Tiles stylesheet](https://github.com/CesiumGS/3d-tiles/tree/main/specification/Styling),
- * of which currently the `color` section is supported, and which may in addition also contain a `batchstyles` section as follows:
+ * of which currently the `color` section is supported, and which may in addition also contain a `featureStyles` section as follows:
  * ```
  * {
  *     "color": {
  *        ...
  *     },
- *     "batchstyles": {
+ *     "featureStyles": {
  *       "<object_id>": {
  *           "label": "<label>",
  *           "labelOffset": <offset>,
@@ -118,8 +118,8 @@ import './style/View3D.css';
  *
  * *Note*:
  *
- * - The color declarations in the `batchstyles` section override any color resulting from a color expression in the `color` section.
- * - You must ensure that your 3D tiles batch table contains all batch attributes which are referenced as variables in a color expression!
+ * - The color declarations in the `featureStyles` section override any color resulting from a color expression in the `color` section.
+ * - You must ensure that your 3D tiles properties table contains all attributes which are referenced as variables in a color expression!
  *
  * ### Import
  *

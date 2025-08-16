@@ -21,6 +21,7 @@ import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 
 import {setCurrentTask} from '../../actions/task';
 import SideBar from '../../components/SideBar';
+import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
 import Spinner from '../../components/widgets/Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
@@ -214,82 +215,82 @@ class ExportObjects3D extends React.Component {
                 if (!selectionBox.intersectsBox(bbox)) {
                     return;
                 }
-                const batchidAttr = c.geometry.getAttribute( '_batchid' );
-                if (!batchidAttr) {
-                    // Not a tile
-                    return;
-                }
+
                 const posAttr = c.geometry.getAttribute('position');
                 const norAttr = c.geometry.getAttribute('normal');
                 const colAttr = c.geometry.getAttribute('color');
                 const colStride = c.material.transparent ? 4 : 3;
-                const batches = {};
-                batchidAttr.array.forEach((batchId, idx) => {
-                    if (!batches[batchId]) {
-                        batches[batchId] = {
-                            position: [],
-                            normal: [],
-                            color: colAttr ? [] : null,
-                            colorStride: colStride,
-                            bbox: new Box3()
-                        };
-                    }
-                    const pos = posAttr.array.slice(3 * idx, 3 * idx + 3);
-                    batches[batchId].position.push(...pos);
-                    const nor = norAttr.array.slice(3 * idx, 3 * idx + 3);
-                    batches[batchId].normal.push(...nor);
-                    if (colAttr) {
-                        const col = colAttr.array.slice(colStride * idx, colStride * idx + colStride);
-                        batches[batchId].color.push(...col);
-                    }
-                    batches[batchId].bbox.expandByPoint(new Vector3(...pos).applyMatrix4(c.matrixWorld));
-                });
-                Object.entries(batches).forEach(([batchId, batch]) => {
-                    if (
-                        selectionBox.intersectsBox(batch.bbox) &&
-                        this.bboxInExportPolygon(batch.bbox)
-                    ) {
-                        // Get batch table object
-                        let batchTableObject = c;
-                        while (!batchTableObject.batchTable) {
-                            batchTableObject = batchTableObject.parent;
+                const helper = new TileMeshHelper(c);
+                helper.getFeatureIds().forEach(featureId => {
+                    const feature = {
+                        position: [],
+                        normal: [],
+                        color: colAttr ? [] : null,
+                        colorStride: colStride,
+                        bbox: new Box3()
+                    };
+                    helper.forEachFeatureTriangle(featureId, (i0, i1, i2) => {
+                        const pos1 = posAttr.array.slice(3 * i0, 3 * i0 + 3);
+                        const pos2 = posAttr.array.slice(3 * i1, 3 * i1 + 3);
+                        const pos3 = posAttr.array.slice(3 * i2, 3 * i2 + 3);
+                        feature.position.push(...pos1);
+                        feature.position.push(...pos2);
+                        feature.position.push(...pos3);
+                        feature.normal.push(norAttr.getX(i0), norAttr.getY(i0), norAttr.getZ(i0));
+                        feature.normal.push(norAttr.getX(i1), norAttr.getY(i1), norAttr.getZ(i1));
+                        feature.normal.push(norAttr.getX(i2), norAttr.getY(i2), norAttr.getZ(i2));
+                        if (colAttr) {
+                            feature.color.push(...colAttr.array.slice(colStride * i0, colStride * i0 + colStride));
+                            feature.color.push(...colAttr.array.slice(colStride * i1, colStride * i1 + colStride));
+                            feature.color.push(...colAttr.array.slice(colStride * i2, colStride * i2 + colStride));
                         }
-                        // Express coordinates wrt center of batch object bbox
-                        const prevPosition = new Vector3();
-                        c.matrixWorld.decompose(prevPosition, new Quaternion(), new Vector3());
-                        const newPosition = new Vector3();
-                        batch.bbox.getCenter(newPosition);
-                        const offset = new Vector3().subVectors(newPosition, prevPosition);
-                        for (let i = 0; i < batch.position.length / 3; ++i) {
-                            batch.position[3 * i + 0] -= offset.x;
-                            batch.position[3 * i + 1] -= offset.y;
-                            batch.position[3 * i + 2] -= offset.z;
-                        }
-                        // Construct mesh
-                        const material = new MeshStandardMaterial({color: 0xFFFFFF});
-                        const geometry = new BufferGeometry();
-                        geometry.setAttribute('position', new Float32BufferAttribute(batch.position, 3));
-                        geometry.setAttribute('normal', new Float32BufferAttribute(batch.normal, 3));
-                        if (batch.color) {
-                            // geometry.setAttribute('color', new Float32BufferAttribute(batch.color, batch.colorStride));
-                            // material.vertexColors = batch.color !== null;
-                            // material.transparent = batch.colorStride === 4;
-                            material.color.set(...batch.color.slice(0, 3));
-                        }
-                        const mesh = new Mesh(geometry, material);
-                        mesh.applyMatrix4(c.matrixWorld.clone().multiply(new Matrix4().makeTranslation(offset)));
-                        // Include attribute from batch table
-                        const batchAttrs = batchTableObject.batchTable.getDataFromId(batchId);
-                        Object.assign(mesh.userData, batchAttrs);
-                        // Add label
-                        const labelEntry = batchTableObject.userData.tileLabels?.[batchId];
-                        if (labelEntry) {
-                            mesh.userData.label = labelEntry.label;
-                            mesh.userData.labelOffset = labelEntry.labelOffset;
-                        }
+                        feature.bbox.expandByPoint(new Vector3(...pos1).applyMatrix4(c.matrixWorld));
+                        feature.bbox.expandByPoint(new Vector3(...pos2).applyMatrix4(c.matrixWorld));
+                        feature.bbox.expandByPoint(new Vector3(...pos3).applyMatrix4(c.matrixWorld));
+                    });
 
-                        exportGroup.add(mesh);
+                    // Omit feature if not within selection
+                    if (
+                        !selectionBox.intersectsBox(feature.bbox) ||
+                        !this.bboxInExportPolygon(feature.bbox)
+                    ) {
+                        return;
                     }
+
+                    // Express coordinates wrt center of feature bbox
+                    const prevPosition = new Vector3();
+                    c.matrixWorld.decompose(prevPosition, new Quaternion(), new Vector3());
+                    const newPosition = new Vector3();
+                    feature.bbox.getCenter(newPosition);
+                    const offset = new Vector3().subVectors(newPosition, prevPosition);
+                    for (let i = 0; i < feature.position.length / 3; ++i) {
+                        feature.position[3 * i + 0] -= offset.x;
+                        feature.position[3 * i + 1] -= offset.y;
+                        feature.position[3 * i + 2] -= offset.z;
+                    }
+                    // Construct mesh
+                    const material = new MeshStandardMaterial({color: 0xFFFFFF});
+                    const geometry = new BufferGeometry();
+                    geometry.setAttribute('position', new Float32BufferAttribute(feature.position, 3));
+                    geometry.setAttribute('normal', new Float32BufferAttribute(feature.normal, 3));
+                    if (feature.color) {
+                        // geometry.setAttribute('color', new Float32BufferAttribute(feature.color, feature.colorStride));
+                        // material.vertexColors = feature.color !== null;
+                        // material.transparent = feature.colorStride === 4;
+                        material.color.set(...feature.color.slice(0, 3));
+                    }
+                    const mesh = new Mesh(geometry, material);
+                    mesh.applyMatrix4(c.matrixWorld.clone().multiply(new Matrix4().makeTranslation(offset)));
+                    // Include attribute from feature properties table
+                    Object.assign(mesh.userData, helper.getFeatureProperties(featureId));
+                    // Add label
+                    const labelEntry = helper.getTileUserData().tileLabels?.[featureId];
+                    if (labelEntry) {
+                        mesh.userData.label = labelEntry.label;
+                        mesh.userData.labelOffset = labelEntry.labelOffset;
+                    }
+
+                    exportGroup.add(mesh);
                 });
             }
         });

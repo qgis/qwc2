@@ -12,7 +12,7 @@ import parseCssColor from 'parse-css-color';
 import {Float32BufferAttribute, Group, Vector3} from "three";
 
 import MiscUtils from '../../../utils/MiscUtils';
-import {createLabelObject} from "./MiscUtils3D";
+import {createLabelObject, TileMeshHelper} from "./MiscUtils3D";
 
 
 const styleExpressionParser = new ExprParser();
@@ -26,16 +26,16 @@ styleExpressionParser.functions.hsl = (h, s, l) => ([...MiscUtils.hslToRgb(h, s,
 styleExpressionParser.functions.hsla = (h, s, l, a) => ([...MiscUtils.hslToRgb(h, s, l), a]);
 
 
-function batchColor(batchId, batchAttr, context) {
-    if ((context.batchStyles?.[batchId]?.color ?? null) !== null) {
-        const color = parseCssColor(context.batchStyles[batchId].color);
+function featureColor(objectId, featureProperties, context) {
+    if ((context.featureStyles?.[objectId]?.color ?? null) !== null) {
+        const color = parseCssColor(context.featureStyles[objectId].color);
         return [...color.values.map(c => c / 255), color.alpha];
     } else if (context.colorExpressions.length) {
         try {
             for (let i = 0; i < context.colorExpressions.length; ++i) {
-                const condition = context.colorExpressions[i][0].evaluate(batchAttr);
+                const condition = context.colorExpressions[i][0].evaluate(featureProperties);
                 if (condition) {
-                    return context.colorExpressions[i][1].evaluate(batchAttr);
+                    return context.colorExpressions[i][1].evaluate(featureProperties);
                 }
             }
         } catch (e) {
@@ -43,9 +43,9 @@ function batchColor(batchId, batchAttr, context) {
             console.warn("Failed to parse color expression: " + String(e));
         }
         return null;
-    } else if (batchAttr[context.colorAttr]) {
-        const color = batchAttr[context.colorAttr];
-        const alpha = context.alphaAttr ? batchAttr[context.alphaAttr] ?? 255 : 255;
+    } else if (featureProperties[context.colorAttr]) {
+        const color = featureProperties[context.colorAttr];
+        const alpha = context.alphaAttr ? featureProperties[context.alphaAttr] ?? 255 : 255;
         const r = ((color >> 16) & 0xff) / 255;
         const g = ((color >> 8) & 0xff) / 255;
         const b = (color & 0xff) / 255;
@@ -55,11 +55,11 @@ function batchColor(batchId, batchAttr, context) {
     }
 }
 
-function batchLabel(batchId, batchAttr, context) {
-    if ((context.batchStyles?.[batchId]?.label ?? null) !== null) {
-        return {text: context.batchStyles[batchId].label, offset: context.batchStyles[batchId].labelOffset ?? 80};
+function featureLabel(objectId, featureProperties, context) {
+    if ((context.featureStyles?.[objectId]?.label ?? null) !== null) {
+        return {text: context.featureStyles[objectId].label, offset: context.featureStyles[objectId].labelOffset ?? 80};
     } else if (context.labelAttr) {
-        return batchAttr[context.labelAttr];
+        return featureProperties[context.labelAttr];
     } else {
         return null;
     }
@@ -67,14 +67,14 @@ function batchLabel(batchId, batchAttr, context) {
 
 const Tiles3DStyle = {
     applyTileStyle(group, config, sceneContext) {
-        const batchColorCache = {};
-        const batchLabelCache = {};
+        const featureColorCache = {};
+        const featureLabelCache = {};
         const labels = {};
         const idAttr = config.idAttr ?? "id";
 
         const context = {
             colorExpressions: [],
-            batchStyles: config.tilesetStyle?.batchstyles,
+            featureStyles: config.tilesetStyle?.featureStyles,
             colorAttr: config.colorAttr,
             alphaAttr: config.alphaAttr,
             labelAttr: config.labelAttr
@@ -103,25 +103,27 @@ const Tiles3DStyle = {
 
         group.traverse(c => {
             if (c.geometry) {
-                const batchidxAttr = c.geometry.getAttribute( '_batchid' );
-                if (!batchidxAttr) {
+                const helper = new TileMeshHelper(c);
+                const featureIdAttr = helper.getFeatureIdAttr();
+                if (!featureIdAttr) {
                     return;
                 }
 
-                const batchPosAttr = c.geometry.getAttribute('position');
+                const posAttr = c.geometry.getAttribute('position');
                 const rgbaColors = [];
                 const rgbColors = [];
                 let haveColor = customBaseColor;
                 let haveAlpha = baseColor[3] < 1;
 
-                batchidxAttr.array.forEach((batchIdx, idx) => {
-                    const batchAttr = group.batchTable.getDataFromId(batchIdx);
-                    const batchId = String(batchAttr[idAttr]);
+                for (let idx = 0; idx < featureIdAttr.count; ++idx) {
+                    const featureId = featureIdAttr.getX(idx);
+                    const featureProperties = helper.getFeatureProperties(featureId);
+                    const objectId = String(featureProperties[idAttr]);
 
                     // Handle color
-                    let color = batchColorCache[batchIdx];
+                    let color = featureColorCache[featureId];
                     if (color === undefined) {
-                        color = batchColorCache[batchIdx] = batchColor(batchId, batchAttr, context);
+                        color = featureColorCache[featureId] = featureColor(objectId, featureProperties, context);
                     }
                     if (color) {
                         haveColor = true;
@@ -134,15 +136,15 @@ const Tiles3DStyle = {
                     }
 
                     // Handle label
-                    let label = batchLabelCache[batchIdx];
+                    let label = featureLabelCache[featureId];
                     if (label === undefined) {
-                        label = batchLabelCache[batchIdx] = batchLabel(batchId, batchAttr, context);
+                        label = featureLabelCache[featureId] = featureLabel(objectId, featureProperties, context);
                     }
                     if (label) {
-                        const pos = batchPosAttr.array.slice(3 * idx, 3 * idx + 3);
-                        let entry = labels[batchIdx];
+                        const pos = posAttr.array.slice(3 * idx, 3 * idx + 3);
+                        let entry = labels[featureId];
                         if (!entry) {
-                            entry = labels[batchIdx] = {
+                            entry = labels[featureId] = {
                                 label: label.text,
                                 labelOffset: label.offset,
                                 pos: pos,
@@ -158,7 +160,7 @@ const Tiles3DStyle = {
                             ++entry.count;
                         }
                     }
-                });
+                }
 
                 // NOTE: Also update color buffers if they were previously colored
                 if (haveColor || group.userData.haveColor) {
@@ -196,7 +198,7 @@ const Tiles3DStyle = {
         if (!isEmpty(labels)) {
             const tileLabels = {};
             const labelObjects = new Group();
-            Object.entries(labels).forEach(([batchId, entry]) => {
+            Object.entries(labels).forEach(([featureId, entry]) => {
                 const pos = new Vector3(
                     entry.pos[0] / entry.count,
                     entry.pos[1] / entry.count,
@@ -207,9 +209,9 @@ const Tiles3DStyle = {
                     entry.ymax,
                     entry.pos[2] / entry.count
                 ).applyMatrix4(entry.matrix);
-                tileLabels[batchId] = {pos, label: entry.label, labelOffset: entry.labelOffset};
-                tileLabels[batchId].labelObject = createLabelObject(entry.label, pos, sceneContext, 0, entry.labelOffset + (maxpos.y - pos.y));
-                labelObjects.add(tileLabels[batchId].labelObject);
+                tileLabels[featureId] = {pos, label: entry.label, labelOffset: entry.labelOffset};
+                tileLabels[featureId].labelObject = createLabelObject(entry.label, pos, sceneContext, 0, entry.labelOffset + (maxpos.y - pos.y));
+                labelObjects.add(tileLabels[featureId].labelObject);
             });
             group.userData.tileLabels = tileLabels;
             group.userData.labelGroup = labelObjects.uuid;
