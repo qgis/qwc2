@@ -194,18 +194,18 @@ export default class Measure3D extends React.Component {
         return [
             new ol.style.Style({
                 fill: new ol.style.Fill({
-                    color: [41, 120, 180, 0.5]
+                    color: [255, 0, 0, 0.5]
                 })
             }),
             new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    color: [255, 255, 255],
+                    color: [255, 0, 0],
                     width: 4
                 })
             }),
             new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    color: [41, 120, 180],
+                    color: [255, 0, 0],
                     width: 1.5
                 })
             })
@@ -226,6 +226,7 @@ export default class Measure3D extends React.Component {
         this.abortController = new AbortController();
         const terrainPick = (e) => this.props.sceneContext.scene.pickObjectsAt(e, {sortByDistance: true, where: [this.props.sceneContext.getMap()]});
         const options = {
+            color: '#ff0000',
             signal: this.abortController.signal,
             endCondition: conditions.doubleClick,
             pick: null // default pick
