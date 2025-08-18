@@ -59,7 +59,7 @@ class MapCopyright extends React.Component {
             return null;
         }
         return ReactDOM.createPortal((
-            <div id="MapCopyright">
+            <div className="MapCopyright">
                 {copyrights}
             </div>
         ), this.context);

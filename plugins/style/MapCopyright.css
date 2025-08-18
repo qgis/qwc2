@@ -1,4 +1,4 @@
-#MapCopyright {
+div.MapCopyright {
     position: absolute;
     right: 0.25em;
     bottom: 0.25em;
@@ -11,10 +11,10 @@
     font-size: x-small;
 }
 
-#MapCopyright > span {
+div.MapCopyright > span {
     padding: 0 0.5em;
 }
 
-#MapCopyright span:not(:first-child) {
+div.MapCopyright span:not(:first-child) {
     border-left: 1px solid var(--panel-text-color);
 }
