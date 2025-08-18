@@ -76,7 +76,7 @@ class MapControls3D extends React.Component {
         });
         const navStyle = {
             marginLeft: this.props.mapMargins.left + this.props.mapMargins.outerLeft,
-            marginRight: this.props.mapMargins.right + this.props.mapMargins.outerRight 
+            marginRight: this.props.mapMargins.right + this.props.mapMargins.outerRight
         };
         return [
             this.props.children,
