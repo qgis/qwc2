@@ -7,20 +7,15 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
-import {MapContainerPortalContext} from '../components/PluginsContainer';
-import Icon from './Icon';
-
-import './style/TaskBar.css';
+import MessageBar from './MessageBar';
 
 
 class TaskBar extends React.Component {
-    static contextType = MapContainerPortalContext;
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
@@ -50,33 +45,15 @@ class TaskBar extends React.Component {
         }
         this.props.setCurrentTask(null);
     };
-    renderRole = (role) => {
-        const children = typeof this.props.children === "function" ?
-            this.props.children() :
-            React.Children.toArray(this.props.children).reduce((res, child) => ({...res, [child.props.role]: child}), {});
-        return children[role];
-    };
     render() {
         if (this.props.currentTask.id !== this.props.task) {
             return null;
         }
-        return ReactDOM.createPortal((
-            <div>
-                <div className="taskbar-container">
-                    <div className={"taskbar " + this.props.task}>
-                        <div className="body">
-                            {this.renderRole("body")}
-                        </div>
-                        {this.props.onHide ? (
-                            <span className="closewrapper">
-                                <Icon className="close" icon="remove" onClick={this.closeClicked} size="large"/>
-                            </span>
-                        ) : null}
-                    </div>
-                </div>
-                {this.renderRole("extra")}
-            </div>
-        ), this.context);
+        return (
+            <MessageBar onClose={this.closeClicked}>
+                {this.props.children}
+            </MessageBar>
+        );
     }
 }
 
