@@ -9,6 +9,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import PropTypes from 'prop-types';
 import {Box3} from 'three';
 
@@ -33,7 +34,9 @@ export default class NumericInput3D extends React.Component {
         rot: [0, 0, 0],
         scale: [1, 1, 1],
         size: null,
-        anchors: ['center', 'center', 'begin']
+        anchors: ['center', 'center', 'begin'],
+        zMode: 'absolute',
+        currentTerrainHeight: 0
     };
     constructor(props) {
         super(props);
@@ -43,6 +46,7 @@ export default class NumericInput3D extends React.Component {
     componentDidMount() {
         this.props.transformControls.addEventListener('objectChange', this.updateStateFromObject);
         this.updateStateFromObject();
+        this.props.sceneContext.map.addEventListener('elevation-changed', this.elevationChanged);
     }
     componentDidUpdate(prevProps) {
         if (this.props.selectedObject !== prevProps.selectedObject) {
@@ -52,6 +56,7 @@ export default class NumericInput3D extends React.Component {
     componentWillUnmount() {
         this.props.sceneContext.scene.viewport.parentElement.removeChild(this.el);
         this.props.transformControls.removeEventListener('objectChange', this.updateStateFromObject);
+        this.props.sceneContext.map.removeEventListener('elevation-changed', this.elevationChanged);
     }
     render() {
         const pos = this.state.pos;
@@ -65,11 +70,11 @@ export default class NumericInput3D extends React.Component {
             {key: 'center', icon: 'middle_h'},
             {key: 'end', icon: 'before'}
         ];
-        const vanchors = [
-            {key: 'begin', icon: 'above'},
-            {key: 'center', icon: 'middle_v'},
-            {key: 'end', icon: 'below'}
+        const zmodes = [
+            {key: 'absolute', icon: 'above_zero'},
+            {key: 'terrain', icon: 'above_terr'}
         ];
+        const voffset = (this.state.zMode === 'terrain' ? this.state.currentTerrainHeight : 0) + (size ? 0.5 * size[2] : 0);
         const contents = (
             <ResizeableWindow fitHeight icon="numericinput" initialWidth={350} initialX={-1}
                 onClose={this.props.toggleNumericInput} scrollable title={LocaleUtils.tr("draw3d.numericinput")} >
@@ -80,7 +85,7 @@ export default class NumericInput3D extends React.Component {
                                 <td>{LocaleUtils.tr("draw3d.position")}</td>
                                 <td><NumberInput decimals={0} disabled={disabled} onChange={x => this.updatePosition(0, x)} value={pos[0]} /></td>
                                 <td><NumberInput decimals={0} disabled={disabled} onChange={y => this.updatePosition(1, y)} value={pos[1]} /></td>
-                                <td><NumberInput decimals={0} disabled={disabled} onChange={z => this.updatePosition(2, z)} value={pos[2]} /></td>
+                                <td><NumberInput decimals={0} disabled={disabled} onChange={z => this.updatePosition(2, z + voffset)} value={pos[2] - voffset} /></td>
                             </tr>
                             <tr>
                                 <td>{LocaleUtils.tr("draw3d.rotation")}</td>
@@ -105,9 +110,9 @@ export default class NumericInput3D extends React.Component {
                             {size ? (
                                 <tr>
                                     <td />
-                                    <td><ButtonBar active={this.state.anchors[0]} buttons={hanchors} onClick={x => this.setAnchor(0, x)} /></td>
-                                    <td><ButtonBar active={this.state.anchors[1]} buttons={hanchors} onClick={y => this.setAnchor(0, y)} /></td>
-                                    <td><ButtonBar active={this.state.anchors[2]} buttons={vanchors} onClick={z => this.setAnchor(0, z)} /></td>
+                                    <td><ButtonBar active={this.state.anchors[0]} buttons={hanchors} onClick={key => this.setAnchor(0, key)} /></td>
+                                    <td><ButtonBar active={this.state.anchors[1]} buttons={hanchors} onClick={key => this.setAnchor(1, key)} /></td>
+                                    <td><ButtonBar active={this.state.zMode} buttons={zmodes} onClick={key => this.setState({zMode: key})} /></td>
                                 </tr>
                             ) : null}
                         </tbody>
@@ -130,18 +135,22 @@ export default class NumericInput3D extends React.Component {
             this.props.selectedObject.rotation.copy(originalRotation);
             this.props.selectedObject.updateMatrixWorld(true);
 
+            const pos = this.props.selectedObject.position.toArray();
+            const terrainHeight = this.props.sceneContext.getTerrainHeightFromMap([pos[0], pos[1]]) ?? 0;
             this.setState({
-                pos: this.props.selectedObject.position.toArray(),
+                pos: pos,
                 rot: this.props.selectedObject.rotation.toArray().slice(0, 3).map(x => x / Math.PI * 180),
                 scale: this.props.selectedObject.scale.toArray(),
-                size: size
+                size: size,
+                currentTerrainHeight: terrainHeight
             });
         } else {
             this.setState({
                 pos: [0, 0, 0],
                 rot: [0, 0, 0],
                 scale: [1, 1, 1],
-                size: null
+                size: null,
+                currentTerrainHeight: 0
             });
         }
     };
@@ -191,6 +200,16 @@ export default class NumericInput3D extends React.Component {
         this.props.transformControls.getHelper().updateMatrixWorld();
         this.updateStateFromObject();
         this.props.sceneContext.scene.notifyChange();
+    };
+    elevationChanged = ({extent}) => {
+        const crs = this.props.sceneContext.mapCrs;
+        const coo = new Coordinates(crs, this.state.pos[0], this.state.pos[1]);
+        if (extent.isPointInside(coo)) {
+            const terrainHeight = this.props.sceneContext.getTerrainHeightFromMap([this.state.pos[0], this.state.pos[1]]) ?? 0;
+            this.setState(state => ({
+                currentTerrainHeight: terrainHeight
+            }));
+        }
     };
 }
 
