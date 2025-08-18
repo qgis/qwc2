@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "Piano di taglio",
       "compare_objects": "Confronta oggetti",
+      "info_message": "Il confronto tra oggetti è attivo",
+      "modify": "Modifica",
       "toggleall": "Tutti"
     },
     "cookiepopup": {

@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "Pla de retall",
       "compare_objects": "Comparar objectes",
+      "info_message": "",
+      "modify": "",
       "toggleall": "Alternar tot"
     },
     "cookiepopup": {

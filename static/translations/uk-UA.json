@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "",
       "compare_objects": "",
+      "info_message": "",
+      "modify": "",
       "toggleall": ""
     },
     "cookiepopup": {
@@ -217,6 +219,7 @@
     },
     "heightprofile": {
       "asl": "над р.м.",
+      "dhmdefaultname": "",
       "distance": "Дистанція",
       "drawnodes": "",
       "error": "",

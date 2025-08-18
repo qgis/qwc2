@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "Schnittebene",
       "compare_objects": "Objekte vergleichen",
+      "info_message": "Objektvergleich ist aktiv",
+      "modify": "Ändern",
       "toggleall": "Alle"
     },
     "cookiepopup": {

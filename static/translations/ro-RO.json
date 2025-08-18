@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "",
       "compare_objects": "",
+      "info_message": "",
+      "modify": "",
       "toggleall": ""
     },
     "cookiepopup": {

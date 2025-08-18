@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "Plan d'écrêtage",
       "compare_objects": "Comparer objets",
+      "info_message": "La comparaison d'objets est active",
+      "modify": "Modifier",
       "toggleall": "Tous"
     },
     "cookiepopup": {

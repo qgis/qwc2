@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "クリッピング平面",
       "compare_objects": "オブジェクトを比較",
+      "info_message": "",
+      "modify": "",
       "toggleall": "全てトグル"
     },
     "cookiepopup": {

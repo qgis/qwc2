@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "Плоскост на изрязване",
       "compare_objects": "Сравняване на обекти",
+      "info_message": "",
+      "modify": "",
       "toggleall": "Превключване на всички"
     },
     "cookiepopup": {

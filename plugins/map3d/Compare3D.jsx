@@ -13,7 +13,9 @@ import PropTypes from 'prop-types';
 import {Group, Plane, Raycaster, Vector2, Vector3} from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 
+import {setCurrentTask} from '../../actions/task';
 import Icon from '../../components/Icon';
+import MessageBar from '../../components/MessageBar';
 import SideBar from '../../components/SideBar';
 import NumberInput from '../../components/widgets/NumberInput';
 import arrowModel from '../../resources/arrow.glb';
@@ -27,7 +29,8 @@ class Compare3D extends React.Component {
 
     static propTypes = {
         active: PropTypes.bool,
-        sceneContext: PropTypes.object
+        sceneContext: PropTypes.object,
+        setCurrentTask: PropTypes.func
     };
     state = {
         enabled: false,
@@ -213,16 +216,28 @@ class Compare3D extends React.Component {
         this.arrows.updateMatrixWorld();
     };
     render() {
-        return (
-            <SideBar icon="layers" id="Compare3D"
-                title={LocaleUtils.tr("appmenu.items.Compare3D")}
-                width="20em"
-            >
-                {() => ({
-                    body: this.renderBody()
-                })}
-            </SideBar>
-        );
+        return [
+            (
+                <SideBar icon="layers" id="Compare3D" key="SideBar"
+                    title={LocaleUtils.tr("appmenu.items.Compare3D")}
+                    width="20em"
+                >
+                    {() => ({
+                        body: this.renderBody()
+                    })}
+                </SideBar>
+            ),
+            this.state.enabled ? (
+                <MessageBar>
+                    <div role="body">
+                        {LocaleUtils.tr("compare3d.info_message")}&nbsp;
+                        <button className="button" onClick={() => this.props.setCurrentTask("Compare3D")}>
+                            {LocaleUtils.tr("compare3d.modify")}
+                        </button>
+                    </div>
+                </MessageBar>
+            ) : null
+        ];
     }
     renderBody = () => {
         const sceneContext = this.props.sceneContext;
@@ -330,5 +345,5 @@ class Compare3D extends React.Component {
 export default connect(state => ({
     active: state.task.id === "Compare3D"
 }), {
-
+    setCurrentTask: setCurrentTask
 })(Compare3D);

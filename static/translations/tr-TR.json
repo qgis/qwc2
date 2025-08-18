@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "Kırpma düzlemi",
       "compare_objects": "Objeleri karşılaştır",
+      "info_message": "",
+      "modify": "",
       "toggleall": "Tümünü aç-kapat"
     },
     "cookiepopup": {

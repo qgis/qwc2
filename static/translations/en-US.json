@@ -110,6 +110,8 @@
     "compare3d": {
       "clipplane": "Clipping plane",
       "compare_objects": "Compare objects",
+      "info_message": "Object comparison is active",
+      "modify": "Modify",
       "toggleall": "Toggle all"
     },
     "cookiepopup": {
