@@ -46,6 +46,11 @@ import './style/View3D.css';
  * To add a 3D View to a theme, add the following configuration block to a theme item in `themesConfig.json`:
  * ```
  * "map3d": {
+ *     "initialView": {
+ *       "camera": [x, y, z],
+ *       "target": [x, y, z],
+ *       "personHeight": h
+ *     },
  *     "dtm": {"url": "<url_to_dtm.tif>", "crs": "<dtm_epsg_code>},
  *     "basemaps": [
  *          {"name": "<name_of_background_layer>", "visibility": true, "overview": true},
@@ -77,6 +82,7 @@ import './style/View3D.css';
  * ```
  * Where:
  *
+ * - `initialView` is optional and allows to define the initial view when opening the 3D view. If `personHeight` is specified and greater than 0, the first-person view is activated. If not specified, the 2D view is synchronized.
  * - The DTM should be a cloud optimized GeoTIFF.
  * - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`. Additionally:
  *   - `visibility` controls the initially visibile background layer
@@ -476,6 +482,8 @@ class View3D extends React.Component {
         if (this.map3dComponentRef) {
             if (!isEmpty(this.state.storedState)) {
                 this.map3dComponentRef.restore3dState(this.state.storedState);
+            } else if (this.props.theme.current.map3d.initialView) {
+                this.map3dComponentRef.restore3dState(this.props.theme.current.map3d.initialView);
             } else {
                 this.sync2DExtent();
             }

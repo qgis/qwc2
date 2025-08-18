@@ -811,7 +811,7 @@ Routing<a name="routing"></a>
 ----------------------------------------------------------------
 Compute routes and isochrones.
 
-Requites `routingServiceUrl` in `config.json` pointing to a Valhalla routing service.
+Requires `routingServiceUrl` in `config.json` pointing to a Valhalla routing service.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
@@ -954,6 +954,11 @@ Displays a 3D map view.
 To add a 3D View to a theme, add the following configuration block to a theme item in `themesConfig.json`:
 ```
 "map3d": {
+    "initialView": {
+      "camera": [x, y, z],
+      "target": [x, y, z],
+      "personHeight": h
+    },
     "dtm": {"url": "<url_to_dtm.tif>", "crs": "<dtm_epsg_code>},
     "basemaps": [
          {"name": "<name_of_background_layer>", "visibility": true, "overview": true},
@@ -985,6 +990,7 @@ To add a 3D View to a theme, add the following configuration block to a theme it
 ```
 Where:
 
+- `initialView` is optional and allows to define the initial view when opening the 3D view. If `personHeight` is specified and greater than 0, the first-person view is activated. If not specified, the 2D view is synchronized.
 - The DTM should be a cloud optimized GeoTIFF.
 - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`. Additionally:
   - `visibility` controls the initially visibile background layer
