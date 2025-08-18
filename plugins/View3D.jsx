@@ -156,7 +156,6 @@ class View3D extends React.Component {
         map: PropTypes.object,
         panTo: PropTypes.func,
         plugins: PropTypes.object,
-        pluginsConfig: PropTypes.object,
         removeLayer: PropTypes.func,
         /** Minimum scale denominator when zooming to search result. */
         searchMinScaleDenom: PropTypes.number,
@@ -353,7 +352,7 @@ class View3D extends React.Component {
                 importedTilesBaseUrl: this.props.importedTilesBaseUrl
             };
             const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
-            const pluginsConfig = this.props.pluginsConfig[device].filter(entry => {
+            const pluginsConfig = this.props.localConfig.plugins[device].filter(entry => {
                 return entry.availableIn3D && (!entry.availableIn2D || this.props.view3dMode === View3DMode.FULLSCREEN);
             });
             return (
@@ -512,7 +511,6 @@ export default connect(
         display: state.display,
         map: state.map,
         layers: state.layers,
-        pluginsConfig: state.localConfig.plugins,
         theme: state.theme,
         localConfig: state.localConfig,
         view3dMode: state.display.view3dMode,
