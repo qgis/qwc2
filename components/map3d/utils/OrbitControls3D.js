@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import {Vector3} from 'three';
 import {MapControls} from 'three/addons/controls/MapControls';
 import {v4 as uuidv4} from 'uuid';
@@ -24,7 +25,7 @@ export default class OrbitControls3D extends MapControls {
         this.keyPanSpeed = 10.0;
         this.maxPolarAngle = Math.PI * 0.5;
 
-        this._targetHeight = 0;
+        this._targetTerrainHeight = 0;
         this._heightOffset = 0;
         this._keyState = {PageUp: false, PageDown: false};
         this._keyboardNavInterval = null;
@@ -41,6 +42,7 @@ export default class OrbitControls3D extends MapControls {
         this.domElement.addEventListener('keyup', this._onKeyUp);
         this.domElement.addEventListener('blur', this._onBlur);
         this.addEventListener('change', this.updateControlsTarget);
+        this.sceneContext.map.addEventListener('elevation-changed', this.elevationChanged);
         this.object.near = 2;
         this.sceneContext.scene.view.setControls(this);
     }
@@ -55,6 +57,7 @@ export default class OrbitControls3D extends MapControls {
         this.domElement.removeEventListener('keyup', this._onKeyUp);
         this.domElement.removeEventListener('blur', this._onBlur);
         this.removeEventListener('change', this.updateControlsTarget);
+        this.sceneContext.map.removeEventListener('elevation-changed', this.elevationChanged);
         this._keyState = {PageUp: false, PageDown: false};
     }
     updateControlsTarget = () => {
@@ -79,12 +82,19 @@ export default class OrbitControls3D extends MapControls {
         this.update();
     }
     updateTargetTerrainAndOffsetHeight = (camerapos, target) => {
-        // Compute targetHeight and heightOffset offset
+        // Compute targetTerrainHeight and heightOffset offset
         const height = this.sceneContext.getTerrainHeightFromMap([target.x, target.y]) ?? 0;
         // If camera height is at terrain height, target height should be at terrain height
         // If camera height is at twice the terrain height or further, target height should be zero
         this._targetTerrainHeight = Math.max(0, 1 - (camerapos.z - height) / height) * height;
-        this._heightOffset = target.z - this._targetTerrainHeight;
+        this._heightOffset = Math.max(0, target.z - this._targetTerrainHeight);
+    };
+    elevationChanged = ({extent}) => {
+        const crs = this.sceneContext.mapCrs;
+        const coo = new Coordinates(crs, this.target.x, this.target.y);
+        if (extent.isPointInside(coo)) {
+            this.updateTargetTerrainAndOffsetHeight(this.object.position, this.target);
+        }
     };
     panView(dx, dy) {
         if (dx || dy) {
