@@ -79,6 +79,7 @@ export default class Measure3D extends React.Component {
             })
         });
         this.props.sceneContext.map.addLayer(this.drawLayer);
+        this.props.sceneContext.scene.domElement.addEventListener('pointerdown', this.clearResultOnUp);
     };
     onHide = () => {
         this.clearResult();
@@ -89,6 +90,7 @@ export default class Measure3D extends React.Component {
         this.measureTool = null;
         this.props.sceneContext.map.removeLayer(this.drawLayer, {dispose: true});
         this.drawLayer = null;
+        this.props.sceneContext.scene.domElement.removeEventListener('pointerdown', this.clearResultOnUp);
     };
     renderModeSwitcher = () => {
         const buttons = [
@@ -210,6 +212,12 @@ export default class Measure3D extends React.Component {
                 })
             })
         ];
+    };
+    clearResultOnUp = (ev) => {
+        ev.view.addEventListener("pointermove", () => {
+            ev.view.removeEventListener("pointerup", this.clearResult);
+        }, {once: true});
+        ev.view.addEventListener("pointerup", this.clearResult, {once: true});
     };
     clearResult = () => {
         this.drawLayer.source.clear();
