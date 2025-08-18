@@ -38,6 +38,7 @@ import ExportObjects3D from '../../plugins/map3d/ExportObjects3D';
 import HideObjects3D from '../../plugins/map3d/HideObjects3D';
 import Identify3D from '../../plugins/map3d/Identify3D';
 import LayerTree3D from '../../plugins/map3d/LayerTree3D';
+import MapCopyright3D from '../../plugins/map3d/MapCopyright3D';
 import MapExport3D from '../../plugins/map3d/MapExport3D';
 import Measure3D from '../../plugins/map3d/Measure3D';
 import OverviewMap3D from '../../plugins/map3d/OverviewMap3D';
@@ -646,6 +647,7 @@ class Map3D extends React.Component {
                         <Identify3D sceneContext={this.state.sceneContext} />
                         <LayerTree3D sceneContext={this.state.sceneContext} />
                         <Map3DLight sceneContext={this.state.sceneContext} />
+                        <MapCopyright3D sceneContext={this.state.sceneContext} />
                         <MapExport3D sceneContext={this.state.sceneContext} />
                         <Measure3D sceneContext={this.state.sceneContext} />
                         <OverviewMap3D sceneContext={this.state.sceneContext} />
