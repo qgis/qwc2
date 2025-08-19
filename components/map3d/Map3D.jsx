@@ -647,7 +647,7 @@ class Map3D extends React.Component {
     };
     render() {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
-        const pluginsConfig = this.props.pluginConfig[device].filter(entry => {
+        const pluginsConfig = this.state.sceneContext.scene ? this.props.pluginConfig[device].filter(entry => {
             return entry.availableIn3D && (!entry.availableIn2D || this.props.view3dMode === View3DMode.FULLSCREEN);
         }).map(entry => {
             // Inject sceneContext into plugin config
@@ -655,7 +655,7 @@ class Map3D extends React.Component {
                 return {...entry, cfg: {...entry.cfg, sceneContext: this.state.sceneContext}};
             }
             return entry;
-        });
+        }) : [];
         return (
             <PluginsContainer className="plugins-container-3d" plugins={PluginStore.getPlugins()} pluginsConfig={pluginsConfig}>
                 <Map3DContainer onMount={this.setupContainer} />
