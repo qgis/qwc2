@@ -11,10 +11,14 @@ import axios from 'axios';
 import yaml from 'js-yaml';
 import polygonIntersectTest from 'polygon-intersect-test';
 
+import {LayerRole} from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import IdentifyUtils from './IdentifyUtils';
+import LayerUtils from './LayerUtils';
 import LocaleUtils from './LocaleUtils';
+import VectorLayerUtils from './VectorLayerUtils';
+
 
 export const SearchResultType = {
     PLACE: 0,
@@ -456,7 +460,10 @@ export class FulltextSearch {
     }
 }
 
-export default {
+
+/** ************************************************************************ **/
+
+const SearchProviders = {
     coordinates: {
         labelmsgid: "search.coordinates",
         onSearch: coordinatesSearch,
@@ -481,3 +488,97 @@ export default {
         handlesGeomFilter: true
     }
 };
+
+export default SearchProviders;
+
+/** ************************************************************************ **/
+
+// Uniformize the response of getResultGeometry
+function getResultGeometry(provider, item, callback) {
+    provider.getResultGeometry(item, (response) => {
+        const features = [];
+        if (response?.geometry) {
+            const highlightFeature = response.geometry.coordinates ? {
+                type: "Feature", geometry: response.geometry
+            } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, response.crs);
+            if (highlightFeature) {
+                features.push(highlightFeature);
+            }
+        } else if (response?.feature) {
+            if (response.feature.features) {
+                features.push(...response.feature.features);
+            } else {
+                features.push(response.feature);
+            }
+        }
+        if (features.length === 0) {
+            callback(null);
+        } else {
+            callback({
+                feature: {
+                    type: "FeatureCollection",
+                    features: features
+                },
+                crs: response.crs,
+                hidemarker: response.hidemarker,
+                ...(response.bbox && { bbox: response.bbox }),
+                ...(response.center && { center: response.center })
+            });
+        }
+    });
+}
+
+export function collectSearchProviders(theme, layers, mapScale = null) {
+    // Collect active layers/search terms
+    let searchTerms = [];
+    const activeLayers = [];
+    for (const entry of LayerUtils.explodeLayers(layers)) {
+        if (
+            entry.layer.role === LayerRole.THEME && entry.sublayer.visibility === true &&
+            (mapScale !== null && LayerUtils.layerScaleInRange(entry.sublayer, mapScale))
+        ) {
+            searchTerms = searchTerms.concat(entry.sublayer.searchterms || []);
+            activeLayers.push(entry.sublayer.name);
+        }
+    }
+
+    const searchProviders = {...SearchProviders, ...window.QWC2SearchProviders || {}};
+    const availableProviders = {};
+    const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
+    const providerKeys = new Set();
+    for (let entry of theme?.searchProviders || []) {
+        if (typeof entry === 'string') {
+            entry = {provider: entry};
+        }
+        // Omit qgis provider with field configuration, this is only supported through the FeatureSearch plugin
+        if (entry.provider === 'qgis' && entry?.params?.fields) {
+            continue;
+        }
+        const provider = searchProviders[entry.provider];
+        if (provider) {
+            if (provider.requiresLayer && !themeLayerNames.includes(provider.requiresLayer)) {
+                continue;
+            }
+            let key = entry.key ?? entry.provider;
+            if (providerKeys.has(key)) {
+                let i = 0;
+                for (i = 0; providerKeys.has(key + "_" + i); ++i);
+                key = key + "_" + i;
+            }
+            providerKeys.add(key);
+            availableProviders[key] = {
+                ...provider,
+                label: entry.label ?? provider.label,
+                labelmsgid: entry.labelmsgid ?? provider.labelmsgid,
+                getResultGeometry: provider.getResultGeometry ? (item, callback) => getResultGeometry(provider, item, callback) : null,
+                cfgParams: entry.params || {},
+                params: {
+                    searchTerms: searchTerms,
+                    activeLayers: activeLayers,
+                    theme: theme
+                }
+            };
+        }
+    }
+    return availableProviders;
+}
