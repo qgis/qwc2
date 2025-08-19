@@ -28,6 +28,7 @@ import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {v4 as uuidv4} from 'uuid';
 
+import {View3DMode} from '../../actions/display';
 import {LayerRole} from '../../actions/layers';
 import {setCurrentTask} from '../../actions/task';
 import BackgroundSwitcher3D from '../../plugins/map3d/BackgroundSwitcher3D';
@@ -49,9 +50,10 @@ import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LayerUtils from '../../utils/LayerUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
+import PluginStore from '../../utils/PluginStore';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
 import ThemeUtils from '../../utils/ThemeUtils';
-import {MapContainerPortalContext} from '../PluginsContainer';
+import PluginsContainer, {MapContainerPortalContext} from '../PluginsContainer';
 import EditDataset3D from './EditDataset3D';
 import Map3DLight from './Map3DLight';
 import MapControls3D from './MapControls3D';
@@ -61,6 +63,19 @@ import {importGltf, updateObjectLabel} from './utils/MiscUtils3D';
 import Tiles3DStyle from './utils/Tiles3DStyle';
 
 import './style/Map3D.css';
+
+class Map3DContainer extends React.Component {
+    static contextType = MapContainerPortalContext;
+    static propTypes = {
+        onMount: PropTypes.func
+    };
+    render() {
+        return ReactDOM.createPortal((
+            <div className="map3d-map" id="map3d" key="Map3D" ref={this.props.onMount} />
+        ), this.context);
+    }
+}
+
 
 // Ensures unUnload is called *after* all other children have unmounted
 class UnloadWrapper extends React.Component {
@@ -92,10 +107,12 @@ class Map3D extends React.Component {
         onCameraChanged: PropTypes.func,
         onMapInitialized: PropTypes.func,
         options: PropTypes.object,
+        pluginConfig: PropTypes.object,
         searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
-        themes: PropTypes.object
+        themes: PropTypes.object,
+        view3dMode: PropTypes.number
     };
     static defaultProps = {
         geometry: {
@@ -630,34 +647,38 @@ class Map3D extends React.Component {
         return this.map;
     };
     render() {
-        return [
-            ReactDOM.createPortal((
-                <div className="map3d-map" id="map3d" key="Map3D" ref={this.setupContainer} />
-            ), this.context),
-            this.state.sceneContext.scene ? (
-                <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
-                    <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext}>
-                        <BackgroundSwitcher3D sceneContext={this.state.sceneContext} />
-                        <BottomBar3D sceneContext={this.state.sceneContext} />
-                        <Compare3D sceneContext={this.state.sceneContext} />
-                        <Draw3D sceneContext={this.state.sceneContext} />
-                        <EditDataset3D sceneContext={this.state.sceneContext} />
-                        <ExportObjects3D sceneContext={this.state.sceneContext} />
-                        <HideObjects3D sceneContext={this.state.sceneContext} />
-                        <Identify3D sceneContext={this.state.sceneContext} />
-                        <LayerTree3D sceneContext={this.state.sceneContext} />
-                        <Map3DLight sceneContext={this.state.sceneContext} />
-                        <MapCopyright3D sceneContext={this.state.sceneContext} />
-                        <MapExport3D sceneContext={this.state.sceneContext} />
-                        <Measure3D sceneContext={this.state.sceneContext} />
-                        <OverviewMap3D sceneContext={this.state.sceneContext} />
-                        <Settings3D sceneContext={this.state.sceneContext} />
-                        <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
-                        <View3DSwitcher position={1} />
-                    </MapControls3D>
-                </UnloadWrapper>
-            ) : null
-        ];
+        const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+        const pluginsConfig = this.props.pluginConfig[device].filter(entry => {
+            return entry.availableIn3D && (!entry.availableIn2D || this.props.view3dMode === View3DMode.FULLSCREEN);
+        });
+        return (
+            <PluginsContainer className="plugins-container-3d" plugins={PluginStore.getPlugins()} pluginsConfig={pluginsConfig}>
+                <Map3DContainer onMount={this.setupContainer} />
+                {this.state.sceneContext.scene ? (
+                    <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
+                        <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext}>
+                            <BackgroundSwitcher3D sceneContext={this.state.sceneContext} />
+                            <BottomBar3D sceneContext={this.state.sceneContext} />
+                            <Compare3D sceneContext={this.state.sceneContext} />
+                            <Draw3D sceneContext={this.state.sceneContext} />
+                            <EditDataset3D sceneContext={this.state.sceneContext} />
+                            <ExportObjects3D sceneContext={this.state.sceneContext} />
+                            <HideObjects3D sceneContext={this.state.sceneContext} />
+                            <Identify3D sceneContext={this.state.sceneContext} />
+                            <LayerTree3D sceneContext={this.state.sceneContext} />
+                            <Map3DLight sceneContext={this.state.sceneContext} />
+                            <MapCopyright3D sceneContext={this.state.sceneContext} />
+                            <MapExport3D sceneContext={this.state.sceneContext} />
+                            <Measure3D sceneContext={this.state.sceneContext} />
+                            <OverviewMap3D sceneContext={this.state.sceneContext} />
+                            <Settings3D sceneContext={this.state.sceneContext} />
+                            <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
+                            <View3DSwitcher position={1} />
+                        </MapControls3D>
+                    </UnloadWrapper>
+                ) : null}
+            </PluginsContainer>
+        );
     }
     setupContainer = (el) => {
         if (el) {
@@ -1127,9 +1148,11 @@ class Map3D extends React.Component {
 }
 
 export default connect((state) => ({
+    pluginConfig: state.localConfig.plugins,
     theme: state.theme.current,
     themes: state.theme.themes,
-    layers: state.layers.flat
+    layers: state.layers.flat,
+    view3dMode: state.display.view3dMode
 }), {
     setCurrentTask: setCurrentTask
 })(Map3D);

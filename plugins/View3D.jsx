@@ -20,7 +20,6 @@ import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {panTo, zoomToPoint} from '../actions/map';
 import * as mapExports from '../actions/map';
 import * as themeExports from '../actions/theme';
-import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import StandardApp from '../components/StandardApp';
 import View3DSwitcher from '../components/map3d/View3DSwitcher';
@@ -29,11 +28,9 @@ import ReducerIndex from '../reducers/index';
 import personIcon from '../resources/person.png';
 import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
-import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
-import PluginStore from '../utils/PluginStore';
 
 import './style/View3D.css';
 
@@ -351,10 +348,6 @@ class View3D extends React.Component {
                 tileInfoServiceUrl: this.props.tileInfoServiceUrl,
                 importedTilesBaseUrl: this.props.importedTilesBaseUrl
             };
-            const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
-            const pluginsConfig = this.props.localConfig.plugins[device].filter(entry => {
-                return entry.availableIn3D && (!entry.availableIn2D || this.props.view3dMode === View3DMode.FULLSCREEN);
-            });
             return (
                 <ResizeableWindow
                     extraControls={extraControls}
@@ -377,22 +370,20 @@ class View3D extends React.Component {
                 >
                     {this.state.componentLoaded ? (
                         <Provider role="body" store={this.store}>
-                            <PluginsContainer className="plugins-container-3d" plugins={PluginStore.getPlugins()} pluginsConfig={pluginsConfig}>
-                                <Map3D
-                                    innerRef={this.setRef}
-                                    onCameraChanged={this.onCameraChanged}
-                                    onMapInitialized={this.setupMap}
-                                    options={options}
-                                    searchProviders={this.props.searchProviders}
-                                    theme={this.props.theme} />
-                                {
-                                    this.props.view3dMode === View3DMode.DISABLING ? (
-                                        <div className="view3d-busy-overlay">
-                                            <Spinner /><span>{LocaleUtils.tr("view3d.storingstate")}</span>
-                                        </div>
-                                    ) : null
-                                }
-                            </PluginsContainer>
+                            <Map3D
+                                innerRef={this.setRef}
+                                onCameraChanged={this.onCameraChanged}
+                                onMapInitialized={this.setupMap}
+                                options={options}
+                                searchProviders={this.props.searchProviders}
+                                theme={this.props.theme} />
+                            {
+                                this.props.view3dMode === View3DMode.DISABLING ? (
+                                    <div className="view3d-busy-overlay">
+                                        <Spinner /><span>{LocaleUtils.tr("view3d.storingstate")}</span>
+                                    </div>
+                                ) : null
+                            }
                         </Provider>
                     ) : null}
                 </ResizeableWindow>
