@@ -27,8 +27,13 @@ class LayerTree3D extends React.Component {
     static availableIn3D = true;
 
     static propTypes = {
+        /** Base URL of imported tile sets. */
+        importedTilesBaseUrl: PropTypes.string,
         sceneContext: PropTypes.object,
         setCurrentTask: PropTypes.func
+    };
+    static defaultProps = {
+        importedTilesBaseUrl: ':/'
     };
     state = {
         activestylemenu: null,
@@ -64,7 +69,9 @@ class LayerTree3D extends React.Component {
                         <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
                     </div>
                 </div>
-                {this.state.importvisible ? (<ImportObjects3D sceneContext={this.props.sceneContext} />) : null}
+                {this.state.importvisible ? (
+                    <ImportObjects3D importedTilesBaseUrl={this.props.importedTilesBaseUrl} sceneContext={this.props.sceneContext} />
+                ) : null}
             </div>
         );
     };

@@ -146,8 +146,6 @@ class View3D extends React.Component {
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool
         }),
-        /** Base URL of imported tile sets. */
-        importedTilesBaseUrl: PropTypes.string,
         layers: PropTypes.object,
         localConfig: PropTypes.object,
         map: PropTypes.object,
@@ -180,8 +178,7 @@ class View3D extends React.Component {
         },
         defaultDay: 182,
         defaultTime: '12:00',
-        searchMinScaleDenom: 1000,
-        importedTilesBaseUrl: ':/'
+        searchMinScaleDenom: 1000
     };
     state = {
         componentLoaded: false,
@@ -347,8 +344,7 @@ class View3D extends React.Component {
                 defaultTime: this.props.defaultTime,
                 controlsPosition: this.props.controlsPosition,
                 searchMinScaleDenom: this.props.searchMinScaleDenom,
-                tileInfoServiceUrl: this.props.tileInfoServiceUrl,
-                importedTilesBaseUrl: this.props.importedTilesBaseUrl
+                tileInfoServiceUrl: this.props.tileInfoServiceUrl
             };
             return (
                 <ResizeableWindow
