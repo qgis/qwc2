@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import {Vector3} from 'three';
 import {MapControls} from 'three/addons/controls/MapControls';
 import {v4 as uuidv4} from 'uuid';
@@ -24,11 +23,6 @@ export default class OrbitControls3D extends MapControls {
         this.dampingFactor = 0.2;
         this.keyPanSpeed = 10.0;
         this.maxPolarAngle = Math.PI * 0.5;
-
-        this._targetTerrainHeight = 0;
-        this._heightOffset = 0;
-        this._keyState = {PageUp: false, PageDown: false};
-        this._keyboardNavInterval = null;
     }
     connect(sceneContext) {
         this.domElement = sceneContext.scene.domElement;
@@ -38,11 +32,7 @@ export default class OrbitControls3D extends MapControls {
         this.listenToKeyEvents(this.domElement);
         this.domElement.addEventListener('pointerdown', this.stopAnimations);
         this.domElement.addEventListener('wheel', this.stopAnimations);
-        this.domElement.addEventListener('keydown', this._onKeyDown);
-        this.domElement.addEventListener('keyup', this._onKeyUp);
-        this.domElement.addEventListener('blur', this._onBlur);
         this.addEventListener('change', this.updateControlsTarget);
-        this.sceneContext.map.addEventListener('elevation-changed', this.elevationChanged);
         this.object.near = 2;
         this.sceneContext.scene.view.setControls(this);
     }
@@ -53,12 +43,7 @@ export default class OrbitControls3D extends MapControls {
         this.sceneContext.scene.view.setControls(null);
         this.domElement.removeEventListener('pointerdown', this.stopAnimations);
         this.domElement.removeEventListener('wheel', this.stopAnimations);
-        this.domElement.removeEventListener('keydown', this._onKeyDown);
-        this.domElement.removeEventListener('keyup', this._onKeyUp);
-        this.domElement.removeEventListener('blur', this._onBlur);
         this.removeEventListener('change', this.updateControlsTarget);
-        this.sceneContext.map.removeEventListener('elevation-changed', this.elevationChanged);
-        this._keyState = {PageUp: false, PageDown: false};
     }
     updateControlsTarget = () => {
         if (this.animationId) {
@@ -72,30 +57,14 @@ export default class OrbitControls3D extends MapControls {
         const height = this.sceneContext.getTerrainHeightFromMap([x, y]) ?? 0;
         // If camera height is at terrain height, target height should be at terrain height
         // If camera height is at twice the terrain height or further, target height should be zero
-        this._targetTerrainHeight = Math.max(0, 1 - (camerapos.z - height) / height) * height;
-        this.target.z = this._targetTerrainHeight + this._heightOffset;
+        const newHeight = Math.max(0, 1 - (camerapos.z - height) / height) * height;
+        this.target.z = newHeight;
     };
     setView(camerapos, target) {
         this.object.position.copy(camerapos);
         this.target.copy(target);
-        this.updateTargetTerrainAndOffsetHeight(camerapos, target);
         this.update();
     }
-    updateTargetTerrainAndOffsetHeight = (camerapos, target) => {
-        // Compute targetTerrainHeight and heightOffset offset
-        const height = this.sceneContext.getTerrainHeightFromMap([target.x, target.y]) ?? 0;
-        // If camera height is at terrain height, target height should be at terrain height
-        // If camera height is at twice the terrain height or further, target height should be zero
-        this._targetTerrainHeight = Math.max(0, 1 - (camerapos.z - height) / height) * height;
-        this._heightOffset = Math.max(0, target.z - this._targetTerrainHeight);
-    };
-    elevationChanged = ({extent}) => {
-        const crs = this.sceneContext.mapCrs;
-        const coo = new Coordinates(crs, this.target.x, this.target.y);
-        if (extent.isPointInside(coo)) {
-            this.updateTargetTerrainAndOffsetHeight(this.object.position, this.target);
-        }
-    };
     panView(dx, dy) {
         if (dx || dy) {
             this._pan(-dx * 10, dy * 10);
@@ -138,7 +107,6 @@ export default class OrbitControls3D extends MapControls {
         this.enableDamping = false;
         const animate = () => {
             if (this.animationId !== animationId) {
-                this.updateTargetTerrainAndOffsetHeight(this.object.position, this.target);
                 return;
             }
             const duration = 2;
@@ -167,7 +135,6 @@ export default class OrbitControls3D extends MapControls {
                 this.update();
                 this.enableDamping = true;
                 this.animationId = null;
-                this.updateTargetTerrainAndOffsetHeight(this.object.position, this.target);
                 callback?.();
             }
         };
@@ -175,38 +142,5 @@ export default class OrbitControls3D extends MapControls {
     }
     stopAnimations = () => {
         this.animationId = null;
-    };
-    _handleKeyboardNav = () => {
-        const pg = -this._keyState.PageDown + this._keyState.PageUp;
-        if (pg) {
-            const newHeightOffset = Math.max(0, this._heightOffset + this._heightOffset * pg * 0.05);
-            const deltaHeight = newHeightOffset - this._heightOffset;
-            this._heightOffset = newHeightOffset;
-            this.target.z = this._targetTerrainHeight + this._heightOffset;
-            this.object.position.z += deltaHeight;
-            this.update();
-        }
-    };
-    _onKeyDown = (event) => {
-        if (event.key in this._keyState) {
-            this._keyState[event.key] = true;
-            if (!this._keyboardNavInterval) {
-                this._keyboardNavInterval = setInterval(this._handleKeyboardNav, 50);
-            }
-        }
-    };
-    _onKeyUp = (event) => {
-        if (event.key in this._keyState) {
-            this._keyState[event.key] = false;
-            if (Object.values(this._keyState).every(x => !x)) {
-                clearInterval(this._keyboardNavInterval);
-                this._keyboardNavInterval = null;
-            }
-        }
-    };
-    _onBlur = () => {
-        this._keyState = {PageUp: false, PageDown: false};
-        clearInterval(this._keyboardNavInterval);
-        this._keyboardNavInterval = null;
     };
 }
