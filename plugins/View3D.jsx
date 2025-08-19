@@ -245,6 +245,7 @@ class View3D extends React.Component {
             this.props.setView3dMode(View3DMode.SPLITSCREEN);
         }
         window.addEventListener('focus', this.trackFocus, true);
+        this.syncParentStore({});
     }
     componentWillUnmount() {
         window.removeEventListener('focus', this.trackFocus);
@@ -277,21 +278,8 @@ class View3D extends React.Component {
             }
         }
         // Sync parts of parent store
-        if (this.props.display !== prevProps.display) {
-            this.store.dispatch({type: "SYNC_DISPLAY_FROM_PARENT_STORE", display: this.props.display});
-        }
-        if (this.props.theme !== prevProps.theme) {
-            this.store.dispatch({type: "SYNC_THEME_FROM_PARENT_STORE", theme: this.props.theme});
-        }
-        if (this.props.localConfig !== prevProps.localConfig) {
-            this.store.dispatch({type: "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE", localConfig: this.props.localConfig});
-        }
-        if (this.props.layers !== prevProps.layers) {
-            this.store.dispatch({type: "SYNC_LAYERS_FROM_PARENT_STORE", layers: this.props.layers});
-        }
-        if (this.props.map !== prevProps.map) {
-            this.store.dispatch({type: "SYNC_MAP_FROM_PARENT_STORE", map: this.props.map});
-        }
+        this.syncParentStore(prevProps);
+        // Handle view mode change
         if (this.props.view3dMode !== prevProps.view3dMode) {
             if (this.props.view3dMode === View3DMode.FULLSCREEN) {
                 UrlParams.updateParams({v: "3d"});
@@ -317,6 +305,23 @@ class View3D extends React.Component {
         // Clear stored state when switching away from a theme
         if (prevProps.theme.current && this.props.theme.current !== prevProps.theme.current) {
             this.setState({storedState: null});
+        }
+    }
+    syncParentStore(prevProps) {
+        if (this.props.display !== prevProps.display) {
+            this.store.dispatch({type: "SYNC_DISPLAY_FROM_PARENT_STORE", display: this.props.display});
+        }
+        if (this.props.theme !== prevProps.theme) {
+            this.store.dispatch({type: "SYNC_THEME_FROM_PARENT_STORE", theme: this.props.theme});
+        }
+        if (this.props.localConfig !== prevProps.localConfig) {
+            this.store.dispatch({type: "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE", localConfig: this.props.localConfig});
+        }
+        if (this.props.layers !== prevProps.layers) {
+            this.store.dispatch({type: "SYNC_LAYERS_FROM_PARENT_STORE", layers: this.props.layers});
+        }
+        if (this.props.map !== prevProps.map) {
+            this.store.dispatch({type: "SYNC_MAP_FROM_PARENT_STORE", map: this.props.map});
         }
     }
     render3DWindow = () => {
