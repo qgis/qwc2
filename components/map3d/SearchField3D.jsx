@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import VectorSource from '@giro3d/giro3d/sources/VectorSource';
@@ -19,15 +20,30 @@ import {CSS2DObject} from 'three/addons/renderers/CSS2DRenderer';
 import pinModel from '../../resources/pin.glb';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import FeatureStyles from '../../utils/FeatureStyles';
+import {collectSearchProviders} from '../../utils/SearchProviders';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 import SearchWidget from '../widgets/SearchWidget';
 
 
-export default class SearchField3D extends React.Component {
+class SearchField3D extends React.Component {
     static propTypes = {
         sceneContext: PropTypes.object,
-        searchProviders: PropTypes.object
+        theme: PropTypes.object
     };
+    state = {
+        searchProviders: {}
+    };
+    componentDidMount() {
+        this.componentDidUpdate({});
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.sceneContext?.colorLayers !== prevProps.sceneContext?.colorLayers) {
+            const layers = Object.values(this.props.sceneContext.colorLayers);
+            this.setState({
+                searchProviders: collectSearchProviders(this.props.theme, layers)
+            });
+        }
+    }
 
     render() {
         return (
@@ -35,7 +51,7 @@ export default class SearchField3D extends React.Component {
                 queryGeometries
                 resultSelected={this.searchResultSelected}
                 searchParams={{mapcrs: this.props.sceneContext.mapCrs, displaycrs: this.props.sceneContext.mapCrs}}
-                searchProviders={Object.values(this.props.searchProviders)}
+                searchProviders={Object.values(this.state.searchProviders)}
                 value={""}
             />
         );
@@ -134,3 +150,7 @@ export default class SearchField3D extends React.Component {
         });
     };
 }
+
+export default connect((state) => ({
+    theme: state.theme.current
+}))(SearchField3D);

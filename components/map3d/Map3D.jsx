@@ -108,7 +108,6 @@ class Map3D extends React.Component {
         onMapInitialized: PropTypes.func,
         options: PropTypes.object,
         pluginConfig: PropTypes.object,
-        searchProviders: PropTypes.object,
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
         themes: PropTypes.object,
@@ -683,7 +682,7 @@ class Map3D extends React.Component {
                             <Measure3D sceneContext={this.state.sceneContext} />
                             <OverviewMap3D sceneContext={this.state.sceneContext} />
                             <Settings3D sceneContext={this.state.sceneContext} />
-                            <TopBar3D sceneContext={this.state.sceneContext} searchProviders={this.props.searchProviders} />
+                            <TopBar3D sceneContext={this.state.sceneContext} />
                             <View3DSwitcher position={1} />
                         </MapControls3D>
                     </UnloadWrapper>

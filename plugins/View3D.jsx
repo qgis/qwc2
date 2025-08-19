@@ -11,7 +11,6 @@ import {connect, Provider} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {createSelector} from 'reselect';
 
 import * as displayExports from '../actions/display';
 import {setView3dMode, View3DMode} from '../actions/display';
@@ -26,7 +25,6 @@ import View3DSwitcher from '../components/map3d/View3DSwitcher';
 import Spinner from '../components/widgets/Spinner';
 import ReducerIndex from '../reducers/index';
 import personIcon from '../resources/person.png';
-import searchProvidersSelector from '../selectors/searchproviders';
 import {createStore} from '../stores/StandardStore';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -502,7 +500,7 @@ class View3D extends React.Component {
 }
 
 export default connect(
-    createSelector([state => state, searchProvidersSelector], (state, searchProviders) => ({
+    (state) => ({
         display: state.display,
         map: state.map,
         layers: state.layers,
@@ -510,9 +508,8 @@ export default connect(
         localConfig: state.localConfig,
         view3dMode: state.display.view3dMode,
         startupParams: state.localConfig.startupParams,
-        startupState: state.localConfig.startupState,
-        searchProviders
-    })), {
+        startupState: state.localConfig.startupState
+    }), {
         addLayerFeatures: addLayerFeatures,
         removeLayer: removeLayer,
         panTo: panTo,

@@ -33,7 +33,6 @@ class TopBar3D extends React.Component {
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
         sceneContext: PropTypes.object,
-        searchProviders: PropTypes.object,
         setTopbarHeight: PropTypes.func,
         toggleFullscreen: PropTypes.func,
         toolbarItems: PropTypes.array,
@@ -103,7 +102,7 @@ class TopBar3D extends React.Component {
                     {logoEl}
                     <div className="topbar-center-span">
                         <div className="topbar-search-container">
-                            <SearchField3D sceneContext={this.props.sceneContext} searchProviders={this.props.searchProviders} />
+                            <SearchField3D sceneContext={this.props.sceneContext} />
                         </div>
                         <Toolbar
                             openExternalUrl={this.openUrl}
