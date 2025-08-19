@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import classNames from 'classnames';
@@ -16,6 +17,7 @@ import {Vector3} from 'three';
 import ConfigUtils from '../../utils/ConfigUtils';
 import {UrlParams} from '../../utils/PermaLinkUtils';
 import Icon from '../Icon';
+import {MapButtonPortalContext} from '../PluginsContainer';
 import FirstPersonControls3D from './utils/FirstPersonControls3D';
 import OrbitControls3D from './utils/OrbitControls3D';
 
@@ -25,10 +27,11 @@ import './style/MapControls3D.css';
 const CAMERA_FOV = 50;
 
 class MapControls3D extends React.Component {
+    static contextType = MapButtonPortalContext;
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        controlsPosition: PropTypes.string,
         currentTask: PropTypes.string,
-        mapMargins: PropTypes.object,
         onCameraChanged: PropTypes.func,
         onControlsSet: PropTypes.func,
         sceneContext: PropTypes.object
@@ -74,47 +77,48 @@ class MapControls3D extends React.Component {
             "map3d-firstperson-button": true,
             "map3d-firstperson-button-active": this.state.firstPerson
         });
-        const navStyle = {
-            marginLeft: this.props.mapMargins.left + this.props.mapMargins.outerLeft,
-            marginRight: this.props.mapMargins.right + this.props.mapMargins.outerRight
-        };
         return [
             this.props.children,
-            (
-                <div className="map3d-nav" key="MapControls3D" ref={this.unload} style={navStyle}>
-                    <div className="map3d-nav-pan" key="MapPanWidget">
-                        <span />
-                        <Icon icon="chevron-up" onPointerDown={(ev) => this.pan(ev, 0, 1)} />
-                        <span />
-                        <Icon icon="chevron-left" onPointerDown={(ev) => this.pan(ev, -1, 0)} />
-                        <Icon icon="home" onClick={() => this.home()} />
-                        <Icon icon="chevron-right" onPointerDown={(ev) => this.pan(ev, 1, 0)} />
-                        <span />
-                        <Icon icon="chevron-down" onPointerDown={(ev) => this.pan(ev, 0, -1)} />
-                        <span />
-                    </div>
-                    <div className="map3d-nav-rotate" key="MapRotateWidget">
-                        <span />
-                        <Icon icon="tilt-up" onPointerDown={(ev) => this.tilt(ev, 0, 0.1)} />
-                        <span />
-                        <Icon icon="tilt-left" onPointerDown={(ev) => this.tilt(ev, 0.1, 0)} />
-                        <Icon icon="point" onClick={() => this.resetTilt()} />
-                        <Icon icon="tilt-right" onPointerDown={(ev) => this.tilt(ev, -0.1, 0)} />
-                        <span />
-                        <Icon icon="tilt-down" onPointerDown={(ev) => this.tilt(ev, 0, -0.1)} />
-                        <span />
-                    </div>
-                    {!this.state.firstPerson ? (
-                        <div className="map3d-nav-zoom">
-                            <div onPointerDown={(ev) => this.zoom(ev, +1)}><Icon icon="plus" /></div>
-                            <div onPointerDown={(ev) => this.zoom(ev, -1)}><Icon icon="minus" /></div>
-                        </div>
-                    ) : null}
-                    <div className={firstPersonButtonClasses} key="FirstPersonButton" onClick={this.toggleFirstPersonControls}>
-                        <Icon icon="person" />
-                    </div>
+            ReactDOM.createPortal((
+                <div className="map3d-nav-pan" data-slot={0} key="MapControlsPan" style={{order: 1000}}>
+                    <span />
+                    <Icon icon="chevron-up" onPointerDown={(ev) => this.pan(ev, 0, 1)} />
+                    <span />
+                    <Icon icon="chevron-left" onPointerDown={(ev) => this.pan(ev, -1, 0)} />
+                    <Icon icon="home" onClick={() => this.home()} />
+                    <Icon icon="chevron-right" onPointerDown={(ev) => this.pan(ev, 1, 0)} />
+                    <span />
+                    <Icon icon="chevron-down" onPointerDown={(ev) => this.pan(ev, 0, -1)} />
+                    <span />
                 </div>
-            )
+            ), this.context),
+            ReactDOM.createPortal((
+                <div className="map3d-nav-rotate" data-slot={0} key="MapControlsRotate" style={{order: 999}}>
+                    <span />
+                    <Icon icon="tilt-up" onPointerDown={(ev) => this.tilt(ev, 0, 0.1)} />
+                    <span />
+                    <Icon icon="tilt-left" onPointerDown={(ev) => this.tilt(ev, 0.1, 0)} />
+                    <Icon icon="point" onClick={() => this.resetTilt()} />
+                    <Icon icon="tilt-right" onPointerDown={(ev) => this.tilt(ev, -0.1, 0)} />
+                    <span />
+                    <Icon icon="tilt-down" onPointerDown={(ev) => this.tilt(ev, 0, -0.1)} />
+                    <span />
+                </div>
+            ), this.context),
+            ReactDOM.createPortal(!this.state.firstPerson ? (
+                <div className="map3d-nav-zoom" data-slot={0} key="MapControlsSpacerZoom" style={{order: 998}}>
+                    <div onPointerDown={(ev) => this.zoom(ev, +1)}><Icon icon="plus" /></div>
+                    <div onPointerDown={(ev) => this.zoom(ev, -1)}><Icon icon="minus" /></div>
+                </div>
+            ) : null, this.context),
+            ReactDOM.createPortal((
+                <div className={firstPersonButtonClasses} data-slot={0} key="MapControlsFirstPerson" onClick={this.toggleFirstPersonControls} style={{order: 997}}>
+                    <Icon icon="person" />
+                </div>
+            ), this.context),
+            this.props.controlsPosition !== 'bottom' ? ReactDOM.createPortal((
+                <div className="map3d-nav-spacer" key="MapControlsSpacer" style={{order: 997}} />
+            ), this.context) : null
         ];
     }
     switchToFirstPersonView = (ev) => {
@@ -273,7 +277,6 @@ class MapControls3D extends React.Component {
 }
 
 export default connect((state) => ({
-    currentTask: state.task.id,
-    mapMargins: state.windows.mapMargins
+    currentTask: state.task.id
 }), {
 })(MapControls3D);
