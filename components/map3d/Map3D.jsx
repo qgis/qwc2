@@ -650,13 +650,24 @@ class Map3D extends React.Component {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
         const pluginsConfig = this.props.pluginConfig[device].filter(entry => {
             return entry.availableIn3D && (!entry.availableIn2D || this.props.view3dMode === View3DMode.FULLSCREEN);
+        }).map(entry => {
+            // Inject sceneContext into plugin config
+            if (entry.availableIn3D) {
+                return {...entry, cfg: {...entry.cfg, sceneContext: this.state.sceneContext}};
+            }
+            return entry;
         });
         return (
             <PluginsContainer className="plugins-container-3d" plugins={PluginStore.getPlugins()} pluginsConfig={pluginsConfig}>
                 <Map3DContainer onMount={this.setupContainer} />
                 {this.state.sceneContext.scene ? (
                     <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
-                        <MapControls3D onCameraChanged={this.props.onCameraChanged} onControlsSet={this.setupControls} sceneContext={this.state.sceneContext}>
+                        <MapControls3D
+                            controlsPosition={this.props.options.controlsPosition}
+                            onCameraChanged={this.props.onCameraChanged}
+                            onControlsSet={this.setupControls}
+                            sceneContext={this.state.sceneContext}
+                        >
                             <BackgroundSwitcher3D sceneContext={this.state.sceneContext} />
                             <BottomBar3D sceneContext={this.state.sceneContext} />
                             <Compare3D sceneContext={this.state.sceneContext} />

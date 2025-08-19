@@ -133,6 +133,8 @@ class View3D extends React.Component {
         addLayerFeatures: PropTypes.func,
         /** The position slot index of the 3d switch map button, from the bottom (0: bottom slot). */
         buttonPosition: PropTypes.number,
+        /** The position of the controls. Either `top` or `bottom`. */
+        controlsPosition: PropTypes.string,
         /** Default viewer day (1-365) */
         defaultDay: PropTypes.number,
         /** Default viewer time (00:00-23:59) */
@@ -170,6 +172,7 @@ class View3D extends React.Component {
     };
     static defaultProps = {
         buttonPosition: 6,
+        controlsPosition: 'top',
         geometry: {
             initialWidth: 600,
             initialHeight: 800,
@@ -344,6 +347,7 @@ class View3D extends React.Component {
             const options = {
                 defaultDay: this.props.defaultDay,
                 defaultTime: this.props.defaultTime,
+                controlsPosition: this.props.controlsPosition,
                 searchMinScaleDenom: this.props.searchMinScaleDenom,
                 tileInfoServiceUrl: this.props.tileInfoServiceUrl,
                 importedTilesBaseUrl: this.props.importedTilesBaseUrl
