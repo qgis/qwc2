@@ -28,6 +28,9 @@ import SearchWidget from '../widgets/SearchWidget';
 class SearchField3D extends React.Component {
     static propTypes = {
         sceneContext: PropTypes.object,
+        searchOptions: PropTypes.shape({
+            minScaleDenom: PropTypes.number
+        }),
         theme: PropTypes.object
     };
     state = {
@@ -90,8 +93,8 @@ class SearchField3D extends React.Component {
         const sceneRect = this.props.sceneContext.scene.viewport.getBoundingClientRect();
         // Compute maximum allowed dimensions at the given scale
         const px2m = 0.0254 / 96;
-        const minWidth = sceneRect.width * px2m * this.props.sceneContext.options.searchMinScaleDenom;
-        const minHeight = sceneRect.height * px2m * this.props.sceneContext.options.searchMinScaleDenom;
+        const minWidth = sceneRect.width * px2m * this.props.searchOptions.minScaleDenom;
+        const minHeight = sceneRect.height * px2m * this.props.searchOptions.minScaleDenom;
         const scaleFactor = Math.max(bbWidth / minWidth, bbHeight / minHeight);
         if (scaleFactor < 1) {
             const bbCenterX = 0.5 * (bounds[0] + bounds[2]);

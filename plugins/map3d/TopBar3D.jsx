@@ -33,11 +33,21 @@ class TopBar3D extends React.Component {
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
         sceneContext: PropTypes.object,
+        /** Options passed down to the search component. */
+        searchOptions: PropTypes.shape({
+            /** Minimum scale denominator when zooming to search result. */
+            minScaleDenom: PropTypes.number
+        }),
         setTopbarHeight: PropTypes.func,
         toggleFullscreen: PropTypes.func,
         toolbarItems: PropTypes.array,
         view3dMode: PropTypes.number
     };
+    static defaultProps = {
+        searchOptions: {
+            minScaleDenom: 1000
+        }
+    }
     state = {
         allowedMenuItems: [],
         allowedToolbarItems: []
@@ -102,7 +112,7 @@ class TopBar3D extends React.Component {
                     {logoEl}
                     <div className="topbar-center-span">
                         <div className="topbar-search-container">
-                            <SearchField3D sceneContext={this.props.sceneContext} />
+                            <SearchField3D sceneContext={this.props.sceneContext} searchOptions={this.props.searchOptions} />
                         </div>
                         <Toolbar
                             openExternalUrl={this.openUrl}

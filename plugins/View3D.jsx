@@ -152,8 +152,6 @@ class View3D extends React.Component {
         panTo: PropTypes.func,
         plugins: PropTypes.object,
         removeLayer: PropTypes.func,
-        /** Minimum scale denominator when zooming to search result. */
-        searchMinScaleDenom: PropTypes.number,
         searchProviders: PropTypes.object,
         setView3dMode: PropTypes.func,
         startupParams: PropTypes.object,
@@ -177,8 +175,7 @@ class View3D extends React.Component {
             initiallyDocked: true
         },
         defaultDay: 182,
-        defaultTime: '12:00',
-        searchMinScaleDenom: 1000
+        defaultTime: '12:00'
     };
     state = {
         componentLoaded: false,
@@ -348,7 +345,6 @@ class View3D extends React.Component {
                 defaultDay: this.props.defaultDay,
                 defaultTime: this.props.defaultTime,
                 controlsPosition: this.props.controlsPosition,
-                searchMinScaleDenom: this.props.searchMinScaleDenom,
                 tileInfoServiceUrl: this.props.tileInfoServiceUrl
             };
             return (
