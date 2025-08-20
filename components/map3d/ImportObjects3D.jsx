@@ -25,6 +25,7 @@ import './style/ImportObjects3D.css';
 
 class ImportObjects3D extends React.Component {
     static propTypes = {
+        importedTilesBaseUrl: PropTypes.string,
         processFinished: PropTypes.func,
         processStarted: PropTypes.func,
         sceneContext: PropTypes.object
@@ -104,7 +105,7 @@ class ImportObjects3D extends React.Component {
             return;
         }
         axios.post(ogcProcessesUrl.replace(/\/$/, '') + '/modelimport/execution_multipart', formData, {headers}).then(response => {
-            const tilesetUrl = this.props.sceneContext.options.importedTilesBaseUrl + response.data.result.value;
+            const tilesetUrl = this.props.importedTilesBaseUrl + response.data.result.value;
             this.props.sceneContext.add3dTiles(tilesetUrl, taskid, {title: file.name}, true);
             this.setState({selectedfile: null, importing: false});
             this.props.processFinished(taskid, true);

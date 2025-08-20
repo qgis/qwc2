@@ -15,6 +15,7 @@ const reactDocs = require("react-docgen");
 
 const qwcPluginDir = __dirname + '/../plugins';
 let pluginData = [];
+let plugin3dData = [];
 
 fs.readdirSync(qwcPluginDir).forEach(entry => {
     if (entry.endsWith(".jsx")) {
@@ -32,6 +33,15 @@ fs.readdirSync(qwcPluginDir + "/map").forEach(entry => {
 });
 pluginData = pluginData.flat();
 
+fs.readdirSync(qwcPluginDir + "/map3d").forEach(entry => {
+    if (entry.endsWith(".jsx")) {
+        const file = path.resolve(qwcPluginDir, "map3d", entry);
+        const contents = fs.readFileSync(file);
+        plugin3dData.push(reactDocs.parse(contents, reactDocs.resolver.findAllComponentDefinitions));
+    }
+});
+plugin3dData = plugin3dData.flat();
+
 function parsePropType(type) {
     if (type.name === 'shape') {
         return '{\n' +
@@ -45,24 +55,10 @@ function parsePropType(type) {
         return type.name;
     }
 }
-
-// Write markdown output
-let output = "";
-output += "Plugin reference\n";
-output += "================\n";
-output += "\n";
-
-pluginData.forEach(plugin => {
+function genPluginDoc(plugin) {
+    let output = "";
     if (!plugin.description) {
-        return;
-    }
-    output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
-});
-output += "\n";
-output += "---\n";
-pluginData.forEach(plugin => {
-    if (!plugin.description) {
-        return;
+        return "";
     }
     output += `${plugin.displayName}<a name="${plugin.displayName.toLowerCase()}"></a>\n`;
     output += "----------------------------------------------------------------\n";
@@ -91,8 +87,41 @@ pluginData.forEach(plugin => {
             output += "\n";
         }
     });
-});
+    return output;
+}
 
+// Write markdown output
+let output = "";
+output += "Plugin reference\n";
+output += "================\n";
+output += "\n";
+
+pluginData.forEach(plugin => {
+    if (!plugin.description) {
+        return;
+    }
+    output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
+});
+output += "\n";
+output += "3D Plugins\n";
+output += "\n";
+plugin3dData.forEach(plugin => {
+    if (!plugin.description) {
+        return;
+    }
+    output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
+});
+output += "\n";
+output += "---\n";
+pluginData.forEach(plugin => {
+    output += genPluginDoc(plugin);
+});
+output += "---\n";
+output += "# 3D Plugins<a name=\"plugins3d\"></a>\n";
+output += "\n";
+plugin3dData.forEach(plugin => {
+    output += genPluginDoc(plugin);
+});
 fs.writeFileSync(__dirname + '/../doc/plugins.md', output);
 /* eslint-disable-next-line */
 console.log("Plugin documentation written to doc/plugins.md!");

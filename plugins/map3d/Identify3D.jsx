@@ -21,12 +21,17 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import '../../components/style/IdentifyViewer.css';
 
 
+/**
+ * Query attributes of objects in the 3D map.
+ */
 class Identify3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         identifyEnabled: PropTypes.bool,
-        sceneContext: PropTypes.object
+        sceneContext: PropTypes.object,
+        /** URL to service for querying additional tile information.
+         * Can contain the `{tileset}` and `{objectid}` placeholders.
+         * Expected to return a JSON dict with attributes.*/
+        tileInfoServiceUrl: PropTypes.string
     };
     state = {
         pickAttrs: null
@@ -150,9 +155,9 @@ class Identify3D extends React.Component {
         this.addHiglightGeometry(pick.object.matrixWorld, pickPosition, pickNormal);
 
         // Gather extra attributes
-        if (this.props.sceneContext.options.tileInfoServiceUrl) {
+        if (this.props.tileInfoServiceUrl) {
             const {tilesetName, featureIdAttr} = helper.getTileUserData();
-            const url = this.props.sceneContext.options.tileInfoServiceUrl.replace(
+            const url = this.props.tileInfoServiceUrl.replace(
                 '{tileset}', tilesetName
             ).replace(
                 '{objectid}', featureAttrs[featureIdAttr]

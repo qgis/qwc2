@@ -17,9 +17,10 @@ import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import './style/BottomBar3D.css';
 
 
+/**
+ * Bottom bar of the 3D map, displaying coordinates, projection, etc.
+ */
 class BottomBar3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         sceneContext: PropTypes.object,
         setBottombarHeight: PropTypes.func

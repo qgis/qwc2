@@ -23,9 +23,10 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import './style/LayerTree3D.css';
 
 
+/**
+ * Layer and object tree for the 3D map
+ */
 class LayerTree3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         /** Base URL of imported tile sets. */
         importedTilesBaseUrl: PropTypes.string,

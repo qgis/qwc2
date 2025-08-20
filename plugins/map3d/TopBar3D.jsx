@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import classNames from 'classnames';
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen, View3DMode} from '../../actions/display';
@@ -24,12 +25,17 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import ThemeUtils from '../../utils/ThemeUtils';
 
 
+/**
+ * Bottom bar of the 3D map, including the search bar, tool bar and menu.
+ */
 class TopBar3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         currentTheme: PropTypes.object,
         fullscreen: PropTypes.bool,
+        /** The menu items, in the same format as the 2D `TopBar` menu items.
+         * You can include entries for the View3D plugins.
+         * You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),
+         * these will be displayed only in fullsceen 3D mode. */
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
         sceneContext: PropTypes.object,
@@ -40,6 +46,10 @@ class TopBar3D extends React.Component {
         }),
         setTopbarHeight: PropTypes.func,
         toggleFullscreen: PropTypes.func,
+        /** The toolbar, in the same format as the 2D `TopBar` toolbar items.
+         * You can include entries for the View3D plugins.
+         * You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),
+         * these will be displayed only in fullsceen 3D mode. */
         toolbarItems: PropTypes.array,
         view3dMode: PropTypes.number
     };
@@ -47,7 +57,7 @@ class TopBar3D extends React.Component {
         searchOptions: {
             minScaleDenom: 1000
         }
-    }
+    };
     state = {
         allowedMenuItems: [],
         allowedToolbarItems: []
@@ -59,27 +69,13 @@ class TopBar3D extends React.Component {
         if (this.props.currentTheme !== prevProps.currentTheme || this.props.view3dMode !== prevProps.view3dMode) {
             this.setState({
                 allowedToolbarItems: ThemeUtils.allowedItems(this.props.toolbarItems, this.props.currentTheme, this.filter2DItems),
-                allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems ?? this.defaultMenuItems(), this.props.currentTheme, this.filter2DItems)
+                allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems, this.props.currentTheme, this.filter2DItems)
             });
         }
     }
-    defaultMenuItems = () => {
-        return [
-            {key: "LayerTree3D", icon: "layers", builtIn: true},
-            {key: "Draw3D", icon: "draw", builtIn: true},
-            {key: "Measure3D", icon: "measure", builtIn: true},
-            {key: "Compare3D", icon: "compare", builtIn: true},
-            {key: "HideObjects3D", icon: "eye", builtIn: true},
-            {key: "MapLight3D", icon: "light", builtIn: true},
-            {key: "MapExport3D", icon: "rasterexport", builtIn: true},
-            {key: "ExportObjects3D", icon: "export", builtIn: true},
-            {key: "Settings3D", icon: "cog", builtIn: true}
-        ].concat(ConfigUtils.getPluginConfig("TopBar")?.cfg?.menuItems ?? []);
-    };
     filter2DItems = (item) => {
         const pluginConf = ConfigUtils.getPluginConfig(item.key);
-        const isFullScreen = this.props.view3dMode === View3DMode.FULLSCREEN;
-        return item.builtIn || (!pluginConf.name && isFullScreen) || (pluginConf.availableIn3D && (!pluginConf.availableIn2D || isFullScreen));
+        return isEmpty(pluginConf) || (this.props.view3dMode === View3DMode.FULLSCREEN && pluginConf.availableIn3D);
     };
     render() {
         const config = ConfigUtils.getPluginConfig("TopBar")?.cfg || {};

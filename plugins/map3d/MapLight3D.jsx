@@ -14,20 +14,28 @@ import PropTypes from 'prop-types';
 import suncalc from 'suncalc';
 import {AmbientLight, BasicShadowMap, CameraHelper, DirectionalLight, DirectionalLightHelper, PCFShadowMap, PCFSoftShadowMap, VSMShadowMap} from 'three';
 
+import Icon from '../../components/Icon';
+import SideBar from '../../components/SideBar';
+import Input from '../../components/widgets/Input';
+import NumberInput from '../../components/widgets/NumberInput';
+import ToggleSwitch from '../../components/widgets/ToggleSwitch';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
-import Icon from '../Icon';
-import SideBar from '../SideBar';
-import Input from '../widgets/Input';
-import NumberInput from '../widgets/NumberInput';
-import ToggleSwitch from '../widgets/ToggleSwitch';
 
-import './style/Map3DLight.css';
+import './style/MapLight3D.css';
 
 
-export default class Map3DLight extends React.Component {
+export default class MapLight3D extends React.Component {
     static propTypes = {
+        /** Default viewer day (1-365) */
+        defaultDay: PropTypes.number,
+        /** Default viewer time (00:00-23:59) */
+        defaultTime: PropTypes.string,
         sceneContext: PropTypes.object
+    };
+    static defaultProps = {
+        defaultDay: 182,
+        defaultTime: '12:00'
     };
     state = {
         showAdvanced: false,
@@ -58,8 +66,8 @@ export default class Map3DLight extends React.Component {
     };
     constructor(props) {
         super(props);
-        this.state.lightParams.day = props.sceneContext.options.defaultDay;
-        const parts = props.sceneContext.options.defaultTime.split(":").slice(0, 2).map(Number);
+        this.state.lightParams.day = props.defaultDay;
+        const parts = props.defaultTime.split(":").slice(0, 2).map(Number);
         this.state.lightParams.time = parts[0] * 60 + parts[1];
     }
     componentDidMount() {

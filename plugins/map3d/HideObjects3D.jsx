@@ -21,9 +21,10 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import './style/HideObjects3D.css';
 
 
+/**
+ * Hide objects in the 3D map.
+ */
 class HideObjects3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         enabled: PropTypes.bool,
         sceneContext: PropTypes.object

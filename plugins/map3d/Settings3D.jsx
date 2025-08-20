@@ -17,6 +17,9 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import './style/Settings3D.css';
 
 
+/**
+ * Settings panel for the 3D map.
+ */
 export default class Settings3D extends React.Component {
     static propTypes = {
         sceneContext: PropTypes.object

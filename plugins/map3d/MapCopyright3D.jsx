@@ -20,7 +20,7 @@ import '../style/MapCopyright.css';
 
 
 /**
- * Displays layer attributions in the bottom right corner of the map.
+ * Displays layer attributions in the bottom right corner of the 3D map.
  */
 export default class MapCopyright3D extends React.Component {
     static contextType = MapContainerPortalContext;

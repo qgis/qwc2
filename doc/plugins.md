@@ -54,6 +54,23 @@ Plugin reference
 * [RedliningSupport](#redliningsupport)
 * [SnappingSupport](#snappingsupport)
 
+3D Plugins
+
+* [BackgroundSwitcher3D](#backgroundswitcher3d)
+* [BottomBar3D](#bottombar3d)
+* [Compare3D](#compare3d)
+* [Draw3D](#draw3d)
+* [ExportObjects3D](#exportobjects3d)
+* [HideObjects3D](#hideobjects3d)
+* [Identify3D](#identify3d)
+* [LayerTree3D](#layertree3d)
+* [MapCopyright3D](#mapcopyright3d)
+* [MapExport3D](#mapexport3d)
+* [Measure3D](#measure3d)
+* [OverviewMap3D](#overviewmap3d)
+* [Settings3D](#settings3d)
+* [TopBar3D](#topbar3d)
+
 ---
 API<a name="api"></a>
 ----------------------------------------------------------------
@@ -996,7 +1013,7 @@ Where:
   - `visibility` controls the initially visibile background layer
   - `overview: true` controls the name of background layer to display in the overview map. If no background layer is marked with `overview: true`, the currently visibile background layer id dipslayed in the overview map.
 - The `tiles3d` entry contains an optional list of 3d tiles to add to the scene, with:
-  - `idAttr`: feature properties table attribute which stores the object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
+  - `idAttr`: feature properties table attribute which stores the object id, used for styling and passed to `tileInfoServiceUrl` of the `Identify3D` plugin. Default: `id`.
   - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.
   - `style`: optional, tileset style enabled by default.
   - `baseColor`: the fallback color for the tile objects, defaults to white.
@@ -1042,11 +1059,9 @@ To import scene objects in formats other than GLTF, a `ogcProcessesUrl` in `conf
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | buttonPosition | `number` | The position slot index of the 3d switch map button, from the bottom (0: bottom slot). | `6` |
-| controlsPosition | `string` | The position of the controls. Either `top` or `bottom`. | `'top'` |
-| defaultDay | `number` | Default viewer day (1-365) | `182` |
-| defaultTime | `string` | Default viewer time (00:00-23:59) | `'12:00'` |
+| controlsPosition | `string` | The position of the navigation controls. Either `top` or `bottom`. | `'top'` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
-| tileInfoServiceUrl | `string` | URL to service for querying additional tile information.<br />Can contain the `{tileset}` and `{objectid}` placeholders.<br />Expected to return a JSON dict with attributes. | `undefined` |
+| pluginOptions | `object` | Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}.<br />Refer to the documentation of the <a href="#plugins3d">3D plugins</a> for settable options. | `{}` |
 
 ZoomButton<a name="zoombutton"></a>
 ----------------------------------------------------------------
@@ -1080,4 +1095,82 @@ Redlining support for the map component.
 SnappingSupport<a name="snappingsupport"></a>
 ----------------------------------------------------------------
 Snapping support for the map component.
+
+---
+# 3D Plugins<a name="plugins3d"></a>
+
+BackgroundSwitcher3D<a name="backgroundswitcher3d"></a>
+----------------------------------------------------------------
+Map button for switching the background layer of the 3D map.
+
+BottomBar3D<a name="bottombar3d"></a>
+----------------------------------------------------------------
+Bottom bar of the 3D map, displaying coordinates, projection, etc.
+
+Compare3D<a name="compare3d"></a>
+----------------------------------------------------------------
+Split-screen and compare objects in the 3D map.
+
+Draw3D<a name="draw3d"></a>
+----------------------------------------------------------------
+Draw objects in the 3D map.
+
+ExportObjects3D<a name="exportobjects3d"></a>
+----------------------------------------------------------------
+Export objects from the 3D map.
+
+HideObjects3D<a name="hideobjects3d"></a>
+----------------------------------------------------------------
+Hide objects in the 3D map.
+
+Identify3D<a name="identify3d"></a>
+----------------------------------------------------------------
+Query attributes of objects in the 3D map.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| tileInfoServiceUrl | `string` | URL to service for querying additional tile information.<br />Can contain the `{tileset}` and `{objectid}` placeholders.<br />Expected to return a JSON dict with attributes. | `undefined` |
+
+LayerTree3D<a name="layertree3d"></a>
+----------------------------------------------------------------
+Layer and object tree for the 3D map
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| importedTilesBaseUrl | `string` | Base URL of imported tile sets. | `':/'` |
+
+MapCopyright3D<a name="mapcopyright3d"></a>
+----------------------------------------------------------------
+Displays layer attributions in the bottom right corner of the 3D map.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| prefixCopyrightsWithLayerNames | `bool` | Whether to prepend the layer name to the attribution string. | `undefined` |
+| showThemeCopyrightOnly | `bool` | Whether to only display the attribution of the theme, omitting external layers. | `undefined` |
+
+MapExport3D<a name="mapexport3d"></a>
+----------------------------------------------------------------
+Export the 3D map image to raster formats.
+
+Measure3D<a name="measure3d"></a>
+----------------------------------------------------------------
+Measure in the 3D map.
+
+OverviewMap3D<a name="overviewmap3d"></a>
+----------------------------------------------------------------
+Overview map for the 3D map.
+
+Settings3D<a name="settings3d"></a>
+----------------------------------------------------------------
+Settings panel for the 3D map.
+
+TopBar3D<a name="topbar3d"></a>
+----------------------------------------------------------------
+Bottom bar of the 3D map, including the search bar, tool bar and menu.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| menuItems | `array` | The menu items, in the same format as the 2D `TopBar` menu items.<br />You can include entries for the View3D plugins.<br />You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),<br />these will be displayed only in fullsceen 3D mode. | `undefined` |
+| searchOptions | `{`<br />`  minScaleDenom: number,`<br />`}` | Options passed down to the search component. | `{`<br />`    minScaleDenom: 1000`<br />`}` |
+| toolbarItems | `array` | The toolbar, in the same format as the 2D `TopBar` toolbar items.<br />You can include entries for the View3D plugins.<br />You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),<br />these will be displayed only in fullsceen 3D mode. | `undefined` |
 

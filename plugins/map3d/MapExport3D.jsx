@@ -29,9 +29,10 @@ import MiscUtils from '../../utils/MiscUtils';
 import '../style/MapExport.css';
 
 
+/**
+ * Export the 3D map image to raster formats.
+ */
 class MapExport3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         hideAutopopulatedFields: PropTypes.bool,
         sceneContext: PropTypes.object,

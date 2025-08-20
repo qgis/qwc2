@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {lazy} from 'react';
+
 import AppMenu from './components/AppMenu';
 import FullscreenSwitcher from './components/FullscreenSwitcher';
 import SearchBox from './components/SearchBox';
@@ -133,7 +135,23 @@ export default {
             }),
             TourGuidePlugin: TourGuidePlugin,
             ValueToolPlugin: ValueToolPlugin,
-            View3DPlugin: View3DPlugin,
+            View3DPlugin: View3DPlugin({
+                BackgroundSwitcher3D: lazy(() => import('./plugins/map3d/BackgroundSwitcher3D')),
+                BottomBar3D: lazy(() => import('./plugins/map3d/BottomBar3D')),
+                Compare3D: lazy(() => import('./plugins/map3d/Compare3D')),
+                Draw3D: lazy(() => import('./plugins/map3d/Draw3D')),
+                ExportObjects3D: lazy(() => import('./plugins/map3d/ExportObjects3D')),
+                HideObjects3D: lazy(() => import('./plugins/map3d/HideObjects3D')),
+                Identify3D: lazy(() => import('./plugins/map3d/Identify3D')),
+                LayerTree3D: lazy(() => import('./plugins/map3d/LayerTree3D')),
+                MapCopyright3D: lazy(() => import('./plugins/map3d/MapCopyright3D')),
+                MapExport3D: lazy(() => import('./plugins/map3d/MapExport3D')),
+                MapLight3D: lazy(() => import('./plugins/map3d/MapLight3D')),
+                Measure3D: lazy(() => import('./plugins/map3d/Measure3D')),
+                OverviewMap3D: lazy(() => import('./plugins/map3d/OverviewMap3D')),
+                Settings3D: lazy(() => import('./plugins/map3d/Settings3D')),
+                TopBar3D: lazy(() => import('./plugins/map3d/TopBar3D'))
+            }),
             ZoomInPlugin: ZoomInPlugin,
             ZoomOutPlugin: ZoomOutPlugin
         },

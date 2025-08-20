@@ -17,11 +17,9 @@ import viewconeIcon from '../../resources/viewcone.svg';
 import './style/OverviewMap3D.css';
 
 /**
- * Overview map support for the map component.
+ * Overview map for the 3D map.
 */
 export default class OverviewMap3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         sceneContext: PropTypes.object
     };

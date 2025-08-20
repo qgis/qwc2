@@ -27,9 +27,10 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
 
 
+/**
+ * Export objects from the 3D map.
+ */
 class ExportObjects3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         sceneContext: PropTypes.object,
         setCurrentTask: PropTypes.func

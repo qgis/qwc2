@@ -14,7 +14,7 @@ import {BackgroundSwitcher} from '../BackgroundSwitcher';
 
 
 /**
- * Map button for switching the background layer.
+ * Map button for switching the background layer of the 3D map.
  */
 export default class BackgroundSwitcher3D extends React.Component {
     static availableIn3D = true;

@@ -29,9 +29,10 @@ import MeasureUtils from '../../utils/MeasureUtils';
 import '../../plugins/style/Measure.css';
 
 
+/**
+ * Measure in the 3D map.
+ */
 export default class Measure3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         maxSampleCount: PropTypes.number,
         minMeasureLength: PropTypes.number,

@@ -20,9 +20,10 @@ import ButtonBar from '../../components/widgets/ButtonBar';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 
+/**
+ * Draw objects in the 3D map.
+ */
 export default class Draw3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         sceneContext: PropTypes.object
     };

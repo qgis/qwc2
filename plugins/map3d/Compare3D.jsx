@@ -24,9 +24,10 @@ import LocaleUtils from '../../utils/LocaleUtils';
 import './style/Compare3D.css';
 
 
+/**
+ * Split-screen and compare objects in the 3D map.
+ */
 class Compare3D extends React.Component {
-    static availableIn3D = true;
-
     static propTypes = {
         active: PropTypes.bool,
         sceneContext: PropTypes.object,

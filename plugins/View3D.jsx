@@ -85,7 +85,7 @@ import './style/View3D.css';
  *   - `visibility` controls the initially visibile background layer
  *   - `overview: true` controls the name of background layer to display in the overview map. If no background layer is marked with `overview: true`, the currently visibile background layer id dipslayed in the overview map.
  * - The `tiles3d` entry contains an optional list of 3d tiles to add to the scene, with:
- *   - `idAttr`: feature properties table attribute which stores the object id, used for styling and passed to `tileInfoServiceUrl`. Default: `id`.
+ *   - `idAttr`: feature properties table attribute which stores the object id, used for styling and passed to `tileInfoServiceUrl` of the `Identify3D` plugin. Default: `id`.
  *   - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.
  *   - `style`: optional, tileset style enabled by default.
  *   - `baseColor`: the fallback color for the tile objects, defaults to white.
@@ -133,12 +133,8 @@ class View3D extends React.Component {
         addLayerFeatures: PropTypes.func,
         /** The position slot index of the 3d switch map button, from the bottom (0: bottom slot). */
         buttonPosition: PropTypes.number,
-        /** The position of the controls. Either `top` or `bottom`. */
+        /** The position of the navigation controls. Either `top` or `bottom`. */
         controlsPosition: PropTypes.string,
-        /** Default viewer day (1-365) */
-        defaultDay: PropTypes.number,
-        /** Default viewer time (00:00-23:59) */
-        defaultTime: PropTypes.string,
         display: PropTypes.object,
         /** Default window geometry. */
         geometry: PropTypes.shape({
@@ -152,17 +148,16 @@ class View3D extends React.Component {
         localConfig: PropTypes.object,
         map: PropTypes.object,
         panTo: PropTypes.func,
-        plugins: PropTypes.object,
+        /** Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}.
+         * Refer to the documentation of the <a href="#plugins3d">3D plugins</a> for settable options. */
+        pluginOptions: PropTypes.object,
+        plugins3d: PropTypes.object,
         removeLayer: PropTypes.func,
         searchProviders: PropTypes.object,
         setView3dMode: PropTypes.func,
         startupParams: PropTypes.object,
         startupState: PropTypes.object,
         theme: PropTypes.object,
-        /** URL to service for querying additional tile information.
-         * Can contain the `{tileset}` and `{objectid}` placeholders.
-         * Expected to return a JSON dict with attributes.*/
-        tileInfoServiceUrl: PropTypes.string,
         view3dMode: PropTypes.number,
         zoomToPoint: PropTypes.func
     };
@@ -176,8 +171,7 @@ class View3D extends React.Component {
             initialY: 0,
             initiallyDocked: true
         },
-        defaultDay: 182,
-        defaultTime: '12:00'
+        pluginOptions: {}
     };
     state = {
         componentLoaded: false,
@@ -343,12 +337,10 @@ class View3D extends React.Component {
                 });
             }
             const Map3D = this.map3dComponent;
-            const options = {
-                defaultDay: this.props.defaultDay,
-                defaultTime: this.props.defaultTime,
-                controlsPosition: this.props.controlsPosition,
-                tileInfoServiceUrl: this.props.tileInfoServiceUrl
-            };
+            const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+            const pluginsConfig = this.props.view3dMode === View3DMode.FULLSCREEN ? this.props.localConfig.plugins[device].filter(entry => {
+                return entry.availableIn3D;
+            }) : [];
             return (
                 <ResizeableWindow
                     extraControls={extraControls}
@@ -373,10 +365,12 @@ class View3D extends React.Component {
                         <Provider role="body" store={this.store}>
                             <PluginsContainer pluginsConfig={pluginsConfig}>
                                 <Map3D
+                                    controlsPosition={this.props.controlsPosition}
                                     innerRef={this.setRef}
                                     onCameraChanged={this.onCameraChanged}
                                     onMapInitialized={this.setupMap}
-                                    options={this.props.options}
+                                    pluginOptions={this.props.pluginOptions}
+                                    plugins3d={this.props.plugins3d}
                                     searchProviders={this.props.searchProviders}
                                     theme={this.props.theme} />
                                 {
@@ -500,8 +494,9 @@ class View3D extends React.Component {
     };
 }
 
-export default connect(
+export default (plugins3d) => connect(
     (state) => ({
+        plugins3d: plugins3d,
         display: state.display,
         map: state.map,
         layers: state.layers,
