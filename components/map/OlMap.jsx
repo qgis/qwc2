@@ -265,7 +265,14 @@ class OlMap extends React.Component {
         }
         const features = [];
         const format = new ol.format.GeoJSON();
+        let suppressClick = false;
         this.map.forEachFeatureAtPixel(pixel, (feature, layer) => {
+            if (suppressClick) {
+                return;
+            } else if (feature.get('__suppress_map_click')) {
+                suppressClick = true;
+                return;
+            }
             // Picked vector tile features cause an exception when passed to format.writeFeatureObject
             try {
                 const featureObj = format.writeFeatureObject(feature);
@@ -275,6 +282,9 @@ class OlMap extends React.Component {
                 /* pass */
             }
         }, {hitTolerance: 5});
+        if (suppressClick) {
+            return;
+        }
         const evpixel = this.map.getEventPixel(event);
         const data = {
             ts: +new Date(),
