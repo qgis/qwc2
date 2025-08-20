@@ -131,11 +131,15 @@ pluginData.forEach(plugin => {
 output += "---\n";
 output += "# Map support plugins<a name=\"mapSupportPlugins\"></a>\n";
 output += "\n";
+output += "These plugins must be listed as children of the [Map](#map) plugin.";
+output += "\n";
 mapToolPluginData.forEach(plugin => {
     output += genPluginDoc(plugin);
 });
 output += "---\n";
 output += "# 3D Plugins<a name=\"plugins3d\"></a>\n";
+output += "\n";
+output += "These plugins must be listed as children of the [View3D](#view3d) plugin.";
 output += "\n";
 plugin3dData.forEach(plugin => {
     output += genPluginDoc(plugin);

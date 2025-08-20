@@ -1091,6 +1091,7 @@ Two specific plugins exist: ZoomInPlugin and ZoomOutPlugin, which are instances 
 ---
 # Map support plugins<a name="mapSupportPlugins"></a>
 
+These plugins must be listed as children of the [Map](#map) plugin.
 EditingSupport<a name="editingsupport"></a>
 ----------------------------------------------------------------
 Editing support for the map component.
@@ -1123,6 +1124,7 @@ Snapping support for the map component.
 ---
 # 3D Plugins<a name="plugins3d"></a>
 
+These plugins must be listed as children of the [View3D](#view3d) plugin.
 BackgroundSwitcher3D<a name="backgroundswitcher3d"></a>
 ----------------------------------------------------------------
 Map button for switching the background layer of the 3D map.
