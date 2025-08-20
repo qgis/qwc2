@@ -47,7 +47,8 @@ class AttributeTable extends React.Component {
     };
     static defaultProps = {
         zoomLevel: 1000,
-        showEditFormButton: true
+        showEditFormButton: true,
+        showLimitToExtent: true
     };
     render() {
         if (!this.props.active) {
