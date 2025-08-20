@@ -163,12 +163,9 @@ class AppContainerComponent extends React.Component {
     render() {
         // Filter 2D plugins
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
-        const pluginsConf = this.props.localConfig.plugins[device].filter(entry => entry.availableIn2D);
+        const pluginsConf = this.props.localConfig.plugins[device];
         return (
-            <PluginsContainer
-                plugins={PluginStore.getPlugins()}
-                pluginsConfig={pluginsConf}
-            />
+            <PluginsContainer pluginsConfig={pluginsConf} />
         );
     }
 }
@@ -261,12 +258,10 @@ export default class StandardApp extends React.Component {
                 return Object.entries(pluginConfig).map(([key, entry]) => {
                     const plugin = this.props.appConfig.pluginsDef.plugins[entry.name + "Plugin"];
                     const component = plugin?.WrappedComponent ?? plugin;
-                    const availableIn2D = component?.availableIn2D ?? true;
                     const availableIn3D = component?.availableIn3D ?? false;
                     return {
                         ...entry,
                         key,
-                        availableIn2D,
                         availableIn3D,
                         cfg: {
                             ...entry.cfg,

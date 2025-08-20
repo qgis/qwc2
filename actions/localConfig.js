@@ -55,11 +55,10 @@ export function setPermalinkParameters(params) {
     };
 }
 
-export function registerCustomPlugin(name, availableIn2D, availableIn3D) {
+export function registerCustomPlugin(name, availableIn3D) {
     return {
         type: REGISTER_CUSTOM_PLUGIN,
         name,
-        availableIn2D: availableIn2D,
         availableIn3D: availableIn3D
     };
 }

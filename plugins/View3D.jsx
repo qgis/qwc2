@@ -19,6 +19,7 @@ import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {panTo, zoomToPoint} from '../actions/map';
 import * as mapExports from '../actions/map';
 import * as themeExports from '../actions/theme';
+import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
 import StandardApp from '../components/StandardApp';
 import View3DSwitcher from '../components/map3d/View3DSwitcher';
@@ -26,6 +27,7 @@ import Spinner from '../components/widgets/Spinner';
 import ReducerIndex from '../reducers/index';
 import personIcon from '../resources/person.png';
 import {createStore} from '../stores/StandardStore';
+import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
@@ -369,20 +371,22 @@ class View3D extends React.Component {
                 >
                     {this.state.componentLoaded ? (
                         <Provider role="body" store={this.store}>
-                            <Map3D
-                                innerRef={this.setRef}
-                                onCameraChanged={this.onCameraChanged}
-                                onMapInitialized={this.setupMap}
-                                options={options}
-                                searchProviders={this.props.searchProviders}
-                                theme={this.props.theme} />
-                            {
-                                this.props.view3dMode === View3DMode.DISABLING ? (
-                                    <div className="view3d-busy-overlay">
-                                        <Spinner /><span>{LocaleUtils.tr("view3d.storingstate")}</span>
-                                    </div>
-                                ) : null
-                            }
+                            <PluginsContainer pluginsConfig={pluginsConfig}>
+                                <Map3D
+                                    innerRef={this.setRef}
+                                    onCameraChanged={this.onCameraChanged}
+                                    onMapInitialized={this.setupMap}
+                                    options={this.props.options}
+                                    searchProviders={this.props.searchProviders}
+                                    theme={this.props.theme} />
+                                {
+                                    this.props.view3dMode === View3DMode.DISABLING ? (
+                                        <div className="view3d-busy-overlay">
+                                            <Spinner /><span>{LocaleUtils.tr("view3d.storingstate")}</span>
+                                        </div>
+                                    ) : null
+                                }
+                            </PluginsContainer>
                         </Provider>
                     ) : null}
                 </ResizeableWindow>

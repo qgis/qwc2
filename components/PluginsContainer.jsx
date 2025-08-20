@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import ConfigUtils from '../utils/ConfigUtils';
+import PluginStore from '../utils/PluginStore';
 import ProcessNotifications from './ProcessNotifications';
 import WindowManager from './WindowManager';
 
@@ -27,7 +28,6 @@ class PluginsContainer extends React.Component {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
         mapMargins: PropTypes.object,
-        plugins: PropTypes.object,
         pluginsConfig: PropTypes.array,
         theme: PropTypes.object
     };
@@ -37,15 +37,18 @@ class PluginsContainer extends React.Component {
     };
     renderPlugins = () => {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
+        const plugins = PluginStore.getPlugins();
         return this.props.pluginsConfig.map(pluginConf => {
-            const Plugin = this.props.plugins[pluginConf.name + "Plugin"];
+            const Plugin = plugins[pluginConf.name + "Plugin"];
             if (!Plugin) {
                 return null;
             }
             const themeDevicePluginConfig = this.props.theme?.config?.[device]?.plugins?.[pluginConf.name] || {};
             const themePluginConfig = this.props.theme?.config?.plugins?.[pluginConf.name] || {};
             const cfg = {...(pluginConf.cfg || {}), ...themePluginConfig, ...themeDevicePluginConfig};
-            return (<Plugin key={pluginConf.key ?? pluginConf.name} {...cfg} />);
+            return (
+                <Plugin key={pluginConf.key ?? pluginConf.name} {...cfg} />
+            );
         });
     };
     render() {
@@ -157,6 +160,8 @@ class PluginsContainer extends React.Component {
 }
 
 export default connect((state) => ({
+    // Just to trigger re-render when custom plugins change
+    customPlugins: state.localConfig.customPlugins,
     mapMargins: state.windows.mapMargins,
     theme: state.theme.current
 }))(PluginsContainer);

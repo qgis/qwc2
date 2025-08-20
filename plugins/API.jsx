@@ -297,11 +297,10 @@ class API extends React.Component {
      */
     addPlugin = (name, plugin, translations = {}) => {
         const component = plugin.WrappedComponent ?? plugin;
-        const availableIn2D = component.availableIn2D ?? true;
         const availableIn3D = component.availableIn3D ?? false;
         PluginStore.addCustomPlugin(name, plugin);
         window.qwc2.addTranslations(translations);
-        this.props.registerCustomPlugin(name, availableIn2D, availableIn3D);
+        this.props.registerCustomPlugin(name, availableIn3D);
     };
     /**
      * Remove custom plugin

@@ -78,13 +78,13 @@ export default function localConfig(state = defaultState, action) {
             plugins: {
                 desktop: state.plugins.desktop.map(entry => {
                     if (entry.name === action.name) {
-                        return {...entry, availableIn2D: action.availableIn2D, availableIn3D: action.availableIn3D};
+                        return {...entry, availableIn3D: action.availableIn3D};
                     }
                     return entry;
                 }),
                 mobile: state.plugins.mobile.map(entry => {
                     if (entry.name === action.name) {
-                        return {...entry, availableIn2D: action.availableIn2D, availableIn3D: action.availableIn3D};
+                        return {...entry, availableIn3D: action.availableIn3D};
                     }
                     return entry;
                 })
