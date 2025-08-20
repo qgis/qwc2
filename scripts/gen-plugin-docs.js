@@ -15,7 +15,6 @@ const reactDocs = require("react-docgen");
 
 const qwcPluginDir = __dirname + '/../plugins';
 let pluginData = [];
-let plugin3dData = [];
 
 fs.readdirSync(qwcPluginDir).forEach(entry => {
     if (entry.endsWith(".jsx")) {
@@ -24,15 +23,19 @@ fs.readdirSync(qwcPluginDir).forEach(entry => {
         pluginData.push(reactDocs.parse(contents, reactDocs.resolver.findAllComponentDefinitions));
     }
 });
+pluginData = pluginData.flat();
+
+let mapToolPluginData = [];
 fs.readdirSync(qwcPluginDir + "/map").forEach(entry => {
     if (entry.endsWith(".jsx")) {
         const file = path.resolve(qwcPluginDir, "map", entry);
         const contents = fs.readFileSync(file);
-        pluginData.push(reactDocs.parse(contents, reactDocs.resolver.findAllComponentDefinitions));
+        mapToolPluginData.push(reactDocs.parse(contents, reactDocs.resolver.findAllComponentDefinitions));
     }
 });
-pluginData = pluginData.flat();
+mapToolPluginData = mapToolPluginData.flat();
 
+let plugin3dData = [];
 fs.readdirSync(qwcPluginDir + "/map3d").forEach(entry => {
     if (entry.endsWith(".jsx")) {
         const file = path.resolve(qwcPluginDir, "map3d", entry);
@@ -103,6 +106,15 @@ pluginData.forEach(plugin => {
     output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
 });
 output += "\n";
+output += "Map support plugins\n";
+output += "\n";
+mapToolPluginData.forEach(plugin => {
+    if (!plugin.description) {
+        return;
+    }
+    output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
+});
+output += "\n";
 output += "3D Plugins\n";
 output += "\n";
 plugin3dData.forEach(plugin => {
@@ -114,6 +126,12 @@ plugin3dData.forEach(plugin => {
 output += "\n";
 output += "---\n";
 pluginData.forEach(plugin => {
+    output += genPluginDoc(plugin);
+});
+output += "---\n";
+output += "# Map support plugins<a name=\"mapSupportPlugins\"></a>\n";
+output += "\n";
+mapToolPluginData.forEach(plugin => {
     output += genPluginDoc(plugin);
 });
 output += "---\n";

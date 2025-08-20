@@ -48,6 +48,9 @@ Plugin reference
 * [ValueTool](#valuetool)
 * [View3D](#view3d)
 * [ZoomButton](#zoombutton)
+
+Map support plugins
+
 * [EditingSupport](#editingsupport)
 * [LocateSupport](#locatesupport)
 * [MeasurementSupport](#measurementsupport)
@@ -590,7 +593,7 @@ The main map component.
 | showLoading | `bool` | Whether to display the loading spinner when layers are loading. | `true` |
 | swipeGeometryTypeBlacklist | `[string]` | A list of layer geometry types to ignore when determining the top-most layer to compare. | `[]` |
 | swipeLayerNameBlacklist | `[string]` | A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a wildcard character. | `[]` |
-| toolsOptions | `object` | Map tool configuraiton options. Refer to the sample config.json. | `{}` |
+| toolsOptions | `object` | Options to pass to the map support plugins, in the form `{"<Name>": {<options>}}.<br />Refer to the documentation of the <a href="#mapSupportPlugins">Map support plugins</a> for settable options. | `{}` |
 
 MapCompare<a name="mapcompare"></a>
 ----------------------------------------------------------------
@@ -1076,6 +1079,9 @@ Two specific plugins exist: ZoomInPlugin and ZoomOutPlugin, which are instances 
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
 
+---
+# Map support plugins<a name="mapSupportPlugins"></a>
+
 EditingSupport<a name="editingsupport"></a>
 ----------------------------------------------------------------
 Editing support for the map component.
@@ -1083,6 +1089,15 @@ Editing support for the map component.
 LocateSupport<a name="locatesupport"></a>
 ----------------------------------------------------------------
 GPS locate support for the map component.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| drawCircle | `bool` | Whether to draw an accuracy circle around the location point. | `true` |
+| metric | `bool` | Whether to display the accuracy in meters (`true`) or in feet (`false`). | `true` |
+| showPopup | `bool` | Whether to show a popup displaying accuracy information when clicking on the location point. | `false` |
+| startupMode | `string` | The geolocation startup mode. Either `DISABLED`, `ENABLED` or `FOLLOWING`. | `"DISABLED"` |
+| stopFollowingOnDrag | `bool` | Whether to stop following when the map is dragged. | `false` |
+| trackingOptions | `object` | Tracking options, as documented in the [HTML5 Geolocation spec](https://www.w3.org/TR/geolocation-API/#position_options_interface) | `{`<br />`    maximumAge: 2000,`<br />`    enableHighAccuracy: true,`<br />`    timeout: 10000`<br />`}` |
 
 MeasurementSupport<a name="measurementsupport"></a>
 ----------------------------------------------------------------

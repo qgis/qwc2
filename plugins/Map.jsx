@@ -53,7 +53,8 @@ class Map extends React.Component {
         swipeLayerNameBlacklist: PropTypes.arrayOf(PropTypes.string),
         theme: PropTypes.object,
         tools: PropTypes.object,
-        /** Map tool configuraiton options. Refer to the sample config.json. */
+        /** Options to pass to the map support plugins, in the form `{"<Name>": {<options>}}.
+         * Refer to the documentation of the <a href="#mapSupportPlugins">Map support plugins</a> for settable options. */
         toolsOptions: PropTypes.object
     };
     static defaultProps = {
