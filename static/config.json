@@ -86,6 +86,12 @@
         "name": "AttributeTable"
       },
       {
+        "name": "Authentication",
+        "cfg": {
+          "showLoginUser": false
+        }
+      },
+      {
         "name": "BackgroundSwitcher",
         "cfg": {
           "position": 0
@@ -181,6 +187,7 @@
           "bboxDependentLegend": true,
           "scaleDependentLegend": "theme",
           "showToggleAllLayersCheckbox": true,
+          "enableVisibleFilter": true,
           "extraLegendParameters": ""
         },
         "mapClickAction": "identify"
@@ -203,7 +210,6 @@
           },
           "toolsOptions": {
             "LocateSupport": {
-              "keepCurrentZoomLevel": true,
               "stopFollowingOnDrag": true,
               "startupMode": "DISABLED"
             }
@@ -311,15 +317,19 @@
       {
         "name": "Print",
         "cfg": {
-          "inlinePrintOutput": false,
+          "inlinePrintOutput": true,
           "printExternalLayers": true,
           "gridInitiallyEnabled": false,
           "allowGeoPdfExport": true,
-          "hideAutopopulatedFields": false
+          "hideAutopopulatedFields": false,
+          "displayPrintSeries": false
         }
       },
       {
         "name": "Redlining"
+      },
+      {
+        "name": "Reports"
       },
       {
         "name": "Routing"
@@ -345,7 +355,9 @@
               {"key": "FeatureForm", "icon": "featureform"},
               {"key": "AttributeTable", "icon": "editing"},
               {"key": "MapExport", "icon": "rasterexport"},
-              {"key": "Routing", "icon": "routing"}
+              {"key": "Routing", "icon": "routing"},
+              {"key": "Reports", "icon": "report"},
+              {"key": "Panoramax", "icon": "cyclomedia"}
             ]},
             {"key": "Print", "icon": "print", "shortcut": "alt+shift+p"},
             {"key": "TourGuide", "icon": "info"},
@@ -368,6 +380,7 @@
           },
           "appMenuClearsTask": true,
           "appMenuFilterField": true,
+          "appMenuCompact": false,
           "appMenuVisibleOnStartup": false,
           "logoUrl": "/",
           "appMenuShortcut": "alt+shift+m",
@@ -377,7 +390,7 @@
       {
         "name": "TourGuide",
         "cfg": {
-          "tourGuideUrl": "tourGuide.json"
+          "tourGuideUrl": ":/tourGuide.json"
         }
       },
       {
@@ -460,6 +473,45 @@
           "stepUnits": ["s", "m", "h", "d", "M", "y", "10y", "100y"],
           "defaultTimelineDisplay": "features"
         }
+      },
+      {
+        "name": "View3D",
+        "cfg": {
+          "controlsPosition": "top",
+          "pluginOptions": {
+            "Identify3D": {
+              "tileInfoServiceUrl": "http://localhost:8088/mily/api/v1/tileinfo/objinfo?tileset={tileset}&objectid={objectid}"
+            },
+            "LayerTree3D": {
+              "importedTilesBaseUrl": "http://localhost:8088/mily/assets/"
+            },
+            "MapLight3D": {
+              "defaultDay": 20,
+              "defaultTime": "10:00"
+            },
+            "TopBar3D": {
+              "menuItems": [
+                {"key": "ThemeSwitcher", "icon": "themes", "shortcut": "alt+shift+t"},
+                {"key": "Share", "icon": "share", "shortcut": "alt+shift+s"},
+                {"key": "Bookmark", "icon": "bookmark", "shortcut": "alt+shift+b"},
+                {"key": "Help", "icon": "info", "shortcut": "alt+shift+h"},
+                {"key": "Settings", "icon": "cog"},
+                {"key": "LayerTree3D", "icon": "layers"},
+                {"key": "Draw3D", "icon": "draw"},
+                {"key": "Measure3D", "icon": "measure"},
+                {"key": "Compare3D", "icon": "compare"},
+                {"key": "HideObjects3D", "icon": "eye"},
+                {"key": "MapLight3D", "icon": "light"},
+                {"key": "MapExport3D", "icon": "rasterexport"},
+                {"key": "ExportObjects3D", "icon": "export"},
+                {"key": "Settings3D", "icon": "cog"}
+              ],
+              "toolbarItems": [
+                {"key": "Measure3D", "icon": "measure"}
+              ]
+            }
+          }
+        }
       }
     ],
     "mobile": [
@@ -473,31 +525,15 @@
     ],
     "desktop": [
       {
-        "name": "TaskButton",
-        "cfg": {
-          "position": 5,
-          "task": "LayerTree",
-          "icon": "layers"
-        }
-      },
-      {
-        "name": "TaskButton",
-        "cfg": {
-          "position": 6,
-          "task": "Editing",
-          "icon": "editing"
-        }
-      },
-      {
         "name": "ZoomIn",
         "cfg": {
-          "position": 2
+          "position": 3
         }
       },
       {
         "name": "ZoomOut",
         "cfg": {
-          "position": 1
+          "position": 2
         }
       },
       {
