@@ -594,7 +594,7 @@ The main map component.
 | showLoading | `bool` | Whether to display the loading spinner when layers are loading. | `true` |
 | swipeGeometryTypeBlacklist | `[string]` | A list of layer geometry types to ignore when determining the top-most layer to compare. | `[]` |
 | swipeLayerNameBlacklist | `[string]` | A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a wildcard character. | `[]` |
-| toolsOptions | `object` | Options to pass to the map support plugins, in the form `{"<Name>": {<options>}}.<br />Refer to the documentation of the <a href="#mapSupportPlugins">Map support plugins</a> for settable options. | `{}` |
+| toolsOptions | `object` | Options to pass to the map support plugins, in the form `{"<Name>": {<options>}}`.<br />Refer to the documentation of the <a href="#mapSupportPlugins">Map support plugins</a> for settable options. | `{}` |
 
 MapCompare<a name="mapcompare"></a>
 ----------------------------------------------------------------
