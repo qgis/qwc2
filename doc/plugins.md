@@ -20,8 +20,8 @@ Plugin reference
 * [LayerCatalog](#layercatalog)
 * [LayerTree](#layertree)
 * [LocateButton](#locatebutton)
-* [MapPlugin](#mapplugin)
-* [MapComparePlugin](#mapcompareplugin)
+* [Map](#map)
+* [MapCompare](#mapcompare)
 * [MapCopyright](#mapcopyright)
 * [MapExport](#mapexport)
 * [MapFilter](#mapfilter)
@@ -580,7 +580,7 @@ Map button for controling the locate (GPS) state.
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
 
-MapPlugin<a name="mapplugin"></a>
+Map<a name="map"></a>
 ----------------------------------------------------------------
 The main map component.
 
@@ -592,7 +592,7 @@ The main map component.
 | swipeLayerNameBlacklist | `[string]` | A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a wildcard character. | `[]` |
 | toolsOptions | `object` | Map tool configuraiton options. Refer to the sample config.json. | `{}` |
 
-MapComparePlugin<a name="mapcompareplugin"></a>
+MapCompare<a name="mapcompare"></a>
 ----------------------------------------------------------------
 Allows comparing the top layer with the rest of the map.
 

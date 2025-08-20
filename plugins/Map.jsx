@@ -28,7 +28,7 @@ import './style/Map.css';
 /**
  * The main map component.
  */
-class MapPlugin extends React.Component {
+class Map extends React.Component {
     static contextType = MapContainerPortalContext;
     static propTypes = {
         layers: PropTypes.array,
@@ -257,5 +257,5 @@ export default (tools) => {
         swipe: state.layers.swipe,
         theme: state.theme.current,
         tools
-    }))(MapPlugin);
+    }))(Map);
 };

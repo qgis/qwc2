@@ -23,7 +23,7 @@ import './style/MapCompare.css';
  *
  * Activated through a checkbox in the LayerTree.
  */
-class MapComparePlugin extends React.Component {
+class MapCompare extends React.Component {
     static contextType = MapContainerPortalContext;
 
     static propTypes = {
@@ -68,4 +68,4 @@ export default connect((state) => ({
     swipe: state.layers.swipe
 }), {
     setSwipe: setSwipe
-})(MapComparePlugin);
+})(MapCompare);
