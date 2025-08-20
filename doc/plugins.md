@@ -45,6 +45,7 @@ Plugin reference
 * [ThemeSwitcher](#themeswitcher)
 * [TimeManager](#timemanager)
 * [TopBar](#topbar)
+* [TourGuide](#tourguide)
 * [ValueTool](#valuetool)
 * [View3D](#view3d)
 * [ZoomButton](#zoombutton)
@@ -954,6 +955,14 @@ Top bar, containing the logo, searchbar, task buttons and app menu.
 | searchOptions | `{`<br />`  allowSearchFilters: bool,`<br />`  hideResultLabels: bool,`<br />`  highlightStyle: {`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`},`<br />`  minScaleDenom: number,`<br />`  resultLimit: number,`<br />`  sectionsDefaultCollapsed: bool,`<br />`  showHighlightMarker: bool,`<br />`  showLayerAfterChangeTheme: bool,`<br />`  showLayerResultsBeforePlaces: bool,`<br />`  showResultInSearchText: bool,`<br />`  zoomToLayers: bool,`<br />`}` | Options passed down to the search component. | `{`<br />`    showHighlightMarker: true,`<br />`    showResultInSearchText: true,`<br />`    minScaleDenom: 1000`<br />`}` |
 | toolbarItems | `array` | The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. | `[]` |
 | toolbarItemsShortcutPrefix | `string` | The keyboard shortcut prefix for triggering toolbar tasks. I.e. alt+shift. The task are then triggered by <prefix>+{1,2,3,...} for the 1st, 2nd, 3rd... toolbar icon. | `undefined` |
+
+TourGuide<a name="tourguide"></a>
+----------------------------------------------------------------
+Launches a tour guide of the application, as configured by a configuration file.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| tourGuideUrl | `string` | Url of the Tourguide JSON configuration. | `undefined` |
 
 ValueTool<a name="valuetool"></a>
 ----------------------------------------------------------------

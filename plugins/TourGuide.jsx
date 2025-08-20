@@ -1,21 +1,22 @@
 import React from "react";
-import { connect } from "react-redux";
+import {connect} from "react-redux";
 
 import PropTypes from "prop-types";
 
-import { setCurrentTask } from "../actions/task";
+import {setCurrentTask} from "../actions/task";
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from "../utils/MiscUtils";
 
+
+/**
+ * Launches a tour guide of the application, as configured by a configuration file.
+ */
 class TourGuide extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         /** Url of the Tourguide JSON configuration. */
         tourGuideUrl: PropTypes.string
-    };
-    static defaultProps = {
-        tourGuideUrl: ":/tourguide.json"
     };
     state = {
         tourSteps: [],
