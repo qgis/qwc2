@@ -148,7 +148,7 @@ class View3D extends React.Component {
         localConfig: PropTypes.object,
         map: PropTypes.object,
         panTo: PropTypes.func,
-        /** Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}.
+        /** Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}`.
          * Refer to the documentation of the <a href="#plugins3d">3D plugins</a> for settable options. */
         pluginOptions: PropTypes.object,
         plugins3d: PropTypes.object,
