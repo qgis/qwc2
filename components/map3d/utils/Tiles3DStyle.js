@@ -88,7 +88,9 @@ const Tiles3DStyle = {
         }
         const colorRules = config.tilesetStyle?.color;
         const parseExpr = (expr) => {
-            const cleanExpr = expr.replace(/\$\{(\w+)\}/g, '$1').replaceAll('===', '==').replaceAll('!==', '==');
+            const cleanExpr = expr.replace(/\$\{(\w+)\}/g, '$1')
+                .replaceAll('===', '==').replaceAll('!==', '==')
+                .replaceAll('||', 'or').replaceAll('&&', 'and');
             return styleExpressionParser.parse(cleanExpr);
         };
         if (colorRules?.conditions) {
