@@ -64,7 +64,7 @@ class PluginsContainer extends React.Component {
         };
         const haveRefs = this.state.mapButtonsContainerRef && this.state.mapContainerRef;
         return (
-            <div className={"plugins-container " + this.props.className} ref={this.setupTouchEvents}>
+            <div className={"plugins-container " + (this.props.className ?? "")} ref={this.setupTouchEvents}>
                 <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
                     <MapContainerPortalContext.Provider value={this.state.mapContainerRef}>
                         {haveRefs ? this.renderPlugins() : null}
