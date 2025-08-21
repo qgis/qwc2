@@ -67,14 +67,13 @@ div.AppMenu div.appmenu-menu-container {
     transform: scaleY(0);
     transition: transform 0.25s, opacity 0.25s;
     overflow-y: auto;
-    max-height: calc(100vh - var(--topbar-height) - var(--bottombar-height));
-    max-height: calc(var(--vh, 1vh) * 100 - var(--topbar-height) - var(--bottombar-height));
+    max-height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
 }
 
 div.AppMenu.appmenu-compact div.appmenu-menu-container {
     right: -11.25em;
     width: 15em;
-    height: calc(100vh - 5.5em);
+    height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
     transition: transform 0.25s, opacity 0.25s, right 0.5s;
     background: var(--app-menu-bg-color);
     box-shadow: 0px 0px 4px rgba(136, 136, 136, 0.5);

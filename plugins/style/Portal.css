@@ -32,7 +32,7 @@ span.portal-topbar-spacer {
 }
 
 div.portal-topbar div.AppMenu div.appmenu-menu-container {
-    height: calc(100vh - 5.75em);
+    height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
     background-color: var(--app-menu-bg-color);
 }
 

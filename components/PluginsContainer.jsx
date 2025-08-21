@@ -85,6 +85,14 @@ class PluginsContainer extends React.Component {
                 this.touchY = ev.targetTouches[0].clientY;
             }, { passive: false });
             el.addEventListener('touchmove', this.preventOverscroll, { passive: false });
+            const resizeObserver = new ResizeObserver(entries => {
+                const contentRectEntry = entries.find(entry => entry.contentRect);
+                if (contentRectEntry) {
+                    const height = contentRectEntry.contentRect.height;
+                    el.style.setProperty('--plugins-container-height', `${height}px`);
+                }
+            });
+            resizeObserver.observe(el);
         }
     };
     preventOverscroll = (ev) => {
