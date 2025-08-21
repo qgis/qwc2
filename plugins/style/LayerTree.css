@@ -78,13 +78,11 @@
 }
 
 #LayerTree div.layertree-container {
-    flex: 0 0 100%;
-    max-width: 100%;
+    flex: 1 1 auto;
     display: flex;
+    max-width: 100%;
     flex-direction: column;
-    /* titlebar: 2.5em */
-    max-height: calc(100vh - 2.5em - var(--topbar-height) - var(--bottombar-height)); /* viewport - sidebar_titlebar - topbar - bottombar*/
-    max-height: calc(var(--vh, 1vh) * 100 - 2.5em - var(--topbar-height) - var(--bottombar-height)); /* viewport - sidebar_titlebar - topbar - bottombar*/
+    min-height: 0;
 }
 
 #LayerTree div.layertree-tree {

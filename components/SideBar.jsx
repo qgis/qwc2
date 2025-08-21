@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import classnames from 'classnames';
@@ -14,11 +15,13 @@ import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
 import Icon from './Icon';
+import {MapContainerPortalContext} from './PluginsContainer';
 import {Swipeable} from './Swipeable';
 
 import './style/SideBar.css';
 
 class SideBar extends React.Component {
+    static contextType = MapContainerPortalContext;
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         currentTask: PropTypes.object,
@@ -28,7 +31,6 @@ class SideBar extends React.Component {
         heightResizeable: PropTypes.bool,
         icon: PropTypes.string,
         id: PropTypes.string.isRequired,
-        mapMargins: PropTypes.object,
         minWidth: PropTypes.string,
         onHide: PropTypes.func,
         onShow: PropTypes.func,
@@ -83,20 +85,12 @@ class SideBar extends React.Component {
     render() {
         const visible = this.props.currentTask.id === this.props.id;
         const render = visible || this.state.render;
-        const marginLeft = this.props.mapMargins.left + this.props.mapMargins.outerLeft;
-        const marginRight = this.props.mapMargins.right + this.props.mapMargins.outerRight;
         const style = {
             width: this.props.width,
             minWidth: this.props.minWidth,
-            zIndex: visible ? 5 : 4,
-            maxWidth: 'calc(100vw - ' + marginLeft + 'px - ' + marginRight + 'px)'
+            zIndex: visible ? 5 : 4
         };
         const isLeftSide = this.props.side === "left";
-        if (isLeftSide) {
-            style.left = visible ? (this.props.mapMargins.left + this.props.mapMargins.outerLeft) : 0;
-        } else {
-            style.right = visible ? (this.props.mapMargins.right + this.props.mapMargins.outerRight) : 0;
-        }
 
         const classes = classnames({
             "sidebar": true,
@@ -112,7 +106,7 @@ class SideBar extends React.Component {
             body = this.renderRole("body");
             extra = this.renderRole("extra");
         }
-        return (
+        return ReactDOM.createPortal((
             <div>
                 <Swipeable delta={30} onSwipedRight={this.closeClicked}>
                     <div className={`${classes} ${this.props.extraClasses}`} id={this.props.id} ref={this.setRef} style={style}>
@@ -135,7 +129,7 @@ class SideBar extends React.Component {
                 </Swipeable>
                 {extra}
             </div>
-        );
+        ), this.context);
     }
     setRef = (el) => {
         this.sidebar = el;
@@ -171,8 +165,7 @@ class SideBar extends React.Component {
 
 
 export default connect((state) => ({
-    currentTask: state.task,
-    mapMargins: state.windows.mapMargins
+    currentTask: state.task
 }), {
     setCurrentTask: setCurrentTask
 })(SideBar);

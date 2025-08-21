@@ -1,14 +1,13 @@
 div.sidebar {
     position: absolute;
-    top: var(--topbar-height);
-    max-height: calc(100vh - var(--topbar-height) - var(--bottombar-height));
-    max-height: calc(var(--vh, 1vh) * 100 - var(--topbar-height) - var(--bottombar-height));
+    top: 0;
+    max-height: 100%;
     background-color: var(--container-bg-color);
     transition: transform 0.25s;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.75);
     display: flex;
     flex-direction: column;
-    max-width: 100vw;
+    max-width: 100%;
 }
 
 div.sidebar-right {
@@ -61,8 +60,7 @@ div.sidebar-resize-handle-bottom {
 div.sidebar div.sidebar-titlebar {
     color: var(--titlebar-text-color);
     background-color: var(--titlebar-bg-color);
-    height: 2.5em;
-    flex: 0 0 auto;
+    flex: 0 0 2.5em;
     display: flex;
     align-items: center;
 }
@@ -98,8 +96,8 @@ div.sidebar span.sidebar-titlebar-closeicon {
 div.sidebar div.sidebar-body {
     overflow-y: auto;
     overflow-x: hidden;
-    /* titlebar: 2.5em */
-    max-height: calc(100vh - 2.5em - var(--topbar-height) - var(--bottombar-height)); /* viewport - sidebar_titlebar - topbar - bottombar*/
-    max-height: calc(var(--vh, 1vh) * 100 - 2.5em - var(--topbar-height) - var(--bottombar-height)); /* viewport - sidebar_titlebar - topbar - bottombar*/
     flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
