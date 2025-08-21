@@ -21,11 +21,15 @@ div.sidebar-left {
 div.sidebar-right:not(.sidebar-open) {
     transform: translateX(100%) translateX(8px);
     pointer-events: none;
+    visibility: hidden;
+    transition: transform 0.25s, visibility 0s linear 0.25s;
 }
 
 div.sidebar-left:not(.sidebar-open) {
     transform: translateX(-100%) translateX(-8px);
     pointer-events: none;
+    visibility: hidden;
+    transition: transform 0.25s, visibility 0s linear 0.25s;
 }
 
 div.sidebar-resize-handle {
