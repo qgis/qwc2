@@ -19,7 +19,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 
 
 /**
- * Displaying the attribute table of layers in a dialog.
+ * Display the attribute table of layers in a dialog.
  *
  * To make a layer available in the attribute table, create a a data resource and matching permissions for it in the `qwc-admin-gui`.
  *
