@@ -3,9 +3,9 @@
 
 
 "3d-tiles-renderer@^0.4.3":
-  version "0.4.11"
-  resolved "https://registry.yarnpkg.com/3d-tiles-renderer/-/3d-tiles-renderer-0.4.11.tgz#ea9d942808977c53bf531c985c0fb9b0d04c2e4b"
-  integrity sha512-aXnd0mv8eMbeSbn5ERacN/ZsDwSycQ8Ar5kfv7I2C//fFTP6VH3jqkn5Av2LHo6gJ6bBv5fQ6Gek+PqsQhFkWg==
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/3d-tiles-renderer/-/3d-tiles-renderer-0.4.14.tgz#96b202e5e2819efaf5041086de49b09abe8832bd"
+  integrity sha512-HTndqhAeZOosClRYnGEjR9MJXcA4jCgHeRxfc/0WQFRkQfkLX1q+y3u1MsoHH+gfEBG8qa8SUBF8ncpAdlwCvg==
 
 "@ampproject/remapping@^2.2.0":
   version "2.3.0"
