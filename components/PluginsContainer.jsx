@@ -72,7 +72,7 @@ class PluginsContainer extends React.Component {
                     </MapContainerPortalContext.Provider>
                 </MapButtonPortalContext.Provider>
                 <WindowManager />
-                <div className="map-container" ref={this.setOverlayContainerRef} style={mapContainerStyle}>
+                <div className="map-container" ref={this.setMapContainerRef} style={mapContainerStyle}>
                     <ProcessNotifications />
                 </div>
                 <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
@@ -119,7 +119,7 @@ class PluginsContainer extends React.Component {
             ev.preventDefault();
         }
     };
-    setOverlayContainerRef = (el) => {
+    setMapContainerRef = (el) => {
         this.setState({mapContainerRef: el});
     };
     setButtonContainerRef = (el) => {
