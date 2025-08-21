@@ -163,10 +163,14 @@ class Identify3D extends React.Component {
                 '{objectid}', featureAttrs[featureIdAttr]
             );
             axios.get(url).then(response => {
-                this.setState({pickAttrs: {
-                    ...featureAttrs,
-                    ...response.data
-                }});
+                response.data.forEach(attr => {
+                    if (attr.name in featureAttrs) {
+                        // Use attribute alias
+                        delete featureAttrs[attr.name];
+                    }
+                    featureAttrs[attr.alias] = attr.value;
+                });
+                this.setState({pickAttrs: featureAttrs});
             }).catch(() => {
                 this.setState({pickAttrs: featureAttrs});
             });
