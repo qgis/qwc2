@@ -92,7 +92,7 @@ const Tiles3DStyle = {
             return styleExpressionParser.parse(cleanExpr);
         };
         if (colorRules?.conditions) {
-            colorRules?.conditions.map(cond => {
+            colorRules?.conditions.forEach(cond => {
                 context.colorExpressions.push([
                     parseExpr(cond[0]), parseExpr(cond[1])
                 ]);
