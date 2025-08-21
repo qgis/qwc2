@@ -44,7 +44,7 @@ export default {
     getFields: (options) => {
         return new Promise((resolve) => {
             const fields = new Set();
-            options.features.forEach(feature => {
+            (options.features || []).forEach(feature => {
                 Object.keys(feature.properties).forEach(key => fields.add(key));
             });
             resolve([...fields.values()]);
