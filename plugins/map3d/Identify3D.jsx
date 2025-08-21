@@ -164,7 +164,7 @@ class Identify3D extends React.Component {
             );
             axios.get(url).then(response => {
                 response.data.forEach(attr => {
-                    if (attr.name in featureAttrs) {
+                    if (attr.name in featureAttrs && featureAttrs[attr.name] === attr.value) {
                         // Use attribute alias
                         delete featureAttrs[attr.name];
                     }
