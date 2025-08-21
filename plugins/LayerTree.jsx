@@ -505,37 +505,35 @@ class LayerTree extends React.Component {
         const sortable = allowReordering && (ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true || flattenGroups === true);
         const treelayers = this.props.layers.filter(layer => layer.role !== LayerRole.BACKGROUND && !layer.layertreehidden);
         return (
-            <div className="layertree-container-wrapper" role="body">
-                <div className="layertree-container">
-                    <div className="layertree-tree"
-                        onContextMenuCapture={ev => {
-                            // Prevent context menu on drag-sort
-                            ev.stopPropagation(); ev.preventDefault(); return false;
-                        }}
-                        onTouchEnd={ev => {
-                            const target = ev.currentTarget;
-                            clearTimeout(target.preventScrollTimeout);
-                            target.preventScrollTimeout = null;
-                            target.removeEventListener("touchmove", MiscUtils.killEvent);
-                        }}
-                        onTouchStart={ev => {
-                            // Prevent touch-scroll after sortable trigger delay
-                            const target = ev.currentTarget;
-                            target.preventScrollTimeout = setTimeout(() => {
-                                target.addEventListener("touchmove", MiscUtils.killEvent, {passive: false});
-                            }, 200);
-                        }}
-                        ref={MiscUtils.setupKillTouchEvents}
-                    >
-                        <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
-                            {this.renderLayerTree(treelayers)}
-                        </Sortable>
-                    </div>
-                    {maptipCheckbox}
-                    {compareCheckbox}
-                    {layerImportExpander}
-                    {this.state.importvisible ? (<ImportLayer theme={this.props.theme} />) : null}
+            <div className="layertree-container" role="body">
+                <div className="layertree-tree"
+                    onContextMenuCapture={ev => {
+                        // Prevent context menu on drag-sort
+                        ev.stopPropagation(); ev.preventDefault(); return false;
+                    }}
+                    onTouchEnd={ev => {
+                        const target = ev.currentTarget;
+                        clearTimeout(target.preventScrollTimeout);
+                        target.preventScrollTimeout = null;
+                        target.removeEventListener("touchmove", MiscUtils.killEvent);
+                    }}
+                    onTouchStart={ev => {
+                        // Prevent touch-scroll after sortable trigger delay
+                        const target = ev.currentTarget;
+                        target.preventScrollTimeout = setTimeout(() => {
+                            target.addEventListener("touchmove", MiscUtils.killEvent, {passive: false});
+                        }, 200);
+                    }}
+                    ref={MiscUtils.setupKillTouchEvents}
+                >
+                    <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
+                        {this.renderLayerTree(treelayers)}
+                    </Sortable>
                 </div>
+                {maptipCheckbox}
+                {compareCheckbox}
+                {layerImportExpander}
+                {this.state.importvisible ? (<ImportLayer theme={this.props.theme} />) : null}
             </div>
         );
     };

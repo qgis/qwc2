@@ -71,12 +71,6 @@
     color: var(--titlebar-bg-color);
 }
 
-/* https://github.com/philipwalton/flexbugs/issues/216 */
-#LayerTree div.layertree-container-wrapper {
-    display: flex;
-    flex-direction: row;
-}
-
 #LayerTree div.layertree-container {
     flex: 1 1 auto;
     display: flex;
