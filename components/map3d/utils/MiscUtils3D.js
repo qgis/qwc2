@@ -129,6 +129,7 @@ export class TileMeshHelper {
         while (this.tileObject.parent && !this.tileObject.parent.isTilesGroup) {
             this.tileObject = this.tileObject.parent;
         }
+        this.propertiesCache = {};
     }
     isValid() {
         return this.featureIdAttr !== null;
@@ -147,13 +148,16 @@ export class TileMeshHelper {
         return featureIds;
     }
     getFeatureProperties(featureId) {
-        if (this.object.userData.structuralMetadata) {
-            return this.object.userData.structuralMetadata.getPropertyTableData([this.featureSet.propertyTable], [featureId])[0];
+        if (featureId in this.propertiesCache) {
+            return this.propertiesCache[featureId];
+        } else if (this.object.userData.structuralMetadata) {
+            this.propertiesCache[featureId] = this.object.userData.structuralMetadata.getPropertyTableData([this.featureSet.propertyTable], [featureId])[0];
         } else if (this.tileObject.batchTable) {
-            return this.tileObject.batchTable.getDataFromId(featureId);
+            this.propertiesCache[featureId] = this.tileObject.batchTable.getDataFromId(featureId);
         } else {
-            return {};
+            this.propertiesCache[featureId] = {};
         }
+        return this.propertiesCache[featureId];
     }
     getTileUserData() {
         return this.tileObject.userData;
