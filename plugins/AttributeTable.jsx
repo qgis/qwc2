@@ -17,7 +17,6 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import EditingInterface from '../utils/EditingInterface';
 import LocaleUtils from '../utils/LocaleUtils';
 
-import './style/AttributeTable.css';
 
 /**
  * Displaying the attribute table of layers in a dialog.
