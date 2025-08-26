@@ -59,8 +59,9 @@ export default class NumberInput extends React.Component {
     render() {
         const className = classNames({
             "number-input": true,
-            "number-input-mobile": this.props.mobile,
-            "number-input-normal": !this.props.mobile,
+            "number-input-mobile": this.props.mobile && !this.props.hideArrows,
+            "number-input-normal": !this.props.mobile && !this.props.hideArrows,
+            "number-input-noarrows": this.props.hideArrows,
             "number-input-disabled": this.props.disabled || this.props.readOnly,
             "number-input-invalid": this.props.required && !this.state.value
         });
@@ -87,7 +88,7 @@ export default class NumberInput extends React.Component {
                     readOnly={this.props.readOnly} required={this.props.required}
                     style={style} type="text" value={this.props.prefix + this.state.value + this.props.suffix} />
                 <input name={this.props.name} required={this.props.required} type="hidden" value={this.state.value} />
-                {this.props.hideArrows ? [(
+                {!this.props.hideArrows ? [(
                     <Icon icon={plusIcon} key="ArrowPlus" onPointerDown={() => this.startStep(+step)} />
                 ), (
                     <Icon icon={minusIcon} key="ArrowMinus" onPointerDown={() => this.startStep(-step)} />
