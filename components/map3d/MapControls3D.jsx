@@ -117,7 +117,7 @@ class MapControls3D extends React.Component {
                 </div>
             ), this.context),
             this.props.controlsPosition !== 'bottom' ? ReactDOM.createPortal((
-                <div className="map3d-nav-spacer" key="MapControlsSpacer" style={{order: 997}} />
+                <div className="map3d-nav-spacer" key="MapControlsSpacer" style={{order: 996}} />
             ), this.context) : null
         ];
     }
