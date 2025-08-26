@@ -54,11 +54,15 @@
     color: var(--text-color);
 }
 
-#BottomBar div.bottombar-scale-combo > input {
+#BottomBar div.bottombar-scale-combo > div.number-input {
     position: absolute;
     top: 0;
     left: 2em;
     width: 6em;
+}
+
+#BottomBar div.bottombar-scale-combo > div.number-input > input {
+    text-align: left;
 }
 
 #BottomBar span.bottombar-spacer {

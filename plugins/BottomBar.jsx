@@ -16,6 +16,7 @@ import {changeZoomLevel, setDisplayCrs} from '../actions/map';
 import {openExternalUrl, setBottombarHeight} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
 import InputContainer from '../components/widgets/InputContainer';
+import NumberInput from '../components/widgets/NumberInput';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -136,11 +137,8 @@ class BottomBar extends React.Component {
                                 (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
                             )}
                         </select>
-                        <input
-                            onBlur={ev => this.setScale(ev.target.value)}
-                            onChange={ev => this.setState({scale: ev.target.value})}
-                            onKeyUp={ev => { if (ev.key === 'Enter') this.setScale(ev.target.value); } }
-                            role="input" type="text" value={LocaleUtils.toLocaleFixed(this.state.scale, 0)}/>
+                        <NumberInput decimals={0} onChange={this.setScale} role="input"
+                            value={this.state.scale}/>
                     </InputContainer>
                 </div>
             );
