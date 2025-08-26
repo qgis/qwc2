@@ -137,7 +137,7 @@ class BottomBar extends React.Component {
                                 (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
                             )}
                         </select>
-                        <NumberInput decimals={0} onChange={this.setScale} role="input"
+                        <NumberInput decimals={0} hideArrows onChange={this.setScale} role="input"
                             value={this.state.scale}/>
                     </InputContainer>
                 </div>
