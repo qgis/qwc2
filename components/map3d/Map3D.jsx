@@ -75,6 +75,7 @@ class Map3D extends React.Component {
     static contextType = MapContainerPortalContext;
     static propTypes = {
         controlsPosition: PropTypes.string,
+        defaultSceneQuality: PropTypes.number,
         innerRef: PropTypes.func,
         layers: PropTypes.array,
         onCameraChanged: PropTypes.func,
@@ -146,7 +147,6 @@ class Map3D extends React.Component {
         this.sceneObjectGroup = null;
         this.objectMap = {};
         this.tilesetStyles = {};
-        this.sceneSettings = {};
         this.state.sceneContext.addLayer = this.addLayer;
         this.state.sceneContext.getLayer = this.getLayer;
         this.state.sceneContext.removeLayer = this.removeLayer;
@@ -164,6 +164,9 @@ class Map3D extends React.Component {
         this.state.sceneContext.getSceneIntersection = this.getSceneIntersection;
         this.state.sceneContext.getSetting = this.getSetting;
         this.state.sceneContext.setSetting = this.setSetting;
+
+        this.state.sceneContext.settings.sceneQuality = props.defaultSceneQuality;
+
         registerPermalinkDataStoreHook("map3d", this.store3dState);
     }
     componentDidMount() {

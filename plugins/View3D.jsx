@@ -135,6 +135,8 @@ class View3D extends React.Component {
         buttonPosition: PropTypes.number,
         /** The position of the navigation controls. Either `top` or `bottom`. */
         controlsPosition: PropTypes.string,
+        /** The default scene quality factor (`20`: min, `100`: max). */
+        defaultSceneQuality: PropTypes.number,
         display: PropTypes.object,
         /** Default window geometry. */
         geometry: PropTypes.shape({
@@ -366,6 +368,7 @@ class View3D extends React.Component {
                             <PluginsContainer pluginsConfig={pluginsConfig}>
                                 <Map3D
                                     controlsPosition={this.props.controlsPosition}
+                                    defaultSceneQuality={this.props.defaultSceneQuality}
                                     innerRef={this.setRef}
                                     onCameraChanged={this.onCameraChanged}
                                     onMapInitialized={this.setupMap}
