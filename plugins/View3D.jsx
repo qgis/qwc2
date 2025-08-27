@@ -82,17 +82,19 @@ import './style/View3D.css';
  * - `initialView` is optional and allows to define the initial view when opening the 3D view. If `personHeight` is specified and greater than 0, the first-person view is activated. If not specified, the 2D view is synchronized.
  * - The DTM should be a cloud optimized GeoTIFF.
  * - The background layer names refer to the names of the entries defined in `backgroundLayers` in the `themesConfig.json`. Additionally:
- *   - `visibility` controls the initially visibile background layer
- *   - `overview: true` controls the name of background layer to display in the overview map. If no background layer is marked with `overview: true`, the currently visibile background layer id dipslayed in the overview map.
+ *    - `visibility` controls the initially visibile background layer
+ *    - `overview: true` controls the name of background layer to display in the overview map. If no background layer is marked with `overview: true`, the currently visibile background layer id dipslayed in the overview map.
  * - The `tiles3d` entry contains an optional list of 3d tiles to add to the scene, with:
- *   - `idAttr`: feature properties table attribute which stores the object id, used for styling and passed to `tileInfoServiceUrl` of the `Identify3D` plugin. Default: `id`.
- *   - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.
- *   - `style`: optional, tileset style enabled by default.
- *   - `baseColor`: the fallback color for the tile objects, defaults to white.
- *   - `colorAttr`: optional, feature properties table attribute which stores the feature color, as a 0xRRGGBB integer.
- *   - `alphaAttr`: optional, feature properties table attribute which stores the feature alpha (transparency), as a [0, 255] integer.
- *   - `labelAttr`: optional, feature properties table attribute which stores the feature label, displayed above the geometry.
+ *    - `idAttr`: feature properties table attribute which stores the object id, used for styling and passed to `tileInfoServiceUrl` of the `Identify3D` plugin. Default: `id`.
+ *    - `styles`: optional, available tileset styles. Takes precedente over `colorAttr`, `alphaAttr`, `labelAttr`.
+ *    - `style`: optional, tileset style enabled by default.
+ *    - `baseColor`: the fallback color for the tile objects, defaults to white.
+ *    - `colorAttr`: optional, feature properties table attribute which stores the feature color, as a 0xRRGGBB integer.
+ *    - `alphaAttr`: optional, feature properties table attribute which stores the feature alpha (transparency), as a [0, 255] integer.
+ *    - `labelAttr`: optional, feature properties table attribute which stores the feature label, displayed above the geometry.
  * - The `objects3d` entry contains an optional list of GLTF objects to add to the scene.
+ *
+ * You can control whether a theme is loaded by default in 2D, 3D or splitscreen 2D/3D view via `startupView` in the [theme item configuration]().
  *
  *
  * ### Styling
