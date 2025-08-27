@@ -1156,6 +1156,7 @@ Query attributes of objects in the 3D map.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | tileInfoServiceUrl | `string` | URL to service for querying additional tile information.<br />Can contain the `{tileset}` and `{objectid}` placeholders.<br />Expected to return a JSON dict with attributes. | `undefined` |
 
 LayerTree3D<a name="layertree3d"></a>
