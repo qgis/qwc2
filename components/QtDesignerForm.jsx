@@ -412,7 +412,7 @@ class QtDesignerForm extends React.Component {
                 return (
                     <EditComboField
                         editIface={this.props.iface} fieldId={fieldId} filterExpr={filterExpr} key={fieldId}
-                        keyvalrel={keyvalrel} multiSelect={widget.allowMulti === "true"}
+                        keyvalrel={keyvalrel} multiSelect={widget.property.allowMulti === true || widget.allowMulti === "true"}
                         name={nametransform(fieldId)} placeholder={inputConstraints.placeholder}
                         readOnly={inputConstraints.readOnly || fieldConstraints.readOnly}
                         required={inputConstraints.required || fieldConstraints.required}
