@@ -1177,6 +1177,13 @@ const LayerUtils = {
             newLayer.visibility = false;
         }
         return newLayer;
+    },
+    applyTranslations(layer, translations) {
+        return {
+            ...layer,
+            title: translations.layertree?.[layer.name] ?? layer.title,
+            sublayers: layer.sublayers?.map?.(sublayer => LayerUtils.applyTranslations(sublayer, translations))
+        };
     }
 };
 

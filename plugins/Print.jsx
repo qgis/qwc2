@@ -247,7 +247,7 @@ class Print extends React.Component {
                                 <select onChange={this.changeLayout} value={this.state.layout.name}>
                                     {this.state.layouts.map(item => {
                                         return (
-                                            <option key={item.name} value={item.name}>{item.name.split('/').pop()}</option>
+                                            <option key={item.name} value={item.name}>{this.translateLayoutName(item.name.split('/').pop())}</option>
                                         );
                                     })}
                                 </select>
@@ -798,6 +798,9 @@ class Print extends React.Component {
         }
         return await mergedDoc.generateAsync({ type: 'arraybuffer' });
     }
+    translateLayoutName = (name) => {
+        return this.props.theme.translations?.layouts?.[name] ?? name;
+    };
 }
 
 const selector = (state) => ({

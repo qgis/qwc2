@@ -13,6 +13,10 @@ import deepmerge from 'deepmerge';
 import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 
+const themeTranslationCache = {
+
+};
+
 const LocaleUtils = {
     loadLocale(lang, fallbackLangData) {
         return new Promise(resolve => {
@@ -100,6 +104,20 @@ const LocaleUtils = {
         } else {
             return number.toFixed(decimals);
         }
+    },
+    loadThemeTranslations(serviceUrl) {
+        return new Promise(resolve => {
+            if (serviceUrl in themeTranslationCache) {
+                resolve(themeTranslationCache[serviceUrl]);
+            } else {
+                axios.get(serviceUrl + "?SERVICE=GetTranslations&LANG=" + LocaleUtils.lang()).then(response => {
+                    themeTranslationCache[serviceUrl] = response.data;
+                    resolve(response.data);
+                }).catch(e => {
+                    resolve({});
+                });
+            }
+        });
     }
 };
 

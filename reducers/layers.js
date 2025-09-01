@@ -138,6 +138,9 @@ export default function layers(state = defaultState, action) {
             opacity: action.layer.opacity ?? 255,
             layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
         };
+        if (newLayer.translations) {
+            newLayer = LayerUtils.applyTranslations(newLayer, newLayer.translations);
+        }
         if (action.options?.beforeLayerName || action.options?.afterLayerName) {
             newLayers = LayerUtils.insertLayer(
                 newLayers, newLayer, "name",

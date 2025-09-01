@@ -35,7 +35,7 @@ export const SWITCHING_THEME = 'SWITCHING_THEME';
 export function themesLoaded(themes) {
     return {
         type: THEMES_LOADED,
-        themes
+        themes: ThemeUtils.applyTranslations(themes)
     };
 }
 
@@ -47,92 +47,94 @@ export function setThemeLayersList(theme) {
 }
 
 export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialView = null) {
-    // Create layer
-    const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
-    let layers = [themeLayer];
+    LocaleUtils.loadThemeTranslations(theme.url).then(themeTranslations => {
+        theme.translations = themeTranslations;
+        // Create layer
+        const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
+        let layers = [themeLayer];
 
-    // Restore theme layer configuration, create placeholders for missing layers
-    const externalLayers = {};
-    if (!isEmpty(permalinkLayers) && ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
-        layers = permalinkLayers;
-    } else {
-        if (layerConfigs) {
-            if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
-                layers = LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
-            } else {
-                layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+        // Restore theme layer configuration, create placeholders for missing layers
+        const externalLayers = {};
+        if (!isEmpty(permalinkLayers) && ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
+            layers = permalinkLayers;
+        } else {
+            if (layerConfigs) {
+                if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
+                    layers = LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+                } else {
+                    layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+                }
+            }
+            if (isEmpty(layers)) {
+                layers = [{...themeLayer, sublayers: []}];
             }
         }
-        if (isEmpty(layers)) {
-            layers = [{...themeLayer, sublayers: []}];
+
+        // Add background layers for theme
+        let haveVisibleBg = false;
+        const bgLayers = ThemeUtils.createThemeBackgroundLayers(theme.backgroundLayers || [], themes, visibleBgLayer, externalLayers);
+        if (initialTheme && visibleBgLayer) {
+            const visibleLayer = bgLayers.find(entry => entry.visibility)?.name;
+            if (visibleLayer !== visibleBgLayer) {
+                dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
+            }
         }
-    }
-
-    // Add background layers for theme
-    let haveVisibleBg = false;
-    const bgLayers = ThemeUtils.createThemeBackgroundLayers(theme.backgroundLayers || [], themes, visibleBgLayer, externalLayers);
-    if (initialTheme && visibleBgLayer) {
-        const visibleLayer = bgLayers.find(entry => entry.visibility)?.name;
-        if (visibleLayer !== visibleBgLayer) {
-            dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
+        for (const bgLayer of bgLayers) {
+            haveVisibleBg |= bgLayer.visibility;
+            dispatch(addLayer(bgLayer));
         }
-    }
-    for (const bgLayer of bgLayers) {
-        haveVisibleBg |= bgLayer.visibility;
-        dispatch(addLayer(bgLayer));
-    }
-    if (!haveVisibleBg) {
-        UrlParams.updateParams({bl: ""});
-    }
+        if (!haveVisibleBg) {
+            UrlParams.updateParams({bl: ""});
+        }
 
-    for (const layer of layers.reverse()) {
-        dispatch(addLayer(layer, insertPos));
-    }
+        for (const layer of layers.reverse()) {
+            dispatch(addLayer(layer, insertPos));
+        }
 
-    // Restore external layers
-    if (externalLayerRestorer) {
-        externalLayerRestorer(externalLayers, themes, (source, layer) => {
-            dispatch(replacePlaceholderLayer(source, layer));
-        });
-    } else {
-        for (const key of Object.keys(externalLayers)) {
-            const idx = key.indexOf(":");
-            const service = key.slice(0, idx);
-            const serviceUrl = key.slice(idx + 1);
-            ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], theme.mapCrs, (id, layer) => {
-                // Don't expose sublayers
-                if (layer) {
-                    layer.sublayers = null;
-                }
-                dispatch(replacePlaceholderLayer(id, layer));
+        // Restore external layers
+        if (externalLayerRestorer) {
+            externalLayerRestorer(externalLayers, themes, (source, layer) => {
+                dispatch(replacePlaceholderLayer(source, layer));
             });
+        } else {
+            for (const key of Object.keys(externalLayers)) {
+                const idx = key.indexOf(":");
+                const service = key.slice(0, idx);
+                const serviceUrl = key.slice(idx + 1);
+                ServiceLayerUtils.findLayers(service, serviceUrl, externalLayers[key], theme.mapCrs, (id, layer) => {
+                    // Don't expose sublayers
+                    if (layer) {
+                        layer.sublayers = null;
+                    }
+                    dispatch(replacePlaceholderLayer(id, layer));
+                });
+            }
         }
-    }
 
-    dispatch({
-        type: SET_CURRENT_THEME,
-        theme: theme,
-        layer: themeLayer.id
-    });
-    if (initialView === null) {
-        if (theme.startupView === "2d") {
-            dispatch(setView3dMode(View3DMode.DISABLED));
-        } else if (theme.startupView === "3d2d") {
-            dispatch(setView3dMode(View3DMode.SPLITSCREEN));
-        } else if (theme.startupView === "3d") {
-            dispatch(setView3dMode(View3DMode.FULLSCREEN));
+        dispatch({
+            type: SET_CURRENT_THEME,
+            theme: theme
+        });
+        if (initialView === null) {
+            if (theme.startupView === "2d") {
+                dispatch(setView3dMode(View3DMode.DISABLED));
+            } else if (theme.startupView === "3d2d") {
+                dispatch(setView3dMode(View3DMode.SPLITSCREEN));
+            } else if (theme.startupView === "3d") {
+                dispatch(setView3dMode(View3DMode.FULLSCREEN));
+            }
         }
-    }
 
-    dispatch({
-        type: SWITCHING_THEME,
-        switching: false
+        dispatch({
+            type: SWITCHING_THEME,
+            switching: false
+        });
+        const task = theme.config?.startupTask;
+        if (task) {
+            const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
+            dispatch(setCurrentTask(task.key, task.mode, mapClickAction));
+        }
     });
-    const task = theme.config?.startupTask;
-    if (task) {
-        const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
-        dispatch(setCurrentTask(task.key, task.mode, mapClickAction));
-    }
 }
 
 export function setCurrentTheme(theme, themes, preserve = true, initialExtent = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null, initialView = null) {

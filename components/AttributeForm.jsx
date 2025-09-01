@@ -158,6 +158,7 @@ class AttributeForm extends React.Component {
                             removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord}
                             report={this.props.report} setFormBusy={this.setFormBusy}
                             setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
+                            translations={this.props.theme.translations}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
                         <AutoEditForm editLayerId={this.props.editConfig.editDataset} fields={this.props.editConfig.fields}

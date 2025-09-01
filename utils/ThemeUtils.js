@@ -15,6 +15,7 @@ import {LayerRole} from '../actions/layers';
 import {SearchResultType} from '../utils/SearchProviders';
 import ConfigUtils from './ConfigUtils';
 import LayerUtils from './LayerUtils';
+import LocaleUtils from './LocaleUtils';
 
 const ThemeUtils = {
     getThemeById(themes, id) {
@@ -272,6 +273,15 @@ const ThemeUtils = {
                 return item;
             }
         }).filter(Boolean);
+    },
+    applyTranslations(group) {
+        return {
+            subdirs: group.subdirs ? group.subdirs.map(ThemeUtils.applyTranslations) : null,
+            items: group.items ? group.items.map(item => ({
+                ...item,
+                title: item.translations?.[LocaleUtils.lang()]?.title ?? item.title
+            })) : null
+        };
     }
 };
 

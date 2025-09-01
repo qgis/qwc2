@@ -176,10 +176,10 @@ class AttributeTableWidget extends React.Component {
                                 </span>
                             </th>
                             {fields.map((field, idx) => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={field.name}>
+                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={this.translateFieldName(field.name, currentEditConfig.layerName)}>
                                     <span>
                                         {this.renderColumnResizeHandle(idx + 1, 'l')}
-                                        <span className="attribtable-table-headername">{field.name}</span>
+                                        <span className="attribtable-table-headername">{this.translateFieldName(field.name, currentEditConfig.layerName)}</span>
                                         {this.renderSortIndicator(field.id)}
                                         {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + 2, 'r') : null}
                                     </span>
@@ -788,6 +788,9 @@ class AttributeTableWidget extends React.Component {
             }).join(",") + "\n";
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), this.state.loadedLayer + ".csv");
+    };
+    translateFieldName = (fieldName, layerName) => {
+        return this.props.theme.translations?.layers?.[layerName]?.fields?.[fieldName] ?? fieldName;
     };
 }
 
