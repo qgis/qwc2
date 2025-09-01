@@ -257,6 +257,9 @@ class ImportLayer extends React.Component {
                     }
                 } else if (file.name.toLowerCase().endsWith(".pdf")) {
                     this.addGeoPDFLayer(file.name, ev.target.result);
+                } else {
+                    /* eslint-disable-next-line */
+                    alert(LocaleUtils.tr("importlayer.unsupportedfile"));
                 }
                 this.setState({file: null, addingLayer: false});
             };

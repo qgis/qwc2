@@ -274,6 +274,7 @@
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",
+      "unsupportedfile": "",
       "url": "URL",
       "urlplaceholder": "Podaj URL do WMS, WFS, WMTS..."
     },

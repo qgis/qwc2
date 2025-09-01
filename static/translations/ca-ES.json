@@ -274,6 +274,7 @@
       "shpreprojectionerror": "La geometria del Shapefile no s'ha pogut reproyectar i pot estar desplaçada.",
       "supportedformats": "Formats suportats: KML, GeoJSON, GeoPDF, SHP (en zip)",
       "unknownproj": "El GeoPDF seleccionat utilitza una projecció desconeguda: {0}.",
+      "unsupportedfile": "",
       "url": "URL",
       "urlplaceholder": "Adreça URL o WMS, WMTS, WFS..."
     },

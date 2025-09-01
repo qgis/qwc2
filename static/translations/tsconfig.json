@@ -260,6 +260,7 @@
     "importlayer.shpreprojectionerror",
     "importlayer.supportedformats",
     "importlayer.unknownproj",
+    "importlayer.unsupportedfile",
     "importlayer.url",
     "importlayer.urlplaceholder",
     "infotool.clickhelpPoint",

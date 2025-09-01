@@ -274,6 +274,7 @@
       "shpreprojectionerror": "",
       "supportedformats": "Поддържани формати: KML, GeoJSON, GeoPDF, SHP (в zip)",
       "unknownproj": "Избраният GeoPDF използва неизвестна проекция: {0}.",
+      "unsupportedfile": "",
       "url": "URL",
       "urlplaceholder": "Въведете URL адреса на WMS, WMTS, WFS..."
     },

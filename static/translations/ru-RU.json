@@ -274,6 +274,7 @@
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",
+      "unsupportedfile": "",
       "url": "",
       "urlplaceholder": "Введите URL для WMS, WMTS, WFS..."
     },

@@ -274,6 +274,7 @@
       "shpreprojectionerror": "Die Shapefile-Geometrie konnte nicht umprojiziert werden und ist möglicherweise nicht richtig platziert.",
       "supportedformats": "Unterstützte Formate: KML, GeoJSON, GeoPDF, SHP (in zip)",
       "unknownproj": "Das ausgewählte GeoPDF verwendet eine unbekannte Projektion: {0}.",
+      "unsupportedfile": "Nicht unterstütztes Dateiformat.",
       "url": "URL",
       "urlplaceholder": "WMS, WMTS oder WFS URL eingeben..."
     },

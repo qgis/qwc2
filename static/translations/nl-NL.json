@@ -274,6 +274,7 @@
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "De geselecteerde GeoPDF gebruikt een onbekende projectie: {0}.",
+      "unsupportedfile": "",
       "url": "URL",
       "urlplaceholder": "Voer URL in voor WMS, WMTS, WFS..."
     },

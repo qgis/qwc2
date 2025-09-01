@@ -274,6 +274,7 @@
       "shpreprojectionerror": "The Shapefile geometry could not be reprojected, and may be misplaced.",
       "supportedformats": "Supported formats: KML, GeoJSON, GeoPDF, SHP (in zip)",
       "unknownproj": "The selected GeoPDF uses an unknown projection: {0}.",
+      "unsupportedfile": "Unsupported file format.",
       "url": "URL",
       "urlplaceholder": "Enter URL to WMS, WMTS, WFS..."
     },

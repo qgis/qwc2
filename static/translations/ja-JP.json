@@ -274,6 +274,7 @@
       "shpreprojectionerror": "シェープファイルのジオメトリを投影できませんでした。間違った場所に置かれたかも知れません。",
       "supportedformats": "サポートされている形式: KML, GeoJSON, GeoPDF, SHP (zip形式)",
       "unknownproj": "選択された GeoPDF は未知の投影法を使っています: {0}。",
+      "unsupportedfile": "",
       "url": "URL",
       "urlplaceholder": "WMS, WMTS, WFS の URL を入力..."
     },

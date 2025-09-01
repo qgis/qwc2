@@ -274,6 +274,7 @@
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "",
+      "unsupportedfile": "",
       "url": "Adresă URL",
       "urlplaceholder": "Introduceți adresa URL către WMS, WMTS, WFS..."
     },

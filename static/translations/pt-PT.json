@@ -274,6 +274,7 @@
       "shpreprojectionerror": "",
       "supportedformats": "",
       "unknownproj": "Projeção Desconhecida",
+      "unsupportedfile": "",
       "url": "URL",
       "urlplaceholder": "Insira endereço URL ou WMS, WMTS, WFS..."
     },
