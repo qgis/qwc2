@@ -128,7 +128,7 @@ export default function layers(state = defaultState, action) {
     case ADD_LAYER: {
         let newLayers = (state.flat || []).concat();
         const layerId = action.layer.id || uuidv4();
-        const newLayer = {
+        let newLayer = {
             ...action.layer,
             id: layerId,
             name: action.layer.name || layerId,
