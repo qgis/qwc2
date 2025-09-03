@@ -276,6 +276,7 @@ const ThemeUtils = {
     },
     applyTranslations(group) {
         return {
+            ...group,
             subdirs: group.subdirs ? group.subdirs.map(ThemeUtils.applyTranslations) : null,
             items: group.items ? group.items.map(item => ({
                 ...item,
