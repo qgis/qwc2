@@ -12,7 +12,7 @@ import {v4 as uuidv4} from 'uuid';
 
 
 export default class OrbitControls3D extends MapControls {
-    constructor(object) {
+    constructor(object, mouseButtons) {
         super(object);
         this.animationId = null;
         this.sceneContext = null;
@@ -23,6 +23,8 @@ export default class OrbitControls3D extends MapControls {
         this.dampingFactor = 0.2;
         this.keyPanSpeed = 10.0;
         this.maxPolarAngle = Math.PI * 0.5;
+        this.mouseButtons = mouseButtons;
+        this.zoomSpeed = 5;
     }
     connect(sceneContext) {
         this.domElement = sceneContext.scene.domElement;

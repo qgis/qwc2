@@ -78,6 +78,7 @@ class Map3D extends React.Component {
         defaultSceneQuality: PropTypes.number,
         innerRef: PropTypes.func,
         layers: PropTypes.array,
+        mouseButtons: PropTypes.object,
         onCameraChanged: PropTypes.func,
         onMapInitialized: PropTypes.func,
         pluginOptions: PropTypes.object,
@@ -628,6 +629,7 @@ class Map3D extends React.Component {
                 <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
                     <MapControls3D
                         controlsPosition={this.props.controlsPosition}
+                        mouseButtons={this.props.mouseButtons}
                         onCameraChanged={this.props.onCameraChanged}
                         onControlsSet={this.setupControls}
                         sceneContext={this.state.sceneContext}

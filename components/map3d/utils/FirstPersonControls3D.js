@@ -1,4 +1,4 @@
-import {Controls, Raycaster, Vector2, Vector3} from 'three';
+import {Controls, MOUSE, Raycaster, Vector2, Vector3} from 'three';
 
 const _twoPI = 2 * Math.PI;
 
@@ -11,8 +11,10 @@ const STATE = {
 };
 
 export default class FirstPersonControls3D extends Controls {
-    constructor( object, domElement = null ) {
-        super( object, domElement );
+    constructor(object, mouseButtons) {
+        super( object, null );
+
+        this.mouseButtons = mouseButtons;
 
         // Step sizes
         this.keyPanStep = 1.5;
@@ -295,11 +297,12 @@ export default class FirstPersonControls3D extends Controls {
         }
     };
     _onMouseDown = (event) => {
+        const buttonMap = {0: 'LEFT', 1: 'MIDDLE', 2: 'RIGHT'};
         this._interactionState = STATE.NONE;
-        if (event.button === 2) { // Rotate
+        if (this.mouseButtons[buttonMap[event.button]] === MOUSE.ROTATE) {
             this._interactionState = STATE.ROTATE;
             this._interactionStart.set(event.clientX, event.clientY);
-        } else if (event.button === 0) { // Pan
+        } else if (this.mouseButtons[buttonMap[event.button]] === MOUSE.PAN) {
             this._interactionState = STATE.PAN;
             this._interactionStart.set(event.clientX, event.clientY);
         }

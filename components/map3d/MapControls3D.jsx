@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import {Vector3} from 'three';
+import {MOUSE, Vector3} from 'three';
 
 import ConfigUtils from '../../utils/ConfigUtils';
 import {UrlParams} from '../../utils/PermaLinkUtils';
@@ -32,6 +32,7 @@ class MapControls3D extends React.Component {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         controlsPosition: PropTypes.string,
         currentTask: PropTypes.string,
+        mouseButtons: PropTypes.object,
         onCameraChanged: PropTypes.func,
         onControlsSet: PropTypes.func,
         sceneContext: PropTypes.object
@@ -45,8 +46,19 @@ class MapControls3D extends React.Component {
         const sceneElement = props.sceneContext.scene.domElement;
         sceneElement.tabIndex = 0;
 
-        this.controls = new OrbitControls3D(props.sceneContext.scene.view.camera);
-        this.fpcontrols = new FirstPersonControls3D(props.sceneContext.scene.view.camera);
+        const buttonMap = {
+            pan: MOUSE.PAN,
+            rotate: MOUSE.ROTATE,
+            zoom: MOUSE.DOLLY
+        };
+        const mouseButtons = {
+            LEFT: buttonMap[this.props.mouseButtons.left] ?? null,
+            MIDDLE: buttonMap[this.props.mouseButtons.middle] ?? null,
+            RIGHT: buttonMap[this.props.mouseButtons.right] ?? null
+        };
+
+        this.controls = new OrbitControls3D(props.sceneContext.scene.view.camera, mouseButtons);
+        this.fpcontrols = new FirstPersonControls3D(props.sceneContext.scene.view.camera, mouseButtons);
         this.controls.connect(props.sceneContext);
 
         const targetPos = props.sceneContext.scene.view.camera.position.clone();

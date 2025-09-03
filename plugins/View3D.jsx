@@ -61,6 +61,12 @@ class View3D extends React.Component {
         layers: PropTypes.object,
         localConfig: PropTypes.object,
         map: PropTypes.object,
+        /** Mouse buttons assignment. You can assign `pan`, `rotate`, `zoom` to each button.  */
+        mouseButtons: PropTypes.shape({
+            left: PropTypes.string,
+            middle: PropTypes.string,
+            right: PropTypes.string
+        }),
         panTo: PropTypes.func,
         /** Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}`.
          * Refer to the documentation of the <a href="#plugins3d">3D plugins</a> for settable options. */
@@ -85,7 +91,12 @@ class View3D extends React.Component {
             initialY: 0,
             initiallyDocked: true
         },
-        pluginOptions: {}
+        pluginOptions: {},
+        mouseButtons: {
+            left: 'pan',
+            middle: 'zoom',
+            right: 'rotate'
+        }
     };
     state = {
         componentLoaded: false,
@@ -282,6 +293,7 @@ class View3D extends React.Component {
                                     controlsPosition={this.props.controlsPosition}
                                     defaultSceneQuality={this.props.defaultSceneQuality}
                                     innerRef={this.setRef}
+                                    mouseButtons={this.props.mouseButtons}
                                     onCameraChanged={this.onCameraChanged}
                                     onMapInitialized={this.setupMap}
                                     pluginOptions={this.props.pluginOptions}
