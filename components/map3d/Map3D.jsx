@@ -177,7 +177,7 @@ class Map3D extends React.Component {
         unregisterPermalinkDataStoreHook("map3d");
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.theme !== prevProps.theme) {
+        if (this.props.theme && this.props.theme !== prevProps.theme) {
             this.setupInstance();
         } else if (this.props.layers !== prevProps.layers) {
             this.setState((state) => (
