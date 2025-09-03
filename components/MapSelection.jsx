@@ -23,6 +23,8 @@ class MapSelection extends React.Component {
         active: PropTypes.bool,
         /** Optional, a css-cursor to use when drawing */
         cursor: PropTypes.string,
+        /** The draw interaction condition. */
+        drawCondition: PropTypes.func,
         /** The selection geometry type (Point, LineString, Polygon, Circle, DragBox, Box) */
         geomType: PropTypes.string,
         /** Initial geometry or geometry to update. */
@@ -40,6 +42,7 @@ class MapSelection extends React.Component {
         styleOptions: PropTypes.object
     };
     static defaultProps = {
+        drawCondition: event => event.originalEvent.buttons === 1,
         styleName: 'default',
         styleOptions: {}
     };
@@ -125,7 +128,8 @@ class MapSelection extends React.Component {
         }
         if (this.props.geomType === "DragBox") {
             this.drawInteraction = new ol.interaction.DragBox({
-                className: 'selection-drag-box'
+                className: 'selection-drag-box',
+                condition: this.props.drawCondition
             });
 
             this.drawInteraction.on('boxend', () => {
@@ -148,7 +152,7 @@ class MapSelection extends React.Component {
             this.drawInteraction = new ol.interaction.Draw({
                 stopClick: true,
                 source: this.selectionLayer.getSource(),
-                condition: event => event.originalEvent.buttons === 1,
+                condition: this.props.drawCondition,
                 type: typeMap[this.props.geomType],
                 style: feature => FeatureStyles[this.props.styleName](feature, {...this.props.styleOptions, circleRadius: 0}),
                 geometryFunction: this.props.geomType === "Box" ? ol.interaction.createBox() : undefined
