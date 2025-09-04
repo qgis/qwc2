@@ -168,18 +168,18 @@ class AttributeTableWidget extends React.Component {
                     <thead>
                         <tr>
                             <th />
-                            <th onClick={() => this.sortBy("id")}>
+                            <th onClick={() => this.sortBy("id")} title={this.translateFieldName("id", this.state.loadedLayer)}>
                                 <span>
-                                    <span className="attribtable-table-headername">id</span>
+                                    <span className="attribtable-table-headername">{this.translateFieldName("id", this.state.loadedLayer)}</span>
                                     {this.renderSortIndicator("id")}
                                     {this.renderColumnResizeHandle(1, 'r')}
                                 </span>
                             </th>
                             {fields.map((field, idx) => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={this.translateFieldName(field.name, currentEditConfig.layerName)}>
+                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={this.translateFieldName(field.name, this.state.loadedLayer)}>
                                     <span>
                                         {this.renderColumnResizeHandle(idx + 1, 'l')}
-                                        <span className="attribtable-table-headername">{this.translateFieldName(field.name, currentEditConfig.layerName)}</span>
+                                        <span className="attribtable-table-headername">{this.translateFieldName(field.name, this.state.loadedLayer)}</span>
                                         {this.renderSortIndicator(field.id)}
                                         {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + 2, 'r') : null}
                                     </span>
@@ -240,9 +240,9 @@ class AttributeTableWidget extends React.Component {
                     <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
                         <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterField", ev.target.value)} value={this.state.filterField}>
-                            <option value="id">id</option>
+                            <option value="id">{this.translateFieldName("id", this.state.loadedLayer)}</option>
                             {fields.map(field => (
-                                <option key={field.id} value={field.id}>{field.name}</option>
+                                <option key={field.id} value={field.id}>{this.translateFieldName(field.name, this.state.loadedLayer)}</option>
                             ))}
                         </select>
                         <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterOp", ev.target.value)} value={this.state.filterOp}>
