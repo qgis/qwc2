@@ -1181,7 +1181,7 @@ const LayerUtils = {
     applyTranslations(layer, translations) {
         return {
             ...layer,
-            title: translations.layertree?.[layer.name] ?? layer.title,
+            title: translations?.layertree?.[layer.name] ?? layer.title,
             sublayers: layer.sublayers?.map?.(sublayer => LayerUtils.applyTranslations(sublayer, translations))
         };
     }
