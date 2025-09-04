@@ -247,7 +247,7 @@ class Print extends React.Component {
                                 <select onChange={this.changeLayout} value={this.state.layout.name}>
                                     {this.state.layouts.map(item => {
                                         return (
-                                            <option key={item.name} value={item.name}>{this.translateLayoutName(item.name.split('/').pop())}</option>
+                                            <option key={item.name} value={item.name}>{this.translateLayoutName(item.name)}</option>
                                         );
                                     })}
                                 </select>
