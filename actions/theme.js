@@ -123,6 +123,8 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
             } else if (theme.startupView === "3d") {
                 dispatch(setView3dMode(View3DMode.FULLSCREEN));
             }
+        } else {
+            UrlParams.updateParams({v: initialView});
         }
 
         dispatch({
