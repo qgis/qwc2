@@ -11,6 +11,7 @@ import layersReducer from '../reducers/layers';
 ReducerIndex.register("layers", layersReducer);
 
 import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
 export const SET_LAYER_LOADING = 'SET_LAYER_LOADING';
@@ -45,7 +46,7 @@ export function addLayer(layer, pos = null, options = null) {
     if (layer.serverType === 'qgis' && !layer.translations) {
         return dispatch => LocaleUtils.loadThemeTranslations(layer.url).then(translations => dispatch({
             type: ADD_LAYER,
-            layer: {...layer, translations},
+            layer: {...LayerUtils.applyTranslations(layer, translations), translations},
             pos,
             options
         }));
