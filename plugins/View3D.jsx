@@ -205,7 +205,7 @@ class View3D extends React.Component {
             } else if (this.props.view3dMode === View3DMode.SPLITSCREEN) {
                 UrlParams.updateParams({v: "3d2d"});
             } else {
-                UrlParams.updateParams({v: undefined});
+                UrlParams.updateParams({v: "2d"});
             }
         }
         // Switch to 2D mode if new theme has no 3D configuration
