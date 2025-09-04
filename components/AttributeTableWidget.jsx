@@ -290,9 +290,13 @@ class AttributeTableWidget extends React.Component {
                             <option disabled value="">{LocaleUtils.tr("attribtable.selectlayer")}</option>
                             {Object.keys(editConfig).map(layerId => {
                                 const layerName = editConfig[layerId].layerName;
-                                const match = LayerUtils.searchLayer(this.props.layers, this.props.theme.url, layerName);
+                                const layerTitle = editConfig[layerId].layerTitle ? (
+                                    this.props.theme.translations?.layertree?.[layerName] ?? editConfig[layerId].layerTitle
+                                ) : (
+                                    LayerUtils.searchLayer(this.props.layers, this.props.theme.url, layerName)?.sublayer?.title ?? layerName
+                                );
                                 return (
-                                    <option key={layerId} value={layerId}>{match?.sublayer?.title ?? layerName}</option>
+                                    <option key={layerId} value={layerId}>{layerTitle}</option>
                                 );
                             })}
                         </select>

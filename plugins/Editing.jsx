@@ -202,9 +202,13 @@ class Editing extends React.Component {
                     <select className="combo editing-layer-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                         {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
                             const layerName = editConfig[layerId].layerName;
-                            const match = LayerUtils.searchLayer(this.props.layers, this.props.theme.url, layerName);
+                            const layerTitle = editConfig[layerId].layerTitle ? (
+                                this.props.theme.translations?.layertree?.[layerName] ?? editConfig[layerId].layerTitle
+                            ) : (
+                                LayerUtils.searchLayer(this.props.layers, this.props.theme.url, layerName)?.sublayer?.title ?? layerName
+                            );
                             return (
-                                <option key={layerId} value={layerId}>{match?.sublayer?.title ?? layerName}</option>
+                                <option key={layerId} value={layerId}>{layerTitle}</option>
                             );
                         })}
                     </select>
