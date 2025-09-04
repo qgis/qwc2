@@ -55,9 +55,9 @@ class AppContainerComponent extends React.Component {
         appConfig: PropTypes.object,
         customPlugins: PropTypes.array,
         defaultUrlParams: PropTypes.string,
-        haveLocale: PropTypes.bool,
         haveMapSize: PropTypes.bool,
         localConfig: PropTypes.object,
+        locale: PropTypes.string,
         setBottombarHeight: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
@@ -95,7 +95,7 @@ class AppContainerComponent extends React.Component {
         }
 
         // Load themes.json
-        axios.get("themes.json").then(response => {
+        axios.get("themes.json", {params: {lang: this.props.locale}}).then(response => {
             const themes = ThemeUtils.applyTranslations(response.data.themes || {});
             this.props.appConfig.themePreprocessor?.(themes);
             this.props.themesLoaded(themes);
@@ -171,7 +171,7 @@ class AppContainerComponent extends React.Component {
 }
 
 const AppContainer = connect(state => ({
-    haveLocale: state.locale.current !== null,
+    locale: state.locale.current,
     haveMapSize: state.map.size !== null,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     localConfig: state.localConfig

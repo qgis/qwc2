@@ -15,7 +15,6 @@ import {LayerRole} from '../actions/layers';
 import {SearchResultType} from '../utils/SearchProviders';
 import ConfigUtils from './ConfigUtils';
 import LayerUtils from './LayerUtils';
-import LocaleUtils from './LocaleUtils';
 
 const ThemeUtils = {
     getThemeById(themes, id) {
@@ -140,7 +139,8 @@ const ThemeUtils = {
                     LayerUtils.completeExternalLayer(res[cur.internalLayer], LayerUtils.searchSubLayer(theme, 'name', cur.internalLayer));
                     return res;
                 }, {})
-            }
+            },
+            translations: theme.translations
         };
         layer = LayerUtils.recomputeLayerBBox(layer);
         // Drawing order only makes sense if layer reordering is disabled
@@ -279,8 +279,8 @@ const ThemeUtils = {
             ...group,
             subdirs: group.subdirs ? group.subdirs.map(ThemeUtils.applyTranslations) : null,
             items: group.items ? group.items.map(item => ({
-                ...item,
-                title: item.translations?.[LocaleUtils.lang()]?.title ?? item.title
+                ...LayerUtils.applyTranslations(item, item.translations),
+                title: item.translations?.theme?.title ?? item.title
             })) : null
         };
     }
