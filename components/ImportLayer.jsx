@@ -54,7 +54,7 @@ class ImportLayer extends React.Component {
         if (this.state.type === "Local") {
             return (
                 <FileSelector
-                    accept=".kml,.json,.geojson,.pdf,.zip" file={this.state.file}
+                    accept=".kml,.kmz,.json,.geojson,.pdf,.zip" file={this.state.file}
                     onFileSelected={this.onFileSelected}
                     title={LocaleUtils.tr("importlayer.supportedformats")} />
             );
@@ -242,6 +242,8 @@ class ImportLayer extends React.Component {
             this.addGeoPDFLayer(file);
         } else if (file.name.toLowerCase().endsWith(".zip")) {
             this.addSHPLayer(file);
+        } else if (file.name.toLowerCase().endsWith(".kmz")) {
+            this.addKMZLayer(file);
         } else {
             const reader = new FileReader();
             reader.onload = (ev) => {
@@ -268,6 +270,21 @@ class ImportLayer extends React.Component {
     };
     addKMLLayer = (filename, data) => {
         this.addGeoJSONLayer(filename, {features: VectorLayerUtils.kmlToGeoJSON(data)});
+    };
+    addKMZLayer = async(file) => {
+        const {_BrowserFileSystem, load} = await import('@loaders.gl/core');
+        const {ZipLoader} = await import('@loaders.gl/zip');
+
+        // .kmz must be a zip archive with at least a doc.kml file. The kml is then imported like any other KML file.
+        const fileMap = await load(file, ZipLoader);
+        for (const fileName in fileMap) {
+            if (fileName == "doc.kml") {
+                const decoder = new TextDecoder();
+                this.addKMLLayer(file.name, decoder.decode(fileMap[fileName]));
+                break;
+            }
+        }
+        this.setState({file: null, addingLayer: false});
     };
     addGeoJSONLayer = (filename, data) => {
         if (!data.features && data.type === "Feature") {
