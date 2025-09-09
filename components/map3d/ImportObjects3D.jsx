@@ -18,7 +18,7 @@ import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import FileSelector from '../widgets/FileSelector';
 import Spinner from '../widgets/Spinner';
-import { importGltf } from './utils/MiscUtils3D';
+import {importGltf} from './utils/MiscUtils3D';
 
 import './style/ImportObjects3D.css';
 
@@ -39,7 +39,7 @@ class ImportObjects3D extends React.Component {
             <div className="importobjects3d-widget">
                 <div>
                     <FileSelector
-                        accept=".gltf,.ifc,.gml,.citygml,.cityjson,.gpkg" file={this.state.selectedfile}
+                        accept=".gltf,.glb,.ifc,.gml,.citygml,.cityjson,.gpkg" file={this.state.selectedfile}
                         onFileSelected={file => this.setState({selectedfile: file})}
                         title={LocaleUtils.tr("layertree3d.supportedformats")} />
                 </div>
@@ -60,13 +60,14 @@ class ImportObjects3D extends React.Component {
         const taskid = uuidv1();
         this.setState({importing: true});
         this.props.processStarted(taskid, LocaleUtils.tr("import3d.importing", file.name));
-        if (file.name.endsWith(".gltf")) {
-            this.importGltf(file, taskid);
+
+        if (file.name.endsWith(".gltf") || file.name.endsWith(".glb")) {
+            this.importGltfFile(file, taskid);
         } else {
             this.importTo3DTiles(file, taskid);
         }
     };
-    importGltf = (file, taskid) => {
+    importGltfFile = (file, taskid) => {
         const reader = new FileReader();
         reader.onload = (ev) => {
             importGltf(ev.target.result, file.name, this.props.sceneContext, {
