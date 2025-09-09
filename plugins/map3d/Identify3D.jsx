@@ -202,7 +202,7 @@ class Identify3D extends React.Component {
         const norAttr = pick.object.geometry.getAttribute('normal');
         const index = pick.object.geometry.getIndex();
         // Add selection object
-        this.addHiglightGeometry(pick.object.matrixWorld, posAttr.array, norAttr.array, index);
+        this.addHiglightGeometry(pick.object.matrixWorld, posAttr.array, norAttr?.array, index);
 
         // Set pick attrs
         this.setState({pickAttrs: pick.object.userData});
@@ -211,7 +211,9 @@ class Identify3D extends React.Component {
         const material = new MeshStandardMaterial({color: 0xff0000});
         const geometry = new BufferGeometry();
         geometry.setAttribute('position', new Float32BufferAttribute(position, 3));
-        geometry.setAttribute('normal', new Float32BufferAttribute(normal, 3));
+        if (normal) {
+            geometry.setAttribute('normal', new Float32BufferAttribute(normal, 3));
+        }
         geometry.setIndex(index);
         const mesh = new Mesh(geometry, material);
         mesh.applyMatrix4(matrixWorld);
