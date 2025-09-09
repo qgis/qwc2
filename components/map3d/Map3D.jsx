@@ -840,12 +840,16 @@ class Map3D extends React.Component {
         // Hide scene objects according to scene quality
         Object.entries(this.state.sceneContext.sceneObjects).forEach(([objId, options]) => {
             const object = this.objectMap[objId];
-            if (options.layertree && object.isObject3D) {
+            if (options.layertree && object.isObject3D && object.visible) {
                 object.children.forEach(child => {
-                    const distance = camera.position.distanceTo(child.getWorldPosition(new Vector3()));
-                    child.userData.__wasVisible = child.visible;
-                    if (distance > maxDistance) {
-                        child.visible = false;
+                    if (child.geometry) {
+                        const localCenter = child.geometry.boundingBox.getCenter(new Vector3());
+                        const worldCenter = localCenter.applyMatrix4(child.matrixWorld);
+                        const distance = camera.position.distanceTo(worldCenter);
+                        child.userData.__wasVisible = child.visible;
+                        if (distance > maxDistance) {
+                            child.visible = false;
+                        }
                     }
                 });
             }
