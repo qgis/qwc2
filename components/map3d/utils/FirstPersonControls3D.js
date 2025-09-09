@@ -170,7 +170,7 @@ export default class FirstPersonControls3D extends Controls {
         }
 
         // Stay above terrain // objects on terain
-        let height = null;
+        let height = undefined;
         raycaster.set(this.target, new Vector3(0, 0, -1));
         const vinter = raycaster.intersectObjects(this.sceneContext.collisionObjects, true)[0];
         if (vinter) {
@@ -180,7 +180,7 @@ export default class FirstPersonControls3D extends Controls {
                 this.target.x, this.target.y
             ]);
         }
-        if (height) {
+        if (height !== undefined) {
             const newHeight = height + this.personHeight;
             this.target.z = 0.75 * this.target.z + 0.25 * newHeight;
         }
