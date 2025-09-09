@@ -202,7 +202,6 @@ class LayerTree3D extends React.Component {
         this.setState((state) => ({activemenu: state.activemenu === entryId ? null : entryId}));
     };
     editObject = (objectId) => {
-        this.props.sceneContext.zoomToObject(objectId);
         this.props.setCurrentTask("EditDataset3D", null, null, {objectId});
     };
 }
