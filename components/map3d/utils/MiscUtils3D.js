@@ -74,6 +74,8 @@ export function importGltf(dataOrUrl, name, sceneContext, options = {}) {
             title: name,
             ...options
         };
+        gltf.scene.castShadow = true;
+        gltf.scene.receiveShadow = true;
         gltf.scene.traverse(c => {
             if (c.geometry) {
                 c.castShadow = true;
@@ -81,17 +83,22 @@ export function importGltf(dataOrUrl, name, sceneContext, options = {}) {
             }
             updateObjectLabel(c, sceneContext);
         });
-        // Center group on object
-        const bbox = new Box3().setFromObject(gltf.scene);
-        const center = bbox.getCenter(new Vector3());
-        const offset = new Vector3().subVectors(center, gltf.scene.position).applyQuaternion(
-            gltf.scene.quaternion.clone().invert()
-        );
-        gltf.scene.children.forEach(child => {
-            child.position.sub(offset);
-        });
-        gltf.scene.position.copy(center);
+
+        // Shift root position to center of object
         gltf.scene.updateMatrixWorld(true);
+
+        const box = new Box3().setFromObject(gltf.scene);
+        const centerWorld = box.getCenter(new Vector3());
+        centerWorld.z = box.min.z;
+        const centerLocal = gltf.scene.worldToLocal(centerWorld.clone());
+        gltf.scene.position.add(centerWorld);
+
+        // Offset children back so the world positions remain unchanged
+        gltf.scene.children.forEach(child => {
+            child.position.sub(centerLocal);
+        });
+        gltf.scene.updateMatrixWorld(true);
+
         sceneContext.addSceneObject(objectId, gltf.scene, options);
     };
     if (typeof dataOrUrl === 'string') {
