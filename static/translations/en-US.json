@@ -159,6 +159,10 @@
       "union": "Union",
       "wedge": "Wedge"
     },
+    "editdataset3d": {
+      "moveobj": "Move object into view",
+      "zoomto": "Zoom to object"
+    },
     "editing": {
       "add": "Add",
       "attrtable": "Table",

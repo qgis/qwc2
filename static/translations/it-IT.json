@@ -159,6 +159,10 @@
       "union": "Unione",
       "wedge": "Cuneo"
     },
+    "editdataset3d": {
+      "moveobj": "Sposta oggetto nella vista",
+      "zoomto": "Zoom sull'oggetto"
+    },
     "editing": {
       "add": "Aggiungi",
       "attrtable": "Tabella",

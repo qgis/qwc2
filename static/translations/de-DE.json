@@ -159,6 +159,10 @@
       "union": "Vereinigung",
       "wedge": "Kegel"
     },
+    "editdataset3d": {
+      "moveobj": "Objekt in Sichtbereich bringen",
+      "zoomto": "Auf Objekt zoomen"
+    },
     "editing": {
       "add": "Hinzufügen",
       "attrtable": "Tabelle",

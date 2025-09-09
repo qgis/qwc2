@@ -166,6 +166,8 @@
     "draw3d.undoBool",
     "draw3d.union",
     "draw3d.wedge",
+    "editdataset3d.moveobj",
+    "editdataset3d.zoomto",
     "editing.add",
     "editing.attrtable",
     "editing.canceldelete",

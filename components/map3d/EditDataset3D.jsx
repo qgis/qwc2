@@ -39,14 +39,24 @@ class EditDataset3D extends React.Component {
         );
     }
     renderBody = () => {
+        const actionButtons = [
+            {key: "zoomto", label: LocaleUtils.tr("editdataset3d.zoomto"), icon: "zoom"},
+            {key: "moveobj", label: LocaleUtils.tr("editdataset3d.moveobj"), icon: "move"}
+        ];
         const editButtons = [
             {key: "translate", label: LocaleUtils.tr("draw3d.translate")},
             {key: "scale", label: LocaleUtils.tr("draw3d.scale")},
             {key: "rotate", label: LocaleUtils.tr("draw3d.rotate")}
         ];
         return [(
+            <div className="redlining-controlsbar" key="Action">
+                <div className="redlining-control redlining-control-fill">
+                    <ButtonBar buttons={actionButtons} onClick={this.actionClicked} />
+                </div>
+            </div>
+        ), (
             <div className="redlining-controlsbar" key="Mode">
-                <div className="redlining-control">
+                <div className="redlining-control redlining-control-fill">
                     <ButtonBar active={this.state.mode} buttons={editButtons} onClick={this.setMode} />
                 </div>
             </div>
@@ -80,6 +90,7 @@ class EditDataset3D extends React.Component {
         this.transformControls.addEventListener('dragging-changed', (event) => {
             this.props.sceneContext.scene.view.controls.enabled = !event.value;
         });
+        this.props.sceneContext.scene.view.controls.addEventListener('change', this.updateTransformHelper);
 
         this.props.sceneContext.scene.notifyChange();
     };
@@ -91,9 +102,27 @@ class EditDataset3D extends React.Component {
 
         const domElement = this.props.sceneContext.scene.renderer.domElement;
         domElement.removeEventListener('keydown', this.onKeyDown);
+        this.props.sceneContext.scene.view.controls.removeEventListener('change', this.updateTransformHelper);
 
         this.props.sceneContext.scene.notifyChange();
         this.setState(EditDataset3D.defaultState);
+    };
+    updateTransformHelper = () => {
+        this.transformControls.getHelper().updateMatrixWorld();
+        this.props.sceneContext.scene.notifyChange();
+    };
+    actionClicked = (action) => {
+        if (action === "zoomto") {
+            this.props.sceneContext.zoomToObject(this.props.taskData.objectId);
+        } else if (action === "moveobj") {
+            const sceneTarget = this.props.sceneContext.scene.view.controls.target.clone();
+            sceneTarget.z = this.props.sceneContext.getTerrainHeightFromMap([
+                sceneTarget.x, sceneTarget.y
+            ]) ?? 0;
+            this.transformControls.object.position.copy(sceneTarget);
+            this.transformControls.object.updateMatrix();
+            this.props.sceneContext.scene.notifyChange();
+        }
     };
     setMode = (mode) => {
         this.setState({mode});

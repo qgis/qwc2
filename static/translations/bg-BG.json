@@ -159,6 +159,10 @@
       "union": "",
       "wedge": "Клин"
     },
+    "editdataset3d": {
+      "moveobj": "",
+      "zoomto": ""
+    },
     "editing": {
       "add": "Добавяне на",
       "attrtable": "Таблица",

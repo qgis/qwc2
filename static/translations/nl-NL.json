@@ -159,6 +159,10 @@
       "union": "",
       "wedge": ""
     },
+    "editdataset3d": {
+      "moveobj": "",
+      "zoomto": ""
+    },
     "editing": {
       "add": "Toevoegen",
       "attrtable": "Tabel",

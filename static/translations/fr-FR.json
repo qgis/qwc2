@@ -159,6 +159,10 @@
       "union": "Unir",
       "wedge": "Coin"
     },
+    "editdataset3d": {
+      "moveobj": "Déplacer l'objet dans la vue",
+      "zoomto": "Zoomer sur l'objet"
+    },
     "editing": {
       "add": "Ajouter",
       "attrtable": "Table",

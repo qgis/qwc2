@@ -159,6 +159,10 @@
       "union": "合成（和）",
       "wedge": "くさび形"
     },
+    "editdataset3d": {
+      "moveobj": "",
+      "zoomto": ""
+    },
     "editing": {
       "add": "追加",
       "attrtable": "テーブル",

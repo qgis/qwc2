@@ -159,6 +159,10 @@
       "union": "Unir",
       "wedge": "Cuña"
     },
+    "editdataset3d": {
+      "moveobj": "",
+      "zoomto": ""
+    },
     "editing": {
       "add": "Añadir",
       "attrtable": "Tabla",
