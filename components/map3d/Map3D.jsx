@@ -487,7 +487,6 @@ class Map3D extends React.Component {
             }
             this.instance.notifyChange(tiles);
             if (showEditTool) {
-                this.zoomToObject(name);
                 this.props.setCurrentTask("EditDataset3D", null, null, {objectId: name});
             }
         });
