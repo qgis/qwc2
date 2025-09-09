@@ -13,7 +13,7 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import {refreshLayer, setLayerLoading} from '../../actions/layers';
-import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import {zoomToExtent} from '../../actions/map';
 import LayerUtils from '../../utils/LayerUtils';
 import MapUtils from '../../utils/MapUtils';
 import Signal from '../../utils/Signal';
@@ -168,13 +168,7 @@ class OlLayer extends React.Component {
         });
 
         if (options.zoomToExtent && options.bbox && options.bbox.bounds) {
-            const map = this.props.map;
-            const extent = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, map.getView().getProjection());
-            try {
-                map.getView().fit(extent, map.getSize());
-            } catch (e) {
-                /* pass */
-            }
+            this.props.zoomToExtent(options.bbox.bounds, options.bbox.crs);
         }
         const sublayers = {};
         if (layer instanceof ol.layer.Group) {
@@ -231,5 +225,6 @@ class OlLayer extends React.Component {
 
 export default connect(() => ({}), {
     setLayerLoading: setLayerLoading,
-    refreshLayer: refreshLayer
+    refreshLayer: refreshLayer,
+    zoomToExtent: zoomToExtent
 })(OlLayer);
