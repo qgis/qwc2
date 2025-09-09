@@ -468,7 +468,7 @@ export default class Measure3D extends React.Component {
         this.restart();
     };
     getElevation = (point) => {
-        return this.props.sceneContext.getTerrainHeightFromMap(point);
+        return this.props.sceneContext.getTerrainHeightFromMap(point) ?? 0;
     };
     triangleArea = (u, v) => {
         const cross = [u[1] * v[2] - u[2] * v[1], u[0] * v[2] - u[2] * v[0], u[0] * v[1] - u[1] * v[0]];
