@@ -61,7 +61,7 @@ export function updateObjectLabel(sceneObject, sceneContext) {
     }
 }
 
-export function importGltf(dataOrUrl, name, sceneContext, options = {}) {
+export function importGltf(dataOrUrl, name, sceneContext, options = {}, showEditTool = false) {
     const loader = new GLTFLoader();
     const processor = (gltf) => {
         // GLTF is Y-UP, we need Z-UP
@@ -99,7 +99,7 @@ export function importGltf(dataOrUrl, name, sceneContext, options = {}) {
         });
         gltf.scene.updateMatrixWorld(true);
 
-        sceneContext.addSceneObject(objectId, gltf.scene, options);
+        sceneContext.addSceneObject(objectId, gltf.scene, options, showEditTool);
     };
     if (typeof dataOrUrl === 'string') {
         loader.load(dataOrUrl, processor, () => {}, (err) => {

@@ -121,7 +121,7 @@ class Map3D extends React.Component {
             setBaseLayer: (layer, visibility) => {},
 
             add3dTiles: (url, options) => {},
-            addSceneObject: (objectId, object, options = {}) => {},
+            addSceneObject: (objectId, object, options = {}, showEditTool = false) => {},
             getSceneObject: (objectId) => {},
             removeSceneObject: (objectId) => {},
             updateSceneObject: (objectId, options) => {},
@@ -532,7 +532,7 @@ class Map3D extends React.Component {
             };
         });
     };
-    addSceneObject = (objectId, object, options = {}) => {
+    addSceneObject = (objectId, object, options = {}, showEditTool = false) => {
         this.sceneObjectGroup.add(object);
         this.objectMap[objectId] = object;
         this.instance.notifyChange(object);
@@ -550,6 +550,9 @@ class Map3D extends React.Component {
                 }
             };
         });
+        if (showEditTool) {
+            this.props.setCurrentTask("EditDataset3D", null, null, {objectId: objectId});
+        }
     };
     getSceneObject = (objectId) => {
         return this.objectMap[objectId];

@@ -73,7 +73,7 @@ class ImportObjects3D extends React.Component {
             importGltf(ev.target.result, file.name, this.props.sceneContext, {
                 drawGroup: true,
                 imported: true
-            });
+            }, true);
             this.setState({selectedfile: null, importing: false});
             this.props.processFinished(taskid, true);
         };
