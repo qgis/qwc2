@@ -843,6 +843,9 @@ class Map3D extends React.Component {
             if (options.layertree && object.isObject3D && object.visible) {
                 object.children.forEach(child => {
                     if (child.geometry) {
+                        if (!child.geometry.boundingBox) {
+                            child.geometry.computeBoundingBox();
+                        }
                         const localCenter = child.geometry.boundingBox.getCenter(new Vector3());
                         const worldCenter = localCenter.applyMatrix4(child.matrixWorld);
                         const distance = camera.position.distanceTo(worldCenter);
