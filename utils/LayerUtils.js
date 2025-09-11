@@ -617,6 +617,9 @@ const LayerUtils = {
         let match = null;
         layers.find(layer => {
             let sublayer = null;
+            try {
+                layer.url = new URL(layer.url).pathname;
+            } catch {}
             if (layer.url === layerUrl && (sublayer = LayerUtils.searchSubLayer(layer, 'name', layerName))) {
                 match = {layer, sublayer};
                 return true;
