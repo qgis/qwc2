@@ -242,7 +242,7 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     // Collect field expressions and dependencies
     const dependencies = {};
     let fieldExpressions = editConfig.fields.reduce((res, field) => {
-        if (field.expression) {
+        if (field.expression && !field.constraints?.hidden) {
             const matches = [...field.expression.matchAll(/"([^"]+)"/g)].map(m => m[1]);
             dependencies[field.id] = [...new Set(matches)];
             return {...res, [field.id]: field.expression};
