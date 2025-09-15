@@ -230,11 +230,15 @@ class FeatureForm extends React.Component {
                                     {Object.entries(this.state.pickedFeatures).map(([id, feature]) => {
                                         const [layerId, featureId] = id.split("::");
                                         const editConfig = this.props.theme.editConfig[layerId];
-                                        const match = LayerUtils.searchLayer(this.props.layers, this.props.theme.url, editConfig.layerName);
-                                        const layerName = match?.sublayer?.title ?? editConfig.layerName;
+                                        const layerName = editConfig.layerName;
+                                        const layerTitle = editConfig.layerTitle ? (
+                                            this.props.theme.translations?.layertree?.[layerName] ?? editConfig.layerTitle
+                                        ) : (
+                                            LayerUtils.searchLayer(this.props.layers, this.props.theme.url, layerName)?.sublayer?.title ?? layerName
+                                        );
                                         const featureName = editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + featureId;
                                         return (
-                                            <option key={id} value={id}>{layerName + ": " + featureName}</option>
+                                            <option key={id} value={id}>{layerTitle + ": " + featureName}</option>
                                         );
                                     })}
                                 </select>
