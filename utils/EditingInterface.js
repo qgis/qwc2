@@ -141,7 +141,7 @@ const EditingInterface = {
             "Accept-Language": LocaleUtils.lang()
         };
         axios.get(requestUrl, {headers, params}).then(response => {
-            if (!isEmpty(response?.data?.features)) {
+            if (Array.isArray(response?.data?.features)) {
                 const version = +new Date();
                 const promises = response.data.features.map(feature => {
                     return new Promise(resolve => {
