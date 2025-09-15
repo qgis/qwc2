@@ -17,7 +17,7 @@
     ],
     "dependencies": {
         "@furkot/webfonts-generator": "^2.0.2",
-        "@giro3d/giro3d": "^0.43.2",
+        "@giro3d/giro3d": "^0.43.4",
         "@kayahr/text-encoding": "^2.0.0",
         "@loaders.gl/core": "^4.3.3",
         "@loaders.gl/shapefile": "^4.3.3",
@@ -110,7 +110,7 @@
         "eslint": "^8.56.0",
         "eslint-plugin-perfectionist": "^2.10.0",
         "eslint-plugin-react": "^7.37.2",
-        "html-webpack-plugin": "^5.6.3",
+        "html-webpack-plugin": "^5.6.4",
         "react-docgen": "^5.4.3",
         "source-map-loader": "^5.0.0",
         "style-loader": "^4.0.0",

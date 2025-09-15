@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"3d-tiles-renderer@^0.4.3":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/3d-tiles-renderer/-/3d-tiles-renderer-0.4.14.tgz#96b202e5e2819efaf5041086de49b09abe8832bd"
-  integrity sha512-HTndqhAeZOosClRYnGEjR9MJXcA4jCgHeRxfc/0WQFRkQfkLX1q+y3u1MsoHH+gfEBG8qa8SUBF8ncpAdlwCvg==
+"3d-tiles-renderer@^0.4.14":
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/3d-tiles-renderer/-/3d-tiles-renderer-0.4.15.tgz#39952be8f66529279a6bd0c8604c2b0f9b58a321"
+  integrity sha512-yzjm13oB9SGdcAmgoi/rIsLeGjrMrYCTeVfc7qSIYPVBuEVn3CBAH5NSQCT7okBxiJvsqY9jGMIyA0MtKkkgLg==
 
 "@ampproject/remapping@^2.2.0":
   version "2.3.0"
@@ -950,12 +950,12 @@
     ttf2woff "^3.0.0"
     wawoff2 "^2.0.0"
 
-"@giro3d/giro3d@^0.43.2":
-  version "0.43.2"
-  resolved "https://registry.yarnpkg.com/@giro3d/giro3d/-/giro3d-0.43.2.tgz#74e9ed1e3d170e134af8df3365c1ade25c50dfac"
-  integrity sha512-kVzN/0IsAGvJij4FEzxJ/Tu/VJ6T1NaDcmySSWvFTN4sjfkEwnZ9cNUJhoFZZrH+lznrv1dsJywcICuo7MOY5Q==
+"@giro3d/giro3d@^0.43.4":
+  version "0.43.4"
+  resolved "https://registry.yarnpkg.com/@giro3d/giro3d/-/giro3d-0.43.4.tgz#daa0e13a89653eb1a87d6c116702df99bc2b2bc8"
+  integrity sha512-wbE6axylh0Sg1LHeim8p9LQkubUwRoUmXKer0Yl8yZrfNJJFvfA2r0T2LUeuENxVIYBIyvDk4cpbxal5mdNazQ==
   dependencies:
-    "3d-tiles-renderer" "^0.4.3"
+    "3d-tiles-renderer" "^0.4.14"
     chart.js "^3.9.1"
     copc "^0.0.8"
     earcut "^2.2.4"
@@ -4080,10 +4080,10 @@ html-react-parser@^5.2.0:
     react-property "2.0.2"
     style-to-js "1.1.16"
 
-html-webpack-plugin@^5.6.3:
-  version "5.6.3"
-  resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-5.6.3.tgz#a31145f0fee4184d53a794f9513147df1e653685"
-  integrity sha512-QSf1yjtSAsmf7rYBV7XX86uua4W/vkhIt0xNXKbsi2foEeW7vjJQz4bhnpL3xH+l1ryl1680uNv968Z+X6jSYg==
+html-webpack-plugin@^5.6.4:
+  version "5.6.4"
+  resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-5.6.4.tgz#d8cb0f7edff7745ae7d6cccb0bff592e9f7f7959"
+  integrity sha512-V/PZeWsqhfpE27nKeX9EO2sbR+D17A+tLf6qU+ht66jdUsN0QLKJN27Z+1+gHrVMKgndBahes0PU6rRihDgHTw==
   dependencies:
     "@types/html-minifier-terser" "^6.0.0"
     html-minifier-terser "^6.0.2"
