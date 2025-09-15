@@ -61,6 +61,8 @@ class Editing extends React.Component {
         setCurrentTaskBlocked: PropTypes.func,
         setEditContext: PropTypes.func,
         setSnappingConfig: PropTypes.func,
+        /** Whether to show a button to open the AttributeTable (if the plugin is available). */
+        showAttributeTableButton: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         /** Whether snapping is available when editing. */
@@ -78,7 +80,8 @@ class Editing extends React.Component {
         side: 'right',
         snapping: true,
         snappingActive: true,
-        allowCloneGeometry: true
+        allowCloneGeometry: true,
+        showAttributeTableButton: true
     };
     state = {
         selectedLayer: null,
@@ -163,7 +166,7 @@ class Editing extends React.Component {
         if ( editPermissions.creatable !== false && !this.props.editContext.geomReadOnly) {
             actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.tr("editing.draw"), data: {action: 'Draw'}});
         }
-        if (ConfigUtils.havePlugin("AttributeTable")) {
+        if (ConfigUtils.havePlugin("AttributeTable") && this.props.showAttributeTableButton) {
             actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.tr("editing.attrtable"), data: {action: 'AttrTable'}});
         }
 

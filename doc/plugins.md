@@ -347,6 +347,7 @@ This plugin queries the dataset via the editing service specified by
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowCloneGeometry | `bool` | Whether to enable the "Clone existing geometry" functionality. | `true` |
+| showAttributeTableButton | `bool` | Whether to show a button to open the AttributeTable (if the plugin is available). | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
