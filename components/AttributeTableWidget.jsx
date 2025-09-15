@@ -427,8 +427,8 @@ class AttributeTableWidget extends React.Component {
             input = (
                 <EditComboField
                     editIface={this.props.iface} fieldId={field.id} filterExpr={filterExpr} keyvalrel={constraints.keyvalrel}
-                    name={field.id} readOnly={constraints.readOnly || disabled} required={constraints.required}
-                    updateField={updateField} value={value} values={constraints.values} />
+                    multiSelect={constraints.allowMulti === true} name={field.id} readOnly={constraints.readOnly || disabled}
+                    required={constraints.required} updateField={updateField} value={value} values={constraints.values} />
             );
         } else if (field.type === "number") {
             const precision = constraints.prec ?? 0;

@@ -166,6 +166,7 @@ table.attribtable-table td > input:not([type=checkbox]),
 table.attribtable-table td > select,
 table.attribtable-table td > div.TextInput,
 table.attribtable-table td > div.number-input,
+table.attribtable-table td > div.edit-multi-select,
 table.attribtable-table td > span.edit-upload-field,
 table.attribtable-table td > span.edit-upload-field-input {
     min-width: 100%;
