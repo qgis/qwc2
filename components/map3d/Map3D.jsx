@@ -514,7 +514,7 @@ class Map3D extends React.Component {
         });
         // Show/hide labels when tile visibility changes
         tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
-            Object.values(scene.userData.tileLabels || {}).forEach(l => {
+            Object.values(scene?.userData?.tileLabels ?? {}).forEach(l => {
                 l.labelObject.visible = visible;
                 l.labelObject.element.style.display = visible ? 'initial' : 'none';
             });
@@ -783,7 +783,7 @@ class Map3D extends React.Component {
             });
             // Show/hide labels when tile visibility changes
             tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
-                Object.values(scene.userData.tileLabels || {}).forEach(label => {
+                Object.values(scene?.userData?.tileLabels ?? {}).forEach(label => {
                     label.labelObject.visible = visible;
                     label.labelObject.element.style.display = visible ? 'initial' : 'none';
                 });
