@@ -182,7 +182,10 @@ class Map3D extends React.Component {
         } else if (this.props.layers !== prevProps.layers) {
             this.setState((state) => (
                 {
-                    sceneContext: {...state.sceneContext, colorLayers: this.collectColorLayers(state.sceneContext.colorLayers)}
+                    sceneContext: {
+                        ...state.sceneContext,
+                        colorLayers: this.collectColorLayers(state.sceneContext.colorLayers, prevProps.layers)
+                    }
                 }
             ));
         }
@@ -248,16 +251,21 @@ class Map3D extends React.Component {
             }
         }));
     };
-    collectColorLayers = (prevColorLayers) => {
+    collectColorLayers = (prevColorLayers, prevLayers) => {
+        const prevLayerMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
         return this.props.layers.reduce((colorLayers, layer) => {
             if (layer.role !== LayerRole.THEME && layer.role !== LayerRole.USERLAYER) {
+                return colorLayers;
+            }
+            const prevOptions = prevColorLayers[layer.id];
+            if (prevOptions && layer === prevLayerMap[layer.id]) {
+                colorLayers[layer.id] = prevOptions;
                 return colorLayers;
             }
             const layerCreator = LayerRegistry[layer.type];
             if (!layerCreator || !layerCreator.create3d) {
                 return colorLayers;
             }
-            const prevOptions = prevColorLayers[layer.id];
             const preserveSublayerOptions = (entry, prevEntry) => {
                 return entry.sublayers?.map?.(child => {
                     const prevChild = prevEntry?.sublayers?.find?.(x => x.name === child.name);
@@ -295,6 +303,9 @@ class Map3D extends React.Component {
         let layerBelow = this.getLayer("__baselayer");
         Object.entries(colorLayers).reverse().forEach(([layerId, options]) => {
             const prevOptions = prevColorLayers[layerId];
+            if (options === prevOptions) {
+                return;
+            }
             const layerCreator = LayerRegistry[options.type];
             let mapLayer = this.getLayer(layerId);
             if (mapLayer) {
@@ -747,7 +758,7 @@ class Map3D extends React.Component {
         }
 
         // Collect color layers
-        const colorLayers = this.collectColorLayers([]);
+        const colorLayers = this.collectColorLayers([], []);
 
         const sceneObjects = {};
         this.objectMap = {};
