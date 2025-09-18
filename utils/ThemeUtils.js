@@ -246,7 +246,7 @@ const ThemeUtils = {
     allowedItems(items, theme, filter = null) {
         return (items || []).map(item => {
             if (item.subitems) {
-                const subitems = ThemeUtils.allowedItems(item.subitems, items, filter).filter(Boolean);
+                const subitems = ThemeUtils.allowedItems(item.subitems, theme, filter).filter(Boolean);
                 if (!isEmpty(subitems)) {
                     return {...item, subitems};
                 } else {
