@@ -125,7 +125,7 @@ class TopBar extends React.Component {
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
         const isMobile = ConfigUtils.isMobile();
-        if (isMobile || this.props.appMenuCompact) {
+        if (isMobile) {
             logo = assetsPath + "/img/logo-mobile." + this.props.logoFormat;
         } else {
             logo = assetsPath + "/img/logo."  + this.props.logoFormat;
