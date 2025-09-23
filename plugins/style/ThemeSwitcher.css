@@ -5,3 +5,7 @@ div.theme-switcher-filter {
     color: var(--text-color);
     margin: 0 0.5em;
 }
+
+div.active-theme {
+    order: 0;
+}
