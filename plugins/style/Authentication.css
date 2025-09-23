@@ -1,16 +1,3 @@
 div.login-user {
-    position: absolute;
-    right: 0.25em;
-    top: 0.25em;
-    z-index: 1;
-    color: var(--panel-text-color);
-    background-color: var(--panel-bg-color);
-    box-shadow: 0 0 4px rgba(136, 136, 136, 0.5);
-    padding: 0.25em 0em 0.125em 0em;
-    display: flex;
-}
-
-div.login-user > span {
-    flex: 0 0 auto;
-    padding: 0 0.25em;
+    order: 1;
 }
