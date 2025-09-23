@@ -9,7 +9,9 @@ npx babel $dir --copy-files --out-dir dist/$dir --extensions ".js,.jsx" --minifi
 done
 mkdir -p dist/static/translations
 mkdir -p dist/icons
+mkdir -p dist/resources
 cp -a icons/*.svg dist/icons/
+cp -a resources/* dist/resources/
 cp -a static/translations/*.json dist/static/translations/
 cp -a package.json dist/
 cp -a LICENSE dist/
