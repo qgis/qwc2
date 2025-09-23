@@ -7,11 +7,13 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
 import Icon from '../components/Icon';
+import {AppInfosPortalContext} from '../components/PluginsContainer';
 import SideBar from '../components/SideBar';
 import ThemeLayersListWindow from '../components/ThemeLayersListWindow';
 import ThemeList from '../components/ThemeList';
@@ -26,6 +28,7 @@ import './style/ThemeSwitcher.css';
  * Theme switcher panel.
  */
 class ThemeSwitcher extends React.Component {
+    static contextType = AppInfosPortalContext;
     static availableIn3D = true;
     static propTypes = {
         activeTheme: PropTypes.object,
@@ -36,6 +39,8 @@ class ThemeSwitcher extends React.Component {
         hideAddThemeButton: PropTypes.bool,
         /** Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. */
         hideAddThemeLayersButton: PropTypes.bool,
+        /** Whether to display the currently active theme below the application menu button. Default: false */
+        showActiveTheme: PropTypes.bool,
         /** Whether to show an icon to select the default theme/bookmark (of a logged in user). */
         showDefaultThemeSelector: PropTypes.bool,
         /** Whether to show the LayerTree by default after switching the theme. */
@@ -54,6 +59,7 @@ class ThemeSwitcher extends React.Component {
     };
     static defaultProps = {
         width: "50%",
+        showActiveTheme: false,
         showThemeFilter: true,
         showDefaultThemeSelector: true,
         showLayerAfterChangeTheme: false,
@@ -96,6 +102,14 @@ class ThemeSwitcher extends React.Component {
                 </SideBar>
                 {showAddThemeLayersButton ? (
                     <ThemeLayersListWindow windowSize={this.props.themeLayersListWindowSize} />
+                ) : null}
+                {this.props.showActiveTheme && this.props.activeTheme ? (
+                    ReactDOM.createPortal((
+                        <div className="app-info active-theme">
+                            <Icon icon="themes" />
+                            <span>{this.props.activeTheme.title || this.props.activeTheme.name || this.props.activeTheme.id }</span>
+                        </div>
+                    ), this.context)
                 ) : null}
             </div>
         );

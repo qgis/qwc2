@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 import url from 'url';
 
 import Icon from '../components/Icon';
-import {MapContainerPortalContext} from '../components/PluginsContainer';
+import {AppInfosPortalContext} from '../components/PluginsContainer';
 import ConfigUtils from '../utils/ConfigUtils';
 
 import './style/Authentication.css';
@@ -25,7 +25,7 @@ import './style/Authentication.css';
  * Invokes the the authentication service specified by `authServiceUrl` in `config.json`.
  */
 class Authentication extends React.Component {
-    static contextType = MapContainerPortalContext;
+    static contextType = AppInfosPortalContext;
     static availableIn3D = true;
 
     static propTypes = {
@@ -98,7 +98,7 @@ class Authentication extends React.Component {
             return null;
         }
         return ReactDOM.createPortal((
-            <div className="login-user">
+            <div className="app-info login-user">
                 <Icon icon="login" />
                 <span>{username}</span>
             </div>
