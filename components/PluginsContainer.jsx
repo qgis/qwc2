@@ -21,6 +21,7 @@ import './style/PluginsContainer.css';
 
 export const MapButtonPortalContext = React.createContext(null);
 export const MapContainerPortalContext = React.createContext(null);
+export const AppInfosPortalContext = React.createContext(null);
 
 
 class PluginsContainer extends React.Component {
@@ -33,7 +34,8 @@ class PluginsContainer extends React.Component {
     };
     state = {
         mapButtonsContainerRef: null,
-        mapContainerRef: null
+        mapContainerRef: null,
+        appInfosContainerRef: null
     };
     renderPlugins = () => {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
@@ -62,20 +64,23 @@ class PluginsContainer extends React.Component {
             right: 'calc(' + right + 'px)',
             bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px)'
         };
-        const haveRefs = this.state.mapButtonsContainerRef && this.state.mapContainerRef;
+        const haveRefs = this.state.mapButtonsContainerRef && this.state.mapContainerRef && this.state.appInfosContainerRef;
         return (
             <div className={"plugins-container " + (this.props.className ?? "")} ref={this.setupTouchEvents}>
-                <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
-                    <MapContainerPortalContext.Provider value={this.state.mapContainerRef}>
-                        {haveRefs ? this.renderPlugins() : null}
-                        {haveRefs ? this.props.children : null}
-                    </MapContainerPortalContext.Provider>
-                </MapButtonPortalContext.Provider>
+                <AppInfosPortalContext.Provider value={this.state.appInfosContainerRef}>
+                    <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
+                        <MapContainerPortalContext.Provider value={this.state.mapContainerRef}>
+                            {haveRefs ? this.renderPlugins() : null}
+                            {haveRefs ? this.props.children : null}
+                        </MapContainerPortalContext.Provider>
+                    </MapButtonPortalContext.Provider>
+                </AppInfosPortalContext.Provider>
                 <WindowManager />
                 <div className="map-container" ref={this.setMapContainerRef} style={mapContainerStyle}>
                     <ProcessNotifications />
                 </div>
                 <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
+                <div className="app-infos-container" ref={this.setAppInfosContainerRef} style={mapContainerStyle} />
             </div>
         );
     }
@@ -129,6 +134,9 @@ class PluginsContainer extends React.Component {
     };
     setMapContainerRef = (el) => {
         this.setState({mapContainerRef: el});
+    };
+    setAppInfosContainerRef = (el) => {
+        this.setState({appInfosContainerRef: el});
     };
     setButtonContainerRef = (el) => {
         this.setState({mapButtonsContainerRef: el});
