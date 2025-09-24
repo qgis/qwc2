@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "No se pudo encontrar el fondo \"{0}\", mostrando el fondo predeterminado.",
+      "missingdefaulttheme": "",
       "missinglayers": "No se pudieron encontrar las siguientes capas: {0}.",
       "missingpermalink": "El enlace permanente o marcador especificado es inválido o ha expirado.",
       "missingprojection": "No se pudo cargar el tema \"{0}\": la proyección {1} no está definida.",

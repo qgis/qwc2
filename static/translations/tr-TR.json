@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Arkaplan bulunamadı \"{0}\", varsayılan arkaplan gösteriliyor.",
+      "missingdefaulttheme": "",
       "missinglayers": "Bu katmanlar bulunamıyor: {0}.",
       "missingpermalink": "Belirtilen yer işareti ya da bağlantı geçerli değil.",
       "missingprojection": "Tema yüklenemedi \"{0}\": projeksiyon {1} tanımlı değil.",

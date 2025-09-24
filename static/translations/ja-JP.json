@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "背景が見付かりません \"{0}\", デフォルトの背景を表示します。",
+      "missingdefaulttheme": "",
       "missinglayers": "以下のレイヤが見付かりません: {0}。",
       "missingpermalink": "指定された永続リンクは無効または期限切れです。",
       "missingprojection": "テーマをロード出来ません \"{0}\": 投影法 {1} は定義されていません。",

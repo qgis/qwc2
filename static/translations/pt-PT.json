@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Fundo em falta",
+      "missingdefaulttheme": "",
       "missinglayers": "Camadas em falta",
       "missingpermalink": "Permalink em falta",
       "missingprojection": "",

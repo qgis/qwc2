@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Unable to find the background \"{0}\", displaying the default background.",
+      "missingdefaulttheme": "Unable to load the default theme.",
       "missinglayers": "Unable to find the following layers: {0}.",
       "missingpermalink": "The specified permalink or bookmark is invalid or expired.",
       "missingprojection": "Unable to load the theme \"{0}\": the projection {1} is not defined.",

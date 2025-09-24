@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Kan de achtergrond \"{0}\" niet vinden, Standaard achtergrond wordt weergegeven.",
+      "missingdefaulttheme": "",
       "missinglayers": "Kan de volgende lagen niet vinden: {0}.",
       "missingpermalink": "De opgegeven permalink of bladwijzer is ongeldig of verlopen.",
       "missingprojection": "Kan de kaart \"{0}\": de projectie {1} is niet gedefinieerd.",
