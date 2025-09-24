@@ -175,6 +175,7 @@ class View3D extends React.Component {
                 this.map3dComponentRef = null;
                 this.setState({componentLoaded: true});
             });
+            this.syncParentStore(this.props, true);
         } else if (this.props.view3dMode === View3DMode.DISABLING && prevProps.view3dMode !== View3DMode.DISABLING) {
             if (this.map3dComponentRef) {
                 this.map3dComponentRef.store3dState().then(storedState => {
@@ -225,20 +226,23 @@ class View3D extends React.Component {
             this.setState({storedState: null});
         }
     }
-    syncParentStore(prevProps) {
-        if (this.props.display !== prevProps.display) {
+    syncParentStore(prevProps, force = false) {
+        if (this.props.view3dMode === View3DMode.DISABLED) {
+            return;
+        }
+        if (this.props.display !== prevProps.display || force) {
             this.store.dispatch({type: "SYNC_DISPLAY_FROM_PARENT_STORE", display: this.props.display});
         }
-        if (this.props.theme !== prevProps.theme) {
+        if (this.props.theme !== prevProps.theme || force) {
             this.store.dispatch({type: "SYNC_THEME_FROM_PARENT_STORE", theme: this.props.theme});
         }
-        if (this.props.localConfig !== prevProps.localConfig) {
+        if (this.props.localConfig !== prevProps.localConfig || force) {
             this.store.dispatch({type: "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE", localConfig: this.props.localConfig});
         }
-        if (this.props.layers !== prevProps.layers) {
+        if (this.props.layers !== prevProps.layers || force) {
             this.store.dispatch({type: "SYNC_LAYERS_FROM_PARENT_STORE", layers: this.props.layers});
         }
-        if (this.props.map !== prevProps.map) {
+        if (this.props.map !== prevProps.map || force) {
             this.store.dispatch({type: "SYNC_MAP_FROM_PARENT_STORE", map: this.props.map});
         }
     }
