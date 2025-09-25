@@ -519,6 +519,7 @@
     },
     "routing": {
       "add": "Aggiungi",
+      "addlayer": "Esporta a livello",
       "addviapoint": "Via qui",
       "arriveat": "Arrivo il",
       "clear": "Azzera",
@@ -536,6 +537,7 @@
       "iso_mode_distance": "Distanza",
       "iso_mode_time": "Tempo",
       "isocenter": "Centro",
+      "isochrone": "",
       "isoextracenter": "Ulteriore centro",
       "leaveat": "Partenza il",
       "leavenow": "Parti ora",

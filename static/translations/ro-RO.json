@@ -519,6 +519,7 @@
     },
     "routing": {
       "add": "Adaugă punct",
+      "addlayer": "",
       "addviapoint": "Punct intermediar",
       "arriveat": "Punct de sosire",
       "clear": "Curățare",
@@ -536,6 +537,7 @@
       "iso_mode_distance": "Distanță",
       "iso_mode_time": "Timp",
       "isocenter": "Centru",
+      "isochrone": "",
       "isoextracenter": "Centru suplimentar",
       "leaveat": "Plecarea la",
       "leavenow": "Plecați acum",

@@ -519,6 +519,7 @@
     },
     "routing": {
       "add": "Nokta ekle",
+      "addlayer": "",
       "addviapoint": "Burası üzerinden",
       "arriveat": "Varış noktası",
       "clear": "Temizle",
@@ -536,6 +537,7 @@
       "iso_mode_distance": "Mesafe",
       "iso_mode_time": "Zaman",
       "isocenter": "Merkez",
+      "isochrone": "",
       "isoextracenter": "İlave merkez",
       "leaveat": "Çıkış zamanı",
       "leavenow": "Şimdi çık",

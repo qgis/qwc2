@@ -519,6 +519,7 @@
     },
     "routing": {
       "add": "点を追加",
+      "addlayer": "",
       "addviapoint": "ここを経由",
       "arriveat": "目的地点",
       "clear": "クリア",
@@ -536,6 +537,7 @@
       "iso_mode_distance": "距離",
       "iso_mode_time": "時間",
       "isocenter": "中心",
+      "isochrone": "",
       "isoextracenter": "追加の中心",
       "leaveat": "出発時刻",
       "leavenow": "今出発する",

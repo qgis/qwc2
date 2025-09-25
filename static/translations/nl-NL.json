@@ -519,6 +519,7 @@
     },
     "routing": {
       "add": "Punt toevoegen",
+      "addlayer": "",
       "addviapoint": "Via hier",
       "arriveat": "Aankomen om",
       "clear": "Wissen",
@@ -536,6 +537,7 @@
       "iso_mode_distance": "Afstand",
       "iso_mode_time": "Tijd",
       "isocenter": "Centrum",
+      "isochrone": "",
       "isoextracenter": "Extra centrum",
       "leaveat": "Vertrekken om",
       "leavenow": "Nu vertrekken",
