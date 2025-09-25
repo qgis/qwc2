@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Не може да се намери фонът \"{0}\", показва се фонът по подразбиране.",
+      "missingdefaulttheme": "",
       "missinglayers": "Не мога да намеря следните слоеве: {0}.",
       "missingpermalink": "Посоченият пермалък или маркер е невалиден или е изтекъл.",
       "missingprojection": "Невъзможно е да се зареди темата \"{0}\": проекцията {1} не е дефинирана.",
@@ -518,6 +519,7 @@
     },
     "routing": {
       "add": "Добавяне на точка",
+      "addlayer": "",
       "addviapoint": "Чрез тук",
       "arriveat": "Пристигнете в",
       "clear": "Clear",
@@ -535,6 +537,7 @@
       "iso_mode_distance": "Разстояние",
       "iso_mode_time": "Време",
       "isocenter": "Център",
+      "isochrone": "",
       "isoextracenter": "Допълнителен център",
       "leaveat": "Оставете в",
       "leavenow": "Напуснете сега",

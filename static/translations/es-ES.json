@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "No se pudo encontrar el fondo \"{0}\", mostrando el fondo predeterminado.",
+      "missingdefaulttheme": "",
       "missinglayers": "No se pudieron encontrar las siguientes capas: {0}.",
       "missingpermalink": "El enlace permanente o marcador especificado es inválido o ha expirado.",
       "missingprojection": "No se pudo cargar el tema \"{0}\": la proyección {1} no está definida.",
@@ -518,6 +519,7 @@
     },
     "routing": {
       "add": "Añadir punto",
+      "addlayer": "",
       "addviapoint": "Pasar por aquí",
       "arriveat": "Llegar a",
       "clear": "Limpiar",
@@ -535,6 +537,7 @@
       "iso_mode_distance": "Distancia",
       "iso_mode_time": "Tiempo",
       "isocenter": "Centro",
+      "isochrone": "",
       "isoextracenter": "Centro adicional",
       "leaveat": "Salir a las",
       "leavenow": "Salir ahora",

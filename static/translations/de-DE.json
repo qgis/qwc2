@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Der Hintergrund \"{0}\" konnte nicht gefunden werden, der Standardhintergrund wird angezeigt.",
+      "missingdefaulttheme": "Das Standardthema konnte nicht geladen werden.",
       "missinglayers": "Die folgenden Ebenen können nicht gefunden werden: {0}.",
       "missingpermalink": "Der Permalink oder das Lesezeichen ist ungültig oder abgelaufen.",
       "missingprojection": "Das Thema \"{0}\" konnte nicht geladen werden: die Projektion {1} ist nicht definiert.",
@@ -518,6 +519,7 @@
     },
     "routing": {
       "add": "Hinzufügen",
+      "addlayer": "Als Ebene exportieren",
       "addviapoint": "Über hier",
       "arriveat": "Ankunft bis",
       "clear": "Zurücksetzen",
@@ -535,6 +537,7 @@
       "iso_mode_distance": "Distanz",
       "iso_mode_time": "Zeit",
       "isocenter": "Zentrum",
+      "isochrone": "",
       "isoextracenter": "Zusätzliches Zentrum",
       "leaveat": "Abfahrt ab",
       "leavenow": "Abfahrt jetzt",

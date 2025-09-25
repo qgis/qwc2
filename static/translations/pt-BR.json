@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Faltando fundo",
+      "missingdefaulttheme": "",
       "missinglayers": "Faltando camadas",
       "missingpermalink": "Faltando link permanente",
       "missingprojection": "",
@@ -518,6 +519,7 @@
     },
     "routing": {
       "add": "Adcionar",
+      "addlayer": "",
       "addviapoint": "Adicionar ponto de via",
       "arriveat": "Chegada",
       "clear": "Limpar",
@@ -535,6 +537,7 @@
       "iso_mode_distance": "",
       "iso_mode_time": "",
       "isocenter": "",
+      "isochrone": "",
       "isoextracenter": "",
       "leaveat": "Sair às",
       "leavenow": "Sair agora",

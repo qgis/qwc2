@@ -13,6 +13,7 @@ import Sortable from 'react-sortablejs';
 import FileSaver from 'file-saver';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
@@ -79,7 +80,7 @@ class Routing extends React.Component {
         enabledModes: ["auto", "heavyvehicle", "transit", "bicycle", "pedestrian"],
         enabledProviders: ["coordinates", "nominatim"],
         geometry: {
-            initialWidth: 320,
+            initialWidth: 480,
             initialHeight: 640,
             initialX: 0,
             initialY: 0,
@@ -439,6 +440,8 @@ class Routing extends React.Component {
                         <span><Icon icon="measure" /> {MeasureUtils.formatMeasurement(routeConfig.result.data.summary.length, false)}</span>
                         <span className="routing-result-spacer" />
                         <span><Icon icon="export" /> <a href="#" onClick={this.exportRoute}>{LocaleUtils.tr("routing.export")}</a></span>
+                        <span className="routing-result-spacer" />
+                        <span><Icon icon="layers" /> <a href="#" onClick={this.addRouteLayer}>{LocaleUtils.tr("routing.addlayer")}</a></span>
                     </div>
                     <div className="routing-result-instructions">
                         {routeConfig.result.data.legs.map((leg, lidx) => leg.maneuvers.map((entry, eidx) => (
@@ -557,7 +560,9 @@ class Routing extends React.Component {
             return (
                 <div className="routing-result">
                     <div className="routing-result-summary">
-                        <Icon icon="export" /> <a href="#" onClick={this.exportIsochrone}>{LocaleUtils.tr("routing.export")}</a>
+                        <span><Icon icon="export" /> <a href="#" onClick={this.exportIsochrone}>{LocaleUtils.tr("routing.export")}</a></span>
+                        <span className="routing-result-spacer" />
+                        <span><Icon icon="layers" /> <a href="#" onClick={this.addIsochroneLayer}>{LocaleUtils.tr("routing.addlayer")}</a></span>
                     </div>
                 </div>
             );
@@ -864,35 +869,74 @@ class Routing extends React.Component {
             this.recomputeTimeout = null;
         }, 750);
     };
+    collectRoutingFeatures = () => {
+        return this.state.routeConfig.result.data.legs.map(leg => ({
+            type: "Feature",
+            properties: {
+                time: leg.time,
+                length: leg.length
+            },
+            geometry: {
+                type: "LineString",
+                coordinates: leg.coordinates
+            },
+            styleName: "default",
+            styleOptions: {
+                strokeColor: [10, 10, 255, 1],
+                strokeWidth: 4,
+                strokeDash: []
+            }
+        }));
+    };
     exportRoute = () => {
         const data = JSON.stringify({
             type: "FeatureCollection",
-            features: this.state.routeConfig.result.data.legs.map(leg => ({
-                type: "Feature",
-                properties: {
-                    time: leg.time,
-                    length: leg.length
-                },
-                geometry: {
-                    type: "LineString",
-                    coordinates: leg.coordinates
-                }
-            }))
+            features: this.collectRoutingFeatures()
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "route.json");
+    };
+    addRouteLayer = () => {
+        const layer = {
+            id: uuidv4(),
+            crs: "EPSG:4326",
+            title: LocaleUtils.tr("routing.route"),
+            type: 'vector'
+        };
+        this.props.addLayerFeatures(layer, this.collectRoutingFeatures());
+        this.props.setCurrentTask("LayerTree");
+    };
+    collectIsochroneFeatures = () => {
+        return this.state.isoConfig.result.data.areas.map(area => ({
+            type: "Feature",
+            geometry: {
+                type: "Polygon",
+                coordinates: [area]
+            },
+            styleName: "default",
+            styleOptions: {
+                strokeColor: [10, 10, 255, 1],
+                fillColor: [10, 10, 255, 0.5],
+                strokeWidth: 4,
+                strokeDash: []
+            }
+        }));
     };
     exportIsochrone = () => {
         const data = JSON.stringify({
             type: "FeatureCollection",
-            features: this.state.isoConfig.result.data.areas.map(area => ({
-                type: "Feature",
-                geometry: {
-                    type: "Polygon",
-                    coordinates: [area]
-                }
-            }))
+            features: this.collectIsochroneFeatures()
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), "isochrone.json");
+    };
+    addIsochroneLayer = () => {
+        const layer = {
+            id: uuidv4(),
+            crs: "EPSG:4326",
+            title: LocaleUtils.tr("routing.reachability"),
+            type: 'vector'
+        };
+        this.props.addLayerFeatures(layer, [this.collectIsochroneFeatures()]);
+        this.props.setCurrentTask("LayerTree");
     };
     onSortChange = (order, sortable, ev) => {
         const newpoints = this.state.routeConfig.points.slice(0);

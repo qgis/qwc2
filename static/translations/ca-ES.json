@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "No s'ha pogut trobar el fons \"{0}\", es mostra el fons per defecte.",
+      "missingdefaulttheme": "",
       "missinglayers": "No s'han pogut trobar les següents capes: {0}.",
       "missingpermalink": "L'enllaç permanent o marcador especificat no és vàlid o ha caducat.",
       "missingprojection": "No s'ha pogut carregar el tema \"{0}\": la projecció {1} no està definida.",
@@ -518,6 +519,7 @@
     },
     "routing": {
       "add": "Afegir punt",
+      "addlayer": "",
       "addviapoint": "Passar per aquí",
       "arriveat": "Arribar a",
       "clear": "Netejar",
@@ -535,6 +537,7 @@
       "iso_mode_distance": "Distància",
       "iso_mode_time": "Temps",
       "isocenter": "Centre",
+      "isochrone": "",
       "isoextracenter": "Centre addicional",
       "leaveat": "Sortir a les",
       "leavenow": "Sortir ara",

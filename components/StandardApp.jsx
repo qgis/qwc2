@@ -101,7 +101,7 @@ class AppContainerComponent extends React.Component {
             this.props.themesLoaded(themes);
 
             let theme = ThemeUtils.getThemeById(themes,  params.t);
-            if ((!theme || theme.restricted) && !ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
+            if ((!theme || theme.restricted) && !ConfigUtils.getConfigProp("dontLoadDefaultTheme") && !ConfigUtils.havePlugin("Portal")) {
                 if (params.t) {
                     this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
                     params.l = undefined;
@@ -151,6 +151,8 @@ class AppContainerComponent extends React.Component {
                     layerParams.reverse();
                 }
                 this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialView);
+            } else if (!ConfigUtils.havePlugin("Portal")) {
+                this.props.showNotification("missingdefaulttheme", LocaleUtils.tr("app.missingdefaulttheme", params.t), NotificationType.WARN, true);
             }
 
             const task = ConfigUtils.getConfigProp("startupTask");

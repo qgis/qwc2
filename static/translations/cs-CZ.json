@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "",
+      "missingdefaulttheme": "",
       "missinglayers": "",
       "missingpermalink": "",
       "missingprojection": "",
@@ -518,6 +519,7 @@
     },
     "routing": {
       "add": "",
+      "addlayer": "",
       "addviapoint": "Přes tento bod",
       "arriveat": "",
       "clear": "",
@@ -535,6 +537,7 @@
       "iso_mode_distance": "",
       "iso_mode_time": "",
       "isocenter": "Centrum",
+      "isochrone": "",
       "isoextracenter": "Širší centrum",
       "leaveat": "",
       "leavenow": "",

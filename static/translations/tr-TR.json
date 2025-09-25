@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Arkaplan bulunamadı \"{0}\", varsayılan arkaplan gösteriliyor.",
+      "missingdefaulttheme": "",
       "missinglayers": "Bu katmanlar bulunamıyor: {0}.",
       "missingpermalink": "Belirtilen yer işareti ya da bağlantı geçerli değil.",
       "missingprojection": "Tema yüklenemedi \"{0}\": projeksiyon {1} tanımlı değil.",
@@ -518,6 +519,7 @@
     },
     "routing": {
       "add": "Nokta ekle",
+      "addlayer": "",
       "addviapoint": "Burası üzerinden",
       "arriveat": "Varış noktası",
       "clear": "Temizle",
@@ -535,6 +537,7 @@
       "iso_mode_distance": "Mesafe",
       "iso_mode_time": "Zaman",
       "isocenter": "Merkez",
+      "isochrone": "",
       "isoextracenter": "İlave merkez",
       "leaveat": "Çıkış zamanı",
       "leavenow": "Şimdi çık",

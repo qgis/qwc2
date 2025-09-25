@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Impossible de trouver le fond \"{0}\", affichage du fond par défaut.",
+      "missingdefaulttheme": "Le thème par défaut n'a pas pu être chargé.",
       "missinglayers": "Impossible de trouver les couches suivantes: {0}.",
       "missingpermalink": "Le permalien ou le signet n'est pas valide ou a expiré.",
       "missingprojection": "Impossible de charger le thème \"{0}\": la projection {1} n'est pas définie.",
@@ -518,6 +519,7 @@
     },
     "routing": {
       "add": "Ajouter",
+      "addlayer": "Exporter en couche",
       "addviapoint": "Par ici",
       "arriveat": "Arriver à",
       "clear": "Réinitialiser",
@@ -535,6 +537,7 @@
       "iso_mode_distance": "Distance",
       "iso_mode_time": "Temps",
       "isocenter": "Centre",
+      "isochrone": "",
       "isoextracenter": "Centre additionnel",
       "leaveat": "Partir à",
       "leavenow": "Partir maintenant",
