@@ -169,7 +169,10 @@ export default class SearchWidget extends React.Component {
             group.provider.getResultGeometry(item, (response) => {
                 this.props.resultSelected({
                     ...item,
-                    feature: response ? VectorLayerUtils.reprojectFeature(response.feature, response.crs, item.crs) : null
+                    feature: response ? VectorLayerUtils.reprojectFeature(response.feature, response.crs, item.crs) : null,
+                    x: item.x ?? (response?.center?.[0]),
+                    y: item.y ?? (response?.center?.[1]),
+                    crs: item.crs ?? response?.crs
                 });
             });
         } else {
