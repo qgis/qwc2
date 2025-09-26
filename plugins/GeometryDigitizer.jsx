@@ -225,20 +225,20 @@ class GeometryDigitizer extends React.Component {
         const target = geomLinkData.target?.iframedialog ? "geomdigitizer-output-window" : (geomLinkData.target ?? "_blank");
 
         return (
-            <div className="redlining-buttongroups">
-                <div className="redlining-group">
+            <div className="redlining-controlsbar">
+                <div className="redlining-groupcontrol">
                     <div>{LocaleUtils.tr("redlining.draw")}</div>
                     <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
                 </div>
-                <div className="redlining-group">
+                <div className="redlining-groupcontrol">
                     <div>{LocaleUtils.tr("redlining.edit")}</div>
                     <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                 </div>
-                <div className="redlining-group">
+                <div className="redlining-groupcontrol">
                     <div>{LocaleUtils.tr("redlining.pick")}</div>
                     <ButtonBar active={activeButton} buttons={pickButtons} onClick={(key, data) => this.actionChanged(data)} />
                 </div>
-                <div className="redlining-group">
+                <div className="redlining-groupcontrol">
                     <div>{LocaleUtils.tr("redlining.buffer")}</div>
                     <div>
                         <NumberInput max={99999} min={-99999} mobile onChange={this.computeBuffer}
@@ -246,7 +246,7 @@ class GeometryDigitizer extends React.Component {
                         />
                     </div>
                 </div>
-                <div className="redlining-group">
+                <div className="redlining-groupcontrol">
                     <div>{LocaleUtils.tr("geomdigitizer.applink")}</div>
                     <div className="controlgroup">
                         <select onChange={ev => this.setState({geomLink: ev.target.value})} value={this.state.geomLink}>
