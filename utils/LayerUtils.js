@@ -1134,6 +1134,9 @@ const LayerUtils = {
             layer.sublayers.forEach(sublayer =>
                 Object.assign(result, LayerUtils.computeVisbilityPreset(sublayer))
             );
+            if (layer.visibility && !layer.url) {
+                result[layer.name] = "";
+            }
         } else if (layer.visibility) {
             result[layer.name] = layer.style;
         }
