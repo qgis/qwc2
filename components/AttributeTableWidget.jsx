@@ -51,6 +51,8 @@ class AttributeTableWidget extends React.Component {
         setCurrentTaskBlocked: PropTypes.func,
         /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
         showEditFormButton: PropTypes.bool,
+        /** Whether to show hidden Fields. */
+        showHiddenFields: PropTypes.bool,
         /** Whether to show the layer selection menu. */
         showLayerSelection: PropTypes.bool,
         /** Whether to show the "Limit to extent" checkbox */
@@ -64,6 +66,7 @@ class AttributeTableWidget extends React.Component {
     static defaultProps = {
         zoomLevel: 1000,
         showEditFormButton: true,
+        showHiddenFields: true,
         showLayerSelection: true
     };
     static defaultState = {
@@ -154,13 +157,9 @@ class AttributeTableWidget extends React.Component {
         let table = null;
         let footbar = null;
         if (currentEditConfig && this.state.features) {
-            const fields = currentEditConfig.fields.reduce((res, field) => {
-                if (field.id !== "id") {
-                    res.push(field);
-                }
-                return res;
-            }, []);
-
+            const fields = currentEditConfig.fields
+                .filter(field => field.id !== "id")
+                .filter(field => this.props.showHiddenFields || field.constraints?.hidden !== true);
             const indexOffset = this.state.currentPage * this.state.pageSize;
             const features = this.state.filteredSortedFeatures.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (

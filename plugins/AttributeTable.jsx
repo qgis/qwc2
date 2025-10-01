@@ -38,6 +38,8 @@ class AttributeTable extends React.Component {
         setCurrentTask: PropTypes.func,
         /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
         showEditFormButton: PropTypes.bool,
+        /** Whether to show hidden fields. */
+        showHiddenFields: PropTypes.bool,
         /** Whether to show the "Limit to extent" checkbox */
         showLimitToExtent: PropTypes.bool,
         taskData: PropTypes.object,
@@ -47,6 +49,7 @@ class AttributeTable extends React.Component {
     static defaultProps = {
         zoomLevel: 1000,
         showEditFormButton: true,
+        showHiddenFields: true,
         showLimitToExtent: true
     };
     render() {
@@ -58,7 +61,8 @@ class AttributeTable extends React.Component {
                 <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers}
                     iface={this.props.iface} initialLayer={this.props.taskData?.layer}
                     role="body" showEditFormButton={this.props.showEditFormButton}
-                    showLimitToExtent={this.props.showLimitToExtent} zoomLevel={this.props.zoomLevel}
+                    showHiddenFields={this.props.showHiddenFields} showLimitToExtent={this.props.showLimitToExtent}
+                    zoomLevel={this.props.zoomLevel}
                 />
             </ResizeableWindow>
         );

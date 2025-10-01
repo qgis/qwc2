@@ -258,7 +258,8 @@ This plugin queries the dataset via the editing service specified by
 |----------|------|-------------|---------------|
 | allowAddForGeometryLayers | `bool` | Whether to allow adding records for datasets which have a geometry column. | `undefined` |
 | showEditFormButton | `bool` | Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. | `true` |
-| showLimitToExtent | `bool` | Whether to show the "Limit to extent" checkbox | `true` |
+| showHiddenFields | `bool` | Whether to show hidden Fields. | `true` |
+| showLimitToExtent | `bool` | Whether to show the "Limit to extent" checkbox | `undefined` |
 | zoomLevel | `number` | The zoom level for zooming to point features. | `1000` |
 
 Authentication<a name="authentication"></a>
