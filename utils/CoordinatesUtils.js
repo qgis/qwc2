@@ -8,6 +8,7 @@
  */
 import ol from 'openlayers';
 import Proj4js from 'proj4';
+import projCodes from '@esri/proj-codes';
 
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
@@ -141,6 +142,16 @@ const CoordinatesUtils = {
     toOgcUrnCrs(crsStr) {
         const parts = crsStr.split(":");
         return "urn:ogc:def:crs:" + parts[0] + "::" + parts[1];
+    },
+    getWktFromCrs(crsStr) {
+        const epsgCode = crsStr.startsWith("EPSG:") ? crsStr : CoordinatesUtils.fromOgcUrnCrs(crsStr);
+        const wkid = parseInt(epsgCode.split(":")[1], 10);
+        const crs = projCodes.lookup(wkid);
+        if (crs && crs.wkt) {
+            return crs.wkt;
+        }
+        // If not found, return null (shapefile will use default)
+        return null;
     },
     getFormattedCoordinate(coo, srcCrs, dstCrs = null, options = {}) {
         const units = CoordinatesUtils.getUnits(dstCrs ?? srcCrs);

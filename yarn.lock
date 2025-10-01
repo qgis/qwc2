@@ -907,6 +907,11 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
+"@esri/proj-codes@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@esri/proj-codes/-/proj-codes-3.5.0.tgz#d2f49d4ceeba86e07e77cbe875b78920fadc5f6b"
+  integrity sha512-EAS0mD6bBjx940IZ9RAfmrUqpcolL//dpgNR4eTWOvpPAdt2wHXuBGLQcegfItMUjMnKrEUpQBwFxRrRCNExPw==
+
 "@fontsource/atkinson-hyperlegible-next@^5.2.2":
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/@fontsource/atkinson-hyperlegible-next/-/atkinson-hyperlegible-next-5.2.3.tgz#c41fc6f2fff26b0669a44b954379bd1aa552113a"
@@ -1190,6 +1195,15 @@
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@mapbox/point-geometry/-/point-geometry-0.1.0.tgz#8a83f9335c7860effa2eeeca254332aa0aeed8f2"
   integrity sha512-6j56HdLTwWGO0fJPlrZtdU/B13q8Uwmo18Ck2GnGgN9PCFyKTZ3UbXeEdRFh18i9XQ92eH2VdtpJHpBD3aripQ==
+
+"@mapbox/shp-write@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@mapbox/shp-write/-/shp-write-0.4.3.tgz#74a47d4e6c44b327cc2cdb8f5bcd673c97bdd390"
+  integrity sha512-mkKIHgtnytyP+cXfk+joYeWwk+SODZ7COQusTcO1rZQVUn68MjzW2F74XMsNIusabnwj5aoKNI8B3mYq9KZ9AQ==
+  dependencies:
+    dbf "0.2.0"
+    file-saver "2.0.5"
+    jszip "^3.10.1"
 
 "@mapbox/tiny-sdf@^2.0.6":
   version "2.0.6"
@@ -2860,6 +2874,13 @@ dayjs@^1.11.13:
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.13.tgz#92430b0139055c3ebb60150aa13e860a4b5a366c"
   integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
 
+dbf@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/dbf/-/dbf-0.2.0.tgz#5b27a9c111f33ce255527010480a6291489fe87f"
+  integrity sha512-JMeGCJzFcVGsfnkIuqrnuiSkJpTu6c4AKJg3LXDnfW7zU/2PSIue3KG4fz9c+/mmlDzT+rVCwyEHzzhxzrzPiA==
+  dependencies:
+    jdataview "~2.5.0"
+
 debug@2.6.9, debug@^2.1.3, debug@^2.6.3:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -3583,7 +3604,7 @@ file-entry-cache@^6.0.1:
   dependencies:
     flat-cache "^3.0.4"
 
-file-saver@^2.0.5:
+file-saver@2.0.5, file-saver@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
   integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
@@ -4606,6 +4627,11 @@ iterator.prototype@^1.1.4:
     get-proto "^1.0.0"
     has-symbols "^1.1.0"
     set-function-name "^2.0.2"
+
+jdataview@~2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/jdataview/-/jdataview-2.5.0.tgz#3081b3fea651f9317ec6bd4feb2ddc98aa41d595"
+  integrity sha512-ZJop3D5nyDcWPBPv4NPnhCvx3HgQNsCXMfw8gpNKY16BobgxmVF+kJ08aHuqk6bJQVeL2mkf6nDCcZPMompalw==
 
 jest-worker@^27.4.5:
   version "27.5.1"
