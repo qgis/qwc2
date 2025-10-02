@@ -907,11 +907,6 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.1.tgz#de633db3ec2ef6a3c89e2f19038063e8a122e2c2"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@esri/proj-codes@^3.5.0":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@esri/proj-codes/-/proj-codes-3.5.0.tgz#d2f49d4ceeba86e07e77cbe875b78920fadc5f6b"
-  integrity sha512-EAS0mD6bBjx940IZ9RAfmrUqpcolL//dpgNR4eTWOvpPAdt2wHXuBGLQcegfItMUjMnKrEUpQBwFxRrRCNExPw==
-
 "@fontsource/atkinson-hyperlegible-next@^5.2.2":
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/@fontsource/atkinson-hyperlegible-next/-/atkinson-hyperlegible-next-5.2.3.tgz#c41fc6f2fff26b0669a44b954379bd1aa552113a"

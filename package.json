@@ -16,7 +16,6 @@
         "geospatial"
     ],
     "dependencies": {
-        "@esri/proj-codes": "^3.5.0",
         "@furkot/webfonts-generator": "^2.0.2",
         "@giro3d/giro3d": "^0.43.4",
         "@kayahr/text-encoding": "^2.0.0",

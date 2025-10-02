@@ -8,7 +8,6 @@
  */
 import ol from 'openlayers';
 import Proj4js from 'proj4';
-import projCodes from '@esri/proj-codes';
 
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
@@ -16,6 +15,11 @@ import LocaleUtils from './LocaleUtils';
 const crsLabels = {
     "EPSG:4326": "WGS 84",
     "EPSG:3857": "WGS 84 / Pseudo Mercator"
+};
+
+const commonEsriWktLookup = {
+    "EPSG:4326": 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]',
+    "EPSG:3857": 'PROJCS["WGS_1984_Web_Mercator_Auxiliary_Sphere",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Mercator_Auxiliary_Sphere"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",0.0],PARAMETER["Standard_Parallel_1",0.0],PARAMETER["Auxiliary_Sphere_Type",0.0],UNIT["Meter",1.0]]'
 };
 
 const CoordinatesUtils = {
@@ -145,12 +149,18 @@ const CoordinatesUtils = {
     },
     getWktFromCrs(crsStr) {
         const epsgCode = crsStr.startsWith("EPSG:") ? crsStr : CoordinatesUtils.fromOgcUrnCrs(crsStr);
-        const wkid = parseInt(epsgCode.split(":")[1], 10);
-        const crs = projCodes.lookup(wkid);
-        if (crs && crs.wkt) {
-            return crs.wkt;
+
+        const projections = ConfigUtils.getConfigProp("projections") || [];
+        const configProjection = projections.find(proj => proj.code === epsgCode);
+        if (configProjection && configProjection.esriWkt) {
+            return configProjection.esriWkt;
         }
-        // If not found, return null (shapefile will use default)
+
+        if (commonEsriWktLookup[epsgCode]) {
+            return commonEsriWktLookup[epsgCode];
+        }
+
+        console.warn(`No ESRI WKT definition found for ${epsgCode}. Shapefile export may not include projection information. Consider adding an 'esriWkt' property to the projection in config.json.`);
         return null;
     },
     getFormattedCoordinate(coo, srcCrs, dstCrs = null, options = {}) {
