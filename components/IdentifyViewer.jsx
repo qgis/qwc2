@@ -16,7 +16,6 @@ import JSZip from 'jszip';
 import isEmpty from 'lodash.isempty';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import shpwrite from '@mapbox/shp-write';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
@@ -158,39 +157,19 @@ const BuiltinExporters = [
         title: 'Shapefile',
         allowClipboard: false,
         export: (json, callback) => {
-            const layers = Object.entries(json);
-            const options = {
-                outputType: 'arraybuffer',
-                types: {
-                    point: 'points',
-                    polygon: 'polygons',
-                    polyline: 'lines'
-                }
-            };
-            if (layers.length === 1) {
-                const [layerName, features] = layers[0];
-                const geojson = {
-                    type: "FeatureCollection",
-                    features: features.map(entry => {
-                        return omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox', 'crs']);
-                    })
-                };
-                const layerOptions = {...options, folder: layerName};
-                const crs = features[0]?.crs;
-                if (crs) {
-                    const wkt = CoordinatesUtils.getWktFromCrs(crs);
-                    if (wkt) {
-                        layerOptions.prj = wkt;
+            import("@mapbox/shp-write").then(shpwriteMod => {
+                const shpwrite = shpwriteMod.default;
+                const layers = Object.entries(json);
+                const options = {
+                    outputType: 'arraybuffer',
+                    types: {
+                        point: 'points',
+                        polygon: 'polygons',
+                        polyline: 'lines'
                     }
-                }
-                shpwrite.zip(geojson, layerOptions).then((shpData) => {
-                    callback({
-                        data: shpData, type: "application/zip", filename: layerName + ".zip"
-                    });
-                });
-            } else {
-                const zip = new JSZip();
-                const promises = layers.map(([layerName, features]) => {
+                };
+                if (layers.length === 1) {
+                    const [layerName, features] = layers[0];
                     const geojson = {
                         type: "FeatureCollection",
                         features: features.map(entry => {
@@ -205,18 +184,41 @@ const BuiltinExporters = [
                             layerOptions.prj = wkt;
                         }
                     }
-                    return shpwrite.zip(geojson, layerOptions).then((shpData) => {
-                        zip.file(layerName + ".zip", shpData);
+                    shpwrite.zip(geojson, layerOptions).then((shpData) => {
+                        callback({
+                            data: shpData, type: "application/zip", filename: layerName + ".zip"
+                        });
                     });
-                });
-                Promise.all(promises).then(() => {
-                    return zip.generateAsync({type: "arraybuffer"});
-                }).then((result) => {
-                    callback({
-                        data: result, type: "application/zip", filename: "shapefiles.zip"
+                } else {
+                    const zip = new JSZip();
+                    const promises = layers.map(([layerName, features]) => {
+                        const geojson = {
+                            type: "FeatureCollection",
+                            features: features.map(entry => {
+                                return omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox', 'crs']);
+                            })
+                        };
+                        const layerOptions = {...options, folder: layerName};
+                        const crs = features[0]?.crs;
+                        if (crs) {
+                            const wkt = CoordinatesUtils.getWktFromCrs(crs);
+                            if (wkt) {
+                                layerOptions.prj = wkt;
+                            }
+                        }
+                        return shpwrite.zip(geojson, layerOptions).then((shpData) => {
+                            zip.file(layerName + ".zip", shpData);
+                        });
                     });
-                });
-            }
+                    Promise.all(promises).then(() => {
+                        return zip.generateAsync({type: "arraybuffer"});
+                    }).then((result) => {
+                        callback({
+                            data: result, type: "application/zip", filename: "shapefiles.zip"
+                        });
+                    });
+                }
+            });
         }
     }
 ];
