@@ -210,8 +210,9 @@ class Map extends React.Component {
             }
             ++zIndex;
             const swipe = this.props.swipe !== null && layer === this.state.swipeLayer;
+            const key = layer.id + ":" + layer.params?.LAYERS ?? "";
             return (
-                <OlLayer key={layer.id} options={layer} swipe={swipe ? this.props.swipe : null} zIndex={layer.zIndex ?? zIndex} />
+                <OlLayer key={key} options={layer} swipe={swipe ? this.props.swipe : null} zIndex={layer.zIndex ?? zIndex} />
             );
         });
     };
