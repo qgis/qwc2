@@ -33,6 +33,7 @@ import Spinner from './widgets/Spinner';
 
 import './style/IdentifyViewer.css';
 
+const EXCLUDE_PROPS = ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox'];
 
 const BuiltinExporters = [
     {
@@ -53,7 +54,7 @@ const BuiltinExporters = [
             const featureCollection = {
                 type: "FeatureCollection",
                 features: Object.values(json).flat().map(entry => {
-                    const feature = omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox']);
+                    const feature = omit(entry, EXCLUDE_PROPS);
                     if (feature.geometry) {
                         feature.crs = {
                             type: "name",
@@ -171,9 +172,7 @@ const BuiltinExporters = [
                 const promises = layers.map(([layerName, features]) => {
                     const geojson = {
                         type: "FeatureCollection",
-                        features: features.map(entry => {
-                            return omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox', 'crs']);
-                        })
+                        features: features.map(entry => omit(entry, EXCLUDE_PROPS))
                     };
                     const layerOptions = {...options, folder: layerName};
                     const crs = features[0]?.crs;
