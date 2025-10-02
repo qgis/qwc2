@@ -33,6 +33,7 @@ import Spinner from './widgets/Spinner';
 
 import './style/IdentifyViewer.css';
 
+const EXCLUDE_PROPS = ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox'];
 
 const BuiltinExporters = [
     {
@@ -53,7 +54,7 @@ const BuiltinExporters = [
             const featureCollection = {
                 type: "FeatureCollection",
                 features: Object.values(json).flat().map(entry => {
-                    const feature = omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox']);
+                    const feature = omit(entry, EXCLUDE_PROPS);
                     if (feature.geometry) {
                         feature.crs = {
                             type: "name",
@@ -151,6 +152,63 @@ const BuiltinExporters = [
                     data: data[0], type: "text/csv;charset=utf-8", filename: filenames[0] + ".csv"
                 });
             }
+        }
+    }, {
+        id: 'shapefile',
+        title: 'Shapefile',
+        allowClipboard: false,
+        export: (json, callback) => {
+            import("@mapbox/shp-write").then(shpwriteMod => {
+                const shpwrite = shpwriteMod.default;
+                const layers = Object.entries(json);
+                const options = {
+                    outputType: 'arraybuffer',
+                    types: {
+                        point: 'points',
+                        polygon: 'polygons',
+                        polyline: 'lines'
+                    }
+                };
+                const promises = layers.map(([layerName, features]) => {
+                    const geojson = {
+                        type: "FeatureCollection",
+                        features: features.map(entry => omit(entry, EXCLUDE_PROPS))
+                    };
+                    const layerOptions = {...options, folder: layerName};
+                    const crs = features[0]?.crs;
+                    if (crs) {
+                        const wkt = CoordinatesUtils.getEsriWktFromCrs(crs);
+                        if (wkt) {
+                            layerOptions.prj = wkt;
+                        }
+                    }
+                    return shpwrite.zip(geojson, layerOptions).then((shpData) => ({
+                        layerName,
+                        shpData
+                    }));
+                });
+                Promise.all(promises).then((results) => {
+                    if (results.length === 1) {
+                        callback({
+                            data: results[0].shpData,
+                            type: "application/zip",
+                            filename: results[0].layerName + ".zip"
+                        });
+                    } else {
+                        const zip = new JSZip();
+                        results.forEach(({layerName, shpData}) => {
+                            zip.file(layerName + ".zip", shpData);
+                        });
+                        zip.generateAsync({type: "arraybuffer"}).then((result) => {
+                            callback({
+                                data: result,
+                                type: "application/zip",
+                                filename: "shapefiles.zip"
+                            });
+                        });
+                    }
+                });
+            });
         }
     }
 ];

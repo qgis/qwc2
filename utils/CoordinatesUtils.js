@@ -17,6 +17,11 @@ const crsLabels = {
     "EPSG:3857": "WGS 84 / Pseudo Mercator"
 };
 
+const commonEsriWktLookup = {
+    "EPSG:4326": 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]',
+    "EPSG:3857": 'PROJCS["WGS_1984_Web_Mercator_Auxiliary_Sphere",GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Mercator_Auxiliary_Sphere"],PARAMETER["False_Easting",0.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",0.0],PARAMETER["Standard_Parallel_1",0.0],PARAMETER["Auxiliary_Sphere_Type",0.0],UNIT["Meter",1.0]]'
+};
+
 const CoordinatesUtils = {
     setCrsLabels(labels) {
         Object.assign(crsLabels, labels);
@@ -141,6 +146,22 @@ const CoordinatesUtils = {
     toOgcUrnCrs(crsStr) {
         const parts = crsStr.split(":");
         return "urn:ogc:def:crs:" + parts[0] + "::" + parts[1];
+    },
+    getEsriWktFromCrs(crsStr) {
+        const epsgCode = crsStr.startsWith("EPSG:") ? crsStr : CoordinatesUtils.fromOgcUrnCrs(crsStr);
+
+        const projections = ConfigUtils.getConfigProp("projections") || [];
+        const configProjection = projections.find(proj => proj.code === epsgCode);
+        if (configProjection && configProjection.esriWkt) {
+            return configProjection.esriWkt;
+        }
+
+        if (commonEsriWktLookup[epsgCode]) {
+            return commonEsriWktLookup[epsgCode];
+        }
+
+        console.warn(`No ESRI WKT definition found for ${epsgCode}. Shapefile export may not include projection information. Consider adding an 'esriWkt' property to the projection in config.json.`);
+        return null;
     },
     getFormattedCoordinate(coo, srcCrs, dstCrs = null, options = {}) {
         const units = CoordinatesUtils.getUnits(dstCrs ?? srcCrs);
