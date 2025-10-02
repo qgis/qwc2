@@ -168,8 +168,7 @@ const BuiltinExporters = [
                         polyline: 'lines'
                     }
                 };
-                if (layers.length === 1) {
-                    const [layerName, features] = layers[0];
+                const promises = layers.map(([layerName, features]) => {
                     const geojson = {
                         type: "FeatureCollection",
                         features: features.map(entry => {
@@ -179,45 +178,37 @@ const BuiltinExporters = [
                     const layerOptions = {...options, folder: layerName};
                     const crs = features[0]?.crs;
                     if (crs) {
-                        const wkt = CoordinatesUtils.getWktFromCrs(crs);
+                        const wkt = CoordinatesUtils.getEsriWktFromCrs(crs);
                         if (wkt) {
                             layerOptions.prj = wkt;
                         }
                     }
-                    shpwrite.zip(geojson, layerOptions).then((shpData) => {
+                    return shpwrite.zip(geojson, layerOptions).then((shpData) => ({
+                        layerName,
+                        shpData
+                    }));
+                });
+                Promise.all(promises).then((results) => {
+                    if (results.length === 1) {
                         callback({
-                            data: shpData, type: "application/zip", filename: layerName + ".zip"
+                            data: results[0].shpData,
+                            type: "application/zip",
+                            filename: results[0].layerName + ".zip"
                         });
-                    });
-                } else {
-                    const zip = new JSZip();
-                    const promises = layers.map(([layerName, features]) => {
-                        const geojson = {
-                            type: "FeatureCollection",
-                            features: features.map(entry => {
-                                return omit(entry, ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox', 'crs']);
-                            })
-                        };
-                        const layerOptions = {...options, folder: layerName};
-                        const crs = features[0]?.crs;
-                        if (crs) {
-                            const wkt = CoordinatesUtils.getWktFromCrs(crs);
-                            if (wkt) {
-                                layerOptions.prj = wkt;
-                            }
-                        }
-                        return shpwrite.zip(geojson, layerOptions).then((shpData) => {
+                    } else {
+                        const zip = new JSZip();
+                        results.forEach(({layerName, shpData}) => {
                             zip.file(layerName + ".zip", shpData);
                         });
-                    });
-                    Promise.all(promises).then(() => {
-                        return zip.generateAsync({type: "arraybuffer"});
-                    }).then((result) => {
-                        callback({
-                            data: result, type: "application/zip", filename: "shapefiles.zip"
+                        zip.generateAsync({type: "arraybuffer"}).then((result) => {
+                            callback({
+                                data: result,
+                                type: "application/zip",
+                                filename: "shapefiles.zip"
+                            });
                         });
-                    });
-                }
+                    }
+                });
             });
         }
     }

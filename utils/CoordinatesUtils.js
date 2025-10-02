@@ -147,7 +147,7 @@ const CoordinatesUtils = {
         const parts = crsStr.split(":");
         return "urn:ogc:def:crs:" + parts[0] + "::" + parts[1];
     },
-    getWktFromCrs(crsStr) {
+    getEsriWktFromCrs(crsStr) {
         const epsgCode = crsStr.startsWith("EPSG:") ? crsStr : CoordinatesUtils.fromOgcUrnCrs(crsStr);
 
         const projections = ConfigUtils.getConfigProp("projections") || [];
