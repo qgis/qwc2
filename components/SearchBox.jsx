@@ -17,7 +17,7 @@ import pointInPolygon from 'point-in-polygon';
 import polygonIntersectTest from 'polygon-intersect-test';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, addThemeSublayer, changeLayerProperty, removeLayer, addLayer} from '../actions/layers';
 import {logAction} from '../actions/logging';
@@ -653,7 +653,7 @@ class SearchBox extends React.Component {
             this.setState({searchResults: {}});
             return;
         }
-        const searchSession = uuidv1();
+        const searchSession = uuidv4();
         this.setState({
             searchResults: {query_text: searchText},
             searchSession: searchSession,

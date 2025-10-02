@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../../actions/layers';
 import {setSnappingConfig} from '../../actions/map';
@@ -255,7 +255,7 @@ class SnappingSupport extends React.Component {
             feature_count: snappingConfig.featureCount || 500
         };
         const request = IdentifyUtils.buildFilterRequest(themeLayer, snapLayers.join(","), filterGeom, this.props.mapObj, options);
-        const reqId = uuidv1();
+        const reqId = uuidv4();
         this.setState({reqId: reqId});
         IdentifyUtils.sendRequest(request, (response) => {
             if (this.state.reqId !== reqId) {
@@ -267,7 +267,7 @@ class SnappingSupport extends React.Component {
                 const format = new ol.format.GeoJSON();
                 const olFeatures = format.readFeatures({
                     type: "FeatureCollection",
-                    features: features.map(feature => ({...feature, id: uuidv1()}))
+                    features: features.map(feature => ({...feature, id: uuidv4()}))
                 });
                 this.source.addFeatures(olFeatures);
                 // Add features from local layers

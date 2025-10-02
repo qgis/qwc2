@@ -13,7 +13,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
@@ -62,7 +62,7 @@ class FeatureSearch extends React.Component {
                     if (providerDef.params.titlemsgid) {
                         providerDef.params.title = LocaleUtils.tr(providerDef.params.titlemsgid);
                     }
-                    const providerId = uuidv1();
+                    const providerId = uuidv4();
                     res[providerId] = providerDef;
                     if (providerDef.params.default) {
                         defaultProvider = providerId;

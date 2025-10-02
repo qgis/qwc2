@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../actions/layers';
 import OlLayer from '../components/map/OlLayer';
@@ -61,7 +61,7 @@ class OverviewMap extends React.Component {
                 overviewLayer = {
                     ...this.props.options.layer,
                     visibility: true,
-                    id: uuidv1()
+                    id: uuidv4()
                 };
                 if (overviewLayer.type === 'wms') {
                     overviewLayer.version = overviewLayer.params.VERSION || overviewLayer.version || this.props.themes?.defaultWMSVersion || "1.3.0";

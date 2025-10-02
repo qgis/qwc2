@@ -13,7 +13,7 @@ import {connect} from 'react-redux';
 import htmlReactParser, {domToReact} from 'html-react-parser';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import {openExternalUrl} from '../actions/windows';
@@ -111,7 +111,7 @@ class MapTip extends React.Component {
             with_maptip: true,
             with_htmlcontent: false
         };
-        const reqId = uuidv1();
+        const reqId = uuidv4();
         this.reqId = reqId;
         const layerOrder = [];
         this.props.layers.forEach(layer => {

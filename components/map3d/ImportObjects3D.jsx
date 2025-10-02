@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {processStarted, processFinished} from '../../actions/processNotifications';
 import ConfigUtils from '../../utils/ConfigUtils';
@@ -57,7 +57,7 @@ class ImportObjects3D extends React.Component {
             return;
         }
         const file = this.state.selectedfile;
-        const taskid = uuidv1();
+        const taskid = uuidv4();
         this.setState({importing: true});
         this.props.processStarted(taskid, LocaleUtils.tr("import3d.importing", file.name));
 

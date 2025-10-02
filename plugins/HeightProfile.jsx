@@ -26,7 +26,7 @@ import {
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
@@ -267,7 +267,7 @@ class HeightProfile extends React.Component {
         }
     }
     queryElevations(coordinates, distances, projection) {
-        const reqId = uuidv1();
+        const reqId = uuidv4();
         this.setState({reqId: reqId});
         const totLength = this.props.measurement.length;
         getElevationInterface().getProfile(coordinates, distances, projection, this.props.samples).then(response => {

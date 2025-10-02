@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
 import IdentifyUtils from '../utils/IdentifyUtils';
@@ -93,7 +93,7 @@ class PickFeature extends React.Component {
                         }
                     }
                     const clickPos = getPixelFromCoordinate([maxX, maxY], false);
-                    const reqId = uuidv1();
+                    const reqId = uuidv4();
                     queryLayers.forEach(layer => {
                         let request = null;
                         if (this.props.pickGeomType === 'Point') {

@@ -15,7 +15,7 @@ const fs = require('fs');
 const path = require('path');
 const objectPath = require('object-path');
 const isEmpty = require('lodash.isempty');
-const uuidv1 = require('uuid').v1;
+const uuidv4 = require('uuid').v1;
 const os = require('os');
 const dns = require('dns');
 
@@ -29,7 +29,7 @@ const autogenExternalLayers = [];
 
 function uniqueThemeId(themeName) {
     if (!themeName) {
-        return uuidv1();
+        return uuidv4();
     }
     if (usedThemeIds.includes(themeName)) {
         let i = 1;

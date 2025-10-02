@@ -13,7 +13,7 @@ import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, setFilter} from '../actions/layers';
 import {setPermalinkParameters} from '../actions/localConfig';
@@ -119,7 +119,7 @@ class MapFilter extends React.Component {
                         };
                     }
                     if ("__custom" in startupConfig) {
-                        customFilters = startupConfig.__custom.reduce((res, entry) => ({...res, [uuidv1()]: {
+                        customFilters = startupConfig.__custom.reduce((res, entry) => ({...res, [uuidv4()]: {
                             title: entry.title || "", layer: entry.layer, expr: JSON.stringify(entry.expr), active: true
                         }}), {});
                     }
@@ -610,7 +610,7 @@ class MapFilter extends React.Component {
         }));
     };
     addCustomFilter = () => {
-        const key = uuidv1();
+        const key = uuidv4();
         this.setState((state) => ({
             customFilters: {
                 ...state.customFilters,

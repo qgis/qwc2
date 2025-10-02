@@ -12,7 +12,7 @@ import {getDefaultImageStyle} from 'ol/format/KML';
 import ol from 'openlayers';
 import simplepolygon from 'simplepolygon';
 import svgpath from 'svgpath';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -378,7 +378,7 @@ const VectorLayerUtils = {
             };
         }
     },
-    wktToGeoJSON(wkt, srccrs, dstcrs, id = uuidv1()) {
+    wktToGeoJSON(wkt, srccrs, dstcrs, id = uuidv4()) {
         wkt = wkt
             .replace(/Point(\w+)/i, "Point $1")
             .replace(/LineString(\w+)/i, "LineString $1")
@@ -466,7 +466,7 @@ const VectorLayerUtils = {
             Object.assign(feature, {
                 styleName: styleOptions.iconSrc && feature.geometry?.type === "Point" ? 'marker' : 'default',
                 styleOptions: styleOptions,
-                id: uuidv1(),
+                id: uuidv4(),
                 crs: "EPSG:4326",
                 properties: {}
             });

@@ -12,7 +12,7 @@ import React from 'react';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
@@ -141,7 +141,7 @@ export default class SearchWidget extends React.Component {
     };
     startSearch = () => {
         clearTimeout(this.searchTimeout);
-        const reqId = uuidv1();
+        const reqId = uuidv4();
         this.setState({reqId: reqId, results: [], pending: this.props.searchProviders.length});
 
         this.props.searchProviders.forEach(provider => {

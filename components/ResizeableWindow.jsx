@@ -14,7 +14,7 @@ import {Rnd} from 'react-rnd';
 
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {raiseWindow, registerWindow, unregisterWindow, setSplitScreen} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -98,7 +98,7 @@ class ResizeableWindow extends React.Component {
         super(props);
         this.rnd = null;
         this.dragShield = null;
-        this.id = uuidv1();
+        this.id = uuidv4();
         this.portalNode = props.usePortal ? portals.createHtmlPortalNode() : null;
     }
     componentDidMount() {

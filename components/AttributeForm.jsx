@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import clone from 'clone';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole, refreshLayer} from '../actions/layers';
@@ -506,7 +506,7 @@ class AttributeForm extends React.Component {
                         const type = element.value.match(/image\/\w+/)[0];
                         if (!filename) {
                             const ext = type.split("/")[1];
-                            filename = uuidv1() + "." + ext;
+                            filename = uuidv4() + "." + ext;
                         }
                         relationUploads[name] = new File([this.dataUriToBlob(element.value)], filename, {type: type});
                         relationValues[datasetname].features[index].properties[field] = "";
@@ -543,7 +543,7 @@ class AttributeForm extends React.Component {
                         const type = element.value.match(/image\/\w+/)[0];
                         if (!filename) {
                             const ext = type.split("/")[1];
-                            filename = uuidv1() + "." + ext;
+                            filename = uuidv4() + "." + ext;
                         }
                         featureUploads[name] = new File([this.dataUriToBlob(element.value)], filename, {type: type});
                         feature.properties[name] = "";

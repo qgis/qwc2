@@ -11,7 +11,7 @@ import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import url from 'url';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -310,7 +310,7 @@ const IdentifyUtils = {
         const result = {};
         (response.features || []).map(feature => {
             // Deduce layer name as far as possible from feature id
-            const id = feature.id || (feature.properties || {}).OBJECTID || uuidv1();
+            const id = feature.id || (feature.properties || {}).OBJECTID || uuidv4();
             if (result[layer.name] === undefined) {
                 result[layer.name] = [];
             }

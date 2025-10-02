@@ -10,7 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayer, clearLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
@@ -75,10 +75,10 @@ class ScratchDrawing extends React.Component {
         }
     }
     createDrawLayer = (data) => {
-        const layerId = uuidv1();
+        const layerId = uuidv4();
         const features = (data.initialFeatures || []).map(feature => ({
             ...feature,
-            id: uuidv1(),
+            id: uuidv4(),
             shape: feature.geometry.type,
             styleName: 'default',
             styleOptions: this.styleOptions(this.drawingStyle(data.style))
