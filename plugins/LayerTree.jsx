@@ -203,7 +203,7 @@ class LayerTree extends React.Component {
         if (subtreevisibility === 0 && this.state.filterinvisiblelayers) {
             return null;
         }
-        const groupId = layer.id + ":" + group.name;
+        const groupId = layer.id + ":" + group.name + ":" + (path.slice(-1)[0] ?? "");
         let visibility = true;
         let checkboxstate = "";
         if (this.props.groupTogglesSublayers && !inMutuallyExclusiveGroup) {
