@@ -34,6 +34,7 @@ import Spinner from './widgets/Spinner';
 import './style/IdentifyViewer.css';
 
 const EXCLUDE_PROPS = ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox'];
+const EXCLUDE_ATTRS = ['htmlContent', 'htmlContentInline'];
 
 const BuiltinExporters = [
     {
@@ -207,6 +208,43 @@ const BuiltinExporters = [
                             });
                         });
                     }
+                });
+            });
+        }
+    }, {
+        id: 'xlsx',
+        title: 'XLSX',
+        allowClipboard: false,
+        export: (json, callback) => {
+            import('xlsx').then(xlsx => {
+
+                const document = xlsx.utils.book_new();
+
+                Object.entries(json).forEach(([layerName, features]) => {
+                    const exportAttrs = Object.keys(features[0]?.properties ?? {}).filter(attr => !EXCLUDE_ATTRS.includes(attr));
+                    const dataset = [[...exportAttrs]];
+                    if (features[0].geometry) {
+                        dataset[0].push("geometry");
+                    }
+                    features.forEach(feature => {
+                        const row = exportAttrs.map(attr => feature.properties[attr]);
+                        if (feature.geometry) {
+                            const geomWkt = VectorLayerUtils.geoJSONGeomToWkt(feature.geometry);
+                            if (geomWkt.length < 32768) {
+                                row.push(geomWkt);
+                            } else {
+                                row.push("Geometry too large");
+                            }
+                        }
+                        dataset.push(row);
+                    });
+                    const worksheet = xlsx.utils.aoa_to_sheet(dataset);
+                    const sheetName = features[0].layertitle.slice(0, 30).replace(/[\\/?*[]]?/g, '_');
+                    xlsx.utils.book_append_sheet(document, worksheet, sheetName);
+                });
+                const data = xlsx.write(document, {type: "buffer"});
+                callback({
+                    data: data, type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename: "results.xlsx"
                 });
             });
         }
