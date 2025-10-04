@@ -44,9 +44,11 @@ class FeatureSearch extends React.Component {
         searchProviders: {},
         providerGroups: {},
         selectedProvider: '',
+        formValues: {},
+        providerSelectOptions: {},
         searchResults: null
     };
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             let defaultProvider = '';
             const providerGroups = {};
@@ -80,6 +82,15 @@ class FeatureSearch extends React.Component {
                 return res;
             }, {});
             this.setState({searchProviders: searchProviders, selectedProvider: defaultProvider, providerGroups: sortedProviderGroups});
+        }
+        if (this.state.selectedProvider !== prevState.selectedProvider) {
+            this.setState(state => ({
+                formValues: Object.entries(state.searchProviders[state.selectedProvider].params.fields).reduce((res, [field, cfg]) => {
+                    return {...res, [field]: cfg.options?.[0]?.value ?? cfg.options?.[0] ?? ""};
+                }, {})
+            }));
+        } else if (this.state.formValues !== prevState.formValues) {
+            this.reloadSelectOptions();
         }
     }
     onHide = () => {
@@ -146,16 +157,18 @@ class FeatureSearch extends React.Component {
         );
     };
     renderField = (fieldname, fieldcfg) => {
+        const onChange = ev => this.setState(state => ({formValues: {...state.formValues, [fieldname]: ev.target.value}}));
         if (fieldcfg.type === "select") {
+            const options = this.state.providerSelectOptions[fieldname]?.options ?? fieldcfg.options;
             return (
-                <select name={fieldname}>
-                    {fieldcfg.options.map(entry => (
+                <select name={fieldname} onChange={onChange}>
+                    {options.map(entry => (
                         <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
                     ))}
                 </select>
             );
         } else {
-            return (<input name={fieldname} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
+            return (<input name={fieldname} onChange={onChange} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
         }
     };
     renderSearchResults = () => {
@@ -174,7 +187,7 @@ class FeatureSearch extends React.Component {
         );
     };
     selectProvider = (ev) => {
-        this.setState({selectedProvider: ev.target.value, searchResults: null});
+        this.setState({selectedProvider: ev.target.value, searchResults: null, providerSelectOptions: {}, formValues: {}});
     };
     search = (ev) => {
         ev.preventDefault();
@@ -229,6 +242,48 @@ class FeatureSearch extends React.Component {
             this.setState({busy: false, searchResults: results});
         }).catch(() => {
             this.setState({busy: false, searchResults: {}});
+        });
+    };
+    reloadSelectOptions = () => {
+        Object.entries(this.state.searchProviders[this.state.selectedProvider]?.params?.fields ?? {}).forEach(([name, fieldcfg]) => {
+            if (fieldcfg.type === "select") {
+                if (fieldcfg.options_query) {
+                    let url = fieldcfg.options_query;
+                    Object.entries(this.state.formValues).forEach(([key, value]) => {
+                        url = url.replace(`$${key}$`, value);
+                    });
+                    if (this.state.providerSelectOptions[name]?.source !== url) {
+                        axios.get(url).then(response => {
+                            let options = [];
+                            if (response.data.type === "FeatureCollection") {
+                                options = Object.entries(response.data.features.reduce((res, feature) => {
+                                    const value = fieldcfg.value_field === 'id' ? feature.id : feature.properties[fieldcfg.value_field];
+                                    const label = fieldcfg.label_field === 'id' ? feature.id : feature.properties[fieldcfg.label_field];
+                                    return {...res, [value]: label};
+                                }, {})).map(entry => ({value: entry[0], label: entry[1]}));
+                            } else if (Array.isArray(response.data)) {
+                                options = response.data.map(entry => ({
+                                    value: entry.key,
+                                    label: entry.value
+                                }));
+                            }
+                            this.setState(state => ({
+                                providerSelectOptions: {...state.providerSelectOptions, [name]: {source: url, options: options}}
+                            }));
+                        }).catch(() => {
+                            /* eslint-disable-next-line */
+                            console.warn(`Failed to query options for field ${name}`);
+                            this.setState(state => ({
+                                providerSelectOptions: {...state.providerSelectOptions, [name]: {source: url, options: []}}
+                            }));
+                        });
+                    }
+                } else if (fieldcfg.options && !this.state.providerSelectOptions[name]) {
+                    this.setState(state => ({
+                        providerSelectOptions: {...state.providerSelectOptions, [name]: {source: "static", options: fieldcfg.options}}
+                    }));
+                }
+            }
         });
     };
 }
