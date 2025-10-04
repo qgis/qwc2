@@ -465,7 +465,6 @@
     "routing.iso_mode_distance",
     "routing.iso_mode_time",
     "routing.isocenter",
-    "routing.isochrone",
     "routing.isoextracenter",
     "routing.leaveat",
     "routing.leavenow",
