@@ -560,13 +560,12 @@ class IdentifyViewer extends React.Component {
             <div className={resultClass} key="results-attributes">
                 <div className="identify-result-title">
                     {this.props.collapsible ? (
-                        <Icon icon={expanded ? "tree_minus" : "tree_plus"} onClick={() => this.setState(state => ({expandedResults: {...state.expandedResults, [key]: !expanded}}))} />
-                    ) : (
-                        <Icon icon="minus" onClick={() => this.removeResult(layer, result)} />
-                    )}
+                        <Icon icon={expanded ? "triangle-down" : "triangle-right"} onClick={() => this.setState(state => ({expandedResults: {...state.expandedResults, [key]: !expanded}}))} />
+                    ) : null}
                     <span>{(this.props.showLayerTitles ? (result.layertitle + ": ") : "") + result.displayname}</span>
                     {zoomToFeatureButton}
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layer)} />
+                    <Icon icon="trash" onClick={() => this.removeResult(layer, result)} />
                 </div>
                 {this.props.collapsible && !expanded ? null : (
                     <div className="identify-result-container">
