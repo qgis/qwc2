@@ -56,6 +56,7 @@ const BuiltinExporters = [
                 type: "FeatureCollection",
                 features: Object.values(json).flat().map(entry => {
                     const feature = omit(entry, EXCLUDE_PROPS);
+                    feature.properties = omit(feature.properties, EXCLUDE_ATTRS);
                     if (feature.geometry) {
                         feature.crs = {
                             type: "name",
@@ -77,23 +78,23 @@ const BuiltinExporters = [
         title: 'CSV',
         allowClipboard: true,
         export: (json, callback) => {
-            let data = "";
+            const dataset = [];
             Object.entries(json).forEach(([layerName, features]) => {
                 features.forEach(feature => {
-                    data += layerName + ": " + feature.displayname + "\n";
+                    dataset.push([feature.layertitle + ": " + feature.displayname]);
                     Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
-                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
-                            data += '\t"' + attrib + '"\t"' + String(value).replace('"', '""') + '"\n';
+                        if (!EXCLUDE_ATTRS.includes(attrib)) {
+                            dataset.push(["", attrib, String(value)]);
                         }
                     });
                     if (feature.geometry) {
-                        data += '\t"geometry"\t"' + VectorLayerUtils.geoJSONGeomToWkt(feature.geometry) + '"\n';
+                        dataset.push(["", "geometry", VectorLayerUtils.geoJSONGeomToWkt(feature.geometry)]);
                     }
                 });
-                data += "\n";
             });
+            const csv = dataset.map(row => row.map(field => field ? `"${field.replace('"', '""')}"` : "").join("\t")).join("\n");
             callback({
-                data: data, type: "text/plain;charset=utf-8", filename: "results.csv"
+                data: csv, type: "text/plain;charset=utf-8", filename: "results.csv"
             });
         }
     }, {
@@ -101,41 +102,25 @@ const BuiltinExporters = [
         title: 'CSV+ZIP',
         allowClipboard: false,
         export: (json, callback) => {
-            let first = true;
+
             const data = [];
             const filenames = [];
             Object.entries(json).forEach(([layerName, features]) => {
-                let csv = "";
-                if (first) {
-                    Object.entries(features[0].properties || {}).forEach(([attrib]) => {
-                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
-                            csv += attrib  + ';';
-                        }
-                    });
-                    if (features[0].geometry) {
-                        csv += 'geometry';
-                    } else if (csv !== "") {
-                        csv = csv.slice(0, -1); // Remove trailling semi column ;
-                    }
-                    first = false;
-                    csv += '\n';
+                const exportAttrs = Object.keys(features[0]?.properties ?? {}).filter(attr => !EXCLUDE_ATTRS.includes(attr));
+                const dataset = [[...exportAttrs]];
+                if (features[0].geometry) {
+                    dataset[0].push("geometry");
                 }
                 features.forEach(feature => {
-                    Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
-                        if (attrib !== "htmlContent" && attrib !== "htmlContentInline") {
-                            csv += String(value).replace('"', '""') + ';';
-                        }
-                    });
+                    const row = exportAttrs.map(attr => String(feature.properties[attr]));
                     if (feature.geometry) {
-                        csv += VectorLayerUtils.geoJSONGeomToWkt(feature.geometry);
-                    } else if (csv !== "") {
-                        csv = csv.slice(0, -1); // Remove trailling semi column ;
+                        row.push(VectorLayerUtils.geoJSONGeomToWkt(feature.geometry));
                     }
-                    csv += '\n';
+                    dataset.push(row);
                 });
-                first = true;
+                const csv = dataset.map(row => row.map(field => `"${field.replace('"', '""')}"`).join(";")).join("\n");
                 data.push(csv);
-                filenames.push(layerName);
+                filenames.push(features[0].layername);
             });
             if (data.length > 1) {
                 const zip = new JSZip();
