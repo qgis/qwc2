@@ -278,7 +278,7 @@ class ImportLayer extends React.Component {
         // .kmz must be a zip archive with at least a doc.kml file. The kml is then imported like any other KML file.
         const fileMap = await load(file, ZipLoader);
         for (const fileName in fileMap) {
-            if (fileName == "doc.kml") {
+            if (fileName === "doc.kml") {
                 const decoder = new TextDecoder();
                 this.addKMLLayer(file.name, decoder.decode(fileMap[fileName]));
                 break;
