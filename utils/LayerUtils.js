@@ -387,19 +387,11 @@ const LayerUtils = {
                     return layers;
                 }
                 // Avoid splitting sibling groups when reordering
-                if (exploded[idx + delta].path.length > level || !isEqual(exploded[idx + delta].path.slice(0, -1), sublayerpath.slice(0, -1))) {
-                    // Find next slot
-                    const siblinggrouppath = exploded[idx + delta].path.slice(0, level);
-                    siblinggrouppath[siblinggrouppath.length - 1] += delta;
-                    while (idx + delta >= 0 && idx + delta < exploded.length && (exploded[idx + delta].path.length > level || !isEqual(exploded[idx + delta].path.slice(0, level), siblinggrouppath))) {
-                        delta += delta > 0 ? 1 : -1;
-                    }
-                    // The above logic adds the number of items to skip to the delta which is already -1 or +1, so we need to decrease delta by one accordingly
-                    if (Math.abs(delta) > 1) {
-                        delta += delta > 0 ? -1 : 1;
-                    }
-                    if (idx + delta < 0 || idx + delta >= exploded.length) {
-                        return layers;
+                const siblinggrouppath = exploded[idx + delta].path.length > level ? exploded[idx + delta].path.slice(0, level) : null;
+                if (siblinggrouppath !== null) {
+                    const dir = delta > 0 ? 1 : -1;
+                    while (idx + delta + dir >= 0 && idx + delta + dir < exploded.length && LayerUtils.pathEqualOrBelow(siblinggrouppath, exploded[idx + delta + dir].path)) {
+                        delta += dir;
                     }
                 }
             }
