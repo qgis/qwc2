@@ -126,6 +126,19 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             type: 'vector',
             opacity: 255,
             features: [
+                ...measurement.coordinates.map(coord => ({
+                    type: 'Feature',
+                    geometry: {
+                        coordinates: coord,
+                        type: 'Point'
+                    },
+                    styleOptions: {
+                        fillColor: [255, 255, 255, 1],
+                        strokeColor: [255, 0, 0, 1],
+                        strokeWidth: 2,
+                        circleRadius: 6
+                    }
+                })),
                 {
                     type: 'Feature',
                     geometry: {
