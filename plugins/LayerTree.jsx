@@ -184,26 +184,30 @@ class LayerTree extends React.Component {
             this.setState({activePreset: LayerUtils.getActiveVisibilityPreset(this.props.layers, this.props.theme.visibilityPresets)});
         }
     }
-    renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
+    renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup, usedGroupIds) => {
         return (group.sublayers || []).map((sublayer, idx) => {
             const subpath = [...path, idx];
             if (sublayer.sublayers) {
-                return this.renderLayerGroup(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup);
+                return this.renderLayerGroup(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup, usedGroupIds);
             } else {
                 return this.renderLayer(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup);
             }
         });
     };
-    renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
+    renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup, usedGroupIds) => {
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         if (flattenGroups) {
-            return this.renderSubLayers(layer, group, path, enabled, false);
+            return this.renderSubLayers(layer, group, path, enabled, false, usedGroupIds);
         }
         const subtreevisibility = LayerUtils.computeLayerVisibility(group);
         if (subtreevisibility === 0 && this.state.filterinvisiblelayers) {
             return null;
         }
-        const groupId = layer.id + ":" + group.name + ":" + (path.slice(-1)[0] ?? "");
+        let groupId = layer.id + ":" + group.name;
+        for (let i = 0; usedGroupIds.has(groupId); ++i) {
+            groupId = layer.id + ":" + group.name + ":" + i;
+        }
+        usedGroupIds.add(groupId);
         let visibility = true;
         let checkboxstate = "";
         if (this.props.groupTogglesSublayers && !inMutuallyExclusiveGroup) {
@@ -247,7 +251,7 @@ class LayerTree extends React.Component {
         };
         let sublayersContent = null;
         if (group.expanded) {
-            sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility, group.mutuallyExclusive === true);
+            sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility, group.mutuallyExclusive === true, usedGroupIds);
         }
         const optMenuClasses = classnames({
             "layertree-item-menubutton": true,
@@ -453,15 +457,16 @@ class LayerTree extends React.Component {
             }
         });
         return layers.map(layer => {
+            const usedGroupIds = new Set();
             if (isEmpty(layer.sublayers) && layer.role !== LayerRole.THEME) {
                 return this.renderLayer(layer, layer, [], layer.visibility, false, !haveGroups);
             } else if (this.props.showRootEntry || layer.role !== LayerRole.THEME) {
-                return this.renderLayerGroup(layer, layer, [], layer.visibility);
+                return this.renderLayerGroup(layer, layer, [], layer.visibility, false, usedGroupIds);
             } else {
                 return layer.sublayers.map((sublayer, idx) => {
                     const subpath = [idx];
                     if (sublayer.sublayers) {
-                        return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility);
+                        return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility, false, usedGroupIds);
                     } else {
                         return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, !haveGroups);
                     }
