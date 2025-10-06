@@ -514,6 +514,8 @@ class ResizeableWindow extends React.Component {
             externalWindow.document.querySelector(':root').style.setProperty('--bottombar-height',
                 document.querySelector(':root').style.getPropertyValue('--bottombar-height')
             );
+            // Inherit API
+            externalWindow.qwc2 = window.qwc2;
 
             this.setState(state => ({
                 externalWindow: externalWindow,
