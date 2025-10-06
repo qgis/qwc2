@@ -33,6 +33,7 @@ class ResizeableWindow extends React.Component {
         bottombarHeight: PropTypes.number,
         busyIcon: PropTypes.bool,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        detachable: PropTypes.bool,
         dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         extraControls: PropTypes.arrayOf(PropTypes.shape({
             active: PropTypes.bool,
@@ -194,7 +195,7 @@ class ResizeableWindow extends React.Component {
         });
 
         let detachIcons = null;
-        if (!ConfigUtils.isMobile() && !ConfigUtils.getConfigProp("globallyDisableDetachableDialogs")) {
+        if (!ConfigUtils.isMobile() && !ConfigUtils.getConfigProp("globallyDisableDetachableDialogs") && this.props.detachable !== false) {
             detachIcons = this.state.externalWindow ? (
                 <Icon className={iconClasses} icon="embed" onClick={this.moveToInternalWindow} title={LocaleUtils.tr("window.embed")} />
             ) : (
