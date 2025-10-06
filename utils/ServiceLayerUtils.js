@@ -256,6 +256,18 @@ const ServiceLayerUtils = {
         } catch (e) {
             /* pass */
         }
+        const dimensions = [];
+        MiscUtils.ensureArray(layer.Dimension).forEach(dim => {
+            dimensions.push({
+                units: dim.units,
+                name: dim.name,
+                multiple: dim.multiple === '1',
+                value: dim["#text"],
+                fieldName: dim.fieldName ?? null,
+                endFieldName: dim.endFieldName ?? null
+            });
+        });
+
         const styles = MiscUtils.ensureArray(layer.Style).reduce((res, entry) => ({...res, [String(entry.Name)]: entry.Title}), {});
         const style = styles.default ? 'default' : (Object.keys(styles)[0] ?? '');
         const attribution = {
@@ -283,6 +295,7 @@ const ServiceLayerUtils = {
             extwmsparams: extwmsparams,
             minScale: layer.MinScaleDenominator !== undefined ? Number(layer.MinScaleDenominator) : undefined,
             maxScale: layer.MinScaleDenominator !== undefined ? Number(layer.MaxScaleDenominator) : undefined,
+            dimensions: dimensions,
             styles: styles,
             style: style
         };
