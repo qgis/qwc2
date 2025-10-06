@@ -273,7 +273,7 @@ class LayerTree extends React.Component {
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(groupId)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
-                {this.state.activemenu === groupId ? this.renderOptionsMenu(layer, group, path, allowRemove) : null}
+                {this.state.activemenu === groupId ? this.renderOptionsMenu(layer, group, path, allowRemove, subtreevisibility) : null}
                 {this.state.activestylemenu === groupId ? this.renderStyleMenu(styles, this.getSelectedStyles(layer), (style) => this.applyLayerStyle(style, layer)) : null}
                 <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
@@ -373,15 +373,8 @@ class LayerTree extends React.Component {
             </div>
         );
     };
-    renderOptionsMenu = (layer, sublayer, path, marginRight = 0) => {
+    renderOptionsMenu = (layer, sublayer, path, marginRight, subtreevisibility = 0) => {
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
-        let reorderButtons = null;
-        if (allowReordering && !this.state.filterinvisiblelayers) {
-            reorderButtons = [
-                (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
-                (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
-            ];
-        }
         let zoomToLayerButton = null;
         if (sublayer.bbox && sublayer.bbox.bounds) {
             const zoomToLayerTooltip = LocaleUtils.tr("layertree.zoomtolayer");
@@ -390,6 +383,18 @@ class LayerTree extends React.Component {
                 <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
             );
         }
+        let reorderButtons = null;
+        if (allowReordering && !this.state.filterinvisiblelayers) {
+            reorderButtons = [
+                (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
+                (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
+            ];
+        }
+        let toggleGroupButton = null;
+        if (sublayer.sublayers && !this.props.groupTogglesSublayers) {
+            toggleGroupButton = (<Icon icon="tree" onClick={() => this.props.changeLayerProperty(layer.id, "visibility", subtreevisibility !== 1, path, "children")} />);
+        }
+
         let infoButton = null;
         if (this.props.infoInSettings && (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts")) {
             infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
@@ -409,6 +414,7 @@ class LayerTree extends React.Component {
                     onChange={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value, !isEmpty(sublayer.sublayers) ? 'children' : null)}
                     step="1" type="range" value={255 - LayerUtils.computeLayerOpacity(sublayer)} />
                 {reorderButtons}
+                {toggleGroupButton}
                 {infoButton}
                 {attrTableButton}
                 {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
