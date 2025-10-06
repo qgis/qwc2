@@ -65,7 +65,7 @@ class RedliningBufferSupport extends React.Component {
         }
         return (
             <div className="redlining-controlsbar">
-                <span>
+                <div className="redlining-control">
                     <span>{LocaleUtils.tr("redlining.bufferdistance")} &nbsp;</span>
                     <NumberInput max={99999} min={-99999} mobile
                         onChange={(nr) => this.setState({bufferDistance: nr})}
@@ -76,19 +76,19 @@ class RedliningBufferSupport extends React.Component {
                         <option value="kilometers">km</option>
                         <option value="miles">mi</option>
                     </select>
-                </span>
-                <span>
+                </div>
+                <div className="redlining-control">
                     <span>{LocaleUtils.tr("redlining.bufferlayer")}:&nbsp;</span>
                     <VectorLayerPicker
                         addLayer={this.props.addLayer} layers={layers}
                         onChange={layer => this.setState({bufferLayer: layer})}
                         value={this.state.bufferLayer.id} />
-                </span>
-                <span>
+                </div>
+                <div className="redlining-control">
                     <button className="button" disabled={!enabled} onClick={this.computeBuffer}>
                         {LocaleUtils.tr("redlining.buffercompute")}
                     </button>
-                </span>
+                </div>
             </div>
         );
     }
