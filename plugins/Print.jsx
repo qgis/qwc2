@@ -76,6 +76,8 @@ class Print extends React.Component {
         /** Layout sort order, asc or desc. */
         layoutSortOrder: PropTypes.string,
         map: PropTypes.object,
+        /** Whether to allow moving the extent while selecting the print series. */
+        movePrintSeries: PropTypes.bool,
         /** Whether to print external layers. Requires QGIS Server 3.x! */
         printExternalLayers: PropTypes.bool,
         /** Whether to print highlights on the map, e.g. selected features or redlining. */
@@ -96,6 +98,7 @@ class Print extends React.Component {
         fileNameTemplate: '{theme}_{timestamp}',
         gridInitiallyEnabled: false,
         layoutSortOrder: 'asc',
+        movePrintSeries: false,
         formats: ['application/pdf', 'image/jpeg', 'image/png', 'image/svg'],
         inlinePrintOutput: false,
         printExternalLayers: true,
@@ -481,9 +484,9 @@ class Print extends React.Component {
                 height: this.state.layout.map.height
             };
             printSelection = (<PrintSelection
-                allowRotation={this.props.displayRotation && !this.state.printSeriesEnabled}
-                allowScaling={!this.state.printSeriesEnabled}
-                allowTranslation={!this.state.printSeriesEnabled}
+                allowRotation={this.props.displayRotation && (!this.state.printSeriesEnabled || this.props.movePrintSeries)}
+                allowScaling={!this.state.printSeriesEnabled || this.props.movePrintSeries}
+                allowTranslation={!this.state.printSeriesEnabled || this.props.movePrintSeries}
                 center={this.state.center || this.props.map.center}
                 fixedFrame={frame}
                 geometryChanged={this.geometryChanged}

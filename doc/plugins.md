@@ -792,6 +792,7 @@ Uses the print layouts defined in the QGIS project.
 | inlinePrintOutput | `bool` | Whether to display the print output in an inline dialog instead triggering a download. | `false` |
 | layoutHidePrefix | `string` | Hide layouts which begin with this prefix. | `undefined` |
 | layoutSortOrder | `string` | Layout sort order, asc or desc. | `'asc'` |
+| movePrintSeries | `bool` | Whether to allow moving the extent while selecting the print series. | `false` |
 | printExternalLayers | `bool` | Whether to print external layers. Requires QGIS Server 3.x! | `true` |
 | printMapHighlights | `bool` | Whether to print highlights on the map, e.g. selected features or redlining. | `true` |
 | scaleFactor | `number` | Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint. | `1.9` |
