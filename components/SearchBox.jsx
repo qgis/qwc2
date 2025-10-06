@@ -93,6 +93,7 @@ class SearchBox extends React.Component {
         expandedLayerGroup: null,
         activeLayerInfo: null,
         filterOptionsVisible: false,
+        searchFilterRegions: null,
         selectedProvider: "",
         filterRegionName: "",
         filterGeomType: null,
@@ -119,14 +120,30 @@ class SearchBox extends React.Component {
                 this.setState({searchText: st}, () => this.startSearch(null, true));
             }
             UrlParams.updateParams({hp: undefined, hf: undefined, ht: undefined, st: undefined});
+            this.loadFilterRegions();
         } else if (this.props.theme !== prevProps.theme) {
             this.clear();
+            this.loadFilterRegions();
         }
         // Trigger search when closing filter options
         if (!this.state.filterOptionsVisible && prevState.filterOptionsVisible) {
             this.searchTextChanged(this.state.searchText);
         }
     }
+    loadFilterRegions = () => {
+        const searchRegions = ConfigUtils.getConfigProp("searchFilterRegions", this.props.theme);
+        if (Array.isArray(searchRegions)) {
+            this.setState({searchFilterRegions: searchRegions});
+        } else if (typeof searchRegions === 'string') {
+            axios.get(searchRegions).then(response => {
+                this.setState({searchFilterRegions: response.data});
+            }).catch(() => {
+                this.setState({searchFilterRegions: null});
+            });
+        } else {
+            this.setState({searchFilterRegions: null});
+        }
+    };
     renderFilterOptions = () => {
         if (!this.state.filterOptionsVisible) {
             return null;
@@ -140,12 +157,11 @@ class SearchBox extends React.Component {
             </ComboBox>
         );
         let searchRegionSelection = null;
-        const searchRegions = ConfigUtils.getConfigProp("searchFilterRegions", this.props.theme);
-        if (!isEmpty(searchRegions)) {
+        if (Array.isArray(this.state.searchFilterRegions)) {
             searchRegionSelection = (
-                <ComboBox onChange={value => this.setFilterRegion(value, searchRegions)} value={this.state.filterRegionName}>
+                <ComboBox onChange={value => this.setFilterRegion(value, this.state.searchFilterRegions)} value={this.state.filterRegionName}>
                     <div value="">{LocaleUtils.tr("search.none")}</div>
-                    {searchRegions.map((group, gidx) => ([
+                    {this.state.searchFilterRegions.map((group, gidx) => ([
                         (<div data-group-header={gidx} disabled key={"group" + gidx}>{group.name}</div>),
                         ...group.items.map((item, idx) => (
                             <div data-group={gidx} key={item.name} value={gidx + ":" + idx + ":" + item.name}>{item.name}</div>
