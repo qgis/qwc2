@@ -240,7 +240,7 @@ class LayerTree extends React.Component {
             checkboxstate = 'radio_' + checkboxstate;
         }
         const expanderstate = group.expanded ? 'tree_minus' : 'tree_plus';
-        const showExpander = !this.props.onlyGroups || (group.sublayers || []).some((sublayer) => sublayer.sublayers);
+        const showExpander = (!this.props.onlyGroups || (group.sublayers || []).some(sublayer => sublayer.sublayers)) && group.sublayers.some(sublayer => !(layer.layerTreeHiddenSublayers ?? []).includes(sublayer.name));
         const itemclasses = {
             "layertree-item": true,
             "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !visibility)
@@ -288,7 +288,7 @@ class LayerTree extends React.Component {
         if (this.state.filterinvisiblelayers && !sublayer.visibility) {
             return null;
         }
-        if (Array.isArray(layer.layerTreeHiddenSublayers) && layer.layerTreeHiddenSublayers.includes(sublayer.name)) {
+        if ((layer.layerTreeHiddenSublayers ?? []).includes(sublayer.name)) {
             return null;
         }
         const sublayerId = layer.id + ":" + sublayer.name;
