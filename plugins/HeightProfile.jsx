@@ -134,7 +134,9 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
                     },
                     styleOptions: {
                         strokeColor: [255, 0, 0, 1],
-                        strokeWidth: 4
+                        strokeWidth: 4,
+                        headmarker: this.props.measurement.lineHeadMarker,
+                        tailmarker: this.props.measurement.lineTailMarker
                     },
                     properties: {
                         segment_labels: measurement.segment_lengths.map(length => MeasureUtils.formatMeasurement(length, false, measurement.lenUnit))
@@ -145,7 +147,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
         const mapCrs = this.props.map.projection;
         const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
         const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, scale, mapCrs, true, false);
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams([layer], mapCrs);
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams([layer], mapCrs, scale);
         const imageParams = {
             SERVICE: 'WMS',
             VERSION: '1.3.0',
