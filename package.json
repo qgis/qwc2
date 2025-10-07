@@ -27,6 +27,7 @@
         "@reduxjs/toolkit": "^2.4.0",
         "@turf/buffer": "^6.5.0",
         "@turf/helpers": "^6.5.0",
+        "@vtaits/react-color-picker": "^2.0.0",
         "any-date-parser": "^1.5.4",
         "axios": "^1.11.0",
         "chart.js": "^4.4.7",

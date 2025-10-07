@@ -86,3 +86,13 @@ div.colorbutton-picker-alpha > div {
 div.colorbutton-picker-alpha input[type=range] {
     width: 100%;
 }
+
+div.colorbutton-picker-spectrum {
+    display: flex;
+    height: 150px;
+    margin: 0 0.25em;
+}
+
+div.colorbutton-picker-spectrum > div.react-color-picker__hue-spectrum {
+    margin-left: 0.25em!important;
+}
