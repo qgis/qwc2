@@ -10,6 +10,7 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import clone from 'clone';
+import DOMPurify from 'dompurify';
 import FileSaver from 'file-saver';
 import htmlReactParser, {domToReact} from 'html-react-parser';
 import JSZip from 'jszip';
@@ -833,7 +834,7 @@ class IdentifyViewer extends React.Component {
         return this.parsedContent(text);
     };
     parsedContent = (text) => {
-        text = text.replace('&#10;', '<br />');
+        text = DOMPurify.sanitize(text, {ADD_ATTR: ['target']}).replace('&#10;', '<br />');
         const options = {replace: (node) => {
             if (node.name === "a") {
                 return (

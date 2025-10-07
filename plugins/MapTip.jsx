@@ -10,6 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
+import DOMPurify from 'dompurify';
 import htmlReactParser, {domToReact} from 'html-react-parser';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
@@ -184,6 +185,7 @@ class MapTip extends React.Component {
         return null;
     }
     parsedContent = (text) => {
+        text = DOMPurify.sanitize(text, {ADD_ATTR: ['target']}).replace('&#10;', '<br />');
         const options = {replace: (node) => {
             if (node.name === "a") {
                 return (
