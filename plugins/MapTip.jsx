@@ -187,7 +187,7 @@ class MapTip extends React.Component {
         const options = {replace: (node) => {
             if (node.name === "a") {
                 return (
-                    <a href={node.attribs.href} onClick={node.attribs.onclick ? (ev) => this.evalOnClick(ev, node.attribs.onclick) : this.attributeLinkClicked} target={node.attribs.target || "_blank"}>
+                    <a href={node.attribs.href} onClick={this.attributeLinkClicked} target={node.attribs.target || "_blank"}>
                         {domToReact(node.children, options)}
                     </a>
                 );
@@ -195,11 +195,6 @@ class MapTip extends React.Component {
             return undefined;
         }};
         return htmlReactParser(text, options);
-    };
-    evalOnClick = (ev, onclick) => {
-        // eslint-disable-next-line
-        eval(onclick);
-        ev.preventDefault();
     };
     attributeLinkClicked = (ev) => {
         this.props.openExternalUrl(ev.target.href, ev.target.target, {docked: this.props.iframeDialogsInitiallyDocked});
