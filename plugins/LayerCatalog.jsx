@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
+import {remove as removeDiacritics} from 'diacritics';
 import PropTypes from 'prop-types';
 
 import {addLayer, removeLayer, replacePlaceholderLayer} from '../actions/layers';
@@ -18,6 +19,7 @@ import ResizeableWindow from '../components/ResizeableWindow';
 import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import {registerSearchProvider, SearchResultType, unregisterSearchProvider} from '../utils/SearchProviders';
 
 import './style/LayerCatalog.css';
 
@@ -93,25 +95,37 @@ class LayerCatalog extends React.Component {
         levelBasedIndentSize: true
     };
     state = {
-        catalog: null
+        catalog: null,
+        visible: false
     };
-    componentDidUpdate(prevProps) {
-        if (this.props.active && !prevProps.active && this.props.catalogUrl) {
-            axios.get(MiscUtils.resolveAssetsPath(this.props.catalogUrl)).then(this.setCatalog).catch(e => {
+    componentDidMount() {
+        if (this.props.catalogUrl) {
+            axios.get(MiscUtils.resolveAssetsPath(this.props.catalogUrl)).then(response => {
+                this.setState({
+                    catalog: response.data.catalog || []
+                });
+            }).catch(e => {
                 this.setState({catalog: []});
                 // eslint-disable-next-line
                 console.warn("Failed to load catalog: " + e);
             });
         }
-    }
-    setCatalog = (response) => {
-        this.setState({
-            catalog: response.data.catalog || []
+        registerSearchProvider("catalogsearch", {
+            label: LocaleUtils.tr("layercatalog.windowtitle"),
+            onSearch: this.searchCatalog
         });
-        this.props.setCurrentTask("LayerTree");
-    };
+    }
+    componentWillUnmount() {
+        unregisterSearchProvider("catalogsearch");
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.active && !prevProps.active) {
+            this.setState({visible: true});
+            this.props.setCurrentTask("LayerTree");
+        }
+    }
     render() {
-        if (!this.state.catalog) {
+        if (!this.state.visible) {
             return null;
         }
         return (
@@ -131,7 +145,47 @@ class LayerCatalog extends React.Component {
         );
     }
     onClose = () => {
-        this.setState({catalog: null});
+        this.setState({visible: false});
+    };
+    searchCatalog = (text, searchParams, callback) => {
+        const filter = new RegExp(removeDiacritics(text).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
+        const results = [];
+        if (this.state.catalog) {
+            this.searchCatalogGroup(results, filter, this.state.catalog);
+        }
+        if (results.length > 0) {
+            callback({results: [{
+                id: "cataloglayers",
+                title: LocaleUtils.tr("layercatalog.windowtitle"),
+                type: SearchResultType.EXTERNALLAYER,
+                items: results
+            }]});
+        } else {
+            callback({results: []});
+        }
+    };
+    searchCatalogGroup = (results, filter, group) => {
+        group.forEach(entry => {
+            const type = entry.resource ? entry.resource.slice(0, entry.resource.indexOf(":")) : entry.type;
+            if (entry.sublayers) {
+                this.searchCatalogGroup(results, filter, entry.sublayers);
+            }
+            if (entry.sublayers && type !== "wms") {
+                return;
+            }
+            if (removeDiacritics(entry.title).match(filter)) {
+                results.push({
+                    id: "cataloglayer:" + results.length,
+                    text: entry.title,
+                    layer: entry,
+                    sublayers: entry.sublayers?.map?.((sublayer, idx) => ({
+                        id: "cataloglayer:" + results.length + ":" + idx,
+                        text: sublayer.title,
+                        layer: sublayer
+                    }))
+                });
+            }
+        });
     };
 }
 
