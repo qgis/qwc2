@@ -85,7 +85,7 @@ class FeatureSearch extends React.Component {
         }
         if (this.state.selectedProvider !== prevState.selectedProvider) {
             this.setState(state => ({
-                formValues: Object.entries(state.searchProviders[state.selectedProvider].params.fields).reduce((res, [field, cfg]) => {
+                formValues: Object.entries(state.searchProviders[state.selectedProvider]?.params?.fields || []).reduce((res, [field, cfg]) => {
                     return {...res, [field]: cfg.options?.[0]?.value ?? cfg.options?.[0] ?? ""};
                 }, {})
             }));
