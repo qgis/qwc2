@@ -393,7 +393,7 @@ class SearchBox extends React.Component {
             const toggleLayerGroup = () => {
                 this.setState((state) => ({expandedLayerGroup: state.expandedLayerGroup === key ? null : key}));
             };
-            icon = (<Icon className="searchbox-result-thumbnail" icon={this.state.expandedLayerGroup === key ? "minus" : "plus"} onClick={ev => {MiscUtils.killEvent(ev); toggleLayerGroup();}} />);
+            icon = (<Icon icon={this.state.expandedLayerGroup === key ? "minus" : "plus"} onClick={ev => {MiscUtils.killEvent(ev); toggleLayerGroup();}} />);
         } else if (result.thumbnail) {
             icon = (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />);
         }
