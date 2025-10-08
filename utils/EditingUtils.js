@@ -242,7 +242,7 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     // Collect field expressions and dependencies
     const dependencies = {};
     let fieldExpressions = editConfig.fields.reduce((res, field) => {
-        if (field.expression && !field.constraints?.hidden) {
+        if (field.expression) {
             const matches = [...field.expression.matchAll(/"([^"]+)"/g)].map(m => m[1]);
             dependencies[field.id] = [...new Set(matches)];
             return {...res, [field.id]: field.expression};
@@ -281,7 +281,10 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
-            if (field.id in result && field.type === "date") {
+            if (!field.constraints?.hidden) {
+                // Remove hidden fields from result
+                delete result[field.id];
+            } else if (field.id in result && field.type === "date") {
                 result[field.id] = result[field.id].split("T")[0];
             }
         });
