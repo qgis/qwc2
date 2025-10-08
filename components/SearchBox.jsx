@@ -379,7 +379,7 @@ class SearchBox extends React.Component {
         const key = provider + ":" + group.id + ":" + result.id;
         return (
             <div className="searchbox-result" key={key} onClick={() => {this.selectPlaceResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
-                {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />) : null}
+                {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.externalLink ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.openUrl(result.externalLink, result.target, result.label ?? result.text);} } /> : null}
             </div>
@@ -395,7 +395,7 @@ class SearchBox extends React.Component {
             };
             icon = (<Icon className="searchbox-result-thumbnail" icon={this.state.expandedLayerGroup === key ? "minus" : "plus"} onClick={ev => {MiscUtils.killEvent(ev); toggleLayerGroup();}} />);
         } else if (result.thumbnail) {
-            icon = (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />);
+            icon = (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />);
         }
         const selectResult = result.theme ? this.selectThemeResult : this.selectLayerResult;
         return (
@@ -423,7 +423,7 @@ class SearchBox extends React.Component {
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         return (
             <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => {this.selectThemeResult(provider, group, result); this.blur();}} onMouseDown={MiscUtils.killEvent}>
-                {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />) : null}
+                {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
                 <Icon className="searchbox-result-openicon" icon="open" />
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.addThemeLayers(result.layer); this.blur();}} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
@@ -543,12 +543,14 @@ class SearchBox extends React.Component {
             this.props.setCurrentTask('LayerTree');
         }
     };
-    loadFallbackResultImage = (ev, item) => {
-        if ((item.type ?? SearchResultType.PLACE) === SearchResultType.PLACE) {
+    loadFallbackResultImage = (ev, type) => {
+        if (type === SearchResultType.PLACE) {
             const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
             if (!ev.target.src.endsWith(iconPath + "feature.svg")) {
                 ev.target.src = iconPath + "feature.svg";
             }
+        } else {
+            ev.target.style.display = 'none';
         }
     };
     toggleLayerInfo = (provider, group, result, key, parent) => {
