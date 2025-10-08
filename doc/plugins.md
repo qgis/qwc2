@@ -258,7 +258,7 @@ This plugin queries the dataset via the editing service specified by
 |----------|------|-------------|---------------|
 | allowAddForGeometryLayers | `bool` | Whether to allow adding records for datasets which have a geometry column. | `undefined` |
 | showEditFormButton | `bool` | Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. | `true` |
-| showHiddenFields | `bool` | Whether to show hidden Fields. | `true` |
+| showHiddenFields | `bool` | Whether to show hidden fields. | `true` |
 | showLimitToExtent | `bool` | Whether to show the "Limit to extent" checkbox | `true` |
 | zoomLevel | `number` | The zoom level for zooming to point features. | `1000` |
 
@@ -721,6 +721,10 @@ Allows measuring points/lines/areas on the map.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| bearingHeadMarker | `string` | Head marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
+| bearingTailMarker | `string` | Tail marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
+| lineHeadMarker | `string` | Head marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
+| lineTailMarker | `string` | Tail marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
 | showMeasureModeSwitcher | `bool` | Whether to show the widget to switch between measure modes. | `true` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
@@ -841,7 +845,7 @@ Requires `routingServiceUrl` in `config.json` pointing to a Valhalla routing ser
 |----------|------|-------------|---------------|
 | enabledModes | `[string]` | List of enabled routing modes. | `["auto", "heavyvehicle", "transit", "bicycle", "pedestrian"]` |
 | enabledProviders | `[string]` | List of search providers to use for routing location search. | `["coordinates", "nominatim"]` |
-| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'left'`<br />`}` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'left'`<br />`}` |
 | showPinLabels | `bool` | Whether to label the routing waypoint pins with the route point number. | `true` |
 | units | `object` | Set of units for isochrone time/distance intervals to use. | `{`<br />`    time: {`<br />`        min: 1,`<br />`        s: 60`<br />`    },`<br />`    distance: {`<br />`        km: 1,`<br />`        m: 1000`<br />`    }`<br />`}` |
 | zoomAuto | `bool` | Automatically zoom to the extent of the route | `true` |
@@ -913,6 +917,7 @@ Theme switcher panel.
 | collapsibleGroups | `bool` | Whether to allow collapsing theme groups. | `undefined` |
 | hideAddThemeButton | `bool` | Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
 | hideAddThemeLayersButton | `bool` | Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
+| showActiveTheme | `bool` | Whether to display the currently active theme below the application menu button. Default: false | `false` |
 | showDefaultThemeSelector | `bool` | Whether to show an icon to select the default theme/bookmark (of a logged in user). | `true` |
 | showLayerAfterChangeTheme | `bool` | Whether to show the LayerTree by default after switching the theme. | `false` |
 | showThemeFilter | `bool` | Wether to show the theme filter field in the top bar. | `true` |
