@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
 import {v4 as uuidv4} from 'uuid';
 
-import {LayerRole, addLayerFeatures, addThemeSublayer, changeLayerProperty, removeLayer, addLayer} from '../actions/layers';
+import {LayerRole, addLayerFeatures, addThemeSublayer, changeLayerProperty, removeLayer, replacePlaceholderLayer, addLayer} from '../actions/layers';
 import {logAction} from '../actions/logging';
 import {panTo, zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentSearchResult} from '../actions/search';
@@ -35,6 +35,7 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import {FulltextSearch, SearchResultType} from '../utils/SearchProviders';
+import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import MapSelection from './MapSelection';
@@ -58,6 +59,7 @@ class SearchBox extends React.Component {
         openExternalUrl: PropTypes.func,
         panTo: PropTypes.func,
         removeLayer: PropTypes.func,
+        replacePlaceholderLayer: PropTypes.func,
         searchOptions: PropTypes.shape({
             allowSearchFilters: PropTypes.bool,
             hideResultLabels: PropTypes.bool,
@@ -309,13 +311,15 @@ class SearchBox extends React.Component {
     renderResults = () => {
         const resultRenderers = {
             [SearchResultType.PLACE]: this.renderPlaceResult,
-            [SearchResultType.THEMELAYER]: this.renderThemeLayerResult,
+            [SearchResultType.THEMELAYER]: this.renderLayerResult,
+            [SearchResultType.EXTERNALLAYER]: this.renderLayerResult,
             [SearchResultType.THEME]: this.renderThemeResult
         };
         const layersBeforePlaces = this.props.searchOptions.showLayerResultsBeforePlaces;
         const priorities = {
-            [SearchResultType.PLACE]: layersBeforePlaces ? 0 : 2,
+            [SearchResultType.PLACE]: layersBeforePlaces ? 0 : 3,
             [SearchResultType.THEMELAYER]: layersBeforePlaces ? 2 : 1,
+            [SearchResultType.EXTERNALLAYER]: layersBeforePlaces ? 3 : 2,
             [SearchResultType.THEME]: layersBeforePlaces ? 1 : 0
         };
         const results = Object.keys(this.props.searchProviders).reduce((result, provider) => {
@@ -381,7 +385,7 @@ class SearchBox extends React.Component {
             </div>
         );
     };
-    renderThemeLayerResult = (provider, group, result, parent = null) => {
+    renderLayerResult = (provider, group, result, parent = null) => {
         const key = provider + ":" + group.id + ":" + result.id;
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         let icon = null;
@@ -393,14 +397,15 @@ class SearchBox extends React.Component {
         } else if (result.thumbnail) {
             icon = (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, result)} src={result.thumbnail} />);
         }
-        const selectResult = result.theme ? this.selectThemeResult : this.selectThemeLayerResult;
+        const selectResult = result.theme ? this.selectThemeResult : this.selectLayerResult;
         return (
             <div key={key}>
                 <div className="searchbox-result" onClick={() => {selectResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
                     {icon}
                     {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
                     <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
-                    {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectThemeLayerResult(provider, group, result); this.blur(); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+                    {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result); this.blur(); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+                    {result.sublayers ? (<Icon icon="group" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result, true);}} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
                     {result.info ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.toggleLayerInfo(provider, group, result, key, parent);} } /> : null}
                 </div>
                 {this.state.activeLayerInfo === key ? (
@@ -409,7 +414,7 @@ class SearchBox extends React.Component {
                     />
                 ) : null}
                 {this.state.expandedLayerGroup === key ? (
-                    <div className="searchbox-result-group">{result.sublayers.map(sublayer => this.renderThemeLayerResult(provider, group, sublayer, result.id))}</div>
+                    <div className="searchbox-result-group">{result.sublayers.map(sublayer => this.renderLayerResult(provider, group, sublayer, result.id))}</div>
                 ) : null}
             </div>
         );
@@ -472,12 +477,14 @@ class SearchBox extends React.Component {
         }
 
     };
-    selectThemeLayerResult = (provider, group, result) => {
+    selectLayerResult = (provider, group, result, asGroup = false) => {
         if (result.layer) {
             if (result.theme) {
                 this.addThemeLayers(result.layer);
-            } else {
+            } else if (group.type === SearchResultType.THEMELAYER) {
                 this.props.addThemeSublayer(result.layer);
+            } else if (group.type === SearchResultType.EXTERNALLAYER) {
+                this.addExternalLayer(result.layer, asGroup);
             }
             // Show layer tree to notify user that something has happened
             this.props.setCurrentTask('LayerTree');
@@ -486,13 +493,48 @@ class SearchBox extends React.Component {
                 if (layer) {
                     if (result.theme) {
                         this.addThemeLayers(layer);
-                    } else {
+                    } else if (group.type === SearchResultType.THEMELAYER) {
                         this.props.addThemeSublayer({sublayers: [layer]});
+                    } else if (group.type === SearchResultType.EXTERNALLAYER) {
+                        this.addExternalLayer(layer, asGroup);
                     }
                     // Show layer tree to notify user that something has happened
                     this.props.setCurrentTask('LayerTree');
                 }
             }, axios);
+        }
+    };
+    addExternalLayer = (entry, asGroup = false) => {
+        if (entry.resource) {
+            const params = LayerUtils.splitLayerUrlParam(entry.resource);
+            // Create placeholder layer
+            this.props.addLayer({
+                id: params.id,
+                type: "placeholder",
+                name: params.name,
+                title: entry.title ?? params.name,
+                role: params.USERLAYER,
+                loading: true
+            });
+            ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.map.projection, (id, layer) => {
+                if (layer) {
+                    if (!asGroup) {
+                        layer.sublayers = null;
+                    }
+                    LayerUtils.propagateLayerProperty(layer, "opacity", params.opacity);
+                    this.props.replacePlaceholderLayer(params.id, layer);
+                } else {
+                    // eslint-disable-next-line
+                    alert(LocaleUtils.tr("importlayer.addfailed"));
+                    this.props.removeLayer(params.id);
+                }
+            });
+        } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {
+            if (asGroup) {
+                this.props.addLayer(entry);
+            } else {
+                this.props.addLayer({...entry, sublayers: null});
+            }
         }
     };
     selectThemeResult = (provider, group, result) => {
@@ -882,6 +924,7 @@ export default connect(
         addLayerFeatures: addLayerFeatures,
         changeLayerProperty: changeLayerProperty,
         removeLayer: removeLayer,
+        replacePlaceholderLayer: replacePlaceholderLayer,
         setCurrentSearchResult: setCurrentSearchResult,
         setCurrentTask: setCurrentTask,
         zoomToExtent: zoomToExtent,
