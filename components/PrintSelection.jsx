@@ -223,6 +223,7 @@ export default class PrintSelection extends React.Component {
                     feature.unset('modifyGeometry', true);
                 }
             });
+            this.recomputeFeature();
         });
 
         // select frames for printing a series

@@ -82,6 +82,8 @@ class Print extends React.Component {
         printExternalLayers: PropTypes.bool,
         /** Whether to print highlights on the map, e.g. selected features or redlining. */
         printMapHighlights: PropTypes.bool,
+        /** Restrict print scale to list of predefine print scales, if any. */
+        restrictToPrintScales: PropTypes.bool,
         /** Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint.  */
         scaleFactor: PropTypes.number,
         setIdentifyEnabled: PropTypes.func,
@@ -172,17 +174,10 @@ class Print extends React.Component {
     onShow = () => {
         // setup initial extent
         let scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom) * this.props.defaultScaleFactor);
-        if (this.props.theme.printScales && this.props.theme.printScales.length > 0) {
-            let closestVal = Math.abs(scale - this.props.theme.printScales[0]);
-            let closestIdx = 0;
-            for (let i = 1; i < this.props.theme.printScales.length; ++i) {
-                const currVal = Math.abs(scale - this.props.theme.printScales[i]);
-                if (currVal < closestVal) {
-                    closestVal = currVal;
-                    closestIdx = i;
-                }
-            }
-            scale = this.props.theme.printScales[closestIdx];
+        if (this.props.theme.printScales?.length > 0) {
+            scale = this.props.theme.printScales.reduce((prev, curr) => {
+                return Math.abs(curr - scale) < Math.abs(prev - scale) ? curr : prev;
+            });
         }
         const bounds = this.props.map.bbox.bounds;
         const center = this.state.center || [0, 0];
@@ -227,6 +222,34 @@ class Print extends React.Component {
             }
         } else {
             resolutionChooser = (<NumberInput max={1200} min={50} mobile name="DPI" onChange={this.changeResolution} suffix=" dpi" value={this.state.dpi || ""} />);
+        }
+
+        let scaleChooser = null;
+        if (this.props.theme.printScales?.length > 0) {
+            if (this.props.restrictToPrintScales) {
+                scaleChooser = (
+                    <InputContainer>
+                        <span role="prefix">1&nbsp;:&nbsp;</span>
+                        <select name={mapName + ":scale"} onChange={ev => this.changeScale(ev.target.value)} role="input" value={this.state.scale}>
+                            {this.props.theme.printScales.map(scale => (<option key={scale} value={scale}>{scale}</option>))}
+                        </select>
+                    </InputContainer>
+                );
+            } else {
+                scaleChooser = (
+                    <InputContainer>
+                        <span role="prefix">1&nbsp;:&nbsp;</span>
+                        <EditableSelect
+                            name={mapName + ":scale"} onChange={this.changeScale}
+                            options={this.props.theme.printScales} role="input" value={this.state.scale || ""}
+                        />
+                    </InputContainer>
+                );
+            }
+        } else {
+            scaleChooser = (
+                <NumberInput min={1} mobile name={mapName + ":scale"} onChange={this.changeScale} prefix="1 : " value={this.state.scale || null}/>
+            );
         }
 
         const formatMap = {
@@ -292,17 +315,7 @@ class Print extends React.Component {
                             <tr>
                                 <td>{LocaleUtils.tr("print.scale")}</td>
                                 <td>
-                                    {!isEmpty(this.props.theme.printScales) ? (
-                                        <InputContainer>
-                                            <span role="prefix">1&nbsp;:&nbsp;</span>
-                                            <EditableSelect
-                                                name={mapName + ":scale"} onChange={this.changeScale}
-                                                options={this.props.theme.printScales} role="input" value={this.state.scale || ""}
-                                            />
-                                        </InputContainer>
-                                    ) : (
-                                        <NumberInput min={1} mobile name={mapName + ":scale"} onChange={this.changeScale} prefix="1 : " value={this.state.scale || null}/>
-                                    )}
+                                    {scaleChooser}
                                 </td>
                             </tr>
                         ) : null}
@@ -512,6 +525,12 @@ class Print extends React.Component {
         return extent.join(',');
     };
     geometryChanged = (center, extents, rotation, scale) => {
+        if (this.props.restrictToPrintScales && this.props.theme.printScales?.length > 0) {
+            scale = this.props.theme.printScales.reduce((prev, curr) => {
+                return Math.abs(curr - scale) < Math.abs(prev - scale) ? curr : prev;
+            });
+        }
+
         this.setState({
             center: center,
             extents: extents,
