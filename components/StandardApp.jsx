@@ -101,14 +101,18 @@ class AppContainerComponent extends React.Component {
             this.props.themesLoaded(themes);
 
             let theme = ThemeUtils.getThemeById(themes,  params.t);
-            if ((!theme || theme.restricted) && !ConfigUtils.getConfigProp("dontLoadDefaultTheme") && !ConfigUtils.havePlugin("Portal")) {
+            if ((!theme || theme.restricted) && !ConfigUtils.getConfigProp("dontLoadDefaultTheme") && (params.t || !ConfigUtils.havePlugin("Portal"))) {
                 if (params.t) {
                     this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
                     params.l = undefined;
                 }
-                const defaultTheme = Object.fromEntries(this.props.defaultUrlParams.split("&").map(x => x.split("="))).t || themes.defaultTheme;
-                theme = ThemeUtils.getThemeById(themes, defaultTheme);
-                params.t = defaultTheme;
+                const userDefaultTheme = Object.fromEntries(this.props.defaultUrlParams.split("&").map(x => x.split("="))).t;
+                const defaultTheme = themes.defaultTheme;
+                if (userDefaultTheme) {
+                    theme = ThemeUtils.getThemeById(themes, userDefaultTheme) ?? ThemeUtils.getThemeById(themes, defaultTheme);
+                } else {
+                    theme = ThemeUtils.getThemeById(themes, defaultTheme);
+                }
             }
 
             if (theme) {
