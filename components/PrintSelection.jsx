@@ -12,6 +12,7 @@ import isEqual from 'lodash.isequal';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
+import rotateCursor from '../resources/rotate.svg';
 import FeatureStyles from '../utils/FeatureStyles';
 import MapUtils from '../utils/MapUtils';
 
@@ -160,14 +161,44 @@ export default class PrintSelection extends React.Component {
         }
     }
     componentDidMount() {
+        this.map.on('pointermove', this.setViewportCursor);
         this.map.addLayer(this.selectionLayer);
         this.addInteractions();
         this.recomputeFeature();
     }
     componentWillUnmount() {
+        this.map.un('pointermove', this.setViewportCursor);
         this.map.removeLayer(this.selectionLayer);
         this.removeInteractions();
     }
+    setViewportCursor = (ev) => {
+        if (this.isInteracting) {
+            return;
+        }
+        const overFeature = this.map.getFeaturesAtPixel(ev.pixel, {hitTolerance: 20, layerFilter: (layer) => layer === this.selectionLayer}).includes(this.feature);
+        if (!overFeature) {
+            this.map.getViewport().style.cursor = '';
+            return;
+        }
+
+        const sqdist = (p, q) => (p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]);
+        const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
+        const topright = getPixelFromCoordinate(this.feature.getGeometry().getCoordinates()[0][0], false);
+        const bottomright = getPixelFromCoordinate(this.feature.getGeometry().getCoordinates()[0][1], false);
+        const bottomleft = getPixelFromCoordinate(this.feature.getGeometry().getCoordinates()[0][2], false);
+        const topleft = getPixelFromCoordinate(this.feature.getGeometry().getCoordinates()[0][3], false);
+        if (sqdist(ev.pixel, topright) < 400) {
+            this.map.getViewport().style.cursor = 'nesw-resize';
+        } else if (sqdist(ev.pixel, bottomright) < 400) {
+            this.map.getViewport().style.cursor = `url(${rotateCursor}) 12 12, auto`;
+        } else if (sqdist(ev.pixel, bottomleft) < 400) {
+            this.map.getViewport().style.cursor = 'nesw-resize';
+        } else if (sqdist(ev.pixel, topleft) < 400) {
+            this.map.getViewport().style.cursor = 'nwse-resize';
+        } else {
+            this.map.getViewport().style.cursor = '';
+        }
+    };
     addInteractions() {
         // move the selection
         const translateCondition = (ev) => {
@@ -204,7 +235,6 @@ export default class PrintSelection extends React.Component {
         });
         this.scaleRotateInteraction.on('modifystart', (ev) => {
             this.isInteracting = true;
-            this.map.getViewport().style.cursor = 'grabbing';
             ev.features.forEach((feature) => {
                 feature.set(
                     'modifyGeometry',
@@ -215,7 +245,6 @@ export default class PrintSelection extends React.Component {
         });
         this.scaleRotateInteraction.on('modifyend', (ev) => {
             this.isInteracting = false;
-            this.map.getViewport().style.cursor = '';
             ev.features.forEach((feature) => {
                 const modifyGeometry = feature.get('modifyGeometry');
                 if (modifyGeometry) {
