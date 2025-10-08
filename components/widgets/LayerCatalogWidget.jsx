@@ -53,11 +53,11 @@ export default class LayerCatalogWidget extends React.PureComponent {
                     ) : (
                         <span className="layer-catalog-widget-entry-iconspacer" />
                     )}
-                    <span className="layer-catalog-widget-entry-contents" onClick={() => type ? this.addServiceLayer(entry) : this.toggleLayerListEntry(path)}>
+                    <span className="layer-catalog-widget-entry-contents" onClick={() => type ? this.addServiceLayer(entry, !hasSublayers) : this.toggleLayerListEntry(path)}>
                         {type ? (<span className="layer-catalog-widget-entry-service">{type}</span>) : null}
                         {entry.title}
                     </span>
-                    {hasSublayers && entry.type === "wms" ? (
+                    {hasSublayers && type === "wms" ? (
                         <Icon icon="group" onClick={() => this.addServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
                     ) : null}
                 </div>
@@ -120,7 +120,7 @@ export default class LayerCatalogWidget extends React.PureComponent {
             });
             ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
                 if (layer) {
-                    if (entry.sublayers === false) {
+                    if (entry.sublayers === false || !asGroup) {
                         layer.sublayers = null;
                     }
                     LayerUtils.propagateLayerProperty(layer, "opacity", params.opacity);
