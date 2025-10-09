@@ -313,14 +313,16 @@ class SearchBox extends React.Component {
             [SearchResultType.PLACE]: this.renderPlaceResult,
             [SearchResultType.THEMELAYER]: this.renderLayerResult,
             [SearchResultType.EXTERNALLAYER]: this.renderLayerResult,
-            [SearchResultType.THEME]: this.renderThemeResult
+            [SearchResultType.THEME]: this.renderThemeResult,
+            [SearchResultType.TASK]: this.renderTaskResult
         };
         const layersBeforePlaces = this.props.searchOptions.showLayerResultsBeforePlaces;
         const priorities = {
             [SearchResultType.PLACE]: layersBeforePlaces ? 0 : 3,
             [SearchResultType.THEMELAYER]: layersBeforePlaces ? 2 : 1,
             [SearchResultType.EXTERNALLAYER]: layersBeforePlaces ? 3 : 2,
-            [SearchResultType.THEME]: layersBeforePlaces ? 1 : 0
+            [SearchResultType.THEME]: layersBeforePlaces ? 1 : 0,
+            [SearchResultType.TASK]: 4
         };
         const results = Object.keys(this.props.searchProviders).reduce((result, provider) => {
             if (!this.state.searchResults[provider]) {
@@ -427,6 +429,14 @@ class SearchBox extends React.Component {
                 <Icon className="searchbox-result-openicon" icon="open" />
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.addThemeLayers(result.layer); this.blur();}} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+            </div>
+        );
+    };
+    renderTaskResult = (provider, group, result) => {
+        return (
+            <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => {this.selectTaskResult(provider, group, result); this.blur();}} onMouseDown={MiscUtils.killEvent}>
+                {result.task.icon ? (<Icon icon={result.task.icon} />) : null}
+                <span className="searchbox-result-label">{result.text}</span>
             </div>
         );
     };
@@ -541,6 +551,13 @@ class SearchBox extends React.Component {
         this.props.setCurrentTheme(result.theme, this.props.themes);
         if (this.props.searchOptions.showLayerAfterChangeTheme) {
             this.props.setCurrentTask('LayerTree');
+        }
+    };
+    selectTaskResult = (provider, group, result) => {
+        if (result.task.url) {
+            this.props.openExternalUrl(result.task.url, result.task.target, result.text, result.task.icon);
+        } else {
+            this.props.setCurrentTask(result.task.task || result.task.key, result.task.mode, result.task.mapClickAction || (result.task.identifyEnabled ? "identify" : null));
         }
     };
     loadFallbackResultImage = (ev, type) => {

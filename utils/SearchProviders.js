@@ -24,7 +24,8 @@ export const SearchResultType = {
     PLACE: 0,
     THEMELAYER: 1,
     THEME: 2,
-    EXTERNALLAYER: 3
+    EXTERNALLAYER: 3,
+    TASK: 4
 };
 
 function coordinatesSearch(text, searchParams, callback) {
