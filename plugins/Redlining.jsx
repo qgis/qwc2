@@ -87,7 +87,7 @@ class Redlining extends React.Component {
         defaultTextOutlineColor: [255, 255, 255, 1],
         defaultAreaUnit: 'metric',
         defaultLengthUnit: 'metric',
-        predefinedDashPatterns: [[], [8], [1, 8], [8, 8, 1, 8]]
+        predefinedDashPatterns: [[], [8, 8], [1, 8], [8, 8, 1, 8]]
     };
     state = {
         selectText: false
