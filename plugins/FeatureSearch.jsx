@@ -136,15 +136,18 @@ class FeatureSearch extends React.Component {
         if (!provider) {
             return null;
         }
+        const fields = Object.entries(provider.params.fields).map(([key, value], idx) => (
+            {key, ...value, order: value.order ?? idx}
+        )).sort((a, b) => a.order - b.order);
         return (
             <form className="feature-search-form" disabled={this.state.busy} onChange={() => this.setState({searchResults: null})} onSubmit={this.search}>
                 <fieldset disabled={this.state.busy}>
                     {provider.params.description ? (<div className="feature-search-form-descr">{provider.params.description}</div>) : null}
                     <table><tbody>
-                        {Object.entries(provider.params.fields).map(([key, value]) => (
-                            <tr key={key}>
-                                <td>{value.label ?? LocaleUtils.tr(value.labelmsgid)}:</td>
-                                <td>{this.renderField(key, value)}</td>
+                        {fields.map(field => (
+                            <tr key={field.key}>
+                                <td>{field.label ?? LocaleUtils.tr(field.labelmsgid)}:</td>
+                                <td>{this.renderField(field.key, field)}</td>
                             </tr>
                         ))}
                     </tbody></table>
