@@ -329,7 +329,7 @@ class Redlining extends React.Component {
                         onChange={(nr) => this.updateRedliningStyle({size: nr})}
                         value={this.props.redlining.style.size}/>
                     {showDash ? (
-                        <ComboBox onChange={value => this.updateRedliningStyle({strokeDash: value.split(":").map(Number)})} value={this.props.redlining.style.strokeDash.join(":")}>
+                        <ComboBox onChange={value => this.updateRedliningStyle({strokeDash: value.split(":").filter(Boolean).map(Number)})} value={this.props.redlining.style.strokeDash.join(":")}>
                             {this.props.predefinedDashPatterns.map(pattern => {
                                 const value = pattern.join(":");
                                 return (
