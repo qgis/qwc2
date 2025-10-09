@@ -3,7 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Impossibile trovare lo sfondo \"{0}\", viene visualizzato lo sfondo predefinito.",
-      "missingdefaulttheme": "",
+      "missingdefaulttheme": "Impossibile caricare il tema predefinito.",
       "missinglayers": "Impossibile trovare i seguenti livelli: {0}.",
       "missingpermalink": "Il permalink o il segnalibro non è valido o è scaduto.",
       "missingprojection": "Impossibile caricare il tema \"{0}\": la proiezione {1} non è definita.",
