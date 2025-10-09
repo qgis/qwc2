@@ -811,16 +811,16 @@ Allows drawing figures and text labels on the map.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowGeometryLabels | `bool` | Whether to allow labeling geometric figures. | `true` |
-| defaultAreaUnit | `string` | Default area unit. Options: metric, imperial, sqm, ha, sqkm, sqft, acre, sqmi | `'metric'` |
-| defaultBorderColor | `array` | Default border color. In format [r, g, b, a]. | `[255, 0, 0, 1]` |
-| defaultFillColor | `array` | Default fill color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
-| defaultLengthUnit | `string` | Default length unit. Options: metric, imperial, m, km, ft, mi | `'metric'` |
-| defaultTextFillColor | `array` | Default text fill color. In format [r, g, b, a]. | `[0, 0, 0, 1]` |
-| defaultTextOutlineColor | `array` | Default text outline color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
-| hiddenTools | `array` | Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. | `[]` |
-| predefinedBorderColors | `[array]` | Predefined border colors. In format [[r, g, b, a], ...]. | `undefined` |
-| predefinedDashPatterns | `[array]` | Predefined dash patterns. In format [[<pattern_list>]]. | `[[], [8], [1, 8], [8, 8, 1, 8]]` |
-| predefinedFillColors | `[array]` | Predefined fill colors. In format [[r, g, b, a], ...]. | `undefined` |
+| defaultAreaUnit | `string` | Default area unit. Options: `metric`, `imperial`, `sqm`, `ha`, `sqkm`, `sqft`, `acre`, `sqmi` | `'metric'` |
+| defaultBorderColor | `array` | Default border color. In format `[r, g, b, a]`. | `[255, 0, 0, 1]` |
+| defaultFillColor | `array` | Default fill color. In format `[r, g, b, a]`. | `[255, 255, 255, 1]` |
+| defaultLengthUnit | `string` | Default length unit. Options: `metric`, `imperial`, `m`, `km`, `ft`, `mi` | `'metric'` |
+| defaultTextFillColor | `array` | Default text fill color. In format `[r, g, b, a]`. | `[0, 0, 0, 1]` |
+| defaultTextOutlineColor | `array` | Default text outline color. In format `[r, g, b, a]`. | `[255, 255, 255, 1]` |
+| hiddenTools | `array` | Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `Export`. | `[]` |
+| predefinedBorderColors | `[array]` | Predefined border colors. In format `[[r, g, b, a], ...]`. | `undefined` |
+| predefinedDashPatterns | `[array]` | Predefined dash patterns. In format `[<dash-array>, ...]`, where a dash-array is list of alternating dash and gap widths, i.e. `[8 4]` for long dashes followed by shorter gaps. | `[[], [8, 8], [1, 8], [8, 8, 1, 8]]` |
+| predefinedFillColors | `[array]` | Predefined fill colors. In format `[[r, g, b, a], ...]`. | `undefined` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
 

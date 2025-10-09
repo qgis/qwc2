@@ -42,28 +42,28 @@ class Redlining extends React.Component {
         /** Whether to allow labeling geometric figures. */
         allowGeometryLabels: PropTypes.bool,
         changeRedliningState: PropTypes.func,
-        /** Default area unit. Options: metric, imperial, sqm, ha, sqkm, sqft, acre, sqmi */
+        /** Default area unit. Options: `metric`, `imperial`, `sqm`, `ha`, `sqkm`, `sqft`, `acre`, `sqmi` */
         defaultAreaUnit: PropTypes.string,
-        /** Default border color. In format [r, g, b, a]. */
+        /** Default border color. In format `[r, g, b, a]`. */
         defaultBorderColor: PropTypes.array,
-        /** Default fill color. In format [r, g, b, a]. */
+        /** Default fill color. In format `[r, g, b, a]`. */
         defaultFillColor: PropTypes.array,
-        /** Default length unit. Options: metric, imperial, m, km, ft, mi */
+        /** Default length unit. Options: `metric`, `imperial`, `m`, `km`, `ft`, `mi` */
         defaultLengthUnit: PropTypes.string,
-        /** Default text fill color. In format [r, g, b, a]. */
+        /** Default text fill color. In format `[r, g, b, a]`. */
         defaultTextFillColor: PropTypes.array,
-        /** Default text outline color. In format [r, g, b, a]. */
+        /** Default text outline color. In format `[r, g, b, a]`. */
         defaultTextOutlineColor: PropTypes.array,
-        /** Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. */
+        /** Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `Export`. */
         hiddenTools: PropTypes.array,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
         plugins: PropTypes.object,
-        /** Predefined border colors. In format [[r, g, b, a], ...]. */
+        /** Predefined border colors. In format `[[r, g, b, a], ...]`. */
         predefinedBorderColors: PropTypes.arrayOf(PropTypes.array),
-        /** Predefined dash patterns. In format [[<pattern_list>]]. */
+        /** Predefined dash patterns. In format `[<dash-array>, ...]`, where a dash-array is list of alternating dash and gap widths, i.e. `[8 4]` for long dashes followed by shorter gaps. */
         predefinedDashPatterns: PropTypes.arrayOf(PropTypes.array),
-        /** Predefined fill colors. In format [[r, g, b, a], ...]. */
+        /** Predefined fill colors. In format `[[r, g, b, a], ...]`. */
         predefinedFillColors: PropTypes.arrayOf(PropTypes.array),
         redlining: PropTypes.object,
         resetRedliningState: PropTypes.func,
