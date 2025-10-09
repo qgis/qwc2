@@ -79,6 +79,8 @@ class LayerCatalog extends React.Component {
         }),
         /** Whether to increase the indent size dynamically according to the current level (`true`) or keep the indent size constant (`false`). */
         levelBasedIndentSize: PropTypes.bool,
+        /** Whether to register a search provider which allows searching catalog layers through the global search field. */
+        registerCatalogSearchProvider: PropTypes.bool,
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
         setCurrentTask: PropTypes.func
@@ -92,7 +94,8 @@ class LayerCatalog extends React.Component {
             initiallyDocked: false,
             side: 'left'
         },
-        levelBasedIndentSize: true
+        levelBasedIndentSize: true,
+        registerCatalogSearchProvider: true
     };
     state = {
         catalog: null,
@@ -110,13 +113,17 @@ class LayerCatalog extends React.Component {
                 console.warn("Failed to load catalog: " + e);
             });
         }
-        registerSearchProvider("catalogsearch", {
-            label: LocaleUtils.tr("layercatalog.windowtitle"),
-            onSearch: this.searchCatalog
-        });
+        if (this.props.registerCatalogSearchProvider) {
+            registerSearchProvider("catalogsearch", {
+                label: LocaleUtils.tr("layercatalog.windowtitle"),
+                onSearch: this.searchCatalog
+            });
+        }
     }
     componentWillUnmount() {
-        unregisterSearchProvider("catalogsearch");
+        if (this.props.registerCatalogSearchProvider) {
+            unregisterSearchProvider("catalogsearch");
+        }
     }
     componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active) {
