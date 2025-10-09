@@ -819,6 +819,7 @@ Allows drawing figures and text labels on the map.
 | defaultTextOutlineColor | `array` | Default text outline color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
 | hiddenTools | `array` | Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. | `[]` |
 | predefinedBorderColors | `[array]` | Predefined border colors. In format [[r, g, b, a], ...]. | `undefined` |
+| predefinedDashPatterns | `[array]` | Predefined dash patterns. In format [[<pattern_list>]]. | `[[], [8], [1, 8], [8, 8, 1, 8]]` |
 | predefinedFillColors | `[array]` | Predefined fill colors. In format [[r, g, b, a], ...]. | `undefined` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |

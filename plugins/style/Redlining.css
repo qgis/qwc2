@@ -55,3 +55,8 @@ div.redlining-message {
     text-align: center;
     font-style: italic;
 }
+
+div.redlining-dash-combo-entry {
+    display: flex;
+    align-items: center;
+}

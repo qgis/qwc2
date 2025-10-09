@@ -61,6 +61,8 @@ class Redlining extends React.Component {
         plugins: PropTypes.object,
         /** Predefined border colors. In format [[r, g, b, a], ...]. */
         predefinedBorderColors: PropTypes.arrayOf(PropTypes.array),
+        /** Predefined dash patterns. In format [[<pattern_list>]]. */
+        predefinedDashPatterns: PropTypes.arrayOf(PropTypes.array),
         /** Predefined fill colors. In format [[r, g, b, a], ...]. */
         predefinedFillColors: PropTypes.arrayOf(PropTypes.array),
         redlining: PropTypes.object,
@@ -84,7 +86,8 @@ class Redlining extends React.Component {
         defaultTextFillColor: [0, 0, 0, 1],
         defaultTextOutlineColor: [255, 255, 255, 1],
         defaultAreaUnit: 'metric',
-        defaultLengthUnit: 'metric'
+        defaultLengthUnit: 'metric',
+        predefinedDashPatterns: [[], [8], [1, 8], [8, 8, 1, 8]]
     };
     state = {
         selectText: false
@@ -92,6 +95,7 @@ class Redlining extends React.Component {
     constructor(props) {
         super(props);
         this.labelInput = null;
+        this.dashIcons = {};
     }
     componentDidMount() {
         this.componentDidUpdate({redlining: {}});
@@ -117,6 +121,9 @@ class Redlining extends React.Component {
             } else if (this.props.redlining.layer !== 'redlining') {
                 this.props.changeRedliningState({layer: 'redlining', layerTitle: LocaleUtils.tr('redlining.layertitle')});
             }
+        }
+        if (this.props.predefinedDashPatterns !== prevProps.predefinedDashPatterns) {
+            this.generateDashIcons();
         }
     }
     onShow = (mode, data) => {
@@ -144,6 +151,13 @@ class Redlining extends React.Component {
             lenUnit: this.props.defaultLengthUnit,
             areaUnit: this.props.defaultAreaUnit
         };
+    };
+    generateDashIcons = () => {
+        this.dashIcons = this.props.predefinedDashPatterns.reduce((res, pattern) => {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16"><line x1="0" y1="8" x2="32" y2="8" stroke="black" stroke-width="2" stroke-dasharray="${pattern.join(" ")}"></line></svg>`;
+            res[pattern.join(":")] = `data:image/svg+xml;base64,${btoa(svg)}`;
+            return res;
+        }, {});
     };
     updateRedliningStyle = (diff) => {
         const newStyle = {...this.props.redlining.style, ...diff};
@@ -275,11 +289,11 @@ class Redlining extends React.Component {
         }
     };
     renderStandardControls = () => {
-        let sizeLabel = LocaleUtils.tr("redlining.size");
-        if (this.props.redlining.geomType === "LineString") {
-            sizeLabel = LocaleUtils.tr("redlining.width");
-        } else if (this.props.redlining.geomType === "Polygon") {
-            sizeLabel = LocaleUtils.tr("redlining.border");
+        let sizeLabel = LocaleUtils.tr("redlining.line");
+        let showDash = true;
+        if (["Text", "Point"].includes(this.props.redlining.geomType)) {
+            sizeLabel = LocaleUtils.tr("redlining.size");
+            showDash = false;
         }
         let labelPlaceholder = LocaleUtils.tr("redlining.label");
         if (this.props.redlining.geomType === "Text") {
@@ -314,6 +328,18 @@ class Redlining extends React.Component {
                     <NumberInput max={99} min={1} mobile
                         onChange={(nr) => this.updateRedliningStyle({size: nr})}
                         value={this.props.redlining.style.size}/>
+                    {showDash ? (
+                        <ComboBox onChange={value => this.updateRedliningStyle({strokeDash: value.split(":").map(Number)})} value={this.props.redlining.style.strokeDash.join(":")}>
+                            {this.props.predefinedDashPatterns.map(pattern => {
+                                const value = pattern.join(":");
+                                return (
+                                    <div className="redlining-dash-combo-entry" key={value} value={value}>
+                                        <img src={this.dashIcons[value]} />
+                                    </div>
+                                );
+                            })}
+                        </ComboBox>
+                    ) : null}
                 </div>
                 {this.props.redlining.geomType === 'LineString' ? (
                     <div className="redlining-control">

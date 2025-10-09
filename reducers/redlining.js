@@ -14,6 +14,7 @@ const defaultState = {
     style: {
         borderColor: [255, 0, 0, 1],
         fillColor: [255, 255, 255, 1],
+        strokeDash: [],
         size: 2,
         text: "",
         textOutlineColor: [255, 255, 255, 1],

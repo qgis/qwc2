@@ -159,9 +159,9 @@ class RedliningSupport extends React.Component {
         return {
             strokeColor: isText ? styleProps.textOutlineColor : styleProps.borderColor,
             strokeWidth: 1 + 0.5 * styleProps.size,
+            strokeDash: styleProps.strokeDash,
             fillColor: isText ? styleProps.textFillColor : styleProps.fillColor,
             circleRadius: 5 + styleProps.size,
-            strokeDash: [],
             headmarker: styleProps.headmarker,
             tailmarker: styleProps.tailmarker
         };
@@ -172,6 +172,7 @@ class RedliningSupport extends React.Component {
         const isText = feature.get("shape") === "Text";
         return {
             [isText ? "textOutlineColor" : "borderColor"]: styleOptions.strokeColor,
+            strokeDash: styleOptions.strokeDash,
             size: (styleOptions.strokeWidth - 1) * 2,
             [isText ? "textFillColor" : "fillColor"]: styleOptions.fillColor,
             text: label,
