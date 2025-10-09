@@ -15,8 +15,10 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
+import Icon from '../components/Icon';
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
+import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -86,7 +88,7 @@ class FeatureSearch extends React.Component {
         if (this.state.selectedProvider !== prevState.selectedProvider) {
             this.setState(state => ({
                 formValues: Object.entries(state.searchProviders[state.selectedProvider]?.params?.fields || []).reduce((res, [field, cfg]) => {
-                    return {...res, [field]: cfg.options?.[0]?.value ?? cfg.options?.[0] ?? ""};
+                    return {...res, [field]: ""};
                 }, {})
             }));
         } else if (this.state.formValues !== prevState.formValues) {
@@ -159,13 +161,17 @@ class FeatureSearch extends React.Component {
     renderField = (fieldname, fieldcfg) => {
         const onChange = ev => this.setState(state => ({formValues: {...state.formValues, [fieldname]: ev.target.value}}));
         if (fieldcfg.type === "select") {
-            const options = this.state.providerSelectOptions[fieldname]?.options ?? fieldcfg.options;
+            const options = this.state.providerSelectOptions[fieldname]?.options ?? fieldcfg.options ?? [];
             return (
-                <select name={fieldname} onChange={onChange}>
-                    {options.map(entry => (
-                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
-                    ))}
-                </select>
+                <InputContainer>
+                    <select defaultValue="" name={fieldname} onChange={onChange} role="input">
+                        <option disabled value="">{LocaleUtils.tr("featuresearch.select")}</option>
+                        {options.map(entry => (
+                            <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
+                        ))}
+                    </select>
+                    <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
+                </InputContainer>
             );
         } else {
             return (<input name={fieldname} onChange={onChange} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
@@ -243,6 +249,10 @@ class FeatureSearch extends React.Component {
         }).catch(() => {
             this.setState({busy: false, searchResults: {}});
         });
+    };
+    clearField = (ev, fieldname) => {
+        ev.target.previousElementSibling.value = "";
+        this.setState(state => ({formValues: {...state.formValues, [fieldname]: ev.target.value}}));
     };
     reloadSelectOptions = () => {
         Object.entries(this.state.searchProviders[this.state.selectedProvider]?.params?.fields ?? {}).forEach(([name, fieldcfg]) => {
