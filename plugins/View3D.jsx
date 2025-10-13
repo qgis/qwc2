@@ -84,6 +84,7 @@ class View3D extends React.Component {
     static defaultProps = {
         buttonPosition: 6,
         controlsPosition: 'top',
+        defaultSceneQuality: 100,
         geometry: {
             initialWidth: 600,
             initialHeight: 800,
