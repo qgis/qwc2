@@ -58,7 +58,7 @@ class Identify extends React.Component {
         displayResultTree: PropTypes.bool,
         /** Whether to enable the aggregated report download button. */
         enableAggregatedReports: PropTypes.bool,
-        /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`) */
+        /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. */
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         enabled: PropTypes.bool,
         /** Whether to clear the task when the results window is closed. */

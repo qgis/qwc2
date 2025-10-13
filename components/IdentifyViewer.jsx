@@ -291,7 +291,7 @@ class IdentifyViewer extends React.Component {
         super(props);
         this.currentResultElRef = null;
         this.scrollIntoView = false;
-        this.state.exportFormat = !Array.isArray(props.enableExport) || props.enableExport.includes('geojson') ? 'geojson' : props.enableExport[0];
+        this.state.exportFormat = !Array.isArray(props.enableExport) ? 'geojson' : props.enableExport[0];
     }
     componentDidMount() {
         this.updateResultTree();
@@ -650,8 +650,9 @@ class IdentifyViewer extends React.Component {
             );
         }
         // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
-        const exporters = this.getExporters();
-        const clipboardExportDisabled = exporters.find(entry => entry.id === this.state.exportFormat)?.allowClipboard !== true;
+        const exporters = Object.fromEntries(this.getExporters().map(exporter => ([exporter.id, exporter])));
+        const enabledExporters = Array.isArray(this.props.enableExport) ? this.props.enableExport : Object.keys(exporters);
+        const clipboardExportDisabled = exporters[this.state.exportFormat]?.allowClipboard !== true;
         return (
             <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } }>
                 {body}
@@ -661,10 +662,8 @@ class IdentifyViewer extends React.Component {
                         <span>{LocaleUtils.tr("identify.export")}:&nbsp;</span>
                         <div className="controlgroup">
                             <select className="combo identify-export-format" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
-                                {exporters.filter(entry => {
-                                    return !Array.isArray(this.props.enableExport) || this.props.enableExport.includes(entry.id);
-                                }).map(entry => (
-                                    <option key={entry.id} value={entry.id}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
+                                {enabledExporters.map(id => (
+                                    <option key={id} value={id}>{exporters[id].title ?? LocaleUtils.tr(exporters[id].titleMsgId)}</option>
                                 ))}
                             </select>
                             <button className="button" onClick={() => this.exportResults()} title={LocaleUtils.tr("identify.download")}>
