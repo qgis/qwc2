@@ -62,10 +62,10 @@ class MapSelection extends React.Component {
             style: feature => FeatureStyles[this.props.styleName](feature, this.props.styleOptions)
         });
 
-        this.map.addLayer(this.selectionLayer);
         this.selectionLayer.setVisible(!this.props.hideGeometry);
     }
     componentDidMount() {
+        this.map.addLayer(this.selectionLayer);
         if (this.props.active) {
             this.addDrawInteraction();
         }
