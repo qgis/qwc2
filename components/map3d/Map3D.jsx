@@ -692,8 +692,9 @@ class Map3D extends React.Component {
         this.instance.add(this.sceneObjectGroup);
 
         // Setup map
-        const bounds = CoordinatesUtils.reprojectBbox(this.props.theme.initialBbox.bounds, this.props.theme.initialBbox.crs, projection);
-        const extent = new Extent(projection, bounds[0], bounds[2], bounds[1], bounds[3]);
+        const initialBbox = this.props.theme.map3d?.extent ?? this.props.theme.initialBbox;
+        const bounds = CoordinatesUtils.reprojectBbox(initialBbox.bounds, initialBbox.crs, projection);
+        const extent = new Extent(crs, bounds[0], bounds[2], bounds[1], bounds[3]);
         this.map = new Map({
             extent: extent,
             backgroundColor: "white"
