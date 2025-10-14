@@ -33,12 +33,15 @@ import "./style/FeatureSearch.css";
  */
 class FeatureSearch extends React.Component {
     static propTypes = {
+        /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. */
+        enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         map: PropTypes.object,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         theme: PropTypes.object
     };
     static defaultProps = {
+        enableExport: true,
         side: 'right'
     };
     state = {
@@ -190,7 +193,7 @@ class FeatureSearch extends React.Component {
                 {isEmpty(this.state.searchResults) ? (
                     <div className="feature-search-noresults">{LocaleUtils.tr("featuresearch.noresults")}</div>
                 ) : (
-                    <IdentifyViewer collapsible displayResultTree={false} enableExport identifyResults={this.state.searchResults} showLayerTitles={!provider.params.resultTitle} />
+                    <IdentifyViewer collapsible displayResultTree={false} enableExport={this.props.enableExport} identifyResults={this.state.searchResults} showLayerTitles={!provider.params.resultTitle} />
                 )}
             </div>
         );

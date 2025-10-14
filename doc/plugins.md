@@ -383,6 +383,7 @@ See [Configuring the QGIS feature search](../../topics/Search/#configuring-the-q
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 GeometryDigitizer<a name="geometrydigitizer"></a>
