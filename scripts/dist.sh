@@ -5,7 +5,7 @@ rm -rf dist
 for dir in actions components libs plugins reducers scripts selectors stores utils;
 do
 mkdir -p dist/$dir
-npx babel $dir --copy-files --out-dir dist/$dir --extensions ".js,.jsx" --minified
+npx babel $dir --copy-files --out-dir dist/$dir --extensions ".js,.jsx"
 done
 mkdir -p dist/static/translations
 mkdir -p dist/icons
