@@ -33,6 +33,7 @@ import {changeMeasurementState} from '../actions/measurement';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {getElevationInterface} from '../utils/ElevationInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -161,6 +162,10 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
         const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
         const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, scale, mapCrs, true, false);
         const highlightParams = VectorLayerUtils.createPrintHighlighParams([layer], mapCrs, scale);
+        let bounds = [...this.props.map.bbox.bounds];
+        if (CoordinatesUtils.getAxisOrder(this.props.map.projection).substr(0, 2) === 'ne') {
+            bounds = [bounds[1], bounds[0], bounds[3], bounds[2]];
+        }
         const imageParams = {
             SERVICE: 'WMS',
             VERSION: '1.3.0',
@@ -168,7 +173,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             TRANSPARENT: 'true',
             TILED: 'false',
             CRS: this.props.map.projection,
-            BBOX: this.props.map.bbox.bounds,
+            BBOX: bounds,
             WIDTH: this.props.map.size.width,
             HEIGHT: this.props.map.size.height,
             HIGHLIGHT_GEOM: highlightParams.geoms.join(";"),
