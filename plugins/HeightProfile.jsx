@@ -486,7 +486,7 @@ class HeightProfile extends React.Component {
         };
 
         let datasetSelector = null;
-        if (this.state.data.length > 1) {
+        if (interactive && this.state.data.length > 1) {
             datasetSelector = (
                 <div className="height-profile-dataset-select">
                     {this.state.data.map((dataset, idx) => {
