@@ -53,7 +53,6 @@ class MapSelection extends React.Component {
     constructor(props) {
         super(props);
         this.drawInteraction = null;
-        this.map = MapUtils.getHook(MapUtils.GET_MAP);
 
         // create a layer to draw on
         this.selectionLayer = new ol.layer.Vector({
@@ -65,6 +64,7 @@ class MapSelection extends React.Component {
         this.selectionLayer.setVisible(!this.props.hideGeometry);
     }
     componentDidMount() {
+        this.map = MapUtils.getHook(MapUtils.GET_MAP);
         this.map.addLayer(this.selectionLayer);
         if (this.props.active) {
             this.addDrawInteraction();
