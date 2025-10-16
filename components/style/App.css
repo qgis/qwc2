@@ -179,6 +179,10 @@ div.controlgroup > .controlgroup-fillitem {
     width: 0;
 }
 
+div.controlgroup > .controlgroup-expanditem {
+    flex: 1 0 auto;
+}
+
 div.controlgroup > *:not(:last-child):not(span) {
     margin-right: -1px;
 }

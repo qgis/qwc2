@@ -54,8 +54,6 @@ class Identify extends React.Component {
         currentTask: PropTypes.string,
         /** Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         customExporters: PropTypes.array,
-        /** Whether to display a tree overview of results (as opposed to a flat list of results). */
-        displayResultTree: PropTypes.bool,
         /** Whether to enable the aggregated report download button. */
         enableAggregatedReports: PropTypes.bool,
         /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. */
@@ -90,6 +88,8 @@ class Identify extends React.Component {
         removeMarker: PropTypes.func,
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
+        /** Result display mode, one of `tree`, `flat`. */
+        resultDisplayMode: PropTypes.string,
         selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
         /** Whether to show a layer selector to filter the identify results by layer. */
@@ -104,7 +104,7 @@ class Identify extends React.Component {
         clearResultsOnClose: true,
         customExporters: [],
         longAttributesDisplay: 'ellipsis',
-        displayResultTree: true,
+        resultDisplayMode: 'flat',
         replaceImageUrls: true,
         featureInfoReturnsLayerName: true,
         geometry: {
@@ -382,7 +382,6 @@ class Identify extends React.Component {
                         attributeCalculator={this.props.attributeCalculator}
                         attributeTransform={this.props.attributeTransform}
                         customExporters={this.props.customExporters}
-                        displayResultTree={this.props.displayResultTree}
                         enableAggregatedReports={this.props.enableAggregatedReports}
                         enableExport={this.props.enableExport}
                         exportGeometry={this.props.exportGeometry}
@@ -391,6 +390,7 @@ class Identify extends React.Component {
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
+                        resultDisplayMode={this.props.resultDisplayMode}
                         role="body"
                         showLayerSelector={this.props.showLayerSelector}
                     />
