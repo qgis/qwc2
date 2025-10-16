@@ -493,7 +493,7 @@ for customized queries and templates for the result presentation.
 | initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. | `'m'` |
 | params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
-| resultDisplayMode | `string` | Result display mode, one of `tree`, `flat`. | `'flat'` |
+| resultDisplayMode | `string` | Result display mode, one of `tree`, `flat`, `paginated`. | `'flat'` |
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
 
 LayerCatalog<a name="layercatalog"></a>

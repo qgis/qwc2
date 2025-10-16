@@ -30,6 +30,7 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
+import NavBar from './widgets/NavBar';
 import Spinner from './widgets/Spinner';
 
 import './style/IdentifyViewer.css';
@@ -288,7 +289,8 @@ class IdentifyViewer extends React.Component {
         selectedAggregatedReport: "",
         generatingReport: false,
         selectedLayer: '',
-        compareEnabled: false
+        compareEnabled: false,
+        currentPage: 0
     };
     constructor(props) {
         super(props);
@@ -305,7 +307,7 @@ class IdentifyViewer extends React.Component {
             this.updateResultTree();
         }
 
-        if (prevState.currentResult !== this.state.currentResult || prevState.resultTree !== this.state.resultTree) {
+        if (prevState.currentResult !== this.state.currentResult || prevState.resultTree !== this.state.resultTree || this.state.currentPage !== prevState.currentPage) {
             this.setHighlightedFeatures(this.state.currentResult ? [this.getCurrentResultFeature()] : null);
         }
         // Scroll to selected result
@@ -314,6 +316,11 @@ class IdentifyViewer extends React.Component {
             this.resultsTreeRef.scrollTop = this.currentResultElRef.offsetTop - 10;
             this.scrollIntoView = false;
             this.currentResultElRef = null;
+        }
+        // Ensure currentPage is in range
+        if (this.state.resultTree !== prevState.resultTree || this.state.selectedLayer !== prevState.selectedLayer) {
+            const count = Object.values(this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree).flat().length;
+            this.setState(state => ({currentPage: Math.max(0, Math.min(state.currentPage, count - 1))}));
         }
     }
     componentWillUnmount() {
@@ -339,9 +346,13 @@ class IdentifyViewer extends React.Component {
         });
     };
     setHighlightedFeatures = (features) => {
-        if (!features && this.props.highlightAllResults) {
+        const paginated = this.props.resultDisplayMode === 'paginated';
+        if (!features && (this.props.highlightAllResults || paginated)) {
             const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
             features = Object.values(resultTree).flat();
+            if (paginated) {
+                features = [features[this.state.currentPage]];
+            }
         }
         features = (features || []).filter(feature => feature.type.toLowerCase() === "feature").map(feature => {
             const newFeature = {...feature, properties: {}};
@@ -630,7 +641,7 @@ class IdentifyViewer extends React.Component {
     render() {
         let body = null;
         const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
-        const results = Object.values(resultTree).flat();
+        const flatResults = Object.entries(resultTree).map(([layerid, features]) => features.map(feature => ([layerid, feature]))).flat();
         if (this.state.compareEnabled) {
             body = (
                 <div className="identify-compare-results">
@@ -651,7 +662,7 @@ class IdentifyViewer extends React.Component {
                 <div className="identify-flat-results-list">
                     {Object.entries(resultTree).map(([layerid, features]) => {
                         return features.map(feature => (
-                            <div key={feature.id}
+                            <div key={layerid + "$" + feature.id}
                                 onMouseEnter={() => this.setHighlightedFeatures([feature])}
                                 onMouseLeave={() => this.setHighlightedFeatures(null)}
                             >
@@ -661,22 +672,29 @@ class IdentifyViewer extends React.Component {
                     })}
                 </div>
             );
+        } else if (this.props.resultDisplayMode === 'paginated' && this.state.currentPage < flatResults.length) {
+            const [layerid, feature] = flatResults[this.state.currentPage];
+            body = (
+                <div className="identify-flat-results-list">
+                    {this.renderResultAttributes(layerid, feature, 'identify-result-frame')}
+                </div>
+            );
         }
         // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
         return (
             <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } }>
                 {body}
-                {this.renderToolbar(results)}
+                {flatResults.length > 0 ? this.renderToolbar(flatResults.length) : null}
             </div>
         );
     }
-    renderToolbar = (results) => {
+    renderToolbar = (resultCount) => {
         const toggleButton = (key, icon) => (<button className={"button" + (this.state[key] ? " pressed" : "")} onClick={() => this.setState(state => ({[key]: !state[key]}))}><Icon icon={icon} /></button>);
         let infoLabel = null;
         if (this.state.compareEnabled) {
             infoLabel = (<span>{LocaleUtils.tr("identify.comparing", this.state.pinnedResults.size())}</span>);
-        } else {
-            infoLabel = (<span>{LocaleUtils.tr("identify.featurecount", results.length)}</span>);
+        } else if (this.props.resultDisplayMode !== 'paginated') {
+            infoLabel = (<span>{LocaleUtils.tr("identify.featurecount", resultCount)}</span>);
         }
         return (
             <div className="identify-toolbar">
@@ -686,6 +704,9 @@ class IdentifyViewer extends React.Component {
                 <span className="identify-toolbar-spacer" />
                 {infoLabel}
                 <span className="identify-toolbar-spacer" />
+                {this.props.resultDisplayMode === 'paginated' ? (
+                    <NavBar currentPage={this.state.currentPage} nPages={resultCount} pageChanged={page => this.setState({currentPage: page})} pageSizes={[1]} />
+                ) : null}
             </div>
         );
     };

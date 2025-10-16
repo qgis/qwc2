@@ -88,7 +88,7 @@ class Identify extends React.Component {
         removeMarker: PropTypes.func,
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
-        /** Result display mode, one of `tree`, `flat`. */
+        /** Result display mode, one of `tree`, `flat`, `paginated`. */
         resultDisplayMode: PropTypes.string,
         selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
