@@ -52,7 +52,6 @@ div.identify-results-tree-entries {
     padding: 0.25em 0.25em 0.25em 1em;
 }
 
-
 div.identify-body div.identify-flat-results-list {
     overflow: auto;
     flex: 1 1 auto;
@@ -105,6 +104,17 @@ div.identify-body .identify-result-title > span.icon:hover {
 
 div.identify-body .identify-result-tree-frame > div.identify-result-container {
     overflow-y: auto;
+}
+
+div.identify-compare-results {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: auto;
+    flex: 1 1 auto;
+}
+
+div.identify-compare-results > div.identify-result-frame {
+    flex: 1 1 20em;
 }
 
 div.identify-body .identify-result-box {

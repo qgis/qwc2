@@ -175,4 +175,46 @@ const MiscUtils = {
     }
 };
 
+export class ToggleSet {
+    constructor(set = new Set()) {
+        this._set = set;
+    }
+    has = (key) => {
+        return this._set.has(key);
+    };
+    toggle = (key) => {
+        const newset = new Set(this._set);
+        if (newset.has(key)) {
+            newset.delete(key);
+        } else {
+            newset.add(key);
+        }
+        return new ToggleSet(newset);
+    };
+    delete = (key) => {
+        if (this._set.has(key)) {
+            const newset = new Set(this._set);
+            newset.delete(key);
+            return new ToggleSet(newset);
+        } else {
+            return this;
+        }
+    };
+    add = (key) => {
+        if (!this._set.has(key)) {
+            const newset = new Set(this._set);
+            newset.add(key);
+            return new ToggleSet(newset);
+        } else {
+            return this;
+        }
+    };
+    size = () => {
+        return this._set.size;
+    };
+    entries = () => {
+        return [...this._set];
+    };
+}
+
 export default MiscUtils;

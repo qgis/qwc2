@@ -383,6 +383,7 @@ class Identify extends React.Component {
                         attributeTransform={this.props.attributeTransform}
                         customExporters={this.props.customExporters}
                         enableAggregatedReports={this.props.enableAggregatedReports}
+                        enableCompare
                         enableExport={this.props.enableExport}
                         exportGeometry={this.props.exportGeometry}
                         highlightAllResults={this.props.highlightAllResults}

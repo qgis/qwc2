@@ -244,10 +244,11 @@
     "identify": {
       "aggregatedreport": "Rapporto aggregato",
       "clipboard": "Copia negli appunti",
+      "comparing": "Confronto di {0} oggetti",
       "download": "Scarica",
       "export": "Esporta",
       "featureReport": "Oggetto formulario",
-      "featurecount": "Number oggetti",
+      "featurecount": "{0} oggetti",
       "layerall": "Tutti i livelli",
       "link": "Link",
       "noattributes": "Nessun attributo",

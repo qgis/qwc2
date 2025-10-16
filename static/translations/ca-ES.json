@@ -244,10 +244,11 @@
     "identify": {
       "aggregatedreport": "Informe agregat",
       "clipboard": "Copiar al porta-retalls",
+      "comparing": "",
       "download": "Descarregar",
       "export": "Exportar",
       "featureReport": "Informe d'element",
-      "featurecount": "Nombre d'elements",
+      "featurecount": "{0} element(s)",
       "layerall": "Totes les capes",
       "link": "Link",
       "noattributes": "Sense atributs",

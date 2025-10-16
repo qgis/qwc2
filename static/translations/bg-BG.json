@@ -244,10 +244,11 @@
     "identify": {
       "aggregatedreport": "Обобщен доклад",
       "clipboard": "Копиране в клипборда",
+      "comparing": "",
       "download": "Изтегляне",
       "export": "Експорт",
       "featureReport": "Отчет за функциите",
-      "featurecount": "Брой функции",
+      "featurecount": "",
       "layerall": "Всички слоеве",
       "link": "Връзка към",
       "noattributes": "Без атрибути",

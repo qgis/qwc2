@@ -244,10 +244,11 @@
     "identify": {
       "aggregatedreport": "Aggregierter Bericht",
       "clipboard": "Nach Zwischenablage kopieren",
+      "comparing": "Vergleich von {0} Objekte",
       "download": "Herunterladen",
       "export": "Exportieren",
       "featureReport": "Objektblatt",
-      "featurecount": "Anzahl Objekte",
+      "featurecount": "{0} Objekt(e)",
       "layerall": "Alle Ebenen",
       "link": "Link",
       "noattributes": "Keine Attribute",

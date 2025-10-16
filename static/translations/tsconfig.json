@@ -234,6 +234,7 @@
     "hideobjects3d.restoreall",
     "identify.aggregatedreport",
     "identify.clipboard",
+    "identify.comparing",
     "identify.download",
     "identify.export",
     "identify.featureReport",

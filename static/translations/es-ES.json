@@ -244,6 +244,7 @@
     "identify": {
       "aggregatedreport": "Informe agregado",
       "clipboard": "Copiar al portapapeles",
+      "comparing": "",
       "download": "Descargar",
       "export": "Exportar",
       "featureReport": "Informe del elemento",

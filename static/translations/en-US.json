@@ -244,10 +244,11 @@
     "identify": {
       "aggregatedreport": "Aggregated report",
       "clipboard": "Copy to clipboard",
+      "comparing": "Comparing {0} features",
       "download": "Download",
       "export": "Export",
       "featureReport": "Feature report",
-      "featurecount": "Feature count",
+      "featurecount": "{0} feature(s)",
       "layerall": "All layers",
       "link": "Link",
       "noattributes": "No attributes",

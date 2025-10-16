@@ -244,10 +244,11 @@
     "identify": {
       "aggregatedreport": "Rapport agrégé",
       "clipboard": "Copier dans le presse-papiers",
+      "comparing": "Comparison de {0} objets",
       "download": "Télécharger",
       "export": "Exporter",
       "featureReport": "Données de l'objet",
-      "featurecount": "Éléments sélectionnés",
+      "featurecount": "{0} élément(s)",
       "layerall": "Toutes les couches",
       "link": "Lien",
       "noattributes": "Pas d'attribut",

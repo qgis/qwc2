@@ -244,10 +244,11 @@
     "identify": {
       "aggregatedreport": "集合レポート",
       "clipboard": "クリップボードにコピー",
+      "comparing": "",
       "download": "ダウンロード",
       "export": "エクスポート",
       "featureReport": "地物レポート",
-      "featurecount": "地物数",
+      "featurecount": "",
       "layerall": "全てのレイヤ",
       "link": "リンク",
       "noattributes": "属性無し",
