@@ -60,11 +60,13 @@ export default class NavBar extends React.Component {
                 <button className="button" disabled={this.props.currentPage >= this.props.nPages - 1 || this.props.disabled} onClick={() => this.props.pageChanged(this.props.currentPage + 1)}>
                     <Icon icon="chevron-right" />
                 </button>
-                <select disabled={this.props.disabled} onChange={ev => this.props.pageSizeChanged(parseInt(ev.target.value, 10))} value={this.props.pageSize}>
-                    {this.props.pageSizes.map(pageSize => (
-                        <option key={pageSize} value={pageSize}>{pageSize} {LocaleUtils.tr("navbar.perpage")}</option>
-                    ))}
-                </select>
+                {this.props.pageSizes.length > 1 ? (
+                    <select disabled={this.props.disabled} onChange={ev => this.props.pageSizeChanged(parseInt(ev.target.value, 10))} value={this.props.pageSize}>
+                        {this.props.pageSizes.map(pageSize => (
+                            <option key={pageSize} value={pageSize}>{pageSize} {LocaleUtils.tr("navbar.perpage")}</option>
+                        ))}
+                    </select>
+                ) : null}
             </div>
         );
     }
