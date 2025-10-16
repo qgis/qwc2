@@ -254,6 +254,7 @@
       "noresults": "選択された点には情報がありません",
       "querying": "検索中...",
       "reportfail": "レポートを生成することが出来ませんでした",
+      "results": "",
       "selectreport": "レポートを選択...",
       "title": "地物情報"
     },

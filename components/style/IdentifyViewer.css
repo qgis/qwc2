@@ -67,7 +67,7 @@ div.identify-body div.identify-result-tree-frame {
 }
 
 div.identify-body div.identify-result-frame {
-    margin-top: 0.25em;
+    margin-bottom: 0.25em;
     border: 1px solid var(--border-color);
 }
 
@@ -160,21 +160,34 @@ div.identify-body td.identify-attr-value > a > img {
     max-width: 100%;
 }
 
-div.identify-body div.identify-buttonbox {
-    margin-top: 0.5em;
+div.identify-body div.identify-toolbar {
+    background-color: var(--container-bg-color);
+    margin-top: -0.25em;
     flex: 0 0 auto;
     display: flex;
     align-items: center;
+    position: relative;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.25em;
 }
 
-div.identify-body div.identify-selectbox {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
+span.identify-toolbar-spacer {
+    flex: 1 1 auto;
 }
 
-select:focus {
-outline: none;
+div.identify-settings-menu {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    border: 1px solid var(--border-color);
+    background-color: var(--container-bg-color);
+    box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
+    z-index: 1;
+    padding: 0.25em;
+}
+
+div.identify-settings-menu table td > div.controlgroup {
+    width: 100%;
 }
 
 div.identify-body table.identify-attr-subtable {
@@ -188,21 +201,4 @@ div.identify-body table.identify-attr-subtable > tbody > tr:nth-child(even) {
 div.identify-body td.identify-attr-spacer {
     height: 2px;
     background-color: var(--list-section-bg-color);
-}
-
-span.identify-buttonbox-spacer {
-    flex: 1 1 auto;
-}
-
-div.identify-body div.identify-result-feature-report-frame {
-    padding: 0.25em 0.5em;
-    font-size: small;
-    display: flex;
-    align-items: center;
-}
-
-div.identify-body div.identify-result-feature-report-frame > div.spinner {
-    width: 1em;
-    height: 1em;
-    margin-left: 0.5em;
 }

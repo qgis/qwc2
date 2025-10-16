@@ -254,6 +254,7 @@
       "noresults": "Brak dostępnych danych dla wybranego punktu",
       "querying": "Przetwarzam zapytanie...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Feature Info"
     },

@@ -254,6 +254,7 @@
       "noresults": "Seçilen nokta için geçerli bilgi yok",
       "querying": "Sorgulanıyor...",
       "reportfail": "Rapor üretilemedi",
+      "results": "",
       "selectreport": "",
       "title": "Obje Bilgisi"
     },

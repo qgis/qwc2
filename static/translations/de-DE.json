@@ -251,9 +251,10 @@
       "layerall": "Alle Ebenen",
       "link": "Link",
       "noattributes": "Keine Attribute",
-      "noresults": "Keine Resultate an der ausgewählten Position",
+      "noresults": "Keine Treffer an der ausgewählten Position",
       "querying": "Objekte werden abgefragt...",
       "reportfail": "Bericht konnt nicht erstellt werden",
+      "results": "Ergebnisse",
       "selectreport": "Bericht auswählen...",
       "title": "Objektinformationen"
     },

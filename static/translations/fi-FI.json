@@ -254,6 +254,7 @@
       "noresults": "Valitulla pisteellä ei ole informaatiota",
       "querying": "Kysely käynnissä...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Ominaisuustiedot"
     },

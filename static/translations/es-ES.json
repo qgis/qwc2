@@ -254,6 +254,7 @@
       "noresults": "Sin información disponible sobre el punto seleccionado",
       "querying": "Consultando...",
       "reportfail": "No se pudo generar el informe",
+      "results": "",
       "selectreport": "Seleccionar informe...",
       "title": "Información del elemento"
     },

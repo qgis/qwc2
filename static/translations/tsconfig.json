@@ -244,6 +244,7 @@
     "identify.noresults",
     "identify.querying",
     "identify.reportfail",
+    "identify.results",
     "identify.selectreport",
     "identify.title",
     "imageeditor.confirmclose",

@@ -254,6 +254,7 @@
       "noresults": "No information available for the selected point",
       "querying": "Querying...",
       "reportfail": "Failed to generate report",
+      "results": "Results",
       "selectreport": "Select report..",
       "title": "Feature Info"
     },
