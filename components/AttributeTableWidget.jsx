@@ -43,6 +43,8 @@ class AttributeTableWidget extends React.Component {
         iface: PropTypes.object,
         initialLayer: PropTypes.string,
         layers: PropTypes.array,
+        /** Whether to limit to the extent by default. */
+        limitToExtent: PropTypes.bool,
         mapBbox: PropTypes.object,
         mapCrs: PropTypes.string,
         mapScales: PropTypes.array,
@@ -67,7 +69,8 @@ class AttributeTableWidget extends React.Component {
         zoomLevel: 1000,
         showEditFormButton: true,
         showHiddenFields: true,
-        showLayerSelection: true
+        showLayerSelection: true,
+        limitToExtent: false
     };
     static defaultState = {
         loading: false,
@@ -97,6 +100,7 @@ class AttributeTableWidget extends React.Component {
         this.state = AttributeTableWidget.defaultState;
         this.table = null;
         this.attribTableContents = null;
+        this.state.limitToExtent = props.limitToExtent
     }
     componentDidMount() {
         if (this.props.initialLayer) {

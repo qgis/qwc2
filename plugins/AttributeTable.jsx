@@ -35,6 +35,8 @@ class AttributeTable extends React.Component {
         allowAddForGeometryLayers: PropTypes.bool,
         blocked: PropTypes.bool,
         iface: PropTypes.object,
+        /** Whether to limit to the extent by default. */
+        limitToExtent: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
         showEditFormButton: PropTypes.bool,
@@ -47,6 +49,7 @@ class AttributeTable extends React.Component {
         zoomLevel: PropTypes.number
     };
     static defaultProps = {
+        limitToExtent: false,
         zoomLevel: 1000,
         showEditFormButton: true,
         showHiddenFields: true,
@@ -59,7 +62,7 @@ class AttributeTable extends React.Component {
         return (
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} initiallyDocked onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}>
                 <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers}
-                    iface={this.props.iface} initialLayer={this.props.taskData?.layer}
+                    iface={this.props.iface} initialLayer={this.props.taskData?.layer} limitToExtent={this.props.limitToExtent}
                     role="body" showEditFormButton={this.props.showEditFormButton}
                     showHiddenFields={this.props.showHiddenFields} showLimitToExtent={this.props.showLimitToExtent}
                     zoomLevel={this.props.zoomLevel}
