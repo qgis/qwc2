@@ -192,6 +192,12 @@
       "takepicture": "Take picture",
       "unsavedchanged": ""
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "",
       "noresults": "",
@@ -481,6 +487,7 @@
       "loading": ""
     },
     "redlining": {
+      "attributes": "",
       "border": "Reunat",
       "buffer": "Bufferi",
       "buffercompute": "Laske",

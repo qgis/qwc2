@@ -192,6 +192,12 @@
       "takepicture": "Fotoğraf çek",
       "unsavedchanged": "Kaydedilmemiş değişiklikler mevcut. Yine de sayfadan ayrılmak istiyor musunuz?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Obje",
       "noresults": "Sonuç yok",
@@ -481,6 +487,7 @@
       "loading": "Form yükleniyor..."
     },
     "redlining": {
+      "attributes": "",
       "border": "Sınır",
       "buffer": "Tampon",
       "buffercompute": "Hesapla",

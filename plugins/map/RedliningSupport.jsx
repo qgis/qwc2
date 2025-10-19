@@ -16,6 +16,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 import {changeRedliningState} from '../../actions/redlining';
+import FeatureAttributesWindow from '../../components/FeatureAttributesWindow';
 import NumericInputWindow from '../../components/NumericInputWindow';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
 import FeatureStyles from '../../utils/FeatureStyles';
@@ -134,11 +135,18 @@ class RedliningSupport extends React.Component {
         }
     }
     render() {
-        if (this.props.redlining.numericInput) {
+        if (this.props.redlining.extraAction === "NumericInput") {
             return (
                 <NumericInputWindow
                     feature={this.props.redlining.selectedFeature}
-                    onClose={() => this.props.changeRedliningState({numericInput: false})}
+                    onClose={() => this.props.changeRedliningState({extraAction: null})}
+                    onFeatureChanged={this.updateCurrentFeature} />
+            );
+        } else if (this.props.redlining.extraAction === "FeatureAttributes") {
+            return (
+                <FeatureAttributesWindow
+                    feature={this.props.redlining.selectedFeature} layerid={this.props.redlining.layer}
+                    onClose={() => this.props.changeRedliningState({extraAction: null})}
                     onFeatureChanged={this.updateCurrentFeature} />
             );
         }
@@ -152,6 +160,7 @@ class RedliningSupport extends React.Component {
             } else {
                 this.currentFeature.getGeometry().setCoordinates(feature.geometry.coordinates);
             }
+            this.currentFeature.setProperties(feature.properties, true);
             this.props.changeRedliningState({selectedFeature: feature, geomType: feature.shape});
         }
     };

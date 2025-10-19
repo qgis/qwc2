@@ -192,6 +192,12 @@
       "takepicture": "Ajouter une photo",
       "unsavedchanged": "Il y a des modifications non enregistrées. Faut-il quand même quitter la page?"
     },
+    "featureattributes": {
+      "name": "Nom",
+      "nofeature": "Aucune objet active",
+      "value": "Valeur",
+      "windowtitle": "Attributs de l'objet"
+    },
     "featureform": {
       "feature": "Objet",
       "noresults": "Pas de résultats",
@@ -481,6 +487,7 @@
       "loading": "Chargement du formulaire..."
     },
     "redlining": {
+      "attributes": "Attributs de l'objet",
       "border": "Bordure",
       "buffer": "Tampon",
       "buffercompute": "Calculer",

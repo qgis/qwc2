@@ -192,6 +192,12 @@
       "takepicture": "Bild schiessen",
       "unsavedchanged": "Es gibt nicht gespeicherte Änderungen. Soll die Seite trotzdem verlassen werden?"
     },
+    "featureattributes": {
+      "name": "Name",
+      "nofeature": "Kein aktives Objekt",
+      "value": "Wert",
+      "windowtitle": "Objektattribute"
+    },
     "featureform": {
       "feature": "Objekt",
       "noresults": "Keine Ergebnisse",
@@ -481,6 +487,7 @@
       "loading": "Formular wird geladen..."
     },
     "redlining": {
+      "attributes": "Objektattribute",
       "border": "Rand",
       "buffer": "Puffern",
       "buffercompute": "Berechnen",

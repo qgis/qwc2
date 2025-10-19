@@ -192,6 +192,12 @@
       "takepicture": "撮影する",
       "unsavedchanged": "保存されていない変更があります。それでもこのページを離れますか?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "地物",
       "noresults": "検索結果無し",
@@ -481,6 +487,7 @@
       "loading": "フォームをロード中..."
     },
     "redlining": {
+      "attributes": "",
       "border": "境界線",
       "buffer": "バッファ",
       "buffercompute": "計算",

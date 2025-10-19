@@ -192,6 +192,12 @@
       "takepicture": "Take picture",
       "unsavedchanged": "There are unsaved changes. Do you want to leave the page anyway?"
     },
+    "featureattributes": {
+      "name": "Name",
+      "nofeature": "No active feature",
+      "value": "Value",
+      "windowtitle": "Feature attributes"
+    },
     "featureform": {
       "feature": "Feature",
       "noresults": "No results",
@@ -481,6 +487,7 @@
       "loading": "Loading form..."
     },
     "redlining": {
+      "attributes": "Feature attributes",
       "border": "Border",
       "buffer": "Buffer",
       "buffercompute": "Compute",

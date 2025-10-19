@@ -192,6 +192,12 @@
       "takepicture": "Fotografiază",
       "unsavedchanged": "Modificările nu sunt salvate. Doriți să părăsiți pagina oricum?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Obiect spațial",
       "noresults": "Nu există rezultate",
@@ -481,6 +487,7 @@
       "loading": "Formularul se încarcă"
     },
     "redlining": {
+      "attributes": "",
       "border": "Margine",
       "buffer": "Zonă tampon",
       "buffercompute": "Calcul",

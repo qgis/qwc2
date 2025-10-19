@@ -169,8 +169,8 @@ class Redlining extends React.Component {
         let drawButtons = [
             {key: "Point", tooltip: LocaleUtils.tr("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
             {key: "LineString", tooltip: LocaleUtils.tr("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
-            {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
             [
+                {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
                 toolEnabled("Circle") ? {key: "Circle", tooltip: LocaleUtils.tr("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}} : null,
                 toolEnabled("Ellipse") ? {key: "Ellipse", tooltip: LocaleUtils.tr("redlining.ellipse"), icon: "ellipse", data: {action: "Draw", geomType: "Ellipse", text: ""}} : null,
                 toolEnabled("Square") ? {key: "Square", tooltip: LocaleUtils.tr("redlining.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}} : null,
@@ -193,7 +193,8 @@ class Redlining extends React.Component {
             {key: "Delete", tooltip: LocaleUtils.tr("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ].filter(Boolean);
         const extraButtons = toolEnabled("NumericInput") ? [
-            {key: "NumericInput", tooltip: LocaleUtils.tr("redlining.numericinput"), icon: "numericinput"}
+            {key: "NumericInput", tooltip: LocaleUtils.tr("redlining.numericinput"), icon: "numericinput"},
+            {key: "FeatureAttributes", tooltip: LocaleUtils.tr("redlining.attributes"), icon: "list-alt"}
         ] : [];
         for (const plugin of Object.values(this.props.plugins || {})) {
             if (toolEnabled(plugin.cfg.key)) {
@@ -237,7 +238,7 @@ class Redlining extends React.Component {
                     </div>
                     <div className="redlining-groupcontrol">
                         <div>&nbsp;</div>
-                        <ButtonBar active={this.props.redlining.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={() => this.props.changeRedliningState({numericInput: !this.props.redlining.numericInput})} />
+                        <ButtonBar active={this.props.redlining.extraAction} buttons={extraButtons} onClick={(key) => this.props.changeRedliningState({extraAction: key})} />
                     </div>
                     {toolEnabled("Export") ? (
                         <div className="redlining-groupcontrol">

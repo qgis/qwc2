@@ -192,6 +192,12 @@
       "takepicture": "Bild schießen",
       "unsavedchanged": "Es gibt nicht gespeicherte Änderungen. Soll die Seite trotzdem verlassen werden?"
     },
+    "featureattributes": {
+      "name": "Name",
+      "nofeature": "Kein aktives Objekt",
+      "value": "Wert",
+      "windowtitle": "Objektattribute"
+    },
     "featureform": {
       "feature": "Objekt",
       "noresults": "Keine Ergebnisse",
@@ -436,7 +442,7 @@
       "angle": "Winkel",
       "featureunsupported": "Numerische Eingabe nicht verfügbar für dieses Objekt",
       "height": "Höhe",
-      "nofeature": "Kein Objekt aktiv",
+      "nofeature": "Kein aktives Objekt",
       "side": "Seite",
       "width": "Breite",
       "windowtitle": "Numerische Eingabe"
@@ -481,6 +487,7 @@
       "loading": "Formular wird geladen..."
     },
     "redlining": {
+      "attributes": "Objektattribute",
       "border": "Rand",
       "buffer": "Puffern",
       "buffercompute": "Berechnen",

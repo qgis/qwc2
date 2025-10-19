@@ -192,6 +192,12 @@
       "takepicture": "Escull imatge",
       "unsavedchanged": "Hi ha canvis sense guardar. Vols sortir de la pàgina sense guardar?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Element",
       "noresults": "Sense resultats",
@@ -481,6 +487,7 @@
       "loading": "Carregant formulari..."
     },
     "redlining": {
+      "attributes": "",
       "border": "Límit",
       "buffer": "Buffer",
       "buffercompute": "Computar",

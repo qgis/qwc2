@@ -192,6 +192,12 @@
       "takepicture": "Foto",
       "unsavedchanged": "Vi sono cambiamenti non salvati. Volete comunque lasciare la pagina?"
     },
+    "featureattributes": {
+      "name": "Nome",
+      "nofeature": "Nessun oggetto attivo",
+      "value": "Valore",
+      "windowtitle": "Attributi oggetto"
+    },
     "featureform": {
       "feature": "Oggetto",
       "noresults": "Nessun risultato",
@@ -481,6 +487,7 @@
       "loading": "Caricando formulario..."
     },
     "redlining": {
+      "attributes": "Attributi oggetto",
       "border": "Bordo",
       "buffer": "Buffer",
       "buffercompute": "Calcola",

@@ -192,6 +192,12 @@
       "takepicture": "Foto maken",
       "unsavedchanged": "Er zijn niet-opgeslagen wijzigingen. Wil je de pagina toch verlaten?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Object",
       "noresults": "Geen resultaten",
@@ -481,6 +487,7 @@
       "loading": "Formulier laden..."
     },
     "redlining": {
+      "attributes": "",
       "border": "Rand",
       "buffer": "Buffer",
       "buffercompute": "Berekenen",

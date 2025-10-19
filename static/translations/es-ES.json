@@ -192,6 +192,12 @@
       "takepicture": "Tomar fotografía",
       "unsavedchanged": "Hay cambios sin guardar. Quieres salir de la página sin guardar?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Elemento",
       "noresults": "Sin resultados",
@@ -481,6 +487,7 @@
       "loading": "Cargando formulario..."
     },
     "redlining": {
+      "attributes": "",
       "border": "Límite",
       "buffer": "Bufer",
       "buffercompute": "Computar",

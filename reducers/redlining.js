@@ -26,7 +26,7 @@ const defaultState = {
     drawMultiple: true,
     freehand: false,
     measurements: false,
-    numericInput: false,
+    extraAction: null,
     lenUnit: 'metric',
     areaUnit: 'metric'
 };

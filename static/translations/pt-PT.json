@@ -192,6 +192,12 @@
       "takepicture": "Tirar Fotografia",
       "unsavedchanged": "Alterações Não Guardadas"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Recurso",
       "noresults": "Sem Resultados",
@@ -481,6 +487,7 @@
       "loading": "A carregar..."
     },
     "redlining": {
+      "attributes": "",
       "border": "Fronteira",
       "buffer": "Tampão",
       "buffercompute": "Calcular",

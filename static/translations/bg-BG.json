@@ -192,6 +192,12 @@
       "takepicture": "Направете снимка",
       "unsavedchanged": "Има неспасени промени. Искате ли все пак да напуснете страницата?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeature": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Функции",
       "noresults": "Няма резултати",
@@ -481,6 +487,7 @@
       "loading": "Зареждане на формуляра..."
     },
     "redlining": {
+      "attributes": "",
       "border": "Граница",
       "buffer": "Буфер",
       "buffercompute": "Изчисляване",
