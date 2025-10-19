@@ -9,3 +9,10 @@ div.numeric-input-widget-body > table input {
 div.numeric-input-widget-body > table tr:hover {
     background-color: var(--list-item-bg-color-hover);
 }
+
+div.numeric-input-widget-body > table td:nth-child(1),
+div.numeric-input-widget-body > table td:nth-child(2),
+div.numeric-input-widget-body > table td:nth-child(4),
+div.numeric-input-widget-body > table td:nth-child(6) {
+    width: 1%;
+}
