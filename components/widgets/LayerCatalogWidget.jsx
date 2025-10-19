@@ -25,6 +25,7 @@ export default class LayerCatalogWidget extends React.PureComponent {
     };
     state = {
         catalog: [],
+        filteredCatalog: null,
         filter: ""
     };
     constructor(props) {
@@ -36,12 +37,9 @@ export default class LayerCatalogWidget extends React.PureComponent {
             this.setState({catalog: this.props.catalog || []});
         }
     }
-    renderCatalogEntry(entry, filter, path, level = 0, idx) {
+    renderCatalogEntry(entry, path, level = 0, idx) {
         const hasSublayers = !isEmpty(entry.sublayers);
-        const sublayers = hasSublayers ? entry.sublayers.map((sublayer, i) => this.renderCatalogEntry(sublayer, filter, [...path, i], level + 1, i)) : [];
-        if (sublayers.filter(item => item).length === 0 && filter && !removeDiacritics(entry.title).match(filter)) {
-            return null;
-        }
+        const sublayers = hasSublayers ? entry.sublayers.map((sublayer, i) => this.renderCatalogEntry(sublayer, [...path, i], level + 1, i)) : [];
         const type = entry.resource ? entry.resource.slice(0, entry.resource.indexOf(":")) : entry.type;
         const key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
         const indentSize = !this.props.levelBasedIndentSize && level > 0 ? 1.5 : level;
@@ -79,7 +77,6 @@ export default class LayerCatalogWidget extends React.PureComponent {
         });
     };
     render() {
-        const filter = new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
         let emptyEntry = null;
         if (isEmpty(this.state.catalog) && this.props.pendingRequests === 0) {
             emptyEntry = (
@@ -91,21 +88,42 @@ export default class LayerCatalogWidget extends React.PureComponent {
             );
         }
         const filterplaceholder = LocaleUtils.tr("importlayer.filter");
+        const catalog = this.state.filteredCatalog ?? this.state.catalog;
         return (
             <div className="layer-catalog-widget">
                 <InputContainer className="layer-catalog-widget-filter">
                     <input
-                        onChange={ev => this.setState({filter: ev.target.value})} placeholder={filterplaceholder}
+                        onChange={ev => this.setFilter(ev.target.value)} placeholder={filterplaceholder}
                         role="input" type="text" value={this.state.filter} />
                     <Icon icon="clear" onClick={() => this.setState({filter: ""})} role="suffix" />
                 </InputContainer>
                 <div className="layer-catalog-widget-body">
-                    {this.state.catalog.map((entry, idx) => this.renderCatalogEntry(entry, filter, [idx], 0, idx))}
+                    {catalog.map((entry, idx) => this.renderCatalogEntry(entry, [idx], 0, idx))}
                     {emptyEntry}
                 </div>
             </div>
         );
     }
+    setFilter = (text) => {
+        this.setState(state => {
+            if (!text) {
+                return {filter: text, filteredCatalog: null};
+            }
+            const filter = new RegExp(removeDiacritics(text).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
+            const filterCatalogEntry = (res, entry) => {
+                if (entry.sublayers) {
+                    const newEntry = {...entry, sublayers: entry.sublayers.reduce(filterCatalogEntry, []), expanded: true};
+                    return newEntry.sublayers.length > 0 ? [...res, newEntry] : res;
+                } else if (removeDiacritics(entry.title).match(filter)) {
+                    return [...res, entry];
+                } else {
+                    return res;
+                }
+            };
+            const filteredCatalog = state.catalog.reduce(filterCatalogEntry, []);
+            return {filter: text, filteredCatalog: filteredCatalog};
+        });
+    };
     addServiceLayer = (entry, asGroup = false) => {
         if (entry.resource) {
             const params = LayerUtils.splitLayerUrlParam(entry.resource);
