@@ -100,7 +100,7 @@ class AttributeTableWidget extends React.Component {
         this.state = AttributeTableWidget.defaultState;
         this.table = null;
         this.attribTableContents = null;
-        this.state.limitToExtent = props.limitToExtent
+        this.state.limitToExtent = props.limitToExtent;
     }
     componentDidMount() {
         if (this.props.initialLayer) {
