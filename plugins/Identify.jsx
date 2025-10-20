@@ -179,7 +179,7 @@ class Identify extends React.Component {
                     IdentifyUtils.sendRequest(request, (response) => {
                         this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
                         if (response) {
-                            this.parseResult(response, l, request.params.info_format, clickPoint);
+                            this.parseResult(response, l, request.params.info_format, clickPoint, this.props.click.modifiers.ctrl);
                         }
                     });
                 });
@@ -284,7 +284,7 @@ class Identify extends React.Component {
     changeBufferUnit = (ev) => {
         this.setState({ radiusUnits: ev.target.value });
     };
-    parseResult = (response, layer, format, clickPoint) => {
+    parseResult = (response, layer, format, clickPoint, ctrlPick = false) => {
         const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection, this.props.featureInfoReturnsLayerName);
         // Merge with previous
         this.setState((state) => {
@@ -292,8 +292,11 @@ class Identify extends React.Component {
             Object.entries(newResults).forEach(([layername, features]) => {
                 const key = layer.url + "#" + layername;
                 identifyResults[key] = features.reduce((result, feature) => {
-                    if (result.find(f => f.id === feature.id) === undefined) {
+                    const idx = result.findIndex(f => f.id === feature.id);
+                    if (idx === -1) {
                         result.push(feature);
+                    } else if (ctrlPick === true) {
+                        result.splice(idx, 1);
                     }
                     return result;
                 }, identifyResults[key] || []);
