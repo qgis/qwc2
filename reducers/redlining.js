@@ -11,6 +11,7 @@ import {CHANGE_REDLINING_STATE, RESET_REDLINING_STATE} from '../actions/redlinin
 const defaultState = {
     action: null,
     geomType: null,
+    format: null,
     style: {
         borderColor: [255, 0, 0, 1],
         fillColor: [255, 255, 255, 1],

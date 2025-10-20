@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import FileSaver from 'file-saver';
 import Mousetrap from 'mousetrap';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
@@ -43,6 +44,7 @@ class RedliningSupport extends React.Component {
         addLayerFeatures: PropTypes.func,
         changeRedliningState: PropTypes.func,
         displayCrs: PropTypes.string,
+        layers: PropTypes.array,
         map: PropTypes.object,
         mapCrs: PropTypes.string,
         redlining: PropTypes.object,
@@ -97,6 +99,10 @@ class RedliningSupport extends React.Component {
             this.deleteCurrentFeature();
             this.props.changeRedliningState({...prevProps.redlining, selectedFeature: null});
             return;
+        }
+        if (this.props.redlining.action === 'Export') {
+            this.export();
+            this.props.changeRedliningState({...prevProps.redlining, selectedFeature: null});
         }
         const recreateInteraction = (
             this.props.redlining.action !== prevProps.redlining.action ||
@@ -334,9 +340,7 @@ class RedliningSupport extends React.Component {
         });
     };
     leaveTemporaryEditMode = () => {
-        if (this.currentFeature) {
-            this.commitCurrentFeature(this.props.redlining);
-        }
+        this.commitCurrentFeature(this.props.redlining);
         if (this.picking) {
             // Remove modify interactions
             this.props.map.removeInteraction(this.interactions.pop());
@@ -355,9 +359,7 @@ class RedliningSupport extends React.Component {
             if (evt.selected.length === 1 && evt.selected[0] === this.currentFeature) {
                 return;
             }
-            if (this.currentFeature) {
-                this.commitCurrentFeature(this.props.redlining);
-            }
+            this.commitCurrentFeature(this.props.redlining);
             if (currentEditInteraction) {
                 this.props.map.removeInteraction(currentEditInteraction);
                 this.interactions = this.interactions.filter(i => i !== currentEditInteraction);
@@ -397,9 +399,7 @@ class RedliningSupport extends React.Component {
             if (evt.feature === this.currentFeature) {
                 return;
             }
-            if (this.currentFeature) {
-                this.commitCurrentFeature(this.props.redlining);
-            }
+            this.commitCurrentFeature(this.props.redlining);
             if (evt.feature) {
                 this.setCurrentFeature(evt.feature);
             }
@@ -513,7 +513,7 @@ class RedliningSupport extends React.Component {
     commitCurrentFeature = (redliningProps, newFeature = false) => {
         const feature = this.currentFeatureObject();
         if (!feature) {
-            return;
+            return null;
         }
         // Don't commit empty/invalid features
         if (
@@ -525,7 +525,7 @@ class RedliningSupport extends React.Component {
                 this.props.removeLayerFeatures(redliningProps.layer, [feature.id]);
             }
             this.resetSelectedFeature();
-            return;
+            return null;
         }
         if (feature.shape === "Circle") {
             const {center, radius} = feature.circleParams;
@@ -545,6 +545,7 @@ class RedliningSupport extends React.Component {
         };
         this.props.addLayerFeatures(layer, [feature]);
         this.resetSelectedFeature();
+        return feature;
     };
     resetSelectedFeature = () => {
         if (this.currentFeature) {
@@ -601,13 +602,49 @@ class RedliningSupport extends React.Component {
         }
         return feature;
     };
+    export = () => {
+        const currentFeature = this.commitCurrentFeature(this.props.redlining);
+        const layer = this.props.layers.find(l => l.id === this.props.redlining.layer);
+        if (!layer) {
+            return;
+        }
+        if (this.props.redlining.format === "geojson") {
+            const geojson = JSON.stringify({
+                type: "FeatureCollection",
+                features: layer.features.map(feature => {
+                    const newFeature = {...(feature.id === currentFeature.id ? currentFeature : feature)};
+                    newFeature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326');
+                    delete newFeature.crs;
+                    return newFeature;
+                })
+            }, null, ' ');
+            FileSaver.saveAs(new Blob([geojson], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
+        } else if (this.props.redlining.format === "kml") {
+            const nativeLayer = this.searchRedliningLayer(this.props.redlining.layer);
+            if (!nativeLayer) {
+                return;
+            }
+            const kmlFormat = new ol.format.KML();
+            const features = nativeLayer.getSource().getFeatures().map(feature => {
+                // Circle is not supported by kml format
+                if (feature.getGeometry() instanceof ol.geom.Circle) {
+                    feature = feature.clone();
+                    feature.setGeometry(ol.geom.polygonFromCircle(feature.getGeometry()));
+                }
+                return feature;
+            });
+            const data = kmlFormat.writeFeatures(features, {featureProjection: this.props.mapCrs});
+            FileSaver.saveAs(new Blob([data], {type: "application/vnd.google-earth.kml+xml"}), layer.title + ".kml");
+        }
+    };
 }
 
 
 export default connect((state) => ({
     displayCrs: state.map.displayCrs,
     mapCrs: state.map.projection,
-    redlining: state.redlining
+    redlining: state.redlining,
+    layers: state.layers.flat
 }), {
     changeRedliningState: changeRedliningState,
     addLayerFeatures: addLayerFeatures,

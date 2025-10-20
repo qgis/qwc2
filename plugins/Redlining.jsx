@@ -9,8 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import FileSaver from 'file-saver';
-import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import {LayerRole, addLayer} from '../actions/layers';
@@ -27,8 +25,6 @@ import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import ConfigUtils from '../utils/ConfigUtils';
 import {END_MARKERS} from '../utils/FeatureStyles';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
-import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Redlining.css';
 
@@ -254,40 +250,8 @@ class Redlining extends React.Component {
             </div>
         );
     };
-    export = (type) => {
-        if (type === "geojson") {
-            const layer = this.props.layers.find(l => l.id === this.props.redlining.layer);
-            if (!layer) {
-                return;
-            }
-            const geojson = JSON.stringify({
-                type: "FeatureCollection",
-                features: layer.features.map(feature => {
-                    const newFeature = {...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')};
-                    delete newFeature.crs;
-                    return newFeature;
-                })
-            }, null, ' ');
-            FileSaver.saveAs(new Blob([geojson], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
-        } else if (type === "kml") {
-            const getNativeLayer = MapUtils.getHook(MapUtils.GET_NATIVE_LAYER);
-            const layer = this.props.layers.find(l => l.id === this.props.redlining.layer);
-            const nativeLayer = getNativeLayer(this.props.redlining.layer);
-            if (!nativeLayer) {
-                return;
-            }
-            const kmlFormat = new ol.format.KML();
-            const features = nativeLayer.getSource().getFeatures().map(feature => {
-                // Circle is not supported by kml format
-                if (feature.getGeometry() instanceof ol.geom.Circle) {
-                    feature = feature.clone();
-                    feature.setGeometry(ol.geom.polygonFromCircle(feature.getGeometry()));
-                }
-                return feature;
-            });
-            const data = kmlFormat.writeFeatures(features, {featureProjection: this.props.mapCrs});
-            FileSaver.saveAs(new Blob([data], {type: "application/vnd.google-earth.kml+xml"}), layer.title + ".kml");
-        }
+    export = (format) => {
+        this.props.changeRedliningState({action: 'Export', format: format});
     };
     renderStandardControls = () => {
         let sizeLabel = LocaleUtils.tr("redlining.line");
