@@ -91,7 +91,7 @@ class FeatureAttributesWindow extends React.Component {
         const newFeature = {...this.props.feature};
         newFeature.properties = {...newFeature.properties};
         delete newFeature.properties[name];
-        this.props.onFeatureChanged(newFeature);
+        this.props.onFeatureChanged(newFeature, [name]);
     };
     addAttrib = (ev) => {
         ev.preventDefault();

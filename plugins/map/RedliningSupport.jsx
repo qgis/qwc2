@@ -158,7 +158,7 @@ class RedliningSupport extends React.Component {
         }
         return null;
     }
-    updateCurrentFeature = (feature) => {
+    updateCurrentFeature = (feature, deletedKeys = []) => {
         if (this.currentFeature && this.props.redlining.selectedFeature) {
             if (feature.circleParams) {
                 const circleParams = feature.circleParams;
@@ -167,6 +167,9 @@ class RedliningSupport extends React.Component {
                 this.currentFeature.getGeometry().setCoordinates(feature.geometry.coordinates);
             }
             this.currentFeature.setProperties(feature.properties, true);
+            deletedKeys.forEach(key => {
+                this.currentFeature.unset(key);
+            });
             this.props.changeRedliningState({selectedFeature: feature, geomType: feature.shape});
         }
     };
