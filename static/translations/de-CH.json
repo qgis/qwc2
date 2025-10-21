@@ -251,6 +251,7 @@
     "identify": {
       "aggregatedreport": "Aggregierter Bericht",
       "clipboard": "Nach Zwischenablage kopieren",
+      "compare": "Selektierte Objekte vergleichen",
       "comparing": "Vergleich von {0} Objekte",
       "download": "Herunterladen",
       "export": "Exportieren",

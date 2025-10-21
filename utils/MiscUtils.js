@@ -200,6 +200,10 @@ export class ToggleSet {
             return this;
         }
     };
+    filtered = (test) => {
+        const newset = new Set(...[...this._set].filter(test));
+        return new ToggleSet(newset);
+    };
     add = (key) => {
         if (!this._set.has(key)) {
             const newset = new Set(this._set);

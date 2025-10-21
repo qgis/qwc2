@@ -94,6 +94,10 @@ div.identify-body .identify-result-title > span.icon {
     flex: 0 0 auto;
 }
 
+span.identify-result-checkbox {
+    background-color: white;
+}
+
 div.identify-body .identify-result-title > span:not(:first-child) {
     margin-left: 0.5em;
 }

@@ -280,7 +280,7 @@ class IdentifyViewer extends React.Component {
     state = {
         collapsedLayers: new ToggleSet(),
         expandedResults: new ToggleSet(),
-        pinnedResults: new ToggleSet(),
+        selectedResults: new ToggleSet(),
         resultTree: {},
         reports: {},
         currentResult: null,
@@ -392,15 +392,15 @@ class IdentifyViewer extends React.Component {
                 collapsedLayers.delete(layerid);
             }
             const selectedLayer = isEmpty(newResultTree[layerid]) ? '' : state.selectedLayer;
-            const pinnedResults = state.pinnedResults.delete(layerid + "$" + feature.id);
+            const selectedResults = state.selectedResults.delete(layerid + "$" + feature.id);
             return {
                 resultTree: newResultTree,
                 currentResult: state.currentResult?.featureid === feature.id ? null : state.currentResult,
                 selectedLayer: selectedLayer,
-                pinnedResults: pinnedResults,
+                selectedResults: selectedResults,
                 expandedResults: state.expandedResults.delete(layerid + "$" + feature.id),
                 collapsedLayers: collapsedLayers,
-                compareEnabled: state.compareEnabled && pinnedResults.size > 1
+                compareEnabled: state.compareEnabled && selectedResults.size > 1
             };
         });
     };
@@ -468,7 +468,7 @@ class IdentifyViewer extends React.Component {
                                         >
                                             <span className={active ? "identify-results-tree-entry-active" : ""} onClick={()=> this.setCurrentResult(layerid, feature.id)} ref={ref}>
                                                 {feature.displayname}
-                                                {this.state.pinnedResults.has(layerid + "$" + feature.id) ? (<Icon icon="pin" />) : null}
+                                                {this.state.selectedResults.has(layerid + "$" + feature.id) ? (<Icon icon="pin" />) : null}
                                             </span>
                                             {exportEnabled ? (<Icon className="identify-export-result" icon="export" onClick={() => this.exportResult(layerid, feature)} />) : null}
                                             <Icon className="identify-remove-result" icon="trash" onClick={() => this.removeResult(layerid, feature)} />
@@ -605,7 +605,7 @@ class IdentifyViewer extends React.Component {
         }
         const key = layerid + "$" + feature.id;
         const expanded = this.state.expandedResults.has(key);
-        const pinned = this.state.pinnedResults.has(key);
+        const selected = this.state.selectedResults.has(key);
         return (
             <div className={resultClass} key={key}>
                 <div className="identify-result-title">
@@ -613,7 +613,7 @@ class IdentifyViewer extends React.Component {
                         <Icon icon={expanded ? "triangle-down" : "triangle-right"} onClick={() => this.setState(state => ({expandedResults: state.expandedResults.toggle(key)}))} />
                     ) : null}
                     {this.props.enableCompare ? (
-                        <Icon icon={pinned ? "unpin" : "pin"} onClick={() => this.togglePinnedResult(key)} />
+                        <Icon className="identify-result-checkbox" icon={selected ? "checked" : "unchecked"} onClick={() => this.toggleSelectedResult(key)} />
                     ) : null}
                     <span>{(this.props.showLayerTitles ? (feature.layertitle + ": ") : "") + feature.displayname}</span>
                     {zoomToFeatureButton}
@@ -629,12 +629,12 @@ class IdentifyViewer extends React.Component {
             </div>
         );
     };
-    togglePinnedResult = (key) => {
+    toggleSelectedResult = (key) => {
         this.setState(state => {
-            const pinnedResults = state.pinnedResults.toggle(key);
+            const selectedResults = state.selectedResults.toggle(key);
             return {
-                pinnedResults: pinnedResults,
-                compareEnabled: pinnedResults.size > 1
+                selectedResults: selectedResults,
+                compareEnabled: selectedResults.size > 1
             };
         });
     };
@@ -645,7 +645,7 @@ class IdentifyViewer extends React.Component {
         if (this.state.compareEnabled) {
             body = (
                 <div className="identify-compare-results">
-                    {this.state.pinnedResults.entries().map(key => {
+                    {this.state.selectedResults.entries().map(key => {
                         const [layerid, featureid] = key.split("$");
                         const feature = this.state.resultTree[layerid].find(f => f.id === featureid);
                         return this.renderResultAttributes(layerid, feature, "identify-result-frame");
@@ -689,18 +689,20 @@ class IdentifyViewer extends React.Component {
         );
     }
     renderToolbar = (resultCount) => {
-        const toggleButton = (key, icon) => (<button className={"button" + (this.state[key] ? " pressed" : "")} onClick={() => this.setState(state => ({[key]: !state[key]}))}><Icon icon={icon} /></button>);
+        const toggleButton = (key, icon, disabled, tooltip = undefined) => (
+            <button className={"button" + (this.state[key] ? " pressed" : "")} disabled={disabled} onClick={() => this.setState(state => ({[key]: !state[key]}))} title={tooltip}><Icon icon={icon} /></button>
+        );
         let infoLabel = null;
         if (this.state.compareEnabled) {
-            infoLabel = (<span>{LocaleUtils.tr("identify.comparing", this.state.pinnedResults.size())}</span>);
+            infoLabel = (<span>{LocaleUtils.tr("identify.comparing", this.state.selectedResults.size())}</span>);
         } else if (this.props.resultDisplayMode !== 'paginated') {
             infoLabel = (<span>{LocaleUtils.tr("identify.featurecount", resultCount)}</span>);
         }
         return (
             <div className="identify-toolbar">
-                {toggleButton("settingsMenu", "cog")}
+                {toggleButton("settingsMenu", "cog", false)}
                 {this.state.settingsMenu ? this.renderSettingsMenu() : null}
-                {this.state.pinnedResults.size() > 1 ? toggleButton("compareEnabled", "compare") : null}
+                {this.props.enableCompare ? toggleButton("compareEnabled", "compare", this.state.selectedResults.size() < 2, LocaleUtils.tr("identify.compare")) : null}
                 <span className="identify-toolbar-spacer" />
                 {infoLabel}
                 <span className="identify-toolbar-spacer" />
@@ -724,7 +726,7 @@ class IdentifyViewer extends React.Component {
                             <td>{LocaleUtils.tr("identify.results")}:</td>
                             <td>
                                 <div className="controlgroup">
-                                    <select className="controlgroup-expanditem" onChange={e => this.setState({selectedLayer: e.target.value})}>
+                                    <select className="controlgroup-expanditem" onChange={ev => this.setSelectedLayer(ev.target.value)}>
                                         <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
                                         {Object.keys(this.state.resultTree).filter(key => this.state.resultTree[key].length).map(
                                             layer => (
@@ -784,6 +786,18 @@ class IdentifyViewer extends React.Component {
                 </table>
             </div>
         );
+    };
+    setSelectedLayer = (layer) => {
+        this.setState(state => {
+            let newSelectedResults = state.selectedResults;
+            if (layer !== '') {
+                newSelectedResults = state.selectedResults.filtered(key => key.startsWith(layer + "$"));
+            }
+            return {
+                selectedResults: newSelectedResults,
+                selectedLayer: layer
+            };
+        });
     };
     computeExtraAttributes = (layer, result) => {
         const rows = [];

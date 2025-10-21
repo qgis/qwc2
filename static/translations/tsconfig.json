@@ -240,6 +240,7 @@
     "hideobjects3d.restoreall",
     "identify.aggregatedreport",
     "identify.clipboard",
+    "identify.compare",
     "identify.comparing",
     "identify.download",
     "identify.export",

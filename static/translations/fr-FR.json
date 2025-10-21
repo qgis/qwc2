@@ -251,6 +251,7 @@
     "identify": {
       "aggregatedreport": "Rapport agrégé",
       "clipboard": "Copier dans le presse-papiers",
+      "compare": "Comparer les objets sélectionnés",
       "comparing": "Comparison de {0} objets",
       "download": "Télécharger",
       "export": "Exporter",
