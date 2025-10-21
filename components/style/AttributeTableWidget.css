@@ -182,7 +182,7 @@ table.attribtable-table td > div.TextInput > pre {
     min-height: 2em;
 }
 
-table.attribtable-table td > *:disabled,
+table.attribtable-table tr.row-disabled td > *:disabled,
 table.attribtable-table tr.row-disabled,
 table.attribtable-table tr.row-disabled * {
     color: var(--text-color-disabled);

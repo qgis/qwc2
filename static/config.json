@@ -293,6 +293,9 @@
         }
       },
       {
+        "name": "ObjectList"
+      },
+      {
         "name": "OverviewMap"
       },
       {
@@ -359,6 +362,7 @@
               {"key": "Editing", "icon": "editing"},
               {"key": "FeatureForm", "icon": "featureform"},
               {"key": "AttributeTable", "icon": "editing"},
+              {"key": "ObjectList", "icon": "list-alt"},
               {"key": "MapExport", "icon": "rasterexport"},
               {"key": "Routing", "icon": "routing"},
               {"key": "Reports", "icon": "report"},

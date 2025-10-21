@@ -30,6 +30,7 @@ Plugin reference
 * [MapTip](#maptip)
 * [Measure](#measure)
 * [NewsPopup](#newspopup)
+* [ObjectList](#objectlist)
 * [OverviewMap](#overviewmap)
 * [Panoramax](#panoramax)
 * [Portal](#portal)
@@ -746,6 +747,23 @@ revision is published (specified via newsRev prop).
 | showInSidebar | `bool` | Whether to show the news in a sidebar instead of a popup. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 | sidebarWidth | `string` | The default width of the sidebar, as a CSS width string. | `undefined` |
+
+ObjectList<a name="objectlist"></a>
+----------------------------------------------------------------
+Display layer object lists in a dialog.
+
+The object list is similar to the attribute table, but displays only the display field for each object and contains no edit functionality.
+
+To make a layer available in the object list, create a a data resource and matching permissions for it in the `qwc-admin-gui`.
+
+This plugin queries the dataset via the editing service specified by
+`editServiceUrl` in `config.json` (by default the `qwc-data-service`).
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| limitToExtent | `bool` | Whether to limit to the extent by default. | `false` |
+| showLimitToExtent | `bool` | Whether to show the "Limit to extent" checkbox | `true` |
+| zoomLevel | `number` | The zoom level for zooming to point features. | `1000` |
 
 OverviewMap<a name="overviewmap"></a>
 ----------------------------------------------------------------
