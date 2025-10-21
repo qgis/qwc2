@@ -346,13 +346,9 @@ class IdentifyViewer extends React.Component {
         });
     };
     setHighlightedFeatures = (features) => {
-        const paginated = this.props.resultDisplayMode === 'paginated';
-        if (!features && (this.props.highlightAllResults || paginated)) {
+        if (!features && this.props.highlightAllResults) {
             const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
             features = Object.values(resultTree).flat();
-            if (paginated) {
-                features = [features[this.state.currentPage]];
-            }
         }
         features = (features || []).filter(feature => feature.type.toLowerCase() === "feature").map(feature => {
             const newFeature = {...feature, properties: {}};
@@ -685,7 +681,10 @@ class IdentifyViewer extends React.Component {
         } else if (this.props.resultDisplayMode === 'paginated' && this.state.currentPage < flatResults.length) {
             const [layerid, feature] = flatResults[this.state.currentPage];
             body = (
-                <div className="identify-flat-results-list">
+                <div className="identify-flat-results-list"
+                    onMouseEnter={() => this.setHighlightedFeatures([feature])}
+                    onMouseLeave={() => this.setHighlightedFeatures(null)}
+                >
                     {this.renderResultAttributes(layerid, feature, 'identify-result-frame')}
                 </div>
             );
