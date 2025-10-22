@@ -169,6 +169,20 @@ button.button > div.spinner {
     height: 1.5em;
 }
 
+button.selected {
+    position: relative;
+}
+button.selected:after {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background-color: var(--color-active);
+    border-top: 1px solid var(--border-color);
+    content: "";
+}
+
 div.controlgroup {
     display: flex;
     align-items: center;

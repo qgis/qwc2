@@ -693,11 +693,12 @@ class IdentifyViewer extends React.Component {
         return (
             <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } }>
                 {body}
-                {flatResults.length > 0 ? this.renderToolbar(flatResults.length) : null}
+                {flatResults.length > 0 ? this.renderToolbar(flatResults) : null}
             </div>
         );
     }
-    renderToolbar = (resultCount) => {
+    renderToolbar = (results) => {
+        const resultCount = results.length;
         const toggleButton = (key, icon, disabled, tooltip = undefined) => (
             <button className={"button" + (this.state[key] ? " pressed" : "")} disabled={disabled} onClick={() => this.setState(state => ({[key]: !state[key]}))} title={tooltip}><Icon icon={icon} /></button>
         );
@@ -707,6 +708,12 @@ class IdentifyViewer extends React.Component {
         } else if (this.props.resultDisplayMode !== 'paginated') {
             infoLabel = (<span>{LocaleUtils.tr("identify.featurecount", resultCount)}</span>);
         }
+        const checkedPages = results.reduce((res, entry, idx) => {
+            if (this.state.selectedResults.has(entry[0] + "$" + entry[1].id)) {
+                return [...res, idx];
+            }
+            return res;
+        }, []);
         return (
             <div className="identify-toolbar">
                 {toggleButton("settingsMenu", "cog", false)}
@@ -716,7 +723,7 @@ class IdentifyViewer extends React.Component {
                 {infoLabel}
                 <span className="identify-toolbar-spacer" />
                 {this.props.resultDisplayMode === 'paginated' ? (
-                    <NavBar currentPage={this.state.currentPage} nPages={resultCount} pageChanged={page => this.setState({currentPage: page})} pageSizes={[1]} />
+                    <NavBar currentPage={this.state.currentPage} nPages={resultCount} pageChanged={page => this.setState({currentPage: page})} pageSizes={[1]} selectedPages={checkedPages} />
                 ) : null}
             </div>
         );
