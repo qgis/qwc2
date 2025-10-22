@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Помощь",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Слои и легенда",
         "LayerTree3D": "",
         "MapExport": "экспортировать карту",
@@ -104,8 +105,10 @@
       "zoomToExtent": ""
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Координаты",
       "scale_label": "Масштаб",
+      "select": "",
       "terms_label": "Условия использования",
       "viewertitle_label": "Домашняя страница"
     },
@@ -297,6 +300,21 @@
       "clickhelpPolygon": "Для получения информации обведите регион многоугольником...",
       "clickhelpRadius": "",
       "radius": ""
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -610,7 +628,6 @@
       "title": ""
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",

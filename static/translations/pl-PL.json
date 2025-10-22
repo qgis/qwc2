@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Pomoc",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Warstwy i ich legendy",
         "LayerTree3D": "",
         "MapExport": "Eksportuj mapę",
@@ -104,8 +105,10 @@
       "zoomToExtent": ""
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Współrzędne",
       "scale_label": "Skala",
+      "select": "",
       "terms_label": "Warunki korzystania",
       "viewertitle_label": ""
     },
@@ -297,6 +300,21 @@
       "clickhelpPolygon": "Narysuj poligon wokół obiektów, aby zidentyfikować...",
       "clickhelpRadius": "",
       "radius": ""
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -610,7 +628,6 @@
       "title": ""
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",

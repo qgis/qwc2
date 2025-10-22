@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Hjelp",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Lag & tegnforklaring",
         "LayerTree3D": "",
         "MapExport": "Eksport kart",
@@ -104,8 +105,10 @@
       "zoomToExtent": ""
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Koordinater",
       "scale_label": "Skala",
+      "select": "",
       "terms_label": "Vilkår",
       "viewertitle_label": ""
     },
@@ -297,6 +300,21 @@
       "clickhelpPolygon": "Tegn et polygon rundt objektene som skal identifieres",
       "clickhelpRadius": "",
       "radius": ""
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -610,7 +628,6 @@
       "title": ""
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",

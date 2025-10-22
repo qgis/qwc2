@@ -13,6 +13,7 @@ import {LayerRole} from '../actions/layers';
 import StandardApp from '../components/StandardApp';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
+import MapUtils from "./MapUtils";
 
 let UrlQuery = {};
 let historyUpdateTimeout = null;
@@ -169,37 +170,43 @@ export function resolveBookmark(bookmarkKey, callback) {
         });
 }
 
-export function getUserBookmarks(user, callback) {
-    if (user) {
-        axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/")
-            .then(response => {
-                callback(response.data || []);
-            })
-            .catch(() => {
-                callback([]);
-            });
-    }
-}
-
-export async function createBookmark(description, callback) {
-    if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
-        callback(false);
-        return;
-    }
-    const state = StandardApp.store.getState();
-    // Only store redlining layers
-    const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
+function buildBookmarkState(state, omitPosition = false) {
     const bookmarkState = {};
     if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
         bookmarkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
     } else {
+        const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
         const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
             .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
             .map(entry => ({...entry.layer, pos: entry.pos}));
         bookmarkState.layers = redliningLayers;
     }
     bookmarkState.permalinkParams = state.localConfig.permalinkParams;
-    bookmarkState.url = UrlParams.getFullUrl();
+
+    const urlObj = new URL(UrlParams.getFullUrl());
+
+    // ignore search term and highlight parameters
+    urlObj.searchParams.delete("st");
+    urlObj.searchParams.delete("hp");
+    urlObj.searchParams.delete("hf");
+
+    // omit center/scale/extent parameters if requested
+    if (omitPosition) {
+        urlObj.searchParams.delete("c");
+        urlObj.searchParams.delete("s");
+        urlObj.searchParams.delete("e");
+    }
+    bookmarkState.url = urlObj.toString();
+    return bookmarkState;
+}
+
+export async function createBookmark(description, callback, omitPosition = false) {
+    if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
+        callback(false);
+        return;
+    }
+    const state = StandardApp.store.getState();
+    const bookmarkState = buildBookmarkState(state, omitPosition);
     await executePermalinkDataStoreHooks(bookmarkState);
     axios.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" +
         "?description=" + description, bookmarkState)
@@ -207,25 +214,13 @@ export async function createBookmark(description, callback) {
         .catch(() => callback(false));
 }
 
-export async function updateBookmark(bkey, description, callback) {
+export async function updateBookmark(bkey, description, callback, omitPosition = false) {
     if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
         callback(false);
         return;
     }
     const state = StandardApp.store.getState();
-    // Only store redlining layers
-    const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
-    const bookmarkState = {};
-    if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
-        bookmarkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
-    } else {
-        const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
-            .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
-            .map(entry => ({...entry.layer, pos: entry.pos}));
-        bookmarkState.layers = redliningLayers;
-    }
-    bookmarkState.permalinkParams = state.localConfig.permalinkParams;
-    bookmarkState.url = UrlParams.getFullUrl();
+    const bookmarkState = buildBookmarkState(state, omitPosition);
     await executePermalinkDataStoreHooks(bookmarkState);
     axios.put(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/bookmarks/" + bkey +
         "?description=" + description, bookmarkState)
@@ -239,5 +234,21 @@ export function removeBookmark(bkey, callback) {
             .then(() => {
                 callback(true);
             }).catch(() => callback(false));
+    }
+}
+
+export function openBookmark(bookmarkkey, newtab, center = undefined, scales = [], zoom = undefined) {
+    const bookmarkUrl = new URL(location.href);
+    bookmarkUrl.search = 'bk=' + bookmarkkey;
+    bookmarkUrl.hash = '';
+    if (center && scales && zoom) {
+        const centerParam = center ? '&c=' + center.map(x => Math.trunc(x)).join(",") : '';
+        const scaleParam = scales ? '&s=' + MapUtils.computeForZoom(scales, zoom) : '';
+        bookmarkUrl.search += centerParam + scaleParam;
+    }
+    if (newtab) {
+        window.open(bookmarkUrl.href, '_blank');
+    } else {
+        location.href = bookmarkUrl.href;
     }
 }

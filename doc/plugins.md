@@ -17,6 +17,7 @@ Plugin reference
 * [Help](#help)
 * [HomeButton](#homebutton)
 * [Identify](#identify)
+* [LayerBookmark](#layerbookmark)
 * [LayerCatalog](#layercatalog)
 * [LayerTree](#layertree)
 * [LocateButton](#locatebutton)
@@ -288,7 +289,7 @@ Map button for switching the background layer.
 
 Bookmark<a name="bookmark"></a>
 ----------------------------------------------------------------
-Allows managing user bookmarks.
+Allows managing user bookmarks which are storing the current view, including the location and zoom level.
 
 Bookmarks are only allowed for authenticated users.
 
@@ -306,6 +307,7 @@ Bottom bar, displaying mouse coordinate, scale, etc.
 |----------|------|-------------|---------------|
 | additionalBottomBarLinks | `[{`<br />`  label: string,`<br />`  labelMsgId: string,`<br />`  side: string,`<br />`  url: string,`<br />`  urlTarget: string,`<br />`  icon: string,`<br />`}]` | Additional bottombar links.`side` can be `left` or `right` (default). | `undefined` |
 | coordinateFormatter | `func` | Custom coordinate formatter, as `(coordinate, crs) => string`. | `undefined` |
+| displayBookmarkDropdown | `string` | Whether to display a dropdown menu for the selection of user bookmarks in the bottom bar. Possible values are `none`, `all`, `withPosition` and `withoutPosition`. | `'none'` |
 | displayCoordinates | `bool` | Whether to display the coordinates in the bottom bar. | `true` |
 | displayScalebar | `bool` | Whether to display the scalebar in the bottom bar. | `true` |
 | displayScales | `bool` | Whether to display the scale in the bottom bar. | `true` |
@@ -497,6 +499,18 @@ for customized queries and templates for the result presentation.
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
 | resultDisplayMode | `string` | Result display mode, one of `tree`, `flat`, `paginated`. | `'flat'` |
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
+
+LayerBookmark<a name="layerbookmark"></a>
+----------------------------------------------------------------
+Allows managing layer bookmarks which are storing the currently visible layers without the location and zoom level.
+
+Bookmarks are only allowed for authenticated users.
+
+Requires `permalinkServiceUrl` to point to a `qwc-permalink-service`.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 LayerCatalog<a name="layercatalog"></a>
 ----------------------------------------------------------------

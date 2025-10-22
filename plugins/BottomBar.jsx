@@ -22,6 +22,8 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 
 import './style/BottomBar.css';
+import GroupSelect from '../components/widgets/GroupSelect';
+import {openBookmark} from '../utils/PermaLinkUtils';
 
 
 /**
@@ -39,9 +41,12 @@ class BottomBar extends React.Component {
             icon: PropTypes.string
         })),
         additionalMouseCrs: PropTypes.array,
+        bookmarks: PropTypes.array,
         changeZoomLevel: PropTypes.func,
         /** Custom coordinate formatter, as `(coordinate, crs) => string`. */
         coordinateFormatter: PropTypes.func,
+        /** Whether to display a dropdown menu for the selection of user bookmarks in the bottom bar. */
+        displayBookmarkDropdown: PropTypes.bool,
         /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
         /** Whether to display the scalebar in the bottom bar. */
@@ -71,6 +76,7 @@ class BottomBar extends React.Component {
     };
     static defaultProps = {
         displayCoordinates: true,
+        displayBookmarkDropdown: false,
         displayScalebar: true,
         displayScales: true
     };
@@ -143,6 +149,21 @@ class BottomBar extends React.Component {
                 </div>
             );
         }
+        let bookmarkDropdown = null;
+        if (this.props.displayBookmarkDropdown && this.props.bookmarks && this.props.bookmarks.length > 0) {
+            const bookmarks = (this.props.bookmarks || []).filter(b => b.data.query.c && b.data.query.s);
+            const layerBookmarks = (this.props.bookmarks || []).filter(b => !b.data.query.c && !b.data.query.s);
+            const options = {
+                [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => [bm.key, bm.description]),
+                [LocaleUtils.tr("appmenu.items.LayerBookmark")]: layerBookmarks.map(bm => [bm.key, bm.description])
+            };
+            bookmarkDropdown = (
+                <div>
+                    <span className="bottombar-bookmarks-label">{LocaleUtils.tr("bottombar.bookmark_label")}:&nbsp;</span>
+                    <GroupSelect onChange={this.openBookmark} options={options} placeholder={LocaleUtils.tr("bottombar.select")} />
+                </div>
+            );
+        }
         const style = {
             marginLeft: this.props.mapMargins.outerLeft + 'px',
             marginRight: this.props.mapMargins.outerRight + 'px'
@@ -157,6 +178,7 @@ class BottomBar extends React.Component {
                 <span className="bottombar-spacer" />
                 {coordinates}
                 {scales}
+                {bookmarkDropdown}
                 <span className="bottombar-spacer" />
                 <span className="bottombar-links">
                     {rightBottomLinks}
@@ -188,6 +210,15 @@ class BottomBar extends React.Component {
         this.props.openExternalUrl(url, target, {title, icon});
         ev.preventDefault();
     };
+    openBookmark = (key) => {
+        openBookmark(
+            key,
+            false,
+            this.props.map.center,
+            this.props.map.scales,
+            this.props.map.zoom
+        );
+    };
     setScale = (value) => {
         const scale = parseInt(value, 10);
         if (!isNaN(scale)) {
@@ -206,6 +237,7 @@ class BottomBar extends React.Component {
 
 export default connect((state) => ({
     map: state.map,
+    bookmarks: state.bookmark?.bookmarks,
     fullscreen: state.display?.fullscreen,
     mapMargins: state.windows.mapMargins,
     additionalMouseCrs: state.theme.current?.additionalMouseCrs ?? []

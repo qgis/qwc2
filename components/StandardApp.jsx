@@ -34,6 +34,7 @@ import PluginsContainer from './PluginsContainer';
 
 import './style/App.css';
 import './style/DefaultColorScheme.css';
+import {refreshUserBookmarks} from '../actions/bookmark';
 
 
 const CSRF_TOKEN = MiscUtils.getCsrfToken();
@@ -302,6 +303,9 @@ export default class StandardApp extends React.Component {
             const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
             const colorScheme = initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
             StandardApp.store.dispatch(setColorScheme(colorScheme));
+
+            // Load all bookmarks
+            StandardApp.store.dispatch(refreshUserBookmarks());
 
             // Resolve permalink and restore settings
             resolvePermaLink(initialParams, (params, state, success) => {

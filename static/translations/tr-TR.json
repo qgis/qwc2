@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Yardım",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Katmanlar & Gösterim",
         "LayerTree3D": "Katmanlar",
         "MapExport": "Dışarıya ver",
@@ -104,8 +105,10 @@
       "zoomToExtent": "Kapsama yaklaş"
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Koordinatlar",
       "scale_label": "Ölçek",
+      "select": "",
       "terms_label": "Kullanım Şartları",
       "viewertitle_label": "QWC"
     },
@@ -297,6 +300,21 @@
       "clickhelpPolygon": "Bilgi alınacak alanı poligon çizerek belirleyiniz...",
       "clickhelpRadius": "Yarıçap belirleyip çevresinden bilgi almak için bir noktayı tıklayınız",
       "radius": "Yarıçap"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Katman kataloğu"
@@ -610,7 +628,6 @@
       "title": "Tema bilgisi"
     },
     "settings": {
-      "bookmarks": "Yer işaretleri",
       "colorscheme": "Renk şeması",
       "confirmlang": "Dil değişikliği için uygulama yeniden yüklenecek. Devam edilsin mi?",
       "default": "Varsayılan",

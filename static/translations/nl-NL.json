@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Help",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Lagen & legenda",
         "LayerTree3D": "",
         "MapExport": "Export kaart",
@@ -104,8 +105,10 @@
       "zoomToExtent": "Zoom tot extent"
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Coördinaten",
       "scale_label": "Schaal",
+      "select": "",
       "terms_label": "Voorwaarden",
       "viewertitle_label": ""
     },
@@ -297,6 +300,21 @@
       "clickhelpPolygon": "Teken een polygoon rond de te op te vragen objecten...",
       "clickhelpRadius": "Stel een straal in en klik op een locatie om objecten rond het punt te identificeren...",
       "radius": "Straal"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Lagencatalogus"
@@ -610,7 +628,6 @@
       "title": "Kaart informatie"
     },
     "settings": {
-      "bookmarks": "Bookmarks",
       "colorscheme": "Kleurenschema",
       "confirmlang": "De applicatie wordt opnieuw geladen om de taal te wijzigen. Doorgaan?",
       "default": "Default",

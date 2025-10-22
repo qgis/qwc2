@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Apua",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Karttatasot ja selite",
         "LayerTree3D": "",
         "MapExport": "Vienti kartta",
@@ -104,8 +105,10 @@
       "zoomToExtent": ""
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Koordinaatit",
       "scale_label": "Mittakaava",
+      "select": "",
       "terms_label": "Käyttöehdot",
       "viewertitle_label": ""
     },
@@ -297,6 +300,21 @@
       "clickhelpPolygon": "Tunnista kohteet piirtämällä alue niiden ympärille...",
       "clickhelpRadius": "",
       "radius": ""
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -610,7 +628,6 @@
       "title": "Teema informaatio"
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",

@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Ajutor",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Straturi & Legendă",
         "LayerTree3D": "",
         "MapExport": "",
@@ -104,8 +105,10 @@
       "zoomToExtent": ""
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Coordonate",
       "scale_label": "Scara",
+      "select": "",
       "terms_label": "Termeni de utilizare",
       "viewertitle_label": "Despre"
     },
@@ -297,6 +300,21 @@
       "clickhelpPolygon": "Încadrați într-un poligon elementele de identificat...",
       "clickhelpRadius": "Setați raza și apoi faceți click pe hartă pentru a identifica elementele din jurul punctului...",
       "radius": "Raza"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Catalog straturi"
@@ -610,7 +628,6 @@
       "title": "Infomrații Temă"
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "Schema de culori",
       "confirmlang": "Aplicația va fi reîncărcată pentru a aplica schimbarea limbii. Continuați?",
       "default": "",
