@@ -25,6 +25,22 @@ div.app-infos-container {
     row-gap: 0.25em;
 }
 
+div.map-bottom-tool-container {
+    z-index: 3;
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    align-content: flex-start;
+    justify-content: flex-start;
+    margin-bottom: -1px;
+}
+
+div.map-bottom-tool-container > * {
+    pointer-events: initial;
+}
+
 div.app-info {
     z-index: 1;
     color: var(--panel-text-color);

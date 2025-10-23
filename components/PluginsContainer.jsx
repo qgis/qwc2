@@ -22,6 +22,7 @@ import './style/PluginsContainer.css';
 export const MapButtonPortalContext = React.createContext(null);
 export const MapContainerPortalContext = React.createContext(null);
 export const AppInfosPortalContext = React.createContext(null);
+export const BottomToolPortalContext = React.createContext(null);
 
 
 class PluginsContainer extends React.Component {
@@ -35,7 +36,8 @@ class PluginsContainer extends React.Component {
     state = {
         mapButtonsContainerRef: null,
         mapContainerRef: null,
-        appInfosContainerRef: null
+        appInfosContainerRef: null,
+        bottomToolContainerRef: null
     };
     renderPlugins = () => {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
@@ -64,14 +66,16 @@ class PluginsContainer extends React.Component {
             right: 'calc(' + right + 'px)',
             bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px)'
         };
-        const haveRefs = this.state.mapButtonsContainerRef && this.state.mapContainerRef && this.state.appInfosContainerRef;
+        const haveRefs = this.state.mapButtonsContainerRef && this.state.mapContainerRef && this.state.appInfosContainerRef && this.state.bottomToolContainerRef;
         return (
             <div className={"plugins-container " + (this.props.className ?? "")} ref={this.setupTouchEvents}>
                 <AppInfosPortalContext.Provider value={this.state.appInfosContainerRef}>
                     <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
                         <MapContainerPortalContext.Provider value={this.state.mapContainerRef}>
-                            {haveRefs ? this.renderPlugins() : null}
-                            {haveRefs ? this.props.children : null}
+                            <BottomToolPortalContext.Provider value={this.state.bottomToolContainerRef}>
+                                {haveRefs ? this.renderPlugins() : null}
+                                {haveRefs ? this.props.children : null}
+                            </BottomToolPortalContext.Provider>
                         </MapContainerPortalContext.Provider>
                     </MapButtonPortalContext.Provider>
                 </AppInfosPortalContext.Provider>
@@ -81,6 +85,7 @@ class PluginsContainer extends React.Component {
                 </div>
                 <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
                 <div className="app-infos-container" ref={this.setAppInfosContainerRef} style={mapContainerStyle} />
+                <div className="map-bottom-tool-container" ref={this.setBottomToolContanerRef} style={mapContainerStyle} />
             </div>
         );
     }
@@ -137,6 +142,9 @@ class PluginsContainer extends React.Component {
     };
     setAppInfosContainerRef = (el) => {
         this.setState({appInfosContainerRef: el});
+    };
+    setBottomToolContanerRef = (el) => {
+        this.setState({bottomToolContainerRef: el});
     };
     setButtonContainerRef = (el) => {
         this.setState({mapButtonsContainerRef: el});
