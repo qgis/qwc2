@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Posisjon: ikke tillatt"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Laster inn...",
       "resetrotation": ""

@@ -1,0 +1,10 @@
+div.LocationRecorder {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25em 0.5em;
+    background-color: var(--container-bg-color);
+    box-shadow: 0px -2px 4px rgba(136, 136, 136, 0.5);
+    border-bottom: 1px solid rgba(136, 136, 136, 0.5);
+    column-gap: 0.25em;
+    order: 1;
+}

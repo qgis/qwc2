@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Positie: toestemming geweigerd"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Laden...",
       "resetrotation": "Rotatie resetten"

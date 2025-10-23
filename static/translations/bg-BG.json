@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Позиция: разрешението е отказано"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Зареждане...",
       "resetrotation": "Нулиране на въртенето"

@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Position: Zugriff verweigert"
       }
     },
+    "locationrecorder": {
+      "record": "Position aufzeichen",
+      "stop": "Aufzeichnung stoppen"
+    },
     "map": {
       "loading": "Karte wird geladen...",
       "resetrotation": "Drehung zurücksetzen"

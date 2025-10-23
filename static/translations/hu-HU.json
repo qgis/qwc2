@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Hozzáférés megtagadva"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Betöltés...",
       "resetrotation": ""

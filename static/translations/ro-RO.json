@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Poziția: acces refuzat"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Se încarcă...",
       "resetrotation": "Resetează rotația"

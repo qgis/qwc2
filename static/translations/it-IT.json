@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Posizione: permesso negato"
       }
     },
+    "locationrecorder": {
+      "record": "Registra posizione",
+      "stop": "Termina registrazione"
+    },
     "map": {
       "loading": "In caricamento...",
       "resetrotation": "Resetta orientamento"

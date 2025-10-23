@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Геолокація: доступ заборонено"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Завантаження...",
       "resetrotation": ""

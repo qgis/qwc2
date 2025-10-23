@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Permis denegat"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Carregant...",
       "resetrotation": "Reiniciar rotació"

@@ -319,6 +319,8 @@
     "locate.statustooltip.FOLLOWING",
     "locate.statustooltip.LOCATING",
     "locate.statustooltip.PERMISSION_DENIED",
+    "locationrecorder.record",
+    "locationrecorder.stop",
     "map.loading",
     "map.resetrotation",
     "map3d.lockview",

@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Position: accès refusé"
       }
     },
+    "locationrecorder": {
+      "record": "Enregistrer la position",
+      "stop": "Arrêter l'enregistrement"
+    },
     "map": {
       "loading": "Chargement de la carte...",
       "resetrotation": "Réinitialiser la rotation"

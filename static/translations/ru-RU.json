@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Геолокация: доступ воспрещен"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Загрузка...",
       "resetrotation": ""

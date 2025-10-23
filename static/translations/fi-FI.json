@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Paikka: pääsy estetty"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Lataa...",
       "resetrotation": ""

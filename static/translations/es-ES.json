@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Posición: permiso denegado"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Cargando...",
       "resetrotation": "Reiniciar rotación"

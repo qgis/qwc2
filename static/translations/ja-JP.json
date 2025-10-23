@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "位置情報: 許可無し"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "ロード中...",
       "resetrotation": "回転をリセット"

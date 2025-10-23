@@ -353,6 +353,10 @@
         "PERMISSION_DENIED": "Konum: izin verilmedi"
       }
     },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
+    },
     "map": {
       "loading": "Yükleniyor...",
       "resetrotation": "Dönüklüğü sıfırla"

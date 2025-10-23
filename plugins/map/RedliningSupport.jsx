@@ -18,6 +18,7 @@ import {v4 as uuidv4} from 'uuid';
 import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/layers';
 import {changeRedliningState} from '../../actions/redlining';
 import FeatureAttributesWindow from '../../components/FeatureAttributesWindow';
+import LocationRecorder from '../../components/LocationRecorder';
 import NumericInputWindow from '../../components/NumericInputWindow';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
 import FeatureStyles from '../../utils/FeatureStyles';
@@ -27,8 +28,8 @@ import VectorLayerUtils from '../../utils/VectorLayerUtils';
 
 const GeomTypeConfig = {
     Text: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
-    Point: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
-    LineString: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "LineString"}), editTool: 'Pick', drawNodes: true},
+    Point: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true},
+    LineString: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "LineString"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true},
     Polygon: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Polygon"}), editTool: 'Pick', drawNodes: true},
     Circle: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Circle"}), editTool: 'Pick', drawNodes: true, regular: true},
     Ellipse: {drawInteraction: (opts) => new ol.interaction.DrawRegular({...opts, sides: 0}), editTool: 'Transform', drawNodes: false},
@@ -52,6 +53,9 @@ class RedliningSupport extends React.Component {
     };
     static defaultProps = {
         redlining: {}
+    };
+    state = {
+        showRecordLocation: false
     };
     constructor(props) {
         super(props);
@@ -141,22 +145,32 @@ class RedliningSupport extends React.Component {
         }
     }
     render() {
+        const widgets = [];
         if (this.props.redlining.extraAction === "NumericInput") {
-            return (
+            widgets.push(
                 <NumericInputWindow
                     feature={this.props.redlining.selectedFeature}
+                    key="NumericInputWindow"
                     onClose={() => this.props.changeRedliningState({extraAction: null})}
                     onFeatureChanged={this.updateCurrentFeature} />
             );
         } else if (this.props.redlining.extraAction === "FeatureAttributes") {
-            return (
+            widgets.push(
                 <FeatureAttributesWindow
-                    feature={this.props.redlining.selectedFeature} layerid={this.props.redlining.layer}
+                    feature={this.props.redlining.selectedFeature}
+                    key="FeatureAttributesWindow" layerid={this.props.redlining.layer}
                     onClose={() => this.props.changeRedliningState({extraAction: null})}
                     onFeatureChanged={this.updateCurrentFeature} />
             );
         }
-        return null;
+        if (this.state.showRecordLocation) {
+            const drawInteraction = this.interactions.find(interaction => (interaction instanceof ol.interaction.Draw));
+            widgets.push(
+                <LocationRecorder
+                    drawInteraction={drawInteraction} geomType={this.props.redlining.geomType} key="LocationRecorder" map={this.props.map} />
+            );
+        }
+        return widgets;
     }
     updateCurrentFeature = (feature, deletedKeys = []) => {
         if (this.currentFeature && this.props.redlining.selectedFeature) {
@@ -277,6 +291,7 @@ class RedliningSupport extends React.Component {
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interactions.push(drawInteraction);
+        this.setState({showRecordLocation: geomTypeConfig.showRecordLocation});
     };
     updateMeasurements = () => {
         if (this.blockOnChange || !this.currentFeature) {
@@ -562,6 +577,7 @@ class RedliningSupport extends React.Component {
         }
     };
     reset = (redliningProps) => {
+        this.setState({showRecordLocation: false});
         while (this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }
