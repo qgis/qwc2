@@ -165,7 +165,7 @@ class LocateSupport extends React.Component {
 
         const mapPos = this.geolocate.getPosition();
         const wgsPos = CoordinatesUtils.reproject(mapPos, this.props.projection, "EPSG:4326");
-        this.props.changeLocatePosition(wgsPos);
+        this.props.changeLocatePosition(wgsPos, mapPos);
 
         const point = new ol.geom.Point(mapPos);
         if (this.props.drawCircle) {
