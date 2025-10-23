@@ -7,8 +7,10 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
+import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
@@ -17,6 +19,7 @@ import {v4 as uuidv4} from 'uuid';
 import {LayerRole} from '../../actions/layers';
 import {setSnappingConfig} from '../../actions/map';
 import Icon from '../../components/Icon';
+import {BottomToolPortalContext} from '../../components/PluginsContainer';
 import Spinner from '../../components/widgets/Spinner';
 import IdentifyUtils from '../../utils/IdentifyUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -31,6 +34,7 @@ import './style/SnappingSupport.css';
  * Snapping support for the map component.
  */
 class SnappingSupport extends React.Component {
+    static contextType = BottomToolPortalContext;
     static propTypes = {
         layers: PropTypes.array,
         map: PropTypes.object,
@@ -99,29 +103,30 @@ class SnappingSupport extends React.Component {
             return null;
         }
         const disabled = !this.state.havesnaplayers || this.props.mapObj.snapping.active === false;
-        const toolbarClass = disabled ? "snapping-toolbar-inactive" : "";
+        const className = classNames({
+            "snapping-toolbar": true,
+            "snapping-toolbar-inactive": disabled
+        });
         const snapEdge = this.snapToEdge(this.props.mapObj.snapping);
         const snapVertex = this.snapToVertex(this.props.mapObj.snapping);
-        return (
-            <div className="snapping-toolbar-container">
-                <div className={toolbarClass}>
-                    {this.state.reqId !== null ? (
-                        <Spinner/>
-                    ) : (
-                        <span>
-                            <button className={"button" + (snapVertex ? " pressed" : "")} onClick={() => this.toggleSnap('vertex')} title={LocaleUtils.tr("snapping.vertex")}>
-                                <Icon icon="snap_vertex" size="large" />
-                            </button>
-                            <button className={"button" + (snapEdge ? " pressed" : "")} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
-                                <Icon icon="snap_edge" size="large" />
-                            </button>
-                        </span>
-                    )}
-                    &nbsp;
-                    {this.state.reqId ? LocaleUtils.tr("snapping.loading") : LocaleUtils.tr("snapping.snappingenabled")}
-                </div>
+        return ReactDOM.createPortal((
+            <div className={className}>
+                {this.state.reqId !== null ? (
+                    <Spinner/>
+                ) : (
+                    <span>
+                        <button className={"button" + (snapVertex ? " pressed" : "")} onClick={() => this.toggleSnap('vertex')} title={LocaleUtils.tr("snapping.vertex")}>
+                            <Icon icon="snap_vertex" size="large" />
+                        </button>
+                        <button className={"button" + (snapEdge ? " pressed" : "")} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
+                            <Icon icon="snap_edge" size="large" />
+                        </button>
+                    </span>
+                )}
+                &nbsp;
+                {this.state.reqId ? LocaleUtils.tr("snapping.loading") : LocaleUtils.tr("snapping.snappingenabled")}
             </div>
-        );
+        ), this.context);
     }
     snapToEdge = (snappingConfig) => {
         return snappingConfig.active === true || snappingConfig.active === 'edge';
