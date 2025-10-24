@@ -13,6 +13,7 @@ import {v5 as uuidv5} from 'uuid';
 import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
+import MiscUtils from './MiscUtils';
 import grammar from './expr_grammar/grammar';
 
 const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
@@ -137,6 +138,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
         feature: feature,
         getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
         representValue: (attr) => representValue(attr, editConfig, editIface, promises),
+        formatDate: MiscUtils.formatDate,
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
         layer: editConfig.layerName,

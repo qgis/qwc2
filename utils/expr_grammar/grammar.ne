@@ -121,6 +121,8 @@ N -> float                         {% id %}
     | "get_feature" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")" {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], d[8], d[12]); } %}
     | "get_feature_by_id" _ "(" _ P0 _ "," _ P0 _ ")"      {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], "id", d[8]); } %}
     | "represent_value" _ "(" _ dqstring _ ")"             {% function(d) { return window.qwc2ExpressionParserContext.representValue(d[4]); } %}
+    | "format_date" _ "(" _ sqstring _ "," _ sqstring _ ")" {% function(d) { return window.qwc2ExpressionParserContext.formatDate(d[4], d[8]); } %}
+    | "format_date" _ "(" _ sqstring _ "," _ sqstring _ "," _ sqstring _ ")" {% function(d) { return window.qwc2ExpressionParserContext.formatDate(d[4], d[8], d[12]); } %}
     | "PI"i                        {% function(d) { return Math.PI; } %}
     | "E"i                         {% function(d) { return Math.E; } %}
     | "NULL"i                      {% function(d) { return null; } %}
