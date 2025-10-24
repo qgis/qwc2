@@ -311,7 +311,10 @@ class GeometryDigitizer extends React.Component {
             ),
             this.renderOutputWindow(),
             this.state.pickGeomType ? (
-                <PickFeature featurePicked={this.selectFeature} key="FeaturePicker" pickGeomType={this.state.pickGeomType} />
+                <PickFeature
+                    featurePicked={this.selectFeature} key="FeaturePicker"
+                    layerFilterFunc={(layer) => !layer.id.startsWith("__geomdigitizer")}
+                    pickGeomType={this.state.pickGeomType} />
             ) : null
         ];
     }
