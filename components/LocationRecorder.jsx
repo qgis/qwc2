@@ -13,7 +13,6 @@ import {connect} from 'react-redux';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
-import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import {BottomToolPortalContext} from './PluginsContainer';
@@ -76,13 +75,11 @@ class LocationRecorder extends React.Component {
                 /* eslint-disable-next-line */
                 console.error("Geolocation not supported");
             } else {
-                console.log(this.props.locatePosition);
                 this.props.drawInteraction.appendCoordinates([this.props.locatePosition]);
                 if (this.props.geomType === "Point") {
                     this.stopRecording();
                 } else {
                     this.pollInterval = setInterval(() => {
-                        console.log(this.props.locatePosition);
                         this.props.drawInteraction.appendCoordinates([this.props.locatePosition]);
                     }, this.state.interval * 1000);
                 }
