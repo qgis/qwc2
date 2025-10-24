@@ -76,6 +76,7 @@ div.identify-body div.identify-result-frame:hover {
 
 div.identify-body .identify-result-title {
     background-color: var(--list-section-bg-color);
+    color: var(--list-section-text-color);
     padding: 0.25em;
     font-weight: bold;
     flex: 0 0 auto;
