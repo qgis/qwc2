@@ -387,13 +387,16 @@ const LayerUtils = {
                     return layers;
                 }
                 // Avoid splitting sibling groups when reordering
-                const siblinggrouppath = exploded[idx + delta].path.length > level ? exploded[idx + delta].path.slice(0, level) : null;
-                if (siblinggrouppath !== null) {
-                    const dir = delta > 0 ? 1 : -1;
-                    while (idx + delta + dir >= 0 && idx + delta + dir < exploded.length && LayerUtils.pathEqualOrBelow(siblinggrouppath, exploded[idx + delta + dir].path)) {
-                        delta += dir;
-                    }
+                const group = sublayerpath.slice(0, -1).reduce((sublayer, i) => sublayer.sublayers[i], movelayer);
+                // Compute move offset
+                const dir = delta > 0 ? 1 : -1;
+                const oldIndex = sublayerpath[sublayerpath.length - 1];
+                const newIndex = oldIndex + delta;
+                let offset = 0;
+                for (let i = oldIndex + dir; dir * i <= dir * newIndex; i += dir) {
+                    offset += LayerUtils.layerTreeCount(group.sublayers[i]) * dir;
                 }
+                delta = offset;
             }
             // Reorder layer
             if (delta < 0) {
@@ -547,6 +550,9 @@ const LayerUtils = {
                 LayerUtils.ensureMutuallyExclusive(sublayer);
             }
         }
+    },
+    layerTreeCount(layer) {
+        return isEmpty(layer.sublayers) ? 1 : layer.sublayers.reduce((sum, sublayer) => sum + LayerUtils.layerTreeCount(sublayer), 0);
     },
     getSublayerNames(layer, toplevel = true, filter = null) {
         return [(toplevel && layer.sublayers) || (filter && !filter(layer)) ? null : layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
