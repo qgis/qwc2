@@ -2,6 +2,10 @@ div.numeric-input-widget-body > table {
     width: 100%;
 }
 
+div.numeric-input-widget-body > table td {
+    padding: 1px 0;
+}
+
 div.numeric-input-widget-body > table input {
     width: 100%;
 }
@@ -10,9 +14,20 @@ div.numeric-input-widget-body > table tr:hover {
     background-color: var(--list-item-bg-color-hover);
 }
 
-div.numeric-input-widget-body > table td:nth-child(1),
-div.numeric-input-widget-body > table td:nth-child(2),
-div.numeric-input-widget-body > table td:nth-child(4),
-div.numeric-input-widget-body > table td:nth-child(6) {
+div.numeric-input-widget-body > table td:not(:has(> div.TextInput)) {
     width: 1%;
+}
+
+div.numeric-input-widget-body > table td:not(:has(> div.TextInput)):not(:first-child) {
+    padding-left: 2px;
+}
+
+div.numeric-input-widget-body > table td > span {
+    display: inline-flex;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-right-width: 0;
+    height: 2em;
+    align-items: center;
+    padding: 0 0.25em;
 }
