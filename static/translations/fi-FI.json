@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "value": "",
       "windowtitle": ""
     },
@@ -448,7 +447,7 @@
       "angle": "",
       "featureunsupported": "",
       "height": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "side": "",
       "width": "",
       "windowtitle": ""
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "",
-      "border": "Reunat",
       "buffer": "Bufferi",
       "buffercompute": "Laske",
       "bufferdistance": "Etäisyys",
@@ -502,6 +500,7 @@
       "bufferlayername": "Bufferi",
       "bufferselectfeature": "Valitse bufferin ominaisuus...",
       "circle": "Ympyrä",
+      "ctrlhint": "",
       "delete": "Poista",
       "draw": "Piirrä",
       "edit": "Editoi",
@@ -522,8 +521,7 @@
       "size": "Koko",
       "square": "",
       "text": "Teksti",
-      "transform": "",
-      "width": "Leveys"
+      "transform": ""
     },
     "reports": {
       "all": "",

@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "Koni",
-      "ctrlhint": "",
       "cuboid": "Kübik",
       "cylinder": "Silindir",
       "delete": "Sil",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "value": "",
       "windowtitle": ""
     },
@@ -448,7 +447,7 @@
       "angle": "Açı",
       "featureunsupported": "Sayısal değer bu geometri için kullanılamaz",
       "height": "Yükseklik",
-      "nofeature": "Aktif obje yok",
+      "nofeatureormultiple": "",
       "side": "Taraf",
       "width": "Genişlik",
       "windowtitle": "Sayısal giriş"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "",
-      "border": "Sınır",
       "buffer": "Tampon",
       "buffercompute": "Hesapla",
       "bufferdistance": "Mesafe",
@@ -502,6 +500,7 @@
       "bufferlayername": "Tampon",
       "bufferselectfeature": "Tampon atılacak bir obje seçiniz...",
       "circle": "Daire",
+      "ctrlhint": "",
       "delete": "Sil",
       "draw": "Çiz",
       "edit": "Düzenle",
@@ -522,8 +521,7 @@
       "size": "Boyut",
       "square": "Kare",
       "text": "Metin",
-      "transform": "Dönüşüm",
-      "width": "Genişlik"
+      "transform": "Dönüşüm"
     },
     "reports": {
       "all": "Tümü",

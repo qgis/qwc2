@@ -265,7 +265,15 @@ class Redlining extends React.Component {
             labelPlaceholder = LocaleUtils.tr("redlining.text");
         }
         if (this.props.redlining.action !== 'Draw' && !this.props.redlining.selectedFeature) {
-            return null;
+            if (this.props.redlining.action === 'Transform') {
+                return (
+                    <div className="redlining-message">
+                        {LocaleUtils.tr("redlining.ctrlhint")}
+                    </div>
+                );
+            } else {
+                return null;
+            }
         }
 
         return (

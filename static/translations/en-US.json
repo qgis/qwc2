@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "Clone",
       "cone": "Cone",
-      "ctrlhint": "Use Ctrl for multiselection...",
       "cuboid": "Cuboid",
       "cylinder": "Cylinder",
       "delete": "Delete",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "Name",
-      "nofeature": "No active feature",
+      "nofeatureormultiple": "No or multiple active features",
       "value": "Value",
       "windowtitle": "Feature attributes"
     },
@@ -448,7 +447,7 @@
       "angle": "Angle",
       "featureunsupported": "Numeric input unavailable for this geometry",
       "height": "Height",
-      "nofeature": "No active feature",
+      "nofeatureormultiple": "",
       "side": "Side",
       "width": "Width",
       "windowtitle": "Numeric input"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "Feature attributes",
-      "border": "Border",
       "buffer": "Buffer",
       "buffercompute": "Compute",
       "bufferdistance": "Distance",
@@ -502,6 +500,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Select a feature to buffer...",
       "circle": "Circle",
+      "ctrlhint": "Use Ctrl for multiselection...",
       "delete": "Delete",
       "draw": "Draw",
       "edit": "Edit",
@@ -522,8 +521,7 @@
       "size": "Size",
       "square": "Square",
       "text": "Text",
-      "transform": "Transform",
-      "width": "Width"
+      "transform": "Transform"
     },
     "reports": {
       "all": "All",

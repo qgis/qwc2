@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "value": "",
       "windowtitle": ""
     },
@@ -448,7 +447,7 @@
       "angle": "",
       "featureunsupported": "",
       "height": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "side": "",
       "width": "",
       "windowtitle": ""
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "",
-      "border": "Obramowanie",
       "buffer": "Buforuj",
       "buffercompute": "Oblicz",
       "bufferdistance": "Odległość",
@@ -502,6 +500,7 @@
       "bufferlayername": "Buforuj",
       "bufferselectfeature": "Wybierz element do buforowania",
       "circle": "",
+      "ctrlhint": "",
       "delete": "Usuń",
       "draw": "Rysuj",
       "edit": "Edytuj",
@@ -522,8 +521,7 @@
       "size": "Rozmiar",
       "square": "",
       "text": "Tekst",
-      "transform": "",
-      "width": "Szerokość"
+      "transform": ""
     },
     "reports": {
       "all": "",

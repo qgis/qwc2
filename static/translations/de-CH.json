@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "Kopieren",
       "cone": "Kegel",
-      "ctrlhint": "Mehrfachselektion mit Ctrl...",
       "cuboid": "Quader",
       "cylinder": "Zylinder",
       "delete": "Löschen",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "Name",
-      "nofeature": "Kein aktives Objekt",
+      "nofeatureormultiple": "Kein oder mehrere Objekte aktiv",
       "value": "Wert",
       "windowtitle": "Objektattribute"
     },
@@ -448,7 +447,7 @@
       "angle": "Winkel",
       "featureunsupported": "Numerische Eingabe nicht verfügbar für dieses Objekt",
       "height": "Höhe",
-      "nofeature": "Kein Objekt aktiv",
+      "nofeatureormultiple": "Kein oder mehrere Objekte aktiv",
       "side": "Seite",
       "width": "Breite",
       "windowtitle": "Numerische Eingabe"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "Objektattribute",
-      "border": "Rand",
       "buffer": "Puffern",
       "buffercompute": "Berechnen",
       "bufferdistance": "Distanz",
@@ -502,6 +500,7 @@
       "bufferlayername": "Objektpuffer",
       "bufferselectfeature": "Zu pufferndes Objekt auswählen...",
       "circle": "Kreis",
+      "ctrlhint": "Mehrfachselektion mit Ctrl...",
       "delete": "Löschen",
       "draw": "Zeichnen",
       "edit": "Bearbeiten",
@@ -522,8 +521,7 @@
       "size": "Grösse",
       "square": "Quadrat",
       "text": "Text",
-      "transform": "Transformieren",
-      "width": "Breite"
+      "transform": "Transformieren"
     },
     "reports": {
       "all": "Alle",

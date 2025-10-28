@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "Конус",
-      "ctrlhint": "",
       "cuboid": "Кубоид",
       "cylinder": "Цилиндър",
       "delete": "Изтриване на",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "value": "",
       "windowtitle": ""
     },
@@ -448,7 +447,7 @@
       "angle": "Ъгъл",
       "featureunsupported": "Цифровото въвеждане не е достъпно за тази геометрия",
       "height": "Височина",
-      "nofeature": "Няма активна функция",
+      "nofeatureormultiple": "",
       "side": "Страна",
       "width": "Ширина",
       "windowtitle": "Цифрово въвеждане"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "",
-      "border": "Граница",
       "buffer": "Буфер",
       "buffercompute": "Изчисляване",
       "bufferdistance": "Разстояние",
@@ -502,6 +500,7 @@
       "bufferlayername": "Буфер",
       "bufferselectfeature": "Изберете функция, която да буферира...",
       "circle": "Кръг",
+      "ctrlhint": "",
       "delete": "Изтриване на",
       "draw": "Начертайте",
       "edit": "Редактиране на",
@@ -522,8 +521,7 @@
       "size": "Размер",
       "square": "Квадрат",
       "text": "Текст",
-      "transform": "Преобразуване",
-      "width": "Ширина"
+      "transform": "Преобразуване"
     },
     "reports": {
       "all": "Всички",

@@ -28,8 +28,8 @@ class FeatureAttributesWindow extends React.Component {
     };
     render() {
         let body = null;
-        if (!this.props.feature) {
-            body = (<span>{LocaleUtils.tr("featureattributes.nofeature")}</span>);
+        if (this.props.feature?.type !== "Feature") {
+            body = (<span>{LocaleUtils.tr("featureattributes.nofeatureormultiple")}</span>);
         } else {
             body = this.renderAttributesList();
         }

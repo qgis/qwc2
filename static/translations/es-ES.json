@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "Clonar",
       "cone": "Cono",
-      "ctrlhint": "Usa Ctrl para selección múltiple...",
       "cuboid": "Cuboide",
       "cylinder": "Cilindro",
       "delete": "Eliminar",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "value": "",
       "windowtitle": ""
     },
@@ -448,7 +447,7 @@
       "angle": "Ángulo",
       "featureunsupported": "Entrada numérica no disponible para esta geometría",
       "height": "Altura",
-      "nofeature": "Sin elemento activo",
+      "nofeatureormultiple": "",
       "side": "Lado",
       "width": "Ancho",
       "windowtitle": "Entrada numérica"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "",
-      "border": "Límite",
       "buffer": "Bufer",
       "buffercompute": "Computar",
       "bufferdistance": "Distancia",
@@ -502,6 +500,7 @@
       "bufferlayername": "Bufer",
       "bufferselectfeature": "Seleccione un elemento para almacenar en bufer",
       "circle": "Círculo",
+      "ctrlhint": "",
       "delete": "Eliminar",
       "draw": "Dibujar",
       "edit": "Editar",
@@ -522,8 +521,7 @@
       "size": "Tamaño",
       "square": "Cuadrado",
       "text": "Texto",
-      "transform": "Transformar",
-      "width": "Ancho"
+      "transform": "Transformar"
     },
     "reports": {
       "all": "Todo",

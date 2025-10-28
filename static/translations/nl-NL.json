@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "value": "",
       "windowtitle": ""
     },
@@ -448,7 +447,7 @@
       "angle": "Hoek",
       "featureunsupported": "Numerieke invoer niet beschikbaar voor deze geometrie",
       "height": "Hoogte",
-      "nofeature": "Geen actieve object",
+      "nofeatureormultiple": "",
       "side": "Zijde",
       "width": "Breedte",
       "windowtitle": "Numerieke invoer"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "",
-      "border": "Rand",
       "buffer": "Buffer",
       "buffercompute": "Berekenen",
       "bufferdistance": "Afstand",
@@ -502,6 +500,7 @@
       "bufferlayername": "Laag",
       "bufferselectfeature": "Selecteer object om te bufferen...",
       "circle": "Cirkel",
+      "ctrlhint": "",
       "delete": "Verwijderen",
       "draw": "Tekenen",
       "edit": "Bewerken",
@@ -522,8 +521,7 @@
       "size": "Afmeting",
       "square": "",
       "text": "Tekst",
-      "transform": "Transformeer",
-      "width": "Breedte"
+      "transform": "Transformeer"
     },
     "reports": {
       "all": "",

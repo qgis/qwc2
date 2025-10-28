@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "Copia",
       "cone": "Cono",
-      "ctrlhint": "Ctrl per selezione multipla...",
       "cuboid": "Cuboide",
       "cylinder": "Cilindro",
       "delete": "Elimina",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "Nome",
-      "nofeature": "Nessun oggetto attivo",
+      "nofeatureormultiple": "Nessun o più oggetti attivi",
       "value": "Valore",
       "windowtitle": "Attributi oggetto"
     },
@@ -448,7 +447,7 @@
       "angle": "Angolo",
       "featureunsupported": "Formulario numerico non disponibile per questa geometria",
       "height": "Altezza",
-      "nofeature": "Nessun oggetto attivo",
+      "nofeatureormultiple": "Nessun o più oggetti attivi",
       "side": "Lato",
       "width": "Larghezza",
       "windowtitle": "Formulario numerico"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "Attributi oggetto",
-      "border": "Bordo",
       "buffer": "Buffer",
       "buffercompute": "Calcola",
       "bufferdistance": "Distanza",
@@ -502,6 +500,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Seleziona un oggetto...",
       "circle": "Cerchio",
+      "ctrlhint": "Ctrl per selezione multipla...",
       "delete": "Elimina",
       "draw": "Disegna",
       "edit": "Modifica",
@@ -522,8 +521,7 @@
       "size": "Dimensione",
       "square": "Quadrato",
       "text": "Testo",
-      "transform": "Transforma",
-      "width": "Larghezza"
+      "transform": "Transforma"
     },
     "reports": {
       "all": "Tutti",

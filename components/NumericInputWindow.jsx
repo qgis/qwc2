@@ -67,7 +67,7 @@ class NumericInputWindow extends React.Component {
         };
         let body = null;
         if (!this.state.geometry) {
-            body = (<span>{LocaleUtils.tr("numericinput.nofeature")}</span>);
+            body = (<span>{LocaleUtils.tr("numericinput.nofeatureormultiple")}</span>);
         } else if (shapeInputForms[this.state.feature.shape]) {
             body = shapeInputForms[this.state.feature.shape]();
         } else {

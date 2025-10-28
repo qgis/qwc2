@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "Clonar",
       "cone": "Con",
-      "ctrlhint": "Utilitza Ctrl per a selecció múltiple...",
       "cuboid": "Cuboid",
       "cylinder": "Cilindre",
       "delete": "Eliminar",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "value": "",
       "windowtitle": ""
     },
@@ -448,7 +447,7 @@
       "angle": "Angle",
       "featureunsupported": "Entrada numèrica no disponible per a aquesta geometria",
       "height": "Alçada",
-      "nofeature": "Sense element actiu",
+      "nofeatureormultiple": "",
       "side": "Costat",
       "width": "Amplada",
       "windowtitle": "Entrada numèrica"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "",
-      "border": "Límit",
       "buffer": "Buffer",
       "buffercompute": "Computar",
       "bufferdistance": "Distància",
@@ -502,6 +500,7 @@
       "bufferlayername": "Capa de buffer",
       "bufferselectfeature": "Seleccioni un element para enmagatzemar en bufer",
       "circle": "Circle",
+      "ctrlhint": "",
       "delete": "Eliminar",
       "draw": "Dibuixar",
       "edit": "Editar",
@@ -522,8 +521,7 @@
       "size": "Tamany",
       "square": "Quadrat",
       "text": "Text",
-      "transform": "Transformar",
-      "width": "Amplada"
+      "transform": "Transformar"
     },
     "reports": {
       "all": "Tot",

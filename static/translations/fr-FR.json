@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "Copier",
       "cone": "Cône",
-      "ctrlhint": "Ctrl pour sélection multiple...",
       "cuboid": "Cuboïde",
       "cylinder": "Cylindre",
       "delete": "Effacer",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "Nom",
-      "nofeature": "Aucune objet active",
+      "nofeatureormultiple": "Aucune o plus objets actives",
       "value": "Valeur",
       "windowtitle": "Attributs de l'objet"
     },
@@ -448,7 +447,7 @@
       "angle": "Angle",
       "featureunsupported": "Entrée numérique non disponible pour cette géométrie",
       "height": "Hauteur",
-      "nofeature": "Aucune objet active",
+      "nofeatureormultiple": "",
       "side": "Côté",
       "width": "Largeur",
       "windowtitle": "Entrée numérique"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "Attributs de l'objet",
-      "border": "Bordure",
       "buffer": "Tampon",
       "buffercompute": "Calculer",
       "bufferdistance": "Distance",
@@ -502,6 +500,7 @@
       "bufferlayername": "Sortie",
       "bufferselectfeature": "Choisissez une entité pour le tampon...",
       "circle": "Cercle",
+      "ctrlhint": "Ctrl pour sélection multiple...",
       "delete": "Effacer",
       "draw": "Dessiner",
       "edit": "Editer",
@@ -522,8 +521,7 @@
       "size": "Taille",
       "square": "Carré",
       "text": "Texte",
-      "transform": "Transformer",
-      "width": "Largeur"
+      "transform": "Transformer"
     },
     "reports": {
       "all": "Tous",

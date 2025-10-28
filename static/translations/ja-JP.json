@@ -137,7 +137,6 @@
     "draw3d": {
       "clone": "クローン",
       "cone": "円錐",
-      "ctrlhint": "Ctrl を使うと複数選択できます",
       "cuboid": "直方体",
       "cylinder": "円柱",
       "delete": "削除",
@@ -195,7 +194,7 @@
     },
     "featureattributes": {
       "name": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "value": "",
       "windowtitle": ""
     },
@@ -448,7 +447,7 @@
       "angle": "角度",
       "featureunsupported": "このジオメトリに対しては数値入力は使用できません",
       "height": "高さ",
-      "nofeature": "アクティブな地物がありません",
+      "nofeatureormultiple": "",
       "side": "サイド",
       "width": "幅",
       "windowtitle": "数値入力"
@@ -494,7 +493,6 @@
     },
     "redlining": {
       "attributes": "",
-      "border": "境界線",
       "buffer": "バッファ",
       "buffercompute": "計算",
       "bufferdistance": "距離",
@@ -502,6 +500,7 @@
       "bufferlayername": "バッファ",
       "bufferselectfeature": "バッファを適用する地物を選択...",
       "circle": "円",
+      "ctrlhint": "",
       "delete": "削除",
       "draw": "作図",
       "edit": "編集",
@@ -522,8 +521,7 @@
       "size": "サイズ",
       "square": "四角形",
       "text": "テキスト",
-      "transform": "変形",
-      "width": "幅"
+      "transform": "変形"
     },
     "reports": {
       "all": "全て",
