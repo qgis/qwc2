@@ -217,7 +217,9 @@ class RedliningSupport extends React.Component {
         const styleName = isText ? "text" : "default";
         const opts = this.styleOptions(styleProps, isText);
         this.blockOnChange = true;
-        this.currentFeature.set('label', styleProps.text);
+        if (!this.currentFeature.get('measurements')) {
+            this.currentFeature.set('label', styleProps.text);
+        }
         this.currentFeature.set('styleName', styleName);
         this.currentFeature.set('styleOptions', opts);
         this.blockOnChange = false;
