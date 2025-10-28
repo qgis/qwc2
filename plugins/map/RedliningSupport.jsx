@@ -350,7 +350,7 @@ class RedliningSupport extends React.Component {
             }
             this.setCurrentFeature(feature);
             if (editTool === 'Transform') {
-                this.setupTransformInteraction([this.currentFeature]);
+                this.setupTransformInteraction(redliningLayer, [this.currentFeature]);
             } else {
                 this.setupModifyInteraction([this.currentFeature]);
             }
@@ -387,7 +387,7 @@ class RedliningSupport extends React.Component {
                 this.setCurrentFeature(evt.selected[0]);
                 const geomTypeConfig = GeomTypeConfig[this.currentFeature.get('shape')];
                 if (geomTypeConfig && geomTypeConfig.editTool === 'Transform') {
-                    currentEditInteraction = this.setupTransformInteraction([this.currentFeature]);
+                    currentEditInteraction = this.setupTransformInteraction(redliningLayer, [this.currentFeature]);
                     currentEditInteraction.on('select', (ev) => {
                         // Clear selection when selecting a different feature, and let the parent select interaction deal with the new feature
                         if (this.currentFeature && ev.feature !== this.currentFeature) {
@@ -412,7 +412,7 @@ class RedliningSupport extends React.Component {
         if (!redliningLayer) {
             return;
         }
-        const transformInteraction = this.setupTransformInteraction();
+        const transformInteraction = this.setupTransformInteraction(redliningLayer);
         transformInteraction.on('select', (evt) => {
             if (evt.feature === this.currentFeature) {
                 return;
@@ -495,12 +495,13 @@ class RedliningSupport extends React.Component {
         this.interactions.push(modifyInteraction);
         return modifyInteraction;
     };
-    setupTransformInteraction = (selectedFeatures = []) => {
+    setupTransformInteraction = (redliningLayer, selectedFeatures = []) => {
         const transformInteraction = new ol.interaction.Transform({
             stretch: false,
             keepAspectRatio: (ev) => {
                 return this.currentFeature ? GeomTypeConfig[this.currentFeature.get('shape')].regular || ol.events.condition.shiftKeyOnly(ev) : false;
-            }
+            },
+            layers: [redliningLayer]
         });
         transformInteraction.on('rotating', (e) => {
             if (this.currentFeature.get('shape') === 'Text') {
