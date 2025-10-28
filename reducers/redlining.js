@@ -35,7 +35,11 @@ const defaultState = {
 export default function redlining(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_REDLINING_STATE: {
-        return {...state, ...action.data, style: {...state.style, ...action.data.style}};
+        const newstate = {...state, ...action.data};
+        if (action.data.style) {
+            newstate.style = {...state.style, ...action.data.style};
+        }
+        return newstate;
     }
     case RESET_REDLINING_STATE: {
         return defaultState;
