@@ -295,11 +295,11 @@ class RedliningSupport extends React.Component {
         this.interactions.push(drawInteraction);
         this.setState({showRecordLocation: geomTypeConfig.showRecordLocation});
     };
-    updateMeasurements = () => {
-        if (this.blockOnChange || !this.currentFeature) {
+    updateMeasurements = (ev) => {
+        if (this.blockOnChange) {
             return;
         }
-        const feature = this.currentFeature;
+        const feature = ev.target;
         const hadMeasurements = !!feature.get('measurements');
         if (this.props.redlining.measurements) {
             const settings = {
