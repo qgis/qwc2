@@ -47,6 +47,13 @@ const EditingInterface = {
         }
         return message;
     },
+    replacer(mapCrs) {
+        if (mapCrs === "EPSG:4326") {
+            return (key, val) => val.toFixed ? Number(val.toFixed(5)) : val;
+        } else {
+            return (key, val) => val.toFixed ? Number(val.toFixed(2)) : val;
+        }
+    },
     /**
      * Gets features at the specified map position.
      *
@@ -71,7 +78,7 @@ const EditingInterface = {
             bbox: bbox,
             crs: mapCrs,
             filter: filter ? JSON.stringify(filter) : undefined,
-            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined
+            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}, this.replacer(mapCrs)) : undefined
         };
         const headers = {
             "Accept-Language": LocaleUtils.lang()
@@ -135,8 +142,8 @@ const EditingInterface = {
         const params = {
             crs: mapCrs,
             bbox: bbox ? bbox.join(",") : undefined,
-            filter: filter ? JSON.stringify(filter) : undefined,
-            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined,
+            filter: filter ? JSON.stringify(filter, this.replacer(mapCrs)) : undefined,
+            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}, this.replacer(mapCrs)) : undefined,
             fields: fields ? fields.join(",") : undefined
         };
         const headers = {
@@ -172,7 +179,7 @@ const EditingInterface = {
         const params = {
             crs: mapCrs,
             filter: filter ? JSON.stringify(filter) : undefined,
-            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined
+            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}, this.replacer(mapCrs)) : undefined
         };
         const headers = {
             "Accept-Language": LocaleUtils.lang()
