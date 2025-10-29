@@ -94,14 +94,14 @@ class NumericInputWindow extends React.Component {
         const decimals = CoordinatesUtils.getPrecision(this.state.displayCrs);
         const value = ordinate.toFixed(decimals);
         return (
-            <TextInput onChange={(text) => this.onValueChanged(text, decimals, onChange)} value={value} />
+            <TextInput onChange={(text) => this.onValueChanged(text, decimals, onChange)} showClear={false} value={value} />
         );
     };
     renderMeasureInput = (measure, onChange, decimals = null) => {
         decimals = decimals ?? ConfigUtils.getConfigProp("measurementPrecision", null, 2);
         const value = measure.toFixed(decimals);
         return (
-            <TextInput onChange={(text) => this.onValueChanged(text, decimals, onChange)} value={value} />
+            <TextInput onChange={(text) => this.onValueChanged(text, decimals, onChange)} showClear={false} value={value} />
         );
     };
     onValueChanged = (text, decimals, onChange) => {
