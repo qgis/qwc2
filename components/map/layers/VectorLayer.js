@@ -14,34 +14,32 @@ import FeatureStyles from '../../../utils/FeatureStyles';
 
 export function createFeatures(options, mapCrs) {
     const format = new ol.format.GeoJSON();
-    return (options.features || []).reduce((collection, feature) => {
-        const featureObject = format.readFeatures({...feature, type: "Feature"});
-        featureObject.forEach(f => {
-            let featureCrs = feature.crs ?? options.projection ?? mapCrs;
-            if (featureCrs.type === "name") {
-                featureCrs = featureCrs.properties.name;
-            }
-            if (featureCrs !== mapCrs) {
-                f.getGeometry()?.transform(featureCrs, mapCrs);
-            }
-            const featureStyleName = feature.styleName || options.styleName;
-            const featureStyleOptions = {...options.styleOptions, ...feature.styleOptions};
-            f.set('styleName', featureStyleName);
-            f.set('styleOptions', featureStyleOptions);
-            if (feature.circleParams) {
-                f.set('circleParams', feature.circleParams);
-            }
-            if (feature.shape) {
-                f.set('shape', feature.shape);
-            }
-            if (feature.measurements) {
-                f.set('measurements', feature.measurements);
-            }
-            if (featureStyleName) {
-                f.setStyle(FeatureStyles[featureStyleName](f, featureStyleOptions));
-            }
-        });
-        return collection.concat(featureObject);
+    return (options.features || []).reduce((collection, featureObj) => {
+        const feature = format.readFeature({...featureObj, type: "Feature"});
+        let featureCrs = featureObj.crs ?? options.projection ?? mapCrs;
+        if (featureCrs.type === "name") {
+            featureCrs = featureCrs.properties.name;
+        }
+        if (featureCrs !== mapCrs) {
+            feature.getGeometry()?.transform(featureCrs, mapCrs);
+        }
+        const featureStyleName = featureObj.styleName || options.styleName;
+        const featureStyleOptions = {...options.styleOptions, ...featureObj.styleOptions};
+        feature.set('styleName', featureStyleName);
+        feature.set('styleOptions', featureStyleOptions);
+        if (featureObj.circleParams) {
+            feature.set('circleParams', featureObj.circleParams);
+        }
+        if (featureObj.shape) {
+            feature.set('shape', featureObj.shape);
+        }
+        if (featureObj.measurements) {
+            feature.set('measurements', featureObj.measurements);
+        }
+        if (featureStyleName) {
+            feature.setStyle(FeatureStyles[featureStyleName](feature, featureStyleOptions));
+        }
+        return [...collection, feature];
     }, []);
 }
 
@@ -63,44 +61,42 @@ export function updateFeatures(source, newOptions, oldOptions, mapCrs) {
     }
 
     // Add / update features
-    let newFeatureObjects = [];
-    for (const feature of newOptions.features) {
-        if (oldFeaturesMap[feature.id] && oldFeaturesMap[feature.id] === feature) {
+    const newFeatures = [];
+    for (const featureObj of newOptions.features) {
+        if (oldFeaturesMap[featureObj.id] && oldFeaturesMap[featureObj.id] === featureObj) {
             // Unchanged, continue
             continue;
         }
-        if (oldFeaturesMap[feature.id] && oldFeaturesMap[feature.id] !== feature) {
+        if (oldFeaturesMap[featureObj.id] && oldFeaturesMap[featureObj.id] !== featureObj) {
             // Changed, remove
-            const oldFeature = source.getFeatureById(feature.id);
+            const oldFeature = source.getFeatureById(featureObj.id);
             if (oldFeature) {
                 source.removeFeature(oldFeature);
             }
         }
         // Add new
-        const featureObject = format.readFeatures({...feature, type: "Feature"});
-        featureObject.forEach(f => {
-            let featureCrs = feature.crs ?? newOptions.projection ?? mapCrs;
-            if (featureCrs.type === "name") {
-                featureCrs = featureCrs.properties.name;
-            }
-            if (featureCrs !== mapCrs) {
-                f.getGeometry()?.transform(featureCrs, mapCrs);
-            }
-            const featureStyleName = feature.styleName || newOptions.styleName;
-            const featureStyleOptions = {...newOptions.styleOptions, ...feature.styleOptions};
-            f.set('styleName', featureStyleName);
-            f.set('styleOptions', featureStyleOptions);
-            f.set('circleParams', feature.circleParams);
-            f.set('shape', feature.shape);
-            f.set('measurements', feature.measurements);
-            if (featureStyleName) {
-                f.setStyle(FeatureStyles[featureStyleName](f, featureStyleOptions));
-            }
-        });
-        newFeatureObjects = newFeatureObjects.concat(featureObject);
+        const feature = format.readFeature({...featureObj, type: "Feature"});
+        let featureCrs = featureObj.crs ?? newOptions.projection ?? mapCrs;
+        if (featureCrs.type === "name") {
+            featureCrs = featureCrs.properties.name;
+        }
+        if (featureCrs !== mapCrs) {
+            feature.getGeometry()?.transform(featureCrs, mapCrs);
+        }
+        const featureStyleName = featureObj.styleName || newOptions.styleName;
+        const featureStyleOptions = {...newOptions.styleOptions, ...featureObj.styleOptions};
+        feature.set('styleName', featureStyleName);
+        feature.set('styleOptions', featureStyleOptions);
+        feature.set('circleParams', featureObj.circleParams);
+        feature.set('shape', featureObj.shape);
+        feature.set('measurements', featureObj.measurements);
+        if (featureStyleName) {
+            feature.setStyle(FeatureStyles[featureStyleName](feature, featureStyleOptions));
+        }
+        newFeatures.push(feature);
     }
-    if (newFeatureObjects) {
-        source.addFeatures(newFeatureObjects);
+    if (newFeatures) {
+        source.addFeatures(newFeatures);
     }
 }
 
