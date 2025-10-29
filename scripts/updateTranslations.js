@@ -54,7 +54,7 @@ const listDir = (dir, pattern) => {
     let results = [];
     const list = fs.readdirSync(dir);
     list.forEach((file) => {
-        if (file === 'node_modules') {
+        if (file === 'node_modules' || file === 'dist') {
             return;
         }
         const path = dir + '/' + file;
