@@ -137,9 +137,10 @@ class RedliningSupport extends React.Component {
                 this.selectedFeatures.forEach(this.updateFeatureStyle);
             }
             // Update current feature measurements
-            if (
+            if (this.props.redlining.measurements !== prevProps.redlining.measurements) {
+                this.selectedFeatures.forEach(this.toggleFeatureMeasurements);
+            } else if (
                 this.props.map.displayCrs !== prevProps.map.displayCrs ||
-                this.props.redlining.measurements !== prevProps.redlining.measurements ||
                 this.props.redlining.lenUnit !== prevProps.redlining.lenUnit ||
                 this.props.redlining.areaUnit !== prevProps.redlining.areaUnit
             ) {
@@ -228,12 +229,7 @@ class RedliningSupport extends React.Component {
         feature.set('styleOptions', opts);
         this.blockOnChange = false;
     };
-    updateMeasurements = (ev) => {
-        if (this.blockOnChange) {
-            return;
-        }
-        const feature = ev.target;
-        const hadMeasurements = !!feature.get('measurements');
+    toggleFeatureMeasurements = (feature) => {
         if (this.props.redlining.measurements) {
             const settings = {
                 displayCrs: this.props.displayCrs,
@@ -241,10 +237,24 @@ class RedliningSupport extends React.Component {
                 areaUnit: this.props.redlining.areaUnit
             };
             MeasureUtils.updateFeatureMeasurements(feature, feature.get('shape'), this.props.mapCrs, settings);
-        } else if (hadMeasurements) {
+        } else {
             feature.set('measurements', undefined);
             feature.set('segment_labels', undefined);
             feature.set('label', '');
+        }
+    };
+    updateMeasurements = (ev) => {
+        if (this.blockOnChange) {
+            return;
+        }
+        const feature = ev.target;
+        if (feature.get('measurements')) {
+            const settings = {
+                displayCrs: this.props.displayCrs,
+                lenUnit: this.props.redlining.lenUnit,
+                areaUnit: this.props.redlining.areaUnit
+            };
+            MeasureUtils.updateFeatureMeasurements(feature, feature.get('shape'), this.props.mapCrs, settings);
         }
     };
     styleFunction = (feature) => {
@@ -316,6 +326,7 @@ class RedliningSupport extends React.Component {
             ev.feature.setId(uuidv4());
             ev.feature.set('shape', this.props.redlining.geomType);
             this.updateFeatureStyle(ev.feature);
+            this.toggleFeatureMeasurements(ev.feature);
             this.selectFeatures([ev.feature]);
         }, this);
         drawInteraction.on('drawend', (ev) => {
@@ -434,6 +445,7 @@ class RedliningSupport extends React.Component {
             evt.feature.setId(uuidv4());
             evt.feature.set('shape', this.props.redlining.geomType);
             this.updateFeatureStyle(evt.feature);
+            this.toggleFeatureMeasurements(ev.feature);
             this.selectFeatures([evt.feature]);
         }, this);
         drawInteraction.on('drawend', () => {
