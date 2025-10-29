@@ -38,6 +38,9 @@ export default {
                     const layer = createLayer();
                     applyStyle(layer, glStyle, styleSource, options.styleOptions).then(() => {
                         group.getLayers().push(layer);
+                    }).catch(e => {
+                        /* eslint-disable-next-line */
+                        console.warn("Unable to apply style " + options.style + ": " + String(e));
                     });
                 });
             }).catch(e => {
