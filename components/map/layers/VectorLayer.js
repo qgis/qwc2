@@ -29,6 +29,9 @@ export function createFeatures(options, mapCrs) {
         feature.set('styleOptions', featureStyleOptions);
         if (featureObj.circleParams) {
             feature.set('circleParams', featureObj.circleParams);
+            feature.setGeometry(
+                new ol.geom.Circle(featureObj.circleParams.center, featureObj.circleParams.radius)
+            );
         }
         if (featureObj.shape) {
             feature.set('shape', featureObj.shape);
@@ -82,6 +85,11 @@ export function updateFeatures(source, newOptions, oldOptions, mapCrs) {
         }
         if (featureCrs !== mapCrs) {
             feature.getGeometry()?.transform(featureCrs, mapCrs);
+        }
+        if (featureObj.circleParams) {
+            feature.setGeometry(
+                new ol.geom.Circle(featureObj.circleParams.center, featureObj.circleParams.radius)
+            );
         }
         const featureStyleName = featureObj.styleName || newOptions.styleName;
         const featureStyleOptions = {...newOptions.styleOptions, ...featureObj.styleOptions};
