@@ -139,7 +139,8 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
                         fillColor: [255, 255, 255, 1],
                         strokeColor: [255, 0, 0, 1],
                         strokeWidth: 2,
-                        circleRadius: 6
+                        circleRadius: 6,
+                        strokeDash: []
                     }
                 })),
                 {
@@ -151,6 +152,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
                     styleOptions: {
                         strokeColor: [255, 0, 0, 1],
                         strokeWidth: 4,
+                        strokeDash: [],
                         headmarker: this.props.measurement.lineHeadMarker,
                         tailmarker: this.props.measurement.lineTailMarker
                     },
