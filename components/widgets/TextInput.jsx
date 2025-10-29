@@ -30,12 +30,14 @@ export default class TextInput extends React.Component {
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,
+        showClear: PropTypes.bool,
         style: PropTypes.object,
         value: PropTypes.string
     };
     static defaultProps = {
         clearValue: "",
-        placeholder: ""
+        placeholder: "",
+        showClear: true
     };
     state = {
         focus: false,
@@ -85,7 +87,7 @@ export default class TextInput extends React.Component {
             "text-input-readonly": this.props.readOnly || !this.state.curValue,
             "text-input-invalid": this.props.required && !this.state.curValue
         });
-        const showClear = this.state.focus && !this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue;
+        const showClear = this.props.showClear && this.state.focus && !this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue;
         const style = {
             ...this.props.style
         };
