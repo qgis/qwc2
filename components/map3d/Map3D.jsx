@@ -796,7 +796,7 @@ class Map3D extends React.Component {
             this.objectMap[entry.name] = tiles;
 
             sceneObjects[entry.name] = {
-                visibility: true,
+                visibility: entry.visibility ?? true,
                 opacity: 255,
                 layertree: true,
                 title: entry.title ?? entry.name,
@@ -813,7 +813,9 @@ class Map3D extends React.Component {
 
         // Add other objects
         (this.props.theme.map3d?.objects3d || []).forEach(entry => {
-            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.name, this.state.sceneContext);
+            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.name, this.state.sceneContext, {
+                visibility: entry.visibility ?? true
+            });
         });
 
         this.setState(state => ({
