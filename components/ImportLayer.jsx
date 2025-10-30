@@ -415,7 +415,7 @@ class ImportLayer extends React.Component {
         const {ZipLoader} = await import('@loaders.gl/zip');
 
         // Import SHP layer from ZIP. Zip must contain all the required files : shp, dbf, shx, prj, cpg
-        const mimeTypes = ['application/zip', 'application/zip-compressed', 'application/x-zip-compressed']
+        const mimeTypes = ['application/zip', 'application/zip-compressed', 'application/x-zip-compressed'];
         if (mimeTypes.includes(file.type)) {
             const projections = ConfigUtils.getConfigProp("projections") || [];
             if (projections) {
