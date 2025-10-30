@@ -410,11 +410,17 @@ class ImportLayer extends React.Component {
     };
     addSHPLayer = async(file) => {
         const {_BrowserFileSystem, load} = await import('@loaders.gl/core');
+        const {Proj4Projection} = await import('@math.gl/proj4');
         const {ShapefileLoader} = await import('@loaders.gl/shapefile');
         const {ZipLoader} = await import('@loaders.gl/zip');
 
         // Import SHP layer from ZIP. Zip must contain all the required files : shp, dbf, shx, prj, cpg
-        if (file.type === "application/zip") {
+        const mimeTypes = ['application/zip', 'application/zip-compressed', 'application/x-zip-compressed'];
+        if (mimeTypes.includes(file.type)) {
+            const projections = ConfigUtils.getConfigProp("projections") || [];
+            if (projections) {
+                Proj4Projection.defineProjectionAliases(projections);
+            }
             const fileMap = await load(file, ZipLoader);
             const EXTENSIONS = ['shp', 'shx', 'dbf', 'cpg', 'prj'];
             const files = {};
