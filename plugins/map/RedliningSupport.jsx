@@ -237,7 +237,7 @@ class RedliningSupport extends React.Component {
                 areaUnit: this.props.redlining.areaUnit
             };
             MeasureUtils.updateFeatureMeasurements(feature, feature.get('shape'), this.props.mapCrs, settings);
-        } else {
+        } else if (feature.get('measurements')) {
             feature.set('measurements', undefined);
             feature.set('segment_labels', undefined);
             feature.set('label', '');
