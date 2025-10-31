@@ -225,7 +225,7 @@ export default class EditTool3D extends React.Component {
             ),
             this.state.selectCount === 0 ? (
                 <div className="redlining-message" key="CtrlHint">
-                    {LocaleUtils.tr("draw3d.ctrlhint")}
+                    {LocaleUtils.tr("redlining.ctrlhint")}
                 </div>
             ) : null,
             this.state.selectCount === 1 ? (

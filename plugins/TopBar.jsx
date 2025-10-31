@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import classnames from 'classnames';
+import {remove as removeDiacritics} from 'diacritics';
 import PropTypes from 'prop-types';
 
 import {toggleFullscreen} from '../actions/display';
@@ -17,6 +18,7 @@ import {openExternalUrl, setTopbarHeight} from '../actions/windows';
 import {Swipeable} from '../components/Swipeable';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import {registerSearchProvider, SearchResultType, unregisterSearchProvider} from '../utils/SearchProviders';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/TopBar.css';
@@ -52,6 +54,8 @@ class TopBar extends React.Component {
         /** The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. */
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
+        /** Whether to register a search provider which allows searching menu tasks through the global search field. */
+        registerTaskSearchProvider: PropTypes.bool,
         /** Options passed down to the search component. */
         searchOptions: PropTypes.shape({
             /** Whether to show the search filter widget. */
@@ -112,6 +116,17 @@ class TopBar extends React.Component {
             allowedToolbarItems: ThemeUtils.allowedItems(this.props.toolbarItems, this.props.currentTheme),
             allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems, this.props.currentTheme)
         });
+        if (this.props.registerTaskSearchProvider) {
+            registerSearchProvider("tasksearch", {
+                label: LocaleUtils.tr("search.tasks"),
+                onSearch: this.searchTasks
+            });
+        }
+    }
+    componentWillUnmount() {
+        if (this.props.registerTaskSearchProvider) {
+            unregisterSearchProvider("tasksearch");
+        }
     }
     componentDidUpdate(prevProps) {
         if (this.props.currentTheme !== prevProps.currentTheme) {
@@ -125,7 +140,7 @@ class TopBar extends React.Component {
         let logo;
         const assetsPath = ConfigUtils.getAssetsPath();
         const isMobile = ConfigUtils.isMobile();
-        if (isMobile || this.props.appMenuCompact) {
+        if (isMobile) {
             logo = assetsPath + "/img/logo-mobile." + this.props.logoFormat;
         } else {
             logo = assetsPath + "/img/logo."  + this.props.logoFormat;
@@ -203,6 +218,37 @@ class TopBar extends React.Component {
         if (el) {
             this.props.setTopbarHeight(el.clientHeight);
         }
+    };
+    searchTasks = (text, searchParams, callback) => {
+        const filter = new RegExp(removeDiacritics(text).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i");
+        const results = [];
+        this.searchTaskGroup(results, filter, this.state.allowedMenuItems);
+        if (results.length > 0) {
+            callback({results: [{
+                id: "tasks",
+                title: LocaleUtils.tr("search.tasks"),
+                type: SearchResultType.TASK,
+                items: results
+            }]});
+        } else {
+            callback({results: []});
+        }
+    };
+    searchTaskGroup = (results, filter, group) => {
+        group.forEach(item => {
+            if (item.subitems) {
+                this.searchTaskGroup(results, filter, item.subitems);
+            } else {
+                const label = item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key + (item.mode || ""));
+                if (removeDiacritics(label).match(filter)) {
+                    results.push({
+                        id: "tasks:" + results.length,
+                        text: label,
+                        task: item
+                    });
+                }
+            }
+        });
     };
 }
 

@@ -204,14 +204,20 @@ class Map extends React.Component {
     }
     renderLayers = () => {
         let zIndex = 0;
+        const usedKeys = new Set();
         return this.state.renderLayers.map(layer => {
             if (layer.type === "placeholder") {
                 return null;
             }
             ++zIndex;
             const swipe = this.props.swipe !== null && layer === this.state.swipeLayer;
+            let key = layer.id;
+            for (let i = 0; usedKeys.has(key); ++i) {
+                key = layer.id + ":" + i;
+            }
+            usedKeys.add(key);
             return (
-                <OlLayer key={layer.id} options={layer} swipe={swipe ? this.props.swipe : null} zIndex={layer.zIndex ?? zIndex} />
+                <OlLayer key={key} options={layer} swipe={swipe ? this.props.swipe : null} zIndex={layer.zIndex ?? zIndex} />
             );
         });
     };

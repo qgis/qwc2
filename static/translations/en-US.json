@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Unable to find the background \"{0}\", displaying the default background.",
+      "missingdefaulttheme": "Unable to load the default theme.",
       "missinglayers": "Unable to find the following layers: {0}.",
       "missingpermalink": "The specified permalink or bookmark is invalid or expired.",
       "missingprojection": "Unable to load the theme \"{0}\": the projection {1} is not defined.",
@@ -23,6 +24,7 @@
         "MapExport3D": "Export Map",
         "MapFilter": "Map Filter",
         "MapLight3D": "Light and Shadows",
+        "ObjectList": "Object list",
         "Print": "Print",
         "Reports": "Reports",
         "Settings": "Settings",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "Clone",
       "cone": "Cone",
-      "ctrlhint": "Use Ctrl for multiselection...",
       "cuboid": "Cuboid",
       "cylinder": "Cylinder",
       "delete": "Delete",
@@ -191,6 +192,12 @@
       "takepicture": "Take picture",
       "unsavedchanged": "There are unsaved changes. Do you want to leave the page anyway?"
     },
+    "featureattributes": {
+      "name": "Name",
+      "nofeatureormultiple": "No or multiple active features",
+      "value": "Value",
+      "windowtitle": "Feature attributes"
+    },
     "featureform": {
       "feature": "Feature",
       "noresults": "No results",
@@ -243,16 +250,19 @@
     "identify": {
       "aggregatedreport": "Aggregated report",
       "clipboard": "Copy to clipboard",
+      "compare": "Compare selected objects",
+      "comparing": "Comparing {0} features",
       "download": "Download",
       "export": "Export",
       "featureReport": "Feature report",
-      "featurecount": "Feature count",
+      "featurecount": "{0} feature(s)",
       "layerall": "All layers",
       "link": "Link",
       "noattributes": "No attributes",
       "noresults": "No information available for the selected point",
       "querying": "Querying...",
       "reportfail": "Failed to generate report",
+      "results": "Results",
       "selectreport": "Select report..",
       "title": "Feature Info"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Position: locating...",
         "PERMISSION_DENIED": "Position: permission denied"
       }
+    },
+    "locationrecorder": {
+      "record": "Record location",
+      "stop": "Stop recording"
     },
     "map": {
       "loading": "Loading...",
@@ -433,7 +447,7 @@
       "angle": "Angle",
       "featureunsupported": "Numeric input unavailable for this geometry",
       "height": "Height",
-      "nofeature": "No active feature",
+      "nofeatureormultiple": "",
       "side": "Side",
       "width": "Width",
       "windowtitle": "Numeric input"
@@ -478,7 +492,7 @@
       "loading": "Loading form..."
     },
     "redlining": {
-      "border": "Border",
+      "attributes": "Feature attributes",
       "buffer": "Buffer",
       "buffercompute": "Compute",
       "bufferdistance": "Distance",
@@ -486,6 +500,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Select a feature to buffer...",
       "circle": "Circle",
+      "ctrlhint": "Use Ctrl for multiselection...",
       "delete": "Delete",
       "draw": "Draw",
       "edit": "Edit",
@@ -506,8 +521,7 @@
       "size": "Size",
       "square": "Square",
       "text": "Text",
-      "transform": "Transform",
-      "width": "Width"
+      "transform": "Transform"
     },
     "reports": {
       "all": "All",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Add point",
+      "addlayer": "Export as layer",
       "addviapoint": "Via here",
       "arriveat": "Arrive at",
       "clear": "Clear",
@@ -577,6 +592,7 @@
       "providerselection": "Search providers",
       "recent": "Recent searches",
       "search": "Search",
+      "tasks": "Menu tasks",
       "themelayers": "Theme layers",
       "themes": "Themes",
       "unknownmore": "More results"

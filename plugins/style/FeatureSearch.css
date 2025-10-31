@@ -35,8 +35,13 @@ form.feature-search-form > fieldset table {
     width: 100%;
 }
 
+form.feature-search-form > fieldset td:first-child {
+    width: 1%;
+}
+
 form.feature-search-form > fieldset td > input,
-form.feature-search-form > fieldset td > select {
+form.feature-search-form > fieldset td > select,
+form.feature-search-form > fieldset td > div.input-container {
     width: 100%;
 }
 

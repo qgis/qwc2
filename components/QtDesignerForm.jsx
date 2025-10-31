@@ -13,7 +13,7 @@ import axios from 'axios';
 import {XMLParser} from 'fast-xml-parser';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import {parseExpression, FeatureCache, KeyValCache} from '../utils/EditingUtils';
@@ -671,7 +671,7 @@ class QtDesignerForm extends React.Component {
         return (constr.year + "-" + ("0" + constr.month).slice(-2) + "-" + ("0" + constr.day).slice(-2));
     };
     parseForm = (data) => {
-        const loadingReqId = uuidv1();
+        const loadingReqId = uuidv4();
         this.setState({loading: true, loadingReqId: loadingReqId}, () => {
             const parserOpts = {
                 isArray: () => false,

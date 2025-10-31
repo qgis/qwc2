@@ -10,8 +10,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
+import ol from 'openlayers';
+import pointInPolygon from 'point-in-polygon';
+import polygonIntersectTest from 'polygon-intersect-test';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, clearLayer} from '../actions/layers';
 import IdentifyUtils from '../utils/IdentifyUtils';
@@ -48,6 +51,8 @@ class PickFeature extends React.Component {
             url: PropTypes.string,
             name: PropTypes.string
         }),
+        /** Optional: Filter function to restrict pick layers */
+        layerFilterFunc: PropTypes.func,
         layers: PropTypes.array,
         map: PropTypes.object,
         /** Pick geometry type: Point, Polygon, ... (default: Point) */
@@ -74,27 +79,39 @@ class PickFeature extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.pickGeom && this.state.pickGeom !== prevState.pickGeom) {
-            let queryLayers = [];
+            let queryWmsLayers = [];
+            let queryVectorLayers = [];
             if (this.props.layerFilter) {
-                queryLayers = [this.props.layers.find((l) => l.url === this.props.layerFilter.url)].filter(Boolean);
+                queryWmsLayers = [this.props.layers.find((l) => l.url === this.props.layerFilter.url)].filter(Boolean);
             } else {
-                queryLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+                queryWmsLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+                queryVectorLayers = this.props.layers.filter(layer => {
+                    return layer.visibility && LayerRole.USERLAYER && (layer.type === 'vector' || layer.type === 'wfs');
+                });
             }
-            if (!isEmpty(queryLayers)) {
-                this.setState(state => {
-                    const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
-                    const coordinates = this.props.pickGeomType === "Point" ? [[state.pickGeom.coordinates]] : state.pickGeom.coordinates;
-                    let maxX = coordinates[0][0][0];
-                    let maxY = coordinates[0][0][1];
-                    for (let i = 1; i < coordinates[0].length; ++i) {
-                        if (coordinates[0][i][0] > maxX) {
-                            maxX = coordinates[0][i][0];
-                            maxY = coordinates[0][i][1];
-                        }
+            if (this.props.layerFilterFunc) {
+                queryWmsLayers = queryWmsLayers.filter(this.props.layerFilterFunc);
+                queryVectorLayers = queryVectorLayers.filter(this.props.layerFilterFunc);
+            }
+
+            if (isEmpty(queryWmsLayers) && isEmpty(queryVectorLayers)) {
+                return;
+            }
+            this.setState(state => {
+                const coordinates = this.props.pickGeomType === "Point" ? [[state.pickGeom.coordinates]] : state.pickGeom.coordinates;
+                let maxX = coordinates[0][0][0];
+                let maxY = coordinates[0][0][1];
+                for (let i = 1; i < coordinates[0].length; ++i) {
+                    if (coordinates[0][i][0] > maxX) {
+                        maxX = coordinates[0][i][0];
+                        maxY = coordinates[0][i][1];
                     }
-                    const clickPos = getPixelFromCoordinate([maxX, maxY], false);
-                    const reqId = uuidv1();
-                    queryLayers.forEach(layer => {
+                }
+                const reqId = uuidv4();
+                const getPixelFromCoordinate = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK);
+                const clickPos = getPixelFromCoordinate([maxX, maxY], false);
+                if (!isEmpty(queryWmsLayers)) {
+                    queryWmsLayers.forEach(layer => {
                         let request = null;
                         if (this.props.pickGeomType === 'Point') {
                             request = IdentifyUtils.buildRequest(layer, this.props.layerFilter?.name || layer.queryLayers.join(","), state.pickGeom.coordinates, this.props.map);
@@ -106,9 +123,50 @@ class PickFeature extends React.Component {
                         }
                         IdentifyUtils.sendRequest(request, (response) => this.handleIdentifyResponse(response, reqId, layer, request.params.info_format));
                     });
-                    return {pickResults: {}, clickPos: clickPos, pendingQueries: queryLayers.length, reqId: reqId};
-                });
-            }
+                }
+                const pickResults = {};
+                if (!isEmpty(queryVectorLayers)) {
+                    const olMap = MapUtils.getHook(MapUtils.GET_MAP);
+                    const layerMap = queryVectorLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
+                    const format = new ol.format.GeoJSON();
+                    if (this.props.pickGeomType === 'Point') {
+                        olMap.forEachFeatureAtPixel(clickPos, (feature, layer) => {
+                            const layerid = layer?.get?.('id');
+                            if (layerid in layerMap) {
+                                const featureObj = format.writeFeatureObject(feature);
+                                const layername = layerMap[layerid].name;
+                                pickResults[layername] = pickResults[layername] || [];
+                                pickResults[layername].push(featureObj);
+                            }
+                        });
+                    } else if (this.props.pickGeomType === 'Polygon') {
+                        const extent = ol.extent.boundingExtent(coordinates[0]);
+                        olMap.getLayers().forEach(layer => {
+                            if (!(layer.get('id') in layerMap)) {
+                                return;
+                            }
+                            layer.getSource().forEachFeatureIntersectingExtent(extent, (feature) => {
+                                let intersects = false;
+                                if (feature.getGeometry().getType() === "Point") {
+                                    intersects = pointInPolygon(feature.getGeometry().getCoordinates(), coordinates[0]);
+                                } else if (feature.getGeometry().getType() === "LineString") {
+                                    intersects = true; // TODO
+                                } else if (feature.getGeometry().getType() === "Polygon") {
+                                    intersects = polygonIntersectTest(feature.getGeometry().getCoordinates()[0], coordinates[0]);
+                                }
+                                if (!intersects) {
+                                    return;
+                                }
+                                const featureObj = format.writeFeatureObject(feature);
+                                const layername = layerMap[layer.get('id')].name;
+                                pickResults[layername] = pickResults[layername] || [];
+                                pickResults[layername].push(featureObj);
+                            });
+                        });
+                    }
+                }
+                return {pickResults: pickResults, clickPos: clickPos, pendingQueries: queryWmsLayers.length, reqId: reqId};
+            });
         }
     }
     handleIdentifyResponse = (response, reqId, layer, infoFormat) => {
@@ -165,7 +223,7 @@ class PickFeature extends React.Component {
                                 onMouseOut={() => this.clearHighlight(layername, feature)}
                                 onMouseOver={() => this.highlightFeature(layername, feature)}
                             >
-                                {layername + ": " + feature.displayname}
+                                {layername + ": " + (feature.displayname ?? feature.id)}
                             </div>
                         )))
                     ) : (

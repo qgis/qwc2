@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
@@ -287,7 +287,7 @@ class ValueTool extends React.Component {
             with_geometry: false,
             with_htmlcontent: false
         };
-        const reqId = uuidv1();
+        const reqId = uuidv4();
         this.reqId = reqId;
         const newValues = {};
         this.props.layers.forEach(layer => {

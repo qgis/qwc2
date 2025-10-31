@@ -24,7 +24,8 @@ export const SearchResultType = {
     PLACE: 0,
     THEMELAYER: 1,
     THEME: 2,
-    EXTERNALLAYER: 3
+    EXTERNALLAYER: 3,
+    TASK: 4
 };
 
 function coordinatesSearch(text, searchParams, callback) {
@@ -460,7 +461,6 @@ export class FulltextSearch {
     }
 }
 
-
 /** ************************************************************************ **/
 
 const SearchProviders = {
@@ -489,9 +489,19 @@ const SearchProviders = {
     }
 };
 
-export default SearchProviders;
-
 /** ************************************************************************ **/
+
+const addedSearchProviders = new Set();
+
+export function registerSearchProvider(key, config) {
+    SearchProviders[key] = config;
+    addedSearchProviders.add(key);
+}
+
+export function unregisterSearchProvider(key) {
+    delete SearchProviders[key];
+    addedSearchProviders.delete(key);
+}
 
 // Uniformize the response of getResultGeometry
 function getResultGeometry(provider, item, callback) {
@@ -546,7 +556,8 @@ export function collectSearchProviders(theme, layers, mapScale = null) {
     const availableProviders = {};
     const themeLayerNames = layers.map(layer => layer.role === LayerRole.THEME ? layer.params.LAYERS : "").join(",").split(",").filter(entry => entry);
     const providerKeys = new Set();
-    for (let entry of theme?.searchProviders || []) {
+    const enabledProviders = [...(theme?.searchProviders || []), ...addedSearchProviders];
+    for (let entry of enabledProviders) {
         if (typeof entry === 'string') {
             entry = {provider: entry};
         }

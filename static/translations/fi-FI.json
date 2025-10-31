@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "",
+      "missingdefaulttheme": "",
       "missinglayers": "",
       "missingpermalink": "",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Tulosta",
         "Reports": "",
         "Settings": "",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "Take picture",
       "unsavedchanged": ""
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "",
       "noresults": "",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Vienti",
       "featureReport": "Ominaisuustietoraportti",
@@ -253,6 +262,7 @@
       "noresults": "Valitulla pisteellä ei ole informaatiota",
       "querying": "Kysely käynnissä...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Ominaisuustiedot"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Paikka: sijainti...",
         "PERMISSION_DENIED": "Paikka: pääsy estetty"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Lataa...",
@@ -433,7 +447,7 @@
       "angle": "",
       "featureunsupported": "",
       "height": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "side": "",
       "width": "",
       "windowtitle": ""
@@ -478,7 +492,7 @@
       "loading": ""
     },
     "redlining": {
-      "border": "Reunat",
+      "attributes": "",
       "buffer": "Bufferi",
       "buffercompute": "Laske",
       "bufferdistance": "Etäisyys",
@@ -486,6 +500,7 @@
       "bufferlayername": "Bufferi",
       "bufferselectfeature": "Valitse bufferin ominaisuus...",
       "circle": "Ympyrä",
+      "ctrlhint": "",
       "delete": "Poista",
       "draw": "Piirrä",
       "edit": "Editoi",
@@ -506,8 +521,7 @@
       "size": "Koko",
       "square": "",
       "text": "Teksti",
-      "transform": "",
-      "width": "Leveys"
+      "transform": ""
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "",
+      "addlayer": "",
       "addviapoint": "",
       "arriveat": "",
       "clear": "",
@@ -577,6 +592,7 @@
       "providerselection": "",
       "recent": "Viimeisimmät haut",
       "search": "Etsi",
+      "tasks": "",
       "themelayers": "",
       "themes": "Teemat",
       "unknownmore": ""

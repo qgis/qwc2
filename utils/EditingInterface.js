@@ -47,6 +47,13 @@ const EditingInterface = {
         }
         return message;
     },
+    replacer(mapCrs) {
+        if (mapCrs === "EPSG:4326") {
+            return (key, val) => val.toFixed ? Number(val.toFixed(5)) : val;
+        } else {
+            return (key, val) => val.toFixed ? Number(val.toFixed(2)) : val;
+        }
+    },
     /**
      * Gets features at the specified map position.
      *
@@ -71,7 +78,7 @@ const EditingInterface = {
             bbox: bbox,
             crs: mapCrs,
             filter: filter ? JSON.stringify(filter) : undefined,
-            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined
+            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}, this.replacer(mapCrs)) : undefined
         };
         const headers = {
             "Accept-Language": LocaleUtils.lang()
@@ -127,15 +134,17 @@ const EditingInterface = {
      * @param callback Callback invoked with the picked features, taking `{features: [...]}` on success and `null` on failure
      * @param filter An optional feature attribute filter expression
      * @param filterGeom An optional filter geometry
+     * @param fields An optional list of fields to query, if unspecified all fields are queried
      */
-    getFeatures(editConfig, mapCrs, callback, bbox = null, filter = null, filterGeom = null) {
+    getFeatures(editConfig, mapCrs, callback, bbox = null, filter = null, filterGeom = null, fields = null) {
         const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl").replace(/\/$/, '');
         const requestUrl = editServiceUrl + '/' + editConfig.editDataset + '/';
         const params = {
             crs: mapCrs,
             bbox: bbox ? bbox.join(",") : undefined,
-            filter: filter ? JSON.stringify(filter) : undefined,
-            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined
+            filter: filter ? JSON.stringify(filter, this.replacer(mapCrs)) : undefined,
+            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}, this.replacer(mapCrs)) : undefined,
+            fields: fields ? fields.join(",") : undefined
         };
         const headers = {
             "Accept-Language": LocaleUtils.lang()
@@ -170,7 +179,7 @@ const EditingInterface = {
         const params = {
             crs: mapCrs,
             filter: filter ? JSON.stringify(filter) : undefined,
-            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}) : undefined
+            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}, this.replacer(mapCrs)) : undefined
         };
         const headers = {
             "Accept-Language": LocaleUtils.lang()

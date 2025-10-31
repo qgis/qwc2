@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "背景が見付かりません \"{0}\", デフォルトの背景を表示します。",
+      "missingdefaulttheme": "",
       "missinglayers": "以下のレイヤが見付かりません: {0}。",
       "missingpermalink": "指定された永続リンクは無効または期限切れです。",
       "missingprojection": "テーマをロード出来ません \"{0}\": 投影法 {1} は定義されていません。",
@@ -23,6 +24,7 @@
         "MapExport3D": "地図をエクスポート",
         "MapFilter": "マップ・フィルタ",
         "MapLight3D": "光と影",
+        "ObjectList": "",
         "Print": "印刷",
         "Reports": "レポート",
         "Settings": "設定",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "クローン",
       "cone": "円錐",
-      "ctrlhint": "Ctrl を使うと複数選択できます",
       "cuboid": "直方体",
       "cylinder": "円柱",
       "delete": "削除",
@@ -191,6 +192,12 @@
       "takepicture": "撮影する",
       "unsavedchanged": "保存されていない変更があります。それでもこのページを離れますか?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "地物",
       "noresults": "検索結果無し",
@@ -243,16 +250,19 @@
     "identify": {
       "aggregatedreport": "集合レポート",
       "clipboard": "クリップボードにコピー",
+      "compare": "",
+      "comparing": "",
       "download": "ダウンロード",
       "export": "エクスポート",
       "featureReport": "地物レポート",
-      "featurecount": "地物数",
+      "featurecount": "",
       "layerall": "全てのレイヤ",
       "link": "リンク",
       "noattributes": "属性無し",
       "noresults": "選択された点には情報がありません",
       "querying": "検索中...",
       "reportfail": "レポートを生成することが出来ませんでした",
+      "results": "",
       "selectreport": "レポートを選択...",
       "title": "地物情報"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "位置情報: 取得中...",
         "PERMISSION_DENIED": "位置情報: 許可無し"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "ロード中...",
@@ -433,7 +447,7 @@
       "angle": "角度",
       "featureunsupported": "このジオメトリに対しては数値入力は使用できません",
       "height": "高さ",
-      "nofeature": "アクティブな地物がありません",
+      "nofeatureormultiple": "",
       "side": "サイド",
       "width": "幅",
       "windowtitle": "数値入力"
@@ -478,7 +492,7 @@
       "loading": "フォームをロード中..."
     },
     "redlining": {
-      "border": "境界線",
+      "attributes": "",
       "buffer": "バッファ",
       "buffercompute": "計算",
       "bufferdistance": "距離",
@@ -486,6 +500,7 @@
       "bufferlayername": "バッファ",
       "bufferselectfeature": "バッファを適用する地物を選択...",
       "circle": "円",
+      "ctrlhint": "",
       "delete": "削除",
       "draw": "作図",
       "edit": "編集",
@@ -506,8 +521,7 @@
       "size": "サイズ",
       "square": "四角形",
       "text": "テキスト",
-      "transform": "変形",
-      "width": "幅"
+      "transform": "変形"
     },
     "reports": {
       "all": "全て",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "点を追加",
+      "addlayer": "",
       "addviapoint": "ここを経由",
       "arriveat": "目的地点",
       "clear": "クリア",
@@ -577,6 +592,7 @@
       "providerselection": "検索プロバイダ",
       "recent": "最近の検索",
       "search": "検索",
+      "tasks": "",
       "themelayers": "テーマのレイヤ",
       "themes": "テーマ",
       "unknownmore": "更なる結果"

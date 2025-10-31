@@ -55,12 +55,14 @@ class WindowManager extends React.Component {
         if (this.boolVal(data.options.print, true) !== false) {
             extraControls.push({icon: "print", callback: () => this.printIframe(key)});
         }
+        const detachable = this.boolVal(data.options.detachable, true) !== false;
         const dockable = ["left", "right", "top", "bottom"].includes(data.options.dockable) ? data.options.dockable : this.boolVal(data.options.dockable);
         const docked = this.boolVal(data.options.docked) !== false;
         const splitScreenWhenDocked = this.boolVal(data.options.splitScreenWhenDocked) !== false;
         return (
             <ResizeableWindow
                 baseZIndex={data.options.zIndex || 10}
+                detachable={detachable}
                 dockable={dockable || docked}
                 extraControls={extraControls} icon={data.options.icon || ""}
                 initialHeight={data.options.h || 480}
@@ -98,13 +100,13 @@ class WindowManager extends React.Component {
             window.frames[key].print();
         }
     };
-    boolVal = (value, delft = false) => {
+    boolVal = (value, deflt = false) => {
         if (value === undefined || value === null) {
-            return delft;
+            return deflt;
         }
         const textVal = ("" + value).toLowerCase();
         if (textVal === "") {
-            return delft;
+            return deflt;
         }
         return ["0", "false"].includes(textVal) ? false : true;
     };

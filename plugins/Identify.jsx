@@ -54,11 +54,9 @@ class Identify extends React.Component {
         currentTask: PropTypes.string,
         /** Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         customExporters: PropTypes.array,
-        /** Whether to display a tree overview of results (as opposed to a flat list of results). */
-        displayResultTree: PropTypes.bool,
         /** Whether to enable the aggregated report download button. */
         enableAggregatedReports: PropTypes.bool,
-        /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`) */
+        /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. */
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         enabled: PropTypes.bool,
         /** Whether to clear the task when the results window is closed. */
@@ -90,6 +88,8 @@ class Identify extends React.Component {
         removeMarker: PropTypes.func,
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
+        /** Result display mode, one of `tree`, `flat`, `paginated`. */
+        resultDisplayMode: PropTypes.string,
         selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
         /** Whether to show a layer selector to filter the identify results by layer. */
@@ -104,7 +104,7 @@ class Identify extends React.Component {
         clearResultsOnClose: true,
         customExporters: [],
         longAttributesDisplay: 'ellipsis',
-        displayResultTree: true,
+        resultDisplayMode: 'flat',
         replaceImageUrls: true,
         featureInfoReturnsLayerName: true,
         geometry: {
@@ -179,7 +179,7 @@ class Identify extends React.Component {
                     IdentifyUtils.sendRequest(request, (response) => {
                         this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
                         if (response) {
-                            this.parseResult(response, l, request.params.info_format, clickPoint);
+                            this.parseResult(response, l, request.params.info_format, clickPoint, this.props.click.modifiers.ctrl);
                         }
                     });
                 });
@@ -284,7 +284,7 @@ class Identify extends React.Component {
     changeBufferUnit = (ev) => {
         this.setState({ radiusUnits: ev.target.value });
     };
-    parseResult = (response, layer, format, clickPoint) => {
+    parseResult = (response, layer, format, clickPoint, ctrlPick = false) => {
         const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection, this.props.featureInfoReturnsLayerName);
         // Merge with previous
         this.setState((state) => {
@@ -292,8 +292,11 @@ class Identify extends React.Component {
             Object.entries(newResults).forEach(([layername, features]) => {
                 const key = layer.url + "#" + layername;
                 identifyResults[key] = features.reduce((result, feature) => {
-                    if (result.find(f => f.id === feature.id) === undefined) {
+                    const idx = result.findIndex(f => f.id === feature.id);
+                    if (idx === -1) {
                         result.push(feature);
+                    } else if (ctrlPick === true) {
+                        result.splice(idx, 1);
                     }
                     return result;
                 }, identifyResults[key] || []);
@@ -382,8 +385,8 @@ class Identify extends React.Component {
                         attributeCalculator={this.props.attributeCalculator}
                         attributeTransform={this.props.attributeTransform}
                         customExporters={this.props.customExporters}
-                        displayResultTree={this.props.displayResultTree}
                         enableAggregatedReports={this.props.enableAggregatedReports}
+                        enableCompare
                         enableExport={this.props.enableExport}
                         exportGeometry={this.props.exportGeometry}
                         highlightAllResults={this.props.highlightAllResults}
@@ -391,6 +394,7 @@ class Identify extends React.Component {
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
+                        resultDisplayMode={this.props.resultDisplayMode}
                         role="body"
                         showLayerSelector={this.props.showLayerSelector}
                     />

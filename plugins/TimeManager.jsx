@@ -18,7 +18,7 @@ import isEqual from 'lodash.isequal';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {createSelector} from 'reselect';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {setLayerDimensions, addLayerFeatures, refreshLayer, removeLayer, LayerRole} from '../actions/layers';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
@@ -656,7 +656,7 @@ class TimeManager extends React.Component {
             ]]
         });
         let pending = 0;
-        const reqUUID = uuidv1();
+        const reqUUID = uuidv4();
         timeData.layers.forEach(layer => {
             const sublayerattrs = timeData.attributes[layer.id];
             const queryLayers = Object.keys(sublayerattrs).join(",");

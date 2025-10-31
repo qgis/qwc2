@@ -16,13 +16,22 @@ const defaultState = {
     area: 0,
     bearing: 0,
     lenUnit: 'metric',
-    areaUnit: 'metric'
+    areaUnit: 'metric',
+    bearingHeadMarker: null,
+    bearingTailMarker: null,
+    lineHeadMarker: null,
+    lineTailMarker: null
 };
 
 export default function measurement(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_MEASUREMENT_STATE: {
-        return {lenUnit: state.lenUnit, areaUnit: state.areaUnit, ...action.data};
+        return {
+            lenUnit: state.lenUnit, areaUnit: state.areaUnit,
+            bearingHeadMarker: state.bearingHeadMarker, bearingTailMarker: state.bearingTailMarker,
+            lineHeadMarker: state.lineHeadMarker, lineTailMarker: state.lineTailMarker,
+            ...action.data
+        };
     }
     default:
         return state;

@@ -31,7 +31,8 @@ class OlLayer extends React.Component {
         refreshLayer: PropTypes.func,
         setLayerLoading: PropTypes.func,
         swipe: PropTypes.number,
-        zIndex: PropTypes.number
+        zIndex: PropTypes.number,
+        zoomToExtent: PropTypes.func
     };
     constructor(props) {
         super(props);

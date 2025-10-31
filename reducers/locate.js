@@ -11,7 +11,8 @@ import {CHANGE_LOCATE_STATE, CHANGE_LOCATE_POSITION, LOCATE_ERROR} from '../acti
 
 const defaultState = {
     state: "DISABLED",
-    position: null
+    position: null,
+    mapPos: null
 };
 
 export default function locate(state = defaultState, action) {
@@ -20,7 +21,7 @@ export default function locate(state = defaultState, action) {
         return {...state, state: action.state};
     }
     case CHANGE_LOCATE_POSITION: {
-        return {...state, position: action.position};
+        return {...state, position: action.position, mapPos: action.mapPos};
     }
     case LOCATE_ERROR: {
         return {...state, error: action.error};

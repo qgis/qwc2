@@ -26,13 +26,14 @@ import {
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {addMarker, removeMarker} from '../actions/layers';
 import {changeMeasurementState} from '../actions/measurement';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {getElevationInterface} from '../utils/ElevationInterface';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -78,6 +79,8 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
     componentDidMount() {
         const templatePath = MiscUtils.resolveAssetsPath(this.props.templatePath);
         this.externalWindow = window.open(templatePath, LocaleUtils.tr("heightprofile.title"), "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes");
+        // Inherit API
+        this.externalWindow.qwc2 = window.qwc2;
         this.externalWindow.addEventListener('load', this.setWindowContent, false);
         this.externalWindow.addEventListener('resize', this.windowResized, false);
         window.addEventListener('beforeunload', this.closePrintWindow);
@@ -126,6 +129,20 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             type: 'vector',
             opacity: 255,
             features: [
+                ...measurement.coordinates.map(coord => ({
+                    type: 'Feature',
+                    geometry: {
+                        coordinates: coord,
+                        type: 'Point'
+                    },
+                    styleOptions: {
+                        fillColor: [255, 255, 255, 1],
+                        strokeColor: [255, 0, 0, 1],
+                        strokeWidth: 2,
+                        circleRadius: 6,
+                        strokeDash: []
+                    }
+                })),
                 {
                     type: 'Feature',
                     geometry: {
@@ -134,7 +151,10 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
                     },
                     styleOptions: {
                         strokeColor: [255, 0, 0, 1],
-                        strokeWidth: 4
+                        strokeWidth: 4,
+                        strokeDash: [],
+                        headmarker: this.props.measurement.lineHeadMarker,
+                        tailmarker: this.props.measurement.lineTailMarker
                     },
                     properties: {
                         segment_labels: measurement.segment_lengths.map(length => MeasureUtils.formatMeasurement(length, false, measurement.lenUnit))
@@ -145,7 +165,11 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
         const mapCrs = this.props.map.projection;
         const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
         const exportParams = LayerUtils.collectPrintParams(this.props.layers, this.props.theme, scale, mapCrs, true, false);
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams([layer], mapCrs);
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams([layer], mapCrs, scale);
+        let bounds = [...this.props.map.bbox.bounds];
+        if (CoordinatesUtils.getAxisOrder(this.props.map.projection).substr(0, 2) === 'ne') {
+            bounds = [bounds[1], bounds[0], bounds[3], bounds[2]];
+        }
         const imageParams = {
             SERVICE: 'WMS',
             VERSION: '1.3.0',
@@ -153,7 +177,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             TRANSPARENT: 'true',
             TILED: 'false',
             CRS: this.props.map.projection,
-            BBOX: this.props.map.bbox.bounds,
+            BBOX: bounds,
             WIDTH: this.props.map.size.width,
             HEIGHT: this.props.map.size.height,
             HIGHLIGHT_GEOM: highlightParams.geoms.join(";"),
@@ -267,7 +291,7 @@ class HeightProfile extends React.Component {
         }
     }
     queryElevations(coordinates, distances, projection) {
-        const reqId = uuidv1();
+        const reqId = uuidv4();
         this.setState({reqId: reqId});
         const totLength = this.props.measurement.length;
         getElevationInterface().getProfile(coordinates, distances, projection, this.props.samples).then(response => {
@@ -471,7 +495,7 @@ class HeightProfile extends React.Component {
         };
 
         let datasetSelector = null;
-        if (this.state.data.length > 1) {
+        if (interactive && this.state.data.length > 1) {
             datasetSelector = (
                 <div className="height-profile-dataset-select">
                     {this.state.data.map((dataset, idx) => {

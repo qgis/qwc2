@@ -9,7 +9,7 @@ span.identify-body-message {
     padding: 0.25em;
 }
 
-div.identify-body div.identify-results-container {
+div.identify-body div.identify-results-tree {
     overflow-y: auto;
     flex: 1 1 50%;
     min-height: 0;
@@ -20,71 +20,36 @@ div.identify-body div.identify-results-container {
     font-size: small;
 }
 
-div.identify-layer-expandable {
-    position: relative;
-    margin-left: 1em;
-}
-
-div.identify-layer-expandable > div.identify-layer-entries {
-    display: none;
-}
-
-div.identify-layer-expanded > div.identify-layer-entries {
-    display: block;
-}
-
-div.identify-layer-expandable:before {
-    content: "";
-    border-color: transparent var(--text-color);
-    border-width: 0.35em 0 0.35em 0.45em;
-    border-style: solid;
-    display: block;
-    height: 0;
-    width: 0;
-    left: -1em;
-    top: 0.3em;
-    position: absolute;
-}
-
-div.identify-layer-expanded:before {
-    border-color: var(--text-color) transparent;
-    border-width: 0.45em 0.35em 0 0.35em;
-    top: 0.4em;
-}
-
-div.identify-layer-entries {
-    padding: 0.25em 0.25em 0.25em 1em;
-}
-
-div.identify-result-entry {
+div.identify-results-tree-entry {
     display: flex;
 }
 
-div.identify-result-entry span.clickable {
+div.identify-results-tree-entry > span:first-child {
+    display: flex;
+    align-items: center;
     cursor: pointer;
-}
-
-div.identify-result-entry span.active {
-    font-weight: bold;
-}
-
-div.identify-result-entry > span:first-child {
     flex: 1 1 auto;
 }
 
-div.identify-result-entry span.identify-remove-result,
-div.identify-result-entry span.identify-export-result {
+span.identify-results-tree-entry-active {
+    font-weight: bold;
+}
+
+div.identify-results-tree-entry span.identify-remove-result,
+div.identify-results-tree-entry span.identify-export-result {
     margin: 0 0.25em;
-    color: var(--border-color);
     cursor: pointer;
     visibility: hidden;
-    font-size: large;
     flex: 0 0 auto;
 }
 
-div.identify-result-entry:hover > span.identify-remove-result,
-div.identify-result-entry:hover > span.identify-export-result {
+div.identify-results-tree-entry:hover > span.identify-remove-result,
+div.identify-results-tree-entry:hover > span.identify-export-result {
     visibility: visible;
+}
+
+div.identify-results-tree-entries {
+    padding: 0.25em 0.25em 0.25em 1em;
 }
 
 div.identify-body div.identify-flat-results-list {
@@ -92,7 +57,7 @@ div.identify-body div.identify-flat-results-list {
     flex: 1 1 auto;
 }
 
-div.identify-body .identify-result-tree-frame {
+div.identify-body div.identify-result-tree-frame {
     flex: 1 1 50%;
     min-height: 0;
     display: flex;
@@ -100,18 +65,18 @@ div.identify-body .identify-result-tree-frame {
     border: 1px solid var(--border-color);
 }
 
-div.identify-body .identify-result-frame-normal {
-    margin-top: 0.25em;
+div.identify-body div.identify-result-frame {
+    margin-bottom: 0.25em;
     border: 1px solid var(--border-color);
 }
 
-div.identify-body .identify-result-frame-highlighted {
-    margin-top: 0.25em;
+div.identify-body div.identify-result-frame:hover {
     border: 1px solid var(--color-active);
 }
 
 div.identify-body .identify-result-title {
     background-color: var(--list-section-bg-color);
+    color: var(--list-section-text-color);
     padding: 0.25em;
     font-weight: bold;
     flex: 0 0 auto;
@@ -130,6 +95,10 @@ div.identify-body .identify-result-title > span.icon {
     flex: 0 0 auto;
 }
 
+span.identify-result-checkbox {
+    background-color: white;
+}
+
 div.identify-body .identify-result-title > span:not(:first-child) {
     margin-left: 0.5em;
 }
@@ -140,6 +109,17 @@ div.identify-body .identify-result-title > span.icon:hover {
 
 div.identify-body .identify-result-tree-frame > div.identify-result-container {
     overflow-y: auto;
+}
+
+div.identify-compare-results {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: auto;
+    flex: 1 1 auto;
+}
+
+div.identify-compare-results > div.identify-result-frame {
+    flex: 1 1 20em;
 }
 
 div.identify-body .identify-result-box {
@@ -195,21 +175,34 @@ div.identify-body td.identify-attr-value > a > img {
     max-width: 100%;
 }
 
-div.identify-body div.identify-buttonbox {
-    margin-top: 0.5em;
+div.identify-body div.identify-toolbar {
+    background-color: var(--container-bg-color);
+    margin-top: -0.25em;
     flex: 0 0 auto;
     display: flex;
     align-items: center;
+    position: relative;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.25em;
 }
 
-div.identify-body div.identify-selectbox {
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
+span.identify-toolbar-spacer {
+    flex: 1 1 auto;
 }
 
-select:focus {
-outline: none;
+div.identify-settings-menu {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    border: 1px solid var(--border-color);
+    background-color: var(--container-bg-color);
+    box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
+    z-index: 1;
+    padding: 0.25em;
+}
+
+div.identify-settings-menu table td > div.controlgroup {
+    width: 100%;
 }
 
 div.identify-body table.identify-attr-subtable {
@@ -223,21 +216,4 @@ div.identify-body table.identify-attr-subtable > tbody > tr:nth-child(even) {
 div.identify-body td.identify-attr-spacer {
     height: 2px;
     background-color: var(--list-section-bg-color);
-}
-
-span.identify-buttonbox-spacer {
-    flex: 1 1 auto;
-}
-
-div.identify-body div.identify-result-feature-report-frame {
-    padding: 0.25em 0.5em;
-    font-size: small;
-    display: flex;
-    align-items: center;
-}
-
-div.identify-body div.identify-result-feature-report-frame > div.spinner {
-    width: 1em;
-    height: 1em;
-    margin-left: 0.5em;
 }

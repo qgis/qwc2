@@ -9,8 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import FileSaver from 'file-saver';
-import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import {LayerRole, addLayer} from '../actions/layers';
@@ -27,8 +25,6 @@ import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import ConfigUtils from '../utils/ConfigUtils';
 import {END_MARKERS} from '../utils/FeatureStyles';
 import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
-import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Redlining.css';
 
@@ -42,26 +38,28 @@ class Redlining extends React.Component {
         /** Whether to allow labeling geometric figures. */
         allowGeometryLabels: PropTypes.bool,
         changeRedliningState: PropTypes.func,
-        /** Default area unit. Options: metric, imperial, sqm, ha, sqkm, sqft, acre, sqmi */
+        /** Default area unit. Options: `metric`, `imperial`, `sqm`, `ha`, `sqkm`, `sqft`, `acre`, `sqmi` */
         defaultAreaUnit: PropTypes.string,
-        /** Default border color. In format [r, g, b, a]. */
+        /** Default border color. In format `[r, g, b, a]`. */
         defaultBorderColor: PropTypes.array,
-        /** Default fill color. In format [r, g, b, a]. */
+        /** Default fill color. In format `[r, g, b, a]`. */
         defaultFillColor: PropTypes.array,
-        /** Default length unit. Options: metric, imperial, m, km, ft, mi */
+        /** Default length unit. Options: `metric`, `imperial`, `m`, `km`, `ft`, `mi` */
         defaultLengthUnit: PropTypes.string,
-        /** Default text fill color. In format [r, g, b, a]. */
+        /** Default text fill color. In format `[r, g, b, a]`. */
         defaultTextFillColor: PropTypes.array,
-        /** Default text outline color. In format [r, g, b, a]. */
+        /** Default text outline color. In format `[r, g, b, a]`. */
         defaultTextOutlineColor: PropTypes.array,
-        /** Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. */
+        /** Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `Export`. */
         hiddenTools: PropTypes.array,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
         plugins: PropTypes.object,
-        /** Predefined border colors. In format [[r, g, b, a], ...]. */
+        /** Predefined border colors. In format `[[r, g, b, a], ...]`. */
         predefinedBorderColors: PropTypes.arrayOf(PropTypes.array),
-        /** Predefined fill colors. In format [[r, g, b, a], ...]. */
+        /** Predefined dash patterns. In format `[<dash-array>, ...]`, where a dash-array is list of alternating dash and gap widths, i.e. `[8 4]` for long dashes followed by shorter gaps. */
+        predefinedDashPatterns: PropTypes.arrayOf(PropTypes.array),
+        /** Predefined fill colors. In format `[[r, g, b, a], ...]`. */
         predefinedFillColors: PropTypes.arrayOf(PropTypes.array),
         redlining: PropTypes.object,
         resetRedliningState: PropTypes.func,
@@ -84,7 +82,8 @@ class Redlining extends React.Component {
         defaultTextFillColor: [0, 0, 0, 1],
         defaultTextOutlineColor: [255, 255, 255, 1],
         defaultAreaUnit: 'metric',
-        defaultLengthUnit: 'metric'
+        defaultLengthUnit: 'metric',
+        predefinedDashPatterns: [[], [8, 8], [1, 8], [8, 8, 1, 8]]
     };
     state = {
         selectText: false
@@ -92,6 +91,7 @@ class Redlining extends React.Component {
     constructor(props) {
         super(props);
         this.labelInput = null;
+        this.dashIcons = {};
     }
     componentDidMount() {
         this.componentDidUpdate({redlining: {}});
@@ -117,6 +117,9 @@ class Redlining extends React.Component {
             } else if (this.props.redlining.layer !== 'redlining') {
                 this.props.changeRedliningState({layer: 'redlining', layerTitle: LocaleUtils.tr('redlining.layertitle')});
             }
+        }
+        if (this.props.predefinedDashPatterns !== prevProps.predefinedDashPatterns) {
+            this.generateDashIcons();
         }
     }
     onShow = (mode, data) => {
@@ -145,6 +148,13 @@ class Redlining extends React.Component {
             areaUnit: this.props.defaultAreaUnit
         };
     };
+    generateDashIcons = () => {
+        this.dashIcons = this.props.predefinedDashPatterns.reduce((res, pattern) => {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16"><line x1="0" y1="8" x2="32" y2="8" stroke="black" stroke-width="2" stroke-dasharray="${pattern.join(" ")}"></line></svg>`;
+            res[pattern.join(":")] = `data:image/svg+xml;base64,${btoa(svg)}`;
+            return res;
+        }, {});
+    };
     updateRedliningStyle = (diff) => {
         const newStyle = {...this.props.redlining.style, ...diff};
         this.props.changeRedliningState({style: newStyle});
@@ -155,8 +165,8 @@ class Redlining extends React.Component {
         let drawButtons = [
             {key: "Point", tooltip: LocaleUtils.tr("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
             {key: "LineString", tooltip: LocaleUtils.tr("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
-            {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
             [
+                {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
                 toolEnabled("Circle") ? {key: "Circle", tooltip: LocaleUtils.tr("redlining.circle"), icon: "circle", data: {action: "Draw", geomType: "Circle", text: ""}} : null,
                 toolEnabled("Ellipse") ? {key: "Ellipse", tooltip: LocaleUtils.tr("redlining.ellipse"), icon: "ellipse", data: {action: "Draw", geomType: "Ellipse", text: ""}} : null,
                 toolEnabled("Square") ? {key: "Square", tooltip: LocaleUtils.tr("redlining.square"), icon: "box", data: {action: "Draw", geomType: "Square", text: ""}} : null,
@@ -179,7 +189,8 @@ class Redlining extends React.Component {
             {key: "Delete", tooltip: LocaleUtils.tr("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ].filter(Boolean);
         const extraButtons = toolEnabled("NumericInput") ? [
-            {key: "NumericInput", tooltip: LocaleUtils.tr("redlining.numericinput"), icon: "numericinput"}
+            {key: "NumericInput", tooltip: LocaleUtils.tr("redlining.numericinput"), icon: "numericinput"},
+            {key: "FeatureAttributes", tooltip: LocaleUtils.tr("redlining.attributes"), icon: "list-alt"}
         ] : [];
         for (const plugin of Object.values(this.props.plugins || {})) {
             if (toolEnabled(plugin.cfg.key)) {
@@ -223,7 +234,7 @@ class Redlining extends React.Component {
                     </div>
                     <div className="redlining-groupcontrol">
                         <div>&nbsp;</div>
-                        <ButtonBar active={this.props.redlining.numericInput ? "NumericInput" : null} buttons={extraButtons} onClick={() => this.props.changeRedliningState({numericInput: !this.props.redlining.numericInput})} />
+                        <ButtonBar active={this.props.redlining.extraAction} buttons={extraButtons} onClick={(key) => this.props.changeRedliningState({extraAction: key})} />
                     </div>
                     {toolEnabled("Export") ? (
                         <div className="redlining-groupcontrol">
@@ -239,54 +250,30 @@ class Redlining extends React.Component {
             </div>
         );
     };
-    export = (type) => {
-        if (type === "geojson") {
-            const layer = this.props.layers.find(l => l.id === this.props.redlining.layer);
-            if (!layer) {
-                return;
-            }
-            const geojson = JSON.stringify({
-                type: "FeatureCollection",
-                features: layer.features.map(feature => {
-                    const newFeature = {...feature, geometry: VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || this.props.mapCrs, 'EPSG:4326')};
-                    delete newFeature.crs;
-                    return newFeature;
-                })
-            }, null, ' ');
-            FileSaver.saveAs(new Blob([geojson], {type: "text/plain;charset=utf-8"}), layer.title + ".json");
-        } else if (type === "kml") {
-            const getNativeLayer = MapUtils.getHook(MapUtils.GET_NATIVE_LAYER);
-            const layer = this.props.layers.find(l => l.id === this.props.redlining.layer);
-            const nativeLayer = getNativeLayer(this.props.redlining.layer);
-            if (!nativeLayer) {
-                return;
-            }
-            const kmlFormat = new ol.format.KML();
-            const features = nativeLayer.getSource().getFeatures().map(feature => {
-                // Circle is not supported by kml format
-                if (feature.getGeometry() instanceof ol.geom.Circle) {
-                    feature = feature.clone();
-                    feature.setGeometry(ol.geom.polygonFromCircle(feature.getGeometry()));
-                }
-                return feature;
-            });
-            const data = kmlFormat.writeFeatures(features, {featureProjection: this.props.mapCrs});
-            FileSaver.saveAs(new Blob([data], {type: "application/vnd.google-earth.kml+xml"}), layer.title + ".kml");
-        }
+    export = (format) => {
+        this.props.changeRedliningState({action: 'Export', format: format});
     };
     renderStandardControls = () => {
-        let sizeLabel = LocaleUtils.tr("redlining.size");
-        if (this.props.redlining.geomType === "LineString") {
-            sizeLabel = LocaleUtils.tr("redlining.width");
-        } else if (this.props.redlining.geomType === "Polygon") {
-            sizeLabel = LocaleUtils.tr("redlining.border");
+        let sizeLabel = LocaleUtils.tr("redlining.line");
+        let showDash = true;
+        if (["Text", "Point"].includes(this.props.redlining.geomType)) {
+            sizeLabel = LocaleUtils.tr("redlining.size");
+            showDash = false;
         }
         let labelPlaceholder = LocaleUtils.tr("redlining.label");
         if (this.props.redlining.geomType === "Text") {
             labelPlaceholder = LocaleUtils.tr("redlining.text");
         }
         if (this.props.redlining.action !== 'Draw' && !this.props.redlining.selectedFeature) {
-            return null;
+            if (this.props.redlining.action === 'Transform') {
+                return (
+                    <div className="redlining-message">
+                        {LocaleUtils.tr("redlining.ctrlhint")}
+                    </div>
+                );
+            } else {
+                return null;
+            }
         }
 
         return (
@@ -314,6 +301,18 @@ class Redlining extends React.Component {
                     <NumberInput max={99} min={1} mobile
                         onChange={(nr) => this.updateRedliningStyle({size: nr})}
                         value={this.props.redlining.style.size}/>
+                    {showDash ? (
+                        <ComboBox onChange={value => this.updateRedliningStyle({strokeDash: value.split(":").filter(Boolean).map(Number)})} value={this.props.redlining.style.strokeDash.join(":")}>
+                            {this.props.predefinedDashPatterns.map(pattern => {
+                                const value = pattern.join(":");
+                                return (
+                                    <div className="redlining-dash-combo-entry" key={value} value={value}>
+                                        <img src={this.dashIcons[value]} />
+                                    </div>
+                                );
+                            })}
+                        </ComboBox>
+                    ) : null}
                 </div>
                 {this.props.redlining.geomType === 'LineString' ? (
                     <div className="redlining-control">

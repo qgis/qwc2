@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Arkaplan bulunamadı \"{0}\", varsayılan arkaplan gösteriliyor.",
+      "missingdefaulttheme": "",
       "missinglayers": "Bu katmanlar bulunamıyor: {0}.",
       "missingpermalink": "Belirtilen yer işareti ya da bağlantı geçerli değil.",
       "missingprojection": "Tema yüklenemedi \"{0}\": projeksiyon {1} tanımlı değil.",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "Harita Filtresi",
         "MapLight3D": "Tarih Zaman",
+        "ObjectList": "",
         "Print": "Yazdır",
         "Reports": "Raporlar",
         "Settings": "Ayarlar",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "Koni",
-      "ctrlhint": "",
       "cuboid": "Kübik",
       "cylinder": "Silindir",
       "delete": "Sil",
@@ -191,6 +192,12 @@
       "takepicture": "Fotoğraf çek",
       "unsavedchanged": "Kaydedilmemiş değişiklikler mevcut. Yine de sayfadan ayrılmak istiyor musunuz?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Obje",
       "noresults": "Sonuç yok",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "Toplu rapor",
       "clipboard": "Panoya kopyala",
+      "compare": "",
+      "comparing": "",
       "download": "İndir",
       "export": "Dışarıya aktar",
       "featureReport": "Obje raporu",
@@ -253,6 +262,7 @@
       "noresults": "Seçilen nokta için geçerli bilgi yok",
       "querying": "Sorgulanıyor...",
       "reportfail": "Rapor üretilemedi",
+      "results": "",
       "selectreport": "",
       "title": "Obje Bilgisi"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Konum: bulunuyor...",
         "PERMISSION_DENIED": "Konum: izin verilmedi"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Yükleniyor...",
@@ -433,7 +447,7 @@
       "angle": "Açı",
       "featureunsupported": "Sayısal değer bu geometri için kullanılamaz",
       "height": "Yükseklik",
-      "nofeature": "Aktif obje yok",
+      "nofeatureormultiple": "",
       "side": "Taraf",
       "width": "Genişlik",
       "windowtitle": "Sayısal giriş"
@@ -478,7 +492,7 @@
       "loading": "Form yükleniyor..."
     },
     "redlining": {
-      "border": "Sınır",
+      "attributes": "",
       "buffer": "Tampon",
       "buffercompute": "Hesapla",
       "bufferdistance": "Mesafe",
@@ -486,6 +500,7 @@
       "bufferlayername": "Tampon",
       "bufferselectfeature": "Tampon atılacak bir obje seçiniz...",
       "circle": "Daire",
+      "ctrlhint": "",
       "delete": "Sil",
       "draw": "Çiz",
       "edit": "Düzenle",
@@ -506,8 +521,7 @@
       "size": "Boyut",
       "square": "Kare",
       "text": "Metin",
-      "transform": "Dönüşüm",
-      "width": "Genişlik"
+      "transform": "Dönüşüm"
     },
     "reports": {
       "all": "Tümü",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Nokta ekle",
+      "addlayer": "",
       "addviapoint": "Burası üzerinden",
       "arriveat": "Varış noktası",
       "clear": "Temizle",
@@ -577,6 +592,7 @@
       "providerselection": "Arama sağlayıcılar",
       "recent": "Son aramalar",
       "search": "Ara",
+      "tasks": "",
       "themelayers": "Tema katmanları",
       "themes": "Temalar",
       "unknownmore": ""

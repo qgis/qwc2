@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "",
+      "missingdefaulttheme": "",
       "missinglayers": "",
       "missingpermalink": "",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Nyomtatás",
         "Reports": "",
         "Settings": "",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "",
       "unsavedchanged": ""
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "",
       "noresults": "",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Exportálás",
       "featureReport": "Lekérdezés eredménye",
@@ -253,6 +262,7 @@
       "noresults": "Nincs információ a kiválasztott pontról",
       "querying": "Lekérdezés...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Lekérdezés információ"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Hely keresése...",
         "PERMISSION_DENIED": "Hozzáférés megtagadva"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Betöltés...",
@@ -433,7 +447,7 @@
       "angle": "",
       "featureunsupported": "",
       "height": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "side": "",
       "width": "",
       "windowtitle": ""
@@ -478,7 +492,7 @@
       "loading": ""
     },
     "redlining": {
-      "border": "Szegély",
+      "attributes": "",
       "buffer": "",
       "buffercompute": "",
       "bufferdistance": "",
@@ -486,6 +500,7 @@
       "bufferlayername": "",
       "bufferselectfeature": "",
       "circle": "",
+      "ctrlhint": "",
       "delete": "",
       "draw": "",
       "edit": "",
@@ -506,8 +521,7 @@
       "size": "Méret",
       "square": "",
       "text": "Szöveg",
-      "transform": "",
-      "width": "Szélesség"
+      "transform": ""
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "",
+      "addlayer": "",
       "addviapoint": "",
       "arriveat": "",
       "clear": "",
@@ -577,6 +592,7 @@
       "providerselection": "",
       "recent": "",
       "search": "Keresés",
+      "tasks": "",
       "themelayers": "",
       "themes": "",
       "unknownmore": ""

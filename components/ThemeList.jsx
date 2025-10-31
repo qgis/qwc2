@@ -39,7 +39,6 @@ class ThemeList extends React.Component {
         dontPreserveSettingsOnSwitch: PropTypes.bool,
         filter: PropTypes.string,
         layers: PropTypes.array,
-        mapConfig: PropTypes.object,
         setActiveLayerInfo: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setThemeLayersList: PropTypes.func,
@@ -279,7 +278,6 @@ class ThemeList extends React.Component {
 const selector = (state) => ({
     themes: state.theme.themes || {},
     layers: state.layers.flat,
-    mapConfig: state.map,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || ""
 });
 

@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "No se pudo encontrar el fondo \"{0}\", mostrando el fondo predeterminado.",
+      "missingdefaulttheme": "",
       "missinglayers": "No se pudieron encontrar las siguientes capas: {0}.",
       "missingpermalink": "El enlace permanente o marcador especificado es inválido o ha expirado.",
       "missingprojection": "No se pudo cargar el tema \"{0}\": la proyección {1} no está definida.",
@@ -23,6 +24,7 @@
         "MapExport3D": "Exportar mapa",
         "MapFilter": "Filtro de mapa",
         "MapLight3D": "Luz y sombras",
+        "ObjectList": "",
         "Print": "Imprimir",
         "Reports": "Informes",
         "Settings": "Opciones",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "Clonar",
       "cone": "Cono",
-      "ctrlhint": "Usa Ctrl para selección múltiple...",
       "cuboid": "Cuboide",
       "cylinder": "Cilindro",
       "delete": "Eliminar",
@@ -191,6 +192,12 @@
       "takepicture": "Tomar fotografía",
       "unsavedchanged": "Hay cambios sin guardar. Quieres salir de la página sin guardar?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Elemento",
       "noresults": "Sin resultados",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "Informe agregado",
       "clipboard": "Copiar al portapapeles",
+      "compare": "",
+      "comparing": "",
       "download": "Descargar",
       "export": "Exportar",
       "featureReport": "Informe del elemento",
@@ -253,6 +262,7 @@
       "noresults": "Sin información disponible sobre el punto seleccionado",
       "querying": "Consultando...",
       "reportfail": "No se pudo generar el informe",
+      "results": "",
       "selectreport": "Seleccionar informe...",
       "title": "Información del elemento"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Posición: ubicando...",
         "PERMISSION_DENIED": "Posición: permiso denegado"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Cargando...",
@@ -433,7 +447,7 @@
       "angle": "Ángulo",
       "featureunsupported": "Entrada numérica no disponible para esta geometría",
       "height": "Altura",
-      "nofeature": "Sin elemento activo",
+      "nofeatureormultiple": "",
       "side": "Lado",
       "width": "Ancho",
       "windowtitle": "Entrada numérica"
@@ -478,7 +492,7 @@
       "loading": "Cargando formulario..."
     },
     "redlining": {
-      "border": "Límite",
+      "attributes": "",
       "buffer": "Bufer",
       "buffercompute": "Computar",
       "bufferdistance": "Distancia",
@@ -486,6 +500,7 @@
       "bufferlayername": "Bufer",
       "bufferselectfeature": "Seleccione un elemento para almacenar en bufer",
       "circle": "Círculo",
+      "ctrlhint": "",
       "delete": "Eliminar",
       "draw": "Dibujar",
       "edit": "Editar",
@@ -506,8 +521,7 @@
       "size": "Tamaño",
       "square": "Cuadrado",
       "text": "Texto",
-      "transform": "Transformar",
-      "width": "Ancho"
+      "transform": "Transformar"
     },
     "reports": {
       "all": "Todo",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Añadir punto",
+      "addlayer": "",
       "addviapoint": "Pasar por aquí",
       "arriveat": "Llegar a",
       "clear": "Limpiar",
@@ -577,6 +592,7 @@
       "providerselection": "Proveedores de búsqueda",
       "recent": "Búsquedas recientes",
       "search": "Buscar",
+      "tasks": "",
       "themelayers": "Capas del tema",
       "themes": "Temas",
       "unknownmore": "Más resultados"

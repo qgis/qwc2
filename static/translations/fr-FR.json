@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Impossible de trouver le fond \"{0}\", affichage du fond par défaut.",
+      "missingdefaulttheme": "Le thème par défaut n'a pas pu être chargé.",
       "missinglayers": "Impossible de trouver les couches suivantes: {0}.",
       "missingpermalink": "Le permalien ou le signet n'est pas valide ou a expiré.",
       "missingprojection": "Impossible de charger le thème \"{0}\": la projection {1} n'est pas définie.",
@@ -23,6 +24,7 @@
         "MapExport3D": "Exporter la carte",
         "MapFilter": "Filtrer la carte",
         "MapLight3D": "Illumination et ombres",
+        "ObjectList": "Liste d'objets",
         "Print": "Imprimer",
         "Reports": "Rapports",
         "Settings": "Paramètres",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "Copier",
       "cone": "Cône",
-      "ctrlhint": "Ctrl pour sélection multiple...",
       "cuboid": "Cuboïde",
       "cylinder": "Cylindre",
       "delete": "Effacer",
@@ -191,6 +192,12 @@
       "takepicture": "Ajouter une photo",
       "unsavedchanged": "Il y a des modifications non enregistrées. Faut-il quand même quitter la page?"
     },
+    "featureattributes": {
+      "name": "Nom",
+      "nofeatureormultiple": "Aucune o plus objets actives",
+      "value": "Valeur",
+      "windowtitle": "Attributs de l'objet"
+    },
     "featureform": {
       "feature": "Objet",
       "noresults": "Pas de résultats",
@@ -243,16 +250,19 @@
     "identify": {
       "aggregatedreport": "Rapport agrégé",
       "clipboard": "Copier dans le presse-papiers",
+      "compare": "Comparer les objets sélectionnés",
+      "comparing": "Comparison de {0} objets",
       "download": "Télécharger",
       "export": "Exporter",
       "featureReport": "Données de l'objet",
-      "featurecount": "Éléments sélectionnés",
+      "featurecount": "{0} élément(s)",
       "layerall": "Toutes les couches",
       "link": "Lien",
       "noattributes": "Pas d'attribut",
       "noresults": "Pas de résultats pour la position sélectionnée",
       "querying": "Identification en cours...",
       "reportfail": "Le rapport n'a pas été généré",
+      "results": "Résultats",
       "selectreport": "Selectionner rapport...",
       "title": "Informations sur l'objet"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Position: en cours...",
         "PERMISSION_DENIED": "Position: accès refusé"
       }
+    },
+    "locationrecorder": {
+      "record": "Enregistrer la position",
+      "stop": "Arrêter l'enregistrement"
     },
     "map": {
       "loading": "Chargement de la carte...",
@@ -433,7 +447,7 @@
       "angle": "Angle",
       "featureunsupported": "Entrée numérique non disponible pour cette géométrie",
       "height": "Hauteur",
-      "nofeature": "Aucune objet active",
+      "nofeatureormultiple": "",
       "side": "Côté",
       "width": "Largeur",
       "windowtitle": "Entrée numérique"
@@ -478,7 +492,7 @@
       "loading": "Chargement du formulaire..."
     },
     "redlining": {
-      "border": "Bordure",
+      "attributes": "Attributs de l'objet",
       "buffer": "Tampon",
       "buffercompute": "Calculer",
       "bufferdistance": "Distance",
@@ -486,6 +500,7 @@
       "bufferlayername": "Sortie",
       "bufferselectfeature": "Choisissez une entité pour le tampon...",
       "circle": "Cercle",
+      "ctrlhint": "Ctrl pour sélection multiple...",
       "delete": "Effacer",
       "draw": "Dessiner",
       "edit": "Editer",
@@ -506,8 +521,7 @@
       "size": "Taille",
       "square": "Carré",
       "text": "Texte",
-      "transform": "Transformer",
-      "width": "Largeur"
+      "transform": "Transformer"
     },
     "reports": {
       "all": "Tous",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Ajouter",
+      "addlayer": "Exporter en couche",
       "addviapoint": "Par ici",
       "arriveat": "Arriver à",
       "clear": "Réinitialiser",
@@ -577,6 +592,7 @@
       "providerselection": "Services de recherche",
       "recent": "Recherches récentes",
       "search": "Chercher",
+      "tasks": "Outils",
       "themelayers": "Couches de thèmes",
       "themes": "Cartes",
       "unknownmore": "Plus de résultats"

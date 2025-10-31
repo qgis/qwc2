@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Не може да се намери фонът \"{0}\", показва се фонът по подразбиране.",
+      "missingdefaulttheme": "",
       "missinglayers": "Не мога да намеря следните слоеве: {0}.",
       "missingpermalink": "Посоченият пермалък или маркер е невалиден или е изтекъл.",
       "missingprojection": "Невъзможно е да се зареди темата \"{0}\": проекцията {1} не е дефинирана.",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "Филтър на картата",
         "MapLight3D": "Дата и час",
+        "ObjectList": "",
         "Print": "Отпечатване",
         "Reports": "Доклади",
         "Settings": "Настройки",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "Конус",
-      "ctrlhint": "",
       "cuboid": "Кубоид",
       "cylinder": "Цилиндър",
       "delete": "Изтриване на",
@@ -191,6 +192,12 @@
       "takepicture": "Направете снимка",
       "unsavedchanged": "Има неспасени промени. Искате ли все пак да напуснете страницата?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Функции",
       "noresults": "Няма резултати",
@@ -243,16 +250,19 @@
     "identify": {
       "aggregatedreport": "Обобщен доклад",
       "clipboard": "Копиране в клипборда",
+      "compare": "",
+      "comparing": "",
       "download": "Изтегляне",
       "export": "Експорт",
       "featureReport": "Отчет за функциите",
-      "featurecount": "Брой функции",
+      "featurecount": "",
       "layerall": "Всички слоеве",
       "link": "Връзка към",
       "noattributes": "Без атрибути",
       "noresults": "Няма налична информация за избраната точка",
       "querying": "Запитване...",
       "reportfail": "Неуспешно генериране на отчет",
+      "results": "",
       "selectreport": "",
       "title": "Информация за функциите"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Позиция: намиране на...",
         "PERMISSION_DENIED": "Позиция: разрешението е отказано"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Зареждане...",
@@ -433,7 +447,7 @@
       "angle": "Ъгъл",
       "featureunsupported": "Цифровото въвеждане не е достъпно за тази геометрия",
       "height": "Височина",
-      "nofeature": "Няма активна функция",
+      "nofeatureormultiple": "",
       "side": "Страна",
       "width": "Ширина",
       "windowtitle": "Цифрово въвеждане"
@@ -478,7 +492,7 @@
       "loading": "Зареждане на формуляра..."
     },
     "redlining": {
-      "border": "Граница",
+      "attributes": "",
       "buffer": "Буфер",
       "buffercompute": "Изчисляване",
       "bufferdistance": "Разстояние",
@@ -486,6 +500,7 @@
       "bufferlayername": "Буфер",
       "bufferselectfeature": "Изберете функция, която да буферира...",
       "circle": "Кръг",
+      "ctrlhint": "",
       "delete": "Изтриване на",
       "draw": "Начертайте",
       "edit": "Редактиране на",
@@ -506,8 +521,7 @@
       "size": "Размер",
       "square": "Квадрат",
       "text": "Текст",
-      "transform": "Преобразуване",
-      "width": "Ширина"
+      "transform": "Преобразуване"
     },
     "reports": {
       "all": "Всички",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Добавяне на точка",
+      "addlayer": "",
       "addviapoint": "Чрез тук",
       "arriveat": "Пристигнете в",
       "clear": "Clear",
@@ -577,6 +592,7 @@
       "providerselection": "Търсене на доставчици",
       "recent": "Последни търсения",
       "search": "Търсене",
+      "tasks": "",
       "themelayers": "Тематични слоеве",
       "themes": "Теми",
       "unknownmore": ""

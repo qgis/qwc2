@@ -8,9 +8,11 @@
 
 import React from 'react';
 
+import {ColorPicker} from '@vtaits/react-color-picker';
 import PropTypes from 'prop-types';
 
 import './style/ColorButton.css';
+import '@vtaits/react-color-picker/index.css';
 
 const defaultColors = [
     // [r, g, b, a]
@@ -70,6 +72,7 @@ export default class ColorButton extends React.Component {
                             </div>
                         ))}
                     </div>
+                    <ColorPicker className="colorbutton-picker-spectrum" onDrag={this.changeColor} saturationHeight={150} value={this.cssColor(curColor)} />
                     <div className="colorbutton-picker-input controlgroup">
                         <div className="colorbutton-icon">
                             <span style={{backgroundColor: this.cssColor(curColor)}} />

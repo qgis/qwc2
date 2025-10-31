@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "",
+      "missingdefaulttheme": "",
       "missinglayers": "",
       "missingpermalink": "",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Tisk",
         "Reports": "",
         "Settings": "Nastavení",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "",
       "unsavedchanged": ""
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Prvek",
       "noresults": "Žádné výsledky",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "Zkopírovat do schránky",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Exportovat",
       "featureReport": "Report prvku",
@@ -253,6 +262,7 @@
       "noresults": "V tomto bodu nejsou k dispozici informace o žádném prvku",
       "querying": "Dotazování...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Informace o prvku"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Poloha: načítá se...",
         "PERMISSION_DENIED": "Poloha: nepovoleno"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Načítání...",
@@ -433,7 +447,7 @@
       "angle": "",
       "featureunsupported": "",
       "height": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "side": "",
       "width": "",
       "windowtitle": ""
@@ -478,7 +492,7 @@
       "loading": ""
     },
     "redlining": {
-      "border": "Okraj",
+      "attributes": "",
       "buffer": "",
       "buffercompute": "",
       "bufferdistance": "",
@@ -486,6 +500,7 @@
       "bufferlayername": "",
       "bufferselectfeature": "",
       "circle": "",
+      "ctrlhint": "",
       "delete": "",
       "draw": "",
       "edit": "",
@@ -506,8 +521,7 @@
       "size": "Velikost",
       "square": "",
       "text": "Text",
-      "transform": "",
-      "width": "Šířka"
+      "transform": ""
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "",
+      "addlayer": "",
       "addviapoint": "Přes tento bod",
       "arriveat": "",
       "clear": "",
@@ -577,6 +592,7 @@
       "providerselection": "Poskytovatelé vyhledávání",
       "recent": "Nedávná hledání",
       "search": "Hledat",
+      "tasks": "",
       "themelayers": "",
       "themes": "Témata",
       "unknownmore": ""

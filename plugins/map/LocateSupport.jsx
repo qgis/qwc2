@@ -85,6 +85,7 @@ class LocateSupport extends React.Component {
         this.posPopup.getElementsByClassName("locate-popup-close")[0].onclick = () => { this.posPopup.hidden = true; };
 
         this.requestedMode = 'DISABLED';
+        this.errorCount = 0;
     }
     componentDidMount() {
         const startupMode = this.props.startupMode.toUpperCase();
@@ -118,6 +119,11 @@ class LocateSupport extends React.Component {
         return null;
     }
     onLocationError = (err) => {
+        // Handle LOCATION_UNAVAILABLE
+        if (err.code === 2 && this.errorCount < 5) {
+            this.errorCount += 1;
+            return;
+        }
         this.props.onLocateError(err.message);
         // User denied geolocation prompt
         if (err.code === 1) {
@@ -155,10 +161,11 @@ class LocateSupport extends React.Component {
             this.props.changeLocateState(this.requestedMode);
             this.posLayer.setVisible(true);
         }
+        this.errorCount = 0;
 
         const mapPos = this.geolocate.getPosition();
         const wgsPos = CoordinatesUtils.reproject(mapPos, this.props.projection, "EPSG:4326");
-        this.props.changeLocatePosition(wgsPos);
+        this.props.changeLocatePosition(wgsPos, mapPos);
 
         const point = new ol.geom.Point(mapPos);
         if (this.props.drawCircle) {

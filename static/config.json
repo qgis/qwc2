@@ -54,27 +54,32 @@
     {
       "code": "EPSG:32632",
       "proj": "+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs",
-      "label": "WGS 84 / UTM zone 32N"
+      "label": "WGS 84 / UTM zone 32N",
+      "esriWKt": "PROJCS[\"WGS_1984_UTM_Zone_32N\",GEOGCS[\"GCS_WGS_1984\",DATUM[\"D_WGS_1984\",SPHEROID[\"WGS_1984\",6378137.0,298.257223563]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",9.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]"
     },
     {
       "code": "EPSG:21781",
       "proj": "+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs",
-      "label": "CH1903 / LV03"
+      "label": "CH1903 / LV03",
+      "esriWkt": "PROJCS[\"CH1903_LV03\",GEOGCS[\"GCS_CH1903\",DATUM[\"D_CH1903\",SPHEROID[\"Bessel_1841\",6377397.155,299.1528128]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Hotine_Oblique_Mercator_Azimuth_Center\"],PARAMETER[\"False_Easting\",600000.0],PARAMETER[\"False_Northing\",200000.0],PARAMETER[\"Scale_Factor\",1.0],PARAMETER[\"Azimuth\",90.0],PARAMETER[\"Longitude_Of_Center\",7.43958333333333],PARAMETER[\"Latitude_Of_Center\",46.9524055555556],UNIT[\"Meter\",1.0]]"
     },
     {
       "code": "EPSG:2056",
       "proj": "+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs",
-      "label": "CH1903+ / LV95"
+      "label": "CH1903+ / LV95",
+      "esriWkt": "PROJCS[\"CH1903+_LV95\",GEOGCS[\"GCS_CH1903+\",DATUM[\"D_CH1903+\",SPHEROID[\"Bessel_1841\",6377397.155,299.1528128]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Hotine_Oblique_Mercator_Azimuth_Center\"],PARAMETER[\"False_Easting\",2600000.0],PARAMETER[\"False_Northing\",1200000.0],PARAMETER[\"Scale_Factor\",1.0],PARAMETER[\"Azimuth\",90.0],PARAMETER[\"Longitude_Of_Center\",7.43958333333333],PARAMETER[\"Latitude_Of_Center\",46.9524055555556],UNIT[\"Meter\",1.0]]"
     },
     {
       "code": "EPSG:25832",
       "proj": "+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
-      "label": "ETRS89 / UTM 32N"
+      "label": "ETRS89 / UTM 32N",
+      "esriWkt": "PROJCS[\"ETRS_1989_UTM_Zone_32N\",GEOGCS[\"GCS_ETRS_1989\",DATUM[\"D_ETRS_1989\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",9.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]"
     },
     {
       "code": "EPSG:31983",
       "proj": "+proj=utm +zone=23 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
-      "label": "SIRGAS 2000 / UTM zone 23S"
+      "label": "SIRGAS 2000 / UTM zone 23S",
+      "esriWkt": "PROJCS[\"SIRGAS_2000_UTM_Zone_23S\",GEOGCS[\"GCS_SIRGAS_2000\",DATUM[\"D_SIRGAS_2000\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",10000000.0],PARAMETER[\"Central_Meridian\",-45.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]"
     }
   ],
   "plugins": {
@@ -288,6 +293,9 @@
         }
       },
       {
+        "name": "ObjectList"
+      },
+      {
         "name": "OverviewMap"
       },
       {
@@ -354,6 +362,7 @@
               {"key": "Editing", "icon": "editing"},
               {"key": "FeatureForm", "icon": "featureform"},
               {"key": "AttributeTable", "icon": "editing"},
+              {"key": "ObjectList", "icon": "list-alt"},
               {"key": "MapExport", "icon": "rasterexport"},
               {"key": "Routing", "icon": "routing"},
               {"key": "Reports", "icon": "report"},

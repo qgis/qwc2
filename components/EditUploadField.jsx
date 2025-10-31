@@ -10,7 +10,7 @@ import React from 'react';
 
 import mime from 'mime-to-extensions';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {showImageEditor} from '../utils/ImageEditor';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -154,9 +154,9 @@ export default class EditUploadField extends React.Component {
             const context = canvas.getContext("2d");
             context.drawImage(this.videoElement, 0, 0, width, height);
             const imageData = canvas.toDataURL("image/jpeg");
-            this.setState({imageData: imageData, imageFilename: uuidv1() + ".jpg"});
+            this.setState({imageData: imageData, imageFilename: uuidv4() + ".jpg"});
             this.props.updateField(this.props.fieldId, '');
-            this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], uuidv1() + ".jpg", {type: "image/jpeg"}));
+            this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], uuidv4() + ".jpg", {type: "image/jpeg"}));
         }
         this.disableCamera();
     };
@@ -169,7 +169,7 @@ export default class EditUploadField extends React.Component {
             showImageEditor(imageData, (newImageData) => {
                 this.setState({imageData: newImageData, imageFilename: fileValue.replace(/.*\//, '')});
                 this.props.updateField(this.props.fieldId, '');
-                this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuidv1() + ".jpg", {type: "image/jpeg"}));
+                this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuidv4() + ".jpg", {type: "image/jpeg"}));
             });
         } else if (action === "Clear") {
             this.clearImage();

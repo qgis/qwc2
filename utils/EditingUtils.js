@@ -13,6 +13,7 @@ import {v5 as uuidv5} from 'uuid';
 import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
+import MiscUtils from './MiscUtils';
 import grammar from './expr_grammar/grammar';
 
 const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
@@ -137,6 +138,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
         feature: feature,
         getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
         representValue: (attr) => representValue(attr, editConfig, editIface, promises),
+        formatDate: MiscUtils.formatDate,
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
         layer: editConfig.layerName,
@@ -221,7 +223,7 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
     }
     // Apply default values
     const defaultFieldExpressions = editConfig.fields.reduce((res, field) => {
-        if (field.defaultValue) {
+        if (field.defaultValue && !(field.id in feature.properties)) {
             return [...res, {field: field.id, expression: field.defaultValue.replace(/^expr:/, '')}];
         }
         return res;
@@ -242,7 +244,7 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     // Collect field expressions and dependencies
     const dependencies = {};
     let fieldExpressions = editConfig.fields.reduce((res, field) => {
-        if (field.expression && !field.constraints?.hidden) {
+        if (field.expression) {
             const matches = [...field.expression.matchAll(/"([^"]+)"/g)].map(m => m[1]);
             dependencies[field.id] = [...new Set(matches)];
             return {...res, [field.id]: field.expression};
@@ -281,7 +283,10 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
-            if (field.id in result && field.type === "date") {
+            if (!field.constraints?.hidden) {
+                // Remove hidden fields from result
+                delete result[field.id];
+            } else if (field.id in result && field.type === "date") {
                 result[field.id] = result[field.id].split("T")[0];
             }
         });

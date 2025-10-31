@@ -1,0 +1,16 @@
+div.feature-attributes-body table {
+    width: 100%;
+}
+
+div.feature-attributes-body table td:first-child {
+    width: 25%
+}
+
+div.feature-attributes-body table td:last-child {
+    width: 1%;
+}
+
+div.feature-attributes-body table td > input {
+    min-width: 0;
+    width: 100%;
+}

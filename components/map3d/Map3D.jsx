@@ -182,7 +182,10 @@ class Map3D extends React.Component {
         } else if (this.props.layers !== prevProps.layers) {
             this.setState((state) => (
                 {
-                    sceneContext: {...state.sceneContext, colorLayers: this.collectColorLayers(state.sceneContext.colorLayers)}
+                    sceneContext: {
+                        ...state.sceneContext,
+                        colorLayers: this.collectColorLayers(state.sceneContext.colorLayers, prevProps.layers)
+                    }
                 }
             ));
         }
@@ -248,16 +251,21 @@ class Map3D extends React.Component {
             }
         }));
     };
-    collectColorLayers = (prevColorLayers) => {
+    collectColorLayers = (prevColorLayers, prevLayers) => {
+        const prevLayerMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
         return this.props.layers.reduce((colorLayers, layer) => {
             if (layer.role !== LayerRole.THEME && layer.role !== LayerRole.USERLAYER) {
+                return colorLayers;
+            }
+            const prevOptions = prevColorLayers[layer.id];
+            if (prevOptions && layer === prevLayerMap[layer.id]) {
+                colorLayers[layer.id] = prevOptions;
                 return colorLayers;
             }
             const layerCreator = LayerRegistry[layer.type];
             if (!layerCreator || !layerCreator.create3d) {
                 return colorLayers;
             }
-            const prevOptions = prevColorLayers[layer.id];
             const preserveSublayerOptions = (entry, prevEntry) => {
                 return entry.sublayers?.map?.(child => {
                     const prevChild = prevEntry?.sublayers?.find?.(x => x.name === child.name);
@@ -295,6 +303,9 @@ class Map3D extends React.Component {
         let layerBelow = this.getLayer("__baselayer");
         Object.entries(colorLayers).reverse().forEach(([layerId, options]) => {
             const prevOptions = prevColorLayers[layerId];
+            if (options === prevOptions) {
+                return;
+            }
             const layerCreator = LayerRegistry[options.type];
             let mapLayer = this.getLayer(layerId);
             if (mapLayer) {
@@ -503,7 +514,7 @@ class Map3D extends React.Component {
         });
         // Show/hide labels when tile visibility changes
         tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
-            Object.values(scene.userData.tileLabels || {}).forEach(l => {
+            Object.values(scene?.userData?.tileLabels ?? {}).forEach(l => {
                 l.labelObject.visible = visible;
                 l.labelObject.element.style.display = visible ? 'initial' : 'none';
             });
@@ -681,7 +692,8 @@ class Map3D extends React.Component {
         this.instance.add(this.sceneObjectGroup);
 
         // Setup map
-        const bounds = CoordinatesUtils.reprojectBbox(this.props.theme.initialBbox.bounds, this.props.theme.initialBbox.crs, projection);
+        const initialBbox = this.props.theme.map3d?.extent ?? this.props.theme.initialBbox;
+        const bounds = CoordinatesUtils.reprojectBbox(initialBbox.bounds, initialBbox.crs, projection);
         const extent = new Extent(projection, bounds[0], bounds[2], bounds[1], bounds[3]);
         this.map = new Map({
             extent: extent,
@@ -747,7 +759,7 @@ class Map3D extends React.Component {
         }
 
         // Collect color layers
-        const colorLayers = this.collectColorLayers([]);
+        const colorLayers = this.collectColorLayers([], []);
 
         const sceneObjects = {};
         this.objectMap = {};
@@ -772,7 +784,7 @@ class Map3D extends React.Component {
             });
             // Show/hide labels when tile visibility changes
             tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
-                Object.values(scene.userData.tileLabels || {}).forEach(label => {
+                Object.values(scene?.userData?.tileLabels ?? {}).forEach(label => {
                     label.labelObject.visible = visible;
                     label.labelObject.element.style.display = visible ? 'initial' : 'none';
                 });
@@ -784,7 +796,7 @@ class Map3D extends React.Component {
             this.objectMap[entry.name] = tiles;
 
             sceneObjects[entry.name] = {
-                visibility: true,
+                visibility: entry.visibility ?? true,
                 opacity: 255,
                 layertree: true,
                 title: entry.title ?? entry.name,
@@ -801,7 +813,9 @@ class Map3D extends React.Component {
 
         // Add other objects
         (this.props.theme.map3d?.objects3d || []).forEach(entry => {
-            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.name, this.state.sceneContext);
+            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.name, this.state.sceneContext, {
+                visibility: entry.visibility ?? true
+            });
         });
 
         this.setState(state => ({

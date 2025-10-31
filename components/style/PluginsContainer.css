@@ -10,6 +10,52 @@ div.map-container {
     position: absolute;
 }
 
+div.app-infos-container {
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap-reverse;
+    z-index: 2;
+    overflow: hidden;
+    padding: 1em 1em 2.5em 1em;
+    row-gap: 0.25em;
+}
+
+div.map-bottom-tool-container {
+    z-index: 3;
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    align-content: flex-start;
+    justify-content: flex-start;
+    margin-bottom: -1px;
+}
+
+div.map-bottom-tool-container > * {
+    pointer-events: initial;
+}
+
+div.app-info {
+    z-index: 1;
+    color: var(--panel-text-color);
+    background-color: var(--panel-bg-color);
+    box-shadow: 0 0 4px rgba(136, 136, 136, 0.5);
+    padding: 0.25em 0em 0.125em 0em;
+    display: flex;
+}
+
+div.app-info > span {
+    flex: 0 0 auto;
+    padding: 0 0.25em;
+}
+
+
 div.map-buttons-container {
     position: absolute;
     pointer-events: none;

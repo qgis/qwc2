@@ -13,6 +13,7 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import {setEditContext} from '../../actions/editing';
+import LocationRecorder from '../../components/LocationRecorder';
 import FeatureStyles from "../../utils/FeatureStyles";
 
 /**
@@ -31,6 +32,9 @@ class EditingSupport extends React.Component {
         this.layer = null;
         this.currentFeature = null;
     }
+    state = {
+        showRecordLocation: false
+    };
     componentDidUpdate(prevProps) {
         if (this.props.editContext === prevProps.editContext) {
             // pass
@@ -53,6 +57,13 @@ class EditingSupport extends React.Component {
         }
     }
     render() {
+        if (this.state.showRecordLocation) {
+            const geomType = this.props.editContext.geomType.replace(/Z$/, '');
+            return (
+                <LocationRecorder
+                    drawInteraction={this.interaction} geomType={geomType} key="LocationRecorder" map={this.props.map} />
+            );
+        }
         return null;
     }
     editStyle = () => {
@@ -89,9 +100,10 @@ class EditingSupport extends React.Component {
     addDrawInteraction = () => {
         this.reset();
         this.createLayer();
+        const geomType = this.props.editContext.geomType.replace(/Z$/, '');
         const drawInteraction = new ol.interaction.Draw({
             stopClick: true,
-            type: this.props.editContext.geomType.replace(/Z$/, ''),
+            type: geomType,
             source: this.layer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
             style: this.editStyle()
@@ -100,11 +112,14 @@ class EditingSupport extends React.Component {
             this.currentFeature = evt.feature;
         }, this);
         drawInteraction.on('drawend', () => {
+            this.setState({showRecordLocation: false});
             this.commitCurrentFeature();
             this.props.map.removeInteraction(drawInteraction);
+            this.interaction = null;
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interaction = drawInteraction;
+        this.setState({showRecordLocation: ["Point", "LineString"].includes(geomType)});
     };
     addEditInteraction = () => {
         this.reset();

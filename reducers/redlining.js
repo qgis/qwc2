@@ -11,9 +11,11 @@ import {CHANGE_REDLINING_STATE, RESET_REDLINING_STATE} from '../actions/redlinin
 const defaultState = {
     action: null,
     geomType: null,
+    format: null,
     style: {
         borderColor: [255, 0, 0, 1],
         fillColor: [255, 255, 255, 1],
+        strokeDash: [],
         size: 2,
         text: "",
         textOutlineColor: [255, 255, 255, 1],
@@ -25,7 +27,7 @@ const defaultState = {
     drawMultiple: true,
     freehand: false,
     measurements: false,
-    numericInput: false,
+    extraAction: null,
     lenUnit: 'metric',
     areaUnit: 'metric'
 };
@@ -33,7 +35,11 @@ const defaultState = {
 export default function redlining(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_REDLINING_STATE: {
-        return {...state, ...action.data, style: {...state.style, ...action.data.style}};
+        const newstate = {...state, ...action.data};
+        if (action.data.style) {
+            newstate.style = {...state.style, ...action.data.style};
+        }
+        return newstate;
     }
     case RESET_REDLINING_STATE: {
         return defaultState;

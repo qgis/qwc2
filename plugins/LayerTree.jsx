@@ -184,26 +184,30 @@ class LayerTree extends React.Component {
             this.setState({activePreset: LayerUtils.getActiveVisibilityPreset(this.props.layers, this.props.theme.visibilityPresets)});
         }
     }
-    renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
+    renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup, usedGroupIds) => {
         return (group.sublayers || []).map((sublayer, idx) => {
             const subpath = [...path, idx];
             if (sublayer.sublayers) {
-                return this.renderLayerGroup(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup);
+                return this.renderLayerGroup(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup, usedGroupIds);
             } else {
                 return this.renderLayer(layer, sublayer, subpath, enabled, inMutuallyExclusiveGroup);
             }
         });
     };
-    renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup = false) => {
+    renderLayerGroup = (layer, group, path, enabled, inMutuallyExclusiveGroup, usedGroupIds) => {
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
         if (flattenGroups) {
-            return this.renderSubLayers(layer, group, path, enabled, false);
+            return this.renderSubLayers(layer, group, path, enabled, false, usedGroupIds);
         }
         const subtreevisibility = LayerUtils.computeLayerVisibility(group);
         if (subtreevisibility === 0 && this.state.filterinvisiblelayers) {
             return null;
         }
-        const groupId = layer.id + ":" + group.name;
+        let groupId = layer.id + ":" + group.name;
+        for (let i = 0; usedGroupIds.has(groupId); ++i) {
+            groupId = layer.id + ":" + group.name + ":" + i;
+        }
+        usedGroupIds.add(groupId);
         let visibility = true;
         let checkboxstate = "";
         if (this.props.groupTogglesSublayers && !inMutuallyExclusiveGroup) {
@@ -240,14 +244,14 @@ class LayerTree extends React.Component {
             checkboxstate = 'radio_' + checkboxstate;
         }
         const expanderstate = group.expanded ? 'tree_minus' : 'tree_plus';
-        const showExpander = !this.props.onlyGroups || (group.sublayers || []).some((sublayer) => sublayer.sublayers);
+        const showExpander = (!this.props.onlyGroups || (group.sublayers || []).some(sublayer => sublayer.sublayers)) && group.sublayers.some(sublayer => !(layer.layerTreeHiddenSublayers ?? []).includes(sublayer.name));
         const itemclasses = {
             "layertree-item": true,
             "layertree-item-disabled": (!this.props.groupTogglesSublayers && !enabled) || (this.props.grayUnchecked && !visibility)
         };
         let sublayersContent = null;
         if (group.expanded) {
-            sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility, group.mutuallyExclusive === true);
+            sublayersContent = this.renderSubLayers(layer, group, path, enabled && visibility, group.mutuallyExclusive === true, usedGroupIds);
         }
         const optMenuClasses = classnames({
             "layertree-item-menubutton": true,
@@ -273,7 +277,7 @@ class LayerTree extends React.Component {
                     <Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(groupId)}/>
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>
-                {this.state.activemenu === groupId ? this.renderOptionsMenu(layer, group, path, allowRemove) : null}
+                {this.state.activemenu === groupId ? this.renderOptionsMenu(layer, group, path, allowRemove, subtreevisibility) : null}
                 {this.state.activestylemenu === groupId ? this.renderStyleMenu(styles, this.getSelectedStyles(layer), (style) => this.applyLayerStyle(style, layer)) : null}
                 <Sortable onChange={this.onSortChange} options={{disabled: sortable === false, ghostClass: 'drop-ghost', delay: 200, forceFallback: this.props.fallbackDrag}}>
                     {sublayersContent}
@@ -288,7 +292,7 @@ class LayerTree extends React.Component {
         if (this.state.filterinvisiblelayers && !sublayer.visibility) {
             return null;
         }
-        if (Array.isArray(layer.layerTreeHiddenSublayers) && layer.layerTreeHiddenSublayers.includes(sublayer.name)) {
+        if ((layer.layerTreeHiddenSublayers ?? []).includes(sublayer.name)) {
             return null;
         }
         const sublayerId = layer.id + ":" + sublayer.name;
@@ -373,15 +377,8 @@ class LayerTree extends React.Component {
             </div>
         );
     };
-    renderOptionsMenu = (layer, sublayer, path, marginRight = 0) => {
+    renderOptionsMenu = (layer, sublayer, path, marginRight, subtreevisibility = 0) => {
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
-        let reorderButtons = null;
-        if (allowReordering && !this.state.filterinvisiblelayers) {
-            reorderButtons = [
-                (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
-                (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
-            ];
-        }
         let zoomToLayerButton = null;
         if (sublayer.bbox && sublayer.bbox.bounds) {
             const zoomToLayerTooltip = LocaleUtils.tr("layertree.zoomtolayer");
@@ -390,6 +387,18 @@ class LayerTree extends React.Component {
                 <Icon icon="zoom" onClick={() => this.props.zoomToExtent(sublayer.bbox.bounds, crs)} title={zoomToLayerTooltip} />
             );
         }
+        let reorderButtons = null;
+        if (allowReordering && !this.state.filterinvisiblelayers) {
+            reorderButtons = [
+                (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
+                (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
+            ];
+        }
+        let toggleGroupButton = null;
+        if (sublayer.sublayers && !this.props.groupTogglesSublayers) {
+            toggleGroupButton = (<Icon icon="tree" onClick={() => this.props.changeLayerProperty(layer.id, "visibility", subtreevisibility !== 1, path, "children")} />);
+        }
+
         let infoButton = null;
         if (this.props.infoInSettings && (layer.type === "wms" || layer.type === "wfs" || layer.type === "wmts")) {
             infoButton = (<Icon className="layertree-item-metadata" icon="info-sign" onClick={() => this.props.setActiveLayerInfo(layer, sublayer)}/>);
@@ -409,6 +418,7 @@ class LayerTree extends React.Component {
                     onChange={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value, !isEmpty(sublayer.sublayers) ? 'children' : null)}
                     step="1" type="range" value={255 - LayerUtils.computeLayerOpacity(sublayer)} />
                 {reorderButtons}
+                {toggleGroupButton}
                 {infoButton}
                 {attrTableButton}
                 {layer.type === 'vector' ? (<Icon icon="export" onClick={() => this.exportRedliningLayer(layer)} />) : null}
@@ -447,15 +457,16 @@ class LayerTree extends React.Component {
             }
         });
         return layers.map(layer => {
+            const usedGroupIds = new Set();
             if (isEmpty(layer.sublayers) && layer.role !== LayerRole.THEME) {
                 return this.renderLayer(layer, layer, [], layer.visibility, false, !haveGroups);
             } else if (this.props.showRootEntry || layer.role !== LayerRole.THEME) {
-                return this.renderLayerGroup(layer, layer, [], layer.visibility);
+                return this.renderLayerGroup(layer, layer, [], layer.visibility, false, usedGroupIds);
             } else {
                 return layer.sublayers.map((sublayer, idx) => {
                     const subpath = [idx];
                     if (sublayer.sublayers) {
-                        return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility);
+                        return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility, false, usedGroupIds);
                     } else {
                         return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, !haveGroups);
                     }

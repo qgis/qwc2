@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {setEditContext, clearEditContext} from '../actions/editing';
 import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
@@ -292,7 +292,7 @@ class Editing extends React.Component {
         const editFeature = {
             type: "Feature",
             geometry: geometry,
-            id: uuidv1()
+            id: uuidv4()
         };
         this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
         this.setState({drawPick: false});

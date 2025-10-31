@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "",
+      "missingdefaulttheme": "",
       "missinglayers": "",
       "missingpermalink": "",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Drukuj",
         "Reports": "",
         "Settings": "",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "",
       "unsavedchanged": ""
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "",
       "noresults": "",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Eksport",
       "featureReport": "Feature report",
@@ -253,6 +262,7 @@
       "noresults": "Brak dostępnych danych dla wybranego punktu",
       "querying": "Przetwarzam zapytanie...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Feature Info"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Pozycja: lokalizowanie...",
         "PERMISSION_DENIED": "Pozycja: dostęp zabroniony"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Ładowanie...",
@@ -433,7 +447,7 @@
       "angle": "",
       "featureunsupported": "",
       "height": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "side": "",
       "width": "",
       "windowtitle": ""
@@ -478,7 +492,7 @@
       "loading": ""
     },
     "redlining": {
-      "border": "Obramowanie",
+      "attributes": "",
       "buffer": "Buforuj",
       "buffercompute": "Oblicz",
       "bufferdistance": "Odległość",
@@ -486,6 +500,7 @@
       "bufferlayername": "Buforuj",
       "bufferselectfeature": "Wybierz element do buforowania",
       "circle": "",
+      "ctrlhint": "",
       "delete": "Usuń",
       "draw": "Rysuj",
       "edit": "Edytuj",
@@ -506,8 +521,7 @@
       "size": "Rozmiar",
       "square": "",
       "text": "Tekst",
-      "transform": "",
-      "width": "Szerokość"
+      "transform": ""
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "",
+      "addlayer": "",
       "addviapoint": "",
       "arriveat": "",
       "clear": "",
@@ -577,6 +592,7 @@
       "providerselection": "",
       "recent": "",
       "search": "Szukaj",
+      "tasks": "",
       "themelayers": "",
       "themes": "Motywy",
       "unknownmore": ""

@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Fundo em falta",
+      "missingdefaulttheme": "",
       "missinglayers": "Camadas em falta",
       "missingpermalink": "Permalink em falta",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Imprimir",
         "Reports": "",
         "Settings": "Configurações",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "Tirar Fotografia",
       "unsavedchanged": "Alterações Não Guardadas"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Recurso",
       "noresults": "Sem Resultados",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "Área de Transferência",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Exportar",
       "featureReport": "Relatório de Recurso",
@@ -253,6 +262,7 @@
       "noresults": "Nenhuma informação disponível para o ponto selecionado",
       "querying": "A consultar...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Informações do Recurso"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Posição: a localizar...",
         "PERMISSION_DENIED": "Posição: permissão negada"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "A carregar...",
@@ -433,7 +447,7 @@
       "angle": "Ângulo",
       "featureunsupported": "Recurso Não Suportado",
       "height": "Altura",
-      "nofeature": "Nenhum Recurso Selecionado",
+      "nofeatureormultiple": "",
       "side": "Lado",
       "width": "Largura",
       "windowtitle": "Entrada Numérica"
@@ -478,7 +492,7 @@
       "loading": "A carregar..."
     },
     "redlining": {
-      "border": "Fronteira",
+      "attributes": "",
       "buffer": "Tampão",
       "buffercompute": "Calcular",
       "bufferdistance": "Distância do Tampão",
@@ -486,6 +500,7 @@
       "bufferlayername": "Nome da Camada de Tampão",
       "bufferselectfeature": "Selecione uma característica para o tampão...",
       "circle": "Círculo",
+      "ctrlhint": "",
       "delete": "Excluir",
       "draw": "Desenhar",
       "edit": "Editar",
@@ -506,8 +521,7 @@
       "size": "Tamanho",
       "square": "Quadrado",
       "text": "Texto",
-      "transform": "Transformar",
-      "width": "Largura"
+      "transform": "Transformar"
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Adicionar",
+      "addlayer": "",
       "addviapoint": "Adicionar ponto de passagem",
       "arriveat": "Chegar a",
       "clear": "Limpar",
@@ -577,6 +592,7 @@
       "providerselection": "Seleção do Provedor",
       "recent": "Pesquisas Recentes",
       "search": "Pesquisar",
+      "tasks": "",
       "themelayers": "",
       "themes": "Temas",
       "unknownmore": ""

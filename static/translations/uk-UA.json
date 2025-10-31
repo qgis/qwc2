@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "",
+      "missingdefaulttheme": "",
       "missinglayers": "",
       "missingpermalink": "",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Друк",
         "Reports": "",
         "Settings": "",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "",
       "unsavedchanged": ""
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "",
       "noresults": "",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Експорт",
       "featureReport": "Звіт по об’єкту",
@@ -253,6 +262,7 @@
       "noresults": "Для обраної точки інформація відсутня",
       "querying": "Обробка запиту...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Відомості про об’єкт"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Геолокація: визначення місцезнаходження…",
         "PERMISSION_DENIED": "Геолокація: доступ заборонено"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Завантаження...",
@@ -433,7 +447,7 @@
       "angle": "",
       "featureunsupported": "",
       "height": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "side": "",
       "width": "",
       "windowtitle": ""
@@ -478,7 +492,7 @@
       "loading": ""
     },
     "redlining": {
-      "border": "Межа",
+      "attributes": "",
       "buffer": "",
       "buffercompute": "",
       "bufferdistance": "",
@@ -486,6 +500,7 @@
       "bufferlayername": "",
       "bufferselectfeature": "",
       "circle": "",
+      "ctrlhint": "",
       "delete": "",
       "draw": "",
       "edit": "",
@@ -506,8 +521,7 @@
       "size": "Розмір",
       "square": "",
       "text": "Текст",
-      "transform": "",
-      "width": "Ширина"
+      "transform": ""
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "",
+      "addlayer": "",
       "addviapoint": "",
       "arriveat": "",
       "clear": "",
@@ -577,6 +592,7 @@
       "providerselection": "",
       "recent": "",
       "search": "Пошук",
+      "tasks": "",
       "themelayers": "",
       "themes": "",
       "unknownmore": ""

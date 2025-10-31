@@ -13,10 +13,12 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
+import Icon from '../components/Icon';
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
+import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -31,12 +33,15 @@ import "./style/FeatureSearch.css";
  */
 class FeatureSearch extends React.Component {
     static propTypes = {
+        /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. */
+        enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         map: PropTypes.object,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         theme: PropTypes.object
     };
     static defaultProps = {
+        enableExport: true,
         side: 'right'
     };
     state = {
@@ -44,9 +49,11 @@ class FeatureSearch extends React.Component {
         searchProviders: {},
         providerGroups: {},
         selectedProvider: '',
+        formValues: {},
+        providerSelectOptions: {},
         searchResults: null
     };
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             let defaultProvider = '';
             const providerGroups = {};
@@ -62,7 +69,7 @@ class FeatureSearch extends React.Component {
                     if (providerDef.params.titlemsgid) {
                         providerDef.params.title = LocaleUtils.tr(providerDef.params.titlemsgid);
                     }
-                    const providerId = uuidv1();
+                    const providerId = uuidv4();
                     res[providerId] = providerDef;
                     if (providerDef.params.default) {
                         defaultProvider = providerId;
@@ -80,6 +87,15 @@ class FeatureSearch extends React.Component {
                 return res;
             }, {});
             this.setState({searchProviders: searchProviders, selectedProvider: defaultProvider, providerGroups: sortedProviderGroups});
+        }
+        if (this.state.selectedProvider !== prevState.selectedProvider) {
+            this.setState(state => ({
+                formValues: Object.entries(state.searchProviders[state.selectedProvider]?.params?.fields || []).reduce((res, [field, cfg]) => {
+                    return {...res, [field]: ""};
+                }, {})
+            }));
+        } else if (this.state.formValues !== prevState.formValues) {
+            this.reloadSelectOptions();
         }
     }
     onHide = () => {
@@ -123,15 +139,18 @@ class FeatureSearch extends React.Component {
         if (!provider) {
             return null;
         }
+        const fields = Object.entries(provider.params.fields).map(([key, value], idx) => (
+            {key, ...value, order: value.order ?? idx}
+        )).sort((a, b) => a.order - b.order);
         return (
             <form className="feature-search-form" disabled={this.state.busy} onChange={() => this.setState({searchResults: null})} onSubmit={this.search}>
                 <fieldset disabled={this.state.busy}>
                     {provider.params.description ? (<div className="feature-search-form-descr">{provider.params.description}</div>) : null}
                     <table><tbody>
-                        {Object.entries(provider.params.fields).map(([key, value]) => (
-                            <tr key={key}>
-                                <td>{value.label ?? LocaleUtils.tr(value.labelmsgid)}:</td>
-                                <td>{this.renderField(key, value)}</td>
+                        {fields.map(field => (
+                            <tr key={field.key}>
+                                <td>{field.label ?? LocaleUtils.tr(field.labelmsgid)}:</td>
+                                <td>{this.renderField(field.key, field)}</td>
                             </tr>
                         ))}
                     </tbody></table>
@@ -146,16 +165,22 @@ class FeatureSearch extends React.Component {
         );
     };
     renderField = (fieldname, fieldcfg) => {
+        const onChange = ev => this.setState(state => ({formValues: {...state.formValues, [fieldname]: ev.target.value}}));
         if (fieldcfg.type === "select") {
+            const options = this.state.providerSelectOptions[fieldname]?.options ?? fieldcfg.options ?? [];
             return (
-                <select name={fieldname}>
-                    {fieldcfg.options.map(entry => (
-                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
-                    ))}
-                </select>
+                <InputContainer>
+                    <select defaultValue="" name={fieldname} onChange={onChange} role="input">
+                        <option disabled value="">{LocaleUtils.tr("featuresearch.select")}</option>
+                        {options.map(entry => (
+                            <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
+                        ))}
+                    </select>
+                    <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
+                </InputContainer>
             );
         } else {
-            return (<input name={fieldname} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
+            return (<input name={fieldname} onChange={onChange} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
         }
     };
     renderSearchResults = () => {
@@ -168,13 +193,13 @@ class FeatureSearch extends React.Component {
                 {isEmpty(this.state.searchResults) ? (
                     <div className="feature-search-noresults">{LocaleUtils.tr("featuresearch.noresults")}</div>
                 ) : (
-                    <IdentifyViewer collapsible displayResultTree={false} enableExport identifyResults={this.state.searchResults} showLayerTitles={!provider.params.resultTitle} />
+                    <IdentifyViewer collapsible displayResultTree={false} enableExport={this.props.enableExport} identifyResults={this.state.searchResults} showLayerTitles={!provider.params.resultTitle} />
                 )}
             </div>
         );
     };
     selectProvider = (ev) => {
-        this.setState({selectedProvider: ev.target.value, searchResults: null});
+        this.setState({selectedProvider: ev.target.value, searchResults: null, providerSelectOptions: {}, formValues: {}});
     };
     search = (ev) => {
         ev.preventDefault();
@@ -229,6 +254,52 @@ class FeatureSearch extends React.Component {
             this.setState({busy: false, searchResults: results});
         }).catch(() => {
             this.setState({busy: false, searchResults: {}});
+        });
+    };
+    clearField = (ev, fieldname) => {
+        ev.target.previousElementSibling.value = "";
+        this.setState(state => ({formValues: {...state.formValues, [fieldname]: ev.target.value}}));
+    };
+    reloadSelectOptions = () => {
+        Object.entries(this.state.searchProviders[this.state.selectedProvider]?.params?.fields ?? {}).forEach(([name, fieldcfg]) => {
+            if (fieldcfg.type === "select") {
+                if (fieldcfg.options_query) {
+                    let url = fieldcfg.options_query;
+                    Object.entries(this.state.formValues).forEach(([key, value]) => {
+                        url = url.replace(`$${key}$`, value);
+                    });
+                    if (this.state.providerSelectOptions[name]?.source !== url) {
+                        axios.get(url).then(response => {
+                            let options = [];
+                            if (response.data.type === "FeatureCollection") {
+                                options = Object.entries(response.data.features.reduce((res, feature) => {
+                                    const value = fieldcfg.value_field === 'id' ? feature.id : feature.properties[fieldcfg.value_field];
+                                    const label = fieldcfg.label_field === 'id' ? feature.id : feature.properties[fieldcfg.label_field];
+                                    return {...res, [value]: label};
+                                }, {})).map(entry => ({value: entry[0], label: entry[1]}));
+                            } else if (Array.isArray(response.data)) {
+                                options = response.data.map(entry => ({
+                                    value: entry.key,
+                                    label: entry.value
+                                }));
+                            }
+                            this.setState(state => ({
+                                providerSelectOptions: {...state.providerSelectOptions, [name]: {source: url, options: options}}
+                            }));
+                        }).catch(() => {
+                            /* eslint-disable-next-line */
+                            console.warn(`Failed to query options for field ${name}`);
+                            this.setState(state => ({
+                                providerSelectOptions: {...state.providerSelectOptions, [name]: {source: url, options: []}}
+                            }));
+                        });
+                    }
+                } else if (fieldcfg.options && !this.state.providerSelectOptions[name]) {
+                    this.setState(state => ({
+                        providerSelectOptions: {...state.providerSelectOptions, [name]: {source: "static", options: fieldcfg.options}}
+                    }));
+                }
+            }
         });
     };
 }

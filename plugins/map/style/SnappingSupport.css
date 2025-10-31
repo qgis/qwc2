@@ -1,21 +1,10 @@
-div.snapping-toolbar-container {
-    position: absolute;
-    bottom: 2.25em;
-    left: 0;
-    right: 0;
-    text-align: center;
-    pointer-events: none;
-    z-index: 3;
-}
-
-div.snapping-toolbar-container > div {
+div.snapping-toolbar {
     display: inline-flex;
     align-items: center;
     line-height: 1.5em;
     position: relative;
-    max-width: 95%;
-    pointer-events: all;
     padding: 0.25em 0.5em;
+    order: 0;
     background-color: var(--container-bg-color);
     box-shadow: 0px -2px 4px rgba(136, 136, 136, 0.5);
     border-bottom: 1px solid rgba(136, 136, 136, 0.5);

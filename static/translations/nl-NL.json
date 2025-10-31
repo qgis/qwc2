@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Kan de achtergrond \"{0}\" niet vinden, Standaard achtergrond wordt weergegeven.",
+      "missingdefaulttheme": "",
       "missinglayers": "Kan de volgende lagen niet vinden: {0}.",
       "missingpermalink": "De opgegeven permalink of bladwijzer is ongeldig of verlopen.",
       "missingprojection": "Kan de kaart \"{0}\": de projectie {1} is niet gedefinieerd.",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "Kaartfilter",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Print",
         "Reports": "",
         "Settings": "Instellingen",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "Foto maken",
       "unsavedchanged": "Er zijn niet-opgeslagen wijzigingen. Wil je de pagina toch verlaten?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Object",
       "noresults": "Geen resultaten",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "Kopiëren naar klembord",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Exporteren",
       "featureReport": "Rapport",
@@ -253,6 +262,7 @@
       "noresults": "Geen informatie beschikbaar voor het aangewezen punt",
       "querying": "Zoeken...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Objectgegevens"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Positie: lokaliseren...",
         "PERMISSION_DENIED": "Positie: toestemming geweigerd"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Laden...",
@@ -433,7 +447,7 @@
       "angle": "Hoek",
       "featureunsupported": "Numerieke invoer niet beschikbaar voor deze geometrie",
       "height": "Hoogte",
-      "nofeature": "Geen actieve object",
+      "nofeatureormultiple": "",
       "side": "Zijde",
       "width": "Breedte",
       "windowtitle": "Numerieke invoer"
@@ -478,7 +492,7 @@
       "loading": "Formulier laden..."
     },
     "redlining": {
-      "border": "Rand",
+      "attributes": "",
       "buffer": "Buffer",
       "buffercompute": "Berekenen",
       "bufferdistance": "Afstand",
@@ -486,6 +500,7 @@
       "bufferlayername": "Laag",
       "bufferselectfeature": "Selecteer object om te bufferen...",
       "circle": "Cirkel",
+      "ctrlhint": "",
       "delete": "Verwijderen",
       "draw": "Tekenen",
       "edit": "Bewerken",
@@ -506,8 +521,7 @@
       "size": "Afmeting",
       "square": "",
       "text": "Tekst",
-      "transform": "Transformeer",
-      "width": "Breedte"
+      "transform": "Transformeer"
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Punt toevoegen",
+      "addlayer": "",
       "addviapoint": "Via hier",
       "arriveat": "Aankomen om",
       "clear": "Wissen",
@@ -577,6 +592,7 @@
       "providerselection": "Zoek providers",
       "recent": "",
       "search": "Zoeken",
+      "tasks": "",
       "themelayers": "Kaartlagen",
       "themes": "Kaarten",
       "unknownmore": ""

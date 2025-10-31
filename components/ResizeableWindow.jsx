@@ -14,7 +14,7 @@ import {Rnd} from 'react-rnd';
 
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import {v1 as uuidv1} from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 import {raiseWindow, registerWindow, unregisterWindow, setSplitScreen} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -33,6 +33,7 @@ class ResizeableWindow extends React.Component {
         bottombarHeight: PropTypes.number,
         busyIcon: PropTypes.bool,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        detachable: PropTypes.bool,
         dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         extraControls: PropTypes.arrayOf(PropTypes.shape({
             active: PropTypes.bool,
@@ -98,7 +99,7 @@ class ResizeableWindow extends React.Component {
         super(props);
         this.rnd = null;
         this.dragShield = null;
-        this.id = uuidv1();
+        this.id = uuidv4();
         this.portalNode = props.usePortal ? portals.createHtmlPortalNode() : null;
     }
     componentDidMount() {
@@ -194,7 +195,7 @@ class ResizeableWindow extends React.Component {
         });
 
         let detachIcons = null;
-        if (!ConfigUtils.isMobile() && !ConfigUtils.getConfigProp("globallyDisableDetachableDialogs")) {
+        if (!ConfigUtils.isMobile() && !ConfigUtils.getConfigProp("globallyDisableDetachableDialogs") && this.props.detachable !== false) {
             detachIcons = this.state.externalWindow ? (
                 <Icon className={iconClasses} icon="embed" onClick={this.moveToInternalWindow} title={LocaleUtils.tr("window.embed")} />
             ) : (
@@ -513,6 +514,8 @@ class ResizeableWindow extends React.Component {
             externalWindow.document.querySelector(':root').style.setProperty('--bottombar-height',
                 document.querySelector(':root').style.getPropertyValue('--bottombar-height')
             );
+            // Inherit API
+            externalWindow.qwc2 = window.qwc2;
 
             this.setState(state => ({
                 externalWindow: externalWindow,

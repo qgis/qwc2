@@ -66,7 +66,7 @@ export default class EditableSelect extends React.Component {
         return typeof option === 'object' ? option.value : String(option);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.value !== prevState.value && !this.state.manualInput) {
+        if (this.state.value !== prevState.value && !this.state.manualInput && document.activeElement === this.el) {
             this.el.select();
         } else if (!this.state.value && this.state.manualInput) {
             this.setState({manualInput: false, popup: true});

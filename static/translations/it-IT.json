@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Impossibile trovare lo sfondo \"{0}\", viene visualizzato lo sfondo predefinito.",
+      "missingdefaulttheme": "Impossibile caricare il tema predefinito.",
       "missinglayers": "Impossibile trovare i seguenti livelli: {0}.",
       "missingpermalink": "Il permalink o il segnalibro non è valido o è scaduto.",
       "missingprojection": "Impossibile caricare il tema \"{0}\": la proiezione {1} non è definita.",
@@ -23,6 +24,7 @@
         "MapExport3D": "Esporta mappa",
         "MapFilter": "Filta mappa",
         "MapLight3D": "Illuminazione e ombre",
+        "ObjectList": "Lista oggetti",
         "Print": "Stampa",
         "Reports": "Rapporti",
         "Settings": "Impostazioni",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "Copia",
       "cone": "Cono",
-      "ctrlhint": "Ctrl per selezione multipla...",
       "cuboid": "Cuboide",
       "cylinder": "Cilindro",
       "delete": "Elimina",
@@ -191,6 +192,12 @@
       "takepicture": "Foto",
       "unsavedchanged": "Vi sono cambiamenti non salvati. Volete comunque lasciare la pagina?"
     },
+    "featureattributes": {
+      "name": "Nome",
+      "nofeatureormultiple": "Nessun o più oggetti attivi",
+      "value": "Valore",
+      "windowtitle": "Attributi oggetto"
+    },
     "featureform": {
       "feature": "Oggetto",
       "noresults": "Nessun risultato",
@@ -243,16 +250,19 @@
     "identify": {
       "aggregatedreport": "Rapporto aggregato",
       "clipboard": "Copia negli appunti",
+      "compare": "Confronta gli oggetti selezionati",
+      "comparing": "Confronto di {0} oggetti",
       "download": "Scarica",
       "export": "Esporta",
       "featureReport": "Oggetto formulario",
-      "featurecount": "Number oggetti",
+      "featurecount": "{0} oggetti",
       "layerall": "Tutti i livelli",
       "link": "Link",
       "noattributes": "Nessun attributo",
       "noresults": "Nessun risultato",
       "querying": "Caricando...",
       "reportfail": "Errore nella generazione del rapporto",
+      "results": "Risultati",
       "selectreport": "Seleziona rapporto...",
       "title": "Titolo"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Posizione: rilevando",
         "PERMISSION_DENIED": "Posizione: permesso negato"
       }
+    },
+    "locationrecorder": {
+      "record": "Registra posizione",
+      "stop": "Termina registrazione"
     },
     "map": {
       "loading": "In caricamento...",
@@ -433,7 +447,7 @@
       "angle": "Angolo",
       "featureunsupported": "Formulario numerico non disponibile per questa geometria",
       "height": "Altezza",
-      "nofeature": "Nessun oggetto attivo",
+      "nofeatureormultiple": "Nessun o più oggetti attivi",
       "side": "Lato",
       "width": "Larghezza",
       "windowtitle": "Formulario numerico"
@@ -478,7 +492,7 @@
       "loading": "Caricando formulario..."
     },
     "redlining": {
-      "border": "Bordo",
+      "attributes": "Attributi oggetto",
       "buffer": "Buffer",
       "buffercompute": "Calcola",
       "bufferdistance": "Distanza",
@@ -486,6 +500,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Seleziona un oggetto...",
       "circle": "Cerchio",
+      "ctrlhint": "Ctrl per selezione multipla...",
       "delete": "Elimina",
       "draw": "Disegna",
       "edit": "Modifica",
@@ -506,8 +521,7 @@
       "size": "Dimensione",
       "square": "Quadrato",
       "text": "Testo",
-      "transform": "Transforma",
-      "width": "Larghezza"
+      "transform": "Transforma"
     },
     "reports": {
       "all": "Tutti",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Aggiungi",
+      "addlayer": "Esporta a livello",
       "addviapoint": "Via qui",
       "arriveat": "Arrivo il",
       "clear": "Azzera",
@@ -577,6 +592,7 @@
       "providerselection": "Selezione provider",
       "recent": "Ricerche recenti",
       "search": "Cerca",
+      "tasks": "Strumenti",
       "themelayers": "Livelli di temi",
       "themes": "Temi",
       "unknownmore": "Ulteriori risultati"

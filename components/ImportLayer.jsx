@@ -278,7 +278,7 @@ class ImportLayer extends React.Component {
         // .kmz must be a zip archive with at least a doc.kml file. The kml is then imported like any other KML file.
         const fileMap = await load(file, ZipLoader);
         for (const fileName in fileMap) {
-            if (fileName == "doc.kml") {
+            if (fileName === "doc.kml") {
                 const decoder = new TextDecoder();
                 this.addKMLLayer(file.name, decoder.decode(fileMap[fileName]));
                 break;
@@ -410,11 +410,17 @@ class ImportLayer extends React.Component {
     };
     addSHPLayer = async(file) => {
         const {_BrowserFileSystem, load} = await import('@loaders.gl/core');
+        const {Proj4Projection} = await import('@math.gl/proj4');
         const {ShapefileLoader} = await import('@loaders.gl/shapefile');
         const {ZipLoader} = await import('@loaders.gl/zip');
 
         // Import SHP layer from ZIP. Zip must contain all the required files : shp, dbf, shx, prj, cpg
-        if (file.type === "application/zip") {
+        const mimeTypes = ['application/zip', 'application/zip-compressed', 'application/x-zip-compressed'];
+        if (mimeTypes.includes(file.type)) {
+            const projections = ConfigUtils.getConfigProp("projections") || [];
+            if (projections) {
+                Proj4Projection.defineProjectionAliases(projections);
+            }
             const fileMap = await load(file, ZipLoader);
             const EXTENSIONS = ['shp', 'shx', 'dbf', 'cpg', 'prj'];
             const files = {};

@@ -1,7 +1,8 @@
 /* This is just a scratch file for testing the expression grammar */
 
-const nearley = require("nearley");
-const grammar = require("./grammar.js");
+import nearley from "nearley";
+import grammar from "./grammar.js";
+import MiscUtils from '../MiscUtils.js';
 
 global.qwc2ExpressionParserContext = {
     feature: {
@@ -9,8 +10,16 @@ global.qwc2ExpressionParserContext = {
         "properties": {
             "listnr": 1,
             "grpcode": 2,
-            "numcode": 3
-
+            "numcode": 3,
+            "label": "My fancy feature",
+            "BerechneteGruenflaeche": 10,
+            "EffektiveGruenflaeche": 8,
+            // "BerechneteBebauungsflaeche" - "EffektiveBebauungsflaeche" - "Abtretung" + "Zuteilung"
+            "BerechneteBebauungsflaeche": 10,
+            "EffektiveBebauungsflaeche": 9,
+            "Abtretung": 8.1,
+            "Zuteilung": 7.3
+            // 10 - 9 - 8 + 7 = 0
         }
     },
     getFeature: (layerName, attr, value) => {
@@ -22,6 +31,7 @@ global.qwc2ExpressionParserContext = {
         console.log(value);
         return {1: 'One', 2: 'Two', 3: 'Three', 4: 'Four'}[value] ?? value;
     },
+    formatDate: MiscUtils.formatDate,
     asFilter: false,
     username: "testuser",
     layer: "layername"
@@ -44,6 +54,11 @@ const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 // parser.feed("nullif('a', 'b')")
 // parser.feed("@user_account_name")
 // parser.feed("'Hello' || ' ' || 'World'");
-parser.feed('represent_value("numcode")');
+// parser.feed('represent_value("numcode")');
+// parser.feed('"BerechneteGruenflaeche" - "EffektiveGruenflaeche"');
+// parser.feed('"BerechneteBebauungsflaeche" - "EffektiveBebauungsflaeche" - "Abtretung" + "Zuteilung"');
+// parser.feed('randf(0.5,0.6)');
+// parser.feed('round(\r "Abtretung" \r+ "Zuteilung")')
+// parser.feed("format_date('2012-05-15','d MMMM yyyy','fr')")
 
 console.log(JSON.stringify(parser.results));

@@ -387,21 +387,16 @@ const LayerUtils = {
                     return layers;
                 }
                 // Avoid splitting sibling groups when reordering
-                if (exploded[idx + delta].path.length > level || !isEqual(exploded[idx + delta].path.slice(0, -1), sublayerpath.slice(0, -1))) {
-                    // Find next slot
-                    const siblinggrouppath = exploded[idx + delta].path.slice(0, level);
-                    siblinggrouppath[siblinggrouppath.length - 1] += delta;
-                    while (idx + delta >= 0 && idx + delta < exploded.length && (exploded[idx + delta].path.length > level || !isEqual(exploded[idx + delta].path.slice(0, level), siblinggrouppath))) {
-                        delta += delta > 0 ? 1 : -1;
-                    }
-                    // The above logic adds the number of items to skip to the delta which is already -1 or +1, so we need to decrease delta by one accordingly
-                    if (Math.abs(delta) > 1) {
-                        delta += delta > 0 ? -1 : 1;
-                    }
-                    if (idx + delta < 0 || idx + delta >= exploded.length) {
-                        return layers;
-                    }
+                const group = sublayerpath.slice(0, -1).reduce((sublayer, i) => sublayer.sublayers[i], movelayer);
+                // Compute move offset
+                const dir = delta > 0 ? 1 : -1;
+                const oldIndex = sublayerpath[sublayerpath.length - 1];
+                const newIndex = oldIndex + delta;
+                let offset = 0;
+                for (let i = oldIndex + dir; dir * i <= dir * newIndex; i += dir) {
+                    offset += LayerUtils.layerTreeCount(group.sublayers[i]) * dir;
                 }
+                delta = offset;
             }
             // Reorder layer
             if (delta < 0) {
@@ -555,6 +550,9 @@ const LayerUtils = {
                 LayerUtils.ensureMutuallyExclusive(sublayer);
             }
         }
+    },
+    layerTreeCount(layer) {
+        return isEmpty(layer.sublayers) ? 1 : layer.sublayers.reduce((sum, sublayer) => sum + LayerUtils.layerTreeCount(sublayer), 0);
     },
     getSublayerNames(layer, toplevel = true, filter = null) {
         return [(toplevel && layer.sublayers) || (filter && !filter(layer)) ? null : layer.name].concat((layer.sublayers || []).reduce((list, sublayer) => {
@@ -1134,6 +1132,9 @@ const LayerUtils = {
             layer.sublayers.forEach(sublayer =>
                 Object.assign(result, LayerUtils.computeVisbilityPreset(sublayer))
             );
+            if (layer.visibility && !layer.url) {
+                result[layer.name] = "";
+            }
         } else if (layer.visibility) {
             result[layer.name] = layer.style;
         }

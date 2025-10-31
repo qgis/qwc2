@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Faltando fundo",
+      "missingdefaulttheme": "",
       "missinglayers": "Faltando camadas",
       "missingpermalink": "Faltando link permanente",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Imprimir",
         "Reports": "",
         "Settings": "Configurações",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "Selecionar imagem",
       "unsavedchanged": "Alterações não salvas"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Feiçao",
       "noresults": "Sem resultados",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Exportação",
       "featureReport": "Relatório de recurso",
@@ -253,6 +262,7 @@
       "noresults": "Nenhuma informação disponível para o ponto selecionado",
       "querying": "Consultando...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Informação do recurso"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Posição: localização...",
         "PERMISSION_DENIED": "Posição: permissão negada"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Carregar...",
@@ -433,7 +447,7 @@
       "angle": "ângulo",
       "featureunsupported": "Feição não suportada",
       "height": "Altura",
-      "nofeature": "Sem feição",
+      "nofeatureormultiple": "",
       "side": "Margem",
       "width": "Largura",
       "windowtitle": "Título da janela"
@@ -478,7 +492,7 @@
       "loading": "Carregando"
     },
     "redlining": {
-      "border": "Borda",
+      "attributes": "",
       "buffer": "Buffer",
       "buffercompute": "Compute",
       "bufferdistance": "Distância",
@@ -486,6 +500,7 @@
       "bufferlayername": "Nome do buffer",
       "bufferselectfeature": "Selecione uma característica para o buffer...",
       "circle": "Círculo",
+      "ctrlhint": "",
       "delete": "Excluir",
       "draw": "Traçar",
       "edit": "Editar",
@@ -506,8 +521,7 @@
       "size": "Tamanho",
       "square": "Praça",
       "text": "Texto",
-      "transform": "Transformar",
-      "width": "Largura"
+      "transform": "Transformar"
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Adcionar",
+      "addlayer": "",
       "addviapoint": "Adicionar ponto de via",
       "arriveat": "Chegada",
       "clear": "Limpar",
@@ -577,6 +592,7 @@
       "providerselection": "Escolher o provedor",
       "recent": "Pesquisas recentes",
       "search": "Pesquisa",
+      "tasks": "",
       "themelayers": "",
       "themes": "Temas",
       "unknownmore": ""

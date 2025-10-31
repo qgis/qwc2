@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "",
+      "missingdefaulttheme": "",
       "missinglayers": "",
       "missingpermalink": "",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Skriv ut",
         "Reports": "",
         "Settings": "",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "",
       "unsavedchanged": ""
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "",
       "noresults": "",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Eksporter",
       "featureReport": "Objektrapport",
@@ -253,6 +262,7 @@
       "noresults": "Ingen informasjon for valgt punkt",
       "querying": "Søker...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Objektinformasjon"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Posisjon: bestemt",
         "PERMISSION_DENIED": "Posisjon: ikke tillatt"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Laster inn...",
@@ -433,7 +447,7 @@
       "angle": "",
       "featureunsupported": "",
       "height": "",
-      "nofeature": "",
+      "nofeatureormultiple": "",
       "side": "",
       "width": "",
       "windowtitle": ""
@@ -478,7 +492,7 @@
       "loading": ""
     },
     "redlining": {
-      "border": "Kant",
+      "attributes": "",
       "buffer": "Buffer",
       "buffercompute": "Beregner",
       "bufferdistance": "Avstand",
@@ -486,6 +500,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Velg et objekt fra buffer",
       "circle": "",
+      "ctrlhint": "",
       "delete": "Slett",
       "draw": "Tegn",
       "edit": "Rediger",
@@ -506,8 +521,7 @@
       "size": "Størrelse",
       "square": "",
       "text": "Tekst",
-      "transform": "",
-      "width": "Bredde"
+      "transform": ""
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "",
+      "addlayer": "",
       "addviapoint": "",
       "arriveat": "",
       "clear": "",
@@ -577,6 +592,7 @@
       "providerselection": "",
       "recent": "Nylige søk",
       "search": "Søk",
+      "tasks": "",
       "themelayers": "",
       "themes": "Tema",
       "unknownmore": ""

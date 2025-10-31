@@ -43,14 +43,21 @@ class AttributeTableWidget extends React.Component {
         iface: PropTypes.object,
         initialLayer: PropTypes.string,
         layers: PropTypes.array,
+        /** Whether to limit to the extent by default. */
+        limitToExtent: PropTypes.bool,
         mapBbox: PropTypes.object,
         mapCrs: PropTypes.string,
         mapScales: PropTypes.array,
+        readOnly: PropTypes.bool,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
+        /** Whether to show the display field only */
+        showDisplayFieldOnly: PropTypes.bool,
         /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
         showEditFormButton: PropTypes.bool,
+        /** Whether to show hidden Fields. */
+        showHiddenFields: PropTypes.bool,
         /** Whether to show the layer selection menu. */
         showLayerSelection: PropTypes.bool,
         /** Whether to show the "Limit to extent" checkbox */
@@ -64,7 +71,9 @@ class AttributeTableWidget extends React.Component {
     static defaultProps = {
         zoomLevel: 1000,
         showEditFormButton: true,
-        showLayerSelection: true
+        showHiddenFields: true,
+        showLayerSelection: true,
+        limitToExtent: false
     };
     static defaultState = {
         loading: false,
@@ -94,6 +103,7 @@ class AttributeTableWidget extends React.Component {
         this.state = AttributeTableWidget.defaultState;
         this.table = null;
         this.attribTableContents = null;
+        this.state.limitToExtent = props.limitToExtent;
     }
     componentDidMount() {
         if (this.props.initialLayer) {
@@ -127,7 +137,7 @@ class AttributeTableWidget extends React.Component {
         const editConfig = this.props.theme.editConfig || {};
         const currentEditConfig = editConfig[this.state.loadedLayer];
         const editPermissions = (editConfig[this.state.loadedLayer] || {}).permissions || {};
-        const readOnly = editPermissions.updatable === false;
+        const readOnly = this.props.readOnly || editPermissions.updatable === false;
 
         let loadOverlay = null;
         if (this.state.selectedLayer && this.state.selectedLayer !== this.state.loadedLayer) {
@@ -154,13 +164,12 @@ class AttributeTableWidget extends React.Component {
         let table = null;
         let footbar = null;
         if (currentEditConfig && this.state.features) {
-            const fields = currentEditConfig.fields.reduce((res, field) => {
-                if (field.id !== "id") {
-                    res.push(field);
-                }
-                return res;
-            }, []);
-
+            const fields = this.props.showDisplayFieldOnly ? currentEditConfig.fields.filter(
+                field => field.name === currentEditConfig.displayField
+            ) : currentEditConfig.fields.filter(field => (
+                field.id !== "id" &&
+                (this.props.showHiddenFields || field.constraints?.hidden !== true)
+            ));
             const indexOffset = this.state.currentPage * this.state.pageSize;
             const features = this.state.filteredSortedFeatures.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (
@@ -168,13 +177,15 @@ class AttributeTableWidget extends React.Component {
                     <thead>
                         <tr>
                             <th />
-                            <th onClick={() => this.sortBy("id")} title={this.translateFieldName("id", this.state.loadedLayer)}>
-                                <span>
-                                    <span className="attribtable-table-headername">{this.translateFieldName("id", this.state.loadedLayer)}</span>
-                                    {this.renderSortIndicator("id")}
-                                    {this.renderColumnResizeHandle(1, 'r')}
-                                </span>
-                            </th>
+                            {!this.props.showDisplayFieldOnly ? (
+                                <th onClick={() => this.sortBy("id")} title={this.translateFieldName("id", this.state.loadedLayer)}>
+                                    <span>
+                                        <span className="attribtable-table-headername">{this.translateFieldName("id", this.state.loadedLayer)}</span>
+                                        {this.renderSortIndicator("id")}
+                                        {this.renderColumnResizeHandle(1, 'r')}
+                                    </span>
+                                </th>
+                            ) : null}
                             {fields.map((field, idx) => (
                                 <th key={field.id} onClick={() => this.sortBy(field.id)} title={this.translateFieldName(field.name, this.state.loadedLayer)}>
                                     <span>
@@ -193,7 +204,7 @@ class AttributeTableWidget extends React.Component {
                             const disabled = readOnly || (this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== featureidx);
                             const key = this.state.changedFeatureIdx === featureidx && this.state.newFeature ? "newfeature" : feature.id;
                             return (
-                                <tr className={disabled ? "row-disabled" : ""} key={key}
+                                <tr className={disabled && !this.props.readOnly ? "row-disabled" : ""} key={key}
                                     onMouseEnter={() => this.setState({highlightedFeature: feature})}
                                     onMouseLeave={() => this.setState(state => ({highlightedFeature: state.highlightedFeature === feature ? null : state.highlightedFeature}))}
                                 >
@@ -204,7 +215,9 @@ class AttributeTableWidget extends React.Component {
                                             {this.renderRowResizeHandle(filteredIndex + 1, 'b')}
                                         </span>
                                     </td>
-                                    <td>{feature.id}</td>
+                                    {!this.props.showDisplayFieldOnly ? (
+                                        <td>{feature.id}</td>
+                                    ) : null}
                                     {fields.map(field => (
                                         <td key={field.id}>
                                             {this.renderField(currentEditConfig, field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
@@ -268,9 +281,9 @@ class AttributeTableWidget extends React.Component {
         const editing = this.state.changedFeatureIdx !== null;
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
         const hasGeometry = (currentEditConfig || {}).geomType !== null;
-        const showAddButton = editPermissions.creatable !== false && (this.props.allowAddForGeometryLayers || !hasGeometry);
-        const showDelButton = editPermissions.deletable !== false;
-        const showEditButton = ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton;
+        const showAddButton = !this.props.readOnly && editPermissions.creatable !== false && (this.props.allowAddForGeometryLayers || !hasGeometry);
+        const showDelButton = !this.props.readOnly && editPermissions.deletable !== false;
+        const showEditButton = !this.props.readOnly && ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton;
         const deleteButton = showDelButton ? (
             <button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                 <Icon icon="trash" />
@@ -383,16 +396,20 @@ class AttributeTableWidget extends React.Component {
             KeyValCache.clear();
             FeatureCache.clear();
             const bbox = this.state.limitToExtent ? this.props.mapBbox.bounds : null;
-            this.props.iface.getFeatures(currentEditConfig, this.props.mapCrs, (result) => {
-                if (result) {
-                    const features = result.features || [];
-                    this.setState((state2) => ({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, state2), loadedLayer: selectedLayer}));
-                } else {
-                    // eslint-disable-next-line
-                    alert(LocaleUtils.tr("attribtable.loadfailed"));
-                    this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
-                }
-            }, bbox, this.props.filter.filterParams?.[selectedLayer], this.props.filter.filterGeom);
+            this.props.iface.getFeatures(
+                currentEditConfig, this.props.mapCrs, (result) => {
+                    if (result) {
+                        const features = result.features || [];
+                        this.setState((state2) => ({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, state2), loadedLayer: selectedLayer}));
+                    } else {
+                        // eslint-disable-next-line
+                        alert(LocaleUtils.tr("attribtable.loadfailed"));
+                        this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
+                    }
+                },
+                bbox, this.props.filter.filterParams?.[selectedLayer], this.props.filter.filterGeom,
+                this.props.showDisplayFieldOnly ? [currentEditConfig.displayField, "geometry"] : null
+            );
             return {...AttributeTableWidget.defaultState, loading: true, selectedLayer: selectedLayer, limitToExtent: state.limitToExtent};
         });
     };
@@ -777,7 +794,9 @@ class AttributeTableWidget extends React.Component {
             return;
         }
 
-        const fields = currentEditConfig.fields.filter(field => field.id !== 'id');
+        const fields = this.props.showDisplayFieldOnly ? currentEditConfig.fields.filter(
+            field => field.name === currentEditConfig.displayField
+        ) : currentEditConfig.fields.filter(field => field.id !== 'id');
         let data = "";
         data += "id," + fields.map(field => `"${field.name.replaceAll('"', '""')}"`).join(",") + "\n";
 

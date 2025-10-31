@@ -30,6 +30,7 @@ Plugin reference
 * [MapTip](#maptip)
 * [Measure](#measure)
 * [NewsPopup](#newspopup)
+* [ObjectList](#objectlist)
 * [OverviewMap](#overviewmap)
 * [Panoramax](#panoramax)
 * [Portal](#portal)
@@ -257,7 +258,9 @@ This plugin queries the dataset via the editing service specified by
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowAddForGeometryLayers | `bool` | Whether to allow adding records for datasets which have a geometry column. | `undefined` |
+| limitToExtent | `bool` | Whether to limit to the extent by default. | `false` |
 | showEditFormButton | `bool` | Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. | `true` |
+| showHiddenFields | `bool` | Whether to show hidden fields. | `true` |
 | showLimitToExtent | `bool` | Whether to show the "Limit to extent" checkbox | `true` |
 | zoomLevel | `number` | The zoom level for zooming to point features. | `1000` |
 
@@ -382,6 +385,7 @@ See [Configuring the QGIS feature search](../../topics/Search/#configuring-the-q
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 GeometryDigitizer<a name="geometrydigitizer"></a>
@@ -481,9 +485,8 @@ for customized queries and templates for the result presentation.
 | attributeTransform | `func` | Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
 | clearResultsOnClose | `bool` | Whether to clear the identify results when exiting the identify tool. | `true` |
 | customExporters | `array` | Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `[]` |
-| displayResultTree | `bool` | Whether to display a tree overview of results (as opposed to a flat list of results). | `true` |
 | enableAggregatedReports | `bool` | Whether to enable the aggregated report download button. | `true` |
-| enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`) | `true` |
+| enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. | `true` |
 | exitTaskOnResultsClose | `bool` | Whether to clear the task when the results window is closed. | `undefined` |
 | exportGeometry | `bool` | Whether to include the geometry in exported features. Default: `true`. | `true` |
 | featureInfoReturnsLayerName | `bool` | Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. | `true` |
@@ -492,6 +495,7 @@ for customized queries and templates for the result presentation.
 | initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. | `'m'` |
 | params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
+| resultDisplayMode | `string` | Result display mode, one of `tree`, `flat`, `paginated`. | `'flat'` |
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
 
 LayerCatalog<a name="layercatalog"></a>
@@ -538,6 +542,7 @@ Example:
 | catalogUrl | `string` | The URL to the catalog JSON file. | `undefined` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | levelBasedIndentSize | `bool` | Whether to increase the indent size dynamically according to the current level (`true`) or keep the indent size constant (`false`). | `true` |
+| registerCatalogSearchProvider | `bool` | Whether to register a search provider which allows searching catalog layers through the global search field. | `true` |
 
 LayerTree<a name="layertree"></a>
 ----------------------------------------------------------------
@@ -720,6 +725,10 @@ Allows measuring points/lines/areas on the map.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| bearingHeadMarker | `string` | Head marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
+| bearingTailMarker | `string` | Tail marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
+| lineHeadMarker | `string` | Head marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
+| lineTailMarker | `string` | Tail marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
 | showMeasureModeSwitcher | `bool` | Whether to show the widget to switch between measure modes. | `true` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
@@ -738,6 +747,23 @@ revision is published (specified via newsRev prop).
 | showInSidebar | `bool` | Whether to show the news in a sidebar instead of a popup. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
 | sidebarWidth | `string` | The default width of the sidebar, as a CSS width string. | `undefined` |
+
+ObjectList<a name="objectlist"></a>
+----------------------------------------------------------------
+Display layer object lists in a dialog.
+
+The object list is similar to the attribute table, but displays only the display field for each object and contains no edit functionality.
+
+To make a layer available in the object list, create a a data resource and matching permissions for it in the `qwc-admin-gui`.
+
+This plugin queries the dataset via the editing service specified by
+`editServiceUrl` in `config.json` (by default the `qwc-data-service`).
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| limitToExtent | `bool` | Whether to limit to the extent by default. | `false` |
+| showLimitToExtent | `bool` | Whether to show the "Limit to extent" checkbox | `true` |
+| zoomLevel | `number` | The zoom level for zooming to point features. | `1000` |
 
 OverviewMap<a name="overviewmap"></a>
 ----------------------------------------------------------------
@@ -791,8 +817,10 @@ Uses the print layouts defined in the QGIS project.
 | inlinePrintOutput | `bool` | Whether to display the print output in an inline dialog instead triggering a download. | `false` |
 | layoutHidePrefix | `string` | Hide layouts which begin with this prefix. | `undefined` |
 | layoutSortOrder | `string` | Layout sort order, asc or desc. | `'asc'` |
+| movePrintSeries | `bool` | Whether to allow moving the extent while selecting the print series. | `false` |
 | printExternalLayers | `bool` | Whether to print external layers. Requires QGIS Server 3.x! | `true` |
 | printMapHighlights | `bool` | Whether to print highlights on the map, e.g. selected features or redlining. | `true` |
+| restrictToPrintScales | `bool` | Restrict print scale to list of predefine print scales, if any. | `undefined` |
 | scaleFactor | `number` | Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint. | `1.9` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
@@ -803,15 +831,16 @@ Allows drawing figures and text labels on the map.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowGeometryLabels | `bool` | Whether to allow labeling geometric figures. | `true` |
-| defaultAreaUnit | `string` | Default area unit. Options: metric, imperial, sqm, ha, sqkm, sqft, acre, sqmi | `'metric'` |
-| defaultBorderColor | `array` | Default border color. In format [r, g, b, a]. | `[255, 0, 0, 1]` |
-| defaultFillColor | `array` | Default fill color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
-| defaultLengthUnit | `string` | Default length unit. Options: metric, imperial, m, km, ft, mi | `'metric'` |
-| defaultTextFillColor | `array` | Default text fill color. In format [r, g, b, a]. | `[0, 0, 0, 1]` |
-| defaultTextOutlineColor | `array` | Default text outline color. In format [r, g, b, a]. | `[255, 255, 255, 1]` |
-| hiddenTools | `array` | Tools to hide. Available tools: Circle, Ellipse, Square, Box, HandDrawing, Transform, NumericInput, Buffer, Export. | `[]` |
-| predefinedBorderColors | `[array]` | Predefined border colors. In format [[r, g, b, a], ...]. | `undefined` |
-| predefinedFillColors | `[array]` | Predefined fill colors. In format [[r, g, b, a], ...]. | `undefined` |
+| defaultAreaUnit | `string` | Default area unit. Options: `metric`, `imperial`, `sqm`, `ha`, `sqkm`, `sqft`, `acre`, `sqmi` | `'metric'` |
+| defaultBorderColor | `array` | Default border color. In format `[r, g, b, a]`. | `[255, 0, 0, 1]` |
+| defaultFillColor | `array` | Default fill color. In format `[r, g, b, a]`. | `[255, 255, 255, 1]` |
+| defaultLengthUnit | `string` | Default length unit. Options: `metric`, `imperial`, `m`, `km`, `ft`, `mi` | `'metric'` |
+| defaultTextFillColor | `array` | Default text fill color. In format `[r, g, b, a]`. | `[0, 0, 0, 1]` |
+| defaultTextOutlineColor | `array` | Default text outline color. In format `[r, g, b, a]`. | `[255, 255, 255, 1]` |
+| hiddenTools | `array` | Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `Export`. | `[]` |
+| predefinedBorderColors | `[array]` | Predefined border colors. In format `[[r, g, b, a], ...]`. | `undefined` |
+| predefinedDashPatterns | `[array]` | Predefined dash patterns. In format `[<dash-array>, ...]`, where a dash-array is list of alternating dash and gap widths, i.e. `[8 4]` for long dashes followed by shorter gaps. | `[[], [8, 8], [1, 8], [8, 8, 1, 8]]` |
+| predefinedFillColors | `[array]` | Predefined fill colors. In format `[[r, g, b, a], ...]`. | `undefined` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
 
@@ -839,7 +868,7 @@ Requires `routingServiceUrl` in `config.json` pointing to a Valhalla routing ser
 |----------|------|-------------|---------------|
 | enabledModes | `[string]` | List of enabled routing modes. | `["auto", "heavyvehicle", "transit", "bicycle", "pedestrian"]` |
 | enabledProviders | `[string]` | List of search providers to use for routing location search. | `["coordinates", "nominatim"]` |
-| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'left'`<br />`}` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'left'`<br />`}` |
 | showPinLabels | `bool` | Whether to label the routing waypoint pins with the route point number. | `true` |
 | units | `object` | Set of units for isochrone time/distance intervals to use. | `{`<br />`    time: {`<br />`        min: 1,`<br />`        s: 60`<br />`    },`<br />`    distance: {`<br />`        km: 1,`<br />`        m: 1000`<br />`    }`<br />`}` |
 | zoomAuto | `bool` | Automatically zoom to the extent of the route | `true` |
@@ -911,6 +940,7 @@ Theme switcher panel.
 | collapsibleGroups | `bool` | Whether to allow collapsing theme groups. | `undefined` |
 | hideAddThemeButton | `bool` | Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
 | hideAddThemeLayersButton | `bool` | Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
+| showActiveTheme | `bool` | Whether to display the currently active theme below the application menu button. Default: false | `false` |
 | showDefaultThemeSelector | `bool` | Whether to show an icon to select the default theme/bookmark (of a logged in user). | `true` |
 | showLayerAfterChangeTheme | `bool` | Whether to show the LayerTree by default after switching the theme. | `false` |
 | showThemeFilter | `bool` | Wether to show the theme filter field in the top bar. | `true` |
@@ -953,6 +983,7 @@ Top bar, containing the logo, searchbar, task buttons and app menu.
 | logoSrc | `string` | The logo image URL if a different source than the default `assets/img/logo.<ext>` and `assets/img/logo-mobile.<ext>` is desired. | `undefined` |
 | logoUrl | `string` | The hyperlink to open when the logo is clicked. | `undefined` |
 | menuItems | `array` | The menu items. Refer to the corresponding chapter of the viewer documentation and the sample config.json. | `[]` |
+| registerTaskSearchProvider | `bool` | Whether to register a search provider which allows searching menu tasks through the global search field. | `undefined` |
 | searchOptions | `{`<br />`  allowSearchFilters: bool,`<br />`  hideResultLabels: bool,`<br />`  highlightStyle: {`<br />`  strokeColor: array,`<br />`  strokeWidth: number,`<br />`  strokeDash: array,`<br />`  fillColor: array,`<br />`},`<br />`  minScaleDenom: number,`<br />`  resultLimit: number,`<br />`  sectionsDefaultCollapsed: bool,`<br />`  showHighlightMarker: bool,`<br />`  showLayerAfterChangeTheme: bool,`<br />`  showLayerResultsBeforePlaces: bool,`<br />`  showResultInSearchText: bool,`<br />`  zoomToLayers: bool,`<br />`}` | Options passed down to the search component. | `{`<br />`    showHighlightMarker: true,`<br />`    showResultInSearchText: true,`<br />`    minScaleDenom: 1000`<br />`}` |
 | toolbarItems | `array` | The toolbar. Refer to the corresponding chapter of the viewer documentation and the sample config.json. | `[]` |
 | toolbarItemsShortcutPrefix | `string` | The keyboard shortcut prefix for triggering toolbar tasks. I.e. alt+shift. The task are then triggered by <prefix>+{1,2,3,...} for the 1st, 2nd, 3rd... toolbar icon. | `undefined` |
@@ -985,7 +1016,7 @@ See [3D View](../../topics/View3D).
 |----------|------|-------------|---------------|
 | buttonPosition | `number` | The position slot index of the 3d switch map button, from the bottom (0: bottom slot). | `6` |
 | controlsPosition | `string` | The position of the navigation controls. Either `top` or `bottom`. | `'top'` |
-| defaultSceneQuality | `number` | The default scene quality factor (`20`: min, `100`: max). | `undefined` |
+| defaultSceneQuality | `number` | The default scene quality factor (`20`: min, `100`: max). | `100` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
 | mouseButtons | `{`<br />`  left: string,`<br />`  middle: string,`<br />`  right: string,`<br />`}` | Mouse buttons assignment. You can assign `pan`, `rotate`, `zoom` to each button. | `{`<br />`    left: 'pan',`<br />`    middle: 'zoom',`<br />`    right: 'rotate'`<br />`}` |
 | pluginOptions | `object` | Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}`.<br />Refer to the documentation of the <a href="#plugins3d">3D plugins</a> for settable options. | `{}` |

@@ -28,8 +28,16 @@ import './style/Measure.css';
  */
 class Measure extends React.Component {
     static propTypes = {
+        /** Head marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. */
+        bearingHeadMarker: PropTypes.string,
+        /** Tail marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. */
+        bearingTailMarker: PropTypes.string,
         changeMeasurementState: PropTypes.func,
         displayCrs: PropTypes.string,
+        /** Head marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. */
+        lineHeadMarker: PropTypes.string,
+        /** Tail marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. */
+        lineTailMarker: PropTypes.string,
         mapCrs: PropTypes.string,
         measureState: PropTypes.object,
         setSnappingConfig: PropTypes.func,
@@ -47,7 +55,13 @@ class Measure extends React.Component {
         snappingActive: true
     };
     onShow = (mode) => {
-        this.props.changeMeasurementState({geomType: mode || 'Point'});
+        this.props.changeMeasurementState({
+            geomType: mode || 'Point',
+            bearingHeadMarker: this.props.bearingHeadMarker,
+            bearingTailMarker: this.props.bearingTailMarker,
+            lineHeadMarker: this.props.lineHeadMarker,
+            lineTailMarker: this.props.lineTailMarker
+        });
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
     };
     onHide = () => {

@@ -273,6 +273,9 @@ class OlMap extends React.Component {
                 suppressClick = true;
                 return;
             }
+            if (!layer) {
+                return;
+            }
             // Picked vector tile features cause an exception when passed to format.writeFeatureObject
             try {
                 const featureObj = format.writeFeatureObject(feature);

@@ -41,6 +41,7 @@ import MapLegendPlugin from './plugins/MapLegend';
 import MapTipPlugin from './plugins/MapTip';
 import MeasurePlugin from './plugins/Measure';
 import NewsPopupPlugin from './plugins/NewsPopup';
+import ObjectListPlugin from './plugins/ObjectList';
 import OverviewMapPlugin from './plugins/OverviewMap';
 import PanoramaxPlugin from './plugins/Panoramax';
 import PortalPlugin from './plugins/Portal';
@@ -110,6 +111,7 @@ export default {
             MapTipPlugin: MapTipPlugin,
             MeasurePlugin: MeasurePlugin,
             NewsPopupPlugin: NewsPopupPlugin,
+            ObjectListPlugin: ObjectListPlugin(/* CustomEditingInterface */),
             OverviewMapPlugin: OverviewMapPlugin,
             PanoramaxPlugin: PanoramaxPlugin,
             PortalPlugin: PortalPlugin,

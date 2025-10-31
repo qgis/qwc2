@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "No s'ha pogut trobar el fons \"{0}\", es mostra el fons per defecte.",
+      "missingdefaulttheme": "",
       "missinglayers": "No s'han pogut trobar les següents capes: {0}.",
       "missingpermalink": "L'enllaç permanent o marcador especificat no és vàlid o ha caducat.",
       "missingprojection": "No s'ha pogut carregar el tema \"{0}\": la projecció {1} no està definida.",
@@ -23,6 +24,7 @@
         "MapExport3D": "Exportar mapa",
         "MapFilter": "Filtre de mapa",
         "MapLight3D": "Llum i ombres",
+        "ObjectList": "",
         "Print": "Imprimir",
         "Reports": "Informes",
         "Settings": "Opcions",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "Clonar",
       "cone": "Con",
-      "ctrlhint": "Utilitza Ctrl per a selecció múltiple...",
       "cuboid": "Cuboid",
       "cylinder": "Cilindre",
       "delete": "Eliminar",
@@ -191,6 +192,12 @@
       "takepicture": "Escull imatge",
       "unsavedchanged": "Hi ha canvis sense guardar. Vols sortir de la pàgina sense guardar?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Element",
       "noresults": "Sense resultats",
@@ -243,16 +250,19 @@
     "identify": {
       "aggregatedreport": "Informe agregat",
       "clipboard": "Copiar al porta-retalls",
+      "compare": "",
+      "comparing": "",
       "download": "Descarregar",
       "export": "Exportar",
       "featureReport": "Informe d'element",
-      "featurecount": "Nombre d'elements",
+      "featurecount": "{0} element(s)",
       "layerall": "Totes les capes",
       "link": "Link",
       "noattributes": "Sense atributs",
       "noresults": "Sense informació disponible sobre el punt seleccionat",
       "querying": "Consultant...",
       "reportfail": "No s'ha pogut generar l'informe",
+      "results": "",
       "selectreport": "Seleccionar informe...",
       "title": "Informació del element"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Posició: ubicant...",
         "PERMISSION_DENIED": "Permis denegat"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Carregant...",
@@ -433,7 +447,7 @@
       "angle": "Angle",
       "featureunsupported": "Entrada numèrica no disponible per a aquesta geometria",
       "height": "Alçada",
-      "nofeature": "Sense element actiu",
+      "nofeatureormultiple": "",
       "side": "Costat",
       "width": "Amplada",
       "windowtitle": "Entrada numèrica"
@@ -478,7 +492,7 @@
       "loading": "Carregant formulari..."
     },
     "redlining": {
-      "border": "Límit",
+      "attributes": "",
       "buffer": "Buffer",
       "buffercompute": "Computar",
       "bufferdistance": "Distància",
@@ -486,6 +500,7 @@
       "bufferlayername": "Capa de buffer",
       "bufferselectfeature": "Seleccioni un element para enmagatzemar en bufer",
       "circle": "Circle",
+      "ctrlhint": "",
       "delete": "Eliminar",
       "draw": "Dibuixar",
       "edit": "Editar",
@@ -506,8 +521,7 @@
       "size": "Tamany",
       "square": "Quadrat",
       "text": "Text",
-      "transform": "Transformar",
-      "width": "Amplada"
+      "transform": "Transformar"
     },
     "reports": {
       "all": "Tot",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Afegir punt",
+      "addlayer": "",
       "addviapoint": "Passar per aquí",
       "arriveat": "Arribar a",
       "clear": "Netejar",
@@ -577,6 +592,7 @@
       "providerselection": "Proveidor",
       "recent": "Cerques recents",
       "search": "Buscar",
+      "tasks": "",
       "themelayers": "Capes del tema",
       "themes": "Temes",
       "unknownmore": "Més resultats"

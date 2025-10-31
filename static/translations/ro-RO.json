@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "",
+      "missingdefaulttheme": "",
       "missinglayers": "",
       "missingpermalink": "",
       "missingprojection": "",
@@ -23,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "ObjectList": "",
         "Print": "Tipărire",
         "Reports": "",
         "Settings": "Setări",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "",
       "cone": "",
-      "ctrlhint": "",
       "cuboid": "",
       "cylinder": "",
       "delete": "",
@@ -191,6 +192,12 @@
       "takepicture": "Fotografiază",
       "unsavedchanged": "Modificările nu sunt salvate. Doriți să părăsiți pagina oricum?"
     },
+    "featureattributes": {
+      "name": "",
+      "nofeatureormultiple": "",
+      "value": "",
+      "windowtitle": ""
+    },
     "featureform": {
       "feature": "Obiect spațial",
       "noresults": "Nu există rezultate",
@@ -243,6 +250,8 @@
     "identify": {
       "aggregatedreport": "",
       "clipboard": "Copiere în clipboard",
+      "compare": "",
+      "comparing": "",
       "download": "",
       "export": "Export",
       "featureReport": "Raport obiect spațial",
@@ -253,6 +262,7 @@
       "noresults": "Nu există informații în punctul selectat",
       "querying": "Interogare...",
       "reportfail": "",
+      "results": "",
       "selectreport": "",
       "title": "Informații obiect spațial"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Poziția: se localizează...",
         "PERMISSION_DENIED": "Poziția: acces refuzat"
       }
+    },
+    "locationrecorder": {
+      "record": "",
+      "stop": ""
     },
     "map": {
       "loading": "Se încarcă...",
@@ -433,7 +447,7 @@
       "angle": "Unghi",
       "featureunsupported": "Valorile numerice nu pot fi introduse pentru acest tip de geometrie",
       "height": "Înălțimea",
-      "nofeature": "Nu există obiecte spațiale active",
+      "nofeatureormultiple": "",
       "side": "Partea",
       "width": "Lățimea",
       "windowtitle": "Valori numerice"
@@ -478,7 +492,7 @@
       "loading": "Formularul se încarcă"
     },
     "redlining": {
-      "border": "Margine",
+      "attributes": "",
       "buffer": "Zonă tampon",
       "buffercompute": "Calcul",
       "bufferdistance": "Distanța",
@@ -486,6 +500,7 @@
       "bufferlayername": "Zonă tampon",
       "bufferselectfeature": "Selectați o entitate...",
       "circle": "Cerc",
+      "ctrlhint": "",
       "delete": "Elimină",
       "draw": "Desenare",
       "edit": "Modifică",
@@ -506,8 +521,7 @@
       "size": "Dimeniuni",
       "square": "Pătrat",
       "text": "Text",
-      "transform": "Transformare",
-      "width": "Lățime"
+      "transform": "Transformare"
     },
     "reports": {
       "all": "",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Adaugă punct",
+      "addlayer": "",
       "addviapoint": "Punct intermediar",
       "arriveat": "Punct de sosire",
       "clear": "Curățare",
@@ -577,6 +592,7 @@
       "providerselection": "Selectare furnizor",
       "recent": "Căutări recente",
       "search": "Caută",
+      "tasks": "",
       "themelayers": "",
       "themes": "Hărți tematice",
       "unknownmore": ""

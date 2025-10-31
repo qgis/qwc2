@@ -169,8 +169,16 @@ class MeasurementSupport extends React.Component {
             }
             return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
         };
+        const opts = {};
+        if (this.props.measurement.geomType === 'LineString') {
+            opts.headmarker = this.props.measurement.lineHeadMarker;
+            opts.tailmarker = this.props.measurement.lineHeadMarker;
+        } else if (this.props.measurement.geomType === 'Bearing') {
+            opts.headmarker = this.props.measurement.bearingHeadMarker;
+            opts.tailmarker = this.props.measurement.bearingHeadMarker;
+        }
         return [
-            ...FeatureStyles.measureInteraction(feature),
+            ...FeatureStyles.measureInteraction(feature, opts),
             FeatureStyles.measureInteractionVertex({geometryFunction})
         ];
     };

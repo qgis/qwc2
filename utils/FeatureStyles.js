@@ -262,6 +262,8 @@ export default {
             strokeColor: opts.measureStrokeColor,
             strokeWidth: opts.measureStrokeWidth,
             fillColor: opts.measureFillColor,
+            headmarker: opts.headmarker,
+            tailmarker: opts.tailmarker,
             strokeDash: []
         };
         return defaultStyle(feature, styleOptions);

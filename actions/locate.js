@@ -22,10 +22,11 @@ export function changeLocateState(state) {
     };
 }
 
-export function changeLocatePosition(position) {
+export function changeLocatePosition(position, mapPos) {
     return {
         type: CHANGE_LOCATE_POSITION,
-        position: position
+        position: position,
+        mapPos: mapPos
     };
 }
 

@@ -172,7 +172,96 @@ const MiscUtils = {
     },
     resolveAssetsPath(path) {
         return path && path.startsWith(":/") ? ConfigUtils.getAssetsPath() + path.substr(1) : path;
+    },
+    formatDate(input, pattern, locale = undefined) {
+        // Try to parse the input as a full date-time or as time-only
+        let date;
+        if (/^\d{2}:\d{2}(:\d{2})?$/.test(input)) {
+            const now = new Date();
+            const [h, m, s] = input.split(':').map(Number);
+            date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s || 0);
+        } else {
+            date = new Date(input);
+        }
+
+        if (isNaN(date)) throw new Error("Invalid date");
+
+        const pad = (n, len = 2) => String(n).padStart(len, "0");
+
+        const tokens = {
+            yyyy: date.getFullYear(),
+            yy: String(date.getFullYear()).slice(-2),
+            MMMM: date.toLocaleString(locale, { month: "long" }),
+            MMM: date.toLocaleString(locale, { month: "short" }),
+            MM: pad(date.getMonth() + 1),
+            M: date.getMonth() + 1,
+            dd: pad(date.getDate()),
+            d: date.getDate(),
+            dddd: date.toLocaleString(locale, { weekday: "long" }),
+            ddd: date.toLocaleString(locale, { weekday: "short" }),
+            hh: pad(((date.getHours() + 11) % 12) + 1),
+            h: ((date.getHours() + 11) % 12) + 1,
+            HH: pad(date.getHours()),
+            H: date.getHours(),
+            mm: pad(date.getMinutes()),
+            m: date.getMinutes(),
+            ss: pad(date.getSeconds()),
+            s: date.getSeconds(),
+            AP: date.getHours() < 12 ? "AM" : "PM",
+            ap: date.getHours() < 12 ? "am" : "pm"
+        };
+
+        return pattern.replace(
+            /(yyyy|yy|MMMM|MMM|MM|M|dddd|ddd|dd|d|hh|h|HH|H|mm|m|ss|s|AP|ap)/g,
+            match => tokens[match]
+        );
     }
 };
+
+export class ToggleSet {
+    constructor(set = new Set()) {
+        this._set = set;
+    }
+    has = (key) => {
+        return this._set.has(key);
+    };
+    toggle = (key) => {
+        const newset = new Set(this._set);
+        if (newset.has(key)) {
+            newset.delete(key);
+        } else {
+            newset.add(key);
+        }
+        return new ToggleSet(newset);
+    };
+    delete = (key) => {
+        if (this._set.has(key)) {
+            const newset = new Set(this._set);
+            newset.delete(key);
+            return new ToggleSet(newset);
+        } else {
+            return this;
+        }
+    };
+    filtered = (test) => {
+        const newset = new Set(...[...this._set].filter(test));
+        return new ToggleSet(newset);
+    };
+    add = (key) => {
+        if (!this._set.has(key)) {
+            const newset = new Set(this._set);
+            newset.add(key);
+            return new ToggleSet(newset);
+        } else {
+            return this;
+        }
+    };
+    size = () => {
+        return this._set.size;
+    };
+    entries = () => {
+        return [...this._set];
+    };
+}
 
 export default MiscUtils;

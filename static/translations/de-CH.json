@@ -3,6 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "Der Hintergrund \"{0}\" konnte nicht gefunden werden, der Standardhintergrund wird angezeigt.",
+      "missingdefaulttheme": "Das Standardthema konnte nicht geladen werden.",
       "missinglayers": "Die folgenden Ebenen können nicht gefunden werden: {0}.",
       "missingpermalink": "Der Permalink oder das Lesezeichen ist ungültig oder abgelaufen.",
       "missingprojection": "Das Thema \"{0}\" konnte nicht geladen werden: die Projektion {1} ist nicht definiert.",
@@ -23,6 +24,7 @@
         "MapExport3D": "Karte exportieren",
         "MapFilter": "Kartenfilter",
         "MapLight3D": "Beleuchtung und Schatten",
+        "ObjectList": "Objektliste",
         "Print": "Drucken",
         "Reports": "Berichte",
         "Settings": "Einstellungen",
@@ -135,7 +137,6 @@
     "draw3d": {
       "clone": "Kopieren",
       "cone": "Kegel",
-      "ctrlhint": "Mehrfachselektion mit Ctrl...",
       "cuboid": "Quader",
       "cylinder": "Zylinder",
       "delete": "Löschen",
@@ -191,6 +192,12 @@
       "takepicture": "Bild schiessen",
       "unsavedchanged": "Es gibt nicht gespeicherte Änderungen. Soll die Seite trotzdem verlassen werden?"
     },
+    "featureattributes": {
+      "name": "Name",
+      "nofeatureormultiple": "Kein oder mehrere Objekte aktiv",
+      "value": "Wert",
+      "windowtitle": "Objektattribute"
+    },
     "featureform": {
       "feature": "Objekt",
       "noresults": "Keine Ergebnisse",
@@ -243,16 +250,19 @@
     "identify": {
       "aggregatedreport": "Aggregierter Bericht",
       "clipboard": "Nach Zwischenablage kopieren",
+      "compare": "Selektierte Objekte vergleichen",
+      "comparing": "Vergleich von {0} Objekte",
       "download": "Herunterladen",
       "export": "Exportieren",
       "featureReport": "Objektblatt",
-      "featurecount": "Anzahl Objekte",
+      "featurecount": "{0} Objekt(e)",
       "layerall": "Alle Ebenen",
       "link": "Link",
       "noattributes": "Keine Attribute",
-      "noresults": "Keine Resultate an der ausgewählten Position",
+      "noresults": "Keine Treffer an der ausgewählten Position",
       "querying": "Objekte werden abgefragt...",
       "reportfail": "Bericht konnt nicht erstellt werden",
+      "results": "Ergebnisse",
       "selectreport": "Bericht auswählen...",
       "title": "Objektinformationen"
     },
@@ -341,6 +351,10 @@
         "LOCATING": "Position: wird bestimmt...",
         "PERMISSION_DENIED": "Position: Zugriff verweigert"
       }
+    },
+    "locationrecorder": {
+      "record": "Position aufzeichen",
+      "stop": "Aufzeichnung stoppen"
     },
     "map": {
       "loading": "Karte wird geladen...",
@@ -433,7 +447,7 @@
       "angle": "Winkel",
       "featureunsupported": "Numerische Eingabe nicht verfügbar für dieses Objekt",
       "height": "Höhe",
-      "nofeature": "Kein Objekt aktiv",
+      "nofeatureormultiple": "Kein oder mehrere Objekte aktiv",
       "side": "Seite",
       "width": "Breite",
       "windowtitle": "Numerische Eingabe"
@@ -478,7 +492,7 @@
       "loading": "Formular wird geladen..."
     },
     "redlining": {
-      "border": "Rand",
+      "attributes": "Objektattribute",
       "buffer": "Puffern",
       "buffercompute": "Berechnen",
       "bufferdistance": "Distanz",
@@ -486,6 +500,7 @@
       "bufferlayername": "Objektpuffer",
       "bufferselectfeature": "Zu pufferndes Objekt auswählen...",
       "circle": "Kreis",
+      "ctrlhint": "Mehrfachselektion mit Ctrl...",
       "delete": "Löschen",
       "draw": "Zeichnen",
       "edit": "Bearbeiten",
@@ -506,8 +521,7 @@
       "size": "Grösse",
       "square": "Quadrat",
       "text": "Text",
-      "transform": "Transformieren",
-      "width": "Breite"
+      "transform": "Transformieren"
     },
     "reports": {
       "all": "Alle",
@@ -518,6 +532,7 @@
     },
     "routing": {
       "add": "Hinzufügen",
+      "addlayer": "Als Ebene exportieren",
       "addviapoint": "Routenpunkt hinzufügen",
       "arriveat": "Ankunft bis",
       "clear": "Zurücksetzen",
@@ -577,6 +592,7 @@
       "providerselection": "Suchdienste",
       "recent": "Zuletzt gesucht",
       "search": "Suchen",
+      "tasks": "Menüwerkzeuge",
       "themelayers": "Themenebenen",
       "themes": "Themen",
       "unknownmore": "Weitere Treffer"
