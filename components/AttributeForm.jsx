@@ -59,11 +59,13 @@ class AttributeForm extends React.Component {
         childEdit: null,
         relationTables: {},
         formValid: true,
-        captchaResponse: null
+        captchaResponse: null,
+        dynamicHeight: false
     };
     constructor(props) {
         super(props);
         this.form = null;
+        this.containerRef = React.createRef();
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -145,7 +147,7 @@ class AttributeForm extends React.Component {
             readOnlyMsg = LocaleUtils.tr("editing.geomnonzeroz");
         }
         return (
-            <div className="AttributeForm">
+            <div className="AttributeForm" ref={this.containerRef} style={{height: this.state.childEdit ? `${this.state.dynamicHeight}px` : ""}}>
                 {readOnlyMsg ? (
                     <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
@@ -299,6 +301,16 @@ class AttributeForm extends React.Component {
         const editConfig = (this.props.theme.editConfig || {})[layer];
         const feature = this.props.editContext.feature.relationValues[dataset].features[idx];
         this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord, displayField: displayField, hideDelete: true}});
+
+        if (!this.state.busy) {
+            const attributeFormContainer = this.containerRef.current;
+            if (attributeFormContainer) {
+                setTimeout(() => {
+                    const qtForm = attributeFormContainer.querySelector(".link-feature-form-container .qt-designer-layout-grid") || attributeFormContainer.querySelector(".qt-designer-layout-grid");
+                    this.setState({dynamicHeight: qtForm.scrollHeight + 100 || attributeFormContainer.scrollHeight + 100});
+                }, 50);
+            }
+        }
     };
     finishEditRelationRecord = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
@@ -323,7 +335,7 @@ class AttributeForm extends React.Component {
             const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
             this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: changed});
         }
-        this.setState({childEdit: null});
+        this.setState({childEdit: null, dynamicHeight: ""});
     };
     onDiscard = (action) => {
         if (action === "Discard") {
