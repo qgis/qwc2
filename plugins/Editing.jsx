@@ -294,6 +294,49 @@ class Editing extends React.Component {
             geometry: geometry,
             id: uuidv4()
         };
+
+        const editConfig = this.props.theme.editConfig;
+        const curConfig = editConfig[this.state.selectedLayer];
+        const sourceProperties = feature.properties || {};
+        const targetFields = curConfig.fields || [];
+
+        // Get source layer's field configuration and build name-to-id mapping
+        const sourceConfig = editConfig[layer];
+        const sourceNameToIdMap = {};
+        if (sourceConfig && sourceConfig.fields) {
+            sourceConfig.fields.forEach(sourceField => {
+                sourceNameToIdMap[sourceField.name] = sourceField.id;
+                sourceNameToIdMap[sourceField.id] = sourceField.id;
+            });
+        }
+
+        const sourcePropertiesById = {};
+        Object.entries(sourceProperties).forEach(([key, value]) => {
+            const fieldId = sourceNameToIdMap[key] || key;
+            sourcePropertiesById[fieldId] = value;
+        });
+
+        if (targetFields.length > 0) {
+            const copiedProperties = {};
+            targetFields.forEach(field => {
+                let value = sourcePropertiesById[field.id];
+
+                if (value !== null && value !== undefined) {
+                    if (field.type === 'number' && typeof value === 'string' && value !== '') {
+                        // Handle both comma and dot as decimal separator
+                        const numValue = parseFloat(value.replace(',', '.'));
+                        if (!isNaN(numValue)) {
+                            value = numValue;
+                        }
+                    }
+                    copiedProperties[field.id] = value;
+                }
+            });
+            if (Object.keys(copiedProperties).length > 0) {
+                editFeature.properties = copiedProperties;
+            }
+        }
+
         this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
         this.setState({drawPick: false});
     };
