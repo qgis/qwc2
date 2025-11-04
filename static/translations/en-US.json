@@ -447,7 +447,7 @@
       "angle": "Angle",
       "featureunsupported": "Numeric input unavailable for this geometry",
       "height": "Height",
-      "nofeatureormultiple": "",
+      "nofeatureormultiple": "No or multiple active features",
       "side": "Side",
       "width": "Width",
       "windowtitle": "Numeric input"
