@@ -566,13 +566,19 @@ class RedliningSupport extends React.Component {
         });
         this.updateRedliningState(firstSelection);
     };
+    deselectFeature = (feature, updateState) => {
+        const styleName = feature.get("shape") === "Text" ? "text" : "default";
+        const style = FeatureStyles[styleName](feature, feature.get('styleOptions'));
+        feature.setStyle(style);
+        feature.un('change', this.updateMeasurements);
+        this.selectedFeatures = this.selectedFeatures.filter(f => f !== feature);
+        if (updateState) {
+            this.updateRedliningState(false);
+        }
+    };
     commitFeatures = (features, redliningProps, newFeature = false) => {
         const featureObjects = features.map(feature => {
-            const styleName = feature.get("shape") === "Text" ? "text" : "default";
-            const style = FeatureStyles[styleName](feature, feature.get('styleOptions'));
-            feature.setStyle(style);
-            feature.un('change', this.updateMeasurements);
-            this.selectedFeatures = this.selectedFeatures.filter(f => f !== feature);
+            this.deselectFeature(feature, false);
             const featureObj = this.serializeFeature(feature);
             // Don't commit empty/invalid features
             if (
@@ -619,12 +625,9 @@ class RedliningSupport extends React.Component {
             this.commitFeatures(this.selectedFeatures, redliningProps, false);
         } else {
             this.selectedFeatures.forEach(feature => {
-                const styleName = feature.get("shape") === "Text" ? "text" : "default";
-                const style = FeatureStyles[styleName](feature, feature.get('styleOptions'));
-                feature.setStyle(style);
-                feature.un('change', this.updateMeasurements);
+                this.deselectFeature(feature, false);
             });
-            this.selectedFeatures = [];
+            this.updateRedliningState(false);
         }
         this.props.map.un('click', this.maybeEnterTemporaryDrawMode);
         this.picking = false;
