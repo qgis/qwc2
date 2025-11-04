@@ -500,6 +500,7 @@
       "bufferlayername": "Objektpuffer",
       "bufferselectfeature": "Zu pufferndes Objekt auswählen...",
       "circle": "Kreis",
+      "clone": "Kopieren",
       "ctrlhint": "Mehrfachselektion mit Ctrl...",
       "delete": "Löschen",
       "draw": "Zeichnen",

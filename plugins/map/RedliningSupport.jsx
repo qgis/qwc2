@@ -106,6 +106,11 @@ class RedliningSupport extends React.Component {
             this.props.changeRedliningState({...prevProps.redlining, selectedFeature: null});
             return;
         }
+        if (this.props.redlining.action === 'Clone') {
+            this.cloneCurrentFeatures();
+            this.props.changeRedliningState({...prevProps.redlining, selectedFeature: null});
+            return;
+        }
         if (this.props.redlining.action === 'Export') {
             this.export();
             this.props.changeRedliningState({...prevProps.redlining, selectedFeature: null});
@@ -414,6 +419,7 @@ class RedliningSupport extends React.Component {
             this.commitFeatures(removed, this.props.redlining);
         });
         this.picking = true;
+        return transformInteraction;
     };
     maybeEnterTemporaryDrawMode = (ev) => {
         const redliningLayer = this.searchRedliningLayer(this.props.redlining.layer);
@@ -534,6 +540,43 @@ class RedliningSupport extends React.Component {
             this.props.removeLayerFeatures(this.props.redlining.layer, this.selectedFeatures.map(f => f.getId()), true);
             this.selectedFeatures = [];
         }
+    };
+    cloneCurrentFeatures = () => {
+        if (isEmpty(this.selectedFeatures)) {
+            return;
+        }
+        const shiftCoordinates = (coords) => {
+            if (typeof coords[0] === 'number') {
+                coords[0] += 10;
+                coords[1] += 10;
+            } else {
+                coords.map(shiftCoordinates);
+            }
+        };
+        const cloneIds = [];
+        const newFeatureObjs = this.selectedFeatures.map(feature => {
+            this.deselectFeature(feature, false);
+            const featureObj = this.serializeFeature(feature);
+            featureObj.id = uuidv4();
+            shiftCoordinates(featureObj.geometry.coordinates);
+            cloneIds.push(featureObj.id);
+            return featureObj;
+        });
+        this.updateRedliningState(true);
+        const layer = {
+            id: this.props.redlining.layer,
+            title: this.props.redlining.layerTitle,
+            role: LayerRole.USERLAYER
+        };
+        this.props.addLayerFeatures(layer, newFeatureObjs);
+        this.waitForFeatureAndLayer(this.props.redlining.layer, cloneIds[0], (l) => {
+            const features = cloneIds.map(id => l.getSource().getFeatureById(id));
+            this.selectFeatures(features);
+            while (this.interactions.length > 0) {
+                this.props.map.removeInteraction(this.interactions.shift());
+            }
+            this.addTransformInteraction().setSelection(new ol.Collection(features));
+        });
     };
     updateRedliningState = (firstSelection) => {
         if (this.selectedFeatures.length > 0) {

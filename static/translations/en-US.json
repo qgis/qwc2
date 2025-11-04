@@ -500,6 +500,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Select a feature to buffer...",
       "circle": "Circle",
+      "clone": "Clone",
       "ctrlhint": "Use Ctrl for multiselection...",
       "delete": "Delete",
       "draw": "Draw",
