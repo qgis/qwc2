@@ -283,7 +283,7 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
-            if (!field.constraints?.hidden) {
+            if (field.constraints?.hidden) {
                 // Remove hidden fields from result
                 delete result[field.id];
             } else if (field.id in result && field.type === "date") {
