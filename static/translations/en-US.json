@@ -55,12 +55,16 @@
         "PrintScreen3D": "Raster Export",
         "Redlining": "Redlining",
         "Routing": "Routing",
+        "StreetView":"Google Street View",
         "Tools": "Map Tools",
         "TourGuide": "Tour Guide",
         "TimeManager": "Time Manager",
         "View3D": "3D View"
       },
       "menulabel": "Map & Tools"
+    },    
+    "streetview": {
+      "loading":"Loading StreetView..."
     },
     "attribtable": {
       "addfeature": "Add feature",

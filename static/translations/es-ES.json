@@ -30,6 +30,7 @@
         "Settings": "Opciones",
         "Settings3D": "",
         "Share": "Compartir enlace",
+        "StreetView":"Google Street View",        
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabla de Atributos",
         "AuthenticationLogin": "Inicio de sesión",
@@ -61,6 +62,9 @@
         "View3D": "Vista 3D"
       },
       "menulabel": "Mapa & Herramientas"
+    },
+    "streetview": {
+      "loading":"Cargando StreetView..."
     },
     "attribtable": {
       "addfeature": "Añadir elemento",
