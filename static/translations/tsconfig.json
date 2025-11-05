@@ -429,6 +429,7 @@
     "redlining.bufferlayername",
     "redlining.bufferselectfeature",
     "redlining.circle",
+    "redlining.clone",
     "redlining.ctrlhint",
     "redlining.delete",
     "redlining.draw",

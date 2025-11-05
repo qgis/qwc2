@@ -186,6 +186,7 @@ class Redlining extends React.Component {
         const editButtons = [
             {key: "Pick", tooltip: LocaleUtils.tr("redlining.pick"), icon: "nodetool", data: {action: "Pick", geomType: null, text: ""}},
             toolEnabled("Transform") ? {key: "Transform", tooltip: LocaleUtils.tr("redlining.transform"), icon: "transformtool", data: {action: "Transform", geomType: null, text: ""}} : null,
+            toolEnabled("Clone") ? {key: "Clone", tooltip: LocaleUtils.tr("redlining.clone"), icon: "clone", data: {action: "Clone", geomType: null}, disabled: !this.props.redlining.selectedFeature} : null,
             {key: "Delete", tooltip: LocaleUtils.tr("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature}
         ].filter(Boolean);
         const extraButtons = toolEnabled("NumericInput") ? [
