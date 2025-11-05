@@ -273,8 +273,8 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
     } catch (e) {
         /* eslint-disable-next-line */
         console.warn("Failed to sort expressions, they probably contain cyclic dependencies");
-        fieldExpressions = Object.entries(fieldExpressions).map((res, [field, expression]) => (
-            [...res, {field, expression}]
+        fieldExpressions = Object.entries(fieldExpressions).map(([field, expression]) => (
+            {field, expression}
         ), {});
     }
     // Evaluate expressions
