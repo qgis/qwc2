@@ -293,7 +293,8 @@ class Cyclomedia extends React.Component {
             styleOptions: {
                 img: "cyclomedia-cone",
                 rotation: posData.yaw,
-                size: dimensions
+                size: dimensions,
+                anchor: [0.5, 1]
             }
         };
         const layer = {
