@@ -567,7 +567,7 @@ class IdentifyViewer extends React.Component {
                 rows.push(
                     <tr key={"__featurereport" + idx}>
                         <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{LocaleUtils.tr("identify.featureReport") + ": " + report.title}</i></td>
-                        <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(report, feature)}>{LocaleUtils.tr("identify.link")}</a></td>
+                        <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(report, feature)} rel="noreferrer" target="_blank">{LocaleUtils.tr("identify.link")}</a></td>
                     </tr>
                 );
             });
