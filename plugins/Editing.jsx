@@ -20,7 +20,6 @@ import {setSnappingConfig} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
 import Icon from '../components/Icon';
-import MessageBar from '../components/MessageBar';
 import PickFeature from '../components/PickFeature';
 import SideBar from '../components/SideBar';
 import ButtonBar from '../components/widgets/ButtonBar';
@@ -144,7 +143,58 @@ class Editing extends React.Component {
             this.setState({pickedFeatures: null});
         }
     }
+    renderCloneAttributeDialog = () => {
+        return (
+            <div className="editing-body">
+                <div className="editing-clone-dialog">
+                    <div className="editing-clone-header">
+                        {LocaleUtils.tr("editing.clone_select_attrs")}
+                    </div>
+                    <div className="editing-clone-quick-actions">
+                        <button className="button" onClick={this.selectAllAttributes}>
+                            {LocaleUtils.tr("editing.clone_all")}
+                        </button>
+                        <button className="button" onClick={this.selectNoneAttributes}>
+                            {LocaleUtils.tr("editing.clone_none")}
+                        </button>
+                        <button className="button" onClick={this.selectVisibleAttributes}>
+                            {LocaleUtils.tr("editing.clone_visible")}
+                        </button>
+                    </div>
+                    <div className="editing-clone-attributes">
+                        {this.state.pendingClone.matchingAttributes.map(attr => (
+                            <label className="editing-clone-attribute" key={attr.fieldId}>
+                                <input
+                                    checked={this.state.pendingClone.selectedAttributes.includes(attr.fieldId)}
+                                    onChange={() => this.toggleAttribute(attr.fieldId)}
+                                    type="checkbox"
+                                />
+                                <span className="editing-clone-attribute-name">
+                                    {attr.fieldName}
+                                    {!attr.visible ? " " + LocaleUtils.tr("editing.clone_hidden") : ""}
+                                    {attr.autoCalculated ? " " + LocaleUtils.tr("editing.clone_calculated") : ""}
+                                </span>
+                            </label>
+                        ))}
+                    </div>
+                    <div className="editing-clone-actions">
+                        <button className="button" onClick={this.confirmCopyAttributes}>
+                            {LocaleUtils.tr("editing.clone_ok")}
+                        </button>
+                        <button className="button" onClick={this.cancelCopyAttributes}>
+                            {LocaleUtils.tr("editing.clone_cancel")}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
     renderBody = () => {
+        // Show clone attribute selection dialog if pending
+        if (this.state.pendingClone) {
+            return this.renderCloneAttributeDialog();
+        }
+
         if (!this.props.theme || isEmpty(this.props.theme.editConfig)) {
             return (
                 <div role="body" style={{padding: "1em"}}>
@@ -241,52 +291,6 @@ class Editing extends React.Component {
             </SideBar>
         ), this.state.drawPick ? (
             <PickFeature featureFilter={this.pickFilter} featurePicked={this.geomPicked} key="FeaturePicker" />
-        ) : null,
-        this.state.pendingClone ? (
-            <MessageBar key="CloneConfirmation" onClose={this.cancelCopyAttributes}>
-                <div role="body">
-                    <div className="editing-clone-dialog">
-                        <div className="editing-clone-header">
-                            {LocaleUtils.tr("editing.clone_select_attrs")}
-                        </div>
-                        <div className="editing-clone-quick-actions">
-                            <button className="button" onClick={this.selectAllAttributes}>
-                                {LocaleUtils.tr("editing.clone_all")}
-                            </button>
-                            <button className="button" onClick={this.selectNoneAttributes}>
-                                {LocaleUtils.tr("editing.clone_none")}
-                            </button>
-                            <button className="button" onClick={this.selectVisibleAttributes}>
-                                {LocaleUtils.tr("editing.clone_visible")}
-                            </button>
-                        </div>
-                        <div className="editing-clone-attributes">
-                            {this.state.pendingClone.matchingAttributes.map(attr => (
-                                <label className="editing-clone-attribute" key={attr.fieldId}>
-                                    <input
-                                        checked={this.state.pendingClone.selectedAttributes.includes(attr.fieldId)}
-                                        onChange={() => this.toggleAttribute(attr.fieldId)}
-                                        type="checkbox"
-                                    />
-                                    <span className="editing-clone-attribute-name">
-                                        {attr.fieldName}
-                                        {!attr.visible ? " " + LocaleUtils.tr("editing.clone_hidden") : ""}
-                                        {attr.autoCalculated ? " " + LocaleUtils.tr("editing.clone_calculated") : ""}
-                                    </span>
-                                </label>
-                            ))}
-                        </div>
-                        <div className="editing-clone-actions">
-                            <button className="button" onClick={this.confirmCopyAttributes}>
-                                {LocaleUtils.tr("editing.clone_ok")}
-                            </button>
-                            <button className="button" onClick={this.cancelCopyAttributes}>
-                                {LocaleUtils.tr("editing.clone_cancel")}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </MessageBar>
         ) : null];
     }
     actionClicked = (action, data) => {
