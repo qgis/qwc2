@@ -144,23 +144,22 @@ class Editing extends React.Component {
         }
     }
     renderCloneAttributeDialog = () => {
+        const quickButtons = [
+            {key: 'All', label: LocaleUtils.tr("editing.clone_all")},
+            {key: 'None', label: LocaleUtils.tr("editing.clone_none")},
+            {key: 'Visible', label: LocaleUtils.tr("editing.clone_visible")}
+        ];
+        const actionButtons = [
+            {key: 'Copy', label: LocaleUtils.tr("editing.clone_copy")},
+            {key: 'DontCopy', label: LocaleUtils.tr("editing.clone_dontcopy")}
+        ];
         return (
             <div className="editing-body">
                 <div className="editing-clone-dialog">
                     <div className="editing-clone-header">
                         {LocaleUtils.tr("editing.clone_select_attrs")}
                     </div>
-                    <div className="editing-clone-quick-actions">
-                        <button className="button" onClick={this.selectAllAttributes}>
-                            {LocaleUtils.tr("editing.clone_all")}
-                        </button>
-                        <button className="button" onClick={this.selectNoneAttributes}>
-                            {LocaleUtils.tr("editing.clone_none")}
-                        </button>
-                        <button className="button" onClick={this.selectVisibleAttributes}>
-                            {LocaleUtils.tr("editing.clone_visible")}
-                        </button>
-                    </div>
+                    <ButtonBar buttons={quickButtons} onClick={this.onQuickSelect} />
                     <div className="editing-clone-attributes">
                         {this.state.pendingClone.matchingAttributes.map(attr => (
                             <label className="editing-clone-attribute" key={attr.fieldId}>
@@ -177,14 +176,7 @@ class Editing extends React.Component {
                             </label>
                         ))}
                     </div>
-                    <div className="editing-clone-actions">
-                        <button className="button" onClick={this.confirmCopyAttributes}>
-                            {LocaleUtils.tr("editing.clone_ok")}
-                        </button>
-                        <button className="button" onClick={this.cancelCopyAttributes}>
-                            {LocaleUtils.tr("editing.clone_cancel")}
-                        </button>
-                    </div>
+                    <ButtonBar buttons={actionButtons} onClick={this.onCloneAction} />
                 </div>
             </div>
         );
@@ -441,24 +433,31 @@ class Editing extends React.Component {
             };
         });
     };
-    selectAllAttributes = () => {
-        const allFieldIds = this.state.pendingClone.matchingAttributes.map(attr => attr.fieldId);
-        this.setState(state => ({
-            pendingClone: {...state.pendingClone, selectedAttributes: allFieldIds}
-        }));
+    onQuickSelect = (action) => {
+        if (action === 'All') {
+            const allFieldIds = this.state.pendingClone.matchingAttributes.map(attr => attr.fieldId);
+            this.setState(state => ({
+                pendingClone: {...state.pendingClone, selectedAttributes: allFieldIds}
+            }));
+        } else if (action === 'None') {
+            this.setState(state => ({
+                pendingClone: {...state.pendingClone, selectedAttributes: []}
+            }));
+        } else if (action === 'Visible') {
+            const visibleFieldIds = this.state.pendingClone.matchingAttributes
+                .filter(attr => attr.visible && !attr.autoCalculated)
+                .map(attr => attr.fieldId);
+            this.setState(state => ({
+                pendingClone: {...state.pendingClone, selectedAttributes: visibleFieldIds}
+            }));
+        }
     };
-    selectNoneAttributes = () => {
-        this.setState(state => ({
-            pendingClone: {...state.pendingClone, selectedAttributes: []}
-        }));
-    };
-    selectVisibleAttributes = () => {
-        const visibleFieldIds = this.state.pendingClone.matchingAttributes
-            .filter(attr => attr.visible && !attr.autoCalculated)
-            .map(attr => attr.fieldId);
-        this.setState(state => ({
-            pendingClone: {...state.pendingClone, selectedAttributes: visibleFieldIds}
-        }));
+    onCloneAction = (action) => {
+        if (action === 'Copy') {
+            this.confirmCopyAttributes();
+        } else if (action === 'DontCopy') {
+            this.cancelCopyAttributes();
+        }
     };
     setLayerVisibility = (selectedLayer, visibility) => {
         if (selectedLayer !== null) {
