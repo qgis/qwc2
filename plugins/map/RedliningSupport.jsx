@@ -409,7 +409,7 @@ class RedliningSupport extends React.Component {
     addTransformInteraction = () => {
         const redliningLayer = this.searchRedliningLayer(this.props.redlining.layer);
         if (!redliningLayer) {
-            return;
+            return null;
         }
         const transformInteraction = this.setupTransformInteraction(redliningLayer, [], true);
         transformInteraction.on('select', (evt) => {
