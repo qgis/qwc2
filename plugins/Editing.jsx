@@ -20,6 +20,7 @@ import {setSnappingConfig} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
 import Icon from '../components/Icon';
+import MessageBar from '../components/MessageBar';
 import PickFeature from '../components/PickFeature';
 import SideBar from '../components/SideBar';
 import ButtonBar from '../components/widgets/ButtonBar';
@@ -89,7 +90,8 @@ class Editing extends React.Component {
         pickedFeatures: null,
         busy: false,
         minimized: false,
-        drawPick: false
+        drawPick: false,
+        pendingClone: null
     };
     onShow = () => {
         if (this.props.taskData) {
@@ -239,6 +241,52 @@ class Editing extends React.Component {
             </SideBar>
         ), this.state.drawPick ? (
             <PickFeature featureFilter={this.pickFilter} featurePicked={this.geomPicked} key="FeaturePicker" />
+        ) : null,
+        this.state.pendingClone ? (
+            <MessageBar key="CloneConfirmation" onClose={this.cancelCopyAttributes}>
+                <div role="body">
+                    <div className="editing-clone-dialog">
+                        <div className="editing-clone-header">
+                            {LocaleUtils.tr("editing.clone_select_attrs")}
+                        </div>
+                        <div className="editing-clone-quick-actions">
+                            <button className="button" onClick={this.selectAllAttributes}>
+                                {LocaleUtils.tr("editing.clone_all")}
+                            </button>
+                            <button className="button" onClick={this.selectNoneAttributes}>
+                                {LocaleUtils.tr("editing.clone_none")}
+                            </button>
+                            <button className="button" onClick={this.selectVisibleAttributes}>
+                                {LocaleUtils.tr("editing.clone_visible")}
+                            </button>
+                        </div>
+                        <div className="editing-clone-attributes">
+                            {this.state.pendingClone.matchingAttributes.map(attr => (
+                                <label className="editing-clone-attribute" key={attr.fieldId}>
+                                    <input
+                                        checked={this.state.pendingClone.selectedAttributes.includes(attr.fieldId)}
+                                        onChange={() => this.toggleAttribute(attr.fieldId)}
+                                        type="checkbox"
+                                    />
+                                    <span className="editing-clone-attribute-name">
+                                        {attr.fieldName}
+                                        {!attr.visible ? " " + LocaleUtils.tr("editing.clone_hidden") : ""}
+                                        {attr.autoCalculated ? " " + LocaleUtils.tr("editing.clone_calculated") : ""}
+                                    </span>
+                                </label>
+                            ))}
+                        </div>
+                        <div className="editing-clone-actions">
+                            <button className="button" onClick={this.confirmCopyAttributes}>
+                                {LocaleUtils.tr("editing.clone_ok")}
+                            </button>
+                            <button className="button" onClick={this.cancelCopyAttributes}>
+                                {LocaleUtils.tr("editing.clone_cancel")}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </MessageBar>
         ) : null];
     }
     actionClicked = (action, data) => {
@@ -317,28 +365,96 @@ class Editing extends React.Component {
         });
 
         if (targetFields.length > 0) {
-            const copiedProperties = {};
+            // Build list of matching attributes with metadata
+            const matchingAttributes = [];
             targetFields.forEach(field => {
                 let value = sourcePropertiesById[field.id];
 
-                if (value !== null && value !== undefined) {
-                    if (field.type === 'number' && typeof value === 'string' && value !== '') {
-                        // Handle both comma and dot as decimal separator
+                if (value !== null && value !== undefined && value !== '') {
+                    // Parse number values
+                    if (field.type === 'number' && typeof value === 'string') {
                         const numValue = parseFloat(value.replace(',', '.'));
                         if (!isNaN(numValue)) {
                             value = numValue;
                         }
                     }
-                    copiedProperties[field.id] = value;
+
+                    matchingAttributes.push({
+                        fieldId: field.id,
+                        fieldName: field.name,
+                        value: value,
+                        visible: field.constraints?.hidden !== true,
+                        autoCalculated: !!(field.defaultValue || field.expression)
+                    });
                 }
             });
-            if (Object.keys(copiedProperties).length > 0) {
-                editFeature.properties = copiedProperties;
+
+            if (matchingAttributes.length > 0) {
+                // Default selection: only visible, non-auto-calculated fields
+                const defaultSelection = matchingAttributes
+                    .filter(attr => attr.visible && !attr.autoCalculated)
+                    .map(attr => attr.fieldId);
+
+                this.setState({
+                    drawPick: false,
+                    pendingClone: {
+                        editFeature: editFeature,
+                        matchingAttributes: matchingAttributes,
+                        selectedAttributes: defaultSelection
+                    }
+                });
+                return;
             }
         }
 
         this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
         this.setState({drawPick: false});
+    };
+    confirmCopyAttributes = () => {
+        const {editFeature, matchingAttributes, selectedAttributes} = this.state.pendingClone;
+        const copiedProperties = {};
+        matchingAttributes.forEach(attr => {
+            if (selectedAttributes.includes(attr.fieldId)) {
+                copiedProperties[attr.fieldId] = attr.value;
+            }
+        });
+        editFeature.properties = copiedProperties;
+        this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
+        this.setState({pendingClone: null});
+    };
+    cancelCopyAttributes = () => {
+        const {editFeature} = this.state.pendingClone;
+        this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
+        this.setState({pendingClone: null});
+    };
+    toggleAttribute = (fieldId) => {
+        this.setState(state => {
+            const selectedAttributes = state.pendingClone.selectedAttributes.includes(fieldId)
+                ? state.pendingClone.selectedAttributes.filter(id => id !== fieldId)
+                : [...state.pendingClone.selectedAttributes, fieldId];
+            return {
+                pendingClone: {...state.pendingClone, selectedAttributes}
+            };
+        });
+    };
+    selectAllAttributes = () => {
+        const allFieldIds = this.state.pendingClone.matchingAttributes.map(attr => attr.fieldId);
+        this.setState(state => ({
+            pendingClone: {...state.pendingClone, selectedAttributes: allFieldIds}
+        }));
+    };
+    selectNoneAttributes = () => {
+        this.setState(state => ({
+            pendingClone: {...state.pendingClone, selectedAttributes: []}
+        }));
+    };
+    selectVisibleAttributes = () => {
+        const visibleFieldIds = this.state.pendingClone.matchingAttributes
+            .filter(attr => attr.visible && !attr.autoCalculated)
+            .map(attr => attr.fieldId);
+        this.setState(state => ({
+            pendingClone: {...state.pendingClone, selectedAttributes: visibleFieldIds}
+        }));
     };
     setLayerVisibility = (selectedLayer, visibility) => {
         if (selectedLayer !== null) {
