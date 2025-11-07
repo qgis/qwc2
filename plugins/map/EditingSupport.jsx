@@ -119,7 +119,7 @@ class EditingSupport extends React.Component {
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interaction = drawInteraction;
-        this.setState({showRecordLocation: ["Point", "LineString"].includes(geomType)});
+        this.setState({showRecordLocation: ["Point", "LineString", "MultiPoint", "MultiLineString"].includes(geomType)});
     };
     addEditInteraction = () => {
         this.reset();

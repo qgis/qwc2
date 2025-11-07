@@ -76,7 +76,7 @@ class LocationRecorder extends React.Component {
                 console.error("Geolocation not supported");
             } else {
                 this.props.drawInteraction.appendCoordinates([this.props.locatePosition]);
-                if (this.props.geomType === "Point") {
+                if (this.props.geomType.replace(/^Multi/, '') === "Point") {
                     this.stopRecording();
                 } else {
                     this.pollInterval = setInterval(() => {
