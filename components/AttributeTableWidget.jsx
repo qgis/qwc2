@@ -439,7 +439,7 @@ class AttributeTableWidget extends React.Component {
         } else if (constraints.values || constraints.keyvalrel) {
             let filterExpr = null;
             if (field.filterExpression) {
-                filterExpr = parseExpression(field.filterExpression, feature, currentEditConfig, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                filterExpr = parseExpression(field.filterExpression, feature, currentEditConfig, this.props.theme.editConfig, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
             }
             input = (
                 <EditComboField

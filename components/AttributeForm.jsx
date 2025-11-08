@@ -384,7 +384,7 @@ class AttributeForm extends React.Component {
             }
             return res;
         }, []);
-        parseExpressionsAsync(constraintExpressions, feature, this.props.editConfig, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
+        parseExpressionsAsync(constraintExpressions, feature, this.props.editConfig, this.props.theme.editConfig, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
             let valid = true;
             const reasons = [];
             Object.entries(result).forEach(([key, value]) => {

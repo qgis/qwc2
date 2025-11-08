@@ -10,7 +10,6 @@ import nearley from 'nearley';
 import toposort from 'toposort';
 import {v5 as uuidv5} from 'uuid';
 
-import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
 import MiscUtils from './MiscUtils';
@@ -21,7 +20,7 @@ const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
 export class FeatureCache {
     static store = {};
     static requestPromises = {};
-    static get = (editIface, layerName, mapCrs, filterExpr) => {
+    static get = (editIface, layerName, editConfig, mapCrs, filterExpr) => {
         const key = layerName +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
         if (key in this.store) {
             return new Promise(resolve => resolve(this.store[key]));
@@ -29,7 +28,6 @@ export class FeatureCache {
             return this.requestPromises[key];
         } else {
             this.requestPromises[key] = new Promise(resolve => {
-                const editConfig = StandardApp.store.getState().theme.current.editConfig?.[layerName] ?? {};
                 editIface.getFeatures(editConfig, mapCrs, (result) => {
                     if (key in this.requestPromises) {
                         if ((result?.features || []).length === 1) {
@@ -49,12 +47,12 @@ export class FeatureCache {
             return this.requestPromises[key];
         }
     };
-    static getSync = (editIface, layerName, mapCrs, filterExpr, promises = []) => {
+    static getSync = (editIface, layerName, editConfig, mapCrs, filterExpr, promises = []) => {
         const key = layerName +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
         if (key in this.store) {
             return this.store[key];
         } else {
-            promises.push(this.get(editIface, layerName, mapCrs, filterExpr));
+            promises.push(this.get(editIface, layerName, editConfig, mapCrs, filterExpr));
             return null;
         }
     };
@@ -130,13 +128,13 @@ function representValue(attr, editConfig, editIface, promises) {
     }
 }
 
-export function parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
+export function parseExpression(expr, feature, editConfig, editConfigs, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     const promises = [];
 
     window.qwc2ExpressionParserContext = {
         feature: feature,
-        getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
+        getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, editConfigs[layerName] ?? {}, mapCrs, [[attr, '=', value]], promises),
         representValue: (attr) => representValue(attr, editConfig, editIface, promises),
         formatDate: MiscUtils.formatDate,
         asFilter: asFilter,
@@ -170,13 +168,13 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
     }
 }
 
-export function parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter) {
+export function parseExpressionsAsync(fieldExpressions, feature, editConfig, editConfigs, editIface, mapPrefix, mapCrs, asFilter) {
     const promises = [];
     return new Promise((resolve) => {
         const newfeature = {...feature, properties: {...feature.properties}};
         window.qwc2ExpressionParserContext = {
             feature: newfeature,
-            getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapCrs, [[attr, '=', value]], promises),
+            getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, editConfigs[layerName] ?? {}, mapCrs, [[attr, '=', value]], promises),
             representValue: (attr) => representValue(attr, editConfig, editIface, promises),
             asFilter: asFilter,
             username: ConfigUtils.getConfigProp("username"),

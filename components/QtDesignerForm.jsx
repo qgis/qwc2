@@ -307,7 +307,7 @@ class QtDesignerForm extends React.Component {
             return (<div className={"qt-designer-form-" + linetype} />);
         } else if (widget.class === "QFrame") {
             if (widget.property.visibilityExpression) {
-                const exprResult = parseExpression(widget.property.visibilityExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                const exprResult = parseExpression(widget.property.visibilityExpression, feature, editConfig, this.props.editConfigs, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
                 if (exprResult === false || exprResult === 0) {
                     return null;
                 }
@@ -321,7 +321,7 @@ class QtDesignerForm extends React.Component {
             );
         } else if (widget.class === "QGroupBox") {
             if (widget.property.visibilityExpression) {
-                const exprResult = parseExpression(widget.property.visibilityExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                const exprResult = parseExpression(widget.property.visibilityExpression, feature, editConfig, this.props.editConfigs, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
                 if (exprResult === false || exprResult === 0) {
                     return null;
                 }
@@ -338,7 +338,7 @@ class QtDesignerForm extends React.Component {
             );
         } else if (widget.class === "QTabWidget") {
             const tabwidgets = (widget.widget || []).filter(child => {
-                const exprResult = parseExpression(child.property.visibilityExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
+                const exprResult = parseExpression(child.property.visibilityExpression, feature, editConfig, this.props.editConfigs, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
                 return exprResult !== false && exprResult !== 0;
             });
             if (isEmpty(tabwidgets)) {
@@ -415,7 +415,7 @@ class QtDesignerForm extends React.Component {
                 const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
                 if (field?.filterExpression) {
-                    filterExpr = parseExpression(field.filterExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                    filterExpr = parseExpression(field.filterExpression, feature, editConfig, this.props.editConfigs, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
                 }
                 return (
                     <EditComboField
