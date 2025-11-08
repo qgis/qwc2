@@ -86,9 +86,6 @@ class AttributeForm extends React.Component {
             this.validateFieldConstraints(this.props.editContext.feature);
         }
     }
-    editLayerId = (layerId) => {
-        return this.props.editConfig || layerId;
-    };
     render = () => {
         const captchaRequired = ConfigUtils.getConfigProp("editServiceCaptchaSiteKey") && !ConfigUtils.getConfigProp("username");
         const captchaPending = captchaRequired && !this.state.captchaResponse;
