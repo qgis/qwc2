@@ -392,10 +392,21 @@ const VectorLayerUtils = {
             const featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
             featureObj.id = id;
             return featureObj;
-        } catch (e) {
-            /* eslint-disable-next-line */
-            console.warn("Failed to parse geometry: " + wkt);
-            return null;
+        } catch (e1) {
+            const wkt2D = wkt.replace(/([0-9.+-]+)\s+([0-9.+-]+)\s+[0-9.+-]+/g, "$1 $2");
+            try {
+                const feature = new ol.format.WKT().readFeature(wkt2D, {
+                    dataProjection: srccrs,
+                    featureProjection: dstcrs
+                });
+                const featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
+                featureObj.id = id;
+                return featureObj;
+            } catch (e2) {
+                /* eslint-disable-next-line */
+                console.warn("Failed to parse geometry: " + wkt);
+                return null;
+            }
         }
     },
     geoJSONGeomToWkt(gj, precision = undefined) {
