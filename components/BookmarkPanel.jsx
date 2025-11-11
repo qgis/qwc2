@@ -10,7 +10,6 @@ import React from 'react';
 
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
-import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
 
 import ConfigUtils from '../utils/ConfigUtils';

@@ -15,6 +15,7 @@ import {register as olProj4Register} from 'ol/proj/proj4';
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
+import {refreshUserBookmarks} from '../actions/bookmark';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {changeLocale} from '../actions/locale';
 import {setCurrentTask} from '../actions/task';
@@ -34,7 +35,6 @@ import PluginsContainer from './PluginsContainer';
 
 import './style/App.css';
 import './style/DefaultColorScheme.css';
-import {refreshUserBookmarks} from '../actions/bookmark';
 
 
 const CSRF_TOKEN = MiscUtils.getCsrfToken();

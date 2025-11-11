@@ -15,15 +15,15 @@ import PropTypes from 'prop-types';
 import {changeZoomLevel, setDisplayCrs} from '../actions/map';
 import {openExternalUrl, setBottombarHeight} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
+import GroupSelect from '../components/widgets/GroupSelect';
 import InputContainer from '../components/widgets/InputContainer';
 import NumberInput from '../components/widgets/NumberInput';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import {openBookmark} from '../utils/PermaLinkUtils';
 
 import './style/BottomBar.css';
-import GroupSelect from '../components/widgets/GroupSelect';
-import {openBookmark} from '../utils/PermaLinkUtils';
 
 
 /**
