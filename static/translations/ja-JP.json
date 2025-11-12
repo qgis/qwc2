@@ -196,6 +196,7 @@
       "reallydelete": "削除",
       "relationcommitfailed": "関連する値にコミット出来ないものがありました。詳細はアイコンのツールチップを参照して下さい。",
       "select": "選択",
+      "selectlayer": "",
       "takepicture": "撮影する",
       "unsavedchanged": "保存されていない変更があります。それでもこのページを離れますか?"
     },
@@ -507,6 +508,7 @@
       "bufferlayername": "バッファ",
       "bufferselectfeature": "バッファを適用する地物を選択...",
       "circle": "円",
+      "clone": "クローン",
       "ctrlhint": "",
       "delete": "削除",
       "draw": "作図",

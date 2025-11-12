@@ -196,6 +196,7 @@
       "reallydelete": "Supprimer",
       "relationcommitfailed": "Certaines relations n'ont pas pu être enregistrées. Pour plus de détails consulter le bouton d'informations",
       "select": "Sélectionner",
+      "selectlayer": "Sélectionner une couche...",
       "takepicture": "Ajouter une photo",
       "unsavedchanged": "Il y a des modifications non enregistrées. Faut-il quand même quitter la page?"
     },
@@ -507,6 +508,7 @@
       "bufferlayername": "Sortie",
       "bufferselectfeature": "Choisissez une entité pour le tampon...",
       "circle": "Cercle",
+      "clone": "Copier",
       "ctrlhint": "Ctrl pour sélection multiple...",
       "delete": "Effacer",
       "draw": "Dessiner",

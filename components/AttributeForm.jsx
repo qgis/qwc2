@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import {setEditContext, clearEditContext} from '../actions/editing';
-import {LayerRole, refreshLayer} from '../actions/layers';
+import {refreshLayer} from '../actions/layers';
 import {setCurrentTaskBlocked} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -34,7 +34,7 @@ class AttributeForm extends React.Component {
         childPickFilter: PropTypes.func,
         clearEditContext: PropTypes.func,
         deleteLabel: PropTypes.string,
-        editConfig: PropTypes.object,
+        editConfigs: PropTypes.object,
         editContext: PropTypes.object,
         hideDelete: PropTypes.bool,
         iface: PropTypes.object,
@@ -48,7 +48,8 @@ class AttributeForm extends React.Component {
         setCurrentTaskBlocked: PropTypes.func,
         setEditContext: PropTypes.func,
         theme: PropTypes.object,
-        touchFriendly: PropTypes.bool
+        touchFriendly: PropTypes.bool,
+        translations: PropTypes.object
     };
     static defaultProps = {
         touchFriendly: true
@@ -86,9 +87,6 @@ class AttributeForm extends React.Component {
             this.validateFieldConstraints(this.props.editContext.feature);
         }
     }
-    editLayerId = (layerId) => {
-        return this.props.editConfig || layerId;
-    };
     render = () => {
         const captchaRequired = ConfigUtils.getConfigProp("editServiceCaptchaSiteKey") && !ConfigUtils.getConfigProp("username");
         const captchaPending = captchaRequired && !this.state.captchaResponse;
@@ -102,8 +100,8 @@ class AttributeForm extends React.Component {
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
         }
 
-        const curConfig = this.props.editConfig;
-        const editPermissions = curConfig.permissions || {};
+        const editConfig = this.props.editContext.editConfig;
+        const editPermissions = editConfig.permissions || {};
         const readOnly = this.props.readOnly || (editPermissions.updatable === false && this.props.editContext.action === 'Pick');
 
         let deleteBar = null;
@@ -130,7 +128,11 @@ class AttributeForm extends React.Component {
         if (this.state.childEdit) {
             childAttributeForm = (
                 <div className="link-feature-form-container">
-                    <LinkFeatureForm {...this.state.childEdit} finished={this.state.childEdit.finishCallback} iface={this.props.iface} pickFilter={this.props.childPickFilter} readOnly={this.props.readOnly} />
+                    <LinkFeatureForm
+                        {...this.state.childEdit} finished={this.state.childEdit.finishCallback}
+                        iface={this.props.iface} mapPrefix={this.props.editContext.mapPrefix}
+                        pickFilter={this.props.childPickFilter} readOnly={this.props.readOnly}
+                        translations={this.props.translations} />
                 </div>
             );
         }
@@ -150,18 +152,18 @@ class AttributeForm extends React.Component {
                     <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
                 <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
-                    {this.props.editConfig.form ? (
-                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={this.props.editConfig}
-                            editConfigs={this.props.theme.editConfig} editRelationRecord={this.editRelationRecord}
+                    {editConfig.form ? (
+                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={editConfig}
+                            editRelationRecord={this.editRelationRecord}
                             feature={this.props.editContext.feature} iface={this.props.iface}
-                            mapCrs={this.props.map.projection} mapPrefix={this.editMapPrefix()} readOnly={readOnly}
+                            mapCrs={this.props.map.projection} mapPrefix={this.props.editContext.mapPrefix} readOnly={readOnly}
                             removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord}
                             report={this.props.report} setFormBusy={this.setFormBusy}
                             setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
-                            translations={this.props.theme.translations}
+                            translations={this.props.translations}
                             updateField={this.updateField} updateRelationField={this.updateRelationField} />
                     ) : (
-                        <AutoEditForm editLayerId={this.props.editConfig.editDataset} fields={this.props.editConfig.fields}
+                        <AutoEditForm editLayerId={editConfig.editDataset} fields={editConfig.fields}
                             iface={this.props.iface}
                             readOnly={readOnly} touchFriendly={this.props.touchFriendly} updateField={this.updateField}
                             values={this.props.editContext.feature.properties} />
@@ -185,9 +187,6 @@ class AttributeForm extends React.Component {
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
         this.validateFieldConstraints(newFeature);
     };
-    editMapPrefix = () => {
-        return (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-    };
     setRelationTables = (relationTables) => {
         this.setState({relationTables: relationTables});
     };
@@ -201,7 +200,8 @@ class AttributeForm extends React.Component {
                         return name + ":" + entry.fk;
                     }
                 }).join(",");
-                this.props.iface.getRelations(this.props.editConfig, feature.id, this.props.map.projection, relTables, this.props.theme.editConfig, (relationValues => {
+                const mapEditConfigs = this.props.editConfigs[this.props.editContext.mapPrefix];
+                this.props.iface.getRelations(this.props.editContext.editConfig, feature.id, this.props.map.projection, relTables, mapEditConfigs, (relationValues => {
                     const newFeature = {...feature, relationValues: relationValues};
                     callback(newFeature);
                 }));
@@ -220,12 +220,11 @@ class AttributeForm extends React.Component {
     };
     addRelationRecord = (table) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
-        const editConfig = this.props.theme.editConfig[table.split('.').slice(-1)];
-        const mapPrefix = (editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
+        const editConfig = this.props.editConfigs[this.props.editContext.mapPrefix][table.split('.').slice(-1)];
         getFeatureTemplate(editConfig, {
             type: "Feature",
             properties: {}
-        }, this.props.iface, mapPrefix, this.props.map.projection, newRelFeature => {
+        }, this.props.iface, this.props.editContext.mapPrefix, this.props.map.projection, newRelFeature => {
             newRelFeature.__status__ = "empty";
             if (editConfig.geomType === null) {
                 newRelFeature.geometry = null;
@@ -295,10 +294,21 @@ class AttributeForm extends React.Component {
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     };
-    editRelationRecord = (action, layer, dataset, idx, displayField) => {
-        const editConfig = (this.props.theme.editConfig || {})[layer];
-        const feature = this.props.editContext.feature.relationValues[dataset].features[idx];
-        this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, dataset, idx, feature, finishCallback: this.finishEditRelationRecord, displayField: displayField, hideDelete: true}});
+    editRelationRecord = (action, layer, table, idx, displayField) => {
+        const editConfig = this.props.editConfigs[this.props.editContext.mapPrefix][table.split('.').slice(-1)];
+        const feature = this.props.editContext.feature.relationValues[table].features[idx];
+        const childEdit = {
+            action: action,
+            editConfig: editConfig,
+            editContextId: ':' + layer,
+            dataset: table,
+            idx: idx,
+            feature: feature,
+            finishCallback: this.finishEditRelationRecord,
+            displayField: displayField,
+            hideDelete: true
+        };
+        this.setState({childEdit: childEdit});
     };
     finishEditRelationRecord = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
@@ -332,7 +342,7 @@ class AttributeForm extends React.Component {
                 if (this.props.editContext.action === 'Pick') {
                     // Re-query the original feature
                     this.setState({busy: true});
-                    this.props.iface.getFeatureById(this.props.editConfig, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
+                    this.props.iface.getFeatureById(this.props.editContext.editConfig, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
                         this.setState({busy: false});
                         if (!isEmpty(this.state.relationTables)) {
                             // Re-load relation values
@@ -350,8 +360,7 @@ class AttributeForm extends React.Component {
                         type: "Feature",
                         properties: {}
                     };
-                    const mapPrefix = (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-                    getFeatureTemplate(this.props.editConfig, featureSkel, this.props.iface, mapPrefix, this.props.map.projection, feature => {
+                    getFeatureTemplate(this.props.editContext.editConfig, featureSkel, this.props.iface, this.props.editContext.mapPrefix, this.props.map.projection, feature => {
                         this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
                     });
                 }
@@ -378,7 +387,7 @@ class AttributeForm extends React.Component {
         }
     };
     validateFieldConstraints = (feature, validCallback = null, invalidCallback = null) => {
-        const constraintExpressions = this.props.editConfig.fields.reduce((res, cur) => {
+        const constraintExpressions = this.props.editContext.editConfig.fields.reduce((res, cur) => {
             if (cur.constraints?.expression) {
                 return [
                     ...res,
@@ -387,7 +396,9 @@ class AttributeForm extends React.Component {
             }
             return res;
         }, []);
-        parseExpressionsAsync(constraintExpressions, feature, this.props.editConfig, this.props.iface, this.editMapPrefix(), this.props.map.projection, false).then(result => {
+        parseExpressionsAsync(
+            constraintExpressions, feature, this.props.editContext.editConfig, this.props.iface, this.props.editContext.mapPrefix, this.props.map.projection, false
+        ).then(result => {
             let valid = true;
             const reasons = [];
             Object.entries(result).forEach(([key, value]) => {
@@ -395,7 +406,7 @@ class AttributeForm extends React.Component {
                 if (element) {
                     if (value === false) {
                         valid = false;
-                        const reason = this.props.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation");
+                        const reason = this.props.editContext.editConfig.fields.find(field => field.id === key)?.constraints?.placeholder ?? LocaleUtils.tr("editing.contraintviolation");
                         reasons.push(reason);
                         element.setCustomValidity(reason);
                     } else {
@@ -442,8 +453,7 @@ class AttributeForm extends React.Component {
             delete feature.geometry;
         }
 
-        const curConfig = this.props.editConfig;
-        const mapPrefix = this.editMapPrefix();
+        const editConfig = this.props.editContext.editConfig;
         const textNullValue = ConfigUtils.getConfigProp("editTextNullValue");
 
         // Keep relation values separate
@@ -465,11 +475,12 @@ class AttributeForm extends React.Component {
                     // Relation value
                     // Usually <table>__<field>__<index>, but <field> might also contain __ (i.e. upload__user)
                     const tablename = parts[0];
-                    const datasetname = mapPrefix + tablename;
+                    const datasetname = this.props.editContext.mapPrefix + "." + tablename;
                     const field = parts.slice(1, parts.length - 1).join("__");
                     const index = parseInt(parts[parts.length - 1], 10);
 
-                    const nrelFieldConfig = this.props.theme.editConfig[tablename].fields?.find?.(f => f.id === field) ?? {};
+                    const relEditConfig = this.props.editConfigs[this.props.editContext.mapPrefix][tablename];
+                    const nrelFieldConfig = relEditConfig.fields?.find?.(f => f.id === field) ?? {};
                     const nrelFieldDataType = nrelFieldConfig.type;
 
                     if (nrelFieldConfig.expression) {
@@ -512,7 +523,7 @@ class AttributeForm extends React.Component {
                         relationValues[datasetname].features[index].properties[field] = "";
                     }
                 } else {
-                    const fieldConfig = (curConfig.fields || []).find(field => field.id === name) || {};
+                    const fieldConfig = (editConfig.fields || []).find(field => field.id === name) || {};
                     if (fieldConfig.expression) {
                         // Skip virtual fields
                         delete feature.properties[name];
@@ -551,6 +562,25 @@ class AttributeForm extends React.Component {
                 }
             }
         });
+        // Remove readonly fields
+        Object.keys(feature.properties).forEach(key => {
+            const fieldConfig = editConfig.fields.find(field => field.id === key) || {};
+            if (fieldConfig?.constraints?.readOnly) {
+                delete feature.properties[key];
+            }
+        });
+        Object.entries(relationValues).forEach(([dataset, entry]) => {
+            const [mapName, layerName] = dataset.split(".", 2);
+            const relEditConfig = this.props.editConfigs[mapName][layerName];
+            entry.features.forEach(f => {
+                Object.keys(f.properties).forEach(key => {
+                    const fieldConfig = relEditConfig.fields.find(field => field.id === key) || {};
+                    if (fieldConfig?.constraints?.readOnly) {
+                        delete f.properties[key];
+                    }
+                });
+            });
+        });
 
         // Set relation values CRS and sort index if necessary
         Object.keys(relationValues).forEach(relTable => {
@@ -577,7 +607,7 @@ class AttributeForm extends React.Component {
         const featureData = new FormData();
         featureData.set('feature', JSON.stringify(feature));
         Object.entries(featureUploads).forEach(([key, value]) => featureData.set('file:' + key, value));
-        Object.entries(relationUploads).forEach(([key, value]) => featureData.set('relfile:' + mapPrefix + key, value));
+        Object.entries(relationUploads).forEach(([key, value]) => featureData.set('relfile:' + this.props.editContext.mapPrefix + "." + key, value));
 
         if (this.state.captchaResponse) {
             featureData.set('g-recaptcha-response', this.state.captchaResponse);
@@ -585,15 +615,15 @@ class AttributeForm extends React.Component {
 
         if (this.props.editContext.action === "Draw") {
             if (this.props.iface.addFeatureMultipart) {
-                this.props.iface.addFeatureMultipart(this.props.editConfig, this.props.map.projection, featureData, (success, result) => this.featureCommited(success, result));
+                this.props.iface.addFeatureMultipart(editConfig, this.props.map.projection, featureData, (success, result) => this.featureCommited(success, result));
             } else {
-                this.props.iface.addFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
+                this.props.iface.addFeature(editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
             }
         } else if (this.props.editContext.action === "Pick") {
             if (this.props.iface.editFeatureMultipart) {
-                this.props.iface.editFeatureMultipart(this.props.editConfig, this.props.map.projection, feature.id, featureData, (success, result) => this.featureCommited(success, result));
+                this.props.iface.editFeatureMultipart(editConfig, this.props.map.projection, feature.id, featureData, (success, result) => this.featureCommited(success, result));
             } else {
-                this.props.iface.editFeature(this.props.editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
+                this.props.iface.editFeature(editConfig.editDataset, feature, this.props.map.projection, (success, result) => this.featureCommited(success, result));
             }
         }
     };
@@ -625,7 +655,7 @@ class AttributeForm extends React.Component {
                 recaptchaResponse = this.state.captchaResponse;
             }
 
-            this.props.iface.deleteFeature(this.props.editConfig, this.props.editContext.feature.id, this.deleteFinished, recaptchaResponse);
+            this.props.iface.deleteFeature(this.props.editContext.editConfig, this.props.editContext.feature.id, this.deleteFinished, recaptchaResponse);
         } else {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
@@ -634,7 +664,7 @@ class AttributeForm extends React.Component {
     commitFinished = (success, result) => {
         this.setState({busy: false});
         if (success) {
-            this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
+            this.props.refreshLayer(layer => layer.wms_name === this.props.editContext.mapPrefix);
             this.props.setCurrentTaskBlocked(false);
             if (!this.props.onCommit || !this.props.onCommit(result)) {
                 if (!isEmpty(this.state.relationTables)) {
@@ -658,7 +688,7 @@ class AttributeForm extends React.Component {
         if (success) {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
-            this.props.refreshLayer(layer => layer.role === LayerRole.THEME);
+            this.props.refreshLayer(layer => layer.wms_name === this.props.editContext.mapPrefix);
             if (!this.props.onDelete || !this.props.onDelete(result)) {
                 this.props.setEditContext(this.props.editContext.id, {feature: null, changed: false});
             }
@@ -679,12 +709,21 @@ class AttributeForm extends React.Component {
         return new Blob([ia], {type: mimeString});
     };
     startChildEdit = (action, layer, featureId, updateField, displayField) => {
-        const editConfig = (this.props.theme.editConfig || {})[layer];
+        const editConfig = this.props.editConfigs[this.props.editContext.mapPrefix][layer];
         if (!editConfig) {
             // eslint-disable-next-line
             console.warn("No edit config found for linked edit layer " + layer);
         } else {
-            this.setState({childEdit: {action, editConfig, editContextId: ':' + layer, displayField, featureId, updateField, finishCallback: this.finishChildEdit}});
+            const childEdit = {
+                action: action,
+                editConfig: editConfig,
+                editContextId: ':' + layer,
+                displayField: displayField,
+                featureId: featureId,
+                updateField: updateField,
+                finishCallback: this.finishChildEdit
+            };
+            this.setState({childEdit: childEdit});
         }
     };
     finishChildEdit = (feature) => {
@@ -698,6 +737,7 @@ class AttributeForm extends React.Component {
 
 export default connect(state => ({
     map: state.map,
+    editConfigs: state.layers.editConfigs,
     theme: state.theme.current
 }), {
     clearEditContext: clearEditContext,

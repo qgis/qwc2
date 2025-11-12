@@ -18,6 +18,7 @@ import {LayerRole} from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
+import LocaleUtils from './LocaleUtils';
 import MiscUtils from './MiscUtils';
 
 function strcmp(a, b) {
@@ -256,6 +257,21 @@ const ServiceLayerUtils = {
         } catch (e) {
             /* pass */
         }
+        let editConfigUrl = null;
+        let wmsName = null;
+        try {
+            editConfigUrl = layer.EditConfig.OnlineResource.href;
+            wmsName = layer.EditConfig.wms_name;
+        } catch (e) {
+            /* pass */
+        }
+        let translationsUrl = null;
+        try {
+            translationsUrl = layer.Traslations.OnlineResource.href;
+        } catch (e) {
+            /* pass */
+        }
+
         const dimensions = [];
         MiscUtils.ensureArray(layer.Dimension).forEach(dim => {
             dimensions.push({
@@ -283,6 +299,9 @@ const ServiceLayerUtils = {
             url: getMapUrl,
             featureInfoUrl: featureInfoUrl,
             legendUrl: legendUrl,
+            editConfigUrl: editConfigUrl,
+            translationsUrl: translationsUrl,
+            wms_name: wmsName,
             version: version,
             infoFormats: infoFormats,
             mapFormats: mapFormats,
@@ -297,7 +316,8 @@ const ServiceLayerUtils = {
             maxScale: layer.MinScaleDenominator !== undefined ? Number(layer.MaxScaleDenominator) : undefined,
             dimensions: dimensions,
             styles: styles,
-            style: style
+            style: style,
+            serverType: translationsUrl ? 'qgis' : null // If there is a translationsUrl, assume it is the qwc-ogc-service
         };
     },
     getWFSLayers(capabilities, calledServiceUrl, mapCrs) {
@@ -506,7 +526,42 @@ const ServiceLayerUtils = {
                     if (layer.type === "wms") {
                         layer.params = {LAYERS: layerConfig.name};
                     }
-                    callback(layerConfig.id, layer);
+                    const metadataRequests = [
+                        new Promise((resolve, reject) => {
+                            if (layer.editConfigUrl) {
+                                axios.get(layer.editConfigUrl).then(response => {
+                                    layer.editConfig = response.data;
+                                    delete layer.editConfigUrl;
+                                    resolve();
+                                }).catch(e => {
+                                    delete layer.editConfigUrl;
+                                    resolve();
+                                });
+                            } else {
+                                resolve();
+                            }
+                        }),
+                        new Promise((resolve, reject) => {
+                            if (layer.translationsUrl) {
+                                axios.get(layer.translationsUrl.replace('{lang}', LocaleUtils.lang())).then(response => {
+                                    layer.translations = response.data;
+                                    delete layer.translationsUrl;
+                                    resolve();
+                                }).catch(e => {
+                                    delete layer.translationsUrl;
+                                    resolve();
+                                });
+                            } else {
+                                resolve();
+                            }
+                        })
+                    ];
+                    Promise.all(metadataRequests).then(() => {
+                        if (layer.translations) {
+                            layer = LayerUtils.applyTranslations(layer, layer.translations);
+                        }
+                        callback(layerConfig.id, layer);
+                    });
                 } else {
                     // eslint-disable-next-line
                     console.warn("Could not find layer " + layerConfig.name);

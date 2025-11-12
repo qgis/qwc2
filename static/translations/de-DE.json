@@ -196,6 +196,7 @@
       "reallydelete": "Löschen",
       "relationcommitfailed": "Einige Relationen konnten nicht gespeichert werden, siehe Tooltips der Icons für mehr Details.",
       "select": "Auswählen",
+      "selectlayer": "Ebene auswählen...",
       "takepicture": "Bild schießen",
       "unsavedchanged": "Es gibt nicht gespeicherte Änderungen. Soll die Seite trotzdem verlassen werden?"
     },
@@ -507,6 +508,7 @@
       "bufferlayername": "Objektpuffer",
       "bufferselectfeature": "Zu pufferndes Objekt auswählen...",
       "circle": "Kreis",
+      "clone": "Kopieren",
       "ctrlhint": "Mehrfachselektion mit Ctrl...",
       "delete": "Löschen",
       "draw": "Zeichnen",

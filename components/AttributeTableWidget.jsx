@@ -39,6 +39,7 @@ class AttributeTableWidget extends React.Component {
         addLayerFeatures: PropTypes.func,
         /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
+        editConfigs: PropTypes.object,
         filter: PropTypes.object,
         iface: PropTypes.object,
         initialLayer: PropTypes.string,
@@ -62,7 +63,6 @@ class AttributeTableWidget extends React.Component {
         showLayerSelection: PropTypes.bool,
         /** Whether to show the "Limit to extent" checkbox */
         showLimitToExtent: PropTypes.bool,
-        theme: PropTypes.object,
         /** The zoom level for zooming to point features. */
         zoomLevel: PropTypes.number,
         zoomToExtent: PropTypes.func,
@@ -79,6 +79,9 @@ class AttributeTableWidget extends React.Component {
         loading: false,
         selectedLayer: "",
         loadedLayer: "",
+        curEditConfig: null,
+        curTranslations: null,
+        fieldTranslations: null,
         features: [],
         filteredSortedFeatures: [],
         selectedFeatures: {},
@@ -134,9 +137,8 @@ class AttributeTableWidget extends React.Component {
         const captchaRequired = ConfigUtils.getConfigProp("editServiceCaptchaSiteKey") && !ConfigUtils.getConfigProp("username");
         const captchaPending = captchaRequired && !this.state.captchaResponse;
 
-        const editConfig = this.props.theme.editConfig || {};
-        const currentEditConfig = editConfig[this.state.loadedLayer];
-        const editPermissions = (editConfig[this.state.loadedLayer] || {}).permissions || {};
+        const curEditConfig = this.state.curEditConfig;
+        const editPermissions = curEditConfig?.permissions || {};
         const readOnly = this.props.readOnly || editPermissions.updatable === false;
 
         let loadOverlay = null;
@@ -154,7 +156,7 @@ class AttributeTableWidget extends React.Component {
                     </div>
                 );
             }
-        } else if (this.state.selectedLayer && this.state.deleteTask) {
+        } else if (this.state.deleteTask) {
             loadOverlay = (
                 <div className="attribtable-overlay">
                     <Spinner /><span>{LocaleUtils.tr("attribtable.deleting")}</span>
@@ -163,10 +165,11 @@ class AttributeTableWidget extends React.Component {
         }
         let table = null;
         let footbar = null;
-        if (currentEditConfig && this.state.features) {
-            const fields = this.props.showDisplayFieldOnly ? currentEditConfig.fields.filter(
-                field => field.name === currentEditConfig.displayField
-            ) : currentEditConfig.fields.filter(field => (
+        if (curEditConfig && this.state.features) {
+            const mapPrefix = this.state.curEditConfig.editDataset.split(".")[0];
+            const fields = this.props.showDisplayFieldOnly ? curEditConfig.fields.filter(
+                field => field.name === curEditConfig.displayField
+            ) : curEditConfig.fields.filter(field => (
                 field.id !== "id" &&
                 (this.props.showHiddenFields || field.constraints?.hidden !== true)
             ));
@@ -178,19 +181,19 @@ class AttributeTableWidget extends React.Component {
                         <tr>
                             <th />
                             {!this.props.showDisplayFieldOnly ? (
-                                <th onClick={() => this.sortBy("id")} title={this.translateFieldName("id", this.state.loadedLayer)}>
+                                <th onClick={() => this.sortBy("id")} title={this.translateFieldName("id")}>
                                     <span>
-                                        <span className="attribtable-table-headername">{this.translateFieldName("id", this.state.loadedLayer)}</span>
+                                        <span className="attribtable-table-headername">{this.translateFieldName("id")}</span>
                                         {this.renderSortIndicator("id")}
                                         {this.renderColumnResizeHandle(1, 'r')}
                                     </span>
                                 </th>
                             ) : null}
                             {fields.map((field, idx) => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={this.translateFieldName(field.name, this.state.loadedLayer)}>
+                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={this.translateFieldName(field.name)}>
                                     <span>
                                         {this.renderColumnResizeHandle(idx + 1, 'l')}
-                                        <span className="attribtable-table-headername">{this.translateFieldName(field.name, this.state.loadedLayer)}</span>
+                                        <span className="attribtable-table-headername">{this.translateFieldName(field.name)}</span>
                                         {this.renderSortIndicator(field.id)}
                                         {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + 2, 'r') : null}
                                     </span>
@@ -220,7 +223,7 @@ class AttributeTableWidget extends React.Component {
                                     ) : null}
                                     {fields.map(field => (
                                         <td key={field.id}>
-                                            {this.renderField(currentEditConfig, field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
+                                            {this.renderField(curEditConfig, mapPrefix, field, featureidx, indexOffset + filteredIndex, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
                                         </td>
                                     ))}
                                 </tr>
@@ -253,9 +256,9 @@ class AttributeTableWidget extends React.Component {
                     <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
                         <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterField", ev.target.value)} value={this.state.filterField}>
-                            <option value="id">{this.translateFieldName("id", this.state.loadedLayer)}</option>
+                            <option value="id">{this.translateFieldName("id")}</option>
                             {fields.map(field => (
-                                <option key={field.id} value={field.id}>{this.translateFieldName(field.name, this.state.loadedLayer)}</option>
+                                <option key={field.id} value={field.id}>{this.translateFieldName(field.name)}</option>
                             ))}
                         </select>
                         <select disabled={this.state.changedFeatureIdx !== null} onChange={ev => this.updateFilter("filterOp", ev.target.value)} value={this.state.filterOp}>
@@ -276,11 +279,11 @@ class AttributeTableWidget extends React.Component {
                 </div>
             );
         }
-        const nolayer = !this.state.selectedLayer;
+        const nolayer = curEditConfig === null;
         const loading = this.state.loading;
         const editing = this.state.changedFeatureIdx !== null;
         const layerChanged = this.state.selectedLayer !== this.state.loadedLayer;
-        const hasGeometry = (currentEditConfig || {}).geomType !== null;
+        const hasGeometry = (curEditConfig || {}).geomType !== null;
         const showAddButton = !this.props.readOnly && editPermissions.creatable !== false && (this.props.allowAddForGeometryLayers || !hasGeometry);
         const showDelButton = !this.props.readOnly && editPermissions.deletable !== false;
         const showEditButton = !this.props.readOnly && ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton;
@@ -301,20 +304,22 @@ class AttributeTableWidget extends React.Component {
                     {this.props.showLayerSelection ? (
                         <select disabled={loading || editing} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                             <option disabled value="">{LocaleUtils.tr("attribtable.selectlayer")}</option>
-                            {Object.keys(editConfig).map(layerId => {
-                                const layerName = editConfig[layerId].layerName;
-                                const layerTitle = editConfig[layerId].layerTitle ? (
-                                    this.props.theme.translations?.layertree?.[layerName] ?? editConfig[layerId].layerTitle
-                                ) : (
-                                    LayerUtils.searchLayer(this.props.layers, this.props.theme.url, layerName)?.sublayer?.title ?? layerName
-                                );
-                                return (
-                                    <option key={layerId} value={layerId}>{layerTitle}</option>
-                                );
-                            })}
+                            {Object.entries(this.props.editConfigs).map(([wmsName, serviceConfigs]) => (
+                                Object.entries(serviceConfigs).map(([layerName, editConfig]) => {
+                                    const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName);
+                                    if (!match) {
+                                        return null;
+                                    }
+                                    const layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
+                                    const value = wmsName + "#" + layerName;
+                                    return (
+                                        <option key={value} value={value}>{layerTitle}</option>
+                                    );
+                                })
+                            ))}
                         </select>
                     ) : null}
-                    <button className="button" disabled={editing || nolayer || this.state.loading} onClick={() => this.reload()} title={LocaleUtils.tr("attribtable.reload")}>
+                    <button className="button" disabled={!this.state.selectedLayer || editing || this.state.loading} onClick={() => this.reload()} title={LocaleUtils.tr("attribtable.reload")}>
                         <Icon icon="refresh" />
                     </button>
                     {showAddButton ? (
@@ -388,27 +393,35 @@ class AttributeTableWidget extends React.Component {
     changeSelectedLayer = (value) => {
         this.setState({selectedLayer: value});
     };
-    reload = (layerName = null) => {
+    reload = (selectedLayer = null) => {
         this.setState((state) => {
-            const selectedLayer = layerName || state.selectedLayer;
-            const editConfig = this.props.theme.editConfig || {};
-            const currentEditConfig = editConfig[selectedLayer];
+            selectedLayer = selectedLayer || state.selectedLayer;
+            const [wmsName, layerName] = selectedLayer.split("#");
+            const editConfig = this.props.editConfigs[wmsName][layerName];
             KeyValCache.clear();
             FeatureCache.clear();
             const bbox = this.state.limitToExtent ? this.props.mapBbox.bounds : null;
             this.props.iface.getFeatures(
-                currentEditConfig, this.props.mapCrs, (result) => {
+                editConfig, this.props.mapCrs, (result) => {
                     if (result) {
                         const features = result.features || [];
-                        this.setState((state2) => ({loading: false, features: features, filteredSortedFeatures: this.filteredSortedFeatures(features, state2), loadedLayer: selectedLayer}));
+                        const fieldTranslations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations?.layers?.[layerName]?.fields ?? {};
+                        this.setState((state2) => ({
+                            loading: false,
+                            features: features,
+                            filteredSortedFeatures: this.filteredSortedFeatures(features, state2),
+                            loadedLayer: selectedLayer,
+                            curEditConfig: editConfig,
+                            curFieldTranslations: fieldTranslations
+                        }));
                     } else {
                         // eslint-disable-next-line
                         alert(LocaleUtils.tr("attribtable.loadfailed"));
-                        this.setState({loading: false, features: [], filteredSortedFeatures: [], loadedLayer: ""});
+                        this.setState({loading: false});
                     }
                 },
                 bbox, this.props.filter.filterParams?.[selectedLayer], this.props.filter.filterGeom,
-                this.props.showDisplayFieldOnly ? [currentEditConfig.displayField, "geometry"] : null
+                this.props.showDisplayFieldOnly ? [editConfig.displayField, "geometry"] : null
             );
             return {...AttributeTableWidget.defaultState, loading: true, selectedLayer: selectedLayer, limitToExtent: state.limitToExtent};
         });
@@ -423,13 +436,12 @@ class AttributeTableWidget extends React.Component {
         newState.filteredSortedFeatures = this.filteredSortedFeatures(this.state.features, {...this.state, ...newState});
         this.setState(newState);
     };
-    renderField = (currentEditConfig, field, featureidx, filteredIndex, fielddisabled) => {
+    renderField = (editConfig, mapPrefix, field, featureidx, filteredIndex, fielddisabled) => {
         const feature = this.state.features[featureidx];
         let value = feature.properties[field.id];
         if (value === undefined || value === null) {
             value = "";
         }
-        const mapPrefix = (currentEditConfig.editDataset.match(/^[^.]+\./) || [""])[0];
         const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, filteredIndex, fieldid, val, emptynull);
         const constraints = field.constraints || {};
         const disabled = constraints.readOnly || fielddisabled;
@@ -439,7 +451,7 @@ class AttributeTableWidget extends React.Component {
         } else if (constraints.values || constraints.keyvalrel) {
             let filterExpr = null;
             if (field.filterExpression) {
-                filterExpr = parseExpression(field.filterExpression, feature, currentEditConfig, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
+                filterExpr = parseExpression(field.filterExpression, feature, editConfig, this.props.iface, mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
             }
             input = (
                 <EditComboField
@@ -464,7 +476,7 @@ class AttributeTableWidget extends React.Component {
                     value={value} />
             );
         } else if (field.type === "file") {
-            return (<EditUploadField constraints={constraints} dataset={currentEditConfig.editDataset} disabled={disabled} fieldId={field.id} iface={this.props.iface} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
+            return (<EditUploadField constraints={constraints} dataset={editConfig.editDataset} disabled={disabled} fieldId={field.id} iface={this.props.iface} name={field.id} showThumbnails={false} updateField={updateField} updateFile={(fieldId, data) => {this.changedFiles[fieldId] = data; }} value={value} />);
         } else if (field.type === "text") {
             if ((feature.properties[field.id] ?? null) === null) {
                 value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
@@ -491,12 +503,7 @@ class AttributeTableWidget extends React.Component {
         return input;
     };
     addFeature = () => {
-        const editConfig = this.props.theme.editConfig || {};
-        const currentEditConfig = editConfig[this.state.loadedLayer];
-        if (!currentEditConfig) {
-            return;
-        }
-        const hasGeometry = (currentEditConfig || {}).geomType !== null;
+        const hasGeometry = this.state.curEditConfig.geomType !== null;
         if (!this.props.allowAddForGeometryLayers && hasGeometry) {
             // eslint-disable-next-line
             alert(LocaleUtils.tr("attribtable.geomnoadd"));
@@ -505,15 +512,15 @@ class AttributeTableWidget extends React.Component {
         const featureSkel = {
             type: "Feature",
             geometry: null,
-            properties: currentEditConfig.fields.reduce((res, field) => {
+            properties: this.state.curEditConfig.fields.reduce((res, field) => {
                 if (field.id !== "id") {
                     res[field.id] = field.type === "text" ? "" : null;
                 }
                 return res;
             }, {})
         };
-        const mapPrefix = (currentEditConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-        getFeatureTemplate(currentEditConfig, featureSkel, this.props.iface, mapPrefix, this.props.mapCrs, feature => {
+        const mapPrefix = this.state.curEditConfig.editDataset.split(".")[0];
+        getFeatureTemplate(this.state.curEditConfig, featureSkel, this.props.iface, mapPrefix, this.props.mapCrs, feature => {
             this.setState((state) => ({
                 features: [...state.features, feature],
                 filteredSortedFeatures: [...state.filteredSortedFeatures, {...feature, originalIndex: state.features.length}],
@@ -528,11 +535,8 @@ class AttributeTableWidget extends React.Component {
     deleteSelectedFeatured = () => {
         this.setState((state) => {
             const features = state.filteredSortedFeatures.filter(feature => state.selectedFeatures[feature.id] === true);
-            const selectedLayer = state.selectedLayer;
-            const editConfig = this.props.theme.editConfig || {};
-            const currentEditConfig = editConfig[selectedLayer];
             features.forEach(feature => {
-                this.props.iface.deleteFeature(currentEditConfig, feature.id, (success) => {
+                this.props.iface.deleteFeature(state.curEditConfig, feature.id, (success) => {
                     this.setState((state2) => {
                         const newState = {
                             deleteTask: {
@@ -587,17 +591,15 @@ class AttributeTableWidget extends React.Component {
                 properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.mapCrs)}
             }
         };
-        const editConfig = this.props.theme.editConfig || {};
-        const currentEditConfig = editConfig[this.state.loadedLayer];
         Object.keys(feature.properties || {}).forEach(name => {
-            const fieldConfig = currentEditConfig.fields?.find?.(f => f.id === name) ?? {};
+            const fieldConfig = this.state.curEditConfig.fields?.find?.(f => f.id === name) ?? {};
             if (fieldConfig.expression) {
                 // Skip virtual fields
                 delete feature.properties[name];
             }
         });
         // Omit geometry if it is read-only
-        const canEditGeometry = ['Point', 'LineString', 'Polygon'].includes((currentEditConfig.geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
+        const canEditGeometry = ['Point', 'LineString', 'Polygon'].includes((this.state.curEditConfig.geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
         if (!canEditGeometry) {
             delete feature.geometry;
         }
@@ -611,12 +613,12 @@ class AttributeTableWidget extends React.Component {
 
         if (this.state.newFeature) {
             this.props.iface.addFeatureMultipart(
-                currentEditConfig, this.props.mapCrs, featureData,
+                this.state.curEditConfig, this.props.mapCrs, featureData,
                 (success, result) => this.featureCommited(success, result)
             );
         } else {
             this.props.iface.editFeatureMultipart(
-                currentEditConfig, this.props.mapCrs, feature.id, featureData,
+                this.state.curEditConfig, this.props.mapCrs, feature.id, featureData,
                 (success, result) => this.featureCommited(success, result)
             );
         }
@@ -676,9 +678,7 @@ class AttributeTableWidget extends React.Component {
         }
     };
     switchToFormEditMode = () => {
-        const editConfig = this.props.theme.editConfig || {};
-        const currentEditConfig = editConfig[this.state.loadedLayer];
-        const hasGeometry = (currentEditConfig || {}).geomType !== null;
+        const hasGeometry = this.state.curEditConfig.geomType !== null;
         if (!hasGeometry) {
             // eslint-disable-next-line
             alert(LocaleUtils.tr("attribtable.nogeomnoform"));
@@ -715,9 +715,7 @@ class AttributeTableWidget extends React.Component {
                 test = (x) => (Number(x) < Number(filterVal));
             }
             // Build value relation lookup
-            const editConfig = this.props.theme.editConfig || {};
-            const currentEditConfig = editConfig[this.state.loadedLayer];
-            const valueLookup = currentEditConfig.fields.reduce((res, field) => {
+            const valueLookup = this.state.curEditConfig.fields.reduce((res, field) => {
                 if (field.constraints && field.constraints.values) {
                     res[field.id] = field.constraints.values.reduce((res2, constraint) => {
                         res2[constraint.value] = constraint.label;
@@ -788,15 +786,9 @@ class AttributeTableWidget extends React.Component {
         }
     };
     csvExport = () => {
-        const editConfig = this.props.theme.editConfig || {};
-        const currentEditConfig = editConfig[this.state.loadedLayer];
-        if (!currentEditConfig) {
-            return;
-        }
-
-        const fields = this.props.showDisplayFieldOnly ? currentEditConfig.fields.filter(
-            field => field.name === currentEditConfig.displayField
-        ) : currentEditConfig.fields.filter(field => field.id !== 'id');
+        const fields = this.props.showDisplayFieldOnly ? this.state.curEditConfig.fields.filter(
+            field => field.name === this.state.curEditConfig.displayField
+        ) : this.state.curEditConfig.fields.filter(field => field.id !== 'id');
         let data = "";
         data += "id," + fields.map(field => `"${field.name.replaceAll('"', '""')}"`).join(",") + "\n";
 
@@ -812,18 +804,18 @@ class AttributeTableWidget extends React.Component {
         });
         FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), this.state.loadedLayer + ".csv");
     };
-    translateFieldName = (fieldName, layerName) => {
-        return this.props.theme.translations?.layers?.[layerName]?.fields?.[fieldName] ?? fieldName;
+    translateFieldName = (fieldName) => {
+        return this.state.fieldTranslations?.[fieldName] ?? fieldName;
     };
 }
 
 export default connect((state) => ({
+    editConfigs: state.layers.editConfigs,
     layers: state.layers.flat,
     filter: state.layers.filter,
     mapBbox: state.map.bbox,
     mapCrs: state.map.projection,
-    mapScales: state.map.scales,
-    theme: state.theme.current
+    mapScales: state.map.scales
 }), {
     addLayerFeatures: addLayerFeatures,
     removeLayer: removeLayer,

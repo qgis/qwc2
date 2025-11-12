@@ -42,7 +42,8 @@ const defaultState = {
         filterParams: null,
         filterGeom: null,
         timeRange: null
-    }
+    },
+    editConfigs: {}
 };
 
 export default function layers(state = defaultState, action) {
@@ -164,7 +165,17 @@ export default function layers(state = defaultState, action) {
         if (newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
             UrlParams.updateParams({bl: newLayer.name});
         }
-        return {...state, flat: newLayers};
+        let newEditConfigs = state.editConfigs;
+        if (newLayer.editConfig && newLayer.wms_name) {
+            newEditConfigs = {
+                ...newEditConfigs,
+                [newLayer.wms_name]: {
+                    ...newEditConfigs[newLayer.wms_name],
+                    ...newLayer.editConfig
+                }
+            };
+        }
+        return {...state, flat: newLayers, editConfigs: newEditConfigs};
     }
     case ADD_LAYER_SEPARATOR: {
         const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath);
@@ -182,6 +193,7 @@ export default function layers(state = defaultState, action) {
             return state;
         }
         let newLayers = state.flat;
+        let newEditConfigs = state.editConfigs;
         if (layer.role === LayerRole.BACKGROUND || isEmpty(action.sublayerpath)) {
             const position = state.flat.findIndex(l => l.id === action.layerId);
             newLayers = [...newLayers];
@@ -193,6 +205,10 @@ export default function layers(state = defaultState, action) {
                 // Compress layers
                 newLayers = LayerUtils.implodeLayers(LayerUtils.explodeLayers(newLayers));
             }
+            if (newEditConfigs[layer.wms_name]) {
+                newEditConfigs = {...newEditConfigs};
+                delete newEditConfigs[layer.wms_name];
+            }
         } else {
             newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath).map(l => {
                 if (l.type === "wms") {
@@ -203,7 +219,7 @@ export default function layers(state = defaultState, action) {
             });
         }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return {...state, flat: newLayers};
+        return {...state, flat: newLayers, editConfigs: newEditConfigs};
     }
     case ADD_LAYER_FEATURES: {
         const layerId = action.layer.id || uuidv4();
@@ -279,7 +295,17 @@ export default function layers(state = defaultState, action) {
             newLayers[themeLayerIdx].visibility = true;
             Object.assign(newLayers[themeLayerIdx], LayerUtils.buildWMSLayerParams(newLayers[themeLayerIdx], state.filter));
             UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-            return {...state, flat: newLayers};
+            let newEditConfigs = state.editConfigs;
+            if (action.layer.editConfig) {
+                newEditConfigs = {
+                    ...newEditConfigs,
+                    [newLayers[themeLayerIdx].wms_name]: {
+                        ...newEditConfigs[newLayers[themeLayerIdx].wms_name],
+                        ...action.layer.editConfig
+                    }
+                };
+            }
+            return {...state, flat: newLayers, editConfigs: newEditConfigs};
         }
         return state;
     }
@@ -311,7 +337,17 @@ export default function layers(state = defaultState, action) {
     case REPLACE_PLACEHOLDER_LAYER: {
         const newLayers = LayerUtils.replacePlaceholderLayer(state.flat, action.id, action.layer, state.filter);
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
-        return {...state, flat: newLayers};
+        let newEditConfigs = state.editConfigs;
+        if (action.layer.editConfig && action.layer.wms_name) {
+            newEditConfigs = {
+                ...newEditConfigs,
+                [action.layer.wms_name]: {
+                    ...newEditConfigs[action.layer.wms_name],
+                    ...action.layer.editConfig
+                }
+            };
+        }
+        return {...state, flat: newLayers, editConfigs: newEditConfigs};
     }
     case SET_SWIPE: {
         return {...state, swipe: action.swipe};

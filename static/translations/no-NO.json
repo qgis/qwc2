@@ -196,6 +196,7 @@
       "reallydelete": "Virkelig slette",
       "relationcommitfailed": "",
       "select": "Velg",
+      "selectlayer": "",
       "takepicture": "",
       "unsavedchanged": ""
     },
@@ -507,6 +508,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Velg et objekt fra buffer",
       "circle": "",
+      "clone": "",
       "ctrlhint": "",
       "delete": "Slett",
       "draw": "Tegn",

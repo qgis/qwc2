@@ -196,6 +196,7 @@
       "reallydelete": "Delete",
       "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
       "select": "Select",
+      "selectlayer": "Select layer...",
       "takepicture": "Take picture",
       "unsavedchanged": "There are unsaved changes. Do you want to leave the page anyway?"
     },
@@ -454,7 +455,7 @@
       "angle": "Angle",
       "featureunsupported": "Numeric input unavailable for this geometry",
       "height": "Height",
-      "nofeatureormultiple": "",
+      "nofeatureormultiple": "No or multiple active features",
       "side": "Side",
       "width": "Width",
       "windowtitle": "Numeric input"
@@ -507,6 +508,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Select a feature to buffer...",
       "circle": "Circle",
+      "clone": "Clone",
       "ctrlhint": "Use Ctrl for multiselection...",
       "delete": "Delete",
       "draw": "Draw",

@@ -34,10 +34,12 @@ class LinkFeatureForm extends React.Component {
         hideDelete: PropTypes.bool,
         iface: PropTypes.object,
         map: PropTypes.object,
+        mapPrefix: PropTypes.string,
         pickFilter: PropTypes.func,
         readOnly: PropTypes.bool,
         removeLayer: PropTypes.func,
-        setEditContext: PropTypes.func
+        setEditContext: PropTypes.func,
+        translations: PropTypes.object
     };
     state = {
         editContext: {},
@@ -47,11 +49,17 @@ class LinkFeatureForm extends React.Component {
     componentDidMount() {
         if (this.props.action === 'Edit') {
             if (this.props.feature) {
-                this.props.setEditContext(this.props.editContextId, {action: 'Pick', feature: this.props.feature, geomType: this.props.editConfig.geomType});
+                this.props.setEditContext(this.props.editContextId, {
+                    action: 'Pick', feature: this.props.feature, geomType: this.props.editConfig.geomType,
+                    editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix
+                });
             } else {
                 this.props.iface.getFeatureById(this.props.editConfig, this.props.featureId, this.props.map.projection, (result) => {
                     if (result) {
-                        this.props.setEditContext(this.props.editContextId, {action: 'Pick', feature: result, geomType: this.props.editConfig.geomType});
+                        this.props.setEditContext(this.props.editContextId, {
+                            action: 'Pick', feature: result, geomType: this.props.editConfig.geomType,
+                            editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix
+                        });
                     }
                 });
             }
@@ -61,12 +69,14 @@ class LinkFeatureForm extends React.Component {
                 properties: {},
                 ...this.props.feature
             };
-            const mapPrefix = (this.props.editConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-            getFeatureTemplate(this.props.editConfig, featureSkel, this.props.iface, mapPrefix, this.props.map.projection, feature => {
-                this.props.setEditContext(this.props.editContextId, {action: 'Draw', geomType: this.props.editConfig.geomType, feature: feature});
+            getFeatureTemplate(this.props.editConfig, featureSkel, this.props.iface, this.props.mapPrefix, this.props.map.projection, feature => {
+                this.props.setEditContext(this.props.editContextId, {
+                    action: 'Draw', geomType: this.props.editConfig.geomType, feature: feature,
+                    editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix
+                });
             });
         } else if (this.props.action === 'Pick') {
-            this.props.setEditContext(this.props.editContextId, {action: null});
+            this.props.setEditContext(this.props.editContextId, {editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix});
         }
     }
     componentDidUpdate(prevProps) {
@@ -116,7 +126,11 @@ class LinkFeatureForm extends React.Component {
                             <span>{LocaleUtils.tr("linkfeatureform.drawhint")}</span>
                         </div>
                     ) : (
-                        <AttributeForm editConfig={this.props.editConfig} editContext={editContext} hideDelete={this.props.hideDelete} iface={this.props.iface} onDiscard={this.onDiscard} readOnly={this.props.readOnly} />
+                        <AttributeForm
+                            editContext={editContext} hideDelete={this.props.hideDelete}
+                            iface={this.props.iface} onDiscard={this.onDiscard}
+                            readOnly={this.props.readOnly} translations={this.props.translations}
+                        />
                     )}
                     <div className="link-feature-form-close">
                         <button className="button" disabled={editContext.changed} onClick={this.finish}>

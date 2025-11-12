@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import {setEditContext, clearEditContext} from '../actions/editing';
-import {LayerRole, addLayerFeatures, removeLayer, refreshLayer, changeLayerProperty} from '../actions/layers';
+import {addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
@@ -49,13 +49,13 @@ class Editing extends React.Component {
         changeLayerProperty: PropTypes.func,
         clearEditContext: PropTypes.func,
         currentEditContext: PropTypes.string,
+        editConfigs: PropTypes.object,
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
         filter: PropTypes.object,
         iface: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
-        refreshLayer: PropTypes.func,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
@@ -106,18 +106,11 @@ class Editing extends React.Component {
         this.setState({minimized: false, drawPick: false});
     };
     componentDidUpdate(prevProps, prevState) {
-        const themeSublayers = this.props.layers.reduce((accum, layer) => {
-            return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
-        }, []);
-        // Update selected layer on layers change
-        if (this.props.enabled && (this.props.layers !== prevProps.layers || !prevProps.enabled)) {
-            const layerIds = Object.keys(this.props.theme && this.props.theme.editConfig || {}).filter(layerId => themeSublayers.includes(layerId));
-            if (!isEmpty(layerIds)) {
-                if (!layerIds.includes(this.state.selectedLayer)) {
-                    this.changeSelectedLayer(layerIds[0]);
-                }
-            } else if (this.state.selectedLayer) {
-                this.changeSelectedLayer(null);
+        // Clear selected layer on layers change
+        if (this.props.layers !== prevProps.layers && this.state.selectedLayer) {
+            const [wmsName, layerName] = this.state.selectedLayer.split("#");
+            if (!LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName)) {
+                this.setState({selectedLayer: null});
             }
         }
         // If click point changed and in pick mode with a selected layer, trigger a pick
@@ -127,7 +120,8 @@ class Editing extends React.Component {
             const oldPoint = prevProps.map.click || {};
             if (newPoint.coordinate && !isEqual(newPoint.coordinate, oldPoint.coordinate)) {
                 const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
-                const editConfig = this.props.theme.editConfig[this.state.selectedLayer];
+                const [wmsName, layerName] = this.state.selectedLayer.split("#");
+                const editConfig = this.props.editConfigs[wmsName][layerName];
                 this.props.iface.getFeature(editConfig, newPoint.coordinate, this.props.map.projection, scale, 96, (featureCollection) => {
                     const features = featureCollection ? featureCollection.features : null;
                     this.setState({pickedFeatures: features});
@@ -189,23 +183,15 @@ class Editing extends React.Component {
             return this.renderCloneAttributeDialog();
         }
 
-        if (!this.props.theme || isEmpty(this.props.theme.editConfig)) {
+        if (!this.props.theme || isEmpty(this.props.editConfigs)) {
             return (
                 <div role="body" style={{padding: "1em"}}>
                     {LocaleUtils.tr("editing.noeditablelayers")}
                 </div>
             );
         }
-        const editConfig = this.props.theme.editConfig;
-        const curConfig = editConfig[this.state.selectedLayer];
-        if (!curConfig) {
-            return (
-                <div role="body" style={{padding: "1em"}}>
-                    {LocaleUtils.tr("editing.noeditablelayers")}
-                </div>
-            );
-        }
-        const editPermissions = curConfig.permissions || {};
+        const editConfig = this.props.editContext?.editConfig;
+        const editPermissions = editConfig?.permissions ?? {};
 
         const actionButtons = [];
         actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("editing.pick"), data: {action: 'Pick', feature: null}});
@@ -217,13 +203,13 @@ class Editing extends React.Component {
         }
 
         let featureSelection = null;
-        if (this.state.pickedFeatures && this.state.pickedFeatures.length > 1) {
+        if (editConfig && this.state.pickedFeatures && this.state.pickedFeatures.length > 1) {
             const featureText = LocaleUtils.tr("editing.feature");
             featureSelection = (
                 <div className="editing-feature-selection">
                     <select className="combo editing-feature-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={(ev) => this.setEditFeature(ev.target.value)}  value={(this.props.editContext.feature || {}).id || ""}>
                         {this.state.pickedFeatures.map(feature => (
-                            <option key={feature.id} value={feature.id}>{curConfig.displayField ? feature.properties[curConfig.displayField] : featureText + " " + feature.id}</option>
+                            <option key={feature.id} value={feature.id}>{editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + feature.id}</option>
                         ))}
                     </select>
                 </div>
@@ -237,32 +223,35 @@ class Editing extends React.Component {
             pickBar = (<ButtonBar active={this.state.drawPick ? "DrawPick" : null} buttons={pickButtons} onClick={this.toggleDrawPick} />);
         }
         let attributeForm = null;
-        if (this.props.editContext.feature && (this.props.editContext.action === "Pick" || this.props.editContext.feature.geometry)) {
+        if (editConfig && this.props.editContext.feature && (this.props.editContext.action === "Pick" || this.props.editContext.feature.geometry)) {
+            const translations = this.props.layers.find(layer => layer.wms_name === this.props.editContext.mapPrefix)?.translations;
             attributeForm = (
-                <AttributeForm editConfig={curConfig} editContext={this.props.editContext} iface={this.props.iface} onCommit={this.updatePickedFeatures} />
+                <AttributeForm
+                    editContext={this.props.editContext} iface={this.props.iface}
+                    onCommit={this.updatePickedFeatures} translations={translations} />
             );
         }
-        const themeSublayers = this.props.layers.reduce((accum, layer) => {
-            return layer.role === LayerRole.THEME ? accum.concat(LayerUtils.getSublayerNames(layer)) : accum;
-        }, []);
         return (
             <div className="editing-body">
                 <div className="editing-layer-selection">
                     <select className="combo editing-layer-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
-                        {Object.keys(editConfig).filter(layerId => themeSublayers.includes(layerId)).map(layerId => {
-                            const layerName = editConfig[layerId].layerName;
-                            const layerTitle = editConfig[layerId].layerTitle ? (
-                                this.props.theme.translations?.layertree?.[layerName] ?? editConfig[layerId].layerTitle
-                            ) : (
-                                LayerUtils.searchLayer(this.props.layers, this.props.theme.url, layerName)?.sublayer?.title ?? layerName
-                            );
-                            return (
-                                <option key={layerId} value={layerId}>{layerTitle}</option>
-                            );
-                        })}
+                        <option disabled value="">{LocaleUtils.tr("editing.selectlayer")}</option>
+                        {Object.entries(this.props.editConfigs).map(([mapName, serviceConfigs]) => (
+                            Object.entries(serviceConfigs).map(([layerName, edConfig]) => {
+                                const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
+                                if (!match) {
+                                    return null;
+                                }
+                                const layerTitle = match.layer.translations?.layertree?.[layerName] ?? edConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
+                                const value = mapName + "#" + layerName;
+                                return (
+                                    <option key={value} value={value}>{layerTitle}</option>
+                                );
+                            })
+                        ))}
                     </select>
                 </div>
-                <ButtonBar active={this.state.drawPick ? "Draw" : this.props.editContext.action} buttons={actionButtons} disabled={this.props.editContext.changed || this.props.editContext.id !== this.props.currentEditContext} onClick={this.actionClicked} />
+                <ButtonBar active={this.state.drawPick ? "Draw" : this.props.editContext.action} buttons={actionButtons} disabled={!editConfig || this.props.editContext.changed || this.props.editContext.id !== this.props.currentEditContext} onClick={this.actionClicked} />
                 {featureSelection}
                 {pickBar}
                 {attributeForm}
@@ -292,22 +281,19 @@ class Editing extends React.Component {
         if (action === "AttribTable") {
             this.props.setCurrentTask("AttributeTable", null, null, {layer: this.state.selectedLayer});
         } else if (action === "Draw") {
-            const editConfig = this.props.theme.editConfig;
-            const curConfig = editConfig[this.state.selectedLayer];
             const featureSkel = {
                 type: "Feature",
                 properties: {}
             };
-            const mapPrefix = (curConfig.editDataset.match(/^[^.]+\./) || [""])[0];
-            getFeatureTemplate(curConfig, featureSkel, this.props.iface, mapPrefix, this.props.map.projection, feature => {
-                this.props.setEditContext('Editing', {...data, feature: feature, geomReadOnly: false});
+            getFeatureTemplate(this.props.editContext.editConfig, featureSkel, this.props.iface, this.props.editContext.mapPrefix, this.props.map.projection, feature => {
+                this.props.setEditContext('Editing', {...data, feature: feature});
             });
         } else {
             this.props.setEditContext('Editing', {...data});
         }
     };
     pickFilter = (feature) => {
-        const geomType = this.props.theme.editConfig[this.state.selectedLayer]?.geomType;
+        const geomType = this.props.editContext.geomType;
         return feature.geometry && (
             feature.geometry.type === geomType ||
             "Multi" + feature.geometry.type === geomType ||
@@ -315,7 +301,7 @@ class Editing extends React.Component {
         );
     };
     geomPicked = (layer, feature) => {
-        const geomType = this.props.theme.editConfig[this.state.selectedLayer]?.geomType;
+        const geomType = this.props.editContext.geomType;
         let geometry = feature.geometry;
         if (geometry.type !== geomType) {
             if (("Multi" + feature.geometry.type) === geomType) {
@@ -465,14 +451,13 @@ class Editing extends React.Component {
     };
     setLayerVisibility = (selectedLayer, visibility) => {
         if (selectedLayer !== null) {
-            const path = [];
-            let sublayer = null;
-            const layer = this.props.layers.find(l => (l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', selectedLayer, path))));
-            if (layer && sublayer) {
-                const oldvisibility = sublayer.visibility;
+            const [wmsName, layerName] = selectedLayer.split("#");
+            const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName);
+            if (match) {
+                const oldvisibility = match.sublayer.visibility;
                 if (oldvisibility !== visibility && visibility !== null) {
                     const recurseDirection = !oldvisibility ? "both" : "children";
-                    this.props.changeLayerProperty(layer.id, "visibility", visibility, path, recurseDirection);
+                    this.props.changeLayerProperty(match.layer.id, "visibility", visibility, match.path, recurseDirection);
                 }
                 return oldvisibility;
             }
@@ -480,12 +465,14 @@ class Editing extends React.Component {
         return null;
     };
     changeSelectedLayer = (selectedLayer, feature = null) => {
-        const curConfig = this.props.theme && this.props.theme.editConfig && selectedLayer ? this.props.theme.editConfig[selectedLayer] : null;
+        const [mapName, layerName] = (selectedLayer ?? '#').split("#");
+        const editConfig = selectedLayer ? this.props.editConfigs[mapName][layerName] : null;
         this.props.setEditContext('Editing', {
             action: "Pick",
             feature: feature,
-            geomType: curConfig?.geomType || null,
-            permissions: curConfig?.permissions || {}
+            changed: false,
+            mapPrefix: mapName,
+            editConfig: editConfig
         });
 
         let prevLayerVisibility = null;
@@ -528,6 +515,7 @@ export default (iface = EditingInterface) => {
         theme: state.theme.current,
         layers: state.layers.flat,
         filter: state.layers.filter,
+        editConfigs: state.layers.editConfigs,
         map: state.map,
         iface: iface,
         editContext: state.editing.contexts.Editing || {},
@@ -541,7 +529,6 @@ export default (iface = EditingInterface) => {
         setSnappingConfig: setSnappingConfig,
         setCurrentTask: setCurrentTask,
         setCurrentTaskBlocked: setCurrentTaskBlocked,
-        refreshLayer: refreshLayer,
         changeLayerProperty: changeLayerProperty
     })(Editing);
 };

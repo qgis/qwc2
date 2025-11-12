@@ -196,6 +196,7 @@
       "reallydelete": "Excluir",
       "relationcommitfailed": "Falha na confirmação",
       "select": "Selecione",
+      "selectlayer": "",
       "takepicture": "Selecionar imagem",
       "unsavedchanged": "Alterações não salvas"
     },
@@ -507,6 +508,7 @@
       "bufferlayername": "Nome do buffer",
       "bufferselectfeature": "Selecione uma característica para o buffer...",
       "circle": "Círculo",
+      "clone": "",
       "ctrlhint": "",
       "delete": "Excluir",
       "draw": "Traçar",

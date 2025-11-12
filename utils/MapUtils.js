@@ -48,15 +48,6 @@ const MapUtils = {
         return (dpi || DEFAULT_SCREEN_DPI) * (100 / 2.54);
     },
     /**
-     * @param dpi {number} screen resolution in dots per inch.
-     * @param projection {string} map projection.
-     * @return {number} dots per map unit.
-     */
-    dpi2dpu(dpi, projection) {
-        const units = CoordinatesUtils.getUnits(projection);
-        return METERS_PER_UNIT[units] * MapUtils.dpi2dpm(dpi);
-    },
-    /**
      * Get a list of scales for each zoom level of the Google Mercator.
      * @param minZoom {number} min zoom level.
      * @param maxZoom {number} max zoom level.
@@ -81,9 +72,9 @@ const MapUtils = {
      * @return {array} a list of resolutions corresponding to the given scales, projection and dpi.
      */
     getResolutionsForScales(scales, projection, dpi = DEFAULT_SCREEN_DPI) {
-        const dpu = MapUtils.dpi2dpu(dpi, projection);
+        const units = CoordinatesUtils.getUnits(projection);
         const resolutions = scales.map((scale) => {
-            return scale / dpu;
+            return scale * 0.0254 / (dpi * METERS_PER_UNIT[units]);
         });
         return resolutions;
     },

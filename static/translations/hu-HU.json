@@ -196,6 +196,7 @@
       "reallydelete": "Törlés",
       "relationcommitfailed": "",
       "select": "",
+      "selectlayer": "",
       "takepicture": "",
       "unsavedchanged": ""
     },
@@ -507,6 +508,7 @@
       "bufferlayername": "",
       "bufferselectfeature": "",
       "circle": "",
+      "clone": "",
       "ctrlhint": "",
       "delete": "",
       "draw": "",

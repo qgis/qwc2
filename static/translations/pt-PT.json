@@ -196,6 +196,7 @@
       "reallydelete": "Eliminar",
       "relationcommitfailed": "Falha ao Confirmar Relação",
       "select": "Selecionar",
+      "selectlayer": "",
       "takepicture": "Tirar Fotografia",
       "unsavedchanged": "Alterações Não Guardadas"
     },
@@ -507,6 +508,7 @@
       "bufferlayername": "Nome da Camada de Tampão",
       "bufferselectfeature": "Selecione uma característica para o tampão...",
       "circle": "Círculo",
+      "clone": "",
       "ctrlhint": "",
       "delete": "Excluir",
       "draw": "Desenhar",
