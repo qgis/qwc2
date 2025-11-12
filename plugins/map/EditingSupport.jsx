@@ -57,7 +57,7 @@ class EditingSupport extends React.Component {
         }
     }
     render() {
-        if (this.state.showRecordLocation) {
+        if (this.state.showRecordLocation && this.props.editContext.geomType) {
             const geomType = this.props.editContext.geomType.replace(/Z$/, '');
             return (
                 <LocationRecorder
