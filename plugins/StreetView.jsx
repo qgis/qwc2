@@ -1,23 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
+import { Translate } from 'ol/interaction';
+import VectorLayer from 'ol/layer/Vector';
+import VectorSource from 'ol/source/Vector';
+import { Style, Icon} from 'ol/style';
 import PropTypes from 'prop-types';
-import MapUtils from '../utils/MapUtils';
+
 import ResizeableWindow from '../components/ResizeableWindow';
 import Spinner from '../components/widgets/Spinner';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import Feature from 'ol/Feature';
-import Point from 'ol/geom/Point';
 import LocaleUtils from '../utils/LocaleUtils';
-import { Style, Icon, Stroke, Fill, RegularShape } from 'ol/style';
-import { Translate } from 'ol/interaction';
+import MapUtils from '../utils/MapUtils';
 
 class StreetView extends React.Component {
     static propTypes = {
-        task: PropTypes.string,
+        googleMapsApiKey: PropTypes.string,
         map: PropTypes.object,
-        googleMapsApiKey: PropTypes.string
+        setCurrentTask: PropTypes.func,
+        task: PropTypes.string
     };
 
     state = {
@@ -31,59 +34,58 @@ class StreetView extends React.Component {
     translateInteraction = null;
 
 
-createMarkerLayer = () => {
-    const olMap = MapUtils.getHook(MapUtils.GET_MAP);
-    
-    if (!olMap) {
-        console.warn('OpenLayers map not available yet');
-        setTimeout(() => this.createMarkerLayer(), 200);
-        return;
-    }
+    createMarkerLayer = () => {
+        const olMap = MapUtils.getHook(MapUtils.GET_MAP);
 
-    // Create vector source and layer
-    const vectorSource = new VectorSource();
-    this.markerLayer = new VectorLayer({
-        source: vectorSource,
-        zIndex: 999
-    });
+        if (!olMap) {
+            setTimeout(() => this.createMarkerLayer(), 200);
+            return;
+        }
 
-    olMap.addLayer(this.markerLayer);
+        // Create vector source and layer
+        const vectorSource = new VectorSource();
+        this.markerLayer = new VectorLayer({
+            source: vectorSource,
+            zIndex: 999
+        });
 
-    // Create translate interaction for dragging
-    this.translateInteraction = new Translate({
-        layers: [this.markerLayer]
-    });
+        olMap.addLayer(this.markerLayer);
 
-    this.translateInteraction.on('translateend', (event) => {
-        if (this.isUpdatingFromStreetView) return;
+        // Create translate interaction for dragging
+        this.translateInteraction = new Translate({
+            layers: [this.markerLayer]
+        });
 
-        const feature = event.features.getArray()[0];
-        const coords = feature.getGeometry().getCoordinates();
+        this.translateInteraction.on('translateend', (event) => {
+            if (this.isUpdatingFromStreetView) return;
 
-        const mapCrs = this.props.map?.projection || 'EPSG:3857';
-        const [lng, lat] = CoordinatesUtils.reproject(coords, mapCrs, 'EPSG:4326');
+            const feature = event.features.getArray()[0];
+            const coords = feature.getGeometry().getCoordinates();
 
-        this.updateStreetViewFromMarker(lat, lng);
-    });
+            const mapCrs = this.props.map?.projection || 'EPSG:3857';
+            const [lng, lat] = CoordinatesUtils.reproject(coords, mapCrs, 'EPSG:4326');
 
-    olMap.addInteraction(this.translateInteraction);
-};
+            this.updateStreetViewFromMarker(lat, lng);
+        });
 
-removeMarkerLayer = () => {
-    const olMap = MapUtils.getHook(MapUtils.GET_MAP);
-    
-    if (!olMap) return; 
-    
-    if (this.translateInteraction) {
-        olMap.removeInteraction(this.translateInteraction);
-        this.translateInteraction = null;
-    }
-    if (this.markerLayer) {
-        olMap.removeLayer(this.markerLayer);
-        this.markerLayer = null;
-        this.markerFeature = null;
-    }
-};
+        olMap.addInteraction(this.translateInteraction);
+    };
+
+    removeMarkerLayer = () => {
+        const olMap = MapUtils.getHook(MapUtils.GET_MAP);
+
+        if (!olMap) return;
+
+        if (this.translateInteraction) {
+            olMap.removeInteraction(this.translateInteraction);
+            this.translateInteraction = null;
+        }
+        if (this.markerLayer) {
+            olMap.removeLayer(this.markerLayer);
+            this.markerLayer = null;
+            this.markerFeature = null;
+        }
+    };
 
     componentDidMount() {
         this.initializeStreetView();
@@ -128,12 +130,10 @@ removeMarkerLayer = () => {
         const container = document.getElementById('streetview-container');
 
         if (!container) {
-            console.warn('Street View container not found');
             return;
         }
         // Check if map is available
         if (!this.props.map || !this.props.map.center) {
-            console.warn('Map not ready yet, retrying...');
             setTimeout(() => this.initStreetView(), 200);
             return;
         }
@@ -213,38 +213,38 @@ removeMarkerLayer = () => {
         canvas.width = 40;
         canvas.height = 40;
         const ctx = canvas.getContext('2d');
-        
+
         const centerX = 20;
         const centerY = 20;
-        
+
         // Save context and rotate
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate((heading * Math.PI) / 180);
         ctx.translate(-centerX, -centerY);
-        
+
         // Draw white outline triangle (larger)
         ctx.beginPath();
         ctx.moveTo(centerX, 5);      // Top point
         ctx.lineTo(centerX - 10, 28); // Bottom left
-        ctx.lineTo(centerX , 24); // Bottom center, and a bit up
+        ctx.lineTo(centerX, 24); // Bottom center, and a bit up
         ctx.lineTo(centerX + 10, 28); // Bottom right
         ctx.closePath();
         ctx.fillStyle = 'white';
         ctx.fill();
-        
+
         // Draw orange/yellow triangle (inner)
         ctx.beginPath();
         ctx.moveTo(centerX, 8);      // Top point
         ctx.lineTo(centerX - 8, 26);  // Bottom left
-        ctx.lineTo(centerX , 22); // Bottom center, and a bit up
+        ctx.lineTo(centerX, 22); // Bottom center, and a bit up
         ctx.lineTo(centerX + 8, 26);  // Bottom right
         ctx.closePath();
         ctx.fillStyle = '#FFA500';  // Orange
         ctx.fill();
-        
+
         ctx.restore();
-        
+
         // Create style with the canvas
         const arrowStyle = new Style({
             image: new Icon({
@@ -272,13 +272,13 @@ removeMarkerLayer = () => {
         if (this.props.task === "StreetView") {
             return (
                 <ResizeableWindow
-                    title="Street View"
-                    icon="street"
-                    initialWidth={800}
-                    initialHeight={350}
                     dockable="bottom"
-                    initiallyDocked={true}
+                    icon="street"
+                    initialHeight={350}
+                    initialWidth={800}
+                    initiallyDocked
                     onClose={() => this.props.setCurrentTask(null)}
+                    title="Street View"
                 >
                     <div
                         id="streetview-container"
