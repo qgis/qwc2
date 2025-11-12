@@ -742,7 +742,7 @@ revision is published (specified via newsRev prop).
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| newsDocument | `string` | URL to the news HTML document to display in the popup. | `undefined` |
+| newsDocument | `string` | URL to the news HTML document to display in the popup. Can contain `{lang}` as a placeholder which will be replaced with the current viewer language. | `undefined` |
 | newsRev | `string` | Revision of the document. | `undefined` |
 | showInSidebar | `bool` | Whether to show the news in a sidebar instead of a popup. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
