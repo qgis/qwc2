@@ -57,7 +57,7 @@ class EditingSupport extends React.Component {
         }
     }
     render() {
-        if (this.state.showRecordLocation) {
+        if (this.state.showRecordLocation && this.props.editContext.geomType) {
             const geomType = this.props.editContext.geomType.replace(/Z$/, '');
             return (
                 <LocationRecorder
@@ -119,7 +119,7 @@ class EditingSupport extends React.Component {
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interaction = drawInteraction;
-        this.setState({showRecordLocation: ["Point", "LineString"].includes(geomType)});
+        this.setState({showRecordLocation: ["Point", "LineString", "MultiPoint", "MultiLineString"].includes(geomType)});
     };
     addEditInteraction = () => {
         this.reset();

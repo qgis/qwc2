@@ -197,6 +197,7 @@
       "reallydelete": "Esborrar",
       "relationcommitfailed": "Ha fallat el commit",
       "select": "Seleccionar",
+      "selectlayer": "",
       "takepicture": "Escull imatge",
       "unsavedchanged": "Hi ha canvis sense guardar. Vols sortir de la pàgina sense guardar?"
     },
@@ -508,6 +509,7 @@
       "bufferlayername": "Capa de buffer",
       "bufferselectfeature": "Seleccioni un element para enmagatzemar en bufer",
       "circle": "Circle",
+      "clone": "Clonar",
       "ctrlhint": "",
       "delete": "Eliminar",
       "draw": "Dibuixar",

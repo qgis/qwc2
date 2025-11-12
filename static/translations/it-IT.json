@@ -197,6 +197,7 @@
       "reallydelete": "Elimina",
       "relationcommitfailed": "Alcune relazioni non sono state salvate, consultare i tooltip delle icone per i dettagli.",
       "select": "Seleziona...",
+      "selectlayer": "Seleziona livello...",
       "takepicture": "Foto",
       "unsavedchanged": "Vi sono cambiamenti non salvati. Volete comunque lasciare la pagina?"
     },
@@ -508,6 +509,7 @@
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Seleziona un oggetto...",
       "circle": "Cerchio",
+      "clone": "Copia",
       "ctrlhint": "Ctrl per selezione multipla...",
       "delete": "Elimina",
       "draw": "Disegna",

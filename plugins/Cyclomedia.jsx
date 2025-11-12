@@ -73,7 +73,7 @@ class Cyclomedia extends React.Component {
         userInfos: PropTypes.object
     };
     static defaultProps = {
-        cyclomediaVersion: '24.1',
+        cyclomediaVersion: '25.7',
         displayMeasurements: true,
         geometry: {
             initialWidth: 480,
@@ -97,7 +97,7 @@ class Cyclomedia extends React.Component {
         super(props);
         this.iframe = null;
         this.iframePollIntervall = null;
-        if (props.credentialUserInfoFields) {
+        if (props.credentialUserInfoFields && props.userInfos) {
             this.state.username = props.userInfos[props.credentialUserInfoFields.username];
             this.state.password = props.userInfos[props.credentialUserInfoFields.password];
         }
@@ -293,7 +293,8 @@ class Cyclomedia extends React.Component {
             styleOptions: {
                 img: "cyclomedia-cone",
                 rotation: posData.yaw,
-                size: dimensions
+                size: dimensions,
+                anchor: [0.5, 1]
             }
         };
         const layer = {
@@ -336,8 +337,8 @@ class Cyclomedia extends React.Component {
             <!DOCTYPE html>
             <html>
             <head>
-            <script type="text/javascript" src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
-            <script type="text/javascript" src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.production.min.js"></script>
+            <script type="text/javascript" src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+            <script type="text/javascript" src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
             <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v${this.props.cyclomediaVersion}/StreetSmartApi.js"></script>
             <script type="text/javascript">
             let apiInitialized = false;

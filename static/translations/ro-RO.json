@@ -197,6 +197,7 @@
       "reallydelete": "Șterge",
       "relationcommitfailed": "Salvarea relației a eșuat, vă rugăm să verificați informațiile asociate iconițelor",
       "select": "Selectează",
+      "selectlayer": "",
       "takepicture": "Fotografiază",
       "unsavedchanged": "Modificările nu sunt salvate. Doriți să părăsiți pagina oricum?"
     },
@@ -508,6 +509,7 @@
       "bufferlayername": "Zonă tampon",
       "bufferselectfeature": "Selectați o entitate...",
       "circle": "Cerc",
+      "clone": "",
       "ctrlhint": "",
       "delete": "Elimină",
       "draw": "Desenare",

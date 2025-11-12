@@ -37,6 +37,7 @@ class ThemeList extends React.Component {
         collapsibleGroups: PropTypes.bool,
         defaultUrlParams: PropTypes.string,
         dontPreserveSettingsOnSwitch: PropTypes.bool,
+        expandGroups: PropTypes.bool,
         filter: PropTypes.string,
         layers: PropTypes.array,
         setActiveLayerInfo: PropTypes.func,
@@ -48,7 +49,7 @@ class ThemeList extends React.Component {
         themes: PropTypes.object
     };
     state = {
-        expandedGroups: [],
+        expandedGroups: {},
         visibleThemeInfoMenu: null
     };
     groupMatchesFilter = (group, filter) => {
@@ -71,20 +72,21 @@ class ThemeList extends React.Component {
         return false;
     };
     renderThemeGroup = (group, filter) => {
+        const defaultExpanded = this.props.expandGroups;
         const assetsPath = ConfigUtils.getAssetsPath();
         let subdirs = (group && group.subdirs ? group.subdirs : []);
         if (filter) {
             subdirs = subdirs.filter(subdir => this.groupMatchesFilter(subdir, filter));
         }
         const subtree = subdirs.map((subdir) => {
-            const expanded = !this.props.collapsibleGroups || filter || this.state.expandedGroups.includes(subdir.id) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
+            const expanded = !this.props.collapsibleGroups || filter || (this.state.expandedGroups[subdir.id] ?? defaultExpanded) || (this.props.activeTheme && this.groupContainsActiveTheme(subdir));
             if (isEmpty(subdir.items) && isEmpty(subdir.subdirs)) {
                 return null;
             }
             return (
                 <li className={"theme-group-header " + (expanded ? "theme-group-header-expanded" : "")} key={subdir.id}>
-                    <span onClick={() => this.setState((state) => ({expandedGroups: expanded ? state.expandedGroups.filter(id => id !== subdir.id) : [...state.expandedGroups, subdir.id]}))}>
-                        {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.title}
+                    <span onClick={() => this.setState((state) => ({expandedGroups: {...state.expandedGroups, [subdir.id]: !expanded}}))}>
+                        {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.titleMsgId ? LocaleUtils.tr(subdir.titleMsgId) : subdir.title}
                     </span>
                     {expanded ? this.renderThemeGroup(subdir, filter) : null}
                 </li>

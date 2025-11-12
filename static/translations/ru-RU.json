@@ -197,6 +197,7 @@
       "reallydelete": "Удалить",
       "relationcommitfailed": "",
       "select": "Выберите...",
+      "selectlayer": "",
       "takepicture": "",
       "unsavedchanged": ""
     },
@@ -508,6 +509,7 @@
       "bufferlayername": "",
       "bufferselectfeature": "",
       "circle": "",
+      "clone": "",
       "ctrlhint": "",
       "delete": "",
       "draw": "",

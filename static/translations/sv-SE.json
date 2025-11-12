@@ -197,6 +197,7 @@
       "reallydelete": "Verkligen radera",
       "relationcommitfailed": "",
       "select": "Välj",
+      "selectlayer": "",
       "takepicture": "",
       "unsavedchanged": ""
     },
@@ -508,6 +509,7 @@
       "bufferlayername": "Buffert",
       "bufferselectfeature": "Välj ett objekt att buffra",
       "circle": "",
+      "clone": "",
       "ctrlhint": "",
       "delete": "Radera",
       "draw": "Rita",

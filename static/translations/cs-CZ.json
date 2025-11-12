@@ -197,6 +197,7 @@
       "reallydelete": "Odstranit",
       "relationcommitfailed": "",
       "select": "Vybrat",
+      "selectlayer": "",
       "takepicture": "",
       "unsavedchanged": ""
     },
@@ -508,6 +509,7 @@
       "bufferlayername": "",
       "bufferselectfeature": "",
       "circle": "",
+      "clone": "",
       "ctrlhint": "",
       "delete": "",
       "draw": "",

@@ -250,7 +250,7 @@ class QtDesignerForm extends React.Component {
         return rows;
     };
     renderWidget = (widget, feature, editConfig, fields, updateField, nametransform = (name) => name, isRelWidget, disabled = false) => {
-        let value = (feature.properties || {})[widget.name] ?? "";
+        let value = feature.properties?.[widget.name] ?? "";
         const prop = widget.property || {};
         if (String(prop.visible) === "false") {
             return null;
@@ -294,7 +294,7 @@ class QtDesignerForm extends React.Component {
 
         if (widget.class === "QLabel") {
             if (widget.name.startsWith("img__")) {
-                value = (feature.properties || [])[widget.name.split("__")[1]] ?? widget.property.text;
+                value = feature.properties?.[widget.name.split("__")[1]] ?? widget.property.text;
                 return (<div className="qt-designer-form-image"><a href={value} rel="noreferrer" target="_blank"><img src={value} /></a></div>);
             } else if (widget.name.startsWith("ext__")) {
                 return (<div style={fontStyle}>{value}</div>);
@@ -412,7 +412,7 @@ class QtDesignerForm extends React.Component {
                 const count = parts.length;
                 const fieldId = parts.slice(1, count - 3).join("__");
                 value = (feature.properties || [])[fieldId] ?? "";
-                const keyvalrel = this.props.mapPrefix + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
+                const keyvalrel = this.props.mapPrefix + "." + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
                 if (field?.filterExpression) {
                     filterExpr = parseExpression(field.filterExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
@@ -449,7 +449,7 @@ class QtDesignerForm extends React.Component {
             if (widget.class === "QSlider") {
                 return (<input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} step={step} style={fontStyle} type="range" value={value} />);
             } else {
-                return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} step={step} style={fontStyle} value={value} />);
+                return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} step={step} style={fontStyle} value={feature.properties?.[widget.name]} />);
             }
         } else if (widget.class === "QDateEdit") {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1600-01-01";
@@ -491,7 +491,7 @@ class QtDesignerForm extends React.Component {
                     value = feature.properties?.[attrname];
                     if (layer === reltable) {
                         const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
-                        const reldataset = this.props.mapPrefix + reltable;
+                        const reldataset = this.props.mapPrefix + "." + reltable;
                         const displayField = attrname.split("__")[1];
                         if (feature.__status__ !== "empty") {
                             const featurebuttons = [
@@ -549,7 +549,7 @@ class QtDesignerForm extends React.Component {
         const widgetItems = widget.layout.item.filter(item => !item.widget || !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const tableFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
         const columnStyles = widgetItems.map(item => { return item.widget && tableFitWidgets.includes(item.widget.class) ? {width: '1px'} : {}; });
-        const editConfig = this.props.editConfigs[tablename];
+        const editConfig = this.props.editConfigs[this.props.mapPrefix][tablename];
         if (!editConfig) {
             // Relation dataset not permitted / no edit config available
             return null;
@@ -769,7 +769,7 @@ class QtDesignerForm extends React.Component {
 
         const parts = widget.name.split("__");
         if (parts.length >= 3 && parts[0] === "nrel") {
-            relationTables[this.props.mapPrefix + parts[1]] = {fk: parts[2], sortcol: parts[3] || null, noreorder: parts[4] || false};
+            relationTables[this.props.mapPrefix + "." + parts[1]] = {fk: parts[2], sortcol: parts[3] || null, noreorder: parts[4] || false};
         }
         return verticalFill;
     };
@@ -820,6 +820,7 @@ class QtDesignerForm extends React.Component {
 }
 
 export default connect((state) => ({
-    locale: state.locale.current
+    locale: state.locale.current,
+    editConfigs: state.layers.editConfigs
 }), {
 })(QtDesignerForm);

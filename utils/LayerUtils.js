@@ -611,12 +611,13 @@ const LayerUtils = {
         }
         return null;
     },
-    searchLayer(layers, layerUrl, layerName) {
+    searchLayer(layers, attr, value, subattr, subval) {
         let match = null;
         layers.find(layer => {
             let sublayer = null;
-            if (layer.url === layerUrl && (sublayer = LayerUtils.searchSubLayer(layer, 'name', layerName))) {
-                match = {layer, sublayer};
+            const path = [];
+            if (layer[attr] === value && (sublayer = LayerUtils.searchSubLayer(layer, subattr, subval, path))) {
+                match = {layer, sublayer, path};
                 return true;
             }
             return false;

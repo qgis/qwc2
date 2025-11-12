@@ -140,7 +140,9 @@ const ThemeUtils = {
                     return res;
                 }, {})
             },
-            translations: theme.translations
+            translations: theme.translations,
+            editConfig: theme.editConfig,
+            wms_name: theme.wms_name
         };
         layer = LayerUtils.recomputeLayerBBox(layer);
         // Drawing order only makes sense if layer reordering is disabled
