@@ -124,7 +124,7 @@ class PickFeature extends React.Component {
                         IdentifyUtils.sendRequest(request, (response) => this.handleIdentifyResponse(response, reqId, layer, request.params.info_format));
                     });
                 }
-                const pickResults = {};
+                const pickResults = [];
                 if (!isEmpty(queryVectorLayers)) {
                     const olMap = MapUtils.getHook(MapUtils.GET_MAP);
                     const layerMap = queryVectorLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
@@ -135,8 +135,7 @@ class PickFeature extends React.Component {
                             if (layerid in layerMap) {
                                 const featureObj = format.writeFeatureObject(feature);
                                 const layername = layerMap[layerid].name;
-                                pickResults[layername] = pickResults[layername] || [];
-                                pickResults[layername].push(featureObj);
+                                pickResults.push({layer: layername, feature: featureObj});
                             }
                         });
                     } else if (this.props.pickGeomType === 'Polygon') {
@@ -159,8 +158,7 @@ class PickFeature extends React.Component {
                                 }
                                 const featureObj = format.writeFeatureObject(feature);
                                 const layername = layerMap[layer.get('id')].name;
-                                pickResults[layername] = pickResults[layername] || [];
-                                pickResults[layername].push(featureObj);
+                                pickResults.push({layer: layername, feature: featureObj});
                             });
                         });
                     }
@@ -185,19 +183,20 @@ class PickFeature extends React.Component {
         }
         this.setState((state) => {
             const newState = {
-                pickResults: {
+                pickResults: [
                     ...state.pickResults,
-                    ...result
-                },
+                    ...Object.entries(result).map(([layername, features]) => {
+                        return features.map(feature => ({layer: layername, feature: feature, mapName: layer.wms_name}));
+                    }).flat()
+                ],
                 pendingQueries: state.pendingQueries - 1
             };
             if (newState.pendingQueries === 0) {
-                const entries = Object.entries(newState.pickResults);
-                if (entries.length === 1 && entries[0][1].length === 1) {
-                    this.props.featurePicked(entries[0][0], entries[0][1][0]);
+                if (newState.pickResults.length === 1) {
+                    this.props.featurePicked(newState.pickResults[0].layer, newState.pickResults[0].feature, newState.pickResults[0].mapName);
                     newState.pickResults = null;
                     newState.pickGeom = null;
-                } else if (entries.reduce((sum, entry) => sum + entry[1].length, 0) === 0) {
+                } else if (newState.pickResults.length === 0) {
                     newState.pickResults = null;
                     newState.pickGeom = null;
                 }
@@ -216,16 +215,19 @@ class PickFeature extends React.Component {
                     x={this.state.clickPos[0]} y={this.state.clickPos[1]}
                 >
                     {this.state.pendingQueries === 0 ? (
-                        Object.entries(this.state.pickResults).map(([layername, features]) => features.map(feature => (
-                            <div
-                                key={layername + ":" + feature.id}
-                                onClickCapture={() => this.props.featurePicked(layername, feature)}
-                                onMouseOut={() => this.clearHighlight(layername, feature)}
-                                onMouseOver={() => this.highlightFeature(layername, feature)}
-                            >
-                                {layername + ": " + (feature.displayname ?? feature.id)}
-                            </div>
-                        )))
+                        this.state.pickResults.map(entry => {
+                            const key = (entry.mapName || "") + "." + entry.layer + ":" + entry.feature.id;
+                            return (
+                                <div
+                                    key={key}
+                                    onClickCapture={() => this.props.featurePicked(entry.layer, entry.feature, entry.mapName)}
+                                    onMouseOut={() => this.clearHighlight(key, entry.feature)}
+                                    onMouseOver={() => this.highlightFeature(key, entry.feature)}
+                                >
+                                    {entry.layer + ": " + (entry.feature.displayname ?? entry.feature.id)}
+                                </div>
+                            );
+                        })
                     ) : (
                         <div className="pick-feature-menu-querying"><Spinner />{LocaleUtils.tr("pickfeature.querying")}</div>
                     )}
@@ -249,10 +251,10 @@ class PickFeature extends React.Component {
             role: LayerRole.SELECTION
         };
         this.props.addLayerFeatures(layer, [feature], true);
-        this.setState({highlightedFeature: key + ":" + feature.id});
+        this.setState({highlightedFeature: key});
     };
     clearHighlight = (key, feature) => {
-        if (this.state.highlightedFeature === key + ":" + feature.id) {
+        if (this.state.highlightedFeature === key) {
             this.setState({highlightFeature: null});
             this.props.clearLayer("pick-feature-selection");
         }
