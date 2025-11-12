@@ -373,7 +373,6 @@ Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` 
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| clearResultsOnClose | `bool` | Whether to clear the identify results when exiting the identify tool. | `true` |
 | exitTaskOnResultsClose | `bool` | Whether to clear the task when the results window is closed. | `undefined` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 

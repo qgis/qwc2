@@ -189,6 +189,7 @@
       "reallydelete": "Delete",
       "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
       "select": "Select",
+      "selectlayer": "",
       "takepicture": "Take picture",
       "unsavedchanged": ""
     },

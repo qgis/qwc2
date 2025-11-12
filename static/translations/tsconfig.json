@@ -194,6 +194,7 @@
     "editing.reallydelete",
     "editing.relationcommitfailed",
     "editing.select",
+    "editing.selectlayer",
     "editing.takepicture",
     "editing.unsavedchanged",
     "featureattributes.name",

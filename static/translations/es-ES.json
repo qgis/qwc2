@@ -189,6 +189,7 @@
       "reallydelete": "Borrar",
       "relationcommitfailed": "Algunos valores de las relaciones no han podido guardarse, verifique los tooltips de los iconos para más detalles",
       "select": "Seleccionar",
+      "selectlayer": "",
       "takepicture": "Tomar fotografía",
       "unsavedchanged": "Hay cambios sin guardar. Quieres salir de la página sin guardar?"
     },

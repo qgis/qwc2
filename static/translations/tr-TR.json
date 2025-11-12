@@ -189,6 +189,7 @@
       "reallydelete": "Sil",
       "relationcommitfailed": "Bazı ilişkili kayıtlar güncellenemedi, detay için ipucu ikonunu kontrol ediniz",
       "select": "Seçim",
+      "selectlayer": "",
       "takepicture": "Fotoğraf çek",
       "unsavedchanged": "Kaydedilmemiş değişiklikler mevcut. Yine de sayfadan ayrılmak istiyor musunuz?"
     },

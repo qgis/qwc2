@@ -256,6 +256,14 @@ const ServiceLayerUtils = {
         } catch (e) {
             /* pass */
         }
+        let editConfigUrl = null;
+        let wmsName = null;
+        try {
+            editConfigUrl = layer.EditConfig.OnlineResource.href;
+            wmsName = layer.EditConfig.wms_name;
+        } catch (e) {
+            /* pass */
+        }
         const dimensions = [];
         MiscUtils.ensureArray(layer.Dimension).forEach(dim => {
             dimensions.push({
@@ -283,6 +291,8 @@ const ServiceLayerUtils = {
             url: getMapUrl,
             featureInfoUrl: featureInfoUrl,
             legendUrl: legendUrl,
+            editConfigUrl: editConfigUrl,
+            wms_name: wmsName,
             version: version,
             infoFormats: infoFormats,
             mapFormats: mapFormats,
@@ -506,7 +516,18 @@ const ServiceLayerUtils = {
                     if (layer.type === "wms") {
                         layer.params = {LAYERS: layerConfig.name};
                     }
-                    callback(layerConfig.id, layer);
+                    if (layer.editConfigUrl) {
+                        axios.get(layer.editConfigUrl).then(response => {
+                            delete layer.editConfigUrl;
+                            layer.editConfig = response.data;
+                            callback(layerConfig.id, layer);
+                        }).catch(e => {
+                            delete layer.editConfigUrl;
+                            callback(layerConfig.id, layer);
+                        });
+                    } else {
+                        callback(layerConfig.id, layer);
+                    }
                 } else {
                     // eslint-disable-next-line
                     console.warn("Could not find layer " + layerConfig.name);

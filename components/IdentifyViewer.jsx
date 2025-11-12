@@ -929,7 +929,7 @@ class IdentifyViewer extends React.Component {
     };
     showLayerInfo = (layer) => {
         const [layerUrl, layerName] = layer.split('#');
-        const match = LayerUtils.searchLayer(this.props.layers, layerUrl, layerName);
+        const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
         if (match) {
             this.props.setActiveLayerInfo(match.layer, match.sublayer);
         }
