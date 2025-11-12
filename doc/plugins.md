@@ -791,7 +791,7 @@ Displays a landing lage, consisting of a full-screen theme switcher and a config
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | bottomBarLinks | `[{`<br />`  href: string,`<br />`  label: string,`<br />`  labelmsgid: string,`<br />`  target: string,`<br />`}]` | Links to show in the portal bottom bar | `undefined` |
-| collapsibleGroups | `bool` | Whether to allow collapsing groups in the theme switcher. | `true` |
+| collapsibleGroups | `bool` | Whether to allow collapsing groups in the theme switcher. | `undefined` |
 | logo | `string` | Name of a logo image below assets/img. | `undefined` |
 | menuItems | `array` | Portal menu items, in the same format as the TopBar menu items. | `[]` |
 | showMenuOnStartup | `bool` | Whether the menu should be visible on startup. | `undefined` |

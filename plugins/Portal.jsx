@@ -57,7 +57,6 @@ class Portal extends React.Component {
         userName: PropTypes.string
     };
     static defaultProps = {
-        collapsibleGroups: true,
         menuItems: []
     };
     state = {
