@@ -16,7 +16,8 @@ import { Translate } from 'ol/interaction';
 class StreetView extends React.Component {
     static propTypes = {
         task: PropTypes.string,
-        map: PropTypes.object
+        map: PropTypes.object,
+        googleMapsApiKey: PropTypes.string
     };
 
     state = {
@@ -182,81 +183,79 @@ removeMarkerLayer = () => {
         this.createMarkerLayer();
         this.updateMarkerFromStreetView();
     };
-updateMarkerFromStreetView = () => {
-    if (!this.panorama || !this.markerLayer) return;
+    updateMarkerFromStreetView = () => {
+        if (!this.panorama || !this.markerLayer) return;
 
-    const position = this.panorama.getPosition();
-    const pov = this.panorama.getPov();
+        const position = this.panorama.getPosition();
+        const pov = this.panorama.getPov();
 
-    if (!position) return;
+        if (!position) return;
 
-    const lat = position.lat();
-    const lng = position.lng();
-    const heading = pov.heading;
+        const lat = position.lat();
+        const lng = position.lng();
+        const heading = pov.heading;
 
-    const mapCrs = this.props.map?.projection || 'EPSG:3857';
-    const coords = CoordinatesUtils.reproject([lng, lat], 'EPSG:4326', mapCrs);
+        const mapCrs = this.props.map?.projection || 'EPSG:3857';
+        const coords = CoordinatesUtils.reproject([lng, lat], 'EPSG:4326', mapCrs);
 
-    // Create or update feature
-    if (!this.markerFeature) {
-        this.markerFeature = new Feature({
-            geometry: new Point(coords)
+        // Create or update feature
+        if (!this.markerFeature) {
+            this.markerFeature = new Feature({
+                geometry: new Point(coords)
+            });
+            this.markerLayer.getSource().addFeature(this.markerFeature);
+        } else {
+            this.markerFeature.getGeometry().setCoordinates(coords);
+        }
+
+        // Create simple triangular delta arrow using Canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 40;
+        canvas.height = 40;
+        const ctx = canvas.getContext('2d');
+        
+        const centerX = 20;
+        const centerY = 20;
+        
+        // Save context and rotate
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate((heading * Math.PI) / 180);
+        ctx.translate(-centerX, -centerY);
+        
+        // Draw white outline triangle (larger)
+        ctx.beginPath();
+        ctx.moveTo(centerX, 5);      // Top point
+        ctx.lineTo(centerX - 10, 28); // Bottom left
+        ctx.lineTo(centerX , 24); // Bottom center, and a bit up
+        ctx.lineTo(centerX + 10, 28); // Bottom right
+        ctx.closePath();
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        
+        // Draw orange/yellow triangle (inner)
+        ctx.beginPath();
+        ctx.moveTo(centerX, 8);      // Top point
+        ctx.lineTo(centerX - 8, 26);  // Bottom left
+        ctx.lineTo(centerX , 22); // Bottom center, and a bit up
+        ctx.lineTo(centerX + 8, 26);  // Bottom right
+        ctx.closePath();
+        ctx.fillStyle = '#FFA500';  // Orange
+        ctx.fill();
+        
+        ctx.restore();
+        
+        // Create style with the canvas
+        const arrowStyle = new Style({
+            image: new Icon({
+                img: canvas,
+                imgSize: [40, 40],
+                anchor: [0.5, 0.5]
+            })
         });
-        this.markerLayer.getSource().addFeature(this.markerFeature);
-    } else {
-        this.markerFeature.getGeometry().setCoordinates(coords);
-    }
 
-    // Create simple triangular delta arrow using Canvas
-    const canvas = document.createElement('canvas');
-    canvas.width = 40;
-    canvas.height = 40;
-    const ctx = canvas.getContext('2d');
-    
-    const centerX = 20;
-    const centerY = 20;
-    
-    // Save context and rotate
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate((heading * Math.PI) / 180);
-    ctx.translate(-centerX, -centerY);
-    
-    // Draw white outline triangle (larger)
-    ctx.beginPath();
-    ctx.moveTo(centerX, 5);      // Top point
-    ctx.lineTo(centerX - 10, 28); // Bottom left
-    ctx.lineTo(centerX , 24); // Bottom center, and a bit up
-    ctx.lineTo(centerX + 10, 28); // Bottom right
-    ctx.closePath();
-    ctx.fillStyle = 'white';
-    ctx.fill();
-    
-    // Draw orange/yellow triangle (inner)
-    ctx.beginPath();
-    ctx.moveTo(centerX, 8);      // Top point
-    ctx.lineTo(centerX - 8, 26);  // Bottom left
-    ctx.lineTo(centerX , 22); // Bottom center, and a bit up
-    ctx.lineTo(centerX + 8, 26);  // Bottom right
-    ctx.closePath();
-    ctx.fillStyle = '#FFA500';  // Orange
-    ctx.fill();
-    
-    ctx.restore();
-    
-    // Create style with the canvas
-    const arrowStyle = new Style({
-        image: new Icon({
-            img: canvas,
-            imgSize: [40, 40],
-            anchor: [0.5, 0.5]
-        })
-    });
-
-    this.markerFeature.setStyle(arrowStyle);
-};
-
-
+        this.markerFeature.setStyle(arrowStyle);
+    };
     updateStreetViewFromMarker = (lat, lng) => {
         if (!this.panorama || this.isUpdatingFromStreetView) return;
 
