@@ -330,7 +330,7 @@ Cyclomedia integration for QWC2.
 | apikey | `string` | The Cyclomedia API key | `undefined` |
 | clientId | `string` | OAuth client ID. | `undefined` |
 | credentialUserInfoFields | `{`<br />`  username: string,`<br />`  password: string,`<br />`}` | Fields from user_infos which contain username and password which will be pre-inserted into the login form. | `undefined` |
-| cyclomediaVersion | `string` | The cyclomedia version. | `'24.1'` |
+| cyclomediaVersion | `string` | The cyclomedia version. | `'25.7'` |
 | displayMeasurements | `bool` | Whether to display Cyclomedia measurement geometries on the map. | `true` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | loginRedirectUri | `string` | The relative path to the redirect login handling of oauth. | `undefined` |
