@@ -58,7 +58,7 @@ class EditingSupport extends React.Component {
     }
     render() {
         if (this.state.showRecordLocation) {
-            const geomType = this.props.editContext.geomType.replace(/Z$/, '');
+            const geomType = this.props.editContext.geomType?.replace(/Z$/, '') || '';
             return (
                 <LocationRecorder
                     drawInteraction={this.interaction} geomType={geomType} key="LocationRecorder" map={this.props.map} />
@@ -100,7 +100,7 @@ class EditingSupport extends React.Component {
     addDrawInteraction = () => {
         this.reset();
         this.createLayer();
-        const geomType = this.props.editContext.geomType.replace(/Z$/, '');
+        const geomType = this.props.editContext.geomType?.replace(/Z$/, '') || '';
         const drawInteraction = new ol.interaction.Draw({
             stopClick: true,
             type: geomType,
