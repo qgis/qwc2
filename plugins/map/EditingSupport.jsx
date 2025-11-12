@@ -100,7 +100,7 @@ class EditingSupport extends React.Component {
     addDrawInteraction = () => {
         this.reset();
         this.createLayer();
-        const geomType = this.props.editContext.geomType?.replace(/Z$/, '') || '';
+        const geomType = this.props.editContext.geomType.replace(/Z$/, '');
         const drawInteraction = new ol.interaction.Draw({
             stopClick: true,
             type: geomType,
