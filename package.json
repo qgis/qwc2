@@ -23,6 +23,7 @@
         "@loaders.gl/shapefile": "^4.3.3",
         "@loaders.gl/zip": "^4.3.3",
         "@mapbox/shp-write": "^0.4.3",
+        "@norbulcz/num-parse": "^0.1.0",
         "@panoramax/web-viewer": "^4.0.1",
         "@reduxjs/toolkit": "^2.4.0",
         "@turf/buffer": "^6.5.0",

@@ -9,6 +9,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import {parseNumber} from '@norbulcz/num-parse';
+import dateParser from 'any-date-parser';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
@@ -89,7 +91,8 @@ class Editing extends React.Component {
         pickedFeatures: null,
         busy: false,
         minimized: false,
-        drawPick: false
+        drawPick: false,
+        pendingClone: null
     };
     onShow = () => {
         if (this.props.taskData) {
@@ -136,7 +139,57 @@ class Editing extends React.Component {
             this.setState({pickedFeatures: null});
         }
     }
+    renderCloneAttributeDialog = () => {
+        const quickButtons = [
+            {key: 'All', label: LocaleUtils.tr("editing.clone_all")},
+            {key: 'None', label: LocaleUtils.tr("editing.clone_none")},
+            {key: 'Visible', label: LocaleUtils.tr("editing.clone_visible")}
+        ];
+        const actionButtons = [
+            {key: 'Copy', label: LocaleUtils.tr("editing.clone_copy"), icon: "ok", extraClasses: "button-accept"},
+            {key: 'DontCopy', label: LocaleUtils.tr("editing.clone_dontcopy"), icon: "remove", extraClasses: "button-reject"}
+        ];
+        return (
+            <div className="editing-body">
+                <div className="editing-clone-dialog">
+                    <div className="editing-clone-header">
+                        {LocaleUtils.tr("editing.clone_select_attrs")}
+                    </div>
+                    <ButtonBar buttons={quickButtons} onClick={this.onCloneAttrQuickSelect} />
+                    <table className="editing-clone-table">
+                        <tbody>
+                            {this.state.pendingClone.matchingAttributes.map(attr => (
+                                <tr key={attr.fieldId}>
+                                    <td>
+                                        <label className="editing-clone-attribute" key={attr.fieldId}>
+                                            <input
+                                                checked={this.state.pendingClone.selectedAttributes.includes(attr.fieldId)}
+                                                onChange={() => this.toggleAttribute(attr.fieldId)}
+                                                type="checkbox"
+                                            />
+                                            <span className="editing-clone-attribute-name">
+                                                {attr.fieldName}
+                                                {!attr.visible ? (<i>{" " + LocaleUtils.tr("editing.clone_hidden")}</i>) : ""}
+                                                {attr.autoCalculated ? (<i>{" " + LocaleUtils.tr("editing.clone_defaulted")}</i>) : ""}
+                                            </span>
+                                        </label>
+                                    </td>
+                                    <td title={attr.value}>{attr.value}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <ButtonBar buttons={actionButtons} onClick={this.onCloneAction} />
+                </div>
+            </div>
+        );
+    };
     renderBody = () => {
+        // Show clone attribute selection dialog if pending
+        if (this.state.pendingClone) {
+            return this.renderCloneAttributeDialog();
+        }
+
         if (!this.props.theme || isEmpty(this.props.editConfigs)) {
             return (
                 <div role="body" style={{padding: "1em"}}>
@@ -254,7 +307,8 @@ class Editing extends React.Component {
             (feature.geometry.type.replace(/^Multi/, "") === geomType && feature.geometry.coordinates.length === 1)
         );
     };
-    geomPicked = (layer, feature) => {
+    geomPicked = (layer, feature, mapName) => {
+        console.log(mapName);
         const geomType = this.props.editContext.geomType;
         let geometry = feature.geometry;
         if (geometry.type !== geomType) {
@@ -280,8 +334,133 @@ class Editing extends React.Component {
             geometry: geometry,
             id: uuidv4()
         };
+
+        const targetFields = this.props.editContext.editConfig?.fields;
+        const matchingAttributes = [];
+        if (!isEmpty(targetFields)) {
+            const sourceProperties = feature.properties || {};
+
+            // Get source layer's field configuration and build name-to-id mapping
+            const sourceFields = this.props.editConfigs[mapName]?.[layer]?.fields;
+            const sourceNameToIdMap = (sourceFields || []).reduce((res, field) => ({
+                ...res,
+                [sourceFields.name]: sourceFields.id,
+                [sourceFields.id]: sourceFields.id
+            }), {});
+
+            const sourcePropertiesById = Object.entries(sourceProperties).reduce((res, [key, value]) => ({
+                ...res,
+                [sourceNameToIdMap[key] || key]: value
+            }), {});
+
+            // Build list of matching attributes with metadata
+            targetFields.forEach(field => {
+                if (!field.expression) {
+                    let value = sourcePropertiesById[field.id];
+
+                    if (value !== null && value !== undefined && value !== '') {
+                        // Parse number values
+                        if (field.type === 'number') {
+                            if (typeof value === 'string') {
+                                const numValue = parseNumber(value.replace(',', '.'));
+                                if (!isNaN(numValue)) {
+                                    value = numValue;
+                                }
+                            }
+                        } else if (field.type === 'boolean') {
+                            value = !['0', 'false'].includes(String(value).toLowerCase())
+                        } else if (field.type === 'date') {
+                            if (typeof value === 'string') {
+                                value = dateParser.fromString(value).toISOString();
+                            }
+                        } else if (field.type === 'list') {
+                            // Not supported
+                            return;
+                        }
+
+                        matchingAttributes.push({
+                            fieldId: field.id,
+                            fieldName: field.name,
+                            value: value,
+                            visible: field.constraints?.hidden !== true,
+                            autoCalculated: !!field.defaultValue
+                        });
+                    }
+                }
+            });
+        }
+
+        if (matchingAttributes.length > 0) {
+            // Default selection: only visible, non-auto-calculated fields
+            const defaultSelection = matchingAttributes
+                .filter(attr => attr.visible && !attr.autoCalculated)
+                .map(attr => attr.fieldId);
+
+            this.setState({
+                drawPick: false,
+                pendingClone: {
+                    editFeature: editFeature,
+                    matchingAttributes: matchingAttributes,
+                    selectedAttributes: defaultSelection
+                }
+            });
+        } else {
+            this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
+            this.setState({drawPick: false});
+        }
+    };
+    confirmCopyAttributes = () => {
+        const {editFeature, matchingAttributes, selectedAttributes} = this.state.pendingClone;
+        const copiedProperties = {};
+        matchingAttributes.forEach(attr => {
+            if (selectedAttributes.includes(attr.fieldId)) {
+                copiedProperties[attr.fieldId] = attr.value;
+            }
+        });
+        editFeature.properties = copiedProperties;
         this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
-        this.setState({drawPick: false});
+        this.setState({pendingClone: null});
+    };
+    cancelCopyAttributes = () => {
+        const {editFeature} = this.state.pendingClone;
+        this.props.setEditContext('Editing', {action: "Draw", feature: editFeature, changed: true});
+        this.setState({pendingClone: null});
+    };
+    toggleAttribute = (fieldId) => {
+        this.setState(state => {
+            const selectedAttributes = state.pendingClone.selectedAttributes.includes(fieldId)
+                ? state.pendingClone.selectedAttributes.filter(id => id !== fieldId)
+                : [...state.pendingClone.selectedAttributes, fieldId];
+            return {
+                pendingClone: {...state.pendingClone, selectedAttributes}
+            };
+        });
+    };
+    onCloneAttrQuickSelect = (action) => {
+        if (action === 'All') {
+            const allFieldIds = this.state.pendingClone.matchingAttributes.map(attr => attr.fieldId);
+            this.setState(state => ({
+                pendingClone: {...state.pendingClone, selectedAttributes: allFieldIds}
+            }));
+        } else if (action === 'None') {
+            this.setState(state => ({
+                pendingClone: {...state.pendingClone, selectedAttributes: []}
+            }));
+        } else if (action === 'Visible') {
+            const visibleFieldIds = this.state.pendingClone.matchingAttributes
+                .filter(attr => attr.visible && !attr.autoCalculated)
+                .map(attr => attr.fieldId);
+            this.setState(state => ({
+                pendingClone: {...state.pendingClone, selectedAttributes: visibleFieldIds}
+            }));
+        }
+    };
+    onCloneAction = (action) => {
+        if (action === 'Copy') {
+            this.confirmCopyAttributes();
+        } else if (action === 'DontCopy') {
+            this.cancelCopyAttributes();
+        }
     };
     setLayerVisibility = (selectedLayer, visibility) => {
         if (selectedLayer !== null) {
