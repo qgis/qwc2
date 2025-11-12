@@ -562,6 +562,25 @@ class AttributeForm extends React.Component {
                 }
             }
         });
+        // Remove readonly fields
+        Object.keys(feature.properties).forEach(key => {
+            const fieldConfig = editConfig.fields.find(field => field.id === key) || {};
+            if (fieldConfig?.constraints?.readOnly) {
+                delete feature.properties[key];
+            }
+        });
+        Object.entries(relationValues).forEach(([dataset, entry]) => {
+            const [mapName, layerName] = dataset.split(".", 2);
+            const relEditConfig = this.props.editConfigs[mapName][layerName];
+            entry.features.forEach(f => {
+                Object.keys(f.properties).forEach(key => {
+                    const fieldConfig = relEditConfig.fields.find(field => field.id === key) || {};
+                    if (fieldConfig?.constraints?.readOnly) {
+                        delete f.properties[key];
+                    }
+                });
+            });
+        });
 
         // Set relation values CRS and sort index if necessary
         Object.keys(relationValues).forEach(relTable => {
