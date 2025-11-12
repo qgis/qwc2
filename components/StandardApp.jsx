@@ -105,6 +105,10 @@ class AppContainerComponent extends React.Component {
                 if (params.t) {
                     this.props.showNotification("missingtheme", LocaleUtils.tr("app.missingtheme", params.t), NotificationType.WARN, true);
                     params.l = undefined;
+                    params.bl = undefined;
+                    params.c = undefined;
+                    params.e = undefined;
+                    params.s = undefined;
                 }
                 const userDefaultTheme = Object.fromEntries(this.props.defaultUrlParams.split("&").map(x => x.split("="))).t;
                 const defaultTheme = themes.defaultTheme;
