@@ -71,4 +71,4 @@ const ElevationInterface = {
 
 export function getElevationInterface() {
     return window.QWC2ElevationInterface ?? ElevationInterface;
-};
+}
