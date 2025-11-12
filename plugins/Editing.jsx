@@ -144,14 +144,17 @@ class Editing extends React.Component {
         }
     }
     renderCloneAttributeDialog = () => {
+        // Filter out calculated attributes
+        const displayAttributes = this.state.pendingClone.matchingAttributes.filter(attr => !attr.autoCalculated);
+
         const quickButtons = [
             {key: 'All', label: LocaleUtils.tr("editing.clone_all")},
             {key: 'None', label: LocaleUtils.tr("editing.clone_none")},
             {key: 'Visible', label: LocaleUtils.tr("editing.clone_visible")}
         ];
         const actionButtons = [
-            {key: 'Copy', label: LocaleUtils.tr("editing.clone_copy")},
-            {key: 'DontCopy', label: LocaleUtils.tr("editing.clone_dontcopy")}
+            {key: 'Copy', label: LocaleUtils.tr("editing.clone_copy"), extraClasses: "button-accept"},
+            {key: 'DontCopy', label: LocaleUtils.tr("editing.clone_dontcopy"), extraClasses: "button-reject"}
         ];
         return (
             <div className="editing-body">
@@ -161,7 +164,7 @@ class Editing extends React.Component {
                     </div>
                     <ButtonBar buttons={quickButtons} onClick={this.onQuickSelect} />
                     <div className="editing-clone-attributes">
-                        {this.state.pendingClone.matchingAttributes.map(attr => (
+                        {displayAttributes.map(attr => (
                             <label className="editing-clone-attribute" key={attr.fieldId}>
                                 <input
                                     checked={this.state.pendingClone.selectedAttributes.includes(attr.fieldId)}
@@ -171,7 +174,6 @@ class Editing extends React.Component {
                                 <span className="editing-clone-attribute-name">
                                     {attr.fieldName}
                                     {!attr.visible ? " " + LocaleUtils.tr("editing.clone_hidden") : ""}
-                                    {attr.autoCalculated ? " " + LocaleUtils.tr("editing.clone_calculated") : ""}
                                 </span>
                             </label>
                         ))}
@@ -435,7 +437,9 @@ class Editing extends React.Component {
     };
     onQuickSelect = (action) => {
         if (action === 'All') {
-            const allFieldIds = this.state.pendingClone.matchingAttributes.map(attr => attr.fieldId);
+            const allFieldIds = this.state.pendingClone.matchingAttributes
+                .filter(attr => !attr.autoCalculated)
+                .map(attr => attr.fieldId);
             this.setState(state => ({
                 pendingClone: {...state.pendingClone, selectedAttributes: allFieldIds}
             }));
