@@ -40,6 +40,8 @@ class Portal extends React.Component {
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.string,
         currentTheme: PropTypes.object,
+        /** Whether to expand theme groups by default. */
+        expandGroups: PropTypes.bool,
         keepMenuOpen: PropTypes.bool,
         /** Name of a logo image below assets/img. */
         logo: PropTypes.string,
@@ -109,7 +111,9 @@ class Portal extends React.Component {
                     ) : null}
                 </div>
                 <div className={"portal-body " + (this.state.menuVisible ? "portal-body-menuvisible" : "")}>
-                    <ThemeList collapsibleGroups={this.props.collapsibleGroups} dontPreserveSettingsOnSwitch={!preserveSettings} filter={this.state.filter} />
+                    <ThemeList
+                        collapsibleGroups={this.props.collapsibleGroups} dontPreserveSettingsOnSwitch={!preserveSettings}
+                        expandGroups={this.props.expandGroups} filter={this.state.filter} />
                 </div>
                 <div className="portal-bottombar">
                     {this.props.userName ? (

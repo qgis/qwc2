@@ -792,6 +792,7 @@ Displays a landing lage, consisting of a full-screen theme switcher and a config
 |----------|------|-------------|---------------|
 | bottomBarLinks | `[{`<br />`  href: string,`<br />`  label: string,`<br />`  labelmsgid: string,`<br />`  target: string,`<br />`}]` | Links to show in the portal bottom bar | `undefined` |
 | collapsibleGroups | `bool` | Whether to allow collapsing groups in the theme switcher. | `undefined` |
+| expandGroups | `bool` | Whether to expand theme groups by default. | `undefined` |
 | logo | `string` | Name of a logo image below assets/img. | `undefined` |
 | menuItems | `array` | Portal menu items, in the same format as the TopBar menu items. | `[]` |
 | showMenuOnStartup | `bool` | Whether the menu should be visible on startup. | `undefined` |
@@ -938,6 +939,7 @@ Theme switcher panel.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | collapsibleGroups | `bool` | Whether to allow collapsing theme groups. | `undefined` |
+| expandGroups | `bool` | Whether to expand theme groups by default. | `undefined` |
 | hideAddThemeButton | `bool` | Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
 | hideAddThemeLayersButton | `bool` | Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
 | showActiveTheme | `bool` | Whether to display the currently active theme below the application menu button. Default: false | `false` |

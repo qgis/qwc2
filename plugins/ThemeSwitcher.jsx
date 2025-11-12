@@ -35,6 +35,8 @@ class ThemeSwitcher extends React.Component {
         /** Whether to allow collapsing theme groups. */
         collapsibleGroups: PropTypes.bool,
         currentTask: PropTypes.object,
+        /** Whether to expand theme groups by default. */
+        expandGroups: PropTypes.bool,
         /** Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. */
         hideAddThemeButton: PropTypes.bool,
         /** Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. */
@@ -94,6 +96,7 @@ class ThemeSwitcher extends React.Component {
                                 allowAddingOtherThemeLayers={showAddThemeLayersButton}
                                 allowAddingOtherThemes={showAddThemeButton}
                                 collapsibleGroups={this.props.collapsibleGroups}
+                                expandGroups={this.props.expandGroups}
                                 filter={this.state.filter}
                                 showDefaultThemeSelector={this.props.showDefaultThemeSelector}
                                 showLayerAfterChangeTheme={this.props.showLayerAfterChangeTheme}/>
