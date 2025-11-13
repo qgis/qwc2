@@ -308,7 +308,6 @@ class Editing extends React.Component {
         );
     };
     geomPicked = (layer, feature, mapName) => {
-        console.log(mapName);
         const geomType = this.props.editContext.geomType;
         let geometry = feature.geometry;
         if (geometry.type !== geomType) {
