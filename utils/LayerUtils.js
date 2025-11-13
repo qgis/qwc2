@@ -1127,17 +1127,18 @@ const LayerUtils = {
         });
         return reports;
     },
-    computeVisbilityPreset(layer) {
+    computeVisbilityPreset(layer, path = "") {
         const result = {};
         if (layer.sublayers) {
+            const istoplevel = !!layer.url;
             layer.sublayers.forEach(sublayer =>
-                Object.assign(result, LayerUtils.computeVisbilityPreset(sublayer))
+                Object.assign(result, LayerUtils.computeVisbilityPreset(sublayer, !istoplevel ? path + layer.name + "/" : ""))
             );
-            if (layer.visibility && !layer.url) {
-                result[layer.name] = "";
+            if (layer.visibility && !istoplevel) {
+                result[path + layer.name] = "";
             }
         } else if (layer.visibility) {
-            result[layer.name] = layer.style;
+            result[path + layer.name] = layer.style;
         }
         return result;
     },
