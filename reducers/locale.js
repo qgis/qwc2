@@ -7,6 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import deepmerge from 'deepmerge';
 import {flatten} from 'flat';
 
 import {CHANGE_LOCALE, ADD_TRANSLATIONS} from '../actions/locale';
@@ -21,6 +22,7 @@ export default function locale(state = defaultState, action) {
     switch (action.type) {
     case CHANGE_LOCALE: {
         return {
+            messagesTree: action.messages,
             messages: flatten(action.messages),
             fallbackMessages: flatten(action.fallbackMessages),
             current: action.locale
@@ -29,6 +31,7 @@ export default function locale(state = defaultState, action) {
     case ADD_TRANSLATIONS: {
         return {
             ...state,
+            messagesTree: deepmerge(state.messages, action.translations[state.current]),
             messages: {...state.messages, ...flatten(action.translations[state.current] || {})}
         };
     }

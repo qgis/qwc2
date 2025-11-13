@@ -20,6 +20,7 @@ import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
 import LocaleUtils from './LocaleUtils';
 import MiscUtils from './MiscUtils';
+import StandardApp from '../components/StandardApp';
 
 function strcmp(a, b) {
     const al = a.toLowerCase();
@@ -558,7 +559,8 @@ const ServiceLayerUtils = {
                     ];
                     Promise.all(metadataRequests).then(() => {
                         if (layer.translations) {
-                            layer = LayerUtils.applyTranslations(layer, layer.translations);
+                            const commonTranslations = StandardApp.store.getState().locale.messagesTree.maptranslations || {};
+                            layer = LayerUtils.applyTranslations(layer, deepmerge(commonTranslations, layer.translations));
                         }
                         callback(layerConfig.id, layer);
                     });
