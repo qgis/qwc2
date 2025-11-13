@@ -562,10 +562,10 @@ class AttributeForm extends React.Component {
                 }
             }
         });
-        // Remove readonly fields
+        // Remove expression fields
         Object.keys(feature.properties).forEach(key => {
             const fieldConfig = editConfig.fields.find(field => field.id === key) || {};
-            if (fieldConfig?.constraints?.readOnly) {
+            if (fieldConfig?.expression) {
                 delete feature.properties[key];
             }
         });
@@ -575,7 +575,7 @@ class AttributeForm extends React.Component {
             entry.features.forEach(f => {
                 Object.keys(f.properties).forEach(key => {
                     const fieldConfig = relEditConfig.fields.find(field => field.id === key) || {};
-                    if (fieldConfig?.constraints?.readOnly) {
+                    if (fieldConfig?.expression) {
                         delete f.properties[key];
                     }
                 });
