@@ -29,7 +29,7 @@ import './style/NewsPopup.css';
 class NewsPopup extends React.Component {
     static availableIn3D = true;
     static propTypes = {
-        /** URL to the news HTML document to display in the popup. */
+        /** URL to the news HTML document to display in the popup. Can contain `{lang}` as a placeholder which will be replaced with the current viewer language.*/
         newsDocument: PropTypes.string,
         /** Revision of the document. */
         newsRev: PropTypes.string,
@@ -83,7 +83,7 @@ class NewsPopup extends React.Component {
     renderBody = () => {
         return (
             <div className="newspopup-dialog-popup-body" role="body">
-                <iframe src={this.props.newsDocument} />
+                <iframe src={this.props.newsDocument.replace('{lang}', LocaleUtils.lang())} />
                 <div className="newspopup-dialog-popup-buttonbar">
                     <button onClick={this.closeDialog}>{LocaleUtils.tr("newspopup.dialogclose")}</button>
                     <label><input onChange={ev => this.setState({dontShowAgain: ev.target.checked})} type="checkbox" value={this.state.dontShowAgain} /> {LocaleUtils.tr("newspopup.dontshowagain")}</label>

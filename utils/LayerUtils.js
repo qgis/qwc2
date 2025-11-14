@@ -611,12 +611,13 @@ const LayerUtils = {
         }
         return null;
     },
-    searchLayer(layers, layerUrl, layerName) {
+    searchLayer(layers, attr, value, subattr, subval) {
         let match = null;
         layers.find(layer => {
             let sublayer = null;
-            if (layer.url === layerUrl && (sublayer = LayerUtils.searchSubLayer(layer, 'name', layerName))) {
-                match = {layer, sublayer};
+            const path = [];
+            if (layer[attr] === value && (sublayer = LayerUtils.searchSubLayer(layer, subattr, subval, path))) {
+                match = {layer, sublayer, path};
                 return true;
             }
             return false;
@@ -1126,17 +1127,18 @@ const LayerUtils = {
         });
         return reports;
     },
-    computeVisbilityPreset(layer) {
+    computeVisbilityPreset(layer, path = "") {
         const result = {};
         if (layer.sublayers) {
+            const istoplevel = !!layer.url;
             layer.sublayers.forEach(sublayer =>
-                Object.assign(result, LayerUtils.computeVisbilityPreset(sublayer))
+                Object.assign(result, LayerUtils.computeVisbilityPreset(sublayer, !istoplevel ? path + layer.name + "/" : ""))
             );
-            if (layer.visibility && !layer.url) {
-                result[layer.name] = "";
+            if (layer.visibility && !istoplevel) {
+                result[path + layer.name] = "";
             }
         } else if (layer.visibility) {
-            result[layer.name] = layer.style;
+            result[path + layer.name] = layer.style;
         }
         return result;
     },

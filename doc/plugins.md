@@ -330,7 +330,7 @@ Cyclomedia integration for QWC2.
 | apikey | `string` | The Cyclomedia API key | `undefined` |
 | clientId | `string` | OAuth client ID. | `undefined` |
 | credentialUserInfoFields | `{`<br />`  username: string,`<br />`  password: string,`<br />`}` | Fields from user_infos which contain username and password which will be pre-inserted into the login form. | `undefined` |
-| cyclomediaVersion | `string` | The cyclomedia version. | `'24.1'` |
+| cyclomediaVersion | `string` | The cyclomedia version. | `'25.7'` |
 | displayMeasurements | `bool` | Whether to display Cyclomedia measurement geometries on the map. | `true` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | loginRedirectUri | `string` | The relative path to the redirect login handling of oauth. | `undefined` |
@@ -373,7 +373,6 @@ Can be used as default identify tool by setting `"identifyTool": "FeatureForm"` 
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| clearResultsOnClose | `bool` | Whether to clear the identify results when exiting the identify tool. | `true` |
 | exitTaskOnResultsClose | `bool` | Whether to clear the task when the results window is closed. | `undefined` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 
@@ -742,7 +741,7 @@ revision is published (specified via newsRev prop).
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| newsDocument | `string` | URL to the news HTML document to display in the popup. | `undefined` |
+| newsDocument | `string` | URL to the news HTML document to display in the popup. Can contain `{lang}` as a placeholder which will be replaced with the current viewer language. | `undefined` |
 | newsRev | `string` | Revision of the document. | `undefined` |
 | showInSidebar | `bool` | Whether to show the news in a sidebar instead of a popup. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `undefined` |
@@ -791,7 +790,8 @@ Displays a landing lage, consisting of a full-screen theme switcher and a config
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | bottomBarLinks | `[{`<br />`  href: string,`<br />`  label: string,`<br />`  labelmsgid: string,`<br />`  target: string,`<br />`}]` | Links to show in the portal bottom bar | `undefined` |
-| collapsibleGroups | `bool` | Whether to allow collapsing groups in the theme switcher. | `true` |
+| collapsibleGroups | `bool` | Whether to allow collapsing groups in the theme switcher. | `undefined` |
+| expandGroups | `bool` | Whether to expand theme groups by default. | `undefined` |
 | logo | `string` | Name of a logo image below assets/img. | `undefined` |
 | menuItems | `array` | Portal menu items, in the same format as the TopBar menu items. | `[]` |
 | showMenuOnStartup | `bool` | Whether the menu should be visible on startup. | `undefined` |
@@ -938,6 +938,7 @@ Theme switcher panel.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | collapsibleGroups | `bool` | Whether to allow collapsing theme groups. | `undefined` |
+| expandGroups | `bool` | Whether to expand theme groups by default. | `undefined` |
 | hideAddThemeButton | `bool` | Whether to hide the add theme button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
 | hideAddThemeLayersButton | `bool` | Whether to hide the add theme layers button. Note: the button will also be hidden if the global option `allowAddingOtherThemes` is `false`. | `undefined` |
 | showActiveTheme | `bool` | Whether to display the currently active theme below the application menu button. Default: false | `false` |

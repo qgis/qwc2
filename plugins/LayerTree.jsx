@@ -59,6 +59,7 @@ class LayerTree extends React.Component {
         /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         changeLayerProperty: PropTypes.func,
+        editConfigs: PropTypes.object,
         /** Whether to enable the legend print functionality. */
         enableLegendPrint: PropTypes.bool,
         /** Whether to display a service info button to display the WMS service metadata. */
@@ -406,7 +407,7 @@ class LayerTree extends React.Component {
         let attrTableButton = null;
         if (
             this.props.showAttributeTableLink && ConfigUtils.havePlugin("AttributeTable") &&
-            layer.role === LayerRole.THEME && this.props.theme.editConfig[sublayer.name]
+            layer.role === LayerRole.THEME && this.props.editConfigs[layer.wms_name]?.[sublayer.name]
         ) {
             attrTableButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("AttributeTable", null, null, {layer: sublayer.name})} />);
         }
@@ -859,6 +860,7 @@ class LayerTree extends React.Component {
 }
 
 const selector = (state) => ({
+    editConfigs: state.layers.editConfigs,
     layers: state.layers.flat,
     filter: state.layers.filter,
     loadingLayers: state.layers.loading,

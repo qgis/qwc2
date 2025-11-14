@@ -1385,6 +1385,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@norbulcz/num-parse@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@norbulcz/num-parse/-/num-parse-0.1.0.tgz#ad3da50b7b735e353c0b6762276d25d968009b5d"
+  integrity sha512-90JKcNPygp6lkYOBbJH9BFA72OVINqXDEmyzNmvT1JO9KGNjvs3myydcnE45Qh0UbLMYxE6iIbAL6mVRnkut2g==
+
 "@panoramax/web-viewer@^4.0.1":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@panoramax/web-viewer/-/web-viewer-4.0.2.tgz#f68c1bb18be4d3a16bfcaa82c6bb04636e224d36"

@@ -97,7 +97,7 @@ class Cyclomedia extends React.Component {
         super(props);
         this.iframe = null;
         this.iframePollIntervall = null;
-        if (props.credentialUserInfoFields) {
+        if (props.credentialUserInfoFields && props.userInfos) {
             this.state.username = props.userInfos[props.credentialUserInfoFields.username];
             this.state.password = props.userInfos[props.credentialUserInfoFields.password];
         }

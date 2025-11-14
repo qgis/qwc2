@@ -27,27 +27,31 @@ const checkNonZeroZ = (oldState, newState, fallback) => {
     return oldState?.geomNonZeroZ || false;
 };
 
-const checkGeomReadOnly = (geomType) => {
-    return (geomType ?? null) !== null && !['Point', 'LineString', 'Polygon'].includes((geomType || "").replace(/^Multi/, '').replace(/Z$/, ''));
+const checkGeomReadOnly = (editConfig) => {
+    const simpleGeomType = (editConfig?.geomType ?? "").replace(/^Multi/, '').replace(/Z$/, '');
+    return editConfig?.geomType && !['Point', 'LineString', 'Polygon'].includes(simpleGeomType) || editConfig?.permissions?.updatable === false;
 };
 
 export default function editing(state = defaultState, action) {
     switch (action.type) {
     case SET_EDIT_CONTEXT: {
+        const editConfig = action.editConfig ?? state.contexts[action.contextId]?.editConfig;
         return {
             contexts: {
                 ...state.contexts,
                 [action.contextId]: {
                     action: null,
                     feature: null,
-                    geomType: null,
                     changed: false,
-                    permissions: {},
+                    mapPrefix: null,
+                    editConfig: null,
                     ...state.contexts[action.contextId],
                     ...action.editContext,
                     geomNonZeroZ: checkNonZeroZ(state.contexts[action.contextId], action.editContext),
-                    geomReadOnly: checkGeomReadOnly(action.editContext.geomType ?? state.contexts[action.contextId]?.geomType),
-                    id: action.contextId
+                    geomReadOnly: checkGeomReadOnly(editConfig),
+                    id: action.contextId,
+                    geomType: editConfig?.geomType,
+                    permissions: editConfig?.permissions ?? {}
                 }
             },
             currentContext: action.contextId
