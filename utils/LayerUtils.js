@@ -1160,24 +1160,21 @@ const LayerUtils = {
         }
         return null;
     },
-    applyVisibilityPreset(layer, preset) {
+    applyVisibilityPreset(layer, preset, path = []) {
         const newLayer = {...layer};
+        const itempath = [...path.slice(1), newLayer.name].join("/");
         if (newLayer.sublayers) {
-            let haveVisibileSublayer = false;
-            newLayer.sublayers = newLayer.sublayers.map(sublayer => {
-                const newSublayer = LayerUtils.applyVisibilityPreset(sublayer, preset);
-                haveVisibileSublayer ||= (newSublayer.visibility === true);
-                return newSublayer;
-            });
-            newLayer.visibility = haveVisibileSublayer;
-            if (newLayer.name in preset) {
-                newLayer.visibility = true;
-            }
-        } else if (newLayer.name in preset) {
-            newLayer.visibility = true;
-            newLayer.style = preset[newLayer.name];
+            newLayer.visibility = itempath in preset;
+            newLayer.sublayers = newLayer.sublayers.map(sublayer =>
+                LayerUtils.applyVisibilityPreset(sublayer, preset, [...path, layer.name])
+            );
         } else {
-            newLayer.visibility = false;
+            if (itempath in preset) {
+                newLayer.visibility = true;
+                newLayer.style = preset[itempath];
+            } else {
+                newLayer.visibility = false;
+            }
         }
         return newLayer;
     },
