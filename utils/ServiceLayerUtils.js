@@ -15,12 +15,12 @@ import randomColor from 'randomcolor';
 import url from 'url';
 
 import {LayerRole} from '../actions/layers';
+import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
 import LocaleUtils from './LocaleUtils';
 import MiscUtils from './MiscUtils';
-import StandardApp from '../components/StandardApp';
 
 function strcmp(a, b) {
     const al = a.toLowerCase();

@@ -367,7 +367,7 @@ class Editing extends React.Component {
                                 }
                             }
                         } else if (field.type === 'boolean') {
-                            value = !['0', 'false'].includes(String(value).toLowerCase())
+                            value = !['0', 'false'].includes(String(value).toLowerCase());
                         } else if (field.type === 'date') {
                             if (typeof value === 'string') {
                                 value = dateParser.fromString(value).toISOString();
