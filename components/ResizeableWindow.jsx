@@ -49,6 +49,7 @@ class ResizeableWindow extends React.Component {
         initialX: PropTypes.number,
         initialY: PropTypes.number,
         initiallyDocked: PropTypes.bool,
+        initiallyMinimized: PropTypes.bool,
         mapMargins: PropTypes.object,
         maxHeight: PropTypes.number,
         maxWidth: PropTypes.number,
@@ -356,7 +357,8 @@ class ResizeableWindow extends React.Component {
                 width: width,
                 height: height,
                 docked: this.props.initiallyDocked,
-                detached: false
+                detached: false,
+                minimized: this.props.initiallyMinimized || false
             };
         }
         if (this.props.splitScreenWhenDocked && geometry.docked) {
