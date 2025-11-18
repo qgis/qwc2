@@ -279,7 +279,6 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
         ), {});
     }
     // Evaluate expressions
-    FeatureCache.clear();
     const mapPrefix = editConfig.editDataset.split(".")[0];
     parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
