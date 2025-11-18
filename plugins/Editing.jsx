@@ -343,8 +343,8 @@ class Editing extends React.Component {
             const sourceFields = this.props.editConfigs[mapName]?.[layer]?.fields;
             const sourceNameToIdMap = (sourceFields || []).reduce((res, field) => ({
                 ...res,
-                [sourceFields.name]: sourceFields.id,
-                [sourceFields.id]: sourceFields.id
+                [field.name]: field.id,
+                [field.id]: field.id
             }), {});
 
             const sourcePropertiesById = Object.entries(sourceProperties).reduce((res, [key, value]) => ({
