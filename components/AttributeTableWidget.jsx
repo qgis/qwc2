@@ -307,10 +307,14 @@ class AttributeTableWidget extends React.Component {
                             {Object.entries(this.props.editConfigs).map(([wmsName, serviceConfigs]) => (
                                 Object.entries(serviceConfigs).map(([layerName, editConfig]) => {
                                     const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName);
-                                    if (!match) {
-                                        return null;
+                                    let layerTitle = layerName;
+                                    if (match) {
+                                        layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
+                                    } else {
+                                        // Note: geometry-less tables are filtered from the theme sublayers
+                                        const translations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations;
+                                        layerTitle = translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? layerName;
                                     }
-                                    const layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
                                     const value = wmsName + "#" + layerName;
                                     return (
                                         <option key={value} value={value}>{layerTitle}</option>
