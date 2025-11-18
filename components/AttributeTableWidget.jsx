@@ -416,7 +416,7 @@ class AttributeTableWidget extends React.Component {
                             filteredSortedFeatures: this.filteredSortedFeatures(features, state2),
                             loadedLayer: selectedLayer,
                             curEditConfig: editConfig,
-                            curFieldTranslations: fieldTranslations
+                            fieldTranslations: fieldTranslations
                         }));
                     } else {
                         // eslint-disable-next-line
