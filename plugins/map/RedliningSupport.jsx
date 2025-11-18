@@ -451,12 +451,12 @@ class RedliningSupport extends React.Component {
             evt.feature.setId(uuidv4());
             evt.feature.set('shape', this.props.redlining.geomType);
             this.updateFeatureStyle(evt.feature);
-            this.toggleFeatureMeasurements(ev.feature);
+            this.toggleFeatureMeasurements(evt.feature);
             this.selectFeatures([evt.feature]);
         }, this);
         drawInteraction.on('drawend', () => {
             // Draw end
-            this.commitFeatures(this.selectFeatures, this.props.redlining, true);
+            this.commitFeatures(this.selectedFeatures, this.props.redlining, true);
             this.reset(this.props.redlining);
             // Ughh... Apparently we need to wait 250ms for the 'singleclick' event processing to finish to avoid pick interactions picking up the current event
             setTimeout(() => this.addPickInteraction(true), 300);
