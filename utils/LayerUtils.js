@@ -1164,7 +1164,7 @@ const LayerUtils = {
         const newLayer = {...layer};
         const itempath = [...path.slice(1), newLayer.name].join("/");
         if (newLayer.sublayers) {
-            newLayer.visibility = itempath in preset;
+            newLayer.visibility = itempath in preset || path.length === 0;
             newLayer.sublayers = newLayer.sublayers.map(sublayer =>
                 LayerUtils.applyVisibilityPreset(sublayer, preset, [...path, layer.name])
             );
