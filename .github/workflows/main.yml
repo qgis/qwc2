@@ -1,6 +1,10 @@
 name: QWC2 Build
 on: [push]
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 jobs:
     build:
       runs-on: ubuntu-latest
