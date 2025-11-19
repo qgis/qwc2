@@ -650,6 +650,7 @@
       "vertex": ""
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Adaugă strat",
       "addlayerstotheme": "Adaugă strat la hartă",
       "addselectedlayers": "Adaugă straturile selectate",

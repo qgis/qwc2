@@ -650,6 +650,7 @@
       "vertex": "Naar hoekpunten snappen"
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Laag toevoegen",
       "addlayerstotheme": "Lagen toevoegen aan huidige kaart",
       "addselectedlayers": "Geselecteerde la(a)g(en) toevoegen",

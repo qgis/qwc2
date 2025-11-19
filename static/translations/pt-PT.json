@@ -650,6 +650,7 @@
       "vertex": "Vértice"
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Adicionar Camada",
       "addlayerstotheme": "Adicionar Camadas ao Mapa Atual",
       "addselectedlayers": "Adicionar Camadas Selecionadas",

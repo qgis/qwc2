@@ -650,6 +650,7 @@
       "vertex": "Ajustar als vèrtexs"
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Afegir capa",
       "addlayerstotheme": "Afegir capa al mapa actual",
       "addselectedlayers": "Afegir capa(s) seleccionada(s)",

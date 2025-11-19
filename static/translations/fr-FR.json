@@ -456,7 +456,7 @@
       "angle": "Angle",
       "featureunsupported": "Entrée numérique non disponible pour cette géométrie",
       "height": "Hauteur",
-      "nofeatureormultiple": "",
+      "nofeatureormultiple": "Aucun ou plusieurs objets actifs",
       "side": "Côté",
       "width": "Largeur",
       "windowtitle": "Entrée numérique"
@@ -650,6 +650,7 @@
       "vertex": "Snapping aux sommets"
     },
     "themelayerslist": {
+      "addanyway": "Ajouter quand même",
       "addlayer": "Ajouter la couche",
       "addlayerstotheme": "Ajouter des couches à la carte",
       "addselectedlayers": "Ajouter les couches sélectionnées",

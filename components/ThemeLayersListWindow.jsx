@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import {LayerRole, addLayer} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import {setThemeLayersList} from '../actions/theme';
-import {showNotification, closeWindow} from '../actions/windows';
+import {showNotification, closeWindow, NotificationType} from '../actions/windows';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import ThemeUtils from '../utils/ThemeUtils';
@@ -101,14 +101,21 @@ class ThemeLayersListWindow extends React.Component {
             const filteredSublayers = [];
             sublayers = sublayers.filter(sublayer => {
                 if (existingSublayers.includes(sublayer.name)) {
-                    filteredSublayers.push(sublayer.title);
+                    filteredSublayers.push(sublayer);
                     return false;
                 }
                 return true;
             });
             if (!isEmpty(filteredSublayers)) {
-                const text = LocaleUtils.tr("themelayerslist.existinglayers") + ": " + filteredSublayers.join(",");
-                this.props.showNotification("existinglayers", text);
+                const text = LocaleUtils.tr("themelayerslist.existinglayers") + ": " + filteredSublayers.map(l => l.title).join(", ");
+                const actions = [{
+                    name: LocaleUtils.tr("themelayerslist.addanyway"),
+                    onClick: () => {
+                        this.props.addLayer(ThemeUtils.createThemeLayer(this.props.theme, this.props.themes, LayerRole.USERLAYER, filteredSublayers));
+                        return true;
+                    }
+                }];
+                this.props.showNotification("existinglayers", text, NotificationType.INFO, false, actions);
             }
         }
         if (!isEmpty(sublayers)) {
@@ -135,6 +142,7 @@ class ThemeLayersListWindow extends React.Component {
         }
     };
     onClose = () => {
+        this.props.closeWindow("existinglayers");
         this.props.setThemeLayersList(null);
     };
 }

@@ -650,6 +650,7 @@
       "vertex": "Snap ai vertici"
     },
     "themelayerslist": {
+      "addanyway": "Aggiungi comunque",
       "addlayer": "Aggiungi layer",
       "addlayerstotheme": "Aggiungi layer alla mappa corrente",
       "addselectedlayers": "Aggiungi i layer selezionati",

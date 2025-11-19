@@ -650,6 +650,7 @@
       "vertex": ""
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Adicionar camada",
       "addlayerstotheme": "Adicionar camadas ao mapa atual",
       "addselectedlayers": "Adicionar camadas selecionadas",

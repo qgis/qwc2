@@ -650,6 +650,7 @@
       "vertex": "Прилепване към върховете"
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Добавяне на слой",
       "addlayerstotheme": "Добавяне на слоеве към текущата карта",
       "addselectedlayers": "Добавяне на избран(и) слой(и)",
