@@ -2,3 +2,4 @@ node_modules/
 icons/build
 static/themes.json
 dist/
+.vscode/

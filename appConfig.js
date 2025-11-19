@@ -53,6 +53,7 @@ import ScratchDrawingPlugin from './plugins/ScratchDrawing';
 import SettingsPlugin from './plugins/Settings';
 import SharePlugin from './plugins/Share';
 import StartupMarkerPlugin from './plugins/StartupMarker';
+import StreetViewPlugin from './plugins/StreetView';
 import TaskButtonPlugin from './plugins/TaskButton';
 import ThemeSwitcherPlugin from './plugins/ThemeSwitcher';
 import TimeManagerPlugin from './plugins/TimeManager';
@@ -126,6 +127,7 @@ export default {
             SettingsPlugin: SettingsPlugin,
             SharePlugin: SharePlugin,
             StartupMarkerPlugin: StartupMarkerPlugin,
+            StreetViewPlugin: StreetViewPlugin,
             TaskButtonPlugin: TaskButtonPlugin,
             ThemeSwitcherPlugin: ThemeSwitcherPlugin,
             TimeManagerPlugin: TimeManagerPlugin,

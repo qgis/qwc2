@@ -343,6 +343,12 @@
         "name": "Routing"
       },
       {
+        "name":"StreetView", 
+        "cfg": {          
+          "googleMapsApiKey": "***YOUR GOOGLE MAPS API KEY GOES HERE***"
+        }
+      },
+      {
         "name": "TopBar",
         "cfg": {
           "menuItems": [
@@ -552,7 +558,8 @@
             {"key": "Measure", "mode": "LineString", "icon": "measure_line"},
             {"key": "Measure", "mode": "Polygon", "icon": "measure_polygon"},
             {"key": "Print", "icon": "print"},
-            {"key": "Identify", "icon": "identify_region", "mode": "Region"}
+            {"key": "Identify", "icon": "identify_region", "mode": "Region"},
+            {"key":"StreetView", "task":"StreetView","icon":"cyclomedia"}
           ]
         }
       }

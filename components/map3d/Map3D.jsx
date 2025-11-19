@@ -48,7 +48,6 @@ import Tiles3DStyle from './utils/Tiles3DStyle';
 import './style/Map3D.css';
 
 
-
 // Ensures unUnload is called *after* all other children have unmounted
 class UnloadWrapper extends React.Component {
     static propTypes = {
