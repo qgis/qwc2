@@ -41,6 +41,9 @@ module.exports = (env, argv) => {
         },
         resolve: {
             extensions: [".mjs", ".js", ".jsx"],
+            alias: {
+                "@giro3d/giro3d": "@sourcepole/qwc-giro3d"
+            },
             fallback: {
                 path: require.resolve("path-browserify")
             }
