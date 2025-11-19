@@ -818,7 +818,7 @@ class Map3D extends React.Component {
 
         // Add other objects
         (this.props.theme.map3d?.objects3d || []).forEach(entry => {
-            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.name, this.state.sceneContext, {
+            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.title ?? entry.name, this.state.sceneContext, {
                 visibility: entry.visibility ?? true
             });
         });
