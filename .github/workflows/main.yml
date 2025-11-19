@@ -105,5 +105,3 @@ jobs:
           pushd dist
           npm publish
           popd
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
