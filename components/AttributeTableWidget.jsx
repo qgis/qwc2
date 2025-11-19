@@ -80,7 +80,6 @@ class AttributeTableWidget extends React.Component {
         selectedLayer: "",
         loadedLayer: "",
         curEditConfig: null,
-        curTranslations: null,
         fieldTranslations: null,
         features: [],
         filteredSortedFeatures: [],
