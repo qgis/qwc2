@@ -43,3 +43,9 @@ div.windows-notification-warn {
 div.windows-notification-error {
     background-color: red;
 }
+
+div.windows-notification-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}

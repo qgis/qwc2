@@ -42,13 +42,14 @@ export function showIframeDialog(name, url, options) {
     };
 }
 
-export function showNotification(name, text, type = NotificationType.INFO, sticky = false) {
+export function showNotification(name, text, type = NotificationType.INFO, sticky = false, actions = []) {
     return {
         type: SHOW_NOTIFICATION,
         name: name,
         text: text,
         notificationType: type,
-        sticky: sticky
+        sticky: sticky,
+        actions: actions
     };
 }
 
