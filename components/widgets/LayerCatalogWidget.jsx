@@ -1,9 +1,11 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import {addLayer, removeLayer, replacePlaceholderLayer} from '../../actions/layers';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
@@ -13,7 +15,7 @@ import InputContainer from './InputContainer';
 import './style/LayerCatalogWidget.css';
 
 
-export default class LayerCatalogWidget extends React.PureComponent {
+class LayerCatalogWidget extends React.PureComponent {
     static propTypes = {
         addLayer: PropTypes.func,
         catalog: PropTypes.array,
@@ -158,3 +160,13 @@ export default class LayerCatalogWidget extends React.PureComponent {
         }
     };
 }
+
+export default connect(state => ({
+    layers: state.layers.flat
+}), {
+    addLayer: addLayer,
+    closeWindow: closeWindow,
+    removeLayer: removeLayer,
+    replacePlaceholderLayer: replacePlaceholderLayer,
+    showNotification: showNotification
+})(LayerCatalogWidget);

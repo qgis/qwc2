@@ -13,8 +13,7 @@ import axios from 'axios';
 import {remove as removeDiacritics} from 'diacritics';
 import PropTypes from 'prop-types';
 
-import {addLayer, removeLayer, replacePlaceholderLayer} from '../actions/layers';
-import {setCurrentTask} from '../actions/task';
+import {setCurrentTask} from '../actions/task'
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -65,7 +64,6 @@ import './style/LayerCatalog.css';
 class LayerCatalog extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
-        addLayer: PropTypes.func,
         /** The URL to the catalog JSON file. */
         catalogUrl: PropTypes.string,
         /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
@@ -81,8 +79,6 @@ class LayerCatalog extends React.Component {
         levelBasedIndentSize: PropTypes.bool,
         /** Whether to register a search provider which allows searching catalog layers through the global search field. */
         registerCatalogSearchProvider: PropTypes.bool,
-        removeLayer: PropTypes.func,
-        replacePlaceholderLayer: PropTypes.func,
         setCurrentTask: PropTypes.func
     };
     static defaultProps = {
@@ -143,10 +139,7 @@ class LayerCatalog extends React.Component {
                 onClose={this.onClose} title={LocaleUtils.tr("layercatalog.windowtitle")}
             >
                 <div className="layer-catalog" role="body">
-                    <LayerCatalogWidget
-                        addLayer={this.props.addLayer} catalog={this.state.catalog}
-                        levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0}
-                        removeLayer={this.props.removeLayer} replacePlaceholderLayer={this.props.replacePlaceholderLayer} />
+                    <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} />
                 </div>
             </ResizeableWindow>
         );
@@ -199,8 +192,5 @@ class LayerCatalog extends React.Component {
 export default connect(state => ({
     active: state.task.id === "LayerCatalog"
 }), {
-    addLayer: addLayer,
-    removeLayer: removeLayer,
-    replacePlaceholderLayer: replacePlaceholderLayer,
     setCurrentTask: setCurrentTask
 })(LayerCatalog);
