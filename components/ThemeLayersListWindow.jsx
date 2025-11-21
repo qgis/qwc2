@@ -95,9 +95,13 @@ class ThemeLayersListWindow extends React.Component {
     };
     addLayers = (sublayers) => {
         this.props.closeWindow("existinglayers");
-        const existingLayer = this.props.layers.find(l => l.type === 'wms' && l.url === this.props.theme.url);
-        if (existingLayer) {
-            const existingSublayers = [...LayerUtils.getSublayerNames(existingLayer), existingLayer.name];
+        const existingSublayers = this.props.layers.reduce((res, layer) => {
+            if (layer.type === 'wms' && layer.url === this.props.theme.url) {
+                return [...res, ...LayerUtils.getSublayerNames(layer), layer.name];
+            }
+            return res;
+        }, []);
+        if (!isEmpty(existingSublayers)) {
             const filteredSublayers = [];
             sublayers = sublayers.filter(sublayer => {
                 if (existingSublayers.includes(sublayer.name)) {
