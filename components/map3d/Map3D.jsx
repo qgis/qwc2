@@ -966,7 +966,7 @@ class Map3D extends React.Component {
             scenePos = [scenePos];
         }
         const dtmPos = scenePos.map(p => {
-            return CoordinatesUtils.reproject(p, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);
+            return CoordinatesUtils.reproject(p, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs.name);
         });
         const dtmExt = [Infinity, Infinity, -Infinity, -Infinity];
         dtmPos.forEach(p => {
