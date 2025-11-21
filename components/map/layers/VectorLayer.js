@@ -12,7 +12,7 @@ import ol from 'openlayers';
 import FeatureStyles from '../../../utils/FeatureStyles';
 
 
-export function createFeatures(options, mapCrs) {
+export function createFeatures(options, mapCrs, segmentize = false) {
     const format = new ol.format.GeoJSON();
     return (options.features || []).reduce((collection, featureObj) => {
         const feature = format.readFeature({...featureObj, type: "Feature"});
@@ -27,7 +27,7 @@ export function createFeatures(options, mapCrs) {
         const featureStyleOptions = {...options.styleOptions, ...featureObj.styleOptions};
         feature.set('styleName', featureStyleName);
         feature.set('styleOptions', featureStyleOptions);
-        if (featureObj.circleParams) {
+        if (featureObj.circleParams && !segmentize) {
             feature.set('circleParams', featureObj.circleParams);
             feature.setGeometry(
                 new ol.geom.Circle(featureObj.circleParams.center, featureObj.circleParams.radius)
@@ -46,7 +46,7 @@ export function createFeatures(options, mapCrs) {
     }, []);
 }
 
-export function updateFeatures(source, newOptions, oldOptions, mapCrs) {
+export function updateFeatures(source, newOptions, oldOptions, mapCrs, segmentize = false) {
     const format = new ol.format.GeoJSON();
 
     const oldFeaturesMap = (oldOptions.features || []).reduce((res, f) => {
@@ -86,7 +86,7 @@ export function updateFeatures(source, newOptions, oldOptions, mapCrs) {
         if (featureCrs !== mapCrs) {
             feature.getGeometry()?.transform(featureCrs, mapCrs);
         }
-        if (featureObj.circleParams) {
+        if (featureObj.circleParams && !segmentize) {
             feature.setGeometry(
                 new ol.geom.Circle(featureObj.circleParams.center, featureObj.circleParams.radius)
             );

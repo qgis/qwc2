@@ -22,7 +22,7 @@ export default {
             name: options.name,
             source: new VectorSource({
                 dataProjection: CoordinateSystem.fromSrid(projection),
-                data: createFeatures(options, projection),
+                data: createFeatures(options, projection, true),
                 format: new ol.format.GeoJSON(),
                 style: options.styleFunction || (feature => {
                     const styleName = options.styleName || 'default';
@@ -39,7 +39,7 @@ export default {
             layer.source.setStyle(newOptions.styleFunction);
         }
         if (newOptions.features !== oldOptions.features) {
-            updateFeatures(layer.source, newOptions, oldOptions, projection);
+            updateFeatures(layer.source, newOptions, oldOptions, projection, true);
         } else if ((oldOptions.rev || 0) !== (newOptions.rev || 0)) {
             layer.source.update();
         }
