@@ -75,6 +75,12 @@ const MiscUtils = {
             ev.preventDefault();
         }
     },
+    checkKeyActivate(ev) {
+        if (ev.code === "Space" || ev.code === "Enter") {
+            ev.preventDefault();
+            ev.currentTarget.click();
+        }
+    },
     blendColors(color1, color2, ratio) {
         color1 = [parseInt(color1[1] + color1[2], 16), parseInt(color1[3] + color1[4], 16), parseInt(color1[5] + color1[6], 16)];
         color2 = [parseInt(color2[1] + color2[2], 16), parseInt(color2[3] + color2[4], 16), parseInt(color2[5] + color2[6], 16)];
