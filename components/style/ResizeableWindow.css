@@ -102,10 +102,6 @@ div.resizeable-window-titlebar {
     flex: 0 0 2.5em;
     display: flex;
     align-items: center;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     padding: 0 0.25em;
 }
 
