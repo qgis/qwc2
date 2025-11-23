@@ -164,7 +164,7 @@ class SearchBox extends React.Component {
                 <ComboBox onChange={value => this.setFilterRegion(value, this.state.searchFilterRegions)} value={this.state.filterRegionName}>
                     <div value="">{LocaleUtils.tr("search.none")}</div>
                     {this.state.searchFilterRegions.map((group, gidx) => ([
-                        (<div data-group-header={gidx} disabled key={"group" + gidx}>{group.name}</div>),
+                        (<div data-group-header={gidx} key={"group" + gidx}>{group.name}</div>),
                         ...group.items.map((item, idx) => (
                             <div data-group={gidx} key={item.name} value={gidx + ":" + idx + ":" + item.name}>{item.name}</div>
                         ))
