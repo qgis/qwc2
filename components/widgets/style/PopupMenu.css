@@ -1,0 +1,13 @@
+div.popup-menu:focus {
+    outline: none;
+}
+
+div.popup-menu-item-disabled {
+    color: var(--text-color-disabled);
+}
+
+div.popup-menu > *:focus {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
+    outline: none;
+}

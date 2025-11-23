@@ -43,6 +43,12 @@ export default class ComboBox extends React.Component {
         super(props);
         this.el = null;
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.popup && !this.state.popup) {
+            // Move focus back to combo button
+            this.el.children[0].focus();
+        }
+    }
     render() {
         const children = React.Children.toArray(this.props.children);
         const rect = this.el ? this.el.getBoundingClientRect() : null;
@@ -55,9 +61,10 @@ export default class ComboBox extends React.Component {
             }
         }
         const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
+        const onClick = this.props.readOnly || isEmpty(children) ? null : () => this.setState(state => ({popup: !state.popup}));
         return (
             <div className={"combobox " + (this.props.className || "")} ref={el => { this.el = el; }}>
-                <div className="combobox-button" onClick={this.props.readOnly || isEmpty(children) ? null : () => this.setState({popup: true})}>
+                <div className="combobox-button" onClick={onClick} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
                     <span className="combobox-button-content">
                         {activeOption}
                     </span>
@@ -72,7 +79,6 @@ export default class ComboBox extends React.Component {
                             const classNames = classnames({
                                 "combobox-menu-entry": true,
                                 "combobox-menu-entry-active": child.props.value === this.props.value && !child.props.disabled,
-                                "combobox-menu-entry-disabled": child.props.disabled,
                                 "combobox-menu-entry-group-header": child.props["data-group-header"] !== undefined
                             });
                             if (child.props["data-group"] !== undefined && !this.state.expanded.includes(child.props["data-group"])) {
@@ -83,7 +89,7 @@ export default class ComboBox extends React.Component {
                             }
                             const expanderIcon = this.state.expanded.includes(child.props["data-group-header"]) ? "collapse" : "expand";
                             return (
-                                <div className={classNames} key={"child:" + idx} onClickCapture={(ev) => this.onChildClicked(ev, child)}>
+                                <div className={classNames} disabled={child.props.disabled} key={"child:" + idx} onClickCapture={(ev) => this.onChildClicked(ev, child)}>
                                     {child.props["data-group-header"] !== undefined ? (
                                         <Icon icon={expanderIcon} />
                                     ) : null}

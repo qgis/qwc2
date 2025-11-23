@@ -75,23 +75,14 @@ div.menubutton-menu > div {
     padding: 0.25em;
 }
 
-div.menubutton-menu > div:hover {
-    background-color: var(--list-item-bg-color-hover);
-    color: var(--list-item-text-color-hover);
-}
-
 div.menubutton-menu > div.menubutton-menu-active {
     background-color: var(--list-item-bg-color-active);
     color: var(--list-item-text-color-active);
 }
 
-div.menubutton-menu > div.menubutton-menu-active:hover {
+div.menubutton-menu > div.menubutton-menu-active:focus {
     background-color: var(--list-item-bg-color-active-hover);
     color: var(--list-item-text-color-active-hover);
-}
-
-div.menubutton-menu-disabled {
-    color: var(--text-color-disabled);
 }
 
 span.menubutton-tooltip {

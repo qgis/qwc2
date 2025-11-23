@@ -52,23 +52,14 @@ div.combobox-menu-entry {
     padding: 0.25em;
 }
 
-div.combobox-menu-entry:not(.combobox-menu-entry-disabled):hover  {
-    background-color: var(--list-item-bg-color-hover);
-    color: var(--list-item-text-color-hover);
-}
-
 div.combobox-menu-entry-active {
     background-color: var(--list-item-bg-color-active);
     color: var(--list-item-text-color-active);
 }
 
-div.combobox-menu-entry-active:hover {
-    background-color: var(--list-item-bg-color-active-hover)!important;
-    color: var(--list-item-text-color-active-hover)!important;
-}
-
-div.combobox-menu-entry-disabled {
-    color: var(--text-color-disabled);
+div.combobox-menu-entry-active:focus {
+    background-color: var(--list-item-bg-color-active-hover);
+    color: var(--list-item-text-color-active-hover);
 }
 
 div.combobox-menu-entry-group-header {
@@ -76,6 +67,10 @@ div.combobox-menu-entry-group-header {
     background-color: var(--list-section-bg-color);
     color: var(--list-section-text-color);
     font-weight: bold;
+}
+
+div.combobox-menu-entry-group-header:focus {
+    background-color: var(--list-section-bg-color-hover);
 }
 
 div.combobox-menu-entry-group-header > span.icon {
