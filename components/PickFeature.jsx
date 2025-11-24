@@ -220,7 +220,7 @@ class PickFeature extends React.Component {
                             return (
                                 <div
                                     key={key}
-                                    onClickCapture={() => this.props.featurePicked(entry.layer, entry.feature, entry.mapName)}
+                                    onClick={() => this.props.featurePicked(entry.layer, entry.feature, entry.mapName)}
                                     onMouseOut={() => this.clearHighlight(key, entry.feature)}
                                     onMouseOver={() => this.highlightFeature(key, entry.feature)}
                                 >
