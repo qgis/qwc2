@@ -24,6 +24,7 @@ export default class PopupMenu extends React.PureComponent {
         className: PropTypes.string,
         disabledItemClass: PropTypes.string,
         onClose: PropTypes.func,
+        setMaxWidth: PropTypes.bool,
         width: PropTypes.number,
         x: PropTypes.number,
         y: PropTypes.number
@@ -107,6 +108,9 @@ export default class PopupMenu extends React.PureComponent {
             zIndex: 1,
             pointerEvents: 'initial'
         };
+        if (this.props.setMaxWidth) {
+            style.maxWidth = minWidth + 'px';
+        }
         const disabledItemClass = this.props.disabledItemClass ?? "popup-menu-item-disabled";
         const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children];
         return ReactDOM.createPortal((

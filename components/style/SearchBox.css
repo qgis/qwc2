@@ -27,18 +27,7 @@ div.searchbox-field > div.spinner {
 }
 
 div.searchbox-results {
-    position: absolute;
-    left: 0;
-    top: 100%;
-    width: 100%;
-    max-height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
-    background-color: var(--list-bg-color);
-    border-left: 1px solid var(--border-color);
-    border-right: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
     overflow-x: hidden;
-    overflow-y: auto;
 }
 
 div.searchbox-results-section-title {
@@ -65,11 +54,6 @@ div.searchbox-noresults {
     padding: 0.125em 0.5em;
     font-style: italic;
     color: var(--text-color-disabled);
-}
-
-div.searchbox-result:hover {
-    background-color: var(--list-item-bg-color-hover);
-    color: var(--list-item-text-color-hover);
 }
 
 div.searchbox-result-expandedinfo {
@@ -114,11 +98,6 @@ div.searchbox-more-results {
     height: 1.75em;
     display: flex;
     align-items: center;
-}
-
-div.searchbox-result-group {
-    margin-left: 1em;
-    border-left: 1px solid var(--list-item-bg-color-hover);
 }
 
 div.searchbox-filter-options {

@@ -43,6 +43,7 @@ import ButtonBar from './widgets/ButtonBar';
 import ComboBox from './widgets/ComboBox';
 import InputContainer from './widgets/InputContainer';
 import NumberInput from './widgets/NumberInput';
+import PopupMenu from './widgets/PopupMenu';
 import Spinner from './widgets/Spinner';
 
 import './style/SearchBox.css';
@@ -105,7 +106,6 @@ class SearchBox extends React.Component {
         super(props);
         this.searchBox = null;
         this.searchTimeout = null;
-        this.preventBlur = false;
     }
     componentDidUpdate(prevProps, prevState) {
         // Restore highlight from URL as soon as theme is loaded
@@ -130,6 +130,10 @@ class SearchBox extends React.Component {
         // Trigger search when closing filter options
         if (!this.state.filterOptionsVisible && prevState.filterOptionsVisible) {
             this.searchTextChanged(this.state.searchText);
+        }
+        // Reset collapsed sections etc
+        if (!this.state.resultsVisible && prevState.resultsVisible) {
+            this.setState({collapsedSections: {}, expandedLayerGroup: null, activeLayerInfo: null});
         }
     }
     loadFilterRegions = () => {
@@ -241,21 +245,21 @@ class SearchBox extends React.Component {
             this.renderRecentResults(),
             this.renderFilters(),
             this.renderResults()
-        ];
+        ].flat(Infinity);
         children = children.filter(child => !isEmpty(child));
         if (isEmpty(children)) {
             if (isEmpty(this.state.pendingSearches) && this.state.searchResults.query_text) {
                 children = (
-                    <div className="searchbox-noresults">{LocaleUtils.tr("search.noresults")}</div>
+                    <div className="searchbox-noresults" disabled key="noresults">{LocaleUtils.tr("search.noresults")}</div>
                 );
             } else {
                 return null;
             }
         }
         return (
-            <div className="searchbox-results" onMouseDown={this.setPreventBlur} ref={MiscUtils.setupKillTouchEvents}>
+            <PopupMenu anchor={this.searchBox} className="searchbox-results" onClose={() => this.setState({resultsVisible: false})} setMaxWidth>
                 {children}
-            </div>
+            </PopupMenu>
         );
     };
     renderRecentResults = () => {
@@ -263,50 +267,40 @@ class SearchBox extends React.Component {
         if (isEmpty(recentSearches) || (recentSearches.length === 1 && recentSearches[0].toLowerCase() === this.state.searchText.toLowerCase())) {
             return null;
         }
-        return (
-            <div key="recent">
-                <div className="searchbox-results-section-title" onClick={() => this.toggleSection("recent")} onMouseDown={MiscUtils.killEvent}>
-                    <Icon icon={this.isCollapsed("recent") ? "expand" : "collapse"} />{LocaleUtils.tr("search.recent")}
-                </div>
-                {!this.isCollapsed("recent") ? (
-                    <div className="searchbox-results-section-body">
-                        {recentSearches.map((entry, idx) => (
-                            <div className="searchbox-result" key={"r" + idx} onClick={() => this.searchTextChanged(entry)} onMouseDown={MiscUtils.killEvent}>
-                                {entry}
-                            </div>
-                        ))}
-                    </div>
-                ) : null}
+        return [(
+            <div className="searchbox-results-section-title" key="recent" onClick={(ev) => this.toggleSection(ev, "recent")}>
+                <Icon icon={this.isCollapsed("recent") ? "expand" : "collapse"} />{LocaleUtils.tr("search.recent")}
             </div>
-        );
+        ),
+        !this.isCollapsed("recent") ? recentSearches.map((entry, idx) => (
+            <div className="searchbox-result" key={"recent:" + idx} onClick={() => this.searchTextChanged(entry)}>
+                {entry}
+            </div>
+        )) : null];
     };
     renderFilters = () => {
-        return Object.entries(this.state.searchResults).map(([provider, results]) => {
+        const filters = Object.entries(this.state.searchResults).reduce((res, [provider, results]) => {
             if (isEmpty(results.result_counts) || results.result_counts.length < 2) {
-                return null;
+                return res;
             }
-            const collapsed = this.isCollapsed('filter', false);
-            const values = results.result_counts.map(entry => entry.filterword + ": " + this.state.searchResults.query_text);
-            values.sort((a, b) => a.localeCompare(b));
-            return (
-                <div key="filter">
-                    <div className="searchbox-results-section-title" onClick={() => this.toggleSection("filter")} onMouseDown={MiscUtils.killEvent}>
-                        <Icon icon={collapsed ? "expand" : "collapse"} />{LocaleUtils.tr("search.filter")}
-                    </div>
-                    {!collapsed ? (
-                        <div className="searchbox-results-section-body">
-                            {values.map((value, idx) => {
-                                return (
-                                    <div className="searchbox-result" key={"f" + idx} onClick={() => this.searchTextChanged(value, true, provider)} onMouseDown={MiscUtils.killEvent}>
-                                        <span className="searchbox-result-label">{value}</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : null}
-                </div>
-            );
-        }).filter(Boolean);
+            const values = results.result_counts.map(entry => ([entry.filterword + ": " + this.state.searchResults.query_text, provider]));
+            values.sort((a, b) => a[0].localeCompare(b[0]));
+            return [...res, ...values];
+        }, []);
+        if (isEmpty(filters)) {
+            return null;
+        }
+        const collapsed = this.isCollapsed('filter', false);
+        return [(
+            <div className="searchbox-results-section-title" key="filter" onClick={(ev) => this.toggleSection(ev, "filter")}>
+                <Icon icon={collapsed ? "expand" : "collapse"} />{LocaleUtils.tr("search.filter")}
+            </div>
+        ),
+        !collapsed ? filters.map((valProv, idx) => (
+            <div className="searchbox-result" key={"filter:" + idx} onClick={() => this.searchTextChanged(valProv[0], true, valProv[1])}>
+                <span className="searchbox-result-label">{valProv[0]}</span>
+            </div>
+        )) : null];
     };
     renderResults = () => {
         const resultRenderers = {
@@ -347,24 +341,20 @@ class SearchBox extends React.Component {
                 return {
                     priority: priority * 1000000 + (group.priority || 0),
                     title: group.title ?? LocaleUtils.tr(group.titlemsgid),
-                    tree: (
-                        <div key={sectionId}>
-                            <div className="searchbox-results-section-title" onClick={() => this.toggleSection(sectionId)} onMouseDown={MiscUtils.killEvent}>
-                                <Icon icon={this.isCollapsed(sectionId) ? "expand" : "collapse"} />
-                                <span>{group.title ?? LocaleUtils.tr(group.titlemsgid)}</span>
-                            </div>
-                            {!this.isCollapsed(sectionId) ? (
-                                <div className="searchbox-results-section-body">
-                                    {group.items.map((entry) => renderer(provider, group, entry))}
-                                    {moreLabel ? (
-                                        <div className="searchbox-more-results">
-                                            {moreLabel}
-                                        </div>
-                                    ) : null}
-                                </div>
-                            ) : null}
+                    tree: [(
+                        <div className="searchbox-results-section-title" key={sectionId} onClick={(ev) => this.toggleSection(ev, sectionId)}>
+                            <Icon icon={this.isCollapsed(sectionId) ? "expand" : "collapse"} />
+                            <span>{group.title ?? LocaleUtils.tr(group.titlemsgid)}</span>
                         </div>
-                    )
+                    ),
+                    !this.isCollapsed(sectionId) ? [
+                        group.items.map((entry) => renderer(provider, group, entry)),
+                        moreLabel ? (
+                            <div className="searchbox-more-results" disabled key={sectionId + ":more"}>
+                                {moreLabel}
+                            </div>
+                        ) : null
+                    ] : null].flat()
                 };
             }));
         }, []).filter(Boolean);
@@ -380,61 +370,59 @@ class SearchBox extends React.Component {
     renderPlaceResult = (provider, group, result) => {
         const key = provider + ":" + group.id + ":" + result.id;
         return (
-            <div className="searchbox-result" key={key} onClick={() => {this.selectPlaceResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
+            <div className="searchbox-result" key={key} onClick={() => this.selectPlaceResult(provider, group, result)}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
-                {result.externalLink ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.openUrl(result.externalLink, result.target, result.label ?? result.text);} } /> : null}
+                {result.externalLink ? <Icon icon="info-sign" onClick={ev => this.openUrl(ev, result.externalLink, result.target, result.label ?? result.text)} /> : null}
             </div>
         );
     };
-    renderLayerResult = (provider, group, result, parent = null) => {
+    renderLayerResult = (provider, group, result, parent = null, level = 0) => {
         const key = provider + ":" + group.id + ":" + result.id;
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         let icon = null;
         if (result.sublayers) {
-            const toggleLayerGroup = () => {
+            const toggleLayerGroup = (ev) => {
+                MiscUtils.killEvent(ev);
                 this.setState((state) => ({expandedLayerGroup: state.expandedLayerGroup === key ? null : key}));
             };
-            icon = (<Icon icon={this.state.expandedLayerGroup === key ? "minus" : "plus"} onClick={ev => {MiscUtils.killEvent(ev); toggleLayerGroup();}} />);
+            icon = (<Icon icon={this.state.expandedLayerGroup === key ? "minus" : "plus"} onClick={ev => toggleLayerGroup(ev)} />);
         } else if (result.thumbnail) {
             icon = (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />);
         }
         const selectResult = result.theme ? this.selectThemeResult : this.selectLayerResult;
-        return (
-            <div key={key}>
-                <div className="searchbox-result" onClick={() => {selectResult(provider, group, result); this.blur(); }} onMouseDown={MiscUtils.killEvent}>
-                    {icon}
-                    {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
-                    <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
-                    {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result); this.blur(); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
-                    {result.sublayers ? (<Icon icon="group" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result, true);}} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
-                    {result.info ? <Icon icon="info-sign" onClick={ev => {MiscUtils.killEvent(ev); this.toggleLayerInfo(provider, group, result, key, parent);} } /> : null}
-                </div>
-                {this.state.activeLayerInfo === key ? (
-                    <div className="searchbox-result-abstract"
-                        dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(DOMPurify.sanitize(result.layer?.abstract || "")) || LocaleUtils.tr("search.nodescription")}}
-                    />
-                ) : null}
-                {this.state.expandedLayerGroup === key ? (
-                    <div className="searchbox-result-group">{result.sublayers.map(sublayer => this.renderLayerResult(provider, group, sublayer, result.id))}</div>
-                ) : null}
+        return [(
+            <div className="searchbox-result" key={key} onClick={() => selectResult(provider, group, result)} style={{borderLeft: `${level}em solid transparent`}}>
+                {icon}
+                {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                {result.theme && addThemes ? (<Icon icon="plus" onClick={() => this.selectLayerResult(provider, group, result)} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+                {result.sublayers ? (<Icon icon="group" onClick={() => this.selectLayerResult(provider, group, result, true)} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
+                {result.info ? <Icon icon="info-sign" onClick={(ev) => this.toggleLayerInfo(ev, provider, group, result, key, parent)} /> : null}
             </div>
-        );
+        ), this.state.activeLayerInfo === key ? (
+            <div className="searchbox-result-abstract"
+                dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(DOMPurify.sanitize(result.layer?.abstract || "")) || LocaleUtils.tr("search.nodescription")}}
+                disabled key={key + ":abstract"} style={{borderLeft: `${level}em solid transparent`}}
+            />
+        ) : null,
+        this.state.expandedLayerGroup === key ? result.sublayers.map(sublayer => this.renderLayerResult(provider, group, sublayer, result.id, level + 1)) : null
+        ].flat();
     };
     renderThemeResult = (provider, group, result) => {
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         return (
-            <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => {this.selectThemeResult(provider, group, result); this.blur();}} onMouseDown={MiscUtils.killEvent}>
+            <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => this.selectThemeResult(provider, group, result)}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
                 <Icon className="searchbox-result-openicon" icon="open" />
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
-                {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.addThemeLayers(result.layer); this.blur();}} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+                {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => this.addThemeLayers(result.layer)} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
             </div>
         );
     };
     renderTaskResult = (provider, group, result) => {
         return (
-            <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => {this.selectTaskResult(provider, group, result); this.blur();}} onMouseDown={MiscUtils.killEvent}>
+            <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => this.selectTaskResult(provider, group, result)}>
                 {result.task.icon ? (<Icon icon={result.task.icon} />) : null}
                 <span className="searchbox-result-label">{result.text}</span>
             </div>
@@ -449,7 +437,7 @@ class SearchBox extends React.Component {
                 searchResults: {
                     query_text: resultText,
                     [provider]: {
-                        results: [{...group, items: [result]}],
+                        results: [{...group, resultCount: 1, items: [result]}],
                         tot_result_count: 1
                     }
                 }
@@ -570,7 +558,8 @@ class SearchBox extends React.Component {
             ev.target.style.display = 'none';
         }
     };
-    toggleLayerInfo = (provider, group, result, key, parent) => {
+    toggleLayerInfo = (ev, provider, group, result, key, parent) => {
+        MiscUtils.killEvent(ev);
         const setResultLayerAndActiveInfo = (layer) => {
             // Embed returned layer into result item, so that layer info is read from item.layer.abstract
             this.setState((state) => ({
@@ -620,11 +609,8 @@ class SearchBox extends React.Component {
             }
         });
     };
-    setPreventBlur = () => {
-        this.preventBlur = true;
-        setTimeout(() => {this.preventBlur = false; return false;}, 100);
-    };
-    toggleSection = (key) => {
+    toggleSection = (ev, key) => {
+        MiscUtils.killEvent(ev);
         return this.setState((state) => {
             const newCollapsedSections = {...state.collapsedSections};
             const deflt = (this.props.searchOptions.sectionsDefaultCollapsed || false);
@@ -648,11 +634,12 @@ class SearchBox extends React.Component {
                 <div className="SearchBox" key="SearchBox">
                     <InputContainer className="searchbox-field">
                         <Icon icon="search" role="prefix" />
-                        <input onBlur={this.onBlur} onChange={ev => this.searchTextChanged(ev.target.value)}
+                        <input onChange={ev => this.searchTextChanged(ev.target.value)}
+                            onClick={() => this.setState({resultsVisible: true})}
                             onFocus={this.onFocus}
+                            onKeyDown={this.onKeyDown}
                             placeholder={placeholder} ref={el => { this.searchBox = el; }}
-                            role="input"
-                            type="text" value={this.state.searchText} />
+                            role="input" type="text" value={this.state.searchText} />
                         {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="clear" onClick={this.clear} role="suffix" />)}
                     </InputContainer>
                     {this.props.searchOptions.allowSearchFilters ? (
@@ -691,8 +678,7 @@ class SearchBox extends React.Component {
         this.searchTimeout = setTimeout(() => this.startSearch(provider), 250);
     };
     onFocus = () => {
-        this.setState({resultsVisible: true});
-        if (this.searchBox) {
+        if (this.searchBox && !this.state.resultsVisible) {
             this.searchBox.select();
         }
         if (isEmpty(this.state.searchResults) && this.props.theme) {
@@ -702,11 +688,10 @@ class SearchBox extends React.Component {
             this.toggleFilterOptions(false);
         }
     };
-    onBlur = () => {
-        if (this.preventBlur && this.searchBox) {
-            this.searchBox.focus();
-        } else {
-            this.setState({resultsVisible: false, collapsedSections: {}, expandedLayerGroup: null, activeLayerInfo: null});
+    onKeyDown = (ev) => {
+        if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+            ev.preventDefault();
+            this.setState({resultsVisible: true});
         }
     };
     clear = () => {
@@ -920,7 +905,8 @@ class SearchBox extends React.Component {
         const y = 0.5 * (bbox[1] + bbox[3]);
         this.props.zoomToPoint([x, y], zoom, this.props.map.projection);
     };
-    openUrl = (url, target, title) => {
+    openUrl = (ev, url, target, title) => {
+        MiscUtils.killEvent(ev);
         if (target === "iframe") {
             target = ":iframedialog:externallinkiframe";
         }
