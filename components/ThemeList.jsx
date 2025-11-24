@@ -86,7 +86,10 @@ class ThemeList extends React.Component {
             }
             return (
                 <li className={"theme-group-header " + (expanded ? "theme-group-header-expanded" : "")} key={subdir.id}>
-                    <span onClick={() => this.setState((state) => ({expandedGroups: {...state.expandedGroups, [subdir.id]: !expanded}}))}>
+                    <span
+                        onClick={() => this.setState((state) => ({expandedGroups: {...state.expandedGroups, [subdir.id]: !expanded}}))}
+                        onKeyDown={MiscUtils.checkKeyActivate} tabIndex="0"
+                    >
                         {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.titleMsgId ? LocaleUtils.tr(subdir.titleMsgId) : subdir.title}
                     </span>
                     {expanded ? this.renderThemeGroup(subdir, filter) : null}
