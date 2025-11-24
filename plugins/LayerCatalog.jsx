@@ -13,7 +13,7 @@ import axios from 'axios';
 import {remove as removeDiacritics} from 'diacritics';
 import PropTypes from 'prop-types';
 
-import {setCurrentTask} from '../actions/task'
+import {setCurrentTask} from '../actions/task';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerCatalogWidget from '../components/widgets/LayerCatalogWidget';
 import LocaleUtils from '../utils/LocaleUtils';
