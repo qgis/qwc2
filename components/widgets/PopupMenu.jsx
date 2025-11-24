@@ -108,9 +108,10 @@ export default class PopupMenu extends React.PureComponent {
             pointerEvents: 'initial'
         };
         const disabledItemClass = this.props.disabledItemClass ?? "popup-menu-item-disabled";
+        const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children];
         return ReactDOM.createPortal((
             <div className={"popup-menu " + this.props.className} onKeyDown={this.keyNav} onMouseLeave={this.clearFocus} ref={this.setFocus} style={style} tabIndex={0}>
-                {this.props.children.filter(Boolean).map((child, idx) => {
+                {children.flat(Infinity).filter(Boolean).map(child => {
                     const className = classnames({
                         [disabledItemClass]: child.props.disabled,
                         [child.props.className]: !!child.props.className
