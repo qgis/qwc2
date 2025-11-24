@@ -19,6 +19,7 @@ import './style/PopupMenu.css';
 
 export default class PopupMenu extends React.PureComponent {
     static propTypes = {
+        anchor: PropTypes.object,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
         disabledItemClass: PropTypes.string,
@@ -37,26 +38,74 @@ export default class PopupMenu extends React.PureComponent {
         this.container.style.top = 0;
         this.container.style.bottom = 0;
         this.container.style.zIndex = 100000;
+        if (this.props.anchor) {
+            this.shields = [];
+            for (let i = 0; i < 4; ++i) {
+                this.shields[i] = document.createElement("div");
+                this.shields[i].style.position = 'absolute';
+                this.shields[i].style.left = "0px";
+                this.shields[i].style.right = "0px";
+                this.shields[i].style.top = "0px";
+                this.shields[i].style.bottom = "0px";
+                this.shields[i].style.pointerEvents = 'initial';
+                this.shields[i].style.zIndex = 0;
+                setTimeout(() => this.shields[i].addEventListener('click', () => {
+                    this.props.onClose?.();
+                }), 0);
+                this.container.appendChild(this.shields[i]);
+            }
+            this.container.style.pointerEvents = 'none';
+        }
         this.menuEl = null;
         setTimeout(() => this.container.addEventListener('click', () => {
             this.props.onClose?.();
         }), 0);
         document.body.appendChild(this.container);
     }
+    componentDidMount() {
+        if (this.props.anchor?.nodeName === "INPUT") {
+            this.props.anchor.addEventListener('keydown', this.keyNav);
+        }
+    }
     componentWillUnmount() {
         document.body.removeChild(this.container);
+        if (this.props.anchor?.nodeName === "INPUT") {
+            this.props.anchor.removeEventListener('keydown', this.keyNav);
+        }
+        this.props.anchor?.focus?.();
     }
     render() {
         if (isEmpty(this.props.children)) {
             return null;
         }
+        let rect = null;
+        if (this.props.anchor) {
+            if ((this.props.anchor.parentElement.className || "").includes("input-container")) {
+                rect = this.props.anchor.parentElement.getBoundingClientRect();
+            } else {
+                rect = this.props.anchor.getBoundingClientRect();
+            }
+            this.shields[0].style.height = rect.top + "px";
+            this.shields[0].style.bottom = 0;
+
+            this.shields[1].style.width = rect.left + "px";
+            this.shields[1].style.right = 0;
+
+            this.shields[2].style.left = rect.right + "px";
+            this.shields[3].style.top = rect.bottom + "px";
+        }
+        const x = (rect?.left ?? this.props.x);
+        const y = (rect?.bottom ?? this.props.y) - 1;
+        const minWidth = (rect?.width ?? this.props.width ?? 0);
         const style = {
             position: 'absolute',
-            left: this.props.x + 'px',
-            top: this.props.y + 'px',
-            minWidth: this.props.width + 'px',
-            maxHeight: (window.innerHeight - this.props.y) + 'px',
-            overflowY: 'auto'
+            left: x + 'px',
+            top: y + 'px',
+            minWidth: minWidth + 'px',
+            maxHeight: (window.innerHeight - y - 5) + 'px',
+            overflowY: 'auto',
+            zIndex: 1,
+            pointerEvents: 'initial'
         };
         const disabledItemClass = this.props.disabledItemClass ?? "popup-menu-item-disabled";
         return ReactDOM.createPortal((
@@ -77,13 +126,17 @@ export default class PopupMenu extends React.PureComponent {
         ), this.container);
     }
     setFocus = (el) => {
-        if (el) {
-            this.menuEl = el;
+        this.menuEl = el;
+        if (el && this.props.anchor?.nodeName !== "INPUT") {
             this.menuEl.focus();
         }
     };
     clearFocus = () => {
-        this.menuEl.focus();
+        if (this.props.anchor?.nodeName === "INPUT") {
+            this.props.anchor.focus();
+        } else {
+            this.menuEl.focus();
+        }
     };
     keyNav = (ev) => {
         if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp' || ev.key === 'Tab') {
@@ -104,6 +157,7 @@ export default class PopupMenu extends React.PureComponent {
             ev.stopPropagation();
         } else if (ev.key === 'Escape') {
             this.props.onClose?.();
+            this.props.anchor?.focus?.();
             ev.preventDefault();
             ev.stopPropagation();
         }
