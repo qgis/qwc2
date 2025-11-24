@@ -40,14 +40,6 @@ div.combobox-button > span.icon {
     flex: 0 0 1em;
 }
 
-div.combobox-menu {
-    border: 1px solid var(--border-color);
-    background-color: var(--list-bg-color);
-    user-select: none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-}
-
 div.combobox-menu-entry {
     padding: 0.25em;
 }
