@@ -30,6 +30,7 @@ import {FeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '..
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/AttributeTableWidget.css';
@@ -180,7 +181,7 @@ class AttributeTableWidget extends React.Component {
                         <tr>
                             <th />
                             {!this.props.showDisplayFieldOnly ? (
-                                <th onClick={() => this.sortBy("id")} title={this.translateFieldName("id")}>
+                                <th onClick={() => this.sortBy("id")} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName("id")}>
                                     <span>
                                         <span className="attribtable-table-headername">{this.translateFieldName("id")}</span>
                                         {this.renderSortIndicator("id")}
@@ -189,7 +190,7 @@ class AttributeTableWidget extends React.Component {
                                 </th>
                             ) : null}
                             {fields.map((field, idx) => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={this.translateFieldName(field.name)}>
+                                <th key={field.id} onClick={() => this.sortBy(field.id)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(field.name)}>
                                     <span>
                                         {this.renderColumnResizeHandle(idx + 1, 'l')}
                                         <span className="attribtable-table-headername">{this.translateFieldName(field.name)}</span>
