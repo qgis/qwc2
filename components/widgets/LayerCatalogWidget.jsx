@@ -9,6 +9,7 @@ import {addLayer, removeLayer, replacePlaceholderLayer} from '../../actions/laye
 import {NotificationType, showNotification, closeWindow} from '../../actions/windows';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
+import MiscUtils from '../../utils/MiscUtils';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
 import Icon from '../Icon';
 import InputContainer from './InputContainer';
@@ -60,7 +61,11 @@ class LayerCatalogWidget extends React.PureComponent {
                     ) : (
                         <span className="layer-catalog-widget-entry-iconspacer" />
                     )}
-                    <span className="layer-catalog-widget-entry-contents" onClick={() => type ? this.checkAddServiceLayer(entry, !hasSublayers) : this.toggleLayerListEntry(path)}>
+                    <span
+                        className="layer-catalog-widget-entry-contents" onClick={() => type ? this.checkAddServiceLayer(entry, !hasSublayers) : this.toggleLayerListEntry(path)}
+                        onKeyDown={MiscUtils.checkKeyActivate}
+                        tabIndex={0}
+                    >
                         {type ? (<span className="layer-catalog-widget-entry-service">{type}</span>) : null}
                         {entry.title}
                     </span>
