@@ -111,6 +111,10 @@ button.button {
     outline: none;
 }
 
+button.button:focus {
+    outline: var(--focus-outline);
+}
+
 button.button:disabled {
     background-color: var(--button-bg-color-disabled);
     color: var(--button-text-color-disabled);
