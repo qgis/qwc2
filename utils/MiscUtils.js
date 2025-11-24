@@ -72,6 +72,7 @@ const MiscUtils = {
     killEvent(ev) {
         if (ev.cancelable) {
             ev.stopPropagation();
+            ev.nativeEvent?.stopImmediatePropagation?.();
             ev.preventDefault();
         }
     },
