@@ -20,33 +20,18 @@
     font-size: 80%;
 }
 
-#LayerTree div.layertree-visibility-menu {
-    z-index: 1;
-    position: absolute;
-    top: 100%;
-    border: 1px solid var(--border-color);
-    background-color: var(--list-bg-color);
-    color: var(--text-color);
-    cursor: default;
-}
-
-#LayerTree div.layertree-visibility-menu > div {
+div.layertree-visibility-menu > div {
     white-space: nowrap;
     padding: 0.25em 1em 0.25em 0.5em;
     display: flex;
     align-items: start;
 }
 
-#LayerTree div.layertree-visibility-menu > div:hover {
-    background-color: var(--list-item-bg-color-hover);
-    color: var(--list-item-text-color-hover);
-}
-
-#LayerTree div.layertree-visibility-menu > div > span.icon {
+div.layertree-visibility-menu > div > span.icon {
     margin-right: 0.5em;
 }
 
-#LayerTree div.layertree-visibility-menu-sep:not(:first-child) {
+div.layertree-visibility-menu-sep:not(:first-child) {
     border-top: 1px solid var(--border-color);
 }
 

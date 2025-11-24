@@ -26,6 +26,7 @@ import LayerInfoWindow from '../components/LayerInfoWindow';
 import ResizeableWindow from '../components/ResizeableWindow';
 import ServiceInfoWindow from '../components/ServiceInfoWindow';
 import SideBar from '../components/SideBar';
+import PopupMenu from '../components/widgets/PopupMenu';
 import {Image} from '../components/widgets/Primitives';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -170,6 +171,7 @@ class LayerTree extends React.Component {
     };
     constructor(props) {
         super(props);
+        this.visibilityButton = null;
         this.legendPrintWindow = null;
         window.addEventListener('beforeunload', () => {
             if (this.legendPrintWindow && !this.legendPrintWindow.closed) {
@@ -508,7 +510,7 @@ class LayerTree extends React.Component {
         let layerImportExpander = null;
         if (this.props.allowImport) {
             layerImportExpander = (
-                <div className="layertree-option" onClick={this.toggleImportLayers}>
+                <div className="layertree-option" onClick={this.toggleImportLayers} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
                     <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree.importlayer")}
                 </div>
             );
@@ -629,18 +631,12 @@ class LayerTree extends React.Component {
             "layertree-visibility-button": true,
             "layertree-visibility-button-active": this.state.visibilityMenu
         });
-        const style = {};
-        if (this.props.side === 'left') {
-            style.left = 0;
-        } else {
-            style.right = 0;
-        }
         return (
-            <span className={buttonClasses} onClick={() => this.setState(state => ({visibilityMenu: !state.visibilityMenu}))}>
+            <span className={buttonClasses} onClick={() => this.setState(state => ({visibilityMenu: !state.visibilityMenu}))} onKeyDown={MiscUtils.checkKeyActivate} ref={el => {this.visibilityButton = el;}} tabIndex={0}>
                 <Icon icon="eye"/>
                 <Icon icon="chevron-down" />
                 {this.state.visibilityMenu ? (
-                    <div className="layertree-visibility-menu" style={style}>
+                    <PopupMenu anchor={this.visibilityButton} className="layertree-visibility-menu" onClose={() => this.setState({visibilityMenu: false})}>
                         {this.props.showToggleAllLayersCheckbox ? (
                             <div onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
                                 <Icon icon={vis === 0 ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.hidealllayers")}
@@ -656,7 +652,7 @@ class LayerTree extends React.Component {
                                 <Icon icon={this.state.activePreset === name ? "radio_checked" : "radio_unchecked"} /> {name}
                             </div>
                         ))}
-                    </div>
+                    </PopupMenu>
                 ) : null}
             </span>
         );
