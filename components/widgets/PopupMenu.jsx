@@ -140,12 +140,12 @@ export default class PopupMenu extends React.PureComponent {
         }
     };
     keyNav = (ev) => {
-        if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp' || ev.key === 'Tab') {
+        if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
             const childCount = this.menuEl.children.length;
-            const delta = ev.key === 'ArrowUp' || (ev.key === 'Tab' && ev.shiftKey) ? -1 : 1;
-            let currentIndex = Array.from(this.menuEl.children).findIndex(el => document.activeElement === el);
+            const delta = ev.key === 'ArrowUp' ? -1 : 1;
+            let currentIndex = Array.from(this.menuEl.children).findIndex(el => document.activeElement === el || el.contains(document.activeElement));
             if (currentIndex === -1) {
-                currentIndex = -delta;
+                currentIndex = delta === 1 ? childCount - 1 : 0;
             }
             let next = (currentIndex + childCount + delta) % childCount;
             while (this.menuEl.children[next].tabIndex !== 0 && next !== currentIndex) {
@@ -161,6 +161,11 @@ export default class PopupMenu extends React.PureComponent {
             this.props.anchor?.focus?.();
             ev.preventDefault();
             ev.stopPropagation();
+        } else if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            ev.stopPropagation();
+        } else if (ev.key !== 'Tab') {
+            this.props.anchor?.focus?.();
         }
     };
 }
