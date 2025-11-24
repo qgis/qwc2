@@ -433,7 +433,7 @@ class LayerTree extends React.Component {
         return (
             <div className="layertree-item-stylemenu" style={{marginRight: (marginRight * 1.75) + 'em'}}>
                 {Object.entries(styles).map(([name, title]) => (
-                    <div key={name} onClick={() => onStyleChange(name)}>
+                    <div key={name} onClick={() => onStyleChange(name)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
                         <Icon icon={selectedStyles.includes(name) ? checkedIcon : "radio_unchecked"} />
                         <div>{title}</div>
                     </div>
