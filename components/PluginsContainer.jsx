@@ -169,7 +169,7 @@ class PluginsContainer extends React.Component {
                             if (child.dataset.subslot === undefined) {
                                 const subslot = (slots[child.dataset.slot] ?? 0) - 1;
                                 slots[child.dataset.slot] = child.dataset.subslot = subslot;
-                                child.style.order = 100 * parseInt(child.dataset.slot, 10) + subslot;
+                                child.style.order = 100 * parseInt(child.style.order, 10) + subslot;
                             }
                         });
                         children.sort((a, b) => (
