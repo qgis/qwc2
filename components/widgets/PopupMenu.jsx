@@ -158,16 +158,13 @@ export default class PopupMenu extends React.PureComponent {
             if (next !== currentIndex) {
                 this.menuEl.children[next].focus();
             }
-            ev.preventDefault();
-            ev.stopPropagation();
+            MiscUtils.killEvent(ev);
         } else if (ev.key === 'Escape') {
             this.props.onClose?.();
             this.props.anchor?.focus?.();
-            ev.preventDefault();
-            ev.stopPropagation();
+            MiscUtils.killEvent(ev);
         } else if (ev.key === 'Enter' || ev.key === ' ') {
-            ev.preventDefault();
-            ev.stopPropagation();
+            MiscUtils.killEvent(ev);
         } else if (ev.key !== 'Tab' && ev.key !== 'Shift') {
             this.props.anchor?.focus?.();
         }
