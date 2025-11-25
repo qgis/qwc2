@@ -158,6 +158,28 @@ class PluginsContainer extends React.Component {
                     el.style.setProperty('--buttons-container-height', `${height}px`);
                 }
             });
+            const mutationObserver = new MutationObserver(mutations => {
+                mutationObserver.disconnect();
+                for (const m of mutations) {
+                    if (m.type === "childList") {
+                        // Reorder child nodes for natural tab focus order
+                        const children = [...el.children];
+                        const slots = {};
+                        children.forEach(child => {
+                            if (child.dataset.subslot === undefined) {
+                                const subslot = (slots[child.dataset.slot] ?? 0) + 1;
+                                slots[child.dataset.slot] = child.dataset.subslot = subslot;
+                            }
+                        });
+                        children.sort((a, b) => (
+                            (100 * parseInt(a.dataset.slot, 10) + parseInt(a.dataset.subslot, 10)) -
+                            (100 * parseInt(b.dataset.slot, 10) + parseInt(b.dataset.subslot, 10))
+                        )).forEach(node => el.appendChild(node));
+                    }
+                }
+                mutationObserver.observe(el, {childList: true});
+            });
+            mutationObserver.observe(el, {childList: true});
             resizeObserver.observe(el);
             el.recomputeSpacers = () => {
                 const slots = new Set();
