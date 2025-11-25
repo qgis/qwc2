@@ -80,7 +80,8 @@ div.AppMenu.appmenu-compact div.appmenu-menu-container {
     top: 3.5em;
 }
 
-div.AppMenu.appmenu-compact div.appmenu-menu-container:hover {
+div.AppMenu.appmenu-compact div.appmenu-menu-container:hover,
+div.AppMenu.appmenu-compact div.appmenu-menu-container:focus-within {
     right: 0;
 }
 
@@ -101,6 +102,14 @@ div.AppMenu ul.appmenu-menu li {
     margin: 0;
     font-size: small;
     font-weight: bold;
+}
+
+div.AppMenu ul.appmenu-button * {
+    pointer-events: none;
+}
+
+div.AppMenu.appmenu-visible ul.appmenu-menu * {
+    pointer-events: initial;
 }
 
 div.AppMenu ul.appmenu-menu li:not(:last-child) {

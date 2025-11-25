@@ -289,14 +289,14 @@ class AppMenu extends React.Component {
         return (
             <div className={className} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}
             >
-                <div className="appmenu-button" onMouseDown={this.toggleMenu}  title={this.props.buttonLabel}>
+                <div className="appmenu-button" onClick={this.toggleMenu} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.props.buttonLabel}>
                     {showLabel ? (<span className="appmenu-label">{this.props.buttonLabel}</span>) : null}
                     <span className="appmenu-icon">
                         <Icon icon="menu-hamburger"/>
                     </span>
                 </div>
-                <div className="appmenu-menu-container">
-                    <ul className="appmenu-menu">
+                <div className="appmenu-menu-container" tabIndex={-1}>
+                    <ul className="appmenu-menu" inert={visible ? undefined : "true"}>
                         {this.props.showFilterField ? (
                             <li className="appmenu-leaf">
                                 <Icon icon={"search"} size="xlarge"/>
