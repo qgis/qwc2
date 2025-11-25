@@ -44,7 +44,6 @@ div.AppMenu .appmenu-icon > span.icon {
     transition: color 0.25s, border-color 0.25s, background-color 0.25s;
 }
 
-
 div.AppMenu.appmenu-visible .appmenu-icon > span.icon {
     color: var(--app-submenu-text-color-hover);
     border-color: var(--app-submenu-text-color-hover);
@@ -85,10 +84,10 @@ div.AppMenu.appmenu-compact div.appmenu-menu-container:focus-within {
     right: 0;
 }
 
-div.AppMenu ul.appmenu-menu {
-    text-align: left;
-    padding: 0;
+div.AppMenu div.appmenu-menu {
     background-color: var(--app-menu-bg-color);
+    text-align: left;
+    font-size: small;
 }
 
 div.AppMenu.appmenu-visible div.appmenu-menu-container {
@@ -96,80 +95,57 @@ div.AppMenu.appmenu-visible div.appmenu-menu-container {
     opacity: 1;
 }
 
-div.AppMenu ul.appmenu-menu li {
+div.appmenu-menu-item {
+    display: flex;
+    align-items: center;
     color: var(--app-menu-text-color);
-    list-style-type: none;
-    margin: 0;
-    font-size: small;
     font-weight: bold;
 }
 
-div.AppMenu ul.appmenu-button * {
-    pointer-events: none;
-}
-
-div.AppMenu.appmenu-visible ul.appmenu-menu * {
-    pointer-events: initial;
-}
-
-div.AppMenu ul.appmenu-menu li:not(:last-child) {
+div.appmenu-menu-item:not(:last-child) {
     border-bottom: 1px solid var(--app-menu-text-color);
 }
 
-div.AppMenu ul.appmenu-menu > li.appmenu-leaf-active,
-div.AppMenu ul.appmenu-menu > li.appmenu-submenu-active,
-div.AppMenu ul.appmenu-menu > li.appmenu-submenu-expanded {
-    background-color: var(--app-menu-bg-color-hover);
-    color: var(--app-menu-text-color-hover);
-}
-
-div.AppMenu ul.appmenu-menu li > .icon {
-    vertical-align: middle;
+div.appmenu-menu-item > .icon {
     width: 2em;
     margin: 0.5em 1em 0.5em 1em;
 }
 
-div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul {
-    background-color: var(--app-submenu-bg-color);
-    padding: 0;
-    display: none;
-}
-
-div.AppMenu ul.appmenu-menu li.appmenu-submenu-expanded > ul {
-    display: block;
-}
-
-div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul > li {
-    color: var(--app-submenu-text-color);
-}
-
-div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul > li.appmenu-leaf-active,
-div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul > li.appmenu-submenu-active,
-div.AppMenu ul.appmenu-menu li.appmenu-submenu > ul > li.appmenu-submenu-expanded {
-    background-color: var(--app-submenu-bg-color-hover);
-    color: var(--app-submenu-text-color-hover);
-}
-
-div.AppMenu ul.appmenu-menu li.appmenu-leaf {
-    display: flex;
-    align-items: center;
-}
-
-div.AppMenu ul.appmenu-menu li.appmenu-leaf > span.icon {
-    flex: 0 0 auto;
-}
-
-div.AppMenu ul.appmenu-menu li.appmenu-leaf > span.appmenu-leaf-label {
-    flex: 1 1 auto;
+div.appmenu-menu-item-label {
     margin: 0.25em 0;
 }
 
-div.AppMenu ul.appmenu-menu li.appmenu-leaf div.appmenu-leaf-comment {
+div.appmenu-menu-item-comment {
     font-weight: normal;
     font-size: 90%;
 }
 
-div.appmenu-filter {
-    width: 100%;
-    margin-right: 0.5em;
+div.appmenu-submenu-active,
+div.appmenu-submenu-expanded {
+    background-color: var(--app-menu-bg-color-hover);
+    color: var(--app-menu-text-color-hover);
+}
+
+div.appmenu-menu-item-nested {
+    background-color: var(--app-submenu-bg-color);
+    color: var(--app-submenu-text-color);
+}
+
+div.appmenu-menu-item:focus-within {
+    background-color: var(--app-menu-bg-color-hover);
+    color: var(--app-menu-text-color-hover);
+    outline: none;
+}
+
+div.appmenu-menu-item-nested:focus-within {
+    background-color: var(--app-submenu-bg-color-hover);
+    color: var(--app-submenu-text-color-hover);
+}
+
+div.appmenu-menu-item-filter {
+    padding-right: 0.5em;
+}
+
+div.appmenu-menu-item-filter > div.input-container {
+    flex: 1 1 auto;
 }
