@@ -762,6 +762,7 @@ class SearchBox extends React.Component {
                         }
                     }
                     return {
+                        resultsVisible: true,
                         searchResults: searchResults,
                         pendingSearches: newPendingSearches
                     };
