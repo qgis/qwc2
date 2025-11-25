@@ -128,7 +128,7 @@ class Panoramax extends React.Component {
                         splitScreenWhenDocked
                         title={LocaleUtils.tr("panoramax.title")}
                     >
-                        <div className="panoramax-body" role="body">
+                        <div className="panoramax-body">
                             {!queryData ? (
                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', textAlign: 'center' }}>
                                     <p>{LocaleUtils.tr("panoramax.notfound")}</p>

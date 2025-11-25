@@ -36,7 +36,7 @@ class FeatureAttributesWindow extends React.Component {
         return (
             <ResizeableWindow fitHeight icon="list-alt" initialWidth={320}
                 onClose={this.props.onClose} scrollable title={LocaleUtils.tr("featureattributes.windowtitle")} >
-                <div className="feature-attributes-body" role="body">{body}</div>
+                <div className="feature-attributes-body">{body}</div>
             </ResizeableWindow>
         );
     }

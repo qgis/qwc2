@@ -80,7 +80,7 @@ class ThemeLayersListWindow extends React.Component {
         return (
             <ResizeableWindow icon="layers" initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
                 onClose={this.onClose} title={LocaleUtils.tr("themelayerslist.addlayerstotheme")} >
-                <div className="theme-list-window-body" role="body">
+                <div className="theme-list-window-body">
                     <h4 className="theme-list-window-title">{this.props.theme.title}</h4>
                     <div className="theme-list-window-frame">
                         {this.renderLayerGroup(this.props.theme)}

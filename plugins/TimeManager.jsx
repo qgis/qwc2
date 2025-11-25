@@ -343,7 +343,7 @@ class TimeManager extends React.Component {
         const timeValues = this.state.timeData.values;
         let body = null;
         if (timeValues.length < 2) {
-            body = (<div role="body"><div className="time-manager-notemporaldata">{LocaleUtils.tr("timemanager.notemporaldata")}</div></div>);
+            body = (<div><div className="time-manager-notemporaldata">{LocaleUtils.tr("timemanager.notemporaldata")}</div></div>);
         } else {
             body = this.renderBody(timeValues);
         }
@@ -439,7 +439,7 @@ class TimeManager extends React.Component {
         }
 
         return (
-            <div className="time-manager-body" role="body">
+            <div className="time-manager-body">
                 <div className="time-manager-toolbar">
                     <div className="time-manager-toolbar-controls">
                         <span className="time-manager-toolbar-block">

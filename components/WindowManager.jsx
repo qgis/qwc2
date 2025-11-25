@@ -72,7 +72,7 @@ class WindowManager extends React.Component {
                 onClose={() => this.closeWindow(key)}
                 splitScreenWhenDocked={splitScreenWhenDocked}
                 title={LocaleUtils.tr(data.options.title || "windows." + key)}>
-                <iframe className="windows-iframe-dialog-body" name={key} role="body" src={data.url} />
+                <iframe className="windows-iframe-dialog-body" name={key} src={data.url} />
             </ResizeableWindow>
         );
     };

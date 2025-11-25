@@ -152,9 +152,6 @@ class ResizeableWindow extends React.Component {
             this.moveToInternalWindow();
         }
     }
-    renderRole = (role) => {
-        return React.Children.toArray(this.props.children).find((child) => child.props.role === role);
-    };
     onClose = (ev) => {
         if (this.state.externalWindow) {
             this.state.externalWindow.removeEventListener('beforeunload', this.props.onClose);
@@ -335,7 +332,7 @@ class ResizeableWindow extends React.Component {
                             <div className="resizeable-window-portal-container">
                                 <portals.OutPortal node={this.portalNode} />
                             </div>
-                        ) : this.renderRole("body")}
+                        ) : this.props.children}
                     </div>
                 </div>
             </Rnd>
@@ -383,7 +380,7 @@ class ResizeableWindow extends React.Component {
                         <div className="resizeable-window-portal-container">
                             <portals.OutPortal node={this.portalNode} />
                         </div>
-                    ) : this.renderRole("body")}
+                    ) : this.props.children}
                 </div>
             </div>
         ), this.state.externalWindow.document.body);
@@ -391,7 +388,7 @@ class ResizeableWindow extends React.Component {
     render() {
         return [this.portalNode ? (
             <portals.InPortal key="InPortal" node={this.portalNode}>
-                {this.renderRole("body")}
+                {this.props.children}
             </portals.InPortal>
         ) : null, this.state.externalWindow ? (
             this.renderExternalWindow()

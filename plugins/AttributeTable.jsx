@@ -63,9 +63,8 @@ class AttributeTable extends React.Component {
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} initiallyDocked onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}>
                 <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers}
                     iface={this.props.iface} initialLayer={this.props.taskData?.layer} limitToExtent={this.props.limitToExtent}
-                    role="body" showEditFormButton={this.props.showEditFormButton}
-                    showHiddenFields={this.props.showHiddenFields} showLimitToExtent={this.props.showLimitToExtent}
-                    zoomLevel={this.props.zoomLevel}
+                    showEditFormButton={this.props.showEditFormButton} showHiddenFields={this.props.showHiddenFields}
+                    showLimitToExtent={this.props.showLimitToExtent} zoomLevel={this.props.zoomLevel}
                 />
             </ResizeableWindow>
         );

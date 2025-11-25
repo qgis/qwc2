@@ -697,7 +697,7 @@ class LayerTree extends React.Component {
                 onClose={() => this.setState({legendPrintVisible: false})}
                 title={LocaleUtils.tr("layertree.printlegend")}
             >
-                <div className="layertree-legend-print-body" role="body">
+                <div className="layertree-legend-print-body">
                     <iframe ref={setLegendPrintContents} src={MiscUtils.resolveAssetsPath(this.props.templatePath)} />
                     <div className="layertree-legend-print-body-buttonbar">
                         <button onClick={printLegend}>{LocaleUtils.tr("layertree.printlegend")}</button>

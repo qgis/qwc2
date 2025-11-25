@@ -55,7 +55,7 @@ class ServiceInfoWindow extends React.Component {
                 initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY}
                 initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
                 title={LocaleUtils.tr("serviceinfo.title")}>
-                <div className="service-info-window-body" role="body">
+                <div className="service-info-window-body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>
                     <div className="service-info-window-frame">
                         <table className="service-info-window-table">

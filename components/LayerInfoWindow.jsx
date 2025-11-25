@@ -73,7 +73,7 @@ class LayerInfoWindow extends React.Component {
                 initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY} initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
                 title={LocaleUtils.tr("layerinfo.title")}
             >
-                <div className="layer-info-window-body" role="body">
+                <div className="layer-info-window-body">
                     <h4 className="layer-info-window-title">{this.props.sublayer.title}</h4>
                     <div className="layer-info-window-frame">
                         <table className="layer-info-window-table">

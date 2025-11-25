@@ -138,7 +138,7 @@ class LayerCatalog extends React.Component {
                 initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onClose} title={LocaleUtils.tr("layercatalog.windowtitle")}
             >
-                <div className="layer-catalog" role="body">
+                <div className="layer-catalog">
                     <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} />
                 </div>
             </ResizeableWindow>

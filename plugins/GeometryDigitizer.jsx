@@ -289,7 +289,7 @@ class GeometryDigitizer extends React.Component {
                 key="OutputWindow" onClose={() => this.setState({outputWindowVisible: false, outputLoaded: false})}
                 title={this.state.outputWindowTitle} visible={this.state.outputWindowVisible}
             >
-                <div className="geomdigitizer-output-window-body" role="body">
+                <div className="geomdigitizer-output-window-body">
                     {!this.state.outputLoaded ? (
                         <span className="geomdigitizer-output-window-wait">
                             <Spinner /> <span>{LocaleUtils.tr("geomdigitizer.wait")}</span>
