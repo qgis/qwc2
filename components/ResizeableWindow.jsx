@@ -327,7 +327,7 @@ class ResizeableWindow extends React.Component {
                 onResizeStop={this.onResizeStop}
                 ref={this.initRnd}
             >
-                <div className="resizeable-window-contents">
+                <div className="resizeable-window-contents" onFocus={() => this.props.raiseWindow(this.id)}>
                     {this.renderTitleBar()}
                     <div className={bodyclasses} onMouseDown={() => this.props.raiseWindow(this.id)}>
                         <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
