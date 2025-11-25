@@ -25,6 +25,7 @@ export default class MapButton extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         busy: PropTypes.bool,
+        buttonRef: PropTypes.func,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
         disabled: PropTypes.bool,
@@ -58,7 +59,7 @@ export default class MapButton extends React.Component {
             <div className="map-button-container" data-slot={position} style={{order: position}}>
                 <button
                     className={`${className} ${this.props.className || ""}`}
-                    onClick={this.props.onClick}
+                    onClick={this.props.onClick} ref={this.props.buttonRef}
                     title={this.props.tooltip}
                 >
                     {this.props.busy ? (

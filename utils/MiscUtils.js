@@ -76,10 +76,13 @@ const MiscUtils = {
             ev.preventDefault();
         }
     },
-    checkKeyActivate(ev) {
+    checkKeyActivate(ev, onEsc = null) {
         if (ev.code === "Space" || ev.code === "Enter") {
             MiscUtils.killEvent(ev);
             ev.currentTarget.click();
+        } else if (ev.code === "Escape" && onEsc) {
+            MiscUtils.killEvent(ev);
+            onEsc();
         }
     },
     blendColors(color1, color2, ratio) {
