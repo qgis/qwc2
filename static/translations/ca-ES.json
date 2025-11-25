@@ -3,7 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "No s'ha pogut trobar el fons \"{0}\", es mostra el fons per defecte.",
-      "missingdefaulttheme": "",
+      "missingdefaulttheme": "No s'ha pogut carregar el tema per defecte.",
       "missinglayers": "No s'han pogut trobar les següents capes: {0}.",
       "missingpermalink": "L'enllaç permanent o marcador especificat no és vàlid o ha caducat.",
       "missingprojection": "No s'ha pogut carregar el tema \"{0}\": la projecció {1} no està definida.",
@@ -24,11 +24,11 @@
         "MapExport3D": "Exportar mapa",
         "MapFilter": "Filtre de mapa",
         "MapLight3D": "Llum i ombres",
-        "ObjectList": "",
+        "ObjectList": "Llistat d'objectes",
         "Print": "Imprimir",
         "Reports": "Informes",
         "Settings": "Opcions",
-        "Settings3D": "",
+        "Settings3D": "Opcions 3D",
         "Share": "Compartir link",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Taula d'atributs",
@@ -112,8 +112,8 @@
     "compare3d": {
       "clipplane": "Pla de retall",
       "compare_objects": "Comparar objectes",
-      "info_message": "",
-      "modify": "",
+      "info_message": "Comparació d'objectes activa",
+      "modify": "Modificar",
       "toggleall": "Alternar tot"
     },
     "cookiepopup": {
@@ -161,22 +161,22 @@
       "wedge": "Cunya"
     },
     "editdataset3d": {
-      "moveobj": "",
-      "zoomto": ""
+      "moveobj": "Moure objecte a la vista",
+      "zoomto": "Fer zoom a l'objecte"
     },
     "editing": {
       "add": "Afegir",
       "attrtable": "Taula",
       "canceldelete": "No esborrar",
       "clearpicture": "Netejar imatge",
-      "clone_all": "",
-      "clone_copy": "",
-      "clone_defaulted": "",
-      "clone_dontcopy": "",
-      "clone_hidden": "",
-      "clone_none": "",
-      "clone_select_attrs": "",
-      "clone_visible": "",
+      "clone_all": "Tots",
+      "clone_copy": "Copiar seleccionats",
+      "clone_defaulted": "(valor per defecte)",
+      "clone_dontcopy": "No copiar",
+      "clone_hidden": "(amagat)",
+      "clone_none": "Cap",
+      "clone_select_attrs": "Seleccionar atributs a copiar:",
+      "clone_visible": "Visibles sense valor per defecte",
       "commit": "Confirmar",
       "commitfailed": "Ha fallat el commit",
       "contraintviolation": "Violació de restricció",
@@ -197,15 +197,15 @@
       "reallydelete": "Esborrar",
       "relationcommitfailed": "Ha fallat el commit",
       "select": "Seleccionar",
-      "selectlayer": "",
+      "selectlayer": "Escollir capa...",
       "takepicture": "Escull imatge",
       "unsavedchanged": "Hi ha canvis sense guardar. Vols sortir de la pàgina sense guardar?"
     },
     "featureattributes": {
-      "name": "",
-      "nofeatureormultiple": "",
-      "value": "",
-      "windowtitle": ""
+      "name": "Nom",
+      "nofeatureormultiple": "Sense element actiu o múltiples elements actius",
+      "value": "Valor ",
+      "windowtitle": "Atributs de l'element"
     },
     "featureform": {
       "feature": "Element",
@@ -239,7 +239,7 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
-      "dhmdefaultname": "",
+      "dhmdefaultname": "Conjunt de dades",
       "distance": "Distància",
       "drawnodes": "Dibuixar nodes",
       "error": "No s'ha pogut calcular el perfil d'alçada",
@@ -259,8 +259,8 @@
     "identify": {
       "aggregatedreport": "Informe agregat",
       "clipboard": "Copiar al porta-retalls",
-      "compare": "",
-      "comparing": "",
+      "compare": "Comparar amb els objectes seleccionats",
+      "comparing": "Comparant {0} elements",
       "download": "Descarregar",
       "export": "Exportar",
       "featureReport": "Informe d'element",
@@ -271,7 +271,7 @@
       "noresults": "Sense informació disponible sobre el punt seleccionat",
       "querying": "Consultant...",
       "reportfail": "No s'ha pogut generar l'informe",
-      "results": "",
+      "results": "Resultats",
       "selectreport": "Seleccionar informe...",
       "title": "Informació del element"
     },
@@ -297,7 +297,7 @@
       "shpreprojectionerror": "La geometria del Shapefile no s'ha pogut reproyectar i pot estar desplaçada.",
       "supportedformats": "Formats suportats: KML, GeoJSON, GeoPDF, SHP (en zip)",
       "unknownproj": "El GeoPDF seleccionat utilitza una projecció desconeguda: {0}.",
-      "unsupportedfile": "",
+      "unsupportedfile": "El format de fitxer seleccionat no és suportat",
       "url": "URL",
       "urlplaceholder": "Adreça URL o WMS, WMTS, WFS..."
     },
@@ -362,8 +362,8 @@
       }
     },
     "locationrecorder": {
-      "record": "",
-      "stop": ""
+      "record": "Registrar",
+      "stop": "Parar"
     },
     "map": {
       "loading": "Carregant...",
@@ -542,7 +542,7 @@
     },
     "routing": {
       "add": "Afegir punt",
-      "addlayer": "",
+      "addlayer": "Afegir capa",
       "addviapoint": "Passar per aquí",
       "arriveat": "Arribar a",
       "clear": "Netejar",
@@ -650,7 +650,7 @@
       "vertex": "Ajustar als vèrtexs"
     },
     "themelayerslist": {
-      "addanyway": "",
+      "addanyway": "Afegir de totes maneres",
       "addlayer": "Afegir capa",
       "addlayerstotheme": "Afegir capa al mapa actual",
       "addselectedlayers": "Afegir capa(s) seleccionada(s)",
