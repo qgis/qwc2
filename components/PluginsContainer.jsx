@@ -80,10 +80,10 @@ class PluginsContainer extends React.Component {
                     </MapButtonPortalContext.Provider>
                 </AppInfosPortalContext.Provider>
                 <WindowManager />
+                <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
                 <div className="map-container" ref={this.setMapContainerRef} style={mapContainerStyle}>
                     <ProcessNotifications />
                 </div>
-                <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
                 <div className="app-infos-container" ref={this.setAppInfosContainerRef} style={mapContainerStyle} />
                 <div className="map-bottom-tool-container" ref={this.setBottomToolContanerRef} style={mapContainerStyle} />
             </div>
@@ -167,13 +167,13 @@ class PluginsContainer extends React.Component {
                         const slots = {};
                         children.forEach(child => {
                             if (child.dataset.subslot === undefined) {
-                                const subslot = (slots[child.dataset.slot] ?? 0) + 1;
+                                const subslot = (slots[child.dataset.slot] ?? 0) - 1;
                                 slots[child.dataset.slot] = child.dataset.subslot = subslot;
+                                child.style.order = 100 * parseInt(child.dataset.slot, 10) + subslot;
                             }
                         });
                         children.sort((a, b) => (
-                            (100 * parseInt(a.dataset.slot, 10) + parseInt(a.dataset.subslot, 10)) -
-                            (100 * parseInt(b.dataset.slot, 10) + parseInt(b.dataset.subslot, 10))
+                            b.style.order - a.style.order
                         )).forEach(node => el.appendChild(node));
                     }
                 }
@@ -196,7 +196,7 @@ class PluginsContainer extends React.Component {
                         const child = document.createElement("div");
                         child.className = "map-buttons-spacer";
                         child.dataset.spacer = 1;
-                        child.style.order = i;
+                        child.style.order = 100 * i;
                         el.appendChild(child);
                     }
                 }
