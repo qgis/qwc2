@@ -212,6 +212,10 @@ const MapUtils = {
         const positionFormat = ConfigUtils.getConfigProp("urlPositionFormat");
         const positionCrs = ConfigUtils.getConfigProp("urlPositionCrs") || state.projection;
         const prec = CoordinatesUtils.getPrecision(positionCrs);
+        // Don't set params for empty map
+        if (state.bbox.bounds.every(x => x === 0)) {
+            return;
+        }
         if (positionFormat === "centerAndZoom") {
             const center = CoordinatesUtils.reproject(state.center, state.projection, positionCrs);
             const scale = Math.round(MapUtils.computeForZoom(state.scales, state.zoom));
