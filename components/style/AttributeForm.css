@@ -41,17 +41,7 @@ div.AttributeForm div.attrib-form-busy {
 }
 
 div.link-feature-form-container {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: rgba(200, 200, 200, 0.5);
-    padding: 1em;
     display: flex;
     flex-direction: column;
-}
-
-div.link-feature-form-container > div.link-feature-form {
-    flex: 1 1 auto;
+    overflow: hidden;
 }
