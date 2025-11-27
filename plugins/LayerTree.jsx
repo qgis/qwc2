@@ -53,8 +53,12 @@ class LayerTree extends React.Component {
         allowCompare: PropTypes.bool,
         /** Whether to allow importing external layers. */
         allowImport: PropTypes.bool,
+        /** Whether to allow adding layer tree separators. */
+        allowLayerTreeSeparators: PropTypes.bool,
         /** Whether to allow enabling map tips. */
         allowMapTips: PropTypes.bool,
+        /** Whether to allow removing theme layers. */
+        allowRemovingThemeLayers: PropTypes.bool,
         /** Whether to allow selection of identifyable layers. The `showQueryableIcon` property should be `true` to be able to select identifyable layers. */
         allowSelectIdentifyableLayers: PropTypes.bool,
         /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
@@ -264,7 +268,7 @@ class LayerTree extends React.Component {
             "layertree-item-menubutton": true,
             "layertree-item-menubutton-active": this.state.activestylemenu === groupId
         });
-        const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
+        const allowRemove = this.props.allowRemovingThemeLayers || ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filterinvisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
         const styles = layer.type === "wms" && path.length === 0 ? this.getLayerStyles(layer) : null;
@@ -299,7 +303,7 @@ class LayerTree extends React.Component {
             return null;
         }
         const sublayerId = layer.id + ":" + sublayer.name;
-        const allowRemove = ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
+        const allowRemove = this.props.allowRemovingThemeLayers || ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true;
         let checkboxstate = sublayer.visibility === true ? 'checked' : 'unchecked';
         if (inMutuallyExclusiveGroup) {
@@ -355,7 +359,7 @@ class LayerTree extends React.Component {
         }
         const allowOptions = layer.type !== "placeholder" && layer.type !== "separator";
         const flattenGroups = ConfigUtils.getConfigProp("flattenLayerTreeGroups", this.props.theme) || this.props.flattenGroups;
-        const allowSeparators = flattenGroups && allowReordering && ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme);
+        const allowSeparators = flattenGroups && allowReordering && (this.props.allowLayerTreeSeparators || ConfigUtils.getConfigProp("allowLayerTreeSeparators", this.props.theme));
         const separatorTitle = LocaleUtils.tr("layertree.separator");
         const separatorTooltip = LocaleUtils.tr("layertree.separatortooltip");
         return (
@@ -576,7 +580,7 @@ class LayerTree extends React.Component {
             );
         }
         let deleteAllLayersIcon = null;
-        if (ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
+        if (this.props.allowRemovingThemeLayers || ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
             const deleteAllLayersTooltip = LocaleUtils.tr("layertree.deletealllayers");
             deleteAllLayersIcon = (<Icon className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers} title={deleteAllLayersTooltip}/>);
         }
