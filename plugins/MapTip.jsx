@@ -199,7 +199,7 @@ class MapTip extends React.Component {
         return htmlReactParser(text, options);
     };
     attributeLinkClicked = (ev) => {
-        this.props.openExternalUrl(ev.target.href, ev.target.target, {docked: this.props.iframeDialogsInitiallyDocked});
+        this.props.openExternalUrl(ev.currentTarget.href, ev.target.target, {docked: this.props.iframeDialogsInitiallyDocked});
         ev.preventDefault();
     };
     positionMapTip = (el) => {
