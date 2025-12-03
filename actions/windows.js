@@ -10,6 +10,7 @@ import ReducerIndex from '../reducers/index';
 import windowsReducer from '../reducers/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
@@ -150,6 +151,8 @@ export function openExternalUrl(url, target = '', iframeDialogOpts = {}) {
         url = url.replace('$crs$', proj);
 
         url = url.replace('$user$', ConfigUtils.getConfigProp("username") || "");
+
+        url = url.replace('$lang$', LocaleUtils.lang());
 
         if (target.startsWith(":iframedialog")) {
             const targetParts = target.split(":");
