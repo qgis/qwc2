@@ -60,11 +60,13 @@ class AttributeForm extends React.Component {
         childEdit: null,
         relationTables: {},
         formValid: true,
-        captchaResponse: null
+        captchaResponse: null,
+        dynamicHeight: false
     };
     constructor(props) {
         super(props);
         this.form = null;
+        this.containerRef = React.createRef();
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -147,33 +149,35 @@ class AttributeForm extends React.Component {
             readOnlyMsg = LocaleUtils.tr("editing.geomnonzeroz");
         }
         return (
-            <div className="AttributeForm">
+            <div className="AttributeForm" >
                 {readOnlyMsg ? (
                     <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
-                <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
-                    {editConfig.form ? (
-                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={editConfig}
-                            editRelationRecord={this.editRelationRecord}
-                            feature={this.props.editContext.feature} iface={this.props.iface}
-                            mapCrs={this.props.map.projection} mapPrefix={this.props.editContext.mapPrefix} readOnly={readOnly}
-                            removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord}
-                            report={this.props.report} setFormBusy={this.setFormBusy}
-                            setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
-                            translations={this.props.translations}
-                            updateField={this.updateField} updateRelationField={this.updateRelationField} />
-                    ) : (
-                        <AutoEditForm editLayerId={editConfig.editDataset} fields={editConfig.fields}
-                            iface={this.props.iface}
-                            readOnly={readOnly} touchFriendly={this.props.touchFriendly} updateField={this.updateField}
-                            values={this.props.editContext.feature.properties} />
-                    )}
-                    {captchaButton}
-                    {commitBar}
-                </form>
+                {!this.state.childEdit && (
+                    <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
+                        {editConfig.form ? (
+                            <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={editConfig}
+                                editRelationRecord={this.editRelationRecord}
+                                feature={this.props.editContext.feature} iface={this.props.iface}
+                                mapCrs={this.props.map.projection} mapPrefix={this.props.editContext.mapPrefix} readOnly={readOnly}
+                                removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord}
+                                report={this.props.report} setFormBusy={this.setFormBusy}
+                                setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
+                                translations={this.props.translations}
+                                updateField={this.updateField} updateRelationField={this.updateRelationField} />
+                        ) : (
+                            <AutoEditForm editLayerId={editConfig.editDataset} fields={editConfig.fields}
+                                iface={this.props.iface}
+                                readOnly={readOnly} touchFriendly={this.props.touchFriendly} updateField={this.updateField}
+                                values={this.props.editContext.feature.properties} />
+                        )}
+                        {captchaButton}
+                        {commitBar}
+                    </form>
+                )}
+                {childAttributeForm}
                 {deleteBar}
                 {busyDiv}
-                {childAttributeForm}
             </div>
 
         );
@@ -309,6 +313,15 @@ class AttributeForm extends React.Component {
             hideDelete: true
         };
         this.setState({childEdit: childEdit});
+        // if (!this.state.busy) {
+        //     const attributeFormContainer = this.containerRef.current;
+        //     if (attributeFormContainer) {
+        //         setTimeout(() => {
+        //             const qtForm = attributeFormContainer.querySelector(".link-feature-form-container .qt-designer-layout-grid") || attributeFormContainer.querySelector(".qt-designer-layout-grid");
+        //             this.setState({dynamicHeight: qtForm.scrollHeight + 100 || attributeFormContainer.scrollHeight + 100});
+        //         }, 50);
+        //     }
+        // }
     };
     finishEditRelationRecord = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
@@ -334,6 +347,8 @@ class AttributeForm extends React.Component {
             this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: changed});
         }
         this.setState({childEdit: null});
+
+        // this.setState({childEdit: null, dynamicHeight: ""});
     };
     onDiscard = (action) => {
         if (action === "Discard") {
