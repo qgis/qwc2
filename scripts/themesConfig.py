@@ -588,6 +588,7 @@ def getGroupThemes(config, configGroup, result, resultGroup, groupCounter):
             groupEntry = {
                 "id": "g%d" % groupCounter,
                 "title": group["title"],
+                "titleMsgId": group["titleMsgId"],
                 "items": [],
                 "subdirs": []
             }

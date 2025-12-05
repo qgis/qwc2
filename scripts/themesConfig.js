@@ -584,6 +584,7 @@ function getGroupThemes(config, configGroup, result, resultGroup, proxy, groupCo
             const groupEntry = {
                 id: 'g' + (++groupCounter),
                 title: group.title,
+                titleMsgId: group.titleMsgId,
                 items: [],
                 subdirs: []
             };
