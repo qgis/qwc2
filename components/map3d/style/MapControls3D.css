@@ -39,7 +39,7 @@ div.map3d-nav-zoom {
     margin: 0 1em 0.5em 1em;
 }
 
-div.map3d-nav-zoom > div {
+div.map3d-nav-zoom > span {
     height: 2em;
     width: 1.5em;
     display: flex;
@@ -47,7 +47,7 @@ div.map3d-nav-zoom > div {
     justify-content: center;
 }
 
-div.map3d-nav-zoom > div:first-child {
+div.map3d-nav-zoom > span:first-child {
     border-bottom: 1px solid var(--map-button-text-color);
 }
 
@@ -72,6 +72,11 @@ div.map3d-firstperson-button {
 div.map3d-firstperson-button-active {
     background-color: var(--map-button-text-color);
     color: var(--map-button-bg-color);
+}
+
+div.map3d-firstperson-button > span {
+    width: 2em;
+    height: 2em;
 }
 
 div.map3d-nav-spacer {
