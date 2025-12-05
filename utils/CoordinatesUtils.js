@@ -160,6 +160,7 @@ const CoordinatesUtils = {
             return commonEsriWktLookup[epsgCode];
         }
 
+        /* eslint-disable-next-line */
         console.warn(`No ESRI WKT definition found for ${epsgCode}. Shapefile export may not include projection information. Consider adding an 'esriWkt' property to the projection in config.json.`);
         return null;
     },
