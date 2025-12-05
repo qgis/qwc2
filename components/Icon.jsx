@@ -41,8 +41,15 @@ export default class Icon extends React.Component {
             ["icon_" + this.props.size]: !!this.props.size,
             [this.props.className]: !!this.props.className
         });
-        const tabIndex = this.props.onClick ? 0 : undefined;
-        const onKeyDown = tabIndex !== undefined ? MiscUtils.checkKeyActivate : null;
+        let tabIndex = undefined;
+        let onKeyDown = null;
+        if (this.props.onClick) {
+            tabIndex = 0;
+            onKeyDown = MiscUtils.checkKeyActivate;
+        } else if (this.props.onPointerDown) {
+            tabIndex = 0;
+            onKeyDown = MiscUtils.checkKeyActivatePointerDown;
+        }
         if (this.props.icon.startsWith(":/")) {
             const assetsPath = ConfigUtils.getAssetsPath();
             const src = assetsPath + this.props.icon.substr(1);

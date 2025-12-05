@@ -85,6 +85,27 @@ const MiscUtils = {
             onEsc();
         }
     },
+    checkKeyActivatePointerDown(ev) {
+        if (ev.code === "Space" || ev.code === "Enter") {
+            MiscUtils.killEvent(ev);
+            ev.currentTarget.dispatchEvent(new PointerEvent("pointerdown", {
+                bubbles: true,
+                cancelable: true,
+                pointerId: 1,
+                pointerType: "mouse",
+                view: ev.view
+            }));
+            ev.currentTarget.addEventListener("keyup", (ev2) => {
+                ev2.currentTarget.dispatchEvent(new PointerEvent("pointerup", {
+                    bubbles: true,
+                    cancelable: true,
+                    pointerId: 1,
+                    pointerType: "mouse",
+                    view: ev2.view
+                }));
+            }, {once: true});
+        }
+    },
     blendColors(color1, color2, ratio) {
         color1 = [parseInt(color1[1] + color1[2], 16), parseInt(color1[3] + color1[4], 16), parseInt(color1[5] + color1[6], 16)];
         color2 = [parseInt(color2[1] + color2[2], 16), parseInt(color2[3] + color2[4], 16), parseInt(color2[5] + color2[6], 16)];
