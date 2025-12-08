@@ -178,11 +178,11 @@ class FeatureForm extends React.Component {
             let body = null;
             if (this.state.pendingRequests > 0) {
                 body = (
-                    <div className="feature-query-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("featureform.querying")}</span></div>
+                    <div className="feature-query-body"><span className="identify-body-message">{LocaleUtils.tr("featureform.querying")}</span></div>
                 );
             } else if (isEmpty(this.state.pickedFeatures)) {
                 body = (
-                    <div className="feature-query-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("featureform.noresults")}</span></div>
+                    <div className="feature-query-body"><span className="identify-body-message">{LocaleUtils.tr("featureform.noresults")}</span></div>
                 );
             } else {
                 const featureText = LocaleUtils.tr("featureform.feature");
@@ -196,7 +196,7 @@ class FeatureForm extends React.Component {
                     );
                 }
                 body = (
-                    <div className="feature-query-body" role="body">
+                    <div className="feature-query-body">
                         {Object.keys(this.state.pickedFeatures).length > 1 ? (
                             <div className="feature-query-selection">
                                 <select onChange={ev => this.setSelectedFeature(ev.target.value)} value={this.state.selectedFeature}>

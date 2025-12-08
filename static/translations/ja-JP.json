@@ -650,6 +650,7 @@
       "vertex": "頂点にスナップ"
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "レイヤを追加",
       "addlayerstotheme": "現在の地図にレイヤを追加",
       "addselectedlayers": "選択されたレイヤを追加",

@@ -650,6 +650,7 @@
       "vertex": "An Ecken einrasten"
     },
     "themelayerslist": {
+      "addanyway": "Trotzdem hinzufügen",
       "addlayer": "Layer hinzufügen",
       "addlayerstotheme": "Ebenen der Karte hinzufügen",
       "addselectedlayers": "Selektierte Ebenen hinzufügen",

@@ -40,6 +40,7 @@
     /* List */
     --list-bg-color: white;
     --list-section-bg-color: black;
+    --list-section-bg-color-hover: black;
     --list-section-text-color: white;
     --list-item-bg-color-even: #eee;
     --list-item-bg-color-hover: #ddd;
@@ -101,6 +102,7 @@
     /* List */
     --list-bg-color: #3f3f3f;
     --list-section-bg-color: black;
+    --list-section-bg-color-hover: #222;
     --list-section-text-color: white;
     --list-item-bg-color-even: #393939;
     --list-item-bg-color-hover: #292929;

@@ -650,6 +650,7 @@
       "vertex": "Kırık noktalarını yakala"
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Katman ekle",
       "addlayerstotheme": "Geçerli haritaya katman ekle",
       "addselectedlayers": "Seçili katmanları ekle",

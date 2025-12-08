@@ -43,7 +43,7 @@ class View3DSwitcher extends React.Component {
                 onClick={() => this.setState(state => ({expanded: !state.expanded}))}
                 position={this.props.position}
             >
-                <div className={"view3d-switcher-buttons" + (this.state.expanded ? " view3d-switcher-buttons-expanded" : "")}>
+                <div className={"view3d-switcher-buttons" + (this.state.expanded ? " view3d-switcher-buttons-expanded" : "")} inert={this.state.expanded ? undefined : "true"}>
                     {buttons.map(button => (
                         <button
                             className={"map-button" + (button.mode === this.props.view3dMode ? " map-button-active" : "")}

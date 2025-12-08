@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {closeWindow, closeAllWindows, NotificationType} from '../actions/windows';
@@ -71,7 +72,7 @@ class WindowManager extends React.Component {
                 onClose={() => this.closeWindow(key)}
                 splitScreenWhenDocked={splitScreenWhenDocked}
                 title={LocaleUtils.tr(data.options.title || "windows." + key)}>
-                <iframe className="windows-iframe-dialog-body" name={key} role="body" src={data.url} />
+                <iframe className="windows-iframe-dialog-body" name={key} src={data.url} />
             </ResizeableWindow>
         );
     };
@@ -84,7 +85,19 @@ class WindowManager extends React.Component {
         }
         return (
             <div className={className} key={key}>
-                <div>{data.text}</div>
+                <div>
+                    <div>{data.text}</div>
+                    {!isEmpty(data.actions) ? (
+                        <div className="windows-notification-actions">
+                            {data.actions.map((action, idx) => (
+                                <button className="button" key={"action" + idx} onClick={() => {
+                                    const res = action.onClick();
+                                    if (res) this.closeWindow(key);
+                                }} type="button">{action.name}</button>
+                            ))}
+                        </div>) : null
+                    }
+                </div>
                 <span>
                     <Icon icon="remove" onClick={() => this.closeWindow(key)} size="large"/>
                 </span>

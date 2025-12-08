@@ -6,7 +6,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import Extent from '@giro3d/giro3d/core/geographic/Extent';
+import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
+import StreamableFeatureSource, {wfsBuilder, tiledLoadingStrategy} from '@giro3d/giro3d/sources/StreamableFeatureSource';
 import VectorSource from "@giro3d/giro3d/sources/VectorSource.js";
 import axios from 'axios';
 import {tile} from "ol/loadingstrategy.js";
@@ -42,7 +45,7 @@ export default {
         return new ColorLayer({
             name: options.name,
             source: new VectorSource({
-                dataProjection: options.projection,
+                dataProjection: CoordinateSystem.fromSrid(projection),
                 data: {
                     url: url.format(urlParts),
                     format: olOpts.format
@@ -93,6 +96,19 @@ export default {
             }).catch((e) => {
                 reject([]);
             });
+        });
+    },
+    createFeatureSource: (layer, options, projection) => {
+        const bounds = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, projection);
+        const crs = CoordinateSystem.fromSrid(projection);
+        const maxextent = new Extent(crs, bounds[0], bounds[2], bounds[1], bounds[3]);
+        return new StreamableFeatureSource({
+            queryBuilder: wfsBuilder(
+                options.url, options.name
+            ),
+            sourceCoordinateSystem: crs,
+            extent: maxextent,
+            loadingStrategy: tiledLoadingStrategy({tileSize: 5000})
         });
     }
 };

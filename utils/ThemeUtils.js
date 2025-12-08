@@ -105,6 +105,7 @@ const ThemeUtils = {
             urlParts.host = locationParts.host;
         }
         const sublayerNames = LayerUtils.getSublayerNames({sublayers: subLayers ?? theme.sublayers});
+        const commonTranslations = StandardApp.store.getState().locale.messagesTree.maptranslations || {};
         const baseParams = urlParts.query;
         let layer = {
             type: "wms",
@@ -142,7 +143,7 @@ const ThemeUtils = {
                     return res;
                 }, {})
             },
-            translations: theme.translations,
+            translations: deepmerge(commonTranslations, theme.translations),
             editConfig: theme.editConfig,
             wms_name: theme.wms_name
         };

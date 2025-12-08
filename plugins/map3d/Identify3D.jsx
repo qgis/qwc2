@@ -74,7 +74,7 @@ class Identify3D extends React.Component {
                 initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.clear} title={LocaleUtils.tr("identify.title")}
             >
-                <div className="identify-body" role="body">
+                <div className="identify-body">
                     {isEmpty(this.state.pickAttrs) ? (
                         <span><i>{LocaleUtils.tr("identify.noattributes")}</i></span>
                     ) : (

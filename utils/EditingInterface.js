@@ -14,6 +14,7 @@ import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 
 import ConfigUtils from './ConfigUtils';
+import CoordinatesUtils from './CoordinatesUtils';
 import {computeExpressionFields} from './EditingUtils';
 import LocaleUtils from './LocaleUtils';
 
@@ -71,8 +72,16 @@ const EditingInterface = {
         const requestUrl = editServiceUrl + '/' + editConfig.editDataset + '/';
 
         // 10px tolerance
-        const tol = (10.0 / dpi) * 0.0254 * mapScale;
-        const bbox = (mapPos[0] - tol) + "," + (mapPos[1] - tol) + "," + (mapPos[0] + tol) + "," + (mapPos[1] + tol);
+        let bbox = null;
+        const metersPerPixel = (1 / dpi) * 0.0254 * mapScale;
+        if (CoordinatesUtils.getUnits(mapCrs) === 'degrees') {
+            const tolLat = 10 * metersPerPixel / 111320.0; // meters per degree latitude
+            const tolLon = 10 * metersPerPixel / (111320.0 * Math.cos(mapPos[1] * Math.PI / 180));
+            bbox = [mapPos[0] - tolLon, mapPos[1] - tolLat, mapPos[0] + tolLon, mapPos[1] + tolLat].join(",");
+        } else {
+            const tol = 10 * metersPerPixel;
+            bbox = (mapPos[0] - tol) + "," + (mapPos[1] - tol) + "," + (mapPos[0] + tol) + "," + (mapPos[1] + tol);
+        }
 
         const params = {
             bbox: bbox,

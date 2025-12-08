@@ -42,7 +42,7 @@ class PluginsContainer extends React.Component {
     renderPlugins = () => {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
         const plugins = PluginStore.getPlugins();
-        return this.props.pluginsConfig.map(pluginConf => {
+        return [...this.props.pluginsConfig].sort((a, b) => (a.order ?? 0 - b.order ?? 0)).map(pluginConf => {
             const Plugin = plugins[pluginConf.name + "Plugin"];
             if (!Plugin) {
                 return null;
@@ -80,10 +80,10 @@ class PluginsContainer extends React.Component {
                     </MapButtonPortalContext.Provider>
                 </AppInfosPortalContext.Provider>
                 <WindowManager />
+                <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
                 <div className="map-container" ref={this.setMapContainerRef} style={mapContainerStyle}>
                     <ProcessNotifications />
                 </div>
-                <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
                 <div className="app-infos-container" ref={this.setAppInfosContainerRef} style={mapContainerStyle} />
                 <div className="map-bottom-tool-container" ref={this.setBottomToolContanerRef} style={mapContainerStyle} />
             </div>
@@ -158,6 +158,28 @@ class PluginsContainer extends React.Component {
                     el.style.setProperty('--buttons-container-height', `${height}px`);
                 }
             });
+            const mutationObserver = new MutationObserver(mutations => {
+                mutationObserver.disconnect();
+                for (const m of mutations) {
+                    if (m.type === "childList") {
+                        // Reorder child nodes for natural tab focus order
+                        const children = [...el.children];
+                        const slots = {};
+                        children.forEach(child => {
+                            if (child.dataset.subslot === undefined) {
+                                const subslot = (slots[child.dataset.slot] ?? 0) - 1;
+                                slots[child.dataset.slot] = child.dataset.subslot = subslot;
+                                child.style.order = 100 * parseInt(child.style.order, 10) + subslot;
+                            }
+                        });
+                        children.sort((a, b) => (
+                            b.style.order - a.style.order
+                        )).forEach(node => el.appendChild(node));
+                    }
+                }
+                mutationObserver.observe(el, {childList: true});
+            });
+            mutationObserver.observe(el, {childList: true});
             resizeObserver.observe(el);
             el.recomputeSpacers = () => {
                 const slots = new Set();
@@ -174,7 +196,7 @@ class PluginsContainer extends React.Component {
                         const child = document.createElement("div");
                         child.className = "map-buttons-spacer";
                         child.dataset.spacer = 1;
-                        child.style.order = i;
+                        child.style.order = 100 * i;
                         el.appendChild(child);
                     }
                 }

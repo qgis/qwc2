@@ -22,6 +22,7 @@ import {setCurrentTask} from '../actions/task';
 import {setCurrentTheme, setThemeLayersList} from '../actions/theme';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 import Icon from './Icon';
 
@@ -85,7 +86,10 @@ class ThemeList extends React.Component {
             }
             return (
                 <li className={"theme-group-header " + (expanded ? "theme-group-header-expanded" : "")} key={subdir.id}>
-                    <span onClick={() => this.setState((state) => ({expandedGroups: {...state.expandedGroups, [subdir.id]: !expanded}}))}>
+                    <span
+                        onClick={() => this.setState((state) => ({expandedGroups: {...state.expandedGroups, [subdir.id]: !expanded}}))}
+                        onKeyDown={MiscUtils.checkKeyActivate} tabIndex="0"
+                    >
                         {this.props.collapsibleGroups ? (<Icon icon={expanded ? "collapse" : "expand"} />) : null} {subdir.titleMsgId ? LocaleUtils.tr(subdir.titleMsgId) : subdir.title}
                     </span>
                     {expanded ? this.renderThemeGroup(subdir, filter) : null}
@@ -148,7 +152,7 @@ class ThemeList extends React.Component {
                                     </div>
                                 ) : null}
                             </div>) : null}
-                            <div className="theme-item-body">
+                            <div className="theme-item-body" onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
                                 {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(item.description)}} />) : null}
                                 <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
                             </div>

@@ -55,7 +55,7 @@ class ObjectList extends React.Component {
             <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} initiallyDocked onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("appmenu.items.ObjectList")}>
                 <AttributeTableWidget
                     iface={this.props.iface} initialLayer={this.props.taskData?.layer} limitToExtent={this.props.limitToExtent}
-                    readOnly role="body" showDisplayFieldOnly showEditFormButton={false}
+                    readOnly showDisplayFieldOnly showEditFormButton={false}
                     showHiddenFields={false} showLimitToExtent={this.props.showLimitToExtent}
                     zoomLevel={this.props.zoomLevel}
                 />

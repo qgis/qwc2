@@ -119,13 +119,13 @@ class MapControls3D extends React.Component {
             ), this.context),
             ReactDOM.createPortal(!this.state.firstPerson ? (
                 <div className="map3d-nav-zoom" data-slot={0} key="MapControlsSpacerZoom" style={{order: 998}}>
-                    <div onPointerDown={(ev) => this.zoom(ev, +1)}><Icon icon="plus" /></div>
-                    <div onPointerDown={(ev) => this.zoom(ev, -1)}><Icon icon="minus" /></div>
+                    <Icon icon="plus" onPointerDown={(ev) => this.zoom(ev, +1)} />
+                    <Icon icon="minus" onPointerDown={(ev) => this.zoom(ev, -1)} />
                 </div>
             ) : null, this.context),
             ReactDOM.createPortal((
-                <div className={firstPersonButtonClasses} data-slot={0} key="MapControlsFirstPerson" onClick={this.toggleFirstPersonControls} style={{order: 997}}>
-                    <Icon icon="person" />
+                <div className={firstPersonButtonClasses} data-slot={0} key="MapControlsFirstPerson" style={{order: 997}}>
+                    <Icon icon="person" onClick={this.toggleFirstPersonControls} />
                 </div>
             ), this.context),
             this.props.controlsPosition !== 'bottom' ? ReactDOM.createPortal((

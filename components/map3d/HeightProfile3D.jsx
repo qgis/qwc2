@@ -284,7 +284,7 @@ export default class HeightProfile extends React.Component {
         };
 
         return (
-            <div className="height-profile-chart-container" onMouseLeave={this.hideMarker} role="body" style={{position: 'relative'}}>
+            <div className="height-profile-chart-container" onMouseLeave={this.hideMarker} style={{position: 'relative'}}>
                 <Line data={data} options={options} ref={saveRef} />
             </div>
         );

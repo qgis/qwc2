@@ -49,6 +49,7 @@ class ResizeableWindow extends React.Component {
         initialX: PropTypes.number,
         initialY: PropTypes.number,
         initiallyDocked: PropTypes.bool,
+        initiallyMinimized: PropTypes.bool,
         mapMargins: PropTypes.object,
         maxHeight: PropTypes.number,
         maxWidth: PropTypes.number,
@@ -101,6 +102,11 @@ class ResizeableWindow extends React.Component {
         this.dragShield = null;
         this.id = uuidv4();
         this.portalNode = props.usePortal ? portals.createHtmlPortalNode() : null;
+        if (this.portalNode) {
+            this.portalNode.element.addEventListener('click', () => this.props.raiseWindow(this.id));
+            this.portalNode.element.addEventListener('focus', () => this.props.raiseWindow(this.id));
+            this.portalNode.element.addEventListener('focusin', () => this.props.raiseWindow(this.id));
+        }
     }
     componentDidMount() {
         this.props.registerWindow(this.id);
@@ -151,9 +157,6 @@ class ResizeableWindow extends React.Component {
             this.moveToInternalWindow();
         }
     }
-    renderRole = (role) => {
-        return React.Children.toArray(this.props.children).find((child) => child.props.role === role);
-    };
     onClose = (ev) => {
         if (this.state.externalWindow) {
             this.state.externalWindow.removeEventListener('beforeunload', this.props.onClose);
@@ -326,7 +329,7 @@ class ResizeableWindow extends React.Component {
                 onResizeStop={this.onResizeStop}
                 ref={this.initRnd}
             >
-                <div className="resizeable-window-contents">
+                <div className="resizeable-window-contents" onFocus={() => this.props.raiseWindow(this.id)}>
                     {this.renderTitleBar()}
                     <div className={bodyclasses} onMouseDown={() => this.props.raiseWindow(this.id)}>
                         <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
@@ -334,7 +337,7 @@ class ResizeableWindow extends React.Component {
                             <div className="resizeable-window-portal-container">
                                 <portals.OutPortal node={this.portalNode} />
                             </div>
-                        ) : this.renderRole("body")}
+                        ) : this.props.children}
                     </div>
                 </div>
             </Rnd>
@@ -356,7 +359,8 @@ class ResizeableWindow extends React.Component {
                 width: width,
                 height: height,
                 docked: this.props.initiallyDocked,
-                detached: false
+                detached: false,
+                minimized: this.props.initiallyMinimized || false
             };
         }
         if (this.props.splitScreenWhenDocked && geometry.docked) {
@@ -381,7 +385,7 @@ class ResizeableWindow extends React.Component {
                         <div className="resizeable-window-portal-container">
                             <portals.OutPortal node={this.portalNode} />
                         </div>
-                    ) : this.renderRole("body")}
+                    ) : this.props.children}
                 </div>
             </div>
         ), this.state.externalWindow.document.body);
@@ -389,7 +393,7 @@ class ResizeableWindow extends React.Component {
     render() {
         return [this.portalNode ? (
             <portals.InPortal key="InPortal" node={this.portalNode}>
-                {this.renderRole("body")}
+                {this.props.children}
             </portals.InPortal>
         ) : null, this.state.externalWindow ? (
             this.renderExternalWindow()

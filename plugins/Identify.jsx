@@ -375,9 +375,9 @@ class Identify extends React.Component {
             let body = null;
             if (isEmpty(this.state.identifyResults)) {
                 if (this.state.pendingRequests > 0) {
-                    body = (<div className="identify-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("identify.querying")}</span></div>);
+                    body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("identify.querying")}</span></div>);
                 } else {
-                    body = (<div className="identify-body" role="body"><span className="identify-body-message">{LocaleUtils.tr("identify.noresults")}</span></div>);
+                    body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("identify.noresults")}</span></div>);
                 }
             } else {
                 body = (
@@ -395,7 +395,6 @@ class Identify extends React.Component {
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
                         resultDisplayMode={this.props.resultDisplayMode}
-                        role="body"
                         showLayerSelector={this.props.showLayerSelector}
                     />
                 );

@@ -555,7 +555,7 @@ class Print extends React.Component {
                 onClose={() => this.setState({printOutputVisible: false, outputLoaded: false, pdfData: null, pdfDataUrl: null})}
                 title={LocaleUtils.tr("print.output")} visible={this.state.printOutputVisible}
             >
-                <div className="print-output-window-body" role="body">
+                <div className="print-output-window-body">
                     {!this.state.outputLoaded ? (
                         <span className="print-output-window-wait">
                             <Spinner /> {LocaleUtils.tr("print.wait")}

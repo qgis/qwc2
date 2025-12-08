@@ -3,7 +3,7 @@
   "messages": {
     "app": {
       "missingbg": "No se pudo encontrar el fondo \"{0}\", mostrando el fondo predeterminado.",
-      "missingdefaulttheme": "",
+      "missingdefaulttheme": "No se pudo cargar el tema predeterminado.",
       "missinglayers": "No se pudieron encontrar las siguientes capas: {0}.",
       "missingpermalink": "El enlace permanente o marcador especificado es inválido o ha expirado.",
       "missingprojection": "No se pudo cargar el tema \"{0}\": la proyección {1} no está definida.",
@@ -24,11 +24,11 @@
         "MapExport3D": "Exportar mapa",
         "MapFilter": "Filtro de mapa",
         "MapLight3D": "Luz y sombras",
-        "ObjectList": "",
+        "ObjectList": "Lista de objetos",
         "Print": "Imprimir",
         "Reports": "Informes",
         "Settings": "Opciones",
-        "Settings3D": "",
+        "Settings3D": "Configuración 3D",
         "Share": "Compartir enlace",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabla de Atributos",
@@ -112,8 +112,8 @@
     "compare3d": {
       "clipplane": "Plano de recorte",
       "compare_objects": "Comparar objetos",
-      "info_message": "",
-      "modify": "",
+      "info_message": "Comparación de objetos activa",
+      "modify": "Modificar",
       "toggleall": "Alternar todo"
     },
     "cookiepopup": {
@@ -161,22 +161,22 @@
       "wedge": "Cuña"
     },
     "editdataset3d": {
-      "moveobj": "",
-      "zoomto": ""
+      "moveobj": "Mover objeto a la vista",
+      "zoomto": "Zoom al objeto"
     },
     "editing": {
       "add": "Añadir",
       "attrtable": "Tabla",
       "canceldelete": "No borrar",
       "clearpicture": "Limpiar",
-      "clone_all": "",
-      "clone_copy": "",
-      "clone_defaulted": "",
-      "clone_dontcopy": "",
-      "clone_hidden": "",
-      "clone_none": "",
-      "clone_select_attrs": "",
-      "clone_visible": "",
+      "clone_all": "Todos",
+      "clone_copy": "Copiar seleccionados",
+      "clone_defaulted": "(valor por defecto)",
+      "clone_dontcopy": "No copiar",
+      "clone_hidden": "(oculto)",
+      "clone_none": "Ninguno",
+      "clone_select_attrs": "Seleccionar atributos a copiar:",
+      "clone_visible": "Visibles sin valor por defecto",
       "commit": "Confirmar",
       "commitfailed": "Fallo al guardar cambios",
       "contraintviolation": "Violación de restricción",
@@ -197,15 +197,15 @@
       "reallydelete": "Borrar",
       "relationcommitfailed": "Algunos valores de las relaciones no han podido guardarse, verifique los tooltips de los iconos para más detalles",
       "select": "Seleccionar",
-      "selectlayer": "",
+      "selectlayer": "Seleccionar capa...",
       "takepicture": "Tomar fotografía",
       "unsavedchanged": "Hay cambios sin guardar. Quieres salir de la página sin guardar?"
     },
     "featureattributes": {
-      "name": "",
-      "nofeatureormultiple": "",
-      "value": "",
-      "windowtitle": ""
+      "name": "Nombre",
+      "nofeatureormultiple": "Sin elemento activo o múltiples elementos activos",
+      "value": "Valor ",
+      "windowtitle": "Atributos del elemento"
     },
     "featureform": {
       "feature": "Elemento",
@@ -239,7 +239,7 @@
     },
     "heightprofile": {
       "asl": "a.s.l.",
-      "dhmdefaultname": "",
+      "dhmdefaultname": "Conjunto de datos",
       "distance": "Distancia",
       "drawnodes": "Dibujar nodos",
       "error": "No se pudo calcular el perfil de altura",
@@ -259,8 +259,8 @@
     "identify": {
       "aggregatedreport": "Informe agregado",
       "clipboard": "Copiar al portapapeles",
-      "compare": "",
-      "comparing": "",
+      "compare": "Comparar con los objetos seleccionados",
+      "comparing": "Comparando {0} elementos",
       "download": "Descargar",
       "export": "Exportar",
       "featureReport": "Informe del elemento",
@@ -271,7 +271,7 @@
       "noresults": "Sin información disponible sobre el punto seleccionado",
       "querying": "Consultando...",
       "reportfail": "No se pudo generar el informe",
-      "results": "",
+      "results": "Resultados",
       "selectreport": "Seleccionar informe...",
       "title": "Información del elemento"
     },
@@ -297,7 +297,7 @@
       "shpreprojectionerror": "La geometría del Shapefile no se pudo reproyectar y puede estar desplazada.",
       "supportedformats": "Formatos soportados: KML, GeoJSON, GeoPDF, SHP (en zip)",
       "unknownproj": "El GeoPDF seleccionado utiliza una proyección desconocida: {0}.",
-      "unsupportedfile": "",
+      "unsupportedfile": "El formato de archivo seleccionado no es compatible",
       "url": "URL",
       "urlplaceholder": "Ingrese dirección URL o WMS, WMTS, WFS..."
     },
@@ -362,8 +362,8 @@
       }
     },
     "locationrecorder": {
-      "record": "",
-      "stop": ""
+      "record": "Registrar",
+      "stop": "Parar"
     },
     "map": {
       "loading": "Cargando...",
@@ -456,7 +456,7 @@
       "angle": "Ángulo",
       "featureunsupported": "Entrada numérica no disponible para esta geometría",
       "height": "Altura",
-      "nofeatureormultiple": "",
+      "nofeatureormultiple": "Sin elemento activo o múltiples elementos activos",
       "side": "Lado",
       "width": "Ancho",
       "windowtitle": "Entrada numérica"
@@ -501,7 +501,7 @@
       "loading": "Cargando formulario..."
     },
     "redlining": {
-      "attributes": "",
+      "attributes": "Atributos",
       "buffer": "Bufer",
       "buffercompute": "Computar",
       "bufferdistance": "Distancia",
@@ -510,7 +510,7 @@
       "bufferselectfeature": "Seleccione un elemento para almacenar en bufer",
       "circle": "Círculo",
       "clone": "Clonar",
-      "ctrlhint": "",
+      "ctrlhint": "Abrir con Ctrl+Click",
       "delete": "Eliminar",
       "draw": "Dibujar",
       "edit": "Editar",
@@ -542,7 +542,7 @@
     },
     "routing": {
       "add": "Añadir punto",
-      "addlayer": "",
+      "addlayer": "Agregar capa",
       "addviapoint": "Pasar por aquí",
       "arriveat": "Llegar a",
       "clear": "Limpiar",
@@ -602,7 +602,7 @@
       "providerselection": "Proveedores de búsqueda",
       "recent": "Búsquedas recientes",
       "search": "Buscar",
-      "tasks": "",
+      "tasks": "Tareas",
       "themelayers": "Capas del tema",
       "themes": "Temas",
       "unknownmore": "Más resultados"
@@ -630,7 +630,7 @@
       "themes": "Temas"
     },
     "settings3d": {
-      "quality": ""
+      "quality": "Calidad"
     },
     "share": {
       "QRCodeLinkTitle": "Código QR",
@@ -650,6 +650,7 @@
       "vertex": "Ajustar a los vértices"
     },
     "themelayerslist": {
+      "addanyway": "Agregar de todas formas",
       "addlayer": "Agregar capa",
       "addlayerstotheme": "Agregar capas al mapa actual",
       "addselectedlayers": "Agregar capa(s) seleccionada(s)",

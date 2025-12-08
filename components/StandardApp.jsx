@@ -171,7 +171,6 @@ class AppContainerComponent extends React.Component {
         });
     };
     render() {
-        // Filter 2D plugins
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
         const pluginsConf = this.props.localConfig.plugins[device];
         return (

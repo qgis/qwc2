@@ -950,20 +950,6 @@
     ttf2woff "^3.0.0"
     wawoff2 "^2.0.0"
 
-"@giro3d/giro3d@^0.43.4":
-  version "0.43.4"
-  resolved "https://registry.yarnpkg.com/@giro3d/giro3d/-/giro3d-0.43.4.tgz#daa0e13a89653eb1a87d6c116702df99bc2b2bc8"
-  integrity sha512-wbE6axylh0Sg1LHeim8p9LQkubUwRoUmXKer0Yl8yZrfNJJFvfA2r0T2LUeuENxVIYBIyvDk4cpbxal5mdNazQ==
-  dependencies:
-    "3d-tiles-renderer" "^0.4.14"
-    chart.js "^3.9.1"
-    copc "^0.0.8"
-    earcut "^2.2.4"
-    geotiff "^2.1.0"
-    lil-gui "^0.17.0"
-    lru-cache "^10.0.1"
-    three-mesh-bvh "^0.7.4"
-
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.13.0.tgz#fb907624df3256d04b9aa2df50d7aa97ec648748"
@@ -1487,6 +1473,19 @@
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/merge-streams/-/merge-streams-2.3.0.tgz#719df7fb41766bc143369eaa0dd56d8dc87c9958"
   integrity sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg==
+
+"@sourcepole/qwc-giro3d@^0.44.0-dev":
+  version "0.44.0-dev"
+  resolved "https://registry.yarnpkg.com/@sourcepole/qwc-giro3d/-/qwc-giro3d-0.44.0-dev.tgz#59c31a9b027fbb88e790d3cadba2477d7f65d081"
+  integrity sha512-HQ0ARAenQzT3r8Ssef/CFlvLULeqUHPi5mgTbfobHHIXLfQ+R6oAiSQc8lIlqJX4Qj2hDxpen2gtvtkdexB6xA==
+  dependencies:
+    "3d-tiles-renderer" "^0.4.14"
+    chart.js "^3.9.1"
+    copc "^0.0.8"
+    earcut "^2.2.4"
+    geotiff "^2.1.0"
+    lil-gui "^0.17.0"
+    lru-cache "^10.0.1"
 
 "@turf/area@^4.5.0":
   version "4.7.3"
@@ -6875,11 +6874,6 @@ three-csg-ts@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/three-csg-ts/-/three-csg-ts-3.2.0.tgz#f6e834610615577dc24419052ce8edf509743ef5"
   integrity sha512-oTYg8kdal6qgHDbso/6VzA12Udf2ic2uXhf0XlJzuSP+Gs0OUR5gTHSZ7GotAE+M/QcVlw41eOwiWZVnJG5/8w==
-
-three-mesh-bvh@^0.7.4:
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/three-mesh-bvh/-/three-mesh-bvh-0.7.8.tgz#83156e4d3945734db076de1c94809331481b3fdd"
-  integrity sha512-BGEZTOIC14U0XIRw3tO4jY7IjP7n7v24nv9JXS1CyeVRWOCkcOMhRnmENUjuV39gktAw4Ofhr0OvIAiTspQrrw==
 
 three.meshline@^1.4.0:
   version "1.4.0"

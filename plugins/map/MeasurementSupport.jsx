@@ -172,10 +172,10 @@ class MeasurementSupport extends React.Component {
         const opts = {};
         if (this.props.measurement.geomType === 'LineString') {
             opts.headmarker = this.props.measurement.lineHeadMarker;
-            opts.tailmarker = this.props.measurement.lineHeadMarker;
+            opts.tailmarker = this.props.measurement.lineTailMarker;
         } else if (this.props.measurement.geomType === 'Bearing') {
             opts.headmarker = this.props.measurement.bearingHeadMarker;
-            opts.tailmarker = this.props.measurement.bearingHeadMarker;
+            opts.tailmarker = this.props.measurement.bearingTailMarker;
         }
         return [
             ...FeatureStyles.measureInteraction(feature, opts),

@@ -18,6 +18,7 @@ import Icon from '../components/Icon';
 import MapButton from '../components/MapButton';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/BackgroundSwitcher.css';
 
@@ -38,6 +39,18 @@ export class BackgroundSwitcher extends React.Component {
     state = {
         visible: false
     };
+    constructor(props) {
+        super(props);
+        this.buttonEl = null;
+        this.listEl = null;
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.visible && !prevState.visible) {
+            this.listEl?.firstElementChild?.focus?.();
+        } else if (!this.state.visible && prevState.visible) {
+            this.buttonEl?.focus?.();
+        }
+    }
     render() {
         const backgroundLayers = this.props.layers.slice(0).reverse();
         // Re-sort layers, ensuring grouped layers are grouped together
@@ -67,12 +80,13 @@ export class BackgroundSwitcher extends React.Component {
             return (
                 <MapButton
                     active={this.state.visible}
+                    buttonRef={el => {this.buttonEl = el;}}
                     icon="bglayer"
                     onClick={this.buttonClicked}
                     position={this.props.position}
                     tooltip={LocaleUtils.tr("tooltip.background")}
                 >
-                    <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')}>
+                    <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')} ref={el => { this.listEl = el; }}>
                         {this.renderLayerItem(null, backgroundLayers.filter(layer => layer.visibility === true).length === 0)}
                         {entries.map(entry => entry.group ? this.renderGroupItem(entry) : this.renderLayerItem(entry, entry.visibility === true))}
                     </div>
@@ -91,9 +105,12 @@ export class BackgroundSwitcher extends React.Component {
             "background-switcher-item-active": visible
         });
         return (
-            <div className={itemclasses} key={layer ? layer.name : "empty"} onClick={() => this.backgroundLayerClicked(layer)}>
+            <div
+                className={itemclasses} key={layer ? layer.name : "empty"} onClick={() => this.backgroundLayerClicked(layer)}
+                onKeyDown={this.KeyNav} tabIndex={this.state.visible ? 0 : -1}
+            >
                 <div className="background-switcher-item-title">
-                    {layer ? (<span title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
+                    {layer ? (<span tabIndex={-1} title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
                 </div>
                 <div className="background-switcher-item-thumbnail">
                     <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
@@ -110,9 +127,9 @@ export class BackgroundSwitcher extends React.Component {
             "background-switcher-item-active": layer.visibility
         });
         return (
-            <div className={itemclasses} key={layer.name}>
+            <div className={itemclasses} key={layer.name} onKeyDown={this.KeyNav} tabIndex={this.state.visible ? 0 : -1}>
                 <div className="background-switcher-item-title">
-                    <span title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
+                    <span tabIndex="-1" title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
                 </div>
                 <div className="background-switcher-item-thumbnail">
                     <img onClick={() => this.backgroundLayerClicked(layer)} src={assetsPath + "/" + layer.thumbnail} />
@@ -125,9 +142,13 @@ export class BackgroundSwitcher extends React.Component {
                         });
                         return (
                             <div className={menuitemclasses} key={l.name}
+                                onBlur={ev => this.updateGroupItem(ev, layer)}
                                 onClick={() => this.backgroundLayerClicked(l)}
+                                onFocus={ev => this.updateGroupItem(ev, l)}
+                                onKeyDown={this.KeyNav}
                                 onMouseEnter={ev => this.updateGroupItem(ev, l)}
                                 onMouseLeave={ev => this.updateGroupItem(ev, layer)}
+                                tabIndex={0}
                                 title={this.itemTitle(l)}
                             >{this.itemTitle(l)}</div>
                         );
@@ -141,6 +162,55 @@ export class BackgroundSwitcher extends React.Component {
         ev.target.parentElement.parentElement.childNodes[0].firstChild.innerText = this.itemTitle(layer);
         ev.target.parentElement.parentElement.childNodes[1].firstChild.src = assetsPath + "/" + layer.thumbnail;
     };
+    KeyNav = (ev) => {
+        if (ev.key === "ArrowUp" || ev.key === "ArrowDown") {
+            let group = null;
+            if (ev.target.parentElement.classList.contains("background-switcher-group")) {
+                group = ev.target.parentElement;
+            } else {
+                group = ev.target.getElementsByClassName("background-switcher-group")[0];
+            }
+            if (!group) {
+                return;
+            }
+
+            const childCount = group.children.length;
+            const delta = ev.key === 'ArrowUp' ? -1 : 1;
+            let currentIndex = Array.from(group.children).findIndex(el => document.activeElement === el || el.contains(document.activeElement));
+            if (currentIndex === -1) {
+                currentIndex = Array.from(group.children).findIndex(el => el.classList.contains("background-switcher-group-item-active"));
+            }
+            let next = (currentIndex + childCount + delta) % childCount;
+            while (group.children[next].tabIndex !== 0 && next !== currentIndex) {
+                next = (next + childCount + delta) % childCount;
+            }
+            if (next !== currentIndex) {
+                group.children[next].focus();
+            }
+            MiscUtils.killEvent(ev);
+        } else if (ev.key === "Tab") {
+            // Move to next tile
+            const current = [...this.listEl.children].find(el => el === document.activeElement || el.contains(document.activeElement));
+            if (current) {
+                if (ev.shiftKey) {
+                    if (current.previousElementSibling) {
+                        current.previousElementSibling.focus();
+                    } else {
+                        this.listEl.children[this.listEl.children.length - 1].focus();
+                    }
+                } else {
+                    if (current.nextElementSibling) {
+                        current.nextElementSibling.focus();
+                    } else {
+                        this.listEl.children[0].focus();
+                    }
+                }
+            }
+            MiscUtils.killEvent(ev);
+        } else {
+            MiscUtils.checkKeyActivate(ev, this.hide);
+        }
+    };
     buttonClicked = () => {
         this.setState((state) => ({visible: !state.visible}));
     };
@@ -153,6 +223,9 @@ export class BackgroundSwitcher extends React.Component {
                 this.props.changeLayerVisibility(visible, false);
             }
         }
+        this.setState({visible: false});
+    };
+    hide = () => {
         this.setState({visible: false});
     };
 }

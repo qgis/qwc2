@@ -11,10 +11,12 @@ import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import Instance from '@giro3d/giro3d/core/Instance.js';
-import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
+import Coordinates, { crsIsGeographic } from '@giro3d/giro3d/core/geographic/Coordinates';
+import Ellipsoid from '@giro3d/giro3d/core/geographic/Ellipsoid';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
+import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
-import FeatureCollection from "@giro3d/giro3d/entities/FeatureCollection.js";
+import DrapedFeatureCollection from '@giro3d/giro3d/entities/DrapedFeatureCollection';
 import Map from '@giro3d/giro3d/entities/Map.js';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import Inspector from "@giro3d/giro3d/gui/Inspector.js";
@@ -285,7 +287,7 @@ class Map3D extends React.Component {
                 ...layer,
                 visibility: prevOptions?.visibility ?? false,
                 opacity: prevOptions?.opacity ?? 255,
-                extrusionHeight: prevOptions?.extrusionHeight ?? (['vector', 'wfs'].includes(layer.type) ? 0 : undefined),
+                extrusionHeight: prevOptions?.extrusionHeight ?? (layerCreator.createFeatureSource ? 0 : undefined),
                 fields: prevOptions?.fields ?? undefined,
                 sublayers: preserveSublayerOptions(layer, prevOptions)
             };
@@ -318,16 +320,16 @@ class Map3D extends React.Component {
             mapLayer.visible = options.visibility;
             mapLayer.opacity = options.opacity / 255;
             layerBelow = mapLayer;
-            if (options.extrusionHeight !== 0) {
-                this.createUpdateExtrudedLayer(mapLayer, options, options.features !== prevOptions?.features);
-            } else if (prevOptions?.extrusionHeight !== 0) {
+            if (options.extrusionHeight !== undefined && options.extrusionHeight !== 0) {
+                this.createUpdateExtrudedLayer(layerCreator, mapLayer, options, options.features !== prevOptions?.features);
+            } else if (prevOptions?.extrusionHeight !== undefined && prevOptions?.extrusionHeight !== 0) {
                 this.removeExtrudedLayer(options.id);
             }
         });
         // Remove old layers
         Object.entries(prevColorLayers).forEach(([layerId, options]) => {
             if (!(layerId in colorLayers)) {
-                if (options.extrusionHeight !== 0) {
+                if (options.extrusionHeight !== undefined && options.extrusionHeight !== 0) {
                     this.removeExtrudedLayer(options.id);
                 }
                 this.removeLayer(layerId);
@@ -335,9 +337,7 @@ class Map3D extends React.Component {
         });
         this.instance.notifyChange(this.map);
     };
-    createUpdateExtrudedLayer = (mapLayer, options, forceCreate = false) => {
-        const bounds = options.bbox.bounds;
-        const extent = new Extent(options.bbox.crs, bounds[0], bounds[2], bounds[1], bounds[3]);
+    createUpdateExtrudedLayer = (layerCreator, mapLayer, options, forceCreate = false) => {
         const objId = options.id + ":extruded";
         const makeColor = (c) => {
             if (Array.isArray(c)) {
@@ -354,19 +354,9 @@ class Map3D extends React.Component {
                 this.instance.remove(obj);
             }
             const layercolor = makeColor(options.color ?? "#FF0000");
-            obj = new FeatureCollection({
-                source: mapLayer.source.source,
-                extent: extent,
-                minLevel: 1,
-                maxLevel: 1,
-                ignoreZ: true,
-                elevation: (feature) => {
-                    let coordinates = feature.getGeometry().getCoordinates();
-                    while (Array.isArray(coordinates[0])) {
-                        coordinates = coordinates[0];
-                    }
-                    return this.getTerrainHeightFromMap(coordinates) ?? 0;
-                },
+            obj = new DrapedFeatureCollection({
+                source: layerCreator.createFeatureSource(mapLayer, options, this.state.sceneContext.mapCrs),
+                drapingMode: 'per-feature',
                 extrusionOffset: (feature) => {
                     if (typeof obj.userData.extrusionHeight === "string") {
                         return parseFloat(feature.getProperties()[obj.userData.extrusionHeight]) || 0;
@@ -382,7 +372,9 @@ class Map3D extends React.Component {
             });
             obj.castShadow = true;
             obj.receiveShadow = true;
-            this.instance.add(obj);
+            this.instance.add(obj).then(() => {
+                obj.attach(this.map);
+            });
             this.objectMap[objId] = obj;
         }
         obj.userData.extrusionHeight = options.extrusionHeight;
@@ -397,7 +389,9 @@ class Map3D extends React.Component {
         }), {});
         obj.opacity = mapLayer.opacity;
         obj.visible = mapLayer.visible;
-        obj.updateStyles();
+        if (obj.visible) {
+            obj.updateStyles();
+        }
     };
     removeExtrudedLayer = (layerId) => {
         const objId = layerId + ":extruded";
@@ -678,23 +672,25 @@ class Map3D extends React.Component {
             return;
         }
         const projection = this.props.theme.mapCrs;
+        const crs = CoordinateSystem.fromSrid(projection);
 
         // Setup instance
         this.instance = new Instance({
             target: this.container,
-            crs: projection,
+            crs: crs,
             renderer: {
                 clearColor: 0x000000,
                 preserveDrawingBuffer: true
             }
         });
         this.sceneObjectGroup = new Group();
+        this.sceneObjectGroup.name = "sceneObjects";
         this.instance.add(this.sceneObjectGroup);
 
         // Setup map
         const initialBbox = this.props.theme.map3d?.extent ?? this.props.theme.initialBbox;
         const bounds = CoordinatesUtils.reprojectBbox(initialBbox.bounds, initialBbox.crs, projection);
-        const extent = new Extent(projection, bounds[0], bounds[2], bounds[1], bounds[3]);
+        const extent = new Extent(crs, bounds[0], bounds[2], bounds[1], bounds[3]);
         this.map = new Map({
             extent: extent,
             backgroundColor: "white"
@@ -703,7 +699,16 @@ class Map3D extends React.Component {
 
         // Setup camera
         const center = extent.center();
-        this.instance.view.camera.position.set(center.x, center.y, 0.5 * (extent.east - extent.west));
+        if (crsIsGeographic(center.crs)) {
+            const position = Ellipsoid.WGS84.toCartesian(
+                center.latitude,
+                center.longitude,
+                center.altitude,
+            );
+            this.instance.view.camera.position.set(position.x, position.y, 0.5 * (extent.east - extent.west));
+        } else {
+            this.instance.view.camera.position.set(center.x, center.y, 0.5 * (extent.east - extent.west));
+        }
 
         // Skybox
         const cubeTextureLoader = new CubeTextureLoader();
@@ -720,7 +725,7 @@ class Map3D extends React.Component {
 
         // Setup elevation
         const demUrl = MiscUtils.resolveAssetsPath(this.props.theme.map3d?.dtm?.url ?? "");
-        const demCrs = this.props.theme.map3d?.dtm?.crs || "EPSG:3857";
+        const demCrs = CoordinateSystem.fromSrid(this.props.theme.map3d?.dtm?.crs || "EPSG:3857");
         if (demUrl) {
             const demSource = new GeoTIFFSource({
                 url: demUrl,
@@ -813,7 +818,7 @@ class Map3D extends React.Component {
 
         // Add other objects
         (this.props.theme.map3d?.objects3d || []).forEach(entry => {
-            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.name, this.state.sceneContext, {
+            importGltf(MiscUtils.resolveAssetsPath(entry.url), entry.title ?? entry.name, this.state.sceneContext, {
                 visibility: entry.visibility ?? true
             });
         });
@@ -961,7 +966,7 @@ class Map3D extends React.Component {
             scenePos = [scenePos];
         }
         const dtmPos = scenePos.map(p => {
-            return CoordinatesUtils.reproject(p, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs);
+            return CoordinatesUtils.reproject(p, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs.name);
         });
         const dtmExt = [Infinity, Infinity, -Infinity, -Infinity];
         dtmPos.forEach(p => {
@@ -1009,7 +1014,8 @@ class Map3D extends React.Component {
         });
     };
     getTerrainHeightFromMap = (scenePos) => {
-        const coordinates = new Coordinates(this.state.sceneContext.mapCrs, scenePos[0], scenePos[1], 0);
+        const crs = CoordinateSystem.fromSrid(this.state.sceneContext.mapCrs);
+        const coordinates = new Coordinates(crs, scenePos[0], scenePos[1], 0);
         const elevationResult = this.state.sceneContext.map.getElevation({coordinates});
         // const raycaster = new Raycaster(new Vector3(scenePos[0], scenePos[1], 10000));
         // const terrInter = raycaster.intersectObjects([this.map.object3d]).filter(result => result.object.children.length === 0)[0];

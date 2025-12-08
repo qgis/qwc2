@@ -102,7 +102,6 @@ export default class EditableSelect extends React.Component {
         );
     }
     renderOptions = () => {
-        const rect = this.el.getBoundingClientRect();
         const lvalue = this.state.value.toLowerCase();
         const options = this.props.options.map((option, idx) => {
             const label = EditableSelect.optionLabel(option);
@@ -110,11 +109,11 @@ export default class EditableSelect extends React.Component {
                 return null;
             }
             return (
-                <div key={"opt" + idx} onClickCapture={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
+                <div key={"opt" + idx} onClick={() => this.optionSelected(option)} onMouseDown={MiscUtils.killEvent} title={label}>{label}</div>
             );
         }).filter(Boolean);
         return !isEmpty(options) ? (
-            <PopupMenu className="editable-select-dropdown" onClose={() => this.setState({popup: false})} width={rect.width} x={rect.left} y={rect.bottom}>
+            <PopupMenu anchor={this.el} className="editable-select-dropdown" onClose={() => this.setState({popup: false})}>
                 {options}
             </PopupMenu>
         ) : null;
@@ -148,12 +147,12 @@ export default class EditableSelect extends React.Component {
     };
     onFocus = (ev) => {
         ev.target.select();
-        this.setState({focused: true, manualInput: false, popup: true});
+        this.setState({focused: true, manualInput: false});
     };
     onBlur = () => {
         if (!this.props.readOnly) {
             this.props.onChange(this.state.value.trim());
-            this.setState({focused: false, popup: false});
+            this.setState({focused: false});
         }
     };
     onKeyDown = (ev) => {

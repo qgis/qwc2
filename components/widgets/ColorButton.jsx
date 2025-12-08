@@ -11,6 +11,8 @@ import React from 'react';
 import {ColorPicker} from '@vtaits/react-color-picker';
 import PropTypes from 'prop-types';
 
+import MiscUtils from '../../utils/MiscUtils';
+
 import './style/ColorButton.css';
 import '@vtaits/react-color-picker/index.css';
 
@@ -61,13 +63,16 @@ export default class ColorButton extends React.Component {
         const curColor = this.props.color;
         return (
             <div className="ColorButton">
-                <div className="colorbutton-icon" onClick={this.togglePicker}>
+                <div className="colorbutton-icon" onClick={this.togglePicker} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
                     <span style={{backgroundColor: this.cssColor(curColor)}} />
                 </div>
                 <div className="colorbutton-picker" ref={el => { this.pickerEl = el; }} style={pickerStyle}>
                     <div className="colorbutton-picker-icons">
                         {this.state.colors.map((color, idx) => (
-                            <div className="colorbutton-icon" key={"color" + idx} onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}>
+                            <div className="colorbutton-icon" key={"color" + idx}
+                                onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}
+                                onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}
+                            >
                                 <span style={{backgroundColor: this.cssColor(color)}} />
                             </div>
                         ))}

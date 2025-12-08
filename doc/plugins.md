@@ -555,7 +555,9 @@ with containing a container element with id=legendcontainer.
 | addLayerSeparator | `func` | Whether to allow adding separator entries in the layer tree, useful for organizing the tree. | `undefined` |
 | allowCompare | `bool` | Whether to enable the compare function. Requires the `MapCompare` plugin. | `true` |
 | allowImport | `bool` | Whether to allow importing external layers. | `true` |
+| allowLayerTreeSeparators | `bool` | Whether to allow adding layer tree separators. | `undefined` |
 | allowMapTips | `bool` | Whether to allow enabling map tips. | `true` |
+| allowRemovingThemeLayers | `bool` | Whether to allow removing theme layers. | `undefined` |
 | allowSelectIdentifyableLayers | `bool` | Whether to allow selection of identifyable layers. The `showQueryableIcon` property should be `true` to be able to select identifyable layers. | `false` |
 | bboxDependentLegend | `{bool, string}` | Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `false` |
 | enableLegendPrint | `bool` | Whether to enable the legend print functionality. | `true` |

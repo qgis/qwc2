@@ -371,7 +371,7 @@ class HeightProfile extends React.Component {
                 title={LocaleUtils.tr("heightprofile.title")} usePortal={false}
             >
                 {this.state.isloading ? (
-                    <div className="height-profile-loading-indicator" role="body">
+                    <div className="height-profile-loading-indicator">
                         <Spinner className="spinner" /> {LocaleUtils.tr("heightprofile.loading")}
                     </div>
                 ) : this.renderHeightProfile((el) => { this.chart = el; }, true)}
@@ -389,7 +389,7 @@ class HeightProfile extends React.Component {
         }
         if (this.state.data.error) {
             return (
-                <div className="height-profile-error" role="body">
+                <div className="height-profile-error">
                     {LocaleUtils.tr("heightprofile.error") + ": " + this.state.data.error}
                 </div>
             );
@@ -520,7 +520,7 @@ class HeightProfile extends React.Component {
             );
         }
         return (
-            <div className="height-profile-chart-container" role="body" style={{position: 'relative'}}>
+            <div className="height-profile-chart-container" style={{position: 'relative'}}>
                 {datasetSelector}
                 <Line data={data} options={options} ref={saveRef}/>
             </div>

@@ -68,7 +68,13 @@ export default function windows(state = defaultState, action) {
             ...state,
             entries: {
                 ...state.entries,
-                [action.name]: {type: 'notification', text: action.text, notificationType: action.notificationType, sticky: action.sticky}
+                [action.name]: {
+                    type: 'notification',
+                    text: action.text,
+                    notificationType: action.notificationType,
+                    sticky: action.sticky,
+                    actions: action.actions
+                }
             }
         };
     }

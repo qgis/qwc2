@@ -292,7 +292,7 @@ class View3D extends React.Component {
                     title={LocaleUtils.tr("map3d.title")}
                 >
                     {this.state.componentLoaded ? (
-                        <Provider role="body" store={this.store}>
+                        <Provider store={this.store}>
                             <PluginsContainer pluginsConfig={pluginsConfig}>
                                 <Map3D
                                     controlsPosition={this.props.controlsPosition}

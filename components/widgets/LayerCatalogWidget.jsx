@@ -1,11 +1,15 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
 import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import {addLayer, removeLayer, replacePlaceholderLayer} from '../../actions/layers';
+import {NotificationType, showNotification, closeWindow} from '../../actions/windows';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
+import MiscUtils from '../../utils/MiscUtils';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
 import Icon from '../Icon';
 import InputContainer from './InputContainer';
@@ -13,15 +17,18 @@ import InputContainer from './InputContainer';
 import './style/LayerCatalogWidget.css';
 
 
-export default class LayerCatalogWidget extends React.PureComponent {
+class LayerCatalogWidget extends React.PureComponent {
     static propTypes = {
         addLayer: PropTypes.func,
         catalog: PropTypes.array,
+        closeWindow: PropTypes.func,
+        layers: PropTypes.array,
         levelBasedIndentSize: PropTypes.bool,
         mapCrs: PropTypes.string,
         pendingRequests: PropTypes.number,
         removeLayer: PropTypes.func,
-        replacePlaceholderLayer: PropTypes.func
+        replacePlaceholderLayer: PropTypes.func,
+        showNotification: PropTypes.func
     };
     state = {
         catalog: [],
@@ -37,6 +44,9 @@ export default class LayerCatalogWidget extends React.PureComponent {
             this.setState({catalog: this.props.catalog || []});
         }
     }
+    componentWillUnmount() {
+        this.props.closeWindow("existinglayers");
+    }
     renderCatalogEntry(entry, path, level = 0, idx) {
         const hasSublayers = !isEmpty(entry.sublayers);
         const sublayers = hasSublayers ? entry.sublayers.map((sublayer, i) => this.renderCatalogEntry(sublayer, [...path, i], level + 1, i)) : [];
@@ -51,12 +61,16 @@ export default class LayerCatalogWidget extends React.PureComponent {
                     ) : (
                         <span className="layer-catalog-widget-entry-iconspacer" />
                     )}
-                    <span className="layer-catalog-widget-entry-contents" onClick={() => type ? this.addServiceLayer(entry, !hasSublayers) : this.toggleLayerListEntry(path)}>
+                    <span
+                        className="layer-catalog-widget-entry-contents" onClick={() => type ? this.checkAddServiceLayer(entry, !hasSublayers) : this.toggleLayerListEntry(path)}
+                        onKeyDown={MiscUtils.checkKeyActivate}
+                        tabIndex={0}
+                    >
                         {type ? (<span className="layer-catalog-widget-entry-service">{type}</span>) : null}
                         {entry.title}
                     </span>
                     {hasSublayers && type === "wms" ? (
-                        <Icon icon="group" onClick={() => this.addServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
+                        <Icon icon="group" onClick={() => this.checkAddServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
                     ) : null}
                 </div>
                 {entry.expanded ? sublayers : null}
@@ -124,29 +138,51 @@ export default class LayerCatalogWidget extends React.PureComponent {
             return {filter: text, filteredCatalog: filteredCatalog};
         });
     };
-    addServiceLayer = (entry, asGroup = false) => {
-        if (entry.resource) {
-            const params = LayerUtils.splitLayerUrlParam(entry.resource);
+    checkAddServiceLayer = (entry, asGroup = false) => {
+        const resource = entry.resource ? LayerUtils.splitLayerUrlParam(entry.resource) : null;
+        const existingSublayers = this.props.layers.reduce((res, layer) => {
+            if (layer.type === (entry.type ?? resource?.type) && layer.url === (entry.url ?? resource?.url)) {
+                return [...res, ...LayerUtils.getSublayerNames(layer), layer.name];
+            }
+            return res;
+        }, []);
+        if (existingSublayers.includes(entry.name ?? resource?.name)) {
+            const text = LocaleUtils.tr("themelayerslist.existinglayers") + ": " + entry.title ?? entry.name;
+            const actions = [{
+                name: LocaleUtils.tr("themelayerslist.addanyway"),
+                onClick: () => {
+                    this.addServiceLayer(entry, resource, asGroup);
+                    return true;
+                }
+            }];
+            this.props.showNotification("existinglayers", text, NotificationType.INFO, false, actions);
+        } else {
+            this.addServiceLayer(entry, resource, asGroup);
+        }
+    };
+    addServiceLayer = (entry, resource, asGroup = false) => {
+        this.props.closeWindow("existinglayers");
+        if (resource) {
             // Create placeholder layer
             this.props.addLayer({
-                id: params.id,
+                id: resource.id,
                 type: "placeholder",
-                name: params.name,
-                title: entry.title ?? params.name,
-                role: params.USERLAYER,
+                name: resource.name,
+                title: entry.title ?? resource.name,
+                role: resource.USERLAYER,
                 loading: true
             });
-            ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
+            ServiceLayerUtils.findLayers(resource.type, resource.url, [resource], this.props.mapCrs, (id, layer) => {
                 if (layer) {
                     if (entry.sublayers === false || !asGroup) {
                         layer.sublayers = null;
                     }
-                    LayerUtils.propagateLayerProperty(layer, "opacity", params.opacity);
-                    this.props.replacePlaceholderLayer(params.id, layer);
+                    LayerUtils.propagateLayerProperty(layer, "opacity", resource.opacity);
+                    this.props.replacePlaceholderLayer(resource.id, layer);
                 } else {
                     // eslint-disable-next-line
                     alert(LocaleUtils.tr("importlayer.addfailed"));
-                    this.props.removeLayer(params.id);
+                    this.props.removeLayer(resource.id);
                 }
             });
         } else if (entry.type === "wms" || entry.type === "wfs" || entry.type === "wmts") {
@@ -158,3 +194,13 @@ export default class LayerCatalogWidget extends React.PureComponent {
         }
     };
 }
+
+export default connect(state => ({
+    layers: state.layers.flat
+}), {
+    addLayer: addLayer,
+    closeWindow: closeWindow,
+    removeLayer: removeLayer,
+    replacePlaceholderLayer: replacePlaceholderLayer,
+    showNotification: showNotification
+})(LayerCatalogWidget);

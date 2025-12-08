@@ -650,6 +650,7 @@
       "vertex": ""
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Přidat vrstvu",
       "addlayerstotheme": "Přidat vrstvy do aktuálního tématu",
       "addselectedlayers": "Přidat vybrané vrstvy",

@@ -11,6 +11,7 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
+import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
 
 import './style/ToggleSwitch.css';
@@ -31,14 +32,14 @@ export default class ToggleSwitch extends React.Component {
             "toggle-switch-read-only": this.props.readOnly
         });
         return (
-            <div className={classNames} onClick={this.onClick}>
+            <div className={classNames} onClick={this.onClick} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
                 <span className="toggle-switch-yes"><Icon icon="ok" /></span>
                 <span className="toggle-switch-slider"><Icon icon="menu-hamburger" /></span>
                 <span className="toggle-switch-no"><Icon icon="remove" /></span>
                 {/* Ensure toggle switch appears in form.elements */}
                 <input checked={this.props.active} name={this.props.name}
                     onChange={()=>{}} readOnly={this.props.readOnly}
-                    required={this.props.required} style={{visibility: 'none'}}
+                    required={this.props.required} style={{visibility: 'hidden'}}
                     type="checkbox" value={this.props.active} />
             </div>
         );

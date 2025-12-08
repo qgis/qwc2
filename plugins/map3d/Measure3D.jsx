@@ -221,12 +221,14 @@ export default class Measure3D extends React.Component {
         ev.view.addEventListener("pointerup", this.clearResult, {once: true});
     };
     clearResult = () => {
-        this.drawLayer.source.clear();
-        this.measurementObjects.forEach(object => {
-            this.props.sceneContext.scene.remove(object);
-        });
-        this.measurementObjects = [];
-        this.setState({result: null});
+        if (this.state.haveResult) {
+            this.drawLayer.source.clear();
+            this.measurementObjects.forEach(object => {
+                this.props.sceneContext.scene.remove(object);
+            });
+            this.measurementObjects = [];
+            this.setState({result: null, haveResult: false});
+        }
     };
     restart = () => {
         if (this.abortController) {
@@ -297,7 +299,7 @@ export default class Measure3D extends React.Component {
             this.measurementObjects.push(shape);
             this.props.sceneContext.scene.remove(point);
 
-            this.setState({result: {pos: [pos.x, pos.y, pos.z], ground: ground}});
+            this.setState({result: {pos: [pos.x, pos.y, pos.z], ground: ground, haveResult: true}});
 
             // Setup for next measurement
             this.restart();
@@ -313,6 +315,7 @@ export default class Measure3D extends React.Component {
         }
         const pos = point.points[0];
 
+        let haveResult = false;
         if ((this.state.result || []).length === 1) {
             // Add line if two points drawn
             const points = [this.state.result[0], pos];
@@ -331,6 +334,7 @@ export default class Measure3D extends React.Component {
             ]);
             this.props.sceneContext.scene.add(line);
             this.measurementObjects.push(line);
+            haveResult = true;
         } else {
             // Add first drawn point
             const shape = new Shape({
@@ -342,7 +346,8 @@ export default class Measure3D extends React.Component {
         }
         this.props.sceneContext.scene.remove(point);
         this.setState(state => ({
-            result: [...(state.result || []), {x: pos.x, y: pos.y, z: pos.z}]
+            result: [...(state.result || []), {x: pos.x, y: pos.y, z: pos.z}],
+            haveResult: haveResult
         }));
 
         this.restart();
@@ -387,7 +392,7 @@ export default class Measure3D extends React.Component {
             len3d += Math.sqrt(dx * dx + dy * dy + dz * dz);
             line3d[i][3] = len3d; // Also store incremental length for height profie
         }
-        this.setState({result: {length: len3d, profile: line3d}});
+        this.setState({result: {length: len3d, profile: line3d}, haveResult: true});
         this.restart();
     };
     measureArea = (polygon) => {
@@ -451,7 +456,7 @@ export default class Measure3D extends React.Component {
                 }
             }
         }
-        this.setState({result: area});
+        this.setState({result: area, haveResult: true});
 
         // Setup for next measurement
         this.restart();

@@ -78,7 +78,7 @@ export default class NumericInput3D extends React.Component {
         const contents = (
             <ResizeableWindow fitHeight icon="numericinput" initialWidth={350} initialX={-1}
                 onClose={this.props.toggleNumericInput} scrollable title={LocaleUtils.tr("draw3d.numericinput")} >
-                <div className="draw3d-numeric-input-body" role="body">
+                <div className="draw3d-numeric-input-body">
                     <table>
                         <tbody>
                             <tr>

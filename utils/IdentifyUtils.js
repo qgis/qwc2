@@ -263,6 +263,9 @@ const IdentifyUtils = {
         if (htmlContent.length > 0) {
             featureResult.properties.htmlContent = htmlContent[0].textContent;
             featureResult.properties.htmlContentInline = (htmlContent[0].getAttribute("inline") === "1" || htmlContent[0].getAttribute("inline") === "true");
+            featureResult.properties.htmlContent = featureResult.properties.htmlContent.replace(
+                /translate\(([^)]+)\)/g, (match, cap) => translations?.layers?.[layername]?.fields?.[cap] ?? cap
+            );
         }
         if (!isEmpty(attrmapping)) {
             featureResult.attribnames = attrmapping;

@@ -200,6 +200,7 @@ class API extends React.Component {
         window.qwc2.CoordinatesUtils = CoordinatesUtils;
         window.qwc2.EditingInterface = EditingInterface;
         window.qwc2.EditingUtils = EditingUtils;
+        window.qwc2.LayerUtils = LayerUtils;
         window.qwc2.LocaleUtils = LocaleUtils;
         window.qwc2.MapUtils = MapUtils;
         window.qwc2.PermaLinkUtils = PermaLinkUtils;

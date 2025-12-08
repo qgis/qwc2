@@ -650,6 +650,7 @@
       "vertex": ""
     },
     "themelayerslist": {
+      "addanyway": "",
       "addlayer": "Lisää taso",
       "addlayerstotheme": "Lisää tasoja nykyiseen karttaan",
       "addselectedlayers": "Lisää valitut tasot",

@@ -32,7 +32,8 @@ div.background-switcher-item:hover {
     border: 1px solid var(--color-active);
 }
 
-div.background-switcher-item:hover div.background-switcher-group {
+div.background-switcher-item:hover div.background-switcher-group,
+div.background-switcher-item:focus-within div.background-switcher-group {
     display: block;
 }
 

@@ -72,7 +72,38 @@ const MiscUtils = {
     killEvent(ev) {
         if (ev.cancelable) {
             ev.stopPropagation();
+            ev.nativeEvent?.stopImmediatePropagation?.();
             ev.preventDefault();
+        }
+    },
+    checkKeyActivate(ev, onEsc = null) {
+        if (ev.code === "Space" || ev.code === "Enter") {
+            MiscUtils.killEvent(ev);
+            ev.currentTarget.click();
+        } else if (ev.code === "Escape" && onEsc) {
+            MiscUtils.killEvent(ev);
+            onEsc();
+        }
+    },
+    checkKeyActivatePointerDown(ev) {
+        if (ev.code === "Space" || ev.code === "Enter") {
+            MiscUtils.killEvent(ev);
+            ev.currentTarget.dispatchEvent(new PointerEvent("pointerdown", {
+                bubbles: true,
+                cancelable: true,
+                pointerId: 1,
+                pointerType: "mouse",
+                view: ev.view
+            }));
+            ev.currentTarget.addEventListener("keyup", (ev2) => {
+                ev2.currentTarget.dispatchEvent(new PointerEvent("pointerup", {
+                    bubbles: true,
+                    cancelable: true,
+                    pointerId: 1,
+                    pointerType: "mouse",
+                    view: ev2.view
+                }));
+            }, {once: true});
         }
     },
     blendColors(color1, color2, ratio) {

@@ -650,6 +650,7 @@
       "vertex": "Snap to vertices"
     },
     "themelayerslist": {
+      "addanyway": "Add anyway",
       "addlayer": "Add layer",
       "addlayerstotheme": "Add layers to current map",
       "addselectedlayers": "Add selected layer(s)",

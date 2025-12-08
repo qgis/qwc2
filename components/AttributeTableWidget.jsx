@@ -30,6 +30,7 @@ import {FeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '..
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/AttributeTableWidget.css';
@@ -80,7 +81,6 @@ class AttributeTableWidget extends React.Component {
         selectedLayer: "",
         loadedLayer: "",
         curEditConfig: null,
-        curTranslations: null,
         fieldTranslations: null,
         features: [],
         filteredSortedFeatures: [],
@@ -181,7 +181,7 @@ class AttributeTableWidget extends React.Component {
                         <tr>
                             <th />
                             {!this.props.showDisplayFieldOnly ? (
-                                <th onClick={() => this.sortBy("id")} title={this.translateFieldName("id")}>
+                                <th onClick={() => this.sortBy("id")} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName("id")}>
                                     <span>
                                         <span className="attribtable-table-headername">{this.translateFieldName("id")}</span>
                                         {this.renderSortIndicator("id")}
@@ -190,7 +190,7 @@ class AttributeTableWidget extends React.Component {
                                 </th>
                             ) : null}
                             {fields.map((field, idx) => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)} title={this.translateFieldName(field.name)}>
+                                <th key={field.id} onClick={() => this.sortBy(field.id)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(field.name)}>
                                     <span>
                                         {this.renderColumnResizeHandle(idx + 1, 'l')}
                                         <span className="attribtable-table-headername">{this.translateFieldName(field.name)}</span>
@@ -307,10 +307,14 @@ class AttributeTableWidget extends React.Component {
                             {Object.entries(this.props.editConfigs).map(([wmsName, serviceConfigs]) => (
                                 Object.entries(serviceConfigs).map(([layerName, editConfig]) => {
                                     const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName);
-                                    if (!match) {
-                                        return null;
+                                    let layerTitle = layerName;
+                                    if (match) {
+                                        layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
+                                    } else {
+                                        // Note: geometry-less tables are filtered from the theme sublayers
+                                        const translations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations;
+                                        layerTitle = translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? layerName;
                                     }
-                                    const layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
                                     const value = wmsName + "#" + layerName;
                                     return (
                                         <option key={value} value={value}>{layerTitle}</option>
@@ -412,7 +416,7 @@ class AttributeTableWidget extends React.Component {
                             filteredSortedFeatures: this.filteredSortedFeatures(features, state2),
                             loadedLayer: selectedLayer,
                             curEditConfig: editConfig,
-                            curFieldTranslations: fieldTranslations
+                            fieldTranslations: fieldTranslations
                         }));
                     } else {
                         // eslint-disable-next-line

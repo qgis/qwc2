@@ -15,7 +15,7 @@ import {WorkerMessageHandler} from "pdfjs-dist/build/pdf.worker";
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
-import {addLayer, addLayerFeatures, removeLayer, replacePlaceholderLayer} from '../actions/layers';
+import {addLayer, addLayerFeatures} from '../actions/layers';
 import EditableSelect from '../components/widgets/EditableSelect';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -35,8 +35,6 @@ class ImportLayer extends React.Component {
         addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         mapCrs: PropTypes.string,
-        removeLayer: PropTypes.func,
-        replacePlaceholderLayer: PropTypes.func,
         theme: PropTypes.object,
         themes: PropTypes.object
     };
@@ -88,8 +86,7 @@ class ImportLayer extends React.Component {
             layerList = (
                 <LayerCatalogWidget
                     addLayer={this.props.addLayer} catalog={this.state.serviceLayers}
-                    pendingRequests={this.state.pendingRequests}
-                    removeLayer={this.props.removeLayer} replacePlaceholderLayer={this.props.replacePlaceholderLayer} />
+                    pendingRequests={this.state.pendingRequests} />
             );
         }
         const disableLocal = ConfigUtils.getConfigProp("disableImportingLocalLayers", this.props.theme);
@@ -490,7 +487,5 @@ export default connect((state) => ({
     themes: state.theme.themes
 }), {
     addLayer: addLayer,
-    addLayerFeatures: addLayerFeatures,
-    removeLayer: removeLayer,
-    replacePlaceholderLayer: replacePlaceholderLayer
+    addLayerFeatures: addLayerFeatures
 })(ImportLayer);

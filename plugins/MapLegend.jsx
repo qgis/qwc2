@@ -113,7 +113,7 @@ class MapLegend extends React.Component {
                 initiallyDocked={this.props.geometry.initiallyDocked} maximizeable={false}
                 onClose={this.props.lockedWindow ? null : this.onClose} title={LocaleUtils.tr("maplegend.windowtitle")}
             >
-                <div className="map-legend" role="body">
+                <div className="map-legend">
                     {this.props.layers.map(layer => {
                         if (this.state.onlyVisibleLegend && !layer.visibility) {
                             return null;

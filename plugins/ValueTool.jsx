@@ -110,7 +110,7 @@ class ValueTool extends React.Component {
                 initiallyDocked={this.props.geometry.initiallyDocked}
                 onClose={this.onWindowClose} title={LocaleUtils.tr("valuetool.title")}
             >
-                <div className="valuetool-body" role="body">
+                <div className="valuetool-body">
                     <ButtonBar active={this.state.activeTab} buttons={buttons} onClick={key => this.setState({activeTab: key})} />
                     {tab}
                 </div>
