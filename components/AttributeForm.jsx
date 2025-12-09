@@ -60,13 +60,11 @@ class AttributeForm extends React.Component {
         childEdit: null,
         relationTables: {},
         formValid: true,
-        captchaResponse: null,
-        dynamicHeight: false
+        captchaResponse: null
     };
     constructor(props) {
         super(props);
         this.form = null;
-        this.containerRef = React.createRef();
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -149,7 +147,7 @@ class AttributeForm extends React.Component {
             readOnlyMsg = LocaleUtils.tr("editing.geomnonzeroz");
         }
         return (
-            <div className="AttributeForm" >
+            <div className="AttributeForm">
                 {readOnlyMsg ? (
                     <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
@@ -313,15 +311,6 @@ class AttributeForm extends React.Component {
             hideDelete: true
         };
         this.setState({childEdit: childEdit});
-        // if (!this.state.busy) {
-        //     const attributeFormContainer = this.containerRef.current;
-        //     if (attributeFormContainer) {
-        //         setTimeout(() => {
-        //             const qtForm = attributeFormContainer.querySelector(".link-feature-form-container .qt-designer-layout-grid") || attributeFormContainer.querySelector(".qt-designer-layout-grid");
-        //             this.setState({dynamicHeight: qtForm.scrollHeight + 100 || attributeFormContainer.scrollHeight + 100});
-        //         }, 50);
-        //     }
-        // }
     };
     finishEditRelationRecord = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
@@ -347,8 +336,6 @@ class AttributeForm extends React.Component {
             this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: changed});
         }
         this.setState({childEdit: null});
-
-        // this.setState({childEdit: null, dynamicHeight: ""});
     };
     onDiscard = (action) => {
         if (action === "Discard") {
