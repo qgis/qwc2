@@ -337,10 +337,10 @@ class Cyclomedia extends React.Component {
             <!DOCTYPE html>
             <html>
             <head>
-            <script type="text/javascript" src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
-            <script type="text/javascript" src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
-            <script type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v${this.props.cyclomediaVersion}/StreetSmartApi.js"></script>
-            <script type="text/javascript">
+            <script nonce="${window.__CSP_NONCE__ ?? ''}" type="text/javascript" src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+            <script nonce="${window.__CSP_NONCE__ ?? ''}" type="text/javascript" src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+            <script nonce="${window.__CSP_NONCE__ ?? ''}" type="text/javascript" src="https://streetsmart.cyclomedia.com/api/v${this.props.cyclomediaVersion}/StreetSmartApi.js"></script>
+            <script nonce="${window.__CSP_NONCE__ ?? ''}" type="text/javascript">
             let apiInitialized = false;
             let initCallback = null;
             let posCallback = null;
