@@ -544,6 +544,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.mapTips = configItem.mapTips;
             resultItem.userMap = configItem.userMap;
             resultItem.map3d = configItem.map3d;
+            resultItem.obliqueDatasets = configItem.obliqueDatasets;
             resultItem.viewMode = configItem.viewMode;
             resultItem.editConfig = getEditConfig(configItem.editConfig);
 

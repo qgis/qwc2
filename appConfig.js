@@ -42,6 +42,7 @@ import MapTipPlugin from './plugins/MapTip';
 import MeasurePlugin from './plugins/Measure';
 import NewsPopupPlugin from './plugins/NewsPopup';
 import ObjectListPlugin from './plugins/ObjectList';
+import ObliqueViewPlugin from './plugins/ObliqueView';
 import OverviewMapPlugin from './plugins/OverviewMap';
 import PanoramaxPlugin from './plugins/Panoramax';
 import PortalPlugin from './plugins/Portal';
@@ -112,6 +113,7 @@ export default {
             MeasurePlugin: MeasurePlugin,
             NewsPopupPlugin: NewsPopupPlugin,
             ObjectListPlugin: ObjectListPlugin(/* CustomEditingInterface */),
+            ObliqueViewPlugin: ObliqueViewPlugin,
             OverviewMapPlugin: OverviewMapPlugin,
             PanoramaxPlugin: PanoramaxPlugin,
             PortalPlugin: PortalPlugin,

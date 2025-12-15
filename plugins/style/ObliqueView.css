@@ -1,0 +1,112 @@
+div.obliqueview-body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+div.obliqueview-empty-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(200, 200, 200);
+    z-index: 4;
+}
+
+div.obliqueview-map {
+    height: 100%;
+}
+
+div.obliqueview-nav-rotate {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 4em;
+    height: 4em;
+    border-radius: 3em;
+    color: var(--map-button-text-color);
+    background-color: var(--map-button-bg-color);
+    box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+    margin-bottom: 0.5em;
+    transition: transform 0.5s;
+}
+
+div.obliqueview-nav-rotate > span {
+    flex: 0 0 1.25em;
+}
+
+span.obliqueview-nav-dir {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.5s;
+}
+
+div.obliqueview-nav-zoom {
+    position: absolute;
+    right: 0.5em;
+    top: 6em;
+    width: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--map-button-text-color);
+    background-color: var(--map-button-bg-color);
+    box-shadow: 0px 5px 10px rgba(136, 136, 136, 0.5);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.5s, color 0.5s;
+    flex-direction: column;
+    margin: 0 1.5em 0.5em 1em;
+}
+
+div.obliqueview-nav-zoom > span {
+    height: 2em;
+    width: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.obliqueview-nav-zoom > span:first-child {
+    border-bottom: 1px solid var(--map-button-text-color);
+}
+
+div.obliqueview-bottombar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3em;
+    z-index: 100;
+    color: var(--panel-text-color);
+    background-color: var(--panel-bg-color);
+    box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
+    backdrop-filter: blur(3px);
+    font-size: 75%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.obliqueview-scalechooser {
+    width: 10em;
+    display: flex;
+    align-items: center;
+}
+
+div.obliqueview-scalechooser > div.input-container {
+    flex: 1 1 auto;
+}

@@ -1,0 +1,300 @@
+/**
+ * Copyright 2025 Sourcepole AG
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+import React from 'react';
+import {connect} from 'react-redux';
+
+import axios from 'axios';
+import ol from 'openlayers';
+import PropTypes from 'prop-types';
+
+import {setCurrentTask} from '../actions/task';
+import Icon from '../components/Icon';
+import ResizeableWindow from '../components/ResizeableWindow';
+import LayerRegistry from '../components/map/layers/index';
+import InputContainer from '../components/widgets/InputContainer';
+import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
+import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
+
+import './style/ObliqueView.css';
+
+
+/**
+ * Display oblique satellite imagery.
+ */
+class ObliqueView extends React.Component {
+    static propTypes = {
+        active: PropTypes.bool,
+        /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
+        geometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool,
+            side: PropTypes.string
+        }),
+        /** The initial map scale. */
+        initialScale: PropTypes.number,
+        mapBbox: PropTypes.object,
+        projection: PropTypes.string,
+        /** A list of allowed map scales, in decreasing order. */
+        scales: PropTypes.arrayOf(PropTypes.number),
+        setCurrentTask: PropTypes.func,
+        theme: PropTypes.object,
+        themes: PropTypes.object
+    };
+    static defaultProps = {
+        geometry: {
+            initialWidth: 480,
+            initialHeight: 640,
+            initialX: 0,
+            initialY: 0,
+            initiallyDocked: true,
+            side: 'left'
+        },
+        initialScale: 1000,
+        scales: [20000, 10000, 5000, 2500, 1000, 500, 250]
+    };
+    static defaultState = {
+        active: false,
+        selectedDataset: null,
+        datasetConfig: null,
+        currentDirection: null,
+        currentZoom: 0
+    };
+    constructor(props) {
+        super(props);
+        const controls = ol.control.defaults({
+            zoom: false,
+            attribution: false,
+            rotate: false
+        });
+        const interactions = ol.interaction.defaults({
+            onFocusOnly: false
+        });
+        this.map = new ol.Map({controls, interactions});
+        this.map.on('moveend', this.searchClosestImage);
+        this.map.on('rotateend', this.searchClosestImage);
+        this.closestImage = null;
+        this.obliqueImageryLayer = null;
+        this.state = ObliqueView.defaultState;
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.active && !prevProps.active) {
+            this.setState({active: true});
+            this.props.setCurrentTask(null);
+        }
+        if (
+            this.props.active && this.props.theme &&
+            (this.props.theme !== prevProps.theme) || (this.props.active && !prevProps.active)
+        ) {
+            const datasets = this.props.theme.obliqueDatasets || [];
+            const defaultDataset = datasets.find(entry => entry.default)?.name ?? datasets[0]?.name;
+            this.setState({selectedDataset: defaultDataset, datasetConfig: null, currentDirection: null});
+        }
+        if (this.state.selectedDataset !== prevState.selectedDataset) {
+            this.closestImage = null;
+            this.obliqueImageryLayer = null;
+            this.queryDatasetConfig();
+        }
+        if (this.state.datasetConfig && this.state.datasetConfig !== prevState.datasetConfig) {
+            this.setupLayer();
+        }
+        if (this.state.datasetConfig && this.state.currentDirection !== prevState.currentDirection) {
+            this.obliqueImageryLayer?.getSource?.()?.refresh?.();
+            this.map.getView()?.setRotation?.(this.getRotation() / 180 * Math.PI);
+        }
+        if (this.state.datasetConfig && this.state.currentZoom !== prevState.currentZoom) {
+            this.map.getView()?.setZoom?.(this.state.currentZoom);
+        }
+    }
+    onClose = () => {
+        this.setState(ObliqueView.defaultState);
+    };
+    render() {
+        if (!this.state.active) {
+            return null;
+        }
+        const rot = this.getRotation();
+        return (
+            <ResizeableWindow dockable={this.props.geometry.side} icon="oblique"
+                initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
+                initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                initiallyDocked={this.props.geometry.initiallyDocked}
+                onClose={this.onClose} splitScreenWhenDocked splitTopAndBottomBar title={LocaleUtils.tr("obliqueview.title")}
+            >
+                <div className="obliqueview-body">
+                    <div className="obliqueview-map" ref={el => this.map.setTarget(el)} tabIndex={0} />
+                    {!this.state.selectedDataset && (
+                        <div className="obliqueview-empty-overlay">
+                            {LocaleUtils.tr("obliqueview.nodataset")}
+                        </div>
+                    )}
+                    <div className="obliqueview-nav-rotate" style={{transform: `rotate(${rot}deg)`}}>
+                        <span />
+                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "n"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>N</span>
+                        <span />
+                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "w"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>W</span>
+                        <span />
+                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "e"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>E</span>
+                        <span />
+                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "s"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>S</span>
+                        <span />
+                    </div>
+                    <div className="obliqueview-nav-zoom">
+                        <Icon icon="plus" onClick={() => this.changeZoom(+1)} />
+                        <Icon icon="minus" onClick={() => this.changeZoom(-1)} />
+                    </div>
+                    <div className="obliqueview-bottombar">
+                        {this.renderScaleChooser()}
+                    </div>
+                </div>
+            </ResizeableWindow>
+        );
+    }
+    renderScaleChooser = () => {
+        return (
+            <div className="obliqueview-scalechooser">
+                <span>{LocaleUtils.tr("bottombar.scale_label")}:&nbsp;</span>
+                <InputContainer>
+                    <span role="prefix"> 1 : </span>
+                    <select onChange={ev => this.setState({currentZoom: parseInt(ev.target.value, 10)})} role="input" value={this.state.currentZoom}>
+                        {this.props.scales.map((item, index) =>
+                            (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
+                        )}
+                    </select>
+                </InputContainer>
+            </div>
+        );
+    };
+    changeZoom = (delta) => {
+        this.setState(state => ({currentZoom: Math.max(0, Math.min(state.currentZoom + delta, this.props.scales.length - 1))}));
+    };
+    queryDatasetConfig = () => {
+        const obliqueImageryServiceUrl = ConfigUtils.getConfigProp('obliqueImageryServiceUrl');
+        if (this.state.selectedDataset && obliqueImageryServiceUrl) {
+            const reqUrl = obliqueImageryServiceUrl.replace(/\/$/, '') + `/${this.state.selectedDataset}/config`;
+            axios.get(reqUrl).then(response => {
+                const datasetConfig = response.data;
+                const direction = 'n' in datasetConfig.image_centers ? 'n' : Object.keys(datasetConfig.image_centers)[0];
+                this.setState({datasetConfig: datasetConfig, currentDirection: direction});
+            }).catch(() => {
+                /* eslint-disable-next-line */
+                console.warn("Failed to load dataset config");
+            });
+        }
+    };
+    setupLayer = () => {
+        const datasetConfig = this.state.datasetConfig;
+
+        const projection = new ol.proj.Projection({
+            code: datasetConfig.crs,
+            extent: datasetConfig.extent,
+            units: "m"
+        });
+        const targetScale = this.props.initialScale;
+        const zoom = this.props.scales.reduce((best, v, i) =>
+            Math.abs(v - targetScale) < Math.abs(this.props.scales[best] - targetScale) ? i : best, 0
+        );
+        this.map.setView(new ol.View({
+            projection: projection,
+            // extent: datasetConfig.extent,
+            center: ol.extent.getCenter(datasetConfig.extent),
+            rotation: this.getRotation() / 180 * Math.PI,
+            zoom: zoom,
+            resolutions: MapUtils.getResolutionsForScales(this.props.scales, datasetConfig.crs),
+            constrainResolution: true
+            // showFullExtent: true
+        }));
+        this.setState({currentZoom: zoom});
+        this.map.on('moveend', () => {
+            this.setState(state => {
+                const newZoom = this.map.getView().getZoom();
+                if (newZoom !== state.currentZoom) {
+                    return {currentZoom: newZoom};
+                }
+                return null;
+            });
+        });
+
+        const layers = [];
+
+        const themeConfig = this.props.theme.obliqueDatasets.find(entry => entry.name === this.state.selectedDataset);
+        if (themeConfig.backgroundLayer) {
+            const layerConfig = LayerUtils.splitLayerUrlParam(themeConfig.backgroundLayer);
+            layerConfig.version = this.props.themes.defaultWMSVersion || "1.3.0";
+            layerConfig.opacity = themeConfig.backgroundOpacity ?? 127;
+            const layerCreator = LayerRegistry[layerConfig.type];
+            if (layerCreator) {
+                layers.push(layerCreator.create(layerConfig, this.map));
+            }
+        }
+
+        this.obliqueImageryLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                projection: projection,
+                tileGrid: new ol.tilegrid.TileGrid({
+                    extent: datasetConfig.extent,
+                    resolutions: datasetConfig.resolutions,
+                    tileSize: datasetConfig.tileSize,
+                    origin: datasetConfig.origin
+                }),
+                url: datasetConfig.url,
+                crossOrigin: "anonymous",
+                tileLoadFunction: (tile, src) => {
+                    if ((this.closestImage ?? null) !== null) {
+                        src += "?img=" + this.closestImage;
+                    }
+                    tile.getImage().src = src.replace('{direction}', this.state.currentDirection);
+                }
+            })
+        });
+        layers.push(this.obliqueImageryLayer);
+        this.map.setLayers(layers);
+    };
+    searchClosestImage = () => {
+        let best = null;
+        const imageCenters = this.state.datasetConfig?.image_centers?.[this.state.currentDirection];
+        if (imageCenters) {
+            const center = this.map.getView().getCenter();
+            const dsqr = (p, q) => (p[0] - q[0]) * (p[0] - q[0]) + (p[1] - q[1]) * (p[1] - q[1]);
+            best = 0;
+            let bestDist = dsqr(center, imageCenters[0]);
+            for (let i = 1; i < imageCenters.length; ++i) {
+                const dist = dsqr(center, imageCenters[i]);
+                if (dist < bestDist) {
+                    bestDist = dist;
+                    best = i;
+                }
+            }
+        }
+        if (best !== this.closestImage) {
+            if (this.obliqueImageryLayer) {
+                this.obliqueImageryLayer.getSource().refresh();
+            }
+            this.closestImage = best;
+        }
+    };
+    getRotation = () => {
+        return {n: 0, w: 90, e: -90, s: 180}[this.state.currentDirection];
+    };
+}
+
+
+export default connect((state) => ({
+    active: state.task.id === "ObliqueView",
+    mapBbox: state.map.bbox,
+    theme: state.theme.current,
+    themes: state.theme.themes
+}), {
+    setCurrentTask: setCurrentTask
+})(ObliqueView);

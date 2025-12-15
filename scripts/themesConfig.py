@@ -540,6 +540,8 @@ def getTheme(config, configItem, result, resultItem):
 
         if "map3d" in configItem:
             resultItem["map3d"] = configItem["map3d"]
+        if "obliqueDatasets" in configItem:
+            resultItem["obliqueDatasets"] = configItem["obliqueDatasets"]
         if "viewMode" in configItem:
             resultItem["viewMode"] = configItem["viewMode"]
 
