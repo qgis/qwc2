@@ -50,6 +50,7 @@
         "MeasureLineString": "Misura una linea",
         "MeasurePolygon": "Misura un poligono",
         "NewsPopup": "Attualità",
+        "ObliqueView": "Vista aerea obliqua",
         "Panoramax": "Panoramax",
         "Portal": "Portale",
         "PrintScreen3D": "Esporta raster",
@@ -460,6 +461,10 @@
       "side": "Lato",
       "width": "Larghezza",
       "windowtitle": "Formulario numerico"
+    },
+    "obliqueview": {
+      "nodataset": "Nessuna immagine aerea obliqua disponibile",
+      "title": "Vista aerea obliqua"
     },
     "panoramax": {
       "notfound": "Nessun immagine disponibile per questa posizione",

@@ -50,6 +50,7 @@
         "MeasureLineString": "Medir una línea",
         "MeasurePolygon": "Medir un polígono",
         "NewsPopup": "Noticias",
+        "ObliqueView": "",
         "Panoramax": "Panoramax",
         "Portal": "Portal",
         "PrintScreen3D": "Exportar ráster",
@@ -460,6 +461,10 @@
       "side": "Lado",
       "width": "Ancho",
       "windowtitle": "Entrada numérica"
+    },
+    "obliqueview": {
+      "nodataset": "",
+      "title": ""
     },
     "panoramax": {
       "notfound": "No hay imagen disponible para esta ubicación.",

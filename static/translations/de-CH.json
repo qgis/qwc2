@@ -50,6 +50,7 @@
         "MeasureLineString": "Messen Linie",
         "MeasurePolygon": "Messen Polygon",
         "NewsPopup": "Aktuelles",
+        "ObliqueView": "Schrägluftbildansicht",
         "Panoramax": "Panoramax",
         "Portal": "Portal",
         "PrintScreen3D": "Raster Export",
@@ -460,6 +461,10 @@
       "side": "Seite",
       "width": "Breite",
       "windowtitle": "Numerische Eingabe"
+    },
+    "obliqueview": {
+      "nodataset": "Keine Schrägluftbilder verfügbar",
+      "title": "Schrägluftbildansicht"
     },
     "panoramax": {
       "notfound": "An diesem Ort ist kein Bild verfügbar.",

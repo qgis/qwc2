@@ -50,6 +50,7 @@
         "MeasureLineString": "Измерване на линия",
         "MeasurePolygon": "Измерване на полигон",
         "NewsPopup": "",
+        "ObliqueView": "",
         "Panoramax": "",
         "Portal": "Портал",
         "PrintScreen3D": "Експорт на мрежата",
@@ -460,6 +461,10 @@
       "side": "Страна",
       "width": "Ширина",
       "windowtitle": "Цифрово въвеждане"
+    },
+    "obliqueview": {
+      "nodataset": "",
+      "title": ""
     },
     "panoramax": {
       "notfound": "",

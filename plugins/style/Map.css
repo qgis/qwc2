@@ -9,8 +9,10 @@ div.map-contents {
 /* Move and re-style rotation reset button */
 div.ol-rotate {
     padding: 0;
-    top: 4em!important;
-    right: 0.5em!important;
+    bottom: 2.75em!important;
+    left: 0.5em!important;
+    right: initial!important;
+    top: initial!important;
 }
 
 div.ol-rotate button {

@@ -50,6 +50,7 @@
         "MeasureLineString": "ラインを測る",
         "MeasurePolygon": "ポリゴンを測る",
         "NewsPopup": "ニュース",
+        "ObliqueView": "",
         "Panoramax": "Panoramax",
         "Portal": "ポータル",
         "PrintScreen3D": "ラスタ・エクスポート",
@@ -460,6 +461,10 @@
       "side": "サイド",
       "width": "幅",
       "windowtitle": "数値入力"
+    },
+    "obliqueview": {
+      "nodataset": "",
+      "title": ""
     },
     "panoramax": {
       "notfound": "この場所には表示できる画像がありません。",

@@ -50,6 +50,7 @@
         "MeasureLineString": "lengte meten",
         "MeasurePolygon": "Oppervlakte meten",
         "NewsPopup": "",
+        "ObliqueView": "",
         "Panoramax": "",
         "Portal": "Portal",
         "PrintScreen3D": "",
@@ -460,6 +461,10 @@
       "side": "Zijde",
       "width": "Breedte",
       "windowtitle": "Numerieke invoer"
+    },
+    "obliqueview": {
+      "nodataset": "",
+      "title": ""
     },
     "panoramax": {
       "notfound": "",
