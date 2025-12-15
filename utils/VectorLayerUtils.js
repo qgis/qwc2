@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import cleanCords from '@turf/clean-coords';
 import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
 import {getDefaultImageStyle} from 'ol/format/KML';
@@ -48,8 +49,14 @@ const VectorLayerUtils = {
                 if (feature.geometry?.coordinates) {
                     feature = {...feature, geometry: {...feature.geometry, coordinates: VectorLayerUtils.removeDuplicateNodes(feature.geometry.coordinates)}};
                 }
-                return VectorLayerUtils.simplifyFeature(feature);
-            }).flat();
+                try {
+                    return VectorLayerUtils.simplifyFeature(feature);
+                } catch (e) {
+                    /* eslint-disable-next-line */
+                    console.warn("Skipping invalid geometry");
+                    return null;
+                }
+            }).filter(Boolean).flat();
             for (const feature of features) {
                 if (!VectorLayerUtils.validateGeometry(feature.geometry)) {
                     continue;
@@ -145,7 +152,7 @@ const VectorLayerUtils = {
                 });
             }).flat();
         } else if (feature.geometry.type === "Polygon") {
-            return simplepolygon(feature).features.map((feat, idx, features) => {
+            return simplepolygon(cleanCords(feature)).features.map((feat, idx, features) => {
                 if (feat.properties.parent >= 0) {
                     features[feat.properties.parent].geometry.coordinates.push(feat.geometry.coordinates[0]);
                     return null;

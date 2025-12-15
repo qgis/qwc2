@@ -27,6 +27,7 @@
         "@panoramax/web-viewer": "^4.0.1",
         "@reduxjs/toolkit": "^2.4.0",
         "@turf/buffer": "^6.5.0",
+        "@turf/clean-coords": "^7.3.1",
         "@turf/helpers": "^6.5.0",
         "@vtaits/react-color-picker": "^2.0.0",
         "any-date-parser": "^1.5.4",
