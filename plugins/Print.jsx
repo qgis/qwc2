@@ -82,7 +82,7 @@ class Print extends React.Component {
         printExternalLayers: PropTypes.bool,
         /** Whether to print highlights on the map, e.g. selected features or redlining. */
         printMapHighlights: PropTypes.bool,
-        /** Restrict print scale to list of predefine print scales, if any. */
+        /** Restrict print scale to list of predefined print scales, if any. */
         restrictToPrintScales: PropTypes.bool,
         /** Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint.  */
         scaleFactor: PropTypes.number,

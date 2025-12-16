@@ -833,7 +833,7 @@ Uses the print layouts defined in the QGIS project.
 | movePrintSeries | `bool` | Whether to allow moving the extent while selecting the print series. | `false` |
 | printExternalLayers | `bool` | Whether to print external layers. Requires QGIS Server 3.x! | `true` |
 | printMapHighlights | `bool` | Whether to print highlights on the map, e.g. selected features or redlining. | `true` |
-| restrictToPrintScales | `bool` | Restrict print scale to list of predefine print scales, if any. | `undefined` |
+| restrictToPrintScales | `bool` | Restrict print scale to list of predefined print scales, if any. | `undefined` |
 | scaleFactor | `number` | Scale factor to apply to line widths, font sizes, ... of redlining drawings passed to GetPrint. | `1.9` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
