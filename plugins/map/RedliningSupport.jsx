@@ -562,7 +562,6 @@ class RedliningSupport extends React.Component {
             cloneIds.push(featureObj.id);
             return featureObj;
         });
-        this.updateRedliningState(true);
         const layer = {
             id: this.props.redlining.layer,
             title: this.props.redlining.layerTitle,
@@ -571,7 +570,7 @@ class RedliningSupport extends React.Component {
         this.props.addLayerFeatures(layer, newFeatureObjs);
         this.waitForFeatureAndLayer(this.props.redlining.layer, cloneIds[0], (l) => {
             const features = cloneIds.map(id => l.getSource().getFeatureById(id));
-            this.selectFeatures(features);
+            this.selectFeatures(features, false);
             while (this.interactions.length > 0) {
                 this.props.map.removeInteraction(this.interactions.shift());
             }
@@ -600,14 +599,16 @@ class RedliningSupport extends React.Component {
             this.props.changeRedliningState({selectedFeature: null});
         }
     };
-    selectFeatures = (features) => {
+    selectFeatures = (features, updateState = true) => {
         const firstSelection = isEmpty(this.selectedFeatures);
         features.forEach(feature => {
             feature.setStyle(this.styleFunction);
             feature.on('change', this.updateMeasurements);
             this.selectedFeatures.push(feature);
         });
-        this.updateRedliningState(firstSelection);
+        if (updateState) {
+            this.updateRedliningState(firstSelection);
+        }
     };
     deselectFeature = (feature, updateState) => {
         const styleName = feature.get("shape") === "Text" ? "text" : "default";
