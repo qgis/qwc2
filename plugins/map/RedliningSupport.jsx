@@ -648,7 +648,7 @@ class RedliningSupport extends React.Component {
             return featureObj;
         }).filter(Boolean);
         if (isEmpty(featureObjects)) {
-            return null;
+            return [];
         }
         const layer = {
             id: redliningProps.layer,
