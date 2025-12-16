@@ -100,13 +100,14 @@ export default class MenuButton extends React.Component {
     }
     onMenuClicked = () => {
         if (!this.props.disabled) {
-            this.setState({popup: true});
+            this.setState(state => ({popup: !state.popup}));
         }
     };
     onButtonClicked = (ev) => {
         ev.stopPropagation();
         if (this.state.selected) {
             this.props.onActivate(this.state.selected);
+            this.setState({popup: false});
         } else {
             this.onMenuClicked();
         }
