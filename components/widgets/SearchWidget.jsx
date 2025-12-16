@@ -170,9 +170,6 @@ export default class SearchWidget extends React.Component {
                 feature: item.geometry ? {type: "Feature", geometry: item.geometry} : null
             });
         }
-        if (this.input) {
-            this.input.blur();
-        }
     };
     clear = () => {
         this.setState({results: [], text: "", resultsVisible: false});
