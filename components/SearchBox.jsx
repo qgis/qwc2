@@ -704,7 +704,7 @@ class SearchBox extends React.Component {
     clear = () => {
         this.props.setCurrentSearchResult(null);
         this.blur();
-        this.setState({searchText: '', searchResults: {}, selectedProvider: '', filterRegionName: "", filterGeometry: null});
+        this.setState({searchText: '', searchResults: {}, selectedProvider: '', filterRegionName: "", filterGeometry: null, resultsVisible: false});
         this.props.removeLayer('searchselection');
         UrlParams.updateParams({hp: undefined, hf: undefined, st: undefined});
     };
