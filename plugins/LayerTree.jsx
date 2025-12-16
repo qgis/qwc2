@@ -640,14 +640,14 @@ class LayerTree extends React.Component {
                 <Icon icon="eye"/>
                 <Icon icon="chevron-down" />
                 {this.state.visibilityMenu ? (
-                    <PopupMenu anchor={this.visibilityButton} className="layertree-visibility-menu" onClose={() => this.setState({visibilityMenu: false})}>
+                    <PopupMenu anchor={this.visibilityButton} className="layertree-visibility-menu" keepMenuOpen onClose={() => this.setState({visibilityMenu: false})}>
                         {this.props.showToggleAllLayersCheckbox ? (
-                            <div onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
+                            <div key="hidealllayers" onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
                                 <Icon icon={vis === 0 ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.hidealllayers")}
                             </div>
                         ) : null}
                         {this.props.enableVisibleFilter ? (
-                            <div onClick={() => this.setState((state) => ({filterinvisiblelayers: !state.filterinvisiblelayers}))}>
+                            <div key="filtervisible" onClick={() => this.setState((state) => ({filterinvisiblelayers: !state.filterinvisiblelayers}))}>
                                 <Icon icon={this.state.filterinvisiblelayers ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.visiblefilter")}
                             </div>
                         ) : null}
