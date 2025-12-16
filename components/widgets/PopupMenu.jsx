@@ -23,6 +23,7 @@ export default class PopupMenu extends React.PureComponent {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
         disabledItemClass: PropTypes.string,
+        keepMenuOpen: PropTypes.bool,
         onClose: PropTypes.func,
         setMaxWidth: PropTypes.bool,
         spaceKeyActivation: PropTypes.bool,
@@ -155,7 +156,7 @@ export default class PopupMenu extends React.PureComponent {
                 disabled = true;
             }
         }
-        if (disabled) {
+        if (disabled || this.props.keepMenuOpen) {
             MiscUtils.killEvent(ev);
         } else {
             this.props.onClose?.();
