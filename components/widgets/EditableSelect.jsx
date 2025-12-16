@@ -113,7 +113,7 @@ export default class EditableSelect extends React.Component {
             );
         }).filter(Boolean);
         return !isEmpty(options) ? (
-            <PopupMenu anchor={this.el} className="editable-select-dropdown" onClose={() => this.setState({popup: false})}>
+            <PopupMenu anchor={this.el} className="editable-select-dropdown" onClose={() => this.setState({popup: false})} spaceKeyActivation={false}>
                 {options}
             </PopupMenu>
         ) : null;
