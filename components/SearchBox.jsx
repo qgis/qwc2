@@ -665,7 +665,7 @@ class SearchBox extends React.Component {
     }
     setSearchBoxRef = (el) => {
         this.searchBox = el;
-        if (this.props.searchOptions.focusOnStartup) {
+        if (el && this.props.searchOptions.focusOnStartup) {
             el.focus();
         }
     };
