@@ -705,7 +705,7 @@ class IdentifyViewer extends React.Component {
         let infoLabel = null;
         if (this.state.compareEnabled) {
             infoLabel = (<span>{LocaleUtils.tr("identify.comparing", this.state.selectedResults.size())}</span>);
-        } else if (this.props.resultDisplayMode !== 'paginated') {
+        } else {
             infoLabel = (<span>{LocaleUtils.tr("identify.featurecount", resultCount)}</span>);
         }
         const checkedPages = results.reduce((res, entry, idx) => {
