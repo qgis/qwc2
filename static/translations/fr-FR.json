@@ -273,7 +273,8 @@
       "querying": "Identification en cours...",
       "reportfail": "Le rapport n'a pas été généré",
       "results": "Résultats",
-      "selectreport": "Selectionner rapport...",
+      "selectforcompare": "Sélectionner pour comparison",
+      "selectreport": "Sélectionner rapport...",
       "title": "Informations sur l'objet"
     },
     "imageeditor": {

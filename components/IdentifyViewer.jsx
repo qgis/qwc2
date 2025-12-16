@@ -619,7 +619,7 @@ class IdentifyViewer extends React.Component {
                         <Icon icon={expanded ? "triangle-down" : "triangle-right"} onClick={() => this.setState(state => ({expandedResults: state.expandedResults.toggle(key)}))} />
                     ) : null}
                     {this.props.enableCompare ? (
-                        <Icon className="identify-result-checkbox" icon={selected ? "checked" : "unchecked"} onClick={() => this.toggleSelectedResult(key)} />
+                        <Icon className="identify-result-checkbox" icon={selected ? "checked" : "unchecked"} onClick={() => this.toggleSelectedResult(key)} title={LocaleUtils.tr("identify.selectforcompare")} />
                     ) : null}
                     <span>{(this.props.showLayerTitles ? (feature.layertitle + ": ") : "") + feature.displayname}</span>
                     {zoomToFeatureButton}

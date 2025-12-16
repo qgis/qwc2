@@ -273,6 +273,7 @@
       "querying": "Consultando...",
       "reportfail": "No se pudo generar el informe",
       "results": "Resultados",
+      "selectforcompare": "",
       "selectreport": "Seleccionar informe...",
       "title": "Información del elemento"
     },

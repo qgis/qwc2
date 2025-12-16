@@ -273,6 +273,7 @@
       "querying": "Consultant...",
       "reportfail": "No s'ha pogut generar l'informe",
       "results": "Resultats",
+      "selectforcompare": "",
       "selectreport": "Seleccionar informe...",
       "title": "Informació del element"
     },

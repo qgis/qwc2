@@ -262,6 +262,7 @@
     "identify.querying",
     "identify.reportfail",
     "identify.results",
+    "identify.selectforcompare",
     "identify.selectreport",
     "identify.title",
     "imageeditor.confirmclose",
