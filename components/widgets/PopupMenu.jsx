@@ -60,11 +60,12 @@ export default class PopupMenu extends React.PureComponent {
                 this.container.appendChild(this.shields[i]);
             }
             this.container.style.pointerEvents = 'none';
+        } else {
+            setTimeout(() => this.container.addEventListener('click', () => {
+                this.props.onClose?.();
+            }), 0);
         }
         this.menuEl = null;
-        setTimeout(() => this.container.addEventListener('click', () => {
-            this.props.onClose?.();
-        }), 0);
         document.body.appendChild(this.container);
     }
     componentDidMount() {
@@ -118,7 +119,7 @@ export default class PopupMenu extends React.PureComponent {
         const disabledItemClass = this.props.disabledItemClass ?? "popup-menu-item-disabled";
         const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children];
         return ReactDOM.createPortal((
-            <div className={"popup-menu " + this.props.className} onKeyDown={this.keyNav} onMouseLeave={this.clearFocus} ref={this.setFocus} style={style} tabIndex={0}>
+            <div className={"popup-menu " + this.props.className} onClick={this.handleMenuClick} onKeyDown={this.keyNav} onMouseLeave={this.clearFocus} ref={this.setFocus} style={style} tabIndex={0}>
                 {children.flat(Infinity).filter(Boolean).map(child => {
                     const className = classnames({
                         [disabledItemClass]: child.props.disabled,
@@ -145,6 +146,19 @@ export default class PopupMenu extends React.PureComponent {
             this.props.anchor.focus();
         } else {
             this.menuEl.focus();
+        }
+    };
+    handleMenuClick = (ev) => {
+        let disabled = false;
+        for (let el = ev.target; ev.currentTarget.contains(el); el = el.parentElement) {
+            if (el.attributes.disabled !== undefined) {
+                disabled = true;
+            }
+        }
+        if (disabled) {
+            MiscUtils.killEvent(ev);
+        } else {
+            this.props.onClose?.();
         }
     };
     keyNav = (ev) => {
