@@ -112,6 +112,11 @@
         "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^5.1.0"
     },
+    "bin": {
+        "qwc_build_iconfont": "./scripts/makeIconkit.js",
+        "qwc_gen_themesconfig": "./scripts/themesConfig.js",
+        "qwc_update_translations": "./scripts/updateTranslations.js"
+    },
     "scripts": {
         "prod": "npm run tsupdate && npm run themesconfig && npm run iconfont && webpack --mode production --progress",
         "start": "npm run tsupdate && npm run themesconfig && npm run iconfont && webpack serve --mode development --progress --host 0.0.0.0 --port 8081",
