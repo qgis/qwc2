@@ -54,7 +54,7 @@ class LayerCatalogWidget extends React.PureComponent {
         const key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
         const indentSize = !this.props.levelBasedIndentSize && level > 0 ? 1.5 : level;
         return (
-            <div key={key} style={{paddingLeft: indentSize + 'em'}}>
+            <div key={key} style={{paddingLeft: (0.5 * indentSize) + 'em'}}>
                 <div className="layer-catalog-widget-entry">
                     {hasSublayers ? (
                         <Icon icon={entry.expanded ? 'tree_minus' : 'tree_plus'} onClick={() => this.toggleLayerListEntry(path)} />
