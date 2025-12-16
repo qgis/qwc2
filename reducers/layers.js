@@ -201,7 +201,8 @@ export default function layers(state = defaultState, action) {
             newLayers.splice(position, 1);
             if (
                 position > 0 && position < newLayers.length &&
-                newLayers[position - 1].id === newLayers[position].id
+                newLayers[position - 1].url &&
+                newLayers[position - 1].url === newLayers[position].url
             ) {
                 // Compress layers
                 newLayers = LayerUtils.implodeLayers(LayerUtils.explodeLayers(newLayers));
