@@ -76,8 +76,8 @@ const MiscUtils = {
             ev.preventDefault();
         }
     },
-    checkKeyActivate(ev, onEsc = null) {
-        if (ev.code === "Space" || ev.code === "Enter") {
+    checkKeyActivate(ev, onEsc = null, spaceActivate = true) {
+        if ((spaceActivate && ev.code === "Space") || ev.code === "Enter") {
             MiscUtils.killEvent(ev);
             ev.currentTarget.click();
         } else if (ev.code === "Escape" && onEsc) {

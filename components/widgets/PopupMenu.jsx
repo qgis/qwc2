@@ -25,9 +25,13 @@ export default class PopupMenu extends React.PureComponent {
         disabledItemClass: PropTypes.string,
         onClose: PropTypes.func,
         setMaxWidth: PropTypes.bool,
+        spaceKeyActivation: PropTypes.bool,
         width: PropTypes.number,
         x: PropTypes.number,
         y: PropTypes.number
+    };
+    static defaultProps = {
+        spaceKeyActivation: true
     };
     constructor(props) {
         super(props);
@@ -123,7 +127,7 @@ export default class PopupMenu extends React.PureComponent {
                     return React.cloneElement(child, {
                         className: className,
                         tabIndex: child.props.disabled ? undefined : 0,
-                        onKeyDown: child.props.disabled ? undefined : MiscUtils.checkKeyActivate,
+                        onKeyDown: child.props.disabled ? undefined : ev => MiscUtils.checkKeyActivate(ev, null, this.props.spaceKeyActivation),
                         onMouseOver: child.props.disabled ? undefined : ev => ev.target.focus()
                     });
                 })}
@@ -163,7 +167,7 @@ export default class PopupMenu extends React.PureComponent {
             this.props.onClose?.();
             this.props.anchor?.focus?.();
             MiscUtils.killEvent(ev);
-        } else if (ev.key === 'Enter' || ev.key === ' ') {
+        } else if (ev.key === 'Enter' || (ev.key === ' ' && this.props.spaceKeyActivation)) {
             MiscUtils.killEvent(ev);
         } else if (ev.key !== 'Tab' && ev.key !== 'Shift') {
             this.props.anchor?.focus?.();

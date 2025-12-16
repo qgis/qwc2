@@ -257,7 +257,7 @@ class SearchBox extends React.Component {
             }
         }
         return (
-            <PopupMenu anchor={this.searchBox} className="searchbox-results" onClose={() => this.setState({resultsVisible: false})} setMaxWidth>
+            <PopupMenu anchor={this.searchBox} className="searchbox-results" onClose={() => this.setState({resultsVisible: false})} setMaxWidth spaceKeyActivation={false}>
                 {children}
             </PopupMenu>
         );
