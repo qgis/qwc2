@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const webfontsGenerator = require('@furkot/webfonts-generator');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
