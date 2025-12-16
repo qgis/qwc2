@@ -227,7 +227,7 @@ class RedliningSupport extends React.Component {
         const isText = feature.get("shape") === "Text";
         const styleName = isText ? "text" : "default";
         const opts = this.styleOptions(styleProps, isText);
-        if (!feature.get('measurements')) {
+        if (!feature.get('measurements') && this.selectedFeatures.length <= 1 && !(isText && !styleProps.text)) {
             feature.set('label', styleProps.text);
         }
         feature.set('styleName', styleName);
