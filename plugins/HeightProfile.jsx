@@ -176,6 +176,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             REQUEST: 'GetMap',
             TRANSPARENT: 'true',
             TILED: 'false',
+            filename: 'heightprofile.png', // To make the ogc-service treat this as a raster export
             CRS: this.props.map.projection,
             BBOX: bounds,
             WIDTH: this.props.map.size.width,
