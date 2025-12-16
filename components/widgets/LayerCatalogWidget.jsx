@@ -140,8 +140,9 @@ class LayerCatalogWidget extends React.PureComponent {
     };
     checkAddServiceLayer = (entry, asGroup = false) => {
         const resource = entry.resource ? LayerUtils.splitLayerUrlParam(entry.resource) : null;
+        const stripQuery = (url) => (url ?? "").split("?")[0];
         const existingSublayers = this.props.layers.reduce((res, layer) => {
-            if (layer.type === (entry.type ?? resource?.type) && layer.url === (entry.url ?? resource?.url)) {
+            if (layer.type === (entry.type ?? resource?.type) && stripQuery(layer.url) === stripQuery(entry.url ?? resource?.url)) {
                 return [...res, ...LayerUtils.getSublayerNames(layer), layer.name];
             }
             return res;
