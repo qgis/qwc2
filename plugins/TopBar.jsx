@@ -60,6 +60,8 @@ class TopBar extends React.Component {
         searchOptions: PropTypes.shape({
             /** Whether to show the search filter widget. */
             allowSearchFilters: PropTypes.bool,
+            /** Whether to focus the search field on startup. */
+            focusOnStartup: PropTypes.bool,
             /** Whether to hide the result labels on the map. */
             hideResultLabels: PropTypes.bool,
             /** The style used for highlighting search result geometries. */

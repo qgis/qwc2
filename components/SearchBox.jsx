@@ -63,6 +63,7 @@ class SearchBox extends React.Component {
         replacePlaceholderLayer: PropTypes.func,
         searchOptions: PropTypes.shape({
             allowSearchFilters: PropTypes.bool,
+            focusOnStartup: PropTypes.bool,
             hideResultLabels: PropTypes.bool,
             highlightStyle: PropTypes.object,
             minScaleDenom: PropTypes.number,
@@ -638,7 +639,7 @@ class SearchBox extends React.Component {
                             onClick={() => this.setState({resultsVisible: true})}
                             onFocus={this.onFocus}
                             onKeyDown={this.onKeyDown}
-                            placeholder={placeholder} ref={el => { this.searchBox = el; }}
+                            placeholder={placeholder} ref={this.setSearchBoxRef}
                             role="input" type="text" value={this.state.searchText} />
                         {this.state.pendingSearches.length > 0 ? (<Spinner role="suffix" />) : (<Icon icon="clear" onClick={this.clear} role="suffix" />)}
                     </InputContainer>
@@ -662,6 +663,12 @@ class SearchBox extends React.Component {
             )
         ];
     }
+    setSearchBoxRef = (el) => {
+        this.searchBox = el;
+        if (this.props.searchOptions.focusOnStartup) {
+            el.focus();
+        }
+    };
     toggleFilterOptions = (visible) => {
         this.setState({filterOptionsVisible: visible});
     };
