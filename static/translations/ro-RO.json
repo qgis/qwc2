@@ -446,7 +446,9 @@
       "ctrlclickhint": ""
     },
     "navbar": {
-      "perpage": "pe pagină"
+      "next": "",
+      "perpage": "pe pagină",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "Închideți",

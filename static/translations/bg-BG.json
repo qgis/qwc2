@@ -446,7 +446,9 @@
       "ctrlclickhint": "Отваряне с Ctrl+Click"
     },
     "navbar": {
-      "perpage": "на страница"
+      "next": "",
+      "perpage": "на страница",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "Затвори",

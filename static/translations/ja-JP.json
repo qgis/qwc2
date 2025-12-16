@@ -446,7 +446,9 @@
       "ctrlclickhint": "Ctrl+クリックで開く"
     },
     "navbar": {
-      "perpage": "/ page"
+      "next": "",
+      "perpage": "/ page",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "閉じる",

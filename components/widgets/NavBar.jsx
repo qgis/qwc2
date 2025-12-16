@@ -54,13 +54,13 @@ export default class NavBar extends React.Component {
         }
         return (
             <div className="navbar controlgroup">
-                <button className="button" disabled={this.props.currentPage <= 0 || this.props.disabled} onClick={() => this.props.pageChanged(this.props.currentPage - 1)}>
+                <button className="button" disabled={this.props.currentPage <= 0 || this.props.disabled} onClick={() => this.props.pageChanged(this.props.currentPage - 1)} title={LocaleUtils.tr("navbar.prev")}>
                     <Icon icon="chevron-left" />
                 </button>
                 {(pages[0] > 0 || pages[0] === -1) ? this.pageButton(0) : null}
                 {pages.map(this.pageButton)}
                 {pages[pages.length - 1] < this.props.nPages - 1 ? this.pageButton(this.props.nPages - 1) : null}
-                <button className="button" disabled={this.props.currentPage >= this.props.nPages - 1 || this.props.disabled} onClick={() => this.props.pageChanged(this.props.currentPage + 1)}>
+                <button className="button" disabled={this.props.currentPage >= this.props.nPages - 1 || this.props.disabled} onClick={() => this.props.pageChanged(this.props.currentPage + 1)} title={LocaleUtils.tr("navbar.next")}>
                     <Icon icon="chevron-right" />
                 </button>
                 {this.props.pageSizes.length > 1 ? (

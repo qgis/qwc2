@@ -446,7 +446,9 @@
       "ctrlclickhint": "Öffne mit Ctrl+Click"
     },
     "navbar": {
-      "perpage": "pro Seite"
+      "next": "Vorherige Seite",
+      "perpage": "pro Seite",
+      "prev": "Nächste Seite"
     },
     "newspopup": {
       "dialogclose": "Schließen",

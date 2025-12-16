@@ -446,7 +446,9 @@
       "ctrlclickhint": "Obrir amb Ctrl+Click"
     },
     "navbar": {
-      "perpage": "per pàgina"
+      "next": "",
+      "perpage": "per pàgina",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "Tancar",

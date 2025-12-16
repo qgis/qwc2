@@ -446,7 +446,9 @@
       "ctrlclickhint": ""
     },
     "navbar": {
-      "perpage": ""
+      "next": "",
+      "perpage": "",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "",

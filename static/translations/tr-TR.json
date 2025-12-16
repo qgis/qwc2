@@ -446,7 +446,9 @@
       "ctrlclickhint": "Ctrl+Click ile aç"
     },
     "navbar": {
-      "perpage": "sayfa başına"
+      "next": "",
+      "perpage": "sayfa başına",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "Kapat",

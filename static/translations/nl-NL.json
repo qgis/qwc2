@@ -446,7 +446,9 @@
       "ctrlclickhint": "Openen met Ctrl+klik"
     },
     "navbar": {
-      "perpage": "Per pagina"
+      "next": "",
+      "perpage": "Per pagina",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "Sluiten",

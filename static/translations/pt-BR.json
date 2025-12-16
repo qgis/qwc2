@@ -446,7 +446,9 @@
       "ctrlclickhint": ""
     },
     "navbar": {
-      "perpage": "Por página"
+      "next": "",
+      "perpage": "Por página",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "Fechar diálogo",

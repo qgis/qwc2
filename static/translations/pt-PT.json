@@ -446,7 +446,9 @@
       "ctrlclickhint": "Ctrl + clique para selecionar múltiplos resultados"
     },
     "navbar": {
-      "perpage": "Por página"
+      "next": "",
+      "perpage": "Por página",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "Fechar Diálogo",

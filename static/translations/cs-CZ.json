@@ -446,7 +446,9 @@
       "ctrlclickhint": ""
     },
     "navbar": {
-      "perpage": "na stránku"
+      "next": "",
+      "perpage": "na stránku",
+      "prev": ""
     },
     "newspopup": {
       "dialogclose": "Zavřít",
