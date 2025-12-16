@@ -156,11 +156,12 @@ export default function layers(state = defaultState, action) {
             // Compress layers if possible
             newLayers = LayerUtils.implodeLayers(LayerUtils.explodeLayers(newLayers));
         }
-        for (const lyr of newLayers) {
-            if (lyr.type === "wms") {
-                Object.assign(lyr, LayerUtils.buildWMSLayerParams(lyr, state.filter));
+        newLayers = newLayers.map(layer => {
+            if (layer.type === "wms") {
+                return {...layer, ...LayerUtils.buildWMSLayerParams(layer, state.filter)};
             }
-        }
+            return layer;
+        });
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         if (newLayer.role === LayerRole.BACKGROUND && newLayer.visibility) {
             UrlParams.updateParams({bl: newLayer.name});
@@ -178,12 +179,12 @@ export default function layers(state = defaultState, action) {
         return {...state, flat: newLayers, editConfigs: newEditConfigs};
     }
     case ADD_LAYER_SEPARATOR: {
-        const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath);
-        for (const layer of newLayers) {
+        const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath).map(layer => {
             if (layer.type === "wms") {
-                Object.assign(layer, LayerUtils.buildWMSLayerParams(layer, state.filter));
+                return {...layer, ...LayerUtils.buildWMSLayerParams(layer, state.filter)};
             }
-        }
+            return layer;
+        });
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers};
     }
