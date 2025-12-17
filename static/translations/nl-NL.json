@@ -332,6 +332,7 @@
       "printlegend": "Print legenda",
       "separator": "Scheider",
       "separatortooltip": "Voeg scheider toe",
+      "togglegroup": "",
       "transparency": "Transparantie",
       "visiblefilter": "Filter onzichtbare lagen",
       "zoomtolayer": "Zoom naar laag"

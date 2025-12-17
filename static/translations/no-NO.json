@@ -332,6 +332,7 @@
       "printlegend": "Skriv ut tegnforklaring",
       "separator": "Separator",
       "separatortooltip": "Legg til separator",
+      "togglegroup": "",
       "transparency": "",
       "visiblefilter": "Filtrer usynlige lag",
       "zoomtolayer": "Zoom til lag"

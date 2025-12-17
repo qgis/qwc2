@@ -403,7 +403,7 @@ class LayerTree extends React.Component {
         }
         let toggleGroupButton = null;
         if (sublayer.sublayers && !this.props.groupTogglesSublayers) {
-            toggleGroupButton = (<Icon icon="tree" onClick={() => this.props.changeLayerProperty(layer.id, "visibility", subtreevisibility !== 1, path, "children")} />);
+            toggleGroupButton = (<Icon icon="tree" onClick={() => this.props.changeLayerProperty(layer.id, "visibility", subtreevisibility !== 1, path, "children")} title={LocaleUtils.tr("layertree.togglegroup")} />);
         }
 
         let infoButton = null;

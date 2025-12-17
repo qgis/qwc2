@@ -332,6 +332,7 @@
       "printlegend": "Imprimer la légende",
       "separator": "Séparateur",
       "separatortooltip": "Ajouter séparateur",
+      "togglegroup": "Basculer le groupe et toutes les sous-couches",
       "transparency": "Transparence",
       "visiblefilter": "Filtrer couches invisibles",
       "zoomtolayer": "Zoomer sur la couche"

@@ -332,6 +332,7 @@
       "printlegend": "Legende drucken",
       "separator": "Separator",
       "separatortooltip": "Separator hinzufügen",
+      "togglegroup": "Inklusive aller Kinder an-/abhaken",
       "transparency": "Transparenz",
       "visiblefilter": "Unsichtbare Ebenen filtern",
       "zoomtolayer": "Auf den Layer zoomen"

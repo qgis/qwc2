@@ -307,6 +307,7 @@
     "layertree.printlegend",
     "layertree.separator",
     "layertree.separatortooltip",
+    "layertree.togglegroup",
     "layertree.transparency",
     "layertree.visiblefilter",
     "layertree.zoomtolayer",

@@ -332,6 +332,7 @@
       "printlegend": "Print legend",
       "separator": "Separator",
       "separatortooltip": "Add separator",
+      "togglegroup": "Toggle group and all sublayers",
       "transparency": "Trasparency",
       "visiblefilter": "Filter invisible layers",
       "zoomtolayer": "Zoom to layer"

@@ -332,6 +332,7 @@
       "printlegend": "Imprimir leyenda",
       "separator": "Separador",
       "separatortooltip": "Agregar separador",
+      "togglegroup": "",
       "transparency": "Transparencia",
       "visiblefilter": "Filtrar capas no visibles",
       "zoomtolayer": "Zoom a la capa"

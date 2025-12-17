@@ -332,6 +332,7 @@
       "printlegend": "凡例を印刷",
       "separator": "区切り",
       "separatortooltip": "区切りを追加",
+      "togglegroup": "",
       "transparency": "透明度",
       "visiblefilter": "不可視のレイヤをフィルタ",
       "zoomtolayer": "レイヤにズーム"

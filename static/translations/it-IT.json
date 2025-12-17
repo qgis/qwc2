@@ -332,6 +332,7 @@
       "printlegend": "Stampa legenda",
       "separator": "Separatore",
       "separatortooltip": "Aggiungi separatore",
+      "togglegroup": "Attiva/disattiva gruppo e tutti i sottolivelli",
       "transparency": "Trasparenza",
       "visiblefilter": "Filtra livelli non visibili",
       "zoomtolayer": "Zoom a tutto il livello"

@@ -332,6 +332,7 @@
       "printlegend": "Tulosta selite",
       "separator": "Erotin",
       "separatortooltip": "Lisää erotin",
+      "togglegroup": "",
       "transparency": "Läpinäkyvyys",
       "visiblefilter": "Suodata näkymättömät tasot",
       "zoomtolayer": "Zoomaa tasolle"

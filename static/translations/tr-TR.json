@@ -332,6 +332,7 @@
       "printlegend": "Yazdırma Lejandı",
       "separator": "Ayırıcı",
       "separatortooltip": "Ayırıcı ekle",
+      "togglegroup": "",
       "transparency": "Şeffaflık",
       "visiblefilter": "Görünmeyen katmanları filtrele",
       "zoomtolayer": "Katman sınırlarına yaklaş"
