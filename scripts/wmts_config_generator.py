@@ -126,7 +126,7 @@ if not styleIdentifier:
             break
 
 # Resource URL
-tileUrl = None
+tileUrl = capabilitiesUrl.split("?")[0]
 for resourceURL in targetLayer.getElementsByTagName("ResourceURL"):
     if resourceURL.getAttribute("resourceType") == "tile":
         tileUrl = resourceURL.getAttribute("template")
