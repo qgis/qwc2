@@ -90,6 +90,8 @@ class Identify extends React.Component {
         replaceImageUrls: PropTypes.bool,
         /** Result display mode, one of `tree`, `flat`, `paginated`. */
         resultDisplayMode: PropTypes.string,
+        /** Target cell size of the result grid in comparison mode. */
+        resultGridSize: PropTypes.number,
         selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
         /** Whether to show a layer selector to filter the identify results by layer. */
@@ -105,6 +107,7 @@ class Identify extends React.Component {
         customExporters: [],
         longAttributesDisplay: 'ellipsis',
         resultDisplayMode: 'flat',
+        resultGridSize: 200,
         replaceImageUrls: true,
         featureInfoReturnsLayerName: true,
         geometry: {
@@ -395,6 +398,7 @@ class Identify extends React.Component {
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
                         resultDisplayMode={this.props.resultDisplayMode}
+                        resultGridSize={this.props.resultGridSize}
                         showLayerSelector={this.props.showLayerSelector}
                     />
                 );

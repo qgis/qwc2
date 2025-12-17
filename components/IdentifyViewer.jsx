@@ -32,6 +32,7 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import NavBar from './widgets/NavBar';
 import Spinner from './widgets/Spinner';
+import ToggleSwitch from './widgets/ToggleSwitch';
 
 import './style/IdentifyViewer.css';
 
@@ -260,6 +261,7 @@ class IdentifyViewer extends React.Component {
         removeLayer: PropTypes.func,
         replaceImageUrls: PropTypes.bool,
         resultDisplayMode: PropTypes.string,
+        resultGridSize: PropTypes.number,
         setActiveLayerInfo: PropTypes.func,
         showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
@@ -273,6 +275,7 @@ class IdentifyViewer extends React.Component {
         attributeTransform: (name, value /* , layer, feature */) => value,
         enableAggregatedReports: true,
         resultDisplayMode: 'flat',
+        resultGridSize: 200,
         showLayerTitles: true,
         showLayerSelector: true,
         highlightAllResults: true
@@ -290,13 +293,16 @@ class IdentifyViewer extends React.Component {
         generatingReport: false,
         selectedLayer: '',
         compareEnabled: false,
-        currentPage: 0
+        multiViewEnabled: false,
+        currentPage: 0,
+        pageSize: 1
     };
     constructor(props) {
         super(props);
         this.resultsTreeRef = null;
         this.currentResultElRef = null;
         this.scrollIntoView = false;
+        this.bodyEl = null;
         this.state.exportFormat = !Array.isArray(props.enableExport) ? 'geojson' : props.enableExport[0];
     }
     componentDidMount() {
@@ -321,6 +327,9 @@ class IdentifyViewer extends React.Component {
         if (this.state.resultTree !== prevState.resultTree || this.state.selectedLayer !== prevState.selectedLayer) {
             const count = Object.values(this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree).flat().length;
             this.setState(state => ({currentPage: Math.max(0, Math.min(state.currentPage, count - 1))}));
+        }
+        if (this.state.multiViewEnabled !== prevState.multiViewEnabled) {
+            this.computePageSize(this.bodyEl.getBoundingClientRect());
         }
     }
     componentWillUnmount() {
@@ -613,7 +622,11 @@ class IdentifyViewer extends React.Component {
         const expanded = this.state.expandedResults.has(key);
         const selected = this.state.selectedResults.has(key);
         return (
-            <div className={resultClass} key={key}>
+            <div
+                className={resultClass} key={key}
+                onMouseEnter={() => this.setHighlightedFeatures([feature])}
+                onMouseLeave={() => this.setHighlightedFeatures(null)}
+            >
                 <div className="identify-result-title">
                     {this.props.collapsible ? (
                         <Icon icon={expanded ? "triangle-down" : "triangle-right"} onClick={() => this.setState(state => ({expandedResults: state.expandedResults.toggle(key)}))} />
@@ -649,8 +662,11 @@ class IdentifyViewer extends React.Component {
         const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
         const flatResults = Object.entries(resultTree).map(([layerid, features]) => features.map(feature => ([layerid, feature]))).flat();
         if (this.state.compareEnabled) {
+            const style = {
+                gridTemplateColumns: `repeat(auto-fit, minmax(${this.resultGridSize / 2 - 2}px, 1fr))`
+            };
             body = (
-                <div className="identify-compare-results">
+                <div className="identify-compare-results" style={style}>
                     {this.state.selectedResults.entries().map(key => {
                         const [layerid, featureid] = key.split("$");
                         const feature = this.state.resultTree[layerid].find(f => f.id === featureid);
@@ -666,37 +682,62 @@ class IdentifyViewer extends React.Component {
         } else if (this.props.resultDisplayMode === 'flat') {
             body = (
                 <div className="identify-flat-results-list">
-                    {Object.entries(resultTree).map(([layerid, features]) => {
-                        return features.map(feature => (
-                            <div key={layerid + "$" + feature.id}
-                                onMouseEnter={() => this.setHighlightedFeatures([feature])}
-                                onMouseLeave={() => this.setHighlightedFeatures(null)}
-                            >
-                                {this.renderResultAttributes(layerid, feature, 'identify-result-frame')}
-                            </div>
-                        ));
-                    })}
+                    {Object.entries(resultTree).map(([layerid, features]) => features.map(feature => (
+                        this.renderResultAttributes(layerid, feature, 'identify-result-frame')
+                    )))}
                 </div>
             );
-        } else if (this.props.resultDisplayMode === 'paginated' && this.state.currentPage < flatResults.length) {
-            const [layerid, feature] = flatResults[this.state.currentPage];
-            body = (
-                <div className="identify-flat-results-list"
-                    onMouseEnter={() => this.setHighlightedFeatures([feature])}
-                    onMouseLeave={() => this.setHighlightedFeatures(null)}
-                >
-                    {this.renderResultAttributes(layerid, feature, 'identify-result-frame')}
-                </div>
-            );
+        } else if (this.props.resultDisplayMode === 'paginated') {
+            if (this.state.multiViewEnabled) {
+                const results = flatResults.slice(this.state.currentPage * this.state.pageSize, (this.state.currentPage + 1) * this.state.pageSize);
+                const style = {
+                    gridTemplateColumns: `repeat(auto-fit, minmax(${this.resultGridSize - 2}px, 1fr))`
+                };
+                body = (
+                    <div className="identify-compare-results" style={style}>
+                        {results.map(([layerid, feature]) => (
+                            this.renderResultAttributes(layerid, feature, 'identify-result-frame')
+                        ))}
+                    </div>
+                );
+            } else if (this.state.currentPage < flatResults.length) {
+                const [layerid, feature] = flatResults[this.state.currentPage];
+                body = (
+                    <div className="identify-flat-results-list">
+                        {this.renderResultAttributes(layerid, feature, 'identify-result-frame')}
+                    </div>
+                );
+            }
         }
-        // "el.style.background='inherit'": HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
         return (
-            <div className="identify-body" ref={el => { if (el) el.style.background = 'inherit'; } }>
+            <div className="identify-body" ref={this.initBody}>
                 {body}
                 {flatResults.length > 0 ? this.renderToolbar(flatResults) : null}
             </div>
         );
     }
+    initBody = (el) => {
+        if (el) {
+            // HACK to trigger an additional repaint, since Safari/Chrome on iOS render the element cut off the first time
+            el.style.background = 'inherit';
+            const resizeObserver = new ResizeObserver(entries => {
+                const contentRectEntry = entries.find(entry => entry.contentRect);
+                if (contentRectEntry) {
+                    this.computePageSize(contentRectEntry.contentRect);
+                }
+            });
+            resizeObserver.observe(el);
+            this.bodyEl = el;
+        }
+    };
+    computePageSize = (rect) => {
+        const s = 2 * this.props.resultGridSize;
+        if (this.state.multiViewEnabled && (rect.height >= s || rect.width >= s)) {
+            this.setState({pageSize: rect.height >= s && rect.width >= s ? 4 : 2});
+        } else {
+            this.setState({pageSize: 1});
+        }
+    };
     renderToolbar = (results) => {
         const resultCount = results.length;
         const toggleButton = (key, icon, disabled, tooltip = undefined) => (
@@ -710,7 +751,7 @@ class IdentifyViewer extends React.Component {
         }
         const checkedPages = results.reduce((res, entry, idx) => {
             if (this.state.selectedResults.has(entry[0] + "$" + entry[1].id)) {
-                return [...res, idx];
+                return [...res, Math.floor(idx / this.state.pageSize)];
             }
             return res;
         }, []);
@@ -722,8 +763,8 @@ class IdentifyViewer extends React.Component {
                 <span className="identify-toolbar-spacer" />
                 {infoLabel}
                 <span className="identify-toolbar-spacer" />
-                {this.props.resultDisplayMode === 'paginated' ? (
-                    <NavBar currentPage={this.state.currentPage} nPages={resultCount} pageChanged={page => this.setState({currentPage: page})} pageSizes={[1]} selectedPages={checkedPages} />
+                {this.props.resultDisplayMode === 'paginated' && !this.state.compareEnabled ? (
+                    <NavBar currentPage={this.state.currentPage} nPages={Math.ceil(resultCount / this.state.pageSize)} pageChanged={page => this.setState({currentPage: page})} pageSizes={[1]} selectedPages={checkedPages} />
                 ) : null}
             </div>
         );
@@ -754,6 +795,16 @@ class IdentifyViewer extends React.Component {
                                 </div>
                             </td>
                         </tr>
+                        {this.props.resultDisplayMode === 'paginated' ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("identify.multiview")}</td>
+                                <td>
+                                    <ToggleSwitch
+                                        active={this.state.multiViewEnabled}
+                                        onChange={(active) => this.setState({multiViewEnabled: active})} />
+                                </td>
+                            </tr>
+                        ) : null}
                         {exportEnabled ? (
                             <tr>
                                 <td>{LocaleUtils.tr("identify.export")}:</td>

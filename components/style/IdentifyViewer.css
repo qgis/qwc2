@@ -70,7 +70,8 @@ div.identify-body div.identify-result-frame {
     border: 1px solid var(--border-color);
 }
 
-div.identify-body div.identify-result-frame:hover {
+div.identify-body div.identify-result-frame:hover,
+div.identify-body div.identify-result-tree-frame:hover {
     border: 1px solid var(--color-active);
 }
 
@@ -112,14 +113,15 @@ div.identify-body .identify-result-tree-frame > div.identify-result-container {
 }
 
 div.identify-compare-results {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 0.25em;
+    grid-template-columns: repeat(auto-fit, minmax(calc(198px), 1fr));
     overflow: auto;
     flex: 1 1 auto;
 }
 
-div.identify-compare-results > div.identify-result-frame {
-    flex: 1 1 20em;
+div.identify-compare-results > div {
+    overflow: auto;
 }
 
 div.identify-body .identify-result-box {

@@ -257,6 +257,7 @@
     "identify.featurecount",
     "identify.layerall",
     "identify.link",
+    "identify.multiview",
     "identify.noattributes",
     "identify.noresults",
     "identify.querying",
