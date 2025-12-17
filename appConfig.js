@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable new-cap */
+
 import {lazy} from 'react';
 
 import AppMenu from './components/AppMenu';
