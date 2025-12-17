@@ -129,6 +129,8 @@ class ResizeableWindow extends React.Component {
         if (this.rnd && this.props.visible && this.props.visible !== prevProps.visible) {
             this.props.onGeometryChanged(this.state.geometry);
             this.rnd.updatePosition(this.state.geometry);
+            // Set focus to first focusable element
+            this.rnd.resizableElement?.current?.querySelector?.('[tabindex="0"]')?.focus?.();
         }
         if (this.state.geometry !== prevState.geometry) {
             this.props.onGeometryChanged(this.state.geometry);
@@ -405,6 +407,10 @@ class ResizeableWindow extends React.Component {
         if (el) {
             this.rnd = el;
             this.rnd.updatePosition(this.state.geometry);
+            // Set focus to first focusable element
+            if (this.props.visible) {
+                this.rnd.resizableElement?.current?.querySelector?.('[tabindex="0"]')?.focus?.();
+            }
         }
     };
     onDragStart = () => {
