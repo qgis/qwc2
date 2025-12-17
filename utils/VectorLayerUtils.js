@@ -66,12 +66,13 @@ const VectorLayerUtils = {
                 const properties = feature.properties || {};
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
                 if (feature.geometry.type === "LineString") {
+                    const markerScale = styleOptions.markerscale ?? 1;
                     // Generate arrow heads
                     if (styleOptions.headmarker) {
-                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.headmarker, false, feature, layer, dpi, printScale, printCrs, scaleFactor);
+                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.headmarker, false, feature, layer, dpi, printScale, printCrs, scaleFactor * markerScale);
                     }
                     if (styleOptions.tailmarker) {
-                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.tailmarker, true, feature, layer, dpi, printScale, printCrs, scaleFactor);
+                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.tailmarker, true, feature, layer, dpi, printScale, printCrs, scaleFactor * markerScale);
                     }
                 }
                 if (feature.geometry.type === "LineString" && !isEmpty(properties.segment_labels)) {

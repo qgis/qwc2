@@ -154,7 +154,8 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
                         strokeWidth: 4,
                         strokeDash: [],
                         headmarker: this.props.measurement.lineHeadMarker,
-                        tailmarker: this.props.measurement.lineTailMarker
+                        tailmarker: this.props.measurement.lineTailMarker,
+                        markerscale: this.props.measurement.markerScale
                     },
                     properties: {
                         segment_labels: measurement.segment_lengths.map(length => MeasureUtils.formatMeasurement(length, false, measurement.lenUnit))

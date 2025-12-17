@@ -30,6 +30,7 @@ export default function measurement(state = defaultState, action) {
             lenUnit: state.lenUnit, areaUnit: state.areaUnit,
             bearingHeadMarker: state.bearingHeadMarker, bearingTailMarker: state.bearingTailMarker,
             lineHeadMarker: state.lineHeadMarker, lineTailMarker: state.lineTailMarker,
+            markerScale: state.markerScale,
             ...action.data
         };
     }

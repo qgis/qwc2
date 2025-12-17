@@ -177,6 +177,7 @@ class MeasurementSupport extends React.Component {
             opts.headmarker = this.props.measurement.bearingHeadMarker;
             opts.tailmarker = this.props.measurement.bearingTailMarker;
         }
+        opts.markerscale = this.props.measurement.markerScale;
         return [
             ...FeatureStyles.measureInteraction(feature, opts),
             FeatureStyles.measureInteractionVertex({geometryFunction})

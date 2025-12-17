@@ -39,6 +39,8 @@ class Measure extends React.Component {
         /** Tail marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. */
         lineTailMarker: PropTypes.string,
         mapCrs: PropTypes.string,
+        /** Scale factor for all heade/tail markers. */
+        markerScale: PropTypes.number,
         measureState: PropTypes.object,
         setSnappingConfig: PropTypes.func,
         /** Whether to show the widget to switch between measure modes. */
@@ -50,6 +52,7 @@ class Measure extends React.Component {
         snappingActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
     };
     static defaultProps = {
+        markerScale: 1,
         showMeasureModeSwitcher: true,
         snapping: true,
         snappingActive: true
@@ -60,7 +63,8 @@ class Measure extends React.Component {
             bearingHeadMarker: this.props.bearingHeadMarker,
             bearingTailMarker: this.props.bearingTailMarker,
             lineHeadMarker: this.props.lineHeadMarker,
-            lineTailMarker: this.props.lineTailMarker
+            lineTailMarker: this.props.lineTailMarker,
+            markerScale: this.props.markerScale
         });
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
     };
