@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -17,10 +18,13 @@ import {getFeatureTemplate} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import AttributeForm from './AttributeForm';
+import MeasureSwitcher from './MeasureSwitcher';
+import {BottomToolPortalContext} from './PluginsContainer';
 
 import './style/LinkFeatureForm.css';
 
 class LinkFeatureForm extends React.Component {
+    static contextType = BottomToolPortalContext;
     static propTypes = {
         action: PropTypes.string,
         addLayerFeatures: PropTypes.func,
@@ -119,8 +123,8 @@ class LinkFeatureForm extends React.Component {
         } else if (editContext.feature) {
             const drawing = (editContext.action === 'Draw' && !editContext.feature.geometry && this.props.editConfig.geomType);
 
-            return (
-                <div className="link-feature-form">
+            return [(
+                <div className="link-feature-form" key="LinkFeatureForm">
                     {drawing ? (
                         <div className="link-feature-form-hint">
                             <span>{LocaleUtils.tr("linkfeatureform.drawhint")}</span>
@@ -138,11 +142,21 @@ class LinkFeatureForm extends React.Component {
                         </button>
                     </div>
                 </div>
-            );
+            ), drawing || editContext.feature?.geometry ? ReactDOM.createPortal((
+                <MeasureSwitcher
+                    changeMeasureState={this.changeMeasurementState}
+                    geomType={editContext.geomType} iconSize="large"
+                    measureState={editContext.measurements}
+                />
+            ), this.context) : null];
         } else {
             return null;
         }
     }
+    changeMeasurementState = (diff) => {
+        const editContext = this.props.editing.contexts[this.props.editContextId];
+        this.props.setEditContext(this.props.editContextId, {measurements: {...editContext.measurements, ...diff}});
+    };
     childPickQuery = (coordinate) => {
         const scale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
         this.props.iface.getFeature(this.props.editConfig, coordinate, this.props.map.projection, scale, 96, (featureCollection) => {

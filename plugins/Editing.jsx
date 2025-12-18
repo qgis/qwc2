@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import {parseNumber} from '@norbulcz/num-parse';
@@ -22,7 +23,9 @@ import {setSnappingConfig} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
 import Icon from '../components/Icon';
+import MeasureSwitcher from '../components/MeasureSwitcher';
 import PickFeature from '../components/PickFeature';
+import {BottomToolPortalContext} from '../components/PluginsContainer';
 import SideBar from '../components/SideBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -44,6 +47,7 @@ import './style/Editing.css';
  * `editServiceUrl` in `config.json` (by default the `qwc-data-service`).
  */
 class Editing extends React.Component {
+    static contextType = BottomToolPortalContext;
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         /** Whether to enable the "Clone existing geometry" functionality. */
@@ -281,8 +285,18 @@ class Editing extends React.Component {
             </SideBar>
         ), this.state.drawPick ? (
             <PickFeature featureFilter={this.pickFilter} featurePicked={this.geomPicked} key="FeaturePicker" />
-        ) : null];
+        ) : null,
+        this.props.editContext.action === "Draw" || this.props.editContext.feature?.geometry ? ReactDOM.createPortal((
+            <MeasureSwitcher
+                changeMeasureState={this.changeMeasurementState}
+                geomType={this.props.editContext.geomType} iconSize="large"
+                measureState={this.props.editContext.measurements}
+            />
+        ), this.context) : null];
     }
+    changeMeasurementState = (diff) => {
+        this.props.setEditContext('Editing', {measurements: {...this.props.editContext.measurements, ...diff}});
+    };
     actionClicked = (action, data) => {
         this.setState({drawPick: false, pickedFeatures: null});
         if (action === "AttribTable") {

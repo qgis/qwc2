@@ -214,20 +214,20 @@ export default {
             })
         ];
     },
-    interaction: (options, isSnap) => {
+    interaction: (feature, options, isSnap) => {
         const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
-        let fillColor = opts.fillColor;
-        let strokeColor = opts.strokeColor;
-        let strokeWidth = opts.strokeWidth;
-        if (isSnap) {
-            fillColor = opts.snapFillColor;
-            strokeColor = opts.snapStrokeColor;
-            strokeWidth = opts.snapStrokeWidth;
-        }
-        return new ol.style.Style({
-            fill: new ol.style.Fill({ color: fillColor }),
-            stroke: new ol.style.Stroke({ color: strokeColor, width: strokeWidth})
-        });
+        const styleOptions = isSnap ? {
+            strokeColor: opts.snapStrokeColor,
+            strokeWidth: opts.snapStrokeWidth,
+            fillColor: opts.snapFillColor
+        } : {
+            strokeColor: opts.strokeColor,
+            strokeWidth: opts.strokeWidth,
+            fillColor: opts.fillColor
+        };
+        styleOptions.strokeDash = [];
+        styleOptions.circleRadius = 0;
+        return defaultStyle(feature, styleOptions);
     },
     interactionVertex: (options, isSnap) => {
         const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};

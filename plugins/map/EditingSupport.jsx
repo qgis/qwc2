@@ -15,14 +15,17 @@ import PropTypes from 'prop-types';
 import {setEditContext} from '../../actions/editing';
 import LocationRecorder from '../../components/LocationRecorder';
 import FeatureStyles from "../../utils/FeatureStyles";
+import MeasureUtils from '../../utils/MeasureUtils';
 
 /**
  * Editing support for the map component.
  */
 class EditingSupport extends React.Component {
     static propTypes = {
+        displayCrs: PropTypes.string,
         editContext: PropTypes.object,
         map: PropTypes.object,
+        mapCrs: PropTypes.string,
         setEditContext: PropTypes.func
     };
     constructor(props) {
@@ -38,6 +41,8 @@ class EditingSupport extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.editContext === prevProps.editContext) {
             // pass
+        } else if (this.props.editContext.measurements !== prevProps.editContext.measurements) {
+            this.updateMeasurements();
         } else if (this.props.editContext.action === 'Pick' && this.props.editContext.feature) {
             // If a feature without geometry was picked, enter draw mode, otherwise enter edit mode
             if (!this.props.editContext.feature.geometry && this.props.editContext.geomType) {
@@ -66,34 +71,34 @@ class EditingSupport extends React.Component {
         }
         return null;
     }
-    editStyle = () => {
-        const geometryFunction = (feature) => {
-            if (feature.getGeometry().getType() === "Point") {
-                return new ol.geom.MultiPoint([feature.getGeometry().getCoordinates()]);
-            } else if (feature.getGeometry().getType() === "LineString") {
-                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates());
-            } else if (feature.getGeometry().getType() === "Polygon") {
-                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-            } else if (feature.getGeometry().getType() === "MultiPoint") {
-                return feature.getGeometry();
-            } else if (feature.getGeometry().getType() === "MultiLineString") {
-                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0]);
-            } else if (feature.getGeometry().getType() === "MultiPolygon") {
-                return new ol.geom.MultiPoint(feature.getGeometry().getCoordinates()[0][0]);
+    editStyle = (feature) => {
+        const geometryFunction = (f) => {
+            if (f.getGeometry().getType() === "Point") {
+                return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
+            } else if (f.getGeometry().getType() === "LineString") {
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
+            } else if (f.getGeometry().getType() === "Polygon") {
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
+            } else if (f.getGeometry().getType() === "MultiPoint") {
+                return f.getGeometry();
+            } else if (f.getGeometry().getType() === "MultiLineString") {
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
+            } else if (f.getGeometry().getType() === "MultiPolygon") {
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0][0]);
             }
-            return feature.getGeometry();
+            return f.getGeometry();
         };
         return [
-            FeatureStyles.interaction(this.props.editContext.geometryStyle),
+            FeatureStyles.interaction(feature, this.props.editContext.geometryStyle),
             FeatureStyles.interactionVertex({geometryFunction, ...this.props.editContext.vertexStyle})
-        ];
+        ].flat();
     };
     createLayer = () => {
         const source = new ol.source.Vector();
         this.layer = new ol.layer.Vector({
             source: source,
             zIndex: 1000000,
-            style: this.editStyle()
+            style: this.editStyle
         });
         this.props.map.addLayer(this.layer);
     };
@@ -106,10 +111,11 @@ class EditingSupport extends React.Component {
             type: geomType,
             source: this.layer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
-            style: this.editStyle()
+            style: this.editStyle
         });
         drawInteraction.on('drawstart', (evt) => {
             this.currentFeature = evt.feature;
+            this.currentFeature.on('change', this.updateMeasurements);
         }, this);
         drawInteraction.on('drawend', () => {
             this.setState({showRecordLocation: false});
@@ -126,6 +132,8 @@ class EditingSupport extends React.Component {
         this.createLayer();
         const format = new ol.format.GeoJSON();
         this.currentFeature = format.readFeature(this.props.editContext.feature);
+        this.currentFeature.on('change', this.updateMeasurements);
+        this.updateMeasurements();
         this.layer.getSource().addFeature(this.currentFeature);
 
         const modifyInteraction = new ol.interaction.Modify({
@@ -150,6 +158,22 @@ class EditingSupport extends React.Component {
         this.props.map.addInteraction(modifyInteraction);
         this.interaction = modifyInteraction;
     };
+    updateMeasurements = () => {
+        if (!this.currentFeature) {
+            return;
+        } else if (!this.props.editContext.measurements?.showmeasurements) {
+            this.currentFeature.set('measurements', undefined);
+            this.currentFeature.set('segment_labels', undefined);
+            this.currentFeature.set('label', undefined);
+        } else {
+            const settings = {
+                displayCrs: this.props.displayCrs,
+                lenUnit: this.props.editContext.measurements.lenUnit,
+                areaUnit: this.props.editContext.measurements.areaUnit
+            };
+            MeasureUtils.updateFeatureMeasurements(this.currentFeature, this.props.editContext.geomType, this.props.mapCrs, settings);
+        }
+    };
     commitCurrentFeature = () => {
         if (!this.currentFeature) {
             return;
@@ -170,6 +194,9 @@ class EditingSupport extends React.Component {
             this.props.map.removeInteraction(this.interaction);
         }
         this.interaction = null;
+        if (this.currentFeature) {
+            this.currentFeature.un('change', this.updateMeasurements);
+        }
         this.currentFeature = null;
         if (this.layer) {
             this.props.map.removeLayer(this.layer);
@@ -179,7 +206,9 @@ class EditingSupport extends React.Component {
 }
 
 export default connect((state) => ({
-    editContext: state.editing.contexts[state.editing.currentContext] || {}
+    editContext: state.editing.contexts[state.editing.currentContext] || {},
+    displayCrs: state.map.displayCrs,
+    mapCrs: state.map.projection
 }), {
     setEditContext: setEditContext
 })(EditingSupport);

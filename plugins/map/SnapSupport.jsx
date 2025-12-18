@@ -43,10 +43,10 @@ class SnapSupport extends React.Component {
         this.snapLayer = new ol.layer.Vector({
             source: this.snapSource,
             zIndex: 1000000,
-            style: [
-                FeatureStyles.interaction( {}, true),
+            style: feature => ([
+                FeatureStyles.interaction(feature, {}, true),
                 FeatureStyles.interactionVertex({geometryFunction}, true)
-            ]
+            ].flat())
         });
         this.props.map.addLayer(this.snapLayer);
         this.curPos = null;

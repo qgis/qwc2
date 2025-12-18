@@ -45,6 +45,7 @@ export default function editing(state = defaultState, action) {
                     changed: false,
                     mapPrefix: null,
                     editConfig: null,
+                    measurements: {showmeasurements: false, lenUnit: 'metric', areaUnit: 'metric'},
                     ...state.contexts[action.contextId],
                     ...action.editContext,
                     geomNonZeroZ: checkNonZeroZ(state.contexts[action.contextId], action.editContext),
