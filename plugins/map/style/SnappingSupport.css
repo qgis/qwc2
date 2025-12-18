@@ -1,13 +1,6 @@
 div.snapping-toolbar {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    line-height: 1.5em;
-    position: relative;
-    padding: 0.25em 0.5em;
-    order: 0;
-    background-color: var(--container-bg-color);
-    box-shadow: 0px -2px 4px rgba(136, 136, 136, 0.5);
-    border-bottom: 1px solid rgba(136, 136, 136, 0.5);
 }
 
 div.snapping-toolbar-container div.spinner {

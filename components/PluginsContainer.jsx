@@ -85,7 +85,9 @@ class PluginsContainer extends React.Component {
                     <ProcessNotifications />
                 </div>
                 <div className="app-infos-container" ref={this.setAppInfosContainerRef} style={mapContainerStyle} />
-                <div className="map-bottom-tool-container" ref={this.setBottomToolContanerRef} style={mapContainerStyle} />
+                <div className="map-bottom-tool-container" style={mapContainerStyle}>
+                    <div ref={this.setBottomToolContanerRef} />
+                </div>
             </div>
         );
     }

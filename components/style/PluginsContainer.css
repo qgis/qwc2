@@ -30,15 +30,20 @@ div.map-bottom-tool-container {
     position: absolute;
     pointer-events: none;
     display: flex;
-    flex-direction: column-reverse;
-    align-items: center;
-    align-content: flex-start;
-    justify-content: flex-start;
-    margin-bottom: -1px;
+    justify-content: center;
+    align-items: flex-end;
 }
 
-div.map-bottom-tool-container > * {
+div.map-bottom-tool-container > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: -1px;
     pointer-events: initial;
+    padding: 0.25em 0.5em;
+    gap: 1em;
+    background-color: var(--container-bg-color);
+    box-shadow: 0px -2px 4px rgba(136, 136, 136, 0.5);
 }
 
 div.app-info {
