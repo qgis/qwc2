@@ -87,12 +87,12 @@ class SnapSupport extends React.Component {
     getFeature = () => {
         this.timeoutId = null;
 
-        const layers = this.props.layers.find(layer => layer.role === LayerRole.THEME);
-        const queryLayers = this.props.layers.reduce((accum, layer) => {
-            return layer.role === LayerRole.THEME ? accum.concat(layer.queryLayers) : accum;
+        const layer = this.props.layers.find(l => l.role === LayerRole.THEME);
+        const queryLayers = this.props.layers.reduce((accum, l) => {
+            return l.role === LayerRole.THEME ? accum.concat(l.queryLayers) : accum;
         }, []).join(",");
 
-        if (!layers || !queryLayers) {
+        if (!layer || !queryLayers) {
             return;
         }
 
@@ -104,9 +104,9 @@ class SnapSupport extends React.Component {
             FI_POLYGON_TOLERANCE: 4
         };
 
-        const request = IdentifyUtils.buildRequest(layers, queryLayers, this.state.mousePos.coordinate, this.props.mapObj, options);
+        const request = IdentifyUtils.buildRequest(layer, queryLayers, this.state.mousePos.coordinate, this.props.mapObj, options);
         axios.get(request.url, {params: request.params}).then(response => {
-            const results = IdentifyUtils.parseXmlResponse(response.data, this.props.mapObj.projection, layers);
+            const results = IdentifyUtils.parseXmlResponse(response.data, this.props.mapObj.projection, layer);
             const features = [];
             results.forEach(result => {
                 for (const feature of result) {
