@@ -409,7 +409,8 @@ Configure the available target applications in `themesConfig.json`:
         "name": "<geomLinkName>",                // Link name referenced in theme item
         "title": "<geomLinkTitle>",              // Link title, displayed in the selection combo
         "geomType": ["<geomType>", "<geomType>"] // Supported geometry types (Point, LineString, Polygon)
-        "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit
+        "format": "wkt|geojson",                 // Format of data to send to application
+        "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit.
         "params": {"<key>": "<value>", ...}      // Optional: additional form parameters to post to URL
         "target": "<target>" | {                 // Optional: form POST target which to display the result
           "iframedialog": true,                  // Use an iframe dialog
@@ -421,6 +422,10 @@ Configure the available target applications in `themesConfig.json`:
   }
 }
 ```
+If you are using `qwc-services`, you will need to explicitly permit the geometry links in the `qwc-admin-gui` as follows:
+
+* Create and permit a `Plugin` resource with name `geometryLinks`
+* Create and permit `Plugin data` resources with name equal to `<geomLinkName>`
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|

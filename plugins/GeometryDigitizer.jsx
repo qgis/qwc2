@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 
 import polySelfIntersections from 'geojson-polygon-self-intersections';
 import isEmpty from 'lodash.isempty';
+import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
 
 import {LayerRole, removeLayer, addLayerFeatures, removeLayerFeatures, clearLayer} from '../actions/layers';
@@ -22,6 +23,7 @@ import ButtonBar from '../components/widgets/ButtonBar';
 import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
+import {EXCLUDE_ATTRS, EXCLUDE_PROPS} from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -50,7 +52,8 @@ import './style/Redlining.css';
  *         "name": "<geomLinkName>",                // Link name referenced in theme item
  *         "title": "<geomLinkTitle>",              // Link title, displayed in the selection combo
  *         "geomType": ["<geomType>", "<geomType>"] // Supported geometry types (Point, LineString, Polygon)
- *         "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit
+ *         "format": "wkt|geojson",                 // Format of data to send to application
+ *         "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit.
  *         "params": {"<key>": "<value>", ...}      // Optional: additional form parameters to post to URL
  *         "target": "<target>" | {                 // Optional: form POST target which to display the result
  *           "iframedialog": true,                  // Use an iframe dialog
@@ -62,6 +65,10 @@ import './style/Redlining.css';
  *   }
  * }
  * ```
+ * If you are using `qwc-services`, you will need to explicitly permit the geometry links in the `qwc-admin-gui` as follows:
+ *
+ * * Create and permit a `Plugin` resource with name `geometryLinks`
+ * * Create and permit `Plugin data` resources with name equal to `<geomLinkName>`
  */
 class GeometryDigitizer extends React.Component {
     static propTypes = {
@@ -430,19 +437,26 @@ class GeometryDigitizer extends React.Component {
         }
         const data = this.geometryLinkData(this.state.geomLink);
         const supportedGeomType = data.geomType || [];
-        const geometries = features.filter(
+        const supportedFeatures = features.filter(
             feature => supportedGeomType.includes(this.state.bufferDistance > 0 ? "Polygon" : feature.geometry.type.replace(/^Multi/, ''))
-        ).map(
-            feature => VectorLayerUtils.geoJSONGeomToWkt(feature.geometry)
         );
-        if (isEmpty(geometries)) {
+        if (isEmpty(supportedFeatures)) {
             ev.preventDefault();
             return;
-        } else {
-            ev.target.GEOMETRIES.value = geometries.join(";");
-            ev.target.GEOMCOUNT.value = geometries.length;
-            ev.target.BUFFERDIST.value = this.state.bufferDistance;
         }
+        const geometries = (data.format || "wkt").toLowerCase() === "wkt" ? supportedFeatures.map(
+            feature => VectorLayerUtils.geoJSONGeomToWkt(feature.geometry)
+        ).join(";") : JSON.stringify({
+            type: "FeatureCollection",
+            features: supportedFeatures.map(feature => {
+                const newFeature = omit(feature, EXCLUDE_PROPS);
+                newFeature.properties = omit(newFeature.properties, EXCLUDE_ATTRS);
+                return newFeature;
+            })
+        });
+        ev.target.GEOMETRIES.value = geometries;
+        ev.target.GEOMCOUNT.value = supportedFeatures.length;
+        ev.target.BUFFERDIST.value = this.state.bufferDistance;
         if (ev.target.target === "geomdigitizer-output-window") {
             this.setState({outputWindowVisible: true, outputLoaded: false, outputWindowSize: {w: data.target.w, h: data.target.h}, outputWindowTitle: data.target.iframedialog});
         } else {
