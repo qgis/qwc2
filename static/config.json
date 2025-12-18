@@ -159,8 +159,7 @@
           "enableExport": true,
           "exportGeometry": true,
           "longAttributesDisplay": "wrap",
-          "displayResultTree": false,
-          "featureInfoReturnsLayerName": true,
+          "resultDisplayMode": "flat",
           "clearResultsOnClose": true,
           "geometry": {
             "initialWidth": 480,

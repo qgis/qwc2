@@ -171,14 +171,14 @@ const IdentifyUtils = {
             });
         }
     },
-    parseResponse(response, layer, format, clickPoint, projection, featureInfoReturnsLayerName) {
+    parseResponse(response, layer, format, clickPoint, projection) {
         const decimals = CoordinatesUtils.getPrecision(projection);
         const posstr = clickPoint ? clickPoint[0].toFixed(decimals) + ", " + clickPoint[1].toFixed(decimals) : "";
         let results = {};
         if (["application/json", "application/geojson", "application/geo+json", "GeoJSON"].includes(format)) {
             results = IdentifyUtils.parseGeoJSONResponse(response, projection, layer);
         } else if (format === "text/xml") {
-            results = IdentifyUtils.parseXmlResponse(response, projection, layer, posstr, featureInfoReturnsLayerName);
+            results = IdentifyUtils.parseXmlResponse(response, projection, layer, posstr);
         } else if (format === "application/vnd.ogc.gml") {
             results = IdentifyUtils.parseGmlResponse(response, projection, layer, posstr);
         } else if (format.startsWith("text/xml;subtype=gml/3.1") || format.startsWith("text/xml;subtype=gml/3.0")) {
@@ -272,7 +272,7 @@ const IdentifyUtils = {
         }
         return featureResult;
     },
-    parseXmlResponse(response, geometrycrs, layer, posstr = null, featureInfoReturnsLayerName = false, mapLayers = null) {
+    parseXmlResponse(response, geometrycrs, layer, posstr = null) {
         const parser = new DOMParser();
 
         const doc = parser.parseFromString(response, "text/xml");
@@ -284,15 +284,18 @@ const IdentifyUtils = {
             const displayfield = layerEl.attributes.displayfield ? layerEl.attributes.displayfield.value : null;
             let layername = "";
             let layertitle = "";
-            if (layerEl.attributes.layername) {
+            if (layerEl.attributes.title) {
+                // QGIS Server 3.36+ / qwc-feature-info-service 2025.12.18+
+                layername = layerEl.attributes.name.value;
+                layertitle = layer.translations?.layertree?.[layername] ?? layerEl.attributes.title.value;
+            } else if (layerEl.attributes.layername) {
+                // qwc-feature-info-service < 2025.12.18
                 layername = layerEl.attributes.layername.value;
                 layertitle = layer.translations?.layertree?.[layername] ?? layerEl.attributes.name.value;
-            } else if (featureInfoReturnsLayerName) {
+            } else {
+                // QGIS Server < 3.36
                 layername = layerEl.attributes.name.value;
                 layertitle = LayerUtils.searchSubLayer(layer, 'name', layername)?.title ?? layername;
-            } else {
-                layertitle = layerEl.attributes.name.value;
-                layername = LayerUtils.searchSubLayer(layer, 'title', layertitle)?.name ?? layertitle;
             }
 
             const layerinfo = layerEl.attributes.layerinfo ? layerEl.attributes.layerinfo.value : null;

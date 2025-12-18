@@ -63,8 +63,6 @@ class Identify extends React.Component {
         exitTaskOnResultsClose: PropTypes.bool,
         /** Whether to include the geometry in exported features. Default: `true`. */
         exportGeometry: PropTypes.bool,
-        /** Whether to assume that XML GetFeatureInfo responses specify the technical layer name in the `name` attribute, rather than the layer title. */
-        featureInfoReturnsLayerName: PropTypes.bool,
         /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -109,7 +107,6 @@ class Identify extends React.Component {
         resultDisplayMode: 'flat',
         resultGridSize: 200,
         replaceImageUrls: true,
-        featureInfoReturnsLayerName: true,
         geometry: {
             initialWidth: 240,
             initialHeight: 320,
@@ -288,7 +285,7 @@ class Identify extends React.Component {
         this.setState({ radiusUnits: ev.target.value });
     };
     parseResult = (response, layer, format, clickPoint, ctrlPick = false) => {
-        const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection, this.props.featureInfoReturnsLayerName);
+        const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection);
         // Merge with previous
         this.setState((state) => {
             const identifyResults = {...state.identifyResults};
