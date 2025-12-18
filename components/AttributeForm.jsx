@@ -470,7 +470,7 @@ class AttributeForm extends React.Component {
                 const parts = name.split("__");
                 let value = element.type === "radio" || element.type === "checkbox" ? element.checked : element.value;
                 const nullElements = ["date", "number", "radio"];
-                const nullFieldTypes = ["date", "number"];
+                const textDataTypes = ["character varying", "text"];
                 if (parts.length >= 3) {
                     // Relation value
                     // Usually <table>__<field>__<index>, but <field> might also contain __ (i.e. upload__user)
@@ -481,7 +481,7 @@ class AttributeForm extends React.Component {
 
                     const relEditConfig = this.props.editConfigs[this.props.editContext.mapPrefix][tablename];
                     const nrelFieldConfig = relEditConfig.fields?.find?.(f => f.id === field) ?? {};
-                    const nrelFieldDataType = nrelFieldConfig.type;
+                    const nrelFieldDataType = nrelFieldConfig.data_type;
 
                     if (nrelFieldConfig.expression) {
                         // Skip virtual fields
@@ -489,11 +489,11 @@ class AttributeForm extends React.Component {
                         return;
                     }
 
-                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(nrelFieldDataType)) && element.value === "") {
+                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || !textDataTypes.includes(nrelFieldDataType)) && element.value === "") {
                         // Set empty value to null instead of empty string
                         value = null;
                     }
-                    if (nrelFieldDataType === "text" && textNullValue !== undefined && element.value === textNullValue) {
+                    if (textDataTypes.includes(nrelFieldDataType) && textNullValue !== undefined && element.value === textNullValue) {
                         // Convert text NULL to null
                         value = null;
                     }
@@ -530,12 +530,12 @@ class AttributeForm extends React.Component {
                         return;
                     }
 
-                    const dataType = fieldConfig.type;
-                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || nullFieldTypes.includes(dataType)) && element.value === "") {
+                    const dataType = fieldConfig.data_type;
+                    if ((element instanceof RadioNodeList || nullElements.includes(element.type) || !textDataTypes.includes(dataType)) && element.value === "") {
                         // Set empty value to null instead of empty string
                         value = null;
                     }
-                    if (dataType === "text" && textNullValue !== undefined && element.value === textNullValue) {
+                    if (textDataTypes.includes(dataType) && textNullValue !== undefined && element.value === textNullValue) {
                         // Convert text NULL to null
                         value = null;
                     }
