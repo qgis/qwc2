@@ -24,6 +24,7 @@ import {zoomToPoint} from '../actions/map';
 import {openExternalUrl} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {EXCLUDE_ATTRS, EXCLUDE_PROPS} from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -35,9 +36,6 @@ import Spinner from './widgets/Spinner';
 import ToggleSwitch from './widgets/ToggleSwitch';
 
 import './style/IdentifyViewer.css';
-
-const EXCLUDE_PROPS = ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox'];
-const EXCLUDE_ATTRS = ['htmlContent', 'htmlContentInline'];
 
 const BuiltinExporters = [
     {

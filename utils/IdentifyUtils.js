@@ -21,6 +21,9 @@ import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';
 
 
+export const EXCLUDE_PROPS = ['featurereport', 'displayfield', 'layername', 'layertitle', 'layerinfo', 'attribnames', 'clickPos', 'displayname', 'bbox'];
+export const EXCLUDE_ATTRS = ['htmlContent', 'htmlContentInline'];
+
 function identifyRequestParams(layer, queryLayers, projection, params) {
     let format = 'text/plain';
     const infoFormats = layer.infoFormats || [];
