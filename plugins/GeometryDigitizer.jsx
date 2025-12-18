@@ -53,7 +53,7 @@ import './style/Redlining.css';
  *         "title": "<geomLinkTitle>",              // Link title, displayed in the selection combo
  *         "geomType": ["<geomType>", "<geomType>"] // Supported geometry types (Point, LineString, Polygon)
  *         "format": "wkt|geojson",                 // Format of data to send to application
- *         "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit.
+ *         "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit. Can contain the $username$ placeholder parameter.
  *         "params": {"<key>": "<value>", ...}      // Optional: additional form parameters to post to URL
  *         "target": "<target>" | {                 // Optional: form POST target which to display the result
  *           "iframedialog": true,                  // Use an iframe dialog
@@ -262,7 +262,7 @@ class GeometryDigitizer extends React.Component {
                                 <option key={entry} value={entry}>{this.geometryLinkData(entry).title}</option>
                             ))}
                         </select>
-                        <form action={geomLinkData.url} method="post" onSubmit={this.submitGeometryLink} target={target}>
+                        <form action={geomLinkData.url?.replace('$username$', ConfigUtils.getConfigProp("username") || "")} method="post" onSubmit={this.submitGeometryLink} target={target}>
                             <input name="csrf_token" type="hidden" value={MiscUtils.getCsrfToken()} />
                             <input name="GEOMETRIES" type="hidden" />
                             <input name="GEOMCOUNT" type="hidden" />
