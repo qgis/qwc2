@@ -233,8 +233,8 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
     parseExpressionsAsync(defaultFieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs).then(result => {
         // Adjust values based on field type
         editConfig.fields.forEach(field => {
-            if (field.id in result && field.type === "date") {
-                result[field.id] = result[field.id].split("T")[0];
+            if (field.id in result && result[field.id] && field.type === "date") {
+                result[field.id] = String(result[field.id]).split("T")[0];
             }
         });
         callback({...feature, properties: {...feature.properties, ...result}});
