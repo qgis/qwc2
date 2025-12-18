@@ -10,15 +10,18 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
+import isEqual from 'lodash.isequal';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
+import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LayerRegistry from '../components/map/layers/index';
 import InputContainer from '../components/widgets/InputContainer';
 import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -44,13 +47,14 @@ class ObliqueView extends React.Component {
         }),
         /** The initial map scale. */
         initialScale: PropTypes.number,
-        mapBbox: PropTypes.object,
+        map: PropTypes.object,
         projection: PropTypes.string,
         /** A list of allowed map scales, in decreasing order. */
         scales: PropTypes.arrayOf(PropTypes.number),
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
-        themes: PropTypes.object
+        themes: PropTypes.object,
+        zoomToExtent: PropTypes.func
     };
     static defaultProps = {
         geometry: {
@@ -69,7 +73,9 @@ class ObliqueView extends React.Component {
         selectedDataset: null,
         datasetConfig: null,
         currentDirection: null,
-        currentZoom: 0
+        currentZoom: 0,
+        currentCenter: null,
+        viewsLocked: false
     };
     constructor(props) {
         super(props);
@@ -82,11 +88,28 @@ class ObliqueView extends React.Component {
             onFocusOnly: false
         });
         this.map = new ol.Map({controls, interactions});
-        this.map.on('moveend', this.searchClosestImage);
         this.map.on('rotateend', this.searchClosestImage);
+        this.map.on('moveend', () => {
+            this.searchClosestImage();
+            this.setState(state => {
+                const newZoom = this.map.getView().getZoom();
+                const newCenter = this.map.getView().getCenter();
+                if (newZoom !== state.currentZoom || !isEqual(newCenter, state.currentCenter)) {
+                    return {currentZoom: newZoom, currentCenter: newCenter};
+                }
+                return null;
+            });
+        });
         this.closestImage = null;
         this.obliqueImageryLayer = null;
         this.state = ObliqueView.defaultState;
+        this.focusedMap = null;
+    }
+    componentDidMount() {
+        window.addEventListener('focus', this.trackFocus, true);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('focus', this.trackFocus);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.active && !prevProps.active) {
@@ -116,6 +139,13 @@ class ObliqueView extends React.Component {
         if (this.state.datasetConfig && this.state.currentZoom !== prevState.currentZoom) {
             this.map.getView()?.setZoom?.(this.state.currentZoom);
         }
+        if (this.state.viewsLocked && this.state.datasetConfig) {
+            if (this.focusedMap === "map" && this.props.map.bbox !== prevProps.map.bbox) {
+                this.sync2DExtent();
+            } else if (this.focusedMap === "mapOblique" && (this.state.currentCenter !== prevState.currentCenter || this.state.currentZoom !== prevState.currentZoom)) {
+                this.props.zoomToExtent(this.map.getView().calculateExtent(), this.state.datasetConfig.crs);
+            }
+        }
     }
     onClose = () => {
         this.setState(ObliqueView.defaultState);
@@ -125,8 +155,18 @@ class ObliqueView extends React.Component {
             return null;
         }
         const rot = this.getRotation();
+        const extraControls = [{
+            icon: "sync",
+            callback: this.sync2DExtent,
+            title: LocaleUtils.tr("common.sync2dview")
+        }, {
+            icon: "lock",
+            callback: () => this.setState(state => ({viewsLocked: !state.viewsLocked})),
+            title: LocaleUtils.tr("common.lock2dview"),
+            active: this.state.viewsLocked
+        }];
         return (
-            <ResizeableWindow dockable={this.props.geometry.side} icon="oblique"
+            <ResizeableWindow dockable={this.props.geometry.side} extraControls={extraControls} icon="oblique"
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                 initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked}
@@ -216,15 +256,6 @@ class ObliqueView extends React.Component {
             // showFullExtent: true
         }));
         this.setState({currentZoom: zoom});
-        this.map.on('moveend', () => {
-            this.setState(state => {
-                const newZoom = this.map.getView().getZoom();
-                if (newZoom !== state.currentZoom) {
-                    return {currentZoom: newZoom};
-                }
-                return null;
-            });
-        });
 
         const layers = [];
 
@@ -287,14 +318,38 @@ class ObliqueView extends React.Component {
     getRotation = () => {
         return {n: 0, w: 90, e: -90, s: 180}[this.state.currentDirection];
     };
+    sync2DExtent = () => {
+        if (!this.state.datasetConfig) {
+            return;
+        }
+        this.setState(state => {
+            const center = CoordinatesUtils.reproject(this.props.map.center, this.props.map.projection, state.datasetConfig.crs);
+            const resolution = MapUtils.computeForZoom(this.props.map.resolutions, this.props.map.zoom);
+            this.map.getView().setCenter(center);
+            this.map.getView().setResolution(resolution);
+            return {currentCenter: center, currentZoom: this.map.getView().getZoom()};
+        });
+    };
+    trackFocus = (ev) => {
+        const mapEl = document.getElementById("map");
+        const mapObliqueEl = this.map?.getTargetElement?.();
+        if (mapEl?.contains?.(document.activeElement)) {
+            this.focusedMap = "map";
+        } else if (mapObliqueEl?.contains?.(document.activeElement)) {
+            this.focusedMap = "mapOblique";
+        } else {
+            this.focusedMap = null;
+        }
+    };
 }
 
 
 export default connect((state) => ({
     active: state.task.id === "ObliqueView",
-    mapBbox: state.map.bbox,
+    map: state.map,
     theme: state.theme.current,
     themes: state.theme.themes
 }), {
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    zoomToExtent: zoomToExtent
 })(ObliqueView);
