@@ -443,7 +443,8 @@
       "imperial": "ヤード・ポンド法",
       "lengthLabel": "長さ",
       "metric": "メートル法",
-      "pointLabel": "位置"
+      "pointLabel": "位置",
+      "showmeasurements": "計測結果を表示"
     },
     "misc": {
       "ctrlclickhint": "Ctrl+クリックで開く"
@@ -532,7 +533,6 @@
       "layertitle": "スケッチ",
       "line": "線",
       "markers": "マーカー",
-      "measurements": "計測結果を表示",
       "numericinput": "数値入力",
       "pick": "ピック",
       "point": "点",

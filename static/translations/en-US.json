@@ -443,7 +443,8 @@
       "imperial": "Imperial",
       "lengthLabel": "Length",
       "metric": "Metric",
-      "pointLabel": "Position"
+      "pointLabel": "Position",
+      "showmeasurements": "Show measurements"
     },
     "misc": {
       "ctrlclickhint": "Open with Ctrl+Click"
@@ -532,7 +533,6 @@
       "layertitle": "Redlining",
       "line": "Line",
       "markers": "Markers",
-      "measurements": "Show measurements",
       "numericinput": "Numeric input",
       "pick": "Pick",
       "point": "Point",

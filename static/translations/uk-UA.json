@@ -443,7 +443,8 @@
       "imperial": "",
       "lengthLabel": "Довжина",
       "metric": "",
-      "pointLabel": "Позиція"
+      "pointLabel": "Позиція",
+      "showmeasurements": ""
     },
     "misc": {
       "ctrlclickhint": ""
@@ -532,7 +533,6 @@
       "layertitle": "",
       "line": "Лінія",
       "markers": "",
-      "measurements": "",
       "numericinput": "",
       "pick": "Вибрати",
       "point": "Точка",

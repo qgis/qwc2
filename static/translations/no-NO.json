@@ -443,7 +443,8 @@
       "imperial": "",
       "lengthLabel": "Lengde",
       "metric": "",
-      "pointLabel": "Posisjon"
+      "pointLabel": "Posisjon",
+      "showmeasurements": ""
     },
     "misc": {
       "ctrlclickhint": ""
@@ -532,7 +533,6 @@
       "layertitle": "",
       "line": "Linje",
       "markers": "",
-      "measurements": "",
       "numericinput": "",
       "pick": "Velg",
       "point": "Punkt",

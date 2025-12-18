@@ -443,7 +443,8 @@
       "imperial": "Imperiálně",
       "lengthLabel": "Délka",
       "metric": "Metricky",
-      "pointLabel": "Poloha"
+      "pointLabel": "Poloha",
+      "showmeasurements": ""
     },
     "misc": {
       "ctrlclickhint": ""
@@ -532,7 +533,6 @@
       "layertitle": "",
       "line": "Linie",
       "markers": "",
-      "measurements": "",
       "numericinput": "",
       "pick": "Výběr",
       "point": "Bod",

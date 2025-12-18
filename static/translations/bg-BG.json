@@ -443,7 +443,8 @@
       "imperial": "Imperial",
       "lengthLabel": "Дължина",
       "metric": "Метричен",
-      "pointLabel": "Позиция"
+      "pointLabel": "Позиция",
+      "showmeasurements": "Показване на измерванията"
     },
     "misc": {
       "ctrlclickhint": "Отваряне с Ctrl+Click"
@@ -532,7 +533,6 @@
       "layertitle": "Redlining",
       "line": "Линия",
       "markers": "Маркери",
-      "measurements": "Показване на измерванията",
       "numericinput": "Цифрово въвеждане",
       "pick": "Изберете",
       "point": "Точка",

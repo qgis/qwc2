@@ -443,7 +443,8 @@
       "imperial": "Imperiaal",
       "lengthLabel": "Lengte",
       "metric": "Metrisch",
-      "pointLabel": "Positie"
+      "pointLabel": "Positie",
+      "showmeasurements": "Metingen tonen"
     },
     "misc": {
       "ctrlclickhint": "Openen met Ctrl+klik"
@@ -532,7 +533,6 @@
       "layertitle": "Laag",
       "line": "Lijn",
       "markers": "Markeringen",
-      "measurements": "Metingen tonen",
       "numericinput": "Numeriek invoerpaneel tonen",
       "pick": "Selecteren",
       "point": "Punt",

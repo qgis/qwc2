@@ -443,7 +443,8 @@
       "imperial": "Mărimi imperiale",
       "lengthLabel": "Lungime",
       "metric": "Mărimi metrice",
-      "pointLabel": "Poziție"
+      "pointLabel": "Poziție",
+      "showmeasurements": "Afișare dimensiuni"
     },
     "misc": {
       "ctrlclickhint": ""
@@ -532,7 +533,6 @@
       "layertitle": "",
       "line": "Linie",
       "markers": "",
-      "measurements": "Afișare dimensiuni",
       "numericinput": "Afișare formular pentru valori numerice",
       "pick": "Alege",
       "point": "Punct",

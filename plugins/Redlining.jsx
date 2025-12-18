@@ -15,6 +15,7 @@ import {LayerRole, addLayer} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
 import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import Icon from '../components/Icon';
+import MeasureSwitcher from '../components/MeasureSwitcher';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
 import ColorButton from '../components/widgets/ColorButton';
@@ -339,40 +340,16 @@ class Redlining extends React.Component {
                     </div>
                 ) : null}
                 <div className="redlining-control redlining-control-fill">
-                    <div className="controlgroup">
+                    <div className={"controlgroup" + (this.props.redlining.showmeasurements ? " redlining-control-fill" : "")}>
                         {this.props.redlining.geomType !== 'Text' && this.props.allowGeometryLabels ? (
-                            <button
-                                className={"button" + (this.props.redlining.measurements ? " pressed" : "")}
-                                onClick={() => this.props.changeRedliningState({measurements: !this.props.redlining.measurements, style: {...this.props.redlining.style, text: ''}})}
-                                title={LocaleUtils.tr("redlining.measurements")}
-                            >
-                                <Icon icon="measure" />
-                            </button>
+                            <MeasureSwitcher
+                                changeMeasureState={(diff) => this.props.changeRedliningState({...diff, text: ''})}
+                                geomType={this.props.redlining.geomType}
+                                measureState={this.props.redlining}
+                            />
                         ) : null}
-                        {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) && !this.props.redlining.measurements ? (
-                            <input className="controlgroup-fillitem" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.measurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
-                        ) : null}
-                        {this.props.redlining.measurements && ['LineString', 'Circle'].includes(this.props.redlining.geomType) ? (
-                            <select className="controlgroup-fillitem" onChange={ev => this.props.changeRedliningState({lenUnit: ev.target.value})} value={this.props.redlining.lenUnit}>
-                                <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
-                                <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
-                                <option value="m">m</option>
-                                <option value="km">km</option>
-                                <option value="ft">ft</option>
-                                <option value="mi">mi</option>
-                            </select>
-                        ) : null}
-                        {this.props.redlining.measurements && ['Polygon', 'Ellipse', 'Square', 'Box'].includes(this.props.redlining.geomType) ? (
-                            <select className="controlgroup-fillitem" onChange={ev => this.props.changeRedliningState({areaUnit: ev.target.value})} value={this.props.redlining.areaUnit}>
-                                <option value="metric">{LocaleUtils.tr("measureComponent.metric")}</option>
-                                <option value="imperial">{LocaleUtils.tr("measureComponent.imperial")}</option>
-                                <option value="sqm">m&#178;</option>
-                                <option value="ha">ha</option>
-                                <option value="sqkm">km&#178;</option>
-                                <option value="sqft">ft&#178;</option>
-                                <option value="acre">acre</option>
-                                <option value="sqmi">mi&#178;</option>
-                            </select>
+                        {(this.props.redlining.geomType === 'Text' || this.props.allowGeometryLabels) && !this.props.redlining.showmeasurements ? (
+                            <input className="controlgroup-fillitem" onChange={(ev) => this.updateRedliningStyle({text: ev.target.value})} placeholder={labelPlaceholder} readOnly={this.props.redlining.showmeasurements} ref={el => this.setLabelRef(el)} type="text" value={this.props.redlining.style.text}/>
                         ) : null}
                     </div>
                 </div>

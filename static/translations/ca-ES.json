@@ -443,7 +443,8 @@
       "imperial": "Imperial",
       "lengthLabel": "Longitud",
       "metric": "Mètric",
-      "pointLabel": "Posició"
+      "pointLabel": "Posició",
+      "showmeasurements": "Mostrar mesuraments"
     },
     "misc": {
       "ctrlclickhint": "Obrir amb Ctrl+Click"
@@ -532,7 +533,6 @@
       "layertitle": "Línia de demarcació",
       "line": "Línia",
       "markers": "Marcadors",
-      "measurements": "Mostrar mesuraments",
       "numericinput": "Entrada numèrica",
       "pick": "Escollir",
       "point": "Punt",

@@ -443,7 +443,8 @@
       "imperial": "Imperial",
       "lengthLabel": "Uzunluk",
       "metric": "Metrik",
-      "pointLabel": "Konum"
+      "pointLabel": "Konum",
+      "showmeasurements": "Ölçüleri göster"
     },
     "misc": {
       "ctrlclickhint": "Ctrl+Click ile aç"
@@ -532,7 +533,6 @@
       "layertitle": "Eskiz",
       "line": "Çizgi",
       "markers": "İşaretçiler",
-      "measurements": "Ölçüleri göster",
       "numericinput": "Sayısal giriş panelini göster",
       "pick": "Seç",
       "point": "Nokta",

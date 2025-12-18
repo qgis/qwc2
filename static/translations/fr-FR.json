@@ -443,7 +443,8 @@
       "imperial": "Impérial",
       "lengthLabel": "Longueur",
       "metric": "Métrique",
-      "pointLabel": "Position"
+      "pointLabel": "Position",
+      "showmeasurements": "Montrer les mesures"
     },
     "misc": {
       "ctrlclickhint": "Ouvrir avec Ctrl+Clic"
@@ -532,7 +533,6 @@
       "layertitle": "Dessin",
       "line": "Ligne",
       "markers": "Pointes",
-      "measurements": "Montrer les mesures",
       "numericinput": "Entrée numérique",
       "pick": "Choisir",
       "point": "Point",

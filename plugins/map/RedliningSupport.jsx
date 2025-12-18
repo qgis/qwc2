@@ -142,7 +142,7 @@ class RedliningSupport extends React.Component {
                 this.selectedFeatures.forEach(this.updateFeatureStyle);
             }
             // Update current feature measurements
-            if (this.props.redlining.measurements !== prevProps.redlining.measurements) {
+            if (this.props.redlining.showmeasurements !== prevProps.redlining.showmeasurements) {
                 this.selectedFeatures.forEach(this.toggleFeatureMeasurements);
             } else if (
                 this.props.map.displayCrs !== prevProps.map.displayCrs ||
@@ -235,7 +235,7 @@ class RedliningSupport extends React.Component {
         this.blockOnChange = false;
     };
     toggleFeatureMeasurements = (feature) => {
-        if (this.props.redlining.measurements) {
+        if (this.props.redlining.showmeasurements) {
             const settings = {
                 displayCrs: this.props.displayCrs,
                 lenUnit: this.props.redlining.lenUnit,

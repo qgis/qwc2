@@ -443,7 +443,8 @@
       "imperial": "",
       "lengthLabel": "Längd",
       "metric": "",
-      "pointLabel": "Position"
+      "pointLabel": "Position",
+      "showmeasurements": ""
     },
     "misc": {
       "ctrlclickhint": ""
@@ -532,7 +533,6 @@
       "layertitle": "",
       "line": "Linje",
       "markers": "",
-      "measurements": "",
       "numericinput": "",
       "pick": "Välj",
       "point": "Punkt",

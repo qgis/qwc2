@@ -443,7 +443,8 @@
       "imperial": "Imperial",
       "lengthLabel": "Distância",
       "metric": "Métrica",
-      "pointLabel": "Posição"
+      "pointLabel": "Posição",
+      "showmeasurements": "Medidas"
     },
     "misc": {
       "ctrlclickhint": ""
@@ -532,7 +533,6 @@
       "layertitle": "",
       "line": "Línha",
       "markers": "",
-      "measurements": "Medidas",
       "numericinput": "Entrada numérica",
       "pick": "Escolher",
       "point": "Ponto",
