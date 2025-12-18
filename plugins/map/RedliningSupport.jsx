@@ -332,7 +332,7 @@ class RedliningSupport extends React.Component {
             ev.feature.set('shape', this.props.redlining.geomType);
             this.updateFeatureStyle(ev.feature);
             this.toggleFeatureMeasurements(ev.feature);
-            this.selectFeatures([ev.feature]);
+            this.selectFeatures([ev.feature], false);
         }, this);
         drawInteraction.on('drawend', (ev) => {
             this.commitFeatures([ev.feature], this.props.redlining, true);
@@ -452,7 +452,7 @@ class RedliningSupport extends React.Component {
             evt.feature.set('shape', this.props.redlining.geomType);
             this.updateFeatureStyle(evt.feature);
             this.toggleFeatureMeasurements(evt.feature);
-            this.selectFeatures([evt.feature]);
+            this.selectFeatures([evt.feature], false);
         }, this);
         drawInteraction.on('drawend', () => {
             // Draw end
