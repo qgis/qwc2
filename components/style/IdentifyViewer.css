@@ -194,7 +194,7 @@ span.identify-toolbar-spacer {
 
 div.identify-settings-menu {
     position: absolute;
-    bottom: 100%;
+    bottom: calc(100% - 0.25em);
     left: 0;
     border: 1px solid var(--border-color);
     background-color: var(--container-bg-color);
