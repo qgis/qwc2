@@ -110,6 +110,10 @@
       "terms_label": "Kullanım Şartları",
       "viewertitle_label": "QWC"
     },
+    "common": {
+      "lock2dview": "",
+      "sync2dview": "Görünümü senkronize et"
+    },
     "compare3d": {
       "clipplane": "Kırpma düzlemi",
       "compare_objects": "Objeleri karşılaştır",
@@ -374,8 +378,6 @@
       "resetrotation": "Dönüklüğü sıfırla"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "Görünümü senkronize et",
       "terrain": "Arazi",
       "title": "3 Boyutlu görünüm"
     },

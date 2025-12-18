@@ -110,6 +110,10 @@
       "terms_label": "Condicions del servei",
       "viewertitle_label": "Pàgina d'inici"
     },
+    "common": {
+      "lock2dview": "Moure amb la vista 2D",
+      "sync2dview": "Sincronitzar amb la vista 2D"
+    },
     "compare3d": {
       "clipplane": "Pla de retall",
       "compare_objects": "Comparar objectes",
@@ -374,8 +378,6 @@
       "resetrotation": "Reiniciar rotació"
     },
     "map3d": {
-      "lockview": "Moure amb la vista 2D",
-      "syncview": "Sincronitzar amb la vista 2D",
       "terrain": "Terreny",
       "title": "Vista 3D"
     },

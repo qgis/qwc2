@@ -110,6 +110,10 @@
       "terms_label": "使用許諾条件",
       "viewertitle_label": "QWC2 デモ"
     },
+    "common": {
+      "lock2dview": "2Dビューで移動",
+      "sync2dview": "2D ビューと同期"
+    },
     "compare3d": {
       "clipplane": "クリッピング平面",
       "compare_objects": "オブジェクトを比較",
@@ -374,8 +378,6 @@
       "resetrotation": "回転をリセット"
     },
     "map3d": {
-      "lockview": "2D ビューとともに移動",
-      "syncview": "2D ビューと同期",
       "terrain": "地形",
       "title": "3D ビュー"
     },

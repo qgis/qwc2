@@ -110,6 +110,10 @@
       "terms_label": "Terms of use",
       "viewertitle_label": "Homepage"
     },
+    "common": {
+      "lock2dview": "Move with 2D view",
+      "sync2dview": "Synchronize with 2D view"
+    },
     "compare3d": {
       "clipplane": "Clipping plane",
       "compare_objects": "Compare objects",
@@ -374,8 +378,6 @@
       "resetrotation": "Reset rotation"
     },
     "map3d": {
-      "lockview": "Auto-sync 2D/3D views",
-      "syncview": "Synchronize with 2D view",
       "terrain": "Terrain",
       "title": "3D View"
     },

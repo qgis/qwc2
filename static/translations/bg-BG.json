@@ -110,6 +110,10 @@
       "terms_label": "Условия за ползване",
       "viewertitle_label": "Начална страница"
     },
+    "common": {
+      "lock2dview": "",
+      "sync2dview": "Синхронизиране на изгледа"
+    },
     "compare3d": {
       "clipplane": "Плоскост на изрязване",
       "compare_objects": "Сравняване на обекти",
@@ -374,8 +378,6 @@
       "resetrotation": "Нулиране на въртенето"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "Синхронизиране на изгледа",
       "terrain": "Земя",
       "title": "3D изглед"
     },

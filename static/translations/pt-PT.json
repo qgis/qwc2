@@ -110,6 +110,10 @@
       "terms_label": "Termos de Uso",
       "viewertitle_label": "Visualizador"
     },
+    "common": {
+      "lock2dview": "",
+      "sync2dview": ""
+    },
     "compare3d": {
       "clipplane": "",
       "compare_objects": "",
@@ -374,8 +378,6 @@
       "resetrotation": "Redefinir Rotação"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "",
       "terrain": "",
       "title": ""
     },

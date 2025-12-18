@@ -252,11 +252,11 @@ class View3D extends React.Component {
             const extraControls = [{
                 icon: "sync",
                 callback: this.sync2DExtent,
-                title: LocaleUtils.tr("map3d.syncview")
+                title: LocaleUtils.tr("common.sync2dview")
             }, {
                 icon: "lock",
                 callback: this.setLockViews,
-                title: LocaleUtils.tr("map3d.lockview"),
+                title: LocaleUtils.tr("common.lock2dview"),
                 active: this.state.viewsLocked
             }];
             if (!this.state.windowDetached) {

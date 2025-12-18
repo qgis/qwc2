@@ -110,6 +110,10 @@
       "terms_label": "Warunki korzystania",
       "viewertitle_label": ""
     },
+    "common": {
+      "lock2dview": "",
+      "sync2dview": ""
+    },
     "compare3d": {
       "clipplane": "",
       "compare_objects": "",
@@ -374,8 +378,6 @@
       "resetrotation": ""
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "",
       "terrain": "",
       "title": ""
     },

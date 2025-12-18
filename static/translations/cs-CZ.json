@@ -110,6 +110,10 @@
       "terms_label": "Podmínky použití",
       "viewertitle_label": ""
     },
+    "common": {
+      "lock2dview": "",
+      "sync2dview": ""
+    },
     "compare3d": {
       "clipplane": "",
       "compare_objects": "",
@@ -374,8 +378,6 @@
       "resetrotation": "Obnovit orientaci mapy"
     },
     "map3d": {
-      "lockview": "",
-      "syncview": "",
       "terrain": "",
       "title": ""
     },

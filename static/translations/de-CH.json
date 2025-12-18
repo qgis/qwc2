@@ -110,6 +110,10 @@
       "terms_label": "Nutzungsbedingungen",
       "viewertitle_label": "Homepage"
     },
+    "common": {
+      "lock2dview": "Mit 2D Ansicht bewegen",
+      "sync2dview": "Mit 2D Ansicht synchronisieren"
+    },
     "compare3d": {
       "clipplane": "Schnittebene",
       "compare_objects": "Objekte vergleichen",
@@ -374,8 +378,6 @@
       "resetrotation": "Drehung zurücksetzen"
     },
     "map3d": {
-      "lockview": "2D/3D Ansichten automatisch synchronisieren",
-      "syncview": "Mit 2D Ansicht synchronisieren",
       "terrain": "Gelände",
       "title": "3D Ansicht"
     },
