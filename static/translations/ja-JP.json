@@ -67,7 +67,6 @@
       "addfeature": "地物を追加",
       "commit": "変更された行をコミット",
       "csvexport": "CSV エクスポート",
-      "delete": "削除",
       "deletefailed": "一つ以上の地物を削除できませんでした",
       "deletefeatures": "選択された地物を削除",
       "deleting": "地物を削除中...",
@@ -76,12 +75,10 @@
       "geomnoadd": "編集フォームを使ってこのレイヤに新しい地物を追加して下さい",
       "limittoextent": "地図の範囲に限定",
       "loadfailed": "地物のデータをロード出来ませんでした",
-      "loading": "ロード中...",
       "nodelete": "削除しない",
       "nogeomnoform": "ジオメトリの無いレイヤに対して編集フォームは使用できません",
       "pleasereload": "「再ロード」を押して属性テーブルをロードして下さい...",
       "reload": "再ロード",
-      "selectlayer": "レイヤを選択...",
       "title": "属性テーブル",
       "zoomtoselection": "選択された地物にズーム"
     },
@@ -111,8 +108,35 @@
       "viewertitle_label": "QWC2 デモ"
     },
     "common": {
+      "all": "全て",
+      "cancel": "キャンセル",
+      "circle": "円",
+      "clear": "クリア",
+      "clone": "クローン",
+      "close": "閉じる",
+      "delete": "削除",
+      "download": "ダウンロード",
+      "export": "エクスポート",
+      "format": "形式",
+      "line": "線",
+      "loading": "ロード中...",
       "lock2dview": "2Dビューで移動",
-      "sync2dview": "2D ビューと同期"
+      "noresults": "検索結果無し",
+      "pick": "選択",
+      "point": "点",
+      "polygon": "ポリゴン",
+      "resolution": "解像度",
+      "save": "保存",
+      "select": "選択",
+      "selectlayer": "レイヤを選択...",
+      "sync2dview": "2D ビューと同期",
+      "wait": "しばらくお待ちください...",
+      "zoomin": "ズーム・イン",
+      "zoomout": "ズーム・アウト",
+      "ellipse": "楕円",
+      "square": "四角形",
+      "rectangle": "四角形",
+      "text": "テキスト"
     },
     "compare3d": {
       "clipplane": "クリッピング平面",
@@ -140,17 +164,14 @@
       "title": "Cyclomedia ビューワ"
     },
     "draw3d": {
-      "clone": "クローン",
       "cone": "円錐",
       "cuboid": "直方体",
       "cylinder": "円柱",
-      "delete": "削除",
       "drawings": "作図",
       "intersect": "交差",
       "label": "ラベル",
       "newgroupprompt": "新しい作図グループ",
       "numericinput": "数値入力",
-      "pick": "選択",
       "position": "位置",
       "pyramid": "四角錐",
       "rotate": "回転",
@@ -173,7 +194,6 @@
       "add": "追加",
       "attrtable": "テーブル",
       "canceldelete": "削除しない",
-      "clearpicture": "クリア",
       "clone_all": "",
       "clone_copy": "",
       "clone_defaulted": "",
@@ -186,23 +206,17 @@
       "commitfailed": "コミット出来ませんでした",
       "contraintviolation": "制約違反",
       "create": "作成",
-      "delete": "削除",
       "discard": "中止",
       "draw": "作図",
       "feature": "地物",
       "geomnonzeroz": "ジオメトリが 0 でない Z 値を含んでいるため、リード・オンリーです。",
       "geomreadonly": "ジオメトリがリード・オンリーです。",
       "invalidform": "無効なフォーム",
-      "maximize": "最大化",
-      "minimize": "最小化",
       "noeditablelayers": "編集可能なレイヤが有りません。",
       "paint": "修正",
-      "pick": "選択",
       "pickdrawfeature": "既存のジオメトリをクローンして作図",
       "reallydelete": "削除",
       "relationcommitfailed": "関連する値にコミット出来ないものがありました。詳細はアイコンのツールチップを参照して下さい。",
-      "select": "選択",
-      "selectlayer": "",
       "takepicture": "撮影する",
       "unsavedchanged": "保存されていない変更があります。それでもこのページを離れますか?"
     },
@@ -214,14 +228,11 @@
     },
     "featureform": {
       "feature": "地物",
-      "noresults": "検索結果無し",
       "querying": "検索中...",
       "title": "地物フォーム"
     },
     "featuresearch": {
-      "noresults": "検索結果無し",
       "query": "検索",
-      "select": "選択...",
       "title": "地物検索"
     },
     "fileselector": {
@@ -239,8 +250,7 @@
       "line_buffer": "線を描く (バッファに)",
       "point_buffer": "点を描く (バッファに)",
       "selfinter": "一つ以上のポリゴンが自己交差を持っています",
-      "send": "スキャン",
-      "wait": "ロード中..."
+      "send": "スキャン"
     },
     "heightprofile": {
       "asl": "a.s.l.",
@@ -266,8 +276,6 @@
       "clipboard": "クリップボードにコピー",
       "compare": "",
       "comparing": "",
-      "download": "ダウンロード",
-      "export": "エクスポート",
       "featureReport": "地物レポート",
       "featurecount": "",
       "layerall": "全てのレイヤ",
@@ -296,7 +304,6 @@
       "asgroup": "グループとして追加",
       "connect": "接続",
       "filter": "フィルタ...",
-      "loading": "ロード中...",
       "localfile": "ローカル・ファイル",
       "nofeatures": "地物をインポート出来ませんでした。",
       "noresults": "検索結果無し、または無効な URL",
@@ -352,8 +359,6 @@
       "zoomtoobject": "オブジェクトにズーム"
     },
     "linkfeatureform": {
-      "cancel": "キャンセル",
-      "close": "閉じる",
       "drawhint": "地図上の地物を作図...",
       "pickhint": "地図上の地物を選択..."
     },
@@ -383,25 +388,17 @@
     },
     "mapexport": {
       "configuration": "構成",
-      "format": "形式",
       "projection": "投影",
-      "resolution": "解像度",
       "scale": "縮尺",
       "size": "サイズ",
-      "submit": "エクスポート",
-      "usersize": "マップ上で選択...",
-      "wait": "しばらくお待ちください..."
+      "usersize": "マップ上で選択..."
     },
     "mapfilter": {
       "addcustomfilter": "カスタム・フィルタを追加",
       "brokenrendering": "無効なフィルタ式によって地図の表示が崩れることがあります",
-      "cancel": "キャンセル",
       "geomfilter": "ジオメトリ",
       "hidefiltergeom": "フィルタ・ジオメトリを隠す",
       "invalidfilter": "無効なフィルタ式",
-      "save": "保存",
-      "select": "選択...",
-      "selectlayer": "レイヤを選択",
       "timefilter": "Time",
       "timefrom": "From",
       "timeto": "To"
@@ -457,7 +454,6 @@
       "prev": ""
     },
     "newspopup": {
-      "dialogclose": "閉じる",
       "dontshowagain": "再び表示しない",
       "title": "ニュース"
     },
@@ -487,28 +483,21 @@
     },
     "print": {
       "atlasfeature": "地図帳機能",
-      "download": "ダウンロード",
       "download_as_onepdf": "1個の PDF 文書として",
       "download_as_onezip": "1個の ZIP ファイルとして",
       "download_as_single": "as single files",
-      "format": "形式",
       "grid": "グリッド",
       "layout": "レイアウト",
       "legend": "凡例",
-      "maximize": "最大化",
-      "minimize": "最小化",
       "nolayouts": "選択されたテーマは印刷をサポートしていません",
       "notheme": "テーマが選択されていません",
       "output": "出力を印刷",
       "overlap": "オーバーラップ",
       "pickatlasfeature": "レイヤ {0} で選択...",
-      "resolution": "解像度",
       "rotation": "回転",
-      "save": "保存",
       "scale": "縮尺",
       "series": "シリーズを印刷",
-      "submit": "印刷",
-      "wait": "しばらくお待ち下さい..."
+      "submit": "印刷"
     },
     "qtdesignerform": {
       "loading": "フォームをロード中..."
@@ -521,34 +510,19 @@
       "bufferlayer": "出力先",
       "bufferlayername": "バッファ",
       "bufferselectfeature": "バッファを適用する地物を選択...",
-      "circle": "円",
-      "clone": "クローン",
       "ctrlhint": "",
-      "delete": "削除",
       "draw": "作図",
       "edit": "編集",
-      "ellipse": "楕円",
-      "export": "エクスポート",
       "freehand": "フリーハンド描画",
       "label": "ラベル",
       "layer": "レイヤ",
       "layertitle": "スケッチ",
-      "line": "線",
       "markers": "マーカー",
       "numericinput": "数値入力",
-      "pick": "ピック",
-      "point": "点",
-      "polygon": "ポリゴン",
-      "rectangle": "四角形",
       "size": "サイズ",
-      "square": "四角形",
-      "text": "テキスト",
       "transform": "変形"
     },
     "reports": {
-      "all": "全て",
-      "download": "ダウンロード",
-      "pick": "ピック",
       "region": "領域を選択",
       "selectlayer": "レポート・レイヤを選択..."
     },
@@ -557,11 +531,9 @@
       "addlayer": "",
       "addviapoint": "ここを経由",
       "arriveat": "目的地点",
-      "clear": "クリア",
       "computefailed": "計算できませんでした",
       "computing": "計算中...",
       "excludepolygons": "領域を除外",
-      "export": "エクスポート",
       "fastest": "最速",
       "fromhere": "出発地点",
       "importerror": "インポート出来ませんでした。ファイルの中身は点地物の GeoJSON FeatureCollection でなければなりません。",
@@ -597,9 +569,7 @@
       "finish": "完了"
     },
     "search": {
-      "all": "全て",
       "circleradius": "円の半径",
-      "clearfilter": "クリア",
       "coordinates": "座標",
       "existinglayer": "レイヤは既に地図の中に存在します",
       "filter": "検索を詳細化",
@@ -608,7 +578,6 @@
       "more": "その他 {0} の検索結果",
       "nodescription": "説明がありません",
       "none": "無し",
-      "noresults": "検索結果無し",
       "placeholder": "場所を検索、または地図を追加...",
       "places": "場所",
       "providerselection": "検索プロバイダ",
@@ -696,7 +665,6 @@
       "group": "グループ化属性",
       "groupnone": "無し",
       "home": "タイムラインをリセット",
-      "loading": "ロード中...",
       "loop": "ループ",
       "markers": "マーカー",
       "notemporaldata": "マップの中に時間軸を持つ可視レイヤがありません。",
@@ -727,17 +695,13 @@
         "months": "月",
         "seconds": "秒",
         "years": "年"
-      },
-      "zoomin": "ズーム・イン",
-      "zoomout": "ズーム・アウト"
+      }
     },
     "tooltip": {
       "background": "背景を切り替える",
       "fullscreendisable": "全画面モードを終了",
       "fullscreenenable": "全画面モードにする",
-      "home": "地図の初期領域を表示",
-      "zoomin": "ズーム・イン",
-      "zoomout": "ズーム・アウト"
+      "home": "地図の初期領域を表示"
     },
     "tourguide": {
       "done": "完了",
@@ -745,7 +709,6 @@
       "previous": "前へ"
     },
     "valuetool": {
-      "all": "",
       "allbands": "",
       "alllayers": "",
       "bands": "",
@@ -772,7 +735,6 @@
       "storingstate": ""
     },
     "window": {
-      "close": "閉じる",
       "detach": "切り離す",
       "dock": "ドック",
       "embed": "埋め込み",

@@ -182,7 +182,7 @@ class FeatureForm extends React.Component {
                 );
             } else if (isEmpty(this.state.pickedFeatures)) {
                 body = (
-                    <div className="feature-query-body"><span className="identify-body-message">{LocaleUtils.tr("featureform.noresults")}</span></div>
+                    <div className="feature-query-body"><span className="identify-body-message">{LocaleUtils.tr("common.noresults")}</span></div>
                 );
             } else {
                 const featureText = LocaleUtils.tr("featureform.feature");

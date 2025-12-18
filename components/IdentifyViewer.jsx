@@ -805,7 +805,7 @@ class IdentifyViewer extends React.Component {
                         ) : null}
                         {exportEnabled ? (
                             <tr>
-                                <td>{LocaleUtils.tr("identify.export")}:</td>
+                                <td>{LocaleUtils.tr("common.export")}:</td>
                                 <td>
                                     <div className="controlgroup">
                                         <select className="controlgroup-expanditem" onChange={ev => this.setState({exportFormat: ev.target.value})} value={this.state.exportFormat}>
@@ -813,7 +813,7 @@ class IdentifyViewer extends React.Component {
                                                 <option key={id} value={id}>{exporters[id].title ?? LocaleUtils.tr(exporters[id].titleMsgId)}</option>
                                             ))}
                                         </select>
-                                        <button className="button" onClick={() => this.exportResults()} title={LocaleUtils.tr("identify.download")}>
+                                        <button className="button" onClick={() => this.exportResults()} title={LocaleUtils.tr("common.download")}>
                                             <Icon icon="export" />
                                         </button>
                                         <button className="button" disabled={clipboardExportDisabled} onClick={() => this.exportResults(true)} title={LocaleUtils.tr("identify.clipboard")}>

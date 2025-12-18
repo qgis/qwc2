@@ -157,7 +157,7 @@ class SearchBox extends React.Component {
         }
         const providerSelection = (
             <ComboBox onChange={value => this.setState({selectedProvider: value})} value={this.state.selectedProvider}>
-                <div value="">{LocaleUtils.tr("search.all")}</div>
+                <div value="">{LocaleUtils.tr("common.all")}</div>
                 {Object.entries(this.props.searchProviders).map(([key, prov]) => (
                     <div key={key} value={key}>{prov?.params?.title || (prov.label ?? LocaleUtils.tr(prov.labelmsgid))}</div>
                 ))}
@@ -178,8 +178,8 @@ class SearchBox extends React.Component {
             );
         }
         const filterButtons = [
-            {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", label: LocaleUtils.tr("redlining.polygon")},
-            {key: "Circle", tooltip: LocaleUtils.tr("redlining.circle"), icon: "circle", label: LocaleUtils.tr("redlining.circle")}
+            {key: "Polygon", tooltip: LocaleUtils.tr("common.polygon"), icon: "polygon", label: LocaleUtils.tr("common.polygon")},
+            {key: "Circle", tooltip: LocaleUtils.tr("common.circle"), icon: "circle", label: LocaleUtils.tr("common.circle")}
         ];
         return (
             <div className="searchbox-filter-options">
@@ -195,7 +195,7 @@ class SearchBox extends React.Component {
                                 <div className="searchbox-filter-options-geometry controlgroup">
                                     <ButtonBar active={this.state.filterGeomType} buttons={filterButtons} onClick={this.setFilterGeomType} />
                                     {searchRegionSelection}
-                                    <button className="button" onClick={this.clearFilter} title={LocaleUtils.tr("search.clearfilter")}>
+                                    <button className="button" onClick={this.clearFilter} title={LocaleUtils.tr("common.clear")}>
                                         <Icon icon="clear" />
                                     </button>
                                 </div>
@@ -251,7 +251,7 @@ class SearchBox extends React.Component {
         if (isEmpty(children)) {
             if (isEmpty(this.state.pendingSearches) && this.state.searchResults.query_text) {
                 children = (
-                    <div className="searchbox-noresults" disabled key="noresults">{LocaleUtils.tr("search.noresults")}</div>
+                    <div className="searchbox-noresults" disabled key="noresults">{LocaleUtils.tr("common.noresults")}</div>
                 );
             } else {
                 return null;

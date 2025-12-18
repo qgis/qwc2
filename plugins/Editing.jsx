@@ -205,7 +205,7 @@ class Editing extends React.Component {
         const editPermissions = editConfig?.permissions ?? {};
 
         const actionButtons = [];
-        actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("editing.pick"), data: {action: 'Pick', feature: null}});
+        actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("common.pick"), data: {action: 'Pick', feature: null}});
         if ( editPermissions.creatable !== false && !this.props.editContext.geomReadOnly) {
             actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.tr("editing.draw"), data: {action: 'Draw'}});
         }
@@ -246,7 +246,7 @@ class Editing extends React.Component {
             <div className="editing-body">
                 <div className="editing-layer-selection">
                     <select className="combo editing-layer-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
-                        <option disabled value="">{LocaleUtils.tr("editing.selectlayer")}</option>
+                        <option disabled value="">{LocaleUtils.tr("common.selectlayer")}</option>
                         {Object.entries(this.props.editConfigs).map(([mapName, serviceConfigs]) => (
                             Object.entries(serviceConfigs).map(([layerName, edConfig]) => {
                                 const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
@@ -271,7 +271,7 @@ class Editing extends React.Component {
         );
     };
     render() {
-        const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("editing.maximize") : LocaleUtils.tr("editing.minimize");
+        const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("window.maximize") : LocaleUtils.tr("window.minimize");
         const extraTitlebarContent = (<Icon className="editing-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState((state) => ({minimized: !state.minimized}))} title={minMaxTooltip}/>);
         const attribFormVisible = !!(this.props.editContext.feature && (this.props.editContext.action === "Pick" || this.props.editContext.feature.geometry));
         return [(

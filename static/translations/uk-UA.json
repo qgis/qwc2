@@ -67,7 +67,6 @@
       "addfeature": "",
       "commit": "",
       "csvexport": "",
-      "delete": "",
       "deletefailed": "",
       "deletefeatures": "",
       "deleting": "",
@@ -76,12 +75,10 @@
       "geomnoadd": "",
       "limittoextent": "",
       "loadfailed": "",
-      "loading": "",
       "nodelete": "",
       "nogeomnoform": "",
       "pleasereload": "",
       "reload": "",
-      "selectlayer": "",
       "title": "",
       "zoomtoselection": ""
     },
@@ -111,8 +108,35 @@
       "viewertitle_label": "Домашня сторінка"
     },
     "common": {
+      "all": "",
+      "cancel": "",
+      "circle": "",
+      "clear": "",
+      "clone": "",
+      "close": "",
+      "delete": "",
+      "download": "",
+      "export": "",
+      "format": "Формат:",
+      "line": "Лінія",
+      "loading": "",
       "lock2dview": "",
-      "sync2dview": ""
+      "noresults": "",
+      "pick": "",
+      "point": "Точка",
+      "polygon": "Полігон",
+      "resolution": "Роздільна здатність:",
+      "save": "",
+      "select": "Виберіть...",
+      "selectlayer": "",
+      "sync2dview": "",
+      "wait": "",
+      "zoomin": "Збільшити",
+      "zoomout": "Зменшити",
+      "ellipse": "",
+      "square": "",
+      "rectangle": "",
+      "text": "Текст"
     },
     "compare3d": {
       "clipplane": "",
@@ -140,17 +164,14 @@
       "title": ""
     },
     "draw3d": {
-      "clone": "",
       "cone": "",
       "cuboid": "",
       "cylinder": "",
-      "delete": "",
       "drawings": "",
       "intersect": "",
       "label": "",
       "newgroupprompt": "",
       "numericinput": "",
-      "pick": "",
       "position": "",
       "pyramid": "",
       "rotate": "",
@@ -173,7 +194,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Не видаляти",
-      "clearpicture": "",
       "clone_all": "",
       "clone_copy": "",
       "clone_defaulted": "",
@@ -186,23 +206,17 @@
       "commitfailed": "",
       "contraintviolation": "",
       "create": "",
-      "delete": "Видалити",
       "discard": "Скасувати зміни",
       "draw": "Намалювати",
       "feature": "",
       "geomnonzeroz": "",
       "geomreadonly": "",
       "invalidform": "",
-      "maximize": "Розгорнути",
-      "minimize": "Згорнути",
       "noeditablelayers": "Немає шарів доступних для редагування.",
       "paint": "",
-      "pick": "Вибрати",
       "pickdrawfeature": "",
       "reallydelete": "Видалити",
       "relationcommitfailed": "",
-      "select": "Виберіть...",
-      "selectlayer": "",
       "takepicture": "",
       "unsavedchanged": ""
     },
@@ -214,14 +228,11 @@
     },
     "featureform": {
       "feature": "",
-      "noresults": "",
       "querying": "",
       "title": ""
     },
     "featuresearch": {
-      "noresults": "",
       "query": "",
-      "select": "",
       "title": ""
     },
     "fileselector": {
@@ -239,8 +250,7 @@
       "line_buffer": "",
       "point_buffer": "",
       "selfinter": "",
-      "send": "",
-      "wait": ""
+      "send": ""
     },
     "heightprofile": {
       "asl": "над р.м.",
@@ -266,8 +276,6 @@
       "clipboard": "",
       "compare": "",
       "comparing": "",
-      "download": "",
-      "export": "Експорт",
       "featureReport": "Звіт по об’єкту",
       "featurecount": "",
       "layerall": "",
@@ -296,7 +304,6 @@
       "asgroup": "",
       "connect": "Підключитись",
       "filter": "Фільтрувати...",
-      "loading": "",
       "localfile": "",
       "nofeatures": "Жоден об’єкт не доступний для імпорту",
       "noresults": "",
@@ -352,8 +359,6 @@
       "zoomtoobject": ""
     },
     "linkfeatureform": {
-      "cancel": "",
-      "close": "",
       "drawhint": "",
       "pickhint": ""
     },
@@ -383,25 +388,17 @@
     },
     "mapexport": {
       "configuration": "",
-      "format": "Формат:",
       "projection": "",
-      "resolution": "Роздільна здатність:",
       "scale": "",
       "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
+      "usersize": ""
     },
     "mapfilter": {
       "addcustomfilter": "",
       "brokenrendering": "",
-      "cancel": "",
       "geomfilter": "",
       "hidefiltergeom": "",
       "invalidfilter": "",
-      "save": "",
-      "select": "",
-      "selectlayer": "",
       "timefilter": "",
       "timefrom": "",
       "timeto": ""
@@ -457,7 +454,6 @@
       "prev": ""
     },
     "newspopup": {
-      "dialogclose": "",
       "dontshowagain": "",
       "title": ""
     },
@@ -487,28 +483,21 @@
     },
     "print": {
       "atlasfeature": "",
-      "download": "",
       "download_as_onepdf": "",
       "download_as_onezip": "",
       "download_as_single": "",
-      "format": "Формат",
       "grid": "Сітка",
       "layout": "Макет",
       "legend": "",
-      "maximize": "Розгорнути",
-      "minimize": "Згорнути",
       "nolayouts": "Вибранна тема не підтримує друк",
       "notheme": "Тема не вибрана",
       "output": "",
       "overlap": "",
       "pickatlasfeature": "",
-      "resolution": "Роздільна здатність",
       "rotation": "Поворот",
-      "save": "",
       "scale": "Масштаб",
       "series": "",
-      "submit": "Друк",
-      "wait": ""
+      "submit": "Друк"
     },
     "qtdesignerform": {
       "loading": ""
@@ -521,34 +510,19 @@
       "bufferlayer": "",
       "bufferlayername": "",
       "bufferselectfeature": "",
-      "circle": "",
-      "clone": "",
       "ctrlhint": "",
-      "delete": "",
       "draw": "",
       "edit": "",
-      "ellipse": "",
-      "export": "",
       "freehand": "",
       "label": "Напис",
       "layer": "",
       "layertitle": "",
-      "line": "Лінія",
       "markers": "",
       "numericinput": "",
-      "pick": "Вибрати",
-      "point": "Точка",
-      "polygon": "Полігон",
-      "rectangle": "",
       "size": "Розмір",
-      "square": "",
-      "text": "Текст",
       "transform": ""
     },
     "reports": {
-      "all": "",
-      "download": "",
-      "pick": "",
       "region": "",
       "selectlayer": ""
     },
@@ -557,11 +531,9 @@
       "addlayer": "",
       "addviapoint": "",
       "arriveat": "",
-      "clear": "",
       "computefailed": "",
       "computing": "",
       "excludepolygons": "",
-      "export": "",
       "fastest": "",
       "fromhere": "",
       "importerror": "",
@@ -597,9 +569,7 @@
       "finish": ""
     },
     "search": {
-      "all": "Все",
       "circleradius": "",
-      "clearfilter": "",
       "coordinates": "",
       "existinglayer": "",
       "filter": "",
@@ -608,7 +578,6 @@
       "more": "",
       "nodescription": "",
       "none": "",
-      "noresults": "",
       "placeholder": "",
       "places": "",
       "providerselection": "",
@@ -696,7 +665,6 @@
       "group": "",
       "groupnone": "",
       "home": "",
-      "loading": "",
       "loop": "",
       "markers": "",
       "notemporaldata": "",
@@ -727,17 +695,13 @@
         "months": "",
         "seconds": "",
         "years": ""
-      },
-      "zoomin": "",
-      "zoomout": ""
+      }
     },
     "tooltip": {
       "background": "Змінити фон",
       "fullscreendisable": "",
       "fullscreenenable": "",
-      "home": "Показати всю карту",
-      "zoomin": "Збільшити",
-      "zoomout": "Зменшити"
+      "home": "Показати всю карту"
     },
     "tourguide": {
       "done": "",
@@ -745,7 +709,6 @@
       "previous": ""
     },
     "valuetool": {
-      "all": "",
       "allbands": "",
       "alllayers": "",
       "bands": "",
@@ -772,7 +735,6 @@
       "storingstate": ""
     },
     "window": {
-      "close": "",
       "detach": "",
       "dock": "",
       "embed": "",

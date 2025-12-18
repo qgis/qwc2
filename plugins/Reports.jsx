@@ -78,9 +78,9 @@ class Reports extends React.Component {
     }
     renderBody = () => {
         const pickButtons = [
-            {key: 'Pick', icon: 'pick', label: LocaleUtils.tr("reports.pick")},
+            {key: 'Pick', icon: 'pick', label: LocaleUtils.tr("common.pick")},
             {key: 'Region', icon: 'pick_region', label: LocaleUtils.tr("reports.region")},
-            {key: 'All', icon: 'ok', label: LocaleUtils.tr("reports.all"), forceLabel: true}
+            {key: 'All', icon: 'ok', label: LocaleUtils.tr("common.all"), forceLabel: true}
         ];
         return (
             <div className="reports-body">
@@ -111,7 +111,7 @@ class Reports extends React.Component {
                         onClick={this.downloadReport} type="button"
                     >
                         {this.state.generatingReport ? (<Spinner />) : (<Icon icon="report" />)}
-                        <span>{LocaleUtils.tr("reports.download")}</span>
+                        <span>{LocaleUtils.tr("common.download")}</span>
                     </button>
                 </div>
             </div>

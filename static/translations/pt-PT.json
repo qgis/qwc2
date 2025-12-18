@@ -67,7 +67,6 @@
       "addfeature": "Adicionar Recurso",
       "commit": "Confirmar",
       "csvexport": "",
-      "delete": "Eliminar",
       "deletefailed": "Falha ao Eliminar",
       "deletefeatures": "Eliminar Recursos",
       "deleting": "A eliminar",
@@ -76,12 +75,10 @@
       "geomnoadd": "A geometria não pode ser adicionada",
       "limittoextent": "",
       "loadfailed": "Falha ao Carregar",
-      "loading": "A carregar",
       "nodelete": "Não é possível eliminar",
       "nogeomnoform": "Sem geometria e sem formulário",
       "pleasereload": "Por favor, recarregue",
       "reload": "Recarregar",
-      "selectlayer": "Selecionar Camada",
       "title": "Tabela de Atributos",
       "zoomtoselection": "Zoom para a Seleção"
     },
@@ -111,8 +108,35 @@
       "viewertitle_label": "Visualizador"
     },
     "common": {
+      "all": "Todos",
+      "cancel": "Cancelar",
+      "circle": "Círculo",
+      "clear": "Limpar",
+      "clone": "Clonar",
+      "close": "Fechar Diálogo",
+      "delete": "Eliminar",
+      "download": "Descarregar",
+      "export": "Enviar",
+      "format": "Formato:",
+      "line": "Linha",
+      "loading": "A carregar",
       "lock2dview": "",
-      "sync2dview": ""
+      "noresults": "Sem Resultados",
+      "pick": "Escolha",
+      "point": "Ponto",
+      "polygon": "Polígono",
+      "resolution": "Resolução:",
+      "save": "Salvar",
+      "select": "Selecionar...",
+      "selectlayer": "Selecionar camada...",
+      "sync2dview": "",
+      "wait": "Por favor, aguarde...",
+      "zoomin": "Aumentar Zoom",
+      "zoomout": "Diminuir Zoom",
+      "ellipse": "Elipse",
+      "square": "Quadrado",
+      "rectangle": "Retângulo",
+      "text": "Texto"
     },
     "compare3d": {
       "clipplane": "",
@@ -140,17 +164,14 @@
       "title": "Cyclomedia"
     },
     "draw3d": {
-      "clone": "",
       "cone": "",
       "cuboid": "",
       "cylinder": "",
-      "delete": "",
       "drawings": "",
       "intersect": "",
       "label": "",
       "newgroupprompt": "",
       "numericinput": "",
-      "pick": "",
       "position": "",
       "pyramid": "",
       "rotate": "",
@@ -173,7 +194,6 @@
       "add": "Adicionar",
       "attrtable": "Tabela de Atributos",
       "canceldelete": "Cancelar Eliminação",
-      "clearpicture": "Limpar Imagem",
       "clone_all": "",
       "clone_copy": "",
       "clone_defaulted": "",
@@ -186,23 +206,17 @@
       "commitfailed": "Falha ao Confirmar",
       "contraintviolation": "",
       "create": "Criar",
-      "delete": "Eliminar",
       "discard": "Descartar",
       "draw": "Desenhar",
       "feature": "Recurso",
       "geomnonzeroz": "Geometria Apenas para Leitura",
       "geomreadonly": "",
       "invalidform": "Formulário Inválido",
-      "maximize": "Maximizar",
-      "minimize": "Minimizar",
       "noeditablelayers": "Sem Camadas Editáveis",
       "paint": "Pintar",
-      "pick": "Escolher",
       "pickdrawfeature": "Escolher Desenhar Recurso",
       "reallydelete": "Eliminar",
       "relationcommitfailed": "Falha ao Confirmar Relação",
-      "select": "Selecionar",
-      "selectlayer": "",
       "takepicture": "Tirar Fotografia",
       "unsavedchanged": "Alterações Não Guardadas"
     },
@@ -214,14 +228,11 @@
     },
     "featureform": {
       "feature": "Recurso",
-      "noresults": "Sem Resultados",
       "querying": "A consultar",
       "title": "Formulário de Recurso"
     },
     "featuresearch": {
-      "noresults": "Sem Resultados",
       "query": "Consulta",
-      "select": "Selecionar",
       "title": "Pesquisa de Recurso"
     },
     "fileselector": {
@@ -239,8 +250,7 @@
       "line_buffer": "",
       "point_buffer": "",
       "selfinter": "",
-      "send": "",
-      "wait": ""
+      "send": ""
     },
     "heightprofile": {
       "asl": "a.s.l.",
@@ -266,8 +276,6 @@
       "clipboard": "Área de Transferência",
       "compare": "",
       "comparing": "",
-      "download": "",
-      "export": "Exportar",
       "featureReport": "Relatório de Recurso",
       "featurecount": "",
       "layerall": "",
@@ -296,7 +304,6 @@
       "asgroup": "",
       "connect": "Ligar",
       "filter": "Filtro...",
-      "loading": "A carregar...",
       "localfile": "Ficheiro Local",
       "nofeatures": "Nenhuma característica poderia ser importada.",
       "noresults": "Sem resultados ou URL inválida",
@@ -352,8 +359,6 @@
       "zoomtoobject": ""
     },
     "linkfeatureform": {
-      "cancel": "Cancelar",
-      "close": "Fechar",
       "drawhint": "Desenhe um retângulo para selecionar um recurso...",
       "pickhint": "Clique no mapa para selecionar um recurso..."
     },
@@ -383,25 +388,17 @@
     },
     "mapexport": {
       "configuration": "Configuração",
-      "format": "Formato:",
       "projection": "",
-      "resolution": "Resolução:",
       "scale": "Escala:",
       "size": "Tamanho:",
-      "submit": "Enviar",
-      "usersize": "Tamanho Personalizado",
-      "wait": "Por favor, aguarde..."
+      "usersize": "Tamanho Personalizado"
     },
     "mapfilter": {
       "addcustomfilter": "",
       "brokenrendering": "",
-      "cancel": "",
       "geomfilter": "",
       "hidefiltergeom": "",
       "invalidfilter": "",
-      "save": "",
-      "select": "",
-      "selectlayer": "",
       "timefilter": "",
       "timefrom": "",
       "timeto": ""
@@ -457,7 +454,6 @@
       "prev": ""
     },
     "newspopup": {
-      "dialogclose": "Fechar Diálogo",
       "dontshowagain": "Não Mostrar Novamente",
       "title": "Pop-up de Notícias"
     },
@@ -487,28 +483,21 @@
     },
     "print": {
       "atlasfeature": "Recurso do Atlas",
-      "download": "",
       "download_as_onepdf": "",
       "download_as_onezip": "",
       "download_as_single": "",
-      "format": "Formato",
       "grid": "Grelha",
       "layout": "Esquema",
       "legend": "Legenda",
-      "maximize": "Maximizar",
-      "minimize": "Minimizar",
       "nolayouts": "O tema selecionado não suporta a impressão",
       "notheme": "Nenhum tema selecionado",
       "output": "Saída",
       "overlap": "",
       "pickatlasfeature": "Escolher Recurso do Atlas",
-      "resolution": "Resolução",
       "rotation": "Rotação",
-      "save": "",
       "scale": "Escala",
       "series": "",
-      "submit": "Imprimir",
-      "wait": "Por favor, aguarde..."
+      "submit": "Imprimir"
     },
     "qtdesignerform": {
       "loading": "A carregar..."
@@ -521,34 +510,19 @@
       "bufferlayer": "Camada de Destino",
       "bufferlayername": "Nome da Camada de Tampão",
       "bufferselectfeature": "Selecione uma característica para o tampão...",
-      "circle": "Círculo",
-      "clone": "",
       "ctrlhint": "",
-      "delete": "Excluir",
       "draw": "Desenhar",
       "edit": "Editar",
-      "ellipse": "Elipse",
-      "export": "",
       "freehand": "Desenho à mão livre",
       "label": "Etiqueta",
       "layer": "Camada",
       "layertitle": "",
-      "line": "Linha",
       "markers": "Marcadores",
       "numericinput": "Entrada Numérica",
-      "pick": "Escolher",
-      "point": "Ponto",
-      "polygon": "Polígono",
-      "rectangle": "Retângulo",
       "size": "Tamanho",
-      "square": "Quadrado",
-      "text": "Texto",
       "transform": "Transformar"
     },
     "reports": {
-      "all": "",
-      "download": "",
-      "pick": "",
       "region": "",
       "selectlayer": ""
     },
@@ -557,11 +531,9 @@
       "addlayer": "",
       "addviapoint": "Adicionar ponto de passagem",
       "arriveat": "Chegar a",
-      "clear": "Limpar",
       "computefailed": "Cálculo falhou",
       "computing": "Calculando",
       "excludepolygons": "Excluir polígonos",
-      "export": "Exportar",
       "fastest": "Mais Rápido",
       "fromhere": "A partir daqui",
       "importerror": "Erro na importação",
@@ -597,9 +569,7 @@
       "finish": "Terminar"
     },
     "search": {
-      "all": "Todos",
       "circleradius": "",
-      "clearfilter": "Limpar Filtro",
       "coordinates": "",
       "existinglayer": "A camada já existe no mapa",
       "filter": "Refinar Pesquisa",
@@ -608,7 +578,6 @@
       "more": "{0} mais resultados",
       "nodescription": "Sem descrição disponível",
       "none": "Nenhum",
-      "noresults": "Sem Resultados",
       "placeholder": "Procurar local ou adicionar mapa...",
       "places": "",
       "providerselection": "Seleção do Provedor",
@@ -696,7 +665,6 @@
       "group": "Grupo",
       "groupnone": "Nenhum Grupo",
       "home": "Início",
-      "loading": "A carregar",
       "loop": "Loop",
       "markers": "Marcadores",
       "notemporaldata": "Sem Dados Temporais",
@@ -727,17 +695,13 @@
         "months": "Meses",
         "seconds": "Segundos",
         "years": "Anos"
-      },
-      "zoomin": "Aumentar Zoom",
-      "zoomout": "Diminuir Zoom"
+      }
     },
     "tooltip": {
       "background": "Mudar Fundo",
       "fullscreendisable": "Desativar Tela Cheia",
       "fullscreenenable": "Ativar Tela Cheia",
-      "home": "Mostrar Mapa Completo",
-      "zoomin": "Aumentar Zoom",
-      "zoomout": "Diminuir Zoom"
+      "home": "Mostrar Mapa Completo"
     },
     "tourguide": {
       "done": "",
@@ -745,7 +709,6 @@
       "previous": ""
     },
     "valuetool": {
-      "all": "",
       "allbands": "",
       "alllayers": "",
       "bands": "",
@@ -772,7 +735,6 @@
       "storingstate": ""
     },
     "window": {
-      "close": "Fechar",
       "detach": "",
       "dock": "Acoplar",
       "embed": "",

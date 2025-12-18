@@ -281,7 +281,7 @@ class Print extends React.Component {
                         </tr>
                         {this.props.formats.length > 1 ? (
                             <tr>
-                                <td>{LocaleUtils.tr("print.format")}</td>
+                                <td>{LocaleUtils.tr("common.format")}</td>
                                 <td>
                                     <select disabled={this.state.printSeriesEnabled} name="FORMAT" onChange={this.formatChanged} value={this.state.selectedFormat}>
                                         {this.props.formats.map(format => {
@@ -321,7 +321,7 @@ class Print extends React.Component {
                         ) : null}
                         {resolutionChooser ? (
                             <tr>
-                                <td>{LocaleUtils.tr("print.resolution")}</td>
+                                <td>{LocaleUtils.tr("common.resolution")}</td>
                                 <td>
                                     {resolutionChooser}
                                 </td>
@@ -377,7 +377,7 @@ class Print extends React.Component {
                         ) : null}
                         {!this.props.inlinePrintOutput && this.state.printSeriesEnabled ? (
                             <tr>
-                                <td>{LocaleUtils.tr("print.download")}</td>
+                                <td>{LocaleUtils.tr("common.download")}</td>
                                 <td>
                                     <select onChange={this.changeDownloadMode} role="input" value={this.state.downloadMode || ""}>
                                         <option key="onepdf" value="onepdf">{LocaleUtils.tr("print.download_as_onepdf")}</option>
@@ -423,7 +423,7 @@ class Print extends React.Component {
                     </div>
                     <div className="button-bar">
                         <button className="button" disabled={this.state.printing} type="submit">
-                            {this.state.printing ? (<span className="print-wait"><Spinner /> {LocaleUtils.tr("print.wait")}</span>) : LocaleUtils.tr("print.submit")}
+                            {this.state.printing ? (<span className="print-wait"><Spinner /> {LocaleUtils.tr("common.wait")}</span>) : LocaleUtils.tr("print.submit")}
                         </button>
                     </div>
                 </form>
@@ -546,7 +546,7 @@ class Print extends React.Component {
     renderPrintOutputWindow = () => {
         const extraControls = [{
             icon: 'save',
-            title: LocaleUtils.tr('print.save'),
+            title: LocaleUtils.tr('common.save'),
             callback: this.savePrintOutput
         }];
         return (
@@ -558,7 +558,7 @@ class Print extends React.Component {
                 <div className="print-output-window-body">
                     {!this.state.outputLoaded ? (
                         <span className="print-output-window-wait">
-                            <Spinner /> {LocaleUtils.tr("print.wait")}
+                            <Spinner /> {LocaleUtils.tr("common.wait")}
                         </span>
                     ) : null}
                     <iframe name="print-output-window" src={this.state.pdfDataUrl}/>
@@ -570,7 +570,7 @@ class Print extends React.Component {
         FileSaver.saveAs(this.state.pdfData.content, this.state.pdfData.fileName);
     };
     render() {
-        const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
+        const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("window.maximize") : LocaleUtils.tr("window.minimize");
         const extraTitlebarContent = (<Icon className="print-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState((state) => ({minimized: !state.minimized}))} title={minMaxTooltip}/>);
         const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
         return [

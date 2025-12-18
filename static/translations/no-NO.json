@@ -67,7 +67,6 @@
       "addfeature": "",
       "commit": "",
       "csvexport": "",
-      "delete": "",
       "deletefailed": "",
       "deletefeatures": "",
       "deleting": "",
@@ -76,12 +75,10 @@
       "geomnoadd": "",
       "limittoextent": "",
       "loadfailed": "",
-      "loading": "",
       "nodelete": "",
       "nogeomnoform": "",
       "pleasereload": "",
       "reload": "",
-      "selectlayer": "",
       "title": "",
       "zoomtoselection": ""
     },
@@ -111,8 +108,35 @@
       "viewertitle_label": ""
     },
     "common": {
+      "all": "",
+      "cancel": "",
+      "circle": "",
+      "clear": "",
+      "clone": "",
+      "close": "",
+      "delete": "",
+      "download": "",
+      "export": "",
+      "format": "Format:",
+      "line": "Linje",
+      "loading": "",
       "lock2dview": "",
-      "sync2dview": ""
+      "noresults": "",
+      "pick": "",
+      "point": "Punkt",
+      "polygon": "Polygon",
+      "resolution": "Oppløsning:",
+      "save": "",
+      "select": "Velg...",
+      "selectlayer": "",
+      "sync2dview": "",
+      "wait": "",
+      "zoomin": "Zoom inn",
+      "zoomout": "Zoom ut",
+      "ellipse": "",
+      "square": "",
+      "rectangle": "",
+      "text": "Tekst"
     },
     "compare3d": {
       "clipplane": "",
@@ -140,17 +164,14 @@
       "title": ""
     },
     "draw3d": {
-      "clone": "",
       "cone": "",
       "cuboid": "",
       "cylinder": "",
-      "delete": "",
       "drawings": "",
       "intersect": "",
       "label": "",
       "newgroupprompt": "",
       "numericinput": "",
-      "pick": "",
       "position": "",
       "pyramid": "",
       "rotate": "",
@@ -173,7 +194,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Ikke slett",
-      "clearpicture": "",
       "clone_all": "",
       "clone_copy": "",
       "clone_defaulted": "",
@@ -186,23 +206,17 @@
       "commitfailed": "",
       "contraintviolation": "",
       "create": "",
-      "delete": "Slett",
       "discard": "Forkast",
       "draw": "Tegn",
       "feature": "Objekt",
       "geomnonzeroz": "",
       "geomreadonly": "",
       "invalidform": "",
-      "maximize": "Maksimer",
-      "minimize": "Minimer",
       "noeditablelayers": "Ingen redigerbare lag",
       "paint": "",
-      "pick": "Velg",
       "pickdrawfeature": "",
       "reallydelete": "Virkelig slette",
       "relationcommitfailed": "",
-      "select": "Velg",
-      "selectlayer": "",
       "takepicture": "",
       "unsavedchanged": ""
     },
@@ -214,14 +228,11 @@
     },
     "featureform": {
       "feature": "",
-      "noresults": "",
       "querying": "",
       "title": ""
     },
     "featuresearch": {
-      "noresults": "",
       "query": "",
-      "select": "",
       "title": ""
     },
     "fileselector": {
@@ -239,8 +250,7 @@
       "line_buffer": "",
       "point_buffer": "",
       "selfinter": "",
-      "send": "",
-      "wait": ""
+      "send": ""
     },
     "heightprofile": {
       "asl": "m.o.h.",
@@ -266,8 +276,6 @@
       "clipboard": "",
       "compare": "",
       "comparing": "",
-      "download": "",
-      "export": "Eksporter",
       "featureReport": "Objektrapport",
       "featurecount": "",
       "layerall": "",
@@ -296,7 +304,6 @@
       "asgroup": "",
       "connect": "Koble til",
       "filter": "Filter...",
-      "loading": "Laster inn...",
       "localfile": "Lokal fil",
       "nofeatures": "Ingen objekt kunne importeres",
       "noresults": "Ingen svar eller ugyldig URL",
@@ -352,8 +359,6 @@
       "zoomtoobject": ""
     },
     "linkfeatureform": {
-      "cancel": "",
-      "close": "",
       "drawhint": "",
       "pickhint": ""
     },
@@ -383,25 +388,17 @@
     },
     "mapexport": {
       "configuration": "",
-      "format": "Format:",
       "projection": "",
-      "resolution": "Oppløsning:",
       "scale": "",
       "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
+      "usersize": ""
     },
     "mapfilter": {
       "addcustomfilter": "",
       "brokenrendering": "",
-      "cancel": "",
       "geomfilter": "",
       "hidefiltergeom": "",
       "invalidfilter": "",
-      "save": "",
-      "select": "",
-      "selectlayer": "",
       "timefilter": "",
       "timefrom": "",
       "timeto": ""
@@ -457,7 +454,6 @@
       "prev": ""
     },
     "newspopup": {
-      "dialogclose": "",
       "dontshowagain": "",
       "title": ""
     },
@@ -487,28 +483,21 @@
     },
     "print": {
       "atlasfeature": "",
-      "download": "",
       "download_as_onepdf": "",
       "download_as_onezip": "",
       "download_as_single": "",
-      "format": "Format",
       "grid": "Rutenett",
       "layout": "Layout",
       "legend": "",
-      "maximize": "Maksimer",
-      "minimize": "Minimer",
       "nolayouts": "Valgt tema støtter ikke utskrift",
       "notheme": "Ingen tema valgt",
       "output": "Utskrift",
       "overlap": "",
       "pickatlasfeature": "",
-      "resolution": "Oppløsning",
       "rotation": "Rotasjon",
-      "save": "",
       "scale": "Skala",
       "series": "",
-      "submit": "Skriv ut",
-      "wait": "Venter..."
+      "submit": "Skriv ut"
     },
     "qtdesignerform": {
       "loading": ""
@@ -521,34 +510,19 @@
       "bufferlayer": "Mållag",
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Velg et objekt fra buffer",
-      "circle": "",
-      "clone": "",
       "ctrlhint": "",
-      "delete": "Slett",
       "draw": "Tegn",
       "edit": "Rediger",
-      "ellipse": "",
-      "export": "",
       "freehand": "Frihånd",
       "label": "Etikett",
       "layer": "Lag",
       "layertitle": "",
-      "line": "Linje",
       "markers": "",
       "numericinput": "",
-      "pick": "Velg",
-      "point": "Punkt",
-      "polygon": "Polygon",
-      "rectangle": "",
       "size": "Størrelse",
-      "square": "",
-      "text": "Tekst",
       "transform": ""
     },
     "reports": {
-      "all": "",
-      "download": "",
-      "pick": "",
       "region": "",
       "selectlayer": ""
     },
@@ -557,11 +531,9 @@
       "addlayer": "",
       "addviapoint": "",
       "arriveat": "",
-      "clear": "",
       "computefailed": "",
       "computing": "",
       "excludepolygons": "",
-      "export": "",
       "fastest": "",
       "fromhere": "",
       "importerror": "",
@@ -597,9 +569,7 @@
       "finish": ""
     },
     "search": {
-      "all": "Alle",
       "circleradius": "",
-      "clearfilter": "",
       "coordinates": "",
       "existinglayer": "Laget finnes allerede på kartet",
       "filter": "Filtrer",
@@ -608,7 +578,6 @@
       "more": "{0} flere resultater",
       "nodescription": "Beskrivelse ikke tilgjengelig",
       "none": "",
-      "noresults": "",
       "placeholder": "Søk etter steder eller legg til kart",
       "places": "",
       "providerselection": "",
@@ -696,7 +665,6 @@
       "group": "",
       "groupnone": "",
       "home": "",
-      "loading": "",
       "loop": "",
       "markers": "",
       "notemporaldata": "",
@@ -727,17 +695,13 @@
         "months": "",
         "seconds": "",
         "years": ""
-      },
-      "zoomin": "",
-      "zoomout": ""
+      }
     },
     "tooltip": {
       "background": "Bytt bakgrunn",
       "fullscreendisable": "",
       "fullscreenenable": "",
-      "home": "Vis hele kartet",
-      "zoomin": "Zoom inn",
-      "zoomout": "Zoom ut"
+      "home": "Vis hele kartet"
     },
     "tourguide": {
       "done": "",
@@ -745,7 +709,6 @@
       "previous": ""
     },
     "valuetool": {
-      "all": "",
       "allbands": "",
       "alllayers": "",
       "bands": "",
@@ -772,7 +735,6 @@
       "storingstate": ""
     },
     "window": {
-      "close": "Lukk",
       "detach": "",
       "dock": "Fest",
       "embed": "",

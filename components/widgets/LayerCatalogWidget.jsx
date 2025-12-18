@@ -99,7 +99,7 @@ class LayerCatalogWidget extends React.PureComponent {
             );
         } else if (isEmpty(this.state.catalog)) {
             emptyEntry = (
-                <div className="layer-catalog-placeholder">{LocaleUtils.tr("importlayer.loading")}</div>
+                <div className="layer-catalog-placeholder">{LocaleUtils.tr("common.loading")}</div>
             );
         }
         const filterplaceholder = LocaleUtils.tr("importlayer.filter");

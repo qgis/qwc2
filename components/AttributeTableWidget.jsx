@@ -146,7 +146,7 @@ class AttributeTableWidget extends React.Component {
             if (this.state.loading) {
                 loadOverlay = (
                     <div className="attribtable-overlay">
-                        <Spinner /><span>{LocaleUtils.tr("attribtable.loading")}</span>
+                        <Spinner /><span>{LocaleUtils.tr("common.loading")}</span>
                     </div>
                 );
             } else {
@@ -303,7 +303,7 @@ class AttributeTableWidget extends React.Component {
                 <div className="attribtable-toolbar">
                     {this.props.showLayerSelection ? (
                         <select disabled={loading || editing} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
-                            <option disabled value="">{LocaleUtils.tr("attribtable.selectlayer")}</option>
+                            <option disabled value="">{LocaleUtils.tr("common.selectlayer")}</option>
                             {Object.entries(this.props.editConfigs).map(([wmsName, serviceConfigs]) => (
                                 Object.entries(serviceConfigs).map(([layerName, editConfig]) => {
                                     const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName);
@@ -342,7 +342,7 @@ class AttributeTableWidget extends React.Component {
                     {this.state.confirmDelete ? (
                         <button className="button button-accept" disabled={captchaPending} onClick={this.deleteSelectedFeatured}>
                             <Icon icon="ok" />
-                            <span>{LocaleUtils.tr("attribtable.delete")}</span>
+                            <span>{LocaleUtils.tr("common.delete")}</span>
                         </button>
                     ) : deleteButton}
                     {this.state.confirmDelete ? (

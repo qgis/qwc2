@@ -184,7 +184,7 @@ class MapExport extends React.Component {
                     <table className="options-table">
                         <tbody>
                             <tr>
-                                <td>{LocaleUtils.tr("mapexport.format")}</td>
+                                <td>{LocaleUtils.tr("common.format")}</td>
                                 <td>
                                     <select onChange={this.changeFormat} value={this.state.selectedFormat}>
                                         {this.state.availableFormats.map(format => {
@@ -228,7 +228,7 @@ class MapExport extends React.Component {
                             ) : null}
                             {this.props.dpis && this.state.selectedFormat !== "application/dxf" ? (
                                 <tr>
-                                    <td>{LocaleUtils.tr("mapexport.resolution")}</td>
+                                    <td>{LocaleUtils.tr("common.resolution")}</td>
                                     <td>
                                         <select onChange={this.changeResolution} value={this.state.dpi}>
                                             {this.props.dpis.map(dpi => {
@@ -255,8 +255,8 @@ class MapExport extends React.Component {
                     <div className="button-bar">
                         <button className="button" disabled={this.state.exporting || isEmpty(this.state.extents)} type="submit">
                             {this.state.exporting ? (
-                                <span className="mapexport-wait"><Spinner /> {LocaleUtils.tr("mapexport.wait")}</span>
-                            ) : LocaleUtils.tr("mapexport.submit")}
+                                <span className="mapexport-wait"><Spinner /> {LocaleUtils.tr("common.wait")}</span>
+                            ) : LocaleUtils.tr("common.export")}
                         </button>
                     </div>
                 </form>
@@ -278,7 +278,7 @@ class MapExport extends React.Component {
         }
     };
     render() {
-        const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("print.maximize") : LocaleUtils.tr("print.minimize");
+        const minMaxTooltip = this.state.minimized ? LocaleUtils.tr("window.maximize") : LocaleUtils.tr("window.minimize");
         const extraTitlebarContent = (<Icon className="mapexport-minimize-maximize" icon={this.state.minimized ? 'chevron-down' : 'chevron-up'} onClick={() => this.setState((state) => ({minimized: !state.minimized}))} title={minMaxTooltip}/>);
         return (
             <SideBar extraClasses="MapExport" extraTitlebarContent={extraTitlebarContent} icon={"rasterexport"} id="MapExport" key="MapExport"

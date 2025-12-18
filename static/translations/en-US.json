@@ -67,7 +67,6 @@
       "addfeature": "Add feature",
       "commit": "Commit changed row",
       "csvexport": "CSV export",
-      "delete": "Delete",
       "deletefailed": "One or more features could not be deleted",
       "deletefeatures": "Delete selected features",
       "deleting": "Deleting features...",
@@ -76,12 +75,10 @@
       "geomnoadd": "Please use the edit form for adding new features to this layer",
       "limittoextent": "Limit to map extent",
       "loadfailed": "Failed to load the feature data",
-      "loading": "Loading...",
       "nodelete": "Don't delete",
       "nogeomnoform": "The edit form is not available for geometryless layers",
       "pleasereload": "Press 'Reload' to load the attribute table...",
       "reload": "Reload",
-      "selectlayer": "Select layer...",
       "title": "Attribute Table",
       "zoomtoselection": "Zoom to selected features"
     },
@@ -111,8 +108,35 @@
       "viewertitle_label": "Homepage"
     },
     "common": {
+      "all": "All",
+      "cancel": "Cancel",
+      "circle": "Circle",
+      "clear": "Clear",
+      "clone": "Clone",
+      "close": "Close",
+      "delete": "Delete",
+      "download": "Download",
+      "export": "Export",
+      "format": "Format",
+      "line": "Line",
+      "loading": "Loading...",
       "lock2dview": "Move with 2D view",
-      "sync2dview": "Synchronize with 2D view"
+      "noresults": "No results",
+      "pick": "Pick",
+      "point": "Point",
+      "polygon": "Polygon",
+      "resolution": "Resolution",
+      "save": "Save",
+      "select": "Select...",
+      "selectlayer": "Select layer...",
+      "sync2dview": "Synchronize with 2D view",
+      "wait": "Please wait...",
+      "zoomin": "Zoom in",
+      "zoomout": "Zoom out",
+      "ellipse": "Ellipse",
+      "square": "Square",
+      "rectangle": "Rectangle",
+      "text": "Text"
     },
     "compare3d": {
       "clipplane": "Clipping plane",
@@ -140,17 +164,14 @@
       "title": "Cyclomedia Viewer"
     },
     "draw3d": {
-      "clone": "Clone",
       "cone": "Cone",
       "cuboid": "Cuboid",
       "cylinder": "Cylinder",
-      "delete": "Delete",
       "drawings": "Drawings",
       "intersect": "Intersect",
       "label": "Label",
       "newgroupprompt": "New drawing group",
       "numericinput": "Numeric input",
-      "pick": "Pick",
       "position": "Position",
       "pyramid": "Pyramid",
       "rotate": "Rotate",
@@ -173,7 +194,6 @@
       "add": "Add",
       "attrtable": "Table",
       "canceldelete": "Don't delete",
-      "clearpicture": "Clear",
       "clone_all": "All",
       "clone_copy": "Copy selected",
       "clone_defaulted": "(default value)",
@@ -186,23 +206,17 @@
       "commitfailed": "Commit failed",
       "contraintviolation": "Constraint violation",
       "create": "Create",
-      "delete": "Delete",
       "discard": "Discard",
       "draw": "Draw",
       "feature": "Feature",
       "geomnonzeroz": "The geometry contains non-zero Z values and is therefore read only.",
       "geomreadonly": "The geometry is read only.",
       "invalidform": "Invalid form",
-      "maximize": "Maximize",
-      "minimize": "Minimize",
       "noeditablelayers": "No editable layers.",
       "paint": "Modify",
-      "pick": "Pick",
       "pickdrawfeature": "Clone existing geometry",
       "reallydelete": "Delete",
       "relationcommitfailed": "Some relation values could not be committed, check the icon tooltips for details",
-      "select": "Select",
-      "selectlayer": "Select layer...",
       "takepicture": "Take picture",
       "unsavedchanged": "There are unsaved changes. Do you want to leave the page anyway?"
     },
@@ -214,14 +228,11 @@
     },
     "featureform": {
       "feature": "Feature",
-      "noresults": "No results",
       "querying": "Querying...",
       "title": "Feature form"
     },
     "featuresearch": {
-      "noresults": "No results",
       "query": "Query",
-      "select": "Select...",
       "title": "Feature search"
     },
     "fileselector": {
@@ -239,8 +250,7 @@
       "line_buffer": "Line (to buffer)",
       "point_buffer": "Point (to buffer)",
       "selfinter": "One or more polygons contain self-intersections",
-      "send": "Send",
-      "wait": "Loading..."
+      "send": "Send"
     },
     "heightprofile": {
       "asl": "a.s.l.",
@@ -266,8 +276,6 @@
       "clipboard": "Copy to clipboard",
       "compare": "Compare selected objects",
       "comparing": "Comparing {0} features",
-      "download": "Download",
-      "export": "Export",
       "featureReport": "Feature report",
       "featurecount": "{0} feature(s)",
       "layerall": "All layers",
@@ -296,7 +304,6 @@
       "asgroup": "Add as group",
       "connect": "Connect",
       "filter": "Filter...",
-      "loading": "Loading...",
       "localfile": "Local file",
       "nofeatures": "No features could be imported.",
       "noresults": "No results or invalid URL",
@@ -352,8 +359,6 @@
       "zoomtoobject": "Zoom to object"
     },
     "linkfeatureform": {
-      "cancel": "Cancel",
-      "close": "Close",
       "drawhint": "Draw the feature on the map...",
       "pickhint": "Pick a feature on the map..."
     },
@@ -383,25 +388,17 @@
     },
     "mapexport": {
       "configuration": "Configuration",
-      "format": "Format",
       "projection": "Projection",
-      "resolution": "Resolution",
       "scale": "Scale",
       "size": "Size",
-      "submit": "Export",
-      "usersize": "Select on map...",
-      "wait": "Please wait..."
+      "usersize": "Select on map..."
     },
     "mapfilter": {
       "addcustomfilter": "Add custom filter",
       "brokenrendering": "Map rendering may be broken due to an invalid filter expression",
-      "cancel": "Cancel",
       "geomfilter": "Geometry",
       "hidefiltergeom": "Hide filter geometry",
       "invalidfilter": "Invalid filter expression",
-      "save": "Save",
-      "select": "Select...",
-      "selectlayer": "Select layer",
       "timefilter": "Time",
       "timefrom": "From",
       "timeto": "To"
@@ -457,7 +454,6 @@
       "prev": "Previous page"
     },
     "newspopup": {
-      "dialogclose": "Close",
       "dontshowagain": "Don't show again",
       "title": "News"
     },
@@ -487,28 +483,21 @@
     },
     "print": {
       "atlasfeature": "Atlas feature",
-      "download": "Download",
       "download_as_onepdf": "as one PDF document",
       "download_as_onezip": "as one ZIP file",
       "download_as_single": "as single files",
-      "format": "Format",
       "grid": "Grid",
       "layout": "Layout",
       "legend": "Legend",
-      "maximize": "Maximize",
-      "minimize": "Minimize",
       "nolayouts": "The selected theme does not support printing",
       "notheme": "No theme selected",
       "output": "Print output",
       "overlap": "Overlap",
       "pickatlasfeature": "Pick in layer {0}...",
-      "resolution": "Resolution",
       "rotation": "Rotation",
-      "save": "Save",
       "scale": "Scale",
       "series": "Print series",
-      "submit": "Print",
-      "wait": "Please wait..."
+      "submit": "Print"
     },
     "qtdesignerform": {
       "loading": "Loading form..."
@@ -521,34 +510,19 @@
       "bufferlayer": "Destination",
       "bufferlayername": "Buffer",
       "bufferselectfeature": "Select a feature to buffer...",
-      "circle": "Circle",
-      "clone": "Clone",
       "ctrlhint": "Use Ctrl for multiselection...",
-      "delete": "Delete",
       "draw": "Draw",
       "edit": "Edit",
-      "ellipse": "Ellipse",
-      "export": "Export",
       "freehand": "Freehand drawing",
       "label": "Label",
       "layer": "Layer",
       "layertitle": "Redlining",
-      "line": "Line",
       "markers": "Markers",
       "numericinput": "Numeric input",
-      "pick": "Pick",
-      "point": "Point",
-      "polygon": "Polygon",
-      "rectangle": "Rectangle",
       "size": "Size",
-      "square": "Square",
-      "text": "Text",
       "transform": "Transform"
     },
     "reports": {
-      "all": "All",
-      "download": "Download",
-      "pick": "Pick",
       "region": "Select region",
       "selectlayer": "Select report layer..."
     },
@@ -557,11 +531,9 @@
       "addlayer": "Export as layer",
       "addviapoint": "Via here",
       "arriveat": "Arrive at",
-      "clear": "Clear",
       "computefailed": "Failed to compute",
       "computing": "Computing...",
       "excludepolygons": "Exclude areas",
-      "export": "Export",
       "fastest": "Fastest",
       "fromhere": "From here",
       "importerror": "Import failed. The file contents must be a GeoJSON FeatureCollection of Point features.",
@@ -597,9 +569,7 @@
       "finish": "Finish"
     },
     "search": {
-      "all": "All",
       "circleradius": "Circle radius",
-      "clearfilter": "Clear",
       "coordinates": "Coordinates",
       "existinglayer": "The layer already exists in the map",
       "filter": "Refine search",
@@ -608,7 +578,6 @@
       "more": "{0} more results",
       "nodescription": "No description available",
       "none": "None",
-      "noresults": "No results",
       "placeholder": "Search place or add map...",
       "places": "Places",
       "providerselection": "Search providers",
@@ -696,7 +665,6 @@
       "group": "Grouping attribute",
       "groupnone": "None",
       "home": "Reset timeline",
-      "loading": "Loading...",
       "loop": "Loop",
       "markers": "Markers",
       "notemporaldata": "No temporal layers are visible in the map.",
@@ -727,17 +695,13 @@
         "months": "months",
         "seconds": "seconds",
         "years": "years"
-      },
-      "zoomin": "Zoom in",
-      "zoomout": "Zoom out"
+      }
     },
     "tooltip": {
       "background": "Switch background",
       "fullscreendisable": "Disable full screen mode",
       "fullscreenenable": "Enable full screen mode",
-      "home": "Show entire map",
-      "zoomin": "Zoom in",
-      "zoomout": "Zoom out"
+      "home": "Show entire map"
     },
     "tourguide": {
       "done": "Done",
@@ -745,7 +709,6 @@
       "previous": "Previous"
     },
     "valuetool": {
-      "all": "All",
       "allbands": "All bands",
       "alllayers": "All layers",
       "bands": "Bands",
@@ -772,7 +735,6 @@
       "storingstate": "Storing 3D state..."
     },
     "window": {
-      "close": "Close",
       "detach": "Detach",
       "dock": "Dock",
       "embed": "Embed",

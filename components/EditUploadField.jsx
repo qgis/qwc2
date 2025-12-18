@@ -71,7 +71,7 @@ export default class EditUploadField extends React.Component {
                 const extension = fileValue ? fileValue.replace(/^.*\./, '') : 'jpg';
                 const imagebuttons = [
                     {key: 'Draw', icon: 'paint', tooltip: LocaleUtils.tr("editing.paint"), disabled: this.props.disabled},
-                    {key: 'Clear', icon: 'clear', tooltip: LocaleUtils.tr("editing.clearpicture"), disabled: this.props.disabled}
+                    {key: 'Clear', icon: 'clear', tooltip: LocaleUtils.tr("common.clear"), disabled: this.props.disabled}
                 ];
                 return (
                     <span className="edit-upload-field-image">

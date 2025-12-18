@@ -115,7 +115,7 @@ export default class EditComboField extends React.Component {
             >
                 {this.state.showPlaceholder ? (
                     <option disabled={this.props.required} value="">
-                        {this.props.placeholder ?? LocaleUtils.tr("editing.select")}
+                        {this.props.placeholder ?? LocaleUtils.tr("common.select")}
                     </option>
                 ) : null}
                 {this.state.values.map((item, index) => {

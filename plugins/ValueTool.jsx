@@ -220,7 +220,7 @@ class ValueTool extends React.Component {
                                         </td>
                                         {this.state.showBands === "selected" ? (
                                             <td>
-                                                <TextInput onChange={(value) => this.setLayerBands(key, value)} placeholder={LocaleUtils.tr("valuetool.all")} value={this.state.selectedBands[key] || ""} />
+                                                <TextInput onChange={(value) => this.setLayerBands(key, value)} placeholder={LocaleUtils.tr("common.all")} value={this.state.selectedBands[key] || ""} />
                                             </td>
                                         ) : null}
                                     </tr>

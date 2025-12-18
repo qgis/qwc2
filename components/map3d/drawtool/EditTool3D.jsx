@@ -194,7 +194,7 @@ export default class EditTool3D extends React.Component {
             {key: "rotate", label: LocaleUtils.tr("draw3d.rotate")}
         ];
         const extraButtons = [
-            {key: "clone", tooltip: LocaleUtils.tr("draw3d.clone"), icon: "clone"},
+            {key: "clone", tooltip: LocaleUtils.tr("common.clone"), icon: "clone"},
             {key: "NumericInput", tooltip: LocaleUtils.tr("draw3d.numericinput"), icon: "numericinput"}
         ];
         const csgButtons = [

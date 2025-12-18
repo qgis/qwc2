@@ -75,7 +75,7 @@ class ZoomButton extends React.Component {
         }
         const defaultPosition = (this.props.direction > 0 ? 4 : 3);
         const position = this.props.position >= 0 ? this.props.position : defaultPosition;
-        const tooltip = this.props.direction > 0 ? LocaleUtils.tr("tooltip.zoomin") : LocaleUtils.tr("tooltip.zoomout");
+        const tooltip = this.props.direction > 0 ? LocaleUtils.tr("common.zoomin") : LocaleUtils.tr("common.zoomout");
         const active = this.props.enableZoomByBoxSelection && this.props.currentTask === this.task;
         return [(
             <MapButton

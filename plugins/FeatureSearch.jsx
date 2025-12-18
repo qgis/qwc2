@@ -116,7 +116,7 @@ class FeatureSearch extends React.Component {
             <div className="feature-search-body">
                 <div className="feature-search-selection">
                     <select onChange={this.selectProvider} value={this.state.selectedProvider}>
-                        <option disabled value="">{LocaleUtils.tr("featuresearch.select")}</option>
+                        <option disabled value="">{LocaleUtils.tr("common.select")}</option>
                         {Object.entries(this.state.providerGroups).map(([group, entries]) => {
                             return [
                                 group !== '' ? (<option disabled key={group} value={group}>{group}</option>) : null,
@@ -171,7 +171,7 @@ class FeatureSearch extends React.Component {
             return (
                 <InputContainer>
                     <select defaultValue="" name={fieldname} onChange={onChange} role="input">
-                        <option disabled value="">{LocaleUtils.tr("featuresearch.select")}</option>
+                        <option disabled value="">{LocaleUtils.tr("common.select")}</option>
                         {options.map(entry => (
                             <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
                         ))}
@@ -191,7 +191,7 @@ class FeatureSearch extends React.Component {
         return (
             <div className="feature-search-results">
                 {isEmpty(this.state.searchResults) ? (
-                    <div className="feature-search-noresults">{LocaleUtils.tr("featuresearch.noresults")}</div>
+                    <div className="feature-search-noresults">{LocaleUtils.tr("common.noresults")}</div>
                 ) : (
                     <IdentifyViewer collapsible displayResultTree={false} enableExport={this.props.enableExport} identifyResults={this.state.searchResults} showLayerTitles={!provider.params.resultTitle} />
                 )}

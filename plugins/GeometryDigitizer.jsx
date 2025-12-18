@@ -211,15 +211,15 @@ class GeometryDigitizer extends React.Component {
         const drawButtons = [
             (supportedGeomType.includes("Polygon") && !supportedGeomType.includes("Point")) ?
                 {key: "Point", tooltip: LocaleUtils.tr("geomdigitizer.point_buffer"), icon: "point_buffer", data: {action: "Draw", geomType: "Point", text: ""}} :
-                {key: "Point", tooltip: LocaleUtils.tr("redlining.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}, disabled: !supportedGeomType.includes("Point")},
+                {key: "Point", tooltip: LocaleUtils.tr("common.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}, disabled: !supportedGeomType.includes("Point")},
             (supportedGeomType.includes("Polygon") && !supportedGeomType.includes("LineString")) ?
                 {key: "LineString", tooltip: LocaleUtils.tr("geomdigitizer.line_buffer"), icon: "line_buffer", data: {action: "Draw", geomType: "LineString", text: ""}} :
-                {key: "LineString", tooltip: LocaleUtils.tr("redlining.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}, disabled: !supportedGeomType.includes("LineString")},
-            {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}, disabled: !supportedGeomType.includes("Polygon")}
+                {key: "LineString", tooltip: LocaleUtils.tr("common.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}, disabled: !supportedGeomType.includes("LineString")},
+            {key: "Polygon", tooltip: LocaleUtils.tr("common.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}, disabled: !supportedGeomType.includes("Polygon")}
         ];
         const editButtons = [
-            {key: "Pick", tooltip: LocaleUtils.tr("redlining.pick"), icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
-            {key: "Delete", tooltip: LocaleUtils.tr("redlining.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature},
+            {key: "Pick", tooltip: LocaleUtils.tr("common.pick"), icon: "pick", data: {action: "Pick", geomType: null, text: ""}},
+            {key: "Delete", tooltip: LocaleUtils.tr("common.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.props.redlining.selectedFeature},
             {key: "Clear", tooltip: LocaleUtils.tr("geomdigitizer.clear"), icon: "clear", data: {action: "Clear"}}
         ];
         const pickButtons = [
@@ -242,7 +242,7 @@ class GeometryDigitizer extends React.Component {
                     <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                 </div>
                 <div className="redlining-groupcontrol">
-                    <div>{LocaleUtils.tr("redlining.pick")}</div>
+                    <div>{LocaleUtils.tr("common.pick")}</div>
                     <ButtonBar active={activeButton} buttons={pickButtons} onClick={(key, data) => this.actionChanged(data)} />
                 </div>
                 <div className="redlining-groupcontrol">
@@ -299,7 +299,7 @@ class GeometryDigitizer extends React.Component {
                 <div className="geomdigitizer-output-window-body">
                     {!this.state.outputLoaded ? (
                         <span className="geomdigitizer-output-window-wait">
-                            <Spinner /> <span>{LocaleUtils.tr("geomdigitizer.wait")}</span>
+                            <Spinner /> <span>{LocaleUtils.tr("common.loading")}</span>
                         </span>
                     ) : null}
                     <iframe name="geomdigitizer-output-window" onLoad={() => this.setState({outputLoaded: true})}/>

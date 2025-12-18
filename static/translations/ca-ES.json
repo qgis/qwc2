@@ -67,7 +67,6 @@
       "addfeature": "Afegir element",
       "commit": "Commit",
       "csvexport": "Exportar CSV",
-      "delete": "Eliminar",
       "deletefailed": "Un o més elements no han pogut eliminar-se",
       "deletefeatures": "Eliminar elements seleccionats",
       "deleting": "Eliminant elements...",
@@ -76,12 +75,10 @@
       "geomnoadd": "Si us plau, feu servir el formulari d'edició per afegir elements a aquesta capa",
       "limittoextent": "Limitar a l'extensió del mapa",
       "loadfailed": "La càrrega ha fallat",
-      "loading": "Carregant",
       "nodelete": "No eliminar",
       "nogeomnoform": "El formulari d'edició no està disponible per a capes sense geometria",
       "pleasereload": "Si us plau, torni a carregar",
       "reload": "Carregar",
-      "selectlayer": "Escollir capa",
       "title": "Títol",
       "zoomtoselection": "Fer zoom als elements seleccionats"
     },
@@ -111,8 +108,35 @@
       "viewertitle_label": "Pàgina d'inici"
     },
     "common": {
+      "all": "Tot",
+      "cancel": "Cancel·lar",
+      "circle": "Circle",
+      "clear": "Netejar",
+      "clone": "Clonar",
+      "close": "Tancar",
+      "delete": "Eliminar",
+      "download": "Descarregar",
+      "export": "Exportar",
+      "format": "Format:",
+      "line": "Línia",
+      "loading": "Carregant",
       "lock2dview": "Moure amb la vista 2D",
-      "sync2dview": "Sincronitzar amb la vista 2D"
+      "noresults": "Cap resultat",
+      "pick": "Escollir",
+      "point": "Punt",
+      "polygon": "Polígon",
+      "resolution": "Resolució:",
+      "save": "Guardar",
+      "select": "Seleccionar...",
+      "selectlayer": "Escollir capa...",
+      "sync2dview": "Sincronitzar amb la vista 2D",
+      "wait": "Espereu si us plau...",
+      "zoomin": "Apropar",
+      "zoomout": "Allunyar",
+      "ellipse": "El·lipse",
+      "square": "Quadrat",
+      "rectangle": "Rectangle",
+      "text": "Text"
     },
     "compare3d": {
       "clipplane": "Pla de retall",
@@ -140,17 +164,14 @@
       "title": "Visor Cyclomedia"
     },
     "draw3d": {
-      "clone": "Clonar",
       "cone": "Con",
       "cuboid": "Cuboid",
       "cylinder": "Cilindre",
-      "delete": "Eliminar",
       "drawings": "Dibuixos",
       "intersect": "Intersecar",
       "label": "Etiqueta",
       "newgroupprompt": "Nou grup de dibuix",
       "numericinput": "Entrada numèrica",
-      "pick": "Escollir",
       "position": "Posició",
       "pyramid": "Piràmide",
       "rotate": "Rotar",
@@ -173,7 +194,6 @@
       "add": "Afegir",
       "attrtable": "Taula",
       "canceldelete": "No esborrar",
-      "clearpicture": "Netejar imatge",
       "clone_all": "Tots",
       "clone_copy": "Copiar seleccionats",
       "clone_defaulted": "(valor per defecte)",
@@ -186,23 +206,17 @@
       "commitfailed": "Ha fallat el commit",
       "contraintviolation": "Violació de restricció",
       "create": "Crear",
-      "delete": "Esborrar",
       "discard": "Descartar",
       "draw": "Traçar",
       "feature": "Element",
       "geomnonzeroz": "La geometria conté valors Z diferents de zero, per tant és de només lectura",
       "geomreadonly": "La geometria és només de lectura.",
       "invalidform": "Formulari invàlid",
-      "maximize": "Maximitzar",
-      "minimize": "Minimitzar",
       "noeditablelayers": "Sense capes a modificar.",
       "paint": "Modificar",
-      "pick": "Escollir",
       "pickdrawfeature": "Clonar geometria existent",
       "reallydelete": "Esborrar",
       "relationcommitfailed": "Ha fallat el commit",
-      "select": "Seleccionar",
-      "selectlayer": "Escollir capa...",
       "takepicture": "Escull imatge",
       "unsavedchanged": "Hi ha canvis sense guardar. Vols sortir de la pàgina sense guardar?"
     },
@@ -214,14 +228,11 @@
     },
     "featureform": {
       "feature": "Element",
-      "noresults": "Sense resultats",
       "querying": "Consultant...",
       "title": "Formulari d'element"
     },
     "featuresearch": {
-      "noresults": "Sense resultats",
       "query": "Consulta",
-      "select": "Seleccionar...",
       "title": "Cerca d'element"
     },
     "fileselector": {
@@ -239,8 +250,7 @@
       "line_buffer": "Línia (a buffer)",
       "point_buffer": "Punt (a buffer)",
       "selfinter": "Un o més polígons contenen auto-interseccions",
-      "send": "Enviar",
-      "wait": "Carregant..."
+      "send": "Enviar"
     },
     "heightprofile": {
       "asl": "a.s.l.",
@@ -266,8 +276,6 @@
       "clipboard": "Copiar al porta-retalls",
       "compare": "Comparar amb els objectes seleccionats",
       "comparing": "Comparant {0} elements",
-      "download": "Descarregar",
-      "export": "Exportar",
       "featureReport": "Informe d'element",
       "featurecount": "{0} element(s)",
       "layerall": "Totes les capes",
@@ -296,7 +304,6 @@
       "asgroup": "Afegir com a grup",
       "connect": "Connectar",
       "filter": "Filtrant...",
-      "loading": "Carregant...",
       "localfile": "Arxiu local",
       "nofeatures": "No s'han pogut importar els elements.",
       "noresults": "Sense resultats o l'adreça URL no és vàlida",
@@ -352,8 +359,6 @@
       "zoomtoobject": "Zoom a l'objecte"
     },
     "linkfeatureform": {
-      "cancel": "Cancel·lar",
-      "close": "Tancar",
       "drawhint": "Dibuixar element en el mapa...",
       "pickhint": "Escollir element en el mapa..."
     },
@@ -383,25 +388,17 @@
     },
     "mapexport": {
       "configuration": "Configuració",
-      "format": "Format:",
       "projection": "Projecció",
-      "resolution": "Resolució:",
       "scale": "Escala",
       "size": "Mida",
-      "submit": "Exportar",
-      "usersize": "Seleccionar al mapa...",
-      "wait": "Espereu si us plau..."
+      "usersize": "Seleccionar al mapa..."
     },
     "mapfilter": {
       "addcustomfilter": "Afegir filtre personalitzat",
       "brokenrendering": "El renderitzat del mapa pot estar trencat a causa d'una expressió de filtre invàlida",
-      "cancel": "Cancel·lar",
       "geomfilter": "Geometria",
       "hidefiltergeom": "Ocultar geometria del filtre",
       "invalidfilter": "Expressió de filtre invàlida",
-      "save": "Guardar",
-      "select": "Seleccionar...",
-      "selectlayer": "Seleccionar capa",
       "timefilter": "Temps",
       "timefrom": "Des de",
       "timeto": "Fins a"
@@ -457,7 +454,6 @@
       "prev": ""
     },
     "newspopup": {
-      "dialogclose": "Tancar",
       "dontshowagain": "No mostrar de nou",
       "title": "Notícies"
     },
@@ -487,28 +483,21 @@
     },
     "print": {
       "atlasfeature": "Element de l'atles",
-      "download": "Descarregar",
       "download_as_onepdf": "com un document PDF",
       "download_as_onezip": "com un fitxer ZIP",
       "download_as_single": "com a fitxers individuals",
-      "format": "Format",
       "grid": "Graella",
       "layout": "Diseny",
       "legend": "Llegenda",
-      "maximize": "Maximitzar",
-      "minimize": "Minimitzar",
       "nolayouts": "El tema seleccionat no admet la impresió",
       "notheme": "No hi ha tema seleccionat",
       "output": "Sortida d'impressió",
       "overlap": "Superposició",
       "pickatlasfeature": "Seleccionar a la capa {0}...",
-      "resolution": "Resolució",
       "rotation": "Rotació",
-      "save": "Guardar",
       "scale": "Escala",
       "series": "Sèrie d'impressió",
-      "submit": "Imprimir",
-      "wait": "Esperi si us plau..."
+      "submit": "Imprimir"
     },
     "qtdesignerform": {
       "loading": "Carregant formulari..."
@@ -521,34 +510,19 @@
       "bufferlayer": "Destí",
       "bufferlayername": "Capa de buffer",
       "bufferselectfeature": "Seleccioni un element para enmagatzemar en bufer",
-      "circle": "Circle",
-      "clone": "Clonar",
       "ctrlhint": "",
-      "delete": "Eliminar",
       "draw": "Dibuixar",
       "edit": "Editar",
-      "ellipse": "El·lipse",
-      "export": "Exportar",
       "freehand": "Dibuix a ma alçada",
       "label": "Etiqueta",
       "layer": "Capa",
       "layertitle": "Línia de demarcació",
-      "line": "Línia",
       "markers": "Marcadors",
       "numericinput": "Entrada numèrica",
-      "pick": "Escollir",
-      "point": "Punt",
-      "polygon": "Polígon",
-      "rectangle": "Rectangle",
       "size": "Tamany",
-      "square": "Quadrat",
-      "text": "Text",
       "transform": "Transformar"
     },
     "reports": {
-      "all": "Tot",
-      "download": "Descarregar",
-      "pick": "Seleccionar",
       "region": "Seleccionar regió",
       "selectlayer": "Seleccionar capa d'informe..."
     },
@@ -557,11 +531,9 @@
       "addlayer": "Afegir capa",
       "addviapoint": "Passar per aquí",
       "arriveat": "Arribar a",
-      "clear": "Netejar",
       "computefailed": "Error en el càlcul",
       "computing": "Calculant...",
       "excludepolygons": "Excloure àrees",
-      "export": "Exportar",
       "fastest": "Més ràpid",
       "fromhere": "Des d'aquí",
       "importerror": "Error en la importació. El contingut del fitxer ha de ser una col·lecció de característiques GeoJSON de tipus punt.",
@@ -597,9 +569,7 @@
       "finish": "Finalitzar"
     },
     "search": {
-      "all": "Tot",
       "circleradius": "Radi del cercle",
-      "clearfilter": "Netejar filtre",
       "coordinates": "Coordenades",
       "existinglayer": "La capa ja existeix en el mapa",
       "filter": "Refinar búsqueda",
@@ -608,7 +578,6 @@
       "more": "{0} més resultats",
       "nodescription": "No hi ha descripció disponible",
       "none": "Cap",
-      "noresults": "Cap resultat",
       "placeholder": "Cerqui un lloc o afegueixi mapa",
       "places": "Llocs",
       "providerselection": "Proveidor",
@@ -696,7 +665,6 @@
       "group": "Atribut d'agrupació",
       "groupnone": "Cap",
       "home": "Restablir línia temporal",
-      "loading": "Carregant...",
       "loop": "Bucle",
       "markers": "Marcadors",
       "notemporaldata": "No hi ha capes temporals visibles al mapa",
@@ -727,17 +695,13 @@
         "months": "mesos",
         "seconds": "segons",
         "years": "anys"
-      },
-      "zoomin": "Apropar",
-      "zoomout": "Allunyar"
+      }
     },
     "tooltip": {
       "background": "Canvi de fons",
       "fullscreendisable": "Desactiva pantalla completa",
       "fullscreenenable": "Activa pantalla completa",
-      "home": "Mostrar tot el mapa",
-      "zoomin": "Apropar",
-      "zoomout": "Allunyar"
+      "home": "Mostrar tot el mapa"
     },
     "tourguide": {
       "done": "Fet",
@@ -745,7 +709,6 @@
       "previous": "Anterior"
     },
     "valuetool": {
-      "all": "Tot",
       "allbands": "Totes les bandes",
       "alllayers": "Totes les capes",
       "bands": "Bandes",
@@ -772,7 +735,6 @@
       "storingstate": "Desant l'estat 3D..."
     },
     "window": {
-      "close": "Tancar",
       "detach": "Desacoblar",
       "dock": "Acoblar",
       "embed": "Incrustar",

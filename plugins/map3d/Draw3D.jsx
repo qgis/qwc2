@@ -94,8 +94,8 @@ export default class Draw3D extends React.Component {
             ]
         ];
         const editButtons = [
-            {key: "Pick", tooltip: LocaleUtils.tr("draw3d.pick"), icon: "nodetool", data: {action: "Pick", geomType: null}},
-            {key: "Delete", tooltip: LocaleUtils.tr("draw3d.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.state.selectedObject}
+            {key: "Pick", tooltip: LocaleUtils.tr("common.pick"), icon: "nodetool", data: {action: "Pick", geomType: null}},
+            {key: "Delete", tooltip: LocaleUtils.tr("common.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.state.selectedObject}
         ];
         const drawGroups = Object.entries(this.props.sceneContext.sceneObjects).filter(([key, entry]) => entry.drawGroup === true);
         return (

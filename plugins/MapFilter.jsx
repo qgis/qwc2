@@ -365,8 +365,8 @@ class MapFilter extends React.Component {
     };
     renderFilterEditor = () => {
         const commitButtons = [
-            {key: 'Save', icon: 'ok', label: LocaleUtils.tr("mapfilter.save"), extraClasses: "button-accept"},
-            {key: 'Cancel', icon: 'remove', label: LocaleUtils.tr("mapfilter.cancel"), extraClasses: "button-reject"}
+            {key: 'Save', icon: 'ok', label: LocaleUtils.tr("common.save"), extraClasses: "button-accept"},
+            {key: 'Cancel', icon: 'remove', label: LocaleUtils.tr("common.cancel"), extraClasses: "button-reject"}
         ];
         const sampleFilters = '["field", "=", "val"]\n' +
                               '[["field", ">", "val1"], "and", ["field", "<", "val2"]]';
@@ -436,7 +436,7 @@ class MapFilter extends React.Component {
                                                     value={this.state.filters[config.id].values[field.id]}
                                                 >
                                                     {!field.defaultValue ? (
-                                                        <option value="">{LocaleUtils.tr("mapfilter.select")}</option>
+                                                        <option value="">{LocaleUtils.tr("common.select")}</option>
                                                     ) : null}
                                                     {field.inputConfig.options.map(entry => (
                                                         <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
@@ -513,7 +513,7 @@ class MapFilter extends React.Component {
                         <tbody>
                             <tr>
                                 <td>
-                                    <ComboBox onChange={value => this.updateCustomFilter(key, 'layer', value)} placeholder={LocaleUtils.tr("mapfilter.selectlayer")} value={entry.layer}>
+                                    <ComboBox onChange={value => this.updateCustomFilter(key, 'layer', value)} placeholder={LocaleUtils.tr("common.selectlayer")} value={entry.layer}>
                                         {layerNames.map(layerName => (<div key={layerName} value={layerName}>{layerName}</div>))}
                                     </ComboBox>
                                 </td>
@@ -538,9 +538,9 @@ class MapFilter extends React.Component {
     renderGeomFilter = () => {
         const geomFilter = this.state.geomFilter;
         const filterButtons = [
-            {key: "Polygon", tooltip: LocaleUtils.tr("redlining.polygon"), icon: "polygon", label: LocaleUtils.tr("redlining.polygon")},
-            {key: "Circle", tooltip: LocaleUtils.tr("redlining.circle"), icon: "circle", label: LocaleUtils.tr("redlining.circle")},
-            {key: "Pick", tooltip: LocaleUtils.tr("redlining.pick"), icon: "pick", label: LocaleUtils.tr("redlining.pick")}
+            {key: "Polygon", tooltip: LocaleUtils.tr("common.polygon"), icon: "polygon", label: LocaleUtils.tr("common.polygon")},
+            {key: "Circle", tooltip: LocaleUtils.tr("common.circle"), icon: "circle", label: LocaleUtils.tr("common.circle")},
+            {key: "Pick", tooltip: LocaleUtils.tr("common.pick"), icon: "pick", label: LocaleUtils.tr("common.pick")}
         ];
         const active = geomFilter.picking ? "Pick" : geomFilter.geomType || "";
         return (

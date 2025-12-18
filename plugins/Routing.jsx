@@ -374,7 +374,7 @@ class Routing extends React.Component {
                         <span className="routing-points-commands-spacer" />
                         {this.renderImportButton('routeConfig')}
                         <span className="routing-points-commands-spacer" />
-                        <a href="#" onClick={() => this.clearConfig('routeConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
+                        <a href="#" onClick={() => this.clearConfig('routeConfig')}><Icon icon="clear" /> {LocaleUtils.tr("common.clear")}</a>
                     </div>
                     {this.state.mode === 'transit' ? (
                         <div className="routing-time-settings">
@@ -439,7 +439,7 @@ class Routing extends React.Component {
                         <span className="routing-result-spacer" />
                         <span><Icon icon="measure" /> {MeasureUtils.formatMeasurement(routeConfig.result.data.summary.length, false)}</span>
                         <span className="routing-result-spacer" />
-                        <span><Icon icon="export" /> <a href="#" onClick={this.exportRoute}>{LocaleUtils.tr("routing.export")}</a></span>
+                        <span><Icon icon="export" /> <a href="#" onClick={this.exportRoute}>{LocaleUtils.tr("common.export")}</a></span>
                         <span className="routing-result-spacer" />
                         <span><Icon icon="layers" /> <a href="#" onClick={this.addRouteLayer}>{LocaleUtils.tr("routing.addlayer")}</a></span>
                     </div>
@@ -539,7 +539,7 @@ class Routing extends React.Component {
                         <span className="routing-points-commands-spacer" />
                         {this.renderImportButton('isoConfig')}
                         <span className="routing-points-commands-spacer" />
-                        <a href="#" onClick={() => this.clearConfig('isoConfig')}><Icon icon="clear" /> {LocaleUtils.tr("routing.clear")}</a>
+                        <a href="#" onClick={() => this.clearConfig('isoConfig')}><Icon icon="clear" /> {LocaleUtils.tr("common.clear")}</a>
                     </div>
                 </div>
                 {isoConfig.busy ? (
@@ -560,7 +560,7 @@ class Routing extends React.Component {
             return (
                 <div className="routing-result">
                     <div className="routing-result-summary">
-                        <span><Icon icon="export" /> <a href="#" onClick={this.exportIsochrone}>{LocaleUtils.tr("routing.export")}</a></span>
+                        <span><Icon icon="export" /> <a href="#" onClick={this.exportIsochrone}>{LocaleUtils.tr("common.export")}</a></span>
                         <span className="routing-result-spacer" />
                         <span><Icon icon="layers" /> <a href="#" onClick={this.addIsochroneLayer}>{LocaleUtils.tr("routing.addlayer")}</a></span>
                     </div>

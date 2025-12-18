@@ -93,7 +93,7 @@ class TimelineFeaturesSlider extends React.Component {
                 {this.renderCursor(timestamp)}
                 {this.props.timeFeatures.pendingRequests > 0 ? (
                     <div className="timeline-slider-loading">
-                        <Spinner /><span>{LocaleUtils.tr("timemanager.loading")}</span>
+                        <Spinner /><span>{LocaleUtils.tr("common.loading")}</span>
                     </div>
                 ) : null}
             </div>

@@ -109,7 +109,7 @@ class AttributeForm extends React.Component {
             // Delete button bar will appear by default if no permissions are defined in editConfig or when deletable permission is set
             if (!this.state.deleteClicked) {
                 const deleteButtons = [
-                    {key: 'Delete', icon: 'trash', label: this.props.deleteLabel ?? LocaleUtils.tr("editing.delete")}
+                    {key: 'Delete', icon: 'trash', label: this.props.deleteLabel ?? LocaleUtils.tr("common.delete")}
                 ];
                 deleteBar = (<ButtonBar buttons={deleteButtons} onClick={this.deleteClicked} />);
             } else {

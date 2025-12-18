@@ -67,7 +67,6 @@
       "addfeature": "",
       "commit": "",
       "csvexport": "",
-      "delete": "",
       "deletefailed": "",
       "deletefeatures": "",
       "deleting": "",
@@ -76,12 +75,10 @@
       "geomnoadd": "",
       "limittoextent": "",
       "loadfailed": "",
-      "loading": "",
       "nodelete": "",
       "nogeomnoform": "",
       "pleasereload": "",
       "reload": "",
-      "selectlayer": "",
       "title": "",
       "zoomtoselection": ""
     },
@@ -111,8 +108,35 @@
       "viewertitle_label": ""
     },
     "common": {
+      "all": "",
+      "cancel": "",
+      "circle": "",
+      "clear": "",
+      "clone": "",
+      "close": "",
+      "delete": "",
+      "download": "",
+      "export": "",
+      "format": "Format:",
+      "line": "Linia",
+      "loading": "",
       "lock2dview": "",
-      "sync2dview": ""
+      "noresults": "",
+      "pick": "",
+      "point": "Punkt",
+      "polygon": "Poligon",
+      "resolution": "Rozdzielczość:",
+      "save": "",
+      "select": "Zaznacz...",
+      "selectlayer": "",
+      "sync2dview": "",
+      "wait": "",
+      "zoomin": "Przybliż",
+      "zoomout": "Oddal",
+      "ellipse": "",
+      "square": "",
+      "rectangle": "",
+      "text": "Tekst"
     },
     "compare3d": {
       "clipplane": "",
@@ -140,17 +164,14 @@
       "title": ""
     },
     "draw3d": {
-      "clone": "",
       "cone": "",
       "cuboid": "",
       "cylinder": "",
-      "delete": "",
       "drawings": "",
       "intersect": "",
       "label": "",
       "newgroupprompt": "",
       "numericinput": "",
-      "pick": "",
       "position": "",
       "pyramid": "",
       "rotate": "",
@@ -173,7 +194,6 @@
       "add": "",
       "attrtable": "",
       "canceldelete": "Nie usuwaj",
-      "clearpicture": "",
       "clone_all": "",
       "clone_copy": "",
       "clone_defaulted": "",
@@ -186,23 +206,17 @@
       "commitfailed": "",
       "contraintviolation": "",
       "create": "",
-      "delete": "Usuń",
       "discard": "Odrzuć",
       "draw": "Rysuj",
       "feature": "",
       "geomnonzeroz": "",
       "geomreadonly": "",
       "invalidform": "",
-      "maximize": "Maksymalizuj",
-      "minimize": "Minimalizuj",
       "noeditablelayers": "Brak edytowalnych warstw.",
       "paint": "",
-      "pick": "Wybierz",
       "pickdrawfeature": "",
       "reallydelete": "Usuń",
       "relationcommitfailed": "",
-      "select": "Zaznacz",
-      "selectlayer": "",
       "takepicture": "",
       "unsavedchanged": ""
     },
@@ -214,14 +228,11 @@
     },
     "featureform": {
       "feature": "",
-      "noresults": "",
       "querying": "",
       "title": ""
     },
     "featuresearch": {
-      "noresults": "",
       "query": "",
-      "select": "",
       "title": ""
     },
     "fileselector": {
@@ -239,8 +250,7 @@
       "line_buffer": "",
       "point_buffer": "",
       "selfinter": "",
-      "send": "",
-      "wait": ""
+      "send": ""
     },
     "heightprofile": {
       "asl": "a.s.l.",
@@ -266,8 +276,6 @@
       "clipboard": "",
       "compare": "",
       "comparing": "",
-      "download": "",
-      "export": "Eksport",
       "featureReport": "Feature report",
       "featurecount": "",
       "layerall": "",
@@ -296,7 +304,6 @@
       "asgroup": "",
       "connect": "Połącz",
       "filter": "Filtruj...",
-      "loading": "",
       "localfile": "Plik lokalny",
       "nofeatures": "Elementy nie mogły zostać zaimportowane",
       "noresults": "Brak wyników lub błędny adres URL",
@@ -352,8 +359,6 @@
       "zoomtoobject": ""
     },
     "linkfeatureform": {
-      "cancel": "",
-      "close": "",
       "drawhint": "",
       "pickhint": ""
     },
@@ -383,25 +388,17 @@
     },
     "mapexport": {
       "configuration": "",
-      "format": "Format:",
       "projection": "",
-      "resolution": "Rozdzielczość:",
       "scale": "",
       "size": "",
-      "submit": "",
-      "usersize": "",
-      "wait": ""
+      "usersize": ""
     },
     "mapfilter": {
       "addcustomfilter": "",
       "brokenrendering": "",
-      "cancel": "",
       "geomfilter": "",
       "hidefiltergeom": "",
       "invalidfilter": "",
-      "save": "",
-      "select": "",
-      "selectlayer": "",
       "timefilter": "",
       "timefrom": "",
       "timeto": ""
@@ -457,7 +454,6 @@
       "prev": ""
     },
     "newspopup": {
-      "dialogclose": "",
       "dontshowagain": "",
       "title": ""
     },
@@ -487,28 +483,21 @@
     },
     "print": {
       "atlasfeature": "",
-      "download": "",
       "download_as_onepdf": "",
       "download_as_onezip": "",
       "download_as_single": "",
-      "format": "Format",
       "grid": "Siatka",
       "layout": "Layout",
       "legend": "",
-      "maximize": "Maksymalizuj",
-      "minimize": "Minimalizuj",
       "nolayouts": "Wybrany motyw nie umożliwia drukowania",
       "notheme": "Brak wybranego motywu",
       "output": "Drukuj output",
       "overlap": "",
       "pickatlasfeature": "",
-      "resolution": "Rozdzielczość",
       "rotation": "Obrót",
-      "save": "",
       "scale": "Skala",
       "series": "",
-      "submit": "Drukuj",
-      "wait": "Proszę czekać..."
+      "submit": "Drukuj"
     },
     "qtdesignerform": {
       "loading": ""
@@ -521,34 +510,19 @@
       "bufferlayer": "Destynacja",
       "bufferlayername": "Buforuj",
       "bufferselectfeature": "Wybierz element do buforowania",
-      "circle": "",
-      "clone": "",
       "ctrlhint": "",
-      "delete": "Usuń",
       "draw": "Rysuj",
       "edit": "Edytuj",
-      "ellipse": "",
-      "export": "",
       "freehand": "",
       "label": "Etykieta",
       "layer": "Warstwa",
       "layertitle": "",
-      "line": "Linia",
       "markers": "",
       "numericinput": "",
-      "pick": "Wybierz",
-      "point": "Punkt",
-      "polygon": "Poligon",
-      "rectangle": "",
       "size": "Rozmiar",
-      "square": "",
-      "text": "Tekst",
       "transform": ""
     },
     "reports": {
-      "all": "",
-      "download": "",
-      "pick": "",
       "region": "",
       "selectlayer": ""
     },
@@ -557,11 +531,9 @@
       "addlayer": "",
       "addviapoint": "",
       "arriveat": "",
-      "clear": "",
       "computefailed": "",
       "computing": "",
       "excludepolygons": "",
-      "export": "",
       "fastest": "",
       "fromhere": "",
       "importerror": "",
@@ -597,9 +569,7 @@
       "finish": ""
     },
     "search": {
-      "all": "Wszystko",
       "circleradius": "",
-      "clearfilter": "",
       "coordinates": "",
       "existinglayer": "",
       "filter": "",
@@ -608,7 +578,6 @@
       "more": "",
       "nodescription": "",
       "none": "",
-      "noresults": "",
       "placeholder": "",
       "places": "",
       "providerselection": "",
@@ -696,7 +665,6 @@
       "group": "",
       "groupnone": "",
       "home": "",
-      "loading": "",
       "loop": "",
       "markers": "",
       "notemporaldata": "",
@@ -727,17 +695,13 @@
         "months": "",
         "seconds": "",
         "years": ""
-      },
-      "zoomin": "",
-      "zoomout": ""
+      }
     },
     "tooltip": {
       "background": "Zmień podkład map",
       "fullscreendisable": "",
       "fullscreenenable": "",
-      "home": "Pokaż całą mapę",
-      "zoomin": "Przybliż",
-      "zoomout": "Oddal"
+      "home": "Pokaż całą mapę"
     },
     "tourguide": {
       "done": "",
@@ -745,7 +709,6 @@
       "previous": ""
     },
     "valuetool": {
-      "all": "",
       "allbands": "",
       "alllayers": "",
       "bands": "",
@@ -772,7 +735,6 @@
       "storingstate": ""
     },
     "window": {
-      "close": "",
       "detach": "",
       "dock": "",
       "embed": "",

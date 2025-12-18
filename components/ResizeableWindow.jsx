@@ -239,7 +239,7 @@ class ResizeableWindow extends React.Component {
                 ) : null}
                 {detachIcons}
                 {this.props.onClose ? (
-                    <Icon className={iconClasses} icon="remove" onClick={this.onClose} title={LocaleUtils.tr("window.close")} />
+                    <Icon className={iconClasses} icon="remove" onClick={this.onClose} title={LocaleUtils.tr("common.close")} />
                 ) : null}
             </div>
         );

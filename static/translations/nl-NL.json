@@ -67,7 +67,6 @@
       "addfeature": "Object toevoegen",
       "commit": "Bevestigen gewijzigde rij",
       "csvexport": "CSV export",
-      "delete": "Verwijderen",
       "deletefailed": "Kan één of meer objecten niet verwijderen",
       "deletefeatures": "Verwijder geselecteerde objecten",
       "deleting": "Verwijderen objecten...",
@@ -76,12 +75,10 @@
       "geomnoadd": "Gebruik het wijzigformulier om nieuwe objecten aan deze laag toe te voegen",
       "limittoextent": "Beperken tot kaartgebied",
       "loadfailed": "Kan de object data niet laden",
-      "loading": "Laden...",
       "nodelete": "Niet verwijderen",
       "nogeomnoform": "Wijzigformulier is niet beschikbaar voor lagen zonder geometrie",
       "pleasereload": "Druk op 'Herladen' om attributentabel te laden...",
       "reload": "Herladen",
-      "selectlayer": "Selecteer laag...",
       "title": "Attributentabel",
       "zoomtoselection": "Inzoomen op geselecteerde objecten"
     },
@@ -111,8 +108,35 @@
       "viewertitle_label": ""
     },
     "common": {
+      "all": "",
+      "cancel": "Annuleren",
+      "circle": "Cirkel",
+      "clear": "Wissen",
+      "clone": "",
+      "close": "Sluiten",
+      "delete": "",
+      "download": "",
+      "export": "Export",
+      "format": "Format",
+      "line": "Lijn",
+      "loading": "Laden...",
       "lock2dview": "",
-      "sync2dview": ""
+      "noresults": "Geen resultaten",
+      "pick": "",
+      "point": "Punt",
+      "polygon": "Polygoon",
+      "resolution": "Resolutie",
+      "save": "",
+      "select": "Selecteren...",
+      "selectlayer": "",
+      "sync2dview": "",
+      "wait": "Even geduld a.u.b....",
+      "zoomin": "Inzoomen",
+      "zoomout": "Uitzoomen",
+      "ellipse": "Ellips",
+      "square": "",
+      "rectangle": "Rechthoek",
+      "text": "Tekst"
     },
     "compare3d": {
       "clipplane": "",
@@ -140,17 +164,14 @@
       "title": "Cyclomedia Viewer"
     },
     "draw3d": {
-      "clone": "",
       "cone": "",
       "cuboid": "",
       "cylinder": "",
-      "delete": "",
       "drawings": "",
       "intersect": "",
       "label": "",
       "newgroupprompt": "",
       "numericinput": "",
-      "pick": "",
       "position": "",
       "pyramid": "",
       "rotate": "",
@@ -173,7 +194,6 @@
       "add": "Toevoegen",
       "attrtable": "Tabel",
       "canceldelete": "Niet verwijderen",
-      "clearpicture": "Wissen",
       "clone_all": "",
       "clone_copy": "",
       "clone_defaulted": "",
@@ -186,23 +206,17 @@
       "commitfailed": "Bevestigen mislukt",
       "contraintviolation": "",
       "create": "Toevoegen",
-      "delete": "Verwijderen",
       "discard": "Negeren",
       "draw": "Tekenen",
       "feature": "Object",
       "geomnonzeroz": "De geometrie bevat geen Z-waarden en is daarom read only.",
       "geomreadonly": "",
       "invalidform": "Ongeldig formulier",
-      "maximize": "Maximaliseren",
-      "minimize": "Minimaliseren",
       "noeditablelayers": "Geen bewerkbare lagen",
       "paint": "Aanpassen",
-      "pick": "Selecteren",
       "pickdrawfeature": "Dupliceer bestaande geometrie",
       "reallydelete": "Verwijderen",
       "relationcommitfailed": "Sommige relatiegegevens konden niet worden bevestigd. Controleer de pictogrammen voor details",
-      "select": "Selecteren",
-      "selectlayer": "",
       "takepicture": "Foto maken",
       "unsavedchanged": "Er zijn niet-opgeslagen wijzigingen. Wil je de pagina toch verlaten?"
     },
@@ -214,14 +228,11 @@
     },
     "featureform": {
       "feature": "Object",
-      "noresults": "Geen resultaten",
       "querying": "Zoeken...",
       "title": "Objectgegevens"
     },
     "featuresearch": {
-      "noresults": "Geen resultaat",
       "query": "Zoeken",
-      "select": "Selecteer...",
       "title": "Zoek object"
     },
     "fileselector": {
@@ -239,8 +250,7 @@
       "line_buffer": "Lijn (naar buffer)",
       "point_buffer": "Punt (naar buffer)",
       "selfinter": "Eén of meer polygonen bevatten zelfdoorsnijdingen",
-      "send": "Verzenden",
-      "wait": "Bezig met laden..."
+      "send": "Verzenden"
     },
     "heightprofile": {
       "asl": "NAP",
@@ -266,8 +276,6 @@
       "clipboard": "Kopiëren naar klembord",
       "compare": "",
       "comparing": "",
-      "download": "",
-      "export": "Exporteren",
       "featureReport": "Rapport",
       "featurecount": "",
       "layerall": "",
@@ -296,7 +304,6 @@
       "asgroup": "",
       "connect": "Verbinden",
       "filter": "Filteren...",
-      "loading": "Laden...",
       "localfile": "Lokaal bestand",
       "nofeatures": "Objecten konden niet geïmporteerd worden",
       "noresults": "Geen resultaten of ongeldige URL",
@@ -352,8 +359,6 @@
       "zoomtoobject": ""
     },
     "linkfeatureform": {
-      "cancel": "Annuleren",
-      "close": "Sluiten",
       "drawhint": "Teken object op de kaart...",
       "pickhint": "Kies object op de kaart..."
     },
@@ -383,25 +388,17 @@
     },
     "mapexport": {
       "configuration": "Configuratie",
-      "format": "Format",
       "projection": "",
-      "resolution": "Resolutie",
       "scale": "Schaal",
       "size": "Afmeting",
-      "submit": "Export",
-      "usersize": "Selecteer op kaart...",
-      "wait": "Even geduld a.u.b...."
+      "usersize": "Selecteer op kaart..."
     },
     "mapfilter": {
       "addcustomfilter": "Aangepast filter toevoegen",
       "brokenrendering": "Kaartweergave kan verstoord zijn door een ongeldige filterexpressie",
-      "cancel": "Annuleren",
       "geomfilter": "Geometriefilter",
       "hidefiltergeom": "Verberg filtergeometrie",
       "invalidfilter": "Ongeldige filterexpressie",
-      "save": "Opslaan",
-      "select": "Selecteren...",
-      "selectlayer": "Laag selecteren",
       "timefilter": "Tijd",
       "timefrom": "Van",
       "timeto": "Tot"
@@ -457,7 +454,6 @@
       "prev": ""
     },
     "newspopup": {
-      "dialogclose": "Sluiten",
       "dontshowagain": "Niet meer tonen",
       "title": "Nieuws"
     },
@@ -487,28 +483,21 @@
     },
     "print": {
       "atlasfeature": "Atlasobject",
-      "download": "",
       "download_as_onepdf": "",
       "download_as_onezip": "",
       "download_as_single": "",
-      "format": "Format",
       "grid": "Raster",
       "layout": "Indeling",
       "legend": "Legenda",
-      "maximize": "Maximaliseren",
-      "minimize": "Minimaliseren",
       "nolayouts": "De geselecteerde kaart ondersteunt geen afdrukken",
       "notheme": "Geen kaart geselecteerd",
       "output": "Print resultaat",
       "overlap": "",
       "pickatlasfeature": "Kies in kaartlaag {0}...",
-      "resolution": "Resolutie",
       "rotation": "Rotatie",
-      "save": "",
       "scale": "Schaal",
       "series": "",
-      "submit": "Print",
-      "wait": "Even geduld a.u.b...."
+      "submit": "Print"
     },
     "qtdesignerform": {
       "loading": "Formulier laden..."
@@ -521,34 +510,19 @@
       "bufferlayer": "Bestemming",
       "bufferlayername": "Laag",
       "bufferselectfeature": "Selecteer object om te bufferen...",
-      "circle": "Cirkel",
-      "clone": "",
       "ctrlhint": "",
-      "delete": "Verwijderen",
       "draw": "Tekenen",
       "edit": "Bewerken",
-      "ellipse": "Ellips",
-      "export": "",
       "freehand": "Uit de hand tekenen",
       "label": "Label",
       "layer": "Laag",
       "layertitle": "Laag",
-      "line": "Lijn",
       "markers": "Markeringen",
       "numericinput": "Numeriek invoerpaneel tonen",
-      "pick": "Selecteren",
-      "point": "Punt",
-      "polygon": "Polygoon",
-      "rectangle": "Rechthoek",
       "size": "Afmeting",
-      "square": "",
-      "text": "Tekst",
       "transform": "Transformeer"
     },
     "reports": {
-      "all": "",
-      "download": "",
-      "pick": "",
       "region": "",
       "selectlayer": ""
     },
@@ -557,11 +531,9 @@
       "addlayer": "",
       "addviapoint": "Via hier",
       "arriveat": "Aankomen om",
-      "clear": "Wissen",
       "computefailed": "Berekening mislukt",
       "computing": "Bezig met berekenen...",
       "excludepolygons": "Gebieden uitsluiten",
-      "export": "Exporteren",
       "fastest": "Snelste",
       "fromhere": "Vanaf hier",
       "importerror": "Import mislukt. De inhoud van het bestand moet een GeoJSON FeatureCollection zijn van puntobjecten",
@@ -597,9 +569,7 @@
       "finish": "Voltooien"
     },
     "search": {
-      "all": "Alle",
       "circleradius": "Straal van de cirkel",
-      "clearfilter": "Wissen",
       "coordinates": "",
       "existinglayer": "Kaartlaag bestaat al",
       "filter": "Filteren",
@@ -608,7 +578,6 @@
       "more": "Meer...",
       "nodescription": "",
       "none": "",
-      "noresults": "Geen resultaten",
       "placeholder": "",
       "places": "",
       "providerselection": "Zoek providers",
@@ -696,7 +665,6 @@
       "group": "Groeperingsattribuut",
       "groupnone": "Geen",
       "home": "Reset tijdlijn",
-      "loading": "Laden...",
       "loop": "Herhalen",
       "markers": "Markeringen",
       "notemporaldata": "Er zijn geen tijdsgerelateerde lagen zichtbaar op de kaart.",
@@ -727,17 +695,13 @@
         "months": "maanden",
         "seconds": "seconden",
         "years": "jaren"
-      },
-      "zoomin": "Inzoomen",
-      "zoomout": "Uitzoomen"
+      }
     },
     "tooltip": {
       "background": "Wissel achtergrond",
       "fullscreendisable": "Schakel volledig scherm uit",
       "fullscreenenable": "Schakel volledig scherm in",
-      "home": "Toon volledige kaart",
-      "zoomin": "Inzoomen",
-      "zoomout": "Uitzoomen"
+      "home": "Toon volledige kaart"
     },
     "tourguide": {
       "done": "",
@@ -745,7 +709,6 @@
       "previous": ""
     },
     "valuetool": {
-      "all": "",
       "allbands": "",
       "alllayers": "",
       "bands": "",
@@ -772,7 +735,6 @@
       "storingstate": ""
     },
     "window": {
-      "close": "Sluiten",
       "detach": "",
       "dock": "Dock",
       "embed": "",

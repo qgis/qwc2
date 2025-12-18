@@ -85,7 +85,7 @@ class NewsPopup extends React.Component {
             <div className="newspopup-dialog-popup-body" role="body">
                 <iframe src={this.props.newsDocument.replace('{lang}', LocaleUtils.lang())} />
                 <div className="newspopup-dialog-popup-buttonbar">
-                    <button onClick={this.closeDialog}>{LocaleUtils.tr("newspopup.dialogclose")}</button>
+                    <button onClick={this.closeDialog}>{LocaleUtils.tr("common.close")}</button>
                     <label><input onChange={ev => this.setState({dontShowAgain: ev.target.checked})} type="checkbox" value={this.state.dontShowAgain} /> {LocaleUtils.tr("newspopup.dontshowagain")}</label>
                 </div>
             </div>
