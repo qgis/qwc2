@@ -291,6 +291,7 @@ class ObliqueView extends React.Component {
         });
         layers.push(this.obliqueImageryLayer);
         this.map.setLayers(layers);
+        this.searchClosestImage();
     };
     searchClosestImage = () => {
         let best = null;
