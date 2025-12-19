@@ -61,17 +61,6 @@ export default class OverviewMap3D extends React.Component {
         if (this.props.sceneContext.mapCrs !== prevProps.sceneContext.mapCrs) {
             this.setupView();
         }
-        if (this.map) {
-            if (this.state.center !== prevState.center || this.state.azimuth !== prevState.azimuth) {
-                this.map.getView().setCenter(this.state.center);
-                this.viewConeFeature.getGeometry().setCoordinates(this.state.center);
-                this.viewConeFeature.set('rotation', -this.state.azimuth, true);
-                this.viewConeLayer.getSource().changed();
-            }
-            if (this.state.resolution !== prevState.resolution) {
-                this.map.getView().setResolution(this.state.resolution);
-            }
-        }
     }
     initOverviewMap = (el) => {
         if (el) {
