@@ -216,7 +216,14 @@ class ObliqueView extends React.Component {
                         <Icon icon="minus" onClick={() => this.changeZoom(-1)} />
                     </div>
                     <div className="obliqueview-bottombar">
+                        <select onChange={ev => this.setState({selectedDataset: ev.target.value})} value={this.state.selectedDataset}>
+                            {(this.props.theme.obliqueDatasets || []).map(entry => (
+                                <option key={entry.name} value={entry.name}>{LocaleUtils.trWithFallback(entry.titleMsgId, entry.title ?? entry.name)}</option>
+                            ))}
+                        </select>
+                        <span className="obliqueview-bottombar-spacer" />
                         {this.renderScaleChooser()}
+                        <span className="obliqueview-bottombar-spacer" />
                     </div>
                 </div>
             </ResizeableWindow>

@@ -90,7 +90,8 @@ div.obliqueview-bottombar {
     right: 0;
     bottom: 0;
     height: 3em;
-    z-index: 100;
+    padding: 0 0.5em;
+    z-index: 3;
     color: var(--panel-text-color);
     background-color: var(--panel-bg-color);
     box-shadow: 0 -2px 4px rgba(136, 136, 136, 0.5);
@@ -98,7 +99,10 @@ div.obliqueview-bottombar {
     font-size: 75%;
     display: flex;
     align-items: center;
-    justify-content: center;
+}
+
+span.obliqueview-bottombar-spacer {
+    flex: 1 1 auto;
 }
 
 div.obliqueview-scalechooser {
