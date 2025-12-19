@@ -777,6 +777,27 @@ ObliqueView<a name="obliqueview"></a>
 ----------------------------------------------------------------
 Display oblique satellite imagery.
 
+Requires `obliqueImageryServiceUrl` in `config.json` to point to a `qwc-oblique-imagery-service`.
+
+You can configure oblique imagery datasets in the `obliqueDatasets` entry in a QWC theme configuration as follows:
+```
+{
+  ...
+  "obliqueDatasets": [{
+    {
+      "name": "<dataset_name>",
+      "default": <false|true>,
+      "backgroundLayer": "<external_layer_resource_string>",
+      "backgroundOpacity": <0-255>,
+      "title": "<dataset_title>",
+      "titleMsgId": "<dataset_title_msgid>"
+    },
+    ...
+  ]
+}
+```
+where `dataset_name` is the the name of a dataset configured in the `qwc-oblique-imagery-service`.
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'left'`<br />`}` |
