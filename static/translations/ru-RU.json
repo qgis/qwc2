@@ -116,6 +116,7 @@
       "close": "",
       "delete": "",
       "download": "",
+      "ellipse": "",
       "export": "",
       "format": "Формат бумаги:",
       "line": "Линия",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Точка",
       "polygon": "Полигон",
+      "rectangle": "",
       "resolution": "Разрешение:",
       "save": "",
       "select": "Выберите...",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Текст",
       "wait": "",
       "zoomin": "Увеличить",
-      "zoomout": "Уменьшить",
-      "ellipse": "",
-      "square": "",
-      "rectangle": "",
-      "text": "Текст"
+      "zoomout": "Уменьшить"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "",
       "size": "Размер",
+      "text": "",
       "transform": ""
     },
     "reports": {

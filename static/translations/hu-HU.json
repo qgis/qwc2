@@ -116,6 +116,7 @@
       "close": "",
       "delete": "",
       "download": "",
+      "ellipse": "",
       "export": "",
       "format": "Formátum:",
       "line": "Vonaé",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Pont",
       "polygon": "Poligon",
+      "rectangle": "",
       "resolution": "Felbontás:",
       "save": "",
       "select": "",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Szöveg",
       "wait": "",
       "zoomin": "",
-      "zoomout": "",
-      "ellipse": "",
-      "square": "",
-      "rectangle": "",
-      "text": "Szöveg"
+      "zoomout": ""
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "",
       "size": "Méret",
+      "text": "",
       "transform": ""
     },
     "reports": {

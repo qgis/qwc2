@@ -116,6 +116,7 @@
       "close": "Close",
       "delete": "Delete",
       "download": "Download",
+      "ellipse": "Ellipse",
       "export": "Export",
       "format": "Format",
       "line": "Line",
@@ -125,18 +126,17 @@
       "pick": "Pick",
       "point": "Point",
       "polygon": "Polygon",
+      "rectangle": "Rectangle",
       "resolution": "Resolution",
       "save": "Save",
       "select": "Select...",
       "selectlayer": "Select layer...",
+      "square": "Square",
       "sync2dview": "Synchronize with 2D view",
+      "text": "Text",
       "wait": "Please wait...",
       "zoomin": "Zoom in",
-      "zoomout": "Zoom out",
-      "ellipse": "Ellipse",
-      "square": "Square",
-      "rectangle": "Rectangle",
-      "text": "Text"
+      "zoomout": "Zoom out"
     },
     "compare3d": {
       "clipplane": "Clipping plane",
@@ -520,6 +520,7 @@
       "markers": "Markers",
       "numericinput": "Numeric input",
       "size": "Size",
+      "text": "",
       "transform": "Transform"
     },
     "reports": {

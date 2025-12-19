@@ -116,6 +116,7 @@
       "close": "閉じる",
       "delete": "削除",
       "download": "ダウンロード",
+      "ellipse": "楕円",
       "export": "エクスポート",
       "format": "形式",
       "line": "線",
@@ -125,18 +126,17 @@
       "pick": "選択",
       "point": "点",
       "polygon": "ポリゴン",
+      "rectangle": "四角形",
       "resolution": "解像度",
       "save": "保存",
       "select": "選択",
       "selectlayer": "レイヤを選択...",
+      "square": "四角形",
       "sync2dview": "2D ビューと同期",
+      "text": "テキスト",
       "wait": "しばらくお待ちください...",
       "zoomin": "ズーム・イン",
-      "zoomout": "ズーム・アウト",
-      "ellipse": "楕円",
-      "square": "四角形",
-      "rectangle": "四角形",
-      "text": "テキスト"
+      "zoomout": "ズーム・アウト"
     },
     "compare3d": {
       "clipplane": "クリッピング平面",
@@ -520,6 +520,7 @@
       "markers": "マーカー",
       "numericinput": "数値入力",
       "size": "サイズ",
+      "text": "",
       "transform": "変形"
     },
     "reports": {

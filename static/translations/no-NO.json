@@ -116,6 +116,7 @@
       "close": "",
       "delete": "",
       "download": "",
+      "ellipse": "",
       "export": "",
       "format": "Format:",
       "line": "Linje",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Punkt",
       "polygon": "Polygon",
+      "rectangle": "",
       "resolution": "Oppløsning:",
       "save": "",
       "select": "Velg...",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Tekst",
       "wait": "",
       "zoomin": "Zoom inn",
-      "zoomout": "Zoom ut",
-      "ellipse": "",
-      "square": "",
-      "rectangle": "",
-      "text": "Tekst"
+      "zoomout": "Zoom ut"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "",
       "size": "Størrelse",
+      "text": "",
       "transform": ""
     },
     "reports": {

@@ -116,6 +116,7 @@
       "close": "",
       "delete": "",
       "download": "",
+      "ellipse": "",
       "export": "",
       "format": "Format:",
       "line": "Linia",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Punkt",
       "polygon": "Poligon",
+      "rectangle": "",
       "resolution": "Rozdzielczość:",
       "save": "",
       "select": "Zaznacz...",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Tekst",
       "wait": "",
       "zoomin": "Przybliż",
-      "zoomout": "Oddal",
-      "ellipse": "",
-      "square": "",
-      "rectangle": "",
-      "text": "Tekst"
+      "zoomout": "Oddal"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "",
       "size": "Rozmiar",
+      "text": "",
       "transform": ""
     },
     "reports": {

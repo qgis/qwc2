@@ -116,6 +116,7 @@
       "close": "Fechar Diálogo",
       "delete": "Eliminar",
       "download": "Descarregar",
+      "ellipse": "Elipse",
       "export": "Enviar",
       "format": "Formato:",
       "line": "Linha",
@@ -125,18 +126,17 @@
       "pick": "Escolha",
       "point": "Ponto",
       "polygon": "Polígono",
+      "rectangle": "Retângulo",
       "resolution": "Resolução:",
       "save": "Salvar",
       "select": "Selecionar...",
       "selectlayer": "Selecionar camada...",
+      "square": "Quadrado",
       "sync2dview": "",
+      "text": "Texto",
       "wait": "Por favor, aguarde...",
       "zoomin": "Aumentar Zoom",
-      "zoomout": "Diminuir Zoom",
-      "ellipse": "Elipse",
-      "square": "Quadrado",
-      "rectangle": "Retângulo",
-      "text": "Texto"
+      "zoomout": "Diminuir Zoom"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "Marcadores",
       "numericinput": "Entrada Numérica",
       "size": "Tamanho",
+      "text": "",
       "transform": "Transformar"
     },
     "reports": {

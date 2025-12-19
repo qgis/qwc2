@@ -116,6 +116,7 @@
       "close": "",
       "delete": "",
       "download": "",
+      "ellipse": "",
       "export": "",
       "format": "Formaatti:",
       "line": "Viiva",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Piste",
       "polygon": "Alue",
+      "rectangle": "",
       "resolution": "Resoluutio:",
       "save": "",
       "select": "",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Teksti",
       "wait": "",
       "zoomin": "Zoomaa sisään",
-      "zoomout": "Zoomaa ulos",
-      "ellipse": "",
-      "square": "",
-      "rectangle": "",
-      "text": "Teksti"
+      "zoomout": "Zoomaa ulos"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "",
       "size": "Koko",
+      "text": "",
       "transform": ""
     },
     "reports": {

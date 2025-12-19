@@ -116,6 +116,7 @@
       "close": "Închideți",
       "delete": "",
       "download": "",
+      "ellipse": "Elipsă",
       "export": "",
       "format": "",
       "line": "Linie",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Punct",
       "polygon": "Poligon",
+      "rectangle": "Dreptunghi",
       "resolution": "",
       "save": "",
       "select": "Selectează...",
       "selectlayer": "",
+      "square": "Pătrat",
       "sync2dview": "",
+      "text": "Text",
       "wait": "",
       "zoomin": "Mărire",
-      "zoomout": "Micșorare",
-      "ellipse": "Elipsă",
-      "square": "Pătrat",
-      "rectangle": "Dreptunghi",
-      "text": "Text"
+      "zoomout": "Micșorare"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "Afișare formular pentru valori numerice",
       "size": "Dimeniuni",
+      "text": "",
       "transform": "Transformare"
     },
     "reports": {

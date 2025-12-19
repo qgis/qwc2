@@ -116,6 +116,7 @@
       "close": "",
       "delete": "",
       "download": "",
+      "ellipse": "",
       "export": "",
       "format": "Format:",
       "line": "Linje",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Punkt",
       "polygon": "Yta",
+      "rectangle": "",
       "resolution": "Upplösning:",
       "save": "",
       "select": "Välj...",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Text",
       "wait": "",
       "zoomin": "Zooma in",
-      "zoomout": "Zooma ut",
-      "ellipse": "",
-      "square": "",
-      "rectangle": "",
-      "text": "Text"
+      "zoomout": "Zooma ut"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "",
       "size": "Storlek",
+      "text": "",
       "transform": ""
     },
     "reports": {

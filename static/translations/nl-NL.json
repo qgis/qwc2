@@ -116,6 +116,7 @@
       "close": "Sluiten",
       "delete": "",
       "download": "",
+      "ellipse": "Ellips",
       "export": "Export",
       "format": "Format",
       "line": "Lijn",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Punt",
       "polygon": "Polygoon",
+      "rectangle": "Rechthoek",
       "resolution": "Resolutie",
       "save": "",
       "select": "Selecteren...",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Tekst",
       "wait": "Even geduld a.u.b....",
       "zoomin": "Inzoomen",
-      "zoomout": "Uitzoomen",
-      "ellipse": "Ellips",
-      "square": "",
-      "rectangle": "Rechthoek",
-      "text": "Tekst"
+      "zoomout": "Uitzoomen"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "Markeringen",
       "numericinput": "Numeriek invoerpaneel tonen",
       "size": "Afmeting",
+      "text": "",
       "transform": "Transformeer"
     },
     "reports": {

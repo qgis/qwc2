@@ -116,6 +116,7 @@
       "close": "",
       "delete": "",
       "download": "",
+      "ellipse": "",
       "export": "",
       "format": "Формат:",
       "line": "Лінія",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Точка",
       "polygon": "Полігон",
+      "rectangle": "",
       "resolution": "Роздільна здатність:",
       "save": "",
       "select": "Виберіть...",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Текст",
       "wait": "",
       "zoomin": "Збільшити",
-      "zoomout": "Зменшити",
-      "ellipse": "",
-      "square": "",
-      "rectangle": "",
-      "text": "Текст"
+      "zoomout": "Зменшити"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "",
       "size": "Розмір",
+      "text": "",
       "transform": ""
     },
     "reports": {

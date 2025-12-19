@@ -116,6 +116,7 @@
       "close": "Zavřít",
       "delete": "",
       "download": "",
+      "ellipse": "",
       "export": "Export",
       "format": "Formát:",
       "line": "Linie",
@@ -125,18 +126,17 @@
       "pick": "",
       "point": "Bod",
       "polygon": "Polygon",
+      "rectangle": "",
       "resolution": "Rozlišení:",
       "save": "",
       "select": "Vybrat...",
       "selectlayer": "",
+      "square": "",
       "sync2dview": "",
+      "text": "Text",
       "wait": "Čekejte...",
       "zoomin": "Přiblížit",
-      "zoomout": "Oddálit",
-      "ellipse": "",
-      "square": "",
-      "rectangle": "",
-      "text": "Text"
+      "zoomout": "Oddálit"
     },
     "compare3d": {
       "clipplane": "",
@@ -520,6 +520,7 @@
       "markers": "",
       "numericinput": "",
       "size": "Velikost",
+      "text": "",
       "transform": ""
     },
     "reports": {

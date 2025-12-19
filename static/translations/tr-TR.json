@@ -116,6 +116,7 @@
       "close": "Kapat",
       "delete": "Sil",
       "download": "İndir",
+      "ellipse": "Elips",
       "export": "Ver",
       "format": "Format:",
       "line": "Çizgi",
@@ -125,18 +126,17 @@
       "pick": "Seç",
       "point": "Nokta",
       "polygon": "Poligon",
+      "rectangle": "Dikdörtgen",
       "resolution": "Çözünürlük:",
       "save": "Kayıt",
       "select": "Seçim...",
       "selectlayer": "Katman seçiniz...",
+      "square": "Kare",
       "sync2dview": "Görünümü senkronize et",
+      "text": "Metin",
       "wait": "Lütfen bekleyiniz...",
       "zoomin": "Yaklaş",
-      "zoomout": "Uzaklaş",
-      "ellipse": "Elips",
-      "square": "Kare",
-      "rectangle": "Dikdörtgen",
-      "text": "Metin"
+      "zoomout": "Uzaklaş"
     },
     "compare3d": {
       "clipplane": "Kırpma düzlemi",
@@ -520,6 +520,7 @@
       "markers": "İşaretçiler",
       "numericinput": "Sayısal giriş panelini göster",
       "size": "Boyut",
+      "text": "",
       "transform": "Dönüşüm"
     },
     "reports": {

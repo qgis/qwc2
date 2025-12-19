@@ -116,6 +116,7 @@
       "close": "Tancar",
       "delete": "Eliminar",
       "download": "Descarregar",
+      "ellipse": "El·lipse",
       "export": "Exportar",
       "format": "Format:",
       "line": "Línia",
@@ -125,18 +126,17 @@
       "pick": "Escollir",
       "point": "Punt",
       "polygon": "Polígon",
+      "rectangle": "Rectangle",
       "resolution": "Resolució:",
       "save": "Guardar",
       "select": "Seleccionar...",
       "selectlayer": "Escollir capa...",
+      "square": "Quadrat",
       "sync2dview": "Sincronitzar amb la vista 2D",
+      "text": "Text",
       "wait": "Espereu si us plau...",
       "zoomin": "Apropar",
-      "zoomout": "Allunyar",
-      "ellipse": "El·lipse",
-      "square": "Quadrat",
-      "rectangle": "Rectangle",
-      "text": "Text"
+      "zoomout": "Allunyar"
     },
     "compare3d": {
       "clipplane": "Pla de retall",
@@ -520,6 +520,7 @@
       "markers": "Marcadors",
       "numericinput": "Entrada numèrica",
       "size": "Tamany",
+      "text": "",
       "transform": "Transformar"
     },
     "reports": {
