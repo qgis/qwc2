@@ -1,11 +1,11 @@
-div.overview-map-3d {
+div.overview-map {
     position: absolute;
     bottom: 0;
     right: 0;
     z-index: 101;
 }
 
-div.overview-map-3d > button {
+div.overview-map > button {
     font-size: initial!important;
     right: 0.25em;
     bottom: 0.25em;
@@ -21,7 +21,7 @@ div.overview-map-3d > button {
     font-weight: bold;
 }
 
-div.overview-map-3d > div.ol-overviewmap-map-3d {
+div.overview-map > div.ol-overviewmap-map {
     position: absolute;
     right: 1px;
     bottom: 1px;
@@ -32,6 +32,6 @@ div.overview-map-3d > div.ol-overviewmap-map-3d {
     border: 1px solid var(--border-color);
 }
 
-div.overview-map-3d.ol-collapsed > div.ol-overviewmap-map-3d {
+div.overview-map.ol-collapsed > div.ol-overviewmap-map {
     display: none;
 }
