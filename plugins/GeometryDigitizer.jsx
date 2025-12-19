@@ -49,16 +49,16 @@ import './style/Redlining.css';
  *   "pluginData": {
  *     "geometryLinks": [
  *       {
- *         "name": "<geomLinkName>",                // Link name referenced in theme item
- *         "title": "<geomLinkTitle>",              // Link title, displayed in the selection combo
- *         "geomType": ["<geomType>", "<geomType>"] // Supported geometry types (Point, LineString, Polygon)
- *         "format": "wkt|geojson",                 // Format of data to send to application
- *         "url": "<targetApplicationUrl>",         // Application target URL, receiving the POST submit. Can contain the $username$ placeholder parameter.
- *         "params": {"<key>": "<value>", ...}      // Optional: additional form parameters to post to URL
- *         "target": "<target>" | {                 // Optional: form POST target which to display the result
- *           "iframedialog": true,                  // Use an iframe dialog
- *           "w": <dialogWidth>,                    // Dialog width
- *           "h": <dialogHeight>                    // Dialog height
+ *         "name": "<geomLinkName>",                 // Link name referenced in theme item
+ *         "title": "<geomLinkTitle>",               // Link title, displayed in the selection combo
+ *         "geomType": ["<geomType>", "<geomType>"], // Supported geometry types (Point, LineString, Polygon)
+ *         "format": "wkt|geojson",                  // Format of data to send to application
+ *         "url": "<targetApplicationUrl>",          // Application target URL, receiving the POST submit. Can contain the $username$ placeholder parameter.
+ *         "params": {"<key>": "<value>", ...}       // Optional: additional form parameters to post to URL
+ *         "target": "<target>" | {                  // Optional: form POST target which to display the result
+ *           "iframedialog": true,                   // Use an iframe dialog
+ *           "w": <dialogWidth>,                     // Dialog width
+ *           "h": <dialogHeight>                     // Dialog height
  *         }
  *       }
  *     ]
