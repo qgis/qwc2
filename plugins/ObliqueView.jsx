@@ -117,8 +117,8 @@ class ObliqueView extends React.Component {
             this.props.setCurrentTask(null);
         }
         if (
-            this.props.active && this.props.theme &&
-            (this.props.theme !== prevProps.theme) || (this.props.active && !prevProps.active)
+            this.state.active && this.props.theme &&
+            (this.props.theme !== prevProps.theme || !prevState.active)
         ) {
             const datasets = this.props.theme.obliqueDatasets || [];
             const defaultDataset = datasets.find(entry => entry.default)?.name ?? datasets[0]?.name;
