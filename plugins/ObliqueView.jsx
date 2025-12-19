@@ -18,11 +18,10 @@ import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ResizeableWindow from '../components/ResizeableWindow';
-import LayerRegistry from '../components/map/layers/index';
+import OlLayer from '../components/map/OlLayer';
 import InputContainer from '../components/widgets/InputContainer';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
@@ -43,7 +42,7 @@ import './style/ObliqueView.css';
  *     {
  *       "name": "<dataset_name>",
  *       "default": <false|true>,
- *       "backgroundLayer": "<external_layer_resource_string>",
+ *       "backgroundLayer": "<background_layer_name>",
  *       "backgroundOpacity": <0-255>,
  *       "title": "<dataset_title>",
  *       "titleMsgId": "<dataset_title_msgid>"
@@ -121,8 +120,9 @@ class ObliqueView extends React.Component {
                 return null;
             });
         });
+        this.obliqueImageryLayer = new ol.layer.Tile();
+        this.map.addLayer(this.obliqueImageryLayer);
         this.closestImage = null;
-        this.obliqueImageryLayer = null;
         this.state = ObliqueView.defaultState;
         this.focusedMap = null;
     }
@@ -146,8 +146,6 @@ class ObliqueView extends React.Component {
             this.setState({selectedDataset: defaultDataset, datasetConfig: null, currentDirection: null});
         }
         if (this.state.selectedDataset !== prevState.selectedDataset) {
-            this.closestImage = null;
-            this.obliqueImageryLayer = null;
             this.queryDatasetConfig();
         }
         if (this.state.datasetConfig && this.state.datasetConfig !== prevState.datasetConfig) {
@@ -186,6 +184,8 @@ class ObliqueView extends React.Component {
             title: LocaleUtils.tr("common.lock2dview"),
             active: this.state.viewsLocked
         }];
+        const obliqueConfig = this.props.theme.obliqueDatasets.find(entry => entry.name === this.state.selectedDataset);
+        const basemap = this.props.themes.backgroundLayers.find(entry => entry.name === obliqueConfig?.backgroundLayer);
         return (
             <ResizeableWindow dockable={this.props.geometry.side} extraControls={extraControls} icon="oblique"
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
@@ -215,8 +215,11 @@ class ObliqueView extends React.Component {
                         <Icon icon="plus" onClick={() => this.changeZoom(+1)} />
                         <Icon icon="minus" onClick={() => this.changeZoom(-1)} />
                     </div>
+                    {basemap && this.state.datasetConfig ? (
+                        <OlLayer map={this.map} options={{...basemap, opacity: obliqueConfig.backgroundOpacity ?? 127}} projection={this.state.datasetConfig.crs} zIndex={-1} />
+                    ) : null}
                     <div className="obliqueview-bottombar">
-                        <select onChange={ev => this.setState({selectedDataset: ev.target.value})} value={this.state.selectedDataset}>
+                        <select onChange={ev => this.setState({selectedDataset: ev.target.value})} value={this.state.selectedDataset ?? ""}>
                             {(this.props.theme.obliqueDatasets || []).map(entry => (
                                 <option key={entry.name} value={entry.name}>{LocaleUtils.trWithFallback(entry.titleMsgId, entry.title ?? entry.name)}</option>
                             ))}
@@ -259,6 +262,9 @@ class ObliqueView extends React.Component {
                 /* eslint-disable-next-line */
                 console.warn("Failed to load dataset config");
             });
+        } else {
+            this.obliqueImageryLayer.setSource(null);
+            this.closestImage = null;
         }
     };
     setupLayer = () => {
@@ -275,7 +281,6 @@ class ObliqueView extends React.Component {
         );
         this.map.setView(new ol.View({
             projection: projection,
-            // extent: datasetConfig.extent,
             center: ol.extent.getCenter(datasetConfig.extent),
             rotation: this.getRotation() / 180 * Math.PI,
             zoom: zoom,
@@ -284,41 +289,23 @@ class ObliqueView extends React.Component {
             // showFullExtent: true
         }));
         this.setState({currentZoom: zoom});
-
-        const layers = [];
-
-        const themeConfig = this.props.theme.obliqueDatasets.find(entry => entry.name === this.state.selectedDataset);
-        if (themeConfig.backgroundLayer) {
-            const layerConfig = LayerUtils.splitLayerUrlParam(themeConfig.backgroundLayer);
-            layerConfig.version = this.props.themes.defaultWMSVersion || "1.3.0";
-            layerConfig.opacity = themeConfig.backgroundOpacity ?? 127;
-            const layerCreator = LayerRegistry[layerConfig.type];
-            if (layerCreator) {
-                layers.push(layerCreator.create(layerConfig, this.map));
-            }
-        }
-
-        this.obliqueImageryLayer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                projection: projection,
-                tileGrid: new ol.tilegrid.TileGrid({
-                    extent: datasetConfig.extent,
-                    resolutions: datasetConfig.resolutions,
-                    tileSize: datasetConfig.tileSize,
-                    origin: datasetConfig.origin
-                }),
-                url: datasetConfig.url,
-                crossOrigin: "anonymous",
-                tileLoadFunction: (tile, src) => {
-                    if ((this.closestImage ?? null) !== null) {
-                        src += "?img=" + this.closestImage;
-                    }
-                    tile.getImage().src = src.replace('{direction}', this.state.currentDirection);
+        this.obliqueImageryLayer.setSource(new ol.source.XYZ({
+            projection: projection,
+            tileGrid: new ol.tilegrid.TileGrid({
+                extent: datasetConfig.extent,
+                resolutions: datasetConfig.resolutions,
+                tileSize: datasetConfig.tileSize,
+                origin: datasetConfig.origin
+            }),
+            url: datasetConfig.url,
+            crossOrigin: "anonymous",
+            tileLoadFunction: (tile, src) => {
+                if ((this.closestImage ?? null) !== null) {
+                    src += "?img=" + this.closestImage;
                 }
-            })
-        });
-        layers.push(this.obliqueImageryLayer);
-        this.map.setLayers(layers);
+                tile.getImage().src = src.replace('{direction}', this.state.currentDirection);
+            }
+        }));
         this.searchClosestImage();
     };
     searchClosestImage = () => {
