@@ -17,6 +17,7 @@ import PropTypes from 'prop-types';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
+import OverviewMapButton from '../components/OverviewMapButton';
 import ResizeableWindow from '../components/ResizeableWindow';
 import OlLayer from '../components/map/OlLayer';
 import InputContainer from '../components/widgets/InputContainer';
@@ -227,6 +228,13 @@ class ObliqueView extends React.Component {
                         <span className="obliqueview-bottombar-spacer" />
                         {this.renderScaleChooser()}
                         <span className="obliqueview-bottombar-spacer" />
+                        {basemap && this.state.datasetConfig ? (
+                            <OverviewMapButton
+                                center={this.state.currentCenter} coneRotation={this.getRotation() / 180 * Math.PI}
+                                layer={basemap} projection={this.state.datasetConfig.crs}
+                                resolution={MapUtils.computeForZoom(this.state.datasetConfig.resolutions, this.state.currentZoom) * 0.25}
+                            />
+                        ) : null}
                     </div>
                 </div>
             </ResizeableWindow>
