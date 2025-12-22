@@ -18,6 +18,7 @@
         "ExportObjects3D": "Objektexport",
         "Help": "Hilfe",
         "HideObjects3D": "Objekte ausblenden",
+        "LayerBookmark": "",
         "LayerTree": "Ebenen und Legende",
         "LayerTree3D": "Ebenen",
         "MapExport": "Karte exportieren",
@@ -102,8 +103,10 @@
       "zoomToExtent": "Auf Ausschnitt zoomen"
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Koordinaten",
       "scale_label": "Massstab",
+      "select": "",
       "terms_label": "Nutzungsbedingungen",
       "viewertitle_label": "Homepage"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen",
       "clickhelpRadius": "Einen Radius setzten und in die Karte klicken, um Objekte um den Punkt zu identifizieren...",
       "radius": "Radius"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Ebenenkatalog"
@@ -601,7 +619,6 @@
       "title": "Informationen zum Thema"
     },
     "settings": {
-      "bookmarks": "Lesezeichen",
       "colorscheme": "Farbschema",
       "confirmlang": "Die Anwendung wird neugeladen, um die Sprache zu wechseln. Fortsetzen?",
       "default": "Standard",

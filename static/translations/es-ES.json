@@ -18,6 +18,7 @@
         "ExportObjects3D": "Exportar objetos",
         "Help": "Ayuda",
         "HideObjects3D": "Ocultar objetos",
+        "LayerBookmark": "",
         "LayerTree": "Capas & Leyenda",
         "LayerTree3D": "Capas",
         "MapExport": "Exportar mapa",
@@ -102,8 +103,10 @@
       "zoomToExtent": "Zoom a la extensión"
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Coordenadas",
       "scale_label": "Escala",
+      "select": "",
       "terms_label": "Términos de uso",
       "viewertitle_label": "Página de inicio"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Trace un polígono alrededor de los elementos para identificarlos...",
       "clickhelpRadius": "Define un radio y haga click en una ubicación para identificar los elementos alrededor del punto...",
       "radius": "Radio"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Catálogo de capas"
@@ -601,7 +619,6 @@
       "title": "Información del tema"
     },
     "settings": {
-      "bookmarks": "Marcadores",
       "colorscheme": "Tema",
       "confirmlang": "La aplicación se reiniciará para cambiar de idioma. Quiere continuar?",
       "default": "Predeterminado",

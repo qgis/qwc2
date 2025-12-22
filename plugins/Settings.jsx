@@ -16,9 +16,9 @@ import url from 'url';
 
 import {setColorScheme, setUserInfoFields} from '../actions/localConfig';
 import SideBar from '../components/SideBar';
+import GroupSelect from '../components/widgets/GroupSelect';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import {getUserBookmarks} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/Settings.css';
@@ -32,6 +32,7 @@ import './style/Settings.css';
 class Settings extends React.Component {
     static availableIn3D = true;
     static propTypes = {
+        bookmarks: PropTypes.array,
         colorScheme: PropTypes.string,
         /** List of available color schemes. Value is the css class name, title/titleMsgId the display name. */
         colorSchemes: PropTypes.arrayOf(PropTypes.shape({
@@ -59,18 +60,6 @@ class Settings extends React.Component {
         languages: [],
         side: 'right',
         showDefaultThemeSelector: true
-    };
-    state = {
-        bookmarks: {}
-    };
-    onShow = () => {
-        const username = ConfigUtils.getConfigProp("username");
-        if (this.props.showDefaultThemeSelector && username) {
-            getUserBookmarks(username, (bookmarks) => {
-                const bookmarkKeys = bookmarks.reduce((res, entry) => ({...res, [entry.key]: entry.description}), {});
-                this.setState({bookmarks: bookmarkKeys});
-            });
-        }
     };
     render() {
         return (
@@ -135,42 +124,43 @@ class Settings extends React.Component {
             return null;
         }
         const themeNames = ThemeUtils.getThemeNames(this.props.themes);
+        const bookmarks = (this.props.bookmarks || []).filter(b => b.data.query.c && b.data.query.s);
+        const layerBookmarks = (this.props.bookmarks || []).filter(b => !b.data.query.c && !b.data.query.s);
+        const options = {
+            [LocaleUtils.tr("settings.themes")]: Object.entries(themeNames).map(([id, name]) => ["t=" + id, name]),
+            [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk=" + bm.key, bm.description]),
+            [LocaleUtils.tr("appmenu.items.LayerBookmark")]: layerBookmarks.map(bm => ["bk=" + bm.key, bm.description])
+        };
+        const defaultOption = ["", LocaleUtils.tr("settings.default")];
         return (
             <tr>
                 <td>{LocaleUtils.tr("settings.defaulttheme")}</td>
                 <td>
-                    <select onChange={this.changeDefaultUrlParams} value={this.props.defaultUrlParams}>
-                        <option value="">{LocaleUtils.tr("settings.default")}</option>
-                        <option disabled>{LocaleUtils.tr("settings.themes")}</option>
-                        {Object.entries(themeNames).map(([id, name]) => (
-                            <option key={id} value={'t=' + id}>{name}</option>
-                        ))}
-                        <option disabled>{LocaleUtils.tr("settings.bookmarks")}</option>
-                        {Object.entries(this.state.bookmarks).map(([key, name]) => (
-                            <option key={key} value={'bk=' + key}>{name}</option>
-                        ))}
-                    </select>
+                    <GroupSelect
+                        defaultOption={defaultOption}
+                        onChange={this.changeDefaultUrlParams}
+                        options={options}
+                        value={this.props.defaultUrlParams}
+                    />
                 </td>
             </tr>
         );
     };
-    changeDefaultUrlParams = (ev) => {
+    changeDefaultUrlParams = (value) => {
         const params = {
-            default_url_params: ev.target.value
+            default_url_params: value
         };
         const baseurl = location.href.split("?")[0].replace(/\/$/, '');
         axios.get(baseurl + "/setuserinfo", {params}).then(response => {
             if (!response.data.success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("settings.defaultthemefailed", response.data.error));
-                ev.target.value = this.props.defaultUrlParams;
             } else {
                 this.props.setUserInfoFields(response.data.fields);
             }
         }).catch((e) => {
             /* eslint-disable-next-line */
             alert(LocaleUtils.tr("settings.defaultthemefailed", String(e)));
-            ev.target.value = this.props.defaultUrlParams;
         });
     };
     changeLocale = (ev) => {
@@ -196,6 +186,7 @@ class Settings extends React.Component {
 }
 
 export default connect((state) => ({
+    bookmarks: state.bookmark.bookmarks,
     colorScheme: state.localConfig.colorScheme,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     themes: state.theme.themes

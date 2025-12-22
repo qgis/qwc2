@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Помощ",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Слоеве и легенда",
         "LayerTree3D": "Слоеве",
         "MapExport": "Експорт на карта",
@@ -102,8 +103,10 @@
       "zoomToExtent": "Увеличаване на обхвата"
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Координати",
       "scale_label": "Стълбища",
+      "select": "",
       "terms_label": "Условия за ползване",
       "viewertitle_label": "Начална страница"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Начертайте полигон около характеристиките, за да определите...",
       "clickhelpRadius": "Задайте радиус и щракнете върху местоположението, за да идентифицирате функции около точката...",
       "radius": "Радиус"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Каталог на слоевете"
@@ -601,7 +619,6 @@
       "title": "Информация за темата"
     },
     "settings": {
-      "bookmarks": "Отметки",
       "colorscheme": "Цветова схема",
       "confirmlang": "Приложението ще бъде презаредено, за да се промени езикът. Продължете?",
       "default": "По подразбиране",

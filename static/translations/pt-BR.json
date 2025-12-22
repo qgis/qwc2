@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Ajuda",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Camadas & Legendas",
         "LayerTree3D": "",
         "MapExport": "Exportar mapa",
@@ -102,8 +103,10 @@
       "zoomToExtent": ""
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Coordenadas",
       "scale_label": "Escala",
+      "select": "",
       "terms_label": "Termos de uso",
       "viewertitle_label": "Home page"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Desenhe um polígono em torno das feiçoes para identificar",
       "clickhelpRadius": "Desenhe um raio em torno das feiçoes para identificar",
       "radius": "Raio"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Titulo da janela"
@@ -601,7 +619,6 @@
       "title": "Título"
     },
     "settings": {
-      "bookmarks": "Favoritos",
       "colorscheme": "Esquema de cores",
       "confirmlang": "Confirmar o idioma",
       "default": "Padrão",

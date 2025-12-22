@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Nápověda",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Vrstvy & legenda",
         "LayerTree3D": "",
         "MapExport": "Export mapu",
@@ -102,8 +103,10 @@
       "zoomToExtent": ""
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Souřadnice",
       "scale_label": "Měřítko",
+      "select": "",
       "terms_label": "Podmínky použití",
       "viewertitle_label": ""
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Nakreslete polygon okolo prvků, ke kterým chcete zobrazit další informace.",
       "clickhelpRadius": "Nastavte velikost okruhu a klikněte na místo, okolo kterého chcete načíst informace o prvcích.",
       "radius": "Velikost okruhu"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Katalog vrstev"
@@ -601,7 +619,6 @@
       "title": "Informace o tématu"
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "Barevné schéma",
       "confirmlang": "Pro změnu jazyka je třeba aplikaci znovu načíst. Pokračovat?",
       "default": "",

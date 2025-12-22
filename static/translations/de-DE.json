@@ -18,6 +18,7 @@
         "ExportObjects3D": "Objektexport",
         "Help": "Hilfe",
         "HideObjects3D": "Objekte ausblenden",
+        "LayerBookmark": "Sichtbarkeiten",
         "LayerTree": "Ebenen und Legende",
         "LayerTree3D": "Ebenen",
         "MapExport": "Karte exportieren",
@@ -102,8 +103,10 @@
       "zoomToExtent": "Auf Ausschnitt zoomen"
     },
     "bottombar": {
+      "bookmark_label": "Lesezeichen",
       "mousepos_label": "Koordinaten",
       "scale_label": "Maßstab",
+      "select": "Auswählen...",
       "terms_label": "Nutzungsbedingungen",
       "viewertitle_label": "Homepage"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen",
       "clickhelpRadius": "Einen Radius setzten und in die Karte klicken, um Objekte um den Punkt zu identifizieren...",
       "radius": "Radius"
+    },
+    "layerbookmark": {
+      "add": "Neue Sichtbarkeit anlegen",
+      "addfailed": "Sichtbarkeit konnte nicht angelegt werden",
+      "description": "Beschreibung eingeben...",
+      "lastUpdate": "Zuletzt gespeichert",
+      "manage": "Sichtbarkeiten verwalten",
+      "nobookmarks": "Keine Sichtbarkeiten",
+      "notloggedin": "Sie müssen angemeldet sein, um Sichtbarkeiten zu verwenden",
+      "open": "In aktuellem Fenster öffnen",
+      "openTab": "In neuem Fenster öffnen",
+      "remove": "Sichtbarkeit entfernen",
+      "removefailed": "Sichtbarkeit konnte nicht entfernt werden",
+      "savefailed": "Sichtbarkeit konnte nicht aktualisiert werden",
+      "update": "Sichtbarkeit aktualisieren"
     },
     "layercatalog": {
       "windowtitle": "Ebenenkatalog"
@@ -601,7 +619,6 @@
       "title": "Informationen zum Thema"
     },
     "settings": {
-      "bookmarks": "Lesezeichen",
       "colorscheme": "Farbschema",
       "confirmlang": "Die Anwendung wird neugeladen, um die Sprache zu wechseln. Fortsetzen?",
       "default": "Standard",

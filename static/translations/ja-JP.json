@@ -18,6 +18,7 @@
         "ExportObjects3D": "オブジェクトをエクスポート",
         "Help": "ヘルプ",
         "HideObjects3D": "オブジェクトを非表示",
+        "LayerBookmark": "",
         "LayerTree": "レイヤ & 凡例",
         "LayerTree3D": "レイヤ",
         "MapExport": "地図をエクスポート",
@@ -102,8 +103,10 @@
       "zoomToExtent": "領域にズーム"
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "座標",
       "scale_label": "縮尺",
+      "select": "",
       "terms_label": "使用許諾条件",
       "viewertitle_label": "QWC2 デモ"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "確認したい領域をポリゴンで囲む...",
       "clickhelpRadius": "中心をクリックして半径を指定し、円内を確認...",
       "radius": "半径"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "レイヤ・カタログ"
@@ -601,7 +619,6 @@
       "title": "テーマの情報"
     },
     "settings": {
-      "bookmarks": "ブックマーク",
       "colorscheme": "カラー・スキーム",
       "confirmlang": "言語を変更するためにアプリケーションを再ロードします。よろしいか?",
       "default": "デフォルト",

@@ -18,6 +18,7 @@
         "ExportObjects3D": "Export Objects",
         "Help": "Help",
         "HideObjects3D": "Hide Objects",
+        "LayerBookmark": "Visibilities",
         "LayerTree": "Layers & Legend",
         "LayerTree3D": "Layers",
         "MapExport": "Export Map",
@@ -102,8 +103,10 @@
       "zoomToExtent": "Zoom to extent"
     },
     "bottombar": {
+      "bookmark_label": "Bookmarks",
       "mousepos_label": "Coordinates",
       "scale_label": "Scale",
+      "select": "Select...",
       "terms_label": "Terms of use",
       "viewertitle_label": "Homepage"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Draw a polygon around the features to identify...",
       "clickhelpRadius": "Set a radius and click a location to identify features around the point...",
       "radius": "Radius"
+    },
+    "layerbookmark": {
+      "add": "Create new visibility",
+      "addfailed": "Failed to create visibility",
+      "description": "Enter description...",
+      "lastUpdate": "Last saved",
+      "manage": "Manage visibilities",
+      "nobookmarks": "No visibilities",
+      "notloggedin": "You need to be logged in to store visibilities",
+      "open": "Open visibility in current tab",
+      "openTab": "Open visibility in tab",
+      "remove": "Remove visibility",
+      "removefailed": "Failed to remove visibility",
+      "savefailed": "Failed to update visibility",
+      "update": "Update visibility"
     },
     "layercatalog": {
       "windowtitle": "Layer catalog"
@@ -601,7 +619,6 @@
       "title": "Theme Information"
     },
     "settings": {
-      "bookmarks": "Bookmarks",
       "colorscheme": "Color scheme",
       "confirmlang": "The application will be reloaded to change the language. Proceed?",
       "default": "Default",

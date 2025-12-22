@@ -18,6 +18,7 @@
         "ExportObjects3D": "",
         "Help": "Допомога",
         "HideObjects3D": "",
+        "LayerBookmark": "",
         "LayerTree": "Шари і легенда",
         "LayerTree3D": "",
         "MapExport": "Експортувати карту",
@@ -102,8 +103,10 @@
       "zoomToExtent": ""
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Координати",
       "scale_label": "Масштаб",
+      "select": "",
       "terms_label": "Правила користування",
       "viewertitle_label": "Домашня сторінка"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Обведіть об’єкти полігоном для отримання інформації…",
       "clickhelpRadius": "",
       "radius": ""
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": ""
@@ -601,7 +619,6 @@
       "title": ""
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",

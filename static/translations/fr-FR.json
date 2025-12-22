@@ -18,6 +18,7 @@
         "ExportObjects3D": "Exporter objets",
         "Help": "Aide",
         "HideObjects3D": "Cacher objets",
+        "LayerBookmark": "",
         "LayerTree": "Couches",
         "LayerTree3D": "Couches",
         "MapExport": "Exporter la carte",
@@ -102,8 +103,10 @@
       "zoomToExtent": "Zommer sur l'étendue"
     },
     "bottombar": {
+      "bookmark_label": "",
       "mousepos_label": "Coordonnées",
       "scale_label": "Echelle",
+      "select": "",
       "terms_label": "Conditions d'utilisation",
       "viewertitle_label": "Page d'accueil"
     },
@@ -320,6 +323,21 @@
       "clickhelpPolygon": "Dessiner un polygone pour identifier les objets",
       "clickhelpRadius": "Configurez un rayon et cliquez sur un emplacement pour identifier les objets autour de ce point",
       "radius": "Rayon"
+    },
+    "layerbookmark": {
+      "add": "",
+      "addfailed": "",
+      "description": "",
+      "lastUpdate": "",
+      "manage": "",
+      "nobookmarks": "",
+      "notloggedin": "",
+      "open": "",
+      "openTab": "",
+      "remove": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "layercatalog": {
       "windowtitle": "Catalogue de couches"
@@ -601,7 +619,6 @@
       "title": "Information sur le thème"
     },
     "settings": {
-      "bookmarks": "Marque-pages",
       "colorscheme": "Schéma de couleurs",
       "confirmlang": "L'application sera rechargée pour changer la langue. Procéder?",
       "default": "Par défaut",

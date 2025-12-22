@@ -1,31 +1,19 @@
-/**
- * Copyright 2021 Oslandia SAS <infos+qwc2@oslandia.com>
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 import React from 'react';
 import {connect} from 'react-redux';
 
-import classnames from 'classnames';
-import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {zoomToExtent, zoomToPoint} from '../actions/map';
-import Icon from '../components/Icon';
+import {refreshUserBookmarks} from '../actions/bookmark';
+import {zoomToExtent, zoomToPoint} from "../actions/map";
+import BookmarkPanel from '../components/BookmarkPanel';
 import SideBar from '../components/SideBar';
-import Spinner from '../components/widgets/Spinner';
-import ConfigUtils from '../utils/ConfigUtils';
-import LocaleUtils from '../utils/LocaleUtils';
-import MapUtils from '../utils/MapUtils';
-import {createBookmark, getUserBookmarks, removeBookmark, resolveBookmark, updateBookmark} from '../utils/PermaLinkUtils';
+import LocaleUtils from "../utils/LocaleUtils";
+import MapUtils from "../utils/MapUtils";
+import {createBookmark, openBookmark, removeBookmark, resolveBookmark, updateBookmark} from '../utils/PermaLinkUtils';
 
-import './style/Bookmark.css';
 
 /**
- * Allows managing user bookmarks.
+ * Allows managing user bookmarks which are storing the current view, including the location and zoom level.
  *
  * Bookmarks are only allowed for authenticated users.
  *
@@ -33,10 +21,11 @@ import './style/Bookmark.css';
  */
 class Bookmark extends React.Component {
     static availableIn3D = true;
-
     static propTypes = {
+        bookmarks: PropTypes.array,
         mapCrs: PropTypes.string,
         mapScales: PropTypes.array,
+        refreshUserBookmarks: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         zoomToExtent: PropTypes.func,
@@ -45,160 +34,97 @@ class Bookmark extends React.Component {
     static defaultProps = {
         side: 'right'
     };
-    state = {
-        bookmarks: [],
-        currentBookmark: null,
-        description: "",
-        saving: false
+    translations = {
+        add: LocaleUtils.tr("bookmark.add"),
+        description: LocaleUtils.tr("bookmark.description"),
+        lastUpdate: LocaleUtils.tr("bookmark.lastUpdate"),
+        manage: LocaleUtils.tr("bookmark.manage"),
+        nobookmarks: LocaleUtils.tr("bookmark.nobookmarks"),
+        notloggedin: LocaleUtils.tr("bookmark.notloggedin"),
+        open: LocaleUtils.tr("bookmark.open"),
+        openTab: LocaleUtils.tr("bookmark.openTab"),
+        remove: LocaleUtils.tr("bookmark.remove"),
+        update: LocaleUtils.tr("bookmark.update"),
+        zoomToExtent: LocaleUtils.tr("bookmark.zoomToExtent")
     };
-    componentDidMount() {
-        this.refresh();
-    }
     render() {
-        const openTitle = LocaleUtils.tr("bookmark.open");
-        const openTabTitle = LocaleUtils.tr("bookmark.openTab");
-        const zoomTitle = LocaleUtils.tr("bookmark.zoomToExtent");
-        const username = ConfigUtils.getConfigProp("username");
-        const placeholder = LocaleUtils.tr("bookmark.description");
-        const addBookmarkTitle = LocaleUtils.tr("bookmark.add");
-        const updateTitle = LocaleUtils.tr("bookmark.update");
-        const removeTitle = LocaleUtils.tr("bookmark.remove");
-        const lastUpdateTitle = LocaleUtils.tr("bookmark.lastUpdate");
-
-        const currentBookmark = this.state.bookmarks.find(bookmark => bookmark.key === this.state.currentBookmark);
         return (
             <SideBar icon="bookmark" id="Bookmark"
                 side={this.props.side}
                 title={LocaleUtils.tr("appmenu.items.Bookmark")} width="20em">
-                {!username ? (
-                    <div className="bookmark-body" role="body">{LocaleUtils.tr("bookmark.notloggedin")}</div>
-                ) : (
-                    <div className="bookmark-body" role="body">
-                        <h4>{LocaleUtils.tr("bookmark.manage")}</h4>
-                        <div className="bookmark-create">
-                            <input onChange={ev => this.setState({description: ev.target.value})}
-                                onKeyDown={ev => {if (ev.key === "Enter" && this.state.description !== "") { this.addBookmark(); }}}
-                                placeholder={placeholder} type="text"  value={this.state.description} />
-                        </div>
-                        <div className="bookmark-actions controlgroup">
-                            <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, false)} title={openTitle}>
-                                <Icon icon="folder-open" />
-                            </button>
-                            <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, true)} title={openTabTitle}>
-                                <Icon icon="open_link" />
-                            </button>
-                            {this.props.mapCrs && this.props.mapScales ? (
-                                <button className="button" disabled={!currentBookmark} onClick={() => this.zoomToBookmarkExtent(currentBookmark.key)} title={zoomTitle}>
-                                    <Icon icon="zoom" />
-                                </button>
-                            ) : null}
-                            <span className="bookmark-actions-spacer" />
-                            <button className="button" disabled={!this.state.description} onClick={this.addBookmark} title={addBookmarkTitle}>
-                                <Icon icon="plus" />
-                            </button>
-                            <button className="button" disabled={!currentBookmark || !this.state.description} onClick={() => this.updateBookmark(currentBookmark)} title={updateTitle}>
-                                {this.state.saving ? (<Spinner />) : (<Icon icon="save" />)}
-                            </button>
-                            <button className="button" disabled={!currentBookmark} onClick={() => this.removeBookmark(currentBookmark)} title={removeTitle}>
-                                <Icon icon="trash" />
-                            </button>
-                        </div>
-                        <div className="bookmark-list">
-                            {this.state.bookmarks.map((bookmark) => {
-                                const itemclasses = classnames({
-                                    "bookmark-list-item": true,
-                                    "bookmark-list-item-active": this.state.currentBookmark === bookmark.key
-                                });
-                                return (
-                                    <div className={itemclasses} key={bookmark.key}
-                                        onClick={() => this.toggleCurrentBookmark(bookmark)}
-                                        onDoubleClick={() => this.open(bookmark.key, false)}
-                                        title={lastUpdateTitle + ": " + bookmark.date}
-                                    >
-                                        {bookmark.description}
-                                    </div>
-                                );
-                            })}
-                            {isEmpty(this.state.bookmarks) ? (
-                                <div className="bookmark-list-item-empty">{LocaleUtils.tr("bookmark.nobookmarks")}</div>
-                            ) : null}
-                        </div>
-                    </div>
-                )}
+                {() => ({
+                    body: this.renderBody()
+                })}
             </SideBar>
         );
     }
-    open = (bookmarkkey, newtab) => {
-        const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
-        if (newtab) {
-            window.open(url, '_blank');
-        } else {
-            location.href = url;
-        }
+    renderBody = () => {
+        const bookmarks = (this.props.bookmarks || []).filter(b => b.data.query.c && b.data.query.s);
+        return (
+            <BookmarkPanel
+                bookmarks={bookmarks}
+                onAdd={this.onAdd}
+                onOpen={this.onOpen}
+                onRemove={this.onRemove}
+                onUpdate={this.onUpdate}
+                onZoomToExtent={this.props.mapCrs && this.props.mapScales ? this.zoomToBookmarkExtent : null}
+                translations={this.translations}
+            />
+        );
     };
-    zoomToBookmarkExtent = (bookmarkkey) => {
-        resolveBookmark(bookmarkkey, (params) => {
-            if ('c' in params && 's' in params) {
-                const scale = parseFloat(params.s);
-                const zoom = MapUtils.computeZoom(this.props.mapScales, scale);
-                const center = params.c.split(/[;,]/g).map(x => parseFloat(x));
-                this.props.zoomToPoint(center, zoom, params.crs ?? this.props.mapCrs);
-            } else if ('e' in params) {
-                const bounds = (params.e).split(',').map(n => parseFloat(n));
-                this.props.zoomToExtent(bounds, params.crs ?? this.props.mapCrs);
-            }
-        });
+    onOpen = (bookmark, newtab) => {
+        openBookmark(bookmark, newtab);
     };
-    toggleCurrentBookmark = (bookmark) => {
-        if (this.state.currentBookmark === bookmark.key) {
-            this.setState({currentBookmark: null, description: ""});
-        } else {
-            this.setState({currentBookmark: bookmark.key, description: bookmark.description});
-        }
-    };
-    addBookmark = () => {
-        createBookmark(this.state.description, (success) => {
+    onAdd = (description) => {
+        createBookmark(description, (success) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.addfailed"));
             }
-            this.refresh();
-        });
-        this.setState({description: "", currentBookmark: null});
-    };
-    updateBookmark = (bookmark) => {
-        this.setState({saving: true});
-        updateBookmark(bookmark.key, this.state.description, (success) => {
-            if (!success) {
-                /* eslint-disable-next-line */
-                alert(LocaleUtils.tr("bookmark.savefailed"));
-            }
-            this.setState({saving: false, description: "", currentBookmark: null});
-            this.refresh();
+            this.props.refreshUserBookmarks();
         });
     };
-    removeBookmark = (bookmark) => {
-        removeBookmark(bookmark.key, (success) => {
+    onRemove = (bookmarkKey) => {
+        removeBookmark(bookmarkKey, (success) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.removefailed"));
             }
-            this.refresh();
+            this.props.refreshUserBookmarks();
         });
     };
-    refresh = () => {
-        getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {
-            this.setState({bookmarks: bookmarks});
+    onUpdate = (bookmarkKey, description) => {
+        updateBookmark(bookmarkKey, description, (success) => {
+            if (!success) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("bookmark.savefailed"));
+            }
+            this.props.refreshUserBookmarks();
         });
+    };
+    zoomToBookmarkExtent = (bookmarkkey) => {
+        if (this.props.mapCrs && this.props.mapScales) {
+            resolveBookmark(bookmarkkey, (params) => {
+                if ('c' in params && 's' in params) {
+                    const scale = parseFloat(params.s);
+                    const zoom = MapUtils.computeZoom(this.props.mapScales, scale);
+                    const center = params.c.split(/[;,]/g).map(x => parseFloat(x));
+                    this.props.zoomToPoint(center, zoom, params.crs ?? this.props.mapCrs);
+                } else if ('e' in params) {
+                    const bounds = (params.e).split(',').map(n => parseFloat(n));
+                    this.props.zoomToExtent(bounds, params.crs ?? this.props.mapCrs);
+                }
+            });
+        }
     };
 }
-
 const selector = state => ({
+    bookmarks: state.bookmark?.bookmarks,
     mapCrs: state.map?.projection,
     mapScales: state.map?.scales
 });
-
 export default connect(selector, {
+    refreshUserBookmarks: refreshUserBookmarks,
     zoomToExtent: zoomToExtent,
     zoomToPoint: zoomToPoint
 })(Bookmark);

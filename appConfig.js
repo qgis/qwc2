@@ -30,6 +30,7 @@ import HeightProfilePlugin from './plugins/HeightProfile';
 import HelpPlugin from './plugins/Help';
 import HomeButtonPlugin from './plugins/HomeButton';
 import IdentifyPlugin from './plugins/Identify';
+import LayerBookmarkPlugin from './plugins/LayerBookmark';
 import LayerCatalogPlugin from './plugins/LayerCatalog';
 import LayerTreePlugin from './plugins/LayerTree';
 import LocateButtonPlugin from './plugins/LocateButton';
@@ -92,6 +93,7 @@ export default {
             AuthenticationPlugin: AuthenticationPlugin,
             BackgroundSwitcherPlugin: BackgroundSwitcherPlugin,
             BookmarkPlugin: BookmarkPlugin,
+            LayerBookmarkPlugin: LayerBookmarkPlugin,
             BottomBarPlugin: BottomBarPlugin,
             CookiePopupPlugin: CookiePopupPlugin,
             CyclomediaPlugin: CyclomediaPlugin,
