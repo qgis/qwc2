@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import url from 'url';
 
 import {LayerRole, addLayer} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
@@ -94,9 +95,17 @@ class ThemeLayersListWindow extends React.Component {
         this.addLayers(this.state.selectedLayers.map(layer => ({...layer, visibility: true})));
     };
     addLayers = (sublayers) => {
+        const urlParts = url.parse(this.props.theme.url, true);
+        // Resolve relative urls
+        if (!urlParts.host) {
+            const locationParts = url.parse(window.location.href);
+            urlParts.protocol = locationParts.protocol;
+            urlParts.host = locationParts.host;
+        }
+        const themeUrl = url.format(urlParts);
         this.props.closeWindow("existinglayers");
         const existingSublayers = this.props.layers.reduce((res, layer) => {
-            if (layer.type === 'wms' && layer.url === this.props.theme.url) {
+            if (layer.type === 'wms' && layer.url === themeUrl) {
                 return [...res, ...LayerUtils.getSublayerNames(layer), layer.name];
             }
             return res;
