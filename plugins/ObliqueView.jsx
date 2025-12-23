@@ -211,6 +211,7 @@ class ObliqueView extends React.Component {
                         <span />
                         <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "s"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>S</span>
                         <span />
+                        <div className="obliqueview-nav-circle" />
                     </div>
                     <div className="obliqueview-nav-zoom">
                         <Icon icon="plus" onClick={() => this.changeZoom(+1)} />
