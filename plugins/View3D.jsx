@@ -99,18 +99,21 @@ class View3D extends React.Component {
             right: 'rotate'
         }
     };
+    EnabledState = {DISABLED: 0, ENABLED: 1, DISABLING: 2};
     state = {
         componentLoaded: false,
         windowDetached: false,
         viewsLocked: false,
-        storedState: null
+        storedState: null,
+        enabledState: this.EnabledState.DISABLED
     };
     constructor(props) {
         super(props);
         this.map3dComponent = null;
         this.map3dComponentRef = null;
         this.focusedMap = null;
-        this.firstPersonMarker = true;
+        this.firstPersonMarker = false;
+        this.pendingViewState = null;
         // Subset of 2d reducers
         const {
             processNotifications,
@@ -170,25 +173,35 @@ class View3D extends React.Component {
         window.removeEventListener('focus', this.trackFocus);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.view3dMode !== View3DMode.DISABLED && prevProps.view3dMode === View3DMode.DISABLED) {
+        if (this.state.enabledState === this.EnabledState.DISABLING && this.props.view3dMode !== prevProps.view3dMode) {
+            this.pendingViewState = [View3DMode.FULLSCREEN, View3DMode.SPLITSCREEN].includes(this.props.view3dMode) ? this.EnabledState.ENABLED : this.EnabledState.DISABLED;
+        } else if (this.props.view3dMode !== View3DMode.DISABLED && prevProps.view3dMode === View3DMode.DISABLED) {
+            this.setState({enabledState: this.EnabledState.ENABLED});
+        } else if (this.props.view3dMode === View3DMode.DISABLED && prevProps.view3dMode !== View3DMode.DISABLED) {
+            this.setState({enabledState: this.EnabledState.DISABLING});
+        }
+
+        if (this.state.enabledState !== this.EnabledState.DISABLED && prevState.enabledState === this.EnabledState.DISABLED) {
             import('../components/map3d/Map3D').then(component => {
                 this.map3dComponent = component.default;
                 this.map3dComponentRef = null;
                 this.setState({componentLoaded: true});
             });
             this.syncParentStore(this.props, true);
-        } else if (this.props.view3dMode === View3DMode.DISABLING && prevProps.view3dMode !== View3DMode.DISABLING) {
+        } else if (this.state.enabledState === this.EnabledState.DISABLING && prevState.enabledState !== this.EnabledState.DISABLING) {
             if (this.map3dComponentRef) {
                 this.map3dComponentRef.store3dState().then(storedState => {
-                    this.setState({storedState});
-                    UrlParams.updateParams({v3d: undefined, bl3d: undefined});
-                    this.props.setView3dMode(View3DMode.DISABLED);
+                    this.setState({storedState, enabledState: this.EnabledState.DISABLED}, () => {
+                        if (this.pendingViewState !== null) {
+                            this.setState({enabledState: this.pendingViewState});
+                        }
+                    });
                 });
             } else {
-                UrlParams.updateParams({v3d: undefined, bl3d: undefined});
-                this.props.setView3dMode(View3DMode.DISABLED);
+                this.setState({enabledState: this.EnabledState.DISABLED});
             }
-        } else if (this.props.view3dMode === View3DMode.DISABLED && prevProps.view3dMode !== View3DMode.DISABLED) {
+        } else if (this.state.enabledState === this.EnabledState.DISABLED && prevState.enabledState !== this.EnabledState.DISABLED) {
+            UrlParams.updateParams({v3d: undefined, bl3d: undefined});
             this.map3dComponent = null;
             this.map3dComponentRef = null;
             this.setState({componentLoaded: false});
@@ -228,7 +241,7 @@ class View3D extends React.Component {
         }
     }
     syncParentStore(prevProps, force = false) {
-        if (this.props.view3dMode === View3DMode.DISABLED) {
+        if (this.state.enabledState !== this.EnabledState.ENABLED) {
             return;
         }
         if (this.props.display !== prevProps.display || force) {
@@ -248,7 +261,7 @@ class View3D extends React.Component {
         }
     }
     render3DWindow = () => {
-        if (this.props.view3dMode > View3DMode.DISABLED) {
+        if (this.state.enabledState > this.EnabledState.DISABLED) {
             const extraControls = [{
                 icon: "sync",
                 callback: this.sync2DExtent,
@@ -306,7 +319,7 @@ class View3D extends React.Component {
                                     searchProviders={this.props.searchProviders}
                                     theme={this.props.theme} />
                                 {
-                                    this.props.view3dMode === View3DMode.DISABLING ? (
+                                    this.state.enabledState === this.EnabledState.DISABLING ? (
                                         <div className="view3d-busy-overlay">
                                             <Spinner /><span>{LocaleUtils.tr("view3d.storingstate")}</span>
                                         </div>
@@ -327,7 +340,7 @@ class View3D extends React.Component {
         return [button, this.render3DWindow()];
     }
     onClose = () => {
-        this.props.setView3dMode(View3DMode.DISABLING);
+        this.props.setView3dMode(View3DMode.DISABLED);
     };
     onGeometryChanged = (geometry) => {
         if (geometry.maximized && this.props.view3dMode !== View3DMode.FULLSCREEN) {

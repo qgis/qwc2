@@ -37,7 +37,6 @@ class View3DSwitcher extends React.Component {
         return (
             <MapButton
                 active={this.state.expanded}
-                busy={this.props.view3dMode === View3DMode.DISABLING}
                 icon={"view"}
                 iconSize="xlarge"
                 onClick={() => this.setState(state => ({expanded: !state.expanded}))}
@@ -58,7 +57,7 @@ class View3DSwitcher extends React.Component {
         );
     };
     switchMode = (mode) => {
-        this.props.setView3dMode(mode === View3DMode.DISABLED ? View3DMode.DISABLING : mode);
+        this.props.setView3dMode(mode);
         this.setState({expanded: false});
     };
 }
