@@ -333,7 +333,7 @@ class ResizeableWindow extends React.Component {
             >
                 <div className="resizeable-window-contents" onFocus={() => this.props.raiseWindow(this.id)}>
                     {this.renderTitleBar()}
-                    <div className={bodyclasses} onMouseDown={() => this.props.raiseWindow(this.id)}>
+                    <div className={bodyclasses} onMouseDown={() => this.props.raiseWindow(this.id)} onScroll={this.preventScroll}>
                         <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
                         {this.portalNode ? (
                             <div className="resizeable-window-portal-container">
@@ -344,6 +344,12 @@ class ResizeableWindow extends React.Component {
                 </div>
             </Rnd>
         );
+    };
+    preventScroll = (ev) => {
+        if (!this.props.scrollable) {
+            ev.target.scrollLeft = 0;
+            ev.target.scrollTop = 0;
+        }
     };
     setInitialSize = (container) => {
         if (!container) {
