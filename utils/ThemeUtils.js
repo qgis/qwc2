@@ -285,7 +285,7 @@ const ThemeUtils = {
             ...group,
             subdirs: group.subdirs ? group.subdirs.map(ThemeUtils.applyTranslations) : null,
             items: group.items ? group.items.map(item => ({
-                ...LayerUtils.applyTranslations(item, deepmerge(commonTranslations, item.translations)),
+                ...LayerUtils.applyTranslations(item, deepmerge(commonTranslations, item.translations || {})),
                 title: item.translations?.theme?.title ?? item.title
             })) : null
         };
