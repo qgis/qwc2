@@ -130,7 +130,8 @@ class MapControls3D extends React.Component {
             ), this.context),
             this.props.controlsPosition !== 'bottom' ? ReactDOM.createPortal((
                 <div className="map3d-nav-spacer" key="MapControlsSpacer" style={{order: 996}} />
-            ), this.context) : null
+            ), this.context) : null,
+            <span key="Unloader" ref={this.unload} />
         ];
     }
     switchToFirstPersonView = (ev) => {
