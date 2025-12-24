@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 
 import polySelfIntersections from 'geojson-polygon-self-intersections';
 import isEmpty from 'lodash.isempty';
-import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
 
 import {LayerRole, removeLayer, addLayerFeatures, removeLayerFeatures, clearLayer} from '../actions/layers';
@@ -449,8 +448,8 @@ class GeometryDigitizer extends React.Component {
         ).join(";") : JSON.stringify({
             type: "FeatureCollection",
             features: supportedFeatures.map(feature => {
-                const newFeature = omit(feature, EXCLUDE_PROPS);
-                newFeature.properties = omit(newFeature.properties, EXCLUDE_ATTRS);
+                const newFeature = MiscUtils.objectOmit(feature, EXCLUDE_PROPS);
+                newFeature.properties = MiscUtils.objectOmit(newFeature.properties, EXCLUDE_ATTRS);
                 return newFeature;
             })
         });

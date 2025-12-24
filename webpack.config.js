@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const availableLanguages = require('./static/translations/tsconfig.json').languages;
@@ -19,7 +18,8 @@ module.exports = (env, argv) => {
             hashFunction: 'sha256',
             path: path.resolve(__dirname, 'prod'),
             filename: 'dist/QWC2App.js',
-            assetModuleFilename: 'dist/[hash][ext][query]'
+            assetModuleFilename: 'dist/[hash][ext][query]',
+            clean: true
         },
         watchOptions: {
             ignored: /node_modules(\\|\/)(?!qwc2)/
@@ -52,7 +52,6 @@ module.exports = (env, argv) => {
             managedPaths: [/(.*(\\|\/)node_modules(\\|\/)(?!qwc2))/]
         },
         plugins: [
-            new CleanWebpackPlugin(),
             new webpack.DefinePlugin({
                 'process.env': {
                     NODE_ENV: JSON.stringify(argv.mode),

@@ -112,7 +112,7 @@ class SideBar extends React.Component {
         return ReactDOM.createPortal((
             <div>
                 <Swipeable delta={30} onSwipedRight={this.closeClicked}>
-                    <div className={`${classes} ${this.props.extraClasses}`} id={this.props.id} inert={visible ? undefined : "true"} ref={this.setRef} style={style}>
+                    <div className={`${classes} ${this.props.extraClasses}`} id={this.props.id} inert={!visible} ref={this.setRef} style={style}>
                         <div className={"sidebar-resize-handle sidebar-resize-handle-" + this.props.side} onPointerDown={this.startSidebarResize}/>
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}

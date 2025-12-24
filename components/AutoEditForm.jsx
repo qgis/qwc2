@@ -8,7 +8,6 @@
 
 import React from 'react';
 
-import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
 
 import EditComboField from './EditComboField';
@@ -38,8 +37,7 @@ export default class AutoEditForm extends React.Component {
         );
     }
     renderField = (field) => {
-        const multiline = (field.constraints || {}).multiline;
-        const constraints = omit(field.constraints || {}, ["multiline"]);
+        const {multiline, ...constraints} = (field.constraints || {});
         const readOnly = this.props.readOnly || constraints.readOnly;
         let value = (this.props.values || {})[field.id];
         if (value === undefined || value === null) {

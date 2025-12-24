@@ -207,7 +207,7 @@ class AppMenu extends React.Component {
                     </span>
                 </div>
                 <div className="appmenu-menu-container" tabIndex={-1}>
-                    <div className="appmenu-menu" inert={visible ? undefined : "true"} onMouseLeave={this.clearFocus} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}>
+                    <div className="appmenu-menu" inert={!visible} onMouseLeave={this.clearFocus} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}>
                         {this.props.showFilterField ? (
                             <div
                                 className="appmenu-menu-item appmenu-menu-item-filter"

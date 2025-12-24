@@ -15,7 +15,6 @@ import FileSaver from 'file-saver';
 import htmlReactParser, {domToReact} from 'html-react-parser';
 import JSZip from 'jszip';
 import isEmpty from 'lodash.isempty';
-import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
@@ -56,8 +55,8 @@ const BuiltinExporters = [
             const featureCollection = {
                 type: "FeatureCollection",
                 features: Object.values(json).flat().map(entry => {
-                    const feature = omit(entry, EXCLUDE_PROPS);
-                    feature.properties = omit(feature.properties, EXCLUDE_ATTRS);
+                    const feature = MiscUtils.objectOmit(entry, EXCLUDE_PROPS);
+                    feature.properties = MiscUtils.objectOmit(feature.properties, EXCLUDE_ATTRS);
                     if (feature.geometry) {
                         feature.crs = {
                             type: "name",
@@ -159,7 +158,7 @@ const BuiltinExporters = [
                 const promises = layers.map(([layerName, features]) => {
                     const geojson = {
                         type: "FeatureCollection",
-                        features: features.map(entry => omit(entry, EXCLUDE_PROPS))
+                        features: features.map(entry => MiscUtils.objectOmit(entry, EXCLUDE_PROPS))
                     };
                     const layerOptions = {...options, folder: layerName};
                     const crs = features[0]?.crs;
@@ -437,7 +436,7 @@ class IdentifyViewer extends React.Component {
         if (exporter) {
             if (!this.props.exportGeometry) {
                 json = Object.entries(json).reduce((res, [layerId, features]) => (
-                    {...res, [layerId]: features.map(feature => omit(feature, ['geometry']))}
+                    {...res, [layerId]: features.map(feature => MiscUtils.objectOmit(feature, ['geometry']))}
                 ), {});
             }
             exporter.export(json, (result) => {

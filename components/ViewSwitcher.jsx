@@ -71,7 +71,7 @@ class ViewSwitcher extends React.Component {
                 onClick={() => this.setState(state => ({expanded: !state.expanded}))}
                 position={this.props.position}
             >
-                <div className={"view-switcher-buttons" + (this.state.expanded ? " view-switcher-buttons-expanded" : "")} inert={this.state.expanded ? undefined : "true"}>
+                <div className={"view-switcher-buttons" + (this.state.expanded ? " view-switcher-buttons-expanded" : "")} inert={!this.state.expanded}>
                     {buttons.map(button => (
                         <button
                             className={"map-button" + (button.mode === this.props.viewMode ? " map-button-active" : "")}

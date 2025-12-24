@@ -31,10 +31,10 @@ import ButtonBar from '../components/widgets/ButtonBar';
 import NumberInput from '../components/widgets/NumberInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import IdentifyUtils from '../utils/IdentifyUtils';
+import markerIcon from '../utils/img/marker-icon.png';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
-import markerIcon from '../utils/img/marker-icon.png';
 
 import './style/TimeManager.css';
 
@@ -55,7 +55,6 @@ const DateUnitLabels = {
 const qgisDateFormat = new Format({
     //        $dateExpr           $hour        $minute         $second             $millisecond                 $zone                 $offset
     matcher: /^(.*?)[\s,-]*([01]\d|2[0-3]):([0-5]\d)(?::([0-5]\d|60)(?:[.,](\d{9}|\d{6}|\d{1,3}))?)?[\s,-]*\(?(UTC)?[\s,-]*([+-]0\d?:?(?:[0-5]\d)?)?[\s,-]*\)?$/i,
-    // eslint-disable-next-line
     handler: function([match, dateExpr, hour, minute, second, millisecond, zone, offset]) {
         let result = {};
         if (dateExpr) {
