@@ -1,3 +1,4 @@
+import htmlReactParser, {domToReact} from 'html-react-parser';
 /**
  * Copyright 2016-2024 Sourcepole AG
  * All rights reserved.
@@ -12,7 +13,6 @@ import axios from 'axios';
 import clone from 'clone';
 import DOMPurify from 'dompurify';
 import FileSaver from 'file-saver';
-import htmlReactParser, {domToReact} from 'html-react-parser';
 import JSZip from 'jszip';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';

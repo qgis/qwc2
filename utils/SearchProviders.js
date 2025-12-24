@@ -130,7 +130,7 @@ class NominatimSearch {
                 let title = entry.type;
                 try {
                     title = translations[entry.class][entry.type] || entry.type;
-                } catch (e) {
+                } catch {
                     /* pass */
                 }
                 groups[entry.class] = {
@@ -209,7 +209,7 @@ class NominatimSearch {
         const doc = yaml.load(data, {json: true});
         try {
             return doc[locale].geocoder.search_osm_nominatim.prefix;
-        } catch (e) {
+        } catch {
             return {};
         }
     }

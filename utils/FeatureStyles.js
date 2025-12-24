@@ -11,10 +11,10 @@ import ol from 'openlayers';
 import minus from '../icons/minus.svg';
 import plus from '../icons/plus.svg';
 import ConfigUtils from './ConfigUtils';
-import ResourceRegistry from './ResourceRegistry';
 import arrowhead from './img/arrowhead.svg';
 import markerIcon from './img/marker-icon.png';
 import measurehead from './img/measurehead.svg';
+import ResourceRegistry from './ResourceRegistry';
 
 ResourceRegistry.addResource('arrowhead', arrowhead);
 ResourceRegistry.addResource('measurehead', measurehead);

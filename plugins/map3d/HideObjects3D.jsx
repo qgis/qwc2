@@ -14,8 +14,8 @@ import PropTypes from 'prop-types';
 import {BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
 
 import Icon from '../../components/Icon';
-import SideBar from '../../components/SideBar';
 import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
+import SideBar from '../../components/SideBar';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import './style/HideObjects3D.css';
@@ -53,7 +53,7 @@ class HideObjects3D extends React.Component {
                                     onMouseEnter={() => this.showHighlight(entry)}
                                     onMouseLeave={() => this.hideHighlight(entry)}
                                 >
-                                    <span>{LocaleUtils.tr("hideobjects3d.object") + " " + entry.featureId ?? ""}</span>
+                                    <span>{LocaleUtils.tr("hideobjects3d.object") + " " + (entry.featureId ?? "")}</span>
                                     <Icon icon="eye" onClick={() => this.restoreObject(entry)} title={LocaleUtils.tr("hideobjects3d.restore")} />
                                 </div>
 

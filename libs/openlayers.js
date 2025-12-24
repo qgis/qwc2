@@ -7,15 +7,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import OlInteractionDrawRegular from 'ol-ext/interaction/DrawRegular';
+import OlInteractionTransform from 'ol-ext/interaction/Transform';
 import OlCollection from 'ol/Collection';
-import OlFeature from 'ol/Feature';
-import OlGeolocation from 'ol/Geolocation';
-import OlKinetic from 'ol/Kinetic';
-import OlMap from 'ol/Map';
-import OlObject from 'ol/Object';
-import OlOverlay from 'ol/Overlay';
-import OlTileQueue from 'ol/TileQueue';
-import OlView from 'ol/View';
 import {defaults as olControlDefaults} from 'ol/control';
 import OlControlAttribution from 'ol/control/Attribution';
 import OlControlOverviewMap from 'ol/control/OverviewMap';
@@ -23,16 +17,18 @@ import OlControlScaleLine from 'ol/control/ScaleLine';
 import OlControlZoom from 'ol/control/Zoom';
 import * as OlEventsCondition from 'ol/events/condition';
 import * as OlExtent from 'ol/extent';
+import OlFeature from 'ol/Feature';
+import OlFormatGeoJSON from 'ol/format/GeoJSON';
 import OlFormatGML2 from 'ol/format/GML2';
 import OlFormatGML3 from 'ol/format/GML3';
 import OlFormatGML32 from 'ol/format/GML32';
-import OlFormatGeoJSON from 'ol/format/GeoJSON';
 import OlFormatKML from 'ol/format/KML';
 import OlFormatMVT from 'ol/format/MVT';
 import OlFormatWFS from 'ol/format/WFS';
 import OlFormatWKT from 'ol/format/WKT';
 import OlFormatWMSCapabilities from 'ol/format/WMSCapabilities';
 import OlFormatWMTSCapabilities from 'ol/format/WMTSCapabilities';
+import OlGeolocation from 'ol/Geolocation';
 import OlGeomCircle from 'ol/geom/Circle';
 import OlGeomGeometryCollection from 'ol/geom/GeometryCollection';
 import OlGeomLineString from 'ol/geom/LineString';
@@ -57,6 +53,7 @@ import OlInteractionPointer from 'ol/interaction/Pointer';
 import OlInteractionSelect from 'ol/interaction/Select';
 import OlInteractionSnap from 'ol/interaction/Snap';
 import OlInteractionTranslate from 'ol/interaction/Translate';
+import OlKinetic from 'ol/Kinetic';
 import OlGraticule from 'ol/layer/Graticule';
 import OlLayerGroup from 'ol/layer/Group';
 import OlLayerImage from 'ol/layer/Image';
@@ -65,6 +62,9 @@ import OlLayerTile from 'ol/layer/Tile';
 import OlLayerVector from 'ol/layer/Vector';
 import OlLayerVectorTile from 'ol/layer/VectorTile';
 import * as OlLoadingstrategy from 'ol/loadingstrategy';
+import OlMap from 'ol/Map';
+import OlObject from 'ol/Object';
+import OlOverlay from 'ol/Overlay';
 import * as OlProj from 'ol/proj';
 import OlSourceBingMaps from 'ol/source/BingMaps';
 import OlSourceImageStatic from 'ol/source/ImageStatic';
@@ -85,8 +85,8 @@ import OlStyleStyle from 'ol/style/Style';
 import OlStyleText from 'ol/style/Text';
 import OlTilegridTileGrid from 'ol/tilegrid/TileGrid';
 import OlTilegridWMTS from 'ol/tilegrid/WMTS';
-import OlInteractionDrawRegular from 'ol-ext/interaction/DrawRegular';
-import OlInteractionTransform from 'ol-ext/interaction/Transform';
+import OlTileQueue from 'ol/TileQueue';
+import OlView from 'ol/View';
 
 import 'ol/ol.css';
 

@@ -664,7 +664,7 @@ const LayerUtils = {
     computeLayerQueryable(layer) {
         let queryable = 0;
         layer.sublayers.map(sublayer => {
-            const sublayerqueryable = !sublayer.omitFromQueryLayers ?? true;
+            const sublayerqueryable = !sublayer.omitFromQueryLayers;
             if (sublayer.sublayers && sublayerqueryable) {
                 queryable += LayerUtils.computeLayerQueryable(sublayer);
             } else {

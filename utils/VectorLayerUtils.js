@@ -51,7 +51,7 @@ const VectorLayerUtils = {
                 }
                 try {
                     return VectorLayerUtils.simplifyFeature(feature);
-                } catch (e) {
+                } catch {
                     /* eslint-disable-next-line */
                     console.warn("Skipping invalid geometry");
                     return null;
@@ -282,7 +282,7 @@ const VectorLayerUtils = {
             width = parseInt(svgDoc.getElementsByTagName("svg")[0].getAttribute("width"), 10);
             height = parseInt(svgDoc.getElementsByTagName("svg")[0].getAttribute("height"), 10);
             path = svgDoc.getElementsByTagName("path")[0].getAttribute("d");
-        } catch (e) {
+        } catch {
             /* eslint-disable-next-line */
             console.warn("Could not parse path for marker " + markername);
             return;
@@ -400,7 +400,7 @@ const VectorLayerUtils = {
             const featureObj = new ol.format.GeoJSON().writeFeatureObject(feature);
             featureObj.id = id;
             return featureObj;
-        } catch (e) {
+        } catch {
             /* eslint-disable-next-line */
             console.warn("Failed to parse geometry: " + wkt);
             return null;

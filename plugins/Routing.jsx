@@ -656,7 +656,7 @@ class Routing extends React.Component {
                     })
                 }}));
                 this.recomputeIfNeeded();
-            } catch (e) {
+            } catch {
                 // eslint-disable-next-line
                 alert(LocaleUtils.tr("routing.importerror"));
             }

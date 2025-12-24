@@ -42,7 +42,7 @@ class PluginsContainer extends React.Component {
     renderPlugins = () => {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
         const plugins = PluginStore.getPlugins();
-        return [...this.props.pluginsConfig].sort((a, b) => (a.order ?? 0 - b.order ?? 0)).map(pluginConf => {
+        return [...this.props.pluginsConfig].sort((a, b) => ((a.order ?? 0) - (b.order ?? 0))).map(pluginConf => {
             const Plugin = plugins[pluginConf.name + "Plugin"];
             if (!Plugin) {
                 return null;

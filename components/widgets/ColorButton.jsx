@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {ColorPicker} from '@vtaits/react-color-picker';
+import '@vtaits/react-color-picker/index.css';
 import React from 'react';
 
-import {ColorPicker} from '@vtaits/react-color-picker';
 import PropTypes from 'prop-types';
 
 import MiscUtils from '../../utils/MiscUtils';
 
 import './style/ColorButton.css';
-import '@vtaits/react-color-picker/index.css';
 
 const defaultColors = [
     // [r, g, b, a]

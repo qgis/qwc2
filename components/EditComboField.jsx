@@ -38,11 +38,9 @@ export default class EditComboField extends React.Component {
     };
     componentDidMount() {
         if (this.props.values) {
-            // eslint-disable-next-line
             this.setState({values: this.props.values, showPlaceholder: !this.hasEmptyValue(this.props.values)});
         } else if (this.props.keyvalrel) {
             KeyValCache.get(this.props.editIface, this.props.keyvalrel, this.props.filterExpr ?? null).then(values => {
-                // eslint-disable-next-line
                 this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
             });
         }
@@ -50,7 +48,6 @@ export default class EditComboField extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.keyvalrel && this.props.filterExpr !== prevProps.filterExpr) {
             KeyValCache.get(this.props.editIface, this.props.keyvalrel, this.props.filterExpr ?? null).then(values => {
-                // eslint-disable-next-line
                 this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
             });
         }
@@ -78,7 +75,7 @@ export default class EditComboField extends React.Component {
         let items = new Set();
         try {
             items = new Set(JSON.parse('[' + this.props.value.slice(1, -1) + ']'));
-        } catch (e) {
+        } catch {
             // pass
         }
         const serializeValue = (value, enabled) => {

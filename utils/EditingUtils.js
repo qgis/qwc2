@@ -12,9 +12,9 @@ import {v5 as uuidv5} from 'uuid';
 
 import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
+import grammar from './expr_grammar/grammar';
 import LocaleUtils from './LocaleUtils';
 import MiscUtils from './MiscUtils';
-import grammar from './expr_grammar/grammar';
 
 const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
 
@@ -150,7 +150,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
     try {
         parser.feed(expr.replace(/\n/, ' '));
         result = parser.results[0];
-    } catch (e) {
+    } catch {
         /* eslint-disable-next-line */
         console.warn("Failed to evaluate expression " + expr.replace(/\n/, ' '));
     }
@@ -193,7 +193,7 @@ export function parseExpressionsAsync(fieldExpressions, feature, editConfig, edi
                 // NOTE: include intermediate results in next context feature
                 newfeature.properties[field] = parser.results[0];
                 return {...res, [field]: parser.results[0]};
-            } catch (e) {
+            } catch {
                 /* eslint-disable-next-line */
                 console.warn("Failed to evaluate expression " + expression.replace(/\n/, ' '));
                 return res;
@@ -271,7 +271,7 @@ export function computeExpressionFields(editConfig, feature, editIface, mapCrs, 
                 return res;
             }
         }, []);
-    } catch (e) {
+    } catch {
         /* eslint-disable-next-line */
         console.warn("Failed to sort expressions, they probably contain cyclic dependencies");
         fieldExpressions = Object.entries(fieldExpressions).map(([field, expression]) => (

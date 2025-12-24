@@ -123,7 +123,7 @@ class MapFilter extends React.Component {
                             title: entry.title || "", layer: entry.layer, expr: JSON.stringify(entry.expr), active: true
                         }}), {});
                     }
-                } catch (e) {
+                } catch {
                     /* eslint-disable-next-line */
                     console.log("Error while parsing startup filter")
                 }
@@ -197,7 +197,7 @@ class MapFilter extends React.Component {
                 let expr = '';
                 try {
                     expr = JSON.parse(entry.expr);
-                } catch (e) {
+                } catch {
                     return;
                 }
                 if (layerExpressions[entry.layer]) {
@@ -261,7 +261,7 @@ class MapFilter extends React.Component {
             let expr = null;
             try {
                 expr = JSON.parse(entry.expr);
-            } catch (e) {
+            } catch {
                 return null;
             }
             return {title: entry.title, layer: entry.layer, expr: expr};
@@ -401,7 +401,7 @@ class MapFilter extends React.Component {
             let filterexpr = null;
             try {
                 filterexpr = JSON.parse(this.state.filterEditor.value);
-            } catch (e) {
+            } catch {
                 // Pass
             }
             if (!Array.isArray(filterexpr) || !validateExpression(filterexpr)) {

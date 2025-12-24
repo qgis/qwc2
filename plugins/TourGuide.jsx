@@ -108,7 +108,7 @@ class TourGuide extends React.Component {
             }),
             () => {
                 direction === "next" ? driverObj.moveNext() : driverObj.movePrevious();
-            },
+            }
         );
     };
     runCustomAction = (actionName) => {

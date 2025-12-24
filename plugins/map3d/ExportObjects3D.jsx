@@ -20,8 +20,8 @@ import {Box3, BufferGeometry, Float32BufferAttribute, Group, Matrix4, Mesh, Mesh
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 
 import {setCurrentTask} from '../../actions/task';
-import SideBar from '../../components/SideBar';
 import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
+import SideBar from '../../components/SideBar';
 import Spinner from '../../components/widgets/Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';

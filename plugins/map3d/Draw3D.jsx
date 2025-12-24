@@ -13,9 +13,9 @@ import {Group} from 'three';
 import {v4 as uuidv4} from 'uuid';
 
 import Icon from '../../components/Icon';
-import TaskBar from '../../components/TaskBar';
 import CreateTool3D from '../../components/map3d/drawtool/CreateTool3D';
 import EditTool3D from '../../components/map3d/drawtool/EditTool3D';
+import TaskBar from '../../components/TaskBar';
 import ButtonBar from '../../components/widgets/ButtonBar';
 import LocaleUtils from '../../utils/LocaleUtils';
 

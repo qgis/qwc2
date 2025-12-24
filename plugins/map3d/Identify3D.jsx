@@ -14,8 +14,8 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
 
-import ResizeableWindow from '../../components/ResizeableWindow';
 import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
+import ResizeableWindow from '../../components/ResizeableWindow';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import '../../components/style/IdentifyViewer.css';

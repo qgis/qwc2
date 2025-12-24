@@ -6,12 +6,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import htmlReactParser, {domToReact} from 'html-react-parser';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import DOMPurify from 'dompurify';
-import htmlReactParser, {domToReact} from 'html-react-parser';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';

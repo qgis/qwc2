@@ -1,7 +1,7 @@
-const webpack = require('webpack');
-const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 const availableLanguages = require('./static/translations/tsconfig.json').languages;
 
 const today = new Date();

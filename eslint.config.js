@@ -1,8 +1,9 @@
-import js from "@eslint/js";
-import globals from "globals";
-import babelParser from "@babel/eslint-parser";
 import reactPlugin from "eslint-plugin-react";
+
+import babelParser from "@babel/eslint-parser";
+import js from "@eslint/js";
 import perfectionistPlugin from "eslint-plugin-perfectionist";
+import globals from "globals";
 
 export default [
     {
@@ -64,7 +65,7 @@ export default [
             /**
              * Strict mode
              */
-            strict: ["error", "never"],
+            "strict": ["error", "never"],
 
             /**
              * ES6
@@ -93,10 +94,10 @@ export default [
              * Best practices
              */
             "consistent-return": "error",
-            curly: ["error", "multi-line"],
+            "curly": ["error", "multi-line"],
             "default-case": "error",
             "dot-notation": ["error", { allowKeywords: true }],
-            eqeqeq: "error",
+            "eqeqeq": "error",
             "guard-for-in": "error",
             "no-caller": "error",
             "no-eq-null": "error",
@@ -120,18 +121,18 @@ export default [
             "no-self-compare": "error",
             "no-sequences": "error",
             "no-throw-literal": "error",
-            radix: "error",
+            "radix": "error",
             "vars-on-top": "error",
             "wrap-iife": ["error", "any"],
-            yoda: "error",
+            "yoda": "error",
 
             /**
              * Style
              */
-            indent: ["error", 4],
+            "indent": ["error", 4],
             "brace-style": ["error", "1tbs", { allowSingleLine: true }],
-            quotes: ["off", "single", "avoid-escape"],
-            camelcase: ["error", { properties: "never" }],
+            "quotes": ["off", "single", "avoid-escape"],
+            "camelcase": ["error", { properties: "never" }],
             "comma-spacing": ["error", { before: false, after: true }],
             "comma-style": ["error", "last"],
             "eol-last": "error",
@@ -147,7 +148,7 @@ export default [
             "no-underscore-dangle": "off",
             "one-var": ["error", "never"],
             "padded-blocks": ["off", "never"],
-            semi: ["error", "always"],
+            "semi": ["error", "always"],
             "semi-spacing": ["error", { before: false, after: true }],
             "keyword-spacing": "error",
             "space-before-blocks": "error",
@@ -186,13 +187,13 @@ export default [
                         "style",
                         "unknown"
                     ],
-                    "customGroups": [
+                    customGroups: [
                         {
-                            "groupName": "react",
-                            "elementNamePattern": ["react", "react-*"]
+                            groupName: "react",
+                            elementNamePattern: ["react", "react-*"]
                         }
                     ],
-                    "newlinesBetween": 1
+                    newlinesBetween: 1
                 }
             ]
         }

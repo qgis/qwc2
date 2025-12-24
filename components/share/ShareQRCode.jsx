@@ -7,10 +7,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {QRCodeCanvas} from 'qrcode.react';
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import {QRCodeCanvas} from 'qrcode.react';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import CopyButton from '../widgets/CopyButton';

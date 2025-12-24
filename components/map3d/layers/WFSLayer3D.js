@@ -6,8 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Extent from '@giro3d/giro3d/core/geographic/Extent';
 import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
+import Extent from '@giro3d/giro3d/core/geographic/Extent';
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import StreamableFeatureSource, {wfsBuilder, tiledLoadingStrategy} from '@giro3d/giro3d/sources/StreamableFeatureSource';
 import VectorSource from "@giro3d/giro3d/sources/VectorSource.js";

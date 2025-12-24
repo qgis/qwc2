@@ -15,10 +15,10 @@ import url from 'url';
 
 import {ViewMode} from '../actions/display';
 import {addMarker, removeMarker} from '../actions/layers';
-import SideBar from '../components/SideBar';
 import ShareLink from '../components/share/ShareLink';
 import ShareQRCode from '../components/share/ShareQRCode';
 import ShareSocials from '../components/share/ShareSocials';
+import SideBar from '../components/SideBar';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';

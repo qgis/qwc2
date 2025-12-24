@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
 const webfontsGenerator = require('@furkot/webfonts-generator');
+const fs = require('fs');
 const glob = require('glob');
 const mkdirp = require('mkdirp');
-const fs = require('fs');
 const path = require('path');
 
 const readJSON = (filename) => {
     try {
         return JSON.parse(fs.readFileSync(process.cwd() + filename, "utf8"));
-    } catch (e) {
+    } catch {
         return {};
     }
 };

@@ -20,8 +20,8 @@ import {LayerRole, addLayerFeatures, removeLayerFeatures} from '../../actions/la
 import {changeRedliningState} from '../../actions/redlining';
 import FeatureAttributesWindow from '../../components/FeatureAttributesWindow';
 import LocationRecorder from '../../components/LocationRecorder';
-import NumericInputWindow from '../../components/NumericInputWindow';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
+import NumericInputWindow from '../../components/NumericInputWindow';
 import FeatureStyles from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';

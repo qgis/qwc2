@@ -17,8 +17,8 @@ import pointInPolygon from 'point-in-polygon';
 import PropTypes from 'prop-types';
 import {CurvePath, LineCurve, Vector2, Vector3} from 'three';
 
-import TaskBar from '../../components/TaskBar';
 import HeightProfile3D from '../../components/map3d/HeightProfile3D';
+import TaskBar from '../../components/TaskBar';
 import ButtonBar from '../../components/widgets/ButtonBar';
 import CopyButton from '../../components/widgets/CopyButton';
 import ConfigUtils from '../../utils/ConfigUtils';
@@ -374,7 +374,7 @@ export default class Measure3D extends React.Component {
 
             const line = new LineCurve(
                 new Vector2(v0.x, v0.y),
-                new Vector2(v1.x, v1.y),
+                new Vector2(v1.x, v1.y)
             );
             path.add(line);
             len2d += Math.sqrt((v1.x - v0.x) * (v1.x - v0.x) + (v1.y - v0.y) * (v1.y - v0.y));

@@ -156,7 +156,7 @@ class LayerCatalogWidget extends React.PureComponent {
             return res;
         }, []);
         if (existingSublayers.includes(entry.name ?? resource?.name)) {
-            const text = LocaleUtils.tr("themelayerslist.existinglayers") + ": " + entry.title ?? entry.name;
+            const text = LocaleUtils.tr("themelayerslist.existinglayers") + ": " + (entry.title ?? entry.name);
             const actions = [{
                 name: LocaleUtils.tr("themelayerslist.addanyway"),
                 onClick: () => {

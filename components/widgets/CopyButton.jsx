@@ -67,7 +67,7 @@ export default class CopyButton extends React.Component {
                     const item = new ClipboardItem(data);
                     navigator.clipboard.write([item]);
                     this.setState({copied: true});
-                } catch (e) {
+                } catch {
                     this.setState({copied: false});
                 }
             });

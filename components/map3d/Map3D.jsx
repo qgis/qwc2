@@ -10,11 +10,11 @@ import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
-import Instance from '@giro3d/giro3d/core/Instance.js';
-import Coordinates, { crsIsGeographic } from '@giro3d/giro3d/core/geographic/Coordinates';
+import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
+import Coordinates, {crsIsGeographic} from '@giro3d/giro3d/core/geographic/Coordinates';
 import Ellipsoid from '@giro3d/giro3d/core/geographic/Ellipsoid';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
-import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
+import Instance from '@giro3d/giro3d/core/Instance.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
 import DrapedFeatureCollection from '@giro3d/giro3d/entities/DrapedFeatureCollection';
 import Map from '@giro3d/giro3d/entities/Map.js';
@@ -42,14 +42,12 @@ import ThemeUtils from '../../utils/ThemeUtils';
 import {MapContainerPortalContext} from '../PluginsContainer';
 import ViewSwitcher from '../ViewSwitcher';
 import EditDataset3D from './EditDataset3D';
-import MapControls3D from './MapControls3D';
 import LayerRegistry from './layers/index';
+import MapControls3D from './MapControls3D';
 import {importGltf, updateObjectLabel} from './utils/MiscUtils3D';
 import Tiles3DStyle from './utils/Tiles3DStyle';
 
 import './style/Map3D.css';
-
-
 
 
 // Ensures onUnload is called *after* all other children have unmounted
@@ -706,7 +704,7 @@ class Map3D extends React.Component {
             const position = Ellipsoid.WGS84.toCartesian(
                 center.latitude,
                 center.longitude,
-                center.altitude,
+                center.altitude
             );
             this.instance.view.camera.position.set(position.x, position.y, 0.5 * (extent.east - extent.west));
         } else {

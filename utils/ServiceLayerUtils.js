@@ -91,7 +91,7 @@ const ServiceLayerUtils = {
                 if (axisOrder  === 'ne') {
                     origin = [topMatrix.TopLeftCorner[1], topMatrix.TopLeftCorner[0]];
                 }
-            } catch (e) {
+            } catch {
                 // eslint-disable-next-line
                 console.warn("Could not determine axis order for projection " + tileMatrices[tileMatrixSet].crs);
                 return null;
@@ -173,19 +173,19 @@ const ServiceLayerUtils = {
         let featureInfoUrl = getMapUrl;
         try {
             featureInfoUrl = this.mergeCalledServiceUrlQuery(ServiceLayerUtils.getDCPTypes(capabilities.Capability.Request.GetFeatureInfo.DCPType).HTTP.Get.OnlineResource.href, calledUrlParts);
-        } catch (e) {
+        } catch {
             // pass
         }
         let mapFormats = null;
         try {
             mapFormats = MiscUtils.ensureArray(capabilities.Capability.Request.GetMap.Format);
-        } catch (e) {
+        } catch {
             mapFormats = ['image/png'];
         }
         let infoFormats = null;
         try {
             infoFormats = MiscUtils.ensureArray(capabilities.Capability.Request.GetFeatureInfo.Format);
-        } catch (e) {
+        } catch {
             infoFormats = ['text/plain'];
         }
         const externalLayerFeatureInfoFormats = ConfigUtils.getConfigProp("externalLayerFeatureInfoFormats") || {};
@@ -255,7 +255,7 @@ const ServiceLayerUtils = {
         let legendUrl = getMapUrl;
         try {
             legendUrl = this.mergeCalledServiceUrlQuery(MiscUtils.ensureArray(MiscUtils.ensureArray(layer.Style)[0].LegendURL)[0].OnlineResource.href, calledUrlParts);
-        } catch (e) {
+        } catch {
             /* pass */
         }
         let editConfigUrl = null;
@@ -263,13 +263,13 @@ const ServiceLayerUtils = {
         try {
             editConfigUrl = layer.EditConfig.OnlineResource.href;
             wmsName = layer.EditConfig.wms_name;
-        } catch (e) {
+        } catch {
             /* pass */
         }
         let translationsUrl = null;
         try {
             translationsUrl = layer.Traslations.OnlineResource.href;
-        } catch (e) {
+        } catch {
             /* pass */
         }
 
@@ -349,7 +349,7 @@ const ServiceLayerUtils = {
                 // convert to list if single entry
                 formats = [formats];
             }
-        } catch (e) {
+        } catch {
             return [];
         }
 
@@ -364,7 +364,7 @@ const ServiceLayerUtils = {
                     crs: featureType.SRS,
                     bounds: [llbbox.minx, llbbox.miny, llbbox.maxx, llbbox.maxy]
                 };
-            } catch (e) {
+            } catch {
                 continue; // Name and bbox are required
             }
             const title = featureType.Title || name;
@@ -396,7 +396,7 @@ const ServiceLayerUtils = {
             serviceUrl = this.mergeCalledServiceUrlQuery(serviceUrl, calledUrlParts);
             const outputFormat = MiscUtils.ensureArray(getFeatureOp.Parameter).find(el => el.name === "outputFormat");
             formats = MiscUtils.ensureArray(outputFormat.AllowedValues ? outputFormat.AllowedValues.Value : outputFormat.Value);
-        } catch (e) {
+        } catch {
             return [];
         }
 
@@ -412,7 +412,7 @@ const ServiceLayerUtils = {
                     crs: "EPSG:4326",
                     bounds: [lc[0], lc[1], uc[0], uc[1]]
                 };
-            } catch (e) {
+            } catch {
                 continue; // Name and bbox are required
             }
             const title = featureType.Title || name;
@@ -596,7 +596,7 @@ const ServiceLayerUtils = {
             urlParts.query = {...calledServiceUrlParts.query, ...urlParts.query};
             delete urlParts.search;
             return url.format(urlParts);
-        } catch (e) {
+        } catch {
             return url.format(capabilityUrl);
         }
     }

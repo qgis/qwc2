@@ -15,10 +15,10 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {LayerRole} from '../actions/layers';
-import {MapContainerPortalContext} from '../components/PluginsContainer';
-import ViewSwitcher from '../components/ViewSwitcher';
 import OlLayer from '../components/map/OlLayer';
 import OlMap from '../components/map/OlMap';
+import {MapContainerPortalContext} from '../components/PluginsContainer';
+import ViewSwitcher from '../components/ViewSwitcher';
 import Spinner from '../components/widgets/Spinner';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';

@@ -251,7 +251,7 @@ class ImportLayer extends React.Component {
                     try {
                         data = JSON.parse(ev.target.result);
                         this.addGeoJSONLayer(file.name, data);
-                    } catch (e) {
+                    } catch {
                         /* Pass */
                     }
                 } else if (file.name.toLowerCase().endsWith(".pdf")) {
@@ -269,7 +269,7 @@ class ImportLayer extends React.Component {
         this.addGeoJSONLayer(filename, {features: VectorLayerUtils.kmlToGeoJSON(data)});
     };
     addKMZLayer = async(file) => {
-        const {_BrowserFileSystem, load} = await import('@loaders.gl/core');
+        const {load} = await import('@loaders.gl/core');
         const {ZipLoader} = await import('@loaders.gl/zip');
 
         // .kmz must be a zip archive with at least a doc.kml file. The kml is then imported like any other KML file.
@@ -452,7 +452,7 @@ class ImportLayer extends React.Component {
                                 format: 'geojson', reproject: true, _targetCrs: this.props.mapCrs
                             }
                         });
-                    } catch (e) {
+                    } catch {
                         try {
                             data = await load(filename, ShapefileLoader, {
                                 fetch,
@@ -463,7 +463,7 @@ class ImportLayer extends React.Component {
                             });
                             /* eslint-disable-next-line */
                             alert(LocaleUtils.tr("importlayer.shpreprojectionerror"));
-                        } catch (e2) {
+                        } catch {
                             data = null;
                         }
                     }

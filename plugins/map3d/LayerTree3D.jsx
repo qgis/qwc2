@@ -15,8 +15,8 @@ import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../../actions/task';
 import Icon from '../../components/Icon';
-import SideBar from '../../components/SideBar';
 import ImportObjects3D from '../../components/map3d/ImportObjects3D';
+import SideBar from '../../components/SideBar';
 import NumberInput from '../../components/widgets/NumberInput';
 import LocaleUtils from '../../utils/LocaleUtils';
 

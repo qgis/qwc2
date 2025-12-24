@@ -8,14 +8,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const fs = require('fs');
 const merge = require('deepmerge');
+const fs = require('fs');
 const objectPath = require('object-path');
 
 const readJSON = (path) => {
     try {
         return JSON.parse(fs.readFileSync(process.cwd() + path, "utf8"));
-    } catch (e) {
+    } catch {
         return {};
     }
 };

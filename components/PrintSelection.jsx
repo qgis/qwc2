@@ -239,7 +239,7 @@ export default class PrintSelection extends React.Component {
                 feature.set(
                     'modifyGeometry',
                     {geometry: feature.getGeometry().clone()},
-                    true,
+                    true
                 );
             });
         });

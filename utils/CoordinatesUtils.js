@@ -68,7 +68,7 @@ const CoordinatesUtils = {
             let transformed = null;
             try {
                 transformed = ol.proj.transform(point, source, dest);
-            } catch (e) {
+            } catch {
                 transformed = [0, 0];
             }
             return transformed;
