@@ -51,7 +51,8 @@ import './style/Map3D.css';
 
 
 
-// Ensures unUnload is called *after* all other children have unmounted
+
+// Ensures onUnload is called *after* all other children have unmounted
 class UnloadWrapper extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
@@ -180,7 +181,9 @@ class Map3D extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
-            this.setupInstance();
+            if (this.props.theme.map3d) {
+                this.setupInstance();
+            }
         } else if (this.props.layers !== prevProps.layers) {
             this.setState((state) => (
                 {
