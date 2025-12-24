@@ -608,7 +608,7 @@ The main map component.
 | swipeGeometryTypeBlacklist | `[string]` | A list of layer geometry types to ignore when determining the top-most layer to compare. | `[]` |
 | swipeLayerNameBlacklist | `[string]` | A list of layer names to ignore when determining the top-most layer to compare. You can use `*` as a wildcard character. | `[]` |
 | toolsOptions | `object` | Options to pass to the map support plugins, in the form `{"<Name>": {<options>}}`.<br />Refer to the documentation of the <a href="#mapSupportPlugins">Map support plugins</a> for settable options. | `{}` |
-| viewSwitcherPosition | `number` | Position of the view switcher button. | `1` |
+| viewSwitcherPosition | `number` | Position of the view switcher button. | `6` |
 
 MapCompare<a name="mapcompare"></a>
 ----------------------------------------------------------------
@@ -1056,7 +1056,6 @@ See [3D View](../../topics/View3D).
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| buttonPosition | `number` | The position slot index of the 3d switch map button, from the bottom (0: bottom slot). | `6` |
 | controlsPosition | `string` | The position of the navigation controls. Either `top` or `bottom`. | `'top'` |
 | defaultSceneQuality | `number` | The default scene quality factor (`20`: min, `100`: max). | `100` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry. | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
