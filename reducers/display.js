@@ -10,7 +10,7 @@ import {TOGGLE_FULLSCREEN, SET_VIEW_3D_MODE} from '../actions/display';
 
 const defaultState = {
     fullscreen: false,
-    view3dMode: 0
+    viewMode: 0
 
 };
 
@@ -20,7 +20,7 @@ export default function toggleFullscreen(state = defaultState, action) {
         return {...state, fullscreen: action.fullscreen};
     }
     case SET_VIEW_3D_MODE: {
-        return {...state, view3dMode: action.mode};
+        return {...state, viewMode: action.mode};
     }
     default:
         return state;

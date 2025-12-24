@@ -14,6 +14,7 @@ import isEqual from 'lodash.isequal';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
+import {setViewMode, ViewMode} from '../actions/display';
 import {zoomToExtent} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
@@ -73,8 +74,11 @@ class ObliqueView extends React.Component {
         /** A list of allowed map scales, in decreasing order. */
         scales: PropTypes.arrayOf(PropTypes.number),
         setCurrentTask: PropTypes.func,
+        setViewMode: PropTypes.func,
+        startupParams: PropTypes.object,
         theme: PropTypes.object,
         themes: PropTypes.object,
+        viewMode: PropTypes.number,
         zoomToExtent: PropTypes.func
     };
     static defaultProps = {
@@ -90,7 +94,6 @@ class ObliqueView extends React.Component {
         scales: [20000, 10000, 5000, 2500, 1000, 500, 250]
     };
     static defaultState = {
-        active: false,
         selectedDataset: null,
         datasetConfig: null,
         currentDirection: null,
@@ -129,18 +132,25 @@ class ObliqueView extends React.Component {
     }
     componentDidMount() {
         window.addEventListener('focus', this.trackFocus, true);
+        if (this.props.startupParams.v === "oblique") {
+            this.props.setViewMode(ViewMode._Oblique);
+        }
     }
     componentWillUnmount() {
         window.removeEventListener('focus', this.trackFocus);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.active && !prevProps.active) {
-            this.setState({active: true});
+            this.props.setViewMode(ViewMode._Oblique);
             this.props.setCurrentTask(null);
         }
+        // Honour theme startupView on theme change unless first loaded theme and startupParams.v is set
+        if (this.props.theme !== prevProps.theme && this.props.theme.startupView === "oblique" && (prevProps.theme !== null || !this.props.startupParams.v)) {
+            this.props.setViewMode(ViewMode._Oblique);
+        }
         if (
-            this.state.active && this.props.theme &&
-            (this.props.theme !== prevProps.theme || !prevState.active)
+            this.props.viewMode === ViewMode._Oblique && this.props.theme &&
+            (this.props.theme !== prevProps.theme || prevProps.viewMode !== ViewMode._Oblique)
         ) {
             const datasets = this.props.theme.obliqueDatasets || [];
             const defaultDataset = datasets.find(entry => entry.default)?.name ?? datasets[0]?.name;
@@ -168,10 +178,11 @@ class ObliqueView extends React.Component {
         }
     }
     onClose = () => {
+        this.props.setViewMode(ViewMode._2D);
         this.setState(ObliqueView.defaultState);
     };
     render() {
-        if (!this.state.active) {
+        if (this.props.viewMode !== ViewMode._Oblique || !this.props.themes) {
             return null;
         }
         const rot = this.getRotation();
@@ -185,8 +196,8 @@ class ObliqueView extends React.Component {
             title: LocaleUtils.tr("common.lock2dview"),
             active: this.state.viewsLocked
         }];
-        const obliqueConfig = this.props.theme.obliqueDatasets.find(entry => entry.name === this.state.selectedDataset);
-        const basemap = this.props.themes.backgroundLayers.find(entry => entry.name === obliqueConfig?.backgroundLayer);
+        const obliqueConfig = this.props.theme?.obliqueDatasets?.find?.(entry => entry.name === this.state.selectedDataset);
+        const basemap = this.props.themes?.backgroundLayers?.find?.(entry => entry.name === obliqueConfig?.backgroundLayer);
         return (
             <ResizeableWindow dockable={this.props.geometry.side} extraControls={extraControls} icon="oblique"
                 initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
@@ -222,7 +233,7 @@ class ObliqueView extends React.Component {
                     ) : null}
                     <div className="obliqueview-bottombar">
                         <select onChange={ev => this.setState({selectedDataset: ev.target.value})} value={this.state.selectedDataset ?? ""}>
-                            {(this.props.theme.obliqueDatasets || []).map(entry => (
+                            {(this.props.theme?.obliqueDatasets || []).map(entry => (
                                 <option key={entry.name} value={entry.name}>{LocaleUtils.trWithFallback(entry.titleMsgId, entry.title ?? entry.name)}</option>
                             ))}
                         </select>
@@ -372,9 +383,12 @@ class ObliqueView extends React.Component {
 export default connect((state) => ({
     active: state.task.id === "ObliqueView",
     map: state.map,
+    startupParams: state.localConfig.startupParams,
+    viewMode: state.display.viewMode,
     theme: state.theme.current,
     themes: state.theme.themes
 }), {
     setCurrentTask: setCurrentTask,
+    setViewMode: setViewMode,
     zoomToExtent: zoomToExtent
 })(ObliqueView);

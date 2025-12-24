@@ -13,7 +13,7 @@ import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {toggleFullscreen, View3DMode} from '../../actions/display';
+import {toggleFullscreen, ViewMode} from '../../actions/display';
 import {openExternalUrl, setTopbarHeight} from '../../actions/windows';
 import AppMenu from '../../components/AppMenu';
 import FullscreenSwitcher from '../../components/FullscreenSwitcher';
@@ -51,7 +51,7 @@ class TopBar3D extends React.Component {
          * You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),
          * these will be displayed only in fullsceen 3D mode. */
         toolbarItems: PropTypes.array,
-        view3dMode: PropTypes.number
+        viewMode: PropTypes.number
     };
     static defaultProps = {
         searchOptions: {
@@ -66,7 +66,7 @@ class TopBar3D extends React.Component {
         this.componentDidUpdate({});
     }
     componentDidUpdate(prevProps) {
-        if (this.props.currentTheme !== prevProps.currentTheme || this.props.view3dMode !== prevProps.view3dMode) {
+        if (this.props.currentTheme !== prevProps.currentTheme || this.props.viewMode !== prevProps.viewMode) {
             this.setState({
                 allowedToolbarItems: ThemeUtils.allowedItems(this.props.toolbarItems, this.props.currentTheme, this.filter2DItems),
                 allowedMenuItems: ThemeUtils.allowedItems(this.props.menuItems, this.props.currentTheme, this.filter2DItems)
@@ -75,7 +75,7 @@ class TopBar3D extends React.Component {
     }
     filter2DItems = (item) => {
         const pluginConf = ConfigUtils.getPluginConfig(item.key);
-        return isEmpty(pluginConf) || (this.props.view3dMode === View3DMode.FULLSCREEN && pluginConf.availableIn3D);
+        return isEmpty(pluginConf) || (this.props.viewMode === ViewMode._3DFullscreen && pluginConf.availableIn3D);
     };
     render() {
         const config = ConfigUtils.getPluginConfig("TopBar")?.cfg || {};
@@ -123,7 +123,7 @@ class TopBar3D extends React.Component {
                         menuItems={this.state.allowedMenuItems}
                         openExternalUrl={this.openUrl}
                         showFilterField={config.appMenuFilterField} />
-                    {this.props.view3dMode === View3DMode.FULLSCREEN ? (
+                    {this.props.viewMode === ViewMode._3DFullscreen ? (
                         <FullscreenSwitcher />
                     ) : null}
                 </div>
@@ -162,7 +162,7 @@ class TopBar3D extends React.Component {
 export default connect((state) => ({
     currentTheme: state.theme.current,
     fullscreen: state.display.fullscreen,
-    view3dMode: state.display.view3dMode
+    viewMode: state.display.viewMode
 }), {
     setTopbarHeight: setTopbarHeight,
     toggleFullscreen: toggleFullscreen,

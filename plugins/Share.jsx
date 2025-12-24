@@ -13,7 +13,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import url from 'url';
 
-import {View3DMode} from '../actions/display';
+import {ViewMode} from '../actions/display';
 import {addMarker, removeMarker} from '../actions/layers';
 import SideBar from '../components/SideBar';
 import ShareLink from '../components/share/ShareLink';
@@ -51,7 +51,7 @@ class Share extends React.Component {
         showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.arrayOf(PropTypes.string)]),
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
-        view3dMode: PropTypes.number
+        viewMode: PropTypes.number
     };
     static defaultProps = {
         showSocials: true,
@@ -98,7 +98,7 @@ class Share extends React.Component {
         const username = ConfigUtils.getConfigProp("username");
         return (
             <div>
-                {this.props.view3dMode !== View3DMode.FULLSCREEN && ConfigUtils.havePlugin("StartupMarker") ? (
+                {this.props.viewMode !== ViewMode._3DFullscreen && ConfigUtils.havePlugin("StartupMarker") ? (
                     <div className="share-option-pin">
                         <span>{LocaleUtils.tr("share.showpin")}</span>
                         <ToggleSwitch active={this.state.pin} onChange={active => this.setState({pin: active})} />
@@ -155,7 +155,7 @@ class Share extends React.Component {
 export default connect(state => ({
     currentTask: state.task.id,
     map: state.map,
-    view3dMode: state.display.view3dMode
+    viewMode: state.display.viewMode
 }), {
     addMarker: addMarker,
     removeMarker: removeMarker

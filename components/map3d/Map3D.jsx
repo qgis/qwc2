@@ -40,9 +40,9 @@ import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlPar
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
 import ThemeUtils from '../../utils/ThemeUtils';
 import {MapContainerPortalContext} from '../PluginsContainer';
+import ViewSwitcher from '../ViewSwitcher';
 import EditDataset3D from './EditDataset3D';
 import MapControls3D from './MapControls3D';
-import View3DSwitcher from './View3DSwitcher';
 import LayerRegistry from './layers/index';
 import {importGltf, updateObjectLabel} from './utils/MiscUtils3D';
 import Tiles3DStyle from './utils/Tiles3DStyle';
@@ -642,7 +642,7 @@ class Map3D extends React.Component {
                         sceneContext={this.state.sceneContext}
                     >
                         <EditDataset3D sceneContext={this.state.sceneContext} />
-                        <View3DSwitcher position={1} />
+                        <ViewSwitcher position={1} />
                         {Object.entries(this.props.plugins3d).map(([name, Component]) => (
                             <Suspense key={name}>
                                 <Component sceneContext={this.state.sceneContext} {...this.props.pluginOptions[name]} />

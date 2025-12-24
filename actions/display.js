@@ -14,11 +14,11 @@ export const TOGGLE_FULLSCREEN = 'TOGGLE_FULLSCREEN';
 export const SET_VIEW_3D_MODE = 'SET_VIEW_3D_MODE';
 
 
-export const View3DMode = {
-    DISABLED: 0,
-    FULLSCREEN: 1,
-    SPLITSCREEN: 2,
-    DISABLING: 3
+export const ViewMode = {
+    _2D: 0,
+    _3DFullscreen: 1,
+    _3DSplitscreen: 2,
+    _Oblique: 3
 };
 
 
@@ -34,7 +34,7 @@ export function toggleFullscreen(fullscreen) {
     };
 }
 
-export function setView3dMode(mode) {
+export function setViewMode(mode) {
     return {
         type: SET_VIEW_3D_MODE,
         mode

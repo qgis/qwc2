@@ -1,0 +1,36 @@
+button.view-switcher-button {
+    position: relative;
+    z-index: 2;
+}
+
+div.view-switcher-buttons > button {
+    transition: right 0.25s, box-shadow 0.25s;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+div.view-switcher-buttons:not(div.view-switcher-buttons-expanded) button {
+    box-shadow: none;
+}
+
+div.view-switcher-buttons-expanded > button:nth-child(1) {
+    right: 4em;
+}
+
+div.view-switcher-buttons-expanded > button:nth-child(2) {
+    right: 8em;
+}
+
+div.view-switcher-buttons-expanded > button:nth-child(3) {
+    right: 12em;
+}
+
+div.view-switcher-buttons-expanded > button:nth-child(4) {
+    right: 16em;
+}
+
+div.view-switcher-buttons-expanded > button:nth-child(5) {
+    right: 20em;
+}

@@ -121,7 +121,6 @@ class AppContainerComponent extends React.Component {
 
             if (theme) {
                 // Compute initial view
-                const initialView = params.v;
                 let initialExtent = null;
                 if (params.c && params.s !== undefined) {
                     const coords = params.c.split(/[;,]/g).map(x => parseFloat(x) || 0);
@@ -158,7 +157,7 @@ class AppContainerComponent extends React.Component {
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
                     layerParams.reverse();
                 }
-                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialView);
+                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
             } else if (!ConfigUtils.havePlugin("Portal")) {
                 this.props.showNotification("missingdefaulttheme", LocaleUtils.tr("app.missingdefaulttheme", params.t), NotificationType.WARN, true);
             }

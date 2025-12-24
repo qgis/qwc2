@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 
 import {LayerRole} from '../actions/layers';
 import {MapContainerPortalContext} from '../components/PluginsContainer';
+import ViewSwitcher from '../components/ViewSwitcher';
 import OlLayer from '../components/map/OlLayer';
 import OlMap from '../components/map/OlMap';
 import Spinner from '../components/widgets/Spinner';
@@ -55,7 +56,9 @@ class Map extends React.Component {
         tools: PropTypes.object,
         /** Options to pass to the map support plugins, in the form `{"<Name>": {<options>}}`.
          * Refer to the documentation of the <a href="#mapSupportPlugins">Map support plugins</a> for settable options. */
-        toolsOptions: PropTypes.object
+        toolsOptions: PropTypes.object,
+        /** Position of the view switcher button. */
+        viewSwitcherPosition: PropTypes.number
     };
     static defaultProps = {
         mapOptions: {},
@@ -63,7 +66,8 @@ class Map extends React.Component {
         swipeGeometryTypeBlacklist: [],
         swipeLayerNameBlacklist: [],
         tools: {},
-        toolsOptions: {}
+        toolsOptions: {},
+        viewSwitcherPosition: 6
     };
     state = {
         renderLayers: [],
@@ -250,6 +254,9 @@ class Map extends React.Component {
                         {this.renderSupportTools()}
                     </OlMap>
                 </div>
+            ),
+            (
+                <ViewSwitcher key="ViewSwitcher" position={this.props.viewSwitcherPosition} />
             ),
             loadingIndicator
         ], this.context);
