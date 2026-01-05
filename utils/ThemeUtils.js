@@ -143,7 +143,7 @@ const ThemeUtils = {
                     return res;
                 }, {})
             },
-            translations: deepmerge(commonTranslations, theme.translations),
+            translations: deepmerge(commonTranslations, theme.translations || {}),
             editConfig: theme.editConfig,
             wms_name: theme.wms_name
         };
