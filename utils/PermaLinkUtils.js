@@ -165,7 +165,7 @@ export function resolveBookmark(bookmarkKey, callback) {
             callback({...(data.query || {})}, (data.state || {}), !!data.query);
         })
         .catch(() => {
-            callback(bookmarkKey, {}, false);
+            callback({}, {}, false);
         });
 }
 
