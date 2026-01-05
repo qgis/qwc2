@@ -42,7 +42,7 @@ import './style/ObliqueView.css';
  *   ...
  *   "obliqueDatasets": [{
  *     {
- *       "name": "<dataset_name>",
+ *       "dataset": "<dataset_name>",
  *       "default": <false|true>,
  *       "backgroundLayer": "<background_layer_name>",
  *       "backgroundOpacity": <0-255>,
@@ -153,7 +153,7 @@ class ObliqueView extends React.Component {
             (this.props.theme !== prevProps.theme || prevProps.viewMode !== ViewMode._Oblique)
         ) {
             const datasets = this.props.theme.obliqueDatasets || [];
-            const defaultDataset = datasets.find(entry => entry.default)?.name ?? datasets[0]?.name;
+            const defaultDataset = datasets.find(entry => entry.default)?.dataset ?? datasets[0]?.dataset;
             this.setState({selectedDataset: defaultDataset, datasetConfig: null, currentDirection: null});
         }
         if (this.state.selectedDataset !== prevState.selectedDataset) {
@@ -196,7 +196,7 @@ class ObliqueView extends React.Component {
             title: LocaleUtils.tr("common.lock2dview"),
             active: this.state.viewsLocked
         }];
-        const obliqueConfig = this.props.theme?.obliqueDatasets?.find?.(entry => entry.name === this.state.selectedDataset);
+        const obliqueConfig = this.props.theme?.obliqueDatasets?.find?.(entry => entry.dataset === this.state.selectedDataset);
         const basemap = this.props.themes?.backgroundLayers?.find?.(entry => entry.name === obliqueConfig?.backgroundLayer);
         return (
             <ResizeableWindow dockable={this.props.geometry.side} extraControls={extraControls} icon="oblique"
@@ -234,7 +234,7 @@ class ObliqueView extends React.Component {
                     <div className="obliqueview-bottombar">
                         <select onChange={ev => this.setState({selectedDataset: ev.target.value})} value={this.state.selectedDataset ?? ""}>
                             {(this.props.theme?.obliqueDatasets || []).map(entry => (
-                                <option key={entry.name} value={entry.name}>{LocaleUtils.trWithFallback(entry.titleMsgId, entry.title ?? entry.name)}</option>
+                                <option key={entry.dataset} value={entry.dataset}>{LocaleUtils.trWithFallback(entry.titleMsgId, entry.title ?? entry.dataset)}</option>
                             ))}
                         </select>
                         <span className="obliqueview-bottombar-spacer" />

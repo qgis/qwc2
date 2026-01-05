@@ -786,7 +786,7 @@ You can configure oblique imagery datasets in the `obliqueDatasets` entry in a Q
   ...
   "obliqueDatasets": [{
     {
-      "name": "<dataset_name>",
+      "dataset": "<dataset_name>",
       "default": <false|true>,
       "backgroundLayer": "<background_layer_name>",
       "backgroundOpacity": <0-255>,
