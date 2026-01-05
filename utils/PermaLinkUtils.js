@@ -241,3 +241,57 @@ export function removeBookmark(bkey, callback) {
             }).catch(() => callback(false));
     }
 }
+
+export function resolveVisibilityPreset(vpKey, callback) {
+    axios.get(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/visibility_presets/" + vpKey)
+        .then(response => {
+            callback(response.data);
+        })
+        .catch(() => {
+            callback(null);
+        });
+}
+
+export function getVisibilityPresets(callback) {
+    const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
+    axios.get(permalinkServiceUrl + "/visibility_presets/").then(response => {
+        callback(response.data || []);
+    }).catch(() => {
+        callback([]);
+    });
+}
+
+export function storeVisibilityPreset(description, callback) {
+    const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
+    if (!permalinkServiceUrl) {
+        callback(false);
+        return;
+    }
+    const state = StandardApp.store.getState();
+    const preset = LayerUtils.computeVisibilityPreset(state.layers.flat);
+    axios.post(permalinkServiceUrl + "/visibility_presets/?description=" + description, preset).then(
+        () => callback(true)
+    ).catch(
+        () => callback(false)
+    );
+}
+
+export function updateVisibilityPreset(key, description, callback) {
+    const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
+    const state = StandardApp.store.getState();
+    const preset = LayerUtils.computeVisibilityPreset(state.layers.flat);
+    axios.put(permalinkServiceUrl + "/visibility_presets/" + key + "?description=" + description, preset).then(
+        () => callback(true)
+    ).catch(
+        () => callback(false)
+    );
+}
+
+export function removeVisibilityPreset(key, callback) {
+    const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
+    axios.delete(permalinkServiceUrl + "/visibility_presets/" + key).then(
+        () => callback(true)
+    ).catch(
+        () => callback(false)
+    );
+}
