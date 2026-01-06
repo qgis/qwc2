@@ -1127,34 +1127,35 @@ const LayerUtils = {
         });
         return reports;
     },
-    computeVisbilityPreset(layer, path = "") {
+    computeVisibilityPreset(layers) {
         const result = {};
-        if (layer.sublayers) {
-            const istoplevel = !!layer.url;
-            layer.sublayers.forEach(sublayer =>
-                Object.assign(result, LayerUtils.computeVisbilityPreset(sublayer, !istoplevel ? path + layer.name + "/" : ""))
-            );
-            if (layer.visibility && !istoplevel) {
-                result[path + layer.name] = "";
+        const collectLayerVisibilities = (layer, path) => {
+            if (layer.sublayers) {
+                const istoplevel = !!layer.url;
+                layer.sublayers.forEach(sublayer =>
+                    collectLayerVisibilities(sublayer, !istoplevel ? path + layer.name + "/" : "")
+                );
+                if (layer.visibility && !istoplevel) {
+                    result[path + layer.name] = "";
+                }
+            } else if (layer.visibility) {
+                result[path + layer.name] = layer.style;
             }
-        } else if (layer.visibility) {
-            result[path + layer.name] = layer.style;
-        }
-        return result;
+        };
+        layers.forEach(layer => {
+            if (layer.role === LayerRole.THEME) {
+                collectLayerVisibilities(layer);
+            }
+        });
     },
     getActiveVisibilityPreset(layers, presets) {
         if (isEmpty(presets)) {
             return null;
         }
-        const result = {};
-        layers.forEach(layer => {
-            if (layer.role === LayerRole.THEME) {
-                Object.assign(result, LayerUtils.computeVisbilityPreset(layer));
-            }
-        });
+        const currentPreset = LayerUtils.computeVisibilityPreset(layers);
 
         for (const [name, preset] of Object.entries(presets)) {
-            if (isEqual(preset, result)) {
+            if (isEqual(preset, currentPreset)) {
                 return name;
             }
         }
