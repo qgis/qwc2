@@ -995,7 +995,7 @@ class IdentifyViewer extends React.Component {
         return this.parsedContent(text);
     };
     parsedContent = (text) => {
-        text = DOMPurify.sanitize(text, {ADD_ATTR: ['target']}).replace('&#10;', '<br />');
+        text = DOMPurify.sanitize(text, {ADD_ATTR: ['target'], ADD_TAGS: ["iframe"], FORCE_BODY: true}).replace('&#10;', '<br />');
         const options = {replace: (node) => {
             if (node.name === "a") {
                 return (
