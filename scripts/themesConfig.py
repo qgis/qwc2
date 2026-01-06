@@ -496,8 +496,6 @@ def getTheme(config, configItem, result, resultItem):
         if printTemplates:
             resultItem["print"] = printTemplates
         resultItem["drawingOrder"] = drawingOrder
-        if "extraDxfParameters" in configItem:
-            resultItem["extraDxfParameters"] = configItem["extraDxfParameters"]
         if "extraPrintParameters" in configItem:
             resultItem["extraPrintParameters"] = configItem["extraPrintParameters"]
         extraLegenParams = configItem["extraLegendParameters"] if "extraLegendParameters" in configItem else ""

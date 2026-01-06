@@ -484,9 +484,6 @@ function getTheme(config, configItem, result, resultItem, proxy) {
                 resultItem.print = printTemplates;
             }
             resultItem.drawingOrder = drawingOrder;
-            if (configItem.extraDxfParameters) {
-                resultItem.extraDxfParameters = configItem.extraDxfParameters;
-            }
             if (configItem.extraPrintParameters) {
                 resultItem.extraPrintParameters = configItem.extraPrintParameters;
             }
