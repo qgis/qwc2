@@ -60,6 +60,10 @@ pre.text-input-readonly {
     color: var(--text-color-disabled);
 }
 
+pre.text-input-clearable {
+    margin-right: 1.5em;
+}
+
 div.text-input-placeholder {
     position: absolute;
     left: 0;
