@@ -34,26 +34,7 @@ import './style/ObliqueView.css';
 /**
  * Display oblique satellite imagery.
  *
- * Requires `obliqueImageryServiceUrl` in `config.json` to point to a `qwc-oblique-imagery-service`.
- *
- * You can configure oblique imagery datasets in the `obliqueDatasets` entry in a QWC theme configuration as follows:
- * ```
- * {
- *   ...
- *   "obliqueDatasets": [{
- *     {
- *       "dataset": "<dataset_name>",
- *       "default": <false|true>,
- *       "backgroundLayer": "<background_layer_name>",
- *       "backgroundOpacity": <0-255>,
- *       "title": "<dataset_title>",
- *       "titleMsgId": "<dataset_title_msgid>"
- *     },
- *     ...
- *   ]
- * }
- * ```
- * where `dataset_name` is the the name of a dataset configured in the `qwc-oblique-imagery-service`.
+ * See [Oblique View](../../topics/ObliqueView).
  */
 class ObliqueView extends React.Component {
     static propTypes = {
