@@ -285,14 +285,7 @@ class Editing extends React.Component {
             </SideBar>
         ), this.state.drawPick ? (
             <PickFeature featureFilter={this.pickFilter} featurePicked={this.geomPicked} key="FeaturePicker" />
-        ) : null,
-        this.props.editContext.action === "Draw" || this.props.editContext.feature?.geometry ? ReactDOM.createPortal((
-            <MeasureSwitcher
-                changeMeasureState={this.changeMeasurementState}
-                geomType={this.props.editContext.geomType} iconSize="large"
-                measureState={this.props.editContext.measurements}
-            />
-        ), this.context) : null];
+        ) : null];
     }
     changeMeasurementState = (diff) => {
         this.props.setEditContext('Editing', {measurements: {...this.props.editContext.measurements, ...diff}});

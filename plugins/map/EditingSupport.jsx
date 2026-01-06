@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import ol from 'openlayers';
@@ -14,6 +15,8 @@ import PropTypes from 'prop-types';
 
 import {setEditContext} from '../../actions/editing';
 import LocationRecorder from '../../components/LocationRecorder';
+import MeasureSwitcher from '../../components/MeasureSwitcher';
+import {BottomToolPortalContext} from '../../components/PluginsContainer';
 import FeatureStyles from "../../utils/FeatureStyles";
 import MeasureUtils from '../../utils/MeasureUtils';
 
@@ -21,6 +24,7 @@ import MeasureUtils from '../../utils/MeasureUtils';
  * Editing support for the map component.
  */
 class EditingSupport extends React.Component {
+    static contextType = BottomToolPortalContext;
     static propTypes = {
         displayCrs: PropTypes.string,
         editContext: PropTypes.object,
@@ -36,13 +40,12 @@ class EditingSupport extends React.Component {
         this.currentFeature = null;
     }
     state = {
-        showRecordLocation: false
+        showRecordLocation: false,
+        measurements: {showmeasurements: false, lenUnit: 'metric', areaUnit: 'metric'}
     };
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.editContext === prevProps.editContext) {
             // pass
-        } else if (this.props.editContext.measurements !== prevProps.editContext.measurements) {
-            this.updateMeasurements();
         } else if (this.props.editContext.action === 'Pick' && this.props.editContext.feature) {
             // If a feature without geometry was picked, enter draw mode, otherwise enter edit mode
             if (!this.props.editContext.feature.geometry && this.props.editContext.geomType) {
@@ -60,17 +63,35 @@ class EditingSupport extends React.Component {
         } else {
             this.reset();
         }
+        if (this.state.measurements !== prevState.measurements) {
+            this.updateMeasurements();
+        }
     }
     render() {
+        let locationRecorder = null;
+        let measureSwitcher = null;
         if (this.state.showRecordLocation && this.props.editContext.geomType) {
             const geomType = this.props.editContext.geomType.replace(/Z$/, '');
-            return (
+            locationRecorder = (
                 <LocationRecorder
                     drawInteraction={this.interaction} geomType={geomType} key="LocationRecorder" map={this.props.map} />
             );
         }
-        return null;
+        if (this.props.editContext.action === "Draw" || this.props.editContext.feature?.geometry) {
+            measureSwitcher = ReactDOM.createPortal((
+                <MeasureSwitcher
+                    changeMeasureState={this.changeMeasurementState}
+                    geomType={this.props.editContext.geomType}
+                    iconSize="large" key="MeasureSwitcher"
+                    measureState={this.state.measurements}
+                />
+            ), this.context);
+        }
+        return [measureSwitcher, locationRecorder];
     }
+    changeMeasurementState = (diff) => {
+        this.setState(state => ({measurements: {...state.measurements, ...diff}}));
+    };
     editStyle = (feature) => {
         const geometryFunction = (f) => {
             if (f.getGeometry().getType() === "Point") {
@@ -161,15 +182,15 @@ class EditingSupport extends React.Component {
     updateMeasurements = () => {
         if (!this.currentFeature) {
             return;
-        } else if (!this.props.editContext.measurements?.showmeasurements) {
+        } else if (!this.state.measurements?.showmeasurements) {
             this.currentFeature.set('measurements', undefined);
             this.currentFeature.set('segment_labels', undefined);
             this.currentFeature.set('label', undefined);
         } else {
             const settings = {
                 displayCrs: this.props.displayCrs,
-                lenUnit: this.props.editContext.measurements.lenUnit,
-                areaUnit: this.props.editContext.measurements.areaUnit
+                lenUnit: this.state.measurements.lenUnit,
+                areaUnit: this.state.measurements.areaUnit
             };
             MeasureUtils.updateFeatureMeasurements(this.currentFeature, this.props.editContext.geomType, this.props.mapCrs, settings);
         }

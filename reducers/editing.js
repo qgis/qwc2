@@ -35,7 +35,7 @@ const checkGeomReadOnly = (editConfig) => {
 export default function editing(state = defaultState, action) {
     switch (action.type) {
     case SET_EDIT_CONTEXT: {
-        const editConfig = action.editConfig ?? state.contexts[action.contextId]?.editConfig;
+        const editConfig = action.editContext?.editConfig ?? state.contexts[action.contextId]?.editConfig;
         return {
             contexts: {
                 ...state.contexts,
@@ -45,7 +45,6 @@ export default function editing(state = defaultState, action) {
                     changed: false,
                     mapPrefix: null,
                     editConfig: null,
-                    measurements: {showmeasurements: false, lenUnit: 'metric', areaUnit: 'metric'},
                     ...state.contexts[action.contextId],
                     ...action.editContext,
                     geomNonZeroZ: checkNonZeroZ(state.contexts[action.contextId], action.editContext),
