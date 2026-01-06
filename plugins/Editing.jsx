@@ -7,7 +7,6 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import {parseNumber} from '@norbulcz/num-parse';
@@ -23,7 +22,6 @@ import {setSnappingConfig} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import AttributeForm from '../components/AttributeForm';
 import Icon from '../components/Icon';
-import MeasureSwitcher from '../components/MeasureSwitcher';
 import PickFeature from '../components/PickFeature';
 import {BottomToolPortalContext} from '../components/PluginsContainer';
 import SideBar from '../components/SideBar';
