@@ -108,7 +108,6 @@ export default class TextInput extends React.Component {
                 <pre
                     className={preClassName}
                     contentEditable={!this.props.disabled && !this.props.readOnly}
-                    dangerouslySetInnerHTML={{__html: this.state.value.replaceAll('\n', this.props.multiline ? '<br />' : '')}}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
                     onCopy={(ev) => this.onCopy(ev, false)}
@@ -119,7 +118,7 @@ export default class TextInput extends React.Component {
                     onMouseDown={this.onMouseDown}
                     onMouseLeave={this.onMouseLeave}
                     onMouseMove={this.onMouseMove}
-                    ref={el => {this.input = el;}}
+                    ref={this.storeRef}
                     style={style}
                 />
                 {!this.state.curValue ? (
@@ -138,6 +137,15 @@ export default class TextInput extends React.Component {
             </div>
         );
     }
+    storeRef = (el) => {
+        if (el) {
+            this.input = el;
+            this.setDefaultValue(this.state.value, this.state.valueRev, -1);
+        }
+    };
+    setInputContents = () => {
+        this.input.innerHTML = this.state.value.replaceAll('\n', this.props.multiline ? '<br />' : '');
+    };
     onCopy = (ev, cut) => {
         ev.preventDefault();
         const selection = window.getSelection();
