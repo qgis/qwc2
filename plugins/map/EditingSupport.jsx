@@ -28,6 +28,7 @@ class EditingSupport extends React.Component {
     static propTypes = {
         displayCrs: PropTypes.string,
         editContext: PropTypes.object,
+        editContexts: PropTypes.object,
         map: PropTypes.object,
         mapCrs: PropTypes.string,
         setEditContext: PropTypes.func
@@ -36,7 +37,8 @@ class EditingSupport extends React.Component {
         super(props);
 
         this.interaction = null;
-        this.layer = null;
+        this.layers = {};
+        this.currentLayer = null;
         this.currentFeature = null;
     }
     state = {
@@ -44,20 +46,22 @@ class EditingSupport extends React.Component {
         measurements: {showmeasurements: false, lenUnit: 'metric', areaUnit: 'metric'}
     };
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.editContext === prevProps.editContext) {
+        const curContext = this.props.editContext;
+        const prevContext = prevProps.editContext;
+        if (curContext === prevContext) {
             // pass
-        } else if (this.props.editContext.action === 'Pick' && this.props.editContext.feature) {
+        } else if (curContext.action === 'Pick' && curContext.feature) {
             // If a feature without geometry was picked, enter draw mode, otherwise enter edit mode
-            if (!this.props.editContext.feature.geometry && this.props.editContext.geomType) {
+            if (!curContext.feature.geometry && curContext.geomType) {
                 this.addDrawInteraction();
             } else {
                 this.addEditInteraction();
             }
-        } else if (this.props.editContext.action === 'Draw' && this.props.editContext.geomType) {
+        } else if (curContext.action === 'Draw' && curContext.geomType) {
             // Usually, draw mode starts without a feature, but draw also can start with a pre-set geometry
-            if (!(this.props.editContext.feature || {}).geometry || prevProps.editContext.geomType !== this.props.editContext.geomType) {
+            if (!(curContext.feature || {}).geometry || (prevContext.id === curContext.id && prevContext.geomType !== curContext.geomType)) {
                 this.addDrawInteraction();
-            } else if ((this.props.editContext.feature || {}).geometry) {
+            } else if ((curContext.feature || {}).geometry) {
                 this.addEditInteraction();
             }
         } else {
@@ -65,6 +69,9 @@ class EditingSupport extends React.Component {
         }
         if (this.state.measurements !== prevState.measurements) {
             this.updateMeasurements();
+        }
+        if (this.props.editContexts !== prevProps.editContexts) {
+            this.cleanupLayers(prevProps.editContexts);
         }
     }
     render() {
@@ -114,23 +121,25 @@ class EditingSupport extends React.Component {
             FeatureStyles.interactionVertex({geometryFunction, ...this.props.editContext.vertexStyle})
         ].flat();
     };
-    createLayer = () => {
-        const source = new ol.source.Vector();
-        this.layer = new ol.layer.Vector({
-            source: source,
-            zIndex: 1000000,
-            style: this.editStyle
-        });
-        this.props.map.addLayer(this.layer);
+    setCurrentLayer = () => {
+        if (!(this.props.editContext.id in this.layers)) {
+            this.layers[this.props.editContext.id] = new ol.layer.Vector({
+                source: new ol.source.Vector(),
+                zIndex: 1000000,
+                style: this.editStyle
+            });
+            this.props.map.addLayer(this.layers[this.props.editContext.id]);
+        }
+        this.currentLayer = this.layers[this.props.editContext.id];
     };
     addDrawInteraction = () => {
         this.reset();
-        this.createLayer();
+        this.setCurrentLayer();
         const geomType = this.props.editContext.geomType.replace(/Z$/, '');
         const drawInteraction = new ol.interaction.Draw({
             stopClick: true,
             type: geomType,
-            source: this.layer.getSource(),
+            source: this.currentLayer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
             style: this.editStyle
         });
@@ -150,12 +159,12 @@ class EditingSupport extends React.Component {
     };
     addEditInteraction = () => {
         this.reset();
-        this.createLayer();
+        this.setCurrentLayer();
         const format = new ol.format.GeoJSON();
         this.currentFeature = format.readFeature(this.props.editContext.feature);
         this.currentFeature.on('change', this.updateMeasurements);
         this.updateMeasurements();
-        this.layer.getSource().addFeature(this.currentFeature);
+        this.currentLayer.getSource().addFeature(this.currentFeature);
 
         const modifyInteraction = new ol.interaction.Modify({
             features: new ol.Collection([this.currentFeature]),
@@ -219,14 +228,24 @@ class EditingSupport extends React.Component {
             this.currentFeature.un('change', this.updateMeasurements);
         }
         this.currentFeature = null;
-        if (this.layer) {
-            this.props.map.removeLayer(this.layer);
+        if (this.layers[this.props.editContext.id]) {
+            this.layers[this.props.editContext.id].getSource().clear();
         }
-        this.layer = null;
+    };
+    cleanupLayers = (prevContexts) => {
+        const currentContexts = new Set(Object.keys(this.props.editContexts));
+        const removedContexts = Object.keys(prevContexts).filter(item => !currentContexts.has(item));
+        removedContexts.forEach(id => {
+            if (this.layers[id]) {
+                this.props.map.removeLayer(this.layers[id]);
+                delete this.layers[id];
+            }
+        });
     };
 }
 
 export default connect((state) => ({
+    editContexts: state.editing.contexts,
     editContext: state.editing.contexts[state.editing.currentContext] || {},
     displayCrs: state.map.displayCrs,
     mapCrs: state.map.projection
