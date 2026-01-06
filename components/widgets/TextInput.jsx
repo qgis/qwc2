@@ -18,47 +18,6 @@ import Icon from '../Icon';
 
 import './style/TextInput.css';
 
-
-class EditablePre extends React.PureComponent {
-    static propTypes = {
-        className: PropTypes.string,
-        editable: PropTypes.bool,
-        innerRef: PropTypes.func,
-        onBlur: PropTypes.func,
-        onChange: PropTypes.func,
-        onCopy: PropTypes.func,
-        onCut: PropTypes.func,
-        onFocus: PropTypes.func,
-        onInput: PropTypes.func,
-        onKeyDown: PropTypes.func,
-        onMouseDown: PropTypes.func,
-        onMouseLeave: PropTypes.func,
-        onMouseMove: PropTypes.func,
-        style: PropTypes.object,
-        value: PropTypes.string
-    };
-    render() {
-        return (
-            <pre
-                className={this.props.className}
-                contentEditable={this.props.editable}
-                dangerouslySetInnerHTML={{__html: this.props.value}}
-                onBlur={this.props.onBlur}
-                onChange={this.props.onChange}
-                onCopy={this.props.onCopy}
-                onCut={this.props.onCut}
-                onFocus={this.props.onFocus}
-                onInput={this.props.onChange}
-                onKeyDown={this.props.onKeyDown}
-                onMouseDown={this.props.onMouseDown}
-                onMouseLeave={this.props.onMouseLeave}
-                onMouseMove={this.props.onMouseMove}
-                ref={this.props.innerRef}
-                style={this.props.style}
-            />
-        );
-    }
-}
 export default class TextInput extends React.Component {
     static propTypes = {
         addLinkAnchors: PropTypes.bool,
@@ -122,14 +81,19 @@ export default class TextInput extends React.Component {
             "text-input-wrapper-multiline": this.props.multiline,
             "text-input-wrapper-focused": this.state.focus
         });
-        const showClear = this.props.showClear && this.state.focus && !this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue;
         const preClassName = classNames({
             "text-input": true,
             "text-input-disabled": this.props.disabled,
             "text-input-readonly": this.props.readOnly || !this.state.curValue,
-            "text-input-invalid": this.props.required && !this.state.curValue,
-            "text-input-clearable": showClear
+            "text-input-invalid": this.props.required && !this.state.curValue
         });
+        const showClear = this.props.showClear && this.state.focus && !this.props.multiline && !this.props.disabled && !this.props.readOnly && this.state.curValue;
+        const style = {
+            ...this.props.style
+        };
+        if (showClear) {
+            style.marginRight = '1.5em';
+        }
         return (
             <div className={wrapperClassName + " " + (this.props.className || "")} ref={this.storeInitialHeight}>
                 {this.props.name ? (
@@ -141,22 +105,22 @@ export default class TextInput extends React.Component {
                         tabIndex="-1"
                         value={this.state.curValue} />
                 ) : null}
-                <EditablePre
+                <pre
                     className={preClassName}
-                    editable={!this.props.disabled && !this.props.readOnly}
-                    innerRef={this.setRef}
+                    contentEditable={!this.props.disabled && !this.props.readOnly}
+                    dangerouslySetInnerHTML={{__html: this.state.value.replaceAll('\n', this.props.multiline ? '<br />' : '')}}
                     onBlur={this.onBlur}
                     onChange={this.onChange}
-                    onCopy={this.onCopy}
-                    onCut={this.onCut}
+                    onCopy={(ev) => this.onCopy(ev, false)}
+                    onCut={(ev) => this.onCopy(ev, true)}
                     onFocus={this.onFocus}
                     onInput={this.onChange}
                     onKeyDown={this.onKeyDown}
                     onMouseDown={this.onMouseDown}
                     onMouseLeave={this.onMouseLeave}
                     onMouseMove={this.onMouseMove}
-                    style={this.props.style}
-                    value={this.state.value.replaceAll('\n', this.props.multiline ? '<br />' : '')}
+                    ref={el => {this.input = el;}}
+                    style={style}
                 />
                 {!this.state.curValue ? (
                     <div className="text-input-placeholder">{this.props.placeholder}</div>
@@ -174,20 +138,16 @@ export default class TextInput extends React.Component {
             </div>
         );
     }
-    setRef = (el) => {
-        this.input = el;
-    };
-    onCopy = (ev) => {
+    onCopy = (ev, cut) => {
         ev.preventDefault();
         const selection = window.getSelection();
         const plainText = selection.toString();
         if (ev.clipboardData) {
             ev.clipboardData.setData('text/plain', plainText);
         }
-    };
-    onCut = (ev) => {
-        this.onCopy(ev);
-        this.clear();
+        if (cut) {
+            this.clear();
+        }
     };
     clear = () => {
         const clearValue = this.props.clearValue;
