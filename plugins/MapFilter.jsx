@@ -143,7 +143,16 @@ class MapFilter extends React.Component {
     }
     collectPredefinedFilters = (layers) => {
         return layers.reduce((res, layer) => (
-            {...res, ...(layer.predefinedFilters || []).reduce((res2, config) => ({...res2, [config.id]: config}), {})}
+            {...res, ...(layer.predefinedFilters || []).reduce((res2, config) => (
+                {...res2, [config.id]: {
+                    ...config,
+                    filter: Object.fromEntries(
+                        Object.entries(config.filter).map(([layername, filter]) => ([
+                            layer.wms_name + "#" + layername, filter
+                        ]))
+                    )
+                }}
+            ), {})}
         ), {});
     };
     initializeFilters = (predefinedFilters, prevFilters) => {
@@ -162,7 +171,7 @@ class MapFilter extends React.Component {
             }
         }), {});
         const timeFilter = {};
-        this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter));
+        this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter, layer.wms_name));
         if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
             filters.__timefilter = {
                 active: prevFilters.__timefilter?.active ?? false,
@@ -268,13 +277,13 @@ class MapFilter extends React.Component {
         }).filter(Boolean);
         this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
     };
-    buildTimeFilter = (layer, filters) => {
+    buildTimeFilter = (layer, filters, wmsName) => {
         if (layer.sublayers) {
-            layer.sublayers.forEach(sublayer => this.buildTimeFilter(sublayer, filters));
+            layer.sublayers.forEach(sublayer => this.buildTimeFilter(sublayer, filters, wmsName));
         } else {
             const timeDimension = (layer.dimensions || []).find(dimension => dimension.units === "ISO8601");
             if (timeDimension) {
-                filters[layer.name] = [
+                filters[wmsName + "#" + layer.name] = [
                     [[timeDimension.fieldName, '>=', "$tstart$"], 'or', [timeDimension.fieldName, 'IS', null]],
                     'and',
                     [[timeDimension.endFieldName, '<=', "$tend$"], 'or', [timeDimension.endFieldName, 'IS', null]]
@@ -495,10 +504,11 @@ class MapFilter extends React.Component {
         }
         const layerNames = this.props.layers.reduce((res, layer) => {
             if (layer.role === LayerRole.THEME) {
-                return [...res, ...LayerUtils.getSublayerNames(layer, true, lyr => !!lyr.geometryType)];
+                const sublayers = LayerUtils.getSublayerNames(layer, true, lyr => !!lyr.geometryType);
+                return {...res, ...Object.fromEntries(sublayers.map(layername => ([layer.wms_name + "#" + layername, layername])))};
             }
             return res;
-        }, []);
+        }, {});
         const customFilters = Object.entries(this.state.customFilters).map(([key, entry]) => (
             <div className="map-filter-entry" key={key}>
                 <div className="map-filter-entry-titlebar map-filter-custom-entry-titlebar">
@@ -514,7 +524,7 @@ class MapFilter extends React.Component {
                             <tr>
                                 <td>
                                     <ComboBox onChange={value => this.updateCustomFilter(key, 'layer', value)} placeholder={LocaleUtils.tr("common.selectlayer")} value={entry.layer}>
-                                        {layerNames.map(layerName => (<div key={layerName} value={layerName}>{layerName}</div>))}
+                                        {Object.entries(layerNames).map(([layerid, layername]) => (<div key={layerid} value={layerid}>{layername}</div>))}
                                     </ComboBox>
                                 </td>
                                 <td>

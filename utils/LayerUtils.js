@@ -195,8 +195,9 @@ const LayerUtils = {
             };
         }
         if (filter.filterParams) {
-            newParams.FILTER = Object.entries(filter.filterParams).reduce((res, [layername, filters]) => {
-                if (!newParams.LAYERS.split(",").includes(layername)) {
+            newParams.FILTER = Object.entries(filter.filterParams).reduce((res, [layerid, filters]) => {
+                const [wmsName, layername] = layerid.split("#");
+                if (wmsName !== layer.wms_name || !newParams.LAYERS.split(",").includes(layername)) {
                     return res;
                 }
                 return [...res, layername + ":" + filters.map(expr => Array.isArray(expr) ? LayerUtils.formatFilterExpr(expr) : "AND").join(" ")];
