@@ -801,7 +801,7 @@ class IdentifyViewer extends React.Component {
                                 <td>
                                     <ToggleSwitch
                                         active={this.state.multiViewEnabled}
-                                        onChange={(active) => this.setState({multiViewEnabled: active})} />
+                                        onChange={(active) => this.setState({multiViewEnabled: active, currentPage: 0})} />
                                 </td>
                             </tr>
                         ) : null}
