@@ -259,6 +259,7 @@ class IdentifyViewer extends React.Component {
         replaceImageUrls: PropTypes.bool,
         resultDisplayMode: PropTypes.string,
         resultGridSize: PropTypes.number,
+        resultMultiDisplay: PropTypes.bool,
         setActiveLayerInfo: PropTypes.func,
         showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
@@ -273,6 +274,7 @@ class IdentifyViewer extends React.Component {
         enableAggregatedReports: true,
         resultDisplayMode: 'flat',
         resultGridSize: 200,
+        resultMultiDisplay: false,
         showLayerTitles: true,
         showLayerSelector: true,
         highlightAllResults: true
@@ -301,6 +303,7 @@ class IdentifyViewer extends React.Component {
         this.scrollIntoView = false;
         this.bodyEl = null;
         this.state.exportFormat = !Array.isArray(props.enableExport) ? 'geojson' : props.enableExport[0];
+        this.state.multiViewEnabled = props.resultMultiDisplay;
     }
     componentDidMount() {
         this.updateResultTree();

@@ -90,6 +90,8 @@ class Identify extends React.Component {
         resultDisplayMode: PropTypes.string,
         /** Target cell size of the result grid in comparison mode. */
         resultGridSize: PropTypes.number,
+        /** Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. */
+        resultMultiDisplay: PropTypes.bool,
         selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
         /** Whether to show a layer selector to filter the identify results by layer. */
@@ -106,6 +108,7 @@ class Identify extends React.Component {
         longAttributesDisplay: 'ellipsis',
         resultDisplayMode: 'flat',
         resultGridSize: 200,
+        resultMultiDisplay: false,
         replaceImageUrls: true,
         geometry: {
             initialWidth: 240,
@@ -396,6 +399,7 @@ class Identify extends React.Component {
                         replaceImageUrls={this.props.replaceImageUrls}
                         resultDisplayMode={this.props.resultDisplayMode}
                         resultGridSize={this.props.resultGridSize}
+                        resultMultiDisplay={this.props.resultMultiDisplay}
                         showLayerSelector={this.props.showLayerSelector}
                     />
                 );
