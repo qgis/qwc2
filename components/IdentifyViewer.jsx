@@ -663,7 +663,7 @@ class IdentifyViewer extends React.Component {
         const flatResults = Object.entries(resultTree).map(([layerid, features]) => features.map(feature => ([layerid, feature]))).flat();
         if (this.state.compareEnabled) {
             const style = {
-                gridTemplateColumns: `repeat(auto-fit, minmax(${this.resultGridSize / 2 - 2}px, 1fr))`
+                gridTemplateColumns: `repeat(auto-fit, minmax(${this.props.resultGridSize / 2 - 2}px, 1fr))`
             };
             body = (
                 <div className="identify-compare-results" style={style}>
@@ -691,7 +691,7 @@ class IdentifyViewer extends React.Component {
             if (this.state.multiViewEnabled) {
                 const results = flatResults.slice(this.state.currentPage * this.state.pageSize, (this.state.currentPage + 1) * this.state.pageSize);
                 const style = {
-                    gridTemplateColumns: `repeat(auto-fit, minmax(${this.resultGridSize - 2}px, 1fr))`
+                    gridTemplateColumns: `repeat(auto-fit, minmax(${this.props.resultGridSize - 2}px, 1fr))`
                 };
                 body = (
                     <div className="identify-compare-results" style={style}>
