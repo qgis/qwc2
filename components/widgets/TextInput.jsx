@@ -44,7 +44,8 @@ export default class TextInput extends React.Component {
         value: "",
         valueRev: 0,
         curValue: "",
-        changed: false
+        changed: false,
+        committing: false
     };
     constructor(props) {
         super(props);
@@ -56,7 +57,7 @@ export default class TextInput extends React.Component {
         this.tooltipTimeout = null;
     }
     static getDerivedStateFromProps(nextProps, state) {
-        if (state.value !== nextProps.value) {
+        if (state.value !== nextProps.value && !state.committing) {
             return {
                 value: nextProps.value,
                 valueRev: state.valueRev + 1,
@@ -248,12 +249,13 @@ export default class TextInput extends React.Component {
     };
     commit = () => {
         if (this.state.changed) {
-            if (this.props.addLinkAnchors) {
-                const valueWithLinks = MiscUtils.addLinkAnchors(this.state.curValue);
-                this.props.onChange(valueWithLinks);
-            } else {
-                this.props.onChange(this.state.curValue);
-            }
+            this.setState(state => {
+                const value = this.props.addLinkAnchors ? MiscUtils.addLinkAnchors(state.curValue) : state.curValue;
+                return {value: value, changed: false, committing: true};
+            }, () => {
+                this.setState({committing: false});
+                this.props.onChange(this.state.value);
+            });
         }
     };
     storeInitialHeight = (el) => {
