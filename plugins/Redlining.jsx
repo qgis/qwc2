@@ -264,7 +264,7 @@ class Redlining extends React.Component {
         }
         let labelPlaceholder = LocaleUtils.tr("redlining.label");
         if (this.props.redlining.geomType === "Text") {
-            labelPlaceholder = LocaleUtils.tr("redlining.text");
+            labelPlaceholder = LocaleUtils.tr("common.text");
         }
         if (this.props.redlining.action !== 'Draw' && !this.props.redlining.selectedFeature) {
             if (this.props.redlining.action === 'Transform') {
@@ -375,7 +375,7 @@ class Redlining extends React.Component {
     };
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {
-            data = {...data, style: {text: LocaleUtils.tr("redlining.text")}};
+            data = {...data, style: {text: LocaleUtils.tr("common.text")}};
         } else if (!this.props.allowGeometryLabels) {
             data = {...data, style: {text: ''}};
         }
