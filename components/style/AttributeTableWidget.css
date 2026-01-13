@@ -9,7 +9,7 @@ div.attribtable-overlay {
     position: absolute;
     left: 0;
     right: 0;
-    top: 2.25em;
+    top: 0;
     bottom: 0;
     display: flex;
     align-items: center;
@@ -39,6 +39,7 @@ div.attribtable-contents {
     background-color: var(--list-bg-color);
     overflow: auto;
     border: 1px solid var(--border-color);
+    position: relative;
 }
 
 table.attribtable-table {
@@ -193,6 +194,7 @@ div.attribtable-footbar {
     display: flex;
     align-items: center;
     margin: 0 -0.25em;
+    flex-wrap: wrap;
 }
 
 div.attribtable-footbar > div {
@@ -203,8 +205,10 @@ div.attribtable-filter {
     flex: 1 1 auto;
 }
 
-div.attribtable-filter div.TextInput {
+div.attribtable-filter .attribtable-filter-value {
     flex: 1 1 auto;
+    min-width: 5em;
+    max-width: 15em;
 }
 
 body.ewresizing, body.ewresizing * {

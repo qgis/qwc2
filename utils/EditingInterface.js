@@ -141,19 +141,26 @@ const EditingInterface = {
      * @param editConfig The edit config of the dataset to query features from
      * @param mapCrs The CRS of the map, as an EPSG code
      * @param callback Callback invoked with the picked features, taking `{features: [...]}` on success and `null` on failure
-     * @param filter An optional feature attribute filter expression
-     * @param filterGeom An optional filter geometry
-     * @param fields An optional list of fields to query, if unspecified all fields are queried
+     * @param options Any of the following:
+     *  - filter Feature attribute filter expression
+     *  - filterGeom Filter geometry
+     *  - fields Restrict the fields to query
+     *  - limit Feature count limit
+     *  - offset Feature count offset
+     *  - Sortby Feature sort order
      */
-    getFeatures(editConfig, mapCrs, callback, bbox = null, filter = null, filterGeom = null, fields = null) {
+    getFeatures(editConfig, mapCrs, callback, options = {}) {
         const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl").replace(/\/$/, '');
         const requestUrl = editServiceUrl + '/' + editConfig.editDataset + '/';
         const params = {
             crs: mapCrs,
-            bbox: bbox ? bbox.join(",") : undefined,
-            filter: filter ? JSON.stringify(filter, this.replacer(mapCrs)) : undefined,
-            filter_geom: filterGeom ? JSON.stringify({...filterGeom, crs: {type: "name", properties: {name: mapCrs}}}, this.replacer(mapCrs)) : undefined,
-            fields: fields ? fields.join(",") : undefined
+            bbox: options.bbox ? options.bbox.join(",") : undefined,
+            filter: options.filter ? JSON.stringify(options.filter, this.replacer(mapCrs)) : undefined,
+            filter_geom: options.filterGeom ? JSON.stringify({...options.filterGeom, crs: {type: "name", properties: {name: mapCrs}}}, this.replacer(mapCrs)) : undefined,
+            fields: options.fields ? options.fields.join(",") : undefined,
+            limit: options.limit ?? undefined,
+            offset: options.offset ?? undefined,
+            sortby: options.sortby ?? undefined
         };
         const headers = {
             "Accept-Language": LocaleUtils.lang()
@@ -168,7 +175,7 @@ const EditingInterface = {
                         }));
                     });
                 });
-                Promise.all(promises).then(features => callback({features}));
+                Promise.all(promises).then(features => callback({...response.data, features}));
             } else {
                 callback(null);
             }

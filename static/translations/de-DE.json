@@ -72,6 +72,7 @@
       "deleting": "Objekte werden gelöscht",
       "discard": "Geänderte Zeile zurücksetzen",
       "formeditmode": "Ausgewähltes Objekt in der Formularansicht editieren",
+      "fulldatasetload": "Das Filtern oder Sortieren nach virtuellen Feldern löst das vollständige Laden des Datensatzes aus.",
       "geomnoadd": "Bitte die Formularansicht verwenden, um neue Objekte für diese Ebene zu erstellen",
       "limittoextent": "In Kartenausschnitt",
       "loadfailed": "Die Objektdaten konnten nicht geladen werden",
@@ -520,7 +521,6 @@
       "markers": "Spitzen",
       "numericinput": "Numerische Eingabe",
       "size": "Größe",
-      "text": "",
       "transform": "Transformieren"
     },
     "reports": {

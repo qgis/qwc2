@@ -43,7 +43,7 @@ export class FeatureCache {
                     } else {
                         resolve(null);
                     }
-                }, null, filterExpr);
+                }, {filter: filterExpr});
             });
             return this.requestPromises[key];
         }

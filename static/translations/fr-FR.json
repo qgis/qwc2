@@ -72,6 +72,7 @@
       "deleting": "Suppression en cours...",
       "discard": "Abandonner les modifications",
       "formeditmode": "Basculer sur la vue formulaire",
+      "fulldatasetload": "Pour le filtrage ou le tri en fonction des champs virtuels, l'ensemble complet des données sera chargé.",
       "geomnoadd": "Veuillez utiliser le formulaire d'édition pour ajouter de nouveaux objets à cette couche",
       "limittoextent": "Dans l'étendue de la carte",
       "loadfailed": "Echec du chargement de l'objet",
@@ -520,7 +521,6 @@
       "markers": "Pointes",
       "numericinput": "Entrée numérique",
       "size": "Taille",
-      "text": "",
       "transform": "Transformer"
     },
     "reports": {

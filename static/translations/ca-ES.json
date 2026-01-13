@@ -72,6 +72,7 @@
       "deleting": "Eliminant elements...",
       "discard": "Descartar",
       "formeditmode": "Obrir formulari d'edició de l'element seleccionat",
+      "fulldatasetload": "",
       "geomnoadd": "Si us plau, feu servir el formulari d'edició per afegir elements a aquesta capa",
       "limittoextent": "Limitar a l'extensió del mapa",
       "loadfailed": "La càrrega ha fallat",
@@ -520,7 +521,6 @@
       "markers": "Marcadors",
       "numericinput": "Entrada numèrica",
       "size": "Tamany",
-      "text": "",
       "transform": "Transformar"
     },
     "reports": {

@@ -72,6 +72,7 @@
       "deleting": "Deletando",
       "discard": "Descartar",
       "formeditmode": "Modo de edição de forma",
+      "fulldatasetload": "",
       "geomnoadd": "Geometria não adicionada",
       "limittoextent": "",
       "loadfailed": "Falha ao carregar",
@@ -520,7 +521,6 @@
       "markers": "",
       "numericinput": "Entrada numérica",
       "size": "Tamanho",
-      "text": "",
       "transform": "Transformar"
     },
     "reports": {

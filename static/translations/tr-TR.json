@@ -72,6 +72,7 @@
       "deleting": "Objeler siliniyor",
       "discard": "Değişiklikleri iptal et",
       "formeditmode": "Seçilen objenin düzenleme formunu aç",
+      "fulldatasetload": "",
       "geomnoadd": "Bu katmana yeni objeler eklemek için düzenleme formunu kullanın",
       "limittoextent": "Harita sınırlarına getir",
       "loadfailed": "Obje verisi yüklenemedi",
@@ -520,7 +521,6 @@
       "markers": "İşaretçiler",
       "numericinput": "Sayısal giriş panelini göster",
       "size": "Boyut",
-      "text": "",
       "transform": "Dönüşüm"
     },
     "reports": {

@@ -72,6 +72,7 @@
       "deleting": "",
       "discard": "",
       "formeditmode": "",
+      "fulldatasetload": "",
       "geomnoadd": "",
       "limittoextent": "",
       "loadfailed": "",
@@ -520,7 +521,6 @@
       "markers": "",
       "numericinput": "",
       "size": "Storlek",
-      "text": "",
       "transform": ""
     },
     "reports": {

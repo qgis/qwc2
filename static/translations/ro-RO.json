@@ -72,6 +72,7 @@
       "deleting": "Ștergere obiecte spațiale...",
       "discard": "Renunță",
       "formeditmode": "Deschide formularul de editare pentru obiecte spațiale selectate",
+      "fulldatasetload": "",
       "geomnoadd": "Vă rugăm să folosiți formularul de editare pentru adăugarea de noi obiecte spațiale",
       "limittoextent": "",
       "loadfailed": "Încărcarea a eșuat",
@@ -520,7 +521,6 @@
       "markers": "",
       "numericinput": "Afișare formular pentru valori numerice",
       "size": "Dimeniuni",
-      "text": "",
       "transform": "Transformare"
     },
     "reports": {

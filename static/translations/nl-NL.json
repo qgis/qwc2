@@ -72,6 +72,7 @@
       "deleting": "Verwijderen objecten...",
       "discard": "Negeer gewijzigde rij",
       "formeditmode": "Open het wijzigformulier voor geselecteerde object",
+      "fulldatasetload": "",
       "geomnoadd": "Gebruik het wijzigformulier om nieuwe objecten aan deze laag toe te voegen",
       "limittoextent": "Beperken tot kaartgebied",
       "loadfailed": "Kan de object data niet laden",
@@ -520,7 +521,6 @@
       "markers": "Markeringen",
       "numericinput": "Numeriek invoerpaneel tonen",
       "size": "Afmeting",
-      "text": "",
       "transform": "Transformeer"
     },
     "reports": {

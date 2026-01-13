@@ -72,6 +72,7 @@
       "deleting": "地物を削除中...",
       "discard": "変更された行を元に戻す",
       "formeditmode": "選択された地物を編集フォームで開く",
+      "fulldatasetload": "",
       "geomnoadd": "編集フォームを使ってこのレイヤに新しい地物を追加して下さい",
       "limittoextent": "地図の範囲に限定",
       "loadfailed": "地物のデータをロード出来ませんでした",
@@ -520,7 +521,6 @@
       "markers": "マーカー",
       "numericinput": "数値入力",
       "size": "サイズ",
-      "text": "",
       "transform": "変形"
     },
     "reports": {

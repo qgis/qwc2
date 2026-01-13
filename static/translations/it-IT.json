@@ -72,6 +72,7 @@
       "deleting": "Eliminando...",
       "discard": "Ripristina riga modificata",
       "formeditmode": "Apri il formulario per l'oggetto selezionato",
+      "fulldatasetload": "Per il filtraggio o l'ordinamento in base ai campi virtuali verrà caricato il dataset completo.",
       "geomnoadd": "Utilizzare il formulario per creare nuovi oggetti per questo livello",
       "limittoextent": "In estensione mappa",
       "loadfailed": "Errore nel caricamento dei dati",
@@ -520,7 +521,6 @@
       "markers": "Punte",
       "numericinput": "Formulario numerico",
       "size": "Dimensione",
-      "text": "",
       "transform": "Transforma"
     },
     "reports": {

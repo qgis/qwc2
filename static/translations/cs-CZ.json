@@ -72,6 +72,7 @@
       "deleting": "Mazání prvků...",
       "discard": "Zahodit změny v řádku",
       "formeditmode": "Otevřít editační formulář pro vybrané prvky",
+      "fulldatasetload": "",
       "geomnoadd": "Pro přidání nových prvků do této vrstvy použijte editační formulář",
       "limittoextent": "",
       "loadfailed": "Chyba při načítání prvků",
@@ -520,7 +521,6 @@
       "markers": "",
       "numericinput": "",
       "size": "Velikost",
-      "text": "",
       "transform": ""
     },
     "reports": {
