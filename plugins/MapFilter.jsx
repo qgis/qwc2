@@ -321,7 +321,7 @@ class MapFilter extends React.Component {
                 </SideBar>
             ),
             this.state.geomFilter.picking ? (
-                <PickFeature featureFilter={feature => (feature?.geometry?.type || "").endsWith("Polygon")} featurePicked={this.filterGeomPicked} highlightStyle={this.props.highlightStyle} key="FeaturePicker" />
+                <PickFeature featureFilter={feature => ["Polygon", "LineString"].find(type => (feature?.geometry?.type || "").includes(type))} featurePicked={this.filterGeomPicked} highlightStyle={this.props.highlightStyle} key="FeaturePicker" />
             ) : null,
             <MapSelection
                 active={taskActive && !!selGeomType}
@@ -548,6 +548,7 @@ class MapFilter extends React.Component {
     renderGeomFilter = () => {
         const geomFilter = this.state.geomFilter;
         const filterButtons = [
+            {key: "LineString", tooltip: LocaleUtils.tr("common.line"), icon: "line", label: LocaleUtils.tr("common.line")},
             {key: "Polygon", tooltip: LocaleUtils.tr("common.polygon"), icon: "polygon", label: LocaleUtils.tr("common.polygon")},
             {key: "Circle", tooltip: LocaleUtils.tr("common.circle"), icon: "circle", label: LocaleUtils.tr("common.circle")},
             {key: "Pick", tooltip: LocaleUtils.tr("common.pick"), icon: "pick", label: LocaleUtils.tr("common.pick")}
