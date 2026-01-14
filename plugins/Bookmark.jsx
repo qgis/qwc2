@@ -20,7 +20,7 @@ import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import {createBookmark, getUserBookmarks, removeBookmark, resolveBookmark, updateBookmark} from '../utils/PermaLinkUtils';
+import {createBookmark, getBookmarks, removeBookmark, resolveBookmark, updateBookmark} from '../utils/PermaLinkUtils';
 
 import './style/Bookmark.css';
 
@@ -187,9 +187,11 @@ class Bookmark extends React.Component {
         });
     };
     refresh = () => {
-        getUserBookmarks(ConfigUtils.getConfigProp("username"), (bookmarks) => {
-            this.setState({bookmarks: bookmarks});
-        });
+        if (ConfigUtils.getConfigProp("username")) {
+            getBookmarks((bookmarks) => {
+                this.setState({bookmarks: bookmarks});
+            });
+        }
     };
 }
 

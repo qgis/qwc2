@@ -18,7 +18,7 @@ import {setColorScheme, setUserInfoFields} from '../actions/localConfig';
 import SideBar from '../components/SideBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import {getUserBookmarks} from '../utils/PermaLinkUtils';
+import {getBookmarks} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/Settings.css';
@@ -66,7 +66,7 @@ class Settings extends React.Component {
     onShow = () => {
         const username = ConfigUtils.getConfigProp("username");
         if (this.props.showDefaultThemeSelector && username) {
-            getUserBookmarks(username, (bookmarks) => {
+            getBookmarks((bookmarks) => {
                 const bookmarkKeys = bookmarks.reduce((res, entry) => ({...res, [entry.key]: entry.description}), {});
                 this.setState({bookmarks: bookmarkKeys});
             });
