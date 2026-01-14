@@ -49,7 +49,6 @@ export default class TextInput extends React.Component {
     };
     constructor(props) {
         super(props);
-        this.skipNextCommitOnBlur = false;
         this.focusEnterClick = false;
         this.initialHeight = null;
         this.input = null;
@@ -173,9 +172,7 @@ export default class TextInput extends React.Component {
     };
     onBlur = () => {
         this.setState({focus: false});
-        if (!this.skipNextCommitOnBlur) {
-            this.commit();
-        }
+        this.commit();
     };
     onFocus = (ev) => {
         this.setState({focus: true});
@@ -242,9 +239,7 @@ export default class TextInput extends React.Component {
                 valueRev: state.valueRev + 1,
                 curValue: this.props.value || "",
                 changed: false
-            }));
-            this.skipNextCommitOnBlur = true;
-            ev.target.blur();
+            }), () => ev.target.blur());
         }
     };
     commit = () => {
