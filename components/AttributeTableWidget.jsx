@@ -30,7 +30,7 @@ import {FeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '..
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import MiscUtils from '../utils/MiscUtils';
+import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/AttributeTableWidget.css';
@@ -85,7 +85,7 @@ class AttributeTableWidget extends React.Component {
         features: [],
         featureCount: 0,
         allFeatures: null,
-        selectedFeatures: {},
+        selectedFeatures: new ToggleSet(),
         highlightedFeature: null,
         changedFeatureIdx: null,
         originalFeatureProps: null,
@@ -144,6 +144,7 @@ class AttributeTableWidget extends React.Component {
         const readOnly = this.props.readOnly || editPermissions.updatable === false;
         const loading = this.state.loading;
         const editing = this.state.changedFeatureIdx !== null || this.state.newFeature;
+        const selectionEmpty = this.state.selectedFeatures.isEmpty();
 
         let loadOverlay = null;
         if (loading) {
@@ -217,7 +218,7 @@ class AttributeTableWidget extends React.Component {
                                     <td>
                                         <span>
                                             {sliceidx > 0 ? this.renderRowResizeHandle(sliceidx, 't') : null}
-                                            {<input checked={this.state.selectedFeatures[feature.id] === true} onChange={(ev) => this.setState((state) => ({selectedFeatures: {...state.selectedFeatures, [feature.id]: ev.target.checked}}))} type="checkbox" />}
+                                            {<input checked={this.state.selectedFeatures.has(feature.id)} onChange={() => this.setState((state) => ({selectedFeatures: state.selectedFeatures.toggle(feature.id)}))} type="checkbox" />}
                                             {this.renderRowResizeHandle(sliceidx + 1, 'b')}
                                         </span>
                                     </td>
@@ -330,7 +331,7 @@ class AttributeTableWidget extends React.Component {
         const showDelButton = !this.props.readOnly && editPermissions.deletable !== false;
         const showEditButton = !this.props.readOnly && ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton;
         const deleteButton = showDelButton ? (
-            <button className="button" disabled={layerChanged || editing || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
+            <button className="button" disabled={layerChanged || editing || selectionEmpty} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                 <Icon icon="trash" />
             </button>
         ) : null;
@@ -372,11 +373,11 @@ class AttributeTableWidget extends React.Component {
                             <Icon icon="plus" />
                         </button>
                     ) : null}
-                    <button className="button" disabled={layerChanged || !Object.values(this.state.selectedFeatures).find(entry => entry === true)} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
+                    <button className="button" disabled={layerChanged || selectionEmpty} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                         <Icon icon="search" />
                     </button>
                     {showEditButton ? (
-                        <button className="button" disabled={layerChanged || editing || Object.values(this.state.selectedFeatures).filter(entry => entry === true).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
+                        <button className="button" disabled={layerChanged || editing || this.state.selectedFeatures.length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
                             <Icon icon="editing" />
                         </button>
                     ) : null}
@@ -515,6 +516,7 @@ class AttributeTableWidget extends React.Component {
                 newState.fieldTranslations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations?.layers?.[layerName]?.fields ?? {};
             }
             newState.selectedLayer = selectedLayer;
+            newState.selectedFeatures = new ToggleSet();
 
             const options = {
                 bbox: newState.limitToExtent ? this.props.mapBbox.bounds : null,
@@ -612,6 +614,10 @@ class AttributeTableWidget extends React.Component {
             return filteredFeatures;
         }
     };
+    currentPageFeatures = (state) => {
+        const indexOffset = state.currentPage * state.pageSize;
+        return state.features.slice(indexOffset, indexOffset + state.pageSize);
+    };
     sortBy = (field) => {
         const newState = {sortField: this.state.sortField};
         if (newState.sortField && newState.sortField.field === field) {
@@ -649,7 +655,7 @@ class AttributeTableWidget extends React.Component {
     };
     deleteSelectedFeatured = () => {
         this.setState((state) => {
-            const features = state.features.filter(feature => state.selectedFeatures[feature.id] === true);
+            const features = this.currentPageFeatures(state).filter(feature => state.selectedFeatures.has(feature.id));
             features.forEach(feature => {
                 this.props.iface.deleteFeature(state.curEditConfig, feature.id, (success) => {
                     this.onFeatureDeleted(feature.id, success);
@@ -787,7 +793,7 @@ class AttributeTableWidget extends React.Component {
     zoomToSelection = () => {
         const collection = {
             type: "FeatureCollection",
-            features: this.state.features.filter(feature => this.state.selectedFeatures[feature.id] === true && feature.geometry)
+            features: this.currentPageFeatures(this.state).filter(feature => this.state.selectedFeatures.has(feature.id))
         };
         if (!isEmpty(collection.features)) {
             if (collection.features.length === 1 && collection.features[0].geometry.type === "Point") {
@@ -805,7 +811,7 @@ class AttributeTableWidget extends React.Component {
             alert(LocaleUtils.tr("attribtable.nogeomnoform"));
             return;
         }
-        const feature = this.state.features.find(f => this.state.selectedFeatures[f.id] === true);
+        const feature = this.currentPageFeatures(this.state).find(f => this.state.selectedFeatures[f.id] === true);
         this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, feature: feature});
     };
     resizeTable = (ev, index, resizeCol) => {
