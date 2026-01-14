@@ -538,9 +538,9 @@ class AttributeTableWidget extends React.Component {
                     }
                 } else {
                     if (this.props.filter.filterParams?.[selectedLayer] && newState.filterVal) {
-                        options.filter = [this.props.filter.filterParams?.[selectedLayer], 'and', [newState.filterField, newState.filterOp.replace(), newState.filterVal]];
+                        options.filter = [this.props.filter.filterParams?.[selectedLayer], 'and', [newState.filterField, newState.filterOp, newState.filterVal]];
                     } else if (newState.filterVal) {
-                        options.filter = [[newState.filterField, newState.filterOp.replace(), newState.filterVal]];
+                        options.filter = [[newState.filterField, newState.filterOp, newState.filterVal]];
                     }
                     options.offset = newState.currentPage * newState.pageSize;
                     options.limit = newState.pageSize;
