@@ -77,16 +77,15 @@ table.attribtable-table th > span > span.icon {
     position: absolute;
     right: 1px;
     background-color: var(--button-bg-color);
+    flex: 0 0 auto;
+    margin-left: 0.5em;
 }
 
 span.attribtable-table-headername {
     flex: 1 1 auto;
     text-align: left;
-}
-
-table.attribtable-table th > span > span.icon {
-    flex: 0 0 auto;
-    margin-left: 0.5em;
+    display: flex;
+    align-items: center;
 }
 
 table.attribtable-table tr:nth-child(even) {

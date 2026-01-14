@@ -90,6 +90,7 @@
     "appmenu.items.ThemeSwitcher",
     "appmenu.menulabel",
     "attribtable.addfeature",
+    "attribtable.calculatedfield",
     "attribtable.commit",
     "attribtable.csvexport",
     "attribtable.deletefailed",

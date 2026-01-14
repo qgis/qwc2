@@ -65,6 +65,7 @@
     },
     "attribtable": {
       "addfeature": "Ajouter un objet",
+      "calculatedfield": "Champ calculé",
       "commit": "Enregistrer les modifications",
       "csvexport": "Exporter en CSV",
       "deletefailed": "Un ou plusieurs objets n'ont pas pu être supprimés",

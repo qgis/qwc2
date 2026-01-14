@@ -65,6 +65,7 @@
     },
     "attribtable": {
       "addfeature": "Obje ekle",
+      "calculatedfield": "",
       "commit": "Değişen satırı kaydet",
       "csvexport": "CSV olarak ver",
       "deletefailed": "Bir ya da daha fazla obje silinemedi",

@@ -65,6 +65,7 @@
     },
     "attribtable": {
       "addfeature": "Přidat prvek",
+      "calculatedfield": "",
       "commit": "Uložit změněný řádek",
       "csvexport": "",
       "deletefailed": "Chyba při mazání jednoho nebo více prvků",

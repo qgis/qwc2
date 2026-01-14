@@ -197,7 +197,10 @@ class AttributeTableWidget extends React.Component {
                                 <th key={field.id} onClick={() => this.sortBy(field.id)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(field.name)}>
                                     <span>
                                         {this.renderColumnResizeHandle(idx + 1, 'l')}
-                                        <span className="attribtable-table-headername">{this.translateFieldName(field.name)}</span>
+                                        <span className="attribtable-table-headername">
+                                            {this.translateFieldName(field.name)}
+                                            {field.expression ? (<Icon icon="epsilon" title={LocaleUtils.tr("attribtable.calculatedfield")} />) : null}
+                                        </span>
                                         {this.renderSortIndicator(field.id)}
                                         {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + 2, 'r') : null}
                                     </span>

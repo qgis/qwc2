@@ -65,6 +65,7 @@
     },
     "attribtable": {
       "addfeature": "Afegir element",
+      "calculatedfield": "",
       "commit": "Commit",
       "csvexport": "Exportar CSV",
       "deletefailed": "Un o més elements no han pogut eliminar-se",

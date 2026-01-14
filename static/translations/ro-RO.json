@@ -65,6 +65,7 @@
     },
     "attribtable": {
       "addfeature": "Adaugă obiect spațial",
+      "calculatedfield": "",
       "commit": "Salvează",
       "csvexport": "",
       "deletefailed": "Ștergerea a eșuat",

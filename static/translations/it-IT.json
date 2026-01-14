@@ -65,6 +65,7 @@
     },
     "attribtable": {
       "addfeature": "Aggiungi oggetto",
+      "calculatedfield": "Campo calcolato",
       "commit": "Salva riga modificata",
       "csvexport": "Esporta a CSV",
       "deletefailed": "Impossibile eliminare uno o più oggetti",

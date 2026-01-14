@@ -65,6 +65,7 @@
     },
     "attribtable": {
       "addfeature": "地物を追加",
+      "calculatedfield": "",
       "commit": "変更された行をコミット",
       "csvexport": "CSV エクスポート",
       "deletefailed": "一つ以上の地物を削除できませんでした",
