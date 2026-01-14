@@ -5,20 +5,17 @@
     min-height: 0;
 }
 
-div.bookmark-create > input {
-    width: 100%;
+h4.bookmark-header {
+    display: flex;
+    align-items: center;
+}
+
+h4.bookmark-header > span:first-child {
+    flex: 1 1 auto;
 }
 
 div.bookmark-actions {
     margin: 0.5em 0;
-}
-
-span.bookmark-actions-spacer {
-    flex: 1 1 auto;
-}
-
-div.bookmark-actions > button:not(:disabled) > span.icon-trash {
-    color: red;
 }
 
 div.bookmark-list {
@@ -29,15 +26,38 @@ div.bookmark-list {
 }
 
 div.bookmark-list-item {
-    padding: 0.5em;
+    height: 2em;
     overflow: hidden;
     overflow-wrap: anywhere;
+    display: flex;
+    align-items: center;
+}
+
+div.bookmark-list-item > div.input-container {
+    flex: 1 1 auto;
+    border: none;
 }
 
 div.bookmark-list-item-empty {
     padding: 0.5em;
     font-style: italic;
     color: var(--text-color-disabled);
+}
+
+div.bookmark-list-item > span:first-child {
+    flex: 1 1 auto;
+    padding: 0 0.25em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div.bookmark-list-item > span.icon {
+    flex: 0 0 1.5em;
+}
+
+div.bookmark-list-item > span.icon-trash {
+    color: red;
 }
 
 div.bookmark-list-item:not(.bookmark-list-item-active):nth-child(even) {

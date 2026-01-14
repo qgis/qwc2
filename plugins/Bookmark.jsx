@@ -16,11 +16,13 @@ import PropTypes from 'prop-types';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
 import Icon from '../components/Icon';
 import SideBar from '../components/SideBar';
-import Spinner from '../components/widgets/Spinner';
+import InputContainer from '../components/widgets/InputContainer';
+import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import {createBookmark, getBookmarks, removeBookmark, resolveBookmark, updateBookmark} from '../utils/PermaLinkUtils';
+import MiscUtils from '../utils/MiscUtils';
+import {createBookmark, getBookmarks, removeBookmark, renameBookmark, resolveBookmark, updateBookmark} from '../utils/PermaLinkUtils';
 
 import './style/Bookmark.css';
 
@@ -37,8 +39,11 @@ class Bookmark extends React.Component {
     static propTypes = {
         mapCrs: PropTypes.string,
         mapScales: PropTypes.array,
+        /** Whether to directly open the bookmark on click / middle click, instead of showing dedicated open buttons. */
+        openOnClick: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
+        theme: PropTypes.object,
         zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func
     };
@@ -47,9 +52,10 @@ class Bookmark extends React.Component {
     };
     state = {
         bookmarks: [],
+        renameBookmark: null,
         currentBookmark: null,
         description: "",
-        saving: false
+        busy: false
     };
     componentDidMount() {
         this.refresh();
@@ -59,63 +65,69 @@ class Bookmark extends React.Component {
         const openTabTitle = LocaleUtils.tr("bookmark.openTab");
         const zoomTitle = LocaleUtils.tr("bookmark.zoomToExtent");
         const username = ConfigUtils.getConfigProp("username");
-        const placeholder = LocaleUtils.tr("bookmark.description");
-        const addBookmarkTitle = LocaleUtils.tr("bookmark.add");
         const updateTitle = LocaleUtils.tr("bookmark.update");
-        const removeTitle = LocaleUtils.tr("bookmark.remove");
         const lastUpdateTitle = LocaleUtils.tr("bookmark.lastUpdate");
 
-        const currentBookmark = this.state.bookmarks.find(bookmark => bookmark.key === this.state.currentBookmark);
+        const currentBookmark = this.state.currentBookmark;
+        const buttonsDisabled = !currentBookmark || this.state.busy;
         return (
             <SideBar icon="bookmark" id="Bookmark"
+                onShow={this.refresh}
                 side={this.props.side}
                 title={LocaleUtils.tr("appmenu.items.Bookmark")} width="20em">
                 {!username ? (
                     <div className="bookmark-body" role="body">{LocaleUtils.tr("bookmark.notloggedin")}</div>
                 ) : (
                     <div className="bookmark-body" role="body">
-                        <h4>{LocaleUtils.tr("bookmark.manage")}</h4>
-                        <div className="bookmark-create">
-                            <input onChange={ev => this.setState({description: ev.target.value})}
-                                onKeyDown={ev => {if (ev.key === "Enter" && this.state.description !== "") { this.addBookmark(); }}}
-                                placeholder={placeholder} type="text"  value={this.state.description} />
-                        </div>
-                        <div className="bookmark-actions controlgroup">
-                            <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, false)} title={openTitle}>
-                                <Icon icon="folder-open" />
-                            </button>
-                            <button className="button" disabled={!currentBookmark} onClick={() => this.open(currentBookmark.key, true)} title={openTabTitle}>
-                                <Icon icon="open_link" />
-                            </button>
-                            {this.props.mapCrs && this.props.mapScales ? (
-                                <button className="button" disabled={!currentBookmark} onClick={() => this.zoomToBookmarkExtent(currentBookmark.key)} title={zoomTitle}>
-                                    <Icon icon="zoom" />
+                        <h4 className="bookmark-header">
+                            <span>{LocaleUtils.tr("bookmark.manage")}</span>
+                            <button className="button" onClick={this.addBookmark} title={LocaleUtils.tr("bookmark.add")}><Icon icon="plus" /></button>
+                        </h4>
+                        {!this.props.openOnClick ? (
+                            <div className="bookmark-actions controlgroup">
+                                <button className="button" disabled={buttonsDisabled} onClick={() => this.open(currentBookmark, false)} title={openTitle}>
+                                    <Icon icon="folder-open" />
                                 </button>
-                            ) : null}
-                            <span className="bookmark-actions-spacer" />
-                            <button className="button" disabled={!this.state.description} onClick={this.addBookmark} title={addBookmarkTitle}>
-                                <Icon icon="plus" />
-                            </button>
-                            <button className="button" disabled={!currentBookmark || !this.state.description} onClick={() => this.updateBookmark(currentBookmark)} title={updateTitle}>
-                                {this.state.saving ? (<Spinner />) : (<Icon icon="save" />)}
-                            </button>
-                            <button className="button" disabled={!currentBookmark} onClick={() => this.removeBookmark(currentBookmark)} title={removeTitle}>
-                                <Icon icon="trash" />
-                            </button>
-                        </div>
+                                <button className="button" disabled={buttonsDisabled} onClick={() => this.open(currentBookmark, true)} title={openTabTitle}>
+                                    <Icon icon="open_link" />
+                                </button>
+                                {this.props.mapCrs && this.props.mapScales ? (
+                                    <button className="button" disabled={buttonsDisabled} onClick={() => this.zoomToBookmarkExtent(currentBookmark)} title={zoomTitle}>
+                                        <Icon icon="zoom" />
+                                    </button>
+                                ) : null}
+                                <button className="button" disabled={buttonsDisabled} onClick={() => this.updateBookmark(currentBookmark)} title={updateTitle}>
+                                    <Icon icon="save" />
+                                </button>
+                            </div>
+                        ) : null}
                         <div className="bookmark-list">
                             {this.state.bookmarks.map((bookmark) => {
                                 const itemclasses = classnames({
                                     "bookmark-list-item": true,
-                                    "bookmark-list-item-active": this.state.currentBookmark === bookmark.key
+                                    "bookmark-list-item-active": currentBookmark === bookmark.key
                                 });
                                 return (
                                     <div className={itemclasses} key={bookmark.key}
-                                        onClick={() => this.toggleCurrentBookmark(bookmark)}
+                                        onAuxClick={(ev) => this.bookmarkClicked(ev, bookmark)}
+                                        onClick={(ev) => this.bookmarkClicked(ev, bookmark)}
                                         onDoubleClick={() => this.open(bookmark.key, false)}
                                         title={lastUpdateTitle + ": " + bookmark.date}
                                     >
-                                        {bookmark.description}
+                                        {this.state.renameBookmark === bookmark.key ? (
+                                            <InputContainer>
+                                                <TextInput focusOnRef onChange={this.updateBookmarkName} onNoChange={() => this.setState({renameBookmark: null})} role="input" showClear={false} value={bookmark.description} />
+                                                <Icon icon="ok" onClick={MiscUtils.killEvent} role="suffix" />
+                                            </InputContainer>
+                                        ) : (
+                                            <span>{bookmark.description}</span>
+                                        )}
+                                        {this.state.renameBookmark !== bookmark.key ? (
+                                            <Icon icon="draw" onClick={(ev) => {this.setState({renameBookmark: bookmark.key, currentBookmark: null}); MiscUtils.killEvent(ev);}} title={LocaleUtils.tr("common.rename")} />
+                                        ) : null}
+                                        {this.state.renameBookmark !== bookmark.key ? (
+                                            <Icon disabled={this.state.busy} icon="trash" onClick={() => this.removeBookmark(bookmark.key)} title={LocaleUtils.tr("common.delete")} />
+                                        ) : null}
                                     </div>
                                 );
                             })}
@@ -128,6 +140,27 @@ class Bookmark extends React.Component {
             </SideBar>
         );
     }
+    bookmarkClicked = (ev, bookmark) => {
+        if (this.state.renameBookmark) {
+            // pass
+        } else if (this.props.openOnClick) {
+            this.open(bookmark.key, ev.button === 1);
+        } else if (this.state.currentBookmark === bookmark.key) {
+            this.setState({currentBookmark: null, description: ""});
+        } else {
+            this.setState({currentBookmark: bookmark.key, description: bookmark.description});
+        }
+    };
+    updateBookmarkName = (text) => {
+        this.setState({busy: true});
+        renameBookmark(this.state.renameBookmark, text, (success) => {
+            if (!success) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("bookmark.savefailed"));
+            }
+            this.refresh(() => this.setState({renameBookmark: null, busy: false}));
+        });
+    };
     open = (bookmarkkey, newtab) => {
         const url = location.href.split("?")[0] + '?bk=' + bookmarkkey;
         if (newtab) {
@@ -149,58 +182,55 @@ class Bookmark extends React.Component {
             }
         });
     };
-    toggleCurrentBookmark = (bookmark) => {
-        if (this.state.currentBookmark === bookmark.key) {
-            this.setState({currentBookmark: null, description: ""});
-        } else {
-            this.setState({currentBookmark: bookmark.key, description: bookmark.description});
-        }
-    };
     addBookmark = () => {
-        createBookmark(this.state.description, (success) => {
+        this.setState({busy: true});
+        createBookmark(this.props.theme.title, (success, key) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.addfailed"));
+            } else {
+                this.refresh(() => this.setState({renameBookmark: key, busy: false}));
             }
-            this.refresh();
         });
         this.setState({description: "", currentBookmark: null});
     };
-    updateBookmark = (bookmark) => {
-        this.setState({saving: true});
-        updateBookmark(bookmark.key, this.state.description, (success) => {
+    updateBookmark = (key) => {
+        this.setState({busy: true});
+        const description = this.state.bookmarks.find(bk => bk.key === key).description;
+        updateBookmark(key, description, (success) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.savefailed"));
             }
-            this.setState({saving: false, description: "", currentBookmark: null});
-            this.refresh();
+            this.refresh(() => this.setState({busy: false, currentBookmark: null}));
         });
     };
-    removeBookmark = (bookmark) => {
-        removeBookmark(bookmark.key, (success) => {
+    removeBookmark = (key) => {
+        this.setState({busy: true});
+        removeBookmark(key, (success) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.removefailed"));
             }
-            this.refresh();
+            this.refresh(() => this.setState({busy: false}));
         });
     };
-    refresh = () => {
+    refresh = (callback = null) => {
         if (ConfigUtils.getConfigProp("username")) {
             getBookmarks((bookmarks) => {
                 this.setState({bookmarks: bookmarks});
+                callback?.(bookmarks);
             });
         }
     };
 }
 
-const selector = state => ({
-    mapCrs: state.map?.projection,
-    mapScales: state.map?.scales
-});
 
-export default connect(selector, {
+export default connect(state => ({
+    mapCrs: state.map?.projection,
+    mapScales: state.map?.scales,
+    theme: state.theme.current
+}), {
     zoomToExtent: zoomToExtent,
     zoomToPoint: zoomToPoint
 })(Bookmark);

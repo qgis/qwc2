@@ -297,6 +297,7 @@ Requires `permalinkServiceUrl` to point to a `qwc-permalink-service`.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| openOnClick | `bool` | Whether to directly open the bookmark on click / middle click, instead of showing dedicated open buttons. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 BottomBar<a name="bottombar"></a>
