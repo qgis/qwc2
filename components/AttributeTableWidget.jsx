@@ -524,13 +524,15 @@ class AttributeTableWidget extends React.Component {
                 filterGeom: this.props.filter.filterGeom,
                 fields: this.props.showDisplayFieldOnly ? [editConfig.displayField, "geometry"] : null
             };
-            // If sort or filter field is virtual, query full feature set and sort/filter client side
+            // If sort is virtual or a filter value is set, query full feature set and sort/filter client side
+            // (Query full feature set when filtering so that filtered geometries can be highlighted)
             const fieldMap = (newState.curEditConfig?.fields || []).reduce((res, field) => ({...res, [field.id]: field}), {});
-            const clientSideFilterSort = newState.clientSideData || (newState.filterVal && fieldMap[newState.filterField]?.expression) || fieldMap[newState.sortField?.field]?.expression;
+            const clientSideFilterSort = newState.clientSideData || (newState.filterVal) || fieldMap[newState.sortField?.field]?.expression;
 
             if (!forceReload && clientSideFilterSort && newState.allFeatures) {
                 return {...newState, features: this.filteredSortedFeatures(newState.allFeatures, newState)};
             } else {
+                Object.assign(newState, {allFeatures: [], features: [], featureCount: 0});
                 if (clientSideFilterSort) {
                     /* eslint-disable-next-line no-alert */
                     if (!forceReload && !confirm(LocaleUtils.tr("attribtable.fulldatasetload"))) {
@@ -553,7 +555,7 @@ class AttributeTableWidget extends React.Component {
                             const featuresSlice = result.features || [];
                             const featureCount = result.numberMatched ?? featuresSlice.length;
                             const features = new Array(featureCount);
-                            features.splice(options.offset, featuresSlice.length, ...featuresSlice);
+                            features.splice(options.offset ?? 0, featuresSlice.length, ...featuresSlice);
                             this.setState({
                                 loading: false,
                                 allFeatures: options.limit === undefined || result.numberMatched === undefined ? features : null,
@@ -565,7 +567,7 @@ class AttributeTableWidget extends React.Component {
                         } else {
                             // eslint-disable-next-line
                             alert(LocaleUtils.tr("attribtable.loadfailed"));
-                            this.setState({loading: false, features: [], featureCount: 0});
+                            this.setState({loading: false});
                         }
                     }, options
                 );
