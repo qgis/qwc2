@@ -60,6 +60,8 @@ class Editing extends React.Component {
         iface: PropTypes.object,
         layers: PropTypes.array,
         map: PropTypes.object,
+        /** Whether to omit read only datasets from the dataset selection menu. */
+        omitReadOnlyDatasets: PropTypes.bool,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
@@ -247,6 +249,9 @@ class Editing extends React.Component {
                         <option disabled value="">{LocaleUtils.tr("common.selectlayer")}</option>
                         {Object.entries(this.props.editConfigs).map(([mapName, serviceConfigs]) => (
                             Object.entries(serviceConfigs).map(([layerName, edConfig]) => {
+                                if (this.props.omitReadOnlyDatasets && Object.values(edConfig.permissions).every(permission => permission === false)) {
+                                    return null;
+                                }
                                 const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
                                 if (!match) {
                                     return null;

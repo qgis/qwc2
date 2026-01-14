@@ -351,6 +351,7 @@ This plugin queries the dataset via the editing service specified by
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowCloneGeometry | `bool` | Whether to enable the "Clone existing geometry" functionality. | `true` |
+| omitReadOnlyDatasets | `bool` | Whether to omit read only datasets from the dataset selection menu. | `undefined` |
 | showAttributeTableButton | `bool` | Whether to show a button to open the AttributeTable (if the plugin is available). | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
