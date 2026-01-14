@@ -618,6 +618,17 @@ class AttributeTableWidget extends React.Component {
         const indexOffset = state.currentPage * state.pageSize;
         return state.features.slice(indexOffset, indexOffset + state.pageSize);
     };
+    updateFilter = (stateField, val) => {
+        const newState = {filterField: this.state.filterField, filterOp: this.state.filterOp, filterVal: this.state.filterVal};
+        newState[stateField] = val;
+        // Reset page if a reload is triggered (either filter changed with a set filter value, or filter value cleared)
+        if (newState.filterVal || (this.state.filterVal && !newState.filterVal)) {
+            newState.currentPage = 0;
+            this.reload(this.state.selectedLayer, false, newState);
+        } else {
+            this.setState({[stateField]: val});
+        }
+    };
     sortBy = (field) => {
         const newState = {sortField: this.state.sortField};
         if (newState.sortField && newState.sortField.field === field) {
