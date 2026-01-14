@@ -292,6 +292,9 @@ export class ToggleSet {
             return this;
         }
     };
+    isEmpty = () => {
+        return this._set.size === 0;
+    };
     size = () => {
         return this._set.size;
     };
