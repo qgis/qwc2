@@ -128,7 +128,7 @@ class AttributeTableWidget extends React.Component {
             this.reload(this.state.loadedLayer, true, {currentPage: 0});
         }
         // Highlight feature
-        if (this.state.highlightedFeature !== prevState.highlightedFeature || this.state.features !== prevState.features) {
+        if (this.state.highlightedFeature !== prevState.highlightedFeature || this.state.features !== prevState.features || this.state.selectedFeatures !== prevState.selectedFeatures) {
             this.highlightFeatures();
         }
     }
@@ -781,6 +781,8 @@ class AttributeTableWidget extends React.Component {
         let features = [];
         if (this.state.highlightedFeature) {
             features.push(this.state.highlightedFeature);
+        } else if (!this.state.selectedFeatures.isEmpty()) {
+            features = this.currentPageFeatures(this.state).filter(feature => this.state.selectedFeatures.has(feature.id));
         } else if (this.state.filterVal) {
             features = this.state.features;
         }
