@@ -109,6 +109,7 @@ class AttributeTableWidget extends React.Component {
         this.table = null;
         this.attribTableContents = null;
         this.state.limitToExtent = props.limitToExtent;
+        this.filterWarningShown = false;
     }
     componentDidMount() {
         if (this.props.initialLayer) {
@@ -538,9 +539,10 @@ class AttributeTableWidget extends React.Component {
                 Object.assign(newState, {allFeatures: [], features: [], featureCount: 0});
                 if (clientSideFilterSort) {
                     /* eslint-disable-next-line no-alert */
-                    if (!forceReload && !confirm(LocaleUtils.tr("attribtable.fulldatasetload"))) {
+                    if (!this.filterWarningShown && !forceReload && !confirm(LocaleUtils.tr("attribtable.fulldatasetload"))) {
                         return {};
                     }
+                    this.filterWarningShown = true;
                 } else {
                     if (this.props.filter.filterParams?.[selectedLayer] && newState.filterVal) {
                         options.filter = [this.props.filter.filterParams?.[selectedLayer], 'and', [newState.filterField, newState.filterOp, newState.filterVal]];
