@@ -95,7 +95,7 @@ export default class TextInput extends React.Component {
             style.marginRight = '1.5em';
         }
         return (
-            <div className={wrapperClassName + " " + (this.props.className || "")} ref={this.storeInitialHeight}>
+            <div className={wrapperClassName + " " + (this.props.className || "")} onClick={MiscUtils.killEvent} ref={this.storeInitialHeight}>
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"
@@ -240,6 +240,7 @@ export default class TextInput extends React.Component {
                 curValue: this.props.value || "",
                 changed: false
             }), () => ev.target.blur());
+            MiscUtils.killEvent(ev);
         }
     };
     commit = () => {
