@@ -83,7 +83,6 @@ class AttributeTableWidget extends React.Component {
         curEditConfig: null,
         fieldTranslations: null,
         features: [],
-        featureCount: 0,
         allFeatures: null,
         selectedFeatures: new ToggleSet(),
         highlightedFeature: null,
@@ -259,7 +258,7 @@ class AttributeTableWidget extends React.Component {
                     </tbody>
                 </table>
             );
-            const npages = Math.ceil(this.state.featureCount / this.state.pageSize);
+            const npages = Math.ceil(this.state.features.length / this.state.pageSize);
             const pages = [this.state.currentPage];
             const extraright = Math.max(0, 2 - this.state.currentPage);
             const extraleft = Math.max(0, this.state.currentPage - (npages - 3));
@@ -528,15 +527,14 @@ class AttributeTableWidget extends React.Component {
                 filterGeom: this.props.filter.filterGeom,
                 fields: this.props.showDisplayFieldOnly ? [editConfig.displayField, "geometry"] : null
             };
-            // If sort is virtual or a filter value is set, query full feature set and sort/filter client side
-            // (Query full feature set when filtering so that filtered geometries can be highlighted)
+            // If sort or filter field is virtual, query full feature set and sort/filter client side
             const fieldMap = (newState.curEditConfig?.fields || []).reduce((res, field) => ({...res, [field.id]: field}), {});
-            const clientSideFilterSort = newState.clientSideData || (newState.filterVal) || fieldMap[newState.sortField?.field]?.expression;
+            const clientSideFilterSort = newState.clientSideData || (newState.filterVal && fieldMap[newState.filterField]?.expression) || fieldMap[newState.sortField?.field]?.expression;
 
             if (!forceReload && clientSideFilterSort && newState.allFeatures) {
                 return {...newState, features: this.filteredSortedFeatures(newState.allFeatures, newState)};
             } else {
-                Object.assign(newState, {allFeatures: [], features: [], featureCount: 0});
+                Object.assign(newState, {allFeatures: [], features: []});
                 if (clientSideFilterSort) {
                     /* eslint-disable-next-line no-alert */
                     if (!this.filterWarningShown && !forceReload && !confirm(LocaleUtils.tr("attribtable.fulldatasetload"))) {
@@ -548,9 +546,11 @@ class AttributeTableWidget extends React.Component {
                         options.filter = [this.props.filter.filterParams?.[selectedLayer], 'and', [newState.filterField, newState.filterOp, newState.filterVal]];
                     } else if (newState.filterVal) {
                         options.filter = [[newState.filterField, newState.filterOp, newState.filterVal]];
+                    } else {
+                        // NOTE: Query full feature set when filtering so that filtered geometries can be highlighted
+                        options.offset = newState.currentPage * newState.pageSize;
+                        options.limit = newState.pageSize;
                     }
-                    options.offset = newState.currentPage * newState.pageSize;
-                    options.limit = newState.pageSize;
                     options.sortby = newState.sortField ? ((newState.sortField.dir < 0 ? "-" : "") + newState.sortField.field) : null;
                 }
                 newState.loading = true;
@@ -558,14 +558,12 @@ class AttributeTableWidget extends React.Component {
                     editConfig, this.props.mapCrs, (result) => {
                         if (result) {
                             const featuresSlice = result.features || [];
-                            const featureCount = result.numberMatched ?? featuresSlice.length;
-                            const features = new Array(featureCount);
+                            const features = new Array(result.numberMatched ?? featuresSlice.length);
                             features.splice(options.offset ?? 0, featuresSlice.length, ...featuresSlice);
                             this.setState({
                                 loading: false,
                                 allFeatures: options.limit === undefined || result.numberMatched === undefined ? features : null,
                                 features: clientSideFilterSort ? this.filteredSortedFeatures(features, newState) : features,
-                                featureCount: featureCount,
                                 loadedLayer: newState.selectedLayer,
                                 clientSideData: result.numberMatched === undefined
                             });
