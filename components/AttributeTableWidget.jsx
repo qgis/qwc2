@@ -864,24 +864,64 @@ class AttributeTableWidget extends React.Component {
         }
     };
     csvExport = () => {
-        const primaryKey = this.state.curEditConfig.primaryKey ?? "id";
-        const fields = this.props.showDisplayFieldOnly ? this.state.curEditConfig.fields.filter(
-            field => field.name === this.state.curEditConfig.displayField
-        ) : this.state.curEditConfig.fields.filter(field => field.id !== primaryKey);
-        let data = "";
-        data += primaryKey + "," + fields.map(field => `"${field.name.replaceAll('"', '""')}"`).join(",") + "\n";
+        const formatCsv = (features) => {
+            const primaryKey = this.state.curEditConfig.primaryKey ?? "id";
+            const fields = this.props.showDisplayFieldOnly ? this.state.curEditConfig.fields.filter(
+                field => field.name === this.state.curEditConfig.displayField
+            ) : this.state.curEditConfig.fields.filter(field => field.id !== primaryKey);
+            let data = "";
+            data += primaryKey + "," + fields.map(field => `"${field.name.replaceAll('"', '""')}"`).join(",") + "\n";
 
-        this.state.features.forEach(feature => {
-            data += feature.id + "," + fields.map(field => {
-                const value = feature.properties[field.id];
-                if (value === null || value === undefined) {
-                    return "null";
-                } else {
-                    return `"${String(feature.properties[field.id]).replaceAll('"', '""')}"`;
+            features.forEach(feature => {
+                data += feature.id + "," + fields.map(field => {
+                    const value = feature.properties[field.id];
+                    if (value === null || value === undefined) {
+                        return "null";
+                    } else {
+                        return `"${String(feature.properties[field.id]).replaceAll('"', '""')}"`;
+                    }
+                }).join(",") + "\n";
+            });
+
+            FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), this.state.loadedLayer.split("#").slice(-1)[0] + ".csv");
+        };
+
+        if (this.state.clientSideData) {
+            formatCsv(this.state.allFeatures);
+        } else {
+            const state = this.state;
+            const options = {
+                bbox: state.limitToExtent ? this.props.mapBbox.bounds : null,
+                filter: this.props.filter.filterParams?.[state.loadedLayer],
+                filterGeom: this.props.filter.filterGeom,
+                fields: this.props.showDisplayFieldOnly ? [state.curEditConfig.displayField, "geometry"] : null
+            };
+            // If sort or filter field is virtual, query full feature set and sort/filter client side
+            const fieldMap = (state.curEditConfig?.fields || []).reduce((res, field) => ({...res, [field.id]: field}), {});
+            const clientSideFilterSort = state.clientSideData || (state.filterVal && fieldMap[state.filterField]?.expression) || fieldMap[state.sortField?.field]?.expression;
+
+            if (!clientSideFilterSort) {
+                if (this.props.filter.filterParams?.[state.loadedLayer] && state.filterVal) {
+                    options.filter = [this.props.filter.filterParams?.[this.state.loadedLayer], 'and', [state.filterField, state.filterOp, state.filterVal]];
+                } else if (state.filterVal) {
+                    options.filter = [[state.filterField, state.filterOp, state.filterVal]];
                 }
-            }).join(",") + "\n";
-        });
-        FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), this.state.loadedLayer + ".csv");
+                options.sortby = state.sortField ? ((state.sortField.dir < 0 ? "-" : "") + state.sortField.field) : null;
+            }
+
+            this.setState({loading: true});
+            this.props.iface.getFeatures(
+                this.state.curEditConfig, this.props.mapCrs, (result) => {
+                    if (result) {
+                        formatCsv(clientSideFilterSort ? this.filteredSortedFeatures(result.features, this.state) : result.features);
+                    } else {
+                        // eslint-disable-next-line
+                        alert(LocaleUtils.tr("attribtable.loadfailed"));
+                    }
+                    this.setState({loading: false});
+                }, options
+            );
+        }
     };
     translateFieldName = (fieldName) => {
         return this.state.fieldTranslations?.[fieldName] ?? fieldName;
