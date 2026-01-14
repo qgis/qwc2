@@ -96,6 +96,8 @@ class Identify extends React.Component {
         setCurrentTask: PropTypes.func,
         /** Whether to show a layer selector to filter the identify results by layer. */
         showLayerSelector: PropTypes.bool,
+        /** Whether to prefix the identify result titles with the respecitve layer name. */
+        showLayerTitles: PropTypes.bool,
         startupParams: PropTypes.object,
         theme: PropTypes.object
     };
@@ -120,7 +122,8 @@ class Identify extends React.Component {
         },
         initialRadiusUnits: 'm',
         highlightAllResults: true,
-        showLayerSelector: true
+        showLayerSelector: true,
+        showLayerTitles: true
     };
     state = {
         mode: 'Point',
@@ -401,6 +404,7 @@ class Identify extends React.Component {
                         resultGridSize={this.props.resultGridSize}
                         resultMultiDisplay={this.props.resultMultiDisplay}
                         showLayerSelector={this.props.showLayerSelector}
+                        showLayerTitles={this.props.showLayerTitles}
                     />
                 );
             }
