@@ -24,9 +24,11 @@ export default class TextInput extends React.Component {
         className: PropTypes.string,
         clearValue: PropTypes.string,
         disabled: PropTypes.bool,
+        focusOnRef: PropTypes.bool,
         multiline: PropTypes.bool,
         name: PropTypes.string,
         onChange: PropTypes.func,
+        onNoChange: PropTypes.func,
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,
@@ -141,6 +143,9 @@ export default class TextInput extends React.Component {
         if (el) {
             this.input = el;
             this.setDefaultValue(this.state.value, this.state.valueRev, -1);
+            if (this.props.focusOnRef) {
+                el.focus();
+            }
         }
     };
     setInputContents = () => {
@@ -252,6 +257,8 @@ export default class TextInput extends React.Component {
                 this.setState({committing: false});
                 this.props.onChange(this.state.value);
             });
+        } else {
+            this.props.onNoChange?.();
         }
     };
     storeInitialHeight = (el) => {
