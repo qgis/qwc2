@@ -220,7 +220,14 @@ const IdentifyUtils = {
                 return properties[sublayer.displayField];
             }
         }
-        return properties.name || properties.Name || properties.NAME || item.id;
+        const fallbackDisplayFields = ConfigUtils.getConfigProp("fallbackDisplayFields", null, ["name", "id"]).map(field => field.toLowerCase());
+        const propertyCaseMap = Object.keys(properties).reduce((res, key) => ({...res, [key.toLowerCase()]: key}), {});
+        for (const field of fallbackDisplayFields) {
+            if (field in propertyCaseMap) {
+                return properties[propertyCaseMap[field]];
+            }
+        }
+        return "";
     },
     parseXmlFeature(feature, geometrycrs, id, featurereport, displayfield, layername, layertitle, layerinfo, translations) {
         const featureResult = {};
