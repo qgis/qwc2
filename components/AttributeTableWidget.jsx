@@ -851,11 +851,12 @@ class AttributeTableWidget extends React.Component {
         }
     };
     csvExport = () => {
+        const primaryKey = this.state.curEditConfig.primaryKey ?? "id";
         const fields = this.props.showDisplayFieldOnly ? this.state.curEditConfig.fields.filter(
             field => field.name === this.state.curEditConfig.displayField
-        ) : this.state.curEditConfig.fields.filter(field => field.id !== 'id');
+        ) : this.state.curEditConfig.fields.filter(field => field.id !== primaryKey);
         let data = "";
-        data += "id," + fields.map(field => `"${field.name.replaceAll('"', '""')}"`).join(",") + "\n";
+        data += primaryKey + "," + fields.map(field => `"${field.name.replaceAll('"', '""')}"`).join(",") + "\n";
 
         this.state.features.forEach(feature => {
             data += feature.id + "," + fields.map(field => {
