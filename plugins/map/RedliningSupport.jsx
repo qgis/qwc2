@@ -426,10 +426,7 @@ class RedliningSupport extends React.Component {
         if (this.selectedFeatures.length || (!this.props.redlining.drawMultiple && redliningLayer.getSource().getFeatures().length > 0)) {
             return;
         }
-        let featureHit = false;
-        this.props.map.forEachFeatureAtPixel(ev.pixel, (feature, layer) => {
-            featureHit |= (layer === redliningLayer);
-        }, {hitTolerance: 5});
+        const featureHit = this.props.map.hasFeatureAtPixel(ev.pixel, {hitTolerance: 5, layerFilter: layer => layer === redliningLayer});
         if (!redliningLayer || featureHit) {
             return;
         }
