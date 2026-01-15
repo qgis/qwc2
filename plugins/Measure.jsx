@@ -90,7 +90,8 @@ class Measure extends React.Component {
             {key: "Point", label: LocaleUtils.tr("measureComponent.pointLabel")},
             {key: "LineString", label: LocaleUtils.tr("measureComponent.lengthLabel")},
             {key: "Polygon", label: LocaleUtils.tr("measureComponent.areaLabel")},
-            {key: "Bearing", label: LocaleUtils.tr("measureComponent.bearingLabel")}
+            {key: "Bearing", label: LocaleUtils.tr("measureComponent.bearingLabel")},
+            {key: "Reset", icon: 'clear', tooltip: LocaleUtils.tr("common.clear")}
         ];
         return (
             <ButtonBar active={this.props.measureState.geomType} buttons={buttons} onClick={this.setMeasureMode} />

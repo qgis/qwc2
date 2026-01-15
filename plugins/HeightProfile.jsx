@@ -283,13 +283,13 @@ class HeightProfile extends React.Component {
         this.profilePrintWindow = null;
     }
     componentDidUpdate(prevProps) {
-        if (this.props.measurement.coordinates !== prevProps.measurement.coordinates) {
-            if (this.props.measurement.drawing === false && this.props.measurement.geomType === "LineString" && !isEmpty(this.props.measurement.coordinates) ) {
-                this.queryElevations(this.props.measurement.coordinates, this.props.measurement.segment_lengths, this.props.projection);
-            } else if (!isEmpty(this.state.data)) {
-                this.setState({data: {}});
-                this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: null});
-            }
+        const measureIdChanged = this.props.measurement.measureId !== prevProps.measurement.measureId;
+        const coordsChanged = this.props.measurement.coordinates !== prevProps.measurement.coordinates;
+        if (this.props.measurement.geomType === 'LineString' && !this.props.measurement.drawing && (measureIdChanged || coordsChanged) && !isEmpty(this.props.measurement.coordinates)) {
+            this.queryElevations(this.props.measurement.coordinates, this.props.measurement.segment_lengths, this.props.projection);
+        } else if (!isEmpty(this.state.data) && measureIdChanged) {
+            this.setState({data: {}});
+            this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: null});
         }
     }
     queryElevations(coordinates, distances, projection) {
@@ -386,9 +386,6 @@ class HeightProfile extends React.Component {
         ) : null];
     }
     renderHeightProfile = (saveRef, interactive) => {
-        if (this.props.measurement.drawing ) {
-            return null;
-        }
         if (this.state.data.error) {
             return (
                 <div className="height-profile-error">

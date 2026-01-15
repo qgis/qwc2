@@ -11,6 +11,7 @@ import {CHANGE_MEASUREMENT_STATE} from '../actions/measurement';
 
 const defaultState = {
     geomType: null,
+    drawing: false,
     coordinates: null,
     length: null,
     area: 0,
