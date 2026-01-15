@@ -241,8 +241,12 @@ const MeasureUtils = {
             }
         } else if (["Ellipse", "Polygon", "Square", "Box"].includes(geomType)) {
             const area = MeasureUtils.computeArea(geom, featureCrs, geodesic);
+            const lengths = MeasureUtils.computeSegmentLengths(geom.getCoordinates()[0], featureCrs, geodesic);
             measurements.area = area;
             feature.set('label', MeasureUtils.formatMeasurement(area, true, settings.areaUnit));
+            if (settings.showPerimeterLength) {
+                feature.set('end_label', MeasureUtils.formatMeasurement(lengths.reduce((sum, len) => sum + len, 0), false, settings.lenUnit));
+            }
         } else if (geomType === 'Circle') {
             const radius = geom.getRadius();
             measurements.radius = radius;

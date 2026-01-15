@@ -45,6 +45,8 @@ class Measure extends React.Component {
         setSnappingConfig: PropTypes.func,
         /** Whether to show the widget to switch between measure modes. */
         showMeasureModeSwitcher: PropTypes.bool,
+        /** Whether to show the perimeter length of area measurements. */
+        showPerimeterLength: PropTypes.bool,
         /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
         /** Whether snapping is enabled by default when editing.
@@ -64,6 +66,7 @@ class Measure extends React.Component {
             bearingTailMarker: this.props.bearingTailMarker,
             lineHeadMarker: this.props.lineHeadMarker,
             lineTailMarker: this.props.lineTailMarker,
+            showPerimeterLength: this.props.showPerimeterLength,
             markerScale: this.props.markerScale
         });
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
