@@ -259,6 +259,7 @@ export default {
     measureInteraction: (feature, options) => {
         const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
         const styleOptions = {
+            circleRadius: opts.measurePointRadius,
             strokeColor: opts.measureStrokeColor,
             strokeWidth: opts.measureStrokeWidth,
             fillColor: opts.measureFillColor,
