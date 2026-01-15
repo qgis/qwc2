@@ -234,6 +234,11 @@ const MeasureUtils = {
             measurements.segment_lengths = lengths;
             measurements.length = lengths.reduce((sum, len) => sum + len, 0);
             feature.set('segment_labels', lengths.map(length => MeasureUtils.formatMeasurement(length, false, settings.lenUnit)));
+            if (geom.getCoordinates().length > 2) {
+                feature.set('end_label', MeasureUtils.formatMeasurement(measurements.length, false, settings.lenUnit));
+            } else {
+                feature.unset('end_label');
+            }
         } else if (["Ellipse", "Polygon", "Square", "Box"].includes(geomType)) {
             const area = MeasureUtils.computeArea(geom, featureCrs, geodesic);
             measurements.area = area;

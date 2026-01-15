@@ -152,6 +152,27 @@ const defaultStyle = (feature, options) => {
             }));
         }
     }
+    if (feature.getProperties().end_label) {
+        const coo = feature.getGeometry().getCoordinates();
+        let point = null;
+        if (feature.getGeometry().getType() === "LineString") {
+            point = coo[coo.length - 1];
+        } else if (feature.getGeometry().getType() === "Polygon") {
+            point = coo[0].reduce((min, p) => p[1] < min[1] ? p : min, [Infinity, Infinity]);
+        }
+        if (point) {
+            styles.push(new ol.style.Style({
+                geometry: new ol.geom.Point(point),
+                text: new ol.style.Text({
+                    font: opts.textFont || '11pt sans-serif',
+                    text: feature.getProperties().end_label,
+                    fill: new ol.style.Fill({color: opts.textFill}),
+                    stroke: new ol.style.Stroke({color: opts.textStroke, width: 3}),
+                    offsetY: 20
+                })
+            }));
+        }
+    }
     if (feature.getGeometry().getType() === "LineString" && opts.headmarker in END_MARKERS) {
         const p1 = feature.getGeometry().getCoordinates()[0];
         const p2 = feature.getGeometry().getCoordinates()[1];
