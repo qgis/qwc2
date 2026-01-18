@@ -285,7 +285,7 @@ class HeightProfile extends React.Component {
     componentDidUpdate(prevProps) {
         const measureIdChanged = this.props.measurement.measureId !== prevProps.measurement.measureId;
         const coordsChanged = this.props.measurement.coordinates !== prevProps.measurement.coordinates;
-        if (this.props.measurement.geomType === 'LineString' && !this.props.measurement.drawing && (measureIdChanged || coordsChanged) && !isEmpty(this.props.measurement.coordinates)) {
+        if (this.props.measurement.mode === 'LineString' && !this.props.measurement.drawing && (measureIdChanged || coordsChanged) && !isEmpty(this.props.measurement.coordinates)) {
             this.queryElevations(this.props.measurement.coordinates, this.props.measurement.segment_lengths, this.props.projection);
         } else if (!isEmpty(this.state.data) && measureIdChanged) {
             this.setState({data: {}});

@@ -10,7 +10,7 @@
 import {CHANGE_MEASUREMENT_STATE} from '../actions/measurement';
 
 const defaultState = {
-    geomType: null,
+    mode: null,
     drawing: false,
     coordinates: null,
     length: null,

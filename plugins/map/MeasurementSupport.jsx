@@ -38,15 +38,14 @@ class MeasurementSupport extends React.Component {
         this.interactions = [];
     }
     componentDidUpdate(prevProps) {
-        if (this.props.measurement.geomType && this.props.measurement.geomType !== prevProps.measurement.geomType ) {
-            if (this.props.measurement.geomType === 'Reset') {
-                this.reset();
-                this.props.changeMeasurementState({geomType: prevProps.measurement.geomType});
-            } else {
-                this.addDrawInteraction(this.props);
-            }
-        } else if (!this.props.measurement.geomType) {
-            this.reset();
+        if (this.props.measurement.mode === 'Reset') {
+            this.resetLayer();
+            const nextmode = this.props.measurement.nextmode !== undefined ? this.props.measurement.nextmode : prevProps.measurement.mode;
+            this.props.changeMeasurementState({mode: nextmode});
+        } else if (this.props.measurement.mode && this.props.measurement.mode !== prevProps.measurement.mode) {
+            this.setupInteractions();
+        } else if (!this.props.measurement.mode && prevProps.measurement.mode) {
+            this.removeInteractions();
         } else if (
             this.measureLayer && (
                 this.props.measurement.lenUnit !== prevProps.measurement.lenUnit ||
@@ -62,66 +61,97 @@ class MeasurementSupport extends React.Component {
     render() {
         return null;
     }
-    addDrawInteraction = (newProps) => {
-        this.reset();
-
-        this.measureLayer = new ol.layer.Vector({
-            source: new ol.source.Vector(),
-            zIndex: 1000000
-        });
-        this.props.map.addLayer(this.measureLayer);
-
-        let geometryType = newProps.measurement.geomType;
+    setupInteractions = () => {
+        if (!this.measureLayer) {
+            this.measureLayer = new ol.layer.Vector({
+                source: new ol.source.Vector(),
+                zIndex: 1000000
+            });
+            this.props.map.addLayer(this.measureLayer);
+        }
+        let geometryType = this.props.measurement.mode;
         if (geometryType === 'Bearing') {
             geometryType = 'LineString';
         }
+        // If a draw interaction already exists, replace it
+
+        const drawInteractionPos = this.drawInteraction ?
+            this.props.map.getInteractions().getArray().findIndex(item => item === this.drawInteraction) : null;
 
         this.drawInteraction = new ol.interaction.Draw({
             stopClick: true,
             source: this.measureLayer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },
+            maxPoints: this.props.measurement.mode === 'Bearing' ? 2 : undefined,
             type: geometryType,
             style: () => { return this.modifyInteraction ? [] : FeatureStyles.sketchInteraction(); }
         });
-        this.selectInteraction = new ol.interaction.Select({
-            layers: [this.measureLayer],
-            style: null
-        });
-        this.modifyInteraction = new ol.interaction.Modify({
-            features: this.selectInteraction.getFeatures(),
-            condition: (event) => { return event.originalEvent.buttons === 1; },
-            insertVertexCondition: () => { return this.props.measurement.geomType !== 'Bearing'; },
-            deleteCondition: (event) => { return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event); },
-            style: (feature) => {
-                // Hack to get cursor position over geometry...
-                if (this.props.measurement.pickPositionCallback) {
-                    clearTimeout(this.pickPositionCallbackTimeout);
-                    this.props.measurement.pickPositionCallback(feature.getGeometry().getCoordinates());
-                }
-                return FeatureStyles.sketchInteraction();
-            }
-        });
-
-        this.props.map.addInteraction(this.drawInteraction);
-        this.props.map.addInteraction(this.selectInteraction);
-        this.props.map.addInteraction(this.modifyInteraction);
-
-        this.selectInteraction.setActive(false);
-        this.modifyInteraction.setActive(false);
-
         this.drawInteraction.on('drawstart', (ev) => {
             this.currentFeature = ev.feature;
             this.currentFeature.setId(uuidv4());
+            this.currentFeature.set('measureMode', this.props.measurement.mode);
             this.currentFeature.setStyle(this.featureStyleFunction);
             this.currentFeature.on('change', evt => this.updateMeasurementResults(evt.target));
         });
         this.drawInteraction.on('drawend', () => {
             this.enterEditMode(this.currentFeature);
         });
-        this.modifyInteraction.on('modifyend', () => {
-            this.updateMeasurementResults(this.currentFeature, false);
-        });
-        this.props.map.on('singleclick', this.handleMapClick);
+        if (drawInteractionPos !== null) {
+            this.drawInteraction.setActive(!this.modifyInteraction.getActive());
+            this.props.map.getInteractions().setAt(drawInteractionPos, this.drawInteraction);
+        } else {
+            this.drawInteraction.setActive(false);
+            this.props.map.addInteraction(this.drawInteraction);
+
+            // If draw interaction is missing, then also the select and modify interactions were missing
+            this.selectInteraction = new ol.interaction.Select({
+                layers: [this.measureLayer],
+                style: null
+            });
+            this.modifyInteraction = new ol.interaction.Modify({
+                features: this.selectInteraction.getFeatures(),
+                condition: (event) => { return event.originalEvent.buttons === 1; },
+                insertVertexCondition: () => { return this.props.measurement.mode !== 'Bearing'; },
+                deleteCondition: (event) => { return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event); },
+                style: (feature) => {
+                    // Hack to get cursor position over geometry...
+                    if (this.props.measurement.pickPositionCallback) {
+                        clearTimeout(this.pickPositionCallbackTimeout);
+                        this.props.measurement.pickPositionCallback(feature.getGeometry().getCoordinates());
+                    }
+                    return FeatureStyles.sketchInteraction();
+                }
+            });
+
+            this.props.map.addInteraction(this.selectInteraction);
+            this.props.map.addInteraction(this.modifyInteraction);
+
+            this.selectInteraction.setActive(true);
+            this.modifyInteraction.setActive(true);
+
+            this.modifyInteraction.on('modifyend', () => {
+                this.updateMeasurementResults(this.currentFeature, false);
+            });
+            this.props.map.on('singleclick', this.handleMapClick);
+        }
+    };
+    removeInteractions = () => {
+        if (this.drawInteraction !== null) {
+            this.currentFeature = null;
+            this.measureLayer.getSource().changed();
+            this.props.map.un('singleclick', this.handleMapClick);
+            this.props.map.removeInteraction(this.drawInteraction);
+            this.drawInteraction = null;
+            this.props.map.removeInteraction(this.selectInteraction);
+            this.selectInteraction = null;
+            this.props.map.removeInteraction(this.modifyInteraction);
+            this.modifyInteraction = null;
+        }
+    };
+    resetLayer = () => {
+        this.removeInteractions();
+        this.props.map.removeLayer(this.measureLayer);
+        this.measureLayer = null;
     };
     enterEditMode = (feature) => {
         this.currentFeature = feature;
@@ -147,27 +177,13 @@ class MeasurementSupport extends React.Component {
                 // Immediately start new drawing
                 const clickCoord = MapUtils.getHook(MapUtils.GET_SNAPPED_COORDINATES_FROM_PIXEL_HOOK)(evt.pixel);
                 this.drawInteraction.appendCoordinates([clickCoord]);
-                if (this.props.measurement.geomType === 'Point') {
+                if (this.props.measurement.mode === 'Point') {
                     // Ughh... Apparently we need to wait 250ms for the 'singleclick' event processing to finish to avoid pick interactions picking up the current event
                     setTimeout(() => this.drawInteraction.finishDrawing(), 300);
                 }
             } else {
                 this.enterEditMode(features[0]);
             }
-        }
-    };
-    reset = () => {
-        if (this.drawInteraction !== null) {
-            this.props.map.un('singleclick', this.handleMapClick);
-            this.props.map.removeInteraction(this.drawInteraction);
-            this.drawInteraction = null;
-            this.props.map.removeInteraction(this.selectInteraction);
-            this.selectInteraction = null;
-            this.props.map.removeInteraction(this.modifyInteraction);
-            this.modifyInteraction = null;
-            this.props.map.removeLayer(this.measureLayer);
-            this.measureLayer = null;
-            this.currentFeature = null;
         }
     };
     clearPickPosition = () => {
@@ -182,23 +198,18 @@ class MeasurementSupport extends React.Component {
         }
     };
     updateMeasurementResults = (feature, drawing = true) => {
-        const geomType = this.props.measurement.geomType;
+        const measureMode = feature.get('measureMode');
         const settings = {
             lenUnit: this.props.measurement.lenUnit,
             areaUnit: this.props.measurement.areaUnit,
             displayCrs: this.props.displayCrs,
             showPerimeterLength: this.props.measurement.showPerimeterLength
         };
-        MeasureUtils.updateFeatureMeasurements(feature, geomType, this.props.projection, settings);
-
-        // Only one segment for bearing measurement
-        if (geomType === 'Bearing' && feature.getGeometry().getCoordinates().length > 2) {
-            this.drawInteraction.finishDrawing();
-        }
+        MeasureUtils.updateFeatureMeasurements(feature, measureMode, this.props.projection, settings);
 
         this.measureLayer.getSource().changed();
         this.props.changeMeasurementState({
-            geomType: this.props.measurement.geomType,
+            mode: measureMode,
             drawing: drawing,
             measureId: feature.getId(),
             coordinates: feature.getGeometry().getCoordinates(),
@@ -215,10 +226,11 @@ class MeasurementSupport extends React.Component {
             return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
         };
         const opts = {};
-        if (this.props.measurement.geomType === 'LineString') {
+        const measureMode = feature.get('measureMode');
+        if (measureMode === 'LineString') {
             opts.headmarker = this.props.measurement.lineHeadMarker;
             opts.tailmarker = this.props.measurement.lineTailMarker;
-        } else if (this.props.measurement.geomType === 'Bearing') {
+        } else if (measureMode === 'Bearing') {
             opts.headmarker = this.props.measurement.bearingHeadMarker;
             opts.tailmarker = this.props.measurement.bearingTailMarker;
         }

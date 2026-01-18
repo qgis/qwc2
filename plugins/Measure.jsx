@@ -33,6 +33,10 @@ class Measure extends React.Component {
         /** Tail marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. */
         bearingTailMarker: PropTypes.string,
         changeMeasurementState: PropTypes.func,
+        /** Whether to clear measurements when exiting measurement tool. */
+        clearMeasurementsOnExit: PropTypes.bool,
+        /** Whether to clear measurements when changing measurement mode. */
+        clearMeasurementsOnModeChange: PropTypes.bool,
         displayCrs: PropTypes.string,
         /** Head marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. */
         lineHeadMarker: PropTypes.string,
@@ -54,6 +58,8 @@ class Measure extends React.Component {
         snappingActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
     };
     static defaultProps = {
+        clearMeasurementsOnExit: true,
+        clearMeasurementsOnModeChange: true,
         markerScale: 1,
         showMeasureModeSwitcher: true,
         snapping: true,
@@ -61,7 +67,7 @@ class Measure extends React.Component {
     };
     onShow = (mode) => {
         this.props.changeMeasurementState({
-            geomType: mode || 'Point',
+            mode: mode || 'Point',
             bearingHeadMarker: this.props.bearingHeadMarker,
             bearingTailMarker: this.props.bearingTailMarker,
             lineHeadMarker: this.props.lineHeadMarker,
@@ -72,11 +78,19 @@ class Measure extends React.Component {
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
     };
     onHide = () => {
-        this.props.changeMeasurementState({geomType: null});
+        if (this.props.clearMeasurementsOnExit) {
+            this.props.changeMeasurementState({mode: 'Reset', nextmode: null});
+        } else {
+            this.props.changeMeasurementState({mode: null});
+        }
     };
-    setMeasureMode = (geomType) => {
-        if (geomType !== this.props.measureState.geomType) {
-            this.props.changeMeasurementState({geomType: geomType});
+    setMeasureMode = (mode) => {
+        if (mode !== this.props.measureState.mode) {
+            if (this.props.clearMeasurementsOnModeChange) {
+                this.props.changeMeasurementState({mode: 'Reset', nextmode: mode});
+            } else {
+                this.props.changeMeasurementState({mode: mode});
+            }
         }
     };
     changeLengthUnit = (ev) => {
@@ -97,17 +111,17 @@ class Measure extends React.Component {
             {key: "Reset", icon: 'clear', tooltip: LocaleUtils.tr("common.clear")}
         ];
         return (
-            <ButtonBar active={this.props.measureState.geomType} buttons={buttons} onClick={this.setMeasureMode} />
+            <ButtonBar active={this.props.measureState.mode} buttons={buttons} onClick={this.setMeasureMode} />
         );
     };
     renderResult = () => {
         let text = "";
         let unitSelector = null;
 
-        if (this.props.measureState.geomType === "Point") {
+        if (this.props.measureState.mode === "Point") {
             const coo = this.props.measureState.coordinates || [0, 0];
             text = CoordinatesUtils.getFormattedCoordinate(coo, this.props.mapCrs, this.props.displayCrs);
-        } else if (this.props.measureState.geomType === "LineString") {
+        } else if (this.props.measureState.mode === "LineString") {
             const length = this.props.measureState.length || 0;
             text = MeasureUtils.formatMeasurement(length, false, this.props.measureState.lenUnit);
             unitSelector = (
@@ -120,7 +134,7 @@ class Measure extends React.Component {
                     <option value="mi">mi</option>
                 </select>
             );
-        } else if (this.props.measureState.geomType === "Polygon") {
+        } else if (this.props.measureState.mode === "Polygon") {
             const area = this.props.measureState.area || 0;
             text = MeasureUtils.formatMeasurement(area, true, this.props.measureState.areaUnit);
             unitSelector = (
@@ -135,7 +149,7 @@ class Measure extends React.Component {
                     <option value="sqmi">mi&#178;</option>
                 </select>
             );
-        } else if (this.props.measureState.geomType === "Bearing") {
+        } else if (this.props.measureState.mode === "Bearing") {
             text = MeasureUtils.getFormattedBearingValue(this.props.measureState.bearing);
         }
         return (

@@ -739,6 +739,8 @@ Allows measuring points/lines/areas on the map.
 |----------|------|-------------|---------------|
 | bearingHeadMarker | `string` | Head marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
 | bearingTailMarker | `string` | Tail marker of bearing line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
+| clearMeasurementsOnExit | `bool` | Whether to clear measurements when exiting measurement tool. | `true` |
+| clearMeasurementsOnModeChange | `bool` | Whether to clear measurements when changing measurement mode. | `true` |
 | lineHeadMarker | `string` | Head marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
 | lineTailMarker | `string` | Tail marker of distance line measurement geometry. Can be one of `OUTARROW`, `INARROW`, `LINE`. | `undefined` |
 | markerScale | `number` | Scale factor for all heade/tail markers. | `1` |
