@@ -140,7 +140,6 @@ export default [
             "key-spacing": ["error", { beforeColon: false, afterColon: true }],
             "new-cap": ["error", { newIsCap: true }],
             "no-multiple-empty-lines": ["error", { max: 2 }],
-            "no-nested-ternary": "error",
             "no-new-object": "error",
             "no-spaced-func": "error",
             "no-trailing-spaces": "error",

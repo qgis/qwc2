@@ -142,7 +142,6 @@ const LayerUtils = {
                     queryable.push(sublayer.name);
                 }
                 if (visibilities) {
-                    // eslint-disable-next-line
                     visibilities.push(layerVisibility ? (parentVisibility ? 1 : 0.5) : 0);
                 }
             }
