@@ -121,7 +121,7 @@ pluginData.forEach(plugin => {
     output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
 });
 output += "\n";
-output += "Map support plugins\n";
+output += "[Map support plugins](#mapSupportPlugins)\n";
 output += "\n";
 mapToolPluginData.forEach(plugin => {
     if (!plugin.description) {
@@ -130,7 +130,7 @@ mapToolPluginData.forEach(plugin => {
     output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
 });
 output += "\n";
-output += "3D Plugins\n";
+output += "[3D Plugins](#plugins3d)\n";
 output += "\n";
 plugin3dData.forEach(plugin => {
     if (!plugin.description) {
@@ -139,7 +139,7 @@ plugin3dData.forEach(plugin => {
     output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
 });
 output += "\n";
-output += "Extra Plugins\n";
+output += "[Extra Plugins](#extraPlugins)\n";
 output += "\n";
 extraPluginData.forEach(plugin => {
     if (!plugin.description) {
@@ -169,9 +169,9 @@ plugin3dData.forEach(plugin => {
     output += genPluginDoc(plugin);
 });
 output += "---\n";
-output += "# Extra plugins<a name=\"plugins3d\"></a>\n";
+output += "# Extra plugins<a name=\"extraPlugins\"></a>\n";
 output += "\n";
-output += "These plugins are not enabled in the stock viewer, and must be enabled in a custom viewer build";
+output += "These plugins are not enabled in the stock viewer, and must be enabled in a custom viewer build.";
 output += "\n";
 extraPluginData.forEach(plugin => {
     output += genPluginDoc(plugin);

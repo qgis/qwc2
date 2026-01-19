@@ -52,7 +52,7 @@ Plugin reference
 * [View3D](#view3d)
 * [ZoomButton](#zoombutton)
 
-Map support plugins
+[Map support plugins](#mapSupportPlugins)
 
 * [EditingSupport](#editingsupport)
 * [LocateSupport](#locatesupport)
@@ -60,7 +60,7 @@ Map support plugins
 * [RedliningSupport](#redliningsupport)
 * [SnappingSupport](#snappingsupport)
 
-3D Plugins
+[3D Plugins](#plugins3d)
 
 * [BackgroundSwitcher3D](#backgroundswitcher3d)
 * [BottomBar3D](#bottombar3d)
@@ -77,7 +77,7 @@ Map support plugins
 * [Settings3D](#settings3d)
 * [TopBar3D](#topbar3d)
 
-Extra Plugins
+[Extra Plugins](#extraPlugins)
 
 * [PlotInfoTool](#plotinfotool)
 
@@ -1181,9 +1181,9 @@ Bottom bar of the 3D map, including the search bar, tool bar and menu.
 | toolbarItems | `array` | The toolbar, in the same format as the 2D `TopBar` toolbar items.<br />You can include entries for the View3D plugins.<br />You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),<br />these will be displayed only in fullsceen 3D mode. | `undefined` |
 
 ---
-# Extra plugins<a name="plugins3d"></a>
+# Extra plugins<a name="extraPlugins"></a>
 
-These plugins are not enabled in the stock viewer, and must be enabled in a custom viewer build
+These plugins are not enabled in the stock viewer, and must be enabled in a custom viewer build.
 PlotInfoTool<a name="plotinfotool"></a>
 ----------------------------------------------------------------
 Plugin for requesting plot information, including Swiss Public-law Restrictions on landownership (PLR) cadastre.
