@@ -410,7 +410,7 @@ class OerebDocument extends React.Component {
         this.setState((state) => ({expandedLegend: state.expandedLegend === legendId ? null : legendId}));
     };
     toggleThemeLayer = (subthemelayer) => {
-        this.props.changeLayerProperty(subthemelayer.uuid, "visibility", !subthemelayer.visibility);
+        this.props.changeLayerProperty(subthemelayer.id, "visibility", !subthemelayer.visibility);
     };
     localizedText = (el) => {
         if (isEmpty(el)) {
