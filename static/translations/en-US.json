@@ -25,6 +25,7 @@
         "MapFilter": "Map Filter",
         "MapLight3D": "Light and Shadows",
         "ObjectList": "Object list",
+        "PlotInfoTool": "Real Estate Information",
         "Print": "Print",
         "Reports": "Reports",
         "Settings": "Settings",
@@ -471,12 +472,38 @@
       "nodataset": "No oblique imagery available",
       "title": "Oblique Aerial View"
     },
+    "oereb": {
+      "concernedThemes": "Concerned themes",
+      "fundationdatastate": "Cadastral surveying data. Status of the cadastral survey:",
+      "fundations": "Fundations",
+      "generalInformation": "General and legal information",
+      "generalinfo": "General information",
+      "hidefulllegend": "Hide full legend",
+      "hints": "Additional information and hints",
+      "legalbasis": "Legal bases",
+      "notConcernedThemes": "Not concerned themes",
+      "nrpoints": "point(s)",
+      "perc": "Share in %",
+      "regulations": "Regulations",
+      "responsibleauthority": "Responsible authority",
+      "responsibleoffice": "Responsible office",
+      "share": "Share",
+      "showfulllegend": "Show full legend",
+      "themeWithoutData": "Themes without data",
+      "type": "Type",
+      "title": "ÖREB cadastre",
+      "failed": "Failed to load OEREB extract"
+    },
     "panoramax": {
       "notfound": "There is no image available for this location.",
       "title": "Panoramax Viewer"
     },
     "pickfeature": {
       "querying": "Querying..."
+    },
+    "plotinfotool": {
+      "failed": "Failed to load data",
+      "loading": "Loading data..."
     },
     "portal": {
       "filter": "Filter themes...",
@@ -749,6 +776,10 @@
       "default": "Default",
       "dark": "Dark",
       "highcontrast": "High contrast"
+    },
+    "plotdescr": {
+      "title": "Plot description",
+      "requestPdf": "Create land register plan (PDF)"
     }
   }
 }

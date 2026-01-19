@@ -25,6 +25,7 @@
         "MapFilter": "Kartenfilter",
         "MapLight3D": "Beleuchtung und Schatten",
         "ObjectList": "Objektliste",
+        "PlotInfoTool": "Grundstücksinformation",
         "Print": "Drucken",
         "Reports": "Berichte",
         "Settings": "Einstellungen",
@@ -471,12 +472,38 @@
       "nodataset": "Keine Schrägluftbilder verfügbar",
       "title": "Schrägluftbildansicht"
     },
+    "oereb": {
+      "concernedThemes": "Betroffene Themen",
+      "fundationdatastate": "Daten der amtlichen Vermessung. Stand der amtlichen Vermessung:",
+      "fundations": "Grundlagedaten",
+      "generalInformation": "Allgemeine und rechtliche Informationen",
+      "generalinfo": "Allgemeine Informationen",
+      "hidefulllegend": "Vollständige Legende ausblenden",
+      "hints": "Weitere Informationen und Hinweise",
+      "legalbasis": "Gesetzliche Grundlagen",
+      "notConcernedThemes": "Nicht betroffene Themen",
+      "nrpoints": "Punkt(e)",
+      "perc": "Anteil in %",
+      "regulations": "Rechtsvorschriften",
+      "responsibleauthority": "Katasterverantwortliche Stelle",
+      "responsibleoffice": "Zuständige Stelle",
+      "share": "Anteil",
+      "showfulllegend": "Vollständige Legende einblenden",
+      "themeWithoutData": "Nicht verfügbare Themen",
+      "type": "Typ",
+      "title": "Öffentlich-rechtliche Eigentumsbeschränkungen",
+      "failed": "Fehler beim Laden des OEREB Auszug"
+    },
     "panoramax": {
       "notfound": "An diesem Ort ist kein Bild verfügbar.",
       "title": "Panoramax Viewer"
     },
     "pickfeature": {
       "querying": "Abfragen..."
+    },
+    "plotinfotool": {
+      "failed": "Datenabfrage gescheitert",
+      "loading": "Daten werden geladen..."
     },
     "portal": {
       "filter": "Themen filtern...",
@@ -749,6 +776,10 @@
       "default": "Standard",
       "dark": "Dunkel",
       "highcontrast": "Hochkontrast"
+    },
+    "plotdescr": {
+      "title": "Grundstücksbeschrieb",
+      "requestPdf": "Grundbuchplan (PDF) erstellen"
     }
   }
 }

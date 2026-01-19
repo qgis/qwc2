@@ -1,0 +1,36 @@
+{
+  "languages": [
+    "de-CH",
+    "en-US"
+  ],
+  "strings": [
+    "appmenu.items.PlotInfoTool",
+    "oereb.concernedThemes",
+    "oereb.fundationdatastate",
+    "oereb.fundations",
+    "oereb.generalInformation",
+    "oereb.generalinfo",
+    "oereb.hidefulllegend",
+    "oereb.hints",
+    "oereb.legalbasis",
+    "oereb.notConcernedThemes",
+    "oereb.nrpoints",
+    "oereb.perc",
+    "oereb.regulations",
+    "oereb.responsibleauthority",
+    "oereb.responsibleoffice",
+    "oereb.share",
+    "oereb.showfulllegend",
+    "oereb.themeWithoutData",
+    "oereb.type",
+    "plotinfotool.failed",
+    "plotinfotool.loading"
+  ],
+  "extra_strings": [
+    "appmenu.items.PlotInfoTool",
+    "oereb.title",
+    "oereb.failed",
+    "plotdescr.title",
+    "plotdescr.requestPdf"
+  ]
+}

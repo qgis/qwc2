@@ -25,6 +25,7 @@
         "MapFilter": "Filta mappa",
         "MapLight3D": "Illuminazione e ombre",
         "ObjectList": "Lista oggetti",
+        "PlotInfoTool": "",
         "Print": "Stampa",
         "Reports": "Rapporti",
         "Settings": "Impostazioni",
@@ -471,12 +472,38 @@
       "nodataset": "Nessuna immagine aerea obliqua disponibile",
       "title": "Vista aerea obliqua"
     },
+    "oereb": {
+      "concernedThemes": "",
+      "fundationdatastate": "",
+      "fundations": "",
+      "generalInformation": "",
+      "generalinfo": "",
+      "hidefulllegend": "",
+      "hints": "",
+      "legalbasis": "",
+      "notConcernedThemes": "",
+      "nrpoints": "",
+      "perc": "",
+      "regulations": "",
+      "responsibleauthority": "",
+      "responsibleoffice": "",
+      "share": "",
+      "showfulllegend": "",
+      "themeWithoutData": "",
+      "type": "",
+      "title": "",
+      "failed": ""
+    },
     "panoramax": {
       "notfound": "Nessun immagine disponibile per questa posizione",
       "title": "Visualizzatore Panoramax"
     },
     "pickfeature": {
       "querying": "Query..."
+    },
+    "plotinfotool": {
+      "failed": "",
+      "loading": ""
     },
     "portal": {
       "filter": "Filtra temi...",
@@ -749,6 +776,10 @@
       "default": "Predefinito",
       "dark": "Scuro",
       "highcontrast": "Contrasto elevato"
+    },
+    "plotdescr": {
+      "title": "",
+      "requestPdf": ""
     }
   }
 }

@@ -1,0 +1,148 @@
+div.plot-info-dialog-body {
+    display: flex;
+    flex-direction: column;
+}
+
+div.resizeable-window-body-nonscrollable div.plot-info-dialog-body {
+    height: 100%;
+}
+
+div.plot-info-dialog-header {
+    background-color: var(--list-bg-color);
+    border-width: 1px 1px 0 1px ;
+    border-style: solid;
+    border-color: var(--border-color);
+    width: 100%;
+    font-size: small;
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+div.plot-info-result-header {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: var(--border-color);
+    background-color: var(--button-bg-color);
+    padding: 0.25em;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+div.plot-info-result-header > span:last-child {
+    flex: 1 1 auto;
+}
+
+div.plot-info-result-header > span.icon {
+    flex: 0 0 auto;
+    margin-right: 0.25em;
+}
+
+div.plot-info-result-body {
+    flex: 0 1 auto;
+    overflow-y: auto;
+}
+
+div.plot-info-result-body table {
+    width: 100%;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: var(--border-color);
+}
+
+div.plot-info-result-body table td:first-child {
+    width: 33%;
+}
+
+div.plot-info-result-body table td {
+    padding: 0.125em 0.25em;
+}
+
+div.plot-info-result-body table td div {
+    max-height: 2.8em;
+    overflow: auto;
+}
+
+div.plot-info-dialog-queries {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5em;
+}
+
+div.plot-info-dialog-query-title {
+    border: 1px solid var(--border-color);
+    margin-top: 0.5em;
+    background-color: var(--button-bg-color);
+    height: 2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding-left: 0.5em;
+    flex: 0 0 auto;
+}
+
+div.plot-info-dialog-query-title > span:not(.icon) {
+    margin: 0 0.5em;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+div.plot-info-dialog-query-title > span.icon-pdf,
+div.plot-info-dialog-query-title > div.spinner {
+    border-left: 1px solid var(--border-color);
+    padding: 0 0.5em;
+    width: 2em;
+    height: 100%;
+}
+
+div.plot-info-dialog-query-title > div.spinner {
+    cursor: default;
+}
+
+div.plot-info-dialog-query-title > span.icon-pdf:hover {
+    background-color: var(--button-bg-color-hover);
+    color: var(--button-text-color-hover);
+}
+
+div.plot-info-dialog-query-loading,
+div.plot-info-dialog-query-failed {
+    display: flex;
+    padding: 0.25em;
+    align-items: center;
+    font-style: italic;
+    color: gray;
+}
+
+div.plot-info-dialog-query-loading div.spinner {
+    flex: 0 0 1.5em;
+    height: 1.5em;
+    width: 1.5em;
+    margin-right: 0.5em;
+}
+
+div.plot-info-dialog-query > div:nth-child(2) {
+    border-top: 1px solid var(--border-color);
+    flex: 1 1 auto;
+}
+
+div.plot-info-dialog-query-result {
+    border-width: 0 1px 1px 1px;
+    border-color: var(--border-color);
+    border-style: solid;
+    width: 100%;
+    background-color: var(--list-bg-color);
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+div.plot-info-dialog-query-result > iframe {
+    min-height: 0;
+    width: 100%;
+    flex: 1 1 auto;
+    border: 0;
+}

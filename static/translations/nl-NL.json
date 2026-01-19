@@ -25,6 +25,7 @@
         "MapFilter": "Kaartfilter",
         "MapLight3D": "",
         "ObjectList": "",
+        "PlotInfoTool": "",
         "Print": "Print",
         "Reports": "",
         "Settings": "Instellingen",
@@ -471,12 +472,38 @@
       "nodataset": "",
       "title": ""
     },
+    "oereb": {
+      "concernedThemes": "",
+      "fundationdatastate": "",
+      "fundations": "",
+      "generalInformation": "",
+      "generalinfo": "",
+      "hidefulllegend": "",
+      "hints": "",
+      "legalbasis": "",
+      "notConcernedThemes": "",
+      "nrpoints": "",
+      "perc": "",
+      "regulations": "",
+      "responsibleauthority": "",
+      "responsibleoffice": "",
+      "share": "",
+      "showfulllegend": "",
+      "themeWithoutData": "",
+      "type": "",
+      "title": "",
+      "failed": ""
+    },
     "panoramax": {
       "notfound": "",
       "title": ""
     },
     "pickfeature": {
       "querying": "Bezig met opvragen..."
+    },
+    "plotinfotool": {
+      "failed": "",
+      "loading": ""
     },
     "portal": {
       "filter": "Filter kaarten...",
@@ -749,6 +776,10 @@
       "default": "",
       "dark": "",
       "highcontrast": ""
+    },
+    "plotdescr": {
+      "title": "",
+      "requestPdf": ""
     }
   }
 }

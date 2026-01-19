@@ -25,6 +25,7 @@
         "MapFilter": "Filtrer la carte",
         "MapLight3D": "Illumination et ombres",
         "ObjectList": "Liste d'objets",
+        "PlotInfoTool": "",
         "Print": "Imprimer",
         "Reports": "Rapports",
         "Settings": "Paramètres",
@@ -471,12 +472,38 @@
       "nodataset": "Aucune image aérienne oblique disponible",
       "title": "Vue aérienne oblique"
     },
+    "oereb": {
+      "concernedThemes": "",
+      "fundationdatastate": "",
+      "fundations": "",
+      "generalInformation": "",
+      "generalinfo": "",
+      "hidefulllegend": "",
+      "hints": "",
+      "legalbasis": "",
+      "notConcernedThemes": "",
+      "nrpoints": "",
+      "perc": "",
+      "regulations": "",
+      "responsibleauthority": "",
+      "responsibleoffice": "",
+      "share": "",
+      "showfulllegend": "",
+      "themeWithoutData": "",
+      "type": "",
+      "title": "",
+      "failed": ""
+    },
     "panoramax": {
       "notfound": "Il n'y a pas d'image disponible pour cet emplacement.",
       "title": "Visionneuse Panoramax"
     },
     "pickfeature": {
       "querying": "Interrogation"
+    },
+    "plotinfotool": {
+      "failed": "",
+      "loading": ""
     },
     "portal": {
       "filter": "Filtrer les thèmes...",
@@ -749,6 +776,10 @@
       "default": "Défaut",
       "dark": "Sombre",
       "highcontrast": "Contraste élevé"
+    },
+    "plotdescr": {
+      "title": "",
+      "requestPdf": ""
     }
   }
 }

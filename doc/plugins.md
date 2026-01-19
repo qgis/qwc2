@@ -77,6 +77,10 @@ Map support plugins
 * [Settings3D](#settings3d)
 * [TopBar3D](#topbar3d)
 
+Extra Plugins
+
+* [PlotInfoTool](#plotinfotool)
+
 ---
 API<a name="api"></a>
 ----------------------------------------------------------------
@@ -1175,4 +1179,86 @@ Bottom bar of the 3D map, including the search bar, tool bar and menu.
 | menuItems | `array` | The menu items, in the same format as the 2D `TopBar` menu items.<br />You can include entries for the View3D plugins.<br />You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),<br />these will be displayed only in fullsceen 3D mode. | `undefined` |
 | searchOptions | `{`<br />`  minScaleDenom: number,`<br />`}` | Options passed down to the search component. | `{`<br />`    minScaleDenom: 1000`<br />`}` |
 | toolbarItems | `array` | The toolbar, in the same format as the 2D `TopBar` toolbar items.<br />You can include entries for the View3D plugins.<br />You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),<br />these will be displayed only in fullsceen 3D mode. | `undefined` |
+
+---
+# Extra plugins<a name="plugins3d"></a>
+
+These plugins are not enabled in the stock viewer, and must be enabled in a custom viewer build
+PlotInfoTool<a name="plotinfotool"></a>
+----------------------------------------------------------------
+Plugin for requesting plot information, including Swiss Public-law Restrictions on landownership (PLR) cadastre.
+
+**`config.json` sample configuration:**
+
+```
+{
+  "name": "PlotInfoTool",
+  "cfg": {
+    "toolLayers": ["<layer_name>", ...],
+    "infoQueries": [
+      {
+        "key": "plotdescr",
+        "titleMsgId": "plotdescr.title",
+        "query": "/plot/$egrid$",
+        "pdfQuery": null,
+        "urlKey": "cadastre_egrid"
+      },
+      {
+        "key": "oereb",
+        "titleMsgId": "oereb.title",
+        "query": "/oereb/json/$egrid$",
+        "pdfQuery": "/oereb/pdf/$egrid$",
+        "pdfTooltip": "oereb.requestPdf",
+        "urlKey": "oereb_egrid",
+        "cfg": {
+          "subthemes": {
+            "LandUsePlans": ["Grundnutzung", "Überlagerungen", "Linienbezogene Festlegungen", "Objektbezogene Festlegungen"]
+          }
+        }
+      }
+    ]
+  }
+}
+```
+Where:
+
+* `toolLayers`: List of layers to load when activating tool.
+* `infoQueries`: List of additional info queries to offer in the dialog (PLR cadastre query is built-in). By default, these render some HTML data in an iframe. If a custom component is needed for rendering the result, see configuration in `appConfig.js` below.
+  - `key`: A unique key name.
+  - `title`: The human visible title.
+  - `titleMsgId`: Instead of `title`, a message id for the title which will be looked up in the translations.
+  - `query`: The query to perform to retreive the info. Must return HTML, which is then rendered in an iframe. `$egrid$` is replaced with the EGRID of the current plot. If the specified URL is relative, it is resolved with respect to `plotInfoService` as defined in `config.json`.
+  - `pdfQuery`: Optional query to retreive a PDF report, which is then presented as a download the the user. Again, `$egrid$` is replaced with the EGRID of the current plot.
+  - `pdfTooltip`: Message id for the pdf button tooltip.
+  - `urlKey`: Optional query parameter key name. If QWC2 is started with `<urlKey>=<egrid>` in the URL, the plot info tool is automatically enabled and the respective query performed.
+  - `cfg`: Arbitrary custom config to pass to a custom component, see `appConfig.js` configuration below.
+
+**`appConfig.js` configuration:**
+
+Sample `PlotInfoToolPlugin` configuration, as can be defined in the `cfg` section of `pluginsDef` in `appConfig.js`:
+
+```
+PlotInfoToolPlugin: {
+  themeLayerRestorer: require('./themeLayerRestorer'),
+  customInfoComponents: {
+    oereb: require('qwc2-extra/components/OerebDocument')
+  }
+}
+```
+Where:
+
+* `themeLayerRestorer`: Function which restores theme layers, used for loading the `toolLayers` specified in the configuration in `config.json`. See `themeLayerRestorer` in the [sample `appConfig.js`](https://github.com/qgis/qwc2-demo-app/blob/master/js/appConfig.js).
+* `customInfoComponents`: Customized components for rendering plot info query results. The `key` specifies a the info query for which this component should be used, as specified in `infoQueries` in config.json (see above). An example of a minimal custom component:
+
+      class CustomPlotInfoComponent extends React.Component {
+        static propTypes = {
+          data: PropTypes.object, // PropType according to format of data returned by the specified query URL
+          config: PropTypes.object // Custom configuration
+        }
+        render() {
+          return (<div>{this.props.data.field}</div>);
+        }
+      };
+
+      module.exports = CustomPlotInfoComponent;
 

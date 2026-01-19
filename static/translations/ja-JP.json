@@ -25,6 +25,7 @@
         "MapFilter": "マップ・フィルタ",
         "MapLight3D": "光と影",
         "ObjectList": "",
+        "PlotInfoTool": "",
         "Print": "印刷",
         "Reports": "レポート",
         "Settings": "設定",
@@ -471,12 +472,38 @@
       "nodataset": "",
       "title": ""
     },
+    "oereb": {
+      "concernedThemes": "",
+      "fundationdatastate": "",
+      "fundations": "",
+      "generalInformation": "",
+      "generalinfo": "",
+      "hidefulllegend": "",
+      "hints": "",
+      "legalbasis": "",
+      "notConcernedThemes": "",
+      "nrpoints": "",
+      "perc": "",
+      "regulations": "",
+      "responsibleauthority": "",
+      "responsibleoffice": "",
+      "share": "",
+      "showfulllegend": "",
+      "themeWithoutData": "",
+      "type": "",
+      "title": "",
+      "failed": ""
+    },
     "panoramax": {
       "notfound": "この場所には表示できる画像がありません。",
       "title": "Panoramax Viewer"
     },
     "pickfeature": {
       "querying": "検索中..."
+    },
+    "plotinfotool": {
+      "failed": "",
+      "loading": ""
     },
     "portal": {
       "filter": "テーマをフィルタ...",
@@ -749,6 +776,10 @@
       "default": "デフォルト",
       "dark": "ダーク",
       "highcontrast": "ハイ・コントラスト"
+    },
+    "plotdescr": {
+      "title": "",
+      "requestPdf": ""
     }
   }
 }

@@ -48,6 +48,18 @@ fs.readdirSync(qwcPluginDir + "/map3d").forEach(entry => {
 });
 plugin3dData = plugin3dData.flat();
 
+let extraPluginData = [];
+const qwcExtraPluginDir = __dirname + '/../extra/plugins';
+fs.readdirSync(qwcExtraPluginDir).forEach(entry => {
+    if (entry.endsWith(".jsx")) {
+        const file = path.resolve(qwcExtraPluginDir, entry);
+        const contents = fs.readFileSync(file);
+        extraPluginData.push(reactDocs.parse(contents, {resolver: findAllDefinitionsResolver}));
+    }
+});
+extraPluginData = extraPluginData.flat();
+
+
 function parsePropType(type) {
     if (type.name === 'shape') {
         return '{\n' +
@@ -127,6 +139,15 @@ plugin3dData.forEach(plugin => {
     output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
 });
 output += "\n";
+output += "Extra Plugins\n";
+output += "\n";
+extraPluginData.forEach(plugin => {
+    if (!plugin.description) {
+        return;
+    }
+    output += `* [${plugin.displayName}](#${plugin.displayName.toLowerCase()})\n`;
+});
+output += "\n";
 output += "---\n";
 pluginData.forEach(plugin => {
     output += genPluginDoc(plugin);
@@ -145,6 +166,14 @@ output += "\n";
 output += "These plugins must be listed as children of the [View3D](#view3d) plugin.";
 output += "\n";
 plugin3dData.forEach(plugin => {
+    output += genPluginDoc(plugin);
+});
+output += "---\n";
+output += "# Extra plugins<a name=\"plugins3d\"></a>\n";
+output += "\n";
+output += "These plugins are not enabled in the stock viewer, and must be enabled in a custom viewer build";
+output += "\n";
+extraPluginData.forEach(plugin => {
     output += genPluginDoc(plugin);
 });
 fs.writeFileSync(__dirname + '/../doc/plugins.md', output);

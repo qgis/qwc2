@@ -25,6 +25,7 @@
         "MapFilter": "",
         "MapLight3D": "",
         "ObjectList": "",
+        "PlotInfoTool": "",
         "Print": "Nyomtatás",
         "Reports": "",
         "Settings": "",
@@ -471,12 +472,38 @@
       "nodataset": "",
       "title": ""
     },
+    "oereb": {
+      "concernedThemes": "",
+      "fundationdatastate": "",
+      "fundations": "",
+      "generalInformation": "",
+      "generalinfo": "",
+      "hidefulllegend": "",
+      "hints": "",
+      "legalbasis": "",
+      "notConcernedThemes": "",
+      "nrpoints": "",
+      "perc": "",
+      "regulations": "",
+      "responsibleauthority": "",
+      "responsibleoffice": "",
+      "share": "",
+      "showfulllegend": "",
+      "themeWithoutData": "",
+      "type": "",
+      "title": "",
+      "failed": ""
+    },
     "panoramax": {
       "notfound": "",
       "title": ""
     },
     "pickfeature": {
       "querying": ""
+    },
+    "plotinfotool": {
+      "failed": "",
+      "loading": ""
     },
     "portal": {
       "filter": "",
@@ -749,6 +776,10 @@
       "default": "",
       "dark": "",
       "highcontrast": ""
+    },
+    "plotdescr": {
+      "title": "",
+      "requestPdf": ""
     }
   }
 }
