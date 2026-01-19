@@ -78,8 +78,7 @@ function genPluginDoc(plugin) {
     if (!plugin.description) {
         return "";
     }
-    output += `${plugin.displayName}<a name="${plugin.displayName.toLowerCase()}"></a>\n`;
-    output += "----------------------------------------------------------------\n";
+    output += `## ${plugin.displayName}<a name="${plugin.displayName.toLowerCase()}"></a>\n\n`;
     output += plugin.description + "\n\n";
 
     const props = Object.entries(plugin.props || {}).filter(entry => entry[1].description);
@@ -156,7 +155,7 @@ output += "---\n";
 output += "# Map support plugins<a name=\"mapSupportPlugins\"></a>\n";
 output += "\n";
 output += "These plugins must be listed as children of the [Map](#map) plugin.";
-output += "\n";
+output += "\n\n";
 mapToolPluginData.forEach(plugin => {
     output += genPluginDoc(plugin);
 });
@@ -164,7 +163,7 @@ output += "---\n";
 output += "# 3D Plugins<a name=\"plugins3d\"></a>\n";
 output += "\n";
 output += "These plugins must be listed as children of the [View3D](#view3d) plugin.";
-output += "\n";
+output += "\n\n";
 plugin3dData.forEach(plugin => {
     output += genPluginDoc(plugin);
 });
@@ -172,7 +171,7 @@ output += "---\n";
 output += "# Extra plugins<a name=\"extraPlugins\"></a>\n";
 output += "\n";
 output += "These plugins are not enabled in the stock viewer, and must be enabled in a custom viewer build.";
-output += "\n";
+output += "\n\n";
 extraPluginData.forEach(plugin => {
     output += genPluginDoc(plugin);
 });
