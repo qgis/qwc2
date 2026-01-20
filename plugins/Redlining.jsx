@@ -112,7 +112,7 @@ class Redlining extends React.Component {
             this.setState({selectText: true});
         }
         if (!this.props.layers.find(layer => layer.id === this.props.redlining.layer)) {
-            const vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
+            const vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly && !layer.layertreehidden && !layer.externallyManaged);
             if (vectorLayers.length >= 1) {
                 this.props.changeRedliningState({layer: vectorLayers[0].id, layerTitle: vectorLayers[0].title});
             } else if (this.props.redlining.layer !== 'redlining') {
@@ -202,7 +202,7 @@ class Redlining extends React.Component {
                 });
             }
         }
-        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly);
+        let vectorLayers = this.props.layers.filter(layer => layer.type === "vector" && layer.role === LayerRole.USERLAYER && !layer.readonly && !layer.layertreehidden && !layer.externallyManaged);
         // Ensure list always contains at least a "Redlining" layer
         if (vectorLayers.length === 0) {
             vectorLayers = [{id: 'redlining', title: LocaleUtils.tr('redlining.layertitle')}, ...vectorLayers];
