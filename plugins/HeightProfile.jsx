@@ -292,6 +292,9 @@ class HeightProfile extends React.Component {
             this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: null});
         }
     }
+    componentWillUnmount() {
+        this.clearMarkerAndTooltip();
+    }
     queryElevations(coordinates, distances, projection) {
         const reqId = uuidv4();
         this.setState({reqId: reqId});
@@ -519,7 +522,7 @@ class HeightProfile extends React.Component {
             );
         }
         return (
-            <div className="height-profile-chart-container" style={{position: 'relative'}}>
+            <div className="height-profile-chart-container" onMouseLeave={this.clearMarkerAndTooltip} style={{position: 'relative'}}>
                 {datasetSelector}
                 <Line data={data} options={options} ref={saveRef}/>
             </div>
