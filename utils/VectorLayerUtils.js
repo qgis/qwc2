@@ -126,6 +126,27 @@ const VectorLayerUtils = {
                         params.labelRotations.push("0");
                     }
                 }
+                if (properties.end_label) {
+                    const coo = geometry.coordinates;
+                    let point = null;
+                    if (feature.geometry.type === "LineString") {
+                        point = coo[coo.length - 1];
+                    } else if (feature.geometry.type === "Polygon") {
+                        point = coo[0].reduce((min, p) => p[1] < min[1] ? p : min, [Infinity, Infinity]);
+                    }
+                    if (point) {
+                        // Add extra endpoint with label
+                        params.styles.push(VectorLayerUtils.createSld('Point', 'text', {}, 255, dpi, scaleFactor));
+                        params.labels.push(properties.end_label);
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt({type: "Point", coordinates: point}));
+                        params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                        params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
+                        params.labelOutlineSizes.push(scaleFactor);
+                        params.labelSizes.push(Math.round(10 * scaleFactor));
+                        params.labelDist.push("-5");
+                        params.labelRotations.push("0");
+                    }
+                }
             }
         }
         return params;
