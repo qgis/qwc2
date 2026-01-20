@@ -82,6 +82,20 @@ export function computeFeatureStyle(layer, feature) {
     return {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...layer.styleOptions, ...feature.styleOptions};
 }
 
+export function computeMeasureFeatureStyle(markerOpts) {
+    const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...markerOpts};
+    return {
+        circleRadius: opts.measurePointRadius,
+        strokeColor: opts.measureStrokeColor,
+        strokeWidth: opts.measureStrokeWidth,
+        fillColor: opts.measureFillColor,
+        headmarker: opts.headmarker,
+        tailmarker: opts.tailmarker,
+        markerscale: opts.markerscale,
+        strokeDash: []
+    };
+}
+
 const defaultStyle = (feature, options) => {
     const opts = {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...options};
     const styles = [];
@@ -276,20 +290,6 @@ export default {
             }),
             geometry: opts.geometryFunction
         });
-    },
-    measureInteraction: (feature, options) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
-        const styleOptions = {
-            circleRadius: opts.measurePointRadius,
-            strokeColor: opts.measureStrokeColor,
-            strokeWidth: opts.measureStrokeWidth,
-            fillColor: opts.measureFillColor,
-            headmarker: opts.headmarker,
-            tailmarker: opts.tailmarker,
-            markerscale: opts.markerscale,
-            strokeDash: []
-        };
-        return defaultStyle(feature, styleOptions);
     },
     measureInteractionVertex: (options) => {
         const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};

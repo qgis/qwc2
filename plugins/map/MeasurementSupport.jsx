@@ -14,8 +14,9 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
+import {addLayerFeatures, removeLayer} from '../../actions/layers';
 import {changeMeasurementState} from '../../actions/measurement';
-import FeatureStyles from '../../utils/FeatureStyles';
+import FeatureStyles, {computeMeasureFeatureStyle} from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
 
@@ -24,11 +25,13 @@ import MeasureUtils from '../../utils/MeasureUtils';
  */
 class MeasurementSupport extends React.Component {
     static propTypes = {
+        addLayerFeatures: PropTypes.func,
         changeMeasurementState: PropTypes.func,
         displayCrs: PropTypes.string,
         map: PropTypes.object,
         measurement: PropTypes.object,
-        projection: PropTypes.string
+        projection: PropTypes.string,
+        removeLayer: PropTypes.func
     };
     constructor(props) {
         super(props);
@@ -39,7 +42,7 @@ class MeasurementSupport extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (this.props.measurement.mode === 'Reset') {
-            this.resetLayer();
+            this.removeInteractions(true);
             const nextmode = this.props.measurement.nextmode !== undefined ? this.props.measurement.nextmode : prevProps.measurement.mode;
             this.props.changeMeasurementState({mode: nextmode});
         } else if (this.props.measurement.mode && this.props.measurement.mode !== prevProps.measurement.mode) {
@@ -67,6 +70,7 @@ class MeasurementSupport extends React.Component {
                 source: new ol.source.Vector(),
                 zIndex: 1000000
             });
+            this.measureLayer.set('id', uuidv4());
             this.props.map.addLayer(this.measureLayer);
         }
         let geometryType = this.props.measurement.mode;
@@ -84,7 +88,7 @@ class MeasurementSupport extends React.Component {
             condition: (event) => { return event.originalEvent.buttons === 1; },
             maxPoints: this.props.measurement.mode === 'Bearing' ? 2 : undefined,
             type: geometryType,
-            style: () => { return this.modifyInteraction ? [] : FeatureStyles.sketchInteraction(); }
+            style: []
         });
         this.drawInteraction.on('drawstart', (ev) => {
             this.currentFeature = ev.feature;
@@ -133,13 +137,15 @@ class MeasurementSupport extends React.Component {
                 this.updateMeasurementResults(this.currentFeature, false);
             });
             this.props.map.on('singleclick', this.handleMapClick);
+            this.props.map.on('pointermove', this.clearPickPosition);
         }
     };
-    removeInteractions = () => {
+    removeInteractions = (clearLayer) => {
         if (this.drawInteraction !== null) {
             this.currentFeature = null;
             this.measureLayer.getSource().changed();
             this.props.map.un('singleclick', this.handleMapClick);
+            this.props.map.un('pointermove', this.clearPickPosition);
             this.props.map.removeInteraction(this.drawInteraction);
             this.drawInteraction = null;
             this.props.map.removeInteraction(this.selectInteraction);
@@ -147,11 +153,30 @@ class MeasurementSupport extends React.Component {
             this.props.map.removeInteraction(this.modifyInteraction);
             this.modifyInteraction = null;
         }
-    };
-    resetLayer = () => {
-        this.removeInteractions();
-        this.props.map.removeLayer(this.measureLayer);
-        this.measureLayer = null;
+        if (this.measureLayer) {
+            if (clearLayer) {
+                this.props.removeLayer(this.measureLayer.get('id'));
+                this.props.map.removeLayer(this.measureLayer);
+                this.measureLayer = null;
+            } else {
+                // Serialize to global state
+                const format = new ol.format.GeoJSON();
+                const features = this.measureLayer.getSource().getFeatures().map(feature => {
+                    const featureObject = format.writeFeatureObject(feature);
+                    featureObject.styleName = 'default';
+                    featureObject.styleOptions = computeMeasureFeatureStyle(this.endMarkerOptions(feature));
+                    return featureObject;
+                });
+                const layer = {
+                    id: this.measureLayer.get('id'),
+                    type: 'vector',
+                    externallyManaged: true,
+                    crs: this.props.map.getView().getProjection().getCode(),
+                    layertreehidden: true
+                };
+                this.props.addLayerFeatures(layer, features);
+            }
+        }
     };
     enterEditMode = (feature) => {
         this.currentFeature = feature;
@@ -217,14 +242,22 @@ class MeasurementSupport extends React.Component {
         });
     };
     featureStyleFunction = (feature) => {
-        const geometryFunction = (f) => {
-            if (f.getGeometry().getType() === "Point") {
-                return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
-            } else if (f.getGeometry().getType() === "LineString") {
-                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
-            }
-            return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
-        };
+        const opts = computeMeasureFeatureStyle(this.endMarkerOptions(feature));
+        const styles = [...FeatureStyles.default(feature, opts)];
+        if (feature === this.currentFeature) {
+            const geometryFunction = (f) => {
+                if (f.getGeometry().getType() === "Point") {
+                    return new ol.geom.MultiPoint([f.getGeometry().getCoordinates()]);
+                } else if (f.getGeometry().getType() === "LineString") {
+                    return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
+                }
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
+            };
+            styles.push(FeatureStyles.measureInteractionVertex({geometryFunction}));
+        }
+        return styles;
+    };
+    endMarkerOptions = (feature) => {
         const opts = {};
         const measureMode = feature.get('measureMode');
         if (measureMode === 'LineString') {
@@ -235,11 +268,7 @@ class MeasurementSupport extends React.Component {
             opts.tailmarker = this.props.measurement.bearingTailMarker;
         }
         opts.markerscale = this.props.measurement.markerScale;
-        const styles = [...FeatureStyles.measureInteraction(feature, opts)];
-        if (feature === this.currentFeature) {
-            styles.push(FeatureStyles.measureInteractionVertex({geometryFunction}));
-        }
-        return styles;
+        return opts;
     };
 }
 
@@ -247,5 +276,7 @@ export default connect((state) => ({
     displayCrs: state.map.displayCrs,
     measurement: state.measurement
 }), {
-    changeMeasurementState
+    addLayerFeatures,
+    changeMeasurementState,
+    removeLayer
 })(MeasurementSupport);

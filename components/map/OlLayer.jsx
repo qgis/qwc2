@@ -88,7 +88,9 @@ class OlLayer extends React.Component {
         };
     };
     createLayer = (options) => {
-        if (options.type === 'group') {
+        if (options.externallyManaged) {
+            return;
+        } else if (options.type === 'group') {
             this.layer = new ol.layer.Group({zIndex: this.props.zIndex});
             this.layer.setLayers(new ol.Collection(options.items.map(item => {
                 const layerCreator = LayerRegistry[item.type];
@@ -125,7 +127,7 @@ class OlLayer extends React.Component {
     };
     updateLayer = (newOptions, oldOptions) => {
         // optimization to avoid to update the layer if not necessary
-        if (newOptions === oldOptions) {
+        if (newOptions === oldOptions || newOptions.externallyManaged) {
             return;
         }
         const layerCreator = LayerRegistry[this.props.options.type];
