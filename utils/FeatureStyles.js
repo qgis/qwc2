@@ -107,7 +107,8 @@ const defaultStyle = (feature, options) => {
             stroke: new ol.style.Stroke({
                 color: opts.strokeColor,
                 width: opts.strokeWidth,
-                lineDash: opts.strokeDash
+                lineDash: opts.strokeDash,
+                lineCap: 'butt'
             }),
             image: opts.circleRadius > 0 ? new ol.style.Circle({
                 radius: opts.circleRadius,

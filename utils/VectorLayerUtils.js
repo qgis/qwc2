@@ -218,6 +218,7 @@ const VectorLayerUtils = {
                      '<se:SvgParameter name="stroke-opacity">' + opacity(opts.strokeColor) + '</se:SvgParameter>' +
                      '<se:SvgParameter name="stroke-width">' + (opts.strokeWidth * dpiScale) + '</se:SvgParameter>' +
                      '<se:SvgParameter name="stroke-linejoin">round</se:SvgParameter>' +
+                     '<se:SvgParameter name="stroke-linecap">butt</se:SvgParameter>' +
                      (!isEmpty(opts.strokeDash) ? '<se:SvgParameter name="stroke-dasharray">' + opts.strokeDash.map(x => x * dpiScale).join(' ') + '</se:SvgParameter>' : '') +
                      '</se:Stroke>';
         const fill = '<se:Fill>' +
