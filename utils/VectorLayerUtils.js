@@ -21,7 +21,7 @@ import {END_MARKERS, computeFeatureStyle} from '../utils/FeatureStyles';
 
 
 const VectorLayerUtils = {
-    createPrintHighlighParams(layers, printCrs, printScale, dpi = 96, scaleFactor = 1.0) {
+    createPrintHighlighParams(layers, printCrs, mapScale, dpi = 96, scaleFactor = 1.0) {
         const qgisServerVersion = ConfigUtils.getConfigProp("qgisServerVersion", null, 3);
         const params = {
             geoms: [],
@@ -66,13 +66,12 @@ const VectorLayerUtils = {
                 const properties = feature.properties || {};
                 let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
                 if (feature.geometry.type === "LineString") {
-                    const markerScale = styleOptions.markerscale ?? 1;
                     // Generate arrow heads
                     if (styleOptions.headmarker) {
-                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.headmarker, false, feature, layer, dpi, printScale, printCrs, scaleFactor * markerScale);
+                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.headmarker, false, feature, layer, mapScale, dpi, scaleFactor);
                     }
                     if (styleOptions.tailmarker) {
-                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.tailmarker, true, feature, layer, dpi, printScale, printCrs, scaleFactor * markerScale);
+                        VectorLayerUtils.generateMarkerGeometry(params, styleOptions.tailmarker, true, feature, layer, mapScale, dpi, scaleFactor);
                     }
                 }
                 if (feature.geometry.type === "LineString" && !isEmpty(properties.segment_labels)) {
@@ -266,7 +265,7 @@ const VectorLayerUtils = {
         }
         return null;
     },
-    generateMarkerGeometry(params, markername, tail, feature, layer, dpi, mapScale, printCrs, scaleFactor) {
+    generateMarkerGeometry(params, markername, tail, feature, layer, mapScale, dpi, scaleFactor) {
         if (!END_MARKERS[markername]) {
             return;
         }
@@ -287,8 +286,9 @@ const VectorLayerUtils = {
             console.warn("Could not parse path for marker " + markername);
             return;
         }
-        //                        [        Same as in FeatureStyles.js         ] [   pixel to map units  ]
-        const markerScaleFactor = 0.125 * (1 + feature.styleOptions.strokeWidth) / dpi * 0.0254 * mapScale * scaleFactor;
+        const opts = feature.styleOptions;
+        //                        [              Same as in FeatureStyles.js             ]   [   pixel to map units  ]
+        const markerScaleFactor = 0.125 * (1 + opts.strokeWidth) * (opts.markerscale ?? 1) / dpi * 0.0254 * mapScale * scaleFactor;
         const origin = feature.geometry.coordinates[tail ? feature.geometry.coordinates.length - 1 : 0];
         const p2 = feature.geometry.coordinates[tail ? feature.geometry.coordinates.length - 2 : 1];
         const coordinates = [];

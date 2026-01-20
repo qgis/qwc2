@@ -667,7 +667,8 @@ class Print extends React.Component {
         const printDpi = parseInt(this.state.dpi, 10) || 0;
 
         if (this.props.printMapHighlights) {
-            const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, this.state.scale, printDpi, this.props.scaleFactor);
+            const mapScale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
+            const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, mapCrs, mapScale, printDpi, this.props.scaleFactor);
             formData[mapName + ":HIGHLIGHT_GEOM"] = highlightParams.geoms.join(";");
             formData[mapName + ":HIGHLIGHT_SYMBOL"] = highlightParams.styles.join(";");
             formData[mapName + ":HIGHLIGHT_LABELSTRING"] = highlightParams.labels.join(";");

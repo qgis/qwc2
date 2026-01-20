@@ -429,7 +429,8 @@ class MapExport extends React.Component {
         Object.assign(params, exportParams);
 
         // Highlight params
-        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.state.exportProjection, this.state.scale, this.state.dpi);
+        const mapScale = Math.round(MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom));
+        const highlightParams = VectorLayerUtils.createPrintHighlighParams(this.props.layers, this.state.exportProjection, mapScale, this.state.dpi);
         params.HIGHLIGHT_GEOM = highlightParams.geoms.join(";");
         params.HIGHLIGHT_SYMBOL = highlightParams.styles.join(";");
         params.HIGHLIGHT_LABELSTRING = highlightParams.labels.join(";");
