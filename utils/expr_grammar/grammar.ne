@@ -115,7 +115,7 @@ N -> float                         {% id %}
     | "if" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")"          {% function(d) { return d[4] ? d[8] : d[12]; } %}
     | "nullif" _ "(" _ P0 _ "," _ P0 _ ")"                 {% function(d) { return d[4] === d[8] ? null : d[4]; } %}
     | "regexp_match" _ "(" _ P0 _ "," _ P0 _ ")"           {% function(d) { return d[4].search(new RegExp(d[8])) + 1; } %}
-    | "attribute" _ "(" _ P0 _ ")"                         {% function(d) { return window.qwc2ExpressionParserContext.feature.properties?.[d[4]] ?? null; } %}
+    | "attribute" _ "(" _ P0 _ ")"                         {% function(d) { const ctx = window.qwc2ExpressionParserContext; return ctx.getFeature(ctx.layer, "id", ctx.feature.id)?.properties?.[d[4]] ?? null; } %}
     | "current_value" _ "(" _ P0 _ ")"                     {% function(d) { return window.qwc2ExpressionParserContext.feature.properties?.[d[4]] ?? null; } %}
     | "attribute" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return d[4]?.properties?.[d[8]] ?? null; } %}
     | "get_feature" _ "(" _ P0 _ "," _ P0 _ "," _ P0 _ ")" {% function(d) { return window.qwc2ExpressionParserContext.getFeature(d[4], d[8], d[12]); } %}
