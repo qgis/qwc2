@@ -49,32 +49,40 @@ P2 -> P2 _ "<" _ P3                {% function(d) { return asFilter(d) ? [d[0], 
     | P2 _ "IS"i _ P3              {% function(d) { return asFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; } %}
     | P2 _ "IS"i _ "NOT"i _ P3     {% function(d) { return asFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; } %}
     | P2 _ "~" _ P3                {% function(d) { return asFilter(d) ? [d[0], "~", d[4]] : new RegExp(d[4]).exec(d[0]) !== null; } %}
-    | P2 _ "LIKE" _ P3             {% function(d) { return asFilter(d) ? [d[0], "LIKE", d[4]] : new RegExp(replaceWildcards(d[4])).exec(d[0]) !== null; } %}
-    | P2 _ "ILIKE" _ P3            {% function(d) { return asFilter(d) ? [d[0], "ILIKE", d[4]] : new RegExp(replaceWildcards(d[4]), 'i').exec(d[0]) !== null; } %}
+    | P2 _ "LIKE"i _ P3             {% function(d) { return asFilter(d) ? [d[0], "LIKE", d[4]] : new RegExp(replaceWildcards(d[4])).exec(d[0]) !== null; } %}
+    | P2 _ "ILIKE"i _ P3            {% function(d) { return asFilter(d) ? [d[0], "ILIKE", d[4]] : new RegExp(replaceWildcards(d[4]), 'i').exec(d[0]) !== null; } %}
     | P3                           {% id %}
 
 # Priority-3 operators (addition, subtraction, concatenation)
 P3 -> P3 _ "+" _ P4                {% function(d) { return d[0] + d[4]; } %}
     | P3 _ "-" _ P4                {% function(d) { return d[0] - d[4]; } %}
-    | P3 _ "||" _ P4               {% function(d) { return d[0] + d[4]; } %}
+    | P3 _ "||" _ P4               {% function(d) { return d[0].concat(d[4]); } %}
     | P4                           {% id %}
 
 # Priority-4 operators (multiplication, division)
 P4 -> P4 _ "*" _ P5                {% function(d) { return d[0] * d[4]; } %}
     | P4 _ "/" _ P5                {% function(d) { return d[0] / d[4]; } %}
-    | P4 _ "//" _ P5               {% function(d) { return Maht.floor(d[0] / d[4]); } %}
+    | P4 _ "//" _ P5               {% function(d) { return Math.floor(d[0] / d[4]); } %}
     | P4 _ "%" _ P5                {% function(d) { return d[0] % d[4]; } %}
     | P5                           {% id %}
 
-# Priority-5 operators (exponent, IS, IS NOT)
-P5 -> P6 _ "^" _ P5                {% function(d) { return Math.pow(d[0], d[4]); } %}
+# Priority-5 operators (unary operators)
+P5 -> "-" _ P5                     {% function(d) { return -d[2]; } %}
+    | "+" _ P5                     {% function(d) { return d[2]; } %}
     | P6                           {% id %}
 
-# Priority-6 operators (parenthesis, number, unary operators)
-P6 -> "-" _ P6                     {% function(d) { return -d[2]; } %}
-    | "+" _ P6                     {% function(d) { return d[2]; } %}
-    | "(" _ P0 _ ")"               {% function(d) { return d[2]; } %}
+# Priority-6 operators (exponent)
+P6 -> P7 _ "^" _ P6                {% function(d) { return Math.pow(d[0], d[4]); } %}
+    | P7                           {% id %}
+
+# Priority-7 operators (array index)
+P7 -> P7 _ "[" _ P8 _ "]"          {% function(d) { return d[0][d[4]]; } %}
+    | P8                           {% id %}
+
+# Priority-8 operators (parenthesis)
+P8 -> "(" _ P0 _ ")"               {% function(d) { return d[2]; } %}
     | N                            {% id %}
+
 
 # A number or a function of a number, a variable or a constant
 N -> float                         {% id %}
@@ -123,6 +131,50 @@ N -> float                         {% id %}
     | "represent_value" _ "(" _ dqstring _ ")"             {% function(d) { return window.qwc2ExpressionParserContext.representValue(d[4]); } %}
     | "format_date" _ "(" _ sqstring _ "," _ sqstring _ ")" {% function(d) { return window.qwc2ExpressionParserContext.formatDate(d[4], d[8]); } %}
     | "format_date" _ "(" _ sqstring _ "," _ sqstring _ "," _ sqstring _ ")" {% function(d) { return window.qwc2ExpressionParserContext.formatDate(d[4], d[8], d[12]); } %}
+    | "array" _ "(" _ var_args _ ")"                       {% function(d) { return [...d[4]]; } %}
+    | "array_all" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return d[8].every(val => d[4].includes(val)); } %}
+    | "array_append" _ "(" _ P0 _ "," _ P0 _ ")"           {% function(d) { return [...d[4], d[8]]; } %}
+    | "array_cat" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return [...d[4], ...d[8]]; } %}
+    | "array_contains" _ "(" _ P0 _ "," _ P0 _ ")"         {% function(d) { return d[4].includes(d[8]); } %}
+    | "array_count" _ "(" _ P0 _ "," _ P0 _ ")"            {% function(d) { return d[4].filter(val => val === d[8]).length; } %}
+    | "array_distinct" _ "(" _ P0 _ ")"                    {% function(d) { return [...new Set(d[4])].sort((a,b) => a-b); } %}
+    # "array_filter" _ "(" _ P0 _ "," _ P1 _ ")"           TODO
+    | "array_find" _ "(" _ P0 _ "," _ P0 _ ")"             {% function(d) { return d[4].indexOf(d[8]); } %}
+    | "array_first" _ "(" _ P0 _ ")"                       {% function(d) { return d[4][0]; } %}
+    # "array_foreach" _ "(" _ P0 _ "," _ P1 _ ")"          TODO
+    | "array_get" _ "(" _ P0 _ "," _ P1 _ ")"              {% function(d) { return d[4][d[8]]; } %}
+    | "array_insert" _ "(" _ P0 _ "," _ P1 _ "," _ P2 _ ")"{% function(d) { const a = [...d[4]]; a.splice(d[8], 0, d[12]); return a; } %}
+    | "array_intersect" _ "(" _ P0 _ "," _ P0 _ ")"        {% function(d) { return d[8].find(val => d[4].includes(val)) !== undefined; } %}
+    | "array_last" _ "(" _ P0 _ ")"                        {% function(d) { return d[4][d[4].length - 1]; } %}
+    | "array_length" _ "(" _ P0 _ ")"                      {% function(d) { return d[4].length; } %}
+    # "array_majority" _ "(" _ P0 _ "," _ P1 _ ")"         TODO
+    | "array_max" _ "(" _ P0 _ ")"                         {% function(d) { return Math.max(...d[4]); } %}
+    | "array_mean" _ "(" _ P0 _ ")"                        {% function(d) { const n = d[4].filter(x => typeof x === "number"); return n.reduce((sum, el) => sum + el, 0) / n.length; } %}
+    | "array_median" _ "(" _ P0 _ ")"                      {% function(d) { const n = d[4].filter(x => typeof x === "number").sort((a, b) => a - b); const mid = Math.floor(n.length / 2); return n.length % 2 === 0 ? (n[mid - 1] + n[mid]) / 2 : n[mid]; } %}
+    | "array_min" _ "(" _ P0 _ ")"                         {% function(d) { return Math.min(...d[4]); } %}
+    # "array_minority" _ "(" _ P0 _ "," _ P1 _ ")"         TODO
+    | "array_prepend" _ "(" _ P0 _ "," _ P0 _ ")"          {% function(d) { return [d[8], ...d[4]]; } %}
+    | "array_prioritize" _ "(" _ P0 _ "," _ P1 _ ")"       {% function(d) { return d[8].filter(x => d[4].includes(x)).concat(d[4].filter(x => !d[8].includes(x))); } %}
+    | "array_remove_all" _ "(" _ P0 _ "," _ P1 _ ")"       {% function(d) { return d[4].filter(x => x !== d[8]); } %}
+    | "array_remove_at" _ "(" _ P0 _ "," _ P1 _ ")"        {% function(d) { const a = [...d[4]]; a.splice(d[8], 1); return a; } %}
+    | "array_replace" _ "(" _ P0 _ "," _ P1 _ "," _ P2 _ ")"{% function(d) { const h = [d[8]].flat(); return Array.isArray(d[12]) ? d[4].map(x => d[12][d[8].indexOf(x)] ?? x) : d[4].map(x => h.includes(x) ? d[12] : x); } %}
+    | "array_replace" _ "(" _ P0 _ "," _ P1 _ ")"          {% function(d) { return d[4].map(x => d[8][x] ?? x); } %}
+    | "array_reverse" _ "(" _ P0 _ ")"                     {% function(d) { return d[4].reverse(); } %}
+    | "array_slice" _ "(" _ P0 _ "," _ P1 _ "," _ P2 _ ")" {% function(d) { const offset = d[12] < 0 ? d[4].length : 0; return d[4].slice(d[8], offset + d[12] + 1); } %}
+    | "array_sort" _ "(" _ P0 _ ")"                        {% function(d) { return d[4].sort((a,b) => a - b); } %}
+    | "array_sort" _ "(" _ P0 _ "," _ P1 _ ")"             {% function(d) { return d[4].sort(d[8] === false ? (a, b) => b - a : (a,b) => a - b); } %}
+    | "array_sum" _ "(" _ P0 _ ")"                         {% function(d) { return d[4].filter(x => typeof x === "number").reduce((sum, x) => sum + x, 0); } %}
+    | "array_to_string" _ "(" _ P0 _ ")"                   {% function(d) { return d[4].join(","); } %}
+    | "array_to_string" _ "(" _ P0 _ "," _ P1 _ ")"        {% function(d) { return d[4].join(d[8]); } %}
+    | "array_to_string" _ "(" _ P0 _ "," _ P1 _ "," _ P2 _ ")" {% function(d) { return d[4].map(x => String(x).length === 0 ? d[12] : x).join(d[8]); } %}
+    | "generate_series" _ "(" _ P0 _ "," _ P1 _ ")"        {% function(d) { return Array.from({length: Math.floor((d[8] - d[4])) + 1}, (_, i) => d[4] + i); } %}
+    | "generate_series" _ "(" _ P0 _ "," _ P1 _ "," _ P2 _ ")" {% function(d) { return Array.from({length: Math.floor((d[8] - d[4]) / d[12]) + 1}, (_, i) => d[4] + i * d[12]); } %}
+    | "regexp_matches" _ "(" _ P0 _ "," _ P1 _ ")"         {% function(d) { return (new RegExp(d[8]).exec(d[4]) || []).slice(1); } %}
+    | "regexp_matches" _ "(" _ P0 _ "," _ P1 _ "," _ P2 _ ")" {% function(d) { return (new RegExp(d[8]).exec(d[4]) || []).slice(1).map(x => (x === '' ? d[12] : x)); } %}
+    | "string_to_array" _ "(" _ P0 _ ")"                   {% function(d) { return d[4].split(","); } %}
+    | "string_to_array" _ "(" _ P0 _ "," _ P1 _ ")"        {% function(d) { return d[4].split(d[8]); } %}
+    | "string_to_array" _ "(" _ P0 _ "," _ P1 _ "," _ P2 _ ")" {% function(d) { return d[4].split(d[8]).map(x => String(x).length === 0 ? d[12] : x); } %}
+    | "map" _ "(" _ var_args _ ")"                         {% function(d) { return Object.fromValues(Array.from({length: d[4].length / 2 }, (_, i) => [d[4][2 * i], d[4][2 * i + 1]])); } %}
     | "PI"i                        {% function(d) { return Math.PI; } %}
     | "E"i                         {% function(d) { return Math.E; } %}
     | "NULL"i                      {% function(d) { return null; } %}
