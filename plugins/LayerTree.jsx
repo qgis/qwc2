@@ -206,6 +206,9 @@ class LayerTree extends React.Component {
         if (flattenGroups) {
             return this.renderSubLayers(layer, group, path, enabled, false, usedGroupIds);
         }
+        if (Array.isArray(layer.layerTreeHiddenGroups) && layer.layerTreeHiddenGroups.includes(group.name)) {
+            return null;
+        }
         const subtreevisibility = LayerUtils.computeLayerVisibility(group);
         if (subtreevisibility === 0 && this.state.filterinvisiblelayers) {
             return null;

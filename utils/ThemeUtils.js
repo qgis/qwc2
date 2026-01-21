@@ -132,6 +132,7 @@ const ThemeUtils = {
             infoFormats: theme.infoFormats,
             mapFormats: theme.availableFormats,
             layerTreeHiddenSublayers: theme.layerTreeHiddenSublayers,
+            layerTreeHiddenGroups: theme.layerTreeHiddenGroups,
             predefinedFilters: (theme.predefinedFilters || []).filter(entry => Object.keys(entry.filter).find(name => sublayerNames.includes(name))),
             externalLayerMap: {
                 ...theme.externalLayerMap,
