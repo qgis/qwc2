@@ -73,7 +73,7 @@ export default class TextInput extends React.Component {
     }
     setDefaultValue = (value, valueRev, prevValueRef) => {
         if (valueRev > prevValueRef) {
-            this.input.innerHTML = DOMPurify.sanitize(value.replaceAll('\n', this.props.multiline ? '<br />' : ''));
+            this.input.innerHTML = DOMPurify.sanitize((value || "").replaceAll('\n', this.props.multiline ? '<br />' : ''));
         }
     };
     render() {
@@ -149,7 +149,7 @@ export default class TextInput extends React.Component {
         }
     };
     setInputContents = () => {
-        this.input.innerHTML = this.state.value.replaceAll('\n', this.props.multiline ? '<br />' : '');
+        this.input.innerHTML = (this.state.value || "").replaceAll('\n', this.props.multiline ? '<br />' : '');
     };
     onCopy = (ev, cut) => {
         ev.preventDefault();
