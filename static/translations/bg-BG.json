@@ -109,6 +109,7 @@
       "viewertitle_label": "Начална страница"
     },
     "common": {
+      "add": "Добавяне на",
       "all": "Всички",
       "cancel": "Отмяна на",
       "circle": "Кръг",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "Добавяне на",
       "attrtable": "Таблица",
       "canceldelete": "Не изтривайте",
       "clone_all": "",

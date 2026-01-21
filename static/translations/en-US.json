@@ -109,6 +109,7 @@
       "viewertitle_label": "Homepage"
     },
     "common": {
+      "add": "Add",
       "all": "All",
       "cancel": "Cancel",
       "circle": "Circle",
@@ -193,7 +194,6 @@
       "zoomto": "Zoom to object"
     },
     "editing": {
-      "add": "Add",
       "attrtable": "Table",
       "canceldelete": "Don't delete",
       "clone_all": "All",

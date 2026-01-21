@@ -109,6 +109,7 @@
       "viewertitle_label": "QWC2 デモ"
     },
     "common": {
+      "add": "追加",
       "all": "全て",
       "cancel": "キャンセル",
       "circle": "円",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "追加",
       "attrtable": "テーブル",
       "canceldelete": "削除しない",
       "clone_all": "",

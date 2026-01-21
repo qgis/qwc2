@@ -109,6 +109,7 @@
       "viewertitle_label": "Pàgina d'inici"
     },
     "common": {
+      "add": "Afegir",
       "all": "Tot",
       "cancel": "Cancel·lar",
       "circle": "Circle",
@@ -193,7 +194,6 @@
       "zoomto": "Fer zoom a l'objecte"
     },
     "editing": {
-      "add": "Afegir",
       "attrtable": "Taula",
       "canceldelete": "No esborrar",
       "clone_all": "Tots",

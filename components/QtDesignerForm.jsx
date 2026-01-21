@@ -636,7 +636,7 @@ class QtDesignerForm extends React.Component {
                 </div>
                 {!this.props.readOnly ? (
                     <div className="qt-designer-widget-relation-buttons">
-                        <button className="button qt-designer-widget-relation-add" disabled={!this.props.feature.relationValues} onClick={(ev) => this.addRelationRecord(ev, relDataset)} type="button">{LocaleUtils.tr("editing.add")}</button>
+                        <button className="button qt-designer-widget-relation-add" disabled={!this.props.feature.relationValues} onClick={(ev) => this.addRelationRecord(ev, relDataset)} type="button">{LocaleUtils.tr("common.add")}</button>
                     </div>
                 ) : null}
                 <div className="qt-designer-widget-relation-resize-handle" onPointerDown={this.startRelationTableResize} />

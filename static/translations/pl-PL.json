@@ -109,6 +109,7 @@
       "viewertitle_label": ""
     },
     "common": {
+      "add": "",
       "all": "",
       "cancel": "",
       "circle": "",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "",
       "attrtable": "",
       "canceldelete": "Nie usuwaj",
       "clone_all": "",

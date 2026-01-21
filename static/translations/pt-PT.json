@@ -109,6 +109,7 @@
       "viewertitle_label": "Visualizador"
     },
     "common": {
+      "add": "Adicionar",
       "all": "Todos",
       "cancel": "Cancelar",
       "circle": "Círculo",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "Adicionar",
       "attrtable": "Tabela de Atributos",
       "canceldelete": "Cancelar Eliminação",
       "clone_all": "",

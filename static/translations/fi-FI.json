@@ -109,6 +109,7 @@
       "viewertitle_label": ""
     },
     "common": {
+      "add": "",
       "all": "",
       "cancel": "",
       "circle": "Ympyrä",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "",
       "attrtable": "",
       "canceldelete": "Don't delete",
       "clone_all": "",

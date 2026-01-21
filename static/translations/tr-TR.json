@@ -109,6 +109,7 @@
       "viewertitle_label": "QWC"
     },
     "common": {
+      "add": "Ekle",
       "all": "Tümü",
       "cancel": "İptal",
       "circle": "Daire",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "Ekle",
       "attrtable": "Tablo",
       "canceldelete": "Silme",
       "clone_all": "",

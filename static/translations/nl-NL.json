@@ -109,6 +109,7 @@
       "viewertitle_label": ""
     },
     "common": {
+      "add": "Toevoegen",
       "all": "",
       "cancel": "Annuleren",
       "circle": "Cirkel",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "Toevoegen",
       "attrtable": "Tabel",
       "canceldelete": "Niet verwijderen",
       "clone_all": "",

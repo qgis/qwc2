@@ -109,6 +109,7 @@
       "viewertitle_label": "Despre"
     },
     "common": {
+      "add": "Adaugă",
       "all": "",
       "cancel": "",
       "circle": "Cerc",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "Adaugă",
       "attrtable": "Tabel",
       "canceldelete": "Nu șterge",
       "clone_all": "",

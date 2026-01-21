@@ -109,6 +109,7 @@
       "viewertitle_label": "Home page"
     },
     "common": {
+      "add": "Adicionar",
       "all": "Todos",
       "cancel": "Cancelar",
       "circle": "Círculo",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "Adicionar",
       "attrtable": "Tabela de atributos",
       "canceldelete": "Não apagar",
       "clone_all": "",

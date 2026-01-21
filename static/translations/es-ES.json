@@ -109,6 +109,7 @@
       "viewertitle_label": "Página de inicio"
     },
     "common": {
+      "add": "Añadir",
       "all": "Todo",
       "cancel": "Cancelar",
       "circle": "Círculo",
@@ -193,7 +194,6 @@
       "zoomto": "Zoom al objeto"
     },
     "editing": {
-      "add": "Añadir",
       "attrtable": "Tabla",
       "canceldelete": "No borrar",
       "clone_all": "Todos",

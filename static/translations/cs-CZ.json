@@ -109,6 +109,7 @@
       "viewertitle_label": ""
     },
     "common": {
+      "add": "Přidat",
       "all": "",
       "cancel": "",
       "circle": "",
@@ -193,7 +194,6 @@
       "zoomto": ""
     },
     "editing": {
-      "add": "Přidat",
       "attrtable": "",
       "canceldelete": "Neodstraňovat",
       "clone_all": "",
