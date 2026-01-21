@@ -57,6 +57,7 @@
         "PrintScreen3D": "",
         "Redlining": "Marcação",
         "Routing": "Roteamento",
+        "SensorThingsTool": "",
         "Tools": "Ferramentas do Mapa",
         "TourGuide": "",
         "TimeManager": "Gestor de Tempo",
@@ -615,6 +616,88 @@
       "themelayers": "",
       "themes": "Temas",
       "unknownmore": ""
+    },
+    "sensorthingstool": {
+      "addDatastream": "",
+      "datastreamInfo": {
+        "calibration": "",
+        "description": "",
+        "name": "",
+        "title": "",
+        "unit": ""
+      },
+      "datastreamLabel": "",
+      "datastreamOptions": {
+        "arithmeticMean": "",
+        "percentiles": "",
+        "percentilesDesc": "",
+        "showOnSecondYAxis": "",
+        "showPercentiles": "",
+        "title": ""
+      },
+      "datastreamTable": {
+        "fullPeriod": "",
+        "selectedPeriod": "",
+        "timestamp": "",
+        "title": "",
+        "unit": "",
+        "value": ""
+      },
+      "exportCSV": "",
+      "exportImage": "",
+      "graphOptions": {
+        "reverseAxis": "",
+        "threshold": "",
+        "thresholdLabel": "",
+        "thresholdValue": "",
+        "title": "",
+        "toggleGridLines": "",
+        "toggleSecondYAxis": "",
+        "xAxis": "",
+        "xAxisAtTop": "",
+        "yAuto": "",
+        "yAxis": "",
+        "yMax": "",
+        "yMin": ""
+      },
+      "intervalOptions": {
+        "custom": "",
+        "day": "",
+        "hour": "",
+        "month": "",
+        "week": "",
+        "year": ""
+      },
+      "locationInfo": {
+        "description": "",
+        "inactive": "",
+        "name": "",
+        "platform": "",
+        "qompSensorId": "",
+        "serialNumber": "",
+        "title": ""
+      },
+      "locationLabel": "",
+      "pickLocation": "",
+      "pickLocationDesc": "",
+      "removeDatastream": "",
+      "removeLocation": "",
+      "selectInterval": "",
+      "selectLocation": "",
+      "setEndToNow": "",
+      "setPeriodAfterBegin": "",
+      "setPeriodBeforeEnd": "",
+      "showDefaultPeriod": "",
+      "showFullPeriod": "",
+      "showNextPeriod": "",
+      "showPrevPeriod": "",
+      "statistics": {
+        "arithmeticMean": "",
+        "nthPercentile": ""
+      },
+      "title": "",
+      "zoomIn": "",
+      "zoomOut": ""
     },
     "serviceinfo": {
       "abstract": "Resumo",

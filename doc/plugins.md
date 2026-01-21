@@ -40,6 +40,7 @@ Plugin reference
 * [Reports](#reports)
 * [Routing](#routing)
 * [ScratchDrawing](#scratchdrawing)
+* [SensorThingsTool](#sensorthingstool)
 * [Settings](#settings)
 * [Share](#share)
 * [StartupMarker](#startupmarker)
@@ -913,6 +914,49 @@ Task which which can be invoked by other tools to draw a geometry and pass it to
 Only useful for third-party code, i.e. over the JavaScript API.
 
 Invoke as `setCurrentTask("ScratchDrawing", null, null, {callback: <function(features, crs)>});`
+
+## SensorThingsTool<a name="sensorthingstool"></a>
+
+Query and display sensor data from a SensorThings API.
+
+Allows picking Locations in the map and displaying their Datastreams as a chart.
+
+**`config.json` sample configuration:**
+
+Add tool to `TopBar` `menuItems` and/or `toolbarItems`:
+```
+{"key": "SensorThingsTool", "icon": "report"}
+```
+
+Sample plugin configuration for Fraunhofer SensorThings API with air quality data:
+```
+{
+  "name": "SensorThingsTool",
+  "cfg": {
+    "sensorThingsApiUrl": "https://airquality-frost.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1",
+    "timeFormats": {
+      "tooltip": "DD.MM.YYYY HH:mm:ss",
+      "millisecond": "HH:mm:ss.SSS",
+      "second": "HH:mm:ss",
+      "minute": "HH:mm",
+      "hour": "DD.MM.YY HH:mm",
+      "day": "DD.MM.YY",
+      "week": "ll",
+      "month": "MM.YYYY",
+      "quarter": "[Q]Q - YYYY",
+      "year": "YYYY"
+    }
+  }
+}
+```
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| queryTolerance | `number` | Map picking tolerance in pixels | `16` |
+| sensorThingsApiUrl | `string` | URL of a SensorThings API | `undefined` |
+| timeFormats | `object` | Formatting patterns for displaying time values | `{`<br />`    tooltip: 'YYYY-MM-DD HH:mm:ss',`<br />`    millisecond: 'HH:mm:ss.SSS',`<br />`    second: 'HH:mm:ss',`<br />`    minute: 'HH:mm',`<br />`    hour: 'HH:mm',`<br />`    day: 'MM-DD',`<br />`    week: 'YYYY-MM-DD',`<br />`    month: 'YYYY-MM',`<br />`    quarter: '[Q]Q - YYYY',`<br />`    year: 'YYYY'`<br />`}` |
+| windowSize | `object` | Default size of the SensorThings Query window | `{width: 800, height: 600}` |
+| zoomFactor | `number` | Zoom factor for chart zoom buttons | `1.5` |
 
 ## Settings<a name="settings"></a>
 

@@ -57,6 +57,7 @@
         "PrintScreen3D": "Raster Export",
         "Redlining": "Redlining",
         "Routing": "Routing",
+        "SensorThingsTool": "SensorThings Query",
         "Tools": "Map Tools",
         "TourGuide": "Tour Guide",
         "TimeManager": "Time Manager",
@@ -615,6 +616,88 @@
       "themelayers": "Theme layers",
       "themes": "Themes",
       "unknownmore": "More results"
+    },
+    "sensorthingstool": {
+      "addDatastream": "Add datastream to graph",
+      "datastreamInfo": {
+        "calibration": "Calibration",
+        "description": "Description",
+        "name": "Name",
+        "title": "Datastream info",
+        "unit": "Unit"
+      },
+      "datastreamLabel": "Datastream",
+      "datastreamOptions": {
+        "arithmeticMean": "Arithmetic mean",
+        "percentiles": "Percentiles",
+        "percentilesDesc": "Enter percentiles as comma-separated values",
+        "showOnSecondYAxis": "Show on second y-axis",
+        "showPercentiles": "Show percentiles",
+        "title": "Datastream statistics"
+      },
+      "datastreamTable": {
+        "fullPeriod": "Available period",
+        "selectedPeriod": "Selected period",
+        "timestamp": "Timestamp",
+        "title": "Datastream table",
+        "unit": "Unit",
+        "value": "Value"
+      },
+      "exportCSV": "Export as CSV",
+      "exportImage": "Export as image",
+      "graphOptions": {
+        "reverseAxis": "Reverse axis",
+        "threshold": "Threshold",
+        "thresholdLabel": "Label",
+        "thresholdValue": "Value",
+        "title": "Settings",
+        "toggleGridLines": "Grid lines",
+        "toggleSecondYAxis": "Second y-axis",
+        "xAxis": "X-axis",
+        "xAxisAtTop": "Position at the top",
+        "yAuto": "auto",
+        "yAxis": "Y-axis",
+        "yMax": "Upper limit",
+        "yMin": "Lower limit"
+      },
+      "intervalOptions": {
+        "custom": "Custom",
+        "day": "Day",
+        "hour": "Hour",
+        "month": "Month",
+        "week": "Week",
+        "year": "Year"
+      },
+      "locationInfo": {
+        "description": "Description",
+        "inactive": "Inactive",
+        "name": "Name",
+        "platform": "Platform",
+        "qompSensorId": "QOMP Sensor ID",
+        "serialNumber": "Serial Number",
+        "title": "Location Info"
+      },
+      "locationLabel": "Location",
+      "pickLocation": "Pick location in map",
+      "pickLocationDesc": "Pick a location in the map",
+      "removeDatastream": "Remove datastream",
+      "removeLocation": "Remove location",
+      "selectInterval": "Select interval",
+      "selectLocation": "Select location",
+      "setEndToNow": "Set end time to now",
+      "setPeriodAfterBegin": "Set period to interval after start time",
+      "setPeriodBeforeEnd": "Set period to interval before end time",
+      "showDefaultPeriod": "Show default period",
+      "showFullPeriod": "Show full period",
+      "showNextPeriod": "Show next period",
+      "showPrevPeriod": "Show previous period",
+      "statistics": {
+        "arithmeticMean": "Arithmetic mean",
+        "nthPercentile": "th percentile"
+      },
+      "title": "SensorThings Query",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
     },
     "serviceinfo": {
       "abstract": "Abstract",

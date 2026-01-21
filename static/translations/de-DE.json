@@ -57,6 +57,7 @@
         "PrintScreen3D": "Raster Export",
         "Redlining": "Zeichnen",
         "Routing": "Routing",
+        "SensorThingsTool": "SensorThings Abfrage",
         "Tools": "Werkzeuge",
         "TourGuide": "Einführung",
         "TimeManager": "Zeitleiste",
@@ -615,6 +616,88 @@
       "themelayers": "Themenebenen",
       "themes": "Themen",
       "unknownmore": "Weitere Treffer"
+    },
+    "sensorthingstool": {
+      "addDatastream": "Datastream zum Graph hinzufügen",
+      "datastreamInfo": {
+        "calibration": "Kalibrierung",
+        "description": "Beschreibung",
+        "name": "Name",
+        "title": "Datastream-Info",
+        "unit": "Einheit"
+      },
+      "datastreamLabel": "Datastream",
+      "datastreamOptions": {
+        "arithmeticMean": "Arithmetisches Mittel",
+        "percentiles": "Perzentile",
+        "percentilesDesc": "Eingabe der Perzentile als kommaseparierte Werte",
+        "showOnSecondYAxis": "Auf zweiter Y-Achse anzeigen",
+        "showPercentiles": "Perzentile anzeigen",
+        "title": "Datastream-Statistik"
+      },
+      "datastreamTable": {
+        "fullPeriod": "Verfügbarer Zeitabschnitt",
+        "selectedPeriod": "Ausgewählter Zeitabschnitt",
+        "timestamp": "Zeitpunkt",
+        "title": "Datastream-Tabelle",
+        "unit": "Einheit",
+        "value": "Wert"
+      },
+      "exportCSV": "Exportieren als CSV",
+      "exportImage": "Exportieren als Bild",
+      "graphOptions": {
+        "reverseAxis": "Achse umkehren",
+        "threshold": "Grenzwert",
+        "thresholdLabel": "Beschriftung",
+        "thresholdValue": "Grenzwert",
+        "title": "Einstellungen",
+        "toggleGridLines": "Gitterlinien",
+        "toggleSecondYAxis": "Zweite Y-Achse",
+        "xAxis": "X-Achse",
+        "xAxisAtTop": "Oben platzieren",
+        "yAuto": "auto",
+        "yAxis": "Y-Achse",
+        "yMax": "Obergrenze",
+        "yMin": "Untergrenze"
+      },
+      "intervalOptions": {
+        "custom": "Benutzerdefiniert",
+        "day": "Tag",
+        "hour": "Stunde",
+        "month": "Monat",
+        "week": "Woche",
+        "year": "Jahr"
+      },
+      "locationInfo": {
+        "description": "Beschreibung",
+        "inactive": "Inaktiv",
+        "name": "Name",
+        "platform": "Platform",
+        "qompSensorId": "QOMP Sensor ID",
+        "serialNumber": "Seriennummer",
+        "title": "Location-Info"
+      },
+      "locationLabel": "Location",
+      "pickLocation": "Location in Karte auswählen",
+      "pickLocationDesc": "Wählen Sie eine Location in der Karte",
+      "removeDatastream": "Datastream entfernen",
+      "removeLocation": "Location entfernen",
+      "selectInterval": "Zeitspanne auswählen",
+      "selectLocation": "Location auswählen",
+      "setEndToNow": "Endzeitpunkt auf jetzt setzen",
+      "setPeriodAfterBegin": "Zeitabschnitt auf Zeitspanne nach Startzeitpunkt setzen",
+      "setPeriodBeforeEnd": "Zeitabschnitt auf Zeitspanne vor Endzeitpunkt setzen",
+      "showDefaultPeriod": "Standard-Zeitabschnitt anzeigen",
+      "showFullPeriod": "Gesamten Zeitabschnitt anzeigen",
+      "showNextPeriod": "Nächsten Zeitabschnitt anzeigen",
+      "showPrevPeriod": "Vorherigen Zeitabschnitt anzeigen",
+      "statistics": {
+        "arithmeticMean": "Arithmetisches Mittel",
+        "nthPercentile": ". Perzentil"
+      },
+      "title": "SensorThings Abfrage",
+      "zoomIn": "Vergrößern",
+      "zoomOut": "Verkleinern"
     },
     "serviceinfo": {
       "abstract": "Zusammenfassung",
