@@ -1,0 +1,23 @@
+div.ListInput {
+    border: 1px solid var(--border-color);
+    background-color: var(--list-bg-color);
+    padding: 0.25em;
+    width: 100%;
+}
+
+div.list-input-value {
+    display: flex;
+}
+
+div.list-input-value > :first-child {
+    flex: 1 1 auto;
+}
+
+div.list-input-value > span.icon-trash {
+    color: red;
+    padding-left: 0.25em;
+}
+
+div.list-input-add > button {
+    width: 100%;
+}

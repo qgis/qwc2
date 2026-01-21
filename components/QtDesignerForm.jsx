@@ -24,6 +24,7 @@ import EditUploadField from './EditUploadField';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
 import DateTimeInput from './widgets/DateTimeInput';
+import ListInput from './widgets/ListInput';
 import NumberInput from './widgets/NumberInput';
 import Spinner from './widgets/Spinner';
 import TextInput from './widgets/TextInput';
@@ -468,6 +469,11 @@ class QtDesignerForm extends React.Component {
                 <DateTimeInput maxDate={max} minDate={min} name={elname} onChange={val => updateField(widget.name, val)}
                     readOnly={inputConstraints.readOnly} required={inputConstraints.required}
                     style={fontStyle} value={value} />
+            );
+        } else if (widget.class === "QListWidget") {
+            return (
+                <ListInput onChange={val => updateField(widget.name, val)} readOnly={inputConstraints.readOnly}
+                    required={inputConstraints.required} type={field.type.slice(0, -2)} value={value} />
             );
         } else if (widget.class === "QWidget") {
             if (widget.name.startsWith("nrel__")) {
