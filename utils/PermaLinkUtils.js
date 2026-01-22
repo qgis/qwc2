@@ -216,7 +216,7 @@ export async function updateBookmark(bkey, description, callback) {
 
 export function renameBookmark(bkey, description, callback) {
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-    axios.patch(permalinkServiceUrl + "/bookmarks/" + bkey + "?description=" + description)
+    axios.put(permalinkServiceUrl + "/bookmarks/" + bkey + "?description=" + description)
         .then((response) => callback(response.data?.success))
         .catch(() => callback(false));
 }
@@ -268,7 +268,7 @@ export function updateVisibilityPreset(key, description, callback) {
 
 export function renameVisibilityPreset(key, description, callback) {
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-    axios.patch(permalinkServiceUrl + "/visibility_presets/" + key + "?description=" + description)
+    axios.put(permalinkServiceUrl + "/visibility_presets/" + key + "?description=" + description)
         .then((response) => callback(response.data?.success))
         .catch(() => callback(false));
 }
