@@ -34,6 +34,15 @@ class AttributeTable extends React.Component {
         /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
         blocked: PropTypes.bool,
+        /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
+        geometry: PropTypes.shape({
+            initialWidth: PropTypes.number,
+            initialHeight: PropTypes.number,
+            initialX: PropTypes.number,
+            initialY: PropTypes.number,
+            initiallyDocked: PropTypes.bool,
+            side: PropTypes.string
+        }),
         iface: PropTypes.object,
         /** Whether to limit to the extent by default. */
         limitToExtent: PropTypes.bool,
@@ -53,14 +62,25 @@ class AttributeTable extends React.Component {
         zoomLevel: 1000,
         showEditFormButton: true,
         showHiddenFields: true,
-        showLimitToExtent: true
+        showLimitToExtent: true,
+        geometry: {
+            initialWidth: 800,
+            initialHeight: 480,
+            initialX: 0,
+            initialY: 0,
+            initiallyDocked: true,
+            side: 'bottom'
+        }
     };
     render() {
         if (!this.props.active) {
             return null;
         }
         return (
-            <ResizeableWindow dockable="bottom" icon="editing" initialHeight={480} initialWidth={800} initiallyDocked onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}>
+            <ResizeableWindow dockable={this.props.geometry.side} icon="editing" initialHeight={this.props.geometry.initialHeight}
+                initialWidth={this.props.geometry.initialWidth} initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
+                initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}
+            >
                 <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers}
                     iface={this.props.iface} initialLayer={this.props.taskData?.layer} limitToExtent={this.props.limitToExtent}
                     showEditFormButton={this.props.showEditFormButton} showHiddenFields={this.props.showHiddenFields}

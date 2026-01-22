@@ -263,6 +263,7 @@ This plugin queries the dataset via the editing service specified by
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowAddForGeometryLayers | `bool` | Whether to allow adding records for datasets which have a geometry column. | `undefined` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 800,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'bottom'`<br />`}` |
 | limitToExtent | `bool` | Whether to limit to the extent by default. | `false` |
 | showEditFormButton | `bool` | Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. | `true` |
 | showHiddenFields | `bool` | Whether to show hidden fields. | `true` |
