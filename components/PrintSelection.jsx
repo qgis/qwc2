@@ -92,14 +92,14 @@ export default class PrintSelection extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (
-            !isEqual(prevProps.fixedFrame, this.props.fixedFrame) ||
-            !isEqual(prevProps.center, this.props.center) ||
-            prevProps.rotation !== this.props.rotation ||
-            prevProps.scale !== this.props.scale
+            !this.isInteracting && (
+                !isEqual(prevProps.fixedFrame, this.props.fixedFrame) ||
+                !isEqual(prevProps.center, this.props.center) ||
+                prevProps.rotation !== this.props.rotation ||
+                prevProps.scale !== this.props.scale
+            )
         ) {
-            if (!this.isInteracting) {
-                this.recomputeFeature();
-            }
+            this.recomputeFeature(!isEqual(prevProps.center, this.props.center));
         }
         if (
             prevProps.printSeriesEnabled !== this.props.printSeriesEnabled ||
@@ -109,9 +109,16 @@ export default class PrintSelection extends React.Component {
             this.geometryChanged();
         }
     }
-    recomputeFeature() {
+    recomputeFeature(recenter = false) {
+        if (this.props.fixedFrame === null) {
+            return;
+        }
+        let center = this.props.center;
         // delete the old feature
         if (this.feature !== null) {
+            if (!recenter) {
+                center = ol.extent.getCenter(this.feature.getGeometry().getExtent());
+            }
             // remove old feature
             this.source.removeFeature(this.feature);
             this.feature = null;
@@ -120,45 +127,43 @@ export default class PrintSelection extends React.Component {
             this.seriesGeometries = [];
         }
         // render the current feature if given a fixed frame
-        if (this.props.fixedFrame !== null) {
-            // calculate actual width and height
-            const {width, height} = MapUtils.transformExtent(
-                this.map.getView().getProjection(),
-                this.props.center,
-                this.props.fixedFrame.width,
-                this.props.fixedFrame.height
-            );
-            // add rectangle
-            const x1 = this.props.center[0] + 0.5 * width;
-            const x2 = this.props.center[0] - 0.5 * width;
-            const y1 = this.props.center[1] + 0.5 * height;
-            const y2 = this.props.center[1] - 0.5 * height;
-            const geometry = new ol.geom.Polygon([
-                [
-                    [x1, y1],
-                    [x1, y2],
-                    [x2, y2],
-                    [x2, y1],
-                    [x1, y1]
-                ]
-            ]);
-            // rotate and scale rectangle
-            if (this.props.rotation) {
-                geometry.rotate(this.props.rotation * Math.PI / 180, this.props.center);
-            }
-            if (this.props.scale) {
-                geometry.scale(this.props.scale / 1000, undefined, this.props.center);
-            }
-            // add feature to layer
-            this.feature = new ol.Feature(geometry);
-            this.feature.on('change', this.geometryChanged);
-            this.source.addFeature(this.feature);
-            // store initial width and height for future updates
-            this.initialWidth = width;
-            this.initialHeight = height;
-            // update geometry to new extent
-            this.geometryChanged();
+        // calculate actual width and height
+        const {width, height} = MapUtils.transformExtent(
+            this.map.getView().getProjection(),
+            center,
+            this.props.fixedFrame.width,
+            this.props.fixedFrame.height
+        );
+        // add rectangle
+        const x1 = center[0] + 0.5 * width;
+        const x2 = center[0] - 0.5 * width;
+        const y1 = center[1] + 0.5 * height;
+        const y2 = center[1] - 0.5 * height;
+        const geometry = new ol.geom.Polygon([
+            [
+                [x1, y1],
+                [x1, y2],
+                [x2, y2],
+                [x2, y1],
+                [x1, y1]
+            ]
+        ]);
+        // rotate and scale rectangle
+        if (this.props.rotation) {
+            geometry.rotate(this.props.rotation * Math.PI / 180, center);
         }
+        if (this.props.scale) {
+            geometry.scale(this.props.scale / 1000, undefined, center);
+        }
+        // add feature to layer
+        this.feature = new ol.Feature(geometry);
+        this.feature.on('change', this.geometryChanged);
+        this.source.addFeature(this.feature);
+        // store initial width and height for future updates
+        this.initialWidth = width;
+        this.initialHeight = height;
+        // update geometry to new extent
+        this.geometryChanged();
     }
     componentDidMount() {
         this.map.on('pointermove', this.setViewportCursor);
