@@ -8,6 +8,7 @@
 h4.bookmark-header {
     display: flex;
     align-items: center;
+    margin: 0;
 }
 
 h4.bookmark-header > span:first-child {
