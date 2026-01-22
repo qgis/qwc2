@@ -12,9 +12,9 @@ ReducerIndex.register("search", searchReducer);
 
 export const SET_CURRENT_SEARCH_RESULT = 'SET_CURRENT_SEARCH_RESULT';
 
-export function setCurrentSearchResult(result) {
+export function setCurrentSearchResult(currentResult) {
     return {
         type: SET_CURRENT_SEARCH_RESULT,
-        result
+        currentResult
     };
 }
