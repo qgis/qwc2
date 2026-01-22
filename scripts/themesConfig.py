@@ -482,8 +482,6 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["themeInfoLinks"] = configItem["themeInfoLinks"]
         if "layerTreeHiddenSublayers" in configItem:
             resultItem["layerTreeHiddenSublayers"] = configItem["layerTreeHiddenSublayers"]
-        if "layerTreeHiddenGroups" in configItem:
-            resultItem["layerTreeHiddenGroups"] = configItem["layerTreeHiddenGroups"]
         resultItem["searchProviders"] = configItem["searchProviders"] if "searchProviders" in configItem else []
         if "additionalMouseCrs" in configItem:
             resultItem["additionalMouseCrs"] = configItem["additionalMouseCrs"]

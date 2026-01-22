@@ -534,9 +534,6 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             if (configItem.layerTreeHiddenSublayers) {
                 resultItem.layerTreeHiddenSublayers = configItem.layerTreeHiddenSublayers;
             }
-            if (configItem.layerTreeHiddenGroups) {
-                resultItem.layerTreeHiddenGroups = configItem.layerTreeHiddenGroups;
-            }
 
             resultItem.skipEmptyFeatureAttributes = configItem.skipEmptyFeatureAttributes;
             resultItem.config = configItem.config;
