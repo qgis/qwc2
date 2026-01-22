@@ -418,7 +418,7 @@ class LayerTree extends React.Component {
             this.props.showAttributeTableLink && ConfigUtils.havePlugin("AttributeTable") &&
             layer.role === LayerRole.THEME && this.props.editConfigs[layer.wms_name]?.[sublayer.name]
         ) {
-            attrTableButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("AttributeTable", null, null, {layer: sublayer.name})} />);
+            attrTableButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("AttributeTable", null, null, {layer: layer.wms_name + "#" + sublayer.name})} />);
         }
         return (
             <div className="layertree-item-optionsmenu" onPointerDown={this.preventLayerTreeItemDrag} style={{marginRight: (marginRight * 1.75) + 'em'}}>
