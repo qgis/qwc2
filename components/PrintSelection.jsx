@@ -89,6 +89,7 @@ export default class PrintSelection extends React.Component {
         this.drawInteraction = null;
 
         this.isInteracting = false;
+        this.overHandle = false;
     }
     componentDidUpdate(prevProps) {
         if (
@@ -192,17 +193,29 @@ export default class PrintSelection extends React.Component {
         const bottomright = getPixelFromCoordinate(this.feature.getGeometry().getCoordinates()[0][1], false);
         const bottomleft = getPixelFromCoordinate(this.feature.getGeometry().getCoordinates()[0][2], false);
         const topleft = getPixelFromCoordinate(this.feature.getGeometry().getCoordinates()[0][3], false);
+        this.overHandle = true;
         if (sqdist(ev.pixel, topright) < 400) {
-            this.map.getViewport().style.cursor = 'nesw-resize';
+            if (this.props.allowScaling) {
+                this.map.getViewport().style.cursor = 'nesw-resize'; return;
+            }
         } else if (sqdist(ev.pixel, bottomright) < 400) {
-            this.map.getViewport().style.cursor = `url(${rotateCursor}) 12 12, auto`;
+            if (this.props.allowRotation) {
+                this.map.getViewport().style.cursor = `url(${rotateCursor}) 12 12, auto`; return;
+            } else if (this.props.allowScaling) {
+                this.map.getViewport().style.cursor = 'nwse-resize'; return;
+            }
         } else if (sqdist(ev.pixel, bottomleft) < 400) {
-            this.map.getViewport().style.cursor = 'nesw-resize';
+            if (this.props.allowScaling) {
+                this.map.getViewport().style.cursor = 'nesw-resize'; return;
+            }
         } else if (sqdist(ev.pixel, topleft) < 400) {
-            this.map.getViewport().style.cursor = 'nwse-resize';
-        } else {
-            this.map.getViewport().style.cursor = '';
+            if (this.props.allowScaling) {
+                this.map.getViewport().style.cursor = 'nwse-resize'; return;
+            }
         }
+        // If this code is reached, the mouse was in fact not over any handle
+        this.overHandle = false;
+        this.map.getViewport().style.cursor = '';
     };
     addInteractions() {
         // move the selection
@@ -227,7 +240,7 @@ export default class PrintSelection extends React.Component {
         // scale and rotate the selection
         const modifyCondition = (ev) => {
             return ol.events.condition.primaryAction(ev)
-                && this.props.fixedFrame
+                && this.overHandle
                 && (this.props.allowScaling || this.props.allowRotation);
         };
         this.scaleRotateInteraction = new ol.interaction.Modify({
@@ -287,7 +300,7 @@ export default class PrintSelection extends React.Component {
         // select a new area when no frame is given (only added when no fixed frame is given)
         const drawCondition = (ev) => {
             return ol.events.condition.primaryAction(ev)
-                && !this.props.fixedFrame;
+                && !this.props.fixedFrame && !this.overHandle;
         };
         this.drawInteraction = new ol.interaction.Draw({
             source: this.source,
@@ -539,7 +552,7 @@ export default class PrintSelection extends React.Component {
                 })
             ];
             const coordinates = this.getGeometry().getCoordinates()[0];
-            if (coordinates && this.props.fixedFrame) {
+            if (coordinates) {
                 if (this.props.allowScaling) {
                     // vertices to scale the selection
                     styles.push(FeatureStyles.printInteractionVertex({
