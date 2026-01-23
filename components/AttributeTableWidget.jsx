@@ -493,7 +493,7 @@ class AttributeTableWidget extends React.Component {
             const editTextNullValue = ConfigUtils.getConfigProp("editTextNullValue");
             input = (
                 <TextInput addLinkAnchors={addLinkAnchors} clearValue={editTextNullValue} disabled={disabled} multiline={constraints.multiline} name={field.id}
-                    onChange={updateTextField} required={constraints.required} value={value} />
+                    onChange={updateTextField} required={constraints.required} value={String(value)} />
             );
         } else {
             input = (
