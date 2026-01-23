@@ -63,6 +63,7 @@ import OlLayerVector from 'ol/layer/Vector';
 import OlLayerVectorTile from 'ol/layer/VectorTile';
 import * as OlLoadingstrategy from 'ol/loadingstrategy';
 import OlMap from 'ol/Map';
+import OlMapBrowserEvent from 'ol/MapBrowserEvent';
 import OlObject from 'ol/Object';
 import OlOverlay from 'ol/Overlay';
 import * as OlProj from 'ol/proj';
@@ -161,6 +162,7 @@ export default {
     },
     loadingstrategy: OlLoadingstrategy,
     Map: OlMap,
+    MapBrowserEvent: OlMapBrowserEvent,
     Object: OlObject,
     Overlay: OlOverlay,
     proj: OlProj,
