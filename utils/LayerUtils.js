@@ -575,6 +575,13 @@ const LayerUtils = {
         explodedAdd = explodedAdd.filter(entry => !existing.includes(entry.sublayer.name));
         return LayerUtils.implodeLayers(explodedAdd.concat(explodedBase))[0];
     },
+    getSublayer(layer, sublayerpath) {
+        let sublayer = layer;
+        for (const index of sublayerpath) {
+            sublayer = sublayer.sublayers[index];
+        }
+        return sublayer;
+    },
     searchSubLayer(layer, attr, value, path = []) {
         if (layer.sublayers) {
             let idx = 0;

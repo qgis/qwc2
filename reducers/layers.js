@@ -212,6 +212,14 @@ export default function layers(state = defaultState, action) {
                 delete newEditConfigs[layer.wms_name];
             }
         } else {
+            const sublayer = LayerUtils.getSublayer(layer, action.sublayerpath);
+            const sublayernames = LayerUtils.getSublayerNames(layer);
+            // Remove edit config if it is last layer which uses it
+            if (newEditConfigs[layer.wms_name] && sublayernames.filter(sl => sl === sublayer.name).length === 1) {
+                newEditConfigs = {...newEditConfigs};
+                newEditConfigs[layer.wms_name] = {...newEditConfigs[layer.wms_name]};
+                delete newEditConfigs[layer.wms_name][sublayer.name];
+            }
             newLayers = LayerUtils.removeLayer(state.flat, layer, action.sublayerpath).map(l => {
                 if (l.type === "wms") {
                     return {...l, ...LayerUtils.buildWMSLayerParams(l, state.filter)};
