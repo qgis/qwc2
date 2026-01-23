@@ -70,7 +70,7 @@ class SnapSupport extends React.Component {
         }
     }
     getMapMousePos = (ev) => {
-        this.setState({mousePos: {coordinate: ev.coordinate, pixel: ev.pixel}});
+        this.setState({mousePos: ev.pixel === null ? null : {coordinate: ev.coordinate, pixel: ev.pixel}});
     };
     addSnapFeatures = (geojson) => {
         this.reset();

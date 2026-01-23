@@ -347,14 +347,21 @@ class OlMap extends React.Component {
             return this.map.getLayers().getArray().find(layer => layer.get('id') === id);
         });
         MapUtils.registerHook(MapUtils.ADD_POINTER_MOVE_LISTENER, (callback) => {
-            this.callbackMap[callback] = (event) => {
-                const pixel = [...event.pixel];
-                callback({coordinate: event.coordinate, pixel: [pixel[0], pixel[1] - this.props.topbarHeight]});
+            this.callbackMap[callback] = {
+                move: (event) => {
+                    const pixel = [...event.pixel];
+                    callback({coordinate: event.coordinate, pixel: [pixel[0], pixel[1] - this.props.topbarHeight]});
+                },
+                out: () => {
+                    callback({coordinate: null, pixel: null});
+                }
             };
-            this.map.on('pointermove', this.callbackMap[callback]);
+            this.map.on('pointermove', this.callbackMap[callback].move);
+            this.map.getViewport().addEventListener('mouseleave', this.callbackMap[callback].out);
         });
         MapUtils.registerHook(MapUtils.REMOVE_POINTER_MOVE_LISTENER, (callback) => {
-            this.map.un('pointermove', this.callbackMap[callback]);
+            this.map.un('pointermove', this.callbackMap[callback].move);
+            this.map.getViewport().removeEventListener('mouseleave', this.callbackMap[callback].out);
             delete this.callbackMap[callback];
         });
     };

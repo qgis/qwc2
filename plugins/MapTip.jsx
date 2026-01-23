@@ -88,11 +88,16 @@ class MapTip extends React.Component {
         }
     }
     getMapMousePos = (ev) => {
-        this.clearMaptip();
+        // Only clear maptip if a new one would be queried
+        if (ev.pixel !== null) {
+            this.clearMaptip();
+        }
         clearTimeout(this.mouseStateTimeout);
-        this.mouseStateTimeout = setTimeout(() => {
-            this.setState({mousePos: {coordinate: ev.coordinate, pixel: ev.pixel}});
-        }, 100);
+        if (ev.pixel !== null) {
+            this.mouseStateTimeout = setTimeout(() => {
+                this.setState({mousePos: {coordinate: ev.coordinate, pixel: ev.pixel}});
+            }, 100);
+        }
     };
     clearMaptip = () => {
         clearTimeout(this.timeoutId);

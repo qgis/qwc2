@@ -276,9 +276,10 @@ class ValueTool extends React.Component {
         this.props.setCurrentTask(null);
     };
     scheduleQueryValues = (ev) => {
-        const coordinate = ev.coordinate;
         clearTimeout(this.queryTimeout);
-        this.queryTimeout = setTimeout(() => this.queryValues(coordinate), 100);
+        if (ev.coordinate !== null) {
+            this.queryTimeout = setTimeout(() => this.queryValues(ev.coordinate), 100);
+        }
     };
     queryValues = (coordinate) => {
         const options = {

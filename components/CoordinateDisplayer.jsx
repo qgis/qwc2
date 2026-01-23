@@ -22,7 +22,7 @@ export default class CoordinateDisplayer extends React.Component {
         mapCrs: PropTypes.string
     };
     state = {
-        mousePos: []
+        mousePos: null
     };
     componentDidMount() {
         MapUtils.getHook(MapUtils.ADD_POINTER_MOVE_LISTENER)(this.getMapMousePos);
@@ -32,12 +32,14 @@ export default class CoordinateDisplayer extends React.Component {
     }
     render() {
         let value = "";
-        const coo = CoordinatesUtils.reproject(this.state.mousePos, this.props.mapCrs, this.props.displayCrs);
-        if (this.props.coordinateFormatter) {
-            value = this.props.coordinateFormatter(coo, this.props.displayCrs);
-        } else if (!isNaN(coo[0]) && !isNaN(coo[1])) {
-            const decimals = CoordinatesUtils.getPrecision(this.props.displayCrs);
-            value = LocaleUtils.toLocaleFixed(coo[0], decimals) + " " + LocaleUtils.toLocaleFixed(coo[1], decimals);
+        if (this.state.mousePos !== null) {
+            const coo = CoordinatesUtils.reproject(this.state.mousePos, this.props.mapCrs, this.props.displayCrs);
+            if (this.props.coordinateFormatter) {
+                value = this.props.coordinateFormatter(coo, this.props.displayCrs);
+            } else if (!isNaN(coo[0]) && !isNaN(coo[1])) {
+                const decimals = CoordinatesUtils.getPrecision(this.props.displayCrs);
+                value = LocaleUtils.toLocaleFixed(coo[0], decimals) + " " + LocaleUtils.toLocaleFixed(coo[1], decimals);
+            }
         }
         return (
             <input className={this.props.className} readOnly="readOnly" type="text" value={value}/>
