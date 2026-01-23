@@ -280,7 +280,7 @@ export class ToggleSet {
         }
     };
     filtered = (test) => {
-        const newset = new Set(...[...this._set].filter(test));
+        const newset = new Set([...this._set].filter(test));
         return new ToggleSet(newset);
     };
     add = (key) => {
