@@ -96,7 +96,7 @@ class AppContainerComponent extends React.Component {
 
         // Load themes.json
         axios.get("themes.json", {params: {lang: this.props.locale}}).then(response => {
-            const themes = ThemeUtils.applyTranslations(response.data.themes || {});
+            const themes = response.data.themes || {};
             this.props.appConfig.themePreprocessor?.(themes);
             this.props.themesLoaded(themes);
 

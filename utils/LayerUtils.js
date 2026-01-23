@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import axios from 'axios';
+import deepmerge from 'deepmerge';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import url from 'url';
@@ -14,6 +16,7 @@ import {v4 as uuidv4} from 'uuid';
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
+import LocaleUtils from './LocaleUtils';
 import MapUtils from './MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';
 
@@ -1185,6 +1188,41 @@ const LayerUtils = {
             }
         }
         return newLayer;
+    },
+    queryLayerMetadata(layer, callback) {
+        const metadataRequests = [];
+        if (layer.editConfigUrl) {
+            metadataRequests.push(new Promise((resolve) => {
+                axios.get(layer.editConfigUrl).then(response => {
+                    layer.editConfig = response.data;
+                    delete layer.editConfigUrl;
+                    resolve();
+                }).catch(() => {
+                    layer.editConfig = {};
+                    delete layer.editConfigUrl;
+                    resolve();
+                });
+            }));
+        }
+        if (layer.translationsUrl) {
+            metadataRequests.push(new Promise((resolve) => {
+                axios.get(layer.translationsUrl.replace('{lang}', LocaleUtils.lang())).then(response => {
+                    layer.translations = response.data;
+                    delete layer.translationsUrl;
+                    resolve();
+                }).catch(() => {
+                    layer.translations = {};
+                    delete layer.translationsUrl;
+                    resolve();
+                });
+            }));
+        }
+        Promise.all(metadataRequests).then(() => {
+            if (layer.translations) {
+                layer = LayerUtils.applyTranslations(layer, deepmerge(LocaleUtils.commonTranslations(), layer.translations));
+            }
+            callback(layer);
+        });
     },
     applyTranslations(layer, translations) {
         return {

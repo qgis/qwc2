@@ -11,6 +11,7 @@ import layersReducer from '../reducers/layers';
 ReducerIndex.register("layers", layersReducer);
 
 import ConfigUtils from '../utils/ConfigUtils';
+import LayerUtils from '../utils/LayerUtils';
 
 export const SET_LAYER_LOADING = 'SET_LAYER_LOADING';
 export const ADD_LAYER = 'ADD_LAYER';
@@ -41,11 +42,13 @@ export const LayerRole = {
 
 
 export function addLayer(layer, pos = null, options = null) {
-    return {
-        type: ADD_LAYER,
-        layer,
-        pos,
-        options
+    return dispatch => {
+        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+            type: ADD_LAYER,
+            layer: result,
+            pos,
+            options
+        }));
     };
 }
 
@@ -104,9 +107,11 @@ export function clearLayer(layerId) {
 }
 
 export function addThemeSublayer(layer) {
-    return {
-        type: ADD_THEME_SUBLAYER,
-        layer
+    return dispatch => {
+        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+            type: ADD_THEME_SUBLAYER,
+            layer: result
+        }));
     };
 }
 
@@ -175,10 +180,12 @@ export function removeAllLayers() {
 }
 
 export function replacePlaceholderLayer(id, layer) {
-    return {
-        type: REPLACE_PLACEHOLDER_LAYER,
-        id,
-        layer
+    return dispatch => {
+        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+            type: REPLACE_PLACEHOLDER_LAYER,
+            id,
+            layer: result
+        }));
     };
 }
 

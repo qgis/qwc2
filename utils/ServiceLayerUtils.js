@@ -15,11 +15,9 @@ import randomColor from 'randomcolor';
 import url from 'url';
 
 import {LayerRole} from '../actions/layers';
-import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
-import LocaleUtils from './LocaleUtils';
 import MiscUtils from './MiscUtils';
 
 function strcmp(a, b) {
@@ -527,43 +525,7 @@ const ServiceLayerUtils = {
                     if (layer.type === "wms") {
                         layer.params = {LAYERS: layerConfig.name};
                     }
-                    const metadataRequests = [
-                        new Promise((resolve, reject) => {
-                            if (layer.editConfigUrl) {
-                                axios.get(layer.editConfigUrl).then(response => {
-                                    layer.editConfig = response.data;
-                                    delete layer.editConfigUrl;
-                                    resolve();
-                                }).catch(e => {
-                                    delete layer.editConfigUrl;
-                                    resolve();
-                                });
-                            } else {
-                                resolve();
-                            }
-                        }),
-                        new Promise((resolve, reject) => {
-                            if (layer.translationsUrl) {
-                                axios.get(layer.translationsUrl.replace('{lang}', LocaleUtils.lang())).then(response => {
-                                    layer.translations = response.data;
-                                    delete layer.translationsUrl;
-                                    resolve();
-                                }).catch(e => {
-                                    delete layer.translationsUrl;
-                                    resolve();
-                                });
-                            } else {
-                                resolve();
-                            }
-                        })
-                    ];
-                    Promise.all(metadataRequests).then(() => {
-                        if (layer.translations) {
-                            const commonTranslations = StandardApp.store.getState().locale.messagesTree.maptranslations || {};
-                            layer = LayerUtils.applyTranslations(layer, deepmerge(commonTranslations, layer.translations));
-                        }
-                        callback(layerConfig.id, layer);
-                    });
+                    callback(layerConfig.id, layer);
                 } else {
                     // eslint-disable-next-line
                     console.warn("Could not find layer " + layerConfig.name);

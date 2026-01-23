@@ -101,6 +101,9 @@ const LocaleUtils = {
         } else {
             return number.toFixed(decimals);
         }
+    },
+    commonTranslations() {
+        return StandardApp.store.getState().locale.messagesTree.maptranslations || {};
     }
 };
 

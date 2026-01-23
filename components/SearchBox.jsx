@@ -493,7 +493,7 @@ class SearchBox extends React.Component {
                     if (result.theme) {
                         this.addThemeLayers(layer);
                     } else if (group.type === SearchResultType.THEMELAYER) {
-                        this.props.addThemeSublayer({sublayers: [layer]});
+                        this.props.addThemeSublayer({sublayers: [layer], editConfigUrl: layer.editConfigUrl});
                     } else if (group.type === SearchResultType.EXTERNALLAYER) {
                         this.addExternalLayer(layer, asGroup);
                     }
