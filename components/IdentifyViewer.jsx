@@ -74,7 +74,7 @@ const BuiltinExporters = [
         allowClipboard: true,
         export: (json, callback) => {
             const dataset = [];
-            Object.entries(json).forEach(([layerName, features]) => {
+            Object.entries(json).forEach(([layerId, features]) => {
                 features.forEach(feature => {
                     dataset.push([feature.layertitle + ": " + feature.displayname]);
                     Object.entries(feature.properties || {}).forEach(([attrib, value]) => {
@@ -100,7 +100,7 @@ const BuiltinExporters = [
 
             const data = [];
             const filenames = [];
-            Object.entries(json).forEach(([layerName, features]) => {
+            Object.entries(json).forEach(([layerId, features]) => {
                 const exportAttrs = Object.keys(features[0]?.properties ?? {}).filter(attr => !EXCLUDE_ATTRS.includes(attr));
                 const dataset = [[...exportAttrs]];
                 if (features[0].geometry) {
@@ -150,7 +150,8 @@ const BuiltinExporters = [
                         polyline: 'lines'
                     }
                 };
-                const promises = layers.map(([layerName, features]) => {
+                const promises = layers.map(([layerId, features]) => {
+                    const layerName = layerId.split('#')[1];
                     const geojson = {
                         type: "FeatureCollection",
                         features: features.map(entry => MiscUtils.objectOmit(entry, EXCLUDE_PROPS))
