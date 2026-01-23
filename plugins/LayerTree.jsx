@@ -117,6 +117,8 @@ class LayerTree extends React.Component {
         showQueryableIcon: PropTypes.bool,
         /** Whether to display the root entry of the layertree. */
         showRootEntry: PropTypes.bool,
+        /** Whether to show the style selection menu for layers with multiple styles. */
+        showStyleSelector: PropTypes.bool,
         /** Whether to display a checkbox to toggle all layers. */
         showToggleAllLayersCheckbox: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
@@ -157,6 +159,7 @@ class LayerTree extends React.Component {
         enableVisibleFilter: true,
         enableServiceInfo: true,
         infoInSettings: true,
+        showStyleSelector: true,
         showToggleAllLayersCheckbox: true,
         transparencyIcon: true,
         side: 'right',
@@ -274,7 +277,7 @@ class LayerTree extends React.Component {
         const allowRemove = this.props.allowRemovingThemeLayers || ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filterinvisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
-        const styles = layer.type === "wms" && path.length === 0 ? this.getLayerStyles(layer) : null;
+        const styles = this.props.showStyleSelector && layer.type === "wms" && path.length === 0 ? this.getLayerStyles(layer) : null;
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.id, path: path})} key={groupId}>
                 <div className={classnames(itemclasses)}>
@@ -378,7 +381,7 @@ class LayerTree extends React.Component {
                     {this.props.loadingLayers.includes(layer.id) ? (<Spinner />) : null}
                     <span className="layertree-item-spacer" />
                     {allowOptions && !this.props.infoInSettings ? infoButton : null}
-                    {Object.keys(sublayer.styles || {}).length > 1 ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(sublayerId)}/>) : null}
+                    {this.props.showStyleSelector && Object.keys(sublayer.styles || {}).length > 1 ? (<Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(sublayerId)}/>) : null}
                     {allowOptions ? (<Icon className={optMenuClasses} icon="cog" onClick={() => this.layerMenuToggled(sublayerId)}/>) : null}
                     {allowRemove ? (<Icon className="layertree-item-remove" icon="trash" onClick={() => this.props.removeLayer(layer.id, path)}/>) : null}
                 </div>

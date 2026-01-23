@@ -591,6 +591,7 @@ with containing a container element with id=legendcontainer.
 | showLegendIcons | `bool` | Whether to display legend icons. | `true` |
 | showQueryableIcon | `bool` | Whether to display the queryable icon to indicate that a layer is identifyable. | `true` |
 | showRootEntry | `bool` | Whether to display the root entry of the layertree. | `true` |
+| showStyleSelector | `bool` | Whether to show the style selection menu for layers with multiple styles. | `true` |
 | showToggleAllLayersCheckbox | `bool` | Whether to display a checkbox to toggle all layers. | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | templatePath | `string` | Template location for the legend print functionality | `":/templates/legendprint.html"` |
