@@ -514,10 +514,10 @@ class IdentifyViewer extends React.Component {
         let extraattribs = null;
         let inlineExtaAttribs = false;
         const featureReports = this.state.reports[layerid] || [];
-        if (feature.featureReport) {
+        if (feature.featurereport) {
             featureReports.push({
                 title: feature.layertitle,
-                template: feature.featureReport
+                template: feature.featurereport
             });
         }
         if (feature.type === "text") {
