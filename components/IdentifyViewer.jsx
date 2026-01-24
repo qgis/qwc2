@@ -154,7 +154,20 @@ const BuiltinExporters = [
                     const layerName = layerId.split('#')[1];
                     const geojson = {
                         type: "FeatureCollection",
-                        features: features.map(entry => MiscUtils.objectOmit(entry, EXCLUDE_PROPS))
+                        features: features.map(feature => MiscUtils.objectOmit(feature, EXCLUDE_PROPS)).map(feature => {
+                            // Note: shpw-write does not handle MultiPoint
+                            if (feature.geometry?.type === "MultiPoint") {
+                                return feature.geometry.coordinates.map((point, idx) => ({
+                                    ...feature,
+                                    geometry: {
+                                        type: 'Point', coordinates: point
+                                    },
+                                    id: idx === 0 ? feature.id : feature.id + "_" + idx
+                                }));
+                            } else {
+                                return feature;
+                            }
+                        }).flat()
                     };
                     const layerOptions = {...options, folder: layerName};
                     const crs = features[0]?.crs;
