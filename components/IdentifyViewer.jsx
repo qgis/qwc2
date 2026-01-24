@@ -150,6 +150,7 @@ const BuiltinExporters = [
                         polyline: 'lines'
                     }
                 };
+                const usedFoldernames = new Set();
                 const promises = layers.map(([layerId, features]) => {
                     const layerName = layerId.split('#')[1];
                     const geojson = {
@@ -169,7 +170,13 @@ const BuiltinExporters = [
                             }
                         }).flat()
                     };
-                    const layerOptions = {...options, folder: layerName};
+                    let folderName = layerName;
+                    if (usedFoldernames.has(folderName)) {
+                        let i = 0;
+                        for (; usedFoldernames.has(folderName + "_" + i); ++i);
+                        folderName = folderName + "_" + i;
+                    }
+                    const layerOptions = {...options, folder: folderName};
                     const crs = features[0]?.crs;
                     if (crs) {
                         const wkt = CoordinatesUtils.getEsriWktFromCrs(crs);
