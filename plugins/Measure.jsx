@@ -87,7 +87,7 @@ class Measure extends React.Component {
     setMeasureMode = (mode) => {
         if (mode !== this.props.measureState.mode) {
             if (this.props.clearMeasurementsOnModeChange) {
-                this.props.changeMeasurementState({mode: 'Reset', nextmode: this.props.measureState.mode});
+                this.props.changeMeasurementState({mode: 'Reset', nextmode: mode === 'Reset' ? this.props.measureState.mode : mode});
             } else {
                 this.props.changeMeasurementState({mode: mode});
             }
