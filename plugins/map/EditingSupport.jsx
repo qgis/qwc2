@@ -183,6 +183,7 @@ class EditingSupport extends React.Component {
         }, this);
         modifyInteraction.setActive(
             this.props.editContext.geomType && this.props.editContext.permissions.updatable &&
+            this.props.editContext.editConfig?.permissions?.updatable === true &&
             !this.props.editContext.geomReadOnly && !this.props.editContext.geomNonZeroZ
         );
         this.props.map.addInteraction(modifyInteraction);
