@@ -11,6 +11,7 @@ import React from 'react';
 import classNames from 'classnames';
 import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
+import {v4 as uuidv4} from 'uuid';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
@@ -18,7 +19,12 @@ import Icon from '../Icon';
 
 import './style/TextInput.css';
 
+
+export const TextInputInitContext = React.createContext(null);
+
 export default class TextInput extends React.Component {
+    static contextType = TextInputInitContext;
+
     static propTypes = {
         addLinkAnchors: PropTypes.bool,
         className: PropTypes.string,
@@ -56,6 +62,7 @@ export default class TextInput extends React.Component {
         this.input = null;
         this.tooltipEl = null;
         this.tooltipTimeout = null;
+        this.id = uuidv4();
     }
     static getDerivedStateFromProps(nextProps, state) {
         if (state.value !== nextProps.value && !state.committing) {
@@ -67,6 +74,9 @@ export default class TextInput extends React.Component {
             };
         }
         return null;
+    }
+    componentDidMount() {
+        this.context?.register?.(this.id);
     }
     componentDidUpdate(prevProps, prevState) {
         this.setDefaultValue(this.state.value, this.state.valueRev, prevState.valueRev);
@@ -143,6 +153,7 @@ export default class TextInput extends React.Component {
         if (el) {
             this.input = el;
             this.setDefaultValue(this.state.value, this.state.valueRev, -1);
+            this.context?.notifyReady?.(this.id);
             if (this.props.focusOnRef) {
                 el.focus();
             }

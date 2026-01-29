@@ -23,7 +23,7 @@ import NavBar from '../components/widgets/NavBar';
 import NumberInput from '../components/widgets/NumberInput';
 import ReCaptchaWidget from '../components/widgets/ReCaptchaWidget';
 import Spinner from '../components/widgets/Spinner';
-import TextInput from '../components/widgets/TextInput';
+import TextInput, {TextInputInitContext} from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {FeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
@@ -34,6 +34,7 @@ import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/AttributeTableWidget.css';
+
 
 class AttributeTableWidget extends React.Component {
     static propTypes = {
@@ -100,7 +101,8 @@ class AttributeTableWidget extends React.Component {
         confirmDelete: false,
         limitToExtent: false,
         captchaResponse: '',
-        clientSideData: false
+        clientSideData: false,
+        tableReady: false
     };
     constructor(props) {
         super(props);
@@ -110,6 +112,7 @@ class AttributeTableWidget extends React.Component {
         this.attribTableContents = null;
         this.state.limitToExtent = props.limitToExtent;
         this.filterWarningShown = false;
+        this.pendingTextEdits = new Set();
     }
     componentDidMount() {
         if (this.props.initialLayer) {
@@ -181,83 +184,94 @@ class AttributeTableWidget extends React.Component {
             const indexOffset = this.state.currentPage * this.state.pageSize;
             const features = this.state.features.slice(indexOffset, indexOffset + this.state.pageSize);
             table = (
-                <table className="attribtable-table" ref={el => { this.table = el; }}>
-                    <thead>
-                        <tr>
-                            <th />
-                            {!this.props.showDisplayFieldOnly ? (
-                                <th onClick={() => this.sortBy(primaryKey)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(primaryKey)}>
-                                    <span>
-                                        <span className="attribtable-table-headername">{this.translateFieldName(primaryKey)}</span>
-                                        {this.renderSortIndicator(primaryKey)}
-                                        {this.renderColumnResizeHandle(1, 'r')}
-                                    </span>
-                                </th>
-                            ) : null}
-                            {fields.map((field, idx) => (
-                                <th key={field.id} onClick={() => this.sortBy(field.id)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(field.name)}>
-                                    <span>
-                                        {this.renderColumnResizeHandle(idx + 1, 'l')}
-                                        <span className="attribtable-table-headername">
-                                            {this.translateFieldName(field.name)}
-                                            {field.expression ? (<Icon icon="epsilon" title={LocaleUtils.tr("attribtable.calculatedfield")} />) : null}
+                <TextInputInitContext.Provider value={{
+                    register: (uuid) => this.pendingTextEdits.add(uuid),
+                    notifyReady: (uuid) => {
+                        this.pendingTextEdits.delete(uuid);
+                        if (this.pendingTextEdits.size === 0) {
+                            this.setState({tableReady: true});
+                        }
+                    }
+                }}>
+                    <div style={{display: "none"}}><TextInput onChange={() => {}} value="x" /></div>{/* Just to ensure at least one TextInput is rendered, for the tableReady logic */}
+                    <table className="attribtable-table" ref={el => { this.table = el; }} style={{display: this.state.tableReady ? '' : 'none'}}>
+                        <thead>
+                            <tr>
+                                <th />
+                                {!this.props.showDisplayFieldOnly ? (
+                                    <th onClick={() => this.sortBy(primaryKey)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(primaryKey)}>
+                                        <span>
+                                            <span className="attribtable-table-headername">{this.translateFieldName(primaryKey)}</span>
+                                            {this.renderSortIndicator(primaryKey)}
+                                            {this.renderColumnResizeHandle(1, 'r')}
                                         </span>
-                                        {this.renderSortIndicator(field.id)}
-                                        {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + 2, 'r') : null}
-                                    </span>
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {features.map((feature, sliceidx) => {
-                            const featureidx = indexOffset + sliceidx;
-                            const disabled = readOnly || (editing && this.state.changedFeatureIdx !== featureidx);
-                            const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, fieldid, val, emptynull);
-                            return (
-                                <tr className={disabled && !this.props.readOnly ? "row-disabled" : ""} key={feature.id}
-                                    onMouseEnter={() => this.setState({highlightedFeature: feature})}
-                                    onMouseLeave={() => this.setState(state => ({highlightedFeature: state.highlightedFeature === feature ? null : state.highlightedFeature}))}
-                                >
+                                    </th>
+                                ) : null}
+                                {fields.map((field, idx) => (
+                                    <th key={field.id} onClick={() => this.sortBy(field.id)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(field.name)}>
+                                        <span>
+                                            {this.renderColumnResizeHandle(idx + 1, 'l')}
+                                            <span className="attribtable-table-headername">
+                                                {this.translateFieldName(field.name)}
+                                                {field.expression ? (<Icon icon="epsilon" title={LocaleUtils.tr("attribtable.calculatedfield")} />) : null}
+                                            </span>
+                                            {this.renderSortIndicator(field.id)}
+                                            {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + 2, 'r') : null}
+                                        </span>
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {features.map((feature, sliceidx) => {
+                                const featureidx = indexOffset + sliceidx;
+                                const disabled = readOnly || (editing && this.state.changedFeatureIdx !== featureidx);
+                                const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, fieldid, val, emptynull);
+                                return (
+                                    <tr className={disabled && !this.props.readOnly ? "row-disabled" : ""} key={feature.id}
+                                        onMouseEnter={() => this.setState({highlightedFeature: feature})}
+                                        onMouseLeave={() => this.setState(state => ({highlightedFeature: state.highlightedFeature === feature ? null : state.highlightedFeature}))}
+                                    >
+                                        <td>
+                                            <span>
+                                                {sliceidx > 0 ? this.renderRowResizeHandle(sliceidx, 't') : null}
+                                                {<input checked={this.state.selectedFeatures.has(feature.id)} onChange={() => this.setState((state) => ({selectedFeatures: state.selectedFeatures.toggle(feature.id)}))} type="checkbox" />}
+                                                {this.renderRowResizeHandle(sliceidx + 1, 'b')}
+                                            </span>
+                                        </td>
+                                        {!this.props.showDisplayFieldOnly ? (
+                                            <td>{feature.id}</td>
+                                        ) : null}
+                                        {fields.map(field => (
+                                            <td key={field.id}>
+                                                {this.renderField(feature, curEditConfig, mapPrefix, field, updateField, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
+                                            </td>
+                                        ))}
+                                    </tr>
+                                );
+                            })}
+                            {this.state.newFeature ? (
+                                <tr>
                                     <td>
                                         <span>
-                                            {sliceidx > 0 ? this.renderRowResizeHandle(sliceidx, 't') : null}
-                                            {<input checked={this.state.selectedFeatures.has(feature.id)} onChange={() => this.setState((state) => ({selectedFeatures: state.selectedFeatures.toggle(feature.id)}))} type="checkbox" />}
-                                            {this.renderRowResizeHandle(sliceidx + 1, 'b')}
+                                            {features.length > 0 ? this.renderRowResizeHandle(features.length, 't') : null}
+                                            {<input disabled type="checkbox" />}
+                                            {this.renderRowResizeHandle(features.length + 1, 'b')}
                                         </span>
                                     </td>
                                     {!this.props.showDisplayFieldOnly ? (
-                                        <td>{feature.id}</td>
+                                        <td>{this.state.newFeature.id}</td>
                                     ) : null}
                                     {fields.map(field => (
                                         <td key={field.id}>
-                                            {this.renderField(feature, curEditConfig, mapPrefix, field, updateField, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
+                                            {this.renderField(this.state.newFeature, curEditConfig, mapPrefix, field, this.updateNewFeatureField, false)}
                                         </td>
                                     ))}
                                 </tr>
-                            );
-                        })}
-                        {this.state.newFeature ? (
-                            <tr>
-                                <td>
-                                    <span>
-                                        {features.length > 0 ? this.renderRowResizeHandle(features.length, 't') : null}
-                                        {<input disabled type="checkbox" />}
-                                        {this.renderRowResizeHandle(features.length + 1, 'b')}
-                                    </span>
-                                </td>
-                                {!this.props.showDisplayFieldOnly ? (
-                                    <td>{this.state.newFeature.id}</td>
-                                ) : null}
-                                {fields.map(field => (
-                                    <td key={field.id}>
-                                        {this.renderField(this.state.newFeature, curEditConfig, mapPrefix, field, this.updateNewFeatureField, false)}
-                                    </td>
-                                ))}
-                            </tr>
-                        ) : null}
-                    </tbody>
-                </table>
+                            ) : null}
+                        </tbody>
+                    </table>
+                </TextInputInitContext.Provider>
             );
             const npages = this.state.featureCount;
             const pages = [this.state.currentPage];
@@ -521,6 +535,8 @@ class AttributeTableWidget extends React.Component {
             }
             newState.selectedLayer = selectedLayer;
             newState.selectedFeatures = new ToggleSet();
+            newState.tableReady = false;
+            this.pendingTextEdits = new Set();
 
             const options = {
                 bbox: newState.limitToExtent ? this.props.mapBbox.bounds : null,
