@@ -105,7 +105,7 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  * Here is an example of a custom plugin:
  *
  * ```
- * window.addEventListener("QWC2ApiReady", () => {
+ * function registerPlugin() {
  *     const {React, PropTypes, connect} = window.qwc2.libs;
  *     const {TaskBar} = window.qwc2.components;
  *
@@ -128,7 +128,12 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  *     }))(CurrentTheme);
  *
  *     window.qwc2.addPlugin("CurrentThemePlugin", CurrentThemePlugin);
- * });
+ * }
+ * if (window.qwc2) {
+ *     registerPlugin();
+ * } else {
+ *     window.addEventListener("QWC2ApiReady", registerPlugin);
+ * }
  * ```
  *
  * *Note*: You can also write the plugin in JSX syntax, and transpile to plain JS using babel.

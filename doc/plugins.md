@@ -91,7 +91,7 @@ You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
 Here is an example of a custom plugin:
 
 ```
-window.addEventListener("QWC2ApiReady", () => {
+function registerPlugin() {
     const {React, PropTypes, connect} = window.qwc2.libs;
     const {TaskBar} = window.qwc2.components;
 
@@ -114,7 +114,12 @@ window.addEventListener("QWC2ApiReady", () => {
     }))(CurrentTheme);
 
     window.qwc2.addPlugin("CurrentThemePlugin", CurrentThemePlugin);
-});
+}
+if (window.qwc2) {
+    registerPlugin();
+} else {
+    window.addEventListener("QWC2ApiReady", registerPlugin);
+}
 ```
 
 *Note*: You can also write the plugin in JSX syntax, and transpile to plain JS using babel.
