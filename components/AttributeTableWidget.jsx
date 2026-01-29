@@ -83,6 +83,7 @@ class AttributeTableWidget extends React.Component {
         curEditConfig: null,
         fieldTranslations: null,
         features: [],
+        featureCount: 0,
         allFeatures: null,
         selectedFeatures: new ToggleSet(),
         highlightedFeature: null,
@@ -258,7 +259,7 @@ class AttributeTableWidget extends React.Component {
                     </tbody>
                 </table>
             );
-            const npages = Math.ceil(this.state.features.length / this.state.pageSize);
+            const npages = this.state.featureCount;
             const pages = [this.state.currentPage];
             const extraright = Math.max(0, 2 - this.state.currentPage);
             const extraleft = Math.max(0, this.state.currentPage - (npages - 3));
@@ -560,10 +561,12 @@ class AttributeTableWidget extends React.Component {
                             const featuresSlice = result.features || [];
                             const features = new Array(result.numberMatched ?? featuresSlice.length);
                             features.splice(options.offset ?? 0, featuresSlice.length, ...featuresSlice);
+                            const sortedFilteredFeatures = clientSideFilterSort ? this.filteredSortedFeatures(features, newState) : features;
                             this.setState({
                                 loading: false,
                                 allFeatures: options.limit === undefined || result.numberMatched === undefined ? features : null,
-                                features: clientSideFilterSort ? this.filteredSortedFeatures(features, newState) : features,
+                                features: sortedFilteredFeatures,
+                                featureCount: Math.ceil(sortedFilteredFeatures.length / newState.pageSize),
                                 loadedLayer: newState.selectedLayer,
                                 clientSideData: result.numberMatched === undefined
                             });
