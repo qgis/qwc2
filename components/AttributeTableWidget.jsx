@@ -369,7 +369,7 @@ class AttributeTableWidget extends React.Component {
                             ))}
                         </select>
                     ) : null}
-                    <button className="button" disabled={!this.state.selectedLayer || editing || loading} onClick={() => this.reload(this.state.loadedLayer, true)} title={LocaleUtils.tr("attribtable.reload")}>
+                    <button className="button" disabled={!this.state.selectedLayer || editing || loading} onClick={() => this.reload(this.state.selectedLayer, true)} title={LocaleUtils.tr("attribtable.reload")}>
                         <Icon icon="refresh" />
                     </button>
                     {showAddButton ? (
