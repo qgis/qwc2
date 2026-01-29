@@ -36,7 +36,10 @@ export const createStore = (reducers, initialState = {}, actionLogger = null) =>
         preloadedState: defaultState,
         middleware: (getDefaultMiddleware) => {
             const middleware = getDefaultMiddleware({
-                serializableCheck: false
+                serializableCheck: false,
+                immutableCheck: {
+                    ignoredPaths: ['theme.themes']
+                }
             });
             if (enableDevTools) {
                 middleware.push(logger);
