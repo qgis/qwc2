@@ -110,7 +110,8 @@ class MeasurementSupport extends React.Component {
             // If draw interaction is missing, then also the select and modify interactions were missing
             this.selectInteraction = new ol.interaction.Select({
                 layers: [this.measureLayer],
-                style: null
+                style: null,
+                hitTolerance: 5
             });
             this.modifyInteraction = new ol.interaction.Modify({
                 features: this.selectInteraction.getFeatures(),
@@ -196,7 +197,7 @@ class MeasurementSupport extends React.Component {
     };
     handleMapClick = (evt) => {
         if (!this.drawInteraction.getActive()) {
-            const features = this.props.map.getFeaturesAtPixel(evt.pixel, {hitTolerance: 10, layerFilter: layer => layer === this.measureLayer});
+            const features = this.props.map.getFeaturesAtPixel(evt.pixel, {hitTolerance: 5, layerFilter: layer => layer === this.measureLayer});
             if (features.length === 0) {
                 this.leaveEditMode();
                 // Immediately start new drawing
