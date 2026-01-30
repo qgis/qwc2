@@ -537,7 +537,7 @@ class IdentifyViewer extends React.Component {
         const featureReports = this.state.reports[layerid] || [];
         if (feature.featurereport) {
             featureReports.push({
-                title: feature.layertitle,
+                title: null,
                 template: feature.featurereport
             });
         }
@@ -591,7 +591,7 @@ class IdentifyViewer extends React.Component {
             featureReports.forEach((report, idx) => {
                 rows.push(
                     <tr key={"__featurereport" + idx}>
-                        <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{LocaleUtils.tr("identify.featureReport") + ": " + report.title}</i></td>
+                        <td className={"identify-attr-title " + this.props.longAttributesDisplay}><i>{LocaleUtils.tr("identify.featureReport") + (report.title ? (": " + report.title) : "")}</i></td>
                         <td className={"identify-attr-value " + this.props.longAttributesDisplay}><a href={this.getFeatureReportUrl(report, feature)} rel="noreferrer" target="_blank">{LocaleUtils.tr("identify.link")}</a></td>
                     </tr>
                 );
@@ -617,7 +617,7 @@ class IdentifyViewer extends React.Component {
                         {featureReports.map((report, idx) => (
                             <tr key={"report" + idx}>
                                 <td className={"identify-attr-title " + this.props.longAttributesDisplay}>
-                                    <i>{LocaleUtils.tr("identify.featureReport") + ": " + report.title}</i>
+                                    <i>{LocaleUtils.tr("identify.featureReport") + (report.title ? (": " + report.title) : "")}</i>
                                 </td>
                                 <td className={"identify-attr-value " + this.props.longAttributesDisplay}>
                                     <a href={this.getFeatureReportUrl(report, feature)} rel="noreferrer" target="_blank">
