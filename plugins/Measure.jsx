@@ -94,10 +94,10 @@ class Measure extends React.Component {
         }
     };
     changeLengthUnit = (ev) => {
-        this.props.changeMeasurementState({...this.props.measureState, lenUnit: ev.target.value});
+        this.props.changeMeasurementState({lenUnit: ev.target.value});
     };
     changeAreaUnit = (ev) => {
-        this.props.changeMeasurementState({...this.props.measureState, areaUnit: ev.target.value});
+        this.props.changeMeasurementState({areaUnit: ev.target.value});
     };
     renderModeSwitcher = () => {
         if (!this.props.showMeasureModeSwitcher) {

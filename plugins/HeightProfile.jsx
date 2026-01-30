@@ -289,7 +289,7 @@ class HeightProfile extends React.Component {
             this.queryElevations(this.props.measurement.coordinates, this.props.measurement.segment_lengths, this.props.projection);
         } else if (!isEmpty(this.state.data) && measureIdChanged) {
             this.setState({data: {}});
-            this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: null});
+            this.props.changeMeasurementState({pickPositionCallback: null});
         }
     }
     componentWillUnmount() {
@@ -349,14 +349,14 @@ class HeightProfile extends React.Component {
                 reqId: null, data: data,
                 selectedDatasetIndices: prevState.selectedDatasetIndices.filter(i => i < data.length) ? prevState.selectedDatasetIndices : [0]
             }));
-            this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: this.pickPositionCallback});
+            this.props.changeMeasurementState({pickPositionCallback: this.pickPositionCallback});
         }).catch((error) => {
             this.setState({reqId: null, data: error ? {error} : {}});
         });
     }
     onClose = () => {
         this.setState({data: {}, isloading: false});
-        this.props.changeMeasurementState({...this.props.measurement, pickPositionCallback: null});
+        this.props.changeMeasurementState({pickPositionCallback: null});
     };
     render() {
         if (isEmpty(this.state.data) && !this.state.isloading) {
