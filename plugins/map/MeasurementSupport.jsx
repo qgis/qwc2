@@ -182,11 +182,13 @@ class MeasurementSupport extends React.Component {
     enterEditMode = (feature) => {
         this.currentFeature = feature;
         this.updateMeasurementResults(this.currentFeature, false);
-        this.drawInteraction.setActive(false);
-        this.selectInteraction.setActive(true);
-        this.modifyInteraction.setActive(true);
-        this.selectInteraction.getFeatures().clear();
-        this.selectInteraction.getFeatures().push(this.currentFeature);
+        if (this.drawInteraction.getActive()) {
+            this.drawInteraction.setActive(false);
+            this.selectInteraction.setActive(true);
+            this.modifyInteraction.setActive(true);
+            this.selectInteraction.getFeatures().clear();
+            this.selectInteraction.getFeatures().push(this.currentFeature);
+        }
     };
     leaveEditMode = () => {
         this.currentFeature = null;
