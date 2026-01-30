@@ -53,7 +53,6 @@ if (CSRF_TOKEN) {
 class AppContainerComponent extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object,
-        customPlugins: PropTypes.array,
         defaultUrlParams: PropTypes.string,
         haveMapSize: PropTypes.bool,
         localConfig: PropTypes.object,
