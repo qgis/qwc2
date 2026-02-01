@@ -12,7 +12,6 @@ import mime from 'mime-to-extensions';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
-import {showImageEditor} from '../utils/ImageEditor';
 import LocaleUtils from '../utils/LocaleUtils';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
@@ -166,10 +165,12 @@ export default class EditUploadField extends React.Component {
             const fileType = mime.lookup(fileValue);
             const fileUrl = this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue);
             const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
-            showImageEditor(imageData, (newImageData) => {
-                this.setState({imageData: newImageData, imageFilename: fileValue.replace(/.*\//, '')});
-                this.props.updateField(this.props.fieldId, '');
-                this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuidv4() + ".jpg", {type: "image/jpeg"}));
+            import('../utils/ImageEditor').then(({showImageEditor}) => {
+                showImageEditor(imageData, (newImageData) => {
+                    this.setState({imageData: newImageData, imageFilename: fileValue.replace(/.*\//, '')});
+                    this.props.updateField(this.props.fieldId, '');
+                    this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuidv4() + ".jpg", {type: "image/jpeg"}));
+                });
             });
         } else if (action === "Clear") {
             this.clearImage();
