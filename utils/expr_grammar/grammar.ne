@@ -135,7 +135,7 @@ N -> float                         {% id %}
     | "array_all" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return d[8].every(val => d[4].includes(val)); } %}
     | "array_append" _ "(" _ P0 _ "," _ P0 _ ")"           {% function(d) { return [...d[4], d[8]]; } %}
     | "array_cat" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return [...d[4], ...d[8]]; } %}
-    | "array_contains" _ "(" _ P0 _ "," _ P0 _ ")"         {% function(d) { return d[4].includes(d[8]); } %}
+    | "array_contains" _ "(" _ P0 _ "," _ P0 _ ")"         {% function(d) { return asFilter(d) ? [d[4], "HAS", d[8]] : d[4].includes(d[8]); } %}
     | "array_count" _ "(" _ P0 _ "," _ P0 _ ")"            {% function(d) { return d[4].filter(val => val === d[8]).length; } %}
     | "array_distinct" _ "(" _ P0 _ ")"                    {% function(d) { return [...new Set(d[4])].sort((a,b) => a-b); } %}
     # "array_filter" _ "(" _ P0 _ "," _ P1 _ ")"           TODO
