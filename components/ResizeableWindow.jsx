@@ -103,9 +103,9 @@ class ResizeableWindow extends React.Component {
         this.id = uuidv4();
         this.portalNode = props.usePortal ? portals.createHtmlPortalNode() : null;
         if (this.portalNode) {
-            this.portalNode.element.addEventListener('click', () => this.props.raiseWindow(this.id));
-            this.portalNode.element.addEventListener('focus', () => this.props.raiseWindow(this.id));
-            this.portalNode.element.addEventListener('focusin', () => this.props.raiseWindow(this.id));
+            this.portalNode.element.addEventListener('click', this.raiseWindow);
+            this.portalNode.element.addEventListener('focus', this.raiseWindow);
+            this.portalNode.element.addEventListener('focusin', this.raiseWindow);
         }
     }
     componentDidMount() {
@@ -327,13 +327,13 @@ class ResizeableWindow extends React.Component {
                 minHeight={this.props.minHeight} minWidth={this.props.minWidth}
                 onDragStart={this.onDragStart}
                 onDragStop={this.onDragStop}
-                onMouseDown={() => this.props.raiseWindow(this.id)}
+                onMouseDown={this.raiseWindow}
                 onResizeStop={this.onResizeStop}
                 ref={this.initRnd}
             >
-                <div className="resizeable-window-contents" onFocus={() => this.props.raiseWindow(this.id)}>
+                <div className="resizeable-window-contents" onFocus={this.raiseWindow}>
                     {this.renderTitleBar()}
-                    <div className={bodyclasses} onMouseDown={() => this.props.raiseWindow(this.id)} onScroll={this.preventScroll}>
+                    <div className={bodyclasses} onMouseDown={this.raiseWindow} onScroll={this.preventScroll}>
                         <div className="resizeable-window-drag-shield" ref={el => {this.dragShield = el;}} />
                         {this.portalNode ? (
                             <div className="resizeable-window-portal-container">
@@ -349,6 +349,11 @@ class ResizeableWindow extends React.Component {
         if (!this.props.scrollable) {
             ev.target.scrollLeft = 0;
             ev.target.scrollTop = 0;
+        }
+    };
+    raiseWindow = () => {
+        if (this.props.windowStacking[this.props.windowStacking.length - 1] !== this.id) {
+            this.props.raiseWindow(this.id);
         }
     };
     setInitialSize = (container) => {
