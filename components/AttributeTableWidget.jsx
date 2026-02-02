@@ -863,15 +863,21 @@ class AttributeTableWidget extends React.Component {
             const resize = {
                 anchor: resizeCol ? ev.clientX : ev.clientY,
                 element: element,
-                initial: initial
+                initial: initial,
+                newsize: initial
             };
+            const contentsEl = element.parentElement.parentElement.parentElement.parentElement;
+            const origin = contentsEl.getBoundingClientRect()[resizeCol ? "left" : "top"];
+            const resizeLine = document.createElement('div');
+            resizeLine.className = resizeCol ? 'attribtable-resize-line-vert' : 'attribtable-resize-line-horiz';
+            resizeLine.style[resizeCol ? "left" : "top"] = (resize.anchor - origin) + "px";
+            contentsEl.appendChild(resizeLine);
             const resizeDo = resizeCol ? (event) => {
-                const delta = event.clientX - resize.anchor;
-                resize.element.style.minWidth = Math.max((resize.initial + delta), 16) + "px";
-                resize.element.style.width = Math.max((resize.initial + delta), 16) + "px";
+                resizeLine.style.left = (event.clientX - origin) + "px";
+                resize.newsize = resize.initial + event.clientX - resize.anchor;
             } : (event) => {
-                const delta = event.clientY - resize.anchor;
-                resize.element.style.height = Math.max((resize.initial + delta), 16) + "px";
+                resizeLine.style.top = (event.clientY - origin) + "px";
+                resize.newsize = resize.initial + event.clientY - resize.anchor;
             };
             const eventShield = ev.view.document.createElement("div");
             eventShield.className = '__event_shield';
@@ -880,8 +886,15 @@ class AttributeTableWidget extends React.Component {
             ev.view.addEventListener("pointermove", resizeDo);
             ev.view.addEventListener("pointerup", (event) => {
                 event.view.document.body.removeChild(eventShield);
+                contentsEl.removeChild(resizeLine);
                 event.view.removeEventListener("pointermove", resizeDo);
                 event.view.document.body.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
+                if (resizeCol) {
+                    resize.element.style.minWidth = Math.max((resize.newsize), 16) + "px";
+                    resize.element.style.width = Math.max((resize.newsize), 16) + "px";
+                } else {
+                    resize.element.style.height = Math.max((resize.newsize), 16) + "px";
+                }
             }, {once: true});
         }
     };

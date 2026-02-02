@@ -219,3 +219,22 @@ body.nsresizing, body.nsresizing * {
     cursor: ns-resize!important;
     user-select: none;
 }
+
+div.attribtable-resize-line-vert,
+div.attribtable-resize-line-horiz {
+    position: absolute;
+    z-index: 2;
+    background-color: var(--border-color);
+}
+
+div.attribtable-resize-line-vert {
+    width: 4px;
+    top: 0;
+    bottom: 0;
+}
+
+div.attribtable-resize-line-horiz {
+    height: 4px;
+    left: 0;
+    right: 0;
+}
