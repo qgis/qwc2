@@ -246,6 +246,7 @@ class RedliningSupport extends React.Component {
             feature.set('measurements', undefined);
             feature.set('segment_labels', undefined);
             feature.set('label', '');
+            feature.set('end_label', undefined);
         }
     };
     updateMeasurements = (ev) => {
