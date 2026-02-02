@@ -316,7 +316,7 @@ const ServiceLayerUtils = {
             dimensions: dimensions,
             styles: styles,
             style: style,
-            serverType: translationsUrl ? 'qgis' : null // If there is a translationsUrl, assume it is the qwc-ogc-service
+            serverType: translationsUrl ? 'qgis' : undefined // If there is a translationsUrl, assume it is the qwc-ogc-service
         };
     },
     getWFSLayers(capabilities, calledServiceUrl, mapCrs) {
