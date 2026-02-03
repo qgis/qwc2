@@ -58,7 +58,7 @@ const BuiltinExporters = [
                     const feature = MiscUtils.objectOmit(entry, EXCLUDE_PROPS);
                     feature.properties = MiscUtils.objectOmit(feature.properties, EXCLUDE_ATTRS);
                     if (feature.geometry) {
-                        feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, entry, 'EPSG:4326');
+                        feature.geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, entry.crs, 'EPSG:4326');
                     }
                     return feature;
                 })
