@@ -857,6 +857,9 @@ class Map3D extends React.Component {
         this.instance.addEventListener('after-entity-update', this.instanceOnAfterEntityUpdate);
     };
     instanceOnUpdateStart = () => {
+        if (!this.state.sceneContext.scene?.view?.controls) {
+            return;
+        }
         const camera = this.instance.view.camera;
         const quality = this.state.sceneContext.settings.sceneQuality;
         const isFirstPerson = this.state.sceneContext.scene.view.controls.isFirstPerson;
@@ -883,6 +886,9 @@ class Map3D extends React.Component {
         });
     };
     instanceOnUpdateEnd = () => {
+        if (!this.state.sceneContext.scene?.view?.controls) {
+            return;
+        }
         Object.entries(this.state.sceneContext.sceneObjects).forEach(([objId, options]) => {
             const object = this.objectMap[objId];
             if (options.layertree && object.isObject3D) {
@@ -894,6 +900,9 @@ class Map3D extends React.Component {
         });
     };
     instanceOnBeforeEntityUpdate = ({entity}) => {
+        if (!this.state.sceneContext.scene?.view?.controls) {
+            return;
+        }
         if (entity !== this.map) {
             this.instance.view.camera.userData.__previousFar = this.instance.view.camera.far;
             const quality = this.state.sceneContext.settings.sceneQuality;
@@ -903,6 +912,9 @@ class Map3D extends React.Component {
         }
     };
     instanceOnAfterEntityUpdate = ({entity}) => {
+        if (!this.state.sceneContext.scene?.view?.camera) {
+            return;
+        }
         if (entity !== this.map) {
             this.instance.view.camera.far = this.instance.view.camera.userData.__previousFar;
             delete this.instance.view.camera.userData.__previousFar;
