@@ -109,7 +109,9 @@ class Map3D extends React.Component {
         collisionObjects: [],
         settings: {
             sceneQuality: 100
-        }
+        },
+        sceneId: null,
+        rebuildInstance: false
     };
     state = {
         sceneContext: {
@@ -137,8 +139,7 @@ class Map3D extends React.Component {
 
             getSetting: (key) => {},
             setSetting: (key, value) => {}
-        },
-        sceneId: null
+        }
     };
     constructor(props) {
         super(props);
@@ -180,17 +181,20 @@ class Map3D extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
             if (this.props.theme.map3d) {
-                this.setupInstance();
-            }
-        } else if (this.props.layers !== prevProps.layers) {
-            this.setState((state) => (
-                {
+                this.setState(state => ({
                     sceneContext: {
                         ...state.sceneContext,
-                        colorLayers: this.collectColorLayers(state.sceneContext.colorLayers, prevProps.layers)
+                        rebuildInstance: true
                     }
+                }));
+            }
+        } else if (this.props.layers !== prevProps.layers) {
+            this.setState((state) => ({
+                sceneContext: {
+                    ...state.sceneContext,
+                    colorLayers: this.collectColorLayers(state.sceneContext.colorLayers, prevProps.layers)
                 }
-            ));
+            }));
         }
 
         // Update map layers
@@ -633,8 +637,8 @@ class Map3D extends React.Component {
             ReactDOM.createPortal((
                 <div className="map3d-map" id="map3d" key="Map3D" ref={this.setupContainer} />
             ), this.context),
-            this.state.sceneContext.scene ? (
-                <UnloadWrapper key={this.state.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneId}>
+            this.state.sceneContext.scene && !this.state.sceneContext.rebuildInstance ? (
+                <UnloadWrapper key={this.state.sceneContext.sceneId} onUnload={this.onUnload} sceneId={this.state.sceneContext.sceneId}>
                     <MapControls3D
                         controlsPosition={this.props.controlsPosition}
                         mouseButtons={this.props.mouseButtons}
@@ -948,8 +952,12 @@ class Map3D extends React.Component {
     };
     onUnload = (key) => {
         // Ensure scene has not already been disposed
-        if (this.state.sceneId === key) {
-            this.disposeInstance();
+        if (this.state.sceneContext.sceneId === key) {
+            if (this.state.sceneContext.rebuildInstance) {
+                this.setupInstance();
+            } else {
+                this.disposeInstance();
+            }
         }
     };
     setupControls = (instance) => {
