@@ -477,7 +477,7 @@ class Map3D extends React.Component {
             url: MiscUtils.resolveAssetsPath(url)
         });
         // Recenter tile group
-        tiles.tiles.addEventListener('load-tile-set', ({tileSet}) => {
+        tiles.tiles.addEventListener('load-tileset', ({tileSet}) => {
             if (tileSet.root.parent === null) {
                 const bbox = new Box3();
                 tiles.tiles.getBoundingBox(bbox);
@@ -779,7 +779,7 @@ class Map3D extends React.Component {
                 url: MiscUtils.resolveAssetsPath(entry.url),
                 errorTarget: 32
             });
-            tiles.tiles.addEventListener('load-tile-set', () => {
+            tiles.tiles.addEventListener('load-tileset', () => {
                 this.instance.notifyChange(tiles);
             });
             tiles.tiles.addEventListener('needs-update', () => {
