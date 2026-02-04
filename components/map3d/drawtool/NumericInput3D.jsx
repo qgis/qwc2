@@ -9,6 +9,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
 import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
 import PropTypes from 'prop-types';
 import {Box3} from 'three';
@@ -202,7 +203,7 @@ export default class NumericInput3D extends React.Component {
         this.props.sceneContext.scene.notifyChange();
     };
     elevationChanged = ({extent}) => {
-        const crs = this.props.sceneContext.mapCrs;
+        const crs = CoordinateSystem.fromSrid(this.props.sceneContext.mapCrs);
         const coo = new Coordinates(crs, this.state.pos[0], this.state.pos[1]);
         if (extent.isPointInside(coo)) {
             const terrainHeight = this.props.sceneContext.getTerrainHeightFromMap([this.state.pos[0], this.state.pos[1]]) ?? 0;
