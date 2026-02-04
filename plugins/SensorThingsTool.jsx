@@ -72,7 +72,11 @@ ChartJS.register(
  * {
  *   "name": "SensorThingsTool",
  *   "cfg": {
- *     "sensorThingsApiUrl": "https://airquality-frost.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1",
+ *     "sensorThingsApiUrls": [
+ *       {
+ *         "url": "https://airquality-frost.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1"
+ *       }
+ *     ],
  *     "timeFormats": {
  *       "tooltip": "DD.MM.YYYY HH:mm:ss",
  *       "millisecond": "HH:mm:ss.SSS",
@@ -97,8 +101,15 @@ class SensorThingsTool extends React.Component {
         /** Map picking tolerance in pixels */
         queryTolerance: PropTypes.number,
         removeLayer: PropTypes.func,
-        /** URL of a SensorThings API */
-        sensorThingsApiUrl: PropTypes.string,
+        /** List of configurations for SensorThings API URLs.
+         * The optional `locationsFilter` is applied to Locations queries.
+         */
+        sensorThingsApiUrls: PropTypes.arrayOf(
+            PropTypes.shape({
+                url: PropTypes.string,
+                locationsFilter: PropTypes.string
+            })
+        ),
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
         /** Formatting patterns for displaying time values */
@@ -111,6 +122,7 @@ class SensorThingsTool extends React.Component {
     };
     static defaultProps = {
         queryTolerance: 16,
+        sensorThingsApiUrls: [],
         timeFormats: {
             tooltip: 'YYYY-MM-DD HH:mm:ss',
             millisecond: 'HH:mm:ss.SSS',
@@ -134,17 +146,17 @@ class SensorThingsTool extends React.Component {
         /**
          *  lookup for Locations at query point, by ID
          *
-         *  locationsAtPoint = {
-         *    <Location ID>: {
+         *  locationsAtPoint = [
+         *    {
          *      id: <Location ID>,
          *      name: <Location name>,
          *      description: <Location description>,
          *      link: <Location @iot.selfLink>,
          *      geom: <Location location>
          *    }
-         *  }
+         *  ]
          */
-        locationsAtPoint: {},
+        locationsAtPoint: [],
         /**
          * Location highlights in locations popup
          *
@@ -1707,39 +1719,56 @@ class SensorThingsTool extends React.Component {
         const maxY = wgs84Bbox[3].toFixed(6);
         const wgs84Wkt = `POLYGON((${minX} ${minY},${maxX} ${minY},${maxX} ${maxY},${minX} ${maxY},${minX} ${minY}))`;
 
-        // update SensorThings API URL for current theme
-        const sensorThingsApiUrl = this.props.sensorThingsApiUrl.replace('$theme$', this.props.theme.name);
-        // query SensorThings API for Locations within BBox
-        const url = sensorThingsApiUrl.replace(/\/$/, '') + '/Locations';
-        const params = {
-            $filter: "st_intersects(location, geography'" + wgs84Wkt + "')",
-            $orderBy: "name,description"
-        };
+        // track results by server
+        let queriesPending = this.props.sensorThingsApiUrls.length;
+        const locationsByServer = this.props.sensorThingsApiUrls.map((sensorThingsApi) => ({
+            url: sensorThingsApi.url,
+            locationsAtPoint: []
+        }));
 
-        axios.get(url, {params}).then(response => {
-            if (response.data.value.length === 0) {
-                // no Location found
-                this.setState({locationsAtPoint: []});
-                return;
+        // query all SensorThings APIs
+        this.props.sensorThingsApiUrls.forEach((sensorThingsApi, idx) => {
+            // update SensorThings API URL for current theme
+            const sensorThingsApiUrl = sensorThingsApi.url.replace('$theme$', this.props.theme.name);
+
+            // build BBox filter
+            let filter = "st_intersects(location, geography'" + wgs84Wkt + "')";
+            if (sensorThingsApi.locationsFilter !== undefined) {
+                // combine BBox filter with provided Locations filter
+                filter = `${filter} and (${sensorThingsApi.locationsFilter})`;
             }
 
-            // collect Locations
-            const locations = [];
-            response.data.value.forEach((location) => {
-                locations.push({
-                    id: location['@iot.id'],
-                    name: location.name,
-                    description: location.description,
-                    link: location['@iot.selfLink'],
-                    geom: location.location
-                });
-            });
+            // query SensorThings API for Locations within BBox
+            const url = sensorThingsApiUrl.replace(/\/$/, '') + '/Locations';
+            const params = {
+                $filter: filter,
+                $orderBy: "name,description"
+            };
 
-            this.setState({locationsAtPoint: locations});
-        }).catch(e => {
-            // eslint-disable-next-line
-            console.warn("SensorThings API locations query failed:", e.message);
-            this.setState({locationsAtPoint: []});
+            axios.get(url, {params}).then(response => {
+                queriesPending -= 1;
+
+                // collect Locations
+                response.data.value.forEach((location) => {
+                    locationsByServer[idx].locationsAtPoint.push({
+                        id: location['@iot.id'],
+                        name: location.name,
+                        description: location.description,
+                        link: location['@iot.selfLink'],
+                        geom: location.location
+                    });
+                });
+
+                if (queriesPending === 0) {
+                    // all queries completed, show combined locations
+                    const locations = locationsByServer.map((result) => result.locationsAtPoint).flat();
+                    this.setState({locationsAtPoint: locations});
+                }
+            }).catch(e => {
+                // eslint-disable-next-line
+                console.warn(`SensorThings API locations query failed for ${url}: ${e.message}`);
+                queriesPending -= 1;
+            });
         });
     };
     loadLocationDatastreams = (locationId) => {

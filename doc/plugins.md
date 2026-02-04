@@ -933,7 +933,11 @@ Sample plugin configuration for Fraunhofer SensorThings API with air quality dat
 {
   "name": "SensorThingsTool",
   "cfg": {
-    "sensorThingsApiUrl": "https://airquality-frost.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1",
+    "sensorThingsApiUrls": [
+      {
+        "url": "https://airquality-frost.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1"
+      }
+    ],
     "timeFormats": {
       "tooltip": "DD.MM.YYYY HH:mm:ss",
       "millisecond": "HH:mm:ss.SSS",
@@ -953,7 +957,7 @@ Sample plugin configuration for Fraunhofer SensorThings API with air quality dat
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | queryTolerance | `number` | Map picking tolerance in pixels | `16` |
-| sensorThingsApiUrl | `string` | URL of a SensorThings API | `undefined` |
+| sensorThingsApiUrls | `[{`<br />`  url: string,`<br />`  locationsFilter: string,`<br />`}]` | List of configurations for SensorThings API URLs.<br />The optional `locationsFilter` is applied to Locations queries. | `[]` |
 | timeFormats | `object` | Formatting patterns for displaying time values | `{`<br />`    tooltip: 'YYYY-MM-DD HH:mm:ss',`<br />`    millisecond: 'HH:mm:ss.SSS',`<br />`    second: 'HH:mm:ss',`<br />`    minute: 'HH:mm',`<br />`    hour: 'HH:mm',`<br />`    day: 'MM-DD',`<br />`    week: 'YYYY-MM-DD',`<br />`    month: 'YYYY-MM',`<br />`    quarter: '[Q]Q - YYYY',`<br />`    year: 'YYYY'`<br />`}` |
 | windowSize | `object` | Default size of the SensorThings Query window | `{width: 800, height: 600}` |
 | zoomFactor | `number` | Zoom factor for chart zoom buttons | `1.5` |
