@@ -56,6 +56,8 @@ class Identify extends React.Component {
         customExporters: PropTypes.array,
         /** Whether to enable the aggregated report download button. */
         enableAggregatedReports: PropTypes.bool,
+        /** Whether to enable the possibility select results for comparison. */
+        enableCompare: PropTypes.bool,
         /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. */
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         enabled: PropTypes.bool,
@@ -103,6 +105,7 @@ class Identify extends React.Component {
     };
     static defaultProps = {
         enableAggregatedReports: true,
+        enableCompare: true,
         enableExport: true,
         exportGeometry: true,
         clearResultsOnClose: true,
@@ -392,7 +395,7 @@ class Identify extends React.Component {
                         attributeTransform={this.props.attributeTransform}
                         customExporters={this.props.customExporters}
                         enableAggregatedReports={this.props.enableAggregatedReports}
-                        enableCompare
+                        enableCompare={this.props.enableCompare}
                         enableExport={this.props.enableExport}
                         exportGeometry={this.props.exportGeometry}
                         highlightAllResults={this.props.highlightAllResults}
