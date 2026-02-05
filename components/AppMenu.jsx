@@ -30,6 +30,7 @@ class AppMenu extends React.Component {
     static propTypes = {
         appMenuClearsTask: PropTypes.bool,
         appMenuShortcut: PropTypes.string,
+        buttonContents: PropTypes.object,
         buttonLabel: PropTypes.string,
         currentTaskBlocked: PropTypes.bool,
         keepMenuOpen: PropTypes.bool,
@@ -201,10 +202,12 @@ class AppMenu extends React.Component {
                     className="appmenu-button" onClick={this.toggleMenu} onKeyDown={this.btnKeyNav}
                     ref={el => { this.menuBtn = el; }} tabIndex={0} title={this.props.buttonLabel}
                 >
-                    {showLabel ? (<span className="appmenu-label">{this.props.buttonLabel}</span>) : null}
-                    <span className="appmenu-icon">
-                        <Icon icon="menu-hamburger"/>
-                    </span>
+                    {this.props.buttonContents ?? [
+                        showLabel ? (<span className="appmenu-label" key="AppMenuLabel">{this.props.buttonLabel}</span>) : null,
+                        (<span className="appmenu-icon" key="AppMenuIcon">
+                            <Icon icon="menu-hamburger"/>
+                        </span>)
+                    ]}
                 </div>
                 <div className="appmenu-menu-container" tabIndex={-1}>
                     <div className="appmenu-menu" inert={!visible} onMouseLeave={this.clearFocus} ref={el => { this.menuEl = el; MiscUtils.setupKillTouchEvents(el); }}>
