@@ -771,10 +771,17 @@ class IdentifyViewer extends React.Component {
             }
             return res;
         }, []);
+        const enabledSettings = {
+            showLayerSelector: this.props.showLayerSelector,
+            paginatedDisplayMode: this.props.resultDisplayMode === 'paginated',
+            exportEnabled: this.props.enableExport === true || !isEmpty(this.props.enableExport),
+            reportsEnabled: this.props.enableAggregatedReports && Object.keys(this.state.reports).length > 0
+        };
+        const haveSettings = Object.values(enabledSettings).find(Boolean) !== undefined;
         return (
             <div className="identify-toolbar">
-                {toggleButton("settingsMenu", "cog", false)}
-                {this.state.settingsMenu ? this.renderSettingsMenu() : null}
+                {haveSettings ? toggleButton("settingsMenu", "cog", false) : null}
+                {this.state.settingsMenu ? this.renderSettingsMenu(enabledSettings) : null}
                 {this.props.enableCompare ? toggleButton("compareEnabled", "compare", this.state.selectedResults.size() < 2, LocaleUtils.tr("identify.compare")) : null}
                 <span className="identify-toolbar-spacer" />
                 {infoLabel}
@@ -785,33 +792,33 @@ class IdentifyViewer extends React.Component {
             </div>
         );
     };
-    renderSettingsMenu = () => {
+    renderSettingsMenu = (enabledSettings) => {
         const exporters = Object.fromEntries(this.getExporters().map(exporter => ([exporter.id, exporter])));
         const enabledExporters = Array.isArray(this.props.enableExport) ? this.props.enableExport : Object.keys(exporters);
         const clipboardExportDisabled = exporters[this.state.exportFormat]?.allowClipboard !== true;
-        const exportEnabled = this.props.enableExport === true || !isEmpty(this.props.enableExport);
-        const reportsEnabled = this.props.enableAggregatedReports && Object.keys(this.state.reports).length > 0;
         return (
             <div className="identify-settings-menu">
                 <table>
                     <tbody>
-                        <tr>
-                            <td>{LocaleUtils.tr("identify.results")}:</td>
-                            <td>
-                                <div className="controlgroup">
-                                    <select className="controlgroup-expanditem" onChange={ev => this.setSelectedLayer(ev.target.value)}>
-                                        <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
-                                        {Object.keys(this.state.resultTree).filter(key => this.state.resultTree[key].length).map(
-                                            layer => (
-                                                <option key={layer} value={layer}>
-                                                    {this.state.resultTree[layer][0].layertitle}
-                                                </option>
-                                            ))}
-                                    </select>
-                                </div>
-                            </td>
-                        </tr>
-                        {this.props.resultDisplayMode === 'paginated' ? (
+                        {enabledSettings.showLayerSelector ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("identify.results")}:</td>
+                                <td>
+                                    <div className="controlgroup">
+                                        <select className="controlgroup-expanditem" onChange={ev => this.setSelectedLayer(ev.target.value)}>
+                                            <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
+                                            {Object.keys(this.state.resultTree).filter(key => this.state.resultTree[key].length).map(
+                                                layer => (
+                                                    <option key={layer} value={layer}>
+                                                        {this.state.resultTree[layer][0].layertitle}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        ) : null}
+                        {enabledSettings.paginatedDisplayMode ? (
                             <tr>
                                 <td>{LocaleUtils.tr("identify.multiview")}</td>
                                 <td>
@@ -821,7 +828,7 @@ class IdentifyViewer extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {exportEnabled ? (
+                        {enabledSettings.exportEnabled ? (
                             <tr>
                                 <td>{LocaleUtils.tr("common.export")}:</td>
                                 <td>
@@ -841,7 +848,7 @@ class IdentifyViewer extends React.Component {
                                 </td>
                             </tr>
                         ) : null}
-                        {reportsEnabled ? (
+                        {enabledSettings.reportsEnabled ? (
                             <tr>
                                 <td>{LocaleUtils.tr("identify.aggregatedreport")}:</td>
                                 <td>
