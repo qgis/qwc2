@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const availableLanguages = require('./static/translations/tsconfig.json').languages;
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 const today = new Date();
 const buildDate = today.getFullYear() + "." + String(1 + today.getMonth()).padStart(2, '0') + "." + String(today.getDate()).padStart(2, '0');
@@ -69,7 +70,12 @@ module.exports = (env, argv) => {
                 patterns: [
                     { from: 'static' }
                 ]
-            })
+            }),
+            env.ANALYZE === "1" ? new BundleAnalyzerPlugin({
+                analyzerMode: 'server',   // opens browser automatically
+                openAnalyzer: true,       // ensures browser launches
+                generateStatsFile: true  // optional, creates stats.json
+            }) : null
         ],
         module: {
             rules: [

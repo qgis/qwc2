@@ -1,6 +1,6 @@
 {
     "name": "qwc2",
-    "version": "2026.02.05",
+    "version": "2026.02.07",
     "description": "QGIS Web Client",
     "author": "Sourcepole AG",
     "license": "BSD-2-Clause",
@@ -120,7 +120,7 @@
         "style-loader": "^4.0.0",
         "typescript": "^5.9.3",
         "webpack": "^5.104.1",
-        "webpack-bundle-size-analyzer": "^3.1.0",
+        "webpack-bundle-analyzer": "^5.2.0",
         "webpack-cli": "^6.0.1",
         "webpack-dev-server": "^5.2.2"
     },
@@ -138,7 +138,7 @@
         "plugindoc": "node scripts/gen-plugin-docs.js",
         "dist": "./scripts/dist.sh",
         "build": "npm run prod",
-        "analyze": "webpack --mode production --json | webpack-bundle-size-analyzer",
+        "analyze": "webpack --mode production --progress --env ANALYZE=1",
         "release": "node -e \"process.exit(require('os').platform() === 'win32' ? 0 : 1)\" && scripts\\package-commands.bat release || ./scripts/package-commands.sh release"
     }
 }
