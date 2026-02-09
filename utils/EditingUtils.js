@@ -123,7 +123,11 @@ function representValue(attr, editConfig, editIface, promises) {
         {...res, [entry.value]: entry.label}
     ), {});
     if (field.constraints.allowMulti) {
-        return '{' + [...new Set(JSON.parse('[' + value.slice(1, -1) + ']'))].map(x => keyvals[x] ?? x).join(", ") + '}';
+        try {
+            return '{' + [...new Set(JSON.parse('[' + value.slice(1, -1) + ']'))].map(x => keyvals[x] ?? x).join(", ") + '}';
+        } catch {
+            return '{}';
+        }
     } else {
         return keyvals[value] ?? value;
     }
