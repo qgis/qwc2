@@ -147,7 +147,7 @@ class AttributeTableWidget extends React.Component {
         const editPermissions = curEditConfig?.permissions || {};
         const readOnly = this.props.readOnly || editPermissions.updatable === false;
         const loading = this.state.loading;
-        const editing = this.state.changedFeatureIdx !== null || this.state.newFeature;
+        const editing = this.state.changedFeatureIdx !== null || this.state.newFeature !== null;
         const selectionEmpty = this.state.selectedFeatures.isEmpty();
 
         let loadOverlay = null;
@@ -395,7 +395,7 @@ class AttributeTableWidget extends React.Component {
                         <Icon icon="search" />
                     </button>
                     {showEditButton ? (
-                        <button className="button" disabled={layerChanged || editing || this.state.selectedFeatures.length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
+                        <button className="button" disabled={layerChanged || editing || this.state.selectedFeatures.size() !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
                             <Icon icon="editing" />
                         </button>
                     ) : null}
@@ -848,7 +848,7 @@ class AttributeTableWidget extends React.Component {
             alert(LocaleUtils.tr("attribtable.nogeomnoform"));
             return;
         }
-        const feature = this.currentPageFeatures(this.state).find(f => this.state.selectedFeatures[f.id] === true);
+        const feature = this.currentPageFeatures(this.state).find(f => this.state.selectedFeatures.has(f.id));
         this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, feature: feature});
     };
     resizeTable = (ev, index, resizeCol) => {
