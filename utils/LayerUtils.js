@@ -1207,19 +1207,21 @@ const LayerUtils = {
         if (layer.translationsUrl) {
             metadataRequests.push(new Promise((resolve) => {
                 axios.get(layer.translationsUrl.replace('{lang}', LocaleUtils.lang())).then(response => {
-                    layer.translations = response.data;
+                    layer.translations = deepmerge(LocaleUtils.commonTranslations(), response.data);
                     delete layer.translationsUrl;
                     resolve();
                 }).catch(() => {
-                    layer.translations = {};
+                    layer.translations = LocaleUtils.commonTranslations();
                     delete layer.translationsUrl;
                     resolve();
                 });
             }));
+        } else {
+            layer.translations = deepmerge(LocaleUtils.commonTranslations(), layer.translations || {});
         }
         Promise.all(metadataRequests).then(() => {
             if (layer.translations) {
-                layer = LayerUtils.applyTranslations(layer, deepmerge(LocaleUtils.commonTranslations(), layer.translations));
+                layer = LayerUtils.applyTranslations(layer, layer.translations);
             }
             callback(layer);
         });
