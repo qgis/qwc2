@@ -1157,6 +1157,7 @@ const LayerUtils = {
                 collectLayerVisibilities(layer);
             }
         });
+        return result;
     },
     getActiveVisibilityPreset(layers, presets) {
         if (isEmpty(presets)) {
