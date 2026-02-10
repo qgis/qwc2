@@ -29,10 +29,11 @@ export default function locale(state = defaultState, action) {
         };
     }
     case ADD_TRANSLATIONS: {
+        const newMessages = action.translations?.[state.current] ?? {};
         return {
             ...state,
-            messagesTree: deepmerge(state.messages, action.translations[state.current]),
-            messages: {...state.messages, ...flatten(action.translations[state.current] || {})}
+            messagesTree: deepmerge(state.messages, newMessages),
+            messages: {...state.messages, ...flatten(newMessages)}
         };
     }
     default:
