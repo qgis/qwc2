@@ -144,7 +144,7 @@ class SensorThingsTool extends React.Component {
         locationPickingActive: true,
         pickGeom: null,
         /**
-         *  lookup for Locations at query point, by ID
+         *  Locations at query point
          *
          *  locationsAtPoint = [
          *    {
@@ -208,17 +208,43 @@ class SensorThingsTool extends React.Component {
          *      datastreams: [
          *          <Datastream ID>
          *      ],
-         *      thing: {
-         *          id: <Thing ID>,
-         *          name: <Thing name>,
-         *          description: <Thing description>,
-         *          properties: <Thing custom properties>
+         *      filterOptions: {
+         *          things: [
+         *              id: <Thing ID>,
+         *              name: <Thing name>,
+         *              description: <Thing description>,
+         *              optionText: <text shown in dropdown>,
+         *              properties: <Thing custom properties>
+         *          ],
+         *          sensors: [
+         *              id: <Sensor ID>,
+         *              name: <Sensor name>,
+         *              description: <Sensor description>,
+         *              optionText: <text shown in dropdown>
+         *          ],
+         *          observedProperties: [
+         *              id: <ObservedProperty ID>,
+         *              name: <ObservedProperty name>,
+         *              description: <ObservedProperty description>,
+         *              optionText: <text shown in dropdown>
+         *          ]
          *      }
+         *      filteredDatastreams: [
+         *          <Datastream ID matching current filter>
+         *      ]
          *  }
          */
         currentSensorLocation: null,
         // show currently selected Location info window if true
         showLocationInfoWindow: false,
+        // currently selected Datastreams filter options
+        currentDatastreamsFilter: {
+            thingId: -1,
+            sensorId: -1,
+            observedPropertyId: -1
+        },
+        // show Datastreams filter window for currently selected Location if true
+        showDatastreamsFilterWindow: false,
         // currently selected Datastream ID
         currentDatastreamId: null,
         /**
@@ -227,9 +253,9 @@ class SensorThingsTool extends React.Component {
          *  datastreams = {
          *      <Datastream ID>: {
          *          locationId: <Location ID>,
-         *          thing: {
-         *              name: <Thing name>
-         *          },
+         *          thingId: <Thing ID>,
+         *          sensorId: <Sensor ID>,
+         *          observedPropertyId: <ObservedProperty ID>,
          *          id: <Datastream ID>,
          *          name: <Datastream name>,
          *          description:<Datastream description>,
@@ -458,6 +484,10 @@ class SensorThingsTool extends React.Component {
             this.props.removeLayer("sensorThingsSelection");
         }
 
+        if (this.state.currentDatastreamsFilter !== prevState.currentDatastreamsFilter) {
+            this.filterLocationDatastreams();
+        }
+
         this.state.datastreamOptions.forEach((datastreamOptions, idx) => {
             if (datastreamOptions.showArithmeticMean !== prevState.datastreamOptions[idx]?.showArithmeticMean) {
                 this.calculateStatisticsArithmeticMean(idx);
@@ -509,6 +539,7 @@ class SensorThingsTool extends React.Component {
             ),
             this.renderLocationSelectPopup(),
             this.renderLocationInfoWindow(),
+            this.renderDatastreamsFilterWindow(),
             this.renderDatastreamTableWindow(),
             (
                 <MapSelection
@@ -780,22 +811,40 @@ class SensorThingsTool extends React.Component {
             );
 
             if (this.state.currentSensorLocation !== null) {
-                datastreamSelect = (
-                    <div className="sensor-things-location-datastreams">
-                        {LocaleUtils.tr("sensorthingstool.datastreamLabel")}:&nbsp;
-                        <select onChange={(ev) => this.setState({currentDatastreamId: parseInt(ev.target.value, 10)})} value={this.state.currentDatastreamId}>
-                            {this.state.currentSensorLocation.datastreams.map((datastreamId) => {
-                                const datastream = this.state.datastreams[datastreamId];
-                                return (
-                                    <option key={"sensor-things-select-datastream-" + datastream.id} value={datastream.id}>{datastream.description}</option>
-                                );
-                            })}
-                        </select>
-                        <button className="button" onClick={this.addDatastream} title={LocaleUtils.tr("sensorthingstool.addDatastream")}>
-                            <Icon icon="plus" />
-                        </button>
-                    </div>
-                );
+                const datastreamsFilterActive = this.state.currentDatastreamsFilter.thingId !== -1 || this.state.currentDatastreamsFilter.sensorId !== -1 || this.state.currentDatastreamsFilter.observedPropertyId !== -1;
+                if (this.state.currentSensorLocation.filteredDatastreams.length > 0) {
+                    datastreamSelect = (
+                        <div className="sensor-things-location-datastreams">
+                            {LocaleUtils.tr("sensorthingstool.datastreamLabel")}:&nbsp;
+                            <select onChange={(ev) => this.setState({currentDatastreamId: parseInt(ev.target.value, 10)})} value={this.state.currentDatastreamId}>
+                                {this.state.currentSensorLocation.filteredDatastreams.map((datastreamId) => {
+                                    const datastream = this.state.datastreams[datastreamId];
+                                    return (
+                                        <option key={"sensor-things-select-datastream-" + datastream.id} value={datastream.id}>{datastream.description}</option>
+                                    );
+                                })}
+                            </select>
+                            <button className="button" onClick={this.addDatastream} title={LocaleUtils.tr("sensorthingstool.addDatastream")}>
+                                <Icon icon="plus" />
+                            </button>
+                            <button className={"button" + (this.state.showDatastreamsFilterWindow ? " pressed" : "") + (datastreamsFilterActive ? " filter-active" : "")} onClick={() => this.toggleDatastreamsFilterWindow()} title={LocaleUtils.tr("sensorthingstool.datastreamsFilter.title")}>
+                                <Icon icon="filter" />
+                            </button>
+                        </div>
+                    );
+                } else {
+                    datastreamSelect = (
+                        <div className="sensor-things-location-datastreams">
+                            {LocaleUtils.tr("sensorthingstool.datastreamLabel")}:&nbsp;
+                            <select>
+                                <option>{LocaleUtils.tr("sensorthingstool.datastreamNone")}</option>
+                            </select>
+                            <button className={"button" + (this.state.showDatastreamsFilterWindow ? " pressed" : "") + (datastreamsFilterActive ? " filter-active" : "")} onClick={() => this.toggleDatastreamsFilterWindow()} title={LocaleUtils.tr("sensorthingstool.datastreamsFilter.title")}>
+                                <Icon icon="filter" />
+                            </button>
+                        </div>
+                    );
+                }
             }
 
             datastreams = (
@@ -987,6 +1036,11 @@ class SensorThingsTool extends React.Component {
         }
     };
     removeSelectedLocation = () => {
+        if (this.state.currentSensorLocation === null) {
+            // skip if currentSensorLocation not yet ready
+            return;
+        }
+
         this.setState((state) => {
             // remove currently selected Location
             const nextSelectedLocations = {...state.selectedLocations};
@@ -1003,6 +1057,11 @@ class SensorThingsTool extends React.Component {
                 selectedLocationsOptions: nextSelectedLocationsOptions,
                 currentLocationId: nextSelectedLocationId,
                 currentSensorLocation: null,
+                currentDatastreamsFilter: {
+                    thingId: -1,
+                    sensorId: -1,
+                    observedPropertyId: -1
+                },
                 currentDatastreamId: null,
                 datastreams: nextDatastreams,
                 graph: {
@@ -1012,6 +1071,14 @@ class SensorThingsTool extends React.Component {
                 datastreamOptions: state.datastreamOptions.filter((options) => !state.currentSensorLocation.datastreams.includes(options.datastreamId))
             };
         });
+    };
+    updateDatastreamsFilter = (field, value) => {
+        this.setState((state) => ({
+            currentDatastreamsFilter: {
+                ...state.currentDatastreamsFilter,
+                [field]: parseInt(value, 10)
+            }
+        }));
     };
     addDatastream = () => {
         if (this.state.currentDatastreamId !== undefined) {
@@ -1405,20 +1472,22 @@ class SensorThingsTool extends React.Component {
                 [LocaleUtils.tr("sensorthingstool.locationInfo.description"), location.description]
             ];
             // TODO: configurable custom properties
-            const thingProperties = location.thing.properties || {};
-            if (thingProperties.platform !== undefined) {
-                locationInfoRows.push([LocaleUtils.tr("sensorthingstool.locationInfo.platform"), thingProperties.platform]);
-            }
-            if (thingProperties.sensor_serial_nr !== undefined) {
-                locationInfoRows.push([LocaleUtils.tr("sensorthingstool.locationInfo.serialNumber"), thingProperties.sensor_serial_nr]);
-            }
-            if (thingProperties.platform !== undefined) {
-                // NOTE: only if platform present
-                locationInfoRows.push([LocaleUtils.tr("sensorthingstool.locationInfo.qompSensorId"), location.thing.id]);
-            }
-            if (thingProperties.inactive !== undefined) {
-                locationInfoRows.push([LocaleUtils.tr("sensorthingstool.locationInfo.inactive"), thingProperties.inactive]);
-            }
+            location.filterOptions.things.forEach((thing) => {
+                const thingProperties = thing.properties || {};
+                if (thingProperties.platform !== undefined) {
+                    locationInfoRows.push([LocaleUtils.tr("sensorthingstool.locationInfo.platform"), thingProperties.platform]);
+                }
+                if (thingProperties.sensor_serial_nr !== undefined) {
+                    locationInfoRows.push([LocaleUtils.tr("sensorthingstool.locationInfo.serialNumber"), thingProperties.sensor_serial_nr]);
+                }
+                if (thingProperties.platform !== undefined) {
+                    // NOTE: only if platform present
+                    locationInfoRows.push([LocaleUtils.tr("sensorthingstool.locationInfo.qompSensorId"), thing.id]);
+                }
+                if (thingProperties.inactive !== undefined) {
+                    locationInfoRows.push([LocaleUtils.tr("sensorthingstool.locationInfo.inactive"), thingProperties.inactive]);
+                }
+            });
         }
 
         return (
@@ -1439,6 +1508,63 @@ class SensorThingsTool extends React.Component {
                                     </tr>
                                 );
                             })}
+                        </tbody>
+                    </table>
+                </div>
+            </ResizeableWindow>
+        );
+    };
+    toggleDatastreamsFilterWindow = () => {
+        this.setState((state) => ({showDatastreamsFilterWindow: !state.showDatastreamsFilterWindow}));
+    };
+    renderDatastreamsFilterWindow = () => {
+        if (!this.state.showDatastreamsFilterWindow || this.state.currentSensorLocation === null) {
+            return null;
+        }
+
+        return (
+            <ResizeableWindow fitHeight="true" icon="filter"
+                initialWidth={500}
+                initialX={this.props.windowSize.width + 10} initialY={0} key="SensorThingsDatastreamsFilterWindow"
+                onClose={() => this.setState({showDatastreamsFilterWindow: false})}
+                title={LocaleUtils.tr("sensorthingstool.datastreamsFilter.title")}
+            >
+                <div className="sensor-things-dialog-body" role="body">
+                    <table className="sensor-things-datastreams-filter">
+                        <tbody>
+                            <tr>
+                                <td>{LocaleUtils.tr("sensorthingstool.datastreamsFilter.thing")}:&nbsp;</td>
+                                <td>
+                                    <select onChange={(ev) => this.updateDatastreamsFilter('thingId', ev.target.value)} value={this.state.currentDatastreamsFilter.thingId}>
+                                        <option value="-1">{LocaleUtils.tr("common.select")}</option>
+                                        {this.state.currentSensorLocation.filterOptions.things.map((thing) => (
+                                            <option key={"sensor-things-select-filter-thing-" + thing.id} value={thing.id}>{thing.optionText}</option>
+                                        ))}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{LocaleUtils.tr("sensorthingstool.datastreamsFilter.sensor")}:&nbsp;</td>
+                                <td>
+                                    <select onChange={(ev) => this.updateDatastreamsFilter('sensorId', ev.target.value)} value={this.state.currentDatastreamsFilter.sensorId}>
+                                        <option value="-1">{LocaleUtils.tr("common.select")}</option>
+                                        {this.state.currentSensorLocation.filterOptions.sensors.map((sensor) => (
+                                            <option key={"sensor-things-select-filter-sensor-" + sensor.id} value={sensor.id}>{sensor.optionText}</option>
+                                        ))}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{LocaleUtils.tr("sensorthingstool.datastreamsFilter.observedProperty")}:&nbsp;</td>
+                                <td>
+                                    <select onChange={(ev) => this.updateDatastreamsFilter('observedPropertyId', ev.target.value)} value={this.state.currentDatastreamsFilter.observedPropertyId}>
+                                        <option value="-1">{LocaleUtils.tr("common.select")}</option>
+                                        {this.state.currentSensorLocation.filterOptions.observedProperties.map((observedProperty) => (
+                                            <option key={"sensor-things-select-filter-observed-property-" + observedProperty.id} value={observedProperty.id}>{observedProperty.optionText}</option>
+                                        ))}
+                                    </select>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -1775,7 +1901,7 @@ class SensorThingsTool extends React.Component {
         // get Datastreams of selected Location
         const selectedLocation = this.state.selectedLocations[locationId];
         const params = {
-            $expand: "Things($expand=Datastreams)"
+            $expand: "Things($expand=Datastreams($expand=Sensor($select=@iot.id,name,description),ObservedProperty($select=@iot.id,name,description)))"
         };
         axios.get(selectedLocation.link, {params}).then(response => {
             if (locationId !== this.state.currentLocationId) {
@@ -1788,7 +1914,26 @@ class SensorThingsTool extends React.Component {
             // collect flat list of Datastreams of all Things of this Location
             const datastreamIds = [];
             const datastreamsLookup = {};
-            let thingInfo = {};
+            const thingsLookup = {};
+            const sensorsLookup = {};
+            const observedPropertiesLookup = {};
+
+            // format text shown in dropdown option
+            const optionTextForItem = (item) => {
+                let text = "";
+                if (item.description === undefined) {
+                    // show only name if there is no description present
+                    text = item.name;
+                } else if (item.name === item.description) {
+                    // show only name if name and description are identical
+                    text = item.name;
+                } else {
+                    // show name and description
+                    text = `${item.name}: ${item.description}`;
+                }
+                return text;
+            };
+
             location.Things.forEach((thing) => {
                 thing.Datastreams.forEach((datastream) => {
                     const datastreamId = datastream['@iot.id'];
@@ -1805,11 +1950,14 @@ class SensorThingsTool extends React.Component {
                         periodEnd = Date.parse(parts[1]);
                     }
 
+                    const sensor = datastream.Sensor;
+                    const observedProperty = datastream.ObservedProperty;
+
                     datastreamsLookup[datastreamId] = {
                         locationId: location['@iot.id'],
-                        thing: {
-                            name: thing.name
-                        },
+                        thingId: thing['@iot.id'],
+                        sensorId: sensor['@iot.id'],
+                        observedPropertyId: observedProperty['@iot.id'],
                         id: datastreamId,
                         name: datastream.name,
                         description: datastream.description,
@@ -1822,15 +1970,37 @@ class SensorThingsTool extends React.Component {
                         properties: datastream.properties,
                         link: datastream['@iot.selfLink']
                     };
-                });
 
-                thingInfo = {
-                    id: thing['@iot.id'],
-                    name: thing.name,
-                    description: thing.description,
-                    properties: thing.properties
-                };
+                    thingsLookup[thing['@iot.id']] = {
+                        id: thing['@iot.id'],
+                        name: thing.name,
+                        description: thing.description,
+                        optionText: optionTextForItem(thing),
+                        properties: thing.properties
+                    };
+
+                    sensorsLookup[sensor['@iot.id']] = {
+                        id: sensor['@iot.id'],
+                        name: sensor.name,
+                        description: sensor.description,
+                        // NOTE: show only name if description is identical
+                        optionText: optionTextForItem(sensor)
+                    };
+
+                    observedPropertiesLookup[observedProperty['@iot.id']] = {
+                        id: observedProperty['@iot.id'],
+                        name: observedProperty.name,
+                        description: observedProperty.description,
+                        // NOTE: show only name if description is identical
+                        optionText: optionTextForItem(observedProperty)
+                    };
+                });
             });
+
+            // collect filter options sorted by name and description
+            const thingsFilterOptions = Object.values(thingsLookup).sort((a, b) => a.name.localeCompare(b.name) || a.description.localeCompare(b.description));
+            const sensorsFilterOptions = Object.values(sensorsLookup).sort((a, b) => a.name.localeCompare(b.name) || a.description.localeCompare(b.description));
+            const observedPropertiesFilterOptions = Object.values(observedPropertiesLookup).sort((a, b) => a.name.localeCompare(b.name) || a.description.localeCompare(b.description));
 
             this.setState((state) => ({
                 currentSensorLocation: {
@@ -1839,7 +2009,17 @@ class SensorThingsTool extends React.Component {
                     description: location.description,
                     geom: location.location,
                     datastreams: datastreamIds,
-                    thing: thingInfo
+                    filterOptions: {
+                        things: thingsFilterOptions,
+                        sensors: sensorsFilterOptions,
+                        observedProperties: observedPropertiesFilterOptions
+                    },
+                    filteredDatastreams: datastreamIds
+                },
+                currentDatastreamsFilter: {
+                    thingId: -1,
+                    sensorId: -1,
+                    observedPropertyId: -1
                 },
                 currentDatastreamId: datastreamIds[0],
                 datastreams: {
@@ -1851,6 +2031,38 @@ class SensorThingsTool extends React.Component {
             // eslint-disable-next-line
             console.warn("SensorThings API location query failed:", e.message);
         });
+    };
+    filterLocationDatastreams = () => {
+        if (this.state.currentSensorLocation !== null) {
+            let filteredDatastreams = this.state.currentSensorLocation.datastreams;
+
+            if (this.state.currentDatastreamsFilter.thingId !== -1) {
+                // filter by Thing
+                filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
+                    this.state.datastreams[datastreamId].thingId === this.state.currentDatastreamsFilter.thingId
+                ));
+            }
+            if (this.state.currentDatastreamsFilter.sensorId !== -1) {
+                // filter by Sensor
+                filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
+                    this.state.datastreams[datastreamId].sensorId === this.state.currentDatastreamsFilter.sensorId
+                ));
+            }
+            if (this.state.currentDatastreamsFilter.observedPropertyId !== -1) {
+                // filter by ObservedProperty
+                filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
+                    this.state.datastreams[datastreamId].observedPropertyId === this.state.currentDatastreamsFilter.observedPropertyId
+                ));
+            }
+
+            this.setState((state) => ({
+                currentSensorLocation: {
+                    ...state.currentSensorLocation,
+                    filteredDatastreams: filteredDatastreams
+                },
+                currentDatastreamId: filteredDatastreams[0]
+            }));
+        }
     };
     loadDatastreamObservations = (datastreamIndex, datastreamId) => {
         // mark as loading

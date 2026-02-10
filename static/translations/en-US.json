@@ -627,6 +627,7 @@
         "unit": "Unit"
       },
       "datastreamLabel": "Datastream",
+      "datastreamNone": "No results",
       "datastreamOptions": {
         "arithmeticMean": "Arithmetic mean",
         "percentiles": "Percentiles",
@@ -642,6 +643,12 @@
         "title": "Datastream table",
         "unit": "Unit",
         "value": "Value"
+      },
+      "datastreamsFilter": {
+        "observedProperty": "Observed Property",
+        "sensor": "Sensor",
+        "thing": "Thing",
+        "title": "Datastreams filter"
       },
       "exportCSV": "Export as CSV",
       "exportImage": "Export as image",

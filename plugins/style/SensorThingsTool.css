@@ -33,6 +33,10 @@ div.sensor-things-location-datastreams {
 div.sensor-things-location-datastreams select:focus {
     z-index: 1;
 }
+div.sensor-things-location-datastreams button.filter-active {
+    background-color: var(--button-text-color);
+    color: var(--button-bg-color);
+}
 tr.sensor-things-datastream div.sensor-things-datastream-legend {
     margin: -4px 0.25em 0 0.25em;
     width: 28px;
@@ -154,6 +158,14 @@ div.sensor-things-location-select div:hover {
 
 table.sensor-things-location-info td:nth-child(1) {
     width: 8.5em;
+}
+
+table.sensor-things-datastreams-filter td:nth-child(1) {
+    width: 9.5em;
+}
+table.sensor-things-datastreams-filter td select {
+    width: 100%;
+    text-overflow: ellipsis;
 }
 
 div.sensor-things-datastream-observations-table-wrapper {
