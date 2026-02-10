@@ -35,7 +35,7 @@ export const SWITCHING_THEME = 'SWITCHING_THEME';
 export function themesLoaded(themes) {
     return {
         type: THEMES_LOADED,
-        themes: themes
+        themes: ThemeUtils.applyCommonTranslations(themes || {})
     };
 }
 
