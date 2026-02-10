@@ -749,7 +749,7 @@ class IdentifyViewer extends React.Component {
     computePageSize = (rect) => {
         const s = 2 * this.props.resultGridSize;
         if (this.state.multiViewEnabled && (rect.height >= s || rect.width >= s)) {
-            this.setState({pageSize: rect.height >= s && rect.width >= s ? 4 : 2});
+            this.setState({pageSize: rect.height >= s && rect.width >= s ? 4 : 2, currentPage: 0});
         } else {
             this.setState({pageSize: 1});
         }
