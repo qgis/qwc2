@@ -253,9 +253,21 @@ class SensorThingsTool extends React.Component {
          *  datastreams = {
          *      <Datastream ID>: {
          *          locationId: <Location ID>,
-         *          thingId: <Thing ID>,
-         *          sensorId: <Sensor ID>,
-         *          observedPropertyId: <ObservedProperty ID>,
+         *          thing: {
+         *              id: <Thing ID>,
+         *              name: <Thing name>,
+         *              description: <Thing description>
+         *          },
+         *          sensor: {
+         *              id: <Sensor ID>,
+         *              name: <Sensor name>,
+         *              description: <Sensor description>
+         *          },
+         *          observedProperty: {
+         *              id: <ObservedProperty ID>,
+         *              name: <ObservedProperty name>,
+         *              description: <ObservedProperty description>
+         *          },
          *          id: <Datastream ID>,
          *          name: <Datastream name>,
          *          description:<Datastream description>,
@@ -401,8 +413,8 @@ class SensorThingsTool extends React.Component {
                 value: null
             }
         },
-        // set to datastream index if datastream options are shown
-        datastreamOptionsPopup: false,
+        // set to datastream index if datastream info/options window is shown
+        datastreamInfoWindow: null,
         /**
          * selected datastream options
          *
@@ -540,6 +552,7 @@ class SensorThingsTool extends React.Component {
             this.renderLocationSelectPopup(),
             this.renderLocationInfoWindow(),
             this.renderDatastreamsFilterWindow(),
+            this.renderDatastreamInfoWindow(),
             this.renderDatastreamTableWindow(),
             (
                 <MapSelection
@@ -859,7 +872,7 @@ class SensorThingsTool extends React.Component {
                                     <td><div className="sensor-things-datastream-legend" style={{backgroundColor: `rgba(${graphDatastreamState.color.join(',')},0.5)`, borderColor: `rgb(${graphDatastreamState.color.join(',')})`}} /></td>
                                     <td>{datastream.description}&nbsp;</td>
                                     <td>
-                                        <button className={"button" + (this.state.datastreamOptionsPopup === datastreamIndex ? " pressed" : "")} onClick={() => this.toggleDatastreamOptionsPopup(datastreamIndex)} title={LocaleUtils.tr("sensorthingstool.datastreamOptions.title")}>
+                                        <button className={"button" + (this.state.datastreamInfoWindow === datastreamIndex ? " pressed" : "")} onClick={() => this.toggleDatastreamInfoWindow(datastreamIndex)} title={LocaleUtils.tr("sensorthingstool.datastreamInfo.title")}>
                                             <Icon icon="info" />
                                         </button>
                                         <button className={"button" + (this.state.datastreamTableWindow === datastreamIndex ? " pressed" : "")} onClick={() => this.toggleDatastreamTableWindow(datastreamIndex)} title={LocaleUtils.tr("sensorthingstool.datastreamTable.title")}>
@@ -868,7 +881,6 @@ class SensorThingsTool extends React.Component {
                                         <button className="button" onClick={() => this.removeDatastream(datastreamIndex)} title={LocaleUtils.tr("sensorthingstool.removeDatastream")}>
                                             <Icon icon="trash" />
                                         </button>
-                                        {this.renderDatastreamOptions(datastreamIndex)}
                                         {this.state.graph.datastreams[datastreamIndex].loading ? (<Spinner />) : null}
                                     </td>
                                 </tr>
@@ -908,7 +920,7 @@ class SensorThingsTool extends React.Component {
                             <div className="sensor-things-toolbar-spacer-small" />
 
                             <div>
-                                <button className={"button" + (this.state.graphOptionsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({graphOptionsPopup: !state.graphOptionsPopup, datastreamOptionsPopup: null}))} title={LocaleUtils.tr("sensorthingstool.graphOptions.title")}>
+                                <button className={"button" + (this.state.graphOptionsPopup ? " pressed" : "")} onClick={() => this.setState((state) => ({graphOptionsPopup: !state.graphOptionsPopup}))} title={LocaleUtils.tr("sensorthingstool.graphOptions.title")}>
                                     <Icon icon="cog" />
                                 </button>
                                 {this.renderGraphOptions()}
@@ -1052,6 +1064,41 @@ class SensorThingsTool extends React.Component {
             const nextDatastreams = {...state.datastreams};
             state.currentSensorLocation.datastreams.forEach((datastreamID) => { delete nextDatastreams[datastreamID]; });
 
+            // collect index changes of shown Datastreams after removal
+            const datastreamIndexChanges = [];
+            let datastreamIndexShift = 0;
+            state.graph.datastreams.forEach((datastream, idx) => {
+                const datastreamRemoved = state.currentSensorLocation.datastreams.includes(datastream.id);
+                if (datastreamRemoved) {
+                    datastreamIndexShift -= 1;
+                    datastreamIndexChanges.push(null);
+                } else {
+                    datastreamIndexChanges.push(datastreamIndexShift);
+                }
+            });
+
+            // update active Datastream windows
+            let nextDatastreamInfoWindow = state.datastreamInfoWindow;
+            if (nextDatastreamInfoWindow !== null) {
+                if (datastreamIndexChanges[nextDatastreamInfoWindow] === null) {
+                    // selected Datastream was removed
+                    nextDatastreamInfoWindow = null;
+                } else {
+                    // adjust selected Datastream index after removal
+                    nextDatastreamInfoWindow += datastreamIndexChanges[nextDatastreamInfoWindow];
+                }
+            }
+            let nextDatastreamTableWindow = state.datastreamTableWindow;
+            if (nextDatastreamTableWindow !== null) {
+                if (datastreamIndexChanges[nextDatastreamTableWindow] === null) {
+                    // selected Datastream was removed
+                    nextDatastreamTableWindow = null;
+                } else {
+                    // adjust selected Datastream index after removal
+                    nextDatastreamTableWindow += datastreamIndexChanges[nextDatastreamTableWindow];
+                }
+            }
+
             return {
                 selectedLocations: nextSelectedLocations,
                 selectedLocationsOptions: nextSelectedLocationsOptions,
@@ -1068,7 +1115,9 @@ class SensorThingsTool extends React.Component {
                     ...state.graph,
                     datastreams: state.graph.datastreams.filter((datastream) => !state.currentSensorLocation.datastreams.includes(datastream.id))
                 },
-                datastreamOptions: state.datastreamOptions.filter((options) => !state.currentSensorLocation.datastreams.includes(options.datastreamId))
+                datastreamInfoWindow: nextDatastreamInfoWindow,
+                datastreamOptions: state.datastreamOptions.filter((options) => !state.currentSensorLocation.datastreams.includes(options.datastreamId)),
+                datastreamTableWindow: nextDatastreamTableWindow
             };
         });
     };
@@ -1135,13 +1184,13 @@ class SensorThingsTool extends React.Component {
     };
     removeDatastream = (datastreamIndex) => {
         this.setState((state) => {
-            let datastreamOptionsPopup = state.datastreamOptionsPopup;
-            if (datastreamOptionsPopup !== null) {
-                if (datastreamOptionsPopup === datastreamIndex) {
-                    datastreamOptionsPopup = null;
-                } else if (datastreamOptionsPopup > datastreamIndex) {
+            let datastreamInfoWindow = state.datastreamInfoWindow;
+            if (datastreamInfoWindow !== null) {
+                if (datastreamInfoWindow === datastreamIndex) {
+                    datastreamInfoWindow = null;
+                } else if (datastreamInfoWindow > datastreamIndex) {
                     // adjust selected datastream index after removal
-                    datastreamOptionsPopup = datastreamOptionsPopup - 1;
+                    datastreamInfoWindow = datastreamInfoWindow - 1;
                 }
             }
 
@@ -1160,7 +1209,7 @@ class SensorThingsTool extends React.Component {
                     ...state.graph,
                     datastreams: state.graph.datastreams.filter((datastream, idx) => idx !== datastreamIndex)
                 },
-                datastreamOptionsPopup: datastreamOptionsPopup,
+                datastreamInfoWindow: datastreamInfoWindow,
                 datastreamOptions: state.datastreamOptions.filter((options, idx) => idx !== datastreamIndex),
                 datastreamTableWindow: datastreamTableWindow
             };
@@ -1571,16 +1620,16 @@ class SensorThingsTool extends React.Component {
             </ResizeableWindow>
         );
     };
-    toggleDatastreamOptionsPopup = (datastreamIndex) => {
-        let datastreamOptionsPopup = null;
-        if (this.state.datastreamOptionsPopup !== datastreamIndex) {
-            // show datastream options popup
-            datastreamOptionsPopup = datastreamIndex;
+    toggleDatastreamInfoWindow = (datastreamIndex) => {
+        let datastreamInfoWindow = null;
+        if (this.state.datastreamInfoWindow !== datastreamIndex) {
+            // show datastream info window for selected datastream
+            datastreamInfoWindow = datastreamIndex;
         } else {
-            // close datastream options popup
-            datastreamOptionsPopup = null;
+            // close datastream info window
+            datastreamInfoWindow = null;
         }
-        this.setState({datastreamOptionsPopup: datastreamOptionsPopup, graphOptionsPopup: false});
+        this.setState({datastreamInfoWindow: datastreamInfoWindow});
     };
     formatCalibrationPart = (value, xTerm) => {
         if (value !== 0.0) {
@@ -1593,18 +1642,24 @@ class SensorThingsTool extends React.Component {
             return "";
         }
     };
-    renderDatastreamOptions = (datastreamIndex) => {
-        if (this.state.datastreamOptionsPopup !== datastreamIndex) {
+    renderDatastreamInfoWindow = () => {
+        if (this.state.datastreamInfoWindow === null) {
             return null;
         }
 
+        const datastreamIndex = this.state.datastreamInfoWindow;
         const datastream = this.state.graph.datastreams[datastreamIndex];
         const datastreamInfo = this.state.datastreams[datastream.id];
+
+        const fullPeriodBegin = dayjs(datastreamInfo.period.begin).format(this.props.timeFormats.tooltip);
+        const fullPeriodEnd = dayjs(datastreamInfo.period.end).format(this.props.timeFormats.tooltip);
         const datastreamInfoRows = [
             // [<label>, <value>]
+            ["ID", datastreamInfo.id],
             [LocaleUtils.tr("sensorthingstool.datastreamInfo.name"), datastreamInfo.name],
             [LocaleUtils.tr("sensorthingstool.datastreamInfo.description"), datastreamInfo.description],
-            [LocaleUtils.tr("sensorthingstool.datastreamInfo.unit"), datastreamInfo.unitOfMeasurement.symbol]
+            [LocaleUtils.tr("sensorthingstool.datastreamInfo.unit"), datastreamInfo.unitOfMeasurement.symbol],
+            [LocaleUtils.tr("sensorthingstool.datastreamTable.fullPeriod"), `${fullPeriodBegin} - ${fullPeriodEnd}`]
         ];
         const datastreamProperties = datastreamInfo.properties || {};
         // TODO: configurable custom properties
@@ -1625,76 +1680,116 @@ class SensorThingsTool extends React.Component {
             datastreamInfoRows.push([LocaleUtils.tr("sensorthingstool.datastreamInfo.calibration"), calibrationText]);
         }
 
+        // format text shown in info
+        const relationInfoRow = (label, name, description) => {
+            // show name and description
+            const row = [label, name, description];
+            if (description === undefined || name === description) {
+                // show only name if there is no description present, or if name and description are identical
+                row[2] = null;
+            }
+            return row;
+        };
+        const location = this.state.selectedLocations[datastreamInfo.locationId];
+        const datastreamRelationsInfoRows = [
+            // [<label>, <name>, <description>]
+            relationInfoRow(LocaleUtils.tr("sensorthingstool.datastreamInfo.location"), location.name, location.description),
+            relationInfoRow(LocaleUtils.tr("sensorthingstool.datastreamInfo.thing"), datastreamInfo.thing.name, datastreamInfo.thing.description),
+            relationInfoRow(LocaleUtils.tr("sensorthingstool.datastreamInfo.sensor"), datastreamInfo.sensor.name, datastreamInfo.sensor.description),
+            relationInfoRow(LocaleUtils.tr("sensorthingstool.datastreamInfo.observedProperty"), datastreamInfo.observedProperty.name, datastreamInfo.observedProperty.description)
+        ];
+
         const datastreamOptions = this.state.datastreamOptions[datastreamIndex];
         const datastreamStats = this.state.graph.datastreams[datastreamIndex].statistics;
+
         return (
-            <div className="sensor-things-options sensor-things-datastream-options">
-                <div className="sensor-things-options-group">
-                    <div className="sensor-things-options-content">
-                        <label><input checked={datastreamOptions.showOnSecondYAxis} onChange={(ev) => this.updateDatastreamOptions(datastreamIndex, {showOnSecondYAxis: ev.target.checked})} type="checkbox" /> {LocaleUtils.tr("sensorthingstool.datastreamOptions.showOnSecondYAxis")}</label>
-                    </div>
-                </div>
-                <div className="sensor-things-options-group">
-                    <div className="sensor-things-options-title">{LocaleUtils.tr("sensorthingstool.datastreamInfo.title")}</div>
-                    <div className="sensor-things-options-content">
-                        <table>
-                            <tbody>
-                                {datastreamInfoRows.map((info, infoIndex) => {
-                                    return (
-                                        <tr key={"sensor-things-datastream-info-" + infoIndex}>
-                                            <td>{info[0]}:</td>
-                                            <td>{info[1]}</td>
+            <ResizeableWindow fitHeight="true" icon="info"
+                initialWidth={500}
+                initialX={this.props.windowSize.width + 10} initialY={0} key="SensorThingsDatastreamInfoWindow"
+                onClose={() => this.setState({datastreamInfoWindow: null})}
+                title={LocaleUtils.tr("sensorthingstool.datastreamInfo.title")}
+            >
+                <div className="sensor-things-dialog-body" role="body">
+                    <div className="sensor-things-datastream-info">
+                        <div className="sensor-things-options-group">
+                            <div className="sensor-things-options-content">
+                                <label><input checked={datastreamOptions.showOnSecondYAxis} onChange={(ev) => this.updateDatastreamOptions(datastreamIndex, {showOnSecondYAxis: ev.target.checked})} type="checkbox" /> {LocaleUtils.tr("sensorthingstool.datastreamOptions.showOnSecondYAxis")}</label>
+                            </div>
+                        </div>
+                        <div className="sensor-things-options-group">
+                            <div className="sensor-things-options-title">{LocaleUtils.tr("sensorthingstool.datastreamInfo.title")}</div>
+                            <div className="sensor-things-options-content">
+                                <table className="sensor-things-datastream-info-table">
+                                    <tbody>
+                                        {datastreamInfoRows.map((info, infoIndex) => {
+                                            return (
+                                                <tr key={"sensor-things-datastream-info-" + infoIndex}>
+                                                    <td>{info[0]}:</td>
+                                                    <td>{info[1]}</td>
+                                                </tr>
+                                            );
+                                        })}
+                                        {datastreamRelationsInfoRows.map((info, infoIndex) => {
+                                            return (
+                                                <tr key={"sensor-things-datastream-relation-info-" + infoIndex}>
+                                                    <td>{info[0]}:</td>
+                                                    <td>
+                                                        <div>{info[1]}</div>
+                                                        <div>{info[2]}</div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="sensor-things-options-group">
+                            <div className="sensor-things-options-title">{LocaleUtils.tr("sensorthingstool.datastreamOptions.title")}</div>
+                            <div className="sensor-things-options-content">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td />
+                                            <td>
+                                                <label><input checked={datastreamOptions.showArithmeticMean} onChange={(ev) => this.updateDatastreamOptions(datastreamIndex, {showArithmeticMean: ev.target.checked})} type="checkbox" /> {LocaleUtils.tr("sensorthingstool.datastreamOptions.arithmeticMean")}</label>
+                                            </td>
                                         </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                                        <tr>
+                                            <td>{LocaleUtils.tr("sensorthingstool.datastreamOptions.percentiles")}:</td>
+                                            <td>
+                                                <input onChange={(ev) => this.updateDatastreamOptions(datastreamIndex, {percentilesInput: ev.target.value})} placeholder={LocaleUtils.tr("sensorthingstool.datastreamOptions.percentiles")} title={LocaleUtils.tr("sensorthingstool.datastreamOptions.percentilesDesc")} type="text" value={datastreamOptions.percentilesInput} />
+                                                <button className="button reset-button" onClick={() => this.updateDatastreamOptions(datastreamIndex, {percentiles: "refresh"})} title={LocaleUtils.tr("sensorthingstool.datastreamOptions.showPercentiles")}>
+                                                    <Icon icon="plus" />
+                                                </button>
+                                                <button className="button reset-button" onClick={() => this.updateDatastreamOptions(datastreamIndex, {percentilesInput: "", percentiles: []})} >
+                                                    <Icon icon="clear" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table className="sensor-things-datastream-statistics-table">
+                                    <tbody>
+                                        {datastreamStats.arithmeticMean !== null ? (
+                                            <tr>
+                                                <td>{LocaleUtils.tr("sensorthingstool.statistics.arithmeticMean")}:</td>
+                                                <td className="sensor-things-datastream-statistics-value">{parseFloat(datastreamStats.arithmeticMean.toFixed(3))}</td>
+                                            </tr>
+                                        ) : null}
+                                        {datastreamStats.percentiles.map((percentile, idx) => (
+                                            <tr key={"sensor-things-datastream-statistics-percentile-" + idx}>
+                                                <td>{percentile.percentile}{LocaleUtils.tr("sensorthingstool.statistics.nthPercentile")}:</td>
+                                                <td className="sensor-things-datastream-statistics-value">{parseFloat(percentile.value.toFixed(3))}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="sensor-things-options-group">
-                    <div className="sensor-things-options-title">{LocaleUtils.tr("sensorthingstool.datastreamOptions.title")}</div>
-                    <div className="sensor-things-options-content">
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td />
-                                    <td>
-                                        <label><input checked={datastreamOptions.showArithmeticMean} onChange={(ev) => this.updateDatastreamOptions(datastreamIndex, {showArithmeticMean: ev.target.checked})} type="checkbox" /> {LocaleUtils.tr("sensorthingstool.datastreamOptions.arithmeticMean")}</label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{LocaleUtils.tr("sensorthingstool.datastreamOptions.percentiles")}:</td>
-                                    <td>
-                                        <input onChange={(ev) => this.updateDatastreamOptions(datastreamIndex, {percentilesInput: ev.target.value})} placeholder={LocaleUtils.tr("sensorthingstool.datastreamOptions.percentiles")} title={LocaleUtils.tr("sensorthingstool.datastreamOptions.percentilesDesc")} type="text" value={datastreamOptions.percentilesInput} />
-                                        <button className="button reset-button" onClick={() => this.updateDatastreamOptions(datastreamIndex, {percentiles: "refresh"})} title={LocaleUtils.tr("sensorthingstool.datastreamOptions.showPercentiles")}>
-                                            <Icon icon="plus" />
-                                        </button>
-                                        <button className="button reset-button" onClick={() => this.updateDatastreamOptions(datastreamIndex, {percentilesInput: "", percentiles: []})} >
-                                            <Icon icon="clear" />
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table className="sensor-things-datastream-statistics-table">
-                            <tbody>
-                                {datastreamStats.arithmeticMean !== null ? (
-                                    <tr>
-                                        <td>{LocaleUtils.tr("sensorthingstool.statistics.arithmeticMean")}:</td>
-                                        <td className="sensor-things-datastream-statistics-value">{parseFloat(datastreamStats.arithmeticMean.toFixed(3))}</td>
-                                    </tr>
-                                ) : null}
-                                {datastreamStats.percentiles.map((percentile, idx) => (
-                                    <tr key={"sensor-things-datastream-statistics-percentile-" + idx}>
-                                        <td>{percentile.percentile}{LocaleUtils.tr("sensorthingstool.statistics.nthPercentile")}:</td>
-                                        <td className="sensor-things-datastream-statistics-value">{parseFloat(percentile.value.toFixed(3))}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            </ResizeableWindow>
         );
     };
     updateDatastream = (datastreamIndex, datastreamId) => {
@@ -1955,9 +2050,21 @@ class SensorThingsTool extends React.Component {
 
                     datastreamsLookup[datastreamId] = {
                         locationId: location['@iot.id'],
-                        thingId: thing['@iot.id'],
-                        sensorId: sensor['@iot.id'],
-                        observedPropertyId: observedProperty['@iot.id'],
+                        thing: {
+                            id: thing['@iot.id'],
+                            name: thing.name,
+                            description: thing.description
+                        },
+                        sensor: {
+                            id: sensor['@iot.id'],
+                            name: sensor.name,
+                            description: sensor.description
+                        },
+                        observedProperty: {
+                            id: observedProperty['@iot.id'],
+                            name: observedProperty.name,
+                            description: observedProperty.description
+                        },
                         id: datastreamId,
                         name: datastream.name,
                         description: datastream.description,
@@ -2039,19 +2146,19 @@ class SensorThingsTool extends React.Component {
             if (this.state.currentDatastreamsFilter.thingId !== -1) {
                 // filter by Thing
                 filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
-                    this.state.datastreams[datastreamId].thingId === this.state.currentDatastreamsFilter.thingId
+                    this.state.datastreams[datastreamId].thing.id === this.state.currentDatastreamsFilter.thingId
                 ));
             }
             if (this.state.currentDatastreamsFilter.sensorId !== -1) {
                 // filter by Sensor
                 filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
-                    this.state.datastreams[datastreamId].sensorId === this.state.currentDatastreamsFilter.sensorId
+                    this.state.datastreams[datastreamId].sensor.id === this.state.currentDatastreamsFilter.sensorId
                 ));
             }
             if (this.state.currentDatastreamsFilter.observedPropertyId !== -1) {
                 // filter by ObservedProperty
                 filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
-                    this.state.datastreams[datastreamId].observedPropertyId === this.state.currentDatastreamsFilter.observedPropertyId
+                    this.state.datastreams[datastreamId].observedProperty.id === this.state.currentDatastreamsFilter.observedPropertyId
                 ));
             }
 

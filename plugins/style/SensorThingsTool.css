@@ -125,10 +125,20 @@ div.sensor-things-number-field {
     display: flex;
 }
 
-div.sensor-things-datastream-options {
-    right: unset;
-    margin-left: 30px;
-    margin-top: -2em;
+table.sensor-things-datastream-info-table td {
+    vertical-align: top;
+}
+table.sensor-things-datastream-info-table td div:nth-child(2) {
+    color: var(--text-color-disabled);
+}
+div.sensor-things-datastream-info td input[type=number], div.sensor-things-datastream-info td input[type=text] {
+    width: 7em;
+    position: relative;
+    z-index: 1;
+}
+div.sensor-things-datastream-info td button.reset-button {
+    vertical-align: bottom;
+    border-left-width: 0;
 }
 
 table.sensor-things-datastream-statistics-table {

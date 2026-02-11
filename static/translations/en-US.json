@@ -622,7 +622,11 @@
       "datastreamInfo": {
         "calibration": "Calibration",
         "description": "Description",
+        "location": "Location",
         "name": "Name",
+        "observedProperty": "Observed Property",
+        "sensor": "Sensor",
+        "thing": "Thing",
         "title": "Datastream info",
         "unit": "Unit"
       },
