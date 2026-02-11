@@ -110,7 +110,7 @@ class LayerCatalogWidget extends React.PureComponent {
                     <input
                         onChange={ev => this.setFilter(ev.target.value)} placeholder={filterplaceholder}
                         role="input" type="text" value={this.state.filter} />
-                    <Icon icon="clear" onClick={() => this.setState({filter: ""})} role="suffix" />
+                    <Icon icon="clear" onClick={() => this.setState({filter: "", filteredCatalog: null})} role="suffix" />
                 </InputContainer>
                 <div className="layer-catalog-widget-body">
                     {catalog.map((entry, idx) => this.renderCatalogEntry(entry, [idx], 0, idx))}
