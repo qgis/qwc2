@@ -62,6 +62,7 @@ class SearchBox extends React.Component {
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
         searchOptions: PropTypes.shape({
+            allowAddLayerAsGroup: PropTypes.bool,
             allowSearchFilters: PropTypes.bool,
             focusOnStartup: PropTypes.bool,
             hideResultLabels: PropTypes.bool,
@@ -398,7 +399,7 @@ class SearchBox extends React.Component {
                 {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.theme && addThemes ? (<Icon icon="plus" onClick={() => this.selectLayerResult(provider, group, result)} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
-                {result.sublayers ? (<Icon icon="group" onClick={() => this.selectLayerResult(provider, group, result, true)} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
+                {this.props.allowAddLayerAsGroup && result.sublayers ? (<Icon icon="group" onClick={() => this.selectLayerResult(provider, group, result, true)} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
                 {result.info ? <Icon icon="info-sign" onClick={(ev) => this.toggleLayerInfo(ev, provider, group, result, key, parent)} /> : null}
             </div>
         ), this.state.activeLayerInfo === key ? (
