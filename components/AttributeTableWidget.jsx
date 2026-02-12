@@ -347,7 +347,11 @@ class AttributeTableWidget extends React.Component {
         const hasGeometry = (curEditConfig || {}).geomType !== null;
         const showAddButton = !this.props.readOnly && editPermissions.creatable !== false && (this.props.allowAddForGeometryLayers || !hasGeometry);
         const showDelButton = !this.props.readOnly && editPermissions.deletable !== false;
-        const showEditButton = !this.props.readOnly && ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton;
+        const showEditButton = (
+            !this.props.readOnly && ConfigUtils.havePlugin("Editing") && this.props.showEditFormButton
+        ) && !(
+            ConfigUtils.getPluginConfig("Editing")?.cfg?.omitReadOnlyDatasets && Object.values(curEditConfig?.permissions || {}).every(permission => permission === false)
+        );
         const deleteButton = showDelButton ? (
             <button className="button" disabled={layerChanged || editing || selectionEmpty} onClick={() => this.setState({confirmDelete: true})} title={LocaleUtils.tr("attribtable.deletefeatures")}>
                 <Icon icon="trash" />
