@@ -119,6 +119,7 @@
     "bookmark.addfailed",
     "bookmark.lastUpdate",
     "bookmark.manage",
+    "bookmark.newbookmark",
     "bookmark.nobookmarks",
     "bookmark.notloggedin",
     "bookmark.open",

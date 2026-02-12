@@ -93,6 +93,7 @@
       "addfailed": "ブックマークを作成出来ませんでした",
       "lastUpdate": "最後の保存",
       "manage": "ブックマークを管理",
+      "newbookmark": "",
       "nobookmarks": "ブックマーク無し",
       "notloggedin": "ブックマークを保存するためにはログインする必要があります",
       "open": "ブックマークを現在のタブで開く",

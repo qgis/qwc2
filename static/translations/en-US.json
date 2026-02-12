@@ -93,6 +93,7 @@
       "addfailed": "Failed to create bookmark",
       "lastUpdate": "Last saved",
       "manage": "Manage bookmarks",
+      "newbookmark": "New bookmark",
       "nobookmarks": "No bookmarks",
       "notloggedin": "You need to be logged in to store bookmarks",
       "open": "Open bookmark in current tab",

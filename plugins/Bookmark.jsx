@@ -184,7 +184,7 @@ class Bookmark extends React.Component {
     };
     addBookmark = () => {
         this.setState({busy: true});
-        createBookmark(this.props.theme.title, (success, key) => {
+        createBookmark(LocaleUtils.tr("bookmark.newbookmark"), (success, key) => {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("bookmark.addfailed"));
