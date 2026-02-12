@@ -427,7 +427,7 @@ class GeometryDigitizer extends React.Component {
             features.push(this.props.redlining.selectedFeature);
         }
 
-        const invalidPoly = features.find(feature => feature.geometry.type === "Polygon" && !isEmpty(polySelfIntersections(feature).geometry.coordinates));
+        const invalidPoly = features.find(feature => feature.geometry.type === "Polygon" && !isEmpty(polySelfIntersections(feature)));
         if (invalidPoly) {
             /* eslint-disable-next-line */
             alert(LocaleUtils.tr("geomdigitizer.selfinter"));
