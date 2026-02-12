@@ -59,7 +59,7 @@ function featureLabel(objectId, featureProperties, context) {
     if ((context.featureStyles?.[objectId]?.label ?? null) !== null) {
         return {text: context.featureStyles[objectId].label, offset: context.featureStyles[objectId].labelOffset ?? 80};
     } else if (context.labelAttr) {
-        return featureProperties[context.labelAttr];
+        return {text: featureProperties[context.labelAttr], offset: 0};
     } else {
         return null;
     }
