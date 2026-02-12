@@ -43,6 +43,8 @@ class AttributeTableWidget extends React.Component {
         allowAddForGeometryLayers: PropTypes.bool,
         editConfigs: PropTypes.object,
         filter: PropTypes.object,
+        /** Whether to hide the id (primary key) column. */
+        hideIdColumn: PropTypes.bool,
         iface: PropTypes.object,
         initialLayer: PropTypes.string,
         layers: PropTypes.array,
@@ -149,6 +151,7 @@ class AttributeTableWidget extends React.Component {
         const loading = this.state.loading;
         const editing = this.state.changedFeatureIdx !== null || this.state.newFeature !== null;
         const selectionEmpty = this.state.selectedFeatures.isEmpty();
+        const showIdColumn = !this.props.showDisplayFieldOnly && !this.props.hideIdColumn;
 
         let loadOverlay = null;
         if (loading) {
@@ -198,7 +201,7 @@ class AttributeTableWidget extends React.Component {
                         <thead>
                             <tr>
                                 <th />
-                                {!this.props.showDisplayFieldOnly ? (
+                                {showIdColumn ? (
                                     <th onClick={() => this.sortBy(primaryKey)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(primaryKey)}>
                                         <span>
                                             <span className="attribtable-table-headername">{this.translateFieldName(primaryKey)}</span>
@@ -216,7 +219,7 @@ class AttributeTableWidget extends React.Component {
                                                 {field.expression ? (<Icon icon="epsilon" title={LocaleUtils.tr("attribtable.calculatedfield")} />) : null}
                                             </span>
                                             {this.renderSortIndicator(field.id)}
-                                            {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + 2, 'r') : null}
+                                            {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + (showIdColumn ? 2 : 1), 'r') : null}
                                         </span>
                                     </th>
                                 ))}
@@ -239,7 +242,7 @@ class AttributeTableWidget extends React.Component {
                                                 {this.renderRowResizeHandle(sliceidx + 1, 'b')}
                                             </span>
                                         </td>
-                                        {!this.props.showDisplayFieldOnly ? (
+                                        {showIdColumn ? (
                                             <td>{feature.id}</td>
                                         ) : null}
                                         {fields.map(field => (
@@ -259,7 +262,7 @@ class AttributeTableWidget extends React.Component {
                                             {this.renderRowResizeHandle(features.length + 1, 'b')}
                                         </span>
                                     </td>
-                                    {!this.props.showDisplayFieldOnly ? (
+                                    {showIdColumn ? (
                                         <td>{this.state.newFeature.id}</td>
                                     ) : null}
                                     {fields.map(field => (
@@ -318,7 +321,9 @@ class AttributeTableWidget extends React.Component {
                     <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
                         <select disabled={footbarDisabled} onChange={ev => this.updateFilter("filterField", ev.target.value)} value={this.state.filterField}>
-                            <option value="<id>">{this.translateFieldName("id")}</option>
+                            {showIdColumn ? (
+                                <option value="<id>">{this.translateFieldName(primaryKey)}</option>
+                            ) : null}
                             {fields.map(field => (
                                 <option key={field.id} value={field.id}>{this.translateFieldName(field.name)}</option>
                             ))}

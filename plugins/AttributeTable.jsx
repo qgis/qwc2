@@ -43,6 +43,8 @@ class AttributeTable extends React.Component {
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string
         }),
+        /** Whether to hide the id (primary key) column. */
+        hideIdColumn: PropTypes.bool,
         iface: PropTypes.object,
         /** Whether to limit to the extent by default. */
         limitToExtent: PropTypes.bool,
@@ -81,7 +83,7 @@ class AttributeTable extends React.Component {
                 initialWidth={this.props.geometry.initialWidth} initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                 initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}
             >
-                <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers}
+                <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers} hideIdColumn={this.props.hideIdColumn}
                     iface={this.props.iface} initialLayer={this.props.taskData?.layer} limitToExtent={this.props.limitToExtent}
                     showEditFormButton={this.props.showEditFormButton} showHiddenFields={this.props.showHiddenFields}
                     showLimitToExtent={this.props.showLimitToExtent} zoomLevel={this.props.zoomLevel}
