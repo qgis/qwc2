@@ -65,7 +65,8 @@ div.bookmark-list-item:not(.bookmark-list-item-active):nth-child(even) {
     background-color: var(--list-item-bg-color-even);
 }
 
-div.bookmark-list-item:hover {
+div.bookmark-list-item:hover,
+div.bookmark-list-item:not(.bookmark-list-item-active):nth-child(even):hover {
     background-color: var(--list-item-bg-color-hover);
     color: var(--list-item-text-color-hover);
 }
