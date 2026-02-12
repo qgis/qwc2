@@ -57,7 +57,7 @@ div.bookmark-list-item > span.icon {
     flex: 0 0 1.5em;
 }
 
-div.bookmark-list-item > span.icon-trash {
+div.bookmark-list-item > span.icon-trash:hover {
     color: red;
 }
 
