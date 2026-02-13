@@ -151,29 +151,31 @@ class AttributeForm extends React.Component {
                 {readOnlyMsg ? (
                     <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
-                <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
-                    {editConfig.form ? (
-                        <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={editConfig}
-                            editRelationRecord={this.editRelationRecord}
-                            feature={this.props.editContext.feature} iface={this.props.iface}
-                            mapCrs={this.props.map.projection} mapPrefix={this.props.editContext.mapPrefix} readOnly={readOnly}
-                            removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord}
-                            report={this.props.report} setFormBusy={this.setFormBusy}
-                            setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
-                            translations={this.props.translations}
-                            updateField={this.updateField} updateRelationField={this.updateRelationField} />
-                    ) : (
-                        <AutoEditForm editLayerId={editConfig.editDataset} fields={editConfig.fields}
-                            iface={this.props.iface}
-                            readOnly={readOnly} touchFriendly={this.props.touchFriendly} updateField={this.updateField}
-                            values={this.props.editContext.feature.properties} />
-                    )}
-                    {captchaButton}
-                    {commitBar}
-                </form>
+                {!this.state.childEdit && (
+                    <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
+                        {editConfig.form ? (
+                            <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={editConfig}
+                                editRelationRecord={this.editRelationRecord}
+                                feature={this.props.editContext.feature} iface={this.props.iface}
+                                mapCrs={this.props.map.projection} mapPrefix={this.props.editContext.mapPrefix} readOnly={readOnly}
+                                removeRelationRecord={this.removeRelationRecord} reorderRelationRecord={this.reorderRelationRecord}
+                                report={this.props.report} setFormBusy={this.setFormBusy}
+                                setRelationTables={this.setRelationTables} switchEditContext={this.startChildEdit}
+                                translations={this.props.translations}
+                                updateField={this.updateField} updateRelationField={this.updateRelationField} />
+                        ) : (
+                            <AutoEditForm editLayerId={editConfig.editDataset} fields={editConfig.fields}
+                                iface={this.props.iface}
+                                readOnly={readOnly} touchFriendly={this.props.touchFriendly} updateField={this.updateField}
+                                values={this.props.editContext.feature.properties} />
+                        )}
+                        {captchaButton}
+                        {commitBar}
+                    </form>
+                )}
+                {childAttributeForm}
                 {deleteBar}
                 {busyDiv}
-                {childAttributeForm}
             </div>
 
         );
