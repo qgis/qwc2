@@ -142,7 +142,7 @@ class MapFilter extends React.Component {
         }
     }
     collectPredefinedFilters = (layers) => {
-        return layers.reduce((res, layer) => (
+        const filters = layers.reduce((res, layer) => (
             {...res, ...(layer.predefinedFilters || []).reduce((res2, config) => (
                 {...res2, [config.id]: {
                     ...config,
@@ -154,12 +154,30 @@ class MapFilter extends React.Component {
                 }}
             ), {})}
         ), {});
+        if (this.props.allowFilterByTime) {
+            const timeFilter = {};
+            layers.forEach(layer => this.buildTimeFilter(layer, timeFilter, layer.wms_name));
+            if (!isEmpty(timeFilter)) {
+                filters.__timefilter = {
+                    id: "__timefilter",
+                    active: false,
+                    filter: timeFilter,
+                    title: LocaleUtils.tr("mapfilter.timefilter"),
+                    fields: [
+                        {id: "tstart", defaultValue: "", inputConfig: {type: "datetime"}, title: LocaleUtils.tr("mapfilter.timefrom")},
+                        {id: "tend", defaultValue: "", inputConfig: {type: "datetime"}, title: LocaleUtils.tr("mapfilter.timeto")}
+                    ],
+                    defaultValues: {tstart: '1800-01-01', tend: '9999-12-31'}
+                };
+            }
+        }
+        return filters;
     };
     initializeFilters = (predefinedFilters, prevFilters) => {
         clearTimeout(this.applyFilterTimeout);
         this.applyFilterTimeout = null;
 
-        const filters = Object.values(predefinedFilters).reduce((res, filterConfig) => ({
+        return Object.values(predefinedFilters).reduce((res, filterConfig) => ({
             ...res,
             [filterConfig.id]: prevFilters?.[filterConfig.id] ?? {
                 active: false,
@@ -167,20 +185,10 @@ class MapFilter extends React.Component {
                 values: filterConfig.fields.reduce((values, valueConfig) => ({
                     ...values,
                     [valueConfig.id]: valueConfig.defaultValue
-                }), {})
+                }), {}),
+                defaultValues: filterConfig.defaultValues
             }
         }), {});
-        const timeFilter = {};
-        this.props.layers.forEach(layer => this.buildTimeFilter(layer, timeFilter, layer.wms_name));
-        if (!isEmpty(timeFilter) && this.props.allowFilterByTime) {
-            filters.__timefilter = {
-                active: prevFilters.__timefilter?.active ?? false,
-                filter: timeFilter,
-                values: prevFilters.__timefilter?.values ?? {tstart: "", tend: ""},
-                defaultValues: {tstart: '1800-01-01', tend: '9999-12-31'}
-            };
-        }
-        return filters;
     };
     applyFilter = () => {
         this.applyFilterTimeout = null;
@@ -356,7 +364,6 @@ class MapFilter extends React.Component {
             return [
                 this.renderInvalidWarning(),
                 ...this.renderPredefinedFilters(),
-                this.props.allowFilterByTime ? this.renderTimeFilter() : null,
                 this.props.allowFilterByGeom ? this.renderGeomFilter() : null,
                 ...this.renderCustomFilters()
             ];
@@ -438,27 +445,7 @@ class MapFilter extends React.Component {
                                 <tr key={field.id}>
                                     <td>{field.title ?? LocaleUtils.tr(field.titlemsgid)}: </td>
                                     <td>
-                                        {
-                                            field.inputConfig.type === 'select' ? (
-                                                <select
-                                                    onChange={ev => this.updateFieldValue(config.id, field.id, ev.target.value)}
-                                                    value={this.state.filters[config.id].values[field.id]}
-                                                >
-                                                    {!field.defaultValue ? (
-                                                        <option value="">{LocaleUtils.tr("common.select")}</option>
-                                                    ) : null}
-                                                    {field.inputConfig.options.map(entry => (
-                                                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
-                                                    ))}
-                                                </select>
-                                            ) : (
-                                                <input
-                                                    onChange={ev => this.updateFieldValue(config.id, field.id, ev.target.value)}
-                                                    type="text"
-                                                    value={this.state.filters[config.id].values[field.id] || ""}
-                                                    {...field.inputConfig} />
-                                            )
-                                        }
+                                        {this.renderFilterField(config.id, field)}
                                     </td>
                                 </tr>
                             ))}
@@ -468,35 +455,34 @@ class MapFilter extends React.Component {
             </div>
         ));
     };
-    renderTimeFilter = () => {
-        const timeFilter = this.state.filters.__timefilter;
-        if (!timeFilter) {
-            return null;
+    renderFilterField = (configid, field) => {
+        if (field.inputConfig.type === 'select') {
+            return (
+                <select
+                    onChange={ev => this.updateFieldValue(configid, field.id, ev.target.value)}
+                    value={this.state.filters[configid].values[field.id]}
+                >
+                    {!field.defaultValue ? (
+                        <option value="">{LocaleUtils.tr("common.select")}</option>
+                    ) : null}
+                    {field.inputConfig.options.map(entry => (
+                        <option key={entry.value ?? entry} value={entry.value ?? entry}>{entry.label ?? (entry.labelmsgid ? LocaleUtils.tr(entry.labelmsgid) : entry)}</option>
+                    ))}
+                </select>
+            );
+        } else if (field.inputConfig.type === "datetime") {
+            return (
+                <DateTimeInput onChange={value => this.updateFieldValue(configid, field.id, value)} value={this.state.filters[configid].values[field.id] || ""} />
+            );
+        } else {
+            return (
+                <input
+                    onChange={ev => this.updateFieldValue(configid, field.id, ev.target.value)}
+                    type="text"
+                    value={this.state.filters[configid].values[field.id] || ""}
+                    {...field.inputConfig} />
+            );
         }
-        return (
-            <div className="map-filter-entry" key={"__timefilter"}>
-                <div className="map-filter-entry-titlebar">
-                    <span className="map-filter-entry-title">{LocaleUtils.tr("mapfilter.timefilter")}</span>
-                    <ToggleSwitch
-                        active={timeFilter.active}
-                        onChange={(active) => this.toggleFilter("__timefilter", active)} />
-                </div>
-                <div className="map-filter-entry-body">
-                    <table className="map-filter-entry-fields">
-                        <tbody>
-                            <tr>
-                                <td>{LocaleUtils.tr("mapfilter.timefrom")}: </td>
-                                <td><DateTimeInput onChange={value => this.updateFieldValue("__timefilter", "tstart", value)} value={timeFilter.values.tstart} /></td>
-                            </tr>
-                            <tr>
-                                <td>{LocaleUtils.tr("mapfilter.timeto")}: </td>
-                                <td><DateTimeInput onChange={value => this.updateFieldValue("__timefilter", "tend", value)} value={timeFilter.values.tend} /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        );
     };
     renderCustomFilters = () => {
         if (!this.props.allowCustomFilters) {
