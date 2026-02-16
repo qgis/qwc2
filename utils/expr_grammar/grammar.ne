@@ -1,12 +1,20 @@
 @builtin "string.ne"
 
 @{%
+class Field extends String {
+  constructor(value) {
+    super(value);
+  }
+  toJSON() {
+    return this.toString();
+  }
+}
 
 if (typeof window === 'undefined') {
     window = global;
 }
 function asFilter(d) {
-    return window.qwc2ExpressionParserContext.asFilter && ["string", "object"].includes(typeof(d[0]));
+    return window.qwc2ExpressionParserContext.asFilter && (d[0] instanceof Field || d[0] instanceof Array);
 }
 function generateUUID() {
     let d = new Date().getTime();
@@ -27,6 +35,7 @@ function generateUUID() {
 function replaceWildcards(str) {
     return "^" + str.replace(/(?<!\\)%/g, '.*').replace(/(?<!\\)_/g, '.{1}') + "$";
 }
+
 %}
 
 main -> _ P0 _                     {% function(d) {return d[1]; } %}
@@ -87,7 +96,7 @@ P8 -> "(" _ P0 _ ")"               {% function(d) { return d[2]; } %}
 # A number or a function of a number, a variable or a constant
 N -> float                         {% id %}
     | sqstring                     {% id %}
-    | dqstring                     {% function(d) { return asFilter(d) ? d[0] : window.qwc2ExpressionParserContext.feature.properties?.[d[0]] ?? null; } %}
+    | dqstring                     {% function(d) { return window.qwc2ExpressionParserContext.asFilter ? new Field(d[0]) : window.qwc2ExpressionParserContext.feature.properties?.[d[0]] ?? null; } %}
     | "uuid" _ "(" _ ")"           {% function(d) { return generateUUID(); } %}
     | "now" _ "(" _ ")"            {% function(d) { return (new Date()).toISOString(); } %}
     | "abs" _ "(" _ P0 _ ")"       {% function(d) { return Math.abs(d[4]); } %}

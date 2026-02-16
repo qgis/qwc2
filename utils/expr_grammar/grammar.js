@@ -3,12 +3,20 @@
 (function () {
 function id(x) { return x[0]; }
 
+class Field extends String {
+  constructor(value) {
+    super(value);
+  }
+  toJSON() {
+    return this.toString();
+  }
+}
 
 if (typeof window === 'undefined') {
     window = global;
 }
 function asFilter(d) {
-    return window.qwc2ExpressionParserContext.asFilter && ["string", "object"].includes(typeof(d[0]));
+    return window.qwc2ExpressionParserContext.asFilter && (d[0] instanceof Field || d[0] instanceof Array);
 }
 function generateUUID() {
     let d = new Date().getTime();
@@ -29,6 +37,7 @@ function generateUUID() {
 function replaceWildcards(str) {
     return "^" + str.replace(/(?<!\\)%/g, '.*').replace(/(?<!\\)_/g, '.{1}') + "$";
 }
+
 var grammar = {
     Lexer: undefined,
     ParserRules: [
@@ -106,7 +115,7 @@ var grammar = {
     {"name": "P8", "symbols": ["N"], "postprocess": id},
     {"name": "N", "symbols": ["float"], "postprocess": id},
     {"name": "N", "symbols": ["sqstring"], "postprocess": id},
-    {"name": "N", "symbols": ["dqstring"], "postprocess": function(d) { return asFilter(d) ? d[0] : window.qwc2ExpressionParserContext.feature.properties?.[d[0]] ?? null; }},
+    {"name": "N", "symbols": ["dqstring"], "postprocess": function(d) { return window.qwc2ExpressionParserContext.asFilter ? new Field(d[0]) : window.qwc2ExpressionParserContext.feature.properties?.[d[0]] ?? null; }},
     {"name": "N$string$1", "symbols": [{"literal":"u"}, {"literal":"u"}, {"literal":"i"}, {"literal":"d"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "N", "symbols": ["N$string$1", "_", {"literal":"("}, "_", {"literal":")"}], "postprocess": function(d) { return generateUUID(); }},
     {"name": "N$string$2", "symbols": [{"literal":"n"}, {"literal":"o"}, {"literal":"w"}], "postprocess": function joiner(d) {return d.join('');}},
