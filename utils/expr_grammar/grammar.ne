@@ -13,7 +13,7 @@ class Field extends String {
 if (typeof window === 'undefined') {
     window = global;
 }
-function asFilter(d) {
+function opAsFilter(d) {
     return window.qwc2ExpressionParserContext.asFilter && (d[0] instanceof Field || d[0] instanceof Array);
 }
 function generateUUID() {
@@ -41,25 +41,25 @@ function replaceWildcards(str) {
 main -> _ P0 _                     {% function(d) {return d[1]; } %}
 
 # Priority-0 operators (OR)
-P0 -> P0 _ "OR"i _ P1              {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] || d[4]); } %}
+P0 -> P0 _ "OR"i _ P1              {% function(d) { return opAsFilter(d) ? [d[0], d[2], d[4]] : (d[0] || d[4]); } %}
     | P1                           {% id %}
 
 # Priority-1 operators (AND)
-P1 -> P1 _ "AND"i _ P2             {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] && d[4]); } %}
+P1 -> P1 _ "AND"i _ P2             {% function(d) { return opAsFilter(d) ? [d[0], d[2], d[4]] : (d[0] && d[4]); } %}
     | P2                           {% id %}
 
 # Priority-2 operators (comparison operators)
-P2 -> P2 _ "<" _ P3                {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] < d[4]); } %}
-    | P2 _ ">" _ P3                {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] > d[4]); } %}
-    | P2 _ ">=" _ P3               {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] >= d[4]); } %}
-    | P2 _ "<=" _ P3               {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] <= d[4]); } %}
-    | P2 _ "=" _ P3                {% function(d) { return asFilter(d) ? [d[0], d[2], d[4]] : (d[0] == d[4]); } %}
-    | P2 _ "<>" _ P3               {% function(d) { return asFilter(d) ? [d[0], "!=", d[4]] : (d[0] != d[4]); } %}
-    | P2 _ "IS"i _ P3              {% function(d) { return asFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; } %}
-    | P2 _ "IS"i _ "NOT"i _ P3     {% function(d) { return asFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; } %}
-    | P2 _ "~" _ P3                {% function(d) { return asFilter(d) ? [d[0], "~", d[4]] : new RegExp(d[4]).exec(d[0]) !== null; } %}
-    | P2 _ "LIKE"i _ P3             {% function(d) { return asFilter(d) ? [d[0], "LIKE", d[4]] : new RegExp(replaceWildcards(d[4])).exec(d[0]) !== null; } %}
-    | P2 _ "ILIKE"i _ P3            {% function(d) { return asFilter(d) ? [d[0], "ILIKE", d[4]] : new RegExp(replaceWildcards(d[4]), 'i').exec(d[0]) !== null; } %}
+P2 -> P2 _ "<" _ P3                {% function(d) { return opAsFilter(d) ? [d[0], d[2], d[4]] : (d[0] < d[4]); } %}
+    | P2 _ ">" _ P3                {% function(d) { return opAsFilter(d) ? [d[0], d[2], d[4]] : (d[0] > d[4]); } %}
+    | P2 _ ">=" _ P3               {% function(d) { return opAsFilter(d) ? [d[0], d[2], d[4]] : (d[0] >= d[4]); } %}
+    | P2 _ "<=" _ P3               {% function(d) { return opAsFilter(d) ? [d[0], d[2], d[4]] : (d[0] <= d[4]); } %}
+    | P2 _ "=" _ P3                {% function(d) { return opAsFilter(d) ? [d[0], d[2], d[4]] : (d[0] == d[4]); } %}
+    | P2 _ "<>" _ P3               {% function(d) { return opAsFilter(d) ? [d[0], "!=", d[4]] : (d[0] != d[4]); } %}
+    | P2 _ "IS"i _ P3              {% function(d) { return opAsFilter(d) ? [d[0], "=", d[4]] : d[0] === d[4]; } %}
+    | P2 _ "IS"i _ "NOT"i _ P3     {% function(d) { return opAsFilter(d) ? [d[0], "!=", d[6]] : d[0] !== d[6]; } %}
+    | P2 _ "~" _ P3                {% function(d) { return opAsFilter(d) ? [d[0], "~", d[4]] : new RegExp(d[4]).exec(d[0]) !== null; } %}
+    | P2 _ "LIKE"i _ P3             {% function(d) { return opAsFilter(d) ? [d[0], "LIKE", d[4]] : new RegExp(replaceWildcards(d[4])).exec(d[0]) !== null; } %}
+    | P2 _ "ILIKE"i _ P3            {% function(d) { return opAsFilter(d) ? [d[0], "ILIKE", d[4]] : new RegExp(replaceWildcards(d[4]), 'i').exec(d[0]) !== null; } %}
     | P3                           {% id %}
 
 # Priority-3 operators (addition, subtraction, concatenation)
@@ -144,7 +144,7 @@ N -> float                         {% id %}
     | "array_all" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return d[8].every(val => d[4].includes(val)); } %}
     | "array_append" _ "(" _ P0 _ "," _ P0 _ ")"           {% function(d) { return [...d[4], d[8]]; } %}
     | "array_cat" _ "(" _ P0 _ "," _ P0 _ ")"              {% function(d) { return [...d[4], ...d[8]]; } %}
-    | "array_contains" _ "(" _ P0 _ "," _ P0 _ ")"         {% function(d) { return asFilter(d) ? [d[4], "HAS", d[8]] : d[4].includes(d[8]); } %}
+    | "array_contains" _ "(" _ P0 _ "," _ P0 _ ")"         {% function(d) { return window.qwc2ExpressionParserContext.asFilter ? [d[4], "HAS", d[8]] : d[4].includes(d[8]); } %}
     | "array_count" _ "(" _ P0 _ "," _ P0 _ ")"            {% function(d) { return d[4].filter(val => val === d[8]).length; } %}
     | "array_distinct" _ "(" _ P0 _ ")"                    {% function(d) { return [...new Set(d[4])].sort((a,b) => a-b); } %}
     # "array_filter" _ "(" _ P0 _ "," _ P1 _ ")"           TODO
