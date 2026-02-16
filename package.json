@@ -57,7 +57,7 @@
         "mousetrap": "^1.6.5",
         "nearley": "^2.20.1",
         "object-path": "^0.11.8",
-        "ol": "^10.7.0",
+        "ol": "^10.8.0",
         "ol-ext": "^4.0.37",
         "ol-mapbox-style": "^13.2.0",
         "painterro": "^1.2.92",
