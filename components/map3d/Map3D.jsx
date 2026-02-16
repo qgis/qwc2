@@ -76,6 +76,7 @@ class Map3D extends React.Component {
     static contextType = MapContainerPortalContext;
     static propTypes = {
         controlsPosition: PropTypes.string,
+        defaultFov: PropTypes.number,
         defaultSceneQuality: PropTypes.number,
         innerRef: PropTypes.func,
         layers: PropTypes.array,
@@ -108,6 +109,7 @@ class Map3D extends React.Component {
         sceneObjects: {},
         collisionObjects: [],
         settings: {
+            fov: 30,
             sceneQuality: 100
         },
         sceneId: null,
@@ -168,6 +170,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.getSetting = this.getSetting;
         this.state.sceneContext.setSetting = this.setSetting;
 
+        this.state.sceneContext.settings.fov = props.defaultFov;
         this.state.sceneContext.settings.sceneQuality = props.defaultSceneQuality;
 
         registerPermalinkDataStoreHook("map3d", this.store3dState);
@@ -222,6 +225,10 @@ class Map3D extends React.Component {
                     }).filter(Boolean)
                 }
             }));
+        }
+        if (this.state.sceneContext.settings.fov !== prevState.sceneContext.settings.fov) {
+            this.instance.view.camera.fov = this.state.sceneContext.settings.fov;
+            this.instance.notifyChange(this.instance.view.camera);
         }
         if (this.state.sceneContext.settings.sceneQuality !== prevState.sceneContext.settings.sceneQuality) {
             const quality = Math.max(20, this.state.sceneContext.settings.sceneQuality);

@@ -41,6 +41,17 @@ export default class Settings3D extends React.Component {
                                 </InputContainer>
                             </td>
                         </tr>
+                        <tr>
+                            <td>{LocaleUtils.tr("settings3d.fov")}</td>
+                            <td>
+                                <InputContainer>
+                                    <Input
+                                        max={100} min={25} onChange={this.fovChanged} role="input" step={5}
+                                        type="range" value={this.props.sceneContext.settings.fov} />
+                                    <span role="suffix">{this.props.sceneContext.settings.fov}&nbsp;°</span>
+                                </InputContainer>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -60,5 +71,8 @@ export default class Settings3D extends React.Component {
     }
     qualityChanged = (value) => {
         this.props.sceneContext.setSetting("sceneQuality", parseInt(value, 10));
+    };
+    fovChanged = (value) => {
+        this.props.sceneContext.setSetting("fov", parseInt(value, 10));
     };
 }
