@@ -44,6 +44,8 @@ class View3D extends React.Component {
         addLayerFeatures: PropTypes.func,
         /** The position of the navigation controls. Either `top` or `bottom`. */
         controlsPosition: PropTypes.string,
+        /** The default field of view (`20`: min, `100`: max). */
+        defaultFov: PropTypes.number,
         /** The default scene quality factor (`20`: min, `100`: max). */
         defaultSceneQuality: PropTypes.number,
         display: PropTypes.object,
@@ -80,6 +82,7 @@ class View3D extends React.Component {
     };
     static defaultProps = {
         controlsPosition: 'top',
+        defaultFov: 30,
         defaultSceneQuality: 100,
         geometry: {
             initialWidth: 600,
@@ -310,6 +313,7 @@ class View3D extends React.Component {
                             <PluginsContainer pluginsConfig={pluginsConfig}>
                                 <Map3D
                                     controlsPosition={this.props.controlsPosition}
+                                    defaultFov={this.props.defaultFov}
                                     defaultSceneQuality={this.props.defaultSceneQuality}
                                     innerRef={this.setRef}
                                     mouseButtons={this.props.mouseButtons}

@@ -6,6 +6,11 @@ div.settings3d-body table td {
     padding: 0 0.25em;
 }
 
-div.settings3d-body table td > input {
+div.settings3d-body table td:nth-child(2) {
+    width: 99%;
+}
+
+div.settings3d-body table td > input,
+div.settings3d-body table td > div.input-container {
     width: 100%;
 }

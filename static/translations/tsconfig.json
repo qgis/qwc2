@@ -550,6 +550,7 @@
     "settings.language",
     "settings.systemlang",
     "settings.themes",
+    "settings3d.fov",
     "settings3d.quality",
     "share.QRCodeLinkTitle",
     "share.directLinkTitle",

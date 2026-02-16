@@ -640,6 +640,7 @@
       "themes": "Temalar"
     },
     "settings3d": {
+      "fov": "",
       "quality": ""
     },
     "share": {

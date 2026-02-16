@@ -640,6 +640,7 @@
       "themes": "Теми"
     },
     "settings3d": {
+      "fov": "",
       "quality": ""
     },
     "share": {
