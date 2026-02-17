@@ -850,7 +850,7 @@ class LayerTree extends React.Component {
     };
     getLayerStyles = (layer) => {
         return layer?.sublayers?.reduce((styleList, sublayer) => {
-            Object.assign(styleList, this.getLayerStyles(sublayer.sublayers));
+            Object.assign(styleList, this.getLayerStyles(sublayer));
             return Object.assign(styleList, sublayer.styles);
         }, {});
     };
