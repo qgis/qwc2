@@ -976,7 +976,7 @@ Allows configuring language and color scheme.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | colorSchemes | `[{`<br />`  title: string,`<br />`  titleMsgId: string,`<br />`  value: string,`<br />`}]` | List of available color schemes. Value is the css class name, title/titleMsgId the display name. | `[]` |
-| languages | `[{`<br />`  title: string,`<br />`  titleMsgId: string,`<br />`  value: string,`<br />`}]` | List of available languages. Value is the lang code, title/titleMsgId the display name. | `[]` |
+| languages | `[{`<br />`  title: string,`<br />`  titleMsgId: string,`<br />`  value: string,`<br />`}]` | List of available languages. Value is the lang code, title/titleMsgId the display name. Falls back to the toplevel `availableLocales` `config.json` setting if not set. | `null` |
 | showDefaultThemeSelector | `bool` | Whether to show a selector to set the default theme/bookmark (of a logged in user). | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
