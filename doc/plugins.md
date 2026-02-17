@@ -84,9 +84,51 @@ Plugin reference
 ---
 ## API<a name="api"></a>
 
-Exposes an API for interacting with QWC2 via `window.qwc2`.
+Exposes an API for interacting with QWC.
 
 You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
+
+### `postMessage` interface
+
+You can interact with a QWC instance from a parent application either via the `window.qwc2`
+interface (see below), if the embedded QWC runs under the same origin as the parent application,
+or via [`postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
+if the origins differ. When using `postMessage`, you must register the allowed parent origins
+via the `allowedMessageOrigins` config prop. For a QWC embedded in an iframe, a sample call could
+then be
+
+```
+qwcframe = document.getElementById("qwciframe");
+qwcframe.contentWindow.postMessage({
+  "method": "zoomToPoint",
+  "params": [[2684764, 1247841], 18, "EPSG:2056"]
+}, "http://<qwc_hostname>:<port>")
+```
+If you call a method which returns a value, pass a `requestId` and listen to response messages:
+
+```
+window.addEventListener("message", (ev) => {
+  console.log(ev.data.requestId);
+  console.log(ev.data.result);
+});
+qwcframe.contentWindow.postMessage(
+  {"method": "getState", "requestId": "<arbitrary_id_string>"},
+  "http://<qwc_hostname>:<port>"
+)
+```
+
+A list of supported methods will be printed to the console if you run
+
+```
+qwcframe.contentWindow.postMessage("help", "http://<qwc_hostname>:<port>")
+```
+
+To check the full signature of a method (including default param values), check
+the respective action function definitions as referenced in the *`window.qwc2` API*
+section below. Note that you can only pass values which can be serialized via
+structured clone in the message params.
+
+### Custom plugins
 
 Here is an example of a custom plugin:
 
@@ -135,6 +177,8 @@ To load custom plugins in QWC:
         {
             "name": "CurrentTheme"
         }
+
+### `window.qwc2` API
 
 The following action functions are exposed in the API:
 

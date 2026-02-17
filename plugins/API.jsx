@@ -97,10 +97,74 @@ import {SearchResultType} from '../utils/SearchProviders';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
+
+function extractFunctions(obj) {
+    return Object.entries(obj).reduce((result, [key, value]) => {
+        if (typeof value === "function") {
+            result[key] = value;
+        }
+        return result;
+    }, {});
+}
+
+const actionFunctions = {
+    ...extractFunctions(displayActions),
+    ...extractFunctions(editingActions),
+    ...extractFunctions(layerActions),
+    ...extractFunctions(localeActions),
+    ...extractFunctions(locateActions),
+    ...extractFunctions(mapActions),
+    ...extractFunctions(taskActions),
+    ...extractFunctions(themeActions),
+    ...extractFunctions(windowsActions)
+};
+
 /**
- * Exposes an API for interacting with QWC2 via `window.qwc2`.
+ * Exposes an API for interacting with QWC.
  *
  * You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
+ *
+ * ### `postMessage` interface
+ *
+ * You can interact with a QWC instance from a parent application either via the `window.qwc2`
+ * interface (see below), if the embedded QWC runs under the same origin as the parent application,
+ * or via [`postMessage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
+ * if the origins differ. When using `postMessage`, you must register the allowed parent origins
+ * via the `allowedMessageOrigins` config prop. For a QWC embedded in an iframe, a sample call could
+ * then be
+ *
+ * ```
+ * qwcframe = document.getElementById("qwciframe");
+ * qwcframe.contentWindow.postMessage({
+ *   "method": "zoomToPoint",
+ *   "params": [[2684764, 1247841], 18, "EPSG:2056"]
+ * }, "http://<qwc_hostname>:<port>")
+ * ```
+ * If you call a method which returns a value, pass a `requestId` and listen to response messages:
+ *
+ * ```
+ * window.addEventListener("message", (ev) => {
+ *   console.log(ev.data.requestId);
+ *   console.log(ev.data.result);
+ * });
+ * qwcframe.contentWindow.postMessage(
+ *   {"method": "getState", "requestId": "<arbitrary_id_string>"},
+ *   "http://<qwc_hostname>:<port>"
+ * )
+ * ```
+ *
+ * A list of supported methods will be printed to the console if you run
+ *
+ * ```
+ * qwcframe.contentWindow.postMessage("help", "http://<qwc_hostname>:<port>")
+ * ```
+ *
+ * To check the full signature of a method (including default param values), check
+ * the respective action function definitions as referenced in the *`window.qwc2` API*
+ * section below. Note that you can only pass values which can be serialized via
+ * structured clone in the message params.
+ *
+ * ### Custom plugins
  *
  * Here is an example of a custom plugin:
  *
@@ -150,6 +214,8 @@ import VectorLayerUtils from '../utils/VectorLayerUtils';
  *             "name": "CurrentTheme"
  *         }
  *
+ * ### `window.qwc2` API
+ *
  * The following action functions are exposed in the API:
  *
  * - [display](https://github.com/qgis/qwc2/blob/master/actions/display.js)
@@ -187,7 +253,9 @@ class API extends React.Component {
         };
         // Auto-binded functions
         for (const prop of Object.keys(this.props)) {
-            window.qwc2[prop] = this.props[prop];
+            if (typeof this.props[prop] === "function") {
+                window.qwc2[prop] = this.props[prop];
+            }
         }
         // Additional exports
         window.qwc2.LayerRole = LayerRole;
@@ -281,15 +349,65 @@ class API extends React.Component {
         window.qwc2.components.ToggleSwitch = ToggleSwitch;
         window.qwc2.components.VectorLayerPicker = VectorLayerPicker;
 
+        // Add message event listener
+        window.addEventListener("message", this.handleMessage);
+
         window.dispatchEvent(new Event("QWC2ApiReady"));
     }
     static propTypes = {
         addLayer: PropTypes.func,
+        /* List of origins which are allowed to post messages via `qwcIframe.postMessage`. */
+        allowedMessageOrigins: PropTypes.arrayOf(PropTypes.string),
         mapCrs: PropTypes.string,
         registerCustomPlugin: PropTypes.func,
         setCurrentTask: PropTypes.func,
         state: PropTypes.object,
         unregisterCustomPlugin: PropTypes.func
+    };
+    static defaultProps = {
+        allowedMessageOrigins: []
+    };
+    handleMessage = (ev) => {
+        if (!this.props.allowedMessageOrigins.includes(ev.origin)) {
+            /* eslint-disable-next-line */
+            console.warn("Discarding message from not-allowed origin " + ev.origin);
+            return;
+        }
+        const allowedMemberFunctions = [
+            "addExternalLayer",
+            "getState"
+        ];
+        if (ev.data === "help") {
+            const signatures = Object.fromEntries(Object.entries(actionFunctions).map(([key, val]) => {
+                return [key, val.toString().match(/^function\s+\w+\s*(\([^)]+\))/)?.[1] ?? "()"];
+            }));
+            allowedMemberFunctions.forEach(name => {
+                signatures[name] = this[name].toString().match(/^function\s+(\([^)]+\))/)?.[1] ?? "()";
+            });
+            /* eslint-disable-next-line */
+            console.log(signatures);
+        }
+        if (ev.data?.method) {
+            const func = ev.data.method;
+            const args = ev.data.params ?? [];
+            let result = null;
+            if (func in actionFunctions) {
+                result = this.props[func](...args);
+            } else if (
+                allowedMemberFunctions.includes(func)
+            ) {
+                result = this[func](...args);
+            } else {
+                /* eslint-disable-next-line */
+                console.warn("Unhandeled message: " + JSON.stringify(ev.data));
+            }
+            if (ev.data.requestId) {
+                ev.source.postMessage({
+                    requestId: ev.data.requestId,
+                    result: result
+                }, ev.origin);
+            }
+        }
     };
     render() {
         return null;
@@ -437,28 +555,11 @@ class API extends React.Component {
     };
 }
 
-function extractFunctions(obj) {
-    return Object.entries(obj).reduce((result, [key, value]) => {
-        if (typeof value === "function") {
-            result[key] = value;
-        }
-        return result;
-    }, {});
-}
-
 export default connect(state => ({
     mapCrs: state.map.projection,
     state: state
 }), {
     registerCustomPlugin: registerCustomPlugin,
     unregisterCustomPlugin: unregisterCustomPlugin,
-    ...extractFunctions(displayActions),
-    ...extractFunctions(editingActions),
-    ...extractFunctions(layerActions),
-    ...extractFunctions(localeActions),
-    ...extractFunctions(locateActions),
-    ...extractFunctions(mapActions),
-    ...extractFunctions(taskActions),
-    ...extractFunctions(themeActions),
-    ...extractFunctions(windowsActions)
+    ...actionFunctions
 })(API);
