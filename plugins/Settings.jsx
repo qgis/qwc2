@@ -40,7 +40,7 @@ class Settings extends React.Component {
             value: PropTypes.string
         })),
         defaultUrlParams: PropTypes.string,
-        /** List of available languages. Value is the lang code, title/titleMsgId the display name. */
+        /** List of available languages. Value is the lang code, title/titleMsgId the display name. Falls back to the toplevel `availableLocales` `config.json` setting if not set. */
         languages: PropTypes.arrayOf(PropTypes.shape({
             title: PropTypes.string,
             titleMsgId: PropTypes.string,
@@ -56,7 +56,7 @@ class Settings extends React.Component {
     };
     static defaultProps = {
         colorSchemes: [],
-        languages: [],
+        languages: null,
         side: 'right',
         showDefaultThemeSelector: true
     };
@@ -95,7 +95,8 @@ class Settings extends React.Component {
         );
     };
     renderLanguageSelector = () => {
-        if (isEmpty(this.props.languages)) {
+        const languages = this.props.languages ?? ConfigUtils.getConfigProp("availableLocales");
+        if (isEmpty(languages)) {
             return null;
         }
         const lang = LocaleUtils.lang();
@@ -105,7 +106,7 @@ class Settings extends React.Component {
                 <td>
                     <select onChange={this.changeLocale} value={lang}>
                         <option key="syslang" value="">{LocaleUtils.tr("settings.systemlang")}</option>
-                        {this.props.languages.map(entry => (
+                        {languages.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                         ))}
                     </select>
