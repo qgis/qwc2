@@ -277,7 +277,7 @@ class LayerTree extends React.Component {
         const allowRemove = this.props.allowRemovingThemeLayers || ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filterinvisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
-        const styles = this.props.showStyleSelector && layer.type === "wms" && path.length === 0 ? this.getLayerStyles(layer) : null;
+        const styles = this.props.showStyleSelector && layer.type === "wms" && path.length === 0 ? this.getLayersStyles([layer]) : null;
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.id, path: path})} key={groupId}>
                 <div className={classnames(itemclasses)}>
@@ -848,9 +848,10 @@ class LayerTree extends React.Component {
     getSelectedStyles = (layer) => {
         return [...new Set((layer.params?.STYLES || "").split(",").filter(Boolean))];
     };
-    getLayerStyles = (layer) => {
-        return layer?.sublayers?.reduce((styleList, sublayer) => {
-            Object.assign(styleList, this.getLayerStyles(sublayer.sublayers));
+
+    getLayersStyles = (layers) => {
+        return layers?.reduce((styleList, sublayer) => {
+            Object.assign(styleList, this.getLayersStyles(sublayer.sublayers));
             return Object.assign(styleList, sublayer.styles);
         }, {});
     };
