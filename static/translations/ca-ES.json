@@ -386,6 +386,7 @@
       "resetrotation": "Reiniciar rotació"
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "Terreny",
       "title": "Vista 3D"
     },

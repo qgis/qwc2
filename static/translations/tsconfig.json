@@ -350,6 +350,7 @@
     "locationrecorder.stop",
     "map.loading",
     "map.resetrotation",
+    "map3d.noterrain",
     "map3d.terrain",
     "map3d.title",
     "mapexport.configuration",

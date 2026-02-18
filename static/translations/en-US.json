@@ -386,6 +386,7 @@
       "resetrotation": "Reset rotation"
     },
     "map3d": {
+      "noterrain": "No terrain",
       "terrain": "Terrain",
       "title": "3D View"
     },

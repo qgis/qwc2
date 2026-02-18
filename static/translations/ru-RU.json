@@ -386,6 +386,7 @@
       "resetrotation": ""
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "",
       "title": ""
     },

@@ -386,6 +386,7 @@
       "resetrotation": "Dönüklüğü sıfırla"
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "Arazi",
       "title": "3 Boyutlu görünüm"
     },

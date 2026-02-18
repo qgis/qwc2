@@ -386,6 +386,7 @@
       "resetrotation": "Obnovit orientaci mapy"
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "",
       "title": ""
     },

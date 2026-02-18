@@ -386,6 +386,7 @@
       "resetrotation": "Redefinir rotação"
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "",
       "title": ""
     },

@@ -386,6 +386,7 @@
       "resetrotation": "Rotatie resetten"
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "",
       "title": ""
     },

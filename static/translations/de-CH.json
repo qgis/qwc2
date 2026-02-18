@@ -386,6 +386,7 @@
       "resetrotation": "Drehung zurücksetzen"
     },
     "map3d": {
+      "noterrain": "Kein Gelände",
       "terrain": "Gelände",
       "title": "3D Ansicht"
     },

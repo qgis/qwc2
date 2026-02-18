@@ -35,6 +35,7 @@ import {setCurrentTask} from '../../actions/task';
 import ConfigUtils from '../../utils/ConfigUtils';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LayerUtils from '../../utils/LayerUtils';
+import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
@@ -239,7 +240,7 @@ class Map3D extends React.Component {
     applyBaseLayer = () => {
         const baseLayer = this.state.sceneContext.baseLayers.find(e => e.visibility === true);
         this.removeLayer("__baselayer");
-        UrlParams.updateParams({bl3d: baseLayer?.name ?? ''});
+        UrlParams.updateParams({bl3d: baseLayer?.name ?? 'null'});
         if (!baseLayer) {
             return;
         }
@@ -252,9 +253,16 @@ class Map3D extends React.Component {
     };
     setBaseLayer = (layer, visibility) => {
         const currentBaseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true)?.name || "";
-        if (visibility && layer?.name === currentBaseLayer) {
+        if (visibility && layer.name === currentBaseLayer) {
             // Nothing changed
             return;
+        }
+        const dtm = this.getLayer("__dtm");
+        if (visibility !== dtm.visible) {
+            dtm.visible = visibility;
+            this.map.receiveShadow = visibility;
+            this.map.backgroundOpacity = visibility ? 1 : 0;
+            this.instance.notifyChange(this.map);
         }
         this.setState(state => ({
             sceneContext: {
@@ -757,6 +765,11 @@ class Map3D extends React.Component {
         // Collect baselayers
         const externalLayers = {};
         const baseLayers = ThemeUtils.createThemeBackgroundLayers(this.props.theme.map3d?.basemaps || [], this.props.themes, null, externalLayers);
+        baseLayers.push({
+            type: "blank",
+            name: "",
+            title: LocaleUtils.tr("bgswitcher.nobg")
+        });
         for (const key of Object.keys(externalLayers)) {
             const idx = key.indexOf(":");
             const service = key.slice(0, idx);
@@ -1162,7 +1175,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.restoreView(data);
         let bl3d = data.baseLayer ?? "";
 
-        this.setBaseLayer({name: bl3d}, bl3d !== "");
+        this.setBaseLayer({name: bl3d}, bl3d !== "null");
         this.state.sceneContext.scene.notifyChange();
     };
 }

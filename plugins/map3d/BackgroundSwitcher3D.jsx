@@ -10,6 +10,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
+import LocaleUtils from '../../utils/LocaleUtils';
 import {BackgroundSwitcher} from '../BackgroundSwitcher';
 
 
@@ -24,7 +25,11 @@ export default class BackgroundSwitcher3D extends React.Component {
     };
     render() {
         return (
-            <BackgroundSwitcher changeLayerVisibility={this.props.sceneContext.setBaseLayer} layers={this.props.sceneContext.baseLayers} />
+            <BackgroundSwitcher
+                changeLayerVisibility={this.props.sceneContext.setBaseLayer}
+                layers={this.props.sceneContext.baseLayers}
+                nobgMsgId={LocaleUtils.trmsg("map3d.noterrain")}
+            />
         );
     }
 }

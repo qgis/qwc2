@@ -386,6 +386,7 @@
       "resetrotation": "Нулиране на въртенето"
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "Земя",
       "title": "3D изглед"
     },

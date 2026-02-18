@@ -386,6 +386,7 @@
       "resetrotation": "Resetta orientamento"
     },
     "map3d": {
+      "noterrain": "Nessun terreno",
       "terrain": "Terreno",
       "title": "Visuale 3D"
     },

@@ -386,6 +386,7 @@
       "resetrotation": "Resetează rotația"
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "",
       "title": ""
     },

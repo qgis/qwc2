@@ -386,6 +386,7 @@
       "resetrotation": "回転をリセット"
     },
     "map3d": {
+      "noterrain": "",
       "terrain": "地形",
       "title": "3D ビュー"
     },
