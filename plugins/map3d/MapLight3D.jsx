@@ -211,6 +211,10 @@ export default class MapLight3D extends React.Component {
                             </tr>
                         ) : null}
                         <tr>
+                            <td />
+                            <td><button className="button" onClick={this.setCurrentDateTime}>{LocaleUtils.tr("maplight3d.currentdatetime")}</button></td>
+                        </tr>
+                        <tr>
                             <td>{LocaleUtils.tr("maplight3d.sunLightIntensity")}</td>
                             <td>{this.renderSlider('sunLightIntensity', 0, 10, 0.1)}</td>
                         </tr>
@@ -441,5 +445,13 @@ export default class MapLight3D extends React.Component {
         }
 
         sceneContext.scene.notifyChange();
+    };
+    setCurrentDateTime = () => {
+        const now = new Date();
+        const day = 1 + (now - new Date(Date.UTC(now.getUTCFullYear(), 0, 1))) / (1000 * 60 * 60 * 24);
+        const time = now.getHours() * 60 + now.getMinutes();
+        this.setState(state => ({lightParams: {
+            ...state.lightParams, day, time
+        }}));
     };
 }

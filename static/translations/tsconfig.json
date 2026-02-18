@@ -373,6 +373,7 @@
     "maplegend.scaledependent",
     "maplegend.windowtitle",
     "maplight3d.animationstep",
+    "maplight3d.currentdatetime",
     "maplight3d.date",
     "maplight3d.dayspersec",
     "maplight3d.helpersVisible",

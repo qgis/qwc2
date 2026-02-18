@@ -419,6 +419,7 @@
     },
     "maplight3d": {
       "animationstep": "アニメーション・ステップ",
+      "currentdatetime": "",
       "date": "日付",
       "dayspersec": "日数 / 秒",
       "helpersVisible": "補助オブジェクト表示",

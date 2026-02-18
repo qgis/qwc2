@@ -6,7 +6,12 @@
     width: 100%;
 }
 
-#MapLight3D div.maplight3d-body > table td > input {
+#MapLight3D div.maplight3d-body > table td {
+    white-space: nowrap;
+}
+
+#MapLight3D div.maplight3d-body > table td > input,
+#MapLight3D div.maplight3d-body > table td > button {
     width: 100%;
 }
 

@@ -419,6 +419,7 @@
     },
     "maplight3d": {
       "animationstep": "Paso de animación",
+      "currentdatetime": "",
       "date": "Fecha",
       "dayspersec": "días / segundo",
       "helpersVisible": "Mostrar ayudas",
