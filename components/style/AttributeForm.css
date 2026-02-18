@@ -44,10 +44,6 @@ div.AttributeForm div.attrib-form-busy {
     cursor: wait;
     z-index: 2;
 }
-/*div.AttributeForm.has-child > .link-feature-form-container {*/
-/*    flex: 1 1 auto;*/
-/*    min-height: 0;*/
-/*}*/
 
 div.link-feature-form-container {
     display: flex;
@@ -58,16 +54,3 @@ div.link-feature-form-container {
 div.link-feature-form-container > div.link-feature-form {
     flex: 1 1 auto;
 }
-
-/*div.link-feature-form-container,*/
-/*div.AttributeForm.has-child > div.link-feature-form-container {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    overflow: hidden;*/
-/*}*/
-
-/*div.link-feature-form-container > div.link-feature-form,*/
-/*div.AttributeForm.has-child > .link-feature-form-container > .link-feature-form {*/
-/*    flex: 1 1 auto;*/
-/*    min-height: 0;*/
-/*}*/
