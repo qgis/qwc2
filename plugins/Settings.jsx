@@ -95,7 +95,12 @@ class Settings extends React.Component {
         );
     };
     renderLanguageSelector = () => {
-        const languages = this.props.languages ?? ConfigUtils.getConfigProp("availableLocales");
+        let languages = this.props.languages;
+        if (!languages) {
+            languages = Object.entries(ConfigUtils.getConfigProp("availableLocales", null, {})).map(([code, title]) => ({
+                title: title, value: code
+            }));
+        }
         if (isEmpty(languages)) {
             return null;
         }
