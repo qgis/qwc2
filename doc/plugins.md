@@ -1223,6 +1223,7 @@ Control the map illumination.
 |----------|------|-------------|---------------|
 | defaultDay | `number` | Default viewer day (1-365) | `182` |
 | defaultTime | `string` | Default viewer time (00:00-23:59) | `'12:00'` |
+| showAdvanced | `bool` | Show advanced controls | `true` |
 
 ## Measure3D<a name="measure3d"></a>
 

@@ -24,18 +24,23 @@ import LocaleUtils from '../../utils/LocaleUtils';
 
 import './style/MapLight3D.css';
 
-
+/**
+ * Control the map illumination.
+ */
 export default class MapLight3D extends React.Component {
     static propTypes = {
         /** Default viewer day (1-365) */
         defaultDay: PropTypes.number,
         /** Default viewer time (00:00-23:59) */
         defaultTime: PropTypes.string,
-        sceneContext: PropTypes.object
+        sceneContext: PropTypes.object,
+        /** Show advanced controls */
+        showAdvanced: PropTypes.bool
     };
     static defaultProps = {
         defaultDay: 182,
-        defaultTime: '12:00'
+        defaultTime: '12:00',
+        showAdvanced: true
     };
     state = {
         showAdvanced: false,
@@ -221,12 +226,14 @@ export default class MapLight3D extends React.Component {
                             <td>{LocaleUtils.tr("maplight3d.shadowintensity")}</td>
                             <td>{this.renderSlider('shadowIntensity', 0, 2, 0.1)}</td>
                         </tr>
-                        <tr>
-                            <td className="maplight3d-advanced" colSpan="2">
-                                <label>
-                                    <input checked={this.state.showAdvanced} onChange={ev => this.setState(state => ({showAdvanced: !state.showAdvanced}))} type="checkbox" /> {LocaleUtils.tr("maplight3d.showadvanced")}</label>
-                            </td>
-                        </tr>
+                        {this.props.showAdvanced ? (
+                            <tr>
+                                <td className="maplight3d-advanced" colSpan="2">
+                                    <label>
+                                        <input checked={this.state.showAdvanced} onChange={ev => this.setState(state => ({showAdvanced: !state.showAdvanced}))} type="checkbox" /> {LocaleUtils.tr("maplight3d.showadvanced")}</label>
+                                </td>
+                            </tr>
+                        ) : null}
                         {this.state.showAdvanced ? [(
                             <tr key="helpersVisible">
                                 <td>{LocaleUtils.tr("maplight3d.helpersVisible")}</td>
