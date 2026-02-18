@@ -115,7 +115,7 @@ export class BackgroundSwitcher extends React.Component {
                     {layer ? (<span tabIndex={-1} title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr(this.props.nobgMsgId)}</span>)}
                 </div>
                 <div className="background-switcher-item-thumbnail">
-                    <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
+                    <img src={layer?.thumbnail ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
                 </div>
             </div>
         );
