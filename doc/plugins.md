@@ -72,6 +72,7 @@ Plugin reference
 * [LayerTree3D](#layertree3d)
 * [MapCopyright3D](#mapcopyright3d)
 * [MapExport3D](#mapexport3d)
+* [MapLight3D](#maplight3d)
 * [Measure3D](#measure3d)
 * [OverviewMap3D](#overviewmap3d)
 * [Settings3D](#settings3d)
@@ -1213,6 +1214,15 @@ Displays layer attributions in the bottom right corner of the 3D map.
 ## MapExport3D<a name="mapexport3d"></a>
 
 Export the 3D map image to raster formats.
+
+## MapLight3D<a name="maplight3d"></a>
+
+Control the map illumination.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| defaultDay | `number` | Default viewer day (1-365) | `182` |
+| defaultTime | `string` | Default viewer time (00:00-23:59) | `'12:00'` |
 
 ## Measure3D<a name="measure3d"></a>
 
