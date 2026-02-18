@@ -30,8 +30,8 @@ export class BackgroundSwitcher extends React.Component {
     static propTypes = {
         changeLayerVisibility: PropTypes.func,
         layers: PropTypes.array,
-        /** The position slot index of the map button, from the bottom (0: bottom slot). */
         nobgMsgId: PropTypes.string,
+        /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number
     };
     static defaultProps = {
