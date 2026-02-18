@@ -58,6 +58,7 @@ class SnappingSupport extends React.Component {
             vertex: this.snapToVertex(props.mapObj.snapping)
         });
         this.snapInteraction.setActive(this.props.mapObj.snapping.active);
+        this.featureInfoCache = {};
         this.inEventHandler = false;
 
         props.map.getInteractions().on('add', this.handleInteractionAdded);
@@ -181,6 +182,7 @@ class SnappingSupport extends React.Component {
         this.inEventHandler = false;
     };
     addSnapInteractionIfNeeded = (interactions) => {
+        this.featureInfoCache = {};
         // Just to be sure
         interactions.remove(this.snapInteraction);
         // If there is any draw or modify interaction, add snapping interaction
@@ -253,6 +255,13 @@ class SnappingSupport extends React.Component {
                 [xmin, ymin]
             ]]
         });
+        const cacheKey = `${xmin}:${ymin}:${xmax}:${ymax}`;
+        if (cacheKey in this.featureInfoCache) {
+            this.source.addFeatures(this.featureInfoCache[cacheKey]);
+            this.addLocalSnapFeatures(localLayers);
+            this.setState({invalid: false, reqId: null, havesnaplayers: true});
+            return;
+        }
         const options = {
             LAYERATTRIBS: JSON.stringify(snapLayers.reduce((res, key) => ({...res, [key]: []}), {}) ),
             with_htmlcontent: false,
@@ -274,6 +283,7 @@ class SnappingSupport extends React.Component {
                     type: "FeatureCollection",
                     features: features.map(feature => ({...feature, id: uuidv4()}))
                 });
+                this.featureInfoCache[cacheKey] = olFeatures;
                 this.source.addFeatures(olFeatures);
                 // Add features from local layers
                 this.addLocalSnapFeatures(localLayers);
