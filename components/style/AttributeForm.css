@@ -5,7 +5,12 @@ div.AttributeForm {
     padding: 0.25em;
 }
 
-div.AttributeForm > form {
+.AttributeForm.attrib-form-has-child > :not(.link-feature-form-container),
+.AttributeForm.attrib-form-has-child ~ .link-feature-form-close{
+    display: none;
+}
+
+div.AttributeForm > form.attrib-form-parent-form {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
@@ -41,15 +46,9 @@ div.AttributeForm div.attrib-form-busy {
 }
 
 div.link-feature-form-container {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: rgba(200, 200, 200, 0.5);
-    padding: 1em;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 div.link-feature-form-container > div.link-feature-form {

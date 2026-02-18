@@ -147,11 +147,11 @@ class AttributeForm extends React.Component {
             readOnlyMsg = LocaleUtils.tr("editing.geomnonzeroz");
         }
         return (
-            <div className="AttributeForm">
+            <div className={`AttributeForm ${this.state.childEdit ? "attrib-form-has-child" : ""}`}>
                 {readOnlyMsg ? (
                     <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
-                <form action="" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
+                <form action="" className="attrib-form-parent-form" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
                     {editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={editConfig}
                             editRelationRecord={this.editRelationRecord}
