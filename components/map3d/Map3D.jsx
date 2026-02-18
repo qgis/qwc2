@@ -1173,7 +1173,7 @@ class Map3D extends React.Component {
             }
         });
         this.state.sceneContext.restoreView(data);
-        let bl3d = data.baseLayer ?? "";
+        const bl3d = data.baseLayer ?? "";
 
         this.setBaseLayer({name: bl3d}, bl3d !== "null");
         this.state.sceneContext.scene.notifyChange();
