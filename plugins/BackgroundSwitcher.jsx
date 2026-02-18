@@ -31,10 +31,12 @@ export class BackgroundSwitcher extends React.Component {
         changeLayerVisibility: PropTypes.func,
         layers: PropTypes.array,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
+        nobgMsgId: PropTypes.string,
         position: PropTypes.number
     };
     static defaultProps = {
-        position: 0
+        position: 0,
+        nobgMsgId: "bgswitcher.nobg"
     };
     state = {
         visible: false
@@ -110,7 +112,7 @@ export class BackgroundSwitcher extends React.Component {
                 onKeyDown={this.KeyNav} tabIndex={this.state.visible ? 0 : -1}
             >
                 <div className="background-switcher-item-title">
-                    {layer ? (<span tabIndex={-1} title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr("bgswitcher.nobg")}</span>)}
+                    {layer ? (<span tabIndex={-1} title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span>) : (<span>{LocaleUtils.tr(this.props.nobgMsgId)}</span>)}
                 </div>
                 <div className="background-switcher-item-thumbnail">
                     <img src={layer ? assetsPath + "/" + layer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="} />
