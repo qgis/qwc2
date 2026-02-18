@@ -1160,15 +1160,9 @@ class Map3D extends React.Component {
             }
         });
         this.state.sceneContext.restoreView(data);
-        if (data.baseLayer !== undefined) {
-            this.setState(state => ({
-                sceneContext: {
-                    ...state.sceneContext,
-                    baseLayers: state.sceneContext.baseLayers.map(l => ({...l, visibility: l.name === data.baseLayer}))
-                }
-            }));
-            UrlParams.updateParams({bl3d: data.baseLayer});
-        }
+        let bl3d = data.baseLayer ?? "";
+
+        this.setBaseLayer({name: bl3d}, bl3d !== "");
         this.state.sceneContext.scene.notifyChange();
     };
 }
