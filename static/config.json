@@ -8,6 +8,12 @@
   "featureReportService": "http://localhost:8088/api/v1/document/",
   "authServiceUrl": "http://localhost:8088/api/v1/auth/",
   "routingServiceUrl": "https://valhalla1.openstreetmap.de",
+  "availableLocales": {
+    "en-US": "English",
+    "de-CH": "Deutsch",
+    "fr-FR": "Français",
+    "it-IT": "Italiano"
+  },
   "urlPositionFormat": "centerAndZoom",
   "urlPositionCrs": "",
   "loadTranslationOverrides": false,
@@ -407,24 +413,6 @@
       {
         "name": "Settings",
         "cfg": {
-          "languages": [
-            {
-              "title": "English",
-              "value": "en-US"
-            },
-            {
-              "title": "Deutsch",
-              "value": "de-CH"
-            },
-            {
-              "title": "Français",
-              "value": "fr-FR"
-            },
-            {
-              "title": "Italiano",
-              "value": "it-IT"
-            }
-          ],
           "colorSchemes": [
             {
               "titleMsgId": "colorschemes.default",
