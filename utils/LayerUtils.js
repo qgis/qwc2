@@ -496,7 +496,7 @@ const LayerUtils = {
             // Attempt to merge with previous if possible
             let target = newlayers.length > 0 ? newlayers[newlayers.length - 1] : null;
             let source = layer;
-            if (target && target.sublayers && target.url === layer.url) {
+            if (target && target.sublayers && target.srcid === layer.srcid) {
                 let innertarget = target.sublayers[target.sublayers.length - 1];
                 let innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
                 while (innertarget && innertarget.sublayers && innertarget.name === innersource.name) {
