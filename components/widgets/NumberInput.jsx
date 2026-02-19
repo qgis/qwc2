@@ -11,6 +11,7 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
+import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
 
 import './style/NumberInput.css';
@@ -124,6 +125,7 @@ export default class NumberInput extends React.Component {
     onKeyDown = (ev) => {
         if (ev.key === 'Enter') {
             this.commit();
+            MiscUtils.killEvent(ev);
         }
         // Ensure prefix/suffix isn't changed
         const selStart = ev.target.selectionStart;
