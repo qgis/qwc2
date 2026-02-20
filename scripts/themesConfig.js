@@ -609,6 +609,7 @@ function genThemes(themesConfig) {
             defaultPrintResolutions: config.defaultPrintResolutions,
             defaultPrintGrid: config.defaultPrintGrid,
             defaultSearchProviders: config.defaultSearchProviders,
+            defaultMapTips: config.defaultMapTips,
             defaultBackgroundLayers: config.defaultBackgroundLayers || [],
             externalLayers: config.themes.externalLayers || [],
             pluginData: config.themes.pluginData,
