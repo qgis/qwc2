@@ -127,8 +127,10 @@ export default class NumberInput extends React.Component {
     };
     onKeyDown = (ev) => {
         if (ev.key === 'Enter') {
+            if (this.state.changed) {
+                MiscUtils.killEvent(ev);
+            }
             this.commit();
-            MiscUtils.killEvent(ev);
         }
         // Ensure prefix/suffix isn't changed
         const selStart = ev.target.selectionStart;
