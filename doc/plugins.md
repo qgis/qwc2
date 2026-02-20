@@ -849,6 +849,7 @@ See [Oblique View](../../topics/ObliqueView).
 |----------|------|-------------|---------------|
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 640,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'left'`<br />`}` |
 | initialScale | `number` | The initial map scale. | `1000` |
+| minOverviewScaleDenom | `number` | Minimal scale denominator for the overview map. | `10000` |
 | scales | `[number]` | A list of allowed map scales, in decreasing order. | `[20000, 10000, 5000, 2500, 1000, 500, 250]` |
 
 ## OverviewMap<a name="overviewmap"></a>
