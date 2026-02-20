@@ -83,11 +83,11 @@ class Compare3D extends React.Component {
         } else if (!this.state.enabled && prevState.enabled) {
             this.clearClippingPlane();
         }
-        if (this.props.sceneContext.sceneObjects !== prevProps.sceneContext.sceneObjects) {
-            const sceneObjects = this.props.sceneContext.sceneObjects;
+        if (this.props.sceneContext.objectTree !== prevProps.sceneContext.objectTree) {
+            const objectTree = this.props.sceneContext.objectTree;
             this.setState(state => ({
                 clippedObjects: Object.fromEntries(
-                    Object.entries(state.clippedObjects).filter(([objectId, entry]) => objectId in sceneObjects)
+                    Object.entries(state.clippedObjects).filter(([objectId, entry]) => objectId in objectTree)
                 )
             }));
         }
@@ -242,8 +242,10 @@ class Compare3D extends React.Component {
     }
     renderBody = () => {
         const sceneContext = this.props.sceneContext;
-        const objects = {__terrain: {layertree: true, title: LocaleUtils.tr("map3d.terrain")}, ...sceneContext.sceneObjects};
-        const objectIds = Object.keys(objects).filter(objectId => objects[objectId].layertree);
+        const objects = [
+            {type: "terrain", objectId: "__terrain", title: LocaleUtils.tr("map3d.terrain")},
+            ...Object.values(sceneContext.objectTree).filter(entry => entry.objectId !== undefined)
+        ];
         return (
             <div className="compare3d-body" role="body">
                 <div className="compare3d-title" onClick={this.toggleCompare}>
@@ -255,8 +257,8 @@ class Compare3D extends React.Component {
                         const clipState = this.state.clippedObjects;
                         let toggleAllIcon = "checked";
                         let toggleAllValue = true;
-                        const toggleAllState = objectIds.reduce((res, id) => res + clipState[id]?.[section], 0);
-                        if (toggleAllState === objectIds.length) {
+                        const toggleAllState = objects.reduce((res, entry) => res + clipState[entry.objectId]?.[section], 0);
+                        if (toggleAllState === objects.length) {
                             toggleAllIcon = "unchecked";
                             toggleAllValue = false;
                         } else if (toggleAllState > 0) {
@@ -266,21 +268,21 @@ class Compare3D extends React.Component {
                             <div className="compare3d-section" key={"compare-" + section}>
                                 <div
                                     className="compare3d-item compare3d-item-toggleall"
-                                    onClick={this.state.enabled ? () => this.toggleAllObjects(section, objectIds, toggleAllValue) : null}
+                                    onClick={this.state.enabled ? () => this.toggleAllObjects(section, objects, toggleAllValue) : null}
                                     title={LocaleUtils.tr("compare3d.toggleall")}
                                 >
                                     <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={toggleAllIcon} />
                                     <span>{LocaleUtils.tr("compare3d.toggleall")}</span>
                                 </div>
-                                {objectIds.map(objectId => (
+                                {objects.map(entry => (
                                     <div
                                         className="compare3d-item"
-                                        key={objectId}
-                                        onClick={this.state.enabled ? () => this.toggleObject(section, objectId) : null}
-                                        title={objects[objectId].title ?? objectId}
+                                        key={entry.objectId}
+                                        onClick={this.state.enabled ? () => this.toggleObject(section, entry.objectId) : null}
+                                        title={entry.title ?? entry.objectId}
                                     >
-                                        <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={clipState[objectId]?.[section] ? "unchecked" : "checked"} />
-                                        <span>{objects[objectId].title ?? objectId}</span>
+                                        <Icon className="compare3d-item-checkbox" disabled={!this.state.enabled} icon={clipState[entry.objectId]?.[section] ? "unchecked" : "checked"} />
+                                        <span>{entry.title ?? entry.objectId}</span>
                                     </div>
                                 ))}
                             </div>
@@ -330,12 +332,12 @@ class Compare3D extends React.Component {
             }
         }));
     };
-    toggleAllObjects = (section, objectIds, value) => {
+    toggleAllObjects = (section, objects, value) => {
         this.setState(state => ({
-            clippedObjects: objectIds.reduce((res, objectId) => ({
+            clippedObjects: objects.reduce((res, entry) => ({
                 ...res,
-                [objectId]: {
-                    ...state.clippedObjects[objectId],
+                [entry.objectId]: {
+                    ...state.clippedObjects[entry.objectId],
                     [section]: value
                 }
             }), {})

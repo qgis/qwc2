@@ -189,11 +189,11 @@ class ExportObjects3D extends React.Component {
         const exportGroup = new Group();
         exportGroup.rotation.set(-Math.PI / 2, 0, 0); // GLTF is Y-UP
 
-        Object.entries(this.props.sceneContext.sceneObjects).forEach(([objectId, options]) => {
-            if (!options.layertree || !options.visibility) {
+        Object.values(this.props.sceneContext.objectTree).forEach(entry => {
+            if (!entry.objectId || !entry.visibility || entry.opacity === 0) {
                 return;
             }
-            const object = this.props.sceneContext.getSceneObject(objectId);
+            const object = this.props.sceneContext.getSceneObject(entry.objectId);
             if (object.tiles) {
                 this.addTileToExportGroup(object.tiles, exportGroup, selectionBox);
             } else {

@@ -126,15 +126,15 @@ class Identify3D extends React.Component {
         raycaster.setFromCamera(new Vector2(x, y), camera);
 
         const picks = [];
-        Object.entries(this.props.sceneContext.sceneObjects).forEach(([objId, options]) => {
-            if (!options.layertree || !options.visibility) {
+        Object.values(this.props.sceneContext.objectTree).forEach(entry => {
+            if (!entry.objectId || !entry.visibility || entry.opacity === 0) {
                 return;
             }
-            const object = this.props.sceneContext.getSceneObject(objId);
+            const object = this.props.sceneContext.getSceneObject(entry.objectId);
             if (object.tiles?.raycast) {
                 const intersections = [];
                 object.tiles.raycast(raycaster, intersections);
-                intersections.forEach(entry => { entry.isTilePick = true; });
+                intersections.forEach(inter => { inter.isTilePick = true; });
                 picks.push(...intersections);
             } else {
                 picks.push(...raycaster.intersectObjects([object], true));

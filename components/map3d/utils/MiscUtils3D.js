@@ -6,13 +6,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Box3, BufferGeometry, Mesh, Vector2, Vector3} from 'three';
+import {BufferGeometry, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
-import {v4 as uuidv4} from 'uuid';
-
-import ConfigUtils from '../../../utils/ConfigUtils';
 
 
 export function createLabelObject(text, pos, sceneContext, zoffset, yoffset = 0) {
@@ -58,59 +54,6 @@ export function updateObjectLabel(sceneObject, sceneContext) {
         // Remove leaderline first, as the remove trigger of the CSS2DObject assumes children are CSS2DObjects as well
         labelObject.children[0].removeFromParent();
         labelObject.removeFromParent();
-    }
-}
-
-export function importGltf(dataOrUrl, name, sceneContext, options = {}, showEditTool = false) {
-    const loader = new GLTFLoader();
-    const processor = (gltf) => {
-        // GLTF is Y-UP, we need Z-UP
-        gltf.scene.rotation.x = Math.PI / 2;
-        gltf.scene.updateMatrixWorld(true);
-
-        const objectId = uuidv4();
-        options = {
-            layertree: true,
-            title: name,
-            ...options
-        };
-        gltf.scene.castShadow = true;
-        gltf.scene.receiveShadow = true;
-        gltf.scene.traverse(c => {
-            if (c.geometry) {
-                c.castShadow = true;
-                c.receiveShadow = true;
-            }
-            updateObjectLabel(c, sceneContext);
-        });
-
-        // Shift root position to center of object
-        gltf.scene.updateMatrixWorld(true);
-
-        const box = new Box3().setFromObject(gltf.scene);
-        const centerWorld = box.getCenter(new Vector3());
-        centerWorld.z = box.min.z;
-        const centerLocal = gltf.scene.worldToLocal(centerWorld.clone());
-        gltf.scene.position.add(centerWorld);
-
-        // Offset children back so the world positions remain unchanged
-        gltf.scene.children.forEach(child => {
-            child.position.sub(centerLocal);
-        });
-        gltf.scene.updateMatrixWorld(true);
-
-        sceneContext.addSceneObject(objectId, gltf.scene, options, showEditTool);
-    };
-    if (typeof dataOrUrl === 'string') {
-        loader.load(dataOrUrl, processor, () => {}, (err) => {
-            /* eslint-disable-next-line */
-            console.warn(err);
-        });
-    } else {
-        loader.parse(dataOrUrl, ConfigUtils.getAssetsPath(), processor, (err) => {
-            /* eslint-disable-next-line */
-            console.warn(err);
-        });
     }
 }
 

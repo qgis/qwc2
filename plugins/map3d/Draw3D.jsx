@@ -41,26 +41,26 @@ export default class Draw3D extends React.Component {
     };
     onHide = () => {
         // Remove empty draw groups
-        Object.entries(this.props.sceneContext.sceneObjects).filter(([objectId, options]) => {
-            return options.drawGroup === true;
-        }).forEach(([objectId, options]) => {
-            const object = this.props.sceneContext.getSceneObject(objectId);
+        Object.values(this.props.sceneContext.objectTree).filter(entry => {
+            return entry.drawGroup === true;
+        }).forEach(entry => {
+            const object = this.props.sceneContext.getSceneObject(entry.objectId);
             if (object.children.length === 0) {
-                this.props.sceneContext.removeSceneObject(objectId);
+                this.props.sceneContext.removeSceneObject(entry.objectId);
             }
         });
         this.setState({selectedObject: null});
     };
     ensureDrawGroup = () => {
         // Ensure a draw group is present
-        const drawGroup = Object.entries(this.props.sceneContext.sceneObjects).find(([key, options]) => {
-            return options.drawGroup === true;
+        const drawGroupEntry = Object.values(this.props.sceneContext.objectTree).find(entry => {
+            return entry.drawGroup === true;
         });
-        if (drawGroup === undefined) {
+        if (drawGroupEntry === undefined) {
             this.addDrawGroup(LocaleUtils.tr("draw3d.drawings"));
         } else {
-            this.props.sceneContext.updateSceneObject(drawGroup[0], {visibility: true});
-            this.setState({drawGroupId: drawGroup[0]});
+            this.props.sceneContext.updateSceneObject(drawGroupEntry.objectId, {visibility: true});
+            this.setState({drawGroupId: drawGroupEntry.objectId});
         }
     };
     createDrawGroup = () => {
@@ -75,10 +75,9 @@ export default class Draw3D extends React.Component {
         const objectId = uuidv4();
         const options = {
             drawGroup: true,
-            layertree: true,
             title: name
         };
-        this.props.sceneContext.addSceneObject(objectId, new Group(), options);
+        this.props.sceneContext.addSceneObject(objectId, new Group(), true, options);
         this.setState({drawGroupId: objectId});
     };
     renderBody = () => {
@@ -97,7 +96,7 @@ export default class Draw3D extends React.Component {
             {key: "Pick", tooltip: LocaleUtils.tr("common.pick"), icon: "nodetool", data: {action: "Pick", geomType: null}},
             {key: "Delete", tooltip: LocaleUtils.tr("common.delete"), icon: "trash", data: {action: "Delete", geomType: null}, disabled: !this.state.selectedObject}
         ];
-        const drawGroups = Object.entries(this.props.sceneContext.sceneObjects).filter(([key, entry]) => entry.drawGroup === true);
+        const drawGroupEntries = Object.values(this.props.sceneContext.objectTree).filter(entry => entry.drawGroup === true);
         return (
             <div>
                 <div className="redlining-controlsbar">
@@ -105,8 +104,8 @@ export default class Draw3D extends React.Component {
                         <div>{LocaleUtils.tr("redlining.layer")}</div>
                         <div className="controlgroup">
                             <select onChange={ev => this.setActiveDrawGroup(ev.target.value)} value={this.state.drawGroupId}>
-                                {drawGroups.map(([objectId, options]) => (
-                                    <option key={objectId} value={objectId}>{options.title}</option>
+                                {drawGroupEntries.map(entry => (
+                                    <option key={entry.objectId} value={entry.objectId}>{entry.title}</option>
                                 ))}
                             </select>
                             <button className="button" onClick={this.createDrawGroup}><Icon icon="plus" /></button>

@@ -18,7 +18,6 @@ import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import FileSelector from '../widgets/FileSelector';
 import Spinner from '../widgets/Spinner';
-import {importGltf} from './utils/MiscUtils3D';
 
 import './style/ImportObjects3D.css';
 
@@ -70,10 +69,7 @@ class ImportObjects3D extends React.Component {
     importGltfFile = (file, taskid) => {
         const reader = new FileReader();
         reader.onload = (ev) => {
-            importGltf(ev.target.result, file.name, this.props.sceneContext, {
-                drawGroup: true,
-                imported: true
-            }, true);
+            this.props.sceneContext.importObject3D(ev.target.result, uuidv4(), true, {title: file.name, drawGroup: true, imported: true}, true);
             this.setState({selectedfile: null, importing: false});
             this.props.processFinished(taskid, true);
         };
@@ -110,7 +106,7 @@ class ImportObjects3D extends React.Component {
         }
         axios.post(ogcProcessesUrl.replace(/\/$/, '') + '/modelimport/execution_multipart', formData, {headers}).then(response => {
             const tilesetUrl = this.props.importedTilesBaseUrl + response.data.result.value;
-            this.props.sceneContext.add3dTiles(tilesetUrl, taskid, {title: file.name}, true);
+            this.props.sceneContext.importTiles3D(tilesetUrl, taskid, true, {title: file.name, imported: true}, true);
             this.setState({selectedfile: null, importing: false});
             this.props.processFinished(taskid, true);
         }).catch(err => {
