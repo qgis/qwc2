@@ -223,7 +223,7 @@ class ObliqueView extends React.Component {
                         <span className="obliqueview-bottombar-spacer" />
                         {basemap && this.state.datasetConfig ? (
                             <OverviewMapButton
-                                center={this.state.currentCenter} coneRotation={this.getRotation() / 180 * Math.PI}
+                                center={this.state.currentCenter} coneRotation={-this.getRotation() / 180 * Math.PI}
                                 layer={basemap} projection={this.state.datasetConfig.crs}
                                 resolution={MapUtils.computeForZoom(this.state.datasetConfig.resolutions, this.state.currentZoom) * 0.25}
                             />
