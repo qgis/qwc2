@@ -75,11 +75,11 @@ export function removeLayer(layerId, sublayerpath = []) {
     };
 }
 
-export function reorderLayer(layer, sublayerpath, direction) {
+export function reorderLayer(layerId, sublayerpath, direction) {
     return (dispatch, getState) => {
         dispatch({
             type: REORDER_LAYER,
-            layer,
+            layerId,
             sublayerpath,
             direction,
             preventSplittingGroups: ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", getState().theme.current)

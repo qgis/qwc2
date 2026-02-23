@@ -361,7 +361,7 @@ export default function layers(state = defaultState, action) {
     }
     case REORDER_LAYER: {
         const newLayers = LayerUtils.reorderLayer(
-            state.flat, action.layer, action.sublayerpath, action.direction, action.preventSplittingGroups
+            state.flat, action.layerId, action.sublayerpath, action.direction, action.preventSplittingGroups
         ).map(layer => {
             if (layer.type === "wms") {
                 return {...layer, ...LayerUtils.buildWMSLayerParams(layer, state.filter)};

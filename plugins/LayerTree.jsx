@@ -403,8 +403,8 @@ class LayerTree extends React.Component {
         let reorderButtons = null;
         if (allowReordering && !this.state.filterinvisiblelayers) {
             reorderButtons = [
-                (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer, path, +1)} />),
-                (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer, path, -1)} />)
+                (<Icon className="layertree-item-move" icon="arrow-down" key="layertree-item-move-down" onClick={() => this.props.reorderLayer(layer.id, path, +1)} />),
+                (<Icon className="layertree-item-move" icon="arrow-up" key="layertree-item-move-up" onClick={() => this.props.reorderLayer(layer.id, path, -1)} />)
             ];
         }
         let toggleGroupButton = null;
@@ -723,10 +723,7 @@ class LayerTree extends React.Component {
     };
     onSortChange = (order, sortable, ev) => {
         const moved = JSON.parse(order[ev.newIndex]);
-        const layer = this.props.layers.find(l => l.id === moved.layer);
-        if (layer) {
-            this.props.reorderLayer(layer, moved.path, ev.newIndex - ev.oldIndex);
-        }
+        this.props.reorderLayer(moved.layer, moved.path, ev.newIndex - ev.oldIndex);
     };
     toggleImportLayers = () => {
         this.setState((state) => {
