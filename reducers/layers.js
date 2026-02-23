@@ -7,6 +7,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import deepmerge from 'deepmerge';
 import isEmpty from 'lodash.isempty';
 import {v4 as uuidv4} from 'uuid';
 
@@ -15,6 +16,7 @@ import {
     SET_LAYER_LOADING,
     ADD_LAYER,
     ADD_LAYER_SEPARATOR,
+    SET_LAYER_METADATA,
     REMOVE_LAYER,
     REORDER_LAYER,
     CHANGE_LAYER_PROPERTY,
@@ -179,6 +181,31 @@ export default function layers(state = defaultState, action) {
         }
         return {...state, flat: newLayers, editConfigs: newEditConfigs};
     }
+    case SET_LAYER_METADATA: {
+        let newEditConfigs = state.editConfigs;
+        const layerIdx = state.flat.findIndex(l => l.id === action.id);
+        if (layerIdx >= 0) {
+            let newLayer = {...state.flat[layerIdx]};
+            if (action.metadata.editConfig) {
+                newEditConfigs = {
+                    ...newEditConfigs,
+                    [newLayer.wms_name]: {
+                        ...newEditConfigs[newLayer.wms_name],
+                        ...action.metadata.editConfig
+                    }
+                };
+            }
+            if (action.metadata.translations) {
+                newLayer.translations = deepmerge(newLayer.translations || {}, action.metadata.translations);
+                newLayer = LayerUtils.applyTranslations(newLayer, newLayer.translations);
+            }
+            const newLayers = [...state.flat];
+            newLayers[layerIdx] = newLayer;
+            return {...state, flat: newLayers, editConfigs: newEditConfigs};
+        } else {
+            return state;
+        }
+    };
     case ADD_LAYER_SEPARATOR: {
         const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath).map(layer => {
             if (layer.type === "wms") {

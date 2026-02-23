@@ -24,6 +24,7 @@ export const REMOVE_LAYER_FEATURES = 'REMOVE_LAYER_FEATURES';
 export const CLEAR_LAYER = 'CLEAR_LAYER';
 export const CHANGE_LAYER_PROPERTY = 'CHANGE_LAYER_PROPERTY';
 export const SET_LAYER_DIMENSIONS = 'SET_LAYER_DIMENSIONS';
+export const SET_LAYER_METADATA = 'SET_LAYER_METADATA';
 export const REFRESH_LAYER = 'REFRESH_LAYER';
 export const REMOVE_ALL_LAYERS = 'REMOVE_ALL_LAYERS';
 export const REPLACE_PLACEHOLDER_LAYER = 'REPLACE_PLACEHOLDER_LAYER';
@@ -43,11 +44,16 @@ export const LayerRole = {
 
 export function addLayer(layer, pos = null, options = null) {
     return dispatch => {
-        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+        dispatch({
             type: ADD_LAYER,
-            layer: result,
+            layer: layer,
             pos,
             options
+        });
+        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+            type: SET_LAYER_METADATA,
+            id: layer.id,
+            metadata: result
         }));
     };
 }
@@ -107,10 +113,16 @@ export function clearLayer(layerId) {
 }
 
 export function addThemeSublayer(layer) {
-    return dispatch => {
-        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+    return (dispatch, getState) => {
+        dispatch({
             type: ADD_THEME_SUBLAYER,
-            layer: result
+            layer: layer
+        });
+        const layerId = getState().layers.flat.find(l => l.role === LayerRole.THEME)?.id;
+        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+            type: SET_LAYER_METADATA,
+            id: layerId,
+            metadata: result
         }));
     };
 }
@@ -181,10 +193,15 @@ export function removeAllLayers() {
 
 export function replacePlaceholderLayer(id, layer) {
     return dispatch => {
-        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+        dispatch({
             type: REPLACE_PLACEHOLDER_LAYER,
-            id,
-            layer: result
+            id: id,
+            layer: layer
+        });
+        LayerUtils.queryLayerMetadata(layer, result => dispatch({
+            type: SET_LAYER_METADATA,
+            id: id,
+            metadata: result
         }));
     };
 }
