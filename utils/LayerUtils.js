@@ -1191,16 +1191,18 @@ const LayerUtils = {
         return newLayer;
     },
     queryLayerMetadata(layer, callback) {
+        if (!layer) {
+            callback({});
+        }
+        const metadata = {};
         const metadataRequests = [];
         if (layer.editConfigUrl) {
             metadataRequests.push(new Promise((resolve) => {
                 axios.get(layer.editConfigUrl).then(response => {
-                    layer.editConfig = response.data;
-                    delete layer.editConfigUrl;
+                    metadata.editConfig = response.data;
                     resolve();
                 }).catch(() => {
-                    layer.editConfig = {};
-                    delete layer.editConfigUrl;
+                    metadata.editConfig = {};
                     resolve();
                 });
             }));
@@ -1208,23 +1210,24 @@ const LayerUtils = {
         if (layer.translationsUrl) {
             metadataRequests.push(new Promise((resolve) => {
                 axios.get(layer.translationsUrl.replace('{lang}', LocaleUtils.lang())).then(response => {
-                    layer.translations = deepmerge(LocaleUtils.commonTranslations(), response.data);
-                    delete layer.translationsUrl;
+                    metadata.translations = deepmerge(LocaleUtils.commonTranslations(), response.data);
                     resolve();
                 }).catch(() => {
-                    layer.translations = LocaleUtils.commonTranslations();
                     delete layer.translationsUrl;
                     resolve();
                 });
             }));
         } else {
-            layer.translations = deepmerge(LocaleUtils.commonTranslations(), layer.translations || {});
+            metadataRequests.push(new Promise((resolve) => {
+                metadata.translations = deepmerge(LocaleUtils.commonTranslations(), layer.translations || {});
+                resolve();
+            }));
         }
         Promise.all(metadataRequests).then(() => {
             if (layer.translations) {
                 layer = LayerUtils.applyTranslations(layer, layer.translations);
             }
-            callback(layer);
+            callback(metadata);
         });
     },
     applyTranslations(layer, translations) {
