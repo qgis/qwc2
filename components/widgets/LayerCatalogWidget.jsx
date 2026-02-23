@@ -5,7 +5,7 @@ import {remove as removeDiacritics} from 'diacritics';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {addLayer, removeLayer, replacePlaceholderLayer} from '../../actions/layers';
+import {addLayer, removeLayer, replacePlaceholderLayer, LayerRole} from '../../actions/layers';
 import {NotificationType, showNotification, closeWindow} from '../../actions/windows';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -178,7 +178,7 @@ class LayerCatalogWidget extends React.PureComponent {
                 type: "placeholder",
                 name: resource.name,
                 title: entry.title ?? resource.name,
-                role: resource.USERLAYER,
+                role: LayerRole.USERLAYER,
                 loading: true
             });
             ServiceLayerUtils.findLayers(resource.type, resource.url, [resource], this.props.mapCrs, (id, layer) => {

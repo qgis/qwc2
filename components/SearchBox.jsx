@@ -513,7 +513,7 @@ class SearchBox extends React.Component {
                 type: "placeholder",
                 name: params.name,
                 title: entry.title ?? params.name,
-                role: params.USERLAYER,
+                role: LayerRole.USERLAYER,
                 loading: true
             });
             ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.map.projection, (id, layer) => {
