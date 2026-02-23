@@ -56,7 +56,7 @@ ChartJS.register(
 );
 
 /**
- * Query and display sensor data from a SensorThings API.
+ * Query and display sensor data from SensorThings APIs.
  *
  * Allows picking Locations in the map and displaying their Datastreams as a chart.
  *
@@ -92,6 +92,35 @@ ChartJS.register(
  *   }
  * }
  * ```
+ *
+ * Additional theme specific `sensorThingsApiUrls` may be added to the `themesConfig.json` as follows:
+ * ```
+ * {
+ *   "themes": {
+ *     "items": [
+ *       {
+ *         ...
+ *         "pluginData": {
+ *           "sensorThingsTool": ["<configName>"]
+ *         }
+ *       }
+ *     ],
+ *     "pluginData": {
+ *       "sensorThingsTool": [
+ *         {
+ *           "name": "<configName>",
+ *           "sensorThingsApiUrls": [
+ *               "url": "<SensorThings API base URL>"
+ *           ]
+ *         }
+ *       ]
+ *     }
+ *   }
+ * }
+ * ```
+ * If you are using `qwc-services`, you will need to explicitly permit the `sensorThingsTool` plugin configs in the `qwc-admin-gui` as follows:
+ * * Create and permit a `Plugin` resource with the name `sensorThingsTool`
+ * * Create and permit `Plugin data` resources with names of corresponding `<configName>`s
  */
 class SensorThingsTool extends React.Component {
     static propTypes = {
@@ -102,6 +131,7 @@ class SensorThingsTool extends React.Component {
         queryTolerance: PropTypes.number,
         removeLayer: PropTypes.func,
         /** List of configurations for SensorThings API URLs.
+         * These are active for all themes. Theme specific URLs may be added in the `themesConfig.json`.
          * The optional `locationsFilter` is applied to Locations queries.
          */
         sensorThingsApiUrls: PropTypes.arrayOf(
@@ -112,6 +142,7 @@ class SensorThingsTool extends React.Component {
         ),
         setCurrentTask: PropTypes.func,
         theme: PropTypes.object,
+        themes: PropTypes.object,
         /** Formatting patterns for displaying time values */
         timeFormats: PropTypes.object,
         /** Default size of the SensorThings Query window */
@@ -1940,15 +1971,25 @@ class SensorThingsTool extends React.Component {
         const maxY = wgs84Bbox[3].toFixed(6);
         const wgs84Wkt = `POLYGON((${minX} ${minY},${maxX} ${minY},${maxX} ${maxY},${minX} ${maxY},${minX} ${minY}))`;
 
+        let sensorThingsApiUrls = (this.props.sensorThingsApiUrls || []);
+        (this.props.theme.pluginData?.sensorThingsTool || []).forEach(configName => {
+            // lookup pluginData config for theme
+            const configForTheme = (this.props.themes.pluginData?.sensorThingsTool || []).find(entry => entry.name === configName);
+            if (configForTheme !== null) {
+                // add theme specific sensorThingsApiUrls
+                sensorThingsApiUrls = sensorThingsApiUrls.concat(configForTheme.sensorThingsApiUrls || []);
+            }
+        });
+
         // track results by server
-        let queriesPending = this.props.sensorThingsApiUrls.length;
-        const locationsByServer = this.props.sensorThingsApiUrls.map((sensorThingsApi) => ({
+        let queriesPending = sensorThingsApiUrls.length;
+        const locationsByServer = sensorThingsApiUrls.map((sensorThingsApi) => ({
             url: sensorThingsApi.url,
             locationsAtPoint: []
         }));
 
         // query all SensorThings APIs
-        this.props.sensorThingsApiUrls.forEach((sensorThingsApi, idx) => {
+        sensorThingsApiUrls.forEach((sensorThingsApi, idx) => {
             // update SensorThings API URL for current theme
             const sensorThingsApiUrl = sensorThingsApi.url.replace('$theme$', this.props.theme.name);
 
@@ -2761,6 +2802,7 @@ class SensorThingsTool extends React.Component {
 const selector = state => ({
     map: state.map,
     theme: state.theme.current,
+    themes: state.theme.themes,
     currentTask: state.task.id
 });
 

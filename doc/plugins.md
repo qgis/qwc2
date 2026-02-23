@@ -917,7 +917,7 @@ Invoke as `setCurrentTask("ScratchDrawing", null, null, {callback: <function(fea
 
 ## SensorThingsTool<a name="sensorthingstool"></a>
 
-Query and display sensor data from a SensorThings API.
+Query and display sensor data from SensorThings APIs.
 
 Allows picking Locations in the map and displaying their Datastreams as a chart.
 
@@ -954,10 +954,39 @@ Sample plugin configuration for Fraunhofer SensorThings API with air quality dat
 }
 ```
 
+Additional theme specific `sensorThingsApiUrls` may be added to the `themesConfig.json` as follows:
+```
+{
+  "themes": {
+    "items": [
+      {
+        ...
+        "pluginData": {
+          "sensorThingsTool": ["<configName>"]
+        }
+      }
+    ],
+    "pluginData": {
+      "sensorThingsTool": [
+        {
+          "name": "<configName>",
+          "sensorThingsApiUrls": [
+              "url": "<SensorThings API base URL>"
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+If you are using `qwc-services`, you will need to explicitly permit the `sensorThingsTool` plugin configs in the `qwc-admin-gui` as follows:
+* Create and permit a `Plugin` resource with the name `sensorThingsTool`
+* Create and permit `Plugin data` resources with names of corresponding `<configName>`s
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | queryTolerance | `number` | Map picking tolerance in pixels | `16` |
-| sensorThingsApiUrls | `[{`<br />`  url: string,`<br />`  locationsFilter: string,`<br />`}]` | List of configurations for SensorThings API URLs.<br />The optional `locationsFilter` is applied to Locations queries. | `[]` |
+| sensorThingsApiUrls | `[{`<br />`  url: string,`<br />`  locationsFilter: string,`<br />`}]` | List of configurations for SensorThings API URLs.<br />These are active for all themes. Theme specific URLs may be added in the `themesConfig.json`.<br />The optional `locationsFilter` is applied to Locations queries. | `[]` |
 | timeFormats | `object` | Formatting patterns for displaying time values | `{`<br />`    tooltip: 'YYYY-MM-DD HH:mm:ss',`<br />`    millisecond: 'HH:mm:ss.SSS',`<br />`    second: 'HH:mm:ss',`<br />`    minute: 'HH:mm',`<br />`    hour: 'HH:mm',`<br />`    day: 'MM-DD',`<br />`    week: 'YYYY-MM-DD',`<br />`    month: 'YYYY-MM',`<br />`    quarter: '[Q]Q - YYYY',`<br />`    year: 'YYYY'`<br />`}` |
 | windowSize | `object` | Default size of the SensorThings Query window | `{width: 800, height: 600}` |
 | zoomFactor | `number` | Zoom factor for chart zoom buttons | `1.5` |
