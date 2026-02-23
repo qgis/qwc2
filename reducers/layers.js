@@ -134,7 +134,7 @@ export default function layers(state = defaultState, action) {
         const newLayer = {
             ...action.layer,
             id: layerId,
-            srcid: uuidv4(),
+            srcid: action.layer.srcid ?? uuidv4(),
             name: action.layer.name || layerId,
             role: action.layer.role || LayerRole.USERLAYER,
             queryable: action.layer.queryable || false,
