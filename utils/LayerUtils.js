@@ -362,15 +362,38 @@ const LayerUtils = {
             ...layers.filter(layer => layer.role === LayerRole.BACKGROUND)
         ];
     },
-    reorderLayer(layers, movelayer, sublayerpath, delta, preventSplittingGroups) {
+    reorderLayer(layers, layerId, sublayerpath, delta, preventSplittingGroups) {
         // Extract foreground layers
-        const fglayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
-        // Explode layers (one entry for every single sublayer)
-        const exploded = LayerUtils.explodeLayers(fglayers);
-        // Find entry to move
-        if (movelayer) {
+        let newlayers = layers.filter(layer => layer.role !== LayerRole.BACKGROUND);
+        if (preventSplittingGroups) {
+            const moveLayerIdx = newlayers.findIndex(l => l.id === layerId);
+            let oldIndex = moveLayerIdx;
+            let group = newlayers;
+            if (!isEmpty(sublayerpath)) {
+                newlayers[moveLayerIdx] = {...newlayers[moveLayerIdx], sublayers: [...newlayers[moveLayerIdx].sublayers]};
+                group = newlayers[moveLayerIdx].sublayers;
+                sublayerpath.slice(0, -1).forEach(idx => {
+                    group[idx] = {...group[idx], sublayers: [...group[idx].sublayers]};
+                    group = group[idx].sublayers;
+                });
+                oldIndex = sublayerpath[sublayerpath.length - 1];
+            }
+            let newIndex = oldIndex + delta;
+            // Clamp to array bounds
+            if (newIndex < 0) {
+                newIndex = 0;
+            }
+            if (newIndex >= group.length) {
+                newIndex = group.length - 1;
+            }
+            const [item] = group.splice(oldIndex, 1);
+            group.splice(newIndex, 0, item);
+        } else {
+            // Explode layers (one entry for every single sublayer)
+            const exploded = LayerUtils.explodeLayers(newlayers);
+            // Find entry to move
             const indices = exploded.reduce((result, entry, index) => {
-                if (entry.layer.id === movelayer.id && LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)) {
+                if (entry.layer.id === layerId && LayerUtils.pathEqualOrBelow(sublayerpath, entry.path)) {
                     return [...result, index];
                 }
                 return result;
@@ -382,25 +405,6 @@ const LayerUtils = {
             if ((delta < 0 && indices[0] <= 0) || (delta > 0 && indices[indices.length - 1] >= exploded.length - 1)) {
                 return layers;
             }
-            if (preventSplittingGroups) {
-                // Prevent moving an entry out of a containing group
-                const idx = delta < 0 ? indices[0] : indices[indices.length - 1];
-                const level = sublayerpath.length;
-                if (level > exploded[idx + delta].path.length || (level > 0 && !isEqual(exploded[idx + delta].path.slice(0, level - 1), sublayerpath.slice(0, -1)))) {
-                    return layers;
-                }
-                // Avoid splitting sibling groups when reordering
-                const group = sublayerpath.slice(0, -1).reduce((sublayer, i) => sublayer.sublayers[i], movelayer);
-                // Compute move offset
-                const dir = delta > 0 ? 1 : -1;
-                const oldIndex = sublayerpath[sublayerpath.length - 1];
-                const newIndex = oldIndex + delta;
-                let offset = 0;
-                for (let i = oldIndex + dir; dir * i <= dir * newIndex; i += dir) {
-                    offset += LayerUtils.layerTreeCount(group.sublayers[i]) * dir;
-                }
-                delta = offset;
-            }
             // Reorder layer
             if (delta < 0) {
                 for (const idx of indices) {
@@ -411,9 +415,9 @@ const LayerUtils = {
                     exploded.splice(idx + delta, 0, exploded.splice(idx, 1)[0]);
                 }
             }
+            // Re-assemble layers
+            newlayers = LayerUtils.implodeLayers(exploded);
         }
-        // Re-assemble layers
-        const newlayers = LayerUtils.implodeLayers(exploded);
         // Re-add background layers
         return [
             ...newlayers,
