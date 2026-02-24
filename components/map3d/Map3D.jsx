@@ -446,7 +446,21 @@ class Map3D extends React.Component {
                 subentry.sublayers[idx] = {...subentry.sublayers[idx]};
                 subentry = subentry.sublayers[idx];
             });
+            const prevOptions = {...subentry};
             Object.assign(subentry, options);
+            if (subentry.visibility !== prevOptions.visibility && !isEmpty(subentry.sublayers) && flags.groupTogglesSublayers) {
+                // Propagate visibility to children
+                const setChildVisibilities = (child) => {
+                    child.sublayers = child.sublayers.map(gchild => {
+                        const ngchild = {...gchild, visibility: options.visibility};
+                        if (!isEmpty(ngchild.sublayers)) {
+                            setChildVisibilities(ngchild);
+                        }
+                        return ngchild;
+                    });
+                };
+                setChildVisibilities(subentry);
+            }
             Object.assign(entry, LayerUtils.buildWMSLayerParams(entry));
             return {
                 sceneContext: {
@@ -633,18 +647,18 @@ class Map3D extends React.Component {
     };
     updateSceneObject = (objectId, options, flags = {}) => {
         this.setState((state) => {
-            const objectTree = state.sceneContext.objectTree;
+            const objectTree = {...state.sceneContext.objectTree};
             const prevOptions = objectTree[objectId] || {};
             options = {...prevOptions, ...options};
             if (options.objectId) {
                 this.applySceneObjectState(objectId, options, prevOptions, objectTree);
-            } else if (options.children) {
-                this.setChildObjectVisibility(objectTree, options.children, options.visibility);
+            } else if (options.children && options.visibility !== prevOptions.visibility) {
+                this.setChildObjectVisibility(objectTree, options.children, options.visibility, flags.groupTogglesSublayers);
             }
             return {
                 sceneContext: {
                     ...state.sceneContext,
-                    objectTree: {...state.sceneContext.objectTree, [objectId]: options}
+                    objectTree: {...objectTree, [objectId]: options}
                 }
             };
         });
@@ -682,6 +696,24 @@ class Map3D extends React.Component {
             this.loadTilesetStyle(objectId, options.styles?.[options.style]);
         }
     };
+    setChildObjectVisibility = (objectTree, children, visibility, groupTogglesSublayers) => {
+        children.forEach(nodeId => {
+            if (objectTree[nodeId].children) {
+                this.setChildObjectVisibility(objectTree, objectTree[nodeId].children, visibility && objectTree[nodeId].visibility);
+            } else {
+                if (groupTogglesSublayers) {
+                    objectTree[nodeId] = {...objectTree[nodeId], visibility: visibility};
+                }
+                const child = objectTree[nodeId];
+                const newVisible = visibility && child.visibility && child.opacity > 0;
+                const changed = newVisible !== this.objectMap[child.objectId].visible;
+                this.objectMap[child.objectId].visible = newVisible;
+                if (changed) {
+                    this.instance.notifyChange(this.objectMap[child.objectId]);
+                }
+            }
+        });
+    };
     loadTilesetStyle = (objectId, url) => {
         const applyTilesetStyle = (styleurl) => {
             const tiles3d = this.objectMap[objectId];
@@ -706,21 +738,6 @@ class Map3D extends React.Component {
             this.tilesetStyles[url] = null;
             applyTilesetStyle(url);
         }
-    };
-    setChildObjectVisibility = (objectTree, children, visibility) => {
-        children.forEach(nodeId => {
-            if (objectTree[nodeId].children) {
-                this.setChildObjectVisibility(objectTree, objectTree[nodeId].children, visibility && objectTree[nodeId].visibility);
-            } else {
-                const child = objectTree[nodeId];
-                const newVisible = visibility && child.visibility && child.opacity > 0;
-                const changed = newVisible !== this.objectMap[child.objectId].visible;
-                this.objectMap[child.objectId].visible = newVisible;
-                if (changed) {
-                    this.instance.notifyChange(this.objectMap[child.objectId]);
-                }
-            }
-        });
     };
     zoomToObject = (objectId, margin = 20) => {
         const obj = this.state.sceneContext.getSceneObject(objectId);

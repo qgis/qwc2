@@ -1201,6 +1201,7 @@ Layer and object tree for the 3D map
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| groupTogglesSublayers | `bool` | Whether toggling a group also toggles all sublayers. | `undefined` |
 | importedTilesBaseUrl | `string` | Base URL of imported tile sets. | `':/'` |
 
 ## MapCopyright3D<a name="mapcopyright3d"></a>

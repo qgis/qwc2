@@ -18,6 +18,7 @@ import Icon from '../../components/Icon';
 import ImportObjects3D from '../../components/map3d/ImportObjects3D';
 import SideBar from '../../components/SideBar';
 import NumberInput from '../../components/widgets/NumberInput';
+import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import './style/LayerTree3D.css';
@@ -28,6 +29,8 @@ import './style/LayerTree3D.css';
  */
 class LayerTree3D extends React.Component {
     static propTypes = {
+        /** Whether toggling a group also toggles all sublayers. */
+        groupTogglesSublayers: PropTypes.bool,
         /** Base URL of imported tile sets. */
         importedTilesBaseUrl: PropTypes.string,
         sceneContext: PropTypes.object,
@@ -97,7 +100,7 @@ class LayerTree3D extends React.Component {
             <div className="layertree3d-item-container" key={key}>
                 <div className={classes}>
                     <Icon className="layertree3d-item-checkbox"
-                        icon={entry.visibility ? "checked" : "unchecked"}
+                        icon={this.computeVisibilityIcon(isObject, entry)}
                         onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})}
                     />
                     <span className="layertree3d-item-title" title={entry.title ?? entryId}>{entry.title ?? entryId}</span>
@@ -118,6 +121,9 @@ class LayerTree3D extends React.Component {
                             <input className="layertree3d-item-transparency-slider" max="255" min="0"
                                 onChange={(ev) => updateCallback(entryId, {opacity: parseInt(ev.target.value, 10)}, {path})}
                                 step="1" type="range" value={entry.opacity} />
+                            {(!isEmpty(entry.children) || !isEmpty(entry.sublayers)) && !this.props.groupTogglesSublayers ? (
+                                <Icon icon="tree" onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path, groupTogglesSublayers: true})} title={LocaleUtils.tr("layertree.togglegroup")} />
+                            ) : null}
                         </div>
                         {entry.extrusionHeight !== undefined ? (
                             <div className="layertree3d-item-optionsmenu-row">
@@ -164,6 +170,34 @@ class LayerTree3D extends React.Component {
             </div>
         );
     };
+    computeVisibilityIcon = (isObject, entry) => {
+        if (!entry.visibility) {
+            return "unchecked";
+        } else {
+            if (this.props.groupTogglesSublayers) {
+                const subtreevisibility = isObject ? this.computeObjectTreeVisibility(entry) : LayerUtils.computeLayerVisibility(entry);
+                return subtreevisibility === 1 ? "checked" : "tristate";
+            } else {
+                return "checked";
+            }
+        }
+    };
+    computeObjectTreeVisibility = (entry) => {
+        if (isEmpty(entry.children) || entry.visibility === false) {
+            return entry.visibility ? 1 : 0;
+        }
+        let visible = 0;
+        entry.children.map(childId => {
+            const child = this.props.sceneContext.objectTree[childId];
+            const sublayervisibility = child.visibility ?? true;
+            if (child.children && sublayervisibility) {
+                visible += this.computeObjectTreeVisibility(entry);
+            } else {
+                visible += sublayervisibility ? 1 : 0;
+            }
+        });
+        return visible / entry.children.length;
+    };
     layerStyleMenuToggled = (entryId) => {
         this.setState((state) => ({activestylemenu: state.activestylemenu === entryId ? null : entryId}));
     };
@@ -174,10 +208,10 @@ class LayerTree3D extends React.Component {
         this.props.setCurrentTask("EditDataset3D", null, null, {objectId});
     };
     updateSceneObject = (objectId, options, flags = {}) => {
-        this.props.sceneContext.updateSceneObject(objectId, options, flags);
+        this.props.sceneContext.updateSceneObject(objectId, options, {groupTogglesSublayers: this.props.groupTogglesSublayers, ...flags});
     };
     updateColorLayer = (objectId, options, flags = {}) => {
-        this.props.sceneContext.updateColorLayer(objectId, options, flags);
+        this.props.sceneContext.updateColorLayer(objectId, options, {groupTogglesSublayers: this.props.groupTogglesSublayers, ...flags});
     };
 }
 
