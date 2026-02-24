@@ -178,6 +178,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
             printGrid: theme.printGrid || themes.defaultPrintGrid || undefined,
             searchProviders: theme.searchProviders || themes.defaultSearchProviders || undefined,
             backgroundLayers: theme.backgroundLayers || themes.defaultBackgroundLayers || [],
+            mapTips: theme.mapTips ?? themes.defaultMapTips ?? undefined,
             defaultDisplayCrs: theme.defaultDisplayCrs || themes.defaultDisplayCrs || undefined
         };
 
