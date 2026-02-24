@@ -122,7 +122,7 @@ export default {
                 ...(options.layerConfig || {})
             });
         }
-        layer.setVisible(queryParameters.LAYERS && options.visibility);
+        layer.setVisible(queryParameters.LAYERS !== "" && options.visibility);
         layer.setOpacity(clientSideOpacity ?? 1);
         return layer;
     },
@@ -149,12 +149,12 @@ export default {
                 if (layer.get("updateTimeout")) {
                     clearTimeout(layer.get("updateTimeout"));
                 }
-                if (!newOptions.visibility || !queryParameters.LAYERS) {
+                if (!newOptions.visibility || queryParameters.LAYERS === "") {
                     layer.setVisible(false);
                 }
                 layer.setOpacity(clientSideOpacity ?? 1);
                 layer.set("updateTimeout", setTimeout(() => {
-                    layer.setVisible(queryParameters.LAYERS && newOptions.visibility);
+                    layer.setVisible(queryParameters.LAYERS !== "" && newOptions.visibility);
                     layer.getSource().updateParams(queryParameters);
                     layer.getSource().changed();
                     layer.set("updateTimeout", null);
