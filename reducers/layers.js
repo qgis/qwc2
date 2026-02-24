@@ -205,7 +205,7 @@ export default function layers(state = defaultState, action) {
         } else {
             return state;
         }
-    };
+    }
     case ADD_LAYER_SEPARATOR: {
         const newLayers = LayerUtils.insertSeparator(state.flat, action.title, action.afterLayerId, action.afterSublayerPath).map(layer => {
             if (layer.type === "wms") {
