@@ -791,8 +791,10 @@ class Map3D extends React.Component {
         if (el) {
             this.container = el;
             el.resizeObserver = new ResizeObserver(entries => {
-                const rect = entries[0].contentRect;
-                this.state.sceneContext.scene.view.dispatchEvent({type: 'view-resized', width: rect.width, height: rect.height});
+                if (this.state.sceneContext.scene) {
+                    const rect = entries[0].contentRect;
+                    this.state.sceneContext.scene.view.dispatchEvent({type: 'view-resized', width: rect.width, height: rect.height});
+                }
             });
             el.resizeObserver.observe(el);
             this.setupInstance();
