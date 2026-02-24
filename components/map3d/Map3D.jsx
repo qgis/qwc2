@@ -336,8 +336,11 @@ class Map3D extends React.Component {
                 this.addLayer(layerId, mapLayer);
             }
             this.map.insertLayerAfter(mapLayer, layerBelow);
-            mapLayer.visible = options.visibility;
-            mapLayer.opacity = options.opacity / 255;
+            // WMS layer handles visibility and opacity internally
+            if (options.type !== "wms") {
+                mapLayer.visible = options.visibility;
+                mapLayer.opacity = options.opacity / 255;
+            }
             layerBelow = mapLayer;
             if (options.extrusionHeight !== undefined && options.extrusionHeight !== 0) {
                 this.createUpdateExtrudedLayer(layerCreator, mapLayer, options, options.features !== prevOptions?.features);
