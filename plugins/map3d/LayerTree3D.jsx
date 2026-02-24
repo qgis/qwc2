@@ -65,11 +65,11 @@ class LayerTree3D extends React.Component {
                 <div className="layertree3d-layers">
                     <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.objects")}</div>
                     {sceneContext.objectTree.null.children.map(objectId => {
-                        return this.renderLayerEntry(objectId, sceneContext.objectTree[objectId], this.updateSceneObject, true, true, [], objectsHaveGroups);
+                        return this.renderLayerEntry(objectId, sceneContext.objectTree[objectId], null, this.updateSceneObject, true, true, [], objectsHaveGroups);
                     })}
                     <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.layers")}</div>
                     {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
-                        return this.renderLayerEntry(layerId, entry, this.updateColorLayer, false, true, [], layersHaveSublayers);
+                        return this.renderLayerEntry(layerId, entry, null, this.updateColorLayer, false, true, [], layersHaveSublayers);
                     })}
                     <div className="layertree3d-option" onClick={() => this.setState(state => ({importvisible: !state.importvisible}))}>
                         <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
@@ -81,7 +81,7 @@ class LayerTree3D extends React.Component {
             </div>
         );
     };
-    renderLayerEntry = (entryId, entry, updateCallback, isObject, parentVisible, path, haveExpanders = true) => {
+    renderLayerEntry = (entryId, entry, parent, updateCallback, isObject, parentVisible, path, haveExpanders = true) => {
         if (entry.layertree === false) {
             return null;
         }
@@ -111,7 +111,7 @@ class LayerTree3D extends React.Component {
                 <div className={classes}>
                     {expander}
                     <Icon className="layertree3d-item-checkbox"
-                        icon={this.computeVisibilityIcon(isObject, entry)}
+                        icon={this.computeVisibilityIcon(isObject, entry, parent)}
                         onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})}
                     />
                     <span className="layertree3d-item-title" onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})} title={entry.title ?? entryId}>{entry.title ?? entryId}</span>
@@ -169,19 +169,22 @@ class LayerTree3D extends React.Component {
                 {!isEmpty(entry.sublayers) && entry.expanded !== false ? (
                     <div className="layertree3d-item-sublayers">
                         {entry.sublayers.map((sublayer, idx) =>
-                            this.renderLayerEntry(entryId, sublayer, updateCallback, isObject, parentVisible && entry.visibility, [...path, idx]))}
+                            this.renderLayerEntry(entryId, sublayer, entry, updateCallback, isObject, parentVisible && entry.visibility, [...path, idx]))}
                     </div>
                 ) : null}
                 {!isEmpty(entry.children) && entry.expanded !== false ? (
                     <div className="layertree3d-item-sublayers">
                         {entry.children.map((childId, idx) =>
-                            this.renderLayerEntry(childId, this.props.sceneContext.objectTree[childId], updateCallback, isObject, parentVisible && entry.visibility, [...path, idx]))}
+                            this.renderLayerEntry(childId, this.props.sceneContext.objectTree[childId], entry, updateCallback, isObject, parentVisible && entry.visibility, [...path, idx]))}
                     </div>
                 ) : null}
             </div>
         );
     };
-    computeVisibilityIcon = (isObject, entry) => {
+    computeVisibilityIcon = (isObject, entry, parent) => {
+        if (parent?.mutuallyExclusive) {
+            return entry.visibility ? "radio_checked" : "radio_unchecked";
+        }
         if (!entry.visibility) {
             return "unchecked";
         } else {

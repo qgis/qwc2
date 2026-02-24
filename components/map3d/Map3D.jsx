@@ -442,25 +442,32 @@ class Map3D extends React.Component {
                 ...state.sceneContext.colorLayers[layerId]
             };
             let subentry = entry;
+            let parent = null;
             (flags.path ?? []).forEach(idx => {
                 subentry.sublayers = [...subentry.sublayers];
                 subentry.sublayers[idx] = {...subentry.sublayers[idx]};
+                parent = subentry;
                 subentry = subentry.sublayers[idx];
             });
             const prevOptions = {...subentry};
             Object.assign(subentry, options);
-            if (subentry.visibility !== prevOptions.visibility && !isEmpty(subentry.sublayers) && flags.groupTogglesSublayers) {
-                // Propagate visibility to children
-                const setChildVisibilities = (child) => {
-                    child.sublayers = child.sublayers.map(gchild => {
-                        const ngchild = {...gchild, visibility: options.visibility};
-                        if (!isEmpty(ngchild.sublayers)) {
-                            setChildVisibilities(ngchild);
-                        }
-                        return ngchild;
-                    });
-                };
-                setChildVisibilities(subentry);
+            if (subentry.visibility !== prevOptions.visibility) {
+                if (!isEmpty(subentry.sublayers) && flags.groupTogglesSublayers) {
+                    // Propagate visibility to children
+                    const setChildVisibilities = (child) => {
+                        child.sublayers = child.sublayers.map(gchild => {
+                            const ngchild = {...gchild, visibility: options.visibility};
+                            if (!isEmpty(ngchild.sublayers)) {
+                                setChildVisibilities(ngchild);
+                            }
+                            return ngchild;
+                        });
+                    };
+                    setChildVisibilities(subentry);
+                }
+                if (parent?.mutuallyExclusive) {
+                    parent.sublayers = parent.sublayers.map(sublayer => sublayer === subentry ? subentry : ({...sublayer, visibility: false}));
+                }
             }
             Object.assign(entry, LayerUtils.buildWMSLayerParams(entry));
             return {
@@ -675,6 +682,13 @@ class Map3D extends React.Component {
             }
             changed |= object.visible !== isVisible;
             object.visible = isVisible;
+            if (objectTree[options.parent]?.mutuallyExclusive && objectTree[options.parent].children) {
+                objectTree[options.parent].children.forEach(child => {
+                    if (child !== objectId) {
+                        objectTree[child] = {...objectTree[child], visibility: false};
+                    }
+                });
+            }
         }
         if (options.opacity !== prevOptions?.opacity) {
             if (object.opacity !== undefined) {
@@ -930,7 +944,9 @@ class Map3D extends React.Component {
                     objectTree[groupId] = {
                         parent: parentId,
                         title: entry.title,
-                        visibility: entry.visibility ?? true
+                        visibility: entry.visibility ?? true,
+                        mutuallyExclusive: entry.mutuallyExclusive ?? false,
+                        expanded: entry.expanded ?? true
                     };
                     // Need this separately to ensure object[groupId] is already assigned
                     objectTree[groupId].children = buildObjectTree(entry.items, groupId);
