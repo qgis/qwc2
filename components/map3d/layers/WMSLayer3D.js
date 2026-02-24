@@ -30,7 +30,8 @@ export default {
         });
     },
     update3d: (layer, newOptions, oldOptions, projection) => {
-        if (oldOptions && layer?.source?.updateParams) {
+        const source = layer.source.source;
+        if (oldOptions && source.updateParams) {
             let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
             const oldParams = wmsToOpenlayersOptions(oldOptions);
             const newParams = wmsToOpenlayersOptions(newOptions);
@@ -54,9 +55,9 @@ export default {
                     layer.visible = false;
                 }
                 layer.__updateTimeout = setTimeout(() => {
-                    layer.visible = queryParameters.LAYERS && newOptions.visibility;
-                    layer.source.updateParams(queryParameters);
-                    layer.update();
+                    layer.visible = queryParameters.LAYERS !== "" && newOptions.visibility;
+                    source.updateParams(queryParameters);
+                    layer.source.update();
                     layer.__updateTimeout = null;
                 }, 500);
             }

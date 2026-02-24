@@ -33,15 +33,16 @@ export default {
         });
     },
     update3d: (layer, newOptions, oldOptions, projection) => {
+        const source = layer.source.source;
         if (newOptions.styleName !== oldOptions.styleName || newOptions.styleOptions !== oldOptions.styleOptions) {
-            layer.source.setStyle(featureStyleFunction(newOptions));
+            source.setStyle(featureStyleFunction(newOptions));
         } else if (newOptions.styleFunction !== oldOptions.styleFunction) {
-            layer.source.setStyle(newOptions.styleFunction);
+            source.setStyle(newOptions.styleFunction);
         }
         if (newOptions.features !== oldOptions.features) {
-            updateFeatures(layer.source, newOptions, oldOptions, projection, true);
+            updateFeatures(source, newOptions, oldOptions, projection, true);
         } else if ((oldOptions.rev || 0) !== (newOptions.rev || 0)) {
-            layer.source.update();
+            source.update();
         }
     },
     getFields: (options) => {

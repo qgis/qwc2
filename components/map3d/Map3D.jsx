@@ -330,7 +330,7 @@ class Map3D extends React.Component {
             const layerCreator = LayerRegistry[options.type];
             let mapLayer = this.getLayer(layerId);
             if (mapLayer) {
-                layerCreator.update3d(mapLayer.source, options, prevOptions, this.state.sceneContext.mapCrs);
+                layerCreator.update3d(mapLayer, options, prevOptions, this.state.sceneContext.mapCrs);
             } else {
                 mapLayer = layerCreator.create3d(options, this.state.sceneContext.mapCrs);
                 this.addLayer(layerId, mapLayer);
