@@ -304,6 +304,7 @@ class Map3D extends React.Component {
             };
             colorLayers[layer.id] = {
                 ...layer,
+                projection: prevOptions?.projection ?? this.props.theme.mapCrs,
                 visibility: prevOptions?.visibility ?? false,
                 opacity: prevOptions?.opacity ?? 255,
                 extrusionHeight: prevOptions?.extrusionHeight ?? (layerCreator.createFeatureSource ? 0 : undefined),
