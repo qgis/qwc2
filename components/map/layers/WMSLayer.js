@@ -130,7 +130,7 @@ export default {
         if (oldOptions && layer?.getSource()?.updateParams) {
             let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
             const oldParams = wmsToOpenlayersOptions(oldOptions);
-            getClientSideOpacity(oldOptions, oldParams);
+            getClientSideOpacity(oldOptions, oldParams); // Make getClientSideOpacity transform oldParams if necessary
             const newParams = wmsToOpenlayersOptions(newOptions);
             const clientSideOpacity = getClientSideOpacity(newOptions, newParams);
             Object.keys(oldParams).forEach(key => {
