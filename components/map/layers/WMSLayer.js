@@ -123,7 +123,7 @@ export default {
             });
         }
         layer.setVisible(queryParameters.LAYERS && options.visibility);
-        layer.setOpacity(clientSideOpacity ?? 100);
+        layer.setOpacity(clientSideOpacity ?? 1);
         return layer;
     },
     update: (layer, newOptions, oldOptions) => {
@@ -152,7 +152,7 @@ export default {
                 if (!newOptions.visibility || !queryParameters.LAYERS) {
                     layer.setVisible(false);
                 }
-                layer.setOpacity(clientSideOpacity ?? 100);
+                layer.setOpacity(clientSideOpacity ?? 1);
                 layer.set("updateTimeout", setTimeout(() => {
                     layer.setVisible(queryParameters.LAYERS && newOptions.visibility);
                     layer.getSource().updateParams(queryParameters);
@@ -160,7 +160,7 @@ export default {
                     layer.set("updateTimeout", null);
                 }, 500));
             } else {
-                layer.setOpacity(clientSideOpacity ?? 100);
+                layer.setOpacity(clientSideOpacity ?? 1);
             }
         }
     }
