@@ -123,7 +123,7 @@ class Map3D extends React.Component {
             addLayer: (layer) => {},
             getLayer: (layerId) => {},
             removeLayer: (layerId) => {},
-            updateColorLayer: (layerId, options, path) => {},
+            updateColorLayer: (layerId, options, flags) => {},
             setBaseLayer: (layer, visibility) => {},
 
             importTiles3D: (url, name, addToLayerTree = false, treeOptions = {}, showEditTool = false, matrix = null, label = null) => {},
@@ -131,7 +131,7 @@ class Map3D extends React.Component {
             addSceneObject: (objectId, object, options = {}, addToLayerTree = false, showEditTool = false) => {},
             getSceneObject: (objectId) => {},
             removeSceneObject: (objectId) => {},
-            updateSceneObject: (objectId, options) => {},
+            updateSceneObject: (objectId, options, flags) => {},
             zoomToObject: (objectId) => {},
 
             getMap: () => {},
@@ -435,13 +435,13 @@ class Map3D extends React.Component {
             this.map.removeLayer(layer, {dispose: true});
         });
     };
-    updateColorLayer = (layerId, options, path = []) => {
+    updateColorLayer = (layerId, options, flags = {}) => {
         this.setState((state) => {
             const entry = {
                 ...state.sceneContext.colorLayers[layerId]
             };
             let subentry = entry;
-            path.forEach(idx => {
+            (flags.path ?? []).forEach(idx => {
                 subentry.sublayers = [...subentry.sublayers];
                 subentry.sublayers[idx] = {...subentry.sublayers[idx]};
                 subentry = subentry.sublayers[idx];
@@ -631,7 +631,7 @@ class Map3D extends React.Component {
             callback?.();
         }
     };
-    updateSceneObject = (objectId, options) => {
+    updateSceneObject = (objectId, options, flags = {}) => {
         this.setState((state) => {
             const objectTree = state.sceneContext.objectTree;
             const prevOptions = objectTree[objectId] || {};
