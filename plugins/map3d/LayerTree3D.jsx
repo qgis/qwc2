@@ -103,7 +103,7 @@ class LayerTree3D extends React.Component {
                         icon={this.computeVisibilityIcon(isObject, entry)}
                         onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})}
                     />
-                    <span className="layertree3d-item-title" title={entry.title ?? entryId}>{entry.title ?? entryId}</span>
+                    <span className="layertree3d-item-title" onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})} title={entry.title ?? entryId}>{entry.title ?? entryId}</span>
                     {Object.keys(entry.styles || {}).length > 1 ? (
                         <Icon className={styleMenuClasses} icon="paint" onClick={() => this.layerStyleMenuToggled(key)}/>
                     ) : null}

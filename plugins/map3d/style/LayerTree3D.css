@@ -31,6 +31,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 #LayerTree3D span.layertree3d-item-transparency {
