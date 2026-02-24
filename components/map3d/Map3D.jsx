@@ -1234,7 +1234,8 @@ class Map3D extends React.Component {
                     id: layerId, options: {
                         visibility: options.visibility,
                         opacity: options.opacity,
-                        extrusionHeight: options.extrusionHeight
+                        extrusionHeight: options.extrusionHeight,
+                        expanded: options.expanded
                     }
                 }));
                 resolve({

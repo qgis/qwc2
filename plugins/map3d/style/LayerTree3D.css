@@ -6,6 +6,11 @@
     padding: 0.25em 0 0 0.25em;
 }
 
+#LayerTree3D span.layertree3d-item-expander {
+    margin-right: 0.25em;
+    flex: 0 0 1em;
+}
+
 #LayerTree3D div.layertree3d-item-container {
     padding-left: 0.5em;
 }

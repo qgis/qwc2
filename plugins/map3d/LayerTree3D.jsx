@@ -58,16 +58,18 @@ class LayerTree3D extends React.Component {
     }
     renderBody = () => {
         const sceneContext = this.props.sceneContext;
+        const objectsHaveGroups = sceneContext.objectTree.null.children.some(child => !isEmpty(sceneContext.objectTree[child].children));
+        const layersHaveSublayers = Object.values(sceneContext.colorLayers).some(layer => !isEmpty(layer.sublayers));
         return (
             <div>
                 <div className="layertree3d-layers">
                     <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.objects")}</div>
                     {sceneContext.objectTree.null.children.map(objectId => {
-                        return this.renderLayerEntry(objectId, sceneContext.objectTree[objectId], this.updateSceneObject, true);
+                        return this.renderLayerEntry(objectId, sceneContext.objectTree[objectId], this.updateSceneObject, true, true, [], objectsHaveGroups);
                     })}
                     <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.layers")}</div>
                     {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
-                        return this.renderLayerEntry(layerId, entry, this.updateColorLayer, false);
+                        return this.renderLayerEntry(layerId, entry, this.updateColorLayer, false, true, [], layersHaveSublayers);
                     })}
                     <div className="layertree3d-option" onClick={() => this.setState(state => ({importvisible: !state.importvisible}))}>
                         <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
@@ -79,7 +81,7 @@ class LayerTree3D extends React.Component {
             </div>
         );
     };
-    renderLayerEntry = (entryId, entry, updateCallback, isObject, parentVisible = true, path = []) => {
+    renderLayerEntry = (entryId, entry, updateCallback, isObject, parentVisible, path, haveExpanders = true) => {
         if (entry.layertree === false) {
             return null;
         }
@@ -96,9 +98,18 @@ class LayerTree3D extends React.Component {
             "layertree3d-item-menubutton": true,
             "layertree3d-item-menubutton-active": this.state.activemenu === key
         });
+        let expander = null;
+        if (haveExpanders) {
+            expander = !isEmpty(entry.sublayers) || !isEmpty(entry.children) ? (
+                <Icon className="layertree3d-item-expander" icon={entry.expanded === false ? "tree_plus" : "tree_minus"} onClick={() => updateCallback(entryId, {expanded: !(entry.expanded ?? true)}, {path})} />
+            ) : (
+                <span className="layertree3d-item-expander" />
+            );
+        }
         return (
             <div className="layertree3d-item-container" key={key}>
                 <div className={classes}>
+                    {expander}
                     <Icon className="layertree3d-item-checkbox"
                         icon={this.computeVisibilityIcon(isObject, entry)}
                         onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path})}
@@ -155,13 +166,13 @@ class LayerTree3D extends React.Component {
                         ))}
                     </div>
                 ) : null}
-                {!isEmpty(entry.sublayers) ? (
+                {!isEmpty(entry.sublayers) && entry.expanded !== false ? (
                     <div className="layertree3d-item-sublayers">
                         {entry.sublayers.map((sublayer, idx) =>
                             this.renderLayerEntry(entryId, sublayer, updateCallback, isObject, parentVisible && entry.visibility, [...path, idx]))}
                     </div>
                 ) : null}
-                {!isEmpty(entry.children) ? (
+                {!isEmpty(entry.children) && entry.expanded !== false ? (
                     <div className="layertree3d-item-sublayers">
                         {entry.children.map((childId, idx) =>
                             this.renderLayerEntry(childId, this.props.sceneContext.objectTree[childId], updateCallback, isObject, parentVisible && entry.visibility, [...path, idx]))}
