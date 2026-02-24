@@ -194,7 +194,7 @@ class Map3D extends React.Component {
                     }
                 }));
             }
-        } else if (this.props.layers !== prevProps.layers) {
+        } else if (this.props.layers !== prevProps.layers && this.instance) {
             this.setState((state) => ({
                 sceneContext: {
                     ...state.sceneContext,
