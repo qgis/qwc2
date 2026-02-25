@@ -73,6 +73,15 @@ function parsePropType(type) {
         return type.name;
     }
 }
+function parsePropDesc(prop) {
+    if (prop.type.name === 'shape') {
+        return prop.description.replaceAll("\n", "<br />") + "<br />" + Object.entries(prop.type.value).map(([name, subprop]) => {
+            return "- " + name + ": " + subprop.description;
+        }).join("<br />");
+    } else {
+        return prop.description.replaceAll("\n", "<br />");
+    }
+}
 function genPluginDoc(plugin) {
     let output = "";
     if (!plugin.description) {
@@ -91,7 +100,7 @@ function genPluginDoc(plugin) {
             }
             const defaultValue = prop.defaultValue ? prop.defaultValue.value.split("\n").map(x => '`' + x.replace(' ', ' ') + '`').join("<br />") : "`undefined`";
             const type = "`" + parsePropType(prop.type).replaceAll(' ', ' ').replaceAll("\n", "`<br />`") + "`";
-            output += `| ${name} | ${type} | ${prop.description.replaceAll("\n", "<br />")} | ${defaultValue} |\n`;
+            output += `| ${name} | ${type} | ${parsePropDesc(prop)} | ${defaultValue} |\n`;
         });
         output += "\n";
     }
