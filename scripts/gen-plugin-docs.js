@@ -76,7 +76,7 @@ function parsePropType(type) {
 function parsePropDesc(prop) {
     if (prop.type.name === 'shape') {
         return prop.description.replaceAll("\n", "<br />") + "<br />" + Object.entries(prop.type.value).map(([name, subprop]) => {
-            return "- " + name + ": " + subprop.description;
+            return "- `" + name + "`: " + subprop.description;
         }).join("<br />");
     } else {
         return prop.description.replaceAll("\n", "<br />");
