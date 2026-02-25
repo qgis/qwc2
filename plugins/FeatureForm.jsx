@@ -195,21 +195,22 @@ class FeatureForm extends React.Component {
                             onCommit={this.updatePickedFeatures} translations={translations} />
                     );
                 }
+                const results = Object.entries(this.state.pickedFeatures).map(([id, feature]) => {
+                    const [mapName, layerName, featureId] = id.split("#");
+                    const editConfig = this.props.editConfigs[mapName][layerName];
+                    const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
+                    const layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
+                    const featureName = editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + featureId;
+                    return {value: id, title: layerTitle + ": " + featureName};
+                }).sort((a, b) => a.title.localeCompare(b.title));
                 body = (
                     <div className="feature-query-body">
                         {Object.keys(this.state.pickedFeatures).length > 1 ? (
                             <div className="feature-query-selection">
                                 <select onChange={ev => this.setSelectedFeature(ev.target.value)} value={this.state.selectedFeature}>
-                                    {Object.entries(this.state.pickedFeatures).map(([id, feature]) => {
-                                        const [mapName, layerName, featureId] = id.split("#");
-                                        const editConfig = this.props.editConfigs[mapName][layerName];
-                                        const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
-                                        const layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
-                                        const featureName = editConfig.displayField ? feature.properties[editConfig.displayField] : featureText + " " + featureId;
-                                        return (
-                                            <option key={id} value={id}>{layerTitle + ": " + featureName}</option>
-                                        );
-                                    })}
+                                    {results.map(entry => (
+                                        <option key={entry.value} value={entry.value}>{entry.title}</option>
+                                    ))}
                                 </select>
                             </div>
                         ) : null}
