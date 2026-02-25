@@ -152,11 +152,11 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
     };
     let result = null;
     try {
-        parser.feed(expr.replace(/\n/, ' '));
+        parser.feed(expr.replace(/\n/g, ' '));
         result = parser.results[0];
     } catch {
         /* eslint-disable-next-line */
-        console.warn("Failed to evaluate expression " + expr.replace(/\n/, ' '));
+        console.warn("Failed to evaluate expression " + expr.replace(/\n/g, ' '));
     }
     delete window.qwc2ExpressionParserContext;
     if (promises.length > 0) {
@@ -193,13 +193,13 @@ export function parseExpressionsAsync(fieldExpressions, feature, editConfig, edi
         const results = fieldExpressions.reduce((res, {field, expression}) => {
             const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
             try {
-                parser.feed(expression.replace(/\n/, ' '));
+                parser.feed(expression.replace(/\n/g, ' '));
                 // NOTE: include intermediate results in next context feature
                 newfeature.properties[field] = parser.results[0];
                 return {...res, [field]: parser.results[0]};
             } catch {
                 /* eslint-disable-next-line */
-                console.warn("Failed to evaluate expression " + expression.replace(/\n/, ' '));
+                console.warn("Failed to evaluate expression " + expression.replace(/\n/g, ' '));
                 return res;
             }
         }, {});
