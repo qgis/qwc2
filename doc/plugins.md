@@ -773,6 +773,7 @@ See https://docs.qgis.org/3.28/en/docs/server_manual/services/wms.html#wms-getle
 | lockedWindow | `bool` | Whether the legend window is locked (always visible, not moveable or closeable). Set position and size via `geometry`. | `undefined` |
 | onlyVisibleLegend | `bool` | Whether to only include enabled layers in the legend by default. | `false` |
 | scaleDependentLegend | `bool` | Whether to display a scale-dependent legend by default. | `false` |
+| showOnStartup | `bool` | Whether to show the MapLegend on startup. Useful if `startupTask` is already set to another task. | `undefined` |
 
 ## MapTip<a name="maptip"></a>
 

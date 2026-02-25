@@ -58,7 +58,9 @@ class MapLegend extends React.Component {
         onlyVisibleLegend: PropTypes.bool,
         /** Whether to display a scale-dependent legend by default. */
         scaleDependentLegend: PropTypes.bool,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        /** Whether to show the MapLegend on startup. Useful if `startupTask` is already set to another task. */
+        showOnStartup: PropTypes.bool
     };
     static defaultProps = {
         addGroupTitles: false,
@@ -87,6 +89,7 @@ class MapLegend extends React.Component {
         this.state.onlyVisibleLegend = props.onlyVisibleLegend;
         this.state.bboxDependentLegend = props.bboxDependentLegend;
         this.state.scaleDependentLegend = props.scaleDependentLegend;
+        this.state.visible = props.showOnStartup;
     }
     componentDidUpdate(prevProps) {
         if (this.props.active && !prevProps.active) {
