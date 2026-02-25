@@ -140,6 +140,16 @@ const actionFunctions = {
  *   "params": [[2684764, 1247841], 18, "EPSG:2056"]
  * }, "http://<qwc_hostname>:<port>")
  * ```
+ * You can also post multiple calls at once as follows:
+ * ```
+ * * qwcframe.contentWindow.postMessage([{
+ *   "method": "zoomToPoint",
+ *   "params": [[2684764, 1247841], 18, "EPSG:2056"]
+ * }, {
+ *   "method": "addMarker",
+ *   "params": ["mymarker", [2684764, 1247841], "Hello world", "EPSG:2056"]
+ * }], "http://<qwc_hostname>:<port>")
+ * ```
  * If you call a method which returns a value, pass a `requestId` and listen to response messages:
  *
  * ```
@@ -387,27 +397,30 @@ class API extends React.Component {
             /* eslint-disable-next-line */
             console.log(signatures);
         }
-        if (ev.data?.method) {
-            const func = ev.data.method;
-            const args = ev.data.params ?? [];
-            let result = null;
-            if (func in actionFunctions) {
-                result = this.props[func](...args);
-            } else if (
-                allowedMemberFunctions.includes(func)
-            ) {
-                result = this[func](...args);
-            } else {
-                /* eslint-disable-next-line */
-                console.warn("Unhandeled message: " + JSON.stringify(ev.data));
+        const messages = Array.isArray(ev.data) ? ev.data : [ev.data];
+        messages.forEach(message => {
+            if (message?.method) {
+                const func = message.method;
+                const args = message.params ?? [];
+                let result = null;
+                if (func in actionFunctions) {
+                    result = this.props[func](...args);
+                } else if (
+                    allowedMemberFunctions.includes(func)
+                ) {
+                    result = this[func](...args);
+                } else {
+                    /* eslint-disable-next-line */
+                    console.warn("Unhandeled message: " + JSON.stringify(message));
+                }
+                if (message.requestId) {
+                    ev.source.postMessage({
+                        requestId: ev.data.requestId,
+                        result: result
+                    }, ev.origin);
+                }
             }
-            if (ev.data.requestId) {
-                ev.source.postMessage({
-                    requestId: ev.data.requestId,
-                    result: result
-                }, ev.origin);
-            }
-        }
+        });
     };
     render() {
         return null;

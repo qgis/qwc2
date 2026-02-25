@@ -105,6 +105,16 @@ qwcframe.contentWindow.postMessage({
   "params": [[2684764, 1247841], 18, "EPSG:2056"]
 }, "http://<qwc_hostname>:<port>")
 ```
+You can also post multiple calls at once as follows:
+```
+* qwcframe.contentWindow.postMessage([{
+  "method": "zoomToPoint",
+  "params": [[2684764, 1247841], 18, "EPSG:2056"]
+}, {
+  "method": "addMarker",
+  "params": ["mymarker", [2684764, 1247841], "Hello world", "EPSG:2056"]
+}], "http://<qwc_hostname>:<port>")
+```
 If you call a method which returns a value, pass a `requestId` and listen to response messages:
 
 ```
