@@ -367,28 +367,28 @@ class AttributeTableWidget extends React.Component {
             captchaBar = (<div><ReCaptchaWidget onChange={value => this.setState({captchaResponse: value})} sitekey={ConfigUtils.getConfigProp("editServiceCaptchaSiteKey")} /></div>);
         }
 
+        const editLayers = Object.entries(this.props.editConfigs).map(([wmsName, serviceConfigs]) => (
+            Object.entries(serviceConfigs).map(([layerName, editConfig]) => {
+                const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName);
+                let layerTitle = layerName;
+                if (match) {
+                    layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
+                } else {
+                    // Note: geometry-less tables are filtered from the theme sublayers
+                    const translations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations;
+                    layerTitle = translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? layerName;
+                }
+                return {value: wmsName + "#" + layerName, title: layerTitle};
+            })
+        )).flat().filter(Boolean).sort((a, b) => a.title.localeCompare(b.title));
         return (
             <div className="AttributeTable">
                 <div className="attribtable-toolbar">
                     {this.props.showLayerSelection ? (
                         <select disabled={loading || editing} onChange={ev => this.setState({selectedLayer: ev.target.value})} value={this.state.selectedLayer || ""}>
                             <option disabled value="">{LocaleUtils.tr("common.selectlayer")}</option>
-                            {Object.entries(this.props.editConfigs).map(([wmsName, serviceConfigs]) => (
-                                Object.entries(serviceConfigs).map(([layerName, editConfig]) => {
-                                    const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName);
-                                    let layerTitle = layerName;
-                                    if (match) {
-                                        layerTitle = match.layer.translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
-                                    } else {
-                                        // Note: geometry-less tables are filtered from the theme sublayers
-                                        const translations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations;
-                                        layerTitle = translations?.layertree?.[layerName] ?? editConfig.layerTitle ?? layerName;
-                                    }
-                                    const value = wmsName + "#" + layerName;
-                                    return (
-                                        <option key={value} value={value}>{layerTitle}</option>
-                                    );
-                                })
+                            {editLayers.map(entry => (
+                                <option key={entry.value} value={entry.value}>{entry.title}</option>
                             ))}
                         </select>
                     ) : null}
