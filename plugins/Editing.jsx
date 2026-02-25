@@ -242,26 +242,26 @@ class Editing extends React.Component {
                     onCommit={this.updatePickedFeatures} translations={translations} />
             );
         }
+        const editLayers = Object.entries(this.props.editConfigs).map(([mapName, serviceConfigs]) => (
+            Object.entries(serviceConfigs).map(([layerName, edConfig]) => {
+                if (this.props.omitReadOnlyDatasets && Object.values(edConfig.permissions).every(permission => permission === false)) {
+                    return null;
+                }
+                const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
+                if (!match) {
+                    return null;
+                }
+                const layerTitle = match.layer.translations?.layertree?.[layerName] ?? edConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
+                return {value: mapName + "#" + layerName, title: layerTitle};
+            })
+        )).flat().filter(Boolean).sort((a, b) => a.title.localeCompare(b.title));
         return (
             <div className="editing-body">
                 <div className="editing-layer-selection">
                     <select className="combo editing-layer-select" disabled={this.props.editContext.changed === true || this.props.editContext.id !== this.props.currentEditContext} onChange={ev => this.changeSelectedLayer(ev.target.value)} value={this.state.selectedLayer || ""}>
                         <option disabled value="">{LocaleUtils.tr("common.selectlayer")}</option>
-                        {Object.entries(this.props.editConfigs).map(([mapName, serviceConfigs]) => (
-                            Object.entries(serviceConfigs).map(([layerName, edConfig]) => {
-                                if (this.props.omitReadOnlyDatasets && Object.values(edConfig.permissions).every(permission => permission === false)) {
-                                    return null;
-                                }
-                                const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
-                                if (!match) {
-                                    return null;
-                                }
-                                const layerTitle = match.layer.translations?.layertree?.[layerName] ?? edConfig.layerTitle ?? match?.sublayer?.title ?? layerName;
-                                const value = mapName + "#" + layerName;
-                                return (
-                                    <option key={value} value={value}>{layerTitle}</option>
-                                );
-                            })
+                        {editLayers.map(entry => (
+                            <option key={entry.value} value={entry.value}>{entry.title}</option>
                         ))}
                     </select>
                 </div>
@@ -270,7 +270,6 @@ class Editing extends React.Component {
                 {pickBar}
                 {attributeForm}
             </div>
-
         );
     };
     render() {
