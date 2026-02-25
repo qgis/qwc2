@@ -62,6 +62,8 @@ class TopBar extends React.Component {
             allowAddLayerAsGroup: PropTypes.bool,
             /** Whether to show the search filter widget. */
             allowSearchFilters: PropTypes.bool,
+            /** List of additional CRS for which the coordinate search should display results. Alternatively, the string `mousecrs` to indicate the CRS listed in `additionalMouseCrs` of the current theme. */
+            extraCoordinateSearchCrs: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
             /** Whether to focus the search field on startup. */
             focusOnStartup: PropTypes.bool,
             /** Whether to hide the result labels on the map. */

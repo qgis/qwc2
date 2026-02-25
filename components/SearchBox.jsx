@@ -64,6 +64,7 @@ class SearchBox extends React.Component {
         searchOptions: PropTypes.shape({
             allowAddLayerAsGroup: PropTypes.bool,
             allowSearchFilters: PropTypes.bool,
+            extraCoordinateSearchCrs: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
             focusOnStartup: PropTypes.bool,
             hideResultLabels: PropTypes.bool,
             highlightStyle: PropTypes.object,
@@ -732,6 +733,7 @@ class SearchBox extends React.Component {
         const searchParams = {
             mapcrs: this.props.map.projection,
             displaycrs: this.props.map.displayCrs,
+            extracrs: (this.props.searchOptions.extraCoordinateSearchCrs === "mousecrs" ? this.props.theme.additionalMouseCrs : this.props.searchOptions.extraCoordinateSearchCrs) ?? [],
             lang: LocaleUtils.lang(),
             limit: this.props.searchOptions.resultLimit,
             filterPoly: this.state.filterGeometry?.coordinates?.[0],

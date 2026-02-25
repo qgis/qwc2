@@ -35,16 +35,17 @@ function coordinatesSearch(text, searchParams, callback) {
     if (matches && matches.length >= 3) {
         const x = parseFloat(matches[1]);
         const y = parseFloat(matches[2]);
-        if (displaycrs !== "EPSG:4326") {
+        const searchCrs = [displaycrs, ...searchParams.extracrs.filter(crs => !['EPSG:4326', displaycrs].includes(crs))];
+        searchCrs.forEach(crs => {
             items.push({
-                id: "coord0",
-                text: x + ", " + y + " (" + displaycrs + ")",
+                id: "coord" + items.length,
+                text: x + ", " + y + " (" + crs + ")",
                 x: x,
                 y: y,
-                crs: displaycrs,
+                crs: crs,
                 bbox: [x, y, x, y]
             });
-        }
+        });
         if (x >= -180 && x <= 180 && y >= -90 && y <= 90) {
             const title = Math.abs(x) + (x >= 0 ? "°E" : "°W") + ", "
                       + Math.abs(y) + (y >= 0 ? "°N" : "°S");
