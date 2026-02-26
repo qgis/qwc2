@@ -984,7 +984,7 @@ class Map3D extends React.Component {
                         visibility: entry.visibility ?? true,
                         opacity: 255
                     };
-                    this.importObject3D(entry, entry.name, false, {}, false, () => {
+                    this.importObject3D(MiscUtils.resolveAssetsPath(entry.url), entry.name, false, {}, false, () => {
                         this.applySceneObjectState(entry.name, objectTree[entry.name], {}, objectTree);
                     });
                     nodeIds.push(entry.name);
