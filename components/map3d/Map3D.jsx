@@ -1300,9 +1300,11 @@ class Map3D extends React.Component {
             }
         });
         this.state.sceneContext.restoreView(data);
-        const bl3d = data.baseLayer ?? "";
+        if ((data.baseLayer ?? null) !== null) {
+            const bl3d = data.baseLayer ?? "";
 
-        this.setBaseLayer({name: bl3d}, bl3d !== "null");
+            this.setBaseLayer({name: bl3d}, bl3d !== "null");
+        }
         this.state.sceneContext.scene.notifyChange();
     };
 }
