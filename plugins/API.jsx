@@ -142,7 +142,7 @@ const actionFunctions = {
  * ```
  * You can also post multiple calls at once as follows:
  * ```
- * * qwcframe.contentWindow.postMessage([{
+ * qwcframe.contentWindow.postMessage([{
  *   "method": "zoomToPoint",
  *   "params": [[2684764, 1247841], 18, "EPSG:2056"]
  * }, {
