@@ -385,7 +385,8 @@ class API extends React.Component {
         }
         const allowedMemberFunctions = [
             "addExternalLayer",
-            "getState"
+            "getState",
+            "drawGeometry"
         ];
         if (ev.data === "help") {
             const signatures = Object.fromEntries(Object.entries(actionFunctions).map(([key, val]) => {
@@ -403,19 +404,32 @@ class API extends React.Component {
                 const func = message.method;
                 const args = message.params ?? [];
                 let result = null;
+                let postResult = true;
                 if (func in actionFunctions) {
                     result = this.props[func](...args);
                 } else if (
                     allowedMemberFunctions.includes(func)
                 ) {
+                    // Inject proper callback function
+                    if (func === "drawGeometry") {
+                        args.splice(2, 0, (features, crs) => {
+                            if (message.requestId) {
+                                ev.source.postMessage({
+                                    requestId: message.requestId,
+                                    result: {features, crs}
+                                }, ev.origin);
+                            }
+                        });
+                        postResult = false;
+                    }
                     result = this[func](...args);
                 } else {
                     /* eslint-disable-next-line */
                     console.warn("Unhandeled message: " + JSON.stringify(message));
                 }
-                if (message.requestId) {
+                if (postResult && message.requestId) {
                     ev.source.postMessage({
-                        requestId: ev.data.requestId,
+                        requestId: message.requestId,
                         result: result
                     }, ev.origin);
                 }
@@ -536,7 +550,9 @@ class API extends React.Component {
         this.props.setCurrentTask("ScratchDrawing", null, null, {geomType, message, drawMultiple, callback, style});
     };
     /**
-     *  Draw geometries, and return these as GeoJSON to the calling application.
+     * Draw geometries, and return these as GeoJSON to the calling application.
+     *
+     * *NOTE*: when calling `drawGeometry` through the `postMessage` interface, omit the `callback` parameter. The response will be sent via the response message.
      *
      * * `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
      * * `message`: A descriptive string to display in the tool taskbar.

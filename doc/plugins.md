@@ -295,6 +295,8 @@ Deprecated, use `window.qwc2.drawGeometry` instead.
 
 Draw geometries, and return these as GeoJSON to the calling application.
 
+*NOTE*: when calling `drawGeometry` through the `postMessage` interface, omit the `callback` parameter. The response will be sent via the response message.
+
 * `geomType`: `Point`, `LineString`, `Polygon`, `Circle` or `Box`.
 * `message`: A descriptive string to display in the tool taskbar.
 * `callback`: A `function(result, crs)`, the `result` being an array of GeoJSON features, and `crs` the projection of the feature coordinates.
