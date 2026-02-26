@@ -673,6 +673,9 @@ class Map3D extends React.Component {
     };
     applySceneObjectState = (objectId, options, prevOptions, objectTree) => {
         const object = this.objectMap[objectId];
+        if (!object) {
+            return;
+        }
         let changed = false;
         if (options.visibility !== prevOptions.visibility || options.opacity !== prevOptions?.opacity) {
             // Visibile if object is visibile and parents also
