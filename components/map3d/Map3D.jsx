@@ -253,7 +253,7 @@ class Map3D extends React.Component {
         }
     };
     setBaseLayer = (layer, visibility) => {
-        const currentBaseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true)?.name || "";
+        const currentBaseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true)?.name || null;
         if (visibility && layer.name === currentBaseLayer) {
             // Nothing changed
             return;
