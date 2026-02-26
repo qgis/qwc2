@@ -368,6 +368,7 @@ class API extends React.Component {
         addLayer: PropTypes.func,
         /* List of origins which are allowed to post messages via `qwcIframe.postMessage`. */
         allowedMessageOrigins: PropTypes.arrayOf(PropTypes.string),
+        click: PropTypes.object,
         mapCrs: PropTypes.string,
         registerCustomPlugin: PropTypes.func,
         setCurrentTask: PropTypes.func,
@@ -377,6 +378,16 @@ class API extends React.Component {
     static defaultProps = {
         allowedMessageOrigins: []
     };
+    constructor(props) {
+        super(props);
+        this.onclickCallbacks = [];
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.click !== prevProps.click && this.onclickCallbacks.length > 0) {
+            this.onclickCallbacks.forEach(cb => cb({...this.props.click}));
+            this.onclickCallbacks = [];
+        }
+    }
     handleMessage = (ev) => {
         if (!this.props.allowedMessageOrigins.includes(ev.origin)) {
             /* eslint-disable-next-line */
@@ -386,7 +397,8 @@ class API extends React.Component {
         const allowedMemberFunctions = [
             "addExternalLayer",
             "getState",
-            "drawGeometry"
+            "drawGeometry",
+            "onMapClick"
         ];
         if (ev.data === "help") {
             const signatures = Object.fromEntries(Object.entries(actionFunctions).map(([key, val]) => {
@@ -402,7 +414,7 @@ class API extends React.Component {
         messages.forEach(message => {
             if (message?.method) {
                 const func = message.method;
-                const args = message.params ?? [];
+                let args = message.params ?? [];
                 let result = null;
                 let postResult = true;
                 if (func in actionFunctions) {
@@ -420,6 +432,16 @@ class API extends React.Component {
                                 }, ev.origin);
                             }
                         });
+                        postResult = false;
+                    } else if (func === "onMapClick") {
+                        args = [(click) => {
+                            if (message.requestId) {
+                                ev.source.postMessage({
+                                    requestId: message.requestId,
+                                    result: click
+                                }, ev.origin);
+                            }
+                        }];
                         postResult = false;
                     }
                     result = this[func](...args);
@@ -582,9 +604,14 @@ class API extends React.Component {
     getState = () => {
         return this.props.state;
     };
+    /** Fires the callback on the next click on the map. */
+    onMapClick = (callback) => {
+        this.onclickCallbacks.push(callback);
+    };
 }
 
 export default connect(state => ({
+    click: state.map.click || {modifiers: {}},
     mapCrs: state.map.projection,
     state: state
 }), {

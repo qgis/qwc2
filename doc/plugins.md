@@ -311,6 +311,10 @@ Draw geometries, and return these as GeoJSON to the calling application.
 
 Return the current application state.
 
+**onMapClick(callback)**
+
+Fires the callback on the next click on the map.
+
 ## AttributeTable<a name="attributetable"></a>
 
 Display the attribute table of layers in a dialog.
