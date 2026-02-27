@@ -233,7 +233,7 @@ class QgisSearch {
             HEIGHT: 100,
             LAYERS: [],
             FILTER: [],
-            WITH_MAPTIP: false,
+            WITH_MAPTIP: true,
             WITH_GEOMETRY: true,
             feature_count: searchParams.cfgParams.featureCount || 100,
             info_format: 'text/xml'
