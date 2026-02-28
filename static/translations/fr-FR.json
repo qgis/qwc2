@@ -638,6 +638,7 @@
       "defaulttheme": "Thème par défaut",
       "defaultthemefailed": "Impossible de modifier le thème par défaut : {0}",
       "language": "Langue",
+      "stylescheme": "Schéma de styles",
       "systemlang": "Langue du système",
       "themes": "Thèmes"
     },

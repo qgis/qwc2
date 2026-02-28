@@ -9,7 +9,7 @@
 
 import {
     LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS,
-    SET_COLOR_SCHEME, SET_USER_INFO_FIELDS,
+    SET_COLOR_SCHEME, SET_STYLE_SCHEME, SET_USER_INFO_FIELDS,
     SET_PERMALINK_PARAMETERS,
     REGISTER_CUSTOM_PLUGIN,
     UNREGISTER_CUSTOM_PLUGIN
@@ -23,7 +23,8 @@ const defaultState = {
     startupParams: {},
     startupState: {},
     permalinkParams: {},
-    colorScheme: 'default'
+    colorScheme: 'default',
+    styleScheme: 'default'
 };
 
 export default function localConfig(state = defaultState, action) {
@@ -50,6 +51,23 @@ export default function localConfig(state = defaultState, action) {
             localStorage.setItem('qwc2-color-scheme', newColorScheme);
         }
         return {...state, colorScheme: newColorScheme};
+    }
+    case SET_STYLE_SCHEME: {
+        const root = document.querySelector(':root');
+        if (state.styleScheme) {
+            root.classList.remove(state.styleScheme);
+        }
+        const newStyleScheme = action.styleScheme || state.defaultStyleScheme || "default";
+        if (newStyleScheme) {
+            root.classList.add(newStyleScheme);
+        }
+        if (UrlParams.getParam("style")) { // TODO change the name of that param ?
+            UrlParams.updateParams({style: newStyleScheme});
+        }
+        if (action.storeInLocalStorage) {
+            localStorage.setItem('qwc2-style-scheme', newStyleScheme);
+        }
+        return {...state, styleScheme: newStyleScheme};
     }
     case SET_USER_INFO_FIELDS: {
         return {

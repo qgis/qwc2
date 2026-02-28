@@ -42,6 +42,7 @@
   "wmsMaxGetUrlLength": 2048,
   "qgisServerVersion": 3,
   "defaultColorScheme": "default",
+  "defaultStyleScheme": "default",
   "username": "admin",
   "defaultFeatureStyle": {
     "strokeColor": [0, 0, 255, 1],
@@ -426,7 +427,21 @@
               "titleMsgId": "colorschemes.dark",
               "value": "dark"
             }
-          ]
+          ],
+          "styleSchemes": [
+            {
+              "titleMsgId": "styleschemes.default",
+              "value": "default"
+            },
+            {
+              "titleMsgId": "styleschemes.square",
+              "value": "square"
+            },
+            {
+              "titleMsgId": "styleschemes.round",
+              "value": "round"
+            }
+          ]          
         }
       },
       {

@@ -14,7 +14,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import url from 'url';
 
-import {setColorScheme, setUserInfoFields} from '../actions/localConfig';
+import {setColorScheme, setStyleScheme, setUserInfoFields} from '../actions/localConfig';
 import SideBar from '../components/SideBar';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -47,15 +47,24 @@ class Settings extends React.Component {
             value: PropTypes.string
         })),
         setColorScheme: PropTypes.func,
+        setStyleScheme: PropTypes.func,
         setUserInfoFields: PropTypes.func,
         /** Whether to show a selector to set the default theme/bookmark (of a logged in user). */
         showDefaultThemeSelector: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
+        styleScheme: PropTypes.string,
+        /** List of available style schemes. Value is the css class name, title/titleMsgId the display name. */
+        styleSchemes: PropTypes.arrayOf(PropTypes.shape({
+            title: PropTypes.string,
+            titleMsgId: PropTypes.string,
+            value: PropTypes.string
+        })),
         themes: PropTypes.object
     };
     static defaultProps = {
         colorSchemes: [],
+        styleSchemes: [],
         languages: null,
         side: 'right',
         showDefaultThemeSelector: true
@@ -88,6 +97,7 @@ class Settings extends React.Component {
                     <tbody>
                         {this.renderLanguageSelector()}
                         {this.renderColorSchemeSelector()}
+                        {this.renderStyleSchemeSelector()}
                         {this.renderDefaultThemeSelector()}
                     </tbody>
                 </table>
@@ -129,6 +139,24 @@ class Settings extends React.Component {
                 <td>
                     <select onChange={this.changeColorScheme} value={this.props.colorScheme}>
                         {this.props.colorSchemes.map(entry => (
+                            <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
+                        ))}
+                    </select>
+                </td>
+            </tr>
+        );
+    };
+    renderStyleSchemeSelector = () => {
+        if (isEmpty(this.props.styleSchemes)) {
+            console.log("iiiiiiiiiiiiiiiii");
+            return null;
+        }
+        return (
+            <tr>
+                <td>{LocaleUtils.tr("styles.stylescheme")}</td>
+                <td>
+                    <select onChange={this.changeStyleScheme} value={this.props.styleScheme}>
+                        {this.props.styleSchemes.map(entry => (
                             <option key={entry.value} value={entry.value}>{entry.title ?? LocaleUtils.tr(entry.titleMsgId)}</option>
                         ))}
                     </select>
@@ -199,13 +227,18 @@ class Settings extends React.Component {
     changeColorScheme = (ev) => {
         this.props.setColorScheme(ev.target.value, true);
     };
+    changeStyleScheme = (ev) => {
+        this.props.setStyleScheme(ev.target.value, true);
+    };
 }
 
 export default connect((state) => ({
     colorScheme: state.localConfig.colorScheme,
+    styleScheme: state.localConfig.styleScheme,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     themes: state.theme.themes
 }), {
     setColorScheme: setColorScheme,
+    setStyleScheme: setStyleScheme,
     setUserInfoFields: setUserInfoFields
 })(Settings);

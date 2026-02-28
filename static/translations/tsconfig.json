@@ -64,7 +64,10 @@
     "oereb.title",
     "oereb.failed",
     "plotdescr.title",
-    "plotdescr.requestPdf"
+    "plotdescr.requestPdf",
+    "styleschemes.default",
+    "styleschemes.square",
+    "styleschemes.round"
   ],
   "strings": [
     "app.missingbg",
@@ -550,6 +553,7 @@
     "settings.defaulttheme",
     "settings.defaultthemefailed",
     "settings.language",
+    "settings.stylescheme",
     "settings.systemlang",
     "settings.themes",
     "settings3d.fov",

@@ -13,6 +13,7 @@ ReducerIndex.register("localConfig", localConfigReducer);
 export const LOCAL_CONFIG_LOADED = 'LOCAL_CONFIG_LOADED';
 export const SET_STARTUP_PARAMETERS = 'SET_STARTUP_PARAMETERS';
 export const SET_COLOR_SCHEME = 'SET_COLOR_SCHEME';
+export const SET_STYLE_SCHEME = 'SET_STYLE_SCHEME';
 export const SET_USER_INFO_FIELDS = 'SET_USER_INFO_FIELDS';
 export const SET_PERMALINK_PARAMETERS = 'SET_PERMALINK_PARAMETERS';
 export const REGISTER_CUSTOM_PLUGIN = 'REGISTER_CUSTOM_PLUGIN';
@@ -37,6 +38,14 @@ export function setColorScheme(colorScheme, storeInLocalStorage = false) {
     return {
         type: SET_COLOR_SCHEME,
         colorScheme,
+        storeInLocalStorage
+    };
+}
+
+export function setStyleScheme(styleScheme, storeInLocalStorage = false) {
+    return {
+        type: SET_STYLE_SCHEME,
+        styleScheme,
         storeInLocalStorage
     };
 }

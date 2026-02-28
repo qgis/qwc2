@@ -4,6 +4,7 @@ div.SearchBox {
     height: 2em;
     background-color: var(--input-bg-color);
     color: var(--text-color);
+    border-radius: var(--border-radius);
 }
 
 div.searchbox-field {
@@ -28,6 +29,7 @@ div.searchbox-field > div.spinner {
 
 div.searchbox-results {
     overflow-x: hidden;
+    border-radius: 0px 0px var(--border-radius) var(--border-radius);
 }
 
 div.searchbox-results-section-title {

@@ -1,0 +1,11 @@
+:root.square {
+    /* radius */
+    --border-radius: 1px;
+
+}
+
+:root.round {
+    /* radius */
+    --border-radius: 16px;
+
+}
