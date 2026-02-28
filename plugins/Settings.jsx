@@ -148,7 +148,6 @@ class Settings extends React.Component {
     };
     renderStyleSchemeSelector = () => {
         if (isEmpty(this.props.styleSchemes)) {
-            console.log("iiiiiiiiiiiiiiiii");
             return null;
         }
         return (
