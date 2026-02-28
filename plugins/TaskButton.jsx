@@ -47,7 +47,8 @@ class TaskButton extends React.Component {
         }
         const title = LocaleUtils.tr("appmenu.items." + this.props.task + (this.props.mode || ""));
         return (
-            <MapButton icon={this.props.icon} onClick={this.buttonClicked}
+            <MapButton active={this.props.currentTask === this.props.task}
+                icon={this.props.icon} onClick={this.buttonClicked}
                 position={this.props.position} tooltip={title} />
         );
     }
