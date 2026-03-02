@@ -121,6 +121,7 @@
       "download": "",
       "ellipse": "",
       "export": "",
+      "false": "",
       "format": "Formátum:",
       "line": "Vonaé",
       "loading": "",
@@ -138,6 +139,7 @@
       "square": "",
       "sync2dview": "",
       "text": "Szöveg",
+      "true": "",
       "wait": "",
       "zoomin": "",
       "zoomout": ""

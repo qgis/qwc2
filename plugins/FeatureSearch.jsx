@@ -179,6 +179,17 @@ class FeatureSearch extends React.Component {
                     <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
                 </InputContainer>
             );
+        } else if (fieldcfg.type === "checkbox") {
+            return (
+                <InputContainer>
+                    <select defaultValue="" name={fieldname} onChange={onChange} role="input">
+                        <option value="">{LocaleUtils.tr("common.select")}</option>
+                        <option value="true">{LocaleUtils.tr("common.true")}</option>
+                        <option value="false">{LocaleUtils.tr("common.false")}</option>
+                    </select>
+                    <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
+                </InputContainer>
+            );
         } else {
             return (<input name={fieldname} onChange={onChange} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
         }
