@@ -365,10 +365,8 @@ class API extends React.Component {
         window.addEventListener("message", this.handleMessage);
 
         window.dispatchEvent(new Event("QWC2ApiReady"));
-        if (window.parent) {
-            this.props.allowedMessageOrigins.forEach(origin => {
-                window.parent.postMessage("QWC2ApiReady", origin);
-            });
+        if (window.parent && window.parent !== window) {
+            window.parent.postMessage("QWC2ApiReady", "*");
         }
     }
     static propTypes = {
