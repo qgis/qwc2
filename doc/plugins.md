@@ -315,6 +315,8 @@ Return the current application state.
 
 Fires the callback on the next click on the map.
 
+*NOTE*: when calling `onMapClick` through the `postMessage` interface, omit the `callback` parameter. The response will be sent via the response message.
+
 ## AttributeTable<a name="attributetable"></a>
 
 Display the attribute table of layers in a dialog.

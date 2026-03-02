@@ -604,7 +604,10 @@ class API extends React.Component {
     getState = () => {
         return this.props.state;
     };
-    /** Fires the callback on the next click on the map. */
+    /** Fires the callback on the next click on the map.
+     *
+     * *NOTE*: when calling `onMapClick` through the `postMessage` interface, omit the `callback` parameter. The response will be sent via the response message.
+     */
     onMapClick = (callback) => {
         this.onclickCallbacks.push(callback);
     };
