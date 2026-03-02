@@ -88,6 +88,8 @@ Plugin reference
 Exposes an API for interacting with QWC.
 
 You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
+If you are using the `postMessage` interface, a `QWC2ApiReady` message will be sent to
+all origins listed in `allowedMessageOrigins`.
 
 ### `postMessage` interface
 

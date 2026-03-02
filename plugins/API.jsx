@@ -123,6 +123,8 @@ const actionFunctions = {
  * Exposes an API for interacting with QWC.
  *
  * You can interact with the API as soon as the `QWC2ApiReady` event is dispatched.
+ * If you are using the `postMessage` interface, a `QWC2ApiReady` message will be sent to
+ * all origins listed in `allowedMessageOrigins`.
  *
  * ### `postMessage` interface
  *
@@ -363,6 +365,11 @@ class API extends React.Component {
         window.addEventListener("message", this.handleMessage);
 
         window.dispatchEvent(new Event("QWC2ApiReady"));
+        if (window.parent) {
+            this.props.allowedMessageOrigins.forEach(origin => {
+                window.parent.postMessage("QWC2ApiReady", origin);
+            });
+        }
     }
     static propTypes = {
         addLayer: PropTypes.func,
