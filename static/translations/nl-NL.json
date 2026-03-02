@@ -123,6 +123,7 @@
       "download": "",
       "ellipse": "Ellips",
       "export": "Export",
+      "false": "",
       "format": "Format",
       "line": "Lijn",
       "loading": "Laden...",
@@ -140,6 +141,7 @@
       "square": "",
       "sync2dview": "",
       "text": "Tekst",
+      "true": "",
       "wait": "Even geduld a.u.b....",
       "zoomin": "Inzoomen",
       "zoomout": "Uitzoomen"

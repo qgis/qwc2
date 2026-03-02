@@ -123,6 +123,7 @@
       "download": "Descarregar",
       "ellipse": "El·lipse",
       "export": "Exportar",
+      "false": "",
       "format": "Format:",
       "line": "Línia",
       "loading": "Carregant",
@@ -140,6 +141,7 @@
       "square": "Quadrat",
       "sync2dview": "Sincronitzar amb la vista 2D",
       "text": "Text",
+      "true": "",
       "wait": "Espereu si us plau...",
       "zoomin": "Apropar",
       "zoomout": "Allunyar"
