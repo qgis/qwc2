@@ -469,6 +469,17 @@ export default class EditTool3D extends React.Component {
                 }
                 offset.applyQuaternion(object.quaternion);
                 object.position.copy(offset).add(this._positionStart);
+
+                const snapOffset = this.computeSnapOffset(object, control);
+                const sx = control.pointStart.x > 0 ? 1 : -1;
+                const sy = control.pointStart.y > 0 ? 1 : -1;
+                const sz = control.pointStart.z > 0 ? 1 : -1;
+                object.scale.x += snapOffset.x / (this._bbox.max.x - this._bbox.min.x) * sx;
+                object.scale.y += snapOffset.y / (this._bbox.max.y - this._bbox.min.y) * sy;
+                object.scale.z += snapOffset.z / (this._bbox.max.z - this._bbox.min.z) * sz;
+                object.position.x += snapOffset.x * 0.5;
+                object.position.y += snapOffset.y * 0.5;
+                object.position.z += snapOffset.z * 0.5;
             }
         } else if (mode === 'translate') {
             object.position.add(this.computeSnapOffset(object, control));
