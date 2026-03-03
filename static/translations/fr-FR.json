@@ -785,6 +785,11 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
+    },
+    "styleschemes": {
+      "default": "Défaut",
+      "square": "Coins carrés",
+      "round": "Coins arrondis"
     }
   }
 }

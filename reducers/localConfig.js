@@ -61,7 +61,7 @@ export default function localConfig(state = defaultState, action) {
         if (newStyleScheme) {
             root.classList.add(newStyleScheme);
         }
-        if (UrlParams.getParam("style")) { // TODO change the name of that param ?
+        if (UrlParams.getParam("style_corners")) {
             UrlParams.updateParams({style: newStyleScheme});
         }
         if (action.storeInLocalStorage) {

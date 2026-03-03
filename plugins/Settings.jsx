@@ -152,7 +152,7 @@ class Settings extends React.Component {
         }
         return (
             <tr>
-                <td>{LocaleUtils.tr("styles.stylescheme")}</td>
+                <td>{LocaleUtils.tr("settings.stylescheme")}</td>
                 <td>
                     <select onChange={this.changeStyleScheme} value={this.props.styleScheme}>
                         {this.props.styleSchemes.map(entry => (

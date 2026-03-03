@@ -638,6 +638,7 @@
       "defaulttheme": "デフォルト・テーマ",
       "defaultthemefailed": "デフォルト・テーマを設定出来ませんでした: {0}",
       "language": "言語",
+      "stylescheme": "",
       "systemlang": "システム言語",
       "themes": "テーマ"
     },
@@ -784,6 +785,11 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
+    },
+    "styleschemes": {
+      "default": "",
+      "square": "",
+      "round": ""
     }
   }
 }
