@@ -499,6 +499,7 @@ export default class EditTool3D extends React.Component {
             Z: new Vector3(0, 0, 1)
         };
         object.updateMatrixWorld();
+        const snapDistance = 5;
         const positionAttr = object.geometry.attributes.position;
         const positions = [];
         for (let i = 0; i < positionAttr.count; i++) {
@@ -510,6 +511,7 @@ export default class EditTool3D extends React.Component {
         }
 
         const raycaster = new Raycaster();
+        raycaster.far = 2 * snapDistance;
         const sceneContext = this.props.sceneContext;
         const inters = [];
 
@@ -559,7 +561,6 @@ export default class EditTool3D extends React.Component {
                 collisionObjects.push(sceneContext.map.object3d);
             }
             const ndir = dir.clone().negate();
-            const snapDistance = 5;
             psnappos.concat(nsnappos).forEach(pos => {
                 raycaster.set(pos, dir);
                 inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
