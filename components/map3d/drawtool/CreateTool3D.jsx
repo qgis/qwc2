@@ -124,6 +124,7 @@ export default class CreateTool3D extends React.Component {
             mesh.updateMatrixWorld();
             this.props.sceneContext.scene.notifyChange();
             this.props.objectCreated(mesh);
+            this.props.sceneContext.computeBoundsTree(mesh);
         }
     };
 }

@@ -25,7 +25,12 @@ import axios from 'axios';
 import {fromUrl} from "geotiff";
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import * as THREE from 'three';
 import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh, Box3, Vector3, Matrix4} from 'three';
+import {
+    computeBoundsTree, disposeBoundsTree,
+    computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast,
+} from 'three-mesh-bvh';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
 import {v4 as uuidv4} from 'uuid';
@@ -49,6 +54,14 @@ import {updateObjectLabel} from './utils/MiscUtils3D';
 import Tiles3DStyle from './utils/Tiles3DStyle';
 
 import './style/Map3D.css';
+
+THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
+THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
+THREE.Mesh.prototype.raycast = acceleratedRaycast;
+
+THREE.BatchedMesh.prototype.computeBoundsTree = computeBatchedBoundsTree;
+THREE.BatchedMesh.prototype.disposeBoundsTree = disposeBatchedBoundsTree;
+THREE.BatchedMesh.prototype.raycast = acceleratedRaycast;
 
 
 // Ensures onUnload is called *after* all other children have unmounted
@@ -136,6 +149,8 @@ class Map3D extends React.Component {
 
             getMap: () => {},
 
+            computeBoundsTree: (object) => {},
+
             setViewToExtent: (bounds, angle) => {},
             getTerrainHeightFromDTM: (scenePos) => {},
             getTerrainHeightFromMap: (scenePos) => {},
@@ -167,6 +182,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
         this.state.sceneContext.zoomToObject = this.zoomToObject;
         this.state.sceneContext.getMap = this.getMap;
+        this.state.computeBoundsTree = this.computeBoundsTree;
         this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
         this.state.sceneContext.getTerrainHeightFromMap = this.getTerrainHeightFromMap;
         this.state.sceneContext.getSceneIntersection = this.getSceneIntersection;
@@ -520,6 +536,7 @@ class Map3D extends React.Component {
             scene.userData.tilesetName = objectId;
             scene.userData.featureIdAttr = "id";
             Tiles3DStyle.applyTileStyle(scene, tiles.userData, this.state.sceneContext);
+            this.computeBoundsTree(scene);
             this.instance.notifyChange(tiles);
         });
         // Show/hide labels when tile visibility changes
@@ -580,6 +597,11 @@ class Map3D extends React.Component {
             });
         }
     };
+    computeBoundsTree = (group) => {
+        group.traverse(c => {
+            c.geometry?.computeBoundsTree?.();
+        });
+    };
     addSceneObject = (objectId, object, addToLayerTree = false, treeOptions = {}, showEditTool = false) => {
         if (object.tiles) {
             this.instance.add(object);
@@ -589,6 +611,7 @@ class Map3D extends React.Component {
         this.objectMap[objectId] = object;
         this.instance.notifyChange(object);
         if (addToLayerTree) {
+            this.computeBoundsTree(object);
             this.setState((state) => {
                 const newObjectTree = {...state.sceneContext.objectTree};
                 newObjectTree.null = {...newObjectTree.null, children: [...newObjectTree.null.children, objectId]};

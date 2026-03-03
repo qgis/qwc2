@@ -366,6 +366,7 @@ export default class EditTool3D extends React.Component {
             result = CSG.intersect(...children);
         }
         if (result) {
+            this.props.sceneContext.computeBoundsTree(result);
             const parent = this.props.selectedObject.parent;
             result.position.add(this.props.selectedObject.position);
             this.props.selectedObject.dissolve();
