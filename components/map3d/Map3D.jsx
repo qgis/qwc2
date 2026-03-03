@@ -232,12 +232,10 @@ class Map3D extends React.Component {
             this.setState(state => ({
                 sceneContext: {
                     ...state.sceneContext,
-                    collisionObjects: Object.entries(state.sceneContext.objectTree).reduce((res, [objectid, entry]) => {
-                        if (entry.visibility && entry.opacity > 0) {
-                            const obj = this.objectMap[entry.objectId];
-                            if (obj) {
-                                res.push(obj.tiles?.group ?? obj);
-                            }
+                    collisionObjects: Object.keys(state.sceneContext.objectTree).reduce((res, objectId) => {
+                        const obj = this.objectMap[objectId];
+                        if (obj?.visible) {
+                            res.push(obj.tiles?.group ?? obj);
                         }
                         return res;
                     }, [])
