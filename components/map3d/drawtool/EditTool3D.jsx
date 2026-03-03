@@ -440,7 +440,6 @@ export default class EditTool3D extends React.Component {
             this._bbox = object.geometry.boundingBox.clone();
             this._scaleStart = object.scale.clone();
             this._positionStart = object.position.clone();
-            object.userData.snapOffset = new Vector3();
         }
     };
     onControlObjectChange = (e) => {
@@ -472,9 +471,8 @@ export default class EditTool3D extends React.Component {
                 object.position.copy(offset).add(this._positionStart);
             }
         } else if (mode === 'translate') {
-            object.userData.snapOffset = this.computeSnapOffset(object, control);
+            object.position.add(this.computeSnapOffset(object, control));
         }
-        object.position.add(object.userData.snapOffset);
         object.updateMatrixWorld();
         this.transformControls.getHelper().updateMatrixWorld();
         this.props.sceneContext.scene.notifyChange(object);
@@ -568,7 +566,6 @@ export default class EditTool3D extends React.Component {
         this._bbox = null;
         this._scaleStart = null;
         this._positionStart = null;
-        delete e.target.object.userData.snapOffset;
 
         const {object} = e.target;
         this.clearCsgBackup();
