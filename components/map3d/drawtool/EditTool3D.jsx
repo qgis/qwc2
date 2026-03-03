@@ -7,14 +7,16 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import PropTypes from 'prop-types';
-import {Color, Group, Vector3} from 'three';
+import {Color, Group, Raycaster, Vector3} from 'three';
 import {CSG} from 'three-csg-ts';
 import {TransformControls} from 'three/addons/controls/TransformControls';
 
 import LocaleUtils from '../../../utils/LocaleUtils';
 import Icon from '../../Icon';
+import {BottomToolPortalContext} from '../../PluginsContainer';
 import ButtonBar from '../../widgets/ButtonBar';
 import ColorButton from '../../widgets/ColorButton';
 import TextInput from '../../widgets/TextInput';
@@ -85,6 +87,7 @@ class GroupSelection extends Group {
 }
 
 export default class EditTool3D extends React.Component {
+    static contextType = BottomToolPortalContext;
     static propTypes = {
         color: PropTypes.array,
         colorChanged: PropTypes.func,
@@ -98,12 +101,13 @@ export default class EditTool3D extends React.Component {
         numericInput: false,
         selectCount: 0,
         csgBackup: null,
-        label: ''
+        label: '',
+        snapTo3dEnabled: true
     };
     componentDidMount() {
         const camera = this.props.sceneContext.scene.view.camera;
         const renderer = this.props.sceneContext.scene.renderer;
-        this.transformControls = new TransformControls( camera, renderer.domElement );
+        this.transformControls = new TransformControls(camera, renderer.domElement);
         this.props.sceneContext.scene.add(this.transformControls.getHelper());
         this.transformControls.setMode(this.state.mode);
         this.transformControls.setSpace('local');
@@ -249,7 +253,14 @@ export default class EditTool3D extends React.Component {
                         <ButtonBar buttons={[{key: "undo", label: LocaleUtils.tr("draw3d.undoBool")}]} onClick={this.undoCsgOperation} />
                     </div>
                 </div>
-            ) : null
+            ) : null,
+            ReactDOM.createPortal((
+                <div>
+                    <button className={"button" + (this.state.snapTo3dEnabled ? " pressed" : "")} onClick={() => this.setState(state => ({snapTo3dEnabled: !state.snapTo3dEnabled}))}>
+                        <Icon icon="snap_3d" size="large" />
+                    </button>
+                </div>
+            ), this.context)
         ];
     }
     toolButtonClicked = (key) => {
@@ -423,10 +434,14 @@ export default class EditTool3D extends React.Component {
     onControlMouseDown = (e) => {
         const {object} = e.target;
         if (object.geometry) {
-            if ( ! object.geometry.boundingBox ) object.geometry.computeBoundingBox();
+            if (!object.geometry.boundingBox) {
+                object.geometry.computeBoundingBox();
+            }
             this._bbox = object.geometry.boundingBox.clone();
             this._scaleStart = object.scale.clone();
             this._positionStart = object.position.clone();
+            this._prevPos = object.position.clone();
+            object.userData.snapOffset = new Vector3();
         }
     };
     onControlObjectChange = (e) => {
@@ -457,24 +472,106 @@ export default class EditTool3D extends React.Component {
                 offset.applyQuaternion(object.quaternion);
                 object.position.copy(offset).add(this._positionStart);
             }
+        } else if (mode === 'translate') {
+            object.userData.snapOffset = this.computeSnapOffset(object, control, object.userData.snapOffset);
         }
+        this._prevPos = object.position.clone();
+        object.position.add(object.userData.snapOffset);
         object.updateMatrixWorld();
         this.transformControls.getHelper().updateMatrixWorld();
         this.props.sceneContext.scene.notifyChange(object);
     };
-    onControlChange = (e) => {
-        this.transformControls.getHelper().updateMatrixWorld();
-        this.props.sceneContext.scene.notifyChange(this.transformControls.getHelper());
+    computeSnapOffset = (object, control, prevOffset) => {
+        if (!this.state.snapTo3dEnabled || (control.axis ?? "").length !== 1) {
+            return new Vector3();
+        }
+        const dir = object.position.clone().sub(this._prevPos);
+        const len = dir.length();
+        if (len > 0) {
+            dir.divideScalar(len);
+            const positionAttr = object.geometry.attributes.position;
+            // Find farthest points of geometry in translate direction
+            let maxdot = 0;
+            let psnappos = [];
+            let pavgpos = null;
+            let mindot = 0;
+            let nsnappos = [];
+            let navgpos = null;
+
+            object.updateMatrixWorld();
+            for (let i = 0; i < positionAttr.count; i++) {
+                const pos = new Vector3(
+                    positionAttr.getX(i),
+                    positionAttr.getY(i),
+                    positionAttr.getZ(i)
+                ).applyMatrix4(object.matrixWorld);
+                const pdir = pos.clone().sub(object.position);
+                const dot = pdir.dot(dir);
+                if (dot > maxdot) {
+                    maxdot = dot;
+                    psnappos = [pos];
+                    pavgpos = pos.clone();
+                } else if (dot !== 0 && dot === maxdot) {
+                    psnappos.push(pos);
+                    pavgpos.add(pos);
+                }
+                if (dot < mindot) {
+                    mindot = dot;
+                    nsnappos = [pos];
+                    navgpos = pos.clone();
+                } else if (dot !== 0 && dot === mindot) {
+                    nsnappos.push(pos);
+                    navgpos.add(pos);
+                }
+            }
+            // Also add average point (i.e. center of face)
+            if (psnappos.length > 1) {
+                psnappos.push(pavgpos.divideScalar(psnappos.length));
+            }
+            if (nsnappos.length > 1) {
+                nsnappos.push(navgpos.divideScalar(nsnappos.length));
+            }
+
+            // Shoot rays from extremes and check for collisions with nearby objects
+            const raycaster = new Raycaster();
+            const sceneContext = this.props.sceneContext;
+            const collisionObjects = [...sceneContext.collisionObjects];
+            if (dir.z !== 0) {
+                collisionObjects.push(sceneContext.map.object3d);
+            }
+            const inters = [];
+            const ndir = dir.clone().negate();
+            const snapDistance = 5;
+            psnappos.concat(nsnappos).forEach(pos => {
+                raycaster.set(pos, dir);
+                inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
+                    intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
+                ).map(intr => ({...intr, snappos: pos}))[0]);
+                raycaster.set(pos, ndir);
+                inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
+                    intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
+                ).map(intr => ({...intr, snappos: pos}))[0]);
+            });
+            const inter = inters.filter(Boolean).sort((a, b) => a.distance - b.distance)[0];
+            return inter ? inter.point.clone().sub(inter.snappos) : new Vector3();
+        }
+        return prevOffset;
     };
     onControlMouseUp = (e) => {
         this._bbox = null;
         this._scaleStart = null;
         this._positionStart = null;
+        this._prevPos = null;
+        delete e.target.object.userData.snapOffset;
 
         const {object} = e.target;
         this.clearCsgBackup();
         object.updateMatrixWorld();
         this.transformControls.getHelper().updateMatrixWorld();
         this.props.sceneContext.scene.notifyChange(object);
+    };
+    onControlChange = () => {
+        this.transformControls.getHelper().updateMatrixWorld();
+        this.props.sceneContext.scene.notifyChange(this.transformControls.getHelper());
     };
 }
