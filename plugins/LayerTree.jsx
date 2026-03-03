@@ -47,13 +47,12 @@ import './style/LayerTree.css';
  */
 class LayerTree extends React.Component {
     static propTypes = {
-        /** Whether to allow adding separator entries in the layer tree, useful for organizing the tree. */
         addLayerSeparator: PropTypes.func,
         /** Whether to enable the compare function. Requires the `MapCompare` plugin. */
         allowCompare: PropTypes.bool,
         /** Whether to allow importing external layers. */
         allowImport: PropTypes.bool,
-        /** Whether to allow adding layer tree separators. */
+        /** Whether to allow adding separator entries in the layer tree, useful for organizing the tree. */
         allowLayerTreeSeparators: PropTypes.bool,
         /** Whether to allow enabling map tips. */
         allowMapTips: PropTypes.bool,

@@ -639,10 +639,9 @@ with containing a container element with id=legendcontainer.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| addLayerSeparator | `func` | Whether to allow adding separator entries in the layer tree, useful for organizing the tree. | `undefined` |
 | allowCompare | `bool` | Whether to enable the compare function. Requires the `MapCompare` plugin. | `true` |
 | allowImport | `bool` | Whether to allow importing external layers. | `true` |
-| allowLayerTreeSeparators | `bool` | Whether to allow adding layer tree separators. | `undefined` |
+| allowLayerTreeSeparators | `bool` | Whether to allow adding separator entries in the layer tree, useful for organizing the tree. | `undefined` |
 | allowMapTips | `bool` | Whether to allow enabling map tips. | `true` |
 | allowRemovingThemeLayers | `bool` | Whether to allow removing theme layers. | `undefined` |
 | allowSelectIdentifyableLayers | `bool` | Whether to allow selection of identifyable layers. The `showQueryableIcon` property should be `true` to be able to select identifyable layers. | `false` |
