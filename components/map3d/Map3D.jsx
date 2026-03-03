@@ -29,7 +29,7 @@ import * as THREE from 'three';
 import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh, Box3, Vector3, Matrix4} from 'three';
 import {
     computeBoundsTree, disposeBoundsTree,
-    computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast,
+    computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast
 } from 'three-mesh-bvh';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader';
