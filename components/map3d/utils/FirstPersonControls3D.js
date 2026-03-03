@@ -140,6 +140,7 @@ export default class FirstPersonControls3D extends Controls {
 
         // Adjust step to avoid passing within any wall buffer zone
         const raycaster = new Raycaster();
+        raycaster.far = 5;
         raycaster.set(this.target, new Vector3(dir.x, dir.y, 0));
         const inter = raycaster.intersectObjects(this.sceneContext.collisionObjects, true)[0];
         const wallBuffer = 0.5;
