@@ -440,7 +440,6 @@ export default class EditTool3D extends React.Component {
             this._bbox = object.geometry.boundingBox.clone();
             this._scaleStart = object.scale.clone();
             this._positionStart = object.position.clone();
-            this._prevPos = object.position.clone();
             object.userData.snapOffset = new Vector3();
         }
     };
@@ -473,24 +472,40 @@ export default class EditTool3D extends React.Component {
                 object.position.copy(offset).add(this._positionStart);
             }
         } else if (mode === 'translate') {
-            object.userData.snapOffset = this.computeSnapOffset(object, control, object.userData.snapOffset);
+            object.userData.snapOffset = this.computeSnapOffset(object, control);
         }
-        this._prevPos = object.position.clone();
         object.position.add(object.userData.snapOffset);
         object.updateMatrixWorld();
         this.transformControls.getHelper().updateMatrixWorld();
         this.props.sceneContext.scene.notifyChange(object);
     };
-    computeSnapOffset = (object, control, prevOffset) => {
-        if (!this.state.snapTo3dEnabled || (control.axis ?? "").length !== 1) {
+    computeSnapOffset = (object, control) => {
+        if (!this.state.snapTo3dEnabled) {
             return new Vector3();
         }
-        const dir = object.position.clone().sub(this._prevPos);
-        const len = dir.length();
-        if (len > 0) {
-            dir.divideScalar(len);
-            const positionAttr = object.geometry.attributes.position;
-            // Find farthest points of geometry in translate direction
+        const axismap = {
+            X: new Vector3(1, 0, 0),
+            Y: new Vector3(0, 1, 0),
+            Z: new Vector3(0, 0, 1)
+        };
+        object.updateMatrixWorld();
+        const positionAttr = object.geometry.attributes.position;
+        const positions = [];
+        for (let i = 0; i < positionAttr.count; i++) {
+            positions.push(new Vector3(
+                positionAttr.getX(i),
+                positionAttr.getY(i),
+                positionAttr.getZ(i)
+            ).applyMatrix4(object.matrixWorld));
+        }
+
+        const raycaster = new Raycaster();
+        const sceneContext = this.props.sceneContext;
+        const inters = [];
+
+        // For each translation axis
+        [...control.axis].forEach(axis => {
+            const dir = axismap[axis];
             let maxdot = 0;
             let psnappos = [];
             let pavgpos = null;
@@ -498,13 +513,9 @@ export default class EditTool3D extends React.Component {
             let nsnappos = [];
             let navgpos = null;
 
-            object.updateMatrixWorld();
-            for (let i = 0; i < positionAttr.count; i++) {
-                const pos = new Vector3(
-                    positionAttr.getX(i),
-                    positionAttr.getY(i),
-                    positionAttr.getZ(i)
-                ).applyMatrix4(object.matrixWorld);
+            // Collect extremes along each axis
+            for (let i = 0; i < positions.length; i++) {
+                const pos = positions[i];
                 const pdir = pos.clone().sub(object.position);
                 const dot = pdir.dot(dir);
                 if (dot > maxdot) {
@@ -532,14 +543,11 @@ export default class EditTool3D extends React.Component {
                 nsnappos.push(navgpos.divideScalar(nsnappos.length));
             }
 
-            // Shoot rays from extremes and check for collisions with nearby objects
-            const raycaster = new Raycaster();
-            const sceneContext = this.props.sceneContext;
+            // Ray-cast to check collisions
             const collisionObjects = [...sceneContext.collisionObjects];
-            if (dir.z !== 0) {
+            if (axis === "Z") {
                 collisionObjects.push(sceneContext.map.object3d);
             }
-            const inters = [];
             const ndir = dir.clone().negate();
             const snapDistance = 5;
             psnappos.concat(nsnappos).forEach(pos => {
@@ -552,16 +560,14 @@ export default class EditTool3D extends React.Component {
                     intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
                 ).map(intr => ({...intr, snappos: pos}))[0]);
             });
-            const inter = inters.filter(Boolean).sort((a, b) => a.distance - b.distance)[0];
-            return inter ? inter.point.clone().sub(inter.snappos) : new Vector3();
-        }
-        return prevOffset;
+        });
+        const inter = inters.filter(Boolean).sort((a, b) => a.distance - b.distance)[0];
+        return inter ? inter.point.clone().sub(inter.snappos) : new Vector3();
     };
     onControlMouseUp = (e) => {
         this._bbox = null;
         this._scaleStart = null;
         this._positionStart = null;
-        this._prevPos = null;
         delete e.target.object.userData.snapOffset;
 
         const {object} = e.target;
