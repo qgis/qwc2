@@ -7,25 +7,30 @@
  */
 
 import React from 'react';
+import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 import {Group} from 'three';
 import {v4 as uuidv4} from 'uuid';
 
+import {LayerRole} from '../../actions/layers';
 import Icon from '../../components/Icon';
 import CreateTool3D from '../../components/map3d/drawtool/CreateTool3D';
 import EditTool3D from '../../components/map3d/drawtool/EditTool3D';
 import TaskBar from '../../components/TaskBar';
 import ButtonBar from '../../components/widgets/ButtonBar';
+import {FeatureSnapIndex} from '../../utils/FeatureSnapIndex';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 
 /**
  * Draw objects in the 3D map.
  */
-export default class Draw3D extends React.Component {
+class Draw3D extends React.Component {
     static propTypes = {
-        sceneContext: PropTypes.object
+        layers: PropTypes.array,
+        sceneContext: PropTypes.object,
+        theme: PropTypes.object
     };
     state = {
         action: null,
@@ -37,6 +42,10 @@ export default class Draw3D extends React.Component {
     };
     onShow = () => {
         this.ensureDrawGroup();
+        const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
+        const activeLayers = (this.props.sceneContext.colorLayers[themeLayer.id]?.params?.LAYERS || "").split(",");
+        const snapLayers = this.props.theme.snapping?.snaplayers.map(entry => entry.name).filter(layer => activeLayers.includes(layer));
+        this.snapIndex2d = new FeatureSnapIndex(themeLayer, snapLayers, this.props.sceneContext.mapCrs);
         this.setState({action: 'Pick'});
     };
     onHide = () => {
@@ -49,7 +58,8 @@ export default class Draw3D extends React.Component {
                 this.props.sceneContext.removeSceneObject(entry.objectId);
             }
         });
-        this.setState({selectedObject: null});
+        this.snapIndex2d = null;
+        this.setState({selectedObject: null, action: null});
     };
     ensureDrawGroup = () => {
         // Ensure a draw group is present
@@ -138,8 +148,8 @@ export default class Draw3D extends React.Component {
                 <EditTool3D
                     color={this.state.color} colorChanged={color => this.setState({color})}
                     drawGroupId={this.state.drawGroupId} objectPicked={this.objectPicked}
-                    sceneContext={this.props.sceneContext}
-                    selectedObject={this.state.selectedObject} />
+                    sceneContext={this.props.sceneContext} selectedObject={this.state.selectedObject}
+                    snapIndex2d={this.snapIndex2d} />
             );
         }
         return null;
@@ -195,3 +205,9 @@ export default class Draw3D extends React.Component {
         this.setState({selectedObject: object});
     };
 }
+
+export default connect((state) => ({
+    theme: state.theme.current,
+    layers: state.layers.flat
+}), {
+})(Draw3D);

@@ -10,7 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import PropTypes from 'prop-types';
-import {Color, Group, Raycaster, Vector3} from 'three';
+import {Box3, Color, Group, Raycaster, Vector2, Vector3} from 'three';
 import {CSG} from 'three-csg-ts';
 import {TransformControls} from 'three/addons/controls/TransformControls';
 
@@ -94,7 +94,8 @@ export default class EditTool3D extends React.Component {
         drawGroupId: PropTypes.string,
         objectPicked: PropTypes.func,
         sceneContext: PropTypes.object,
-        selectedObject: PropTypes.object
+        selectedObject: PropTypes.object,
+        snapIndex2d: PropTypes.object
     };
     state = {
         mode: 'translate',
@@ -102,8 +103,15 @@ export default class EditTool3D extends React.Component {
         selectCount: 0,
         csgBackup: null,
         label: '',
-        snapTo3dEnabled: true
+        snapTo3dEnabled: true,
+        snapTo2dNodeEnabled: true,
+        snapTo2dEdgeEnabled: true
     };
+    constructor(props) {
+        super(props);
+        this.state.snapTo2dNodeEnabled = props.snapIndex2d.haveSnapLayers();
+        this.state.snapTo2dEdgeEnabled = props.snapIndex2d.haveSnapLayers();
+    }
     componentDidMount() {
         const camera = this.props.sceneContext.scene.view.camera;
         const renderer = this.props.sceneContext.scene.renderer;
@@ -256,9 +264,19 @@ export default class EditTool3D extends React.Component {
             ) : null,
             ReactDOM.createPortal((
                 <div>
-                    <button className={"button" + (this.state.snapTo3dEnabled ? " pressed" : "")} onClick={() => this.setState(state => ({snapTo3dEnabled: !state.snapTo3dEnabled}))}>
+                    <button className={"button" + (this.state.snapTo3dEnabled ? " pressed" : "")} onClick={() => this.setState(state => ({snapTo3dEnabled: !state.snapTo3dEnabled}))} title={LocaleUtils.tr("draw3d.snap_3dbody")}>
                         <Icon icon="snap_3d" size="large" />
                     </button>
+                    {this.props.snapIndex2d.haveSnapLayers() ? (
+                        <button className={"button" + (this.state.snapTo2dNodeEnabled ? " pressed" : "")} onClick={() => this.setState(state => ({snapTo2dNodeEnabled: !state.snapTo2dNodeEnabled}))} title={LocaleUtils.tr("draw3d.snap_2dvertex")}>
+                            <Icon icon="snap_vertex" size="large" />
+                        </button>
+                    ) : null}
+                    {this.props.snapIndex2d.haveSnapLayers() ? (
+                        <button className={"button" + (this.state.snapTo2dEdgeEnabled ? " pressed" : "")} onClick={() => this.setState(state => ({snapTo2dEdgeEnabled: !state.snapTo2dEdgeEnabled}))} title={LocaleUtils.tr("draw3d.snap_2dedge")}>
+                            <Icon icon="snap_edge" size="large" />
+                        </button>
+                    ) : null}
                 </div>
             ), this.context)
         ];
@@ -441,6 +459,11 @@ export default class EditTool3D extends React.Component {
             this._bbox = object.geometry.boundingBox.clone();
             this._scaleStart = object.scale.clone();
             this._positionStart = object.position.clone();
+            if (this.state.snapTo2dEdgeEnabled || this.state.snapTo2dNodeEnabled) {
+                const box = new Box3().setFromObject(object);
+                const margin = 0.5 * this.props.snapIndex2d.featureGridSize;
+                this.props.snapIndex2d.loadArea([box.min.x - margin, box.min.y - margin, box.max.x + margin, box.max.y + margin]);
+            }
         }
     };
     onControlObjectChange = (e) => {
@@ -488,9 +511,14 @@ export default class EditTool3D extends React.Component {
         object.updateMatrixWorld();
         this.transformControls.getHelper().updateMatrixWorld();
         this.props.sceneContext.scene.notifyChange(object);
+        if (this.state.snapTo2dEdgeEnabled || this.state.snapTo2dNodeEnabled) {
+            const box = new Box3().setFromObject(object);
+            const margin = 0.5 * this.props.snapIndex2d.featureGridSize;
+            this.props.snapIndex2d.loadArea([box.min.x - margin, box.min.y - margin, box.max.x + margin, box.max.y + margin]);
+        }
     };
     computeSnapOffset = (object, control) => {
-        if (!this.state.snapTo3dEnabled) {
+        if (!this.state.snapTo3dEnabled && !this.state.snapTo2dEdgeEnabled && !this.state.snapTo2dNodeEnabled) {
             return new Vector3();
         }
         const axismap = {
@@ -561,15 +589,40 @@ export default class EditTool3D extends React.Component {
                 collisionObjects.push(sceneContext.map.object3d);
             }
             const ndir = dir.clone().negate();
+            const dir2 = new Vector2(dir.x, dir.y).normalize();
+            const ndir2 = dir2.clone().negate();
+            const snap2dNode = this.state.snapTo2dNodeEnabled && axis !== "Z";
+            const snap2dEdge = this.state.snapTo2dEdgeEnabled && axis !== "Z";
             psnappos.concat(nsnappos).forEach(pos => {
-                raycaster.set(pos, dir);
-                inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
-                    intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
-                ).map(intr => ({...intr, snappos: pos}))[0]);
-                raycaster.set(pos, ndir);
-                inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
-                    intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
-                ).map(intr => ({...intr, snappos: pos}))[0]);
+                if (this.state.snapTo3dEnabled) {
+                    raycaster.set(pos, dir);
+                    inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
+                        intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
+                    ).map(intr => ({...intr, snappos: pos}))[0]);
+                    raycaster.set(pos, ndir);
+                    inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
+                        intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
+                    ).map(intr => ({...intr, snappos: pos}))[0]);
+                }
+                let haveSnapNode = false;
+                if (snap2dNode) {
+                    const snapNode = this.props.snapIndex2d.snapToNode([pos.x, pos.y], snapDistance);
+                    if (snapNode) {
+                        haveSnapNode = true;
+                        const point = new Vector3(snapNode[0], snapNode[1], pos.z);
+                        inters.push({point: point, snappos: pos, distance: point.distanceTo(pos)});
+                    }
+                }
+                if (snap2dEdge && !haveSnapNode) {
+                    const pray = this.props.snapIndex2d.raycast([pos.x, pos.y], [dir2.x, dir2.y], snapDistance);
+                    if (pray) {
+                        inters.push({...pray, point: new Vector3(pray.point[0], pray.point[1], pos.z), snappos: pos});
+                    }
+                    const nray = this.props.snapIndex2d.raycast([pos.x, pos.y], [ndir2.x, ndir2.y], snapDistance);
+                    if (nray) {
+                        inters.push({...nray, point: new Vector3(nray.point[0], nray.point[1], pos.z), snappos: pos});
+                    }
+                }
             });
         });
         const inter = inters.filter(Boolean).sort((a, b) => a.distance - b.distance)[0];
