@@ -111,6 +111,8 @@ class LayerTree extends React.Component {
         setThemeLayersVisibilityPreset: PropTypes.func,
         /** Whether to display an icon linking to the layer attribute table in the layer options menu.  */
         showAttributeTableLink: PropTypes.bool,
+        /** Whether to show style selection menu for groups (if `showStyleSelector` is `true`). */
+        showGroupStyleSelector: PropTypes.bool,
         /** Whether to display legend icons. */
         showLegendIcons: PropTypes.bool,
         /** Whether to display the queryable icon to indicate that a layer is identifyable. */
@@ -159,6 +161,7 @@ class LayerTree extends React.Component {
         enableVisibleFilter: true,
         enableServiceInfo: true,
         infoInSettings: true,
+        showGroupStyleSelector: true,
         showStyleSelector: true,
         showToggleAllLayersCheckbox: true,
         transparencyIcon: true,
@@ -277,7 +280,7 @@ class LayerTree extends React.Component {
         const allowRemove = this.props.allowRemovingThemeLayers || ConfigUtils.getConfigProp("allowRemovingThemeLayers", this.props.theme) === true || layer.role !== LayerRole.THEME;
         const allowReordering = ConfigUtils.getConfigProp("allowReorderingLayers", this.props.theme) === true && !this.state.filterinvisiblelayers;
         const sortable = allowReordering && ConfigUtils.getConfigProp("preventSplittingGroupsWhenReordering", this.props.theme) === true;
-        const styles = this.props.showStyleSelector && layer.type === "wms" && path.length === 0 ? this.getLayerStyles(layer) : null;
+        const styles = this.props.showStyleSelector && this.props.showGroupStyleSelector && layer.type === "wms" && path.length === 0 ? this.getLayerStyles(layer) : null;
         return (
             <div className="layertree-item-container" data-id={JSON.stringify({layer: layer.id, path: path})} key={groupId}>
                 <div className={classnames(itemclasses)}>
