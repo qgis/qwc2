@@ -866,7 +866,7 @@ class Map3D extends React.Component {
         this.instance.add(this.sceneObjectGroup);
 
         // Setup map
-        const initialBbox = this.props.theme.map3d?.extent ?? this.props.theme.initialBbox;
+        const initialBbox = this.props.theme.map3d.extent ?? this.props.theme.initialBbox;
         const bounds = CoordinatesUtils.reprojectBbox(initialBbox.bounds, initialBbox.crs, projection);
         const extent = new Extent(crs, bounds[0], bounds[2], bounds[1], bounds[3]);
         this.map = new Map({
@@ -902,8 +902,8 @@ class Map3D extends React.Component {
         this.instance.scene.background = cubeTexture;
 
         // Setup elevation
-        const demUrl = MiscUtils.resolveAssetsPath(this.props.theme.map3d?.dtm?.url ?? "");
-        const demCrs = CoordinateSystem.fromSrid(this.props.theme.map3d?.dtm?.crs || "EPSG:3857");
+        const demUrl = MiscUtils.resolveAssetsPath(this.props.theme.map3d.dtm?.url ?? "");
+        const demCrs = CoordinateSystem.fromSrid(this.props.theme.map3d.dtm?.crs || "EPSG:3857");
         if (demUrl) {
             const demSource = new GeoTIFFSource({
                 url: demUrl,
@@ -922,7 +922,7 @@ class Map3D extends React.Component {
 
         // Collect baselayers
         const externalLayers = {};
-        const baseLayers = ThemeUtils.createThemeBackgroundLayers(this.props.theme.map3d?.basemaps || [], this.props.themes, null, externalLayers);
+        const baseLayers = ThemeUtils.createThemeBackgroundLayers(this.props.theme.map3d.basemaps || [], this.props.themes, null, externalLayers);
         baseLayers.push({
             type: "blank",
             name: "",
@@ -953,10 +953,10 @@ class Map3D extends React.Component {
 
         const objects = [...this.props.theme.map3d.objects ?? []];
         // Convert legacy flat lists to tree
-        (this.props.theme.map3d?.tiles3d || []).forEach(entry => {
+        (this.props.theme.map3d.tiles3d || []).forEach(entry => {
             objects.push({...entry, type: "tiles3d"});
         });
-        (this.props.theme.map3d?.objects3d || []).forEach(entry => {
+        (this.props.theme.map3d.objects3d || []).forEach(entry => {
             objects.push({...entry, type: "object3d"});
         });
 
