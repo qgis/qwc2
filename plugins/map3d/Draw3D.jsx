@@ -44,7 +44,7 @@ class Draw3D extends React.Component {
         this.ensureDrawGroup();
         const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
         const activeLayers = (this.props.sceneContext.colorLayers[themeLayer.id]?.params?.LAYERS || "").split(",");
-        const snapLayers = this.props.theme.snapping?.snaplayers.map(entry => entry.name).filter(layer => activeLayers.includes(layer));
+        const snapLayers = this.props.theme.snapping ? this.props.theme.snapping.snaplayers.map(entry => entry.name).filter(layer => activeLayers.includes(layer)) : [];
         this.snapIndex2d = new FeatureSnapIndex(themeLayer, snapLayers, this.props.sceneContext.mapCrs);
         this.setState({action: 'Pick'});
     };
