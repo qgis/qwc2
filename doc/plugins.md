@@ -659,6 +659,7 @@ with containing a container element with id=legendcontainer.
 | onlyGroups | `bool` | Whether to only display layer groups but not individual layers in layertree. | `false` |
 | scaleDependentLegend | `{bool, string}` | Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
 | showAttributeTableLink | `bool` | Whether to display an icon linking to the layer attribute table in the layer options menu. | `undefined` |
+| showGroupStyleSelector | `bool` | Whether to show style selection menu for groups (if `showStyleSelector` is `true`). | `true` |
 | showLegendIcons | `bool` | Whether to display legend icons. | `true` |
 | showQueryableIcon | `bool` | Whether to display the queryable icon to indicate that a layer is identifyable. | `true` |
 | showRootEntry | `bool` | Whether to display the root entry of the layertree. | `true` |
