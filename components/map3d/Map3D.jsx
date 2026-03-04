@@ -951,7 +951,7 @@ class Map3D extends React.Component {
 
         this.objectMap = {};
 
-        const objects = this.props.theme.map3d?.objects || [];
+        const objects = [...this.props.theme.map3d.objects ?? []];
         // Convert legacy flat lists to tree
         (this.props.theme.map3d?.tiles3d || []).forEach(entry => {
             objects.push({...entry, type: "tiles3d"});
