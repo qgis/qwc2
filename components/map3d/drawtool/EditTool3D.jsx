@@ -494,9 +494,9 @@ export default class EditTool3D extends React.Component {
             return new Vector3();
         }
         const axismap = {
-            X: new Vector3(1, 0, 0),
-            Y: new Vector3(0, 1, 0),
-            Z: new Vector3(0, 0, 1)
+            X: new Vector3(1, 0, 0).applyQuaternion(object.quaternion),
+            Y: new Vector3(0, 1, 0).applyQuaternion(object.quaternion),
+            Z: new Vector3(0, 0, 1).applyQuaternion(object.quaternion)
         };
         object.updateMatrixWorld();
         const snapDistance = 5;
