@@ -272,9 +272,11 @@ class Map3D extends React.Component {
             // Nothing changed
             return;
         }
-        const dtm = this.getLayer("__dtm");
-        if (visibility !== dtm.visible) {
-            dtm.visible = visibility;
+        if (visibility !== !!(this.map.backgroundOpacity)) {
+            const dtm = this.getLayer("__dtm");
+            if (dtm) {
+                dtm.visible = visibility;
+            }
             this.map.receiveShadow = visibility;
             this.map.backgroundOpacity = visibility ? 1 : 0;
             this.instance.notifyChange(this.map);
