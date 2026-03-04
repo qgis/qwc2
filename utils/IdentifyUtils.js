@@ -137,6 +137,7 @@ const IdentifyUtils = {
     buildFilterRequest(layer, queryLayers, filterGeom, map, options = {}) {
         const params = {
             feature_count: 100,
+            filter: layer.params.FILTER ?? '',
             FILTER_GEOM: filterGeom,
             ...options
         };
