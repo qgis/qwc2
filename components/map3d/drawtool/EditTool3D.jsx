@@ -585,7 +585,7 @@ export default class EditTool3D extends React.Component {
 
             // Ray-cast to check collisions
             const collisionObjects = [...sceneContext.collisionObjects];
-            if (axis === "Z") {
+            if (axis.includes("Z")) {
                 collisionObjects.push(sceneContext.map.object3d);
             }
             const ndir = dir.clone().negate();
