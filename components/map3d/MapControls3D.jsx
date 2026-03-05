@@ -14,7 +14,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {MOUSE, Vector3} from 'three';
 
-import ConfigUtils from '../../utils/ConfigUtils';
+import personSvg from '../../resources/person.svg';
 import {UrlParams} from '../../utils/PermaLinkUtils';
 import Icon from '../Icon';
 import {MapButtonPortalContext} from '../PluginsContainer';
@@ -149,8 +149,7 @@ class MapControls3D extends React.Component {
             this.setState({pickingFirstPerson: false});
         } else {
             this.props.sceneContext.scene.domElement.addEventListener('click', this.setupFirstPerson, {once: true});
-            const cursor = ConfigUtils.getAssetsPath() + "/img/person.svg";
-            this.props.sceneContext.scene.domElement.style.cursor = `url(${cursor}), pointer`;
+            this.props.sceneContext.scene.domElement.style.cursor = `url(${personSvg}), pointer`;
             this.setState({pickingFirstPerson: true});
         }
     };
