@@ -475,6 +475,10 @@
       "windowtitle": "Numerische Eingabe"
     },
     "obliqueview": {
+      "directionEast": "O",
+      "directionNorth": "N",
+      "directionSouth": "S",
+      "directionWest": "W",
       "nodataset": "Keine Schrägluftbilder verfügbar",
       "title": "Schrägluftbildansicht"
     },

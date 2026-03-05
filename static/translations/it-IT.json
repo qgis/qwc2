@@ -475,6 +475,10 @@
       "windowtitle": "Formulario numerico"
     },
     "obliqueview": {
+      "directionEast": "",
+      "directionNorth": "",
+      "directionSouth": "",
+      "directionWest": "",
       "nodataset": "Nessuna immagine aerea obliqua disponibile",
       "title": "Vista aerea obliqua"
     },

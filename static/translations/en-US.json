@@ -475,6 +475,10 @@
       "windowtitle": "Numeric input"
     },
     "obliqueview": {
+      "directionEast": "E",
+      "directionNorth": "N",
+      "directionSouth": "S",
+      "directionWest": "W",
       "nodataset": "No oblique imagery available",
       "title": "Oblique Aerial View"
     },

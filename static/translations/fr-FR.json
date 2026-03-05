@@ -475,6 +475,10 @@
       "windowtitle": "Entrée numérique"
     },
     "obliqueview": {
+      "directionEast": "",
+      "directionNorth": "",
+      "directionSouth": "",
+      "directionWest": "",
       "nodataset": "Aucune image aérienne oblique disponible",
       "title": "Vue aérienne oblique"
     },
