@@ -9,7 +9,8 @@ import { addLayer, addLayerFeatures, LayerRole, removeLayer } from '../actions/l
 import { setCurrentTask } from '../actions/task';
 import MapSelection from '../components/MapSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
-import ConfigUtils from '../utils/ConfigUtils';
+import cursorSvg from '../resources/panoramax-cursor.svg';
+import targetSvg from '../resources/target.svg';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -18,6 +19,9 @@ import ResourceRegistry from '../utils/ResourceRegistry';
 import '@panoramax/web-viewer';
 import '@panoramax/web-viewer/build/index.css';
 import './style/Panoramax.css';
+
+
+ResourceRegistry.addResource('panoramaxCursor', cursorSvg);
 
 /**
  * Panoramax Integration for QWC2.
@@ -105,7 +109,6 @@ class Panoramax extends React.Component {
         this.props.removeLayer('panoramax-recordings');
         this.props.removeLayer('panoramaxselection');
         this.setState({ selectionGeom: null, queryData: null, lon: null, lat: null, selectionActive: null, yaw: null, currentTooltip: '', viewerInitialized: false });
-        ResourceRegistry.removeResource('selected');
         this.viewer?.select(null, null, true);
     };
     render() {
@@ -162,7 +165,7 @@ class Panoramax extends React.Component {
                 )}
                 <MapSelection
                     active={this.state.selectionActive}
-                    cursor={`url("${ConfigUtils.getAssetsPath()}/img/target.svg") 1 1, default`}
+                    cursor={`url("${targetSvg}") 1 1, default`}
                     geomType={'Point'}
                     geometry={selectionGeom}
                     geometryChanged={(geom) => this.setState({ selectionGeom: geom })}
@@ -199,7 +202,6 @@ class Panoramax extends React.Component {
         }
     };
     handlePanoramaxEvent = () => {
-        ResourceRegistry.addResource('selected', `${ConfigUtils.getAssetsPath()}/img/panoramax-cursor.svg`);
         const layer = {
             id: "panoramaxselection",
             role: LayerRole.SELECTION
@@ -212,7 +214,7 @@ class Panoramax extends React.Component {
             crs: 'EPSG:4326',
             styleName: 'image',
             styleOptions: {
-                img: 'selected',
+                img: 'panoramaxCursor',
                 rotation: MapUtils.degreesToRadians(this.state.yaw),
                 anchor: [0.5, 0.5]
             }
