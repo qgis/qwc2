@@ -475,6 +475,10 @@
       "windowtitle": "Цифрово въвеждане"
     },
     "obliqueview": {
+      "directionEast": "",
+      "directionNorth": "",
+      "directionSouth": "",
+      "directionWest": "",
       "nodataset": "",
       "title": ""
     },

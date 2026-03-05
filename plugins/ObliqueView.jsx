@@ -198,13 +198,13 @@ class ObliqueView extends React.Component {
                     )}
                     <div className="obliqueview-nav-rotate" style={{transform: `rotate(${rot}deg)`}}>
                         <span />
-                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "n"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>N</span>
+                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "n"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>{LocaleUtils.tr("obliqueview.directionNorth")}</span>
                         <span />
-                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "w"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>W</span>
+                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "w"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>{LocaleUtils.tr("obliqueview.directionWest")}</span>
                         <span />
-                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "e"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>E</span>
+                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "e"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>{LocaleUtils.tr("obliqueview.directionEast")}</span>
                         <span />
-                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "s"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>S</span>
+                        <span className="obliqueview-nav-dir" onClick={() => this.setState({currentDirection: "s"})} onKeyDown={MiscUtils.checkKeyActivate} style={{transform: `rotate(${-rot}deg)`}} tabIndex={0}>{LocaleUtils.tr("obliqueview.directionSouth")}</span>
                         <span />
                         <div className="obliqueview-nav-circle" />
                     </div>
