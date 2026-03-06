@@ -456,7 +456,7 @@ class QtDesignerForm extends React.Component {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1600-01-01";
             const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
             return (
-                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} type="date" value={value} />
+                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} type="date" value={value.split("T")[0]} />
             );
         } else if (widget.class === "QTimeEdit") {
             return (
