@@ -632,7 +632,7 @@
     },
     "settings": {
       "bookmarks": "Bookmarks",
-      "colorscheme": "Color scheme",
+      "colorscheme": "Appearance",
       "confirmlang": "The application will be reloaded to change the language. Proceed?",
       "default": "Default",
       "defaulttheme": "Default theme",
