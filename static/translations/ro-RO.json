@@ -638,7 +638,6 @@
       "defaulttheme": "",
       "defaultthemefailed": "",
       "language": "Limba",
-      "stylescheme": "",
       "systemlang": "Liba sistemului",
       "themes": ""
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
-    },
-    "styleschemes": {
-      "default": "",
-      "square": "",
-      "round": ""
     }
   }
 }

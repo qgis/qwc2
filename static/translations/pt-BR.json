@@ -638,7 +638,6 @@
       "defaulttheme": "Tema padrão",
       "defaultthemefailed": "O tema padrão falhou",
       "language": "Idioma",
-      "stylescheme": "",
       "systemlang": "Idioma do sistema",
       "themes": "Temas"
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
-    },
-    "styleschemes": {
-      "default": "",
-      "square": "",
-      "round": ""
     }
   }
 }

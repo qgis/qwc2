@@ -638,7 +638,6 @@
       "defaulttheme": "Default kaart",
       "defaultthemefailed": "Instellen van de default kaart niet gelukt: {0}",
       "language": "Taal",
-      "stylescheme": "",
       "systemlang": "Systeemtaal",
       "themes": "Kaarten"
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
-    },
-    "styleschemes": {
-      "default": "",
-      "square": "",
-      "round": ""
     }
   }
 }

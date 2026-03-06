@@ -638,7 +638,6 @@
       "defaulttheme": "Тема по подразбиране",
       "defaultthemefailed": "Неуспешно задаване на темата по подразбиране: {0}",
       "language": "Език",
-      "stylescheme": "",
       "systemlang": "Език на системата",
       "themes": "Теми"
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
-    },
-    "styleschemes": {
-      "default": "",
-      "square": "",
-      "round": ""
     }
   }
 }

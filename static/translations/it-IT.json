@@ -638,7 +638,6 @@
       "defaulttheme": "Tema predefinito",
       "defaultthemefailed": "Impossibile cambiare il tema predefinito: {0}",
       "language": "Lingua",
-      "stylescheme": "",
       "systemlang": "Lingua del sistema",
       "themes": "Temi"
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
-    },
-    "styleschemes": {
-      "default": "",
-      "square": "",
-      "round": ""
     }
   }
 }

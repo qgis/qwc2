@@ -638,7 +638,6 @@
       "defaulttheme": "Thème par défaut",
       "defaultthemefailed": "Impossible de modifier le thème par défaut : {0}",
       "language": "Langue",
-      "stylescheme": "Schéma de styles",
       "systemlang": "Langue du système",
       "themes": "Thèmes"
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
-    },
-    "styleschemes": {
-      "default": "Défaut",
-      "square": "Coins carrés",
-      "round": "Coins arrondis"
     }
   }
 }

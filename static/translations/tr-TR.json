@@ -638,7 +638,6 @@
       "defaulttheme": "Varsayılan tema",
       "defaultthemefailed": "Varsayılan tema yüklenemedi: {0}",
       "language": "Dil",
-      "stylescheme": "",
       "systemlang": "Sistem dili",
       "themes": "Temalar"
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "",
       "requestPdf": ""
-    },
-    "styleschemes": {
-      "default": "",
-      "square": "",
-      "round": ""
     }
   }
 }

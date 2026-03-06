@@ -638,7 +638,6 @@
       "defaulttheme": "Standardthema",
       "defaultthemefailed": "Konnte das Standardthema nicht ändern: {0}",
       "language": "Sprache",
-      "stylescheme": "",
       "systemlang": "Systemsprache",
       "themes": "Themen"
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "Grundstücksbeschrieb",
       "requestPdf": "Grundbuchplan (PDF) erstellen"
-    },
-    "styleschemes": {
-      "default": "",
-      "square": "",
-      "round": ""
     }
   }
 }

@@ -638,7 +638,6 @@
       "defaulttheme": "Default theme",
       "defaultthemefailed": "Failed to set the default theme: {0}",
       "language": "Language",
-      "stylescheme": "Style scheme",
       "systemlang": "System language",
       "themes": "Themes"
     },
@@ -785,11 +784,6 @@
     "plotdescr": {
       "title": "Plot description",
       "requestPdf": "Create land register plan (PDF)"
-    },
-    "styleschemes": {
-      "default": "Default",
-      "square": "Square corners",
-      "round": "Round corners"
     }
   }
 }
