@@ -419,12 +419,24 @@
               "value": "default"
             },
             {
+              "titleMsgId": "colorschemes.default_rounded",
+              "value": "default_rounded"
+            },
+            {
               "titleMsgId": "colorschemes.highcontrast",
               "value": "highcontrast"
             },
             {
+              "titleMsgId": "colorschemes.highcontrast_rounded",
+              "value": "highcontrast_rounded"
+            },
+            {
               "titleMsgId": "colorschemes.dark",
               "value": "dark"
+            },
+            {
+              "titleMsgId": "colorschemes.dark_rounded",
+              "value": "dark_rounded"
             }
           ]
         }

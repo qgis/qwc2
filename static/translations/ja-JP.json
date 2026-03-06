@@ -785,8 +785,11 @@
     },
     "colorschemes": {
       "default": "デフォルト",
+      "default_rounded": "",
       "dark": "ダーク",
-      "highcontrast": "ハイ・コントラスト"
+      "dark_rounded": "",
+      "highcontrast": "ハイ・コントラスト",
+      "highcontrast_rounded": ""
     },
     "plotdescr": {
       "title": "",

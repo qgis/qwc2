@@ -8,6 +8,7 @@ div.sidebar {
     display: flex;
     flex-direction: column;
     max-width: 100%;
+    border-radius: var(--border-radius);
 }
 
 div.sidebar-right {

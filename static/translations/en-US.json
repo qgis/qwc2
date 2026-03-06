@@ -639,7 +639,7 @@
     },
     "settings": {
       "bookmarks": "Bookmarks",
-      "colorscheme": "Color scheme",
+      "colorscheme": "Appearance",
       "confirmlang": "The application will be reloaded to change the language. Proceed?",
       "default": "Default",
       "defaulttheme": "Default theme",
@@ -785,8 +785,11 @@
     },
     "colorschemes": {
       "default": "Default",
+      "default_rounded": "Default rounded",
       "dark": "Dark",
-      "highcontrast": "High contrast"
+      "dark_rounded": "Dark rounded",
+      "highcontrast": "High contrast",
+      "highcontrast_rounded": "High contrast rounded"
     },
     "plotdescr": {
       "title": "Plot description",

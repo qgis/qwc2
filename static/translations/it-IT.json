@@ -785,8 +785,11 @@
     },
     "colorschemes": {
       "default": "Predefinito",
+      "default_rounded": "",
       "dark": "Scuro",
-      "highcontrast": "Contrasto elevato"
+      "dark_rounded": "",
+      "highcontrast": "Contrasto elevato",
+      "highcontrast_rounded": ""
     },
     "plotdescr": {
       "title": "",
