@@ -15,7 +15,7 @@ import {register as olProj4Register} from 'ol/proj/proj4';
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
-import {localConfigLoaded, setStartupParameters, setColorScheme, setStyleScheme} from '../actions/localConfig';
+import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {changeLocale} from '../actions/locale';
 import {setCurrentTask} from '../actions/task';
 import {themesLoaded, setCurrentTheme} from '../actions/theme';
@@ -34,7 +34,6 @@ import PluginsContainer from './PluginsContainer';
 
 import './style/App.css';
 import './style/DefaultColorScheme.css';
-import './style/DefaultStyleScheme.css';
 
 
 const CSRF_TOKEN = MiscUtils.getCsrfToken();
@@ -304,11 +303,6 @@ export default class StandardApp extends React.Component {
             const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
             const colorScheme = initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
             StandardApp.store.dispatch(setColorScheme(colorScheme));
-
-            // Set style scheme
-            const storedStyleScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-style-scheme') : null;
-            const styleScheme = initialParams.style || storedStyleScheme || ConfigUtils.getConfigProp("defaultStyleScheme");
-            StandardApp.store.dispatch(setStyleScheme(styleScheme));
 
             // Resolve permalink and restore settings
             resolvePermaLink(initialParams, (params, state, success) => {

@@ -42,14 +42,6 @@ export function setColorScheme(colorScheme, storeInLocalStorage = false) {
     };
 }
 
-export function setStyleScheme(styleScheme, storeInLocalStorage = false) {
-    return {
-        type: SET_STYLE_SCHEME,
-        styleScheme,
-        storeInLocalStorage
-    };
-}
-
 export function setUserInfoFields(fields) {
     return {
         type: SET_USER_INFO_FIELDS,

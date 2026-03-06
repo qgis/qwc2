@@ -52,23 +52,6 @@ export default function localConfig(state = defaultState, action) {
         }
         return {...state, colorScheme: newColorScheme};
     }
-    case SET_STYLE_SCHEME: {
-        const root = document.querySelector(':root');
-        if (state.styleScheme) {
-            root.classList.remove(state.styleScheme);
-        }
-        const newStyleScheme = action.styleScheme || state.defaultStyleScheme || "default";
-        if (newStyleScheme) {
-            root.classList.add(newStyleScheme);
-        }
-        if (UrlParams.getParam("style_corners")) {
-            UrlParams.updateParams({style: newStyleScheme});
-        }
-        if (action.storeInLocalStorage) {
-            localStorage.setItem('qwc2-style-scheme', newStyleScheme);
-        }
-        return {...state, styleScheme: newStyleScheme};
-    }
     case SET_USER_INFO_FIELDS: {
         return {
             ...state,

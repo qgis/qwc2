@@ -42,7 +42,6 @@
   "wmsMaxGetUrlLength": 2048,
   "qgisServerVersion": 3,
   "defaultColorScheme": "default",
-  "defaultStyleScheme": "default",
   "username": "admin",
   "defaultFeatureStyle": {
     "strokeColor": [0, 0, 255, 1],
@@ -420,28 +419,26 @@
               "value": "default"
             },
             {
+              "titleMsgId": "colorschemes.default_rounded",
+              "value": "default_rounded"
+            },
+            {
               "titleMsgId": "colorschemes.highcontrast",
               "value": "highcontrast"
             },
             {
+              "titleMsgId": "colorschemes.highcontrast_rounded",
+              "value": "highcontrast_rounded"
+            },
+            {
               "titleMsgId": "colorschemes.dark",
               "value": "dark"
-            }
-          ],
-          "styleSchemes": [
-            {
-              "titleMsgId": "styleschemes.default",
-              "value": "default"
             },
             {
-              "titleMsgId": "styleschemes.square",
-              "value": "square"
-            },
-            {
-              "titleMsgId": "styleschemes.round",
-              "value": "round"
+              "titleMsgId": "colorschemes.dark_rounded",
+              "value": "dark_rounded"
             }
-          ]          
+          ]
         }
       },
       {
