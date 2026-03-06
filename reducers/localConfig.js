@@ -9,7 +9,7 @@
 
 import {
     LOCAL_CONFIG_LOADED, SET_STARTUP_PARAMETERS,
-    SET_COLOR_SCHEME, SET_STYLE_SCHEME, SET_USER_INFO_FIELDS,
+    SET_COLOR_SCHEME, SET_USER_INFO_FIELDS,
     SET_PERMALINK_PARAMETERS,
     REGISTER_CUSTOM_PLUGIN,
     UNREGISTER_CUSTOM_PLUGIN
@@ -23,8 +23,7 @@ const defaultState = {
     startupParams: {},
     startupState: {},
     permalinkParams: {},
-    colorScheme: 'default',
-    styleScheme: 'default'
+    colorScheme: 'default'
 };
 
 export default function localConfig(state = defaultState, action) {

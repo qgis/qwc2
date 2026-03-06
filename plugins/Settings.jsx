@@ -203,7 +203,6 @@ class Settings extends React.Component {
 
 export default connect((state) => ({
     colorScheme: state.localConfig.colorScheme,
-    styleScheme: state.localConfig.styleScheme,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     themes: state.theme.themes
 }), {

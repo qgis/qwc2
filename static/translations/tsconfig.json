@@ -64,10 +64,7 @@
     "oereb.title",
     "oereb.failed",
     "plotdescr.title",
-    "plotdescr.requestPdf",
-    "styleschemes.default",
-    "styleschemes.square",
-    "styleschemes.round"
+    "plotdescr.requestPdf"
   ],
   "strings": [
     "app.missingbg",
