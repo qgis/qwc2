@@ -778,8 +778,11 @@
     },
     "colorschemes": {
       "default": "Standard",
+      "default_rounded": "",
       "dark": "Dunkel",
-      "highcontrast": "Hochkontrast"
+      "dark_rounded": "",
+      "highcontrast": "Hochkontrast",
+      "highcontrast_rounded": ""
     },
     "plotdescr": {
       "title": "Grundstücksbeschrieb",

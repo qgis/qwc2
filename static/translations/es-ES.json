@@ -778,8 +778,11 @@
     },
     "colorschemes": {
       "default": "Predeterminado",
+      "default_rounded": "",
       "dark": "Oscuro",
-      "highcontrast": "Alto contraste"
+      "dark_rounded": "",
+      "highcontrast": "Alto contraste",
+      "highcontrast_rounded": ""
     },
     "plotdescr": {
       "title": "",
