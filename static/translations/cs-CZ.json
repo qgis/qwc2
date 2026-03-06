@@ -121,6 +121,7 @@
       "download": "",
       "ellipse": "",
       "export": "Export",
+      "false": "",
       "format": "Formát:",
       "line": "Linie",
       "loading": "Načítání...",
@@ -138,6 +139,7 @@
       "square": "",
       "sync2dview": "",
       "text": "Text",
+      "true": "",
       "wait": "Čekejte...",
       "zoomin": "Přiblížit",
       "zoomout": "Oddálit"

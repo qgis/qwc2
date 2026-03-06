@@ -121,6 +121,7 @@
       "download": "ダウンロード",
       "ellipse": "楕円",
       "export": "エクスポート",
+      "false": "",
       "format": "形式",
       "line": "線",
       "loading": "ロード中...",
@@ -138,6 +139,7 @@
       "square": "四角形",
       "sync2dview": "2D ビューと同期",
       "text": "テキスト",
+      "true": "",
       "wait": "しばらくお待ちください...",
       "zoomin": "ズーム・イン",
       "zoomout": "ズーム・アウト"

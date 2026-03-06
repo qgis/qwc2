@@ -121,6 +121,7 @@
       "download": "",
       "ellipse": "",
       "export": "",
+      "false": "",
       "format": "Format:",
       "line": "Linia",
       "loading": "",
@@ -138,6 +139,7 @@
       "square": "",
       "sync2dview": "",
       "text": "Tekst",
+      "true": "",
       "wait": "",
       "zoomin": "Przybliż",
       "zoomout": "Oddal"

@@ -179,6 +179,17 @@ class FeatureSearch extends React.Component {
                     <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
                 </InputContainer>
             );
+        } else if (fieldcfg.type === "checkbox") {
+            return (
+                <InputContainer>
+                    <select defaultValue="" name={fieldname} onChange={onChange} role="input">
+                        <option value="">{LocaleUtils.tr("common.select")}</option>
+                        <option value="true">{LocaleUtils.tr("common.true")}</option>
+                        <option value="false">{LocaleUtils.tr("common.false")}</option>
+                    </select>
+                    <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
+                </InputContainer>
+            );
         } else {
             return (<input name={fieldname} onChange={onChange} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
         }
@@ -227,10 +238,31 @@ class FeatureSearch extends React.Component {
             feature_count: provider.params.featureCount || 100,
             info_format: 'text/xml'
         };
+
         Object.keys(filter).forEach(layer => {
             Object.entries(values).forEach(([key, value]) => {
                 filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
             });
+
+            // Empty searches break with NULL values in DB (`ILIKE '%%'` or `= ''` returns
+            // false against NULL values), so we want to filter-out the condition with empty values.
+            // QGIS Server doesn't allow us to do stuff like
+            // `('$KEY1$' = '' OR "col1" = '$KEY1$') AND ('$KEY2$' = '' OR "col2" = '$KEY2$')`
+            // for security reasons, so we need to alter the filter itself.
+            // Blindly removing the condition with empty values is quite aggressive and will surely
+            // break existing filters.
+            // So we match "simple" filters which follow the pattern:
+            // "col1" = 'val1' AND "col2" ILIKE '%val2%' AND "col3" ILIKE 'val3%'
+            const pattern = /^("\w+"\s*(ILIKE|=|<|=<|>|>=|!=)\s*'(?:\\'|[^'])*')(\s+AND\s+"\w+"\s*(ILIKE|=|<|=<|>|>=|!=)\s*'(?:\\'|[^'])*')*$/i;
+            const emptyConditionPattern = /(ILIKE|=|<|=<|>|>=|!=)\s*'%?%?'$/i;
+            if (pattern.test(filter[layer])) {
+                filter[layer] = filter[layer].split(/\s+AND\s+/i)
+                    // Remove empty conditions
+                    .filter(condition => !emptyConditionPattern.test(condition))
+                    .join(' AND ')
+                    .trim();
+            }
+
             params.LAYERS.push(layer);
             params.FILTER.push(layer + ":" + filter[layer]);
         });

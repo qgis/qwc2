@@ -121,6 +121,7 @@
       "download": "",
       "ellipse": "Elipsă",
       "export": "",
+      "false": "",
       "format": "",
       "line": "Linie",
       "loading": "Se încarcă",
@@ -138,6 +139,7 @@
       "square": "Pătrat",
       "sync2dview": "",
       "text": "Text",
+      "true": "",
       "wait": "",
       "zoomin": "Mărire",
       "zoomout": "Micșorare"

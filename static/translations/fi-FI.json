@@ -121,6 +121,7 @@
       "download": "",
       "ellipse": "",
       "export": "",
+      "false": "",
       "format": "Formaatti:",
       "line": "Viiva",
       "loading": "",
@@ -138,6 +139,7 @@
       "square": "",
       "sync2dview": "",
       "text": "Teksti",
+      "true": "",
       "wait": "",
       "zoomin": "Zoomaa sisään",
       "zoomout": "Zoomaa ulos"

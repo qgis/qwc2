@@ -121,6 +121,7 @@
       "download": "Scarica",
       "ellipse": "Ellisse",
       "export": "Esporta",
+      "false": "",
       "format": "Formato",
       "line": "Linea",
       "loading": "Caricamento...",
@@ -138,6 +139,7 @@
       "square": "Quadrato",
       "sync2dview": "Sincronizza con visuale 2D",
       "text": "Testo",
+      "true": "",
       "wait": "Attendere...",
       "zoomin": "Ingrandisci",
       "zoomout": "Rimpicciolisci"
