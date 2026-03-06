@@ -122,6 +122,7 @@ class Map3D extends React.Component {
         colorLayers: {},
         objectTree: {},
         collisionObjects: [],
+        snapObjects: [],
         settings: {
             fov: 30,
             sceneQuality: 100
@@ -235,6 +236,13 @@ class Map3D extends React.Component {
                     collisionObjects: Object.keys(state.sceneContext.objectTree).reduce((res, objectId) => {
                         const obj = this.objectMap[objectId];
                         if (obj?.visible) {
+                            res.push(obj.tiles?.group ?? obj);
+                        }
+                        return res;
+                    }, []),
+                    snapObjects: Object.entries(state.sceneContext.objectTree).reduce((res, [objectId, entry]) => {
+                        const obj = this.objectMap[objectId];
+                        if (obj?.visible && entry.snap) {
                             res.push(obj.tiles?.group ?? obj);
                         }
                         return res;
@@ -620,6 +628,7 @@ class Map3D extends React.Component {
                     parent: null,
                     visibility: true,
                     opacity: 255,
+                    snap: true,
                     ...treeOptions
                 };
                 return {
@@ -985,6 +994,7 @@ class Map3D extends React.Component {
                         parent: parentId,
                         title: entry.title ?? entry.name,
                         visibility: entry.visibility ?? true,
+                        snap: entry.snap ?? true,
                         opacity: 255,
                         styles: entry.styles || {},
                         style: entry.style || Object.keys(entry.styles || {})[0] || null
@@ -1007,6 +1017,7 @@ class Map3D extends React.Component {
                         parent: parentId,
                         title: entry.title ?? entry.name,
                         visibility: entry.visibility ?? true,
+                        snap: entry.snap ?? true,
                         opacity: 255
                     };
                     this.importObject3D(MiscUtils.resolveAssetsPath(entry.url), entry.name, false, {}, false, () => {

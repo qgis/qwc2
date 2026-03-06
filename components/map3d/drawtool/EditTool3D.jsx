@@ -584,9 +584,9 @@ export default class EditTool3D extends React.Component {
             }
 
             // Ray-cast to check collisions
-            const collisionObjects = [...sceneContext.collisionObjects];
+            const snapObjects = [...sceneContext.snapObjects];
             if (axis.includes("Z")) {
-                collisionObjects.push(sceneContext.map.object3d);
+                snapObjects.push(sceneContext.map.object3d);
             }
             const ndir = dir.clone().negate();
             const dir2 = new Vector2(dir.x, dir.y).normalize();
@@ -596,11 +596,11 @@ export default class EditTool3D extends React.Component {
             psnappos.concat(nsnappos).forEach(pos => {
                 if (this.state.snapTo3dEnabled) {
                     raycaster.set(pos, dir);
-                    inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
+                    inters.push(raycaster.intersectObjects(snapObjects, true).filter(
                         intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
                     ).map(intr => ({...intr, snappos: pos}))[0]);
                     raycaster.set(pos, ndir);
-                    inters.push(raycaster.intersectObjects(collisionObjects, true).filter(
+                    inters.push(raycaster.intersectObjects(snapObjects, true).filter(
                         intr => intr.object.uuid !== object.uuid && intr.distance < snapDistance
                     ).map(intr => ({...intr, snappos: pos}))[0]);
                 }
