@@ -64,9 +64,13 @@ export function updateObjectLabel(sceneObject, sceneContext) {
 export function importGltf(dataOrUrl, name, sceneContext, options = {}, showEditTool = false) {
     const loader = new GLTFLoader();
     const processor = (gltf) => {
+        let root = gltf.scene;
+        if (root.children.length === 1 && root.children[0].isGroup) {
+            root = root.children[0];
+        }
         // GLTF is Y-UP, we need Z-UP
-        gltf.scene.rotation.x = Math.PI / 2;
-        gltf.scene.updateMatrixWorld(true);
+        root.rotation.x = Math.PI / 2;
+        root.updateMatrixWorld(true);
 
         const objectId = uuidv4();
         options = {
@@ -74,9 +78,9 @@ export function importGltf(dataOrUrl, name, sceneContext, options = {}, showEdit
             title: name,
             ...options
         };
-        gltf.scene.castShadow = true;
-        gltf.scene.receiveShadow = true;
-        gltf.scene.traverse(c => {
+        root.castShadow = true;
+        root.receiveShadow = true;
+        root.traverse(c => {
             if (c.geometry) {
                 c.castShadow = true;
                 c.receiveShadow = true;
@@ -85,21 +89,21 @@ export function importGltf(dataOrUrl, name, sceneContext, options = {}, showEdit
         });
 
         // Shift root position to center of object
-        gltf.scene.updateMatrixWorld(true);
+        root.updateMatrixWorld(true);
 
-        const box = new Box3().setFromObject(gltf.scene);
+        const box = new Box3().setFromObject(root);
         const centerWorld = box.getCenter(new Vector3());
         centerWorld.z = box.min.z;
-        const centerLocal = gltf.scene.worldToLocal(centerWorld.clone());
-        gltf.scene.position.add(centerWorld);
+        const centerLocal = root.worldToLocal(centerWorld.clone());
+        root.position.add(centerWorld);
 
         // Offset children back so the world positions remain unchanged
-        gltf.scene.children.forEach(child => {
+        root.children.forEach(child => {
             child.position.sub(centerLocal);
         });
-        gltf.scene.updateMatrixWorld(true);
+        root.updateMatrixWorld(true);
 
-        sceneContext.addSceneObject(objectId, gltf.scene, options, showEditTool);
+        sceneContext.addSceneObject(objectId, root, options, showEditTool);
     };
     if (typeof dataOrUrl === 'string') {
         loader.load(dataOrUrl, processor, () => {}, (err) => {
