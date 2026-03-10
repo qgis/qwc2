@@ -187,7 +187,6 @@ class ExportObjects3D extends React.Component {
             new Vector3(bbox[2], bbox[3], 8000)
         ]);
         const exportGroup = new Group();
-        exportGroup.rotation.set(-Math.PI / 2, 0, 0); // GLTF is Y-UP
 
         Object.entries(this.props.sceneContext.sceneObjects).forEach(([objectId, options]) => {
             if (!options.layertree || !options.visibility) {
@@ -200,6 +199,8 @@ class ExportObjects3D extends React.Component {
                 this.addObjectToExportGroup(object, exportGroup, selectionBox);
             }
         });
+        exportGroup.rotation.x -= Math.PI / 2; // GLTF is Y-UP
+        exportGroup.updateMatrixWorld(true);
         const exportScene = new Scene();
         exportScene.add(exportGroup);
         const exporter = new GLTFExporter();
