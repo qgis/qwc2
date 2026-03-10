@@ -232,9 +232,9 @@ class ExportObjects3D extends React.Component {
                         bbox: new Box3()
                     };
                     helper.forEachFeatureTriangle(featureId, (i0, i1, i2) => {
-                        const pos1 = posAttr.array.slice(3 * i0, 3 * i0 + 3);
-                        const pos2 = posAttr.array.slice(3 * i1, 3 * i1 + 3);
-                        const pos3 = posAttr.array.slice(3 * i2, 3 * i2 + 3);
+                        const pos1 = [posAttr.getX(i0), posAttr.getY(i0), posAttr.getZ(i0)];
+                        const pos2 = [posAttr.getX(i1), posAttr.getY(i1), posAttr.getZ(i1)];
+                        const pos3 = [posAttr.getX(i2), posAttr.getY(i2), posAttr.getZ(i2)];
                         feature.position.push(...pos1);
                         feature.position.push(...pos2);
                         feature.position.push(...pos3);
