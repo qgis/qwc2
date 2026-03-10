@@ -298,13 +298,22 @@ class ExportObjects3D extends React.Component {
         });
     };
     addObjectToExportGroup = (object, exportGroup, selectionBox) => {
-        object.children.forEach(child => {
-            const objBox = new Box3().setFromObject(child);
-            if (
-                selectionBox.intersectsBox(objBox) &&
-                this.bboxInExportPolygon(objBox)
-            ) {
-                exportGroup.add(child.clone());
+        object.traverse(child => {
+            if (child.isMesh) {
+                const objBox = new Box3().setFromObject(child);
+                if (
+                    selectionBox.intersectsBox(objBox) &&
+                    this.bboxInExportPolygon(objBox)
+                ) {
+                    const clone = child.clone();
+                    clone.matrix.copy(child.matrixWorld);
+                    clone.matrix.decompose(
+                        clone.position,
+                        clone.quaternion,
+                        clone.scale
+                    );
+                    exportGroup.add(clone);
+                }
             }
         });
     };
