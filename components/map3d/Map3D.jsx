@@ -147,6 +147,7 @@ class Map3D extends React.Component {
             removeSceneObject: (objectId) => {},
             updateSceneObject: (objectId, options, flags) => {},
             zoomToObject: (objectId) => {},
+            objectIsVisible: (objectId) => {},
 
             getMap: () => {},
 
@@ -182,6 +183,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
         this.state.sceneContext.zoomToObject = this.zoomToObject;
+        this.state.sceneContext.objectIsVisible = this.objectIsVisible;
         this.state.sceneContext.getMap = this.getMap;
         this.state.computeBoundsTree = this.computeBoundsTree;
         this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
@@ -810,6 +812,15 @@ class Map3D extends React.Component {
             ];
             this.state.sceneContext.setViewToExtent(bounds, 0);
         }
+    };
+    objectIsVisible = (objectId) => {
+        const objectTree = this.state.sceneContext.objectTree;
+        const options = objectTree[objectId];
+        let isVisible = options.opacity > 0 && options.visibility;
+        for (let curId = options.parent; isVisible && curId !== undefined; curId = objectTree[curId].parent) {
+            isVisible &&= objectTree[curId].visibility;
+        }
+        return isVisible;
     };
     getMap = () => {
         return this.map;

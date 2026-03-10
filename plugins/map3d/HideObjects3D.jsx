@@ -109,7 +109,7 @@ class HideObjects3D extends React.Component {
 
         const picks = [];
         Object.values(this.props.sceneContext.objectTree).forEach(entry => {
-            if (!entry.objectId || !entry.visibility || entry.opacity === 0) {
+            if (!entry.objectId || !this.props.sceneContext.objectIsVisible(entry.objectId)) {
                 return;
             }
             const object = this.props.sceneContext.getSceneObject(entry.objectId);
