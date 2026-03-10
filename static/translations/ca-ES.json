@@ -25,7 +25,7 @@
         "MapFilter": "Filtre de mapa",
         "MapLight3D": "Llum i ombres",
         "ObjectList": "Llistat d'objectes",
-        "PlotInfoTool": "",
+        "PlotInfoTool": "Informació immobiliària",
         "Print": "Imprimir",
         "Reports": "Informes",
         "Settings": "Opcions",
@@ -51,7 +51,7 @@
         "MeasureLineString": "Mesurar una línia",
         "MeasurePolygon": "Mesurar un polígon",
         "NewsPopup": "Notícies",
-        "ObliqueView": "",
+        "ObliqueView": "Vista aèria obliqua",
         "Panoramax": "Panoramax",
         "Portal": "Portal",
         "PrintScreen3D": "Exportar ràster",
@@ -66,7 +66,7 @@
     },
     "attribtable": {
       "addfeature": "Afegir element",
-      "calculatedfield": "",
+      "calculatedfield": "Camp calculat",
       "commit": "Commit",
       "csvexport": "Exportar CSV",
       "deletefailed": "Un o més elements no han pogut eliminar-se",
@@ -74,7 +74,7 @@
       "deleting": "Eliminant elements...",
       "discard": "Descartar",
       "formeditmode": "Obrir formulari d'edició de l'element seleccionat",
-      "fulldatasetload": "",
+      "fulldatasetload": "Filtrar o ordenar per camps virtuals provocarà la càrrega completa del conjunt de dades.",
       "geomnoadd": "Si us plau, feu servir el formulari d'edició per afegir elements a aquesta capa",
       "limittoextent": "Limitar a l'extensió del mapa",
       "loadfailed": "La càrrega ha fallat",
@@ -93,7 +93,7 @@
       "addfailed": "Error al crear",
       "lastUpdate": "Darrer canvi",
       "manage": "Gestionar",
-      "newbookmark": "",
+      "newbookmark": "Nou marcador",
       "nobookmarks": "Cap marcador",
       "notloggedin": "No logat",
       "open": "Obrir",
@@ -130,7 +130,7 @@
       "point": "Punt",
       "polygon": "Polígon",
       "rectangle": "Rectangle",
-      "rename": "",
+      "rename": "Reanomena",
       "resolution": "Resolució:",
       "save": "Guardar",
       "select": "Seleccionar...",
@@ -181,9 +181,9 @@
       "rotate": "Rotar",
       "rotation": "Rotació",
       "scale": "Escalar",
-      "snap_2dedge": "",
-      "snap_2dvertex": "",
-      "snap_3dbody": "",
+      "snap_2dedge": "Ajusta a les vores de les capes d’ajust 2D",
+      "snap_2dvertex": "Ajusta als vèrtexs de les capes d’ajust 2D",
+      "snap_3dbody": "Ajusta als cossos 3D",
       "sphere": "Esfera",
       "subtract": "Restar",
       "thescale": "Escala",
@@ -286,13 +286,13 @@
       "featurecount": "{0} element(s)",
       "layerall": "Totes les capes",
       "link": "Link",
-      "multiview": "",
+      "multiview": "Multivista",
       "noattributes": "Sense atributs",
       "noresults": "Sense informació disponible sobre el punt seleccionat",
       "querying": "Consultant...",
       "reportfail": "No s'ha pogut generar l'informe",
       "results": "Resultats",
-      "selectforcompare": "",
+      "selectforcompare": "Selecciona per comparar",
       "selectreport": "Seleccionar informe...",
       "title": "Informació del element"
     },
@@ -350,7 +350,7 @@
       "printlegend": "Imprimir llegenda",
       "separator": "Separador",
       "separatortooltip": "Afegir separador",
-      "togglegroup": "",
+      "togglegroup": "Activar o desactivar el grup i totes les subcapes",
       "transparency": "Transparència",
       "visiblefilter": "Filtrar capes no visibles",
       "zoomtolayer": "Zoom a la capa"
@@ -389,7 +389,7 @@
       "resetrotation": "Reiniciar rotació"
     },
     "map3d": {
-      "noterrain": "",
+      "noterrain": "Sense terreny",
       "terrain": "Terreny",
       "title": "Vista 3D"
     },
@@ -422,7 +422,7 @@
     },
     "maplight3d": {
       "animationstep": "Pas d'animació",
-      "currentdatetime": "",
+      "currentdatetime": "Data i hora actuals",
       "date": "Data",
       "dayspersec": "dies / segon",
       "helpersVisible": "Mostrar ajudes",
@@ -456,10 +456,10 @@
     "misc": {
       "ctrlclickhint": "Obrir amb Ctrl+Click"
     },
-    "navbar": {
-      "next": "",
+   "navbar": {
+      "next": "Pàgina següent",
       "perpage": "per pàgina",
-      "prev": ""
+      "prev": "Pàgina anterior"
     },
     "newspopup": {
       "dontshowagain": "No mostrar de nou",
@@ -469,40 +469,40 @@
       "angle": "Angle",
       "featureunsupported": "Entrada numèrica no disponible per a aquesta geometria",
       "height": "Alçada",
-      "nofeatureormultiple": "",
+      "nofeatureormultiple": "Cap o múltiples elements actius",
       "side": "Costat",
       "width": "Amplada",
       "windowtitle": "Entrada numèrica"
     },
     "obliqueview": {
-      "directionEast": "",
-      "directionNorth": "",
-      "directionSouth": "",
-      "directionWest": "",
-      "nodataset": "",
-      "title": ""
+      "directionEast": "E",
+      "directionNorth": "N",
+      "directionSouth": "S",
+      "directionWest": "O",
+      "nodataset": "No hi ha imatges obliqües disponibles",
+      "title": "Vista aèria obliqua"
     },
     "oereb": {
-      "concernedThemes": "",
-      "fundationdatastate": "",
-      "fundations": "",
-      "generalInformation": "",
-      "generalinfo": "",
-      "hidefulllegend": "",
-      "hints": "",
-      "legalbasis": "",
-      "notConcernedThemes": "",
-      "nrpoints": "",
-      "perc": "",
-      "regulations": "",
-      "responsibleauthority": "",
-      "responsibleoffice": "",
-      "share": "",
-      "showfulllegend": "",
-      "themeWithoutData": "",
-      "type": "",
-      "title": "",
-      "failed": ""
+      "concernedThemes": "Temes afectats",
+      "fundationdatastate": "Dades de la mesura cadastral. Estat de la mesura cadastral:",
+      "fundations": "Fonaments",
+      "generalInformation": "Informació general i legal",
+      "generalinfo": "Informació general",
+      "hidefulllegend": "Amaga la llegenda completa",
+      "hints": "Informació addicional i suggeriments",
+      "legalbasis": "Bases legals",
+      "notConcernedThemes": "Temes no afectats",
+      "nrpoints": "punt(s)",
+      "perc": "Percentatge (%)",
+      "regulations": "Regulacions",
+      "responsibleauthority": "Autoritat responsable",
+      "responsibleoffice": "Oficina responsable",
+      "share": "Participació",
+      "showfulllegend": "Mostra la llegenda completa",
+      "themeWithoutData": "Temes sense dades",
+      "type": "Tipus",
+      "title": "Cadastre ÖREB",
+      "failed": "Error en carregar l'extracte OEREB"
     },
     "panoramax": {
       "notfound": "No hi ha imatge disponible per a aquesta ubicació.",
@@ -512,8 +512,8 @@
       "querying": "Consultant..."
     },
     "plotinfotool": {
-      "failed": "",
-      "loading": ""
+      "failed": "Error en carregar les dades",
+      "loading": "Carregant dades..."
     },
     "portal": {
       "filter": "Filtrar temes...",
@@ -541,24 +541,24 @@
       "loading": "Carregant formulari..."
     },
     "redlining": {
-      "attributes": "",
-      "buffer": "Buffer",
-      "buffercompute": "Computar",
+      "attributes": "Atributs de l’element",
+      "buffer": "Zona d’influència",
+      "buffercompute": "Calcula",
       "bufferdistance": "Distància",
-      "bufferlayer": "Destí",
-      "bufferlayername": "Capa de buffer",
-      "bufferselectfeature": "Seleccioni un element para enmagatzemar en bufer",
-      "ctrlhint": "",
-      "draw": "Dibuixar",
-      "edit": "Editar",
-      "freehand": "Dibuix a ma alçada",
+      "bufferlayer": "Destinació",
+      "bufferlayername": "Zona d’influència",
+      "bufferselectfeature": "Selecciona un element per crear la zona d’influència...",
+      "ctrlhint": "Utilitza Ctrl per a la multiselecció...",
+      "draw": "Dibuixa",
+      "edit": "Edita",
+      "freehand": "Dibuix a mà alçada",
       "label": "Etiqueta",
       "layer": "Capa",
-      "layertitle": "Línia de demarcació",
+      "layertitle": "Redlining",
       "markers": "Marcadors",
       "numericinput": "Entrada numèrica",
-      "size": "Tamany",
-      "transform": "Transformar"
+      "size": "Mida",
+      "transform": "Transforma"
     },
     "reports": {
       "region": "Seleccionar regió",
@@ -621,7 +621,7 @@
       "providerselection": "Proveidor",
       "recent": "Cerques recents",
       "search": "Buscar",
-      "tasks": "",
+      "tasks": "Tasques del menú",
       "themelayers": "Capes del tema",
       "themes": "Temes",
       "unknownmore": "Més resultats"
@@ -649,8 +649,8 @@
       "themes": "Temes"
     },
     "settings3d": {
-      "fov": "",
-      "quality": ""
+      "fov": "Camp de visió",
+      "quality": "Qualitat"
     },
     "share": {
       "QRCodeLinkTitle": "Codi QR",
@@ -789,8 +789,8 @@
       "highcontrast": "Alt contrast"
     },
     "plotdescr": {
-      "title": "",
-      "requestPdf": ""
+      "title": "Descripció de la parcel·la",
+      "requestPdf": "Crea el plànol del registre de la propietat (PDF)"
     }
   }
 }
