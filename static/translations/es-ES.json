@@ -25,7 +25,7 @@
         "MapFilter": "Filtro de mapa",
         "MapLight3D": "Luz y sombras",
         "ObjectList": "Lista de objetos",
-        "PlotInfoTool": "",
+        "PlotInfoTool": "Información inmobiliaria",
         "Print": "Imprimir",
         "Reports": "Informes",
         "Settings": "Opciones",
@@ -51,7 +51,7 @@
         "MeasureLineString": "Medir una línea",
         "MeasurePolygon": "Medir un polígono",
         "NewsPopup": "Noticias",
-        "ObliqueView": "",
+        "ObliqueView": "Vista aérea oblicua",
         "Panoramax": "Panoramax",
         "Portal": "Portal",
         "PrintScreen3D": "Exportar ráster",
@@ -66,7 +66,7 @@
     },
     "attribtable": {
       "addfeature": "Añadir elemento",
-      "calculatedfield": "",
+      "calculatedfield": "Campo calculado",
       "commit": "Commit de la fila modificada",
       "csvexport": "Exportar CSV",
       "deletefailed": "Uno o más elementos no han podido eliminarse",
@@ -74,7 +74,7 @@
       "deleting": "Eliminando elementos...",
       "discard": "Descartar fila modificada",
       "formeditmode": "Abrir el formulario de edición del elemento seleccionado",
-      "fulldatasetload": "",
+      "fulldatasetload": "El filtrado o la ordenación por campos virtuales provocará la carga completa del conjunto de datos.",
       "geomnoadd": "Por favor use el formulario de edición para añadir elementos a esta capa",
       "limittoextent": "Limitar a la extensión del mapa",
       "loadfailed": "No se han podido cargar los datos del elemento",
@@ -93,7 +93,7 @@
       "addfailed": "Error al crear",
       "lastUpdate": "Último guardado",
       "manage": "Administrar",
-      "newbookmark": "",
+      "newbookmark": "Nuevo marcador",
       "nobookmarks": "Ningún marcador",
       "notloggedin": "Se necesita tener sesión iniciada para guardar marcadores",
       "open": "Abrir en la pestaña actual",
@@ -130,7 +130,7 @@
       "point": "Punto",
       "polygon": "Polígono",
       "rectangle": "Rectángulo",
-      "rename": "",
+      "rename": "Renombrar",
       "resolution": "Resolución:",
       "save": "Guardar",
       "select": "Seleccionar...",
@@ -181,9 +181,9 @@
       "rotate": "Rotar",
       "rotation": "Rotación",
       "scale": "Escalar",
-      "snap_2dedge": "",
-      "snap_2dvertex": "",
-      "snap_3dbody": "",
+      "snap_2dedge": "Ajustar a bordes de capas de ajuste 2D",
+      "snap_2dvertex": "Ajustar a vértices de capas de ajuste 2D",
+      "snap_3dbody": "Ajustar a cuerpos 3D",
       "sphere": "Esfera",
       "subtract": "Restar",
       "thescale": "Escala",
@@ -283,16 +283,16 @@
       "compare": "Comparar con los objetos seleccionados",
       "comparing": "Comparando {0} elementos",
       "featureReport": "Informe del elemento",
-      "featurecount": "Cantidad de elementos",
+      "featurecount": "{0} elemento(s)",
       "layerall": "Todas las capas",
       "link": "Link",
-      "multiview": "",
+      "multiview": "Vista múltiple",
       "noattributes": "Sin atributos",
       "noresults": "Sin información disponible sobre el punto seleccionado",
       "querying": "Consultando...",
       "reportfail": "No se pudo generar el informe",
       "results": "Resultados",
-      "selectforcompare": "",
+      "selectforcompare": "Seleccionar para comparar",
       "selectreport": "Seleccionar informe...",
       "title": "Información del elemento"
     },
@@ -350,7 +350,7 @@
       "printlegend": "Imprimir leyenda",
       "separator": "Separador",
       "separatortooltip": "Agregar separador",
-      "togglegroup": "",
+      "togglegroup": "Activar o desactivar el grupo y todas las subcapas",
       "transparency": "Transparencia",
       "visiblefilter": "Filtrar capas no visibles",
       "zoomtolayer": "Zoom a la capa"
@@ -389,7 +389,7 @@
       "resetrotation": "Reiniciar rotación"
     },
     "map3d": {
-      "noterrain": "",
+      "noterrain": "Sin terreno",
       "terrain": "Terreno",
       "title": "Vista 3D"
     },
@@ -422,7 +422,7 @@
     },
     "maplight3d": {
       "animationstep": "Paso de animación",
-      "currentdatetime": "",
+      "currentdatetime": "Fecha y hora actual",
       "date": "Fecha",
       "dayspersec": "días / segundo",
       "helpersVisible": "Mostrar ayudas",
@@ -457,9 +457,9 @@
       "ctrlclickhint": "Abrir con Ctrl+Click"
     },
     "navbar": {
-      "next": "",
+      "next": "Siguiente página",
       "perpage": "por página",
-      "prev": ""
+      "prev": "Página anterior"
     },
     "newspopup": {
       "dontshowagain": "No mostrar de nuevo",
@@ -475,34 +475,34 @@
       "windowtitle": "Entrada numérica"
     },
     "obliqueview": {
-      "directionEast": "",
-      "directionNorth": "",
-      "directionSouth": "",
-      "directionWest": "",
-      "nodataset": "",
-      "title": ""
+      "directionEast": "E",
+      "directionNorth": "N",
+      "directionSouth": "S",
+      "directionWest": "O",
+      "nodataset": "No hay imágenes oblicuas disponibles",
+      "title": "Vista aérea oblicua"
     },
     "oereb": {
-      "concernedThemes": "",
-      "fundationdatastate": "",
-      "fundations": "",
-      "generalInformation": "",
-      "generalinfo": "",
-      "hidefulllegend": "",
-      "hints": "",
-      "legalbasis": "",
-      "notConcernedThemes": "",
-      "nrpoints": "",
-      "perc": "",
-      "regulations": "",
-      "responsibleauthority": "",
-      "responsibleoffice": "",
-      "share": "",
-      "showfulllegend": "",
-      "themeWithoutData": "",
-      "type": "",
-      "title": "",
-      "failed": ""
+      "concernedThemes": "Temas afectados",
+      "fundationdatastate": "Datos de la mensura catastral. Estado de la mensura catastral:",
+      "fundations": "Fundamentos",
+      "generalInformation": "Información general y legal",
+      "generalinfo": "Información general",
+      "hidefulllegend": "Ocultar leyenda completa",
+      "hints": "Información adicional y sugerencias",
+      "legalbasis": "Bases legales",
+      "notConcernedThemes": "Temas no afectados",
+      "nrpoints": "punto(s)",
+      "perc": "Porcentaje (%)",
+      "regulations": "Regulaciones",
+      "responsibleauthority": "Autoridad responsable",
+      "responsibleoffice": "Oficina responsable",
+      "share": "Participación",
+      "showfulllegend": "Mostrar leyenda completa",
+      "themeWithoutData": "Temas sin datos",
+      "type": "Tipo",
+      "title": "Catastro ÖREB",
+      "failed": "Error al cargar el extracto OEREB"
     },
     "panoramax": {
       "notfound": "No hay imagen disponible para esta ubicación.",
@@ -511,9 +511,9 @@
     "pickfeature": {
       "querying": "Consultando..."
     },
-    "plotinfotool": {
-      "failed": "",
-      "loading": ""
+   "plotinfotool": {
+      "failed": "Error al cargar los datos",
+      "loading": "Cargando datos..."
     },
     "portal": {
       "filter": "Filtrar temas...",
@@ -789,8 +789,8 @@
       "highcontrast": "Alto contraste"
     },
     "plotdescr": {
-      "title": "",
-      "requestPdf": ""
+      "title": "Descripción de la parcela",
+      "requestPdf": "Crear plano del registro de la propiedad (PDF)"
     }
   }
 }
