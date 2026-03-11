@@ -62,6 +62,8 @@ const DEFAULT_INTERACTION_STYLE = {
     measureVertexStrokeColor: "red",
     measureVertexStrokeWidth: 2,
     measurePointRadius: 6,
+    measureTextFill: "black",
+    measureTextStroke: "white",
     sketchPointFillColor: "#0099FF",
     sketchPointStrokeColor: "white",
     sketchPointRadius: 6,
@@ -92,6 +94,8 @@ export function computeMeasureFeatureStyle(markerOpts) {
         headmarker: opts.headmarker,
         tailmarker: opts.tailmarker,
         markerscale: opts.markerscale,
+        textFill: opts.measureTextFill,
+        textStroke: opts.measureTextStroke,
         strokeDash: []
     };
 }
