@@ -112,8 +112,21 @@ class Editing extends React.Component {
         this.setState({minimized: false, drawPick: false});
     };
     componentDidUpdate(prevProps, prevState) {
-        // Clear selected layer on layers change
-        if (this.props.layers !== prevProps.layers && this.state.selectedLayer) {
+        if (!this.state.selectedLayer && this.props.editConfigs !== prevProps.editConfigs) {
+            // Automatically select layer if only one edit layer exists
+            const editLayers = Object.entries(this.props.editConfigs).map(([mapName, serviceConfigs]) => (
+                Object.entries(serviceConfigs).map(([layerName, edConfig]) => {
+                    if (this.props.omitReadOnlyDatasets && Object.values(edConfig.permissions).every(permission => permission === false)) {
+                        return null;
+                    }
+                    return mapName + "#" + layerName;
+                })
+            )).flat().filter(Boolean);
+            if (editLayers.length === 1) {
+                this.setState({selectedLayer: editLayers[0]});
+            }
+        } else if (this.props.layers !== prevProps.layers && this.state.selectedLayer) {
+            // Clear selected layer on layers change
             const [wmsName, layerName] = this.state.selectedLayer.split("#");
             if (!LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName)) {
                 this.setState({selectedLayer: null});
