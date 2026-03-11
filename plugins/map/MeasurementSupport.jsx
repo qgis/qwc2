@@ -10,6 +10,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import Mousetrap from 'mousetrap';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
@@ -47,8 +48,14 @@ class MeasurementSupport extends React.Component {
             this.props.changeMeasurementState({mode: nextmode});
         } else if (this.props.measurement.mode && this.props.measurement.mode !== prevProps.measurement.mode) {
             this.setupInteractions();
+            if (!prevProps.measurement.mode) {
+                Mousetrap.bind('del', this.triggerDelete);
+                Mousetrap.bind('backspace', this.triggerDelete);
+            }
         } else if (!this.props.measurement.mode && prevProps.measurement.mode) {
             this.removeInteractions();
+            Mousetrap.unbind('del', this.triggerDelete);
+            Mousetrap.unbind('backspace', this.triggerDelete);
         } else if (
             this.measureLayer && (
                 this.props.measurement.lenUnit !== prevProps.measurement.lenUnit ||
@@ -196,6 +203,18 @@ class MeasurementSupport extends React.Component {
         this.drawInteraction.setActive(true);
         this.selectInteraction.setActive(false);
         this.modifyInteraction.setActive(false);
+    };
+    triggerDelete = () => {
+        if (this.currentFeature) {
+            this.measureLayer.getSource().removeFeature(this.currentFeature);
+            this.props.changeMeasurementState({
+                mode: this.props.measurement.mode,
+                drawing: false,
+                measureId: null,
+                coordinates: null
+            });
+            this.setupInteractions();
+        }
     };
     handleMapClick = (evt) => {
         if (!this.drawInteraction.getActive()) {
