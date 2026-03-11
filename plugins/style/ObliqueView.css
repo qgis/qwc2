@@ -118,11 +118,11 @@ span.obliqueview-bottombar-spacer {
 }
 
 div.obliqueview-scalechooser {
-    width: 10em;
     display: flex;
     align-items: center;
 }
 
 div.obliqueview-scalechooser > div.input-container {
     flex: 1 1 auto;
+    width: 10em;
 }
