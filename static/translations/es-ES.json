@@ -511,7 +511,7 @@
     "pickfeature": {
       "querying": "Consultando..."
     },
-   "plotinfotool": {
+    "plotinfotool": {
       "failed": "Error al cargar los datos",
       "loading": "Cargando datos..."
     },

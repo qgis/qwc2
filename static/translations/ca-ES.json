@@ -456,7 +456,7 @@
     "misc": {
       "ctrlclickhint": "Obrir amb Ctrl+Click"
     },
-   "navbar": {
+    "navbar": {
       "next": "Pàgina següent",
       "perpage": "per pàgina",
       "prev": "Pàgina anterior"
