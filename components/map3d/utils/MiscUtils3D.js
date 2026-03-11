@@ -64,11 +64,15 @@ export class TileMeshHelper {
         if (meshFeatures && structuralMetadata) {
             // Get featureId via featureId attribute
             const featureSetIndex = 0; // usually 0 unless multiple feature sets
-            this.featureSet = meshFeatures.featureIds[featureSetIndex];
-            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_${this.featureSet.attribute}`);
+            const featureSet = meshFeatures.featureIds[featureSetIndex];
+            this.propertyTable = featureSet.propertyTable;
+            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_${featureSet.attribute}`);
+        } else if (structuralMetadata) {
+            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_0`);
+            this.propertyTable = 0;
         } else if ('_batchid' in object.geometry.attributes) {
             // Get featureId via batchId attribute
-            this.featureSet = null;
+            this.propertyTable = null;
             this.featureIdAttr = object.geometry.getAttribute('_batchid');
         } else {
             /* eslint-disable-next-line */
@@ -101,7 +105,7 @@ export class TileMeshHelper {
         if (featureId in this.propertiesCache) {
             return this.propertiesCache[featureId];
         } else if (this.object.userData.structuralMetadata) {
-            this.propertiesCache[featureId] = this.object.userData.structuralMetadata.getPropertyTableData([this.featureSet.propertyTable], [featureId])[0];
+            this.propertiesCache[featureId] = this.object.userData.structuralMetadata.getPropertyTableData([this.propertyTable], [featureId])[0];
         } else if (this.tileObject.batchTable) {
             this.propertiesCache[featureId] = this.tileObject.batchTable.getDataFromId(featureId);
         } else {
