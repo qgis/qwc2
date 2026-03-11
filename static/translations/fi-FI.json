@@ -341,12 +341,12 @@
     "layertree": {
       "compare": "Vertaa ylintä tasoa",
       "deletealllayers": "Poista kaikki tasot",
-      "hidealllayers": "",
       "importlayer": "Tuo taso",
       "maptip": "Näytä tason vinkkejä",
       "printlegend": "Tulosta selite",
       "separator": "Erotin",
       "separatortooltip": "Lisää erotin",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "Läpinäkyvyys",
       "visiblefilter": "Suodata näkymättömät tasot",

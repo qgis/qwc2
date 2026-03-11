@@ -341,12 +341,12 @@
     "layertree": {
       "compare": "トップ・レイヤを比較",
       "deletealllayers": "全てのレイヤを削除",
-      "hidealllayers": "全てのレイヤを非表示",
       "importlayer": "レイヤをインポート",
       "maptip": "レイヤのマップ・チップを表示",
       "printlegend": "凡例を印刷",
       "separator": "区切り",
       "separatortooltip": "区切りを追加",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "透明度",
       "visiblefilter": "不可視のレイヤをフィルタ",

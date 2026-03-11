@@ -645,8 +645,8 @@ class LayerTree extends React.Component {
         let needsep = false;
         if (this.props.showToggleAllLayersCheckbox) {
             menuEntries.push(
-                <div key="hidealllayers" onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
-                    <Icon icon={vis === 0 ? "unchecked" : "checked"} /> {LocaleUtils.tr("layertree.hidealllayers")}
+                <div key="showallayers" onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
+                    <Icon icon={vis === 0 ? "unchecked" : "checked"} /> {LocaleUtils.tr("layertree.showallayers")}
                 </div>
             );
         }

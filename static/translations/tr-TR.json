@@ -341,12 +341,12 @@
     "layertree": {
       "compare": "En üst katmanı karşılaştır",
       "deletealllayers": "Tüm katmanları kaldır",
-      "hidealllayers": "",
       "importlayer": "Katmanı içeri al",
       "maptip": "Katman harita ipuçlarını göster",
       "printlegend": "Yazdırma Lejandı",
       "separator": "Ayırıcı",
       "separatortooltip": "Ayırıcı ekle",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "Şeffaflık",
       "visiblefilter": "Görünmeyen katmanları filtrele",

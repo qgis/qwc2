@@ -341,12 +341,12 @@
     "layertree": {
       "compare": "Compare top layer",
       "deletealllayers": "Remove all layers",
-      "hidealllayers": "Hide all layers",
       "importlayer": "Import layer",
       "maptip": "Show layer map tips",
       "printlegend": "Print legend",
       "separator": "Separator",
       "separatortooltip": "Add separator",
+      "showallayers": "Show all layers",
       "togglegroup": "Toggle group and all sublayers",
       "transparency": "Trasparency",
       "visiblefilter": "Filter invisible layers",

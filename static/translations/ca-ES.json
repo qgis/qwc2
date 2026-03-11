@@ -341,13 +341,13 @@
     "layertree": {
       "compare": "Comparar amb la capa superior",
       "deletealllayers": "Eliminar todas las capas",
-      "hidealllayers": "Ocultar totes les capes",
       "importlayer": "Importar capa",
       "maptip": "Mostrar suggerències de capes en el mapa",
       "printlegend": "Imprimir llegenda",
       "separator": "Separador",
       "separatortooltip": "Afegir separador",
-      "togglegroup": "",
+      "showallayers": "Mostra totes les capes",
+      "togglegroup": "Activar o desactivar el grup i totes les subcapes",
       "transparency": "Transparència",
       "visiblefilter": "Filtrar capes no visibles",
       "zoomtolayer": "Zoom a la capa"

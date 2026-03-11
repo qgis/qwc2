@@ -341,12 +341,12 @@
     "layertree": {
       "compare": "Compară stratul de sus",
       "deletealllayers": "Elimină toate straturile",
-      "hidealllayers": "",
       "importlayer": "Import strat",
       "maptip": "Arată indicii hartă",
       "printlegend": "Tipărește legenda",
       "separator": "separator",
       "separatortooltip": "Adaugă separator",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "Transparență",
       "visiblefilter": "Filtrează straturile invizibile",

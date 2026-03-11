@@ -341,12 +341,12 @@
     "layertree": {
       "compare": "Compare a camada superior",
       "deletealllayers": "Remover todas as camadas",
-      "hidealllayers": "",
       "importlayer": "Camada de importação",
       "maptip": "Mostrar dicas de mapa de camadas",
       "printlegend": "Legenda da impressão",
       "separator": "Separador",
       "separatortooltip": "Adicionar separador",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "Transparência",
       "visiblefilter": "Filtrar camadas invisíveis",
