@@ -344,12 +344,12 @@
     "layertree": {
       "compare": "Sammenlign øverste lag",
       "deletealllayers": "Slett alle lag",
-      "hidealllayers": "",
       "importlayer": "Importer lag",
       "maptip": "Vis karttips for lag",
       "printlegend": "Skriv ut tegnforklaring",
       "separator": "Separator",
       "separatortooltip": "Legg til separator",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "",
       "visiblefilter": "Filtrer usynlige lag",

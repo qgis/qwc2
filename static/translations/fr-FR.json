@@ -344,12 +344,12 @@
     "layertree": {
       "compare": "Comparer",
       "deletealllayers": "Supprimer toutes les couches",
-      "hidealllayers": "Cacher toutes les couches",
       "importlayer": "Importer une couche",
       "maptip": "Afficher les infobulles",
       "printlegend": "Imprimer la légende",
       "separator": "Séparateur",
       "separatortooltip": "Ajouter séparateur",
+      "showallayers": "Afficher toutes les couches",
       "togglegroup": "Basculer le groupe et toutes les sous-couches",
       "transparency": "Transparence",
       "visiblefilter": "Filtrer couches invisibles",

@@ -344,12 +344,12 @@
     "layertree": {
       "compare": "Compara il primo livello",
       "deletealllayers": "Rimuovi tutti i livelli",
-      "hidealllayers": "Nascondi tutti i livelli",
       "importlayer": "Importa livello",
       "maptip": "Attiva maptip",
       "printlegend": "Stampa legenda",
       "separator": "Separatore",
       "separatortooltip": "Aggiungi separatore",
+      "showallayers": "Mostra tutti i livelli",
       "togglegroup": "Attiva/disattiva gruppo e tutti i sottolivelli",
       "transparency": "Trasparenza",
       "visiblefilter": "Filtra livelli non visibili",

@@ -344,12 +344,12 @@
     "layertree": {
       "compare": "Comparar con la capa superior",
       "deletealllayers": "Remover todas las capas",
-      "hidealllayers": "Ocultar todas las capas",
       "importlayer": "Importar capa",
       "maptip": "Mostrar sugerencias de capas en el mapa",
       "printlegend": "Imprimir leyenda",
       "separator": "Separador",
       "separatortooltip": "Agregar separador",
+      "showallayers": "Mostrar todas las capas",
       "togglegroup": "Activar o desactivar el grupo y todas las subcapas",
       "transparency": "Transparencia",
       "visiblefilter": "Filtrar capas no visibles",

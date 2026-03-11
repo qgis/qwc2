@@ -344,12 +344,12 @@
     "layertree": {
       "compare": "Порівняти верхній шар",
       "deletealllayers": "Видалити всі шари",
-      "hidealllayers": "Приховати всі шари",
       "importlayer": "Імпортувати шар",
       "maptip": "Показувати підказки на карті",
       "printlegend": "Друкувати легенду",
       "separator": "",
       "separatortooltip": "",
+      "showallayers": "показати всі шари",
       "togglegroup": "",
       "transparency": "",
       "visiblefilter": "",

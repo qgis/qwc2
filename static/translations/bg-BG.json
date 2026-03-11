@@ -344,12 +344,12 @@
     "layertree": {
       "compare": "Сравнете горния слой",
       "deletealllayers": "Премахване на всички слоеве",
-      "hidealllayers": "",
       "importlayer": "Импортиране на слой",
       "maptip": "Показване на съвети за картата на слоевете",
       "printlegend": "Легенда за печат",
       "separator": "Сепаратор",
       "separatortooltip": "Добавяне на разделител",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "Trasparency",
       "visiblefilter": "Филтриране на невидими слоеве",

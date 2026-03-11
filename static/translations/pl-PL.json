@@ -344,12 +344,12 @@
     "layertree": {
       "compare": "Porównaj najwyższą warstwę",
       "deletealllayers": "Usuń wszystkie warstwy",
-      "hidealllayers": "",
       "importlayer": "Importuj warstwę",
       "maptip": "Pokaż wskazówki dla warstwy",
       "printlegend": "Drukuj legendę",
       "separator": "",
       "separatortooltip": "",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "",
       "visiblefilter": "",

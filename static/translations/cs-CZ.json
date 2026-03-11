@@ -344,12 +344,12 @@
     "layertree": {
       "compare": "Porovnat vrchní vrstvy",
       "deletealllayers": "Odstranit všechny vrstvy",
-      "hidealllayers": "",
       "importlayer": "Importovat vrstvu",
       "maptip": "Zobrazovat bubliny nad mapou",
       "printlegend": "Tisk legendy",
       "separator": "",
       "separatortooltip": "",
+      "showallayers": "",
       "togglegroup": "",
       "transparency": "Průhlednost",
       "visiblefilter": "Skrýt nezobrazující se vrstvy",
