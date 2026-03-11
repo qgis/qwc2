@@ -121,6 +121,8 @@ class LayerTree extends React.Component {
         showRootEntry: PropTypes.bool,
         /** Whether to show the style selection menu for layers with multiple styles. */
         showStyleSelector: PropTypes.bool,
+        /** Whether to show a settings menu in the titlebar which groups all titlebar buttons. */
+        showTitlebarSettingsMenu: PropTypes.bool,
         /** Whether to display a checkbox to toggle all layers. */
         showToggleAllLayersCheckbox: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
@@ -590,16 +592,15 @@ class LayerTree extends React.Component {
         }
         let deleteAllLayersIcon = null;
         if (this.props.allowRemovingThemeLayers || ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
-            const deleteAllLayersTooltip = LocaleUtils.tr("layertree.deletealllayers");
-            deleteAllLayersIcon = (<Icon className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers} title={deleteAllLayersTooltip}/>);
+            deleteAllLayersIcon = (<Icon className="layertree-delete-legend" icon="trash" onClick={this.deleteAllLayers} title={LocaleUtils.tr("layertree.deletealllayers")}/>);
         }
         let serviceInfoIcon = null;
         if (this.props.enableServiceInfo) {
-            const serviceInfoTooltip = LocaleUtils.tr("serviceinfo.title");
-            serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)} title={serviceInfoTooltip} />);
+            serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)} title={LocaleUtils.tr("serviceinfo.title")} />);
         }
 
-        const extraTitlebarContent = (
+        const extraBeforeContent = this.props.showTitlebarSettingsMenu ? this.renderVisibilityButton() : null;
+        const extraTitlebarContent = this.props.showTitlebarSettingsMenu ? null : (
             <span>
                 {this.renderVisibilityButton()}
                 {legendPrintIcon}
@@ -610,8 +611,9 @@ class LayerTree extends React.Component {
 
         return (
             <div>
-                <SideBar extraTitlebarContent={extraTitlebarContent}
-                    icon="layers"
+                <SideBar extraBeforeContent={extraBeforeContent}
+                    extraTitlebarContent={extraTitlebarContent}
+                    icon={this.props.showTitlebarSettingsMenu ? null : "layers"}
                     id="LayerTree" onHide={this.onHide}
                     side={this.props.side}
                     title={LocaleUtils.tr("appmenu.items.LayerTree")}
@@ -628,43 +630,82 @@ class LayerTree extends React.Component {
         );
     }
     renderVisibilityButton = () => {
-        if (!this.props.showToggleAllLayersCheckbox && !this.props.enableVisibleFilter && isEmpty(this.props.theme.visibilityPresets)) {
-            return null;
-        }
+        const menuEntries = [];
         let vis = 0;
-        let count = 0;
-        for (const layer of this.props.layers) {
-            if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                count += 1;
-                vis += layer.visibility;
+        if (this.state.visibilityMenu) {
+            let count = 0;
+            for (const layer of this.props.layers) {
+                if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
+                    count += 1;
+                    vis += layer.visibility;
+                }
+            }
+            vis /= Math.min(1, count);
+        }
+        let needsep = false;
+        if (this.props.showToggleAllLayersCheckbox) {
+            menuEntries.push(
+                <div key="hideallayers" onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
+                    <Icon icon={vis === 0 ? "unchecked" : "checked"} /> {LocaleUtils.tr("layertree.hideallayers")}
+                </div>
+            );
+        }
+        if (this.props.enableVisibleFilter) {
+            menuEntries.push(
+                <div key="filtervisible" onClick={() => this.setState((state) => ({filterinvisiblelayers: !state.filterinvisiblelayers}))}>
+                    <Icon icon={this.state.filterinvisiblelayers ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.visiblefilter")}
+                </div>
+            );
+        }
+        Object.entries(this.props.theme.visibilityPresets || {}).forEach(([name, preset], idx) => {
+            menuEntries.push(
+                <div className={idx === 0 && menuEntries.length > 0 ? "layertree-visibility-menu-sep" : ""} key={name} onClick={() => this.props.setThemeLayersVisibilityPreset(preset)}>
+                    <Icon icon={this.state.activePreset === name ? "radio_checked" : "radio_unchecked"} /> {name}
+                </div>
+            );
+            needsep = true;
+        });
+        if (this.props.showTitlebarSettingsMenu) {
+            if (this.props.enableLegendPrint) {
+                menuEntries.push(
+                    <div className={needsep ? "layertree-visibility-menu-sep" : ""} key="printlegend" onClick={() => this.setState({legendPrintVisible: true})}>
+                        <Icon icon="print" /> {LocaleUtils.tr("layertree.printlegend")}
+                    </div>
+                );
+                needsep = false;
+            }
+            if (this.props.allowRemovingThemeLayers || ConfigUtils.getConfigProp("allowRemovingThemeLayers") === true) {
+                menuEntries.push(
+                    <div className={needsep ? "layertree-visibility-menu-sep" : ""} key="removeall" onClick={this.deleteAllLayers}>
+                        <Icon icon="trash" /> {LocaleUtils.tr("layertree.deletealllayers")}
+                    </div>
+                );
+                needsep = false;
+            }
+            if (this.props.enableServiceInfo) {
+                menuEntries.push(
+                    <div className={needsep ? "layertree-visibility-menu-sep" : ""} key="removeall" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}>
+                        <Icon icon="info-sign" /> {LocaleUtils.tr("serviceinfo.title")}
+                    </div>
+                );
+                needsep = false;
             }
         }
-        vis /= Math.min(1, count);
+        if (menuEntries.length === 0) {
+            return null;
+        }
+
         const buttonClasses = classnames({
             "layertree-visibility-button": true,
             "layertree-visibility-button-active": this.state.visibilityMenu
         });
         return (
             <span className={buttonClasses} onClick={() => this.setState(state => ({visibilityMenu: !state.visibilityMenu}))} onKeyDown={MiscUtils.checkKeyActivate} ref={el => {this.visibilityButton = el;}} tabIndex={0}>
-                <Icon icon="eye"/>
+                <Icon icon={this.props.showTitlebarSettingsMenu ? "cog" : "eye"}/>
                 <Icon icon="chevron-down" />
                 {this.state.visibilityMenu ? (
                     <PopupMenu anchor={this.visibilityButton} className="layertree-visibility-menu" keepMenuOpen onClose={() => this.setState({visibilityMenu: false})}>
-                        {this.props.showToggleAllLayersCheckbox ? (
-                            <div key="hidealllayers" onClick={() => this.toggleLayerTreeVisibility(vis === 0)}>
-                                <Icon icon={vis === 0 ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.hidealllayers")}
-                            </div>
-                        ) : null}
-                        {this.props.enableVisibleFilter ? (
-                            <div key="filtervisible" onClick={() => this.setState((state) => ({filterinvisiblelayers: !state.filterinvisiblelayers}))}>
-                                <Icon icon={this.state.filterinvisiblelayers ? "checked" : "unchecked"} /> {LocaleUtils.tr("layertree.visiblefilter")}
-                            </div>
-                        ) : null}
-                        {Object.entries(this.props.theme.visibilityPresets || {}).map(([name, preset], idx) => (
-                            <div className={idx === 0 ? "layertree-visibility-menu-sep" : ""} key={name} onClick={() => this.props.setThemeLayersVisibilityPreset(preset)}>
-                                <Icon icon={this.state.activePreset === name ? "radio_checked" : "radio_unchecked"} /> {name}
-                            </div>
-                        ))}
+                        {menuEntries}
                     </PopupMenu>
                 ) : null}
             </span>

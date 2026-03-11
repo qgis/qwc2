@@ -5,6 +5,7 @@
     align-items: start;
     justify-content: center;
     cursor: pointer;
+    margin-right: 0.25em;
 }
 
 #LayerTree span.layertree-visibility-button:hover,
@@ -39,7 +40,7 @@ div.layertree-visibility-menu-sep:not(:first-child) {
 #LayerTree span.layertree-visible-filter,
 #LayerTree span.layertree-delete-legend,
 #LayerTree span.layertree-theme-metadata {
-    margin-left: 0.5em;
+    margin-right: 0.25em;
     padding: 0.25em;
 }
 
