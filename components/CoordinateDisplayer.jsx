@@ -46,6 +46,8 @@ export default class CoordinateDisplayer extends React.Component {
         );
     }
     getMapMousePos = (ev) => {
-        this.setState({mousePos: ev.coordinate});
+        if (ev.coordinate) {
+            this.setState({mousePos: ev.coordinate});
+        }
     };
 }
