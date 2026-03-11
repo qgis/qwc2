@@ -108,6 +108,7 @@ const LayerUtils = {
         });
         return LayerUtils.explodeLayers([{
             id: id,
+            srcid: uuidv4(),
             type: "placeholder",
             name: layerConfig.name,
             opacity: layerConfig.opacity,

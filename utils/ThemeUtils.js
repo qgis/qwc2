@@ -141,6 +141,7 @@ const ThemeUtils = {
                     return res;
                 }, {})
             },
+            srcid: uuidv4(),
             translations: theme.translations,
             translationsUrl: theme.translationsUrl,
             editConfig: theme.editConfig,
