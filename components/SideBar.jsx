@@ -116,7 +116,7 @@ class SideBar extends React.Component {
                         <div className={"sidebar-resize-handle sidebar-resize-handle-" + this.props.side} onPointerDown={this.startSidebarResize}/>
                         <div className="sidebar-titlebar">
                             {this.state.render ? this.props.extraBeforeContent : null}
-                            <Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>
+                            {this.props.icon ? (<Icon className="sidebar-titlebar-icon" icon={this.props.icon} size="large"/>) : null}
                             <span className="sidebar-titlebar-title">{this.props.title}</span>
                             {this.state.render ? this.props.extraTitlebarContent : null}
                             <span className="sidebar-titlebar-spacer" />
