@@ -66,7 +66,7 @@ class LocateButton extends React.Component {
                 icon="screenshot"
                 onClick={this.onClick}
                 position={this.props.position}
-                title={tooltipMsg[this.props.locateState]}
+                tooltip={tooltipMsg[this.props.locateState]}
             />
         );
     };
