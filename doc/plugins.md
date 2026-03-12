@@ -74,6 +74,7 @@ Plugin reference
 * [MapExport3D](#mapexport3d)
 * [MapLight3D](#maplight3d)
 * [Measure3D](#measure3d)
+* [MeasureObjects3D](#measureobjects3d)
 * [OverviewMap3D](#overviewmap3d)
 * [Settings3D](#settings3d)
 * [TopBar3D](#topbar3d)
@@ -1252,6 +1253,10 @@ Control the map illumination.
 ## Measure3D<a name="measure3d"></a>
 
 Measure in the 3D map.
+
+## MeasureObjects3D<a name="measureobjects3d"></a>
+
+Displays the measurements of the oriented bounds of objects selected in the 3D map.
 
 ## OverviewMap3D<a name="overviewmap3d"></a>
 

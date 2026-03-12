@@ -24,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "Филтър на картата",
         "MapLight3D": "Дата и час",
+        "MeasureObjects3D": "",
         "ObjectList": "",
         "PlotInfoTool": "",
         "Print": "Отпечатване",
@@ -48,6 +49,7 @@
         "MapLegend": "Легенда",
         "Measure": "Мярка",
         "Measure3D": "Мярка",
+        "MeasureObject3D": "",
         "MeasureLineString": "Измерване на линия",
         "MeasurePolygon": "Измерване на полигон",
         "NewsPopup": "",
@@ -452,6 +454,12 @@
       "metric": "Метричен",
       "pointLabel": "Позиция",
       "showmeasurements": "Показване на измерванията"
+    },
+    "measureobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "remove": "",
+      "removeall": ""
     },
     "misc": {
       "ctrlclickhint": "Отваряне с Ctrl+Click"

@@ -24,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "MeasureObjects3D": "",
         "ObjectList": "",
         "PlotInfoTool": "",
         "Print": "Skriv ut",
@@ -48,6 +49,7 @@
         "MapLegend": "",
         "Measure": "Mät",
         "Measure3D": "",
+        "MeasureObject3D": "",
         "MeasureLineString": "Mäta en linje",
         "MeasurePolygon": "Mäta en polygon",
         "NewsPopup": "",
@@ -452,6 +454,12 @@
       "metric": "",
       "pointLabel": "Position",
       "showmeasurements": ""
+    },
+    "measureobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "remove": "",
+      "removeall": ""
     },
     "misc": {
       "ctrlclickhint": ""

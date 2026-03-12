@@ -24,6 +24,7 @@
         "MapExport3D": "Exporter la carte",
         "MapFilter": "Filtrer la carte",
         "MapLight3D": "Illumination et ombres",
+        "MeasureObjects3D": "Mesurer objets",
         "ObjectList": "Liste d'objets",
         "PlotInfoTool": "Informations foncières",
         "Print": "Imprimer",
@@ -48,6 +49,7 @@
         "MapLegend": "Légende",
         "Measure": "Mesurer",
         "Measure3D": "Mesurer",
+        "MeasureObject3D": "Mesurer objects",
         "MeasureLineString": "Mesurer une ligne",
         "MeasurePolygon": "Mesurer un polygone",
         "NewsPopup": "Actualités",
@@ -452,6 +454,12 @@
       "metric": "Métrique",
       "pointLabel": "Position",
       "showmeasurements": "Montrer les mesures"
+    },
+    "measureobjects3d": {
+      "clickonmap": "Cliquez sur les objets pour les mesurer...",
+      "object": "Objet",
+      "remove": "Supprimer la mesure",
+      "removeall": "Tout supprimer"
     },
     "misc": {
       "ctrlclickhint": "Ouvrir avec Ctrl+Clic"

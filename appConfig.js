@@ -147,6 +147,7 @@ export default {
                 MapExport3D: lazy(() => import('./plugins/map3d/MapExport3D')),
                 MapLight3D: lazy(() => import('./plugins/map3d/MapLight3D')),
                 Measure3D: lazy(() => import('./plugins/map3d/Measure3D')),
+                MeasureObjects3D: lazy(() => import('./plugins/map3d/MeasureObjects3D')),
                 OverviewMap3D: lazy(() => import('./plugins/map3d/OverviewMap3D')),
                 Settings3D: lazy(() => import('./plugins/map3d/Settings3D')),
                 TopBar3D: lazy(() => import('./plugins/map3d/TopBar3D'))

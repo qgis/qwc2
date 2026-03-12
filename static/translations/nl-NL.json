@@ -24,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "Kaartfilter",
         "MapLight3D": "",
+        "MeasureObjects3D": "",
         "ObjectList": "",
         "PlotInfoTool": "",
         "Print": "Print",
@@ -48,6 +49,7 @@
         "MapLegend": "Legenda",
         "Measure": "Meten",
         "Measure3D": "",
+        "MeasureObject3D": "",
         "MeasureLineString": "lengte meten",
         "MeasurePolygon": "Oppervlakte meten",
         "NewsPopup": "",
@@ -452,6 +454,12 @@
       "metric": "Metrisch",
       "pointLabel": "Positie",
       "showmeasurements": "Metingen tonen"
+    },
+    "measureobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "remove": "",
+      "removeall": ""
     },
     "misc": {
       "ctrlclickhint": "Openen met Ctrl+klik"

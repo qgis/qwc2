@@ -24,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "Harita Filtresi",
         "MapLight3D": "Tarih Zaman",
+        "MeasureObjects3D": "",
         "ObjectList": "",
         "PlotInfoTool": "",
         "Print": "Yazdır",
@@ -48,6 +49,7 @@
         "MapLegend": "Harita Lejandı",
         "Measure": "Ölç",
         "Measure3D": "Ölç",
+        "MeasureObject3D": "",
         "MeasureLineString": "Çizgi Ölç",
         "MeasurePolygon": "Alan Ölç",
         "NewsPopup": "",
@@ -452,6 +454,12 @@
       "metric": "Metrik",
       "pointLabel": "Konum",
       "showmeasurements": "Ölçüleri göster"
+    },
+    "measureobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "remove": "",
+      "removeall": ""
     },
     "misc": {
       "ctrlclickhint": "Ctrl+Click ile aç"

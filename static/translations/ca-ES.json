@@ -24,6 +24,7 @@
         "MapExport3D": "Exportar mapa",
         "MapFilter": "Filtre de mapa",
         "MapLight3D": "Llum i ombres",
+        "MeasureObjects3D": "",
         "ObjectList": "Llistat d'objectes",
         "PlotInfoTool": "Informació immobiliària",
         "Print": "Imprimir",
@@ -48,6 +49,7 @@
         "MapLegend": "Llegenda",
         "Measure": "Mesurar",
         "Measure3D": "Mesura 3D",
+        "MeasureObject3D": "",
         "MeasureLineString": "Mesurar una línia",
         "MeasurePolygon": "Mesurar un polígon",
         "NewsPopup": "Notícies",
@@ -452,6 +454,12 @@
       "metric": "Mètric",
       "pointLabel": "Posició",
       "showmeasurements": "Mostrar mesuraments"
+    },
+    "measureobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "remove": "",
+      "removeall": ""
     },
     "misc": {
       "ctrlclickhint": "Obrir amb Ctrl+Click"

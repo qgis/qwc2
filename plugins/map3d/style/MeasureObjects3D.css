@@ -1,0 +1,34 @@
+#MeasureObjects3D div.measureobjects3d-body {
+    padding: 0.25em;
+}
+
+#MeasureObjects3D div.measureobjects3d-list {
+    border: 1px solid var(--border-color);
+    background-color: var(--list-bg-color);
+}
+
+#MeasureObjects3D div.measureobjects3d-list > div {
+    padding: 0.25em;
+    display: flex;
+}
+
+#MeasureObjects3D div.measureobjects3d-list > div:hover {
+    background-color: var(--list-item-bg-color-hover);
+}
+
+#MeasureObjects3D div.measureobjects3d-list > div > span:first-child {
+    flex: 1 1 auto;
+}
+
+#MeasureObjects3D div.measureobjects3d-restorebutton {
+    margin-top:-1px;
+}
+
+#MeasureObjects3D div.measureobjects3d-restorebutton > button {
+    width: 100%;
+}
+
+span.map3d-measure-label {
+    -webkit-text-stroke: 1px white;
+    font-size: 125%;
+}

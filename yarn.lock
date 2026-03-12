@@ -5996,6 +5996,11 @@ pbf@^3.2.1:
     ieee754 "^1.1.12"
     resolve-protobuf-schema "^2.1.0"
 
+pca-js@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/pca-js/-/pca-js-2.0.6.tgz#daa97451f47f08e020bf17c5893f650f2db279cf"
+  integrity sha512-XioCSiDxEWKPKMJ1GW5aKddIa2tkUNGd0ST4jZKcdG+zRz2DZVgXSzlxMs8j4EAtKmOCQU2XrO8r3/nWc5JdqA==
+
 pdf-lib@^1.17.1:
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/pdf-lib/-/pdf-lib-1.17.1.tgz#9e7dd21261a0c1fb17992580885b39e7d08f451f"

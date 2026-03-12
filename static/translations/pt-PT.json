@@ -24,6 +24,7 @@
         "MapExport3D": "",
         "MapFilter": "",
         "MapLight3D": "",
+        "MeasureObjects3D": "",
         "ObjectList": "",
         "PlotInfoTool": "",
         "Print": "Imprimir",
@@ -48,6 +49,7 @@
         "MapLegend": "Legenda do Mapa",
         "Measure": "Medir",
         "Measure3D": "",
+        "MeasureObject3D": "",
         "MeasureLineString": "Medir Linha",
         "MeasurePolygon": "Medir Polígono",
         "NewsPopup": "",
@@ -452,6 +454,12 @@
       "metric": "Métrico",
       "pointLabel": "Posição",
       "showmeasurements": "Medições"
+    },
+    "measureobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "remove": "",
+      "removeall": ""
     },
     "misc": {
       "ctrlclickhint": "Ctrl + clique para selecionar múltiplos resultados"

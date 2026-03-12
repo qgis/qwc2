@@ -24,6 +24,7 @@
         "MapExport3D": "地図をエクスポート",
         "MapFilter": "マップ・フィルタ",
         "MapLight3D": "光と影",
+        "MeasureObjects3D": "",
         "ObjectList": "",
         "PlotInfoTool": "",
         "Print": "印刷",
@@ -48,6 +49,7 @@
         "MapLegend": "凡例",
         "Measure": "計測",
         "Measure3D": "計測",
+        "MeasureObject3D": "",
         "MeasureLineString": "ラインを測る",
         "MeasurePolygon": "ポリゴンを測る",
         "NewsPopup": "ニュース",
@@ -452,6 +454,12 @@
       "metric": "メートル法",
       "pointLabel": "位置",
       "showmeasurements": "計測結果を表示"
+    },
+    "measureobjects3d": {
+      "clickonmap": "",
+      "object": "",
+      "remove": "",
+      "removeall": ""
     },
     "misc": {
       "ctrlclickhint": "Ctrl+クリックで開く"

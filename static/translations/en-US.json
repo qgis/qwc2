@@ -24,6 +24,7 @@
         "MapExport3D": "Export Map",
         "MapFilter": "Map Filter",
         "MapLight3D": "Light and Shadows",
+        "MeasureObjects3D": "Measure objects",
         "ObjectList": "Object list",
         "PlotInfoTool": "Real Estate Information",
         "Print": "Print",
@@ -48,6 +49,7 @@
         "MapLegend": "Legend",
         "Measure": "Measure",
         "Measure3D": "Measure",
+        "MeasureObject3D": "Measure objects",
         "MeasureLineString": "Measure a line",
         "MeasurePolygon": "Measure a polygon",
         "NewsPopup": "News",
@@ -452,6 +454,12 @@
       "metric": "Metric",
       "pointLabel": "Position",
       "showmeasurements": "Show measurements"
+    },
+    "measureobjects3d": {
+      "clickonmap": "Click on objects to measure them...",
+      "object": "Object",
+      "remove": "Remove measurement",
+      "removeall": "Remove all"
     },
     "misc": {
       "ctrlclickhint": "Open with Ctrl+Click"

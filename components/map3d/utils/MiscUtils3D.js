@@ -6,7 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {BufferGeometry, Mesh, Vector2, Vector3} from 'three';
+import PCA from "pca-js";
+import {BufferGeometry, Matrix3, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 
@@ -14,7 +15,11 @@ import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 export function createLabelObject(text, pos, sceneContext, zoffset, yoffset = 0) {
     const labelEl = document.createElement("span");
     labelEl.className = "map3d-object-label";
-    labelEl.textContent = text;
+    if (text.startsWith("<")) {
+        labelEl.innerHTML = text;
+    } else {
+        labelEl.textContent = text;
+    }
     const labelObject = new CSS2DObject(labelEl);
     labelObject.position.set(pos.x, pos.y + yoffset, pos.z + zoffset);
     labelObject.updateMatrixWorld();
@@ -55,6 +60,78 @@ export function updateObjectLabel(sceneObject, sceneContext) {
         labelObject.children[0].removeFromParent();
         labelObject.removeFromParent();
     }
+}
+
+export function computeOBBXY(mesh) {
+    const pos = mesh.geometry.attributes.position;
+    const n = pos.count;
+
+    // Collect vertex array for PCA and compute centroid
+    const data = new Array(n);
+    const center = new Vector3();
+    for (let i = 0; i < n; i++) {
+        data[i] = [pos.getX(i), pos.getY(i)];
+        center.x += pos.getX(i);
+        center.y += pos.getY(i);
+        center.z += pos.getZ(i);
+    }
+    center.divideScalar(n);
+
+    // Run PCA
+    const eigenVectors = PCA.getEigenVectors(data);
+
+    const axisX = new Vector3(
+        eigenVectors[0].eigenvector[0],
+        eigenVectors[0].eigenvector[1],
+        0
+    ).normalize();
+    const axisZ = new Vector3(0, 0, 1);
+    const axisY = new Vector3().crossVectors(axisZ, axisX).normalize();
+    const axes = [axisX, axisY, axisZ];
+
+    // Project points onto PCA axes
+    const min = [Infinity, Infinity, Infinity];
+    const max = [-Infinity, -Infinity, -Infinity];
+
+    const v = new Vector3();
+    for (let i = 0; i < n; i++) {
+        v.set(
+            pos.getX(i) - center.x,
+            pos.getY(i) - center.y,
+            pos.getZ(i) - center.z
+        );
+
+        for (let a = 0; a < 3; a++) {
+            const d = v.dot(axes[a]);
+            if (d < min[a]) min[a] = d;
+            if (d > max[a]) max[a] = d;
+        }
+    }
+
+    // Half extents
+    const halfSizes = new Vector3(
+        (max[0] - min[0]) / 2,
+        (max[1] - min[1]) / 2,
+        (max[2] - min[2]) / 2
+    );
+
+    // True center
+    const obbCenter = center.clone()
+        .addScaledVector(axes[0], (max[0] + min[0]) / 2)
+        .addScaledVector(axes[1], (max[1] + min[1]) / 2)
+        .addScaledVector(axes[2], (max[2] + min[2]) / 2)
+        .applyMatrix4(mesh.matrixWorld);
+    const normalMatrix = new Matrix3().getNormalMatrix(mesh.matrixWorld);
+
+    return {
+        center: obbCenter,
+        axes: [
+            axes[0].applyMatrix3(normalMatrix).normalize(),
+            axes[1].applyMatrix3(normalMatrix).normalize(),
+            axes[2].applyMatrix3(normalMatrix).normalize()
+        ],
+        halfSizes
+    };
 }
 
 export class TileMeshHelper {
