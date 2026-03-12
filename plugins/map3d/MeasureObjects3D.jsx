@@ -69,7 +69,7 @@ class MeasureObjects3D extends React.Component {
     };
     render() {
         return (
-            <SideBar icon="measure"
+            <SideBar icon="measureobj"
                 id="MeasureObjects3D"
                 title={LocaleUtils.tr("appmenu.items.MeasureObjects3D")} width="20em"
             >
