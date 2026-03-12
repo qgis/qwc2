@@ -49,7 +49,7 @@
         "MapLegend": "Legenda",
         "Measure": "Misura",
         "Measure3D": "Misura",
-        "MeasureObject3D": "",
+        "MeasureObject3D": "Misura oggetti",
         "MeasureLineString": "Misura una linea",
         "MeasurePolygon": "Misura un poligono",
         "NewsPopup": "Attualità",
@@ -183,9 +183,9 @@
       "rotate": "Ruota",
       "rotation": "Rotazione",
       "scale": "Scala",
-      "snap_2dedge": "",
-      "snap_2dvertex": "",
-      "snap_3dbody": "",
+      "snap_2dedge": "Aggancia ai bordi dei livelli 2D",
+      "snap_2dvertex": "Aggancia ai vertici dei livelli 2D",
+      "snap_3dbody": "Aggancia ai corpi 3D",
       "sphere": "Sfera",
       "subtract": "Differenza",
       "thescale": "Scala",
@@ -483,34 +483,34 @@
       "windowtitle": "Formulario numerico"
     },
     "obliqueview": {
-      "directionEast": "",
-      "directionNorth": "",
-      "directionSouth": "",
-      "directionWest": "",
+      "directionEast": "E",
+      "directionNorth": "N",
+      "directionSouth": "S",
+      "directionWest": "O",
       "nodataset": "Nessuna immagine aerea obliqua disponibile",
       "title": "Vista aerea obliqua"
     },
     "oereb": {
-      "concernedThemes": "",
-      "fundationdatastate": "",
-      "fundations": "",
-      "generalInformation": "",
-      "generalinfo": "",
-      "hidefulllegend": "",
-      "hints": "",
-      "legalbasis": "",
-      "notConcernedThemes": "",
-      "nrpoints": "",
-      "perc": "",
-      "regulations": "",
-      "responsibleauthority": "",
-      "responsibleoffice": "",
-      "share": "",
-      "showfulllegend": "",
-      "themeWithoutData": "",
-      "type": "",
-      "title": "",
-      "failed": ""
+      "concernedThemes": "Temi interessati",
+      "fundationdatastate": "Dati rilevamento catastale. Stato del rilievo catastale:",
+      "fundations": "Fondazioni",
+      "generalInformation": "Informazioni generali e legali",
+      "generalinfo": "Informazioni generali",
+      "hidefulllegend": "Nascondi legenda completa",
+      "hints": "Informazioni aggiuntive e suggerimenti",
+      "legalbasis": "Basi legali",
+      "notConcernedThemes": "Temi non interessati",
+      "nrpoints": "punto/i",
+      "perc": "Quota in %",
+      "regulations": "Regolamenti",
+      "responsibleauthority": "Autorità responsabile",
+      "responsibleoffice": "Ufficio responsabile",
+      "share": "Quota",
+      "showfulllegend": "Mostra legenda completa",
+      "themeWithoutData": "Temi senza dati",
+      "type": "Tipo",
+      "title": "Catasto RDPP",
+      "failed": "Caricamento estratto RDPP non riuscito"
     },
     "panoramax": {
       "notfound": "Nessun immagine disponibile per questa posizione",
@@ -520,8 +520,8 @@
       "querying": "Query..."
     },
     "plotinfotool": {
-      "failed": "",
-      "loading": ""
+      "failed": "Impossibile caricare dati",
+      "loading": "Caricando dati..."
     },
     "portal": {
       "filter": "Filtra temi...",
@@ -793,15 +793,15 @@
     },
     "colorschemes": {
       "default": "Predefinito",
-      "default_rounded": "",
+      "default_rounded": "Predefinito (arrotondato)",
       "dark": "Scuro",
-      "dark_rounded": "",
+      "dark_rounded": "Scuro (arrotondato)",
       "highcontrast": "Contrasto elevato",
-      "highcontrast_rounded": ""
+      "highcontrast_rounded": "Contrasto elevato (arrotondato)"
     },
     "plotdescr": {
-      "title": "",
-      "requestPdf": ""
+      "title": "Descrizione del lotto",
+      "requestPdf": "Crea planimetria catastale (PDF)"
     }
   }
 }

@@ -510,7 +510,7 @@
       "themeWithoutData": "Themes without data",
       "type": "Type",
       "title": "ÖREB cadastre",
-      "failed": "Failed to load OEREB extract"
+      "failed": "Failed to load ÖREB extract"
     },
     "panoramax": {
       "notfound": "There is no image available for this location.",

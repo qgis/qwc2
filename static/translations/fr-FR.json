@@ -483,34 +483,34 @@
       "windowtitle": "Entrée numérique"
     },
     "obliqueview": {
-      "directionEast": "",
-      "directionNorth": "",
-      "directionSouth": "",
-      "directionWest": "",
+      "directionEast": "E",
+      "directionNorth": "N",
+      "directionSouth": "S",
+      "directionWest": "O",
       "nodataset": "Aucune image aérienne oblique disponible",
       "title": "Vue aérienne oblique"
     },
     "oereb": {
-      "concernedThemes": "",
-      "fundationdatastate": "",
-      "fundations": "",
-      "generalInformation": "",
-      "generalinfo": "",
-      "hidefulllegend": "",
-      "hints": "",
-      "legalbasis": "",
-      "notConcernedThemes": "",
-      "nrpoints": "",
-      "perc": "",
-      "regulations": "",
-      "responsibleauthority": "",
-      "responsibleoffice": "",
-      "share": "",
-      "showfulllegend": "",
-      "themeWithoutData": "",
-      "type": "",
-      "title": "",
-      "failed": ""
+      "concernedThemes": "Thèmes concernés",
+      "fundationdatastate": "Données de la mensuration cadastrale. État de la mensuration officielle:",
+      "fundations": "Fondements",
+      "generalInformation": "Informations générales et juridiques",
+      "generalinfo": "Informations générales",
+      "hidefulllegend": "Masquer la légende complète",
+      "hints": "Informations complémentaires et remarques",
+      "legalbasis": "Bases légales",
+      "notConcernedThemes": "Thèmes non concernés",
+      "nrpoints": "point(s)",
+      "perc": "Part en %",
+      "regulations": "Prescriptions",
+      "responsibleauthority": "Autorité compétente",
+      "responsibleoffice": "Service compétent",
+      "share": "Part",
+      "showfulllegend": "Afficher la légende complète",
+      "themeWithoutData": "Thèmes sans données",
+      "type": "Type",
+      "title": "Cadastre RDPPF",
+      "failed": "Échec du chargement de l'extrait RDPPF"
     },
     "panoramax": {
       "notfound": "Il n'y a pas d'image disponible pour cet emplacement.",
@@ -520,8 +520,8 @@
       "querying": "Interrogation"
     },
     "plotinfotool": {
-      "failed": "",
-      "loading": ""
+      "failed": "Échec du chargement des données",
+      "loading": "Chargement des données..."
     },
     "portal": {
       "filter": "Filtrer les thèmes...",
@@ -800,8 +800,8 @@
       "highcontrast_rounded": "Contraste élevé arrondi"
     },
     "plotdescr": {
-      "title": "",
-      "requestPdf": ""
+      "title": "Description de la parcelle",
+      "requestPdf": "Créer le plan du registre foncier (PDF)"
     }
   }
 }
