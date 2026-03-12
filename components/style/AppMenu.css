@@ -67,6 +67,7 @@ div.AppMenu div.appmenu-menu-container {
     transition: transform 0.25s, opacity 0.25s;
     overflow-y: auto;
     max-height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
+    border-radius: 0px 0px 0px var(--border-radius);
 }
 
 div.AppMenu.appmenu-compact div.appmenu-menu-container {

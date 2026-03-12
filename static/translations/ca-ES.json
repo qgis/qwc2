@@ -785,8 +785,11 @@
     },
     "colorschemes": {
       "default": "Per defecte",
+      "default_rounded": "",
       "dark": "Fosc",
-      "highcontrast": "Alt contrast"
+      "dark_rounded": "",
+      "highcontrast": "Alt contrast",
+      "highcontrast_rounded": ""
     },
     "plotdescr": {
       "title": "Descripció de la parcel·la",

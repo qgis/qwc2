@@ -41,6 +41,11 @@
 #BottomBar input.bottombar-mousepos {
     width: 25ch;
     text-align: center;
+    border-radius: var(--border-radius) 0px 0px var(--border-radius);
+}
+
+#BottomBar .controlgroup select {
+    border-radius: 0px var(--border-radius) var(--border-radius) 0px;
 }
 
 #BottomBar div.bottombar-scale-combo {

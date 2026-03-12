@@ -32,6 +32,7 @@ div.TopBar div.topbar-center-span {
 div.TopBar div.topbar-search-container {
     flex: 1 1 auto;
     max-width: 70ch;
+    border-radius: var(--border-radius);
 }
 
 div.TopBar.fullscreen {

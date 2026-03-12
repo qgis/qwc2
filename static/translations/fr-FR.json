@@ -639,7 +639,7 @@
     },
     "settings": {
       "bookmarks": "Marque-pages",
-      "colorscheme": "Schéma de couleurs",
+      "colorscheme": "Apparence",
       "confirmlang": "L'application sera rechargée pour changer la langue. Procéder?",
       "default": "Par défaut",
       "defaulttheme": "Thème par défaut",
@@ -785,8 +785,11 @@
     },
     "colorschemes": {
       "default": "Défaut",
+      "default_rounded": "Défaut arrondi",
       "dark": "Sombre",
-      "highcontrast": "Contraste élevé"
+      "dark_rounded": "Sombre arrondi",
+      "highcontrast": "Contraste élevé",
+      "highcontrast_rounded": "Contraste élevé arrondi"
     },
     "plotdescr": {
       "title": "",

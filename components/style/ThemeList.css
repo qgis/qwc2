@@ -34,6 +34,7 @@ div.ThemeList li.theme-item {
     display: inline-block;
     width: calc(15em + 2px);
     position: relative;
+    border-radius: var(--border-radius);
 }
 div.ThemeList div.theme-item-title {
     display: flex;
@@ -55,7 +56,6 @@ div.ThemeList div.theme-item-title > span.icon {
 }
 
 div.ThemeList div.theme-item-body {
-    background-color: white;
     height: 7.5em;
     width: 15em;
 }
@@ -70,6 +70,7 @@ div.ThemeList img.theme-item-thumbnail {
     max-width: 15em;
     max-height: 7.5em;
     vertical-align: top;
+    border-radius: 0px 0px var(--border-radius) var(--border-radius);
 }
 
 div.ThemeList div.theme-item-icons {
@@ -88,6 +89,7 @@ div.ThemeList div.theme-item-icons > span.icon {
     background-color: var(--button-bg-color);
     color: var(--text-color);
     z-index: 2;
+    border-radius: 0px 0px var(--border-radius) 0px ;
 }
 
 div.ThemeList div.theme-item-icons > span.icon:hover {

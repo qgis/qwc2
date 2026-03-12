@@ -4,6 +4,7 @@ div.input-container {
     height: 2em;
     border: 1px solid var(--border-color);
     background-color: var(--input-bg-color);
+    border-radius: var(--border-radius);
 }
 
 div.input-container div.input-container {
@@ -27,6 +28,7 @@ div.input-container .input-container-input {
     outline: none!important;
     width: 0;
     min-width: 0;
+    border-radius: var(--border-radius);
 }
 
 div.input-container .input-container-input {

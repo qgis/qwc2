@@ -1,4 +1,5 @@
-:root.highcontrast {
+:root.highcontrast,
+:root.highcontrast_rounded {
     /* Base colors */
     --text-color: black;
     --text-color-link: blue;
@@ -58,9 +59,13 @@
     --app-submenu-text-color: white;
     --app-submenu-bg-color-hover: #222;
     --app-submenu-text-color-hover: white;
+    /* Corner */
+    --border-radius: 1px;    
+
 }
 
-:root.dark {
+:root.dark,
+:root.dark_rounded  {
     /* Base colors */
     --text-color: white;
     --text-color-link: #AAAAFF;
@@ -120,5 +125,14 @@
     --app-submenu-text-color: white;
     --app-submenu-bg-color-hover: #404040;
     --app-submenu-text-color-hover: white;
+    /* Corner */
+    --border-radius: 1px;    
+
 }
 
+:root.default_rounded,
+:root.highcontrast_rounded,
+:root.dark_rounded {
+    /* Corner */
+    --border-radius: 16px;
+}
