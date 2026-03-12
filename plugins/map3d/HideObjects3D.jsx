@@ -79,10 +79,6 @@ class HideObjects3D extends React.Component {
             </SideBar>
         );
     }
-    clear = () => {
-        this.setState({pickAttrs: null});
-        this.props.sceneContext.removeSceneObject("__identify3d_highlight");
-    };
     pickOnRelease = (ev) => {
         if (ev.button !== 0) {
             return;
@@ -96,7 +92,6 @@ class HideObjects3D extends React.Component {
         if (this.props.enabled !== true) {
             return;
         }
-        this.clear();
 
         // Setup raycaster
         const raycaster = new Raycaster();
