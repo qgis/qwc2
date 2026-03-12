@@ -507,6 +507,7 @@
                 {"key": "LayerTree3D", "icon": "layers"},
                 {"key": "Draw3D", "icon": "draw"},
                 {"key": "Measure3D", "icon": "measure"},
+                {"key": "MeasureObjects3D", "icon": "measureobj"},
                 {"key": "Compare3D", "icon": "compare"},
                 {"key": "HideObjects3D", "icon": "eye"},
                 {"key": "MapLight3D", "icon": "light"},
