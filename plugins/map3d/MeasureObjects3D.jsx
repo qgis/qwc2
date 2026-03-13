@@ -144,6 +144,7 @@ class MeasureObjects3D extends React.Component {
         const pickFeatureId = helper.getFeatureId(pick.face);
         const pickUuid = pick.object.uuid + "#" + pickFeatureId;
         if (pickUuid in this.state.measuredObjects) {
+            this.removeMeasurement(this.state.measuredObjects[pickUuid]);
             return;
         }
 
@@ -168,6 +169,7 @@ class MeasureObjects3D extends React.Component {
         const index = pick.object.geometry.getIndex();
 
         if (pick.object.uuid in this.state.measuredObjects) {
+            this.removeMeasurement(this.state.measuredObjects[pick.object.uuid]);
             return;
         }
 
