@@ -16,6 +16,7 @@ import {v4 as uuidv4} from 'uuid';
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
+import DataServiceExprUtils from './DataServiceExprUtils';
 import LocaleUtils from './LocaleUtils';
 import MapUtils from './MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';
@@ -203,7 +204,7 @@ const LayerUtils = {
                 if (wmsName !== layer.wms_name || !newParams.LAYERS.split(",").includes(layername)) {
                     return res;
                 }
-                return [...res, layername + ":" + filters.map(expr => Array.isArray(expr) ? LayerUtils.formatFilterExpr(expr) : "AND").join(" ")];
+                return [...res, layername + ":" + DataServiceExprUtils.buildFilter(filters)];
             }, []).join(";");
         }
         if (filter.filterGeom) {
@@ -215,22 +216,6 @@ const LayerUtils = {
             queryLayers: queryLayers,
             initialOpacities: initialOpacities
         };
-    },
-    formatFilterExpr(expr) {
-        if (expr.length === 3 && typeof expr[0] === "string") {
-            const op = expr[1].toUpperCase();
-            if (typeof expr[2] === "number") {
-                return `"${expr[0]}" ${op} ${expr[2]}`;
-            } else if (expr[2] === null) {
-                return `"${expr[0]}" ${op} NULL`;
-            } else if (Array.isArray(expr[2])) {
-                return `"${expr[0]}" ${op} ( ${expr[2].join(' , ')} )`;
-            } else {
-                return `"${expr[0]}" ${op} '${expr[2]}'`;
-            }
-        } else {
-            return "( " + expr.map(entry => Array.isArray(entry) ? this.formatFilterExpr(entry) : entry.toUpperCase()).join(" ") + " )";
-        }
     },
     buildWMSLayerUrlParam(layers) {
         const layernames = [];

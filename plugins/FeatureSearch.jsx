@@ -20,6 +20,7 @@ import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
 import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
+import DataServiceExprUtils from '../utils/DataServiceExprUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
@@ -231,43 +232,37 @@ class FeatureSearch extends React.Component {
             CRS: this.props.theme.mapCrs,
             WIDTH: 100,
             HEIGHT: 100,
-            LAYERS: [],
-            FILTER: [],
             WITH_GEOMETRY: true,
             WITH_MAPTIP: false,
             feature_count: provider.params.featureCount || 100,
             info_format: 'text/xml'
         };
 
-        Object.keys(filter).forEach(layer => {
-            Object.entries(values).forEach(([key, value]) => {
-                filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
-            });
+        const newParams = {
+            LAYERS: Array.from(Object.keys(filter)),
+            FILTER: []
+        };
 
-            // Empty searches break with NULL values in DB (`ILIKE '%%'` or `= ''` returns
-            // false against NULL values), so we want to filter-out the condition with empty values.
-            // QGIS Server doesn't allow us to do stuff like
-            // `('$KEY1$' = '' OR "col1" = '$KEY1$') AND ('$KEY2$' = '' OR "col2" = '$KEY2$')`
-            // for security reasons, so we need to alter the filter itself.
-            // Blindly removing the condition with empty values is quite aggressive and will surely
-            // break existing filters.
-            // So we match "simple" filters which follow the pattern:
-            // "col1" = 'val1' AND "col2" ILIKE '%val2%' AND "col3" ILIKE 'val3%'
-            const pattern = /^("\w+"\s*(ILIKE|=|<|=<|>|>=|!=)\s*'(?:\\'|[^'])*')(\s+AND\s+"\w+"\s*(ILIKE|=|<|=<|>|>=|!=)\s*'(?:\\'|[^'])*')*$/i;
-            const emptyConditionPattern = /(ILIKE|=|<|=<|>|>=|!=)\s*'%?%?'$/i;
-            if (pattern.test(filter[layer])) {
-                filter[layer] = filter[layer].split(/\s+AND\s+/i)
-                    // Remove empty conditions
-                    .filter(condition => !emptyConditionPattern.test(condition))
-                    .join(' AND ')
-                    .trim();
+        newParams.LAYERS.forEach(layer => {
+            if (typeof filter[layer] === "string") {
+                // Uses legacy expression format
+                Object.entries(values).forEach(([key, value]) => {
+                    filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
+                });
+            } else {
+                // Data service filter expression
+                filter[layer] = DataServiceExprUtils.replaceExpressionVariables(filter[layer], values, {});
+                const isSimple = DataServiceExprUtils.isSimpleExpr(filter[layer]);
+                if (isSimple) {
+                    filter[layer] = DataServiceExprUtils.removeEmptyExpr(filter[layer]);
+                }
+                filter[layer] = DataServiceExprUtils.buildFilter(filter[layer]);
             }
 
-            params.LAYERS.push(layer);
-            params.FILTER.push(layer + ":" + filter[layer]);
+            newParams.FILTER.push(layer + ":" + filter[layer]);
         });
-        params.QUERY_LAYERS = params.LAYERS = params.LAYERS.join(",");
-        params.FILTER = params.FILTER.join(";");
+        params.QUERY_LAYERS = params.LAYERS = newParams.LAYERS.join(",");
+        params.FILTER = newParams.FILTER.join(";");
         this.setState({busy: true, searchResults: null});
         axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
             const results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);
