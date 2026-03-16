@@ -55,11 +55,6 @@ div.feature-search-bar > button > div.Spinner {
     margin-right: 1em;
 }
 
-div.feature-search-results {
-    flex: 1 1 auto;
-    overflow-y: auto;
-}
-
 div.feature-search-noresults {
     font-style: italic;
     padding: 0.25em;
