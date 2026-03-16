@@ -2,13 +2,43 @@
  * @typedef {('and' | 'or')} JoinOperator Data Service Join Operator
  * @typedef {string} SubExpressionLefthand Data Service left-hand filter
  * @typedef {string} SubExpressionOperator Data Service operator (e.g. ilike, =, etc.)
- * @typedef {string | number | string[] | null} SubExpressionValue Data Service right-hand expression (ie. value)
+ * @typedef {string | number | string[]} SubExpressionValue Data Service right-hand expression (ie. value)
  * @typedef {[SubExpressionLefthand, SubExpressionOperator, SubExpressionValue]} SubExpression Service subexpression
- * @typedef {(DataServiceExpression | JoinOperator)[]} ExpressionArray Expressions joined by operators
- * @typedef {SubExpression | ExpressionArray} DataServiceExpression Data Service Expression
+ * @typedef {(DataServiceExpression | JoinOperator)[]} ExpressionArray Expressions joined by operators - Expressions can be SubExpression (e.g. `["<name>", "<op>", <value>]`) or an array of complex expressions (e.g. `[["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]`)
+ * @typedef {SubExpression | ExpressionArray} DataServiceExpression Data Service Expression - Can be a SubExpression (e.g. `["<name>", "<op>", <value>]`) or an array of complex expressions (e.g. `[["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]`)
  */
 
 const DataServiceExprUtils = {
+    isSubExpression(expr) {
+        return Array.isArray(expr) && expr.length === 3 && typeof expr[0] === "string";
+    },
+    isJoinOperator(expr) {
+        return typeof(expr) === "string" && ["and", "or"].includes(expr.toLowerCase());
+    },
+
+    /**
+     * Returns whether a DataServiceExpression is valid or not
+     * @param {DataServiceExpression} expr Expression
+     * @returns {boolean}
+     */
+    isValid(expr) {
+        if (!Array.isArray(expr)) {
+            return false;
+        }
+
+        if (this.isSubExpression(expr)) {
+            return true;
+        } else {
+            if ((expr.length % 2) === 0) {
+                // Invalid expression: array must have odd number of entries (can be 1)
+                return null;
+            }
+
+            // Even indices must be DataServiceExpression, odd must be and|or strings
+            return expr.every((entry, idx) => (idx % 2) === 0 ? this.isValid(entry) : this.isJoinOperator(entry));
+        }
+    },
+
     /**
      * Replaces variable placeholders in a Data Service Expression
      * @param {DataServiceExpression} expr Expression
@@ -17,12 +47,9 @@ const DataServiceExprUtils = {
      * @returns {DataServiceExpression | null} Expression with placeholders replaced, or `null` if invalid
      */
     replaceExpressionVariables(expr, values, defaultValues) {
-        if (expr.length < 3 || (expr.length % 2) === 0 || typeof expr[1] !== 'string') {
-            // Invalid expression: array must have at least three and odd number of entries,
-            // mid entry must be a string (operator)
-            return null;
-        }
-        if (typeof expr[0] === 'string') {
+        if (!this.isValid(expr)) return null;
+
+        if (this.isSubExpression(expr)) {
             const op = expr[1].toLowerCase();
             if (typeof expr[2] === 'string') {
                 const right = Object.entries(values).reduce((res, [key, value]) => res.replace(`$${key}$`, (value || defaultValues[key]) ?? value), expr[2]);
@@ -31,23 +58,17 @@ const DataServiceExprUtils = {
                 return [expr[0], op, expr[2]];
             }
         } else {
-            // Even indices must be arrays, odd and|or strings
-            const isAndOr = (entry) => ["and", "or"].includes(String(entry).toLowerCase());
-            const invalid = expr.find((entry, idx) => (idx % 2) === 0 ? !Array.isArray(entry) : !isAndOr(entry));
-            if (invalid) {
-                return null;
-            }
             return expr.map((entry, idx) => (idx % 2) === 0 ? this.replaceExpressionVariables(entry, values, defaultValues) : entry);
         }
     },
 
     /**
-     * Formats a valid Data Service Expression into a string
+     * Formats a valid expression array into a string
      * @param {DataServiceExpression} expr Expression
      * @returns {string} Formatted expression
      */
     formatFilterExpr(expr) {
-        if (expr.length === 3 && typeof expr[0] === "string") {
+        if (this.isSubExpression(expr)) {
             const op = expr[1].toUpperCase();
             if (typeof expr[2] === "number") {
                 return `"${expr[0]}" ${op} ${expr[2]}`;
@@ -59,40 +80,34 @@ const DataServiceExprUtils = {
                 return `"${expr[0]}" ${op} '${expr[2].replace("'", "\\'")}'`;
             }
         } else {
-            return "( " + expr.map(entry => Array.isArray(entry) ? this.formatFilterExpr(entry) : entry.toUpperCase()).join(" ") + " )";
+            return "( " + expr.map((entry, idx) => (idx % 2) === 0 ? this.formatFilterExpr(entry) : entry.toUpperCase()).join(" ") + " )";
         }
     },
 
     /**
-     * Builds the query filter for a Data Service Expression
+     * Builds the query filter for a DataServiceExpression
      * @param {DataServiceExpression} filters Filters
      * @returns {string} Formatted query
      */
     buildFilter(filters) {
-        return filters.map(expr => Array.isArray(expr) ? DataServiceExprUtils.formatFilterExpr(expr) : "AND").join(" ");
+        if (this.isSubExpression(filters)) {
+            return this.formatFilterExpr(filters);
+        } else {
+            return filters.map((entry, idx) => (idx % 2) === 0 ? this.formatFilterExpr(entry) : entry.toUpperCase()).join(" ");
+        }
     },
 
     /**
-     * Computes whether a Data Service Expression is valid and simple: use simple operators (ILIKE, =, etc.), joined via AND
+     * Computes whether a DataServiceExpression is valid and simple: use simple operators (ILIKE, =, etc.), joined via AND
      * @param {DataServiceExpression} expr Expression
      * @returns {boolean} `true` if the expression is simple
      */
     isSimpleExpr(expr) {
-        if (expr.length < 3 || (expr.length % 2) === 0 || typeof expr[1] !== 'string') {
-            // Invalid expression: array must have at least three and odd number of entries,
-            // mid entry must be a string (operator)
-            return false;
-        }
-        if (typeof expr[0] === 'string') {
+        if (this.isSubExpression(expr)) {
             const op = expr[1].toLowerCase();
             const simpleOperators = ['ilike', '=', '<', '=<', '>=', '!='];
             return simpleOperators.includes(op) && typeof expr[2] === 'string';
         } else {
-            const isAnd = (entry) => String(entry).toLowerCase() === "and";
-            const invalid = expr.any((entry, idx) => (idx % 2) === 0 ? !Array.isArray(entry) : !isAnd(entry));
-            if (invalid) {
-                return false;
-            }
             return expr.every((entry, idx) => (idx % 2) === 0 ? this.isSimpleExpr(entry) : String(entry).toLowerCase() === 'and');
         }
     },
@@ -105,7 +120,7 @@ const DataServiceExprUtils = {
      * @returns {DataServiceExpression} Filtered expression
      */
     removeEmptySubexpressions(expr) {
-        if (typeof expr[0] === 'string') {
+        if (this.isSubExpression(expr)) {
             if (expr[2] === "" || expr[2] === "%" || expr[2] === "%%") {
                 // Empty search expression, remove it
                 return null;
@@ -114,7 +129,9 @@ const DataServiceExprUtils = {
         } else {
             const filtered = expr
                 .map(
-                    (entry, idx) => (idx % 2) === 0 ? this.removeEmptySubexpressions(entry) : null // don't care about the operators, we know they're all AND
+                    // don't care about the operators, we know they're all AND
+                    // we'll add them back before returning
+                    (entry, idx) => (idx % 2) === 0 ? this.removeEmptySubexpressions(entry) : null
                 )
                 .filter((entry) => entry !== null)
                 .reduce(

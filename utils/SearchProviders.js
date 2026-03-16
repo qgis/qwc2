@@ -14,6 +14,7 @@ import polygonIntersectTest from 'polygon-intersect-test';
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
+import DataServiceExprUtils from './DataServiceExprUtils';
 import IdentifyUtils from './IdentifyUtils';
 import LayerUtils from './LayerUtils';
 import LocaleUtils from './LocaleUtils';
@@ -231,22 +232,37 @@ class QgisSearch {
             CRS: searchParams.theme.mapCrs,
             WIDTH: 100,
             HEIGHT: 100,
-            LAYERS: [],
-            FILTER: [],
             WITH_MAPTIP: false,
             WITH_GEOMETRY: true,
             feature_count: searchParams.cfgParams.featureCount || 100,
             info_format: 'text/xml'
         };
-        Object.keys(filter).forEach(layer => {
-            Object.entries(values).forEach(([key, value]) => {
-                filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
-            });
-            params.LAYERS.push(layer);
-            params.FILTER.push(layer + ":" + filter[layer]);
+
+        const newParams = {
+            LAYERS: Array.from(Object.keys(filter)),
+            FILTER: []
+        };
+
+        newParams.LAYERS.forEach(layer => {
+            if (typeof filter[layer] === "string") {
+                // Uses legacy expression format
+                Object.entries(values).forEach(([key, value]) => {
+                    filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
+                });
+            } else {
+                // Data service filter expression
+                filter[layer] = DataServiceExprUtils.replaceExpressionVariables(filter[layer], values, {});
+                const isSimple = DataServiceExprUtils.isSimpleExpr(filter[layer]);
+                if (isSimple) {
+                    filter[layer] = DataServiceExprUtils.removeEmptySubexpressions(filter[layer]);
+                }
+                filter[layer] = DataServiceExprUtils.buildFilter(filter[layer]);
+            }
+
+            newParams.FILTER.push(layer + ":" + filter[layer]);
         });
-        params.QUERY_LAYERS = params.LAYERS = params.LAYERS.join(",");
-        params.FILTER = params.FILTER.join(";");
+        params.QUERY_LAYERS = params.LAYERS = newParams.LAYERS.join(",");
+        params.FILTER = newParams.FILTER.join(";");
         axios.get(searchParams.theme.featureInfoUrl, {params}).then(response => {
             callback(QgisSearch.searchResults(
                 IdentifyUtils.parseResponse(response.data, searchParams.theme, 'text/xml', null, searchParams.mapcrs),

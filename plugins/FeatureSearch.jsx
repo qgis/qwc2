@@ -254,7 +254,7 @@ class FeatureSearch extends React.Component {
                 filter[layer] = DataServiceExprUtils.replaceExpressionVariables(filter[layer], values, {});
                 const isSimple = DataServiceExprUtils.isSimpleExpr(filter[layer]);
                 if (isSimple) {
-                    filter[layer] = DataServiceExprUtils.removeEmptyExpr(filter[layer]);
+                    filter[layer] = DataServiceExprUtils.removeEmptySubexpressions(filter[layer]);
                 }
                 filter[layer] = DataServiceExprUtils.buildFilter(filter[layer]);
             }
