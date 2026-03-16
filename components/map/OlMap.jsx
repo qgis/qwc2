@@ -330,7 +330,8 @@ class OlMap extends React.Component {
             constrainRotation: false,
             enableRotation: enableRotation !== false,
             rotation: MapUtils.degreesToRadians(rotation) || 0,
-            extent: extent
+            extent: extent,
+            constrainOnlyCenter: this.props.mapOptions.constrainOnlyCenter || false
         };
         return new ol.View(viewOptions);
     };

@@ -43,6 +43,7 @@ class Map extends React.Component {
             panStepSize: PropTypes.number,
             panPageSize: PropTypes.number,
             constrainExtent: PropTypes.bool,
+            constrainOnlyCenter: PropTypes.bool,
             kineticPanParams: PropTypes.object
         }),
         /** Whether to display the loading spinner when layers are loading. */
