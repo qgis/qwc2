@@ -20,9 +20,9 @@ import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
 import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
-import DataServiceExprUtils from '../utils/DataServiceExprUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import { QgisSearch } from '../utils/SearchProviders';
 
 import "./style/FeatureSearch.css";
 
@@ -225,44 +225,14 @@ class FeatureSearch extends React.Component {
         Object.keys(provider.params.fields).forEach(fieldname => {
             values[fieldname] = form.elements[fieldname].value;
         });
-        const params = {
-            SERVICE: 'WMS',
-            VERSION: this.props.theme.version,
-            REQUEST: 'GetFeatureInfo',
-            CRS: this.props.theme.mapCrs,
-            WIDTH: 100,
-            HEIGHT: 100,
-            WITH_GEOMETRY: true,
-            WITH_MAPTIP: false,
-            feature_count: provider.params.featureCount || 100,
-            info_format: 'text/xml'
-        };
-
-        const newParams = {
-            LAYERS: Array.from(Object.keys(filter)),
-            FILTER: []
-        };
-
-        newParams.LAYERS.forEach(layer => {
-            if (typeof filter[layer] === "string") {
-                // Uses legacy expression format
-                Object.entries(values).forEach(([key, value]) => {
-                    filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
-                });
-            } else {
-                // Data service filter expression
-                filter[layer] = DataServiceExprUtils.replaceExpressionVariables(filter[layer], values, {});
-                const isSimple = DataServiceExprUtils.isSimpleExpr(filter[layer]);
-                if (isSimple) {
-                    filter[layer] = DataServiceExprUtils.removeEmptySubexpressions(filter[layer]);
-                }
-                filter[layer] = DataServiceExprUtils.buildFilter(filter[layer]);
+        const searchParams = {
+            theme: this.props.theme,
+            cfgParams: {
+                featureCount: provider.params.featureCount
             }
+        };
+        const params = QgisSearch.buildFeatureInfoUrlParams(searchParams, filter, values);
 
-            newParams.FILTER.push(layer + ":" + filter[layer]);
-        });
-        params.QUERY_LAYERS = params.LAYERS = newParams.LAYERS.join(",");
-        params.FILTER = newParams.FILTER.join(";");
         this.setState({busy: true, searchResults: null});
         axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
             const results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);

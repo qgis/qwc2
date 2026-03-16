@@ -219,12 +219,32 @@ class NominatimSearch {
 
 /** ************************************************************************ **/
 
-class QgisSearch {
+export class QgisSearch {
 
-    static search(text, searchParams, callback) {
+    static buildFilter(filter, values, removeEmptySubexpr = true) {
+        if (typeof filter === "string") {
+            let replacedFilter = filter;
+            // Uses legacy expression format
+            Object.entries(values).forEach(([key, value]) => {
+                replacedFilter = replacedFilter.replaceAll(`$${key}$`, value.replace("'", "\\'"));
+            });
+            return replacedFilter;
+        } else {
+            // Data service filter expression
+            let replacedExpr = DataServiceExprUtils.replaceExpressionVariables(filter, values, {});
+            if (replacedExpr === null) {
+                /* eslint-disable-next-line */
+                console.warn("Invalid filter expression: " + JSON.stringify(filter));
+                return null;
+            }
+            if (removeEmptySubexpr && DataServiceExprUtils.isSimpleExpr(replacedExpr)) {
+                replacedExpr = DataServiceExprUtils.removeEmptySubexpressions(replacedExpr);
+            }
+            return DataServiceExprUtils.buildFilter(replacedExpr);
+        }
+    }
 
-        const filter = {...searchParams.cfgParams.expression};
-        const values = {TEXT: text};
+    static buildFeatureInfoUrlParams(searchParams, filter, values, removeEmptySubexpr = true) {
         const params = {
             SERVICE: 'WMS',
             VERSION: searchParams.theme.version,
@@ -232,8 +252,8 @@ class QgisSearch {
             CRS: searchParams.theme.mapCrs,
             WIDTH: 100,
             HEIGHT: 100,
-            WITH_MAPTIP: false,
             WITH_GEOMETRY: true,
+            WITH_MAPTIP: false,
             feature_count: searchParams.cfgParams.featureCount || 100,
             info_format: 'text/xml'
         };
@@ -244,25 +264,19 @@ class QgisSearch {
         };
 
         newParams.LAYERS.forEach(layer => {
-            if (typeof filter[layer] === "string") {
-                // Uses legacy expression format
-                Object.entries(values).forEach(([key, value]) => {
-                    filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
-                });
-            } else {
-                // Data service filter expression
-                filter[layer] = DataServiceExprUtils.replaceExpressionVariables(filter[layer], values, {});
-                const isSimple = DataServiceExprUtils.isSimpleExpr(filter[layer]);
-                if (isSimple) {
-                    filter[layer] = DataServiceExprUtils.removeEmptySubexpressions(filter[layer]);
-                }
-                filter[layer] = DataServiceExprUtils.buildFilter(filter[layer]);
+            const replacedFilter = QgisSearch.buildFilter(filter[layer], values, removeEmptySubexpr);
+            if (replacedFilter !== null) {
+                newParams.FILTER.push(layer + ":" + replacedFilter);
             }
-
-            newParams.FILTER.push(layer + ":" + filter[layer]);
         });
         params.QUERY_LAYERS = params.LAYERS = newParams.LAYERS.join(",");
         params.FILTER = newParams.FILTER.join(";");
+
+        return params;
+    }
+
+    static search(text, searchParams, callback) {
+        const params = QgisSearch.buildFeatureInfoUrlParams(searchParams, {...searchParams.cfgParams.expression}, {TEXT: text}, false);
         axios.get(searchParams.theme.featureInfoUrl, {params}).then(response => {
             callback(QgisSearch.searchResults(
                 IdentifyUtils.parseResponse(response.data, searchParams.theme, 'text/xml', null, searchParams.mapcrs),
