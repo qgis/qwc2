@@ -141,7 +141,6 @@ class HideObjects3D extends React.Component {
         }
         if (!pick.object.userData.originalIndex) {
             pick.object.userData.originalIndex = pick.object.geometry.index.array.slice();
-            pick.object.userData.hiddenIds = [];
         }
 
         const helper = new TileMeshHelper(pick.object);
