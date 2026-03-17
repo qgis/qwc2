@@ -14,8 +14,11 @@ div.list-input-value > :first-child {
 }
 
 div.list-input-value > span.icon-trash {
-    color: red;
     padding-left: 0.25em;
+}
+
+div.list-input-value > span.icon-trash:hover {
+    color: red;
 }
 
 div.list-input-add > button {
