@@ -163,6 +163,7 @@ class HideObjects3D extends React.Component {
             return helper.featureIdAttr.getX(idx) !== pickFeatureId;
         });
         pick.object.geometry.setIndex(new BufferAttribute(new Uint32Array(filteredIndices), 1));
+        pick.object.geometry?.computeBoundsTree?.();
 
         // Hide label
         const pickLabel = helper.getTileUserData().tileLabels?.[pickFeatureId];
@@ -225,6 +226,7 @@ class HideObjects3D extends React.Component {
             combined.set(entry.object.geometry.index.array, 0);
             combined.set(new Uint32Array(filteredIndices), entry.object.geometry.index.array.length);
             entry.object.geometry.setIndex(new BufferAttribute(combined, 1));
+            entry.object.geometry?.computeBoundsTree?.();
 
             // Restore label
             const pickLabel = helper.getTileUserData().tileLabels?.[entry.featureId];
