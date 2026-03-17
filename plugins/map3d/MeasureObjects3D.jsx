@@ -129,7 +129,6 @@ class MeasureObjects3D extends React.Component {
     };
     measureTilePick = (pick) => {
         const posAttr = pick.object.geometry.getAttribute('position');
-        const norAttr = pick.object.geometry.getAttribute('normal');
 
         // Ensure geometry is indexed
         if (!pick.object.geometry.index) {
@@ -141,7 +140,7 @@ class MeasureObjects3D extends React.Component {
         }
 
         const helper = new TileMeshHelper(pick.object);
-        const pickFeatureId = helper.getFeatureId(pick.face);
+        const pickFeatureId = helper.getPickFeatureId(pick);
         const pickUuid = pick.object.uuid + "#" + pickFeatureId;
         if (pickUuid in this.state.measuredObjects) {
             this.removeMeasurement(this.state.measuredObjects[pickUuid]);
@@ -151,13 +150,13 @@ class MeasureObjects3D extends React.Component {
         // Extract feature geometry
         const pickPosition = [];
         const pickNormal = [];
-        helper.forEachFeatureTriangle(pickFeatureId, (i0, i1, i2) => {
-            pickPosition.push(posAttr.getX(i0), posAttr.getY(i0), posAttr.getZ(i0));
-            pickPosition.push(posAttr.getX(i1), posAttr.getY(i1), posAttr.getZ(i1));
-            pickPosition.push(posAttr.getX(i2), posAttr.getY(i2), posAttr.getZ(i2));
-            pickNormal.push(norAttr.getX(i0), norAttr.getY(i0), norAttr.getZ(i0));
-            pickNormal.push(norAttr.getX(i1), norAttr.getY(i1), norAttr.getZ(i1));
-            pickNormal.push(norAttr.getX(i2), norAttr.getY(i2), norAttr.getZ(i2));
+        helper.forEachFeatureTriangle(pickFeatureId, (i0, i1, i2, matrix, normalMatrix) => {
+            pickPosition.push(...helper.getPosition(i0, matrix).toArray());
+            pickPosition.push(...helper.getPosition(i1, matrix).toArray());
+            pickPosition.push(...helper.getPosition(i2, matrix).toArray());
+            pickNormal.push(...helper.getNormal(i0, normalMatrix).toArray());
+            pickNormal.push(...helper.getNormal(i1, normalMatrix).toArray());
+            pickNormal.push(...helper.getNormal(i2, normalMatrix).toArray());
         });
 
         // Store measured object metadata

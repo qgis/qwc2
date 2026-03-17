@@ -7,7 +7,7 @@
  */
 
 import PCA from "pca-js";
-import {BufferGeometry, Matrix3, Mesh, Vector2, Vector3} from 'three';
+import {BufferGeometry, Matrix3, Matrix4, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 
@@ -143,14 +143,18 @@ export class TileMeshHelper {
             const featureSetIndex = 0; // usually 0 unless multiple feature sets
             const featureSet = meshFeatures.featureIds[featureSetIndex];
             this.propertyTable = featureSet.propertyTable;
-            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_${featureSet.attribute}`);
+            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_${featureSet.attribute}`) || object.geometry.getAttribute(`_FEATURE_ID_${featureSet.attribute}`);
         } else if (structuralMetadata) {
-            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_0`);
+            this.featureIdAttr = object.geometry.getAttribute(`_feature_id_0`) || object.geometry.getAttribute('_FEATURE_ID_0');
             this.propertyTable = 0;
         } else if ('_batchid' in object.geometry.attributes) {
             // Get featureId via batchId attribute
             this.propertyTable = null;
             this.featureIdAttr = object.geometry.getAttribute('_batchid');
+        } else if ('_BATCHID' in object.geometry.attributes) {
+            // Get featureId via batchId attribute
+            this.propertyTable = null;
+            this.featureIdAttr = object.geometry.getAttribute('_BATCHID');
         } else {
             /* eslint-disable-next-line */
             console.warn("Cannot determine tile mesh feature index attribute")
@@ -162,19 +166,26 @@ export class TileMeshHelper {
         }
         this.propertiesCache = {};
     }
-    isValid() {
-        return this.featureIdAttr !== null;
-    }
-    getFeatureId(face) {
-        return this.featureIdAttr ? this.featureIdAttr.getX(face.a) : null;
+    getPickFeatureId(pick) {
+        if (pick.instanceId) {
+            return this.featureIdAttr ? this.featureIdAttr.getX(pick.instanceId) : pick.instanceId;
+        } else {
+            return this.featureIdAttr ? this.featureIdAttr.getX(pick.instanceId ?? pick.face.a) : null;
+        }
     }
     getFeatureIdAttr() {
         return this.featureIdAttr;
     }
     getFeatureIds() {
         const featureIds = new Set();
-        for (let i = 0; i < this.featureIdAttr.count; i++) {
-            featureIds.add(this.featureIdAttr.getX(i));
+        if (this.featureIdAttr) {
+            for (let i = 0; i < this.featureIdAttr.count; i++) {
+                featureIds.add(this.featureIdAttr.getX(i));
+            }
+        } else if (this.object.isInstancedMesh) {
+            for (let i = 0; i < this.object.count; ++i) {
+                featureIds.add(i);
+            }
         }
         return featureIds;
     }
@@ -194,6 +205,26 @@ export class TileMeshHelper {
         return this.tileObject.userData;
     }
     forEachFeatureTriangle(featureId, callback) {
+        if (this.object.isInstancedMesh) {
+            const matrix = new Matrix4();
+            this.object.getMatrixAt(featureId, matrix);
+            const normalMatrix = new Matrix3().getNormalMatrix(matrix);
+            if (this.object.geometry.index) {
+                const indices = this.object.geometry.index.array;
+                for (let tri = 0; tri < indices.length; tri += 3) {
+                    const i0 = indices[tri];
+                    const i1 = indices[tri + 1];
+                    const i2 = indices[tri + 2];
+                    callback(i0, i1, i2, matrix, normalMatrix);
+                }
+            } else {
+                const position = this.object.geometry.getAttribute('position');
+                for (let tri = 0; tri < position.length; tri += 3) {
+                    callback(tri, tri + 1, tri + 2, matrix, normalMatrix);
+                }
+            }
+
+        }
         if (!this.featureIdAttr) {
             return;
         } else if (this.object.geometry.index) {
@@ -204,16 +235,32 @@ export class TileMeshHelper {
                 if (this.featureIdAttr.getX(i0) === featureId) {
                     const i1 = indices[tri + 1];
                     const i2 = indices[tri + 2];
-                    callback(i0, i1, i2);
+                    callback(i0, i1, i2, null, null);
                 }
             }
         } else {
             // For non-index geometries, the id attribute contains a sequence of triangle vertex indices
             for (let tri = 0; tri < this.featureIdAttr.count; tri += 3) {
                 if (this.featureIdAttr.getX(tri) === featureId) {
-                    callback(tri, tri + 1, tri + 2);
+                    callback(tri, tri + 1, tri + 2, null, null);
                 }
             }
         }
+    }
+    getPosition(idx, matrix = null) {
+        const posAttr = this.object.geometry.attributes.position;
+        const pos = new Vector3(posAttr.getX(idx), posAttr.getY(idx), posAttr.getZ(idx));
+        if (matrix) {
+            pos.applyMatrix4(matrix);
+        }
+        return pos;
+    }
+    getNormal(idx, matrix = null) {
+        const norAttr = this.object.geometry.attributes.normal;
+        const pos = new Vector3(norAttr.getX(idx), norAttr.getY(idx), norAttr.getZ(idx));
+        if (matrix) {
+            pos.applyMatrix3(matrix).normalize();
+        }
+        return pos;
     }
 }

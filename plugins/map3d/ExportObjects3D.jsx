@@ -218,8 +218,6 @@ class ExportObjects3D extends React.Component {
                     return;
                 }
 
-                const posAttr = c.geometry.getAttribute('position');
-                const norAttr = c.geometry.getAttribute('normal');
                 const colAttr = c.geometry.getAttribute('color');
                 const colStride = c.material.transparent ? 4 : 3;
                 const helper = new TileMeshHelper(c);
@@ -231,16 +229,16 @@ class ExportObjects3D extends React.Component {
                         colorStride: colStride,
                         bbox: new Box3()
                     };
-                    helper.forEachFeatureTriangle(featureId, (i0, i1, i2) => {
-                        const pos1 = [posAttr.getX(i0), posAttr.getY(i0), posAttr.getZ(i0)];
-                        const pos2 = [posAttr.getX(i1), posAttr.getY(i1), posAttr.getZ(i1)];
-                        const pos3 = [posAttr.getX(i2), posAttr.getY(i2), posAttr.getZ(i2)];
-                        feature.position.push(...pos1);
-                        feature.position.push(...pos2);
-                        feature.position.push(...pos3);
-                        feature.normal.push(norAttr.getX(i0), norAttr.getY(i0), norAttr.getZ(i0));
-                        feature.normal.push(norAttr.getX(i1), norAttr.getY(i1), norAttr.getZ(i1));
-                        feature.normal.push(norAttr.getX(i2), norAttr.getY(i2), norAttr.getZ(i2));
+                    helper.forEachFeatureTriangle(featureId, (i0, i1, i2, matrix, normalMatrix) => {
+                        const pos1 = helper.getPosition(i0, matrix);
+                        const pos2 = helper.getPosition(i1, matrix);
+                        const pos3 = helper.getPosition(i2, matrix);
+                        feature.position.push(...pos1.toArray());
+                        feature.position.push(...pos2.toArray());
+                        feature.position.push(...pos3.toArray());
+                        feature.normal.push(helper.getNormal(i0, normalMatrix));
+                        feature.normal.push(helper.getNormal(i1, normalMatrix));
+                        feature.normal.push(helper.getNormal(i2, normalMatrix));
                         if (colAttr) {
                             feature.color.push(...colAttr.array.slice(colStride * i0, colStride * i0 + colStride));
                             feature.color.push(...colAttr.array.slice(colStride * i1, colStride * i1 + colStride));

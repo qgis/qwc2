@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
-import {BufferAttribute, BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
+import {BufferAttribute, BufferGeometry, Float32BufferAttribute, Matrix4, Mesh, MeshStandardMaterial, Raycaster, Vector2, Vector3} from 'three';
 
 import Icon from '../../components/Icon';
 import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
@@ -129,7 +129,6 @@ class HideObjects3D extends React.Component {
     };
     hideTilePick = (pick) => {
         const posAttr = pick.object.geometry.getAttribute('position');
-        const norAttr = pick.object.geometry.getAttribute('normal');
 
         // Ensure geometry is indexed
         if (!pick.object.geometry.index) {
@@ -139,30 +138,42 @@ class HideObjects3D extends React.Component {
             }
             pick.object.geometry.setIndex(new BufferAttribute(indices, 1));
         }
-        if (!pick.object.userData.originalIndex) {
-            pick.object.userData.originalIndex = pick.object.geometry.index.array.slice();
-        }
 
         const helper = new TileMeshHelper(pick.object);
-        const pickFeatureId = helper.getFeatureId(pick.face);
+        const pickFeatureId = helper.getPickFeatureId(pick);
 
         // Extract feature geometry
         const pickPosition = [];
         const pickNormal = [];
-        helper.forEachFeatureTriangle(pickFeatureId, (i0, i1, i2) => {
-            pickPosition.push(posAttr.getX(i0), posAttr.getY(i0), posAttr.getZ(i0));
-            pickPosition.push(posAttr.getX(i1), posAttr.getY(i1), posAttr.getZ(i1));
-            pickPosition.push(posAttr.getX(i2), posAttr.getY(i2), posAttr.getZ(i2));
-            pickNormal.push(norAttr.getX(i0), norAttr.getY(i0), norAttr.getZ(i0));
-            pickNormal.push(norAttr.getX(i1), norAttr.getY(i1), norAttr.getZ(i1));
-            pickNormal.push(norAttr.getX(i2), norAttr.getY(i2), norAttr.getZ(i2));
+        helper.forEachFeatureTriangle(pickFeatureId, (i0, i1, i2, matrix, normalMatrix) => {
+            pickPosition.push(...helper.getPosition(i0, matrix).toArray());
+            pickPosition.push(...helper.getPosition(i1, matrix).toArray());
+            pickPosition.push(...helper.getPosition(i2, matrix).toArray());
+            pickNormal.push(...helper.getNormal(i0, normalMatrix).toArray());
+            pickNormal.push(...helper.getNormal(i1, normalMatrix).toArray());
+            pickNormal.push(...helper.getNormal(i2, normalMatrix).toArray());
         });
 
         // Filter indices
-        const filteredIndices = pick.object.geometry.index.array.filter(idx => {
-            return helper.featureIdAttr.getX(idx) !== pickFeatureId;
-        });
-        pick.object.geometry.setIndex(new BufferAttribute(new Uint32Array(filteredIndices), 1));
+        if (pick.object.isInstancedMesh) {
+            if (!pick.object.userData.originalMatrix) {
+                pick.object.userData.originalMatrix = {};
+            }
+            const matrix = new Matrix4();
+            pick.object.getMatrixAt(pickFeatureId, matrix);
+            pick.object.userData.originalMatrix[pickFeatureId] = matrix.clone();
+            matrix.setPosition(new Vector3(1e9, 1e9, 1e9));
+            pick.object.setMatrixAt(pickFeatureId, matrix);
+            pick.object.instanceMatrix.needsUpdate = true;
+        } else {
+            if (!pick.object.userData.originalIndex) {
+                pick.object.userData.originalIndex = pick.object.geometry.index.array.slice();
+            }
+            const filteredIndices = pick.object.geometry.index.array.filter(idx => {
+                return helper.featureIdAttr.getX(idx) !== pickFeatureId;
+            });
+            pick.object.geometry.setIndex(new BufferAttribute(new Uint32Array(filteredIndices), 1));
+        }
         pick.object.geometry?.computeBoundsTree?.();
 
         // Hide label
@@ -221,11 +232,16 @@ class HideObjects3D extends React.Component {
             const helper = new TileMeshHelper(entry.object);
 
             // Re-add filtered indices
-            const filteredIndices = entry.object.userData.originalIndex.filter(i => helper.featureIdAttr.getX(i) === entry.featureId);
-            const combined = new Uint32Array(entry.object.geometry.index.array.length + filteredIndices.length);
-            combined.set(entry.object.geometry.index.array, 0);
-            combined.set(new Uint32Array(filteredIndices), entry.object.geometry.index.array.length);
-            entry.object.geometry.setIndex(new BufferAttribute(combined, 1));
+            if (entry.object.isInstancedMesh) {
+                entry.object.setMatrixAt(entry.featureId, entry.object.userData.originalMatrix[entry.featureId]);
+                entry.object.instanceMatrix.needsUpdate = true;
+            } else {
+                const filteredIndices = entry.object.userData.originalIndex.filter(i => helper.featureIdAttr.getX(i) === entry.featureId);
+                const combined = new Uint32Array(entry.object.geometry.index.array.length + filteredIndices.length);
+                combined.set(entry.object.geometry.index.array, 0);
+                combined.set(new Uint32Array(filteredIndices), entry.object.geometry.index.array.length);
+                entry.object.geometry.setIndex(new BufferAttribute(combined, 1));
+            }
             entry.object.geometry?.computeBoundsTree?.();
 
             // Restore label
