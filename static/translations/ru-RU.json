@@ -123,6 +123,7 @@
       "download": "",
       "ellipse": "",
       "export": "",
+      "false": "",
       "format": "Формат бумаги:",
       "line": "Линия",
       "loading": "",
@@ -140,6 +141,7 @@
       "square": "",
       "sync2dview": "",
       "text": "Текст",
+      "true": "",
       "wait": "",
       "zoomin": "Увеличить",
       "zoomout": "Уменьшить"

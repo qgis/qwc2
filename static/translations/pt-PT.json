@@ -123,6 +123,7 @@
       "download": "Descarregar",
       "ellipse": "Elipse",
       "export": "Enviar",
+      "false": "",
       "format": "Formato:",
       "line": "Linha",
       "loading": "A carregar",
@@ -140,6 +141,7 @@
       "square": "Quadrado",
       "sync2dview": "",
       "text": "Texto",
+      "true": "",
       "wait": "Por favor, aguarde...",
       "zoomin": "Aumentar Zoom",
       "zoomout": "Diminuir Zoom"

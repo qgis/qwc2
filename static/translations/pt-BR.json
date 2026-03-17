@@ -123,6 +123,7 @@
       "download": "Descarregar",
       "ellipse": "Elipse",
       "export": "Enviar",
+      "false": "",
       "format": "Formato:",
       "line": "Línha",
       "loading": "Carregando",
@@ -140,6 +141,7 @@
       "square": "Praça",
       "sync2dview": "",
       "text": "Texto",
+      "true": "",
       "wait": "Aguarde",
       "zoomin": "Mais zoom",
       "zoomout": "Reduzir o zoom"

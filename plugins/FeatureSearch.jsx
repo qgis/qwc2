@@ -22,6 +22,7 @@ import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import { QgisSearch } from '../utils/SearchProviders';
 
 import "./style/FeatureSearch.css";
 
@@ -179,6 +180,17 @@ class FeatureSearch extends React.Component {
                     <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
                 </InputContainer>
             );
+        } else if (fieldcfg.type === "checkbox") {
+            return (
+                <InputContainer>
+                    <select defaultValue="" name={fieldname} onChange={onChange} role="input">
+                        <option value="">{LocaleUtils.tr("common.select")}</option>
+                        <option value="true">{LocaleUtils.tr("common.true")}</option>
+                        <option value="false">{LocaleUtils.tr("common.false")}</option>
+                    </select>
+                    <Icon icon="clear" onClick={(ev) => this.clearField(ev, fieldname)} role="suffix" />
+                </InputContainer>
+            );
         } else {
             return (<input name={fieldname} onChange={onChange} type={fieldcfg.type || "text"} {...fieldcfg.options} />);
         }
@@ -213,29 +225,14 @@ class FeatureSearch extends React.Component {
         Object.keys(provider.params.fields).forEach(fieldname => {
             values[fieldname] = form.elements[fieldname].value;
         });
-        const params = {
-            SERVICE: 'WMS',
-            VERSION: this.props.theme.version,
-            REQUEST: 'GetFeatureInfo',
-            CRS: this.props.theme.mapCrs,
-            WIDTH: 100,
-            HEIGHT: 100,
-            LAYERS: [],
-            FILTER: [],
-            WITH_GEOMETRY: true,
-            WITH_MAPTIP: false,
-            feature_count: provider.params.featureCount || 100,
-            info_format: 'text/xml'
+        const searchParams = {
+            theme: this.props.theme,
+            cfgParams: {
+                featureCount: provider.params.featureCount
+            }
         };
-        Object.keys(filter).forEach(layer => {
-            Object.entries(values).forEach(([key, value]) => {
-                filter[layer] = filter[layer].replaceAll(`$${key}$`, value.replace("'", "\\'"));
-            });
-            params.LAYERS.push(layer);
-            params.FILTER.push(layer + ":" + filter[layer]);
-        });
-        params.QUERY_LAYERS = params.LAYERS = params.LAYERS.join(",");
-        params.FILTER = params.FILTER.join(";");
+        const params = QgisSearch.buildFeatureInfoUrlParams(searchParams, filter, values);
+
         this.setState({busy: true, searchResults: null});
         axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
             const results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);

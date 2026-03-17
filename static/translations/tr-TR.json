@@ -123,6 +123,7 @@
       "download": "İndir",
       "ellipse": "Elips",
       "export": "Ver",
+      "false": "",
       "format": "Format:",
       "line": "Çizgi",
       "loading": "Yükleniyor...",
@@ -140,6 +141,7 @@
       "square": "Kare",
       "sync2dview": "Görünümü senkronize et",
       "text": "Metin",
+      "true": "",
       "wait": "Lütfen bekleyiniz...",
       "zoomin": "Yaklaş",
       "zoomout": "Uzaklaş"

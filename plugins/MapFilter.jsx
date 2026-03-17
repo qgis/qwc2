@@ -29,6 +29,7 @@ import DateTimeInput from '../components/widgets/DateTimeInput';
 import TextInput from '../components/widgets/TextInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
+import DataServiceExprUtils from '../utils/DataServiceExprUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
@@ -197,7 +198,7 @@ class MapFilter extends React.Component {
         Object.values(this.state.filters).forEach(entry => {
             if (entry.active) {
                 Object.entries(entry.filter).forEach(([layer, expression]) => {
-                    const replacedExpr = this.replaceExpressionVariables(expression, entry.values, entry.defaultValues || {});
+                    const replacedExpr = DataServiceExprUtils.replaceExpressionVariables(expression, entry.values, entry.defaultValues || {});
                     if (replacedExpr === null) {
                         /* eslint-disable-next-line */
                         console.warn("Invalid filter expression: " + JSON.stringify(expression));
@@ -626,30 +627,6 @@ class MapFilter extends React.Component {
             delete newCustomFilters[key];
             return {customFilters: newCustomFilters};
         });
-    };
-    replaceExpressionVariables = (expr, values, defaultValues) => {
-        if (expr.length < 3 || (expr.length % 2) === 0 || typeof expr[1] !== 'string') {
-            // Invalid expression: array must have at least three and odd number of entries,
-            // mid entry must be a string (operator)
-            return null;
-        }
-        const op = expr[1].toLowerCase();
-        if (typeof expr[0] === 'string') {
-            if (typeof expr[2] === 'string') {
-                const right = Object.entries(values).reduce((res, [key, value]) => res.replace(`$${key}$`, (value || defaultValues[key]) ?? value), expr[2]);
-                return [expr[0], op, right];
-            } else {
-                return [expr[0], op, expr[2]];
-            }
-        } else {
-            // Even indices must be arrays, odd and|or strings
-            const isAndOr = (entry) => ["and", "or"].includes(String(entry).toLowerCase());
-            const invalid = expr.find((entry, idx) => (idx % 2) === 0 ? !Array.isArray(entry) : !isAndOr(entry));
-            if (invalid) {
-                return null;
-            }
-            return expr.map((entry, idx) => (idx % 2) === 0 ? this.replaceExpressionVariables(entry, values, defaultValues) : entry);
-        }
     };
 }
 
