@@ -118,10 +118,10 @@ export default class CreateTool3D extends React.Component {
             const mesh = new Mesh( geometry, material);
             mesh.castShadow = true;
             mesh.receiveShadow = true;
-            drawGroup.add(mesh);
             const pos = this.drawCursor.points[0];
             mesh.position.copy(new Vector3(Math.round(pos.x), Math.round(pos.y), Math.floor(pos.z + 0.5 * s)));
             mesh.updateMatrixWorld();
+            drawGroup.attach(mesh);
             this.props.sceneContext.scene.notifyChange();
             this.props.objectCreated(mesh);
             this.props.sceneContext.computeBoundsTree(mesh);
