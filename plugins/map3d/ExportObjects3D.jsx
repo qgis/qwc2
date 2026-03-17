@@ -213,14 +213,14 @@ class ExportObjects3D extends React.Component {
     addTileToExportGroup = (tiles, exportGroup, selectionBox) => {
         tiles.group.traverse( c => {
             if (c.geometry) {
-                const bbox = c.geometry.boundingBox.clone().applyMatrix4(c.matrixWorld);
+                const helper = new TileMeshHelper(c);
+                const bbox = helper.getWorldBBox();
                 if (!selectionBox.intersectsBox(bbox)) {
                     return;
                 }
 
                 const colAttr = c.geometry.getAttribute('color');
                 const colStride = c.material.transparent ? 4 : 3;
-                const helper = new TileMeshHelper(c);
                 helper.getFeatureIds().forEach(featureId => {
                     const feature = {
                         position: [],

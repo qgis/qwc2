@@ -7,7 +7,7 @@
  */
 
 import PCA from "pca-js";
-import {BufferGeometry, Matrix3, Matrix4, Mesh, Vector2, Vector3} from 'three';
+import {Box3, BufferGeometry, Matrix3, Matrix4, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
 
@@ -165,6 +165,24 @@ export class TileMeshHelper {
             this.tileObject = this.tileObject.parent;
         }
         this.propertiesCache = {};
+    }
+    getWorldBBox() {
+        if (this.object.isInstancedMesh) {
+            const globalBox = new Box3();
+            const tempBox = new Box3();
+            const tempMatrix = new Matrix4();
+
+            for (let i = 0; i < this.object.count; i++) {
+                this.object.getMatrixAt(i, tempMatrix);
+
+                tempBox.copy(this.object.geometry.boundingBox);
+                tempBox.applyMatrix4(tempMatrix);
+                globalBox.union(tempBox);
+            }
+            return globalBox.applyMatrix4(this.object.matrixWorld);
+        } else {
+            return this.object.geometry.boundingBox.clone().applyMatrix4(this.object.matrixWorld);
+        }
     }
     getPickFeatureId(pick) {
         if (pick.instanceId) {
