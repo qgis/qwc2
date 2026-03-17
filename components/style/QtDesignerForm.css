@@ -139,6 +139,11 @@ div.qt-designer-widget-relation-table-container > table td {
 div.qt-designer-widget-relation-table-container > table td.qt-designer-widget-relation-record-icon {
     width: 1px;
 }
+
+td.qt-designer-widget-relation-record-icon > span.icon-trash:hover {
+    color: red;
+}
+
 div.qt-designer-widget-relation-table-container > table td.qt-designer-widget-relation-row-widget > * {
     width: 100%;
 }
