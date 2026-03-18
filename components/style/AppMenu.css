@@ -80,6 +80,11 @@ div.AppMenu.appmenu-compact div.appmenu-menu-container {
     top: 3.5em;
 }
 
+div.AppMenu.appmenu-icononly div.appmenu-menu-container {
+    right: 0;
+    width: auto;
+}
+
 div.AppMenu.appmenu-compact div.appmenu-menu-container:hover,
 div.AppMenu.appmenu-compact div.appmenu-menu-container:focus-within {
     right: 0;

@@ -35,6 +35,7 @@ class AppMenu extends React.Component {
         currentTaskBlocked: PropTypes.bool,
         keepMenuOpen: PropTypes.bool,
         menuCompact: PropTypes.bool,
+        menuIconOnly: PropTypes.bool,
         menuItems: PropTypes.array,
         onMenuToggled: PropTypes.func,
         openExternalUrl: PropTypes.func,
@@ -144,6 +145,7 @@ class AppMenu extends React.Component {
                     "appmenu-submenu": true,
                     "appmenu-submenu-expanded": expanded
                 });
+                const label = item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key);
                 return [(
                     <div className={className} key={item.key ?? item.title}
                         onClick={() => this.onSubmenuClicked(item.key, level)}
@@ -151,8 +153,8 @@ class AppMenu extends React.Component {
                         onMouseOver={ev => ev.target.focus()}
                         tabIndex={0}
                     >
-                        <Icon icon={item.icon} size="xlarge"/>
-                        {item.title ? LocaleUtils.tr(item.title) : LocaleUtils.tr("appmenu.items." + item.key)}
+                        <Icon icon={item.icon} size="xlarge" title={this.props.menuIconOnly ? label : null} />
+                        {!this.props.menuIconOnly ? label : null}
                     </div>
                 ),
                 subitems];
@@ -172,11 +174,13 @@ class AppMenu extends React.Component {
                             onMouseOver={ev => ev.target.focus()}
                             tabIndex={0}
                         >
-                            <Icon icon={item.icon} size="xlarge"/>
-                            <span className="appmenu-menu-item-label">
-                                {label}
-                                {comment ? (<div className="appmenu-menu-item-comment">{comment}</div>) : null}
-                            </span>
+                            <Icon icon={item.icon} size="xlarge" title={this.props.menuIconOnly ? label : null}/>
+                            {!this.props.menuIconOnly ? (
+                                <span className="appmenu-menu-item-label">
+                                    {label}
+                                    {comment ? (<div className="appmenu-menu-item-comment">{comment}</div>) : null}
+                                </span>
+                            ) : null}
                         </div>
                     );
                 }
@@ -193,6 +197,7 @@ class AppMenu extends React.Component {
             "appmenu-blocked": this.props.currentTaskBlocked,
             "appmenu-visible": visible,
             "appmenu-compact": this.props.menuCompact,
+            "appmenu-icononly": this.props.menuIconOnly,
             "appmenu-nolabel": !showLabel
         });
         const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;

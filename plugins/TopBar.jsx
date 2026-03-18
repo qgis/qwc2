@@ -37,6 +37,8 @@ class TopBar extends React.Component {
         appMenuFilterField: PropTypes.bool,
         /** Whether to hide the app menu (useful primarely as a theme specific setting). */
         appMenuHidden: PropTypes.bool,
+        /** Whether to display an icon-only app menu. */
+        appMenuIconOnly: PropTypes.bool,
         /** The shortcut for tiggering the app menu, i.e. alt+shift+m. */
         appMenuShortcut: PropTypes.string,
         /** Whether to open the app menu on application startup. */
@@ -203,6 +205,7 @@ class TopBar extends React.Component {
                             buttonLabel={LocaleUtils.tr("appmenu.menulabel")}
                             keepMenuOpen={keepMenuOpen}
                             menuCompact={menuCompact}
+                            menuIconOnly={this.props.appMenuIconOnly}
                             menuItems={this.state.allowedMenuItems}
                             openExternalUrl={this.openUrl}
                             showFilterField={this.props.appMenuFilterField}
