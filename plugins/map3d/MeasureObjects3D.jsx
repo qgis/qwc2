@@ -16,6 +16,7 @@ import {Color, BufferAttribute, BufferGeometry, Float32BufferAttribute, LineSegm
 import Icon from '../../components/Icon';
 import {computeOBBXY, TileMeshHelper, updateObjectLabel} from '../../components/map3d/utils/MiscUtils3D';
 import SideBar from '../../components/SideBar';
+import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import './style/MeasureObjects3D.css';
@@ -303,9 +304,10 @@ class MeasureObjects3D extends React.Component {
         const boxmesh = new LineSegments(geometry, material);
         boxmesh.position.copy(obox.center);
         boxmesh.updateMatrixWorld(true);
-        const dim1 = Math.round(2 * obox.halfSizes.x);
-        const dim2 = Math.round(2 * obox.halfSizes.y);
-        const dim3 = Math.round(2 * obox.halfSizes.z);
+        const decimals = ConfigUtils.getConfigProp("measurementPrecision", null, 2);
+        const dim1 = LocaleUtils.toLocaleFixed(2 * obox.halfSizes.x, decimals);
+        const dim2 = LocaleUtils.toLocaleFixed(2 * obox.halfSizes.y, decimals);
+        const dim3 = LocaleUtils.toLocaleFixed(2 * obox.halfSizes.z, decimals);
         boxmesh.userData.label = `<span class="map3d-measure-label"><span style="color: red">${dim1}</span> ⛌ <span style="color: green">${dim2}</span> ⛌ <span style="color: blue">${dim3}</span></<span>`;
         boxmesh.userData.labelOffset = 15;
         updateObjectLabel(boxmesh, this.props.sceneContext);
