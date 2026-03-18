@@ -184,6 +184,7 @@ class Draw3D extends React.Component {
         });
         if (parent) {
             parent.remove(this.state.selectedObject);
+            this.props.sceneContext.eventDispatcher.dispatchEvent({type: 'objectDeleted', objectUuid: this.state.selectedObject.uuid});
             while (parent.parent && !parent.isMesh && parent.children.length === 0 && parent !== group) {
                 const grandparent = parent.parent;
                 grandparent.remove(parent);

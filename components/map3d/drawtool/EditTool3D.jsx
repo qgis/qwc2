@@ -390,6 +390,8 @@ export default class EditTool3D extends React.Component {
             this.props.selectedObject.dissolve();
             children[0].removeFromParent();
             children[1].removeFromParent();
+            this.props.sceneContext.eventDispatcher.dispatchEvent({type: 'objectDeleted', objectUuid: children[0].uuid});
+            this.props.sceneContext.eventDispatcher.dispatchEvent({type: 'objectDeleted', objectUuid: children[1].uuid});
             result.material.color = new Color().lerpColors(children[0].material.color, children[1].material.color, 0.5);
             result.userData.originalChildren = children;
             parent.attach(result);
@@ -516,6 +518,7 @@ export default class EditTool3D extends React.Component {
             const margin = 0.5 * this.props.snapIndex2d.featureGridSize;
             this.props.snapIndex2d.loadArea([box.min.x - margin, box.min.y - margin, box.max.x + margin, box.max.y + margin]);
         }
+        this.props.sceneContext.eventDispatcher.dispatchEvent({type: 'objectEdited', objectUuid: object.uuid, object: object});
     };
     computeSnapOffset = (object, control) => {
         if (!this.state.snapTo3dEnabled && !this.state.snapTo2dEdgeEnabled && !this.state.snapTo2dNodeEnabled) {
