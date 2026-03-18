@@ -141,9 +141,9 @@ export function computeOBBXY(mesh) {
             new Vector3(0, 0, 1)
         ],
         halfSizes: new Vector3(
-            (umax - umin) / 2,
-            (vmax - vmin) / 2,
-            (zmax - zmin) / 2
+            (umax - umin) / 2 * mesh.scale.x,
+            (vmax - vmin) / 2 * mesh.scale.y,
+            (zmax - zmin) / 2 * mesh.scale.z
         )
     };
 }
