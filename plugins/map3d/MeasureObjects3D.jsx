@@ -35,6 +35,12 @@ class MeasureObjects3D extends React.Component {
     };
     componentDidMount() {
         this.props.sceneContext.scene.viewport.addEventListener('pointerdown', this.pickOnRelease);
+        this.props.sceneContext.eventDispatcher.addEventListener('objectEdited', this.objectEdited);
+        this.props.sceneContext.eventDispatcher.addEventListener('objectDeleted', this.objectDeleted);
+    }
+    componentWillUnmount() {
+        this.props.sceneContext.eventDispatcher.removeEventListener('objectEdited', this.objectEdited);
+        this.props.sceneContext.eventDispatcher.removeEventListener('objectDeleted', this.objectDeleted);
     }
     componentDidUpdate(prevProps) {
         if (this.props.sceneContext.scene !== prevProps.sceneContext?.scene) {
@@ -227,7 +233,7 @@ class MeasureObjects3D extends React.Component {
         });
         this.setState({measuredObjects: {}});
     };
-    createAxisColoredWireBox(mesh) {
+    createAxisColoredWireBox = (mesh) => {
         const obox = computeOBBXY(mesh);
         if (!obox) {
             return null;
@@ -312,7 +318,23 @@ class MeasureObjects3D extends React.Component {
         boxmesh.userData.labelOffset = 15;
         updateObjectLabel(boxmesh, this.props.sceneContext);
         return boxmesh;
-    }
+    };
+    objectEdited = ({objectUuid, object}) => {
+        if (objectUuid in this.state.measuredObjects) {
+            const newBox = this.createAxisColoredWireBox(object);
+            const colorBoxId = this.state.measuredObjects[objectUuid].colorBoxId;
+            const highlight = this.state.measuredObjects[objectUuid].highlight;
+            object.matrixWorld.decompose(highlight.position, highlight.quaternion, highlight.scale);
+            highlight.updateMatrixWorld(true);
+            this.props.sceneContext.removeSceneObject(colorBoxId);
+            this.props.sceneContext.addSceneObject(colorBoxId, newBox);
+        }
+    };
+    objectDeleted = ({objectUuid}) => {
+        if (objectUuid in this.state.measuredObjects) {
+            this.removeMeasurement(this.state.measuredObjects[objectUuid]);
+        }
+    };
 }
 
 export default connect((state) => ({
