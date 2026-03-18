@@ -198,15 +198,27 @@ const LayerUtils = {
                 ...layer.dimensionValues
             };
         }
+        const LAYERS = newParams.LAYERS.split(",");
+        const FILTER = {};
         if (filter.filterParams) {
-            newParams.FILTER = Object.entries(filter.filterParams).reduce((res, [layerid, filters]) => {
+            Object.entries(filter.filterParams).forEach(([layerid, expression]) => {
                 const [wmsName, layername] = layerid.split("#");
-                if (wmsName !== layer.wms_name || !newParams.LAYERS.split(",").includes(layername)) {
-                    return res;
+                if (wmsName === layer.wms_name && LAYERS.includes(layername)) {
+                    FILTER[layername] = expression;
                 }
-                return [...res, layername + ":" + DataServiceExprUtils.buildFilter(filters)];
-            }, []).join(";");
+            });
         }
+        if (layer.filter?.layerfilter) {
+            Object.entries(layer.filter.layerfilter).forEach(([layername, expression]) => {
+                if (LAYERS.includes(layername)) {
+                    FILTER[layername] = FILTER[layername] ? [FILTER[layername], 'AND', expression] : expression;
+                }
+            });
+        }
+        newParams.FILTER = Object.entries(FILTER).reduce((res, [layername, expression]) => {
+            return [...res, layername + ":" + DataServiceExprUtils.buildFilter(expression)];
+        }, []).join(";");
+
         if (filter.filterGeom) {
             newParams.FILTER_GEOM = VectorLayerUtils.geoJSONGeomToWkt(filter.filterGeom);
         }

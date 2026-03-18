@@ -542,6 +542,8 @@ def getTheme(config, configItem, result, resultItem):
             resultItem["obliqueDatasets"] = configItem["obliqueDatasets"]
         if "viewMode" in configItem:
             resultItem["viewMode"] = configItem["viewMode"]
+        if "filter" in configItem:
+            resultItem["filter"] = configItem["filter"]
 
         resultItem["editConfig"] = getEditConfig(configItem["editConfig"] if "editConfig" in configItem else None)
 

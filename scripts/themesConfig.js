@@ -543,6 +543,7 @@ function getTheme(config, configItem, result, resultItem, proxy) {
             resultItem.map3d = configItem.map3d;
             resultItem.obliqueDatasets = configItem.obliqueDatasets;
             resultItem.viewMode = configItem.viewMode;
+            resultItem.filter = configItem.filter;
             resultItem.editConfig = getEditConfig(configItem.editConfig);
 
             // set default theme

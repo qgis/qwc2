@@ -146,6 +146,7 @@ const ThemeUtils = {
             translationsUrl: theme.translationsUrl,
             editConfig: theme.editConfig,
             editConfigUrl: theme.editConfigUrl,
+            filter: theme.filter,
             wms_name: theme.wms_name
         };
         if (layer.editConfigUrl) {
