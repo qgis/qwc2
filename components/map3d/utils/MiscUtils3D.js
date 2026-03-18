@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import PCA from "pca-js";
+import convexHull from 'quick-hull-2d';
 import {Box3, BufferGeometry, Matrix3, Matrix4, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
@@ -63,74 +63,88 @@ export function updateObjectLabel(sceneObject, sceneContext) {
 }
 
 export function computeOBBXY(mesh) {
-    const pos = mesh.geometry.attributes.position;
+    // Idea:
+    // - compute convex hull of 2D points (XY plane)
+    // - for each edge of the hull, compute box oriented to that edge, and check which results in minimum box area
+
+    const pos = mesh.geometry.getAttribute('position');
     const n = pos.count;
-
-    // Collect vertex array for PCA and compute centroid
-    const data = new Array(n);
-    const center = new Vector3();
-    for (let i = 0; i < n; i++) {
-        data[i] = [pos.getX(i), pos.getY(i)];
-        center.x += pos.getX(i);
-        center.y += pos.getY(i);
-        center.z += pos.getZ(i);
+    if (n === 0) {
+        return null;
     }
-    center.divideScalar(n);
 
-    // Run PCA
-    const eigenVectors = PCA.getEigenVectors(data);
+    // Collect 2D points
+    const pointsxy = new Array(n);
+    let zmin = Infinity;
+    let zmax = -Infinity;
 
-    const axisX = new Vector3(
-        eigenVectors[0].eigenvector[0],
-        eigenVectors[0].eigenvector[1],
-        0
-    ).normalize();
-    const axisZ = new Vector3(0, 0, 1);
-    const axisY = new Vector3().crossVectors(axisZ, axisX).normalize();
-    const axes = [axisX, axisY, axisZ];
-
-    // Project points onto PCA axes
-    const min = [Infinity, Infinity, Infinity];
-    const max = [-Infinity, -Infinity, -Infinity];
-
-    const v = new Vector3();
     for (let i = 0; i < n; i++) {
-        v.set(
-            pos.getX(i) - center.x,
-            pos.getY(i) - center.y,
-            pos.getZ(i) - center.z
-        );
+        pointsxy[i] = [pos.getX(i), pos.getY(i)];
+        zmin = Math.min(zmin, pos.getZ(i));
+        zmax = Math.max(zmax, pos.getZ(i));
+    }
 
-        for (let a = 0; a < 3; a++) {
-            const d = v.dot(axes[a]);
-            if (d < min[a]) min[a] = d;
-            if (d > max[a]) max[a] = d;
+    // Compute convex hull
+    const hull = convexHull(pointsxy);
+    if (hull.length < 3) {
+        return null;
+    }
+
+    // Edge sweep
+    let bestArea = Infinity;
+    let best = null;
+
+    for (let i = 0; i < hull.length; i++) {
+        const p0 = new Vector2(...hull[i]);
+        const p1 = new Vector2(...hull[(i + 1) % hull.length]);
+
+        const u = new Vector2().subVectors(p1, p0).normalize();
+        const v = new Vector2(u.y, -u.x);
+
+        let umin = Infinity;
+        let umax = -Infinity;
+        let vmin = Infinity;
+        let vmax = -Infinity;
+
+        for (let j = 0; j < hull.length; j++) {
+            const p = new Vector2(...hull[j]);
+            const pu = p.dot(u);
+            const pv = p.dot(v);
+
+            if (pu < umin) umin = pu;
+            if (pu > umax) umax = pu;
+            if (pv < vmin) vmin = pv;
+            if (pv > vmax) vmax = pv;
+        }
+
+        const area = (umax - umin) * (vmax - vmin);
+
+        if (area < bestArea) {
+            bestArea = area;
+            best = {u, v, umin, umax, vmin, vmax};
         }
     }
 
-    // Half extents
-    const halfSizes = new Vector3(
-        (max[0] - min[0]) / 2,
-        (max[1] - min[1]) / 2,
-        (max[2] - min[2]) / 2
-    );
+    const {u, v, umin, umax, vmin, vmax} = best;
 
-    // True center
-    const obbCenter = center.clone()
-        .addScaledVector(axes[0], (max[0] + min[0]) / 2)
-        .addScaledVector(axes[1], (max[1] + min[1]) / 2)
-        .addScaledVector(axes[2], (max[2] + min[2]) / 2)
-        .applyMatrix4(mesh.matrixWorld);
+    const center = new Vector3(
+        u.x * (umin + umax) / 2 + v.x * (vmin + vmax) / 2,
+        u.y * (umin + umax) / 2 + v.y * (vmin + vmax) / 2,
+        (zmin + zmax) / 2
+    ).applyMatrix4(mesh.matrixWorld);
     const normalMatrix = new Matrix3().getNormalMatrix(mesh.matrixWorld);
-
     return {
-        center: obbCenter,
+        center,
         axes: [
-            axes[0].applyMatrix3(normalMatrix).normalize(),
-            axes[1].applyMatrix3(normalMatrix).normalize(),
-            axes[2].applyMatrix3(normalMatrix).normalize()
+            new Vector3(u.x, u.y, 0).applyMatrix3(normalMatrix).normalize(),
+            new Vector3(v.x, v.y, 0).applyMatrix3(normalMatrix).normalize(),
+            new Vector3(0, 0, 1)
         ],
-        halfSizes
+        halfSizes: new Vector3(
+            (umax - umin) / 2,
+            (vmax - vmin) / 2,
+            (zmax - zmin) / 2
+        )
     };
 }
 

@@ -186,6 +186,9 @@ class MeasureObjects3D extends React.Component {
         mesh.applyMatrix4(pick.object.matrixWorld);
         mesh.updateMatrixWorld();
         const colorBox = this.createAxisColoredWireBox(mesh);
+        if (!colorBox) {
+            return;
+        }
         this.props.sceneContext.addSceneObject(colorBox.uuid, colorBox);
 
         this.setState(state => ({
@@ -225,6 +228,9 @@ class MeasureObjects3D extends React.Component {
     };
     createAxisColoredWireBox(mesh) {
         const obox = computeOBBXY(mesh);
+        if (!obox) {
+            return null;
+        }
 
         const ax = obox.axes[0].clone().multiplyScalar(obox.halfSizes.x);
         const ay = obox.axes[1].clone().multiplyScalar(obox.halfSizes.y);

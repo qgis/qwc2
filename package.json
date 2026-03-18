@@ -71,6 +71,7 @@
         "proj4": "^2.20.2",
         "prop-types": "^15.8.1",
         "qrcode.react": "^4.2.0",
+        "quick-hull-2d": "^0.1.0",
         "randomcolor": "^0.6.2",
         "react": "^19.2.4",
         "react-chartjs-2": "^5.3.1",
