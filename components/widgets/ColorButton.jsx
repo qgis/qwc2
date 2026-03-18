@@ -77,7 +77,7 @@ export default class ColorButton extends React.Component {
                             </div>
                         ))}
                     </div>
-                    <ColorPicker className="colorbutton-picker-spectrum" onDrag={this.changeColor} saturationHeight={150} value={this.cssColor(curColor)} />
+                    <ColorPicker className="colorbutton-picker-spectrum" onDrag={this.changeColor} saturationHeight={150} value={this.cssColorRGB(curColor)} />
                     <div className="colorbutton-picker-input controlgroup">
                         <div className="colorbutton-icon">
                             <span style={{backgroundColor: this.cssColor(curColor)}} />
@@ -97,6 +97,9 @@ export default class ColorButton extends React.Component {
     }
     cssColor(color) {
         return "rgba(" + color.join(",") + ")";
+    }
+    cssColorRGB(color) {
+        return "rgb(" + color.slice(0, 3).join(",") + ")";
     }
     hexColor(color) {
         return (0x1000000 + (color[2] | (color[1] << 8) | (color[0] << 16))).toString(16).slice(1).toUpperCase();
