@@ -119,6 +119,10 @@ class Editing extends React.Component {
                     if (this.props.omitReadOnlyDatasets && Object.values(edConfig.permissions).every(permission => permission === false)) {
                         return null;
                     }
+                    const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
+                    if (!match) {
+                        return null;
+                    }
                     return mapName + "#" + layerName;
                 })
             )).flat().filter(Boolean);
