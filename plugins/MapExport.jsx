@@ -21,6 +21,7 @@ import {setSnappingConfig} from '../actions/map';
 import Icon from '../components/Icon';
 import PrintSelection from '../components/PrintSelection';
 import SideBar from '../components/SideBar';
+import ComboBox from '../components/widgets/ComboBox';
 import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -142,8 +143,8 @@ class MapExport extends React.Component {
             return projections.indexOf(this.props.map.projection) !== -1 ? this.props.map.projection : projections[0];
         }
     };
-    changeScale = (ev) => {
-        this.setState({scale: Math.max(1, parseInt(ev.target.value, 10) || 0)});
+    changeScale = (value) => {
+        this.setState({scale: Math.max(1, parseInt(value, 10) || 0)});
     };
     changeResolution = (ev) => {
         this.setState({dpi: parseInt(ev.target.value, 10) || 0});
@@ -169,10 +170,10 @@ class MapExport extends React.Component {
         let scaleChooser = null;
         if (!isEmpty(this.props.allowedScales)) {
             scaleChooser = (
-                <select onChange={this.changeScale} value={this.state.scale || ""}>
-                    <option hidden value={this.state.scale || ""}>{this.state.scale || ""}</option>
-                    {this.props.allowedScales.map(scale => (<option key={scale} value={scale}>1 : {scale}</option>))}
-                </select>);
+                <ComboBox onChange={this.changeScale} value={this.state.scale || ""}>
+                    {this.props.allowedScales.map(scale => (<div key={scale} value={scale}>1 : {scale}</div>))}
+                </ComboBox>
+            );
         } else if (this.props.allowedScales !== false) {
             scaleChooser = (
                 <NumberInput min={1} mobile onChange={this.changeScale} prefix="1 : " value={this.state.scale || null} />
