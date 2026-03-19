@@ -142,8 +142,8 @@ class MapExport extends React.Component {
             return projections.indexOf(this.props.map.projection) !== -1 ? this.props.map.projection : projections[0];
         }
     };
-    changeScale = (value) => {
-        this.setState({scale: Math.max(1, parseInt(value, 10) || 0)});
+    changeScale = (ev) => {
+        this.setState({scale: Math.max(1, parseInt(ev.target.value, 10) || 0)});
     };
     changeResolution = (ev) => {
         this.setState({dpi: parseInt(ev.target.value, 10) || 0});
