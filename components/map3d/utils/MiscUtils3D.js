@@ -6,10 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import convexHull from 'quick-hull-2d';
 import {Box3, BufferGeometry, Matrix3, Matrix4, Mesh, Vector2, Vector3} from 'three';
 import {MeshLine, MeshLineMaterial} from 'three.meshline';
 import {CSS2DObject} from "three/addons/renderers/CSS2DRenderer";
+
+import convexHull from '../../../utils/QuickHull2D';
 
 
 export function createLabelObject(text, pos, sceneContext, zoffset, yoffset = 0) {
