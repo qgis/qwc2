@@ -120,6 +120,7 @@ class TopBar3D extends React.Component {
                         buttonLabel={LocaleUtils.tr("appmenu.menulabel")}
                         keepMenuOpen={menuCompact}
                         menuCompact={menuCompact}
+                        menuIconOnly={config.appMenuIconOnly}
                         menuItems={this.state.allowedMenuItems}
                         openExternalUrl={this.openUrl}
                         showFilterField={config.appMenuFilterField} />
