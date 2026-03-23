@@ -1127,6 +1127,7 @@ See [3D View](../../topics/View3D).
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| allowInspector | `bool` | Whether to allow opening the inspector. | `process.env.NODE_ENV !== "production" && (new URLSearchParams(window.location.search).get("debug") || "").toLowerCase() === "true"` |
 | controlsPosition | `string` | The position of the navigation controls. Either `top` or `bottom`. | `'top'` |
 | defaultFov | `number` | The default field of view (`20`: min, `100`: max). | `30` |
 | defaultSceneQuality | `number` | The default scene quality factor (`20`: min, `100`: max). | `100` |
