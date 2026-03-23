@@ -65,7 +65,7 @@ P2 -> P2 _ "<" _ P3                {% function(d) { return opAsFilter(d) ? [d[0]
 # Priority-3 operators (addition, subtraction, concatenation)
 P3 -> P3 _ "+" _ P4                {% function(d) { return d[0] + d[4]; } %}
     | P3 _ "-" _ P4                {% function(d) { return d[0] - d[4]; } %}
-    | P3 _ "||" _ P4               {% function(d) { return d[0].concat(d[4]); } %}
+    | P3 _ "||" _ P4               {% function(d) { return String(d[0]).concat(String(d[4])); } %}
     | P4                           {% id %}
 
 # Priority-4 operators (multiplication, division)
