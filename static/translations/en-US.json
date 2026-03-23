@@ -660,6 +660,8 @@
     },
     "settings3d": {
       "fov": "Field of view",
+      "pointSize": "Point size",
+      "pointSizeAuto": "Auto",
       "quality": "Quality"
     },
     "share": {
