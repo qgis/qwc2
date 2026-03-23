@@ -376,7 +376,7 @@ class Redlining extends React.Component {
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {
             data = {...data, style: {text: LocaleUtils.tr("common.text")}};
-        } else if (!this.props.allowGeometryLabels) {
+        } else if (!this.props.allowGeometryLabels || this.props.redlining.geomType === "Text" && data.action === "Draw" && data.geomType !== "Text") {
             data = {...data, style: {text: ''}};
         }
         this.props.changeRedliningState(data);
