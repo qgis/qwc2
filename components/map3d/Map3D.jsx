@@ -26,7 +26,7 @@ import {fromUrl} from "geotiff";
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
-import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh, Box3, Vector3, Matrix4, EventDispatcher} from 'three';
+import {Vector2, CubeTextureLoader, Group, Raycaster, Mesh, Box3, Vector3, Matrix4, EventDispatcher, Points} from 'three';
 import {
     computeBoundsTree, disposeBoundsTree,
     computeBatchedBoundsTree, disposeBatchedBoundsTree, acceleratedRaycast
@@ -91,6 +91,7 @@ class Map3D extends React.Component {
     static propTypes = {
         controlsPosition: PropTypes.string,
         defaultFov: PropTypes.number,
+        defaultPointSize: PropTypes.number,
         defaultSceneQuality: PropTypes.number,
         innerRef: PropTypes.func,
         layers: PropTypes.array,
@@ -125,6 +126,7 @@ class Map3D extends React.Component {
         snapObjects: [],
         settings: {
             fov: 30,
+            pointSize: 0,
             sceneQuality: 100
         },
         sceneId: null,
@@ -148,6 +150,7 @@ class Map3D extends React.Component {
             updateSceneObject: (objectId, options, flags) => {},
             zoomToObject: (objectId) => {},
             objectIsVisible: (objectId) => {},
+            objectContainsPoints: (object) => {},
 
             getMap: () => {},
 
@@ -185,6 +188,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
         this.state.sceneContext.zoomToObject = this.zoomToObject;
         this.state.sceneContext.objectIsVisible = this.objectIsVisible;
+        this.state.sceneContext.objectContainsPoints = this.objectContainsPoints;
         this.state.sceneContext.getMap = this.getMap;
         this.state.computeBoundsTree = this.computeBoundsTree;
         this.state.sceneContext.getTerrainHeightFromDTM = this.getTerrainHeightFromDTM;
@@ -194,6 +198,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.setSetting = this.setSetting;
 
         this.state.sceneContext.settings.fov = props.defaultFov;
+        this.state.sceneContext.settings.pointSize = props.defaultPointSize;
         this.state.sceneContext.settings.sceneQuality = props.defaultSceneQuality;
 
         registerPermalinkDataStoreHook("map3d", this.store3dState);
@@ -256,6 +261,15 @@ class Map3D extends React.Component {
         if (this.state.sceneContext.settings.fov !== prevState.sceneContext.settings.fov) {
             this.instance.view.camera.fov = this.state.sceneContext.settings.fov;
             this.instance.notifyChange(this.instance.view.camera);
+        }
+        if (this.state.sceneContext.settings.pointSize !== prevState.sceneContext.settings.pointSize) {
+            Object.values(this.state.sceneContext.objectTree).map((entry) => {
+                const obj = this.state.sceneContext.getSceneObject(entry.objectId);
+                if (this.objectContainsPoints(obj)) {
+                    obj.pointSize = this.state.sceneContext.settings.pointSize;
+                    this.instance.notifyChange(obj);
+                }
+            });
         }
         if (this.state.sceneContext.settings.sceneQuality !== prevState.sceneContext.settings.sceneQuality) {
             const quality = Math.max(20, this.state.sceneContext.settings.sceneQuality);
@@ -547,6 +561,9 @@ class Map3D extends React.Component {
             scene.userData.tilesetName = objectId;
             scene.userData.featureIdAttr = "id";
             Tiles3DStyle.applyTileStyle(scene, tiles.userData, this.state.sceneContext);
+            if (this.objectContainsPoints(tiles)) {
+                tiles.pointSize = this.state.sceneContext.settings.pointSize;
+            }
             this.computeBoundsTree(scene);
             this.instance.notifyChange(tiles);
         });
@@ -822,6 +839,17 @@ class Map3D extends React.Component {
             isVisible &&= objectTree[curId].visibility;
         }
         return isVisible;
+    };
+    objectContainsPoints = (object) => {
+        let containsPoints = false;
+        if (object?.tiles) {
+            object.traverse((child) => {
+                if (child instanceof Points) {
+                    containsPoints = true;
+                }
+            });
+        }
+        return containsPoints;
     };
     getMap = () => {
         return this.map;
