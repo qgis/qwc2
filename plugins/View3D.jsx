@@ -42,6 +42,8 @@ import './style/View3D.css';
 class View3D extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        /** Whether to allow opening the inspector. */
+        allowInspector: PropTypes.bool,
         /** The position of the navigation controls. Either `top` or `bottom`. */
         controlsPosition: PropTypes.string,
         /** The default field of view (`20`: min, `100`: max). */
@@ -81,6 +83,7 @@ class View3D extends React.Component {
         zoomToPoint: PropTypes.func
     };
     static defaultProps = {
+        allowInspector: true,
         controlsPosition: 'top',
         defaultFov: 30,
         defaultSceneQuality: 100,
@@ -312,6 +315,7 @@ class View3D extends React.Component {
                         <Provider store={this.store}>
                             <PluginsContainer pluginsConfig={pluginsConfig}>
                                 <Map3D
+                                    allowInspector={this.props.allowInspector}
                                     controlsPosition={this.props.controlsPosition}
                                     defaultFov={this.props.defaultFov}
                                     defaultSceneQuality={this.props.defaultSceneQuality}

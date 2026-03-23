@@ -89,6 +89,7 @@ class UnloadWrapper extends React.Component {
 class Map3D extends React.Component {
     static contextType = MapContainerPortalContext;
     static propTypes = {
+        allowInspector: PropTypes.bool,
         controlsPosition: PropTypes.string,
         defaultFov: PropTypes.number,
         defaultSceneQuality: PropTypes.number,
@@ -1060,7 +1061,7 @@ class Map3D extends React.Component {
         }));
 
         // Inspector
-        if (["1", "true"].includes((UrlParams.getParam("inspector") || "").toLowerCase())) {
+        if (this.props.allowInspector && ["1", "true"].includes((UrlParams.getParam("inspector") || "").toLowerCase())) {
             const inspectorContainer = document.createElement("div");
             inspectorContainer.className = 'map3d-inspector';
             this.container.appendChild(inspectorContainer);
