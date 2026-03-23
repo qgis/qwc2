@@ -83,7 +83,7 @@ class View3D extends React.Component {
         zoomToPoint: PropTypes.func
     };
     static defaultProps = {
-        allowInspector: true,
+        allowInspector: process.env.NODE_ENV !== "production" && (new URLSearchParams(window.location.search).get("debug") || "").toLowerCase() === "true",
         controlsPosition: 'top',
         defaultFov: 30,
         defaultSceneQuality: 100,
