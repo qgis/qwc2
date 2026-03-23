@@ -79,9 +79,9 @@ class Measure extends React.Component {
     };
     onHide = () => {
         if (this.props.clearMeasurementsOnExit) {
-            this.props.changeMeasurementState({mode: 'Reset', nextmode: null});
+            this.props.changeMeasurementState({mode: 'Reset', nextmode: null, measureId: null});
         } else {
-            this.props.changeMeasurementState({mode: null});
+            this.props.changeMeasurementState({mode: null, measureId: null});
         }
     };
     setMeasureMode = (mode) => {
