@@ -32,7 +32,8 @@ class MeasurementSupport extends React.Component {
         map: PropTypes.object,
         measurement: PropTypes.object,
         projection: PropTypes.string,
-        removeLayer: PropTypes.func
+        removeLayer: PropTypes.func,
+        theme: PropTypes.object
     };
     constructor(props) {
         super(props);
@@ -42,7 +43,9 @@ class MeasurementSupport extends React.Component {
         this.interactions = [];
     }
     componentDidUpdate(prevProps) {
-        if (this.props.measurement.mode === 'Reset') {
+        if (this.props.theme !== prevProps.theme) {
+            this.removeInteractions(true);
+        } else if (this.props.measurement.mode === 'Reset') {
             this.removeInteractions(true);
             const nextmode = this.props.measurement.nextmode !== undefined ? this.props.measurement.nextmode : prevProps.measurement.mode;
             this.props.changeMeasurementState({mode: nextmode});
@@ -151,7 +154,6 @@ class MeasurementSupport extends React.Component {
     removeInteractions = (clearLayer) => {
         if (this.drawInteraction !== null) {
             this.currentFeature = null;
-            this.measureLayer.getSource().changed();
             this.props.map.un('singleclick', this.handleMapClick);
             this.props.map.un('pointermove', this.clearPickPosition);
             this.props.map.removeInteraction(this.drawInteraction);
@@ -296,7 +298,8 @@ class MeasurementSupport extends React.Component {
 
 export default connect((state) => ({
     displayCrs: state.map.displayCrs,
-    measurement: state.measurement
+    measurement: state.measurement,
+    theme: state.theme.current
 }), {
     addLayerFeatures,
     changeMeasurementState,
