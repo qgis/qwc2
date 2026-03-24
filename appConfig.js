@@ -120,6 +120,7 @@ export default {
             RoutingPlugin: RoutingPlugin,
             FeatureSearchPlugin: FeatureSearchPlugin,
             ScratchDrawingPlugin: ScratchDrawingPlugin,
+            SensorThingsToolPlugin: lazy(() => import('./plugins/SensorThingsTool')),
             SettingsPlugin: SettingsPlugin,
             SharePlugin: SharePlugin,
             StartupMarkerPlugin: StartupMarkerPlugin,

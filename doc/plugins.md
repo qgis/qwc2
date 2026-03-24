@@ -40,6 +40,7 @@ Plugin reference
 * [Reports](#reports)
 * [Routing](#routing)
 * [ScratchDrawing](#scratchdrawing)
+* [SensorThingsTool](#sensorthingstool)
 * [Settings](#settings)
 * [Share](#share)
 * [StartupMarker](#startupmarker)
@@ -991,6 +992,85 @@ Task which which can be invoked by other tools to draw a geometry and pass it to
 Only useful for third-party code, i.e. over the JavaScript API.
 
 Invoke as `setCurrentTask("ScratchDrawing", null, null, {callback: <function(features, crs)>});`
+
+## SensorThingsTool<a name="sensorthingstool"></a>
+
+Query and display sensor data from SensorThings APIs.
+
+Allows picking Locations in the map and displaying their Datastreams as a chart.
+
+**`config.json` sample configuration:**
+
+Add tool to `TopBar` `menuItems` and/or `toolbarItems`:
+```
+{"key": "SensorThingsTool", "icon": "report"}
+```
+
+Sample plugin configuration for Fraunhofer SensorThings API with air quality data:
+```
+{
+  "name": "SensorThingsTool",
+  "cfg": {
+    "sensorThingsApiUrls": [
+      {
+        "url": "https://airquality-frost.k8s.ilt-dmz.iosb.fraunhofer.de/v1.1"
+      }
+    ],
+    "timeFormats": {
+      "tooltip": "DD.MM.YYYY HH:mm:ss",
+      "millisecond": "HH:mm:ss.SSS",
+      "second": "HH:mm:ss",
+      "minute": "HH:mm",
+      "hour": "DD.MM.YY HH:mm",
+      "day": "DD.MM.YY",
+      "week": "ll",
+      "month": "MM.YYYY",
+      "quarter": "[Q]Q - YYYY",
+      "year": "YYYY"
+    }
+  }
+}
+```
+
+Additional theme specific `sensorThingsApiUrls` may be added to the `themesConfig.json` as follows:
+```
+{
+  "themes": {
+    "items": [
+      {
+        ...
+        "pluginData": {
+          "sensorThingsTool": ["<configName>"]
+        }
+      }
+    ],
+    "pluginData": {
+      "sensorThingsTool": [
+        {
+          "name": "<configName>",
+          "sensorThingsApiUrls": [
+            {
+              "url": "<SensorThings API base URL>",
+              "locationsFilter": "<optional Locations filter>"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+If you are using `qwc-services`, you will need to explicitly permit the `sensorThingsTool` plugin configs in the `qwc-admin-gui` as follows:
+* Create and permit a `Plugin` resource with the name `sensorThingsTool`
+* Create and permit `Plugin data` resources with names of corresponding `<configName>`s
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| queryTolerance | `number` | Map picking tolerance in pixels | `16` |
+| sensorThingsApiUrls | `[{`<br />`  url: string,`<br />`  locationsFilter: string,`<br />`}]` | List of configurations for SensorThings API URLs.<br />These are active for all themes. Theme specific URLs may be added in the `themesConfig.json`.<br />The optional `locationsFilter` is applied to Locations queries. | `[]` |
+| timeFormats | `object` | Formatting patterns for displaying time values | `{`<br />`    tooltip: 'YYYY-MM-DD HH:mm:ss',`<br />`    millisecond: 'HH:mm:ss.SSS',`<br />`    second: 'HH:mm:ss',`<br />`    minute: 'HH:mm',`<br />`    hour: 'HH:mm',`<br />`    day: 'MM-DD',`<br />`    week: 'YYYY-MM-DD',`<br />`    month: 'YYYY-MM',`<br />`    quarter: '[Q]Q - YYYY',`<br />`    year: 'YYYY'`<br />`}` |
+| windowSize | `object` | Default size of the SensorThings Query window | `{width: 800, height: 600}` |
+| zoomFactor | `number` | Zoom factor for chart zoom buttons | `1.5` |
 
 ## Settings<a name="settings"></a>
 
