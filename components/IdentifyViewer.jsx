@@ -654,7 +654,7 @@ class IdentifyViewer extends React.Component {
                     ) : null}
                     <span>{[this.props.showLayerTitles ? feature.layertitle : "", feature.displayname].filter(Boolean).join(": ")}</span>
                     {zoomToFeatureButton}
-                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layerid)} />
+                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layerid, feature.layerinfo)} />
                     <Icon icon="trash" onClick={() => this.removeResult(layerid, feature)} />
                 </div>
                 {this.props.collapsible && !expanded ? null : (
@@ -1003,9 +1003,12 @@ class IdentifyViewer extends React.Component {
             this.setState({generatingReport: false});
         });
     };
-    showLayerInfo = (layer) => {
+    showLayerInfo = (layer, infolayer) => {
         const [layerUrl, layerName] = layer.split('#');
-        const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+        if (!infolayer) {
+            infolayer = layerName;
+        }
+        const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', infolayer);
         if (match) {
             this.props.setActiveLayerInfo(match.layer, match.sublayer);
         }
