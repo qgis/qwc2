@@ -3,6 +3,7 @@ div.ListInput {
     background-color: var(--list-bg-color);
     padding: 0.25em;
     width: 100%;
+    min-height: 2em;
 }
 
 div.list-input-value {
