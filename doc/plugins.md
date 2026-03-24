@@ -1127,10 +1127,11 @@ See [3D View](../../topics/View3D).
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| allowInspector | `bool` | Whether to allow opening the inspector. | `process.env.NODE_ENV !== "production" && (new URLSearchParams(window.location.search).get("debug") || "").toLowerCase() === "true"` |
 | controlsPosition | `string` | The position of the navigation controls. Either `top` or `bottom`. | `'top'` |
 | defaultFov | `number` | The default field of view (`20`: min, `100`: max). | `30` |
+| defaultPointSize | `number` | The default point size for point cloud tiles (`0`: min, `20`: max). Automatic size computation when the value is `0`. | `0` |
 | defaultSceneQuality | `number` | The default scene quality factor (`20`: min, `100`: max). | `100` |
+| forceAllowInspector | `bool` | Whether to allow opening the inspector in production environment. | `false` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry.<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
 | mouseButtons | `{`<br />`  left: string,`<br />`  middle: string,`<br />`  right: string,`<br />`}` | Mouse buttons assignment. You can assign `pan`, `rotate`, `zoom` to each button.<br />- `left`: undefined<br />- `middle`: undefined<br />- `right`: undefined | `{`<br />`    left: 'pan',`<br />`    middle: 'zoom',`<br />`    right: 'rotate'`<br />`}` |
 | pluginOptions | `object` | Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}`.<br />Refer to the documentation of the <a href="#plugins3d">3D plugins</a> for settable options. | `{}` |
@@ -1267,6 +1268,10 @@ Overview map for the 3D map.
 ## Settings3D<a name="settings3d"></a>
 
 Settings panel for the 3D map.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| showPointSizeSlider | `bool` | Whether to show a slider to set the point size for point cloud tiles. | `false` |
 
 ## TopBar3D<a name="topbar3d"></a>
 
