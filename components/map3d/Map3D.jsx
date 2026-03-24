@@ -93,6 +93,7 @@ class Map3D extends React.Component {
         defaultFov: PropTypes.number,
         defaultPointSize: PropTypes.number,
         defaultSceneQuality: PropTypes.number,
+        forceAllowInspector: PropTypes.bool,
         innerRef: PropTypes.func,
         layers: PropTypes.array,
         mouseButtons: PropTypes.object,
@@ -1088,7 +1089,7 @@ class Map3D extends React.Component {
         }));
 
         // Inspector
-        if (["1", "true"].includes((UrlParams.getParam("inspector") || "").toLowerCase())) {
+        if ((process.env.NODE_ENV !== "production" || this.props.forceAllowInspector) && ["1", "true"].includes((UrlParams.getParam("inspector") || "").toLowerCase())) {
             const inspectorContainer = document.createElement("div");
             inspectorContainer.className = 'map3d-inspector';
             this.container.appendChild(inspectorContainer);
