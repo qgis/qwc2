@@ -94,7 +94,7 @@ class AttributeTableWidget extends React.Component {
         originalFeatureProps: null,
         pageSize: 50,
         currentPage: 0,
-        filterField: "id",
+        filterField: "",
         filterOp: "~",
         filterVal: "",
         sortField: null,
@@ -321,6 +321,7 @@ class AttributeTableWidget extends React.Component {
                     <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
                         <select disabled={footbarDisabled} onChange={ev => this.updateFilter("filterField", ev.target.value)} value={this.state.filterField}>
+                            <option disabled value="">{LocaleUtils.tr("common.select")}</option>
                             {showIdColumn ? (
                                 <option value="<id>">{this.translateFieldName(primaryKey)}</option>
                             ) : null}
