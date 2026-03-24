@@ -13,7 +13,7 @@ import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
-import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
+import {LayerRole, addLayerFeatures, removeLayer, refreshLayer} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask, setCurrentTaskBlocked} from '../actions/task';
 import EditComboField from '../components/EditComboField';
@@ -54,6 +54,7 @@ class AttributeTableWidget extends React.Component {
         mapCrs: PropTypes.string,
         mapScales: PropTypes.array,
         readOnly: PropTypes.bool,
+        refreshLayer: PropTypes.func,
         removeLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTaskBlocked: PropTypes.func,
@@ -738,6 +739,8 @@ class AttributeTableWidget extends React.Component {
             return newState;
         }, () => {
             if (reload) {
+                const mapPrefix = this.state.curEditConfig.editDataset.split(".")[0];
+                this.props.refreshLayer(layer => layer.wms_name === mapPrefix);
                 this.reload(this.state.loadedLayer, true);
             }
         });
@@ -805,6 +808,8 @@ class AttributeTableWidget extends React.Component {
             alert(result);
         } else {
             this.changedFiles = {};
+            const mapPrefix = this.state.curEditConfig.editDataset.split(".")[0];
+            this.props.refreshLayer(layer => layer.wms_name === mapPrefix);
             this.reload(this.state.loadedLayer, true, {changedFeatureIdx: null, originalFeatureProps: null, newFeature: null});
         }
         this.props.setCurrentTaskBlocked(false);
@@ -982,6 +987,7 @@ export default connect((state) => ({
     mapScales: state.map.scales
 }), {
     addLayerFeatures: addLayerFeatures,
+    refreshLayer: refreshLayer,
     removeLayer: removeLayer,
     setCurrentTask: setCurrentTask,
     setCurrentTaskBlocked: setCurrentTaskBlocked,
