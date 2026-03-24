@@ -42,8 +42,6 @@ import './style/View3D.css';
 class View3D extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
-        /** Whether to allow opening the inspector. */
-        allowInspector: PropTypes.bool,
         /** The position of the navigation controls. Either `top` or `bottom`. */
         controlsPosition: PropTypes.string,
         /** The default field of view (`20`: min, `100`: max). */
@@ -53,6 +51,8 @@ class View3D extends React.Component {
         /** The default scene quality factor (`20`: min, `100`: max). */
         defaultSceneQuality: PropTypes.number,
         display: PropTypes.object,
+        /** Whether to allow opening the inspector in production environment. */
+        forceAllowInspector: PropTypes.bool,
         /** Default window geometry. */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -85,11 +85,11 @@ class View3D extends React.Component {
         zoomToPoint: PropTypes.func
     };
     static defaultProps = {
-        allowInspector: process.env.NODE_ENV !== "production" && (new URLSearchParams(window.location.search).get("debug") || "").toLowerCase() === "true",
         controlsPosition: 'top',
         defaultFov: 30,
         defaultPointSize: 0,
         defaultSceneQuality: 100,
+        forceAllowInspector: false,
         geometry: {
             initialWidth: 600,
             initialHeight: 800,
@@ -318,11 +318,11 @@ class View3D extends React.Component {
                         <Provider store={this.store}>
                             <PluginsContainer pluginsConfig={pluginsConfig}>
                                 <Map3D
-                                    allowInspector={this.props.allowInspector}
                                     controlsPosition={this.props.controlsPosition}
                                     defaultFov={this.props.defaultFov}
                                     defaultPointSize={this.props.defaultPointSize}
                                     defaultSceneQuality={this.props.defaultSceneQuality}
+                                    forceAllowInspector={this.props.forceAllowInspector}
                                     innerRef={this.setRef}
                                     mouseButtons={this.props.mouseButtons}
                                     onCameraChanged={this.onCameraChanged}
