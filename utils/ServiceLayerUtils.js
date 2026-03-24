@@ -457,7 +457,10 @@ const ServiceLayerUtils = {
                     ignoreAttributes: false,
                     parseTagValue: true,
                     parseAttributeValue: true,
-                    removeNSPrefix: true
+                    removeNSPrefix: true,
+                    processEntities: {
+                        maxTotalExpansions: 10000
+                    }
                 };
                 resolve({capabilities: (new XMLParser(options)).parse(response.data), requestUrl});
             }).catch((e) => {

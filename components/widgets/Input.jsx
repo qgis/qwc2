@@ -33,7 +33,7 @@ export default class Input extends React.Component {
         changed: false
     };
     static getDerivedStateFromProps(nextProps, state) {
-        const strValue = String(nextProps.value || "");
+        const strValue = String(nextProps.value ?? "");
         if (state.value !== strValue) {
             return {value: strValue, curValue: strValue, changed: false};
         }

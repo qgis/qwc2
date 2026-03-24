@@ -23,7 +23,12 @@ import './style/Settings3D.css';
  */
 export default class Settings3D extends React.Component {
     static propTypes = {
-        sceneContext: PropTypes.object
+        sceneContext: PropTypes.object,
+        /** Whether to show a slider to set the point size for point cloud tiles. */
+        showPointSizeSlider: PropTypes.bool
+    };
+    static defaultProps = {
+        showPointSizeSlider: false
     };
     renderBody = () => {
         return (
@@ -52,6 +57,19 @@ export default class Settings3D extends React.Component {
                                 </InputContainer>
                             </td>
                         </tr>
+                        {this.props.showPointSizeSlider ? (
+                            <tr>
+                                <td>{LocaleUtils.tr("settings3d.pointSize")}</td>
+                                <td>
+                                    <InputContainer>
+                                        <Input
+                                            max={20} min={0} onChange={this.pointSizeChanged} role="input" step={1}
+                                            type="range" value={this.props.sceneContext.settings.pointSize} />
+                                        <span role="suffix">{this.props.sceneContext.settings.pointSize === 0 ? LocaleUtils.tr("settings3d.pointSizeAuto") : this.props.sceneContext.settings.pointSize}</span>
+                                    </InputContainer>
+                                </td>
+                            </tr>
+                        ) : null}
                     </tbody>
                 </table>
             </div>
@@ -74,5 +92,8 @@ export default class Settings3D extends React.Component {
     };
     fovChanged = (value) => {
         this.props.sceneContext.setSetting("fov", parseInt(value, 10));
+    };
+    pointSizeChanged = (value) => {
+        this.props.sceneContext.setSetting("pointSize", parseInt(value, 10));
     };
 }

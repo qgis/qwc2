@@ -536,9 +536,11 @@ class IdentifyViewer extends React.Component {
         let inlineExtaAttribs = false;
         const featureReports = this.state.reports[layerid] || [];
         if (feature.featurereport) {
+            const parts = feature.featurereport.split(".");
             featureReports.push({
                 title: null,
-                template: feature.featurereport
+                template: parts.shift(),
+                format: parts.join(".")
             });
         }
         if (feature.type === "text") {
