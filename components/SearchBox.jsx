@@ -837,7 +837,7 @@ class SearchBox extends React.Component {
             const existingLayer = this.props.layers.find(l => {
                 return l.type === layer.type && l.url === layer.url;
             });
-            this.props.addLayer({...layer, srcid: existingLayer?.srcid, role: LayerRole.USERLAYER});
+            this.props.addLayer({...layer, srcid: existingLayer?.srcid, role: existingLayer?.role ?? LayerRole.USERLAYER});
         }
         if (this.props.searchOptions.zoomToLayers && layer.bbox) {
             this.props.zoomToExtent(layer.bbox.bounds, layer.bbox.crs);
