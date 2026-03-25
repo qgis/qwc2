@@ -53,9 +53,11 @@ const LayerUtils = {
     restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers) {
         const exploded = LayerUtils.explodeLayers([themeLayer]);
         let reordered = [];
+        let haveThemeLayer = false;
         // Iterate over layer configs and reorder items accordingly, create external layer placeholders as neccessary
         for (const layerConfig of layerConfigs) {
             if (layerConfig.type === 'theme') {
+                haveThemeLayer = true;
                 const entry = exploded.find(e => e.sublayer.name === layerConfig.name);
                 if (entry) {
                     entry.sublayer.opacity = layerConfig.opacity;
@@ -72,6 +74,10 @@ const LayerUtils = {
         }
         LayerUtils.insertPermalinkLayers(reordered, permalinkLayers);
         const layers = LayerUtils.implodeLayers(reordered);
+        if (!haveThemeLayer) {
+            // Ensure empty theme layer container is present
+            layers.unshift({...themeLayer, sublayers: []});
+        }
         LayerUtils.setGroupVisiblities(layers);
         return layers;
     },
