@@ -256,6 +256,15 @@ export default function layers(state = defaultState, action) {
                 }
             });
         }
+        // Ensure (empty) theme layer is present
+        if (!newLayers.find(l => l.role === LayerRole.THEME)) {
+            const prevThemeLayer = state.flat.find(l => l.role === LayerRole.THEME);
+            if (prevThemeLayer) {
+                const themeLayer = {...prevThemeLayer, sublayers: []};
+                const pos = newLayers.findIndex(l => l.role === LayerRole.BACKGROUND);
+                newLayers.splice(pos === -1 ? newLayers.length : pos, 0, {...themeLayer, ...LayerUtils.buildWMSLayerParams(themeLayer, state.filter)});
+            }
+        }
         UrlParams.updateParams({l: LayerUtils.buildWMSLayerUrlParam(newLayers)});
         return {...state, flat: newLayers, editConfigs: newEditConfigs};
     }
