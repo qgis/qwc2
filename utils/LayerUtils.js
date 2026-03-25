@@ -496,30 +496,36 @@ const LayerUtils = {
     implodeLayers(exploded) {
         const newlayers = [];
         const usedIds = new Set();
+        let prevlayer = null;
 
         // Merge all possible items of an exploded layer array
         for (const entry of exploded) {
             const layer = entry.layer;
 
             // Attempt to merge with previous if possible
-            let target = newlayers.length > 0 ? newlayers[newlayers.length - 1] : null;
-            let source = layer;
-            if (target && target.sublayers && target.srcid === layer.srcid) {
-                let innertarget = target.sublayers[target.sublayers.length - 1];
-                let innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
-                while (innertarget && innertarget.sublayers && innertarget.name === innersource.name) {
-                    target = innertarget;
-                    source = innersource;
-                    innertarget = target.sublayers[target.sublayers.length - 1];
-                    innersource = source.sublayers[0]; // Exploded entries have only one entry per sublayer level
+            if (prevlayer?.srcid === layer.srcid) {
+                if (isEmpty(prevlayer.sublayers)) {
+                    prevlayer.sublayers = layer.sublayers;
+                } else if (!isEmpty(layer.sublayers)) {
+                    // Find deepest nested matching group
+                    let group = layer;
+                    let prevgroup = prevlayer;
+                    while (
+                        !isEmpty(group.sublayers) && !isEmpty(prevgroup.sublayers) &&
+                        group.sublayers[0]?.name === prevgroup.sublayers[prevgroup.sublayers.length - 1]?.name
+                    ) {
+                        group = group.sublayers[0]; // Exploded layers have one layer per sublayer level
+                        prevgroup = prevgroup.sublayers[prevgroup.sublayers.length - 1];
+                    }
+                    prevgroup.sublayers.push(group.sublayers[0]);
                 }
-                target.sublayers.push(source.sublayers[0]);
             } else {
                 if (usedIds.has(layer.id)) {
                     newlayers.push({...layer, id: uuidv4()});
                 } else {
                     newlayers.push(layer);
                 }
+                prevlayer = newlayers[newlayers.length - 1];
                 usedIds.add(layer.id);
             }
         }
