@@ -477,12 +477,14 @@ class LayerTree extends React.Component {
             const usedGroupIds = new Set();
             if (isEmpty(layer.sublayers) && layer.role !== LayerRole.THEME) {
                 return this.renderLayer(layer, layer, [], layer.visibility, false, !haveGroups);
+            } else if (this.props.showRootEntry && layer.role === LayerRole.THEME && isEmpty(layer.sublayers)) {
+                return null;
             } else if (this.props.showRootEntry || layer.role !== LayerRole.THEME) {
                 return this.renderLayerGroup(layer, layer, [], layer.visibility, false, usedGroupIds);
             } else {
                 return layer.sublayers.map((sublayer, idx) => {
                     const subpath = [idx];
-                    if (sublayer.sublayers) {
+                    if (!isEmpty(sublayer.sublayers)) {
                         return this.renderLayerGroup(layer, sublayer, subpath, layer.visibility, false, usedGroupIds);
                     } else {
                         return this.renderLayer(layer, sublayer, subpath, layer.visibility, false, !haveGroups);
