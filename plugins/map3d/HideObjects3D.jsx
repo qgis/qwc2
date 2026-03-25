@@ -195,13 +195,15 @@ class HideObjects3D extends React.Component {
         const index = pick.object.geometry.getIndex();
 
         // Create highlight geometry
-        this.storeHiddenObject(pick, posAttr.array, norAttr.array, index);
+        this.storeHiddenObject(pick, posAttr.array, norAttr?.array, index);
     };
     storeHiddenObject = (pick, position, normal, index = null, featureId = null) => {
         const material = new MeshStandardMaterial({color: 0xff0000});
         const geometry = new BufferGeometry();
         geometry.setAttribute('position', new Float32BufferAttribute(position, 3));
-        geometry.setAttribute('normal', new Float32BufferAttribute(normal, 3));
+        if (normal) {
+            geometry.setAttribute('normal', new Float32BufferAttribute(normal, 3));
+        }
         geometry.setIndex(index);
         const mesh = new Mesh(geometry, material);
         mesh.receiveShadow = true;
