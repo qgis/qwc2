@@ -170,23 +170,25 @@ class MeasureObjects3D extends React.Component {
         this.storeMeasuredObject(pick, pickPosition, pickNormal, null, pickFeatureId, pickUuid);
     };
     measureObjectPick = (pick) => {
-        const posAttr = pick.object.geometry.getAttribute('position');
-        const norAttr = pick.object.geometry.getAttribute('normal');
-        const index = pick.object.geometry.getIndex();
-
         if (pick.object.uuid in this.state.measuredObjects) {
             this.removeMeasurement(this.state.measuredObjects[pick.object.uuid]);
             return;
         }
 
+        const posAttr = pick.object.geometry.getAttribute('position');
+        const norAttr = pick.object.geometry.getAttribute('normal');
+        const index = pick.object.geometry.getIndex();
+
         // Create highlight geometry
-        this.storeMeasuredObject(pick, posAttr.array, norAttr.array, index, null, pick.object.uuid);
+        this.storeMeasuredObject(pick, posAttr.array, norAttr?.array, index, null, pick.object.uuid);
     };
     storeMeasuredObject = (pick, position, normal, index = null, featureId, uuid) => {
         const material = new MeshStandardMaterial({color: 0xff0000});
         const geometry = new BufferGeometry();
         geometry.setAttribute('position', new Float32BufferAttribute(position, 3));
-        geometry.setAttribute('normal', new Float32BufferAttribute(normal, 3));
+        if (normal) {
+            geometry.setAttribute('normal', new Float32BufferAttribute(normal, 3));
+        }
         geometry.setIndex(index);
         const mesh = new Mesh(geometry, material);
         mesh.receiveShadow = true;
