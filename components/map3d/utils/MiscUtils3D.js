@@ -80,9 +80,10 @@ export function computeOBBXY(mesh) {
     let zmax = -Infinity;
 
     for (let i = 0; i < n; i++) {
-        pointsxy[i] = [pos.getX(i), pos.getY(i)];
-        zmin = Math.min(zmin, pos.getZ(i));
-        zmax = Math.max(zmax, pos.getZ(i));
+        const p = new Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)).applyMatrix4(mesh.matrixWorld);
+        pointsxy[i] = [p.x, p.y];
+        zmin = Math.min(zmin, p.z);
+        zmax = Math.max(zmax, p.z);
     }
 
     // Compute convex hull
@@ -132,19 +133,18 @@ export function computeOBBXY(mesh) {
         u.x * (umin + umax) / 2 + v.x * (vmin + vmax) / 2,
         u.y * (umin + umax) / 2 + v.y * (vmin + vmax) / 2,
         (zmin + zmax) / 2
-    ).applyMatrix4(mesh.matrixWorld);
-    const normalMatrix = new Matrix3().getNormalMatrix(mesh.matrixWorld);
+    );
     return {
         center,
         axes: [
-            new Vector3(u.x, u.y, 0).applyMatrix3(normalMatrix).normalize(),
-            new Vector3(v.x, v.y, 0).applyMatrix3(normalMatrix).normalize(),
+            new Vector3(u.x, u.y, 0),
+            new Vector3(v.x, v.y, 0),
             new Vector3(0, 0, 1)
         ],
         halfSizes: new Vector3(
-            (umax - umin) / 2 * Math.hypot(u.x * mesh.scale.x, u.y * mesh.scale.y),
-            (vmax - vmin) / 2 * Math.hypot(v.x * mesh.scale.x, v.y * mesh.scale.y),
-            (zmax - zmin) / 2 * mesh.scale.z
+            (umax - umin) / 2,
+            (vmax - vmin) / 2,
+            (zmax - zmin) / 2
         )
     };
 }
