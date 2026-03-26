@@ -138,6 +138,9 @@ class AttributeTableWidget extends React.Component {
         if (this.state.highlightedFeature !== prevState.highlightedFeature || this.state.features !== prevState.features || this.state.selectedFeatures !== prevState.selectedFeatures) {
             this.highlightFeatures();
         }
+        if (this.state.loadedLayer !== prevState.loadedLayer && this.props.showDisplayFieldOnly) {
+            this.setState(state => ({filterField: state.curEditConfig.displayField}));
+        }
     }
     componentWillUnmount() {
         this.props.removeLayer("__attributetablehighlight");
