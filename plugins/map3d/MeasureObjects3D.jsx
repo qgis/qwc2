@@ -317,7 +317,7 @@ class MeasureObjects3D extends React.Component {
         const dim2 = LocaleUtils.toLocaleFixed(2 * obox.halfSizes.y, decimals);
         const dim3 = LocaleUtils.toLocaleFixed(2 * obox.halfSizes.z, decimals);
         boxmesh.userData.label = `<span class="map3d-measure-label"><span style="color: red">${dim1}</span> ⛌ <span style="color: green">${dim2}</span> ⛌ <span style="color: blue">${dim3}</span></<span>`;
-        boxmesh.userData.labelOffset = 15;
+        boxmesh.userData.labelOffset = 5 + obox.halfSizes.z;
         updateObjectLabel(boxmesh, this.props.sceneContext);
         return boxmesh;
     };
