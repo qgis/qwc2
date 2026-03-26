@@ -660,7 +660,7 @@ class AttributeTableWidget extends React.Component {
         const newState = {filterField: this.state.filterField, filterOp: this.state.filterOp, filterVal: this.state.filterVal};
         newState[stateField] = val;
         // Reset page if a reload is triggered (either filter changed with a set filter value, or filter value cleared)
-        if (newState.filterVal || (this.state.filterVal && !newState.filterVal)) {
+        if (newState.filterField && (newState.filterVal || (this.state.filterVal && !newState.filterVal))) {
             newState.currentPage = 0;
             this.reload(this.state.selectedLayer, false, newState);
         } else {
