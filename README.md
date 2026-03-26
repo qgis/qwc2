@@ -1,7 +1,7 @@
 [![NPM Version](https://img.shields.io/npm/v/qwc2.svg?style=flat)](https://www.npmjs.com/package/qwc2)
 [![NPM Version LTS](https://img.shields.io/npm/v/qwc2-lts.svg?style=flat&label=npm%20%28LTS%29)](https://www.npmjs.com/package/qwc2-lts)
 
-![Logo](https://raw.githubusercontent.com/qgis/qwc2/refs/heads/master/static/assets/img/qwc-logo.svg) QGIS Web Client
+![Logo](https://raw.githubusercontent.com/qgis/qwc2/refs/heads/master/static/assets/img/qwc-logo.svg) QGIS Web Client • [qwc.app](https://qwc.app)
 =================
 
 ## Introduction
@@ -15,28 +15,7 @@ Alternatively, you can run QWC as part of the **[qwc-services Docker application
 
 ### Main Features
 
-- Modular and easily configurable and extensible
-- Responsive, separately configurable for desktop and mobile devices
-- Theme switcher
-- Search with configurable search providers
-- Layer tree
-  * Toggle layers and groups
-  * Change layer order and opacity
-  * Import external WMS/WFS/WMTS/GeoJSON/KML layers
-  * Compare layers
-- Feature info
-- Printing using QGIS print layouts
-- Share permalinks
-- Bookmarks
-- Measuring tools
-- Height profile
-- Redlining
-- Editing and attribute table
-- Attribute table
-- Export map (raster images, DXF)
-- Time manager for temporal layers
-- Themeable with color schemes
-- [Additional plugins!](https://qwc-services.github.io/master/references/qwc2_plugins/)
+See [qwc.app/features](https://qwc.app/features).
 
 ## Quick start
 
