@@ -126,7 +126,7 @@ class Bookmark extends React.Component {
                                             <Icon icon="draw" onClick={(ev) => {this.setState({renameBookmark: bookmark.key, currentBookmark: null}); MiscUtils.killEvent(ev);}} title={LocaleUtils.tr("common.rename")} />
                                         ) : null}
                                         {this.state.renameBookmark !== bookmark.key ? (
-                                            <Icon disabled={this.state.busy} icon="trash" onClick={() => this.removeBookmark(bookmark.key)} title={LocaleUtils.tr("common.delete")} />
+                                            <Icon disabled={this.state.busy} icon="trash" onClick={(ev) => {this.removeBookmark(bookmark.key); MiscUtils.killEvent(ev);}} title={LocaleUtils.tr("common.delete")} />
                                         ) : null}
                                     </div>
                                 );
