@@ -32,7 +32,7 @@ class TopBar extends React.Component {
         /** Whether opening the app menu clears the active task. */
         appMenuClearsTask: PropTypes.bool,
         /** App-Menu display mode. Only available for desktop client. */
-        appMenuDisplayMode: PropTypes.oneOf(["normal", "compact", "iconsonly"]),
+        appMenuDisplayMode: PropTypes.oneOf(["normal", "compact", "icononly"]),
         /** Whether to display the filter field in the app menu. */
         appMenuFilterField: PropTypes.bool,
         /** Whether to hide the app menu (useful primarely as a theme specific setting). */
