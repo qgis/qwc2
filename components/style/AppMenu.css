@@ -36,10 +36,16 @@ div.AppMenu.appmenu-visible .appmenu-label {
     color: var(--app-submenu-text-color-hover);
 }
 
+div.AppMenu .appmenu-icon {
+    width: 3.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 div.AppMenu .appmenu-icon > span.icon {
     color: var(--app-menu-text-color);
     padding: 0.25em;
-    margin: 0 1em;
     border: 2px solid var(--app-menu-text-color);
     transition: color 0.25s, border-color 0.25s, background-color 0.25s;
 }
@@ -58,42 +64,15 @@ div.AppMenu div.appmenu-menu-container {
     position: absolute;
     top: 100%;
     right: 0;
-    box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
-    width: 20em;
-    max-width: 100vw;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
+    pointer-events: none;
     opacity: 0;
     transform-origin: top;
     transform: scaleY(0);
     transition: transform 0.25s, opacity 0.25s;
-    overflow-y: auto;
-    max-height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
-    border-radius: 0px 0px 0px var(--border-radius);
-}
-
-div.AppMenu.appmenu-compact div.appmenu-menu-container {
-    right: -11.25em;
-    width: 15em;
-    height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
-    transition: transform 0.25s, opacity 0.25s, right 0.5s;
-    background: var(--app-menu-bg-color);
-    box-shadow: 0px 0px 4px rgba(136, 136, 136, 0.5);
-    top: 3.5em;
-}
-
-div.AppMenu.appmenu-icononly div.appmenu-menu-container {
-    right: 0;
-    width: auto;
-}
-
-div.AppMenu.appmenu-compact div.appmenu-menu-container:hover,
-div.AppMenu.appmenu-compact div.appmenu-menu-container:focus-within {
-    right: 0;
-}
-
-div.AppMenu div.appmenu-menu {
-    background-color: var(--app-menu-bg-color);
-    text-align: left;
-    font-size: small;
 }
 
 div.AppMenu.appmenu-visible div.appmenu-menu-container {
@@ -101,11 +80,44 @@ div.AppMenu.appmenu-visible div.appmenu-menu-container {
     opacity: 1;
 }
 
+div.AppMenu div.appmenu-menu-aligner {
+    display: flex;
+    justify-content: end;
+}
+
+div.AppMenu div.appmenu-menu {
+    position:  relative;
+    pointer-events: initial;
+    text-align: left;
+    background-color: var(--app-menu-bg-color);
+    box-shadow: 0px 2px 4px rgba(136, 136, 136, 0.5);
+    text-align: left;
+    width: 22.22em;
+    font-size: 90%;
+    border-radius: 0px 0px 0px var(--border-radius);
+}
+
+div.AppMenu.appmenu-compact div.appmenu-menu {
+    right: -18.33em;
+    transition: right 0.5s;
+}
+
+div.AppMenu.appmenu-compact div.appmenu-menu:hover,
+div.AppMenu.appmenu-compact div.appmenu-menu:focus-within {
+    right: 0;
+}
+
+div.AppMenu.appmenu-icononly div.appmenu-menu {
+    width: 3.89em;
+    right: 0;
+}
+
 div.appmenu-menu-item {
     display: flex;
     align-items: center;
     color: var(--app-menu-text-color);
     font-weight: bold;
+    position: relative;
 }
 
 div.appmenu-menu-item:not(:last-child) {
@@ -124,6 +136,25 @@ div.appmenu-menu-item-label {
 div.appmenu-menu-item-comment {
     font-weight: normal;
     font-size: 90%;
+}
+
+span.appmenu-menu-item-tooltip {
+    position: absolute;
+    display: none;
+    background-color: var(--tooltip-bg-color);
+    border: 1px solid var(--tooltip-border-color);
+    color: var(--tooltip-text-color);
+    font-size: 75%;
+    font-weight: normal;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    white-space: nowrap;
+    right: calc(100% + 0.25em);
+    z-index: 2;
+}
+
+div.appmenu-menu-item:hover span.appmenu-menu-item-tooltip {
+    display: inline;
 }
 
 div.appmenu-submenu-active,

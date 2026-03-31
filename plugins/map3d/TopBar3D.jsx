@@ -91,7 +91,14 @@ class TopBar3D extends React.Component {
         if (config.logoUrl) {
             logoEl = (<a href={config.logoUrl} rel="noreferrer" target="_blank">{logoEl}</a>);
         }
-        const menuCompact = !isMobile ? config.appMenuCompact : false;
+
+        // Validate appMenuDisplayMode
+        let appMenuDisplayMode = config.appMenuDisplayMode;
+        if (!ConfigUtils.isMobile() || !["normal", "compact", "icononly"].includes(config.appMenuDisplayMode)) {
+            appMenuDisplayMode = "normal";
+        } else if (config.appMenuCompact) {
+            appMenuDisplayMode = "compact";
+        }
 
         const classes = classNames({
             TopBar: true,
@@ -118,12 +125,11 @@ class TopBar3D extends React.Component {
                         appMenuClearsTask={config.appMenuClearsTask}
                         appMenuShortcut={config.appMenuShortcut}
                         buttonLabel={LocaleUtils.tr("appmenu.menulabel")}
-                        keepMenuOpen={menuCompact}
-                        menuCompact={menuCompact}
-                        menuIconOnly={config.appMenuIconOnly}
+                        menuDisplayMode={appMenuDisplayMode}
                         menuItems={this.state.allowedMenuItems}
                         openExternalUrl={this.openUrl}
-                        showFilterField={config.appMenuFilterField} />
+                        showFilterField={config.appMenuFilterField}
+                        showOnStartup={config.appMenuVisibleOnStartup} />
                     {this.props.viewMode === ViewMode._3DFullscreen ? (
                         <FullscreenSwitcher />
                     ) : null}

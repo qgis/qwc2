@@ -31,11 +31,6 @@ span.portal-topbar-spacer {
     flex: 1 1 auto;
 }
 
-div.portal-topbar div.AppMenu div.appmenu-menu-container {
-    height: calc(var(--plugins-container-height) - var(--topbar-height) - var(--bottombar-height));
-    background-color: var(--app-menu-bg-color);
-}
-
 div.portal-topbar div.AppMenu ul.appmenu-menu li:last-child {
     border-bottom: 1px solid var(--app-menu-text-color);
 }

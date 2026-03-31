@@ -31,8 +31,8 @@ class TopBar extends React.Component {
     static propTypes = {
         /** Whether opening the app menu clears the active task. */
         appMenuClearsTask: PropTypes.bool,
-        /** Whether show an appMenu compact (menu visible on icons hover) - Only available for desktop client. */
-        appMenuCompact: PropTypes.bool,
+        /** App-Menu display mode. Only available for desktop client. */
+        appMenuDisplayMode: PropTypes.oneOf(["normal", "compact", "iconsonly"]),
         /** Whether to display the filter field in the app menu. */
         appMenuFilterField: PropTypes.bool,
         /** Whether to hide the app menu (useful primarely as a theme specific setting). */
@@ -112,6 +112,7 @@ class TopBar extends React.Component {
             showResultInSearchText: true,
             minScaleDenom: 1000
         },
+        appMenuDisplayMode: 'normal',
         menuItems: [],
         toolbarItems: [],
         logoFormat: "svg"
@@ -168,12 +169,17 @@ class TopBar extends React.Component {
         const searchOptions = {...TopBar.defaultProps.searchOptions, ...this.props.searchOptions};
         searchOptions.minScaleDenom = searchOptions.minScaleDenom || searchOptions.minScale;
         delete searchOptions.minScale;
-        // Menu compact only available for desktop client
-        const menuCompact = !isMobile ? this.props.appMenuCompact : false;
-        // Keep menu open when appMenu is in compact mode (Visible on Hover)
-        const keepMenuOpen = menuCompact;
+        // Validate appMenuDisplayMode
+        let appMenuDisplayMode = this.props.appMenuDisplayMode;
+        if (ConfigUtils.isMobile() || !["normal", "compact", "icononly"].includes(this.props.appMenuDisplayMode)) {
+            appMenuDisplayMode = "normal";
+        /* eslint-disable-next-line react/prop-types */
+        } else if (this.props.appMenuCompact) {
+            /* eslint-disable-next-line no-console */
+            console.warn("TopBar: the appMenuCompact prop is deprecated, use appMenuDisplayMode");
+            appMenuDisplayMode = "compact";
+        }
         // Menu should be visible on startup when appMenu is in compact mode (Visible on Hover)
-        const showOnStartup = this.props.appMenuVisibleOnStartup || menuCompact;
         const style = {
             marginLeft: this.props.mapMargins.outerLeft + 'px',
             marginRight: this.props.mapMargins.outerRight + 'px'
@@ -203,13 +209,11 @@ class TopBar extends React.Component {
                             appMenuClearsTask={this.props.appMenuClearsTask}
                             appMenuShortcut={this.props.appMenuShortcut}
                             buttonLabel={LocaleUtils.tr("appmenu.menulabel")}
-                            keepMenuOpen={keepMenuOpen}
-                            menuCompact={menuCompact}
-                            menuIconOnly={this.props.appMenuIconOnly}
+                            menuDisplayMode={appMenuDisplayMode}
                             menuItems={this.state.allowedMenuItems}
                             openExternalUrl={this.openUrl}
                             showFilterField={this.props.appMenuFilterField}
-                            showOnStartup={showOnStartup} />
+                            showOnStartup={this.props.appMenuVisibleOnStartup} />
                     ) : null}
                     {this.props.components.FullscreenSwitcher ? (
                         <this.props.components.FullscreenSwitcher />
