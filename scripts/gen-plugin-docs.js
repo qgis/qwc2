@@ -69,6 +69,8 @@ function parsePropType(type) {
         return '[' + parsePropType(type.value) + "]";
     } else if (type.name === 'union') {
         return '{' + type.value.map(entry => parsePropType(entry)).join(", ") + '}';
+    } else if (type.name === 'enum') {
+        return `{${type.value.map(x => x.value).join(", ")}}`;
     } else {
         return type.name;
     }

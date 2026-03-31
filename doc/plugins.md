@@ -1166,7 +1166,7 @@ Top bar, containing the logo, searchbar, task buttons and app menu.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | appMenuClearsTask | `bool` | Whether opening the app menu clears the active task. | `undefined` |
-| appMenuDisplayMode | `enum` | App-Menu display mode. Only available for desktop client. | `'normal'` |
+| appMenuDisplayMode | `{"normal", "compact", "icononly"}` | App-Menu display mode. Only available for desktop client. | `'normal'` |
 | appMenuFilterField | `bool` | Whether to display the filter field in the app menu. | `undefined` |
 | appMenuHidden | `bool` | Whether to hide the app menu (useful primarely as a theme specific setting). | `undefined` |
 | appMenuIconOnly | `bool` | Whether to display an icon-only app menu. | `undefined` |
