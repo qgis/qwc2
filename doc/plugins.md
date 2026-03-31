@@ -578,9 +578,10 @@ for customized queries and templates for the result presentation.
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX).<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined<br />- `side`: undefined | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | highlightAllResults | `bool` | Whether to highlight all results if no result is hovered | `true` |
 | initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. | `'m'` |
+| longAttributesDisplay | `{"wrap", "ellipsis"}` | How to handle long attribute names / values. | `'wrap'` |
 | params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
-| resultDisplayMode | `string` | Result display mode, one of `tree`, `flat`, `paginated`. | `'flat'` |
+| resultDisplayMode | `{"tree", "flat", "paginated"}` | Result display mode. | `'flat'` |
 | resultGridSize | `number` | Target cell size of the result grid in comparison mode. | `200` |
 | resultMultiDisplay | `bool` | Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. | `false` |
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |

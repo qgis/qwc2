@@ -80,7 +80,8 @@ class Identify extends React.Component {
         /** The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. */
         initialRadiusUnits: PropTypes.string,
         layers: PropTypes.array,
-        longAttributesDisplay: PropTypes.string,
+        /** How to handle long attribute names / values. */
+        longAttributesDisplay: PropTypes.oneOf(["wrap", "ellipsis"]),
         map: PropTypes.object,
         /** Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. */
         params: PropTypes.object,
@@ -88,8 +89,8 @@ class Identify extends React.Component {
         removeMarker: PropTypes.func,
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
-        /** Result display mode, one of `tree`, `flat`, `paginated`. */
-        resultDisplayMode: PropTypes.string,
+        /** Result display mode. */
+        resultDisplayMode: PropTypes.oneOf(["tree", "flat", "paginated"]),
         /** Target cell size of the result grid in comparison mode. */
         resultGridSize: PropTypes.number,
         /** Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. */
@@ -110,7 +111,7 @@ class Identify extends React.Component {
         exportGeometry: true,
         clearResultsOnClose: true,
         customExporters: [],
-        longAttributesDisplay: 'ellipsis',
+        longAttributesDisplay: 'wrap',
         resultDisplayMode: 'flat',
         resultGridSize: 200,
         resultMultiDisplay: false,
