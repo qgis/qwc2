@@ -83,6 +83,7 @@ div.AppMenu.appmenu-visible div.appmenu-menu-container {
 div.AppMenu div.appmenu-menu-aligner {
     display: flex;
     justify-content: end;
+    min-height: 100%;
 }
 
 div.AppMenu div.appmenu-menu {
@@ -110,6 +111,7 @@ div.AppMenu.appmenu-compact div.appmenu-menu:focus-within {
 div.AppMenu.appmenu-icononly div.appmenu-menu {
     width: 3.89em;
     right: 0;
+    min-height: 100%;
 }
 
 div.appmenu-menu-item {
@@ -144,7 +146,7 @@ span.appmenu-menu-item-tooltip {
     background-color: var(--tooltip-bg-color);
     border: 1px solid var(--tooltip-border-color);
     color: var(--tooltip-text-color);
-    font-size: 75%;
+    font-size: 90%;
     font-weight: normal;
     padding: 0.5em;
     border-radius: 0.5em;
