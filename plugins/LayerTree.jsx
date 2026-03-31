@@ -434,6 +434,9 @@ class LayerTree extends React.Component {
                 {this.props.transparencyIcon ? (<Icon icon="transparency" />) : LocaleUtils.tr("layertree.transparency")}
                 <input className="layertree-item-transparency-slider" max="255" min="0"
                     onChange={(ev) => this.layerTransparencyChanged(layer, path, ev.target.value, !isEmpty(sublayer.sublayers) ? 'children' : null)}
+                    onMouseDown={ev => ev.stopPropagation()} onMouseMove={ev => ev.stopPropagation()}
+                    onPointerDown={ev => ev.stopPropagation()} onPointerMove={ev => ev.stopPropagation()}
+                    onTouchMove={ev => ev.stopPropagation()} onTouchStart={ev => ev.stopPropagation()}
                     step="1" type="range" value={255 - LayerUtils.computeLayerOpacity(sublayer)} />
                 {reorderButtons}
                 {toggleGroupButton}
