@@ -32,6 +32,7 @@
         "Settings": "Ayarlar",
         "Settings3D": "",
         "Share": "Bağlantı Paylaş",
+        "SunExposure3D": "",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Öznitelik Tablosu",
         "AuthenticationLogin": "Giriş",
@@ -120,6 +121,8 @@
       "clear": "Temizle",
       "clone": "",
       "close": "Kapat",
+      "compute": "",
+      "date": "",
       "delete": "Sil",
       "download": "İndir",
       "ellipse": "Elips",
@@ -774,6 +777,17 @@
       "loading": "Yakalanan geometriler yükleniyor...",
       "snappingenabled": "Yakalama",
       "vertex": "Kırık noktalarını yakala"
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "",

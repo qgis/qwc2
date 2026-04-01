@@ -1,0 +1,46 @@
+
+div.sunexposure3d-body {
+    padding: 0.25em;
+}
+
+table.sunexposure3d-options-table {
+    width: 100%;
+    margin-bottom: 0.25em;
+}
+
+table.sunexposure3d-options-table td input {
+    width: 100%;
+}
+
+div.sunexposure3d-body div.button-bar button {
+    width: 100%
+}
+
+div.sunexposure3d-result-controls {
+    margin-top: 0.25em;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.25em;
+}
+
+div.sunexposure3d-visualization {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+
+div.sunexposure3d-colormap {
+    height: 2em;
+    border: 1px solid var(--border-color);
+    margin-top: 0.25em;
+}
+
+div.sunexposure3d-gradient-labels {
+    margin: 0.25em 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: small;
+}
+
+div.sunexposure3d-visualization select {
+    flex: 1 1 auto;
+}

@@ -32,6 +32,7 @@
         "Settings": "Settings",
         "Settings3D": "3D Settings",
         "Share": "Share Link",
+        "SunExposure3D": "Sun Exposure",
         "ThemeSwitcher": "Theme",
         "AttributeTable": "Attribute Table",
         "AuthenticationLogin": "Login",
@@ -120,6 +121,8 @@
       "clear": "Clear",
       "clone": "Clone",
       "close": "Close",
+      "compute": "Compute",
+      "date": "Date",
       "delete": "Delete",
       "download": "Download",
       "ellipse": "Ellipse",
@@ -774,6 +777,17 @@
       "loading": "Loading snapping geometries...",
       "snappingenabled": "Snapping",
       "vertex": "Snap to vertices"
+    },
+    "sunexposure3d": {
+      "end": "End time",
+      "helpersVisible": "Show helpers",
+      "hoursOfSunlight": "Hours of sunlight",
+      "includeterrain": "",
+      "irradiation": "Irradiation",
+      "meanIrradiance": "Mean irradiance",
+      "spatialres": "Spatial res.",
+      "start": "Start time",
+      "tempres": "Temporal res."
     },
     "themelayerslist": {
       "addanyway": "Add anyway",

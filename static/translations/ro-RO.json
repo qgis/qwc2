@@ -32,6 +32,7 @@
         "Settings": "Setări",
         "Settings3D": "",
         "Share": "Trimite Link",
+        "SunExposure3D": "",
         "ThemeSwitcher": "Hărți tematice",
         "AttributeTable": "Tabela de atribute",
         "AuthenticationLogin": "Conectează-te",
@@ -120,6 +121,8 @@
       "clear": "Curățare",
       "clone": "",
       "close": "Închideți",
+      "compute": "",
+      "date": "",
       "delete": "",
       "download": "",
       "ellipse": "Elipsă",
@@ -774,6 +777,17 @@
       "loading": "Geometriile se încarcă...",
       "snappingenabled": "Sari la punct",
       "vertex": ""
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "",

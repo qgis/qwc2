@@ -32,6 +32,7 @@
         "Settings": "Opcions",
         "Settings3D": "Opcions 3D",
         "Share": "Compartir link",
+        "SunExposure3D": "",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Taula d'atributs",
         "AuthenticationLogin": "Inicio de sessió",
@@ -120,6 +121,8 @@
       "clear": "Netejar",
       "clone": "Clonar",
       "close": "Tancar",
+      "compute": "",
+      "date": "",
       "delete": "Eliminar",
       "download": "Descarregar",
       "ellipse": "El·lipse",
@@ -774,6 +777,17 @@
       "loading": "Carregant geometries de snapping",
       "snappingenabled": "Snapping",
       "vertex": "Ajustar als vèrtexs"
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "Afegir de totes maneres",

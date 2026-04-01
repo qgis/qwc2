@@ -32,6 +32,7 @@
         "Settings": "",
         "Settings3D": "",
         "Share": "Поделиться ссылкой",
+        "SunExposure3D": "",
         "ThemeSwitcher": "Тема",
         "AttributeTable": "",
         "AuthenticationLogin": "",
@@ -120,6 +121,8 @@
       "clear": "",
       "clone": "",
       "close": "",
+      "compute": "",
+      "date": "",
       "delete": "",
       "download": "",
       "ellipse": "",
@@ -774,6 +777,17 @@
       "loading": "",
       "snappingenabled": "",
       "vertex": ""
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "",

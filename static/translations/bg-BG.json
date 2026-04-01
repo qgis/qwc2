@@ -32,6 +32,7 @@
         "Settings": "Настройки",
         "Settings3D": "",
         "Share": "Споделяне на връзка",
+        "SunExposure3D": "",
         "ThemeSwitcher": "Тема",
         "AttributeTable": "Таблица на атрибутите",
         "AuthenticationLogin": "Вход",
@@ -120,6 +121,8 @@
       "clear": "Clear",
       "clone": "",
       "close": "Затвори",
+      "compute": "",
+      "date": "",
       "delete": "Изтриване на",
       "download": "Изтегляне",
       "ellipse": "Елипса",
@@ -774,6 +777,17 @@
       "loading": "Зареждане на геометрии за прихващане...",
       "snappingenabled": "Снапинг",
       "vertex": "Прилепване към върховете"
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "",

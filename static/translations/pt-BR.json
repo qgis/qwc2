@@ -32,6 +32,7 @@
         "Settings": "Configurações",
         "Settings3D": "",
         "Share": "Compartilhar link",
+        "SunExposure3D": "",
         "ThemeSwitcher": "Tema",
         "AttributeTable": "Tabela de atributos",
         "AuthenticationLogin": "Inicio da sessão",
@@ -120,6 +121,8 @@
       "clear": "Limpar",
       "clone": "Clonar",
       "close": "Fechar diálogo",
+      "compute": "",
+      "date": "",
       "delete": "Eliminar",
       "download": "Descarregar",
       "ellipse": "Elipse",
@@ -774,6 +777,17 @@
       "loading": "Carregando...",
       "snappingenabled": "Ajuste ativado",
       "vertex": ""
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "",

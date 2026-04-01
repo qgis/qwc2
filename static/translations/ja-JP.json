@@ -32,6 +32,7 @@
         "Settings": "設定",
         "Settings3D": "",
         "Share": "リンクを共有",
+        "SunExposure3D": "",
         "ThemeSwitcher": "テーマ",
         "AttributeTable": "属性テーブル",
         "AuthenticationLogin": "ログイン",
@@ -120,6 +121,8 @@
       "clear": "クリア",
       "clone": "クローン",
       "close": "閉じる",
+      "compute": "",
+      "date": "",
       "delete": "削除",
       "download": "ダウンロード",
       "ellipse": "楕円",
@@ -774,6 +777,17 @@
       "loading": "スナップしたジオメトリをロード中...",
       "snappingenabled": "スナップ有効",
       "vertex": "頂点にスナップ"
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "",

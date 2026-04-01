@@ -32,6 +32,7 @@
         "Settings": "Nastavení",
         "Settings3D": "",
         "Share": "Sdílet odkaz",
+        "SunExposure3D": "",
         "ThemeSwitcher": "Téma",
         "AttributeTable": "Atributy",
         "AuthenticationLogin": "Přihlášení",
@@ -120,6 +121,8 @@
       "clear": "",
       "clone": "",
       "close": "Zavřít",
+      "compute": "",
+      "date": "",
       "delete": "",
       "download": "",
       "ellipse": "",
@@ -774,6 +777,17 @@
       "loading": "Načítání...",
       "snappingenabled": "",
       "vertex": ""
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "",

@@ -78,6 +78,7 @@ Plugin reference
 * [MeasureObjects3D](#measureobjects3d)
 * [OverviewMap3D](#overviewmap3d)
 * [Settings3D](#settings3d)
+* [SunExposure3D](#sunexposure3d)
 * [TopBar3D](#topbar3d)
 
 [Extra Plugins](#extraPlugins)
@@ -1353,6 +1354,10 @@ Settings panel for the 3D map.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | showPointSizeSlider | `bool` | Whether to show a slider to set the point size for point cloud tiles. | `false` |
+
+## SunExposure3D<a name="sunexposure3d"></a>
+
+Compute sun exposure of terrain and objects within a selected area on the 3D map.
 
 ## TopBar3D<a name="topbar3d"></a>
 

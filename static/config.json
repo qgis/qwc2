@@ -513,6 +513,7 @@
                 {"key": "MapLight3D", "icon": "light"},
                 {"key": "MapExport3D", "icon": "rasterexport"},
                 {"key": "ExportObjects3D", "icon": "export"},
+                {"key": "SunExposure3D", "icon": "sunexp"},
                 {"key": "Settings3D", "icon": "cog"}
               ],
               "toolbarItems": [

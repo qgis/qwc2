@@ -32,6 +32,7 @@
         "Settings": "Instellingen",
         "Settings3D": "",
         "Share": "Link delen",
+        "SunExposure3D": "",
         "ThemeSwitcher": "Kaartselectie",
         "AttributeTable": "Attributentabel",
         "AuthenticationLogin": "Inloggen",
@@ -120,6 +121,8 @@
       "clear": "Wissen",
       "clone": "",
       "close": "Sluiten",
+      "compute": "",
+      "date": "",
       "delete": "",
       "download": "",
       "ellipse": "Ellips",
@@ -774,6 +777,17 @@
       "loading": "Snapping-geometrieën laden...",
       "snappingenabled": "Snapping ingeschakeld",
       "vertex": "Naar hoekpunten snappen"
+    },
+    "sunexposure3d": {
+      "end": "",
+      "helpersVisible": "",
+      "hoursOfSunlight": "",
+      "includeterrain": "",
+      "irradiation": "",
+      "meanIrradiance": "",
+      "spatialres": "",
+      "start": "",
+      "tempres": ""
     },
     "themelayerslist": {
       "addanyway": "",
