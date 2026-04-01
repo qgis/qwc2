@@ -83,6 +83,9 @@ div.AppMenu.appmenu-visible div.appmenu-menu-container {
 div.AppMenu div.appmenu-menu-aligner {
     display: flex;
     justify-content: end;
+}
+
+div.AppMenu.appmenu-icononly div.appmenu-menu-aligner {
     min-height: 100%;
 }
 
