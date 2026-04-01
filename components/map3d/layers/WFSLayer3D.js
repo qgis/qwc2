@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
+import CoordinateSystem from '@giro3d/giro3d/core/geographic/CoordinateSystem';
 import Extent from '@giro3d/giro3d/core/geographic/Extent';
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import StreamableFeatureSource, {wfsBuilder, tiledLoadingStrategy} from '@giro3d/giro3d/sources/StreamableFeatureSource';
@@ -45,7 +45,7 @@ export default {
         return new ColorLayer({
             name: options.name,
             source: new VectorSource({
-                dataProjection: CoordinateSystem.fromSrid(projection),
+                dataProjection: CoordinateSystem.get(projection),
                 data: {
                     url: url.format(urlParts),
                     format: olOpts.format
@@ -100,7 +100,7 @@ export default {
     },
     createFeatureSource: (layer, options, projection) => {
         const bounds = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, projection);
-        const crs = CoordinateSystem.fromSrid(projection);
+        const crs = CoordinateSystem.get(projection);
         const maxextent = new Extent(crs, bounds[0], bounds[2], bounds[1], bounds[3]);
         return new StreamableFeatureSource({
             queryBuilder: wfsBuilder(

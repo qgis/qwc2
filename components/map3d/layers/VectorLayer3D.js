@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
+import CoordinateSystem from '@giro3d/giro3d/core/geographic/CoordinateSystem';
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import StaticFeatureSource from '@giro3d/giro3d/sources/StaticFeatureSource';
 import VectorSource from "@giro3d/giro3d/sources/VectorSource.js";
@@ -21,7 +21,7 @@ export default {
         return new ColorLayer({
             name: options.name,
             source: new VectorSource({
-                dataProjection: CoordinateSystem.fromSrid(projection),
+                dataProjection: CoordinateSystem.get(projection),
                 data: createFeatures(options, projection, true),
                 format: new ol.format.GeoJSON(),
                 style: options.styleFunction || (feature => {
@@ -55,7 +55,7 @@ export default {
         });
     },
     createFeatureSource: (layer, options, projection) => {
-        const crs = CoordinateSystem.fromSrid(projection);
+        const crs = CoordinateSystem.get(projection);
         return new StaticFeatureSource({
             coordinateSystem: crs,
             features: layer.source.source.getFeatures()

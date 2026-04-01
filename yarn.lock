@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"3d-tiles-renderer@^0.4.14":
-  version "0.4.21"
-  resolved "https://registry.yarnpkg.com/3d-tiles-renderer/-/3d-tiles-renderer-0.4.21.tgz#7dd830ac829f680e3c2333f2ec7c1dd9a4bf031c"
-  integrity sha512-tpXt8sGeQRst94jepL2LXZunQZD0x6zKaSsQX+OxeFsDjOTxfv3UK10xlqnD/j7MZH7jlBjiFur6jb3w3NKoeg==
+"3d-tiles-renderer@^0.4.22":
+  version "0.4.23"
+  resolved "https://registry.yarnpkg.com/3d-tiles-renderer/-/3d-tiles-renderer-0.4.23.tgz#70cfa25913c79b808438ead39d2b94fe91add93a"
+  integrity sha512-IlcDWcKQ1Phk2bnz2ONywEuyL+Vm2GffYtJFTPpvhXBeWL4TZHQPGy17X+dfMH/nSTeBjGhmEmbhTN+Aj6ag6Q==
 
 "@babel/cli@^7.28.6":
   version "7.28.6"
@@ -1007,6 +1007,20 @@
     ttf2woff "^3.0.0"
     wawoff2 "^2.0.0"
 
+"@giro3d/giro3d@2.0.0-beta.0":
+  version "2.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@giro3d/giro3d/-/giro3d-2.0.0-beta.0.tgz#fe70c337ad37924b9fd1c9e6b66e1cf8f53d7cf1"
+  integrity sha512-dT2Oup6s62D0+WfYxBxD25J5tcrsxCiLMGsLezYdI2PvxJnUVJykpDz185d188Rdg1ZFRWyMnY/R7tmrYSgVWg==
+  dependencies:
+    "3d-tiles-renderer" "^0.4.22"
+    chart.js "^3.9.1"
+    copc "^0.0.8"
+    earcut "^2.2.4"
+    geotiff "^3.0.2"
+    lil-gui "^0.17.0"
+    lru-cache "^10.0.1"
+    wkt-parser "^1.5.2"
+
 "@humanfs/core@^0.19.1":
   version "0.19.1"
   resolved "https://registry.yarnpkg.com/@humanfs/core/-/core-0.19.1.tgz#17c55ca7d426733fe3c561906b8173c336b40a77"
@@ -1877,19 +1891,6 @@
     redux "^5.0.1"
     redux-thunk "^3.1.0"
     reselect "^5.1.0"
-
-"@sourcepole/qwc-giro3d@^0.44.0-dev":
-  version "0.44.0-dev"
-  resolved "https://registry.yarnpkg.com/@sourcepole/qwc-giro3d/-/qwc-giro3d-0.44.0-dev.tgz#59c31a9b027fbb88e790d3cadba2477d7f65d081"
-  integrity sha512-HQ0ARAenQzT3r8Ssef/CFlvLULeqUHPi5mgTbfobHHIXLfQ+R6oAiSQc8lIlqJX4Qj2hDxpen2gtvtkdexB6xA==
-  dependencies:
-    "3d-tiles-renderer" "^0.4.14"
-    chart.js "^3.9.1"
-    copc "^0.0.8"
-    earcut "^2.2.4"
-    geotiff "^2.1.0"
-    lil-gui "^0.17.0"
-    lru-cache "^10.0.1"
 
 "@standard-schema/spec@^1.0.0":
   version "1.1.0"
@@ -3169,6 +3170,13 @@ colorette@^2.0.10, colorette@^2.0.14:
   resolved "https://registry.yarnpkg.com/colorette/-/colorette-2.0.20.tgz#9eb793e6833067f7235902fcd3b09917a000a95a"
   integrity sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==
 
+colormap@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/colormap/-/colormap-2.3.2.tgz#4422c1178ce563806e265b96782737be85815abf"
+  integrity sha512-jDOjaoEEmA9AgA11B/jCSAvYE95r3wRoAyTf3LEHGiUVlNHJaL1mRkf5AyLSpQBVGfTEPwGEqCIzL+kgr2WgNA==
+  dependencies:
+    lerp "^1.0.3"
+
 combined-stream@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.8.tgz#c3d45a8b34fd730631a110a8a2520682b31d5a7f"
@@ -4367,20 +4375,6 @@ geojson@0.5.0:
   resolved "https://registry.yarnpkg.com/geojson/-/geojson-0.5.0.tgz#3cd6c96399be65b56ee55596116fe9191ce701c0"
   integrity sha512-/Bx5lEn+qRF4TfQ5aLu6NH+UKtvIv7Lhc487y/c8BdludrCTpiWf9wyI0RTyqg49MFefIAvFDuEi5Dfd/zgNxQ==
 
-geotiff@^2.1.0:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/geotiff/-/geotiff-2.1.3.tgz#993f40f2aa6aa65fb1e0451d86dd22ca8e66910c"
-  integrity sha512-PT6uoF5a1+kbC3tHmZSUsLHBp2QJlHasxxxxPW47QIY1VBKpFB+FcDvX+MxER6UzgLQZ0xDzJ9s48B9JbOCTqA==
-  dependencies:
-    "@petamoriken/float16" "^3.4.7"
-    lerc "^3.0.0"
-    pako "^2.0.4"
-    parse-headers "^2.0.2"
-    quick-lru "^6.1.1"
-    web-worker "^1.2.0"
-    xml-utils "^1.0.2"
-    zstddec "^0.1.0"
-
 geotiff@^3.0.2:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/geotiff/-/geotiff-3.0.3.tgz#ade71fce42e37fdc89500bed74df62098bb12068"
@@ -5258,6 +5252,11 @@ lerc@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lerc/-/lerc-3.0.0.tgz#36f36fbd4ba46f0abf4833799fff2e7d6865f5cb"
   integrity sha512-Rm4J/WaHhRa93nCN2mwWDZFoRVF18G1f47C+kvQWyHGEZxFpTUi73p7lMVSAndyxGt6lJ2/CFbOcf9ra5p8aww==
+
+lerp@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/lerp/-/lerp-1.0.3.tgz#a18c8968f917896de15ccfcc28d55a6b731e776e"
+  integrity sha512-70Rh4rCkJDvwWiTsyZ1HmJGvnyfFah4m6iTux29XmasRiZPDBpT9Cfa4ai73+uLZxnlKruUS62jj2lb11wURiA==
 
 levn@^0.4.1:
   version "0.4.1"
@@ -7661,7 +7660,7 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-web-worker@^1.2.0, web-worker@^1.5.0:
+web-worker@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/web-worker/-/web-worker-1.5.0.tgz#71b2b0fbcc4293e8f0aa4f6b8a3ffebff733dcc5"
   integrity sha512-RiMReJrTAiA+mBjGONMnjVDP2u3p9R1vkcGz6gDIrOMT3oGuYwX2WRMYI9ipkphSuE5XKEhydbhNEJh4NY9mlw==
@@ -7890,6 +7889,11 @@ wkt-parser@^1.2.4, wkt-parser@^1.5.1:
   resolved "https://registry.yarnpkg.com/wkt-parser/-/wkt-parser-1.5.2.tgz#a8eaf86ac2cc1d0a2e6a8082a930f5c7ebdb5771"
   integrity sha512-1ZUiV1FTwSiSrgWzV9KXJuOF2BVW91KY/mau04BhnmgOdroRQea7Q0s5TVqwGLm0D2tZwObd/tBYXW49sSxp3Q==
 
+wkt-parser@^1.5.2:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/wkt-parser/-/wkt-parser-1.5.4.tgz#e44b0580cd832f34a3f2288d19423c60780e608d"
+  integrity sha512-heRp3QBynj8SAGepAkE8h2k4KhUGRqzgwlSRgqNhxjmSIeSvE5ZrV8n1uy5jk+iJO2jmfffIwjdAaTirBOOx0A==
+
 wmf@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wmf/-/wmf-1.0.2.tgz#7d19d621071a08c2bdc6b7e688a9c435298cc2da"
@@ -7940,7 +7944,7 @@ xlsx@^0.18.5:
     wmf "~1.0.1"
     word "~0.3.0"
 
-xml-utils@^1.0.2, xml-utils@^1.10.2:
+xml-utils@^1.10.2:
   version "1.10.2"
   resolved "https://registry.yarnpkg.com/xml-utils/-/xml-utils-1.10.2.tgz#436b39ccc25a663ce367ea21abb717afdea5d6b1"
   integrity sha512-RqM+2o1RYs6T8+3DzDSoTRAUfrvaejbVHcp3+thnAtDKo8LskR+HomLajEy5UjTz24rpka7AxVBRR3g2wTUkJA==
@@ -7972,11 +7976,6 @@ zstd-codec@^0.1:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/zstd-codec/-/zstd-codec-0.1.5.tgz#c180193e4603ef74ddf704bcc835397d30a60e42"
   integrity sha512-v3fyjpK8S/dpY/X5WxqTK3IoCnp/ZOLxn144GZVlNUjtwAchzrVo03h+oMATFhCIiJ5KTr4V3vDQQYz4RU684g==
-
-zstddec@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/zstddec/-/zstddec-0.1.0.tgz#7050f3f0e0c3978562d0c566b3e5a427d2bad7ec"
-  integrity sha512-w2NTI8+3l3eeltKAdK8QpiLo/flRAr2p8AGeakfMZOXBxOg9HIu4LVDxBi81sYgVhFhdJjv1OrB5ssI8uFPoLg==
 
 zstddec@^0.2.0:
   version "0.2.0"

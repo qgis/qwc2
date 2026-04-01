@@ -10,8 +10,8 @@ import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
-import CoordinateSystem from '@giro3d/giro3d/core/geographic/coordinate-system/CoordinateSystem';
-import Coordinates, {crsIsGeographic} from '@giro3d/giro3d/core/geographic/Coordinates';
+import Coordinates from '@giro3d/giro3d/core/geographic/Coordinates';
+import CoordinateSystem from '@giro3d/giro3d/core/geographic/CoordinateSystem';
 import Ellipsoid from '@giro3d/giro3d/core/geographic/Ellipsoid';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import Instance from '@giro3d/giro3d/core/Instance.js';
@@ -54,6 +54,7 @@ import {updateObjectLabel} from './utils/MiscUtils3D';
 import Tiles3DStyle from './utils/Tiles3DStyle';
 
 import './style/Map3D.css';
+
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
@@ -891,6 +892,9 @@ class Map3D extends React.Component {
                 }
             });
             el.resizeObserver.observe(el);
+            ConfigUtils.getConfigProp("projections", null, []).forEach(entry => {
+                CoordinateSystem.register(entry.code, entry.proj);
+            });
             this.setupInstance();
         }
     };
@@ -902,7 +906,7 @@ class Map3D extends React.Component {
             return;
         }
         const projection = this.props.theme.mapCrs;
-        const crs = CoordinateSystem.fromSrid(projection);
+        const crs = CoordinateSystem.get(projection);
 
         // Setup instance
         this.instance = new Instance({
@@ -929,7 +933,7 @@ class Map3D extends React.Component {
 
         // Setup camera
         const center = extent.center();
-        if (crsIsGeographic(center.crs)) {
+        if (center.crs.isGeographic()) {
             const position = Ellipsoid.WGS84.toCartesian(
                 center.latitude,
                 center.longitude,
@@ -955,7 +959,7 @@ class Map3D extends React.Component {
 
         // Setup elevation
         const demUrl = MiscUtils.resolveAssetsPath(this.props.theme.map3d.dtm?.url ?? "");
-        const demCrs = CoordinateSystem.fromSrid(this.props.theme.map3d.dtm?.crs || "EPSG:3857");
+        const demCrs = CoordinateSystem.get(this.props.theme.map3d.dtm?.crs || "EPSG:3857");
         if (demUrl) {
             const demSource = new GeoTIFFSource({
                 url: demUrl,
@@ -1212,7 +1216,7 @@ class Map3D extends React.Component {
             scenePos = [scenePos];
         }
         const dtmPos = scenePos.map(p => {
-            return CoordinatesUtils.reproject(p, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs.name);
+            return CoordinatesUtils.reproject(p, this.state.sceneContext.mapCrs, this.state.sceneContext.dtmCrs.id);
         });
         const dtmExt = [Infinity, Infinity, -Infinity, -Infinity];
         dtmPos.forEach(p => {
@@ -1229,7 +1233,8 @@ class Map3D extends React.Component {
             fromUrl(this.state.sceneContext.dtmUrl).then(tiff => {
 
                 tiff.getImage().then(image => {
-                    const {ModelTiepoint, ModelPixelScale} = image.fileDirectory;
+                    const ModelPixelScale = image.fileDirectory.getValue('ModelPixelScale');
+                    const ModelTiepoint = image.fileDirectory.getValue('ModelTiepoint');
 
                     // Extract scale and tiepoint values
                     const [scaleX, scaleY] = [ModelPixelScale[0], ModelPixelScale[1]];
@@ -1260,7 +1265,7 @@ class Map3D extends React.Component {
         });
     };
     getTerrainHeightFromMap = (scenePos) => {
-        const crs = CoordinateSystem.fromSrid(this.state.sceneContext.mapCrs);
+        const crs = CoordinateSystem.get(this.state.sceneContext.mapCrs);
         const coordinates = new Coordinates(crs, scenePos[0], scenePos[1], 0);
         const elevationResult = this.state.sceneContext.map.getElevation({coordinates});
         // const raycaster = new Raycaster(new Vector3(scenePos[0], scenePos[1], 10000));
