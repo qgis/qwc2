@@ -9,8 +9,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import intersect from '@turf/intersect';
 import {featureCollection} from '@turf/helpers';
+import intersect from '@turf/intersect';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
@@ -81,6 +81,7 @@ class Identify extends React.Component {
         iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. */
         initialRadiusUnits: PropTypes.string,
+        layerFilterGeom: PropTypes.string,
         layers: PropTypes.array,
         /** How to handle long attribute names / values. */
         longAttributesDisplay: PropTypes.oneOf(["wrap", "ellipsis"]),
@@ -247,7 +248,6 @@ class Identify extends React.Component {
         center[0] /= poly.length;
         center[1] /= poly.length;
 
-        const filter = VectorLayerUtils.geoJSONGeomToWkt(this.state.filterGeom);
         let pendingRequests = 0;
         const params = {...this.props.params};
         if (this.props.params.region_feature_count) {
@@ -255,7 +255,7 @@ class Identify extends React.Component {
             delete params.region_feature_count;
         }
         queryableLayers.forEach(layer => {
-            const requestFilterGeom = this.getRequestFilterGeomWkt(layer, this.state.filterGeom);
+            const requestFilterGeom = this.getRequestFilterGeomWkt(this.state.filterGeom);
             const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
@@ -293,12 +293,10 @@ class Identify extends React.Component {
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
         });
         this.props.addMarker("identify", clickPoint, "", this.props.map.projection);
-    };    
-    getRequestFilterGeomWkt = (layer, identifyGeom) => {
-        const identifyGeomWkt = VectorLayerUtils.geoJSONGeomToWkt(identifyGeom);
-        const sourceFilterGeomWkt = layer?.params?.FILTER_GEOM;
-        if (!sourceFilterGeomWkt) return identifyGeomWkt;
-        const sourceFilterGeom = VectorLayerUtils.wktToGeoJSON(sourceFilterGeomWkt, this.props.map.projection, this.props.map.projection)?.geometry ?? identifyGeom;
+    };
+    getRequestFilterGeomWkt = (identifyGeom) => {
+        const sourceFilterGeom = this.props.layerFilterGeom;
+        if (!sourceFilterGeom) return VectorLayerUtils.geoJSONGeomToWkt(identifyGeom);
         try {
             const intersection = intersect(featureCollection([
                 {type: "Feature", properties: {}, geometry: identifyGeom},
@@ -306,7 +304,7 @@ class Identify extends React.Component {
             ]));
             return intersection?.geometry ? VectorLayerUtils.geoJSONGeomToWkt(intersection.geometry) : null;
         } catch {
-            return identifyGeomWkt;
+            return VectorLayerUtils.geoJSONGeomToWkt(identifyGeom);
         }
     };
     changeBufferUnit = (ev) => {
@@ -466,6 +464,7 @@ export default connect((state) => {
     return {
         click: state.map.click || {modifiers: {}},
         enabled: enabled,
+        layerFilterGeom: state.layers.filter?.filterGeom,
         layers: state.layers.flat,
         map: state.map,
         selection: state.selection,
