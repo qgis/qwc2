@@ -94,7 +94,7 @@ class TopBar3D extends React.Component {
 
         // Validate appMenuDisplayMode
         let appMenuDisplayMode = config.appMenuDisplayMode;
-        if (!ConfigUtils.isMobile() || !["normal", "compact", "icononly"].includes(config.appMenuDisplayMode)) {
+        if (ConfigUtils.isMobile() || !["normal", "compact", "icononly"].includes(config.appMenuDisplayMode)) {
             appMenuDisplayMode = "normal";
         } else if (config.appMenuCompact) {
             appMenuDisplayMode = "compact";
