@@ -531,8 +531,8 @@ class Map3D extends React.Component {
             url: MiscUtils.resolveAssetsPath(url)
         });
         // Recenter tile group (so that origin of transform tool is in the center of the tileset)
-        tiles.tiles.addEventListener('load-tileset', ({tileSet}) => {
-            if (tileSet.root.parent === null) {
+        tiles.tiles.addEventListener('load-tileset', ({tileset}) => {
+            if (tileset.root.parent === null) {
                 const bbox = new Box3();
                 tiles.tiles.getBoundingBox(bbox);
                 const center = bbox.getCenter(new Vector3());
