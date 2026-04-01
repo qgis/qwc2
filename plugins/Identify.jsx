@@ -9,6 +9,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import intersect from '@turf/intersect';
+import {featureCollection} from '@turf/helpers';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
@@ -253,7 +255,8 @@ class Identify extends React.Component {
             delete params.region_feature_count;
         }
         queryableLayers.forEach(layer => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, params);
+            const requestFilterGeom = this.getRequestFilterGeomWkt(layer, this.state.filterGeom);
+            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
                 this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
@@ -290,6 +293,21 @@ class Identify extends React.Component {
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
         });
         this.props.addMarker("identify", clickPoint, "", this.props.map.projection);
+    };    
+    getRequestFilterGeomWkt = (layer, identifyGeom) => {
+        const identifyGeomWkt = VectorLayerUtils.geoJSONGeomToWkt(identifyGeom);
+        const sourceFilterGeomWkt = layer?.params?.FILTER_GEOM;
+        if (!sourceFilterGeomWkt) return identifyGeomWkt;
+        const sourceFilterGeom = VectorLayerUtils.wktToGeoJSON(sourceFilterGeomWkt, this.props.map.projection, this.props.map.projection)?.geometry ?? identifyGeom;
+        try {
+            const intersection = intersect(featureCollection([
+                {type: "Feature", properties: {}, geometry: identifyGeom},
+                {type: "Feature", properties: {}, geometry: sourceFilterGeom}
+            ]));
+            return intersection?.geometry ? VectorLayerUtils.geoJSONGeomToWkt(intersection.geometry) : null;
+        } catch {
+            return identifyGeomWkt;
+        }
     };
     changeBufferUnit = (ev) => {
         this.setState({ radiusUnits: ev.target.value });
