@@ -130,8 +130,8 @@ class LayerTree3D extends React.Component {
                             {entry.imported ? (<Icon icon="draw" onClick={() => this.editObject(entryId)} />) : null}
                             <Icon icon="transparency" />
                             <input className="layertree3d-item-transparency-slider" max="255" min="0"
-                                onChange={(ev) => updateCallback(entryId, {opacity: parseInt(ev.target.value, 10)}, {path})}
-                                step="1" type="range" value={entry.opacity} />
+                                onChange={(ev) => updateCallback(entryId, {opacity: 255 - parseInt(ev.target.value, 10)}, {path})}
+                                step="1" type="range" value={255 - LayerUtils.computeLayerOpacity(entry)} />
                             {(!isEmpty(entry.children) || !isEmpty(entry.sublayers)) && !this.props.groupTogglesSublayers ? (
                                 <Icon icon="tree" onClick={() => updateCallback(entryId, {visibility: !entry.visibility}, {path, groupTogglesSublayers: true})} title={LocaleUtils.tr("layertree.togglegroup")} />
                             ) : null}
