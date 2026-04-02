@@ -1,34 +1,33 @@
 /**
- * Copyright 2022 Oslandia SAS <infos+qwc2@oslandia.com>
+ * Copyright 2026 Sourcepole AG
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
 
+import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
+import VectorTileSource from "@giro3d/giro3d/sources/VectorTileSource.js";
 import axios from 'axios';
 import { applyStyle } from 'ol-mapbox-style';
-import ol from 'openlayers';
 
-export const createLayer = (options) => {
-    return new ol.layer.VectorTile({
-        minResolution: options.minResolution,
-        maxResolution: options.maxResolution,
-        declutter: options.declutter,
-        source: new ol.source.VectorTile({
-            projection: options.projection,
-            format: new ol.format.MVT({}),
-            url: options.url,
-            tileGrid: options.tileGridConfig ? new ol.tilegrid.TileGrid({...options.tileGridConfig}) : undefined,
-            ...(options.sourceConfig || {})
-        }),
-        ...(options.layerConfig || {})
-    });
-};
+import {createLayer} from '../../map/layers/MVTLayer';
+import {LayerGroup3D} from './Layer3D';
 
 export default {
-    create: (options) => {
-        const group = new ol.layer.Group();
+    create3d: (options, projection) => {
+        const create3dLayer = (style = null) => {
+            const source = new VectorTileSource({
+                url: options.url,
+                style: style,
+                backgroundColor: "white"
+            });
+            return new ColorLayer({
+                name: options.name,
+                source: source
+            });
+        };
+        const group = new LayerGroup3D(options.id);
         if (options.style) {
             axios.get(options.style).then(response => {
                 const glStyle = response.data;
@@ -36,9 +35,9 @@ export default {
                 glStyle.glyphs?.startsWith(".") && (glStyle.glyphs = new URL(glStyle.glyphs, options.style).href);
                 Object.keys(glStyle.sources).forEach(styleSource => {
                     glStyle.sources[styleSource].url?.startsWith(".") && (glStyle.sources[styleSource].url = new URL(glStyle.sources[styleSource].url, options.style).href);
-                    const layer = createLayer(options);
-                    applyStyle(layer, glStyle, styleSource, options.styleOptions).then(() => {
-                        group.getLayers().push(layer);
+                    const olLayer = createLayer(options);
+                    applyStyle(olLayer, glStyle, styleSource, options.styleOptions).then(() => {
+                        group.addLayer(create3dLayer(olLayer.getStyle()));
                     }).catch(e => {
                         /* eslint-disable-next-line */
                         console.warn("Unable to apply style " + options.style + ": " + String(e));
@@ -49,8 +48,11 @@ export default {
                 console.warn("Unable to load style " + options.style + ": " + String(e));
             });
         } else {
-            group.getLayers().push(createLayer(options));
+            group.addLayer(create3dLayer());
         }
         return group;
+    },
+    update3d: (mapLayer, newOptions, oldOptions, projection) => {
+        // pass
     }
 };
