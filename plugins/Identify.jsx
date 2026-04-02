@@ -81,7 +81,7 @@ class Identify extends React.Component {
         iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. */
         initialRadiusUnits: PropTypes.string,
-        layerFilterGeom: PropTypes.string,
+        layerFilterGeom: PropTypes.object,
         layers: PropTypes.array,
         /** How to handle long attribute names / values. */
         longAttributesDisplay: PropTypes.oneOf(["wrap", "ellipsis"]),
