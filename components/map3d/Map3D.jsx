@@ -16,7 +16,6 @@ import Ellipsoid from '@giro3d/giro3d/core/geographic/Ellipsoid';
 import Extent from '@giro3d/giro3d/core/geographic/Extent.js';
 import Instance from '@giro3d/giro3d/core/Instance.js';
 import ElevationLayer from '@giro3d/giro3d/core/layer/ElevationLayer.js';
-import DrapedFeatureCollection from '@giro3d/giro3d/entities/DrapedFeatureCollection';
 import Map from '@giro3d/giro3d/entities/Map.js';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import Inspector from "@giro3d/giro3d/gui/Inspector.js";
@@ -47,6 +46,7 @@ import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
 import ThemeUtils from '../../utils/ThemeUtils';
 import {MapContainerPortalContext} from '../PluginsContainer';
 import ViewSwitcher from '../ViewSwitcher';
+import ColorLayer3D from './ColorLayer3D';
 import EditDataset3D from './EditDataset3D';
 import LayerRegistry from './layers/index';
 import MapControls3D from './MapControls3D';
@@ -235,9 +235,6 @@ class Map3D extends React.Component {
             this.applyBaseLayer();
         }
 
-        if (this.state.sceneContext.colorLayers !== prevState.sceneContext.colorLayers) {
-            this.applyColorLayerUpdates(this.state.sceneContext.colorLayers, prevState.sceneContext.colorLayers);
-        }
         // Update collision objects
         if (this.state.sceneContext.objectTree !== prevState.sceneContext.objectTree) {
             this.setState(state => ({
@@ -364,110 +361,6 @@ class Map3D extends React.Component {
             }
             return colorLayers;
         }, {});
-    };
-    applyColorLayerUpdates = (colorLayers, prevColorLayers) => {
-        // Add-update new layers
-        let layerBelow = this.getLayer("__baselayer");
-        Object.entries(colorLayers).reverse().forEach(([layerId, options]) => {
-            const prevOptions = prevColorLayers[layerId];
-            if (options === prevOptions) {
-                return;
-            }
-            const layerCreator = LayerRegistry[options.type];
-            let mapLayer = this.getLayer(layerId);
-            if (mapLayer) {
-                layerCreator.update3d(mapLayer, options, prevOptions, this.state.sceneContext.mapCrs);
-            } else {
-                mapLayer = layerCreator.create3d(options, this.state.sceneContext.mapCrs);
-                this.addLayer(layerId, mapLayer);
-            }
-            this.map.insertLayerAfter(mapLayer, layerBelow);
-            // WMS layer handles visibility and opacity internally
-            if (options.type !== "wms") {
-                mapLayer.visible = options.visibility;
-                mapLayer.opacity = options.opacity / 255;
-            }
-            layerBelow = mapLayer;
-            if (options.extrusionHeight !== undefined && options.extrusionHeight !== 0) {
-                this.createUpdateExtrudedLayer(layerCreator, mapLayer, options, options.features !== prevOptions?.features);
-            } else if (prevOptions?.extrusionHeight !== undefined && prevOptions?.extrusionHeight !== 0) {
-                this.removeExtrudedLayer(options.id);
-            }
-        });
-        // Remove old layers
-        Object.entries(prevColorLayers).forEach(([layerId, options]) => {
-            if (!(layerId in colorLayers)) {
-                if (options.extrusionHeight !== undefined && options.extrusionHeight !== 0) {
-                    this.removeExtrudedLayer(options.id);
-                }
-                this.removeLayer(layerId);
-            }
-        });
-        this.instance.notifyChange(this.map);
-    };
-    createUpdateExtrudedLayer = (layerCreator, mapLayer, options, forceCreate = false) => {
-        const objId = options.id + ":extruded";
-        const makeColor = (c) => {
-            if (Array.isArray(c)) {
-                return ((c[0] << 16) | (c[1] << 8) | c[2]);
-            } else if (typeof c === "string") {
-                return parseInt(c.replace("#", ""), 16);
-            } else {
-                return c;
-            }
-        };
-        let obj = this.objectMap[objId];
-        if (!obj || forceCreate) {
-            if (obj) {
-                this.instance.remove(obj);
-            }
-            const layercolor = makeColor(options.color ?? "#FF0000");
-            obj = new DrapedFeatureCollection({
-                source: layerCreator.createFeatureSource(mapLayer, options, this.state.sceneContext.mapCrs),
-                drapingMode: 'per-feature',
-                extrusionOffset: (feature) => {
-                    if (typeof obj.userData.extrusionHeight === "string") {
-                        return parseFloat(feature.getProperties()[obj.userData.extrusionHeight]) || 0;
-                    } else {
-                        return obj.userData.extrusionHeight;
-                    }
-                },
-                style: (feature) => {
-                    return obj.userData.featureStyles?.[feature.getId()] ?? {
-                        fill: {color: layercolor, shading: true}
-                    };
-                }
-            });
-            obj.castShadow = true;
-            obj.receiveShadow = true;
-            this.instance.add(obj).then(() => {
-                obj.attach(this.map);
-            });
-            this.objectMap[objId] = obj;
-        }
-        obj.userData.extrusionHeight = options.extrusionHeight;
-        obj.userData.featureStyles = options.features?.reduce?.((res, feature) => ({
-            ...res,
-            [feature.id]: {
-                fill: {
-                    color: makeColor(feature.styleOptions.fillColor),
-                    shading: true
-                }
-            }
-        }), {});
-        obj.opacity = mapLayer.opacity;
-        obj.visible = mapLayer.visible;
-        if (obj.visible) {
-            obj.updateStyles();
-        }
-    };
-    removeExtrudedLayer = (layerId) => {
-        const objId = layerId + ":extruded";
-        if (this.objectMap[objId]) {
-            this.instance.remove(this.objectMap[objId]);
-            delete this.objectMap[objId];
-        }
-        this.instance.notifyChange();
     };
     addLayer = (layerId, layer) => {
         layer.userData.layerId = layerId;
@@ -634,11 +527,12 @@ class Map3D extends React.Component {
             c.geometry?.computeBoundsTree?.();
         });
     };
-    addSceneObject = (objectId, object, addToLayerTree = false, treeOptions = {}, showEditTool = false) => {
-        if (object.tiles) {
-            this.instance.add(object);
+    addSceneObject = (objectId, object, addToLayerTree = false, treeOptions = {}, showEditTool = false, callback = null) => {
+        if (object.isEntity3D) {
+            this.instance.add(object).then(() => callback?.());
         } else {
             this.sceneObjectGroup.add(object);
+            callback?.();
         }
         this.objectMap[objectId] = object;
         this.instance.notifyChange(object);
@@ -673,7 +567,7 @@ class Map3D extends React.Component {
         if (!object) {
             return;
         }
-        if (object.tiles) {
+        if (object.isEntity3D) {
             this.instance.remove(object);
         } else {
             this.sceneObjectGroup.remove(object);
@@ -876,6 +770,14 @@ class Map3D extends React.Component {
                             <Suspense key={name}>
                                 <Component sceneContext={this.state.sceneContext} {...this.props.pluginOptions[name]} />
                             </Suspense>
+                        ))}
+                        {Object.values(this.state.sceneContext.colorLayers).map((options, idx) => (
+                            <ColorLayer3D
+                                key={options.id}
+                                map={this.map} options={options}
+                                prevLayerId={this.state.sceneContext.colorLayers[idx - 1]?.id ?? "__baselayer"}
+                                sceneContext={this.state.sceneContext}
+                            />
                         ))}
                     </MapControls3D>
                 </UnloadWrapper>
