@@ -19,6 +19,7 @@ import url from 'url';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import FeatureStyles from '../../../utils/FeatureStyles';
 import {wfsToOpenlayersOptions} from '../../map/layers/WFSLayer';
+import {Layer3D} from './Layer3D';
 
 
 export default {
@@ -42,7 +43,7 @@ export default {
             srsName: srsName
         };
 
-        return new ColorLayer({
+        return new Layer3D(options.id, new ColorLayer({
             name: options.name,
             source: new VectorSource({
                 dataProjection: CoordinateSystem.get(projection),
@@ -59,9 +60,9 @@ export default {
                 }),
                 strategy: tile(createXYZ({ tileSize: 512 }))
             })
-        });
+        }));
     },
-    update3d: (layer, newOptions, oldOptions, projection) => {
+    update3d: (mapLayer, newOptions, oldOptions, projection) => {
         // pass
     },
     getFields: (options) => {
@@ -98,7 +99,7 @@ export default {
             });
         });
     },
-    createFeatureSource: (layer, options, projection) => {
+    createFeatureSource: (mapLayer, options, projection) => {
         const bounds = CoordinatesUtils.reprojectBbox(options.bbox.bounds, options.bbox.crs, projection);
         const crs = CoordinateSystem.get(projection);
         const maxextent = new Extent(crs, bounds[0], bounds[2], bounds[1], bounds[3]);

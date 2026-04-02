@@ -14,11 +14,12 @@ import ol from 'openlayers';
 
 import FeatureStyles from '../../../utils/FeatureStyles';
 import {createFeatures, featureStyleFunction, updateFeatures} from '../../map/layers/VectorLayer';
+import {Layer3D} from './Layer3D';
 
 
 export default {
     create3d: (options, projection) => {
-        return new ColorLayer({
+        return new Layer3D(options.id, new ColorLayer({
             name: options.name,
             source: new VectorSource({
                 dataProjection: CoordinateSystem.get(projection),
@@ -30,9 +31,10 @@ export default {
                     return FeatureStyles[styleName](feature, styleOptions);
                 })
             })
-        });
+        }));
     },
-    update3d: (layer, newOptions, oldOptions, projection) => {
+    update3d: (mapLayer, newOptions, oldOptions, projection) => {
+        const layer = mapLayer.layer();
         const source = layer.source.source;
         if (newOptions.styleName !== oldOptions.styleName || newOptions.styleOptions !== oldOptions.styleOptions) {
             source.setStyle(featureStyleFunction(newOptions));
@@ -55,10 +57,11 @@ export default {
         });
     },
     createFeatureSource: (layer, options, projection) => {
+        const colorlayer = layer.layer();
         const crs = CoordinateSystem.get(projection);
         return new StaticFeatureSource({
             coordinateSystem: crs,
-            features: layer.source.source.getFeatures()
+            features: colorlayer.source.source.getFeatures()
         });
     }
 };

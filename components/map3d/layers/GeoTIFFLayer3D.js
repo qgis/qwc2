@@ -10,15 +10,17 @@ import CoordinateSystem from '@giro3d/giro3d/core/geographic/CoordinateSystem';
 import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
 
+import {Layer3D} from './Layer3D';
+
 
 export default {
     create3d: (options, projection) => {
-        return new ColorLayer({
+        return new Layer3D(options.id, new ColorLayer({
             name: options.name,
             source: new GeoTIFFSource({
                 url: options.url,
                 crs: CoordinateSystem.get(projection)
             })
-        });
+        }));
     }
 };

@@ -23,47 +23,46 @@ export default class ColorLayer3D extends React.Component {
     };
     constructor(props) {
         super(props);
-        this.layer = null;
+        this.mapLayer = null;
     }
     componentDidMount() {
         const layerCreator = LayerRegistry3D[this.props.options.type];
         if (layerCreator) {
-            this.layer = layerCreator.create3d(this.props.options, this.props.sceneContext.mapCrs);
-            this.props.map.addLayer(this.layer);
-            this.layer.userData.layerId = this.props.options.id;
+            this.mapLayer = layerCreator.create3d(this.props.options, this.props.sceneContext.mapCrs);
+            this.mapLayer.attach(this.props.map);
             this.applyLayerOptions(layerCreator, {});
         }
     }
     componentDidUpdate(prevProps) {
         const layerCreator = LayerRegistry3D[this.props.options.type];
-        if (this.layer && layerCreator) {
-            layerCreator.update3d(this.layer, this.props.options, prevProps.options, this.props.sceneContext.mapCrs);
+        if (this.mapLayer && layerCreator) {
+            layerCreator.update3d(this.mapLayer, this.props.options, prevProps.options, this.props.sceneContext.mapCrs);
             this.applyLayerOptions(layerCreator, prevProps.options);
         }
     }
     componentWillUnmount() {
-        if (this.layer) {
+        if (this.mapLayer) {
             this.props.sceneContext.removeSceneObject(this.props.options.id + ":extruded");
-            this.props.map.removeLayer(this.layer, {dispose: true});
+            this.mapLayer.dispose();
         }
     }
     applyLayerOptions = (layerCreator, prevOptions) => {
         const options = this.props.options;
         // Reorder layer
         const layerBelow = this.props.map.getLayers(l => l.userData.layerId === this.props.prevLayerId)[0] ?? null;
-        this.props.map.insertLayerAfter(this.layer, layerBelow);
+        this.mapLayer.moveAfter(layerBelow);
         // WMS layer handles visibility and opacity internally
         if (this.props.options.type !== "wms") {
-            this.layer.visible = options.visibility;
-            this.layer.opacity = options.opacity / 255;
+            this.mapLayer.setVisible(options.visibility);
+            this.mapLayer.setOpacity(options.opacity / 255);
         }
         if (this.props.options.extrusionHeight !== undefined && this.props.options.extrusionHeight !== 0) {
-            this.createUpdateExtrudedLayer(layerCreator, this.layer, options, options.features !== prevOptions?.features);
+            this.createUpdateExtrudedLayer(layerCreator, options, options.features !== prevOptions?.features);
         } else if (prevOptions?.extrusionHeight !== undefined && prevOptions?.extrusionHeight !== 0) {
             this.props.sceneContext.removeSceneObject(this.props.options.id + ":extruded");
         }
     };
-    createUpdateExtrudedLayer = (layerCreator, mapLayer, options, forceCreate = false) => {
+    createUpdateExtrudedLayer = (layerCreator, options, forceCreate = false) => {
         const objId = options.id + ":extruded";
         const makeColor = (c) => {
             if (Array.isArray(c)) {
@@ -81,7 +80,7 @@ export default class ColorLayer3D extends React.Component {
             }
             const layercolor = makeColor(options.color ?? "#FF0000");
             obj = new DrapedFeatureCollection({
-                source: layerCreator.createFeatureSource(mapLayer, options, this.props.sceneContext.mapCrs),
+                source: layerCreator.createFeatureSource(this.mapLayer, options, this.props.sceneContext.mapCrs),
                 drapingMode: 'per-feature',
                 extrusionOffset: (feature) => {
                     if (typeof obj.userData.extrusionHeight === "string") {
@@ -112,8 +111,8 @@ export default class ColorLayer3D extends React.Component {
                 }
             }
         }), {});
-        obj.opacity = mapLayer.opacity;
-        obj.visible = mapLayer.visible;
+        obj.opacity = this.mapLayer.opacity();
+        obj.visible = this.mapLayer.visible();
         if (obj.visible) {
             obj.updateStyles();
         }

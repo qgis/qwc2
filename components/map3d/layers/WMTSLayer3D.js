@@ -11,18 +11,19 @@ import ColorLayer from '@giro3d/giro3d/core/layer/ColorLayer';
 import TiledImageSource from "@giro3d/giro3d/sources/TiledImageSource.js";
 
 import {createWMTSSource} from '../../map/layers/WMTSLayer';
+import {Layer3D} from './Layer3D';
 
 
 export default {
     create3d: (options, projection) => {
-        return new ColorLayer({
+        return new Layer3D(options.id, new ColorLayer({
             name: options.name,
             source: new TiledImageSource({
                 source: createWMTSSource({...options, projection})
             })
-        });
+        }));
     },
-    update3d: (layer, newOptions, oldOptions, projection) => {
+    update3d: (mapLayer, newOptions, oldOptions, projection) => {
         // pass
     }
 };

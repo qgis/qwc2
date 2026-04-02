@@ -11,13 +11,14 @@ import TiledImageSource from '@giro3d/giro3d/sources/TiledImageSource.js';
 import ol from 'openlayers';
 
 import {wmsImageLoadFunction, wmsToOpenlayersOptions, getClientSideOpacity} from '../../map/layers/WMSLayer';
+import {Layer3D} from './Layer3D';
 
 
 export default {
     create3d: (options, projection) => {
         const queryParameters = {...wmsToOpenlayersOptions(options), __t: +new Date()};
         const clientSideOpacity = getClientSideOpacity(options, queryParameters);
-        const layer = new ColorLayer({
+        const layer = new Layer3D(options.id, new ColorLayer({
             name: options.name,
             opacity: clientSideOpacity ?? 1,
             source: new TiledImageSource({
@@ -29,11 +30,12 @@ export default {
                     tileLoadFunction: (imageTile, src) => wmsImageLoadFunction(imageTile.getImage(), src)
                 })
             })
-        });
-        layer.visible = queryParameters.LAYERS !== "" && options.visibility;
+        }));
+        layer.layer().visible = queryParameters.LAYERS !== "" && options.visibility;
         return layer;
     },
-    update3d: (layer, newOptions, oldOptions, projection) => {
+    update3d: (mapLayer, newOptions, oldOptions, projection) => {
+        const layer = mapLayer.layer();
         const source = layer.source.source;
         if (oldOptions && source.updateParams) {
             let changed = (oldOptions.rev || 0) !== (newOptions.rev || 0);
