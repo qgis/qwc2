@@ -230,11 +230,6 @@ class Map3D extends React.Component {
             }));
         }
 
-        // Update map layers
-        if (this.state.sceneContext.baseLayers !== prevState.sceneContext.baseLayers) {
-            this.applyBaseLayer();
-        }
-
         // Update collision objects
         if (this.state.sceneContext.objectTree !== prevState.sceneContext.objectTree) {
             this.setState(state => ({
@@ -276,20 +271,6 @@ class Map3D extends React.Component {
             this.instance.notifyChange(this.instance.view.camera);
         }
     }
-    applyBaseLayer = () => {
-        const baseLayer = this.state.sceneContext.baseLayers.find(e => e.visibility === true);
-        this.removeLayer("__baselayer");
-        UrlParams.updateParams({bl3d: baseLayer?.name ?? 'null'});
-        if (!baseLayer) {
-            return;
-        }
-        const layerCreator = LayerRegistry[baseLayer.type];
-        if (layerCreator?.create3d) {
-            const layer3d = layerCreator.create3d(baseLayer, this.state.sceneContext.mapCrs);
-            this.addLayer("__baselayer", layer3d);
-            this.map.insertLayerAfter(layer3d, null);
-        }
-    };
     setBaseLayer = (layer, visibility) => {
         const currentBaseLayer = this.state.sceneContext.baseLayers.find(l => l.visibility === true)?.name || null;
         if (visibility && layer.name === currentBaseLayer) {
@@ -305,6 +286,7 @@ class Map3D extends React.Component {
             this.map.backgroundOpacity = visibility ? 1 : 0;
             this.instance.notifyChange(this.map);
         }
+        UrlParams.updateParams({bl3d: !visibility ? 'null' : layer.name});
         this.setState(state => ({
             sceneContext: {
                 ...state.sceneContext,
@@ -771,6 +753,7 @@ class Map3D extends React.Component {
                                 <Component sceneContext={this.state.sceneContext} {...this.props.pluginOptions[name]} />
                             </Suspense>
                         ))}
+                        {this.renderBaseLayer()}
                         {Object.values(this.state.sceneContext.colorLayers).map((options, idx) => (
                             <ColorLayer3D
                                 key={options.id}
@@ -784,6 +767,12 @@ class Map3D extends React.Component {
             ) : null
         ];
     }
+    renderBaseLayer = () => {
+        const baseLayer = this.state.sceneContext.baseLayers.find(e => e.visibility === true);
+        return !baseLayer ? null : (
+            <ColorLayer3D key={baseLayer.name} map={this.map} options={{id: "__baselayer", ...baseLayer}} sceneContext={this.state.sceneContext} />
+        );
+    };
     setupContainer = (el) => {
         if (el) {
             this.container = el;
