@@ -161,10 +161,10 @@ class AppContainerComponent extends React.Component {
                 this.props.showNotification("missingdefaulttheme", LocaleUtils.tr("app.missingdefaulttheme", params.t), NotificationType.WARN, true);
             }
 
-            const task = ConfigUtils.getConfigProp("startupTask");
-            if (task && !theme?.config?.startupTask) {
+            const task = params.stkey || theme?.config?.startupTask || ConfigUtils.getConfigProp("startupTask");
+            if (task) {
                 const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
-                this.props.setCurrentTask(task.key, task.mode, mapClickAction);
+                this.props.setCurrentTask(task.key ?? task, task.mode ?? params.stmode ?? null, mapClickAction);
             }
         });
     };
