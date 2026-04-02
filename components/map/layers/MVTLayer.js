@@ -10,7 +10,7 @@ import axios from 'axios';
 import { applyStyle } from 'ol-mapbox-style';
 import ol from 'openlayers';
 
-export const createLayer = (options) => {
+function createLayer(url, options) {
     return new ol.layer.VectorTile({
         minResolution: options.minResolution,
         maxResolution: options.maxResolution,
@@ -18,38 +18,77 @@ export const createLayer = (options) => {
         source: new ol.source.VectorTile({
             projection: options.projection,
             format: new ol.format.MVT({}),
-            url: options.url,
+            url: url,
             tileGrid: options.tileGridConfig ? new ol.tilegrid.TileGrid({...options.tileGridConfig}) : undefined,
             ...(options.sourceConfig || {})
         }),
         ...(options.layerConfig || {})
     });
-};
+}
+
+
+export function createFromStyle(style, options, callback) {
+    axios.get(style).then(response => {
+        const glStyle = response.data;
+        glStyle.sprite?.startsWith(".") && (glStyle.sprite = new URL(glStyle.sprite, options.style).href);
+        glStyle.glyphs?.startsWith(".") && (glStyle.glyphs = new URL(glStyle.glyphs, options.style).href);
+        // Collect used sources
+        const usedSources = new Set(
+            glStyle.layers.map(l => l.source).filter(Boolean)
+        );
+        // Create layer for each source
+        usedSources.forEach(sourceName => {
+            const source = glStyle.sources[sourceName];
+            if (source.type !== 'vector' && source.type !== 'geojson') {
+                return;
+            }
+            source.url?.startsWith(".") && (source.url = new URL(source.url, options.style).href);
+            if (source.tiles?.length) {
+                const layer = createLayer(source.tiles[0], options);
+                applyStyle(layer, style, sourceName, options.styleOptions).then(() => {
+                    callback(layer);
+                }).catch(e => {
+                    /* eslint-disable-next-line */
+                    console.warn("Unable to apply style " + sourceName + ": " + String(e));
+                });
+            } else if (source.url) {
+                axios.get(source.url).then(response2 => {
+                    if (response2.data?.tiles?.length) {
+                        const layer = createLayer(response2.data.tiles[0], options, callback);
+                        applyStyle(layer, style, sourceName, options.styleOptions).then(() => {
+                            callback(layer);
+                        }).catch(e => {
+                            /* eslint-disable-next-line */
+                            console.warn("Unable to apply style " + sourceName + ": " + String(e));
+                        });
+                    } else {
+                        /* eslint-disable-next-line */
+                        console.warn("Could not find source tile URL for style " + sourceName);
+                    }
+                }).catch(() => {
+                    /* eslint-disable-next-line */
+                    console.warn("Could not find source tile URL for style " + sourceName);
+                });
+            } else {
+                /* eslint-disable-next-line */
+                console.warn("Could not find source tile URL for style " + sourceName);
+            }
+        });
+    }).catch(e => {
+        /* eslint-disable-next-line */
+        console.warn("Unable to load style " + options.style + ": " + String(e));
+    });
+}
 
 export default {
     create: (options) => {
         const group = new ol.layer.Group();
         if (options.style) {
-            axios.get(options.style).then(response => {
-                const glStyle = response.data;
-                glStyle.sprite?.startsWith(".") && (glStyle.sprite = new URL(glStyle.sprite, options.style).href);
-                glStyle.glyphs?.startsWith(".") && (glStyle.glyphs = new URL(glStyle.glyphs, options.style).href);
-                Object.keys(glStyle.sources).forEach(styleSource => {
-                    glStyle.sources[styleSource].url?.startsWith(".") && (glStyle.sources[styleSource].url = new URL(glStyle.sources[styleSource].url, options.style).href);
-                    const layer = createLayer(options);
-                    applyStyle(layer, glStyle, styleSource, options.styleOptions).then(() => {
-                        group.getLayers().push(layer);
-                    }).catch(e => {
-                        /* eslint-disable-next-line */
-                        console.warn("Unable to apply style " + options.style + ": " + String(e));
-                    });
-                });
-            }).catch(e => {
-                /* eslint-disable-next-line */
-                console.warn("Unable to load style " + options.style + ": " + String(e));
+            createFromStyle(options.style, options, (layer) => {
+                group.getLayers().push(layer);
             });
         } else {
-            group.getLayers().push(createLayer(options));
+            group.getLayers().push(createLayer(options.url, options));
         }
         return group;
     }
