@@ -389,7 +389,22 @@ class Map3D extends React.Component {
                     parent.sublayers = parent.sublayers.map(sublayer => sublayer === subentry ? subentry : ({...sublayer, visibility: false}));
                 }
             }
-            Object.assign(entry, LayerUtils.buildWMSLayerParams(entry));
+            if (subentry.opacity !== prevOptions.opacity) {
+                // Propagate opacity to children
+                const setChildOpacities = (child) => {
+                    child.sublayers = child.sublayers.map(gchild => {
+                        const ngchild = {...gchild, opacity: options.opacity};
+                        if (!isEmpty(ngchild.sublayers)) {
+                            setChildOpacities(ngchild);
+                        }
+                        return ngchild;
+                    });
+                };
+                setChildOpacities(subentry);
+            }
+            if (entry.type === "wms") {
+                Object.assign(entry, LayerUtils.buildWMSLayerParams(entry));
+            }
             return {
                 sceneContext: {
                     ...state.sceneContext,
