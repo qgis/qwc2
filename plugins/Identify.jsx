@@ -9,6 +9,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import {featureCollection} from '@turf/helpers';
+import intersect from '@turf/intersect';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
@@ -79,6 +81,7 @@ class Identify extends React.Component {
         iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. */
         initialRadiusUnits: PropTypes.string,
+        layerFilterGeom: PropTypes.object,
         layers: PropTypes.array,
         /** How to handle long attribute names / values. */
         longAttributesDisplay: PropTypes.oneOf(["wrap", "ellipsis"]),
@@ -245,7 +248,6 @@ class Identify extends React.Component {
         center[0] /= poly.length;
         center[1] /= poly.length;
 
-        const filter = VectorLayerUtils.geoJSONGeomToWkt(this.state.filterGeom);
         let pendingRequests = 0;
         const params = {...this.props.params};
         if (this.props.params.region_feature_count) {
@@ -253,7 +255,8 @@ class Identify extends React.Component {
             delete params.region_feature_count;
         }
         queryableLayers.forEach(layer => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, params);
+            const requestFilterGeom = this.getRequestFilterGeomWkt(this.state.filterGeom);
+            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
                 this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
@@ -290,6 +293,19 @@ class Identify extends React.Component {
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
         });
         this.props.addMarker("identify", clickPoint, "", this.props.map.projection);
+    };
+    getRequestFilterGeomWkt = (identifyGeom) => {
+        const sourceFilterGeom = this.props.layerFilterGeom;
+        if (!sourceFilterGeom) return VectorLayerUtils.geoJSONGeomToWkt(identifyGeom);
+        try {
+            const intersection = intersect(featureCollection([
+                {type: "Feature", properties: {}, geometry: identifyGeom},
+                {type: "Feature", properties: {}, geometry: sourceFilterGeom}
+            ]));
+            return intersection?.geometry ? VectorLayerUtils.geoJSONGeomToWkt(intersection.geometry) : null;
+        } catch {
+            return VectorLayerUtils.geoJSONGeomToWkt(identifyGeom);
+        }
     };
     changeBufferUnit = (ev) => {
         this.setState({ radiusUnits: ev.target.value });
@@ -448,6 +464,7 @@ export default connect((state) => {
     return {
         click: state.map.click || {modifiers: {}},
         enabled: enabled,
+        layerFilterGeom: state.layers.filter?.filterGeom,
         layers: state.layers.flat,
         map: state.map,
         selection: state.selection,

@@ -29,6 +29,7 @@
         "@turf/buffer": "^7.3.3",
         "@turf/clean-coords": "^7.3.3",
         "@turf/helpers": "^7.3.3",
+        "@turf/intersect": "^7.3.3",
         "@vtaits/react-color-picker": "^2.0.0",
         "any-date-parser": "^1.5.4",
         "axios": "^1.13.4",
