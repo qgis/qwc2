@@ -36,7 +36,7 @@ export default class ColorLayer3D extends React.Component {
     componentDidUpdate(prevProps) {
         const layerCreator = LayerRegistry3D[this.props.options.type];
         if (this.mapLayer && layerCreator) {
-            layerCreator.update3d(this.mapLayer, this.props.options, prevProps.options, this.props.sceneContext.mapCrs);
+            layerCreator.update3d?.(this.mapLayer, this.props.options, prevProps.options, this.props.sceneContext.mapCrs);
             this.applyLayerOptions(layerCreator, prevProps.options);
         }
     }
