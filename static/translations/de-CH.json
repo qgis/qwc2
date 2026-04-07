@@ -672,6 +672,8 @@
         "value": "Wert"
       },
       "datastreamsFilter": {
+        "datastream": "Datastream",
+        "location": "Location",
         "observedProperty": "Observed Property",
         "sensor": "Sensor",
         "thing": "Thing",

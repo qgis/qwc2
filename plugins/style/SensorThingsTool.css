@@ -177,8 +177,34 @@ table.sensor-things-datastreams-filter td select {
     width: 100%;
     text-overflow: ellipsis;
 }
+table.sensor-things-datastreams-filter td.sensor-things-datastreams-filter-location {
+    height: 2em;
+}
+table.sensor-things-datastreams-filter-table {
+    width: 100%;
+    margin-top: 1em;
+    font-size: 85%;
+}
+table.sensor-things-datastreams-filter-table td {
+    vertical-align: top;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid var(--border-color);
+}
+table.sensor-things-datastreams-filter-table td div:nth-child(2) {
+    color: var(--text-color-disabled);
+}
+table.sensor-things-datastreams-filter-table td:last-child {
+    vertical-align: middle;
+}
+table.sensor-things-datastreams-filter-table tr.sensor-things-datastreams-filter-table-thing {
+    background-color: var(--button-bg-color);
+}
+table.sensor-things-datastreams-filter-table tr.sensor-things-datastreams-filter-table-thing td:nth-child(1) {
+    font-weight: bold;
+}
 
-div.sensor-things-datastream-observations-table-wrapper {
+div.sensor-things-datastream-observations-table-wrapper, div.sensor-things-datastreams-filter-table-wrapper {
     overflow: auto;
     margin-bottom: 0.25em;
 }

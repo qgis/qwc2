@@ -672,6 +672,8 @@
         "value": ""
       },
       "datastreamsFilter": {
+        "datastream": "",
+        "location": "",
         "observedProperty": "",
         "sensor": "",
         "thing": "",

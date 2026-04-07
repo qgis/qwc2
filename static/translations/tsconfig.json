@@ -580,6 +580,8 @@
     "sensorthingstool.datastreamTable.title",
     "sensorthingstool.datastreamTable.unit",
     "sensorthingstool.datastreamTable.value",
+    "sensorthingstool.datastreamsFilter.datastream",
+    "sensorthingstool.datastreamsFilter.location",
     "sensorthingstool.datastreamsFilter.observedProperty",
     "sensorthingstool.datastreamsFilter.sensor",
     "sensorthingstool.datastreamsFilter.thing",
