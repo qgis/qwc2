@@ -6,7 +6,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {addLayer, removeLayer, replacePlaceholderLayer, LayerRole} from '../../actions/layers';
-import {NotificationType, showNotification, closeWindow} from '../../actions/windows';
+import {openExternalUrl, NotificationType, showNotification, closeWindow} from '../../actions/windows';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
@@ -25,6 +25,7 @@ class LayerCatalogWidget extends React.PureComponent {
         layers: PropTypes.array,
         levelBasedIndentSize: PropTypes.bool,
         mapCrs: PropTypes.string,
+        openExternalUrl: PropTypes.func,
         pendingRequests: PropTypes.number,
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
@@ -53,6 +54,7 @@ class LayerCatalogWidget extends React.PureComponent {
         const type = entry.resource ? entry.resource.slice(0, entry.resource.indexOf(":")) : entry.type;
         const key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
         const indentSize = !this.props.levelBasedIndentSize && level > 0 ? 1.5 : level;
+        console.log(entry.target);
         return (
             <div key={key} style={{paddingLeft: (0.5 * indentSize) + 'em'}}>
                 <div className="layer-catalog-widget-entry">
@@ -72,18 +74,7 @@ class LayerCatalogWidget extends React.PureComponent {
                     {hasSublayers && type === "wms" ? (
                         <Icon icon="group" onClick={() => this.checkAddServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
                     ) : null}
-                    {entry.link ? (
-                        <a
-                            className="layer-catalog-widget-entry-link"
-                            href={entry.link}
-                            onClick={(e) => e.stopPropagation()}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                            title={LocaleUtils.tr("layercatalog.openlink")}
-                        >
-                            <Icon icon="info-sign" />
-                        </a>
-                    ) : null}
+                    {entry.link ? <a className="layer-catalog-widget-entry-link"> <Icon icon="info-sign" onClick={ev => this.openUrl(ev, entry.link, entry.target)} /> </a> : null}
                 </div>
                 {entry.expanded ? sublayers : null}
             </div>
@@ -214,6 +205,13 @@ class LayerCatalogWidget extends React.PureComponent {
             }
         }
     };
+    openUrl = (ev, url, target, title) => {
+        MiscUtils.killEvent(ev);
+        if (target === "iframe") {
+            target = ":iframedialog:externallinkiframe";
+        }
+        this.props.openExternalUrl(url, target, {title: title});
+    };
 }
 
 export default connect(state => ({
@@ -221,6 +219,7 @@ export default connect(state => ({
 }), {
     addLayer: addLayer,
     closeWindow: closeWindow,
+    openExternalUrl: openExternalUrl,
     removeLayer: removeLayer,
     replacePlaceholderLayer: replacePlaceholderLayer,
     showNotification: showNotification
