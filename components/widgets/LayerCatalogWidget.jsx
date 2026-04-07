@@ -72,6 +72,18 @@ class LayerCatalogWidget extends React.PureComponent {
                     {hasSublayers && type === "wms" ? (
                         <Icon icon="group" onClick={() => this.checkAddServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
                     ) : null}
+                    {entry.link ? (
+                        <a
+                            className="layer-catalog-widget-entry-link"
+                            href={entry.link}
+                            onClick={(e) => e.stopPropagation()}
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            title={LocaleUtils.tr("layercatalog.openlink")}
+                        >
+                            <Icon icon="info-sign" />
+                        </a>
+                    ) : null}
                 </div>
                 {entry.expanded ? sublayers : null}
             </div>

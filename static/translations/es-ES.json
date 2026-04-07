@@ -336,6 +336,7 @@
       "radius": "Radio"
     },
     "layercatalog": {
+      "openlink": "",
       "windowtitle": "Catálogo de capas"
     },
     "layerinfo": {

@@ -402,6 +402,7 @@ class SearchBox extends React.Component {
                 {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
                 {this.props.searchOptions.allowAddLayerAsGroup && result.sublayers ? (<Icon icon="group" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result, true); }} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
                 {result.info ? <Icon icon="info-sign" onClick={(ev) => this.toggleLayerInfo(ev, provider, group, result, key, parent)} /> : null}
+                {result.layer.link ? <Icon icon="info-sign" onClick={ev => this.openUrl(ev, result.layer.link, result.target, result.label ?? result.text)} /> : null}
             </div>
         ), this.state.activeLayerInfo === key ? (
             <div className="searchbox-result-abstract"
