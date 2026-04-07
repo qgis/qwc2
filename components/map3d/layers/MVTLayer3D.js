@@ -17,8 +17,7 @@ export default {
         const create3dLayer = (url, style = null) => {
             const source = new VectorTileSource({
                 url: url,
-                style: style,
-                backgroundColor: "white"
+                style: style
             });
             return new ColorLayer({
                 name: options.name,
