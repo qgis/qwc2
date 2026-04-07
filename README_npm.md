@@ -8,18 +8,22 @@ The `qwc2` NPM package can be used as a dependency to build a custom QWC applica
 
 ![Screenshot](https://github.com/qgis/qwc2/blob/gh-pages/Screenshot.jpg?raw=true)
 
-### Main Features
+## Homepage
+
+See [qwc.app](https://qwc.app).
+
+## Main Features
 
 See [qwc.app/features](https://qwc.app/features).
 
 ## Quick start
 
-See [qwc-services.github.io/master/QuickStart/](https://qwc-services.github.io/master/QuickStart/)
+See [docs.qwc.app/master/QuickStart/](https://docs.qwc.app/master/QuickStart/).
 
 ## Documentation
 
-* [qwc-services.github.io](https://qwc-services.github.io/)
-* [ChangeLog](https://qwc-services.github.io/master/release_notes/ChangeLog/)
+* [docs.qwc.app](https://docs.qwc.app)
+* [ChangeLog](https://docs.qwc.app/master/release_notes/ChangeLog/)
 
 ## Help
 
