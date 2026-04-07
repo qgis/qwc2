@@ -1,6 +1,5 @@
 Copyright (c) 2015-2016 GeoSolutions Sas
-Copyright (c) 2016-2024 Sourcepole AG
-Copyright (c) 2021 Oslandia SAS <infos+qwc2@oslandia.com>
+Copyright (c) QWC Contributors <https://github.com/qgis/qwc2/graphs/contributors>
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are
@@ -22,7 +21,3 @@ SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRU
 HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-The views and conclusions contained in the software and documentation are those
-of the authors and should not be interpreted as representing official policies,
-either expressed or implied, of the MapStore2 Project.
