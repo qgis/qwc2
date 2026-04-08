@@ -60,6 +60,7 @@ class MapInfoTooltip extends React.Component {
         /** The number of decimal places to display for elevation values. */
         elevationPrecision: PropTypes.number,
         enabled: PropTypes.bool,
+        /** Whether to display WGS84 coordinates in addition to map CRS coordinates. */
         includeWGS84: PropTypes.bool,
         map: PropTypes.object,
         /** Additional plugin components for the map info tooltip. */
