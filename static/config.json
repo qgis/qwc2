@@ -6,6 +6,7 @@
   "permalinkServiceUrl": "http://localhost:8088/api/v1/permalink/",
   "elevationServiceUrl": "http://localhost:8088/elevation/",
   "featureReportService": "http://localhost:8088/api/v1/document/",
+  "documentServiceUrl": "http://localhost:8088/api/v1/document/",
   "authServiceUrl": "http://localhost:8088/api/v1/auth/",
   "routingServiceUrl": "https://valhalla1.openstreetmap.de",
   "availableLocales": {
