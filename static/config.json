@@ -2,7 +2,7 @@
   "searchServiceUrl": "http://localhost:8088/api/v2/search/",
   "searchDataServiceUrl": "http://localhost:8088/api/v2/search/geom/",
   "editServiceUrl": "http://localhost:8088/api/v1/data/",
-  "mapInfoService": "http://localhost:8088/api/v1/mapinfo/",
+  "mapInfoServiceUrl": "http://localhost:8088/api/v1/mapinfo/",
   "permalinkServiceUrl": "http://localhost:8088/api/v1/permalink/",
   "elevationServiceUrl": "http://localhost:8088/elevation/",
   "featureReportService": "http://localhost:8088/api/v1/document/",
