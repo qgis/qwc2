@@ -756,7 +756,7 @@ or a custom elevation interface is exposed in `window.QWC2ElevationInterface` (s
 [ElevationInterface.js](https://github.com/qgis/qwc2/blob/master/utils/ElevationInterface.js)), the
 height at the picked position is also displayed.
 
-If `mapInfoService` in `config.json` points to a `qwc-mapinfo-service`, additional
+If `mapInfoServiceUrl` in `config.json` points to a `qwc-mapinfo-service`, additional
 custom information according to the `qwc-mapinfo-service` configuration is returned.
 
 You can pass additional plugin components to the `MapInfoTooltip` in `appConfig.js`:
@@ -777,6 +777,7 @@ class MapInfoTooltipPlugin extends React.Component {
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | elevationPrecision | `number` | The number of decimal places to display for elevation values. | `0` |
+| includeWGS84 | `bool` | Whether to display WGS84 coordinates in addition to map CRS coordinates. | `true` |
 | plugins | `array` | Additional plugin components for the map info tooltip. | `[]` |
 
 ## MapLegend<a name="maplegend"></a>
