@@ -59,17 +59,12 @@ span.layer-catalog-widget-entry-service {
 }
 
 .layer-catalog-widget-entry-link {
-    display: inline-flex;
-    align-items: center;
+    margin-right: 0.5em;
     margin-left: 0.5em;
     opacity: 0.6;
     transition: opacity 0.2s;
-    text-decoration: none;
-    outline:none;
-    color: inherit;
 }
  
 .layer-catalog-widget-entry-link:hover {
     opacity: 1;
-    text-decoration: none;
 }

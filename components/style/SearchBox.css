@@ -136,3 +136,14 @@ div.searchbox-filter-options-geometry > div.combobox {
     flex: 1 1 auto;
     height: 2em;
 }
+
+.searchbox-entry-link {
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+ 
+.searchbox-entry-link:hover {
+    opacity: 1;
+}
