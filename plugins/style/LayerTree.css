@@ -234,6 +234,11 @@ img.layertree-item-legend-tooltip {
     color: red;
 }
 
+
+#LayerTree span.layertree-item-metadata {
+    width: 1.75em;
+}
+
 #LayerTree span.layertree-item-menubutton {
     text-align: center;
     width: 1.75em;
