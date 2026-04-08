@@ -1012,10 +1012,10 @@
     ttf2woff "^3.0.0"
     wawoff2 "^2.0.0"
 
-"@giro3d/giro3d@2.0.0-beta.1":
-  version "2.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@giro3d/giro3d/-/giro3d-2.0.0-beta.1.tgz#2e4adf37df41017e9a26653114ede80cf6696914"
-  integrity sha512-Z36//WVanpqM1WrFIyLgSLTnxoI6bshalqhKuhyKB6BsG0yP5u76FWwv1M4uWqksd3R/4KJuvAjH/prfkikhVw==
+"@giro3d/giro3d@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@giro3d/giro3d/-/giro3d-2.0.0.tgz#385efe57e2ba1fcb2b41f0657b9e70808cda7f6f"
+  integrity sha512-N9isUeLmzWBn0Jxbxxy3SOklrobDVqBMeDygwMlG8LBzqwx2gyZZLrUcS2bjapmxfkGgnHqJx8C+kwEIYhuITg==
   dependencies:
     "3d-tiles-renderer" "^0.4.22"
     chart.js "^3.9.1"
