@@ -336,6 +336,7 @@
       "radius": "Rayon"
     },
     "layercatalog": {
+      "openlink": "Lien d'information",
       "windowtitle": "Catalogue de couches"
     },
     "layerinfo": {

@@ -6,7 +6,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {addLayer, removeLayer, replacePlaceholderLayer, LayerRole} from '../../actions/layers';
-import {NotificationType, showNotification, closeWindow} from '../../actions/windows';
+import {openExternalUrl, NotificationType, showNotification, closeWindow} from '../../actions/windows';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
@@ -25,6 +25,7 @@ class LayerCatalogWidget extends React.PureComponent {
         layers: PropTypes.array,
         levelBasedIndentSize: PropTypes.bool,
         mapCrs: PropTypes.string,
+        openExternalUrl: PropTypes.func,
         pendingRequests: PropTypes.number,
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
@@ -72,6 +73,7 @@ class LayerCatalogWidget extends React.PureComponent {
                     {hasSublayers && type === "wms" ? (
                         <Icon icon="group" onClick={() => this.checkAddServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
                     ) : null}
+                    {entry.link ? <Icon className="layer-catalog-widget-entry-link" icon="info-sign"  onClick={ev => this.openUrl(ev, entry.link, entry.target)} title={LocaleUtils.tr("layercatalog.openlink")} /> : null}
                 </div>
                 {entry.expanded ? sublayers : null}
             </div>
@@ -202,6 +204,13 @@ class LayerCatalogWidget extends React.PureComponent {
             }
         }
     };
+    openUrl = (ev, url, target, title) => {
+        MiscUtils.killEvent(ev);
+        if (target === "iframe") {
+            target = ":iframedialog:externallinkiframe";
+        }
+        this.props.openExternalUrl(url, target, {title: title});
+    };
 }
 
 export default connect(state => ({
@@ -209,6 +218,7 @@ export default connect(state => ({
 }), {
     addLayer: addLayer,
     closeWindow: closeWindow,
+    openExternalUrl: openExternalUrl,
     removeLayer: removeLayer,
     replacePlaceholderLayer: replacePlaceholderLayer,
     showNotification: showNotification

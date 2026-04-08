@@ -321,6 +321,7 @@
     "infotool.clickhelpPolygon",
     "infotool.clickhelpRadius",
     "infotool.radius",
+    "layercatalog.openlink",
     "layercatalog.windowtitle",
     "layerinfo.abstract",
     "layerinfo.attribution",

@@ -336,6 +336,7 @@
       "radius": "Raio"
     },
     "layercatalog": {
+      "openlink": "",
       "windowtitle": "Titulo da janela"
     },
     "layerinfo": {

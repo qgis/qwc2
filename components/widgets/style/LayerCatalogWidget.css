@@ -57,3 +57,14 @@ span.layer-catalog-widget-entry-service {
     border-radius: 0.25em;
     width: 6ch;
 }
+
+.layer-catalog-widget-entry-link {
+    margin-right: 0.5em;
+    margin-left: 0.5em;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+ 
+.layer-catalog-widget-entry-link:hover {
+    opacity: 1;
+}

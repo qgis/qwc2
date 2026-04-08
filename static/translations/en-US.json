@@ -336,6 +336,7 @@
       "radius": "Radius"
     },
     "layercatalog": {
+      "openlink": "Info link",
       "windowtitle": "Layer catalog"
     },
     "layerinfo": {

@@ -336,6 +336,7 @@
       "radius": "Радиус"
     },
     "layercatalog": {
+      "openlink": "",
       "windowtitle": "Каталог на слоевете"
     },
     "layerinfo": {

@@ -336,6 +336,7 @@
       "radius": "半径"
     },
     "layercatalog": {
+      "openlink": "",
       "windowtitle": "レイヤ・カタログ"
     },
     "layerinfo": {
