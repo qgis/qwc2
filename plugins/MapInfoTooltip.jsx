@@ -36,7 +36,7 @@ import './style/MapInfoTooltip.css';
  * [ElevationInterface.js](https://github.com/qgis/qwc2/blob/master/utils/ElevationInterface.js)), the
  * height at the picked position is also displayed.
  *
- * If `mapInfoService` in `config.json` points to a `qwc-mapinfo-service`, additional
+ * If `mapInfoServiceUrl` in `config.json` points to a `qwc-mapinfo-service`, additional
  * custom information according to the `qwc-mapinfo-service` configuration is returned.
  *
  * You can pass additional plugin components to the `MapInfoTooltip` in `appConfig.js`:
@@ -93,7 +93,7 @@ class MapInfoTooltip extends React.Component {
                 getElevationInterface().getElevation(pos, crs).then(elevation => {
                     this.setState({elevation: elevation});
                 }).catch(() => {});
-                const mapInfoService = ConfigUtils.getConfigProp("mapInfoService");
+                const mapInfoService = ConfigUtils.getConfigProp("mapInfoServiceUrl") || ConfigUtils.getConfigProp("mapInfoService");
                 if (mapInfoService) {
                     axios.get(mapInfoService, {params: {pos: pos.join(","), crs}}).then(response => {
                         this.setState({extraInfo: response.data.results});
