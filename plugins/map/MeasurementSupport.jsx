@@ -188,6 +188,15 @@ class MeasurementSupport extends React.Component {
             }
         }
     };
+    createPoint = (coord) => {
+        this.currentFeature = new ol.Feature({geometry: new ol.geom.Point(coord)});
+        this.currentFeature.setId(uuidv4());
+        this.currentFeature.set('measureMode', this.props.measurement.mode);
+        this.currentFeature.setStyle(this.featureStyleFunction);
+        this.currentFeature.on('change', evt => this.updateMeasurementResults(evt.target));
+        this.measureLayer.getSource().addFeature(this.currentFeature);
+        this.enterEditMode(this.currentFeature);
+    };
     enterEditMode = (feature) => {
         this.currentFeature = feature;
         this.updateMeasurementResults(this.currentFeature, false);
@@ -222,13 +231,14 @@ class MeasurementSupport extends React.Component {
         if (!this.drawInteraction.getActive()) {
             const features = this.props.map.getFeaturesAtPixel(evt.pixel, {hitTolerance: 5, layerFilter: layer => layer === this.measureLayer});
             if (features.length === 0) {
-                this.leaveEditMode();
-                // Immediately start new drawing
                 const clickCoord = MapUtils.getHook(MapUtils.GET_SNAPPED_COORDINATES_FROM_PIXEL_HOOK)(evt.pixel);
-                this.drawInteraction.appendCoordinates([clickCoord]);
                 if (this.props.measurement.mode === 'Point') {
-                    // Ughh... Apparently we need to wait 250ms for the 'singleclick' event processing to finish to avoid pick interactions picking up the current event
-                    setTimeout(() => this.drawInteraction.finishDrawing(), 300);
+                    // Special handling for Point: create point feature directly instead of starting a draw interaction
+                    this.createPoint(clickCoord);
+                } else {
+                    this.leaveEditMode();
+                    // Immediately start new drawing
+                    this.drawInteraction.appendCoordinates([clickCoord]);
                 }
             } else {
                 this.enterEditMode(features[0]);
