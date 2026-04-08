@@ -44,7 +44,8 @@ class AppMenu extends React.Component {
         showOnStartup: PropTypes.bool
     };
     static defaultProps = {
-        onMenuToggled: () => {}
+        onMenuToggled: () => {},
+        menuDisplayMode: "normal"
     };
     state = {
         menuVisible: false,
