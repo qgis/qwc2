@@ -135,6 +135,14 @@ class Editing extends React.Component {
             if (!LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName)) {
                 this.setState({selectedLayer: null});
             }
+        } else if (this.props.taskData && this.props.taskData !== prevProps.taskData) {
+            if (this.props.taskData.feature) {
+                const [wmsName, layerName] = this.props.taskData.layer.split("#");
+                const editConfig = this.props.editConfigs[wmsName][layerName];
+                this.props.iface.getFeatureById(editConfig, this.props.taskData.feature, this.props.map.projection, (feature) => {
+                    this.changeSelectedLayer(this.props.taskData.layer, feature || this.props.taskData.feature);
+                });
+            } else this.changeSelectedLayer(this.props.taskData.layer);
         }
         // If click point changed and in pick mode with a selected layer, trigger a pick
         const isCurrentContext = this.props.editContext.id === this.props.currentEditContext;
