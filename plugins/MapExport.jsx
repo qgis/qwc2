@@ -57,7 +57,7 @@ class MapExport extends React.Component {
         fileNameTemplate: PropTypes.string,
         /** Formats to force as available even if the map capabilities report otherwise. Useful if a serviceUrl is defined in a format configuration. */
         forceAvailableFormats: PropTypes.array,
-        /** Custom export configuration per format.
+        /** Custom format export configuration. Specify a format mime-type (i.e. `application/dxf`) as key, and an array of one or more configurations as value.
          *  If more than one configuration per format is provided, a selection combo will be displayed.
          *  `labelMsgId` is a translation string message id for the combo label. If not defined, `name` will be displayed.
          *  `extraQuery` will be appended to the query string (replacing any existing parameters).
@@ -65,8 +65,8 @@ class MapExport extends React.Component {
          *  `baseLayer` will be appended to the LAYERS instead of the background layer.
          *  `projections` is a list of export projections. If empty, the map projection is automatically used.
          *  `serviceUrl` is the address of a custom service to use instead of the layer OWS service url. */
-        formatConfiguration: PropTypes.shape({
-            format: PropTypes.arrayOf(PropTypes.shape({
+        formatConfiguration: PropTypes.objectOf(
+            PropTypes.arrayOf(PropTypes.shape({
                 name: PropTypes.string,
                 labelMsgId: PropTypes.string,
                 extraQuery: PropTypes.string,
@@ -75,7 +75,7 @@ class MapExport extends React.Component {
                 projections: PropTypes.array,
                 serviceUrl: PropTypes.string
             }))
-        }),
+        ),
         layers: PropTypes.array,
         map: PropTypes.object,
         /** List of image sizes to offer, in addition to the free-hand selection. The width and height are in millimeters. */
