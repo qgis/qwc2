@@ -71,6 +71,8 @@ function parsePropType(type) {
         return '{' + type.value.map(entry => parsePropType(entry)).join(", ") + '}';
     } else if (type.name === 'enum') {
         return `{${type.value.map(x => x.value).join(", ")}}`;
+    } else if (type.name === 'objectOf') {
+        return '<key>: ' + parsePropType(type.value);
     } else {
         return type.name;
     }
