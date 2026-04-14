@@ -782,7 +782,7 @@
     "sunexposure3d": {
       "end": "End time",
       "hoursOfSunlight": "Hours of sunlight",
-      "includeterrain": "",
+      "includeterrain": "Include terrain",
       "irradiation": "Irradiation",
       "meanIrradiance": "Mean irradiance",
       "spatialres": "Spatial res.",

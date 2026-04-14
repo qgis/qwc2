@@ -336,7 +336,7 @@
       "radius": "Radius"
     },
     "layercatalog": {
-      "openlink": "",
+      "openlink": "Link öffnen",
       "windowtitle": "Ebenenkatalog"
     },
     "layerinfo": {
@@ -782,7 +782,7 @@
     "sunexposure3d": {
       "end": "Endzeit",
       "hoursOfSunlight": "Sonnenstunden",
-      "includeterrain": "",
+      "includeterrain": "Terrain berechnen",
       "irradiation": "Bestrahlung",
       "meanIrradiance": "Mittlere Bestrahlungsstärke",
       "spatialres": "Räumliche Auflösung",
