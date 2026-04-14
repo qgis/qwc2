@@ -162,9 +162,8 @@ class AppContainerComponent extends React.Component {
             }
 
             const task = (params.task ? JSON.parse(decodeURIComponent(params.task)) : undefined)
-                || theme?.config?.startupTask
                 || ConfigUtils.getConfigProp("startupTask");
-            if (task) {
+            if (task && ((!params.task && !theme?.config?.startupTask) || (params.task && task !== theme?.config?.startupTask))) {
                 const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
                 this.props.setCurrentTask(task.key, task.mode, mapClickAction, task.data);
             }
