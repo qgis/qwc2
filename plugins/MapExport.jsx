@@ -334,7 +334,8 @@ class MapExport extends React.Component {
             width: 0,
             height: 0,
             scale: null,
-            pageSize: null
+            pageSize: null,
+            exporting: false
         });
     };
     geometryChanged = (center, extents, rotation, scale) => {
@@ -477,17 +478,33 @@ class MapExport extends React.Component {
         });
     };
     dxfExport = (baseParams, fileName, formatConfiguration) => {
-        const promises = this.props.layers.filter(
-            layer => layer.type === 'wms' && layer.role > LayerRole.BACKGROUND && layer.mapFormats?.includes("application/dxf")
-        ).reverse().map(layer => {
-            const params = {
-                ...baseParams,
-                LAYERS: layer.params.LAYERS,
-                OPACITIES: layer.params.OPACITIES,
-                STYLES: layer.params.STYLES,
-                FILTER: layer.params.FILTER ?? '',
-                FILTER_GEOM: layer.params.FILTER_GEOM ?? ''
-            };
+        // If formatConfiguration overrides LAYERS, only export theme layer with those layers
+        const layersOverridden = (formatConfiguration.extraQuery || "").split(/[?&]/).find(
+            entry => entry.split("=")[0].toLowerCase() === "layers"
+        ) !== undefined;
+        let jobs = [];
+        if (layersOverridden) {
+            jobs.push({
+                layer: this.props.theme,
+                params: baseParams
+            });
+        } else {
+            jobs = this.props.layers.filter(
+                layer => layer.type === 'wms' && layer.role > LayerRole.BACKGROUND && layer.mapFormats?.includes("application/dxf")
+            ).reverse().map(layer => ({
+                layer: layer,
+                params: {
+                    ...baseParams,
+                    LAYERS: layer.params.LAYERS,
+                    OPACITIES: layer.params.OPACITIES,
+                    STYLES: layer.params.STYLES,
+                    FILTER: layer.params.FILTER ?? '',
+                    FILTER_GEOM: layer.params.FILTER_GEOM ?? ''
+                }
+            }));
+        }
+
+        const promises = jobs.map(({layer, params}) => {
             const data = Object.entries(params).map((pair) =>
                 pair.map(entry => encodeURIComponent(entry).replace(/%20/g, '+')).join("=")
             ).join("&");
@@ -508,17 +525,22 @@ class MapExport extends React.Component {
         Promise.all(promises).then((responses) => {
             const decoder = new TextDecoder("iso-8859-1");
             const dxfDocuments = responses.filter(
-                response => response.headers['content-type'] === "application/dxf"
+                response => response && response.headers['content-type'] === "application/dxf"
             ).map(response => explodeDxf(decoder.decode(response.data)));
-            const dxfDocument = mergeDxf(dxfDocuments);
-            const result = implodeDxf(dxfDocument);
-            const encoder = new TextEncoder("iso-8859-1");
-            FileSaver.saveAs(new Blob([encoder.encode(result)], {type: "application/dxf"}), fileName);
-            /*
-            responses.forEach((response, idx) => {
-                FileSaver.saveAs(new Blob([response.data], {type: "application/dxf"}), "orig_" + idx + "_" + fileName);
-            });
-            */
+            if (dxfDocuments.length !== 0) {
+                const dxfDocument = mergeDxf(dxfDocuments);
+                const result = implodeDxf(dxfDocument);
+                const encoder = new TextEncoder("iso-8859-1");
+                FileSaver.saveAs(new Blob([encoder.encode(result)], {type: "application/dxf"}), fileName);
+                /*
+                responses.forEach((response, idx) => {
+                    FileSaver.saveAs(new Blob([response.data], {type: "application/dxf"}), "orig_" + idx + "_" + fileName);
+                });
+                */
+            } else {
+                /* eslint-disable-next-line */
+                alert('Export failed');
+            }
             this.setState({exporting: false});
         });
     };
