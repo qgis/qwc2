@@ -54,12 +54,10 @@ webfontsGenerator({
     },
     types: ['woff'],
     fontHeight: 1000
-}, (error) => {
-    if (error) {
-        // eslint-disable-next-line
-        console.log('Fail!', error);
-    } else {
-        // eslint-disable-next-line
+}).then(() => {
+    // eslint-disable-next-line
         console.log('Done!');
-    }
+}).catch(e => {
+    // eslint-disable-next-line
+    console.log('Fail!', e);
 });
