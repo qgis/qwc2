@@ -732,9 +732,7 @@
         "arithmeticMean": "Arithmetisches Mittel",
         "nthPercentile": ". Perzentil"
       },
-      "title": "SensorThings Abfrage",
-      "zoomIn": "Vergrößern",
-      "zoomOut": "Verkleinern"
+      "title": "SensorThings Abfrage"
     },
     "serviceinfo": {
       "abstract": "Zusammenfassung",

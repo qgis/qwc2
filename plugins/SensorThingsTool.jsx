@@ -1005,10 +1005,10 @@ class SensorThingsTool extends React.Component {
 
                         <div className="sensor-things-toolbar-spacer-small" />
 
-                        <button className="button" onClick={this.zoomIn} title={LocaleUtils.tr("sensorthingstool.zoomIn")}>
+                        <button className="button" onClick={this.zoomIn} title={LocaleUtils.tr("common.zoomin")}>
                             <Icon icon="zoomin" />
                         </button>
-                        <button className="button" onClick={this.zoomOut} title={LocaleUtils.tr("sensorthingstool.zoomOut")}>
+                        <button className="button" onClick={this.zoomOut} title={LocaleUtils.tr("common.zoomout")}>
                             <Icon icon="zoomout" />
                         </button>
                         <button className="button" onClick={this.updateFullPeriod} title={updateFullPeriodLabel}>

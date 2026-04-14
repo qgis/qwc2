@@ -632,8 +632,6 @@
     "sensorthingstool.statistics.arithmeticMean",
     "sensorthingstool.statistics.nthPercentile",
     "sensorthingstool.title",
-    "sensorthingstool.zoomIn",
-    "sensorthingstool.zoomOut",
     "serviceinfo.abstract",
     "serviceinfo.contactEmail",
     "serviceinfo.contactOrganization",

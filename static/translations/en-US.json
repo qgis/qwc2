@@ -732,9 +732,7 @@
         "arithmeticMean": "Arithmetic mean",
         "nthPercentile": "th percentile"
       },
-      "title": "SensorThings Query",
-      "zoomIn": "Zoom in",
-      "zoomOut": "Zoom out"
+      "title": "SensorThings Query"
     },
     "serviceinfo": {
       "abstract": "Abstract",
