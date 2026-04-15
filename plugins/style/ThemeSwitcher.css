@@ -9,3 +9,7 @@ div.theme-switcher-filter {
 div.active-theme {
     order: 0;
 }
+
+div.active-theme > span.icon {
+    margin-right: 0.25em;
+}

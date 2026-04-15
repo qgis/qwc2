@@ -1,3 +1,7 @@
 div.login-user {
     order: 1;
 }
+
+div.login-user > span.icon {
+    margin-right: 0.25em;
+}

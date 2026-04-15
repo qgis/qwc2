@@ -21,7 +21,7 @@ div.app-infos-container {
     flex-wrap: wrap-reverse;
     z-index: 2;
     overflow: hidden;
-    padding: 1em 1em 2.5em 1em;
+    padding: .5em .5em 2.5em .5em;
     row-gap: 0.25em;
 }
 
@@ -58,13 +58,9 @@ div.app-info {
     color: var(--panel-text-color);
     background-color: var(--panel-bg-color);
     box-shadow: 0 0 4px rgba(136, 136, 136, 0.5);
-    padding: 0.25em 0em 0.125em 0em;
+    padding: 0.25em;
     display: flex;
-}
-
-div.app-info > span {
-    flex: 0 0 auto;
-    padding: 0 0.25em;
+    align-items: center;
 }
 
 
