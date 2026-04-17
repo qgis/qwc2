@@ -156,16 +156,10 @@ class AppContainerComponent extends React.Component {
                 if (layerParams && ConfigUtils.getConfigProp("urlReverseLayerOrder")) {
                     layerParams.reverse();
                 }
-                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer);
+                const initialTaskParam = (params.task ? JSON.parse(decodeURIComponent(params.task)) : null);
+                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialTaskParam);
             } else if (!ConfigUtils.havePlugin("Portal")) {
                 this.props.showNotification("missingdefaulttheme", LocaleUtils.tr("app.missingdefaulttheme", params.t), NotificationType.WARN, true);
-            }
-
-            const task = (params.task ? JSON.parse(decodeURIComponent(params.task)) : undefined)
-                || ConfigUtils.getConfigProp("startupTask");
-            if (task && ((!params.task && !theme?.config?.startupTask) || (params.task && task !== theme?.config?.startupTask))) {
-                const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
-                this.props.setCurrentTask(task.key, task.mode, mapClickAction, task.data);
             }
         });
     };
