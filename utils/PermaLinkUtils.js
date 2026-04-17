@@ -71,7 +71,7 @@ export const UrlParams = {
         }
     },
     clear() {
-        const clearKeys = ['k', 't', 'l', 'bl', 'bk', 'c', 'hc', 'ic', 's', 'e', 'crs', 'st', 'sp', 'f', 'v', 'v3d', 'bl3d'];
+        const clearKeys = ['k', 't', 'l', 'bl', 'bk', 'c', 'hc', 'ic', 's', 'e', 'crs', 'st', 'sp', 'f', 'v', 'v3d', 'bl3d', 'task'];
         this.updateParams(clearKeys.reduce((res, key) => ({...res, [key]: undefined}), {}), true);
     },
     getFullUrl() {

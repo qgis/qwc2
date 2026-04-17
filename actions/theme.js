@@ -46,7 +46,7 @@ export function setThemeLayersList(theme) {
     };
 }
 
-export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme) {
+export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialTask) {
     // Create layer
     const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
     let layers = [themeLayer];
@@ -118,14 +118,15 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         type: SWITCHING_THEME,
         switching: false
     });
-    const task = theme.config?.startupTask;
+
+    const task = initialTask || theme?.config?.startupTask || (initialTheme ? ConfigUtils.getConfigProp("startupTask") : null);
     if (task) {
         const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
-        dispatch(setCurrentTask(task.key, task.mode, mapClickAction));
+        dispatch(setCurrentTask(task.key, task.mode, mapClickAction, task.data));
     }
 }
 
-export function setCurrentTheme(theme, themes, preserve = true, initialExtent = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null) {
+export function setCurrentTheme(theme, themes, preserve = true, initialExtent = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null, initialTask = null) {
     return (dispatch, getState) => {
         const curLayers = getState().layers?.flat || [];
         const mapCrs = theme.mapCrs || themes.defaultMapCrs || "EPSG:3857";
@@ -252,13 +253,13 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
                         dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
                     }
                 }
-                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
+                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialTask);
             });
         } else {
             if (!isEmpty(missingThemeLayers)) {
                 dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", Object.keys(missingThemeLayers).join(", ")), NotificationType.WARN, true));
             }
-            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme);
+            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialTask);
         }
     };
 }
