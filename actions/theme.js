@@ -119,7 +119,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         switching: false
     });
 
-    const task = (initialTheme ? initialTask : null) || theme?.config?.startupTask || (initialTheme ? ConfigUtils.getConfigProp("startupTask") : null);
+    const task = initialTask || theme?.config?.startupTask || (initialTheme ? ConfigUtils.getConfigProp("startupTask") : null);
     if (task) {
         const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
         dispatch(setCurrentTask(task.key, task.mode, mapClickAction, task.data));
