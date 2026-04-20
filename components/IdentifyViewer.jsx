@@ -1021,6 +1021,9 @@ class IdentifyViewer extends React.Component {
             return (<a href={text} rel="noreferrer" target="_blank"><img src={text} /></a>);
         }
         text = "" + text; // Ensure text is a string
+        for (const formatter of Object.values(window.qwc2?.__attributeFormatters || {})) {
+            text = formatter(attrName, text, layer, result);
+        }
         text = this.props.attributeTransform(attrName, text, layer, result);
         text = MiscUtils.addLinkAnchors(text);
         return this.parsedContent(text);

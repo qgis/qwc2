@@ -254,6 +254,22 @@ Remove custom identify attribute calculator
 
 * `name`: The identifier
 
+**addIdentifyAttributeFormatter(name,fmtFunc)**
+
+Add custom attribute formatter
+(i.e. computed attributes which are added to GetFeatureInfo responses).
+
+* `name`: An identifier
+* `fmtFunc`: The formatter function with signature `function(name, value, layer, feature)`
+
+The `fmtFunc` should return a string (which may also be a HTML fragment).
+
+**removeIdentifyAttributeFormatter(name)**
+
+Remove custom identify attribute formatter
+
+* `name`: The identifier
+
 **addIdentifyExporter(name,exporterConfig)**
 
 Add custom identify exporter

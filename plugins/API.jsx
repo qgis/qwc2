@@ -261,6 +261,7 @@ class API extends React.Component {
         window.qwc2 = {
             __customPlugins: {},
             __attributeCalculators: {},
+            __attributeFormatters: {},
             __identifyExportes: {}
         };
         // Auto-binded functions
@@ -277,6 +278,8 @@ class API extends React.Component {
         window.qwc2.removeIdentifyAttributeCalculator = this.removeIdentifyAttributeCalculator;
         window.qwc2.addIdentifyExporter = this.addIdentifyExporter;
         window.qwc2.removeIdentifyExporter = this.removeIdentifyExporter;
+        window.qwc2.addIdentifyAttributeFormatter = this.addIdentifyAttributeFormatter;
+        window.qwc2.removeIdentifyAttributeFormatter = this.removeIdentifyAttributeFormatter;
         window.qwc2.addExternalLayer = this.addExternalLayer;
         window.qwc2.drawScratch = this.drawScratch;
         window.qwc2.drawGeometry = this.drawGeometry;
@@ -508,6 +511,26 @@ class API extends React.Component {
      */
     removeIdentifyAttributeCalculator = (name) => {
         delete window.qwc2.__attributeCalculators[name];
+    };
+    /**
+     * Add custom attribute formatter
+     * (i.e. computed attributes which are added to GetFeatureInfo responses).
+     *
+     * * `name`: An identifier
+     * * `fmtFunc`: The formatter function with signature `function(name, value, layer, feature)`
+     *
+     * The `fmtFunc` should return a string (which may also be a HTML fragment).
+     */
+    addIdentifyAttributeFormatter = (name, fmtFunc) => {
+        window.qwc2.__attributeFormatters[name] = fmtFunc;
+    };
+    /**
+     * Remove custom identify attribute formatter
+     *
+     * * `name`: The identifier
+     */
+    removeIdentifyAttributeFormatter = (name) => {
+        delete window.qwc2.__attributeFormatters[name];
     };
     /**
      * Add custom identify exporter
