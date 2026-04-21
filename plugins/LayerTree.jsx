@@ -83,6 +83,8 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: PropTypes.bool,
         /** Whether to display the layer info button inside the layer settings menu rather than next to the layer title. */
         infoInSettings: PropTypes.bool,
+        /** Whether to open the LayerTree automatically when a theme is loaded. Can be set per-theme via the theme config. */
+        visibleOnStartup: PropTypes.bool,
         /** Default layer info window geometry with size, position and docking status. */
         layerInfoGeometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -196,6 +198,12 @@ class LayerTree extends React.Component {
         }
         if (this.props.layers !== prevProps.layers) {
             this.setState({activePreset: LayerUtils.getActiveVisibilityPreset(this.props.layers, this.props.theme.visibilityPresets)});
+        }
+        if (this.props.theme !== prevProps.theme && this.props.theme?.id) {
+            const initiallyVisible = ConfigUtils.getConfigProp("visibleOnStartup", this.props.theme) ?? this.props.visibleOnStartup;
+            if (initiallyVisible) {
+                this.props.setCurrentTask("LayerTree");
+            }
         }
     }
     renderSubLayers = (layer, group, path, enabled, inMutuallyExclusiveGroup, usedGroupIds) => {
