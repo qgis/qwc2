@@ -607,6 +607,10 @@ class Map3D extends React.Component {
             const objectTree = {...state.sceneContext.objectTree};
             const prevOptions = objectTree[objectId] || {};
             options = {...prevOptions, ...options};
+            // Don't allow hiding the visible child of a mutex group
+            if (objectTree[options.parent]?.mutuallyExclusive && !options.visibility && prevOptions.visibility) {
+                options.visibility = true;
+            }
             if (options.objectId) {
                 this.applySceneObjectState(objectId, options, prevOptions, objectTree);
             } else if (options.children && options.visibility !== prevOptions.visibility) {
