@@ -8,6 +8,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {connect} from 'react-redux';
 
 import DOMPurify from 'dompurify';
 import isEmpty from 'lodash.isempty';
@@ -22,7 +23,7 @@ import '../style/MapCopyright.css';
 /**
  * Displays layer attributions in the bottom right corner of the 3D map.
  */
-export default class MapCopyright3D extends React.Component {
+class MapCopyright3D extends React.Component {
     static contextType = MapContainerPortalContext;
 
     static propTypes = {
@@ -30,30 +31,41 @@ export default class MapCopyright3D extends React.Component {
         prefixCopyrightsWithLayerNames: PropTypes.bool,
         sceneContext: PropTypes.object,
         /** Whether to only display the attribution of the theme, omitting external layers. */
-        showThemeCopyrightOnly: PropTypes.bool
+        showThemeCopyrightOnly: PropTypes.bool,
+        theme: PropTypes.object
     };
     state = {
         currentCopyrights: {}
     };
+    componentDidMount() {
+        this.collectCopyrights();
+    }
     componentDidUpdate(prevProps) {
         if (
             this.props.sceneContext.baseLayers !== prevProps.sceneContext.baseLayers ||
             this.props.sceneContext.colorLayers !== prevProps.sceneContext.colorLayers
         ) {
-            const layers = this.props.sceneContext.baseLayers.concat(this.props.sceneContext.colorLayers);
-            const copyrights = layers.reduce((res, layer) => {
-                if (layer.attribution && layer.attribution.Title) {
-                    const key = layer.attribution.OnlineResource || layer.attribution.Title;
-                    res[key] = {
-                        title: layer.attribution.OnlineResource ? layer.attribution.Title : null,
-                        layers: [ ...(res[key]?.layers || []), layer]
-                    };
-                }
-                return res;
-            }, {});
-            this.setState({currentCopyrights: copyrights});
+            this.collectCopyrights();
         }
     }
+    collectCopyrights = () => {
+        const layers = [this.props.theme];
+        if (!this.props.showThemeCopyrightOnly) {
+            layers.push(...this.props.sceneContext.baseLayers);
+            layers.push(...Object.values(this.props.sceneContext.colorLayers));
+        }
+        const copyrights = layers.reduce((res, layer) => {
+            if (layer.attribution?.Title) {
+                const key = layer.attribution.OnlineResource || layer.attribution.Title;
+                res[key] = {
+                    title: layer.attribution.OnlineResource ? layer.attribution.Title : null,
+                    layers: [ ...(res[key]?.layers || []), layer]
+                };
+            }
+            return res;
+        }, {});
+        this.setState({currentCopyrights: copyrights});
+    };
     render() {
         // If attribution has both url and label, "key" is the url and "value.title" the label.
         // If it only has a label, "key" is the label and "value" is null.
@@ -81,3 +93,7 @@ export default class MapCopyright3D extends React.Component {
         }
     };
 }
+
+export default connect((state) => ({
+    theme: state.theme.current
+}), {})(MapCopyright3D);
