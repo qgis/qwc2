@@ -223,7 +223,9 @@ export class TileMeshHelper {
         return featureIds;
     }
     getFeatureProperties(featureId) {
-        if (featureId in this.propertiesCache) {
+        if (featureId === null) {
+            return {};
+        } else if (featureId in this.propertiesCache) {
             return this.propertiesCache[featureId];
         } else if (this.object.userData.structuralMetadata) {
             this.propertiesCache[featureId] = this.object.userData.structuralMetadata.getPropertyTableData([this.propertyTable], [featureId])[0];
