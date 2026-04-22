@@ -67,6 +67,10 @@ export default {
     },
     getFields: (options) => {
         return new Promise((resolve, reject) => {
+            if (options.fields !== undefined) {
+                // Don't requery fields
+                resolve(options.fields);
+            }
 
             const typeName = options.version < "2.0.0" ? "typeName" : "typeNames";
             const urlParts = url.parse(options.url, true);

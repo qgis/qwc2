@@ -336,7 +336,7 @@ class Map3D extends React.Component {
                 sublayers: preserveSublayerOptions(layer, prevOptions)
             };
             Object.assign(colorLayers[layer.id], LayerUtils.buildWMSLayerParams(colorLayers[layer.id]));
-            if (colorLayers[layer.id].fields === undefined && layerCreator.getFields) {
+            if (layerCreator.getFields) {
                 layerCreator.getFields(layer).then(fields => {
                     this.updateColorLayer(layer.id, {fields});
                 });
