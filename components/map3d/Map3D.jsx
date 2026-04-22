@@ -638,6 +638,7 @@ class Map3D extends React.Component {
                 objectTree[options.parent].children.forEach(child => {
                     if (child !== objectId) {
                         objectTree[child] = {...objectTree[child], visibility: false};
+                        this.objectMap[child].visible = false;
                     }
                 });
             }
