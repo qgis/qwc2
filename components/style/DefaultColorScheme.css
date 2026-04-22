@@ -58,4 +58,6 @@
     --app-submenu-text-color: white;
     --app-submenu-bg-color-hover: #a0a0a0;
     --app-submenu-text-color-hover: white;
+    /* Radius */
+    --border-radius: 1px;
 }
