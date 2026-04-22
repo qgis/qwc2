@@ -941,6 +941,14 @@ class Map3D extends React.Component {
                     };
                     // Need this separately to ensure object[groupId] is already assigned
                     objectTree[groupId].children = buildObjectTree(entry.items, groupId);
+                    if (entry.mutuallyExclusive) {
+                        // Ensure only one child is visible
+                        let haveVisibleChild = false;
+                        objectTree[groupId].children.forEach(childId => {
+                            objectTree[childId].visibility = objectTree[childId].visibility && !haveVisibleChild;
+                            haveVisibleChild |= objectTree[childId].visibility;
+                        });
+                    }
                     nodeIds.push(groupId);
                 } else if (entry.type === "tiles3d") {
                     objectTree[entry.name] = {
