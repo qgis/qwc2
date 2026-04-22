@@ -343,6 +343,9 @@ class QtDesignerForm extends React.Component {
             );
         } else if (widget.class === "QTabWidget") {
             const tabwidgets = (widget.widget || []).filter(child => {
+                if (!child.property.visibilityExpression) {
+                    return true;
+                }
                 const exprResult = parseExpression(child.property.visibilityExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}));
                 return exprResult !== false && exprResult !== 0;
             });
