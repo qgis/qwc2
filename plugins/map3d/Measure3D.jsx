@@ -299,7 +299,7 @@ export default class Measure3D extends React.Component {
             this.measurementObjects.push(shape);
             this.props.sceneContext.scene.remove(point);
 
-            this.setState({result: {pos: [pos.x, pos.y, pos.z], ground: ground, haveResult: true}});
+            this.setState({result: {pos: [pos.x, pos.y, pos.z], ground: ground}, haveResult: true});
 
             // Setup for next measurement
             this.restart();
