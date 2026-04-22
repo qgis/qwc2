@@ -973,7 +973,8 @@ class Map3D extends React.Component {
                         idAttr: entry.idAttr,
                         colorAttr: entry.colorAttr,
                         alphaAttr: entry.alphaAttr,
-                        labelAttr: entry.labelAttr
+                        labelAttr: entry.labelAttr,
+                        infoAttrBlacklist: entry.infoAttrBlacklist
                     };
                     this.applySceneObjectState(entry.name, objectTree[entry.name], {}, objectTree);
                     nodeIds.push(entry.name);

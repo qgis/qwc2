@@ -154,6 +154,10 @@ class Identify3D extends React.Component {
         const helper = new TileMeshHelper(pick.object);
         const pickFeatureId = helper.getPickFeatureId(pick);
         const featureAttrs = helper.getFeatureProperties(pickFeatureId);
+        const infoAttrBlacklist = pick.object.userData?.parentEntity?.userData?.infoAttrBlacklist ?? [];
+        const infoAttrs = Object.fromEntries(Object.entries(featureAttrs).filter(([key, value]) => {
+            return !infoAttrBlacklist.includes(key);
+        }));
 
         // Extract feature geometry
         const pickPosition = [];
@@ -180,18 +184,18 @@ class Identify3D extends React.Component {
             );
             axios.get(url).then(response => {
                 response.data.forEach(attr => {
-                    if (attr.name in featureAttrs && featureAttrs[attr.name] === attr.value) {
+                    if (attr.name in infoAttrs && infoAttrs[attr.name] === attr.value) {
                         // Use attribute alias
-                        delete featureAttrs[attr.name];
+                        delete infoAttrs[attr.name];
                     }
-                    featureAttrs[attr.alias] = attr.value;
+                    infoAttrs[attr.alias] = attr.value;
                 });
-                this.setState({pickAttrs: featureAttrs});
+                this.setState({pickAttrs: infoAttrs});
             }).catch(() => {
-                this.setState({pickAttrs: featureAttrs});
+                this.setState({pickAttrs: infoAttrs});
             });
         } else {
-            this.setState({pickAttrs: featureAttrs});
+            this.setState({pickAttrs: infoAttrs});
         }
     };
     identifyObjectPick = (pick) => {
