@@ -83,8 +83,6 @@ class LayerTree extends React.Component {
         groupTogglesSublayers: PropTypes.bool,
         /** Whether to display the layer info button inside the layer settings menu rather than next to the layer title. */
         infoInSettings: PropTypes.bool,
-        /** Whether to open the LayerTree automatically when a theme is loaded. Can be set per-theme via the theme config. */
-        visibleOnStartup: PropTypes.bool,
         /** Default layer info window geometry with size, position and docking status. */
         layerInfoGeometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -134,6 +132,8 @@ class LayerTree extends React.Component {
         theme: PropTypes.object,
         toggleMapTips: PropTypes.func,
         transparencyIcon: PropTypes.bool,
+        /** Whether to open the LayerTree automatically when a theme is loaded. Can be set per-theme via the theme config. */
+        visibleOnStartup: PropTypes.bool,
         /** The initial width of the layertree, as a CSS width string. */
         width: PropTypes.string,
         zoomToExtent: PropTypes.func
