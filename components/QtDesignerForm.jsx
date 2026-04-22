@@ -276,6 +276,10 @@ class QtDesignerForm extends React.Component {
             fontSize: Math.round((fontProps.pointsize || 9) / 9 * 100) + "%",
             textAlign: 'left'
         };
+        const frameStyle = {};
+        if (prop.flat) {
+            frameStyle.border = '0';
+        }
         if (prop.alignment) {
             if (prop.alignment.includes("Qt::AlignRight")) {
                 fontStyle.textAlign = 'right';
@@ -315,7 +319,7 @@ class QtDesignerForm extends React.Component {
             }
             return (
                 <div className="qt-designer-form-container">
-                    <div className="qt-designer-form-frame">
+                    <div className="qt-designer-form-frame" style={frameStyle}>
                         {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, editConfig, updateField, nametransform)}
                     </div>
                 </div>
@@ -332,7 +336,7 @@ class QtDesignerForm extends React.Component {
                     <div className="qt-designer-form-frame-title" style={fontStyle}>
                         {this.translateFormString(prop.title, editConfig.layerName)}
                     </div>
-                    <div className="qt-designer-form-frame">
+                    <div className="qt-designer-form-frame" style={frameStyle}>
                         {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, editConfig, updateField, nametransform)}
                     </div>
                 </div>
@@ -354,7 +358,7 @@ class QtDesignerForm extends React.Component {
                 <div className="qt-designer-form-container">
                     <ButtonBar active={activetab} buttons={tabs} className="qt-designer-form-tabbar"
                         onClick={(key) => this.setState((state) => ({activetabs: {...state.activetabs, [widget.name]: key}}))} />
-                    <div className="qt-designer-form-frame">
+                    <div className="qt-designer-form-frame qt-designer-form-tab" style={frameStyle}>
                         {tabwidgets.filter(child => child.layout).map(child => (
                             this.renderLayout(child.layout, feature, editConfig, updateField, nametransform, child.name === activetab)
                         ))}
