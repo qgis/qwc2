@@ -663,7 +663,7 @@ class Print extends React.Component {
         formData[mapName + ":FILTER"] = printParams.FILTER;
         formData[mapName + ":FILTER_GEOM"] = printParams.FILTER_GEOM;
 
-        if (this.state.layout.map.followPresetName in this.props.theme.visibilityPresets) {
+        if (this.state.layout.map.followPresetName in (this.props.theme.visibilityPresets ?? {})) {
             const preset = this.props.theme.visibilityPresets[this.state.layout.map.followPresetName];
             const layers = [];
             const styles = [];
