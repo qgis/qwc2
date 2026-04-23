@@ -109,11 +109,11 @@ class LinkFeatureForm extends React.Component {
                             ))}
                         </div>
                     )}
-                    <div className="link-feature-form-close">
-                        <button className="button" disabled={editContext.changed} onClick={this.finish}>
-                            {LocaleUtils.tr("common.cancel")}
+                    {!editContext.changed && (<div className="link-feature-form-close">
+                        <button className="button" onClick={this.close}>
+                            {LocaleUtils.tr("common.close")}
                         </button>
-                    </div>
+                    </div>)}
                 </div>
             );
         } else if (editContext.feature) {
@@ -132,11 +132,11 @@ class LinkFeatureForm extends React.Component {
                             readOnly={this.props.readOnly} translations={this.props.translations}
                         />
                     )}
-                    <div className="link-feature-form-close">
-                        <button className="button" disabled={editContext.changed} onClick={this.finish}>
-                            {drawing ? LocaleUtils.tr("common.cancel") : LocaleUtils.tr("common.close")}
+                    {!editContext.changed && (<div className="link-feature-form-close">
+                        <button className="button" onClick={this.close}>
+                            {editContext.action === 'Draw' ? LocaleUtils.tr("common.cancel") : LocaleUtils.tr("common.close")}
                         </button>
-                    </div>
+                    </div>)}
                 </div>
             );
         } else {
@@ -161,7 +161,7 @@ class LinkFeatureForm extends React.Component {
             }
         });
     };
-    finish = () => {
+    close = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];
         this.props.finished(editContext.feature);
     };
