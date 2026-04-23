@@ -163,7 +163,7 @@ class LinkFeatureForm extends React.Component {
     };
     close = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];
-        this.props.finished(editContext.feature);
+        this.props.finished(editContext.action === 'Draw' ? null : editContext.feature);
     };
     hoverFeature = (feature) => {
         const layer = {
