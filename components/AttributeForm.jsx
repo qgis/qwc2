@@ -732,7 +732,8 @@ class AttributeForm extends React.Component {
                 displayField: displayField,
                 featureId: featureId,
                 updateField: updateField,
-                finishCallback: this.finishChildEdit
+                finishCallback: this.finishChildEdit,
+                hideDelete: true
             };
             this.setState({childEdit: childEdit});
         }
