@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import ConfigUtils from '../utils/ConfigUtils';
-import {parseExpression, FeatureCache, KeyValCache} from '../utils/EditingUtils';
+import {parseExpression} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import EditComboField from './EditComboField';
@@ -118,10 +118,6 @@ class QtDesignerForm extends React.Component {
             relationWidget.scrollTo(0, relationWidget.scrollHeight);
             this.setState({relationAddPressed: null});
         }
-    }
-    componentWillUnmount() {
-        KeyValCache.clear();
-        FeatureCache.clear();
     }
     render() {
         if (this.state.loading) {

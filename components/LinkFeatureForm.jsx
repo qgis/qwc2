@@ -128,7 +128,7 @@ class LinkFeatureForm extends React.Component {
                     ) : (
                         <AttributeForm
                             editContext={editContext} hideDelete={this.props.hideDelete}
-                            iface={this.props.iface} onDiscard={this.onDiscard}
+                            iface={this.props.iface} nested onDiscard={this.onDiscard}
                             readOnly={this.props.readOnly} translations={this.props.translations}
                         />
                     )}

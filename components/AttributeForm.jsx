@@ -19,7 +19,7 @@ import {refreshLayer} from '../actions/layers';
 import {setCurrentTaskBlocked} from '../actions/task';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import {getFeatureTemplate, parseExpressionsAsync} from '../utils/EditingUtils';
+import {FeatureCache, getFeatureTemplate, KeyValCache, parseExpressionsAsync} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import AutoEditForm from './AutoEditForm';
 import LinkFeatureForm from './LinkFeatureForm';
@@ -39,6 +39,7 @@ class AttributeForm extends React.Component {
         hideDelete: PropTypes.bool,
         iface: PropTypes.object,
         map: PropTypes.object,
+        nested: PropTypes.bool,
         onCommit: PropTypes.func,
         onDelete: PropTypes.func,
         onDiscard: PropTypes.func,
@@ -85,6 +86,12 @@ class AttributeForm extends React.Component {
             });
             // Re-validate feature field constraints
             this.validateFieldConstraints(this.props.editContext.feature);
+        }
+    }
+    componentWillUnmount() {
+        if (!this.props.nested) {
+            KeyValCache.clear();
+            FeatureCache.clear();
         }
     }
     render = () => {
