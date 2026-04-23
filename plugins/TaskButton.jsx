@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
+import {setActiveServiceInfo} from '../actions/serviceinfo';
 import {setCurrentTask} from '../actions/task';
 import MapButton from '../components/MapButton';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -19,6 +20,12 @@ import ThemeUtils from '../utils/ThemeUtils';
 
 /**
  * Generic map button to launch a task.
+ *
+ * The `task` generally corresponds to the `key` of a menuItem or toolbaritem.
+ *
+ * The following special values for `task` are suppported:
+ *
+ * * `ServiceInfo`: Open the service info of the current theme.
  */
 class TaskButton extends React.Component {
     static propTypes = {
@@ -29,6 +36,7 @@ class TaskButton extends React.Component {
         mode: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
+        setActiveServiceInfo: PropTypes.func,
         setCurrentTask: PropTypes.func,
         /** The task name. */
         task: PropTypes.string,
@@ -53,8 +61,13 @@ class TaskButton extends React.Component {
         );
     }
     buttonClicked = () => {
-        const mapClickAction = ConfigUtils.getPluginConfig(this.props.task).mapClickAction;
-        this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, mapClickAction);
+        // Special cases
+        if (this.props.task === "ServiceInfo") {
+            this.props.setActiveServiceInfo(this.props.theme);
+        } else {
+            const mapClickAction = ConfigUtils.getPluginConfig(this.props.task).mapClickAction;
+            this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, mapClickAction);
+        }
     };
 }
 
@@ -64,5 +77,6 @@ const selector = (state) => ({
 });
 
 export default connect(selector, {
+    setActiveServiceInfo: setActiveServiceInfo,
     setCurrentTask: setCurrentTask
 })(TaskButton);
