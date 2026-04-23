@@ -740,8 +740,8 @@ class AttributeForm extends React.Component {
     };
     finishChildEdit = (feature) => {
         this.props.clearEditContext(this.state.childEdit.editContextId, this.props.editContext.id);
-        if (feature && feature.id !== this.state.childEdit.featureId) {
-            this.state.childEdit.updateField(feature.id);
+        if (feature) {
+            this.state.childEdit.updateField(feature);
         }
         this.setState({childEdit: null});
     };
