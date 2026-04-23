@@ -18,7 +18,6 @@ import DataServiceExprUtils from './DataServiceExprUtils';
 import IdentifyUtils from './IdentifyUtils';
 import LayerUtils from './LayerUtils';
 import LocaleUtils from './LocaleUtils';
-import VectorLayerUtils from './VectorLayerUtils';
 
 
 export const SearchResultType = {
@@ -430,9 +429,9 @@ export class FulltextSearch {
         const quot = typeof(resultItem.id) === 'string' ? '"' : '';
         const filter = `[["${resultItem.id_field_name}","=", ${quot}${resultItem.id}${quot}]]`;
         axios.get(dataServiceUrl.replace(/\/?$/, "/") + resultItem.dataproduct_id + "/?filter=" + filter).then(response => {
+            const feature = response.data;
             const bbox = response.data.bbox;
-            const center = bbox ? [0.5 * (bbox[0] + bbox[2]), 0.5 * (bbox[1] + bbox[3])] : null;
-            callback({bbox, center, feature: response.data, crs: response.data.crs.properties.name});
+            callback({bbox, center: null, feature: feature, crs: feature.crs.properties.name});
         }).catch(() => {
             callback(null);
         });
@@ -534,41 +533,6 @@ export function unregisterSearchProvider(key) {
     addedSearchProviders.delete(key);
 }
 
-// Uniformize the response of getResultGeometry
-function getResultGeometry(provider, item, callback) {
-    provider.getResultGeometry(item, (response) => {
-        const features = [];
-        if (response?.geometry) {
-            const highlightFeature = response.geometry.coordinates ? {
-                type: "Feature", geometry: response.geometry
-            } : VectorLayerUtils.wktToGeoJSON(response.geometry, response.crs, response.crs);
-            if (highlightFeature) {
-                features.push(highlightFeature);
-            }
-        } else if (response?.feature) {
-            if (response.feature.features) {
-                features.push(...response.feature.features);
-            } else {
-                features.push(response.feature);
-            }
-        }
-        if (features.length === 0) {
-            callback(null);
-        } else {
-            callback({
-                feature: {
-                    type: "FeatureCollection",
-                    features: features
-                },
-                crs: response.crs,
-                hidemarker: response.hidemarker,
-                ...(response.bbox && { bbox: response.bbox }),
-                ...(response.center && { center: response.center })
-            });
-        }
-    });
-}
-
 export function collectSearchProviders(theme, layers, mapScale = null) {
     // Collect active layers/search terms
     let searchTerms = [];
@@ -612,7 +576,7 @@ export function collectSearchProviders(theme, layers, mapScale = null) {
                 ...provider,
                 label: entry.label ?? provider.label,
                 labelmsgid: entry.labelmsgid ?? provider.labelmsgid,
-                getResultGeometry: provider.getResultGeometry ? (item, callback) => getResultGeometry(provider, item, callback) : null,
+                getResultGeometry: provider.getResultGeometry,
                 cfgParams: entry.params || {},
                 params: {
                     searchTerms: searchTerms,
