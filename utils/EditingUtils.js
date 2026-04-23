@@ -66,9 +66,9 @@ export class FeatureCache {
 export class KeyValCache {
     static store = {};
     static requestPromises = {};
-    static get = (editIface, keyvalrel, filterExpr) => {
+    static get = (editIface, keyvalrel, filterExpr, forceReload = false) => {
         const key = keyvalrel +  uuidv5(JSON.stringify(filterExpr ?? null), UUID_NS);
-        if (key in this.store) {
+        if (key in this.store && !forceReload) {
             return new Promise(resolve => resolve(this.store[key]));
         } else if (key in this.requestPromises) {
             return this.requestPromises[key];

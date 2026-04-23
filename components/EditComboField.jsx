@@ -12,6 +12,8 @@ import PropTypes from 'prop-types';
 
 import {KeyValCache} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import Icon from './Icon';
+import ComboBox from './widgets/ComboBox';
 
 import './style/EditComboField.css';
 
@@ -22,12 +24,16 @@ export default class EditComboField extends React.Component {
         fieldId: PropTypes.string,
         filterExpr: PropTypes.array,
         keyvalrel: PropTypes.string,
+        mapPrefix: PropTypes.string,
         multiSelect: PropTypes.bool,
         name: PropTypes.string,
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
         required: PropTypes.bool,
+        showAdd: PropTypes.bool,
+        showEdit: PropTypes.bool,
         style: PropTypes.object,
+        switchEditContext: PropTypes.func,
         updateField: PropTypes.func,
         value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         values: PropTypes.array
@@ -40,14 +46,14 @@ export default class EditComboField extends React.Component {
         if (this.props.values) {
             this.setState({values: this.props.values, showPlaceholder: !this.hasEmptyValue(this.props.values)});
         } else if (this.props.keyvalrel) {
-            KeyValCache.get(this.props.editIface, this.props.keyvalrel, this.props.filterExpr ?? null).then(values => {
+            KeyValCache.get(this.props.editIface, this.props.mapPrefix + "." + this.props.keyvalrel, this.props.filterExpr ?? null).then(values => {
                 this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
             });
         }
     }
     componentDidUpdate(prevProps) {
         if (this.props.keyvalrel && this.props.filterExpr !== prevProps.filterExpr) {
-            KeyValCache.get(this.props.editIface, this.props.keyvalrel, this.props.filterExpr ?? null).then(values => {
+            KeyValCache.get(this.props.editIface, this.props.mapPrefix + "." + this.props.keyvalrel, this.props.filterExpr ?? null).then(values => {
                 this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
             });
         }
@@ -106,22 +112,26 @@ export default class EditComboField extends React.Component {
     };
     renderComboSelect = () => {
         return (
-            <select disabled={this.props.readOnly} name={this.props.name}
-                onChange={ev => this.props.updateField(this.props.fieldId, ev.target.selectedIndex === 0 && this.state.showPlaceholder ? null : ev.target.value)}
-                required={this.props.required} style={this.props.style} value={String(this.props.value)}
-            >
-                {this.state.showPlaceholder ? (
-                    <option disabled={this.props.required} value="">
-                        {this.props.placeholder ?? LocaleUtils.tr("common.select")}
-                    </option>
+            <div className="edit-single-select controlgroup">
+                <ComboBox className="controlgroup-expanditem" name={this.props.name}
+                    onChange={value => this.props.updateField(this.props.fieldId, value)}
+                    placeholder={this.state.showPlaceholder ? (this.props.placeholder ?? LocaleUtils.tr("common.select")) : undefined}
+                    required={this.props.required} style={this.props.style} value={String(this.props.value)}
+                >
+                    {this.state.values.map((item, index) => {
+                        const {value, label} = this.itemValueLabel(item);
+                        return (
+                            <div key={this.props.fieldId + index} value={String(value)}>{label}</div>
+                        );
+                    })}
+                </ComboBox>
+                {this.props.showEdit ? (
+                    <button className="button" onClick={this.onEdit} type="button"><Icon icon="draw" /></button>
                 ) : null}
-                {this.state.values.map((item, index) => {
-                    const {value, label} = this.itemValueLabel(item);
-                    return (
-                        <option key={this.props.fieldId + index} value={String(value)}>{label}</option>
-                    );
-                })}
-            </select>
+                {this.props.showAdd ? (
+                    <button className="button" onClick={this.onAdd} type="button"><Icon icon="plus" /></button>
+                ) : null}
+            </div>
         );
     };
     itemValueLabel = (item) => {
@@ -134,5 +144,20 @@ export default class EditComboField extends React.Component {
             label = item.label;
         }
         return {value, label};
+    };
+    onAdd = () => {
+        const parts = this.props.keyvalrel.split(":");
+        this.props.switchEditContext("Create", parts[0], null, this.childContextDone, parts[2]);
+    };
+    onEdit = () => {
+        const parts = this.props.keyvalrel.split(":");
+        this.props.switchEditContext("Edit", parts[0], this.props.value, this.childContextDone, parts[2]);
+    };
+    childContextDone = (feature) => {
+        const parts = this.props.keyvalrel.split(":");
+        KeyValCache.get(this.props.editIface, this.props.mapPrefix + "." + this.props.keyvalrel, this.props.filterExpr ?? null, true).then(values => {
+            this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
+            this.props.updateField(this.props.fieldId, feature.properties[parts[1]]);
+        });
     };
 }

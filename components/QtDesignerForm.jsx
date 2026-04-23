@@ -416,7 +416,7 @@ class QtDesignerForm extends React.Component {
                 const count = parts.length;
                 const fieldId = parts.slice(1, count - 3).join("__");
                 value = (feature.properties || [])[fieldId] ?? "";
-                const keyvalrel = this.props.mapPrefix + "." + parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
+                const keyvalrel = parts[count - 3] + ":" + parts[count - 2] + ":" + parts[count - 1];
                 let filterExpr = null;
                 if (field?.filterExpression) {
                     filterExpr = parseExpression(field.filterExpression, feature, editConfig, this.props.iface, this.props.mapPrefix, this.props.mapCrs, () => this.setState({reevaluate: +new Date}), true);
@@ -424,11 +424,14 @@ class QtDesignerForm extends React.Component {
                 return (
                     <EditComboField
                         editIface={this.props.iface} fieldId={fieldId} filterExpr={filterExpr} key={fieldId}
-                        keyvalrel={keyvalrel} multiSelect={widget.property.allowMulti === true || widget.allowMulti === "true"}
+                        keyvalrel={keyvalrel} mapPrefix={this.props.mapPrefix}
+                        multiSelect={widget.property.allowMulti === true || widget.allowMulti === "true"}
                         name={nametransform(fieldId)} placeholder={inputConstraints.placeholder}
                         readOnly={inputConstraints.readOnly || fieldConstraints.readOnly}
                         required={inputConstraints.required || fieldConstraints.required}
-                        style={fontStyle} updateField={updateField} value={value} />
+                        showAdd={fieldConstraints.showAdd} showEdit={fieldConstraints.showEdit}
+                        style={fontStyle} switchEditContext={this.props.switchEditContext}
+                        updateField={updateField} value={value} />
                 );
             } else {
                 const values = MiscUtils.ensureArray(widget.item || []).map((item) => ({
