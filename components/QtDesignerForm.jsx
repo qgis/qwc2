@@ -500,7 +500,6 @@ class QtDesignerForm extends React.Component {
                     value = feature.properties?.[attrname];
                     if (layer === reltable) {
                         const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
-                        const reldataset = this.props.mapPrefix + "." + reltable;
                         const displayField = attrname.split("__")[1];
                         if (feature.__status__ !== "empty") {
                             const featurebuttons = [
@@ -508,7 +507,7 @@ class QtDesignerForm extends React.Component {
                             ];
                             return (
                                 <div className="qt-designer-form-featurelink-buttons">
-                                    <ButtonBar buttons={featurebuttons} forceLabel onClick={() => this.props.editRelationRecord('Edit', reltable, reldataset, index, displayField)} />
+                                    <ButtonBar buttons={featurebuttons} forceLabel onClick={() => this.props.editRelationRecord('Edit', reltable, index, displayField)} />
                                 </div>
                             );
                         } else {
@@ -517,7 +516,7 @@ class QtDesignerForm extends React.Component {
                                 featurebuttons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("common.pick")});
                             }
                             featurebuttons.push({key: 'Create', icon: 'editdraw', label: LocaleUtils.tr("editing.create")});
-                            return (<ButtonBar buttons={featurebuttons} forceLabel onClick={(action) => this.props.editRelationRecord(action, reltable, reldataset, index, displayField)} />);
+                            return (<ButtonBar buttons={featurebuttons} forceLabel onClick={(action) => this.props.editRelationRecord(action, reltable, index, displayField)} />);
                         }
                     } else {
                         if (value !== null) {

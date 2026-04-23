@@ -301,14 +301,15 @@ class AttributeForm extends React.Component {
         const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     };
-    editRelationRecord = (action, layer, table, idx, displayField) => {
-        const editConfig = this.props.editConfigs[this.props.editContext.mapPrefix][table.split('.').slice(-1)];
-        const feature = this.props.editContext.feature.relationValues[table].features[idx];
+    editRelationRecord = (action, layer, idx, displayField) => {
+        const dataset = this.props.editContext.mapPrefix + "." + layer;
+        const editConfig = this.props.editConfigs[this.props.editContext.mapPrefix][layer];
+        const feature = this.props.editContext.feature.relationValues[dataset].features[idx];
         const childEdit = {
             action: action,
             editConfig: editConfig,
             editContextId: ':' + layer,
-            dataset: table,
+            dataset: dataset,
             idx: idx,
             feature: feature,
             finishCallback: this.finishEditRelationRecord,
