@@ -189,6 +189,9 @@ class AttributeForm extends React.Component {
         this.setState({busy: busy});
     };
     updateField = (key, value) => {
+        if (value === this.props.editContext.feature?.properties?.[key]) {
+            return;
+        }
         const newProperties = {...this.props.editContext.feature.properties, [key]: value};
         const newFeature = {...this.props.editContext.feature, properties: newProperties};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
