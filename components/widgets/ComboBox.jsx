@@ -25,9 +25,12 @@ export default class ComboBox extends React.Component {
         className: PropTypes.string,
         filterable: PropTypes.bool,
         menuClassName: PropTypes.string,
+        name: PropTypes.string,
         onChange: PropTypes.func,
         placeholder: PropTypes.string,
         readOnly: PropTypes.bool,
+        required: PropTypes.bool,
+        style: PropTypes.object,
         value: PropTypes.string
     };
     state = {
@@ -56,7 +59,8 @@ export default class ComboBox extends React.Component {
         const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
         const onClick = this.props.readOnly || isEmpty(children) ? null : () => this.setState(state => ({popup: !state.popup}));
         return (
-            <div className={"combobox " + (this.props.className || "")}>
+            <div className={"combobox " + (this.props.className || "")} style={this.props.style}>
+                {this.props.name && (<input name={this.props.name} required={this.props.required} type="hidden" value={this.props.value} />)}
                 <div className="combobox-button" onClick={onClick} onKeyDown={MiscUtils.checkKeyActivate} ref={el => { this.el = el; }} tabIndex={0}>
                     <span className="combobox-button-content">
                         {activeOption}
