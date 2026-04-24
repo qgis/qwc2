@@ -52,7 +52,10 @@ export default class EditComboField extends React.Component {
         }
     }
     componentDidUpdate(prevProps) {
-        if (this.props.keyvalrel && this.props.filterExpr !== prevProps.filterExpr) {
+        if (this.props.values && this.props.values !== prevProps.values) {
+            // This does not handle the case a selected value has disappeared from values, caller should handle that
+            this.setState({values: this.props.values, showPlaceholder: !this.hasEmptyValue(this.props.values)});
+        } else if (this.props.keyvalrel && this.props.filterExpr !== prevProps.filterExpr) {
             KeyValCache.get(this.props.editIface, this.props.mapPrefix + "." + this.props.keyvalrel, this.props.filterExpr ?? null).then(values => {
                 this.setState({values, showPlaceholder: !this.hasEmptyValue(values)});
             });
