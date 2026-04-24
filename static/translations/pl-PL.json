@@ -41,6 +41,7 @@
         "FeatureSearch": "",
         "GeometryDigitizer": "",
         "IdentifyPoint": "",
+        "IdentifyRadius": "",
         "IdentifyRegion": "Identifikuj Obszar",
         "LayerCatalog": "",
         "Login": "Zaloguj",
