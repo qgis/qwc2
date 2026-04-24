@@ -43,6 +43,7 @@
         "FeatureSearch": "",
         "GeometryDigitizer": "",
         "IdentifyPoint": "Interogare punct",
+        "IdentifyRadius": "",
         "IdentifyRegion": "Interogare regiune",
         "LayerCatalog": "Catalog  de straturi",
         "Login": "Conectează-te",

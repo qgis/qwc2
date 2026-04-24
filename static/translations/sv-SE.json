@@ -43,6 +43,7 @@
         "FeatureSearch": "",
         "GeometryDigitizer": "",
         "IdentifyPoint": "",
+        "IdentifyRadius": "",
         "IdentifyRegion": "Identifiera med område",
         "LayerCatalog": "",
         "Login": "Logga in",

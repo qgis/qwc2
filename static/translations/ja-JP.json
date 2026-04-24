@@ -43,6 +43,7 @@
         "FeatureSearch": "地物検索",
         "GeometryDigitizer": "ジオメトリ・デジタイザ",
         "IdentifyPoint": "点で地物を確認",
+        "IdentifyRadius": "",
         "IdentifyRegion": "領域内の地物を確認",
         "LayerCatalog": "レイヤ・カタログ",
         "Login": "ログイン",

@@ -43,6 +43,7 @@
         "FeatureSearch": "Търсене на функции",
         "GeometryDigitizer": "Дигитайзер на геометрия",
         "IdentifyPoint": "Идентифициране на точка",
+        "IdentifyRadius": "",
         "IdentifyRegion": "Определяне на региона",
         "LayerCatalog": "Каталог на слоевете",
         "Login": "Вход",
