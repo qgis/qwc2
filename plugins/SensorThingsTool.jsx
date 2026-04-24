@@ -1029,20 +1029,28 @@ class SensorThingsTool extends React.Component {
             // show popup with list of Locations at picking pos, cf. MapInfoTooltip
             const pixel = MapUtils.getHook(MapUtils.GET_PIXEL_FROM_COORDINATES_HOOK)(this.state.pickGeom.coordinates);
             const style = {
-                left: pixel[0] + 16 + "px",
+                left: pixel[0] + 32 + "px",
                 top: pixel[1] + "px"
             };
             return (
                 <div className="sensor-things-location-select" key="SensorThingsLocationSelectPopup" style={style}>
-                    <b>{LocaleUtils.tr("sensorthingstool.selectLocation")}:</b><br/>
-                    {this.state.locationsAtPoint.map((location, idx) => (
-                        <div key={"select-location-" + idx}
-                            onClickCapture={() => this.addLocation(location)}
-                            onMouseOut={() => this.setState({highlightedLocation: null})}
-                            onMouseOver={() => this.setState({highlightedLocation: location})} >
-                            {location.name}: {location.description}
-                        </div>
-                    ))}
+                    <div className="sensor-things-location-select-header">
+                        <b>{LocaleUtils.tr("sensorthingstool.selectLocation")}</b>
+                        <div className="sensor-things-toolbar-spacer" />
+                        <button className="button" onClick={() => this.setState({locationsAtPoint: []})} title={LocaleUtils.tr("common.close")}>
+                            <Icon icon="remove" />
+                        </button>
+                    </div>
+                    <div className="sensor-things-location-select-list">
+                        {this.state.locationsAtPoint.map((location, idx) => (
+                            <div key={"select-location-" + idx}
+                                onClickCapture={() => this.addLocation(location)}
+                                onMouseOut={() => this.setState({highlightedLocation: null})}
+                                onMouseOver={() => this.setState({highlightedLocation: location})} >
+                                {location.name}: {location.description}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             );
         } else {
