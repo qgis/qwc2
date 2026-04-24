@@ -43,6 +43,7 @@
         "FeatureSearch": "",
         "GeometryDigitizer": "",
         "IdentifyPoint": "",
+        "IdentifyRadius": "",
         "IdentifyRegion": "Определить регион",
         "LayerCatalog": "",
         "Login": "",

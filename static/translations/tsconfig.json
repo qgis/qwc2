@@ -34,6 +34,7 @@
     "appmenu.items.GeometryDigitizer",
     "appmenu.items.Help",
     "appmenu.items.IdentifyPoint",
+    "appmenu.items.IdentifyRadius",
     "appmenu.items.IdentifyRegion",
     "appmenu.items.LayerCatalog",
     "appmenu.items.LayerTree",

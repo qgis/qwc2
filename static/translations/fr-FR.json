@@ -43,6 +43,7 @@
         "FeatureSearch": "Recherche objet",
         "GeometryDigitizer": "Digitalisation des géométries",
         "IdentifyPoint": "Interroger point",
+        "IdentifyRadius": "Interroger dans un rayon",
         "IdentifyRegion": "Interroger la région",
         "LayerCatalog": "Catalogue des couches",
         "Login": "Connexion",

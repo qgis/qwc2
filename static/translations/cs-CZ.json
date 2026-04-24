@@ -43,6 +43,7 @@
         "FeatureSearch": "",
         "GeometryDigitizer": "",
         "IdentifyPoint": "Informace o bodu",
+        "IdentifyRadius": "",
         "IdentifyRegion": "Informace o oblasti",
         "LayerCatalog": "Katalog vrstev",
         "Login": "Přihlášení",

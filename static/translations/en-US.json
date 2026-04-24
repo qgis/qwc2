@@ -43,6 +43,7 @@
         "FeatureSearch": "Feature Search",
         "GeometryDigitizer": "Geometry digitizer",
         "IdentifyPoint": "Identify Point",
+        "IdentifyRadius": "Identify in Radius",
         "IdentifyRegion": "Identify Region",
         "LayerCatalog": "Layer catalog",
         "Login": "Login",
