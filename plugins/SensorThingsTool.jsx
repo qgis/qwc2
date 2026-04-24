@@ -273,9 +273,9 @@ class SensorThingsTool extends React.Component {
         showLocationInfoWindow: false,
         // currently selected Datastreams filter options
         currentDatastreamsFilter: {
-            thingId: -1,
-            sensorId: -1,
-            observedPropertyId: -1
+            thingId: '-1',
+            sensorId: '-1',
+            observedPropertyId: '-1'
         },
         // show Datastreams filter window for currently selected Location if true
         showDatastreamsFilterWindow: false,
@@ -839,7 +839,7 @@ class SensorThingsTool extends React.Component {
             locationSelect = (
                 <div>
                     {LocaleUtils.tr("sensorthingstool.locationLabel")}:&nbsp;
-                    <select onChange={(ev) => this.setState({currentLocationId: parseInt(ev.target.value, 10)})} value={this.state.currentLocationId}>
+                    <select onChange={(ev) => this.setState({currentLocationId: ev.target.value})} value={this.state.currentLocationId}>
                         {this.state.selectedLocationsOptions.map((location, idx) => (
                             <option key={"sensor-things-select-location-" + idx} value={location.id}>{location.name}: {location.description}</option>
                         ))}
@@ -858,12 +858,12 @@ class SensorThingsTool extends React.Component {
             );
 
             if (this.state.currentSensorLocation !== null) {
-                const datastreamsFilterActive = this.state.currentDatastreamsFilter.thingId !== -1 || this.state.currentDatastreamsFilter.sensorId !== -1 || this.state.currentDatastreamsFilter.observedPropertyId !== -1;
+                const datastreamsFilterActive = this.state.currentDatastreamsFilter.thingId !== '-1' || this.state.currentDatastreamsFilter.sensorId !== '-1' || this.state.currentDatastreamsFilter.observedPropertyId !== '-1';
                 if (this.state.currentSensorLocation.filteredDatastreams.length > 0) {
                     datastreamSelect = (
                         <div className="sensor-things-location-datastreams">
                             {LocaleUtils.tr("sensorthingstool.datastreamLabel")}:&nbsp;
-                            <select onChange={(ev) => this.setState({currentDatastreamId: parseInt(ev.target.value, 10)})} value={this.state.currentDatastreamId}>
+                            <select onChange={(ev) => this.setState({currentDatastreamId: ev.target.value})} value={this.state.currentDatastreamId}>
                                 {this.state.currentSensorLocation.filteredDatastreams.map((datastreamId) => {
                                     const datastream = this.state.datastreams[datastreamId];
                                     return (
@@ -1139,9 +1139,9 @@ class SensorThingsTool extends React.Component {
                 currentLocationId: nextSelectedLocationId,
                 currentSensorLocation: null,
                 currentDatastreamsFilter: {
-                    thingId: -1,
-                    sensorId: -1,
-                    observedPropertyId: -1
+                    thingId: '-1',
+                    sensorId: '-1',
+                    observedPropertyId: '-1'
                 },
                 currentDatastreamId: null,
                 datastreams: nextDatastreams,
@@ -1159,7 +1159,7 @@ class SensorThingsTool extends React.Component {
         this.setState((state) => ({
             currentDatastreamsFilter: {
                 ...state.currentDatastreamsFilter,
-                [field]: parseInt(value, 10)
+                [field]: value
             }
         }));
     };
@@ -2268,9 +2268,9 @@ class SensorThingsTool extends React.Component {
                     filteredDatastreams: datastreamIds
                 },
                 currentDatastreamsFilter: {
-                    thingId: -1,
-                    sensorId: -1,
-                    observedPropertyId: -1
+                    thingId: '-1',
+                    sensorId: '-1',
+                    observedPropertyId: '-1'
                 },
                 currentDatastreamId: datastreamIds[0],
                 datastreams: {
@@ -2287,22 +2287,24 @@ class SensorThingsTool extends React.Component {
         if (this.state.currentSensorLocation !== null) {
             let filteredDatastreams = this.state.currentSensorLocation.datastreams;
 
-            if (this.state.currentDatastreamsFilter.thingId !== -1) {
+            // NOTE: entity IDs may be integer or UUID strings, so compare them as string
+
+            if (this.state.currentDatastreamsFilter.thingId !== '-1') {
                 // filter by Thing
                 filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
-                    this.state.datastreams[datastreamId].thing.id === this.state.currentDatastreamsFilter.thingId
+                    this.state.datastreams[datastreamId].thing.id.toString() === this.state.currentDatastreamsFilter.thingId
                 ));
             }
-            if (this.state.currentDatastreamsFilter.sensorId !== -1) {
+            if (this.state.currentDatastreamsFilter.sensorId !== '-1') {
                 // filter by Sensor
                 filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
-                    this.state.datastreams[datastreamId].sensor.id === this.state.currentDatastreamsFilter.sensorId
+                    this.state.datastreams[datastreamId].sensor.id.toString() === this.state.currentDatastreamsFilter.sensorId
                 ));
             }
-            if (this.state.currentDatastreamsFilter.observedPropertyId !== -1) {
+            if (this.state.currentDatastreamsFilter.observedPropertyId !== '-1') {
                 // filter by ObservedProperty
                 filteredDatastreams = filteredDatastreams.filter((datastreamId) => (
-                    this.state.datastreams[datastreamId].observedProperty.id === this.state.currentDatastreamsFilter.observedPropertyId
+                    this.state.datastreams[datastreamId].observedProperty.id.toString() === this.state.currentDatastreamsFilter.observedPropertyId
                 ));
             }
 
