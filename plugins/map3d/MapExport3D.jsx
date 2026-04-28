@@ -288,7 +288,7 @@ class MapExport3D extends React.Component {
         let exportScale = this.state.exportScaleFactor / 100;
         if (this.state.selectedFormat === "application/pdf") {
             const mapWidthMM = this.state.layout.map.width;
-            const exportWidthPx = this.state.width;
+            const exportWidthPx = this.state.frame.width;
             exportScale = Math.min(5, this.state.exportDpi / (exportWidthPx * 25.4 / mapWidthMM));
         }
 
