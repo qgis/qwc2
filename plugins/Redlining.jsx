@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {LayerRole, addLayer} from '../actions/layers';
+import {LayerRole, addLayer, changeLayerProperty} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
 import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import Icon from '../components/Icon';
@@ -38,6 +38,7 @@ class Redlining extends React.Component {
         addLayer: PropTypes.func,
         /** Whether to allow labeling geometric figures. */
         allowGeometryLabels: PropTypes.bool,
+        changeLayerProperty: PropTypes.func,
         changeRedliningState: PropTypes.func,
         /** Default area unit. Options: `metric`, `imperial`, `sqm`, `ha`, `sqkm`, `sqft`, `acre`, `sqmi` */
         defaultAreaUnit: PropTypes.string,
@@ -126,11 +127,14 @@ class Redlining extends React.Component {
     onShow = (mode, data) => {
         this.props.changeRedliningState({action: mode ?? 'Pick', geomType: data?.geomType ?? null, ...this.redliningStateDefaults()});
         this.props.setSnappingConfig(this.props.snapping, this.props.snappingActive);
+        let layer = null;
         if (data && data.layerId) {
-            const layer = this.props.layers.find(l => l.id === data.layerId);
-            if (layer) {
-                this.changeRedliningLayer(layer);
-            }
+            layer = this.props.layers.find(l => l.id === data.layerId);
+        } else {
+            layer = this.props.layers.find(l => l.id === this.props.redlining.layer);
+        }
+        if (layer) {
+            this.changeRedliningLayer(layer);
         }
     };
     onHide = () => {
@@ -384,6 +388,8 @@ class Redlining extends React.Component {
     changeRedliningLayer = (layer) => {
         const action = ["Draw", "Pick", "Transform"].includes(this.props.redlining.action) ? this.props.redlining.action : "Pick";
         this.props.changeRedliningState({layer: layer.id, layerTitle: layer.title, action: action});
+        // Ensure layer is visible
+        this.props.changeLayerProperty(layer.id, "visibility", true);
     };
 }
 
@@ -395,6 +401,7 @@ export default (plugins) => {
         plugins: plugins
     }), {
         changeRedliningState: changeRedliningState,
+        changeLayerProperty: changeLayerProperty,
         addLayer: addLayer,
         resetRedliningState: resetRedliningState,
         setSnappingConfig: setSnappingConfig
