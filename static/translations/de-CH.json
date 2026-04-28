@@ -43,7 +43,7 @@
         "FeatureSearch": "Objektsuche",
         "GeometryDigitizer": "Geometriedigitalisierung",
         "IdentifyPoint": "Punkt abfragen",
-        "IdentifyRadius": "",
+        "IdentifyRadius": "Radius abfragen",
         "IdentifyRegion": "Region abfragen",
         "LayerCatalog": "Ebenenkatalog",
         "Login": "Anmelden",
