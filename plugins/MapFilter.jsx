@@ -430,12 +430,12 @@ class MapFilter extends React.Component {
     };
     renderPredefinedFilters = () => {
         const predefinedFilters = this.collectPredefinedFilters(this.props.layers);
-        return Object.values(predefinedFilters).map(config => (
+        return Object.values(predefinedFilters).filter(filter => filter.id in this.state.filters).map(config => (
             <div className="map-filter-entry" key={config.id}>
                 <div className="map-filter-entry-titlebar">
                     <span className="map-filter-entry-title">{config.title ?? LocaleUtils.tr(config.titlemsgid)}</span>
                     <ToggleSwitch
-                        active={this.state.filters[config.id]?.active}
+                        active={this.state.filters[config.id].active}
                         onChange={(active) => this.toggleFilter(config.id, active)} />
                 </div>
                 <div className="map-filter-entry-body">
