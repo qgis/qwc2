@@ -45,7 +45,9 @@ export default class AutoEditForm extends React.Component {
         }
         let input = null;
         let title = field.name + ":";
-        if (field.type === "boolean" || field.type === "bool") {
+        if (constraints.hidden) {
+            return null;
+        } else if (field.type === "boolean" || field.type === "bool") {
             if (this.props.touchFriendly) {
                 const boolvalue = value === "1" || value === "on" || value === "true" || value === true;
                 input = (
