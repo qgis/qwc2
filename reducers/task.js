@@ -14,7 +14,8 @@ const defaultState = {
     data: null,
     blocked: false,
     unsetOnMapClick: false,
-    identifyEnabled: true
+    identifyEnabled: true,
+    unblockedIdentifyEnabled: true
 };
 
 export default function task(state = defaultState, action) {
@@ -29,11 +30,15 @@ export default function task(state = defaultState, action) {
             mode: action.mode,
             data: action.data,
             unsetOnMapClick: action.unsetOnMapClick,
-            identifyEnabled: action.identifyEnabled
+            identifyEnabled: action.identifyEnabled,
+            unblockedIdentifyEnabled: action.identifyEnabled
         };
     }
     case SET_CURRENT_TASK_BLOCKED: {
-        return {...state, blocked: action.blocked};
+        return {
+            ...state,
+            blocked: action.blocked,
+            identifyEnabled: action.blocked ? false : state.unblockedIdentifyEnabled};
     }
     default:
         return state;
