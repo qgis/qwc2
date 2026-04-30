@@ -28,6 +28,7 @@ export default class DateTimeInput extends React.Component {
     };
     render() {
         const parts = (this.props.value || "T").split("T");
+        parts[1] = (parts[1] || "").replace(/\+[0-9:]+$/, ''); // Strip timezone
         parts[1] = (parts[1] || "").replace(/\.\d+$/, ''); // Strip milliseconds
         return (
             <InputContainer className="DateTimeInput">
