@@ -71,10 +71,10 @@ export default class AutoEditForm extends React.Component {
                 </span>
             );
         } else if (field.type === "number") {
-            const precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 6;
+            const precision = constraints.step > 0 ? Math.ceil(-Math.log10(constraints.step)) : 0;
             input = (
                 <NumberInput decimals={precision} max={constraints.max} min={constraints.min}
-                    mobile name={field.id} onChange={nr => this.props.updateField(field.id, nr)}
+                    name={field.id} onChange={nr => this.props.updateField(field.id, nr)}
                     readOnly={readOnly} required={constraints.required} value={value} />
             );
         } else if (field.type === "date") {
