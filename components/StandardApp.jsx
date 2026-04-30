@@ -162,7 +162,9 @@ class AppContainerComponent extends React.Component {
             }
 
             const task = ConfigUtils.getConfigProp("startupTask");
-            if (task && !theme?.config?.startupTask) {
+            const section = ConfigUtils.isMobile() ? "mobile" : "desktop";
+            const themeTaskProp = theme?.config?.[section]?.startupTask ?? theme?.config?.startupTask;
+            if (task && !themeTaskProp) {
                 const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
                 this.props.setCurrentTask(task.key, task.mode, mapClickAction);
             }

@@ -118,7 +118,8 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         type: SWITCHING_THEME,
         switching: false
     });
-    const task = theme.config?.startupTask;
+    const section = ConfigUtils.isMobile() ? "mobile" : "desktop";
+    const task = (theme?.config?.[section]?.startupTask ?? theme?.config?.startupTask);
     if (task) {
         const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
         dispatch(setCurrentTask(task.key, task.mode, mapClickAction));
