@@ -119,7 +119,8 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         switching: false
     });
 
-    const task = initialTask || theme?.config?.startupTask || (initialTheme ? ConfigUtils.getConfigProp("startupTask") : null);
+    const section = ConfigUtils.isMobile() ? "mobile" : "desktop";
+    const task = initialTask || (theme?.config?.[section]?.startupTask ?? theme?.config?.startupTask) || (initialTheme ? ConfigUtils.getConfigProp("startupTask") : null);
     if (task) {
         const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
         dispatch(setCurrentTask(task.key, task.mode, mapClickAction, task.data));
