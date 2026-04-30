@@ -38,7 +38,10 @@ class Help extends React.Component {
         body: ''
     };
     componentDidMount() {
-        if (this.props.bodyContentsFragmentUrl) {
+        this.componentDidUpdate({});
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.bodyContentsFragmentUrl && this.props.bodyContentsFragmentUrl !== prevProps.bodyContentsFragmentUrl) {
             axios.get(this.props.bodyContentsFragmentUrl).then(response => {
                 this.setState({body: response.data.replace('$VERSION$', process.env.BuildDate)});
             }).catch(() => {});
