@@ -519,7 +519,7 @@ class API extends React.Component {
      * * `name`: An identifier
      * * `fmtFunc`: The formatter function with signature `function(name, value, layer, feature)`
      *
-     * The `fmtFunc` should return a string (which may also be a HTML fragment).
+     * The `fmtFunc` should return a string (which may also be a HTML fragment) or a React element.
      */
     addIdentifyAttributeFormatter = (name, fmtFunc) => {
         window.qwc2.__attributeFormatters[name] = fmtFunc;

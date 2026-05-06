@@ -1023,6 +1023,9 @@ class IdentifyViewer extends React.Component {
         text = "" + text; // Ensure text is a string
         for (const formatter of Object.values(window.qwc2?.__attributeFormatters || {})) {
             text = formatter(attrName, text, layer, result);
+            if (React.isValidElement(text)) {
+                return text;
+            }
         }
         text = this.props.attributeTransform(attrName, text, layer, result);
         text = MiscUtils.addLinkAnchors(text);
