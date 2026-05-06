@@ -287,7 +287,8 @@ export default function layers(state = defaultState, action) {
                 visibility: action.layer.visibility || true,
                 opacity: action.layer.opacity || 255,
                 layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER,
-                bbox: VectorLayerUtils.computeFeaturesBBox(action.features)
+                bbox: VectorLayerUtils.computeFeaturesBBox(action.features),
+                srcid: action.layer.srcid ?? uuidv4()
             };
             let inspos = 0;
             for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
