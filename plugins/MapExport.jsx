@@ -55,6 +55,7 @@ class MapExport extends React.Component {
         exportExternalLayers: PropTypes.bool,
         /** Template for the name of the generated files when downloading. Can contain the placeholders `{username}`, `{tenant}`, `{theme}`, `{themeTitle}`, `{timestamp}`. */
         fileNameTemplate: PropTypes.string,
+        filter: PropTypes.object,
         /** Formats to force as available even if the map capabilities report otherwise. Useful if a serviceUrl is defined in a format configuration. */
         forceAvailableFormats: PropTypes.array,
         /** Custom export configuration per format.
@@ -397,6 +398,7 @@ class MapExport extends React.Component {
         params.WIDTH = width;
         params.HEIGHT = height;
         params.filename = fileName;
+        params.FILTER_GEOM = VectorLayerUtils.geoJSONGeomToWkt(VectorLayerUtils.reprojectGeometry(this.props.filter.filterGeom, this.props.map.projection, crs));
 
         // Dimension values
         this.props.layers.forEach(layer => {
@@ -498,8 +500,7 @@ class MapExport extends React.Component {
                     LAYERS: layer.params.LAYERS,
                     OPACITIES: layer.params.OPACITIES,
                     STYLES: layer.params.STYLES,
-                    FILTER: layer.params.FILTER ?? '',
-                    FILTER_GEOM: layer.params.FILTER_GEOM ?? ''
+                    FILTER: layer.params.FILTER ?? ''
                 }
             }));
         }
@@ -549,7 +550,8 @@ class MapExport extends React.Component {
 const selector = (state) => ({
     theme: state.theme.current,
     map: state.map,
-    layers: state.layers.flat
+    layers: state.layers.flat,
+    filter: state.layers.filter
 });
 
 export default connect(selector, {
