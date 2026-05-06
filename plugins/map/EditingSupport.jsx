@@ -17,7 +17,9 @@ import {setEditContext} from '../../actions/editing';
 import LocationRecorder from '../../components/LocationRecorder';
 import MeasureSwitcher from '../../components/MeasureSwitcher';
 import {BottomToolPortalContext} from '../../components/PluginsContainer';
+import ButtonBar from '../../components/widgets/ButtonBar';
 import FeatureStyles from "../../utils/FeatureStyles";
+import LocaleUtils from '../../utils/LocaleUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
 
 /**
@@ -42,6 +44,7 @@ class EditingSupport extends React.Component {
         this.currentFeature = null;
     }
     state = {
+        activeEditTool: 'Node',
         showRecordLocation: false,
         measurements: {showmeasurements: false, lenUnit: 'metric', areaUnit: 'metric'}
     };
@@ -53,16 +56,16 @@ class EditingSupport extends React.Component {
         } else if (curContext.action === 'Pick' && curContext.feature) {
             // If a feature without geometry was picked, enter draw mode, otherwise enter edit mode
             if (!curContext.feature.geometry && curContext.geomType) {
-                this.addDrawInteraction();
+                this.setDrawInteraction();
             } else {
-                this.addEditInteraction();
+                this.setEditInteraction();
             }
         } else if (curContext.action === 'Draw' && curContext.geomType) {
             // Usually, draw mode starts without a feature, but draw also can start with a pre-set geometry
             if (!(curContext.feature || {}).geometry || (prevContext.id === curContext.id && prevContext.geomType !== curContext.geomType)) {
-                this.addDrawInteraction();
+                this.setDrawInteraction();
             } else if ((curContext.feature || {}).geometry) {
-                this.addEditInteraction();
+                this.setEditInteraction();
             }
         } else {
             this.reset();
@@ -75,8 +78,18 @@ class EditingSupport extends React.Component {
         }
     }
     render() {
+        let toolbar = null;
         let locationRecorder = null;
         let measureSwitcher = null;
+        if (this.props.editContext.feature?.geometry) {
+            const editButtons = [
+                {key: "Node", tooltip: LocaleUtils.tr("redlining.draw"), icon: "nodetool"},
+                {key: "Transform", tooltip: LocaleUtils.tr("redlining.transform"), icon: "transformtool"}
+            ];
+            toolbar = ReactDOM.createPortal((
+                <ButtonBar active={this.state.activeEditTool} buttons={editButtons} key="ButtonBar" onClick={this.setEditMode} tooltipPos="top" />
+            ), this.context);
+        }
         if (this.state.showRecordLocation && this.props.editContext.geomType) {
             const geomType = this.props.editContext.geomType.replace(/Z$/, '');
             locationRecorder = (
@@ -89,13 +102,16 @@ class EditingSupport extends React.Component {
                 <MeasureSwitcher
                     changeMeasureState={this.changeMeasurementState}
                     geomType={this.props.editContext.geomType}
-                    iconSize="large" key="MeasureSwitcher"
+                    key="MeasureSwitcher"
                     measureState={this.state.measurements}
                 />
             ), this.context);
         }
-        return [measureSwitcher, locationRecorder];
+        return [toolbar, measureSwitcher, locationRecorder];
     }
+    setEditMode = (action) => {
+        this.setState({activeEditTool: action}, this.setEditInteraction);
+    };
     changeMeasurementState = (diff) => {
         this.setState(state => ({measurements: {...state.measurements, ...diff}}));
     };
@@ -132,7 +148,7 @@ class EditingSupport extends React.Component {
         }
         this.currentLayer = this.layers[this.props.editContext.id];
     };
-    addDrawInteraction = () => {
+    setDrawInteraction = () => {
         this.reset();
         this.setCurrentLayer();
         const geomType = this.props.editContext.geomType.replace(/Z$/, '');
@@ -157,7 +173,7 @@ class EditingSupport extends React.Component {
         this.interaction = drawInteraction;
         this.setState({showRecordLocation: ["Point", "LineString", "MultiPoint", "MultiLineString"].includes(geomType)});
     };
-    addEditInteraction = () => {
+    setEditInteraction = () => {
         this.reset();
         this.setCurrentLayer();
         const format = new ol.format.GeoJSON();
@@ -166,28 +182,44 @@ class EditingSupport extends React.Component {
         this.updateMeasurements();
         this.currentLayer.getSource().addFeature(this.currentFeature);
 
-        const modifyInteraction = new ol.interaction.Modify({
-            features: new ol.Collection([this.currentFeature]),
-            condition: (event) => { return event.originalEvent.buttons === 1; },
-            deleteCondition: (event) => {
-                // delete vertices on SHIFT + click
-                if (event.type === "pointerdown" && ol.events.condition.shiftKeyOnly(event)) {
-                    this.props.map.setIgnoreNextClick(true);
-                }
-                return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
-            },
-            style: FeatureStyles.sketchInteraction()
-        });
-        modifyInteraction.on('modifyend', () => {
-            this.commitCurrentFeature();
-        }, this);
-        modifyInteraction.setActive(
+        if (this.state.activeEditTool === "Node") {
+            const modifyInteraction = new ol.interaction.Modify({
+                features: new ol.Collection([this.currentFeature]),
+                condition: (event) => { return event.originalEvent.buttons === 1; },
+                deleteCondition: (event) => {
+                    // delete vertices on SHIFT + click
+                    if (event.type === "pointerdown" && ol.events.condition.shiftKeyOnly(event)) {
+                        this.props.map.setIgnoreNextClick(true);
+                    }
+                    return ol.events.condition.shiftKeyOnly(event) && ol.events.condition.singleClick(event);
+                },
+                style: FeatureStyles.sketchInteraction()
+            });
+            modifyInteraction.on('modifyend', this.commitCurrentFeature);
+            this.interaction = modifyInteraction;
+            this.props.map.addInteraction(this.interaction);
+        } else if (this.state.activeEditTool === "Transform") {
+            const transformInteraction = new ol.interaction.Transform({
+                stretch: false,
+                keepAspectRatio: (ev) => {
+                    return ol.events.condition.shiftKeyOnly(ev);
+                },
+                layers: [this.currentLayer],
+                translateFeature: true,
+                selection: false
+            });
+            transformInteraction.on('rotateend', this.commitCurrentFeature);
+            transformInteraction.on('translateend', this.commitCurrentFeature);
+            transformInteraction.on('scaleend', this.commitCurrentFeature);
+            this.interaction = transformInteraction;
+            this.props.map.addInteraction(this.interaction);
+            this.interaction.setSelection([this.currentFeature]);
+        }
+        this.interaction.setActive(
             this.props.editContext.geomType && this.props.editContext.permissions.updatable &&
             this.props.editContext.editConfig?.permissions?.updatable === true &&
             !this.props.editContext.geomReadOnly && !this.props.editContext.geomNonZeroZ
         );
-        this.props.map.addInteraction(modifyInteraction);
-        this.interaction = modifyInteraction;
     };
     updateMeasurements = () => {
         if (!this.currentFeature) {
