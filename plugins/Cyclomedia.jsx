@@ -443,44 +443,80 @@ class Cyclomedia extends React.Component {
         `;
     };
     addRecordingsWFS = () => {
+        // Maximum tile size in map CRS units to avoid exceeding the feature limit per request.
+        // ~1000 m in metric CRS, ~0.01° (≈ 1000 m) in geographic CRS, ~3280 ft in imperial CRS.
+        const crsUnits = CoordinatesUtils.getUnits(this.props.mapCrs);
+        const MAX_TILE_SIZE = crsUnits === 'degrees' ? 0.01 : crsUnits === 'ft' ? 3280 : 1000;
         const layer = {
             id: 'cyclomedia-recordings',
             type: 'wfs',
             loader: (vectorSource, extent, resolution, projection, success, failure) => {
                 const [minx, miny, maxx, maxy] = CoordinatesUtils.reprojectBbox(extent, projection.getCode(), this.props.mapCrs);
-                // Cyclomedia WFS only returns up to 3000 points per request. Split bbox in four to reduce chance of hitting the limit
-                const midx = 0.5 * (minx + maxx);
-                const midy = 0.5 * (miny + maxy);
-                const bboxes = [
-                    [minx, miny, midx, midy], // Bottom left
-                    [midx, miny, maxx, midy], // Bottom right
-                    [midx, midy, maxx, maxy], // Top right
-                    [minx, midy, midx, maxy]  // Top left
-                ];
-                bboxes.forEach(bbox => {
-                    const bboxstr = bbox.join(",");
+                const width = maxx - minx;
+                const height = maxy - miny;
+                // Cyclomedia WFS only returns up to 3000 points per request.
+                // Split the bbox into tiles so that no tile exceeds MAX_TILE_SIZE in each dimension.
+                // Each tile is expanded by OVERLAP on every side so that features on tile borders
+                // are reliably included. Duplicate features are removed afterwards via their id.
+                const OVERLAP = MAX_TILE_SIZE * 0.05; // 5 % of tile size
+                const cols = Math.max(1, Math.ceil(width / MAX_TILE_SIZE));
+                const rows = Math.max(1, Math.ceil(height / MAX_TILE_SIZE));
+                const tileW = width / cols;
+                const tileH = height / rows;
 
-                    const reqUrl = `https://atlasapi.cyclomedia.com/api/recording/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=atlas:Recording&srsname=${this.props.mapCrs}&bbox=${bboxstr}&maxFeatures=10000000`;
+                const tiles = [];
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        tiles.push([
+                            minx + col * tileW - OVERLAP,
+                            miny + row * tileH - OVERLAP,
+                            minx + (col + 1) * tileW + OVERLAP,
+                            miny + (row + 1) * tileH + OVERLAP
+                        ]);
+                    }
+                }
+
+                const authHeader = "Basic " + btoa(this.state.username + ":" + this.state.password);
+                const onError = () => {
+                    vectorSource.removeLoadedExtent(extent);
+                    failure();
+                };
+
+                let completed = 0;
+                let hasError = false;
+                const allFeatures = [];
+
+                tiles.forEach((tile) => {
+                    const bboxstr = tile.join(",");
+                    const reqUrl = `https://atlasapi.cyclomedia.com/api/recording/wfs?service=WFS&version=1.1.0&request=GetFeature&typename=atlas:Recording&srsname=${this.props.mapCrs}&bbox=${bboxstr}&maxFeatures=10000`;
                     const xhr = new XMLHttpRequest();
                     xhr.open('GET', reqUrl);
-                    xhr.setRequestHeader("Authorization", "Basic " + btoa(this.state.username + ":" + this.state.password));
-                    const onError = function() {
-                        vectorSource.removeLoadedExtent(extent);
-                        failure();
-                    };
-                    xhr.onerror = onError;
-                    xhr.onload = () => {
-                        if (xhr.status === 200) {
-                            const features = vectorSource.getFormat().readFeatures(xhr.responseText,
-                                {
-                                    dataProjection: this.props.mapCrs,
-                                    featureProjection: projection.getCode()
-                                }
-                            );
-                            vectorSource.addFeatures(features);
-                            success(features);
-                        } else {
+                    xhr.setRequestHeader("Authorization", authHeader);
+                    xhr.onerror = () => {
+                        if (!hasError) {
+                            hasError = true;
                             onError();
+                        }
+                    };
+                    xhr.onload = () => {
+                        if (hasError) {
+                            return;
+                        }
+                        if (xhr.status === 200) {
+                            const features = vectorSource.getFormat().readFeatures(xhr.responseText, {
+                                dataProjection: this.props.mapCrs,
+                                featureProjection: projection.getCode()
+                            });
+                            allFeatures.push(...features);
+                        } else {
+                            hasError = true;
+                            onError();
+                            return;
+                        }
+                        completed++;
+                        if (completed === tiles.length) {
+                            vectorSource.addFeatures(allFeatures);
+                            success(allFeatures);
                         }
                     };
                     xhr.send();
