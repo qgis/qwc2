@@ -140,7 +140,7 @@ export default function layers(state = defaultState, action) {
             queryable: action.layer.queryable || false,
             visibility: action.layer.visibility ?? true,
             opacity: action.layer.opacity ?? 255,
-            layertreehidden: action.layer.layertreehidden || action.layer.role > LayerRole.USERLAYER
+            layertreehidden: action.options?.layertreehidden ?? action.layer.layertreehidden ?? action.layer.role > LayerRole.USERLAYER
         };
         if (action.options?.beforeLayerName || action.options?.afterLayerName) {
             newLayers = LayerUtils.insertLayer(
