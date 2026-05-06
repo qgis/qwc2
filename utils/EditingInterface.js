@@ -294,7 +294,7 @@ const EditingInterface = {
      * @param editConfig The edit config of the feature dataset
      * @param featureId The feature ID
      * @param mapCrs The CRS of the map, as an EPSG code
-     * @param tables Comma separated string of relation table names
+     * @param tables Comma separated string of relation table references in the form `<table_name>:<fk_name>:<sort_col>`
      * @param editConfigs The theme editConfig block, containing all theme dataset edit configs
      * @param callback Callback invoked with the relation values, taking `{<tablename>: {<relation_values>}}` on success and `{}` on failure
      */
