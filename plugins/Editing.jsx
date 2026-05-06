@@ -502,7 +502,7 @@ class Editing extends React.Component {
             if (match) {
                 const oldvisibility = match.sublayer.visibility;
                 if (oldvisibility !== visibility && visibility !== null) {
-                    const recurseDirection = !oldvisibility ? "both" : "children";
+                    const recurseDirection = !oldvisibility ? "parents" : null;
                     this.props.changeLayerProperty(match.layer.id, "visibility", visibility, match.path, recurseDirection);
                 }
                 return oldvisibility;
