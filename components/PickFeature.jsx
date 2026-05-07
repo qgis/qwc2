@@ -229,7 +229,7 @@ class PickFeature extends React.Component {
                             );
                         })
                     ) : (
-                        <div className="pick-feature-menu-querying"><Spinner />{LocaleUtils.tr("pickfeature.querying")}</div>
+                        <div className="pick-feature-menu-querying" key="spinner"><Spinner />{LocaleUtils.tr("pickfeature.querying")}</div>
                     )}
                 </PopupMenu>
             );
