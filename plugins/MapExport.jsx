@@ -398,7 +398,7 @@ class MapExport extends React.Component {
         params.WIDTH = width;
         params.HEIGHT = height;
         params.filename = fileName;
-        params.FILTER_GEOM = VectorLayerUtils.geoJSONGeomToWkt(VectorLayerUtils.reprojectGeometry(this.props.filter.filterGeom, this.props.map.projection, crs));
+        params.FILTER_GEOM = this.props.filter.filterGeom ? VectorLayerUtils.geoJSONGeomToWkt(VectorLayerUtils.reprojectGeometry(this.props.filter.filterGeom, this.props.map.projection, crs)) : "";
 
         // Dimension values
         this.props.layers.forEach(layer => {
