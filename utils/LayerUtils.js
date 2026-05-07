@@ -100,7 +100,8 @@ const LayerUtils = {
             type: "separator",
             title: title,
             role: LayerRole.USERLAYER,
-            id: uuidv4()
+            id: uuidv4(),
+            srcid: uuidv4()
         }]);
     },
     createExternalLayerPlaceholder(layerConfig, externalLayers, id) {
