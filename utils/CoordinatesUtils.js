@@ -226,6 +226,14 @@ const CoordinatesUtils = {
             return formatted;
         };
         return coo.map((coord, idx) => formatCoordinate(coord, swapLonLat ? idx === 0 : idx === 1)).join(", ");
+    },
+    pixelsToMapUnits(pixels, dpi, scaleDenom, mapCrs) {
+        const unit = CoordinatesUtils.getUnits(mapCrs);
+        let inchesToUnits = 1;
+        if (unit === 'meters') {
+            inchesToUnits = 0.0254;
+        }
+        return (pixels / dpi) * scaleDenom * inchesToUnits;
     }
 };
 

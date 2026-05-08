@@ -417,5 +417,34 @@ export default {
                 })
             })
         ];
+    },
+    textlabel: (feature, options) => {
+        return [
+            new ol.style.Style({
+                text: new ol.style.Text({
+                    font: '10pt sans-serif',
+                    padding: [6, 10, 6, 10],
+                    text: feature.getProperties().label || "",
+                    rotation: feature.getProperties().rotation || 0,
+                    scale: options.strokeWidth,
+                    fill: new ol.style.Fill({color: '#000'}),
+                    stroke: new ol.style.Stroke({color: '#FFF', width: 2}),
+                    backgroundFill: new ol.style.Fill({
+                        color: options.fillColor
+                    }),
+                    backgroundStroke: new ol.style.Stroke({
+                        color: options.strokeColor,
+                        width: 2
+                    })
+                })
+            }),
+            new ol.style.Style({
+                geometry: new ol.geom.LineString([feature.getGeometry().getCoordinates(), options.anchor]),
+                stroke: new ol.style.Stroke({
+                    color: options.strokeColor,
+                    width: 2
+                })
+            })
+        ];
     }
 };

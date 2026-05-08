@@ -1,0 +1,153 @@
+/**
+ * Copyright 2026 Sourcepole AG
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+import React from 'react';
+import {connect} from 'react-redux';
+
+import PropTypes from 'prop-types';
+
+import {addLayer, addLayerFeatures, LayerRole} from '../../actions/layers';
+import Icon from '../../components/Icon';
+import PickFeature from '../../components/PickFeature';
+import ComboBox from '../../components/widgets/ComboBox';
+import TextInput from '../../components/widgets/TextInput';
+import {parseExpression} from '../../utils/EditingUtils';
+import LocaleUtils from '../../utils/LocaleUtils';
+import VectorLayerUtils from '../../utils/VectorLayerUtils';
+
+
+class RedliningFeatureLabelSupport extends React.Component {
+    static propTypes = {
+        addLayer: PropTypes.func,
+        addLayerFeatures: PropTypes.func,
+        layers: PropTypes.array,
+        projection: PropTypes.string,
+        redlining: PropTypes.object
+    };
+    state = {
+        cur: null,
+        currentProfile: null
+    };
+    componentDidUpdate(prevProps) {
+        if (this.props.redlining.action !== "FeatureLabel" && prevProps.redlining.action === "FeatureLabel") {
+            this.setState({cur: null, currentProfile: null});
+        }
+    }
+    render() {
+        let control = null;
+        if (this.state.cur) {
+            const selectedProfile = this.state.cur.profiles.find(profile => profile.name === this.state.currentProfile);
+            const isCustomProfile = this.state.currentProfile === "__custom";
+            control = (
+                <div className="controlgroup" key="Control">
+                    {this.state.cur.profiles.length > 1 ? (
+                        <ComboBox onChange={this.setCurrentProfile} value={this.state.currentProfile}>
+                            {this.state.cur.profiles.map(profile => (
+                                <div key={profile.name} value={profile.name}>{profile.title ?? profile.name}</div>
+                            ))}
+                        </ComboBox>
+                    ) : null}
+                    <TextInput
+                        className="controlgroup-expanditem" multiline onChange={this.setProfileExpression}
+                        placeholder={"'Text: ' || \"fieldname\""}
+                        readOnly={!isCustomProfile} value={selectedProfile?.expression} />
+                    {isCustomProfile ? (
+                        <button className="button" type="button"><Icon icon="ok" /></button>
+                    ) : null}
+                </div>
+            );
+        } else {
+            control = (
+                <div className="redlining-message" key="Control">
+                    {LocaleUtils.tr("redlining.labelselectfeature")}
+                </div>
+            );
+        }
+        return [control, (
+            <PickFeature featurePicked={this.featurePicked} key="FeaturePicker" layerFilterFunc={layer => layer.type === "wms"} />
+        )];
+    }
+    featurePicked = (layer, feature, map) => {
+        const profiles = [...(this.props.layers.find(l => l.wms_name === map)?.labelProfiles?.[layer] ?? [])];
+        profiles.push({name: "__custom", expression: "", title: LocaleUtils.tr("common.custom")});
+        this.setState({cur: {layer, feature, map, profiles}, currentProfile: profiles[0].name}, this.updateLabelFeature);
+    };
+    setCurrentProfile = (value) => {
+        this.setState({currentProfile: value}, this.updateLabelFeature);
+    };
+    setProfileExpression = (value) => {
+        this.setState(state => ({
+            cur: {
+                ...state.cur,
+                profiles: state.cur.profiles.map(profile => ({
+                    ...profile, expression: profile.name === state.currentProfile ? value : profile.expression
+                }))
+            }
+        }), this.updateLabelFeature);
+    };
+    updateLabelFeature = () => {
+        const cur = this.state.cur;
+        const expression = cur.profiles.find(profile => profile.name === this.state.currentProfile).expression;
+        const fakeEditConfig = {layerName: this.state.cur.layer};
+        let text = parseExpression(expression, this.state.cur.feature, fakeEditConfig);
+        if (text === null) {
+            text = expression;
+        }
+        const layer = {
+            id: this.props.redlining.layer,
+            title: this.props.redlining.layerTitle,
+            role: LayerRole.USERLAYER
+        };
+        const center = VectorLayerUtils.getFeatureCenter(this.state.cur.feature);
+        const featureId = `label::${cur.map}::${cur.layer}::${cur.feature.id}`;
+        let feature = (this.props.layers.find(l => l.id === this.props.redlining.layer)?.features || []).find(f => f.id === featureId);
+        if (feature) {
+            feature = {...feature, properties: {label: text}};
+        } else {
+            feature = {
+                id: featureId,
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: center
+                },
+                properties: {
+                    label: text
+                },
+                shape: "Text",
+                styleName: "textlabel",
+                styleOptions: {
+                    strokeWidth: 2,
+                    fillColor: [255, 255, 255, 1],
+                    strokeColor: [0, 0, 0, 1],
+                    strokeDash: [],
+                    anchor: center
+                }
+            };
+        }
+        this.props.addLayerFeatures(layer, [feature]);
+    };
+}
+
+export default {
+    cfg: {
+        key: "FeatureLabel",
+        tooltip: LocaleUtils.trmsg("redlining.featurelabel"),
+        tooltype: "draw",
+        icon: "label",
+        data: {action: "FeatureLabel", geomType: null}
+    },
+    controls: connect((state) => ({
+        projection: state.map.projection,
+        layers: state.layers.flat,
+        redlining: state.redlining
+    }), {
+        addLayerFeatures: addLayerFeatures,
+        addLayer: addLayer
+    })(RedliningFeatureLabelSupport)
+};

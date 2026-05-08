@@ -5,7 +5,10 @@ div.redlining-controlsbar {
 
 div.redlining-groupcontrol {
     flex: 0 0 auto;
-    margin: 0 0.125em;
+}
+
+div.redlining-groupcontrol:not(:last-child) {
+    margin-right: 0.25em;
 }
 
 div.redlining-groupcontrol > div:first-child {

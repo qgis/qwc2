@@ -18,6 +18,7 @@ import {v4 as uuidv4} from 'uuid';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {END_MARKERS, computeFeatureStyle} from '../utils/FeatureStyles';
+import MiscUtils from './MiscUtils';
 
 
 const VectorLayerUtils = {
@@ -64,7 +65,7 @@ const VectorLayerUtils = {
                 const styleOptions = computeFeatureStyle(layer, feature);
 
                 const properties = feature.properties || {};
-                let geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
+                const geometry = VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs || printCrs, printCrs);
                 if (feature.geometry.type === "LineString") {
                     // Generate arrow heads
                     if (styleOptions.headmarker) {
@@ -92,39 +93,82 @@ const VectorLayerUtils = {
                         params.labelDist.push("-5");
                         params.labelRotations.push("0");
                     }
+                } else if (feature.styleName === "text" || feature.styleName === "textlabel") {
+                    const x = geometry.coordinates[0];
+                    const y = geometry.coordinates[1];
+                    if (feature.styleName === "textlabel") {
+                        const fontSize = Math.round(styleOptions.strokeWidth * scaleFactor);
+                        const metrics = MiscUtils.measureText(feature.properties.label, `${fontSize}pt sans`);
+                        // Don't ask why these scale factors...
+                        const mapWidth = CoordinatesUtils.pixelsToMapUnits(metrics.width, dpi, mapScale, printCrs) / 6;
+                        const mapHeight = CoordinatesUtils.pixelsToMapUnits(metrics.height, dpi, mapScale, printCrs) / 4;
+                        const frame = {
+                            type: "Polygon",
+                            coordinates: [[
+                                [x - 0.5 * mapWidth, y - 0.5 * mapHeight],
+                                [x + 0.5 * mapWidth, y - 0.5 * mapHeight],
+                                [x + 0.5 * mapWidth, y + 0.5 * mapHeight],
+                                [x - 0.5 * mapWidth, y + 0.5 * mapHeight],
+                                [x - 0.5 * mapWidth, y - 0.5 * mapHeight]
+                            ]]
+                        };
+                        params.styles.push(VectorLayerUtils.createSld("Polygon", "default", {strokeColor: [0, 0, 0, 1], strokeWidth: styleOptions.strokeWidth, fillColor: [255, 255, 255, 1]}, layer.opacity, dpi, scaleFactor));
+                        params.labels.push(" ");
+                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(frame));
+                        params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                        params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
+                        params.labelOutlineSizes.push("0");
+                        params.labelSizes.push("1");
+                        params.labelDist.push("0");
+                        params.labelRotations.push("0");
+
+                        if (x !== styleOptions.anchor[0] && y !== styleOptions.anchor[1]) {
+                            params.styles.push(VectorLayerUtils.createSld("LineString", "default", {strokeColor: [0, 0, 0, 1], strokeWidth: styleOptions.strokeWidth}, layer.opacity, dpi, scaleFactor));
+                            params.labels.push(" ");
+                            params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt({type: "LineString", coordinates: [[x, y], styleOptions.anchor]}));
+                            params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                            params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
+                            params.labelOutlineSizes.push("0");
+                            params.labelSizes.push("1");
+                            params.labelDist.push("0");
+                            params.labelRotations.push("0");
+                        }
+                    }
+                    // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
+                    const square = {
+                        type: "Polygon",
+                        coordinates: [[
+                            [x - 0.01, y - 0.01],
+                            [x + 0.01, y - 0.01],
+                            [x + 0.01, y + 0.01],
+                            [x - 0.01, y + 0.01],
+                            [x - 0.01, y - 0.01]
+                        ]]
+                    };
+                    params.styles.push(VectorLayerUtils.createSld(square.type, feature.styleName, styleOptions, 0, dpi, scaleFactor));
+                    params.labels.push(properties.label || " ");
+                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(square));
+                    if (feature.styleName === "textlabel") {
+                        params.labelFillColors.push(ensureHex([0, 0, 0, 1]));
+                        params.labelOutlineColors.push(ensureHex([255, 255, 255, 1]));
+                    } else {
+                        params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                        params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
+                    }
+                    params.labelOutlineSizes.push(scaleFactor * styleOptions.strokeWidth * 0.5);
+                    params.labelSizes.push(Math.round(10 * styleOptions.strokeWidth * scaleFactor));
+                    params.labelDist.push("5");
+                    params.labelRotations.push(((properties.rotation || 0) / Math.PI * 180).toFixed(0));
                 } else {
                     params.styles.push(VectorLayerUtils.createSld(geometry.type, feature.styleName, styleOptions, layer.opacity, dpi, scaleFactor));
                     params.labels.push(properties.label || " ");
-                    if (feature.styleName === "text") {
-                        // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
-                        const x = geometry.coordinates[0];
-                        const y = geometry.coordinates[1];
-                        geometry = {
-                            type: "Polygon",
-                            coordinates: [[
-                                [x - 0.01, y - 0.01],
-                                [x + 0.01, y - 0.01],
-                                [x + 0.01, y + 0.01],
-                                [x - 0.01, y + 0.01],
-                                [x - 0.01, y - 0.01]
-                            ]]
-                        };
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry));
-                        params.labelFillColors.push(ensureHex(styleOptions.fillColor));
-                        params.labelOutlineColors.push(ensureHex(styleOptions.strokeColor));
-                        params.labelOutlineSizes.push(scaleFactor * styleOptions.strokeWidth * 0.5);
-                        params.labelSizes.push(Math.round(10 * styleOptions.strokeWidth * scaleFactor));
-                        params.labelDist.push("5");
-                        params.labelRotations.push(((properties.rotation || 0) / Math.PI * 180).toFixed(0));
-                    } else {
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry));
-                        params.labelFillColors.push(ensureHex(styleOptions.textFill));
-                        params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
-                        params.labelOutlineSizes.push(scaleFactor);
-                        params.labelSizes.push(Math.round(10 * scaleFactor));
-                        params.labelDist.push("-5");
-                        params.labelRotations.push("0");
-                    }
+                    params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(geometry));
+                    params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                    params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
+                    params.labelOutlineSizes.push(scaleFactor);
+                    params.labelSizes.push(Math.round(10 * scaleFactor));
+                    params.labelDist.push("-5");
+                    params.labelRotations.push("0");
                 }
                 if (properties.end_label) {
                     const coo = geometry.coordinates;

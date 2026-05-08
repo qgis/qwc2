@@ -251,6 +251,16 @@ const MiscUtils = {
             /(yyyy|yy|MMMM|MMM|MM|M|dddd|ddd|dd|d|hh|h|HH|H|mm|m|ss|s|AP|ap)/g,
             match => tokens[match]
         );
+    },
+    measureText(text, font) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.font = font;
+        const metrics = ctx.measureText(text);
+        return {
+            width: metrics.width,
+            height: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
+        };
     }
 };
 

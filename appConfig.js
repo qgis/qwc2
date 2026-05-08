@@ -50,7 +50,8 @@ import OverviewMapPlugin from './plugins/OverviewMap';
 import PortalPlugin from './plugins/Portal';
 import PrintPlugin from './plugins/Print';
 import RedliningPlugin from './plugins/Redlining';
-import BufferSupport from './plugins/redlining/RedliningBufferSupport';
+import RedliningBufferSupport from './plugins/redlining/RedliningBufferSupport';
+import RedliningFeatureLabelSupport from './plugins/redlining/RedliningFeatureLabelSupport';
 import ReportsPlugin from './plugins/Reports';
 import RoutingPlugin from './plugins/Routing';
 import ScratchDrawingPlugin from './plugins/ScratchDrawing';
@@ -114,7 +115,8 @@ export default {
             PortalPlugin: PortalPlugin,
             PrintPlugin: PrintPlugin,
             RedliningPlugin: RedliningPlugin({
-                BufferSupport: BufferSupport
+                BufferSupport: RedliningBufferSupport,
+                FeatureLabelSupport: RedliningFeatureLabelSupport
             }),
             ReportsPlugin: ReportsPlugin,
             RoutingPlugin: RoutingPlugin,

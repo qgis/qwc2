@@ -225,8 +225,11 @@ class RedliningSupport extends React.Component {
         this.blockOnChange = true;
         const styleProps = this.props.redlining.style;
         const isText = feature.get("shape") === "Text";
-        const styleName = isText ? "text" : "default";
-        const opts = this.styleOptions(styleProps, isText);
+        const styleName = feature.get("styleName") ?? (isText ? "text" : "default");
+        const opts = {
+            ...feature.get('styleOptions'),
+            ...this.styleOptions(styleProps, isText)
+        };
         if (!feature.get('measurements') && this.selectedFeatures.length <= 1 && !(isText && !styleProps.text)) {
             feature.set('label', styleProps.text);
         }
@@ -266,12 +269,12 @@ class RedliningSupport extends React.Component {
     styleFunction = (feature) => {
         const styleOptions = feature.get("styleOptions");
         const styleName = feature.get("styleName");
+        const shape = feature.get('shape');
         const styles = [];
-        if (styleName === "text") {
+        if (shape === "Text") {
             styles.push(this.selectedTextStyle(feature, styleOptions));
         }
         styles.push(...FeatureStyles[styleName](feature, styleOptions));
-        const shape = feature.get('shape');
         const geomTypeConfig = GeomTypeConfig[shape];
         if ((geomTypeConfig || {}).drawNodes !== false) {
             styles.push(this.selectedStyle);
@@ -609,8 +612,7 @@ class RedliningSupport extends React.Component {
         }
     };
     deselectFeature = (feature, updateState) => {
-        const styleName = feature.get("shape") === "Text" ? "text" : "default";
-        const style = FeatureStyles[styleName](feature, feature.get('styleOptions'));
+        const style = FeatureStyles[feature.get("styleName")](feature, feature.get('styleOptions'));
         feature.setStyle(style);
         feature.un('change', this.updateMeasurements);
         this.selectedFeatures = this.selectedFeatures.filter(f => f !== feature);

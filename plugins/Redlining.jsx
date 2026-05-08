@@ -200,7 +200,8 @@ class Redlining extends React.Component {
         ] : [];
         for (const plugin of Object.values(this.props.plugins || {})) {
             if (toolEnabled(plugin.cfg.key)) {
-                editButtons.push({
+                const buttonGroup = plugin.cfg.tooltype === 'draw' ? drawButtons : editButtons;
+                buttonGroup.push({
                     ...plugin.cfg,
                     tooltip: plugin.cfg.tooltip ? LocaleUtils.tr(plugin.cfg.tooltip) : undefined
                 });
