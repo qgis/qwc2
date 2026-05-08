@@ -262,7 +262,7 @@ Add custom attribute formatter
 * `name`: An identifier
 * `fmtFunc`: The formatter function with signature `function(name, value, layer, feature)`
 
-The `fmtFunc` should return a string (which may also be a HTML fragment).
+The `fmtFunc` should return a string (which may also be a HTML fragment) or a React element.
 
 **removeIdentifyAttributeFormatter(name)**
 
@@ -968,7 +968,7 @@ Allows drawing figures and text labels on the map.
 | defaultLengthUnit | `string` | Default length unit. Options: `metric`, `imperial`, `m`, `km`, `ft`, `mi` | `'metric'` |
 | defaultTextFillColor | `array` | Default text fill color. In format `[r, g, b, a]`. | `[0, 0, 0, 1]` |
 | defaultTextOutlineColor | `array` | Default text outline color. In format `[r, g, b, a]`. | `[255, 255, 255, 1]` |
-| hiddenTools | `array` | Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `Export`. | `[]` |
+| hiddenTools | `array` | Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `FeatureLabel`, `Export`. | `[]` |
 | predefinedBorderColors | `[array]` | Predefined border colors. In format `[[r, g, b, a], ...]`. | `undefined` |
 | predefinedDashPatterns | `[array]` | Predefined dash patterns. In format `[<dash-array>, ...]`, where a dash-array is list of alternating dash and gap widths, i.e. `[8 4]` for long dashes followed by shorter gaps. | `[[], [8, 8], [1, 8], [8, 8, 1, 8]]` |
 | predefinedFillColors | `[array]` | Predefined fill colors. In format `[[r, g, b, a], ...]`. | `undefined` |
