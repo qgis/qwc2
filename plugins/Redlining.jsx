@@ -52,7 +52,7 @@ class Redlining extends React.Component {
         defaultTextFillColor: PropTypes.array,
         /** Default text outline color. In format `[r, g, b, a]`. */
         defaultTextOutlineColor: PropTypes.array,
-        /** Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `Export`. */
+        /** Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `FeatureLabel`, `Export`. */
         hiddenTools: PropTypes.array,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
