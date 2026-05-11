@@ -103,19 +103,25 @@ class RedliningFeatureLabelSupport extends React.Component {
     };
     updateLabelFeature = () => {
         const cur = this.state.cur;
-        const expression = cur.profiles.find(profile => profile.name === this.state.currentProfile).expression;
-        const fakeEditConfig = {layerName: this.state.cur.layer};
-        let text = parseExpression(expression, this.state.cur.feature, fakeEditConfig);
-        if (text === null) {
-            text = expression;
-        }
         const layer = {
             id: this.props.redlining.layer,
             title: this.props.redlining.layerTitle,
             role: LayerRole.USERLAYER
         };
-        const center = VectorLayerUtils.getFeatureCenter(this.state.cur.feature);
         const featureId = `label::${cur.map}::${cur.layer}::${cur.feature.id}`;
+        const expression = cur.profiles.find(profile => profile.name === this.state.currentProfile).expression;
+        if (!expression) {
+            this.props.removeLayerFeatures(layer, [featureId]);
+            return;
+        }
+        const fakeEditConfig = {layerName: this.state.cur.layer};
+        let text = parseExpression(expression, this.state.cur.feature, fakeEditConfig, null, this.state.cur.map, this.props.projection, this.updateLabelFeature);
+        if (text === null) {
+            text = expression;
+        } else {
+            text = String(text);
+        }
+        const center = VectorLayerUtils.getFeatureCenter(this.state.cur.feature);
         let feature = (this.props.layers.find(l => l.id === this.props.redlining.layer)?.features || []).find(f => f.id === featureId);
         if (feature) {
             feature = {...feature, properties: {label: text}};
