@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {addLayer, addLayerFeatures, LayerRole} from '../../actions/layers';
+import {addLayer, addLayerFeatures, removeLayerFeatures, removeLayer, LayerRole} from '../../actions/layers';
 import Icon from '../../components/Icon';
 import PickFeature from '../../components/PickFeature';
 import ComboBox from '../../components/widgets/ComboBox';
@@ -27,7 +27,9 @@ class RedliningFeatureLabelSupport extends React.Component {
         addLayerFeatures: PropTypes.func,
         layers: PropTypes.array,
         projection: PropTypes.string,
-        redlining: PropTypes.object
+        redlining: PropTypes.object,
+        removeLayer: PropTypes.func,
+        removeLayerFeatures: PropTypes.func
     };
     state = {
         cur: null,
@@ -36,7 +38,11 @@ class RedliningFeatureLabelSupport extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.redlining.action !== "FeatureLabel" && prevProps.redlining.action === "FeatureLabel") {
             this.setState({cur: null, currentProfile: null});
+            this.props.removeLayer("__redliningfeaturelabelhighlight");
         }
+    }
+    componentWillUnmount() {
+        this.props.removeLayer("__redliningfeaturelabelhighlight");
     }
     render() {
         let control = null;
@@ -73,6 +79,11 @@ class RedliningFeatureLabelSupport extends React.Component {
         )];
     }
     featurePicked = (layer, feature, map) => {
+        const sellayer = {
+            id: "__redliningfeaturelabelhighlight",
+            role: LayerRole.SELECTION
+        };
+        this.props.addLayerFeatures(sellayer, [feature], true);
         const profiles = [...(this.props.layers.find(l => l.wms_name === map)?.labelProfiles?.[layer] ?? [])];
         profiles.push({name: "__custom", expression: "", title: LocaleUtils.tr("common.custom")});
         this.setState({cur: {layer, feature, map, profiles}, currentProfile: profiles[0].name}, this.updateLabelFeature);
@@ -124,6 +135,7 @@ class RedliningFeatureLabelSupport extends React.Component {
                 styleOptions: {
                     strokeWidth: 2,
                     fillColor: [255, 255, 255, 1],
+                    textFillColor: [0, 0, 0, 1],
                     strokeColor: [0, 0, 0, 1],
                     strokeDash: [],
                     anchor: center
@@ -148,6 +160,8 @@ export default {
         redlining: state.redlining
     }), {
         addLayerFeatures: addLayerFeatures,
+        removeLayer: removeLayer,
+        removeLayerFeatures: removeLayerFeatures,
         addLayer: addLayer
     })(RedliningFeatureLabelSupport)
 };

@@ -271,11 +271,14 @@ class RedliningSupport extends React.Component {
         const styleName = feature.get("styleName");
         const shape = feature.get('shape');
         const styles = [];
+        styles.push(...FeatureStyles[styleName](feature, styleOptions));
         if (shape === "Text") {
             styles.push(this.selectedTextStyle(feature, styleOptions));
         }
-        styles.push(...FeatureStyles[styleName](feature, styleOptions));
         const geomTypeConfig = GeomTypeConfig[shape];
+        if (shape === "Text" && styleName === "textlabel") {
+            styles.push(this.selectedTextStyle(feature, styleOptions));
+        }
         if ((geomTypeConfig || {}).drawNodes !== false) {
             styles.push(this.selectedStyle);
         }
