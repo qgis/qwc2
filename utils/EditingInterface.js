@@ -323,7 +323,7 @@ const EditingInterface = {
     },
     /**
      * Query key-value-pairs of a key-value-relation
-     * @param keyvalues The keyval string `<keyvaldataset>:<keyfield>:<valuefield>`
+     * @param keyvalues Comma separated list of keyvalue tables of the form `<keyvaldataset>:<keyfield>:<valuefield>`
      * @param callback Callback invoked with the key-value pairs, taking `{keyvalues: {<keyvaldataset>: [{key: <key>, value: <value>}]}}` on success and `{}` on failure
      * @param filter An optional filter expression, as `[[["<name>", "<op>", <value>],"and|or",["<name>","<op>",<value>],...]]` (one filter expr per keyvalue entry)
      */
