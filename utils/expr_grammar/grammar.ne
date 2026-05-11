@@ -183,6 +183,7 @@ N -> float                         {% id %}
     | "string_to_array" _ "(" _ P0 _ ")"                   {% function(d) { return d[4].split(","); } %}
     | "string_to_array" _ "(" _ P0 _ "," _ P1 _ ")"        {% function(d) { return d[4].split(d[8]); } %}
     | "string_to_array" _ "(" _ P0 _ "," _ P1 _ "," _ P2 _ ")" {% function(d) { return d[4].split(d[8]).map(x => String(x).length === 0 ? d[12] : x); } %}
+    | "overlay_intersects" _ "(" _ var_args _ ")"          {% function(d) { return window.qwc2ExpressionParserContext.overlayIntersects(d[4]); } %}
     | "map" _ "(" _ var_args _ ")"                         {% function(d) { return Object.fromValues(Array.from({length: d[4].length / 2 }, (_, i) => [d[4][2 * i], d[4][2 * i + 1]])); } %}
     | "PI"i                        {% function(d) { return Math.PI; } %}
     | "E"i                         {% function(d) { return Math.E; } %}

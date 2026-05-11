@@ -13,8 +13,10 @@ import {v5 as uuidv5} from 'uuid';
 import StandardApp from '../components/StandardApp';
 import ConfigUtils from './ConfigUtils';
 import grammar from './expr_grammar/grammar';
+import IdentifyUtils from './IdentifyUtils';
 import LocaleUtils from './LocaleUtils';
 import MiscUtils from './MiscUtils';
+import VectorLayerUtils from './VectorLayerUtils';
 
 const UUID_NS = '5ae5531d-8e21-4456-b45d-77e9840a5bb7';
 
@@ -133,6 +135,49 @@ function representValue(attr, editConfig, editIface, promises) {
     }
 }
 
+function overlayIntersects(feature, mapPrefix, mapCrs, args, promises) {
+    overlayIntersects.__cache__ = overlayIntersects.__cache__ ?? {};
+    const state = StandardApp.store.getState();
+    const layer = state.layers.flat.find(l => l.wms_name === mapPrefix);
+    const layerName = args[0];
+    const filter = args[1] ? `${layerName}:${args[1]}` : undefined;
+    let geometry = feature.geometry;
+    if (feature.geometry.type.endsWith("Point")) {
+        let p = feature.geometry.coordinates;
+        if (feature.geometry.type === "MultiPoint") {
+            p = p[0];
+        }
+        geometry = {
+            type: "Polygon",
+            coordinates: [[
+                [p[0] - 0.1, p[1] - 0.1],
+                [p[0] + 0.1, p[1] - 0.1],
+                [p[0] + 0.1, p[1] + 0.1],
+                [p[0] - 0.1, p[1] + 0.1],
+                [p[0] - 0.1, p[1] - 0.1]
+            ]]
+        };
+    }
+    const extraParams = {
+        with_geometry: false,
+        feature_count: 1,
+        FILTER: filter
+    };
+    const request = IdentifyUtils.buildFilterRequest(layer, layerName, VectorLayerUtils.geoJSONGeomToWkt(geometry), {projection: mapCrs}, extraParams);
+    const key = uuidv5(JSON.stringify(request.params), UUID_NS);
+    if (key in overlayIntersects.__cache__) {
+        return overlayIntersects.__cache__[key];
+    }
+    promises.push(new Promise(resolve => {
+        IdentifyUtils.sendRequest(request, response => {
+            const features = IdentifyUtils.parseResponse(response, layerName, request.params.info_format, null, mapCrs);
+            overlayIntersects.__cache__[key] = (features[layerName] ?? []).length > 0;
+            resolve();
+        });
+    }));
+    return null;
+}
+
 export function parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     const promises = [];
@@ -142,6 +187,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
         feature: feature,
         getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapEditConfigs[layerName] ?? {}, mapCrs, [[attr, '=', value]], promises),
         representValue: (attr) => representValue(attr, editConfig, editIface, promises),
+        overlayIntersects: (layer) => overlayIntersects(feature, mapPrefix, mapCrs, layer, promises),
         formatDate: MiscUtils.formatDate,
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
@@ -183,6 +229,7 @@ export function parseExpressionsAsync(fieldExpressions, feature, editConfig, edi
             feature: newfeature,
             getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapEditConfigs[layerName] ?? {}, mapCrs, [[attr, '=', value]], promises),
             representValue: (attr) => representValue(attr, editConfig, editIface, promises),
+            overlayIntersects: (layer) => overlayIntersects(feature, mapPrefix, mapCrs, layer, promises),
             asFilter: asFilter,
             username: ConfigUtils.getConfigProp("username"),
             layer: editConfig.layerName,
