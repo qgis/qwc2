@@ -60,7 +60,11 @@ class MapInfoTooltip extends React.Component {
         /** The number of decimal places to display for elevation values. */
         elevationPrecision: PropTypes.number,
         enabled: PropTypes.bool,
-        /** Whether to display WGS84 coordinates in addition to map CRS coordinates. */
+        /** Whether to display coordinates in the display CRS. */
+        includeDisplayCrs: PropTypes.bool,
+        /** Whether to display coordinates in map CRS. */
+        includeMapCrs: PropTypes.bool,
+        /** Whether to display coordinates in WGS84. */
         includeWGS84: PropTypes.bool,
         map: PropTypes.object,
         /** Additional plugin components for the map info tooltip. */
@@ -69,6 +73,8 @@ class MapInfoTooltip extends React.Component {
     };
     static defaultProps = {
         elevationPrecision: 0,
+        includeDisplayCrs: true,
+        includeMapCrs: true,
         includeWGS84: true,
         plugins: []
     };
@@ -113,8 +119,11 @@ class MapInfoTooltip extends React.Component {
 
         const info = [];
 
-        const projections = [this.props.map.displayCrs];
-        if (!projections.includes(this.props.map.projection)) {
+        const projections = [];
+        if (this.props.includeDisplayCrs) {
+            projections.push(this.props.map.displayCrs);
+        }
+        if (this.props.includeMapCrs && !projections.includes(this.props.map.projection)) {
             projections.push(this.props.map.projection);
         }
         if (this.props.includeWGS84 && !projections.includes("EPSG:4326")) {
