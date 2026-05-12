@@ -508,6 +508,10 @@ class AttributeForm extends React.Component {
                         // Convert text NULL to null
                         value = null;
                     }
+                    if (nrelFieldConfig.type === 'number' && value !== null) {
+                        // Ensure numeric values are numbers and not strings
+                        value = Number(value);
+                    }
 
                     // relationValues for table must exist as rows are either pre-existing or were added
                     if (!(field in relationValues[datasetname].features[index].properties)) {
@@ -549,6 +553,10 @@ class AttributeForm extends React.Component {
                     if (textDataTypes.includes(dataType) && textNullValue !== undefined && element.value === textNullValue) {
                         // Convert text NULL to null
                         value = null;
+                    }
+                    if (fieldConfig.type === 'number' && value !== null) {
+                        // Ensure numeric values are numbers and not strings
+                        value = Number(value);
                     }
                     if (!(name in feature.properties)) {
                         feature.defaultedProperties = [
