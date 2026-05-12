@@ -77,7 +77,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
             dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
         }
     }
-    for (const bgLayer of bgLayers) {
+    for (const bgLayer of bgLayers.reverse()) {
         haveVisibleBg |= bgLayer.visibility;
         dispatch(addLayer(bgLayer));
     }
