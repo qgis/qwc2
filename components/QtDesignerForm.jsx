@@ -474,7 +474,7 @@ class QtDesignerForm extends React.Component {
             return (
                 <DateTimeInput maxDate={max} minDate={min} name={elname} onChange={val => updateField(widget.name, val)}
                     readOnly={inputConstraints.readOnly} required={inputConstraints.required}
-                    style={fontStyle} value={value} />
+                    style={fontStyle} value={value} valueHasTz={field.data_type === "timestamp with time zone"} />
             );
         } else if (widget.class === "QListWidget") {
             return (
