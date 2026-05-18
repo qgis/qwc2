@@ -115,7 +115,7 @@ const ThemeUtils = {
             name: theme.name,
             title: theme.title,
             bbox: theme.bbox,
-            sublayers: subLayers ?? theme.sublayers,
+            sublayers: subLayers ?? theme.sublayers ?? [],
             tiled: theme.tiled,
             tileSize: theme.tileSize,
             ratio: !theme.tiled ? 1 : undefined,
