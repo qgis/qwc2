@@ -50,6 +50,8 @@ class Portal extends React.Component {
         menuItems: PropTypes.array,
         openExternalUrl: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        /** Whether to show a button to close the portal without selecting a theme. */
+        showCloseButton: PropTypes.bool,
         /** Whether the menu should be visible on startup. */
         showMenuOnStartup: PropTypes.bool,
         startupParams: PropTypes.object,
@@ -59,6 +61,7 @@ class Portal extends React.Component {
         userName: PropTypes.string
     };
     static defaultProps = {
+        showCloseButton: true,
         menuItems: []
     };
     state = {
@@ -103,6 +106,11 @@ class Portal extends React.Component {
                         placeholder={LocaleUtils.tr("portal.filter")}
                         type="text"
                         value={this.state.filter} />
+                    {this.props.showCloseButton ? (
+                        <button className="portal-close-button button" onClick={() => this.props.setCurrentTask(null)} type="button">
+                            <Icon icon="remove" /><span>{LocaleUtils.tr("portal.close")}</span>
+                        </button>
+                    ) : null}
                     <span className="portal-topbar-spacer" />
                     {this.props.menuItems.length > 0 ? (
                         <AppMenu appMenuClearsTask={false} buttonLabel={LocaleUtils.tr("portal.menulabel")}

@@ -533,6 +533,7 @@
       "loading": ""
     },
     "portal": {
+      "close": "",
       "filter": "テーマをフィルタ...",
       "menulabel": "メニュー"
     },

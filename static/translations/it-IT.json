@@ -533,6 +533,7 @@
       "loading": "Caricando dati..."
     },
     "portal": {
+      "close": "Chiudi portale",
       "filter": "Filtra temi...",
       "menulabel": "Menu"
     },

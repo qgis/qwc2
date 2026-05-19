@@ -10,6 +10,13 @@ div.portal-topbar {
     align-items: center;
 }
 
+button.portal-close-button {
+    margin-left: 0.5em;
+    background-color: var(--titlebar-bg-color);
+    border-color: var(--titlebar-bg-color);
+    color: var(--titlebar-text-color);
+}
+
 span.portal-topbar-text {
     color: var(--titlebar-text-color);
     padding: 0 1.5em 0 0.5em;

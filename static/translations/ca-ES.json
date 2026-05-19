@@ -533,6 +533,7 @@
       "loading": "Carregant dades..."
     },
     "portal": {
+      "close": "",
       "filter": "Filtrar temes...",
       "menulabel": "Menú"
     },

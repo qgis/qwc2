@@ -927,6 +927,7 @@ Displays a landing lage, consisting of a full-screen theme switcher and a config
 | expandGroups | `bool` | Whether to expand theme groups by default. | `undefined` |
 | logo | `string` | Name of a logo image below assets/img. | `undefined` |
 | menuItems | `array` | Portal menu items, in the same format as the TopBar menu items. | `[]` |
+| showCloseButton | `bool` | Whether to show a button to close the portal without selecting a theme. | `true` |
 | showMenuOnStartup | `bool` | Whether the menu should be visible on startup. | `undefined` |
 | topBarText | `string` | Portal title text to show in the top bar. | `undefined` |
 

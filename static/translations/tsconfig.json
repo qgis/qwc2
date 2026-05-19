@@ -464,6 +464,7 @@
     "pickfeature.querying",
     "plotinfotool.failed",
     "plotinfotool.loading",
+    "portal.close",
     "portal.filter",
     "portal.menulabel",
     "print.atlasfeature",
