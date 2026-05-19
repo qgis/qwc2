@@ -210,10 +210,10 @@ const CoordinatesUtils = {
             let formatted;
             switch (format) {
             case 'dms':
-                formatted = toDMS(value, decimals);
+                formatted = toDMS(value);
                 break;
             case 'dm':
-                formatted = toDM(value, decimals);
+                formatted = toDM(value);
                 break;
             default:
                 formatted = LocaleUtils.toLocaleFixed(Math.abs(value), decimals);
