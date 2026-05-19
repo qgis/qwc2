@@ -9,22 +9,17 @@
 import {
     THEMES_LOADED,
     SET_THEME_LAYERS_LIST,
-    SET_CURRENT_THEME,
-    SWITCHING_THEME
+    SET_CURRENT_THEME
 } from '../actions/theme';
 import {UrlParams} from '../utils/PermaLinkUtils';
 
 const defaultState = {
     current: null,
-    themelist: null,
-    switching: false
+    themelist: null
 };
 
 export default function theme(state = defaultState, action) {
     switch (action.type) {
-    case SWITCHING_THEME: {
-        return {...state, switching: action.switching};
-    }
     case THEMES_LOADED: {
         return {...state, themes: action.themes};
     }

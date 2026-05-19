@@ -29,7 +29,6 @@ import {showNotification, NotificationType} from './windows';
 export const THEMES_LOADED = 'THEMES_LOADED';
 export const SET_THEME_LAYERS_LIST = 'SET_THEME_LAYERS_LIST';
 export const SET_CURRENT_THEME = 'SET_CURRENT_THEME';
-export const SWITCHING_THEME = 'SWITCHING_THEME';
 
 
 export function themesLoaded(themes) {
@@ -114,11 +113,6 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
         theme: theme
     });
 
-    dispatch({
-        type: SWITCHING_THEME,
-        switching: false
-    });
-
     const section = ConfigUtils.isMobile() ? "mobile" : "desktop";
     const task = initialTask || (theme?.config?.[section]?.startupTask ?? theme?.config?.startupTask) || (initialTheme ? ConfigUtils.getConfigProp("startupTask") : null);
     if (task) {
@@ -136,10 +130,6 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
             return;
         }
         const initialTheme = !getState().theme.current;
-        dispatch({
-            type: SWITCHING_THEME,
-            switching: true
-        });
 
         // Get current background layer if it needs to be preserved
         if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
@@ -162,10 +152,6 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
         }
         dispatch(setSwipe(null));
         if (!theme) {
-            dispatch({
-                type: SWITCHING_THEME,
-                switching: false
-            });
             return;
         }
 
