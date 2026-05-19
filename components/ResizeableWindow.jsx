@@ -43,6 +43,7 @@ class ResizeableWindow extends React.Component {
         })),
         fitHeight: PropTypes.bool,
         fullscreen: PropTypes.bool,
+        hideDockIcon: PropTypes.bool,
         icon: PropTypes.string,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
@@ -225,7 +226,7 @@ class ResizeableWindow extends React.Component {
                             onClick={entry.callback} title={entry.title} />
                     );
                 })}
-                {!maximized && dockable ? (
+                {!maximized && dockable && !this.props.hideDockIcon ? (
                     <Icon
                         className={iconClasses} icon={dockIcon}
                         onClick={this.toggleDock}
