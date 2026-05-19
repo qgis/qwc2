@@ -41,7 +41,7 @@ const CoordinatesUtils = {
     },
     getPrecision(projection) {
         const precisions = ConfigUtils.getConfigProp("projections").reduce((res, entry) => (
-            {...res, [entry.code]: entry.precision ?? 0}
+            {...res, [entry.code]: entry.precision ?? (CoordinatesUtils.getUnits(entry.code) === 'degrees' ? 4 : 0)}
         ), {});
         return precisions[projection] ?? (CoordinatesUtils.getUnits(projection) === 'degrees' ? 4 : 0);
     },
