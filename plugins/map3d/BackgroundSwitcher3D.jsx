@@ -26,8 +26,8 @@ export default class BackgroundSwitcher3D extends React.Component {
     render() {
         return (
             <BackgroundSwitcher
+                backgroundLayers={this.props.sceneContext.baseLayers}
                 changeLayerVisibility={this.props.sceneContext.setBaseLayer}
-                layers={this.props.sceneContext.baseLayers}
                 nobgMsgId={LocaleUtils.trmsg("map3d.noterrain")}
             />
         );
