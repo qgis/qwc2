@@ -32,7 +32,9 @@ export class BackgroundSwitcher extends React.Component {
         changeLayerVisibility: PropTypes.func,
         nobgMsgId: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
-        position: PropTypes.number
+        position: PropTypes.number,
+        /** Whether to show the thumbnails of the group children when hovering a group item. */
+        showGroupThumbnails: PropTypes.bool
     };
     static defaultProps = {
         position: 0,
@@ -48,7 +50,9 @@ export class BackgroundSwitcher extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.visible && !prevState.visible) {
-            this.listEl?.firstElementChild?.focus?.();
+            if (this.listEl) {
+                (Array.from(this.listEl.children).find(el => el.classList.contains("background-switcher-item-active")) ?? this.listEl.firstElementChild)?.focus?.();
+            }
         } else if (!this.state.visible && prevState.visible) {
             this.buttonEl?.focus?.();
         }
@@ -87,7 +91,7 @@ export class BackgroundSwitcher extends React.Component {
         });
         return (
             <div
-                className={itemclasses} key={layer ? layer.name : "empty"} onClick={() => this.backgroundLayerClicked(layer)}
+                className={itemclasses} key={layer ? layer.name : "empty"} onClick={(ev) => this.backgroundLayerClicked(ev, layer)}
                 onKeyDown={this.KeyNav} tabIndex={this.state.visible ? 0 : -1}
             >
                 <div className="background-switcher-item-title">
@@ -102,21 +106,26 @@ export class BackgroundSwitcher extends React.Component {
     renderGroupItem = (layers, visibleBgLayer) => {
         const assetsPath = ConfigUtils.getAssetsPath();
         const layer = (layers.find(l => l === visibleBgLayer) || layers.find(l => l.default === true)) || layers[layers.length - 1];
+        const otherLayers = layers.filter(l => l !== layer);
 
         const itemclasses = classnames({
             "background-switcher-item": true,
             "background-switcher-item-active": layer === visibleBgLayer
         });
+        const groupclasses = classnames({
+            "background-switcher-group": true,
+            "background-switcher-group-menu": !this.props.showGroupThumbnails
+        });
         return (
-            <div className={itemclasses} key={layer.name} onKeyDown={this.KeyNav} tabIndex={this.state.visible ? 0 : -1}>
+            <div className={itemclasses} key={layer.name} onClick={(ev) => this.backgroundLayerClicked(ev, layer)} onKeyDown={this.KeyNav} tabIndex={this.state.visible ? 0 : -1}>
                 <div className="background-switcher-item-title">
                     <span tabIndex="-1" title={this.itemTitle(layer)}>{this.itemTitle(layer)}</span><Icon icon="chevron-down" />
                 </div>
                 <div className="background-switcher-item-thumbnail">
-                    <img onClick={() => this.backgroundLayerClicked(layer)} src={assetsPath + "/" + layer.thumbnail} />
+                    <img src={assetsPath + "/" + layer.thumbnail} />
                 </div>
-                <div className="background-switcher-group">
-                    {layers.map(l => {
+                <div className={groupclasses}>
+                    {this.props.showGroupThumbnails ? otherLayers.map(l => this.renderLayerItem(l, visibleBgLayer)) : otherLayers.map(l => {
                         const menuitemclasses = classnames({
                             "background-switcher-group-item": true,
                             "background-switcher-group-item-active": l === visibleBgLayer
@@ -124,7 +133,7 @@ export class BackgroundSwitcher extends React.Component {
                         return (
                             <div className={menuitemclasses} key={l.name}
                                 onBlur={ev => this.updateGroupItem(ev, layer)}
-                                onClick={() => this.backgroundLayerClicked(l)}
+                                onClick={(ev) => this.backgroundLayerClicked(ev, l)}
                                 onFocus={ev => this.updateGroupItem(ev, l)}
                                 onKeyDown={this.KeyNav}
                                 onMouseEnter={ev => this.updateGroupItem(ev, l)}
@@ -160,6 +169,13 @@ export class BackgroundSwitcher extends React.Component {
             let currentIndex = Array.from(group.children).findIndex(el => document.activeElement === el || el.contains(document.activeElement));
             if (currentIndex === -1) {
                 currentIndex = Array.from(group.children).findIndex(el => el.classList.contains("background-switcher-group-item-active"));
+                if (currentIndex === -1 && delta === -1) {
+                    currentIndex = childCount;
+                }
+            } else if (currentIndex + delta >= childCount || currentIndex + delta < 0) {
+                group.parentElement.focus();
+                MiscUtils.killEvent(ev);
+                return;
             }
             let next = (currentIndex + childCount + delta) % childCount;
             while (group.children[next].tabIndex !== 0 && next !== currentIndex) {
@@ -195,7 +211,8 @@ export class BackgroundSwitcher extends React.Component {
     buttonClicked = () => {
         this.setState((state) => ({visible: !state.visible}));
     };
-    backgroundLayerClicked = (layer) => {
+    backgroundLayerClicked = (ev, layer) => {
+        MiscUtils.killEvent(ev);
         if (layer) {
             this.props.changeLayerVisibility(layer, true);
         } else {

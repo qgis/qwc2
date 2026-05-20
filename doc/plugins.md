@@ -381,6 +381,7 @@ Map button for switching the background layer.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `0` |
+| showGroupThumbnails | `bool` | Whether to show the thumbnails of the group children when hovering a group item. | `undefined` |
 
 ## Bookmark<a name="bookmark"></a>
 

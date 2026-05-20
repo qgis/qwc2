@@ -6,10 +6,7 @@ div.background-switcher {
     transform-origin: right;
     transition: transform 0.1s;
     text-align: right;
-    display: flex;
     width: calc(var(--buttons-container-width) - 4em);
-    flex-wrap: wrap;
-    justify-content: flex-end;
     z-index: 1;
 }
 
@@ -17,12 +14,15 @@ div.background-switcher-active {
     transform: scaleX(1);
 }
 
+div.background-switcher > div.background-switcher-item {
+    margin: 0.5em;
+}
+
 div.background-switcher-item {
     background-color: var(--list-bg-color);
     cursor: pointer;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
     display: inline-block;
-    margin: 0.5em;
     width: 8em;
     border: 1px solid var(--border-color);
     position: relative;
@@ -55,7 +55,7 @@ div.background-switcher-item-thumbnail > img {
 }
 
 div.background-switcher-item-title > span:first-child,
-div.background-switcher-group > div {
+div.background-switcher-group > div.background-switcher-group-item {
     font-weight: bold;
     font-size: 80%;
     text-align: center;
@@ -81,8 +81,11 @@ div.background-switcher-item-title span.icon {
 div.background-switcher-group {
     display: none;
     position: absolute;
-    bottom: calc(100% + 1px);
+    bottom: 100%;
     width: 100%;
+}
+
+div.background-switcher-group-menu {
     background-color: var(--list-bg-color);
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
     clip-path: inset(-8px -8px 0 -8px);
