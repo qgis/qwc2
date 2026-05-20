@@ -169,42 +169,46 @@ class PluginsContainer extends React.Component {
                         // Reorder child nodes for natural tab focus order
                         const children = [...el.children];
                         const slots = {};
+                        const usedSlots = new Set();
                         children.forEach(child => {
                             if (child.dataset.subslot === undefined) {
                                 const subslot = (slots[child.dataset.slot] ?? 0) - 1;
                                 slots[child.dataset.slot] = child.dataset.subslot = subslot;
                                 child.style.order = 100 * parseInt(child.style.order, 10) + subslot;
                             }
+                            if (child.dataset.slot !== undefined) {
+                                usedSlots.add(child.dataset.slot);
+                            }
                         });
                         children.sort((a, b) => (
                             b.style.order - a.style.order
                         )).forEach(node => el.appendChild(node));
+                        const slotString = [...usedSlots].sort().join(":");
+                        if (slotString !== el.dataset.slotString) {
+                            // Recompute spacers
+                            children.forEach(child => {
+                                if (child.dataset.spacer) {
+                                    el.removeChild(child);
+                                }
+                            });
+                            const maxSlot = Math.max(...usedSlots);
+                            for (let i = 0; i < maxSlot; ++i) {
+                                if (!usedSlots.has(String(i))) {
+                                    const child = document.createElement("div");
+                                    child.className = "map-buttons-spacer";
+                                    child.dataset.spacer = 1;
+                                    child.style.order = 100 * i;
+                                    el.appendChild(child);
+                                }
+                            }
+                            el.dataset.slotString = slotString;
+                        }
                     }
                 }
                 mutationObserver.observe(el, {childList: true});
             });
             mutationObserver.observe(el, {childList: true});
             resizeObserver.observe(el);
-            el.recomputeSpacers = () => {
-                const slots = new Set();
-                Array.from(el.childNodes).forEach(child => {
-                    if (child.dataset.spacer) {
-                        el.removeChild(child);
-                    } else {
-                        slots.add(child.dataset.slot);
-                    }
-                });
-                const maxSlot = Math.max(...slots);
-                for (let i = 0; i < maxSlot; ++i) {
-                    if (!slots.has(String(i))) {
-                        const child = document.createElement("div");
-                        child.className = "map-buttons-spacer";
-                        child.dataset.spacer = 1;
-                        child.style.order = 100 * i;
-                        el.appendChild(child);
-                    }
-                }
-            };
         }
     };
 }

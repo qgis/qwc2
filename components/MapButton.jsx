@@ -36,14 +36,6 @@ export default class MapButton extends React.Component {
         position: PropTypes.number,
         tooltip: PropTypes.string
     };
-    componentDidMount() {
-        this.componentDidUpdate({});
-    }
-    componentDidUpdate(prevProps) {
-        if (this.context && this.props.position !== prevProps.position) {
-            this.context.recomputeSpacers();
-        }
-    }
     render() {
         if (!this.context) {
             return null;
