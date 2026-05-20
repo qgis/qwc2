@@ -1303,6 +1303,13 @@ These plugins must be listed as children of the [View3D](#view3d) plugin.
 
 Map button for switching the background layer of the 3D map.
 
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| buttonClickAction | `string` | The button click action, either `select` or `cycle`. | `'select'` |
+| buttonDisplayMode | `string` | The button display mode, either `button` or `thumbnail`. | `'button'` |
+| position | `number` | The position slot index of the map button, from the bottom (0: bottom slot). | `0` |
+| showGroupThumbnails | `bool` | Whether to show the thumbnails of the group children when hovering a group item. | `undefined` |
+
 ## BottomBar3D<a name="bottombar3d"></a>
 
 Bottom bar of the 3D map, displaying coordinates, projection, etc.
