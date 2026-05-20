@@ -32,6 +32,8 @@ export class BackgroundSwitcher extends React.Component {
     static contextType = MapButtonPortalContext;
     static propTypes = {
         backgroundLayers: PropTypes.array,
+        /** The button click action, either `select` or `cycle`. */
+        buttonClickAction: PropTypes.string,
         /** The button display mode, either `button` or `thumbnail`. */
         buttonDisplayMode: PropTypes.string,
         changeLayerVisibility: PropTypes.func,
@@ -42,6 +44,7 @@ export class BackgroundSwitcher extends React.Component {
         showGroupThumbnails: PropTypes.bool
     };
     static defaultProps = {
+        buttonClickAction: 'select',
         buttonDisplayMode: 'button',
         position: 0,
         nobgMsgId: "bgswitcher.nobg"
@@ -67,49 +70,63 @@ export class BackgroundSwitcher extends React.Component {
         if (isEmpty(this.props.backgroundLayers)) {
             return null;
         }
-        const visibleBgLayer = this.props.backgroundLayers.flat().find(l => l.visibility === true) ?? null;
+        const flatLayers = this.props.backgroundLayers.flat();
+        const currentIndex = flatLayers.findIndex(l => l.visibility === true);
+        let nextIndex = (currentIndex + 1) % flatLayers.length;
+        while (nextIndex !== currentIndex && flatLayers[nextIndex].omitFromCycle) {
+            nextIndex = (nextIndex + 1) % flatLayers.length;
+        }
+        const visibleBgLayer = flatLayers[currentIndex] ?? null;
+        const nextLayer = flatLayers[nextIndex] ?? null;
         const backgroundLayers = [null, ...this.props.backgroundLayers];
         if (this.props.buttonDisplayMode === 'thumbnail') {
             // const currentIndex = backgroundLayers.findIndex(bl => Array.isArray(bl) ? bl.includes(visibleBgLayer) : bl === visibleBgLayer);
             const assetsPath = ConfigUtils.getAssetsPath();
-            const thumbnail = visibleBgLayer?.thumbnail ? assetsPath + "/" + visibleBgLayer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+            let thumbnail = null;
+            if (this.props.buttonClickAction === "cycle") {
+                thumbnail = nextLayer?.thumbnail ? assetsPath + "/" + nextLayer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+            } else {
+                thumbnail = visibleBgLayer?.thumbnail ? assetsPath + "/" + visibleBgLayer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+            }
             return ReactDOM.createPortal((
                 <div
                     className="background-switcher-thumbnail" data-slot={this.props.position}
-                    onClick={this.buttonClicked} onKeyDown={MiscUtils.checkKeyActivate}
+                    onClick={() => this.buttonClicked(nextLayer)} onKeyDown={MiscUtils.checkKeyActivate}
+                    onMouseEnter={() => this.setSwitcherVisible(true)} onMouseLeave={() => this.setSwitcherVisible(false)}
                     ref={el => {this.buttonEl = el;}} style={{order: this.props.position}} tabIndex={0}
                 >
                     <img src={thumbnail} />
-                    <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')} ref={el => { this.listEl = el; }}>
-                        {backgroundLayers.map(entry => {
-                            return Array.isArray(entry) ? this.renderGroupItem(entry, visibleBgLayer) : this.renderLayerItem(entry, visibleBgLayer);
-                        })}
-                    </div>
+                    {this.renderSwitcher(backgroundLayers, visibleBgLayer)}
                 </div>
             ), this.context);
         } else {
             return (
                 <MapButton
-                    active={this.state.visible}
-                    buttonRef={el => {this.buttonEl = el;}}
-                    icon="bglayer"
-                    onClick={this.buttonClicked}
-                    position={this.props.position}
-                    tooltip={LocaleUtils.tr("tooltip.background")}
+                    active={this.state.visible} buttonRef={el => {this.buttonEl = el;}}
+                    icon="bglayer" onClick={() => this.buttonClicked(nextLayer)}
+                    position={this.props.position} tooltip={LocaleUtils.tr("tooltip.background")}
                 >
-                    <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')} ref={el => { this.listEl = el; }}>
-                        {backgroundLayers.map(entry => {
-                            return Array.isArray(entry) ? this.renderGroupItem(entry, visibleBgLayer) : this.renderLayerItem(entry, visibleBgLayer);
-                        })}
-                    </div>
+                    {this.renderSwitcher(backgroundLayers, visibleBgLayer)}
                 </MapButton>
             );
         }
     }
+    renderSwitcher = (backgroundLayers, visibleBgLayer) => {
+        return (
+            <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')} ref={el => { this.listEl = el; }}>
+                {backgroundLayers.filter(entry => !entry?.omitFromSelect).map(entry => {
+                    return Array.isArray(entry) ? this.renderGroupItem(entry, visibleBgLayer) : this.renderLayerItem(entry, visibleBgLayer);
+                })}
+            </div>
+        );
+    };
     itemTitle = (item) => {
         return item.titleMsgId ? LocaleUtils.tr(item.titleMsgId) : item.title ?? item.name;
     };
     renderLayerItem = (layer, visibleBgLayer) => {
+        if (layer?.omitFromSelect) {
+            return null;
+        }
         const assetsPath = ConfigUtils.getAssetsPath();
         const itemclasses = classnames({
             "background-switcher-item": true,
@@ -130,9 +147,13 @@ export class BackgroundSwitcher extends React.Component {
         );
     };
     renderGroupItem = (layers, visibleBgLayer) => {
+        const selLayers = layers.filter(layer => !layer.omitFromSelect);
+        if (selLayers.length === 0) {
+            return null;
+        }
         const assetsPath = ConfigUtils.getAssetsPath();
-        const layer = (layers.find(l => l === visibleBgLayer) || layers.find(l => l.default === true)) || layers[layers.length - 1];
-        const otherLayers = layers.filter(l => l !== layer);
+        const layer = (selLayers.find(l => l === visibleBgLayer) || selLayers.find(l => l.default === true)) || selLayers[selLayers.length - 1];
+        const otherLayers = selLayers.filter(l => l !== layer);
 
         const itemclasses = classnames({
             "background-switcher-item": true,
@@ -234,8 +255,16 @@ export class BackgroundSwitcher extends React.Component {
             MiscUtils.checkKeyActivate(ev, this.hide);
         }
     };
-    buttonClicked = () => {
-        this.setState((state) => ({visible: !state.visible}));
+    setSwitcherVisible = (visible) => {
+        clearTimeout(this.visibleTimeout);
+        this.visibleTimeout = setTimeout(() => this.setState({visible: visible}), 500);
+    };
+    buttonClicked = (nextLayer) => {
+        if (this.props.buttonClickAction === 'cycle') {
+            this.props.changeLayerVisibility(nextLayer, true);
+        } else {
+            this.setState((state) => ({visible: !state.visible}));
+        }
     };
     backgroundLayerClicked = (ev, layer) => {
         MiscUtils.killEvent(ev);

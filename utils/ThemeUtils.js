@@ -53,7 +53,9 @@ const ThemeUtils = {
                     role: LayerRole.BACKGROUND,
                     thumbnail: bgLayer.thumbnail || "img/mapthumbs/default.jpg",
                     visibility: false,
-                    opacity: bgLayer.opacity !== undefined ? bgLayer.opacity : 255
+                    opacity: bgLayer.opacity !== undefined ? bgLayer.opacity : 255,
+                    omitFromCycle: entry.omitFromCycle,
+                    omitFromSelect: entry.omitFromSelect
                 };
                 if (bgLayer.resource) {
                     bgLayer.id = uuidv4();
