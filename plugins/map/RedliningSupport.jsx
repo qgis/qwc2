@@ -22,7 +22,7 @@ import FeatureAttributesWindow from '../../components/FeatureAttributesWindow';
 import LocationRecorder from '../../components/LocationRecorder';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
 import NumericInputWindow from '../../components/NumericInputWindow';
-import FeatureStyles from '../../utils/FeatureStyles';
+import FeatureStyles, {computeFeatureStyle} from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
@@ -208,7 +208,7 @@ class RedliningSupport extends React.Component {
         };
     };
     styleProps = (feature) => {
-        const styleOptions = feature.get('styleOptions');
+        const styleOptions = computeFeatureStyle({}, feature.get('styleOptions'));
         const label = feature.get("label") || "";
         const isText = feature.get("shape") === "Text";
         return {
