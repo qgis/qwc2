@@ -34,6 +34,7 @@
         "Share": "Link delen",
         "SunExposure3D": "",
         "ThemeSwitcher": "Kaartselectie",
+        "VisibilityPresets": "",
         "AttributeTable": "Attributentabel",
         "AuthenticationLogin": "Inloggen",
         "AuthenticationLogout": "Uitloggen - {0}",
@@ -110,7 +111,9 @@
     },
     "bottombar": {
       "mousepos_label": "Coördinaten",
+      "quick_select_label": "",
       "scale_label": "Schaal",
+      "select": "",
       "terms_label": "Voorwaarden",
       "viewertitle_label": ""
     },
@@ -754,7 +757,6 @@
       "title": "Kaart informatie"
     },
     "settings": {
-      "bookmarks": "Bookmarks",
       "colorscheme": "Kleurenschema",
       "confirmlang": "De applicatie wordt opnieuw geladen om de taal te wijzigen. Doorgaan?",
       "default": "Default",
@@ -901,6 +903,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "",

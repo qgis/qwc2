@@ -34,6 +34,7 @@
         "Share": "Share Link",
         "SunExposure3D": "Sun Exposure",
         "ThemeSwitcher": "Theme",
+        "VisibilityPresets": "Visibility Presets",
         "AttributeTable": "Attribute Table",
         "AuthenticationLogin": "Login",
         "AuthenticationLogout": "Logout - {0}",
@@ -110,7 +111,9 @@
     },
     "bottombar": {
       "mousepos_label": "Coordinates",
+      "quick_select_label": "Quick Select",
       "scale_label": "Scale",
+      "select": "Select...",
       "terms_label": "Terms of use",
       "viewertitle_label": "Homepage"
     },
@@ -754,7 +757,6 @@
       "title": "Theme Information"
     },
     "settings": {
-      "bookmarks": "Bookmarks",
       "colorscheme": "Appearance",
       "confirmlang": "The application will be reloaded to change the language. Proceed?",
       "default": "Default",
@@ -901,6 +903,18 @@
     },
     "view3d": {
       "storingstate": "Storing 3D state..."
+    },
+    "visibilitypreset": {
+      "add": "Create new visibility preset",
+      "addfailed": "Failed to create visibility preset",
+      "manage": "Manage visibility presets",
+      "newpreset": "New visibility preset",
+      "nopresets": "No visibility presets",
+      "notloggedin": "You need to be logged in to store visibilities",
+      "open": "Open visibility in current tab",
+      "removefailed": "Failed to remove visibility preset",
+      "savefailed": "Failed to update visibility preset",
+      "update": "Update visibility preset"
     },
     "window": {
       "detach": "Detach",

@@ -63,6 +63,7 @@ import ThemeSwitcherPlugin from './plugins/ThemeSwitcher';
 import TimeManagerPlugin from './plugins/TimeManager';
 import TopBarPlugin from './plugins/TopBar';
 import View3DPlugin from './plugins/View3D';
+import VisibilityPresetsPlugin from './plugins/VisibilityPreset';
 import {ZoomInPlugin, ZoomOutPlugin} from './plugins/ZoomButtons';
 import defaultLocaleData from './static/translations/en-US.json';
 
@@ -86,6 +87,7 @@ export default {
             AuthenticationPlugin: AuthenticationPlugin,
             BackgroundSwitcherPlugin: BackgroundSwitcherPlugin,
             BookmarkPlugin: BookmarkPlugin,
+            VisibilityPresetsPlugin: VisibilityPresetsPlugin,
             BottomBarPlugin: BottomBarPlugin,
             CookiePopupPlugin: CookiePopupPlugin,
             CyclomediaPlugin: lazy(() => import('./plugins/Cyclomedia')),
