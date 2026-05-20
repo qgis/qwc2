@@ -44,6 +44,7 @@ class ResizeableWindow extends React.Component {
         fitHeight: PropTypes.bool,
         fullscreen: PropTypes.bool,
         hideDockIcon: PropTypes.bool,
+        hideTitleBar: PropTypes.bool,
         icon: PropTypes.string,
         initialHeight: PropTypes.number,
         initialWidth: PropTypes.number,
@@ -168,7 +169,7 @@ class ResizeableWindow extends React.Component {
         ev.stopPropagation();
     };
     renderTitleBar = () => {
-        if (this.props.fullscreen) {
+        if (this.props.fullscreen || this.props.hideTitleBar) {
             return null;
         }
         const maximized = this.state.geometry.maximized ? true : false;
