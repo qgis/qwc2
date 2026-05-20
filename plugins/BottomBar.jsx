@@ -12,14 +12,17 @@ import {connect} from 'react-redux';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
+import {setThemeLayersVisibilityPreset} from '../actions/layers';
 import {changeZoomLevel, setDisplayCrs} from '../actions/map';
 import {openExternalUrl, setBottombarHeight} from '../actions/windows';
 import CoordinateDisplayer from '../components/CoordinateDisplayer';
+import GroupSelect from '../components/widgets/GroupSelect';
 import InputContainer from '../components/widgets/InputContainer';
 import NumberInput from '../components/widgets/NumberInput';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import {resolveVisibilityPreset} from "../utils/PermaLinkUtils";
 
 import './style/BottomBar.css';
 
@@ -39,11 +42,14 @@ class BottomBar extends React.Component {
             icon: PropTypes.string
         })),
         additionalMouseCrs: PropTypes.array,
+        bookmarks: PropTypes.array,
         changeZoomLevel: PropTypes.func,
         /** Custom coordinate formatter, as `(coordinate, crs) => string`. */
         coordinateFormatter: PropTypes.func,
         /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
+        /** Whether to display a dropdown menu for the selection of user bookmarks and visibility presets in the bottom bar. */
+        displayQuickSelectDropdown: PropTypes.bool,
         /** Whether to display the scalebar in the bottom bar. */
         displayScalebar: PropTypes.bool,
         /** Whether to display the scale in the bottom bar. */
@@ -56,6 +62,7 @@ class BottomBar extends React.Component {
         scalebarOptions: PropTypes.object,
         setBottombarHeight: PropTypes.func,
         setDisplayCrs: PropTypes.func,
+        setThemeLayersVisibilityPreset: PropTypes.func,
         /** The URL of the terms label anchor. */
         termsUrl: PropTypes.string,
         /** Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. */
@@ -67,10 +74,12 @@ class BottomBar extends React.Component {
         /** Icon of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. */
         viewertitleUrlIcon: PropTypes.string,
         /** The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. */
-        viewertitleUrlTarget: PropTypes.string
+        viewertitleUrlTarget: PropTypes.string,
+        visibilityPresets: PropTypes.array
     };
     static defaultProps = {
         displayCoordinates: true,
+        displayQuickSelectDropdown: false,
         displayScalebar: true,
         displayScales: true
     };
@@ -103,7 +112,7 @@ class BottomBar extends React.Component {
             rightBottomLinks.push(this.renderLink(entry));
         }
         const enabledMouseCrs = [...this.props.additionalMouseCrs || [], this.props.map.projection, "EPSG:4326"];
-        // eslint-disable-next-line no-unused-vars
+
         const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, value]) => {
             return enabledMouseCrs.includes(key);
         }));
@@ -143,6 +152,22 @@ class BottomBar extends React.Component {
                 </div>
             );
         }
+        let quickSelectDropdown = null;
+        if (this.props.displayQuickSelectDropdown &&
+            ((this.props.bookmarks && this.props.bookmarks.length > 0) || (this.props.visibilityPresets && this.props.visibilityPresets.length > 0))) {
+            const bookmarks = (this.props.bookmarks || []);
+            const visibilityPresets = (this.props.visibilityPresets || []);
+            const options = {
+                [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk:" + bm.key, bm.description]),
+                [LocaleUtils.tr("appmenu.items.VisibilityPresets")]: visibilityPresets.map(bm => ["vp:" + bm.key, bm.description])
+            };
+            quickSelectDropdown = (
+                <div>
+                    <span className="bottombar-quick-select-label">{LocaleUtils.tr("bottombar.quick_select_label")}:&nbsp;</span>
+                    <GroupSelect onChange={this.openBookmarkOrPreset} options={options} placeholder={LocaleUtils.tr("bottombar.select")} />
+                </div>
+            );
+        }
         const style = {
             marginLeft: this.props.mapMargins.outerLeft + 'px',
             marginRight: this.props.mapMargins.outerRight + 'px'
@@ -157,6 +182,7 @@ class BottomBar extends React.Component {
                 <span className="bottombar-spacer" />
                 {coordinates}
                 {scales}
+                {quickSelectDropdown}
                 <span className="bottombar-spacer" />
                 <span className="bottombar-links">
                     {rightBottomLinks}
@@ -188,6 +214,22 @@ class BottomBar extends React.Component {
         this.props.openExternalUrl(url, target, {title, icon});
         ev.preventDefault();
     };
+    openBookmarkOrPreset = (prefixedKey) => {
+        if (prefixedKey.startsWith("vp:")) {
+            const key = prefixedKey.slice("vp:".length);
+            resolveVisibilityPreset(key, (preset) => {
+                if (preset) {
+                    this.props.setThemeLayersVisibilityPreset(preset);
+                }
+            });
+        } else if (prefixedKey.startsWith("bk:")) {
+            const key = prefixedKey.slice("bk:".length);
+            location.href = location.href.split("?")[0] + '?bk=' + key;
+        } else {
+            /* eslint-disable-next-line */
+            console.warn("openBookmarkOrPreset: unexpected key format:", prefixedKey);
+        }
+    };
     setScale = (value) => {
         const scale = parseInt(value, 10);
         if (!isNaN(scale)) {
@@ -206,6 +248,8 @@ class BottomBar extends React.Component {
 
 export default connect((state) => ({
     map: state.map,
+    bookmarks: state.bookmark?.bookmarks,
+    visibilityPresets: state.bookmark?.visibilityPresets,
     fullscreen: state.display?.fullscreen,
     mapMargins: state.windows.mapMargins,
     additionalMouseCrs: state.theme.current?.additionalMouseCrs ?? []
@@ -213,5 +257,6 @@ export default connect((state) => ({
     changeZoomLevel: changeZoomLevel,
     openExternalUrl: openExternalUrl,
     setBottombarHeight: setBottombarHeight,
-    setDisplayCrs: setDisplayCrs
+    setDisplayCrs: setDisplayCrs,
+    setThemeLayersVisibilityPreset: setThemeLayersVisibilityPreset
 })(BottomBar);

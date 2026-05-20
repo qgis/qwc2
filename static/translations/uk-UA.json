@@ -34,6 +34,7 @@
         "Share": "Поділитися лінком",
         "SunExposure3D": "",
         "ThemeSwitcher": "Тема",
+        "VisibilityPresets": "",
         "AttributeTable": "",
         "AuthenticationLogin": "",
         "AuthenticationLogout": "",
@@ -110,7 +111,9 @@
     },
     "bottombar": {
       "mousepos_label": "Координати",
+      "quick_select_label": "",
       "scale_label": "Масштаб",
+      "select": "",
       "terms_label": "Правила користування",
       "viewertitle_label": "Домашня сторінка"
     },
@@ -751,7 +754,6 @@
       "title": ""
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",
@@ -897,6 +899,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "",
