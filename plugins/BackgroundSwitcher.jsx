@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import classnames from 'classnames';
@@ -16,6 +17,7 @@ import PropTypes from 'prop-types';
 import {LayerRole, changeLayerProperty} from '../actions/layers';
 import Icon from '../components/Icon';
 import MapButton from '../components/MapButton';
+import {MapButtonPortalContext} from '../components/PluginsContainer';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
@@ -27,8 +29,11 @@ import './style/BackgroundSwitcher.css';
  * Map button for switching the background layer.
  */
 export class BackgroundSwitcher extends React.Component {
+    static contextType = MapButtonPortalContext;
     static propTypes = {
         backgroundLayers: PropTypes.array,
+        /** The button display mode, either `button` or `thumbnail`. */
+        buttonDisplayMode: PropTypes.string,
         changeLayerVisibility: PropTypes.func,
         nobgMsgId: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
@@ -37,6 +42,7 @@ export class BackgroundSwitcher extends React.Component {
         showGroupThumbnails: PropTypes.bool
     };
     static defaultProps = {
+        buttonDisplayMode: 'button',
         position: 0,
         nobgMsgId: "bgswitcher.nobg"
     };
@@ -63,22 +69,42 @@ export class BackgroundSwitcher extends React.Component {
         }
         const visibleBgLayer = this.props.backgroundLayers.flat().find(l => l.visibility === true) ?? null;
         const backgroundLayers = [null, ...this.props.backgroundLayers];
-        return (
-            <MapButton
-                active={this.state.visible}
-                buttonRef={el => {this.buttonEl = el;}}
-                icon="bglayer"
-                onClick={this.buttonClicked}
-                position={this.props.position}
-                tooltip={LocaleUtils.tr("tooltip.background")}
-            >
-                <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')} ref={el => { this.listEl = el; }}>
-                    {backgroundLayers.map(entry => {
-                        return Array.isArray(entry) ? this.renderGroupItem(entry, visibleBgLayer) : this.renderLayerItem(entry, visibleBgLayer);
-                    })}
+        if (this.props.buttonDisplayMode === 'thumbnail') {
+            // const currentIndex = backgroundLayers.findIndex(bl => Array.isArray(bl) ? bl.includes(visibleBgLayer) : bl === visibleBgLayer);
+            const assetsPath = ConfigUtils.getAssetsPath();
+            const thumbnail = visibleBgLayer?.thumbnail ? assetsPath + "/" + visibleBgLayer.thumbnail : "data:image/gif;base64,R0lGODlhAQABAIAAAP7//wAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
+            return ReactDOM.createPortal((
+                <div
+                    className="background-switcher-thumbnail" data-slot={this.props.position}
+                    onClick={this.buttonClicked} onKeyDown={MiscUtils.checkKeyActivate}
+                    ref={el => {this.buttonEl = el;}} style={{order: this.props.position}} tabIndex={0}
+                >
+                    <img src={thumbnail} />
+                    <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')} ref={el => { this.listEl = el; }}>
+                        {backgroundLayers.map(entry => {
+                            return Array.isArray(entry) ? this.renderGroupItem(entry, visibleBgLayer) : this.renderLayerItem(entry, visibleBgLayer);
+                        })}
+                    </div>
                 </div>
-            </MapButton>
-        );
+            ), this.context);
+        } else {
+            return (
+                <MapButton
+                    active={this.state.visible}
+                    buttonRef={el => {this.buttonEl = el;}}
+                    icon="bglayer"
+                    onClick={this.buttonClicked}
+                    position={this.props.position}
+                    tooltip={LocaleUtils.tr("tooltip.background")}
+                >
+                    <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')} ref={el => { this.listEl = el; }}>
+                        {backgroundLayers.map(entry => {
+                            return Array.isArray(entry) ? this.renderGroupItem(entry, visibleBgLayer) : this.renderLayerItem(entry, visibleBgLayer);
+                        })}
+                    </div>
+                </MapButton>
+            );
+        }
     }
     itemTitle = (item) => {
         return item.titleMsgId ? LocaleUtils.tr(item.titleMsgId) : item.title ?? item.name;
