@@ -974,7 +974,7 @@ Allows drawing figures and text labels on the map.
 | defaultTextOutlineColor | `array` | Default text outline color. In format `[r, g, b, a]`. | `[255, 255, 255, 1]` |
 | hiddenTools | `array` | Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `FeatureLabel`, `Export`. | `[]` |
 | predefinedBorderColors | `[array]` | Predefined border colors. In format `[[r, g, b, a], ...]`. | `undefined` |
-| predefinedDashPatterns | `[array]` | Predefined dash patterns. In format `[<dash-array>, ...]`, where a dash-array is list of alternating dash and gap widths, i.e. `[8 4]` for long dashes followed by shorter gaps. | `[[], [8, 8], [1, 8], [8, 8, 1, 8]]` |
+| predefinedDashPatterns | `[array]` | Predefined dash patterns. In format `[<dash-array>, ...]`, where a dash-array is list of alternating dash and gap widths, i.e. `[8 4]` for long dashes followed by shorter gaps. | `[[], [4], [8, 8], [1, 8], [8, 8, 1, 8]]` |
 | predefinedFillColors | `[array]` | Predefined fill colors. In format `[[r, g, b, a], ...]`. | `undefined` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
 | snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
