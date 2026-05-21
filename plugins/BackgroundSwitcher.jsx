@@ -256,8 +256,10 @@ export class BackgroundSwitcher extends React.Component {
         }
     };
     setSwitcherVisible = (visible) => {
-        clearTimeout(this.visibleTimeout);
-        this.visibleTimeout = setTimeout(() => this.setState({visible: visible}), 500);
+        if (this.props.buttonClickAction === "cycle") {
+            clearTimeout(this.visibleTimeout);
+            this.visibleTimeout = setTimeout(() => this.setState({visible: visible}), 500);
+        }
     };
     buttonClicked = (nextLayer) => {
         if (this.props.buttonClickAction === 'cycle') {
