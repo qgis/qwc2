@@ -3,9 +3,9 @@
 
 
 "3d-tiles-renderer@^0.4.22":
-  version "0.4.23"
-  resolved "https://registry.yarnpkg.com/3d-tiles-renderer/-/3d-tiles-renderer-0.4.23.tgz#70cfa25913c79b808438ead39d2b94fe91add93a"
-  integrity sha512-IlcDWcKQ1Phk2bnz2ONywEuyL+Vm2GffYtJFTPpvhXBeWL4TZHQPGy17X+dfMH/nSTeBjGhmEmbhTN+Aj6ag6Q==
+  version "0.4.25"
+  resolved "https://registry.yarnpkg.com/3d-tiles-renderer/-/3d-tiles-renderer-0.4.25.tgz#e123d163be9c9420fa83ac2dc95c50db88d3ff7d"
+  integrity sha512-05wG0xQ2D2+lQSMV7TQGh1ul3Ozx8USHTCBI0JO0E9EIDlS0gSevwWYBcT/4TMX3JMFIzva4Ls7NjStoH+Z76Q==
 
 "@babel/cli@^7.28.6":
   version "7.28.6"
