@@ -89,6 +89,10 @@ div.background-switcher-group > div.background-switcher-group-item {
     padding: 0.25em;
 }
 
+div.background-switcher-group > div.background-switcher-item {
+    margin-bottom: 0.5em;;
+}
+
 div.background-switcher-item-title {
     display: flex;
     align-items: center;
