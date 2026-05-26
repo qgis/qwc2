@@ -230,7 +230,7 @@ const CoordinatesUtils = {
     pixelsToMapUnits(pixels, dpi, scaleDenom, mapCrs) {
         const unit = CoordinatesUtils.getUnits(mapCrs);
         let inchesToUnits = 1;
-        if (unit === 'meters') {
+        if (unit === 'm') {
             inchesToUnits = 0.0254;
         }
         return (pixels / dpi) * scaleDenom * inchesToUnits;
