@@ -1154,22 +1154,25 @@ const LayerUtils = {
     },
     computeVisibilityPreset(layers) {
         const result = {};
-        const collectLayerVisibilities = (layer, path) => {
+        const collectLayerVisibilities = (layer, path, parentVisible) => {
             if (layer.sublayers) {
                 const istoplevel = !!layer.url;
                 layer.sublayers.forEach(sublayer =>
-                    collectLayerVisibilities(sublayer, !istoplevel ? path + layer.name + "/" : "")
+                    collectLayerVisibilities(sublayer, !istoplevel ? path + layer.name + "/" : "", parentVisible && layer.visibility)
                 );
                 if (layer.visibility && !istoplevel) {
-                    result[path + layer.name] = "";
+                    result[path + layer.name] = {checked: true};
                 }
-            } else if (layer.visibility) {
-                result[path + layer.name] = layer.style;
+                if (layer.expanded && !istoplevel) {
+                    result[path + layer.name] = {...result[path + layer.name], expanded: true};
+                }
+            } else {
+                result[path + layer.name] = {checked: layer.visibility, style: layer.style, visible: layer.visibility && parentVisible};
             }
         };
         layers.forEach(layer => {
             if (layer.role === LayerRole.THEME) {
-                collectLayerVisibilities(layer);
+                collectLayerVisibilities(layer, "", layer.visibility);
             }
         });
         return result;
@@ -1191,17 +1194,16 @@ const LayerUtils = {
         const newLayer = {...layer};
         const itempath = [...path.slice(1), newLayer.name].join("/");
         if (newLayer.sublayers) {
-            newLayer.visibility = itempath in preset || path.length === 0;
+            newLayer.visibility = path.length === 0 || preset[itempath]?.checked === true;
+            newLayer.expanded = path.length === 0 || preset[itempath]?.expanded === true;
             newLayer.sublayers = newLayer.sublayers.map(sublayer =>
                 LayerUtils.applyVisibilityPreset(sublayer, preset, [...path, layer.name])
             );
+        } else if (itempath in preset) {
+            newLayer.visibility = preset[itempath].checked === true;
+            newLayer.style = preset[itempath].style;
         } else {
-            if (itempath in preset) {
-                newLayer.visibility = true;
-                newLayer.style = preset[itempath];
-            } else {
-                newLayer.visibility = false;
-            }
+            newLayer.visibility = false;
         }
         return newLayer;
     },

@@ -667,10 +667,10 @@ class Print extends React.Component {
             const preset = this.props.theme.visibilityPresets[this.state.layout.map.followPresetName];
             const layers = [];
             const styles = [];
-            Object.entries(preset).forEach(([layerPath, style]) => {
-                if (style) {
+            Object.entries(preset).forEach(([layerPath, options]) => {
+                if (options.visible) {
                     layers.push(layerPath.split("/").slice(-1)[0]);
-                    styles.push(style);
+                    styles.push(options.style);
                 }
             });
             formData[mapName + ":LAYERS"] = layers.join(",");
