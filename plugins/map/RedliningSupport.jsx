@@ -208,7 +208,7 @@ class RedliningSupport extends React.Component {
         };
     };
     styleProps = (feature) => {
-        const styleOptions = computeFeatureStyle({}, feature.get('styleOptions'));
+        const styleOptions = computeFeatureStyle({}, {styleOptions: feature.get('styleOptions')});
         const label = feature.get("label") || "";
         const isText = feature.get("shape") === "Text";
         return {
