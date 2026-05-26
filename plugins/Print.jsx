@@ -673,6 +673,8 @@ class Print extends React.Component {
                     styles.push(options.style);
                 }
             });
+            formData.LAYERS = layers.join(",");
+            formData.STYLES = styles.join(",");
             formData[mapName + ":LAYERS"] = layers.join(",");
             formData[mapName + ":STYLES"] = styles.join(",");
         }
