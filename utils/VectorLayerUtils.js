@@ -97,11 +97,22 @@ const VectorLayerUtils = {
                     const x = geometry.coordinates[0];
                     const y = geometry.coordinates[1];
                     if (feature.styleName === "textlabel") {
-                        const fontSize = Math.round(styleOptions.strokeWidth * scaleFactor);
-                        const metrics = MiscUtils.measureText(feature.properties.label, `${fontSize}pt sans`);
-                        // Don't ask why these scale factors...
-                        const mapWidth = CoordinatesUtils.pixelsToMapUnits(metrics.width, dpi, mapScale, printCrs) / 6;
-                        const mapHeight = CoordinatesUtils.pixelsToMapUnits(metrics.height, dpi, mapScale, printCrs) / 4;
+                        if (x !== styleOptions.anchor[0] && y !== styleOptions.anchor[1]) {
+                            params.styles.push(VectorLayerUtils.createSld("LineString", "default", {strokeColor: [0, 0, 0, 1], strokeWidth: styleOptions.strokeWidth}, layer.opacity, dpi, scaleFactor));
+                            params.labels.push(" ");
+                            params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt({type: "LineString", coordinates: [[x, y], styleOptions.anchor]}));
+                            params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                            params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
+                            params.labelOutlineSizes.push("0");
+                            params.labelSizes.push("1");
+                            params.labelDist.push("0");
+                            params.labelRotations.push("0");
+                        }
+
+                        const metrics = MiscUtils.measureText(feature.properties.label, `10pt sans`);
+                        const scale = styleOptions.strokeWidth * scaleFactor;
+                        const mapWidth = CoordinatesUtils.pixelsToMapUnits((metrics.width + 12) * scale, 100, mapScale, printCrs);
+                        const mapHeight = CoordinatesUtils.pixelsToMapUnits((metrics.height + 12) * scale, 100, mapScale, printCrs);
                         const frame = {
                             type: "Polygon",
                             coordinates: [[
@@ -121,18 +132,6 @@ const VectorLayerUtils = {
                         params.labelSizes.push("1");
                         params.labelDist.push("0");
                         params.labelRotations.push("0");
-
-                        if (x !== styleOptions.anchor[0] && y !== styleOptions.anchor[1]) {
-                            params.styles.push(VectorLayerUtils.createSld("LineString", "default", {strokeColor: [0, 0, 0, 1], strokeWidth: styleOptions.strokeWidth}, layer.opacity, dpi, scaleFactor));
-                            params.labels.push(" ");
-                            params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt({type: "LineString", coordinates: [[x, y], styleOptions.anchor]}));
-                            params.labelFillColors.push(ensureHex(styleOptions.textFill));
-                            params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
-                            params.labelOutlineSizes.push("0");
-                            params.labelSizes.push("1");
-                            params.labelDist.push("0");
-                            params.labelRotations.push("0");
-                        }
                     }
                     // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
                     const square = {
