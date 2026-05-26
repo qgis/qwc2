@@ -34,6 +34,7 @@
         "Share": "Dela länk",
         "SunExposure3D": "",
         "ThemeSwitcher": "Tema",
+        "VisibilityPresets": "",
         "AttributeTable": "",
         "AuthenticationLogin": "Logga in",
         "AuthenticationLogout": "Logga ut - {0}",
@@ -110,7 +111,9 @@
     },
     "bottombar": {
       "mousepos_label": "Koordinater",
+      "quick_select_label": "",
       "scale_label": "Skala",
+      "select": "",
       "terms_label": "Villkor",
       "viewertitle_label": ""
     },
@@ -751,7 +754,6 @@
       "title": ""
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",
@@ -897,6 +899,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "",
