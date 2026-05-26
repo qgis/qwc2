@@ -360,7 +360,6 @@
             {"key": "FeatureSearch", "icon": "search"},
             {"key": "Share", "icon": "share", "shortcut": "alt+shift+s"},
             {"key": "Bookmark", "icon": "bookmark", "shortcut": "alt+shift+b"},
-            {"key": "VisibilityPresets", "icon": "eye", "shortcut": "alt+shift+v"},
             {"key": "Tools", "icon": "tools", "subitems": [
               {"key": "Identify", "icon": "identify_region", "mode": "Region"},
               {"key": "TimeManager", "icon": "clock"},
@@ -524,9 +523,6 @@
             }
           }
         }
-      },
-      {
-        "name": "VisibilityPresets"
       }
     ],
     "mobile": [
