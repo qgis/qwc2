@@ -108,7 +108,6 @@ class Editing extends React.Component {
     };
     onHide = () => {
         this.props.clearEditContext('Editing');
-        this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility);
         this.setState({minimized: false, drawPick: false});
     };
     componentDidUpdate(prevProps, prevState) {
@@ -495,21 +494,6 @@ class Editing extends React.Component {
             this.cancelCopyAttributes();
         }
     };
-    setLayerVisibility = (selectedLayer, visibility) => {
-        if (selectedLayer !== null) {
-            const [wmsName, layerName] = selectedLayer.split("#");
-            const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', wmsName, 'name', layerName);
-            if (match) {
-                const oldvisibility = match.sublayer.visibility;
-                if (oldvisibility !== visibility && visibility !== null) {
-                    const recurseDirection = !oldvisibility ? "parents" : null;
-                    this.props.changeLayerProperty(match.layer.id, "visibility", visibility, match.path, recurseDirection);
-                }
-                return oldvisibility;
-            }
-        }
-        return null;
-    };
     changeSelectedLayer = (selectedLayer, feature = null) => {
         const [mapName, layerName] = (selectedLayer ?? '#').split("#");
         const editConfig = selectedLayer ? this.props.editConfigs[mapName][layerName] : null;
@@ -520,16 +504,15 @@ class Editing extends React.Component {
             mapPrefix: mapName,
             editConfig: editConfig
         });
-
-        let prevLayerVisibility = null;
-        if (this.state.selectedLayer !== null) {
-            this.setLayerVisibility(this.state.selectedLayer, this.state.selectedLayerVisibility);
-            prevLayerVisibility = this.setLayerVisibility(selectedLayer, true);
+        if (selectedLayer !== null) {
+            const match = LayerUtils.searchLayer(this.props.layers, 'wms_name', mapName, 'name', layerName);
+            if (match) {
+                this.props.changeLayerProperty(match.layer.id, "visibility", true, match.path, "parents");
+            }
         }
 
         this.setState({
             selectedLayer: selectedLayer,
-            selectedLayerVisibility: prevLayerVisibility,
             drawPick: false
         });
     };
