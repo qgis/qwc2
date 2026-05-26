@@ -16,7 +16,6 @@ import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
 import {refreshBookmarks, refreshVisibilityPresets} from '../actions/bookmark';
-import {setThemeLayersVisibilityPreset} from '../actions/layers';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {changeLocale} from '../actions/locale';
 import {setCurrentTask} from '../actions/task';
@@ -72,7 +71,6 @@ class AppContainerComponent extends React.Component {
     constructor(props) {
         super(props);
         this.themesLoaded = false;
-        this.pendingVisibilityPreset = null;
 
         // Set initial bottom/topbar height to zero in case not topbar/bottombar is enabled
         // The components will set the proper height if and when initialized
@@ -86,11 +84,6 @@ class AppContainerComponent extends React.Component {
         // The map component needs to have finished loading before theme initialization can proceed
         if (this.props.haveMapSize && !this.themesLoaded) {
             this.loadThemes();
-        }
-        // Apply pending visibility preset once the theme is loaded
-        if (this.pendingVisibilityPreset && this.props.currentTheme && !prevProps.currentTheme) {
-            this.props.setThemeLayersVisibilityPreset(this.pendingVisibilityPreset);
-            this.pendingVisibilityPreset = null;
         }
     }
     loadThemes = () => {
@@ -167,14 +160,7 @@ class AppContainerComponent extends React.Component {
                     layerParams.reverse();
                 }
                 const initialTaskParam = (params.task ? JSON.parse(decodeURIComponent(params.task)) : null);
-                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialTaskParam);
-                if (state.visibilityPreset) {
-                    if (this.props.currentTheme) {
-                        this.props.setThemeLayersVisibilityPreset(state.visibilityPreset);
-                    } else {
-                        this.pendingVisibilityPreset = state.visibilityPreset;
-                    }
-                }
+                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialTaskParam, state.visibilityPreset);
             } else if (!ConfigUtils.havePlugin("Portal")) {
                 this.props.showNotification("missingdefaulttheme", LocaleUtils.tr("app.missingdefaulttheme", params.t), NotificationType.WARN, true);
             }
@@ -193,14 +179,12 @@ class AppContainerComponent extends React.Component {
 const AppContainer = connect(state => ({
     locale: state.locale.current,
     haveMapSize: state.map.size !== null,
-    currentTheme: state.theme.current,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     localConfig: state.localConfig
 }), {
     themesLoaded: themesLoaded,
     setCurrentTask: setCurrentTask,
     setCurrentTheme: setCurrentTheme,
-    setThemeLayersVisibilityPreset: setThemeLayersVisibilityPreset,
     showNotification: showNotification,
     setTopbarHeight: setTopbarHeight,
     setBottombarHeight: setBottombarHeight
