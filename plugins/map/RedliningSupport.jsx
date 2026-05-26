@@ -73,7 +73,7 @@ class RedliningSupport extends React.Component {
                 rotation: feature.getProperties().rotation || 0,
                 scale: opts.strokeWidth,
                 fill: new ol.style.Fill({color: opts.textFillColor}),
-                stroke: new ol.style.Stroke({color: [0, 0, 0, 0.5], width: 4})
+                stroke: new ol.style.Stroke({color: [0, 0, 0, 0.25], width: 4})
             })
         });
         const geometryFunction = (feature) => {
