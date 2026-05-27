@@ -739,7 +739,7 @@ Allows exporting a selected portion of the map to a variety of formats.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| allowedFormats | `[string]` | Whitelist of allowed export format mimetypes. If empty, supported formats are listed. | `undefined` |
+| allowedFormats | `[string]` | Whitelist of allowed export format mimetypes. If empty, supported formats are listed. Formats are sorted according to this list, and the first entry becomes the default format. Supported mimetypes are: `image/jpeg`, `image/png`, `image/png; mode=16bit`, `image/png; mode=8bit`, `image/png; mode=1bit`, `image/geotiff`, `image/tiff`, `application/dxf`, `application/pdf`. | `undefined` |
 | allowedScales | `{[number], bool}` | List of scales at which to export the map. If empty, scale can be freely specified. If `false`, the map can only be exported at the current scale. | `undefined` |
 | defaultFormat | `string` | Default export format mimetype. If empty, first available format is used. | `undefined` |
 | defaultScaleFactor | `number` | The factor to apply to the map scale to determine the initial export map scale (if `allowedScales` is not `false`). | `1` |
