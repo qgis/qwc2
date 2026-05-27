@@ -72,6 +72,11 @@ const Tiles3DStyle = {
         const labels = {};
         const idAttr = config.idAttr ?? "id";
 
+        if (!["tilesetStyle", "colorAttr", "alphaAttr", "labelAttr"].some(k => (config[k] ?? null) !== null)) {
+            // No styling information is present
+            return;
+        }
+
         const context = {
             colorExpressions: [],
             featureStyles: config.tilesetStyle?.featureStyles,
