@@ -15,12 +15,14 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
+import {LayerRole, changeLayerProperty} from '../actions/layers';
 import Icon from '../components/Icon';
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
 import InputContainer from '../components/widgets/InputContainer';
 import Spinner from '../components/widgets/Spinner';
 import IdentifyUtils from '../utils/IdentifyUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import { QgisSearch } from '../utils/SearchProviders';
 
@@ -34,8 +36,10 @@ import "./style/FeatureSearch.css";
  */
 class FeatureSearch extends React.Component {
     static propTypes = {
+        changeLayerProperty: PropTypes.func,
         /** Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. */
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
+        layers: PropTypes.array,
         map: PropTypes.object,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
@@ -236,6 +240,17 @@ class FeatureSearch extends React.Component {
         this.setState({busy: true, searchResults: null});
         axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
             const results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);
+            // Enable the layers
+            Object.keys(results).forEach(layername => {
+                const path = [];
+                let sublayer = null;
+                const layer = this.props.layers.find(l => {
+                    return l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', layername, path));
+                });
+                if (layer && sublayer) {
+                    this.props.changeLayerProperty(layer.id, "visibility", true, path, 'both');
+                }
+            });
             if (provider.params.resultTitle) {
                 Object.entries(results).forEach(([layername, features]) => {
                     features.forEach(feature => {
@@ -302,6 +317,9 @@ class FeatureSearch extends React.Component {
 }
 
 export default connect((state) => ({
+    layers: state.layers.flat,
     map: state.map,
     theme: state.theme.current
-}), {})(FeatureSearch);
+}), {
+    changeLayerProperty: changeLayerProperty
+})(FeatureSearch);
