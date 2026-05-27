@@ -72,7 +72,7 @@ class BottomBar3D extends React.Component {
             return null;
         }
         const leftBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side === "left").map(this.renderLink);
-        const rightBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side !== "left").map(this.renderLink); 
+        const rightBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side !== "left").map(this.renderLink);
         if (this.props.viewertitleUrl) {
             const entry = {url: this.props.viewertitleUrl, urlTarget: this.props.viewertitleUrlTarget, label: LocaleUtils.tr("bottombar.viewertitle_label"), icon: this.props.viewertitleUrlIcon};
             rightBottomLinks.push(this.renderLink(entry));
@@ -148,8 +148,8 @@ class BottomBar3D extends React.Component {
 }
 
 export default connect((state) => ({
-    fullscreen: state.display?.fullscreen,
+    fullscreen: state.display?.fullscreen
 }), {
     openExternalUrl: openExternalUrl,
-    setBottombarHeight: setBottombarHeight,
+    setBottombarHeight: setBottombarHeight
 })(BottomBar3D);
