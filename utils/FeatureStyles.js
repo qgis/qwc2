@@ -14,8 +14,8 @@ import ConfigUtils from './ConfigUtils';
 import arrowhead from './img/arrowhead.svg';
 import markerIcon from './img/marker-icon.png';
 import measurehead from './img/measurehead.svg';
-import ResourceRegistry from './ResourceRegistry';
 import MiscUtils from './MiscUtils';
+import ResourceRegistry from './ResourceRegistry';
 
 ResourceRegistry.addResource('arrowhead', arrowhead);
 ResourceRegistry.addResource('measurehead', measurehead);
