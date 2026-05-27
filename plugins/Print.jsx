@@ -195,7 +195,7 @@ class Print extends React.Component {
     onHide = () => {
         this.setState({minimized: false, printSeriesEnabled: false, atlasFeatures: []});
     };
-    renderBody = () => {
+    renderBody = (themeLayer) => {
         if (!this.state.layout) {
             return (<div className="print-body" role="body">{LocaleUtils.tr("print.nolayouts")}</div>);
         }
@@ -273,7 +273,7 @@ class Print extends React.Component {
                                 <select onChange={this.changeLayout} value={this.state.layout.name}>
                                     {this.state.layouts.map(item => {
                                         return (
-                                            <option key={item.name} value={item.name}>{this.translateLayoutName(item)}</option>
+                                            <option key={item.name} value={item.name}>{this.translateLayoutName(themeLayer, item)}</option>
                                         );
                                     })}
                                 </select>
@@ -579,7 +579,7 @@ class Print extends React.Component {
                     onHide={this.onHide} onShow={this.onShow} side={this.props.side}
                     title={LocaleUtils.tr("appmenu.items.Print")} width="20em">
                     {() => ({
-                        body: this.state.minimized ? null : this.renderBody(),
+                        body: this.state.minimized ? null : this.renderBody(themeLayer),
                         extra: [
                             this.renderPrintSelection()
                         ]
@@ -836,8 +836,8 @@ class Print extends React.Component {
         }
         return await mergedDoc.generateAsync({ type: 'arraybuffer' });
     }
-    translateLayoutName = (item) => {
-        return this.props.theme.translations?.layouts?.[item.title] ?? this.props.theme.translations?.layouts?.[item.name] ?? item.title ?? item.name;
+    translateLayoutName = (themeLayer, item) => {
+        return themeLayer.translations?.layouts?.[item.title] ?? themeLayer.translations?.layouts?.[item.name] ?? item.title ?? item.name;
     };
 }
 
