@@ -850,9 +850,9 @@ class Map3D extends React.Component {
                 center.longitude,
                 center.altitude
             );
-            this.instance.view.camera.position.set(position.x, position.y, 0.5 * (extent.east - extent.west));
+            this.instance.view.camera.position.set(position.x, position.y, 0.5 * (extent.maxX - extent.minX));
         } else {
-            this.instance.view.camera.position.set(center.x, center.y, 0.5 * (extent.east - extent.west));
+            this.instance.view.camera.position.set(center.x, center.y, 0.5 * (extent.maxX - extent.minX));
         }
 
         // Skybox
