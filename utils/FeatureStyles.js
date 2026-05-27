@@ -424,7 +424,7 @@ export default {
             new ol.style.Style({
                 text: new ol.style.Text({
                     font: '10pt sans-serif',
-                    padding: [6, 10, 6, 10],
+                    padding: [3, 5, 3, 5],
                     text: feature.getProperties().label || "",
                     rotation: feature.getProperties().rotation || 0,
                     scale: options.strokeWidth,
