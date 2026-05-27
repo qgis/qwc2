@@ -15,6 +15,7 @@ import arrowhead from './img/arrowhead.svg';
 import markerIcon from './img/marker-icon.png';
 import measurehead from './img/measurehead.svg';
 import ResourceRegistry from './ResourceRegistry';
+import MiscUtils from './MiscUtils';
 
 ResourceRegistry.addResource('arrowhead', arrowhead);
 ResourceRegistry.addResource('measurehead', measurehead);
@@ -427,8 +428,8 @@ export default {
                     text: feature.getProperties().label || "",
                     rotation: feature.getProperties().rotation || 0,
                     scale: options.strokeWidth,
-                    fill: new ol.style.Fill({color: '#000'}),
-                    stroke: new ol.style.Stroke({color: '#FFF', width: 2}),
+                    fill: new ol.style.Fill({color: options.strokeColor}),
+                    stroke: new ol.style.Stroke({color: MiscUtils.isBrightColor(options.strokeColor) ? '#333' : '#FFF', width: 2}),
                     backgroundFill: new ol.style.Fill({
                         color: options.fillColor
                     }),
