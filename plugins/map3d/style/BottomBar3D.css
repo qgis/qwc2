@@ -65,3 +65,9 @@ div.map3d-bottombar-projection {
     padding: 0.25em 0.5em;
     height: 2em;
 }
+
+div.map3d-bottombar span.bottombar-links > a:not(:first-child) {
+    border-left: 1px solid var(--panel-text-color);
+    margin-left: 0.5em;
+    padding-left: 0.5em;
+}

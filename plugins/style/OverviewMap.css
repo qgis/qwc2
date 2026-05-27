@@ -2,6 +2,9 @@
 #BottomBar span.bottombar-links {
     margin-right: 3em;
 }
+div.map3d-bottombar span.bottombar-links {
+    margin-right: 3em;
+}
 
 div.overview-map {
     position: absolute;
