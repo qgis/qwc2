@@ -81,17 +81,17 @@ class BottomBar3D extends React.Component {
             const entry = {url: this.props.termsUrl, urlTarget: this.props.termsUrlTarget, label: LocaleUtils.tr("bottombar.terms_label"), icon: this.props.termsUrlIcon};
             rightBottomLinks.push(this.renderLink(entry));
         }
-        let coordinates = null;
+        let position = null;
+        let projection = null;
         if (this.props.displayCoordinates) {
-            coordinates = (
-                <div className="controlgroup">
-                    <div className="map3d-bottombar-position">
-                        {(this.state.cursorPosition || []).map(x => x.toFixed(0)).join(" ")}
-                    </div>
-                    <div className="map3d-bottombar-projection">
-                        {this.props.sceneContext.mapCrs ? CoordinatesUtils.getAvailableCRS()[this.props.sceneContext.mapCrs].label : ""}
-                    </div>
-                    <div className="map3d-bottombar-spacer" />
+            position = (
+                <div className="map3d-bottombar-position">
+                    {(this.state.cursorPosition || []).map(x => x.toFixed(0)).join(" ")}
+                </div>
+            );
+            projection = (
+                <div className="map3d-bottombar-projection">
+                    {this.props.sceneContext.mapCrs ? CoordinatesUtils.getAvailableCRS()[this.props.sceneContext.mapCrs].label : ""}
                 </div>
             );
         }
@@ -104,7 +104,9 @@ class BottomBar3D extends React.Component {
                 <span className="bottombar-links">
                     {leftBottomLinks}
                 </span>
-                {coordinates}
+                <div className="map3d-bottombar-spacer" />
+                {position}
+                {projection}
                 <div className="map3d-bottombar-spacer" />
                 <span className="bottombar-links">
                     {rightBottomLinks}
