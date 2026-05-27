@@ -305,7 +305,7 @@ class Redlining extends React.Component {
                 )}
                 <div className="redlining-control">
                     <span>{sizeLabel}:&nbsp;</span>
-                    <NumberInput max={99} min={1} mobile
+                    <NumberInput max={99} min={0} mobile
                         onChange={(nr) => this.updateRedliningStyle({size: nr})}
                         value={this.props.redlining.style.size}/>
                     {showDash ? (
