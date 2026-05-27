@@ -109,7 +109,8 @@ class RedliningFeatureLabelSupport extends React.Component {
             role: LayerRole.USERLAYER
         };
         const featureId = `label::${cur.map}::${cur.layer}::${cur.feature.id}`;
-        const expression = cur.profiles.find(profile => profile.name === this.state.currentProfile).expression;
+        const profile = cur.profiles.find(entry => entry.name === this.state.currentProfile);
+        const expression = profile.expression;
         if (!expression) {
             this.props.removeLayerFeatures(layer, [featureId]);
             return;
@@ -124,7 +125,13 @@ class RedliningFeatureLabelSupport extends React.Component {
         const center = VectorLayerUtils.getFeatureCenter(this.state.cur.feature);
         let feature = (this.props.layers.find(l => l.id === this.props.redlining.layer)?.features || []).find(f => f.id === featureId);
         if (feature) {
-            feature = {...feature, properties: {label: text}};
+            feature = {
+                ...feature,
+                properties: {label: text},
+                styleOptions: {
+                    ...feature.styleOptions,
+                    strokeWidth: (profile.size ?? null) !== null ? 1 + 0.5 * (profile.size) : feature.styleOptions.stokeWidth
+                }};
         } else {
             feature = {
                 id: featureId,
@@ -139,7 +146,7 @@ class RedliningFeatureLabelSupport extends React.Component {
                 shape: "Text",
                 styleName: "textlabel",
                 styleOptions: {
-                    strokeWidth: 2,
+                    strokeWidth: 1 + 0.5 * (profile.size ?? 1),
                     fillColor: [255, 255, 255, 1],
                     textFillColor: [0, 0, 0, 1],
                     strokeColor: [0, 0, 0, 1],
