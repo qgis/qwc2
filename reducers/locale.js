@@ -13,6 +13,7 @@ import {flatten} from 'flat';
 import {CHANGE_LOCALE, ADD_TRANSLATIONS} from '../actions/locale';
 
 const defaultState = {
+    messagesTree: {},
     messages: {},
     fallbackMessages: {},
     current: null
@@ -32,7 +33,7 @@ export default function locale(state = defaultState, action) {
         const newMessages = action.translations?.[state.current] ?? {};
         return {
             ...state,
-            messagesTree: deepmerge(state.messages, newMessages),
+            messagesTree: deepmerge(state.messagesTree, newMessages),
             messages: {...state.messages, ...flatten(newMessages)}
         };
     }
