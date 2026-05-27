@@ -41,7 +41,7 @@ import "@kayahr/text-encoding/encodings/windows-1252";
  */
 class MapExport extends React.Component {
     static propTypes = {
-        /** Whitelist of allowed export format mimetypes. If empty, supported formats are listed. Formats are sorted according to this list, and the first entry becomes the default format. */
+        /** Whitelist of allowed export format mimetypes. If empty, supported formats are listed. Formats are sorted according to this list, and the first entry becomes the default format. Supported mimetypes are: `image/jpeg`, `image/png`, `image/png; mode=16bit`, `image/png; mode=8bit`, `image/png; mode=1bit`, `image/geotiff`, `image/tiff`, `application/dxf`, `application/pdf`. */
         allowedFormats: PropTypes.arrayOf(PropTypes.string),
         /** List of scales at which to export the map. If empty, scale can be freely specified. If `false`, the map can only be exported at the current scale. */
         allowedScales: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.number), PropTypes.bool]),
