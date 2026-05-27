@@ -612,6 +612,7 @@ function genThemes(themesConfig) {
             defaultSearchProviders: config.defaultSearchProviders,
             defaultMapTips: config.defaultMapTips,
             defaultBackgroundLayers: config.defaultBackgroundLayers || [],
+            defaultLabelProfiles: config.defaultLabelProfiles,
             externalLayers: config.themes.externalLayers || [],
             pluginData: config.themes.pluginData,
             themeInfoLinks: config.themes.themeInfoLinks,

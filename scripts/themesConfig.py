@@ -628,6 +628,7 @@ def genThemes(themesConfig):
             "defaultSearchProviders": config["defaultSearchProviders"] if "defaultSearchProviders" in config else None,
             "defaultBackgroundLayers": config["defaultBackgroundLayers"] if "defaultBackgroundLayers" in config else [],
             "defaultMapTips": config["defaultMapTips"] if "defaultMapTips" in config else None,
+            "defaultLabelProfiles": config["defaultLabelProfiles"] if "defaultLabelProfiles" in config else None,
             "pluginData": config["themes"]["pluginData"] if "pluginData" in config["themes"] else [],
             "themeInfoLinks": config["themes"]["themeInfoLinks"] if "themeInfoLinks" in config["themes"] else [],
             "externalLayers": config["themes"]["externalLayers"] if "externalLayers" in config["themes"] else [],

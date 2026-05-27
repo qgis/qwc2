@@ -149,7 +149,7 @@ const ThemeUtils = {
             editConfig: theme.editConfig,
             editConfigUrl: theme.editConfigUrl,
             filter: theme.filter,
-            labelProfiles: theme.labelProfiles,
+            labelProfiles: {...themes.defaultLabelProfiles, ...theme.labelProfiles},
             wms_name: theme.wms_name
         };
         if (layer.editConfigUrl) {
