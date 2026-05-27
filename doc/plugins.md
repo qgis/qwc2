@@ -1292,6 +1292,7 @@ GPS locate support for the map component.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| defaultFollowScale | `number` | Scale denominator to zoom to when the position is first determined. If not set, the map zoom level is not changed. | `undefined` |
 | drawCircle | `bool` | Whether to draw an accuracy circle around the location point. | `true` |
 | metric | `bool` | Whether to display the accuracy in meters (`true`) or in feet (`false`). | `true` |
 | showPopup | `bool` | Whether to show a popup displaying accuracy information when clicking on the location point. | `false` |
