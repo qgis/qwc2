@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 
 import {openExternalUrl, setBottombarHeight} from '../../actions/windows';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import './style/BottomBar3D.css';
@@ -23,33 +24,12 @@ import './style/BottomBar3D.css';
  */
 class BottomBar3D extends React.Component {
     static propTypes = {
-        /** Additional bottombar links.`side` can be `left` or `right` (default). */
-        additionalBottomBarLinks: PropTypes.arrayOf(PropTypes.shape({
-            label: PropTypes.string,
-            labelMsgId: PropTypes.string,
-            side: PropTypes.string,
-            url: PropTypes.string,
-            urlTarget: PropTypes.string,
-            icon: PropTypes.string
-        })),
         /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
         fullscreen: PropTypes.bool,
         openExternalUrl: PropTypes.func,
         sceneContext: PropTypes.object,
-        setBottombarHeight: PropTypes.func,
-        /** The URL of the terms label anchor. */
-        termsUrl: PropTypes.string,
-        /** Icon of the terms inline window. Relevant only when `termsUrlTarget` is `iframe`. */
-        termsUrlIcon: PropTypes.string,
-        /** The target where to open the terms URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. */
-        termsUrlTarget: PropTypes.string,
-        /** The URL of the viewer title label anchor. */
-        viewertitleUrl: PropTypes.string,
-        /** Icon of the viewer title inline window. Relevant only when `viewertitleUrl` is `iframe`. */
-        viewertitleUrlIcon: PropTypes.string,
-        /** The target where to open the viewer title URL. If `iframe`, it will be displayed in an inline window, otherwise in a new tab. You can also use the `:iframedialog:<dialogname>:<options>` syntax to set up the inline window. */
-        viewertitleUrlTarget: PropTypes.string
+        setBottombarHeight: PropTypes.func
     };
     static defaultProps = {
         displayCoordinates: true
@@ -71,14 +51,15 @@ class BottomBar3D extends React.Component {
         if (this.props.fullscreen) {
             return null;
         }
-        const leftBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side === "left").map(this.renderLink);
-        const rightBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side !== "left").map(this.renderLink);
-        if (this.props.viewertitleUrl) {
-            const entry = {url: this.props.viewertitleUrl, urlTarget: this.props.viewertitleUrlTarget, label: LocaleUtils.tr("bottombar.viewertitle_label"), icon: this.props.viewertitleUrlIcon};
+        const bottomBarConfig = ConfigUtils.getPluginConfig("BottomBar")?.cfg ?? {};
+        const leftBottomLinks = (bottomBarConfig.additionalBottomBarLinks || []).filter(entry => entry.side === "left").map(this.renderLink);
+        const rightBottomLinks = (bottomBarConfig.additionalBottomBarLinks || []).filter(entry => entry.side !== "left").map(this.renderLink);
+        if (bottomBarConfig.viewertitleUrl) {
+            const entry = {url: bottomBarConfig.viewertitleUrl, urlTarget: bottomBarConfig.viewertitleUrlTarget, label: LocaleUtils.tr("bottombar.viewertitle_label"), icon: bottomBarConfig.viewertitleUrlIcon};
             rightBottomLinks.push(this.renderLink(entry));
         }
-        if (this.props.termsUrl) {
-            const entry = {url: this.props.termsUrl, urlTarget: this.props.termsUrlTarget, label: LocaleUtils.tr("bottombar.terms_label"), icon: this.props.termsUrlIcon};
+        if (bottomBarConfig.termsUrl) {
+            const entry = {url: bottomBarConfig.termsUrl, urlTarget: bottomBarConfig.termsUrlTarget, label: LocaleUtils.tr("bottombar.terms_label"), icon: bottomBarConfig.termsUrlIcon};
             rightBottomLinks.push(this.renderLink(entry));
         }
         let position = null;
