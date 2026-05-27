@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {openExternalUrl, setBottombarHeight} from '../../actions/windows';
+import {ViewMode} from '../../actions/display';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -82,16 +83,20 @@ class BottomBar3D extends React.Component {
                     <div className="map3d-bottombar-progressbar" style={{width: this.state.progress}} />
                     <div className="map3d-bottombar-progress-label">{this.state.progress}</div>
                 </div>
-                <span className="bottombar-links">
-                    {leftBottomLinks}
-                </span>
+                {this.props.viewMode === ViewMode._3DFullscreen ? (
+                    <span className="bottombar-links">
+                        {leftBottomLinks}
+                    </span>
+                ) : null}
                 <div className="map3d-bottombar-spacer" />
                 {position}
                 {projection}
                 <div className="map3d-bottombar-spacer" />
-                <span className="bottombar-links">
-                    {rightBottomLinks}
-                </span>
+                {this.props.viewMode === ViewMode._3DFullscreen ? (
+                    <span className="bottombar-links">
+                        {rightBottomLinks}
+                    </span>
+                ) : null}
             </div>
         );
     }
@@ -131,7 +136,8 @@ class BottomBar3D extends React.Component {
 }
 
 export default connect((state) => ({
-    fullscreen: state.display?.fullscreen
+    fullscreen: state.display?.fullscreen,
+    viewMode: state.display?.viewMode
 }), {
     openExternalUrl: openExternalUrl,
     setBottombarHeight: setBottombarHeight
