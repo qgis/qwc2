@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import isEmpty from 'lodash.isempty';
-import {WorkerMessageHandler} from "pdfjs-dist/build/pdf.worker";
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
@@ -373,8 +372,11 @@ class ImportLayer extends React.Component {
             const geoextent = [bl.coo[0], bl.coo[1], tr.coo[0], tr.coo[1]];
             const imgextent = [bl.pixel[0], bl.pixel[1], tr.pixel[0], tr.pixel[1]];
 
-            import('pdfjs-dist/build/pdf').then(pdfjsLib => {
-                pdfjsLib.GlobalWorkerOptions.workerSrc = WorkerMessageHandler;
+            import('pdfjs-dist').then(pdfjsLib => {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+                    'pdfjs-dist/build/pdf.worker.min.mjs',
+                    import.meta.url
+                ).toString();
 
                 pdfjsLib.getDocument(ev.target.result).promise.then((pdf) => {
                     pdf.getPage(1).then((page) => {
