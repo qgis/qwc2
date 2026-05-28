@@ -901,16 +901,16 @@
       "storingstate": "Salvando vista 3D..."
     },
     "visibilitypreset": {
-      "add": "Crea nuova configurazione di visibilità ",
-      "addfailed": "Impossibile creare la configurazione di visibilità",
-      "manage": "Gestisci le configurazione di visibilità",
-      "newpreset": "Nuova configurazione di visibilità",
-      "nopresets": "Nessuna configurazione di visibilità",
-      "notloggedin": "Devi effettuare l'accesso per salvare le configurazioni di visibilità",
-      "open": "Apri la configurazione di visibilità nella scheda corrente",
-      "removefailed": "Impossibile rimuovere la configurazione di visibilità",
-      "savefailed": "Impossibile aggiornare la configurazione di visibilità",
-      "update": "Aggiorna la configurazione di visibilità"
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "Staccare",

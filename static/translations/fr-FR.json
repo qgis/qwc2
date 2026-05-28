@@ -901,16 +901,16 @@
       "storingstate": "Enregistrement de la vue 3D..."
     },
     "visibilitypreset": {
-      "add": "Créer une nouvelle configuration de visibilité",
-      "addfailed": "Échec de la création de la configuration de visibilité",
-      "manage": "Gérer les configurations de visibilité",
-      "newpreset": "Nouvelle configuration de visibilité",
-      "nopresets": "Aucune configuration de visibilité",
-      "notloggedin": "Vous devez être connecté pour enregistrer les configurations de visibilité",
-      "open": "Ouvrir la configuration de visibilité dans l’onglet actuel",
-      "removefailed": "Échec de la suppression de la configuration de visibilité",
-      "savefailed": "Échec de la mise à jour de la configuration de visibilité",
-      "update": "Mettre à jour la configuration de visibilité"
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "Détacher",
