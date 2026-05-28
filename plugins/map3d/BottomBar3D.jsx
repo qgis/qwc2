@@ -11,10 +11,10 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {openExternalUrl, setBottombarHeight} from '../../actions/windows';
 import {ViewMode} from '../../actions/display';
-import CoordinatesUtils from '../../utils/CoordinatesUtils';
+import {openExternalUrl, setBottombarHeight} from '../../actions/windows';
 import ConfigUtils from '../../utils/ConfigUtils';
+import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 
 import './style/BottomBar3D.css';
@@ -30,7 +30,8 @@ class BottomBar3D extends React.Component {
         fullscreen: PropTypes.bool,
         openExternalUrl: PropTypes.func,
         sceneContext: PropTypes.object,
-        setBottombarHeight: PropTypes.func
+        setBottombarHeight: PropTypes.func,
+        viewMode: PropTypes.number
     };
     static defaultProps = {
         displayCoordinates: true
