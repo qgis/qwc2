@@ -51,7 +51,6 @@ Plugin reference
 * [TourGuide](#tourguide)
 * [ValueTool](#valuetool)
 * [View3D](#view3d)
-* [VisibilityPreset](#visibilitypreset)
 * [ZoomButton](#zoombutton)
 
 [Map support plugins](#mapSupportPlugins)
@@ -388,7 +387,7 @@ Map button for switching the background layer.
 
 ## Bookmark<a name="bookmark"></a>
 
-Allows managing user bookmarks which are storing the current view, including the location and zoom level.
+Allows managing user bookmarks.
 
 Bookmarks are only allowed for authenticated users.
 
@@ -408,7 +407,6 @@ Bottom bar, displaying mouse coordinate, scale, etc.
 | additionalBottomBarLinks | `[{`<br />`  label: string,`<br />`  labelMsgId: string,`<br />`  side: string,`<br />`  url: string,`<br />`  urlTarget: string,`<br />`  icon: string,`<br />`}]` | Additional bottombar links.`side` can be `left` or `right` (default). | `undefined` |
 | coordinateFormatter | `func` | Custom coordinate formatter, as `(coordinate, crs) => string`. | `undefined` |
 | displayCoordinates | `bool` | Whether to display the coordinates in the bottom bar. | `true` |
-| displayQuickSelectDropdown | `bool` | Whether to display a dropdown menu for the selection of user bookmarks and visibility presets in the bottom bar. | `false` |
 | displayScalebar | `bool` | Whether to display the scalebar in the bottom bar. | `true` |
 | displayScales | `bool` | Whether to display the scale in the bottom bar. | `true` |
 | scalebarOptions | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) | `undefined` |
@@ -1248,21 +1246,6 @@ See [3D View](../../topics/View3D).
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry.<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
 | mouseButtons | `{`<br />`  left: string,`<br />`  middle: string,`<br />`  right: string,`<br />`}` | Mouse buttons assignment. You can assign `pan`, `rotate`, `zoom` to each button.<br />- `left`: undefined<br />- `middle`: undefined<br />- `right`: undefined | `{`<br />`    left: 'pan',`<br />`    middle: 'zoom',`<br />`    right: 'rotate'`<br />`}` |
 | pluginOptions | `object` | Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}`.<br />Refer to the documentation of the <a href="#plugins3d">3D plugins</a> for settable options. | `{}` |
-
-## VisibilityPreset<a name="visibilitypreset"></a>
-
-Allows managing custom user visibility presets, which are storing the currently selected layers without location or
- zoom level.
-
- Visibility presets are only allowed for authenticated users.
-
- Requires `permalinkServiceUrl` to point to a `qwc-permalink-service` with tables setup for visibility presets
- (see `qwc-permalink-service` documentation for details).
-
-| Property | Type | Description | Default value |
-|----------|------|-------------|---------------|
-| openOnClick | `bool` | Whether to directly open the bookmark on click / middle click, instead of showing dedicated open buttons. | `undefined` |
-| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 ## ZoomButton<a name="zoombutton"></a>
 

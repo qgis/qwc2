@@ -70,7 +70,7 @@ class Portal extends React.Component {
         menuVisible: false
     };
     componentDidMount() {
-        if (!this.props.startupParams.t && !this.props.startupParams.k && !this.props.startupParams.bk && !this.props.startupParams.vp) {
+        if (!this.props.startupParams.t && !this.props.startupParams.k && !this.props.startupParams.bk) {
             this.props.setCurrentTask("Portal");
         }
     }
@@ -84,9 +84,7 @@ class Portal extends React.Component {
         } else if (!prevProps.themes && this.props.themes && this.props.currentTask !== "Portal") {
             // Show portal if no theme is to be loaded
             const theme = ThemeUtils.getThemeById(this.props.themes, this.props.startupParams.t);
-            if ((!theme || theme.restricted)
-                && !this.props.startupParams.vp
-                && (ConfigUtils.getConfigProp("dontLoadDefaultTheme") || !this.props.themes.defaultTheme)) {
+            if ((!theme || theme.restricted) && (ConfigUtils.getConfigProp("dontLoadDefaultTheme") || !this.props.themes.defaultTheme)) {
                 this.props.setCurrentTask("Portal");
             }
         }

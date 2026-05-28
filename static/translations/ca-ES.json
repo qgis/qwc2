@@ -34,7 +34,6 @@
         "Share": "Compartir link",
         "SunExposure3D": "",
         "ThemeSwitcher": "Tema",
-        "VisibilityPresets": "",
         "AttributeTable": "Taula d'atributs",
         "AuthenticationLogin": "Inicio de sessió",
         "AuthenticationLogout": "Tancament de sessió - {0}",
@@ -111,9 +110,7 @@
     },
     "bottombar": {
       "mousepos_label": "Coordenades",
-      "quick_select_label": "",
       "scale_label": "Escala",
-      "select": "",
       "terms_label": "Condicions del servei",
       "viewertitle_label": "Pàgina d'inici"
     },
@@ -754,6 +751,7 @@
       "title": "Informació del tema"
     },
     "settings": {
+      "bookmarks": "Marcadors",
       "colorscheme": "Tema",
       "confirmlang": "L'aplicació es reiniciarà per canviar l'idioma. Vol continuar?",
       "default": "Per defecte",
@@ -899,18 +897,6 @@
     },
     "view3d": {
       "storingstate": "Desant l'estat 3D..."
-    },
-    "visibilitypreset": {
-      "add": "",
-      "addfailed": "",
-      "manage": "",
-      "newpreset": "",
-      "nopresets": "",
-      "notloggedin": "",
-      "open": "",
-      "removefailed": "",
-      "savefailed": "",
-      "update": ""
     },
     "window": {
       "detach": "Desacoblar",

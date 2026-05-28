@@ -34,7 +34,6 @@
         "Share": "Partilhar Link",
         "SunExposure3D": "",
         "ThemeSwitcher": "Tema",
-        "VisibilityPresets": "",
         "AttributeTable": "Tabela de Atributos",
         "AuthenticationLogin": "Iniciar Sessão",
         "AuthenticationLogout": "Terminar Sessão - {0}",
@@ -111,9 +110,7 @@
     },
     "bottombar": {
       "mousepos_label": "Coordenadas",
-      "quick_select_label": "",
       "scale_label": "Escala",
-      "select": "",
       "terms_label": "Termos de Uso",
       "viewertitle_label": "Visualizador"
     },
@@ -754,6 +751,7 @@
       "title": "Informação Temática"
     },
     "settings": {
+      "bookmarks": "Marcadores",
       "colorscheme": "Esquema de Cores",
       "confirmlang": "Confirmar Idioma",
       "default": "Padrão",
@@ -899,18 +897,6 @@
     },
     "view3d": {
       "storingstate": ""
-    },
-    "visibilitypreset": {
-      "add": "",
-      "addfailed": "",
-      "manage": "",
-      "newpreset": "",
-      "nopresets": "",
-      "notloggedin": "",
-      "open": "",
-      "removefailed": "",
-      "savefailed": "",
-      "update": ""
     },
     "window": {
       "detach": "",

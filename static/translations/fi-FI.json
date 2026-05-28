@@ -34,7 +34,6 @@
         "Share": "Jaa linkki",
         "SunExposure3D": "",
         "ThemeSwitcher": "Teema",
-        "VisibilityPresets": "",
         "AttributeTable": "",
         "AuthenticationLogin": "Kirjaudu",
         "AuthenticationLogout": "Kirjaudu ulos - {0}",
@@ -111,9 +110,7 @@
     },
     "bottombar": {
       "mousepos_label": "Koordinaatit",
-      "quick_select_label": "",
       "scale_label": "Mittakaava",
-      "select": "",
       "terms_label": "Käyttöehdot",
       "viewertitle_label": ""
     },
@@ -754,6 +751,7 @@
       "title": "Teema informaatio"
     },
     "settings": {
+      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",
@@ -899,18 +897,6 @@
     },
     "view3d": {
       "storingstate": ""
-    },
-    "visibilitypreset": {
-      "add": "",
-      "addfailed": "",
-      "manage": "",
-      "newpreset": "",
-      "nopresets": "",
-      "notloggedin": "",
-      "open": "",
-      "removefailed": "",
-      "savefailed": "",
-      "update": ""
     },
     "window": {
       "detach": "",

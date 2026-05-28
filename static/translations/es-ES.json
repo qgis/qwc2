@@ -34,7 +34,6 @@
         "Share": "Compartir enlace",
         "SunExposure3D": "",
         "ThemeSwitcher": "Tema",
-        "VisibilityPresets": "",
         "AttributeTable": "Tabla de Atributos",
         "AuthenticationLogin": "Inicio de sesión",
         "AuthenticationLogout": "Cierre de sesión - {0}",
@@ -111,9 +110,7 @@
     },
     "bottombar": {
       "mousepos_label": "Coordenadas",
-      "quick_select_label": "",
       "scale_label": "Escala",
-      "select": "",
       "terms_label": "Términos de uso",
       "viewertitle_label": "Página de inicio"
     },
@@ -754,6 +751,7 @@
       "title": "Información del tema"
     },
     "settings": {
+      "bookmarks": "Marcadores",
       "colorscheme": "Tema",
       "confirmlang": "La aplicación se reiniciará para cambiar de idioma. Quiere continuar?",
       "default": "Predeterminado",
@@ -899,18 +897,6 @@
     },
     "view3d": {
       "storingstate": "Guardando estado 3D..."
-    },
-    "visibilitypreset": {
-      "add": "",
-      "addfailed": "",
-      "manage": "",
-      "newpreset": "",
-      "nopresets": "",
-      "notloggedin": "",
-      "open": "",
-      "removefailed": "",
-      "savefailed": "",
-      "update": ""
     },
     "window": {
       "detach": "Desacoplar",

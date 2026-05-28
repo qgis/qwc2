@@ -16,12 +16,13 @@ import url from 'url';
 
 import {setColorScheme, setUserInfoFields} from '../actions/localConfig';
 import SideBar from '../components/SideBar';
-import GroupSelect from "../components/widgets/GroupSelect";
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import {getBookmarks} from '../utils/PermaLinkUtils';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/Settings.css';
+
 
 /**
  * Settings panel.
@@ -31,7 +32,6 @@ import './style/Settings.css';
 class Settings extends React.Component {
     static availableIn3D = true;
     static propTypes = {
-        bookmarks: PropTypes.array,
         colorScheme: PropTypes.string,
         /** List of available color schemes. Value is the css class name, title/titleMsgId the display name. */
         colorSchemes: PropTypes.arrayOf(PropTypes.shape({
@@ -52,14 +52,25 @@ class Settings extends React.Component {
         showDefaultThemeSelector: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
-        themes: PropTypes.object,
-        visibilityPresets: PropTypes.array
+        themes: PropTypes.object
     };
     static defaultProps = {
         colorSchemes: [],
         languages: null,
         side: 'right',
         showDefaultThemeSelector: true
+    };
+    state = {
+        bookmarks: {}
+    };
+    onShow = () => {
+        const username = ConfigUtils.getConfigProp("username");
+        if (this.props.showDefaultThemeSelector && username) {
+            getBookmarks((bookmarks) => {
+                const bookmarkKeys = bookmarks.reduce((res, entry) => ({...res, [entry.key]: entry.description}), {});
+                this.setState({bookmarks: bookmarkKeys});
+            });
+        }
     };
     render() {
         return (
@@ -130,43 +141,42 @@ class Settings extends React.Component {
             return null;
         }
         const themeNames = ThemeUtils.getThemeNames(this.props.themes);
-        const bookmarks = (this.props.bookmarks || []);
-        const visibilityPresets = (this.props.visibilityPresets || []);
-        const options = {
-            [LocaleUtils.tr("settings.themes")]: Object.entries(themeNames).map(([id, name]) => ["t=" + id, name]),
-            [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk=" + bm.key, bm.description]),
-            [LocaleUtils.tr("appmenu.items.VisibilityPresets")]: visibilityPresets.map(vp => ["vp=" + vp.key, vp.description])
-        };
-        const defaultOption = ["", LocaleUtils.tr("settings.default")];
         return (
             <tr>
                 <td>{LocaleUtils.tr("settings.defaulttheme")}</td>
                 <td>
-                    <GroupSelect
-                        defaultOption={defaultOption}
-                        onChange={this.changeDefaultUrlParams}
-                        options={options}
-                        value={this.props.defaultUrlParams}
-                    />
+                    <select onChange={this.changeDefaultUrlParams} value={this.props.defaultUrlParams}>
+                        <option value="">{LocaleUtils.tr("settings.default")}</option>
+                        <option disabled>{LocaleUtils.tr("settings.themes")}</option>
+                        {Object.entries(themeNames).map(([id, name]) => (
+                            <option key={id} value={'t=' + id}>{name}</option>
+                        ))}
+                        <option disabled>{LocaleUtils.tr("settings.bookmarks")}</option>
+                        {Object.entries(this.state.bookmarks).map(([key, name]) => (
+                            <option key={key} value={'bk=' + key}>{name}</option>
+                        ))}
+                    </select>
                 </td>
             </tr>
         );
     };
-    changeDefaultUrlParams = (value) => {
+    changeDefaultUrlParams = (ev) => {
         const params = {
-            default_url_params: value
+            default_url_params: ev.target.value
         };
         const baseurl = location.href.split("?")[0].replace(/\/$/, '');
         axios.get(baseurl + "/setuserinfo", {params}).then(response => {
             if (!response.data.success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("settings.defaultthemefailed", response.data.error));
+                ev.target.value = this.props.defaultUrlParams;
             } else {
                 this.props.setUserInfoFields(response.data.fields);
             }
         }).catch((e) => {
             /* eslint-disable-next-line */
             alert(LocaleUtils.tr("settings.defaultthemefailed", String(e)));
+            ev.target.value = this.props.defaultUrlParams;
         });
     };
     changeLocale = (ev) => {
@@ -192,11 +202,9 @@ class Settings extends React.Component {
 }
 
 export default connect((state) => ({
-    bookmarks: state.bookmark.bookmarks,
     colorScheme: state.localConfig.colorScheme,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
-    themes: state.theme.themes,
-    visibilityPresets: state.bookmark.visibilityPresets
+    themes: state.theme.themes
 }), {
     setColorScheme: setColorScheme,
     setUserInfoFields: setUserInfoFields
