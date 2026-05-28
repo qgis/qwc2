@@ -192,11 +192,11 @@ class Settings extends React.Component {
 }
 
 export default connect((state) => ({
-    bookmarks: state.bookmark.bookmarks,
+    bookmarks: state.bookmark?.bookmarks,
     colorScheme: state.localConfig.colorScheme,
     defaultUrlParams: state.localConfig.user_infos?.default_url_params || "",
     themes: state.theme.themes,
-    visibilityPresets: state.bookmark.visibilityPresets
+    visibilityPresets: state.bookmark?.visibilityPresets
 }), {
     setColorScheme: setColorScheme,
     setUserInfoFields: setUserInfoFields
