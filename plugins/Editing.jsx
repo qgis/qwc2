@@ -403,7 +403,7 @@ class Editing extends React.Component {
                             value = !['0', 'false'].includes(String(value).toLowerCase());
                         } else if (field.type === 'date') {
                             if (typeof value === 'string') {
-                                value = dateParser.fromString(value).toISOString();
+                                value = dateParser.fromString(value)?.toISOString?.() ?? null;
                             }
                         } else if (field.type === 'list') {
                             // Not supported
