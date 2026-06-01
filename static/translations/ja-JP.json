@@ -813,6 +813,7 @@
         "title": "タイトル"
       },
       "openintab": "タブで開く",
+      "restrictedcontent": "",
       "restrictedthemeinfo": "テーマを閲覧する権限がありません。ログインして下さい。"
     },
     "timemanager": {

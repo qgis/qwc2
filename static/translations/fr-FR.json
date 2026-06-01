@@ -813,6 +813,7 @@
         "title": "Titre"
       },
       "openintab": "Ouvrir dans l'onglet",
+      "restrictedcontent": "Thème avec contenu réservé aux utilisateurs authentifiés",
       "restrictedthemeinfo": "Vous n'êtes pas autorisé à voir le thème ou vous n'êtes pas connecté"
     },
     "timemanager": {

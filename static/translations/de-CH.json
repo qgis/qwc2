@@ -813,6 +813,7 @@
         "title": "Titel"
       },
       "openintab": "In Tab öffnen",
+      "restrictedcontent": "Theme mit Inhalten, die auf authentifizierte Benutzer beschränkt sind",
       "restrictedthemeinfo": "Sie sind nicht berechtigt oder sind nicht angemeldet"
     },
     "timemanager": {

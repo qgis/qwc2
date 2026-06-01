@@ -813,6 +813,7 @@
         "title": "Otsikko"
       },
       "openintab": "Avaa välilehdellä",
+      "restrictedcontent": "",
       "restrictedthemeinfo": "Teeman tarkasteluun ei ole oikeuksia tai et ole kirjautunut sisään"
     },
     "timemanager": {

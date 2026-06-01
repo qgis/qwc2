@@ -813,6 +813,7 @@
         "title": "Título"
       },
       "openintab": "Abrir em Aba",
+      "restrictedcontent": "",
       "restrictedthemeinfo": "Não está autorizado a ver o tema ou não iniciou sessão"
     },
     "timemanager": {

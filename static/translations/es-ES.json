@@ -813,6 +813,7 @@
         "title": "Título"
       },
       "openintab": "Abrir en pestaña",
+      "restrictedcontent": "",
       "restrictedthemeinfo": "Ud. no tiene permitido ver el tema o no está conectado"
     },
     "timemanager": {

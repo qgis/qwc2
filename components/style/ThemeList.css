@@ -200,3 +200,11 @@ div.ThemeList div.theme-item-restricted-overlay {
     justify-content: center;
     font-size: 400%;
 }
+
+div.ThemeList div.theme-item-restricted-content {
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: .5;
+    padding: 0.25em;
+}

@@ -813,6 +813,7 @@
         "title": "Títol"
       },
       "openintab": "Obrir en pestaña",
+      "restrictedcontent": "",
       "restrictedthemeinfo": "Vostè no te permisos per veure el tema o no està connectat"
     },
     "timemanager": {

@@ -813,6 +813,7 @@
         "title": "Заглавие"
       },
       "openintab": "Отваряне в раздел",
+      "restrictedcontent": "",
       "restrictedthemeinfo": "Нямате право да разглеждате темата или не сте влезли в системата"
     },
     "timemanager": {
