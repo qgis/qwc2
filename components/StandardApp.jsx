@@ -288,7 +288,7 @@ export default class StandardApp extends React.Component {
             this.setState({haveConfig: true});
 
             // Load locale
-            const lang = this.props.appConfig.getDefaultLocale?.() ?? initialParams.lang ?? navigator.language;
+            const lang = this.props.appConfig.getDefaultLocale?.() ?? initialParams.lang ?? config.defaultLocale ?? navigator.language;
             LocaleUtils.loadLocale(lang, this.props.appConfig.defaultLocaleData).then(localeData => {
                 StandardApp.store.dispatch(changeLocale(localeData, this.props.appConfig.defaultLocaleData));
                 this.setState({haveLocale: true});
