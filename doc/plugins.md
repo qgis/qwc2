@@ -1314,6 +1314,10 @@ Map button for switching the background layer of the 3D map.
 
 Bottom bar of the 3D map, displaying coordinates, projection, etc.
 
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| displayCoordinates | `bool` | Whether to display the coordinates in the bottom bar. | `true` |
+
 ## Compare3D<a name="compare3d"></a>
 
 Split-screen and compare objects in the 3D map.
@@ -1347,6 +1351,8 @@ Layer and object tree for the 3D map
 |----------|------|-------------|---------------|
 | groupTogglesSublayers | `bool` | Whether toggling a group also toggles all sublayers. | `undefined` |
 | importedTilesBaseUrl | `string` | Base URL of imported tile sets. | `':/'` |
+| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
+| width | `string` | The initial width of the layertree, as a CSS width string. | `'25em'` |
 
 ## MapCopyright3D<a name="mapcopyright3d"></a>
 
@@ -1397,7 +1403,7 @@ Compute sun exposure of terrain and objects within a selected area on the 3D map
 
 ## TopBar3D<a name="topbar3d"></a>
 
-Bottom bar of the 3D map, including the search bar, tool bar and menu.
+Top bar of the 3D map, including the search bar, tool bar and menu.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|

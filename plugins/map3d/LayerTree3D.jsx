@@ -34,10 +34,16 @@ class LayerTree3D extends React.Component {
         /** Base URL of imported tile sets. */
         importedTilesBaseUrl: PropTypes.string,
         sceneContext: PropTypes.object,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        /** The side of the application on which to display the sidebar. */
+        side: PropTypes.string,
+        /** The initial width of the layertree, as a CSS width string. */
+        width: PropTypes.string
     };
     static defaultProps = {
-        importedTilesBaseUrl: ':/'
+        importedTilesBaseUrl: ':/',
+        side: 'right',
+        width: '25em'
     };
     state = {
         activestylemenu: null,
@@ -47,8 +53,9 @@ class LayerTree3D extends React.Component {
     render() {
         return (
             <SideBar icon="layers" id="LayerTree3D"
+                side={this.props.side}
                 title={LocaleUtils.tr("appmenu.items.LayerTree3D")}
-                width="20em"
+                width={this.state.sidebarwidth || this.props.width}
             >
                 {() => ({
                     body: this.renderBody()

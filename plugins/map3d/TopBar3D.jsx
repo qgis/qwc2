@@ -26,7 +26,7 @@ import ThemeUtils from '../../utils/ThemeUtils';
 
 
 /**
- * Bottom bar of the 3D map, including the search bar, tool bar and menu.
+ * Top bar of the 3D map, including the search bar, tool bar and menu.
  */
 class TopBar3D extends React.Component {
     static propTypes = {
