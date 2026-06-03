@@ -152,19 +152,21 @@ export default class FirstPersonControls3D extends Controls {
             this.target.y += step * dir.y;
 
             // Project overstep onto wall
-            const tangent = new Vector2(-inter.normal.y, inter.normal.x).normalize();
-            let slidestep = tangent.dot(dir) * overstep;
-            if (slidestep < 0) {
-                tangent.negate();
-                slidestep *= -1;
+            if (inter.normal) {
+                const tangent = new Vector2(-inter.normal.y, inter.normal.x).normalize();
+                let slidestep = tangent.dot(dir) * overstep;
+                if (slidestep < 0) {
+                    tangent.negate();
+                    slidestep *= -1;
+                }
+                raycaster.set(this.target, new Vector3(tangent.x, tangent.y, 0));
+                const slideInter = raycaster.intersectObjects(this.sceneContext.collisionObjects, true)[0];
+                if (slideInter && (slideInter.distance - wallBuffer) < slidestep) {
+                    slidestep = slideInter.distance - wallBuffer;
+                }
+                this.target.x += slidestep * tangent.x;
+                this.target.y += slidestep * tangent.y;
             }
-            raycaster.set(this.target, new Vector3(tangent.x, tangent.y, 0));
-            const slideInter = raycaster.intersectObjects(this.sceneContext.collisionObjects, true)[0];
-            if (slideInter && (slideInter.distance - wallBuffer) < slidestep) {
-                slidestep = slideInter.distance - wallBuffer;
-            }
-            this.target.x += slidestep * tangent.x;
-            this.target.y += slidestep * tangent.y;
         } else {
             this.target.x += step * dir.x;
             this.target.y += step * dir.y;
