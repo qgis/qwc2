@@ -1,10 +1,6 @@
 div.SearchBox {
     position: relative;
     display: flex;
-    height: 2em;
-    background-color: var(--input-bg-color);
-    color: var(--text-color);
-    border-radius: var(--border-radius);
 }
 
 div.searchbox-field {
