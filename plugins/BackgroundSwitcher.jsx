@@ -287,7 +287,7 @@ export class BackgroundSwitcher extends React.Component {
 
 const selector = (state) => {
     const backgroundLayers = Object.values(state.layers.flat.filter(layer => layer.role === LayerRole.BACKGROUND).reduce((res, l) => {
-        return {...res, [l.group || l.name]: l.group ? [...(res[l.group] || []), l] : l};
+        return {...res, ["_" + (l.group || l.name)]: l.group ? [...(res["_" + l.group] || []), l] : l};
     }, {}));
     return {
         backgroundLayers: backgroundLayers
