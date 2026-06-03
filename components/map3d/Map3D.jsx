@@ -890,7 +890,7 @@ class Map3D extends React.Component {
         // Collect baselayers
         const externalLayers = {};
         const baseLayers = ThemeUtils.createThemeBackgroundLayers(this.props.theme.map3d.basemaps || [], this.props.themes, null, externalLayers);
-        baseLayers.push({
+        baseLayers.unshift({
             type: "blank",
             name: "",
             title: LocaleUtils.tr("bgswitcher.nobg")
