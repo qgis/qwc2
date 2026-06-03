@@ -293,7 +293,18 @@ class QtDesignerForm extends React.Component {
             elname = nametransform(widget.name);
         }
 
-        if (widget.class === "QLabel") {
+        if (widget.component) {
+            return (
+                <widget.component
+                    addRelationRecord={this.props.addRelationRecord}
+                    editConfigs={this.props.editConfigs} feature={this.props.feature}
+                    inputConstraints={inputConstraints} mapPrefix={this.props.mapPrefix}
+                    name={elname} onChange={(val) => updateField(widget.name, val)}
+                    readOnly={this.props.readOnly} removeRelationRecord={this.props.removeRelationRecord}
+                    reorderRelationRecord={this.props.reorderRelationRecord}
+                    updateRelationField={this.props.updateRelationField} widget={widget} />
+            );
+        } else if (widget.class === "QLabel") {
             if (widget.name.startsWith("img__")) {
                 value = feature.properties?.[widget.name.split("__")[1]] ?? widget.property.text;
                 return (<div className="qt-designer-form-image"><a href={value} rel="noreferrer" target="_blank"><img src={value} /></a></div>);
