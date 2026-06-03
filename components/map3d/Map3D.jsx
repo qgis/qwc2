@@ -642,7 +642,9 @@ class Map3D extends React.Component {
                 objectTree[options.parent].children.forEach(child => {
                     if (child !== objectId) {
                         objectTree[child] = {...objectTree[child], visibility: false};
-                        this.objectMap[child].visible = false;
+                        if (this.objectMap[child]) {
+                            this.objectMap[child].visible = false;
+                        }
                     }
                 });
             }
@@ -678,10 +680,12 @@ class Map3D extends React.Component {
                 }
                 const child = objectTree[nodeId];
                 const newVisible = visibility && child.visibility && child.opacity > 0;
-                const changed = newVisible !== this.objectMap[child.objectId].visible;
-                this.objectMap[child.objectId].visible = newVisible;
-                if (changed) {
-                    this.instance.notifyChange(this.objectMap[child.objectId]);
+                if (this.objectMap[child.objectId]) {
+                    const changed = newVisible !== this.objectMap[child.objectId].visible;
+                    this.objectMap[child.objectId].visible = newVisible;
+                    if (changed) {
+                        this.instance.notifyChange(this.objectMap[child.objectId]);
+                    }
                 }
             }
         });
