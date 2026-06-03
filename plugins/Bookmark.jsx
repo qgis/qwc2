@@ -111,7 +111,7 @@ class Bookmark extends React.Component {
                                     <div className={itemclasses} key={bookmark.key}
                                         onAuxClick={(ev) => this.bookmarkClicked(ev, bookmark)}
                                         onClick={(ev) => this.bookmarkClicked(ev, bookmark)}
-                                        onDoubleClick={() => this.open(bookmark.key, false)}
+                                        onDoubleClick={(ev) => this.bookmarkDoubleClicked(ev, bookmark)}
                                         title={lastUpdateTitle + ": " + bookmark.date}
                                     >
                                         {this.state.renameBookmark === bookmark.key ? (
@@ -149,6 +149,11 @@ class Bookmark extends React.Component {
             this.setState({currentBookmark: null, description: ""});
         } else {
             this.setState({currentBookmark: bookmark.key, description: bookmark.description});
+        }
+    };
+    bookmarkDoubleClicked = (ev, bookmark) => {
+        if (!this.state.renameBookmark) {
+            this.open(bookmark.key, false);
         }
     };
     updateBookmarkName = (text) => {
