@@ -224,6 +224,7 @@
       "create": "",
       "discard": "Förkasta",
       "draw": "Rita",
+      "emptyvalue": "",
       "feature": "Objekt",
       "geomnonzeroz": "",
       "geomreadonly": "",

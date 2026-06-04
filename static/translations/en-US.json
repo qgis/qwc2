@@ -224,6 +224,7 @@
       "create": "Create",
       "discard": "Discard",
       "draw": "Draw",
+      "emptyvalue": "Empty value",
       "feature": "Feature",
       "geomnonzeroz": "The geometry contains non-zero Z values and is therefore read only.",
       "geomreadonly": "The geometry is read only.",

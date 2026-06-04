@@ -224,6 +224,7 @@
       "create": "Criar",
       "discard": "Descartar",
       "draw": "Desenhar",
+      "emptyvalue": "",
       "feature": "Recurso",
       "geomnonzeroz": "Geometria Apenas para Leitura",
       "geomreadonly": "",

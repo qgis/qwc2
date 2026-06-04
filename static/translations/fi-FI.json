@@ -224,6 +224,7 @@
       "create": "",
       "discard": "Discard",
       "draw": "Draw",
+      "emptyvalue": "",
       "feature": "Feature",
       "geomnonzeroz": "",
       "geomreadonly": "",

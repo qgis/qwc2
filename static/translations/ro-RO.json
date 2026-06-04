@@ -224,6 +224,7 @@
       "create": "Creare",
       "discard": "Renunță",
       "draw": "Desenare",
+      "emptyvalue": "",
       "feature": "Obiect spațial",
       "geomnonzeroz": "Geometria include valori Z și, prin urmare, nu poate fi editată",
       "geomreadonly": "",

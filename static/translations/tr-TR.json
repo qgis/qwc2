@@ -224,6 +224,7 @@
       "create": "Yeni oluştur",
       "discard": "İptal",
       "draw": "Çiz",
+      "emptyvalue": "",
       "feature": "Obje",
       "geomnonzeroz": "Geometri, sıfır olmayan yükseklik değeri içerdiğinden salt okunur",
       "geomreadonly": "",

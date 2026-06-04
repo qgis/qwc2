@@ -224,6 +224,7 @@
       "create": "Toevoegen",
       "discard": "Negeren",
       "draw": "Tekenen",
+      "emptyvalue": "",
       "feature": "Object",
       "geomnonzeroz": "De geometrie bevat geen Z-waarden en is daarom read only.",
       "geomreadonly": "",

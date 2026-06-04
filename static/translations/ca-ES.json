@@ -224,6 +224,7 @@
       "create": "Crear",
       "discard": "Descartar",
       "draw": "Traçar",
+      "emptyvalue": "",
       "feature": "Element",
       "geomnonzeroz": "La geometria conté valors Z diferents de zero, per tant és de només lectura",
       "geomreadonly": "La geometria és només de lectura.",

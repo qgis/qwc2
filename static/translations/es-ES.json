@@ -224,6 +224,7 @@
       "create": "Crear",
       "discard": "Descartar",
       "draw": "Trazar",
+      "emptyvalue": "",
       "feature": "Elemento",
       "geomnonzeroz": "La geometría contiene valores Z diferentes de cero por lo que es sólo lectura",
       "geomreadonly": "La geometría es de solo lectura.",

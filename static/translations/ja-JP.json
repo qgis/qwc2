@@ -224,6 +224,7 @@
       "create": "作成",
       "discard": "中止",
       "draw": "作図",
+      "emptyvalue": "",
       "feature": "地物",
       "geomnonzeroz": "ジオメトリが 0 でない Z 値を含んでいるため、リード・オンリーです。",
       "geomreadonly": "ジオメトリがリード・オンリーです。",

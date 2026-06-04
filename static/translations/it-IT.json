@@ -224,6 +224,7 @@
       "create": "Crea",
       "discard": "Annulla",
       "draw": "Disegna",
+      "emptyvalue": "Valore vuoto",
       "feature": "Oggetto",
       "geomnonzeroz": "La geometria contiene valori Z non nulli ed è quindi di sola lettura.",
       "geomreadonly": "La geometria è di solo lettura.",
@@ -648,8 +649,8 @@
     },
     "sensorthingstool": {
       "addDatastream": "Aggiungi flusso di dati al grafico",
-      "addLocation": "",
-      "addLocationAndDatastreams": "",
+      "addLocation": "Aggiungi una posizione",
+      "addLocationAndDatastreams": "Aggiungi una posizione e visualizza tutti i relativi flussi di dati nel grafico",
       "datastreamInfo": {
         "calibration": "Calibrazione",
         "description": "Descrizione",

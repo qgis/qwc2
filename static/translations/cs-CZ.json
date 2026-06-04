@@ -224,6 +224,7 @@
       "create": "Vytvořit",
       "discard": "Vyřadit",
       "draw": "Kreslit",
+      "emptyvalue": "",
       "feature": "Prvek",
       "geomnonzeroz": "",
       "geomreadonly": "",

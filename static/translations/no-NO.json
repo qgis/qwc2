@@ -224,6 +224,7 @@
       "create": "",
       "discard": "Forkast",
       "draw": "Tegn",
+      "emptyvalue": "",
       "feature": "Objekt",
       "geomnonzeroz": "",
       "geomreadonly": "",

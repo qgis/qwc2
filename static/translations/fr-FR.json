@@ -224,6 +224,7 @@
       "create": "Créer",
       "discard": "Rejeter",
       "draw": "Dessiner",
+      "emptyvalue": "Valeur vide",
       "feature": "Objet",
       "geomnonzeroz": "La géométrie contient des valeurs Z non nulles et ne peut donc pas être modifiée.",
       "geomreadonly": "La géométrie e peut pas être modifiée.",
@@ -533,7 +534,7 @@
       "loading": "Chargement des données..."
     },
     "portal": {
-      "close": "",
+      "close": "Fermer le portail",
       "filter": "Filtrer les thèmes...",
       "menulabel": "Menu"
     },
@@ -648,8 +649,8 @@
     },
     "sensorthingstool": {
       "addDatastream": "Ajouter un flux de données au graphique",
-      "addLocation": "",
-      "addLocationAndDatastreams": "",
+      "addLocation": "Ajouter un lieu",
+      "addLocationAndDatastreams": "Ajouter un emplacement et afficher tous ses flux de données dans le graphique",
       "datastreamInfo": {
         "calibration": "Calibration",
         "description": "Description",

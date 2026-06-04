@@ -224,6 +224,7 @@
       "create": "Erstellen",
       "discard": "Abbrechen",
       "draw": "Zeichnen",
+      "emptyvalue": "Leerer Wert",
       "feature": "Objekt",
       "geomnonzeroz": "Die Geometrie enthält Z-Werte ungleich Null und ist daher nicht veränderbar.",
       "geomreadonly": "Die Geometrie ist nicht veränderbar.",

@@ -235,6 +235,7 @@
     "editing.create",
     "editing.discard",
     "editing.draw",
+    "editing.emptyvalue",
     "editing.feature",
     "editing.geomnonzeroz",
     "editing.geomreadonly",
