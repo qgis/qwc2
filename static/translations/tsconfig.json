@@ -563,6 +563,8 @@
     "search.themes",
     "search.unknownmore",
     "sensorthingstool.addDatastream",
+    "sensorthingstool.addLocation",
+    "sensorthingstool.addLocationAndDatastreams",
     "sensorthingstool.datastreamInfo.calibration",
     "sensorthingstool.datastreamInfo.description",
     "sensorthingstool.datastreamInfo.location",

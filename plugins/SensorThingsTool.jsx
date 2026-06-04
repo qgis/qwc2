@@ -269,6 +269,8 @@ class SensorThingsTool extends React.Component {
          *  }
          */
         currentSensorLocation: null,
+        // automatically add all Datastreams of currently selected Location if true
+        addCurrentLocationDatastreams: false,
         // show currently selected Location info window if true
         showLocationInfoWindow: false,
         // currently selected Datastreams filter options
@@ -528,6 +530,13 @@ class SensorThingsTool extends React.Component {
             this.props.addLayerFeatures(layer, [feature], true);
         } else if (prevState.currentSensorLocation && !this.state.currentSensorLocation) {
             this.props.removeLayer("sensorThingsSelection");
+        }
+
+        if (this.state.addCurrentLocationDatastreams && this.state.currentSensorLocation && this.state.currentSensorLocation.id === this.state.currentLocationId) {
+            // add all Datastreams of current Location
+            this.addDatastreams(this.state.currentSensorLocation.datastreams);
+            // reset flag
+            this.setState({addCurrentLocationDatastreams: false});
         }
 
         if (this.state.currentDatastreamsFilter !== prevState.currentDatastreamsFilter) {
@@ -1042,14 +1051,29 @@ class SensorThingsTool extends React.Component {
                         </button>
                     </div>
                     <div className="sensor-things-location-select-list">
-                        {this.state.locationsAtPoint.map((location, idx) => (
-                            <div key={"select-location-" + idx}
-                                onClickCapture={() => this.addLocation(location)}
-                                onMouseOut={() => this.setState({highlightedLocation: null})}
-                                onMouseOver={() => this.setState({highlightedLocation: location})} >
-                                {location.name}: {location.description}
-                            </div>
-                        ))}
+                        <table className="sensor-things-location-select-table">
+                            <tbody>
+                                {this.state.locationsAtPoint.map((location, idx) => (
+                                    <tr key={"select-location--" + idx}
+                                        onMouseOut={() => this.setState({highlightedLocation: null})}
+                                        onMouseOver={() => this.setState({highlightedLocation: location})} >
+                                        <td onClickCapture={() => this.addLocation(location)} title={`${location.name}: ${location.description}`}>
+                                            {location.name}: {location.description}
+                                        </td>
+                                        <td>
+                                            <div className="sensor-things-location-select-buttons">
+                                                <button className="button" onClick={() => this.addLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocation")}>
+                                                    <Icon icon="plus" />
+                                                </button>
+                                                <button className="button" onClick={() => this.addFullLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocationAndDatastreams")}>
+                                                    <Icon icon="sync" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             );
@@ -1088,6 +1112,14 @@ class SensorThingsTool extends React.Component {
             // select previously added Location
             this.setState({currentLocationId: location.id});
         }
+    };
+    addFullLocation = (location) => {
+        // remove current Datastreams
+        this.removeAllDatastreams();
+        // add selected Location
+        this.addLocation(location);
+        // set flag to automatically add all Datastreams of selected Location once ready
+        this.setState({addCurrentLocationDatastreams: true});
     };
     removeSelectedLocation = () => {
         if (this.state.currentSensorLocation === null) {
@@ -1229,6 +1261,12 @@ class SensorThingsTool extends React.Component {
             });
         }
     };
+    addDatastreams = (datastreamIds) => {
+        // add multiple Datastreams
+        datastreamIds.forEach(datastreamId => {
+            this.addDatastream(datastreamId);
+        });
+    };
     removeDatastream = (datastreamIndex) => {
         this.setState((state) => {
             let datastreamInfoWindow = state.datastreamInfoWindow;
@@ -1259,6 +1297,19 @@ class SensorThingsTool extends React.Component {
                 datastreamInfoWindow: datastreamInfoWindow,
                 datastreamOptions: state.datastreamOptions.filter((options, idx) => idx !== datastreamIndex),
                 datastreamTableWindow: datastreamTableWindow
+            };
+        });
+    };
+    removeAllDatastreams = () => {
+        this.setState((state) => {
+            return {
+                graph: {
+                    ...state.graph,
+                    datastreams: []
+                },
+                datastreamInfoWindow: null,
+                datastreamOptions: [],
+                datastreamTableWindow: null
             };
         });
     };

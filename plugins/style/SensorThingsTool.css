@@ -163,15 +163,29 @@ div.sensor-things-location-select-header {
 }
 div.sensor-things-location-select-list {
     padding: 0.25em;
+    max-width: 500px;
     max-height: 16em;
     overflow-y: auto;
 }
-div.sensor-things-location-select-list div {
-    padding-top: 0.25em;
+table.sensor-things-location-select-table tr:hover {
+    background-color: var(--button-bg-color);
 }
-div.sensor-things-location-select-list div:hover {
-    font-weight: bold;
+table.sensor-things-location-select-table td {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid var(--border-color);
+}
+table.sensor-things-location-select-table td:nth-child(1) {
+    max-width: 430px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     cursor: pointer;
+}
+table.sensor-things-location-select-table td div.sensor-things-location-select-buttons {
+    display: flex;
+    padding-left: 0.25em;
+    font-size: 85%;
 }
 
 table.sensor-things-location-info td:nth-child(1) {

@@ -648,6 +648,8 @@
     },
     "sensorthingstool": {
       "addDatastream": "Ajouter un flux de données au graphique",
+      "addLocation": "",
+      "addLocationAndDatastreams": "",
       "datastreamInfo": {
         "calibration": "Calibration",
         "description": "Description",
