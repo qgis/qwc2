@@ -19,6 +19,7 @@ import './style/PopupMenu.css';
 
 export default class PopupMenu extends React.PureComponent {
     static propTypes = {
+        align: PropTypes.string,
         anchor: PropTypes.object,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string,
@@ -101,12 +102,12 @@ export default class PopupMenu extends React.PureComponent {
             this.shields[2].style.left = rect.right + "px";
             this.shields[3].style.top = rect.bottom + "px";
         }
-        const x = (rect?.left ?? this.props.x);
+        const x = ((this.props.align === 'right' ? rect?.right : rect?.left) ?? this.props.x);
         const y = (rect?.bottom ?? this.props.y) - 1;
         const minWidth = (rect?.width ?? this.props.width ?? 0);
         const style = {
             position: 'absolute',
-            left: x + 'px',
+            [this.props.align === "right" ? "right" : "left"]: (this.props.align === "right" ? window.innerWidth - x : x) + 'px',
             top: y + 'px',
             minWidth: minWidth + 'px',
             maxHeight: (window.innerHeight - y - 5) + 'px',

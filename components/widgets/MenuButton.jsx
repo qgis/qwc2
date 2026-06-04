@@ -15,6 +15,7 @@ export default class MenuButton extends React.Component {
         children: PropTypes.array,
         className: PropTypes.string,
         disabled: PropTypes.bool,
+        menuAlign: PropTypes.string,
         menuClassName: PropTypes.string,
         menuIcon: PropTypes.string,
         menuLabel: PropTypes.string,
@@ -81,7 +82,7 @@ export default class MenuButton extends React.Component {
                     ) : null}
                 </div>
                 {this.el && this.state.popup ? (
-                    <PopupMenu anchor={this.el} className={menuClassnames} onClose={() => this.setState({popup: false})}>
+                    <PopupMenu align={this.props.menuAlign} anchor={this.el} className={menuClassnames} onClose={() => this.setState({popup: false})}>
                         {children.map(child => {
                             const classNames = classnames({
                                 "menubutton-menu-active": child.props.value === this.state.selected && !child.props.disabled,
