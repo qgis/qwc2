@@ -104,7 +104,7 @@ export default class NumberInput extends React.Component {
     };
     currentFloatValue = () => {
         if (this.state.value === "") {
-            return 0;
+            return null;
         }
         const floatValue = parseFloat(this.state.value);
         return isNaN(floatValue) ? null : floatValue;
