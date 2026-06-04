@@ -62,10 +62,12 @@ export default class AutoEditForm extends React.Component {
                 );
             }
         } else if (constraints.values || constraints.keyvalrel) {
+            const [mapPrefix, keyvalrel] = constraints.keyvalrel.split('.', 2);
             input = (
                 <span className="input-frame">
                     <EditComboField
-                        editIface={this.props.iface} fieldId={field.id} keyvalrel={constraints.keyvalrel}
+                        editIface={this.props.iface} fieldId={field.id}
+                        keyvalrel={keyvalrel} mapPrefix={mapPrefix}
                         name={field.id} readOnly={readOnly} required={constraints.required}
                         updateField={this.props.updateField} value={value} values={constraints.values} />
                 </span>
