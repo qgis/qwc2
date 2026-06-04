@@ -84,8 +84,9 @@ class AttributeForm extends React.Component {
             this.loadRelationValues(this.props.editContext.feature, (newFeature) => {
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
             });
-            // Re-validate feature field constraints
-            this.validateFieldConstraints(this.props.editContext.feature);
+        }
+        if (this.props.editContext.feature !== prevProps.editContext.feature) {
+            this.validateForm(this.props.editContext.feature);
         }
     }
     componentWillUnmount() {
@@ -101,7 +102,7 @@ class AttributeForm extends React.Component {
         let commitBar = null;
         if (this.props.editContext.changed) {
             const commitButtons = [
-                {key: 'Commit', icon: this.state.formValid ? 'ok' : 'warning', label: this.state.formValid ? LocaleUtils.tr("editing.commit") : LocaleUtils.tr("editing.invalidform"), extraClasses: this.state.formValid ? "button-accept" : "button-warning", type: "submit", disabled: !this.state.formValid || captchaPending},
+                {key: 'Commit', icon: this.state.formValid ? 'ok' : 'warning', label: this.state.formValid ? LocaleUtils.tr("editing.commit") : LocaleUtils.tr("editing.invalidform"), extraClasses: this.state.formValid ? "button-accept" : "button-warning", type: "submit", disabled: captchaPending},
                 {key: 'Discard', icon: 'remove', label: LocaleUtils.tr("editing.discard"), extraClasses: "button-reject"}
             ];
             commitBar = (<ButtonBar buttons={commitButtons} onClick={this.onDiscard}/>); /* submit is handled via onSubmit in the form */
@@ -158,7 +159,7 @@ class AttributeForm extends React.Component {
                 {readOnlyMsg ? (
                     <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
-                <form action="" className="attrib-form-parent-form" onChange={ev => this.formChanged(ev)} onSubmit={this.onSubmit} ref={this.setupChangedObserver}>
+                <form action="" className="attrib-form-parent-form" onSubmit={this.onSubmit} ref={el => {this.form = el;}}>
                     {editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={editConfig}
                             editRelationRecord={this.editRelationRecord}
@@ -195,7 +196,6 @@ class AttributeForm extends React.Component {
         const newProperties = {...this.props.editContext.feature.properties, [key]: value};
         const newFeature = {...this.props.editContext.feature, properties: newProperties};
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
-        this.validateFieldConstraints(newFeature);
     };
     setRelationTables = (relationTables) => {
         this.setState({relationTables: relationTables});
@@ -360,8 +360,6 @@ class AttributeForm extends React.Component {
                             this.loadRelationValues(feature, (newFeature) => {
                                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: false});
                             });
-                            // Re-validate feature field constraints
-                            this.validateFieldConstraints(feature);
                         } else {
                             this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
                         }
@@ -378,26 +376,7 @@ class AttributeForm extends React.Component {
             }
         }
     };
-    setupChangedObserver = (form) => {
-        this.form = form;
-        if (form) {
-            form.observer = new MutationObserver(() => {
-                this.setState({formValid: form.checkValidity()});
-            });
-            form.observer.observe(form, {subtree: true, childList: true, attributes: true});
-        }
-    };
-    formChanged = (ev) => {
-        const form = ev.currentTarget;
-        if (ev.target?.setCustomValidity) {
-            ev.target.setCustomValidity("");
-        }
-        if (form) {
-            this.setState({formValid: form.checkValidity()});
-            this.props.setEditContext(this.props.editContext.id, {changed: true});
-        }
-    };
-    validateFieldConstraints = (feature, validCallback = null, invalidCallback = null) => {
+    validateForm = (feature, validCallback = null, invalidCallback = null) => {
         const constraintExpressions = this.props.editContext.editConfig.fields.reduce((res, cur) => {
             if (cur.constraints?.expression) {
                 return [
@@ -410,7 +389,7 @@ class AttributeForm extends React.Component {
         parseExpressionsAsync(
             constraintExpressions, feature, this.props.editContext.editConfig, this.props.iface, this.props.editContext.mapPrefix, this.props.map.projection, false
         ).then(result => {
-            let valid = true;
+            let valid = this.form.checkValidity();
             const reasons = [];
             Object.entries(result).forEach(([key, value]) => {
                 const element = this.form.elements.namedItem(key);
@@ -425,21 +404,21 @@ class AttributeForm extends React.Component {
                     }
                 }
             });
+            Array.from(this.form.elements).filter(el => el.willValidate && el.required && el.validity.valueMissing).forEach(el => {
+                reasons.push(`${el.name}: ${LocaleUtils.tr("editing.emptyvalue")}`);
+            });
             if (!valid) {
                 this.setState({formValid: false});
-                if (invalidCallback) {
-                    invalidCallback(reasons);
-                }
+                invalidCallback?.(reasons);
             } else {
-                if (validCallback) {
-                    validCallback();
-                }
+                this.setState({formValid: true});
+                validCallback?.();
             }
         });
     };
     onSubmit = (ev) => {
         ev.preventDefault();
-        this.validateFieldConstraints(this.props.editContext.feature, this.doSubmit, (reasons) => {
+        this.validateForm(this.props.editContext.feature, this.doSubmit, (reasons) => {
             /* eslint-disable-next-line */
             alert(LocaleUtils.tr("editing.contraintviolation") + ":\n" + reasons.join("\n"));
         });
@@ -691,8 +670,6 @@ class AttributeForm extends React.Component {
                     this.loadRelationValues(result, (newFeature) => {
                         this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: newFeature, changed: false});
                     });
-                    // Re-validate feature field constraints
-                    this.validateFieldConstraints(result);
                 } else {
                     this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: result, changed: false});
                 }

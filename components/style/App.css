@@ -149,6 +149,10 @@ button.button-reject {
     background-color: rgb(255,127,127);
 }
 
+button.button-warning:not(:disabled):hover {
+    background-color: #f5ce74;
+}
+
 button.button-accept:not(:disabled):hover {
     background-color: rgb(127,225,127);
 }
