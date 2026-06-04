@@ -47,7 +47,7 @@ export default class MenuButton extends React.Component {
         if (this.props.menuIcon || this.props.menuLabel) {
             buttonContents = [
                 this.props.menuIcon ? (<Icon icon={this.props.menuIcon} key="icon" />) : null,
-                this.props.menuLabel ? (<span>{this.props.menuLabel}</span>) : null
+                this.props.menuLabel ? (<span key="label">{this.props.menuLabel}</span>) : null
             ];
         } else {
             buttonContents = children.filter((child) => child.props.value === this.state.selected);

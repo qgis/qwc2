@@ -52,6 +52,10 @@ span.menubutton-button-content {
     align-items: center;
 }
 
+span.menubutton-button-content span+span {
+    margin-left: 0.5em;
+}
+
 div.menubutton span.menubotton-button-arrow {
     height: 80%;
     display: flex;
