@@ -2250,6 +2250,11 @@ class SensorThingsTool extends React.Component {
 
                     const sensor = datastream.Sensor;
                     const observedProperty = datastream.ObservedProperty;
+                    const unitOfMeasurement = datastream.unitOfMeasurement || {};
+                    if (unitOfMeasurement.symbol === undefined || unitOfMeasurement.symbol === null) {
+                        // set empty string as dummy symbol if missing
+                        unitOfMeasurement.symbol = "";
+                    }
 
                     datastreamsLookup[datastreamId] = {
                         locationId: location['@iot.id'],
@@ -2271,7 +2276,7 @@ class SensorThingsTool extends React.Component {
                         id: datastreamId,
                         name: datastream.name,
                         description: datastream.description,
-                        unitOfMeasurement: datastream.unitOfMeasurement,
+                        unitOfMeasurement: unitOfMeasurement,
                         phenomenonTime: datastream.phenomenonTime,
                         period: {
                             begin: periodBegin,
