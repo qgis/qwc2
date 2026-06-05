@@ -588,6 +588,7 @@ class SensorThingsTool extends React.Component {
                     initialX={0} initialY={0} key="SensorThingsInfoWindow"
                     onClose={() => this.props.setCurrentTask(null)}
                     title={LocaleUtils.tr("sensorthingstool.title")}
+                    usePortal={false}
                 >
                     {this.renderBody()}
                 </ResizeableWindow>
@@ -1693,6 +1694,7 @@ class SensorThingsTool extends React.Component {
                 initialX={this.props.windowSize.width + 10} initialY={0} key="SensorThingsDatastreamsFilterWindow"
                 onClose={() => this.setState({showDatastreamsFilterWindow: false})}
                 title={LocaleUtils.tr("sensorthingstool.datastreamsFilter.title")}
+                usePortal={false}
             >
                 <div className="sensor-things-dialog-body" role="body">
                     <table className="sensor-things-datastreams-filter">

@@ -1,4 +1,5 @@
 div.sensor-things-dialog-body {
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
