@@ -29,10 +29,10 @@ class LocateSupport extends React.Component {
     static propTypes = {
         changeLocatePosition: PropTypes.func,
         changeLocateState: PropTypes.func,
-        /** Scale denominator to zoom to when the position is first determined. If not set, the map zoom level is not changed. */
-        defaultFollowScale: PropTypes.number,
         /** Whether to draw an accuracy circle around the location point. */
         drawCircle: PropTypes.bool,
+        /** Scale denominator to zoom to when entering follow mode. If not set, the map zoom level is not changed. */
+        followScale: PropTypes.number,
         locateState: PropTypes.object,
         map: PropTypes.object,
         /** Whether to display the accuracy in meters (`true`) or in feet (`false`). */
@@ -116,6 +116,13 @@ class LocateSupport extends React.Component {
                 this.requestedMode = "DISABLED";
                 this.stop();
             }
+            if (newState === "FOLLOWING" && oldState !== "FOLLOWING" && this.props.followScale && this.props.scales) {
+                const mapPos = this.geolocate.getPosition();
+                if (mapPos) {
+                    const wgsPos = CoordinatesUtils.reproject(mapPos, this.props.projection, "EPSG:4326");
+                    this.props.zoomToPoint(wgsPos, MapUtils.computeZoom(this.props.scales, this.props.followScale), "EPSG:4326");
+                }
+            }
         }
         if (this.props.projection !== prevProps.projection) {
             this.geolocate.setProjection(this.props.projection);
@@ -163,8 +170,7 @@ class LocateSupport extends React.Component {
         this.props.map.un('touch', this.maybeShowPopup);
     };
     positionChanged = () => {
-        const initialLocate = this.props.locateState.state === "LOCATING";
-        if (initialLocate) {
+        if (this.props.locateState.state === "LOCATING") {
             this.props.changeLocateState(this.requestedMode);
             this.posLayer.setVisible(true);
         }
@@ -173,11 +179,6 @@ class LocateSupport extends React.Component {
         const mapPos = this.geolocate.getPosition();
         const wgsPos = CoordinatesUtils.reproject(mapPos, this.props.projection, "EPSG:4326");
         this.props.changeLocatePosition(wgsPos, mapPos);
-
-        if (initialLocate && this.props.defaultFollowScale && this.props.scales) {
-            const zoom = MapUtils.computeZoom(this.props.scales, this.props.defaultFollowScale);
-            this.props.zoomToPoint(wgsPos, zoom, "EPSG:4326");
-        }
 
         const point = new ol.geom.Point(mapPos);
         if (this.props.drawCircle) {
