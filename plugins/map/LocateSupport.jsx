@@ -119,8 +119,7 @@ class LocateSupport extends React.Component {
             if (newState === "FOLLOWING" && oldState !== "FOLLOWING" && this.props.followScale && this.props.scales) {
                 const mapPos = this.geolocate.getPosition();
                 if (mapPos) {
-                    const wgsPos = CoordinatesUtils.reproject(mapPos, this.props.projection, "EPSG:4326");
-                    this.props.zoomToPoint(wgsPos, MapUtils.computeZoom(this.props.scales, this.props.followScale), "EPSG:4326");
+                    this.props.zoomToPoint(mapPos, MapUtils.computeZoom(this.props.scales, this.props.followScale), this.props.projection);
                 }
             }
         }
