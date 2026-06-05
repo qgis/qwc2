@@ -2107,6 +2107,7 @@ class SensorThingsTool extends React.Component {
     };
     deactivated = () => {
         this.setState({showWindow: false, pickGeom: null});
+        this.props.removeLayer("sensorThingsSelection");
     };
     initPeriod = () => {
         if (this.state.graph.x.min === null) {
