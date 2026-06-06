@@ -15,8 +15,10 @@ import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
 import {changeLocateState, changeLocatePosition, onLocateError} from '../../actions/locate';
+import {zoomToPoint} from '../../actions/map';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
+import MapUtils from '../../utils/MapUtils';
 
 import './style/LocateSupport.css';
 
@@ -29,12 +31,15 @@ class LocateSupport extends React.Component {
         changeLocateState: PropTypes.func,
         /** Whether to draw an accuracy circle around the location point. */
         drawCircle: PropTypes.bool,
+        /** Scale denominator to zoom to when entering follow mode. If not set, the map zoom level is not changed. */
+        followScale: PropTypes.number,
         locateState: PropTypes.object,
         map: PropTypes.object,
         /** Whether to display the accuracy in meters (`true`) or in feet (`false`). */
         metric: PropTypes.bool,
         onLocateError: PropTypes.func,
         projection: PropTypes.string,
+        scales: PropTypes.arrayOf(PropTypes.number),
         /** Whether to show a popup displaying accuracy information when clicking on the location point. */
         showPopup: PropTypes.bool,
         /** The geolocation startup mode. Either `DISABLED`, `ENABLED` or `FOLLOWING`. */
@@ -43,7 +48,8 @@ class LocateSupport extends React.Component {
         /** Whether to stop following when the map is dragged. */
         stopFollowingOnDrag: PropTypes.bool,
         /** Tracking options, as documented in the [HTML5 Geolocation spec](https://www.w3.org/TR/geolocation-API/#position_options_interface) */
-        trackingOptions: PropTypes.object
+        trackingOptions: PropTypes.object,
+        zoomToPoint: PropTypes.func
     };
     static defaultProps = {
         drawCircle: true,
@@ -109,6 +115,12 @@ class LocateSupport extends React.Component {
             } else if (newState === "DISABLED") {
                 this.requestedMode = "DISABLED";
                 this.stop();
+            }
+            if (newState === "FOLLOWING" && oldState !== "FOLLOWING" && this.props.followScale && this.props.scales) {
+                const mapPos = this.geolocate.getPosition();
+                if (mapPos) {
+                    this.props.zoomToPoint(mapPos, MapUtils.computeZoom(this.props.scales, this.props.followScale), this.props.projection);
+                }
             }
         }
         if (this.props.projection !== prevProps.projection) {
@@ -237,9 +249,11 @@ class LocateSupport extends React.Component {
 
 export default connect((state) => ({
     locateState: state.locate,
+    scales: state.map.scales,
     startupParams: state.localConfig.startupParams
 }), {
     changeLocateState,
     changeLocatePosition,
-    onLocateError
+    onLocateError,
+    zoomToPoint
 })(LocateSupport);

@@ -1276,6 +1276,7 @@ GPS locate support for the map component.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | drawCircle | `bool` | Whether to draw an accuracy circle around the location point. | `true` |
+| followScale | `number` | Scale denominator to zoom to when entering follow mode. If not set, the map zoom level is not changed. | `undefined` |
 | metric | `bool` | Whether to display the accuracy in meters (`true`) or in feet (`false`). | `true` |
 | showPopup | `bool` | Whether to show a popup displaying accuracy information when clicking on the location point. | `false` |
 | startupMode | `string` | The geolocation startup mode. Either `DISABLED`, `ENABLED` or `FOLLOWING`. | `"DISABLED"` |
