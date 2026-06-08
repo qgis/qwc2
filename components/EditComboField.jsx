@@ -119,7 +119,7 @@ export default class EditComboField extends React.Component {
                 <ComboBox className="controlgroup-expanditem" name={this.props.name}
                     onChange={value => this.props.updateField(this.props.fieldId, value)}
                     placeholder={this.state.showPlaceholder ? (this.props.placeholder ?? LocaleUtils.tr("common.select")) : undefined}
-                    required={this.props.required} style={this.props.style} value={String(this.props.value)}
+                    readOnly={this.props.readOnly} required={this.props.required} style={this.props.style} value={String(this.props.value)}
                 >
                     {this.state.values.map((item, index) => {
                         const {value, label} = this.itemValueLabel(item);
