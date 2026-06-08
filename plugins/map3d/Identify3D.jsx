@@ -127,10 +127,10 @@ class Identify3D extends React.Component {
 
         const picks = [];
         Object.values(this.props.sceneContext.objectTree).forEach(entry => {
-            if (!entry.objectId || !this.props.sceneContext.objectIsVisible(entry.objectId)) {
+            const object = this.props.sceneContext.getSceneObject(entry.objectId);
+            if (!entry.objectId || !this.props.sceneContext.objectIsVisible(entry.objectId) || !object) {
                 return;
             }
-            const object = this.props.sceneContext.getSceneObject(entry.objectId);
             if (object.tiles?.raycast) {
                 const intersections = [];
                 object.tiles.raycast(raycaster, intersections);
