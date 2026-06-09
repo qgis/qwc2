@@ -791,7 +791,13 @@ class QtDesignerForm extends React.Component {
 
         const parts = widget.name.split("__");
         if (parts.length >= 3 && parts[0] === "nrel") {
-            relationTables[this.props.mapPrefix + "." + parts[1]] = {fk: parts[2], sortcol: parts[3] || null, noreorder: parts[4] || false};
+            relationTables[this.props.mapPrefix + "." + parts[1]] = {
+                table: this.props.mapPrefix + "." + parts[1],
+                fkField: parts[2],
+                sortField: parts[3] || null,
+                noreorder: parts[4] || false,
+                pkField: this.props.editConfig.reltables.find(entry => entry.id === widget.name)?.referencedField ?? null
+            };
         }
         return verticalFill;
     };

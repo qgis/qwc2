@@ -203,22 +203,22 @@ class AttributeForm extends React.Component {
     loadRelationValues = (feature, callback) => {
         if (!isEmpty(this.state.relationTables)) {
             if (feature.id) {
-                const relTables = Object.entries(this.state.relationTables).map(([name, entry]) => {
-                    if (entry.sortcol) {
-                        return name + ":" + entry.fk + ":" + entry.sortcol;
-                    } else {
-                        return name + ":" + entry.fk;
-                    }
-                }).join(",");
+                // Existing feature, load relations from data service
+                const relTables = Object.values(this.state.relationTables).map(entry => ({
+                    ...entry,
+                    fkVal: entry.pkField ? feature.properties[entry.pkField] : feature.id
+                }));
                 const mapEditConfigs = this.props.editConfigs[this.props.editContext.mapPrefix];
-                this.props.iface.getRelations(this.props.editContext.editConfig, feature.id, this.props.map.projection, relTables, mapEditConfigs, (relationValues => {
+                this.props.iface.getRelations(relTables, this.props.map.projection, mapEditConfigs, (relationValues => {
                     const newFeature = {...feature, relationValues: relationValues};
                     callback(newFeature);
                 }));
             } else {
+                // New feature, create relationValues skeleton
                 const relationValues = {
-                    ...Object.entries(this.state.relationTables).reduce((res, [name, entry]) => ({...res, [name]: {
-                        fk: entry.fk,
+                    ...Object.values(this.state.relationTables).reduce((res, entry) => ({...res, [entry.table]: {
+                        fk: entry.fkField,
+                        pk: entry.pkField,
                         features: []
                     }}), {}),
                     ...feature.relationValues
@@ -241,7 +241,9 @@ class AttributeForm extends React.Component {
             }
             // If feature id is known, i.e. not when drawing new feature, set foreign key
             if (this.props.editContext.action !== "Draw") {
-                newRelFeature.properties[this.state.relationTables[table].fk] = this.props.editContext.feature.id;
+                const relTable = this.state.relationTables[table];
+                const fkVal = relTable.pkField ? this.props.editContext.feature.properties[relTable.pkField] : this.props.editContext.feature.id;
+                newRelFeature.properties[relTable.fkField] = fkVal;
             }
             newRelationValues[table] = {...newRelationValues[table]};
             newRelationValues[table].features = newRelationValues[table].features.concat([newRelFeature]);
@@ -335,9 +337,11 @@ class AttributeForm extends React.Component {
             };
             // If feature id is known, i.e. not when drawing new feature, set foreign key
             let changed = this.props.editContext.changed;
+            const relTable = this.state.relationTables[table];
+            const fkVal = relTable.pkField ? this.props.editContext.feature.properties[relTable.pkField] : this.props.editContext.feature.id;
             const fk = this.state.relationTables[table].fk;
-            if (this.props.editContext.action !== "Draw" && feature.properties[fk] !== this.props.editContext.feature.id) {
-                newRelationValues[table].features[idx].properties[fk] = this.props.editContext.feature.id;
+            if (this.props.editContext.action !== "Draw" && feature.properties[fk] !== fkVal) {
+                newRelationValues[table].features[idx].properties[fk] = fkVal;
                 newRelationValues[table].features[idx].__status__ = "changed";
                 changed = true;
             }
@@ -590,11 +594,11 @@ class AttributeForm extends React.Component {
                         properties: {name: CoordinatesUtils.toOgcUrnCrs(this.props.map.projection)}
                     }
                 };
-                const sortcol = this.state.relationTables[relTable].sortcol;
+                const sortField = this.state.relationTables[relTable].sortField;
                 const noreorder = this.state.relationTables[relTable].noreorder;
-                if (sortcol && !noreorder) {
-                    newRelFeature.__status__ = feature.__status__ || (newRelFeature.properties[sortcol] !== idx ? "changed" : "");
-                    newRelFeature.properties[sortcol] = idx;
+                if (sortField && !noreorder) {
+                    newRelFeature.__status__ = feature.__status__ || (newRelFeature.properties[sortField] !== idx ? "changed" : "");
+                    newRelFeature.properties[sortField] = idx;
                 }
                 return newRelFeature;
             });

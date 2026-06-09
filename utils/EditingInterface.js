@@ -291,18 +291,16 @@ const EditingInterface = {
     },
     /**
      * Queries relation values of a feature
-     * @param editConfig The edit config of the feature dataset
-     * @param featureId The feature ID
+     * @param tables List of the form `[{"table": "<table>", "fkField": "<fk_field_name>", "fkVal": "<fk_val>", "sortCol": "<sort_col>", "pkField": "<pk_field>"}]`
      * @param mapCrs The CRS of the map, as an EPSG code
-     * @param tables Comma separated string of relation table references in the form `<table_name>:<fk_name>:<sort_col>`
      * @param editConfigs The theme editConfig block, containing all theme dataset edit configs
      * @param callback Callback invoked with the relation values, taking `{<tablename>: {<relation_values>}}` on success and `{}` on failure
      */
-    getRelations(editConfig, featureId, mapCrs, tables, editConfigs, callback) {
+    getRelations(tables, mapCrs, editConfigs, callback) {
         const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl").replace(/\/$/, '');
-        const req = editServiceUrl + '/' + editConfig.editDataset + '/' + featureId + "/relations";
+        const req = editServiceUrl + '/relations';
         const params = {
-            tables: tables,
+            tables: JSON.stringify(tables),
             crs: mapCrs
         };
         const headers = {
