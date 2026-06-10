@@ -955,6 +955,7 @@ Uses the print layouts defined in the QGIS project.
 | layoutHidePrefix | `string` | Hide layouts which begin with this prefix. | `undefined` |
 | layoutSortOrder | `string` | Layout sort order, asc or desc. | `'asc'` |
 | movePrintSeries | `bool` | Whether to allow moving the extent while selecting the print series. | `false` |
+| omitLayoutPathsFromTitle | `bool` | Whether to cut off any layout path prefixes (i.e. as in `subdir/Layout Name`) from the layout titles displayed in selection combo. | `undefined` |
 | printExternalLayers | `bool` | Whether to print external layers. Requires QGIS Server 3.x! | `true` |
 | printMapHighlights | `bool` | Whether to print highlights on the map, e.g. selected features or redlining. | `true` |
 | restrictToPrintScales | `bool` | Restrict print scale to list of predefined print scales, if any. | `undefined` |

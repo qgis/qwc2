@@ -78,6 +78,8 @@ class Print extends React.Component {
         map: PropTypes.object,
         /** Whether to allow moving the extent while selecting the print series. */
         movePrintSeries: PropTypes.bool,
+        /** Whether to cut off any layout path prefixes (i.e. as in `subdir/Layout Name`) from the layout titles displayed in selection combo. */
+        omitLayoutPathsFromTitle: PropTypes.bool,
         /** Whether to print external layers. Requires QGIS Server 3.x! */
         printExternalLayers: PropTypes.bool,
         /** Whether to print highlights on the map, e.g. selected features or redlining. */
@@ -272,8 +274,12 @@ class Print extends React.Component {
                             <td>
                                 <select onChange={this.changeLayout} value={this.state.layout.name}>
                                     {this.state.layouts.map(item => {
+                                        let name = this.translateLayoutName(themeLayer, item);
+                                        if (this.props.omitLayoutPathsFromTitle) {
+                                            name = name.replace(/.*\//, '');
+                                        }
                                         return (
-                                            <option key={item.name} value={item.name}>{this.translateLayoutName(themeLayer, item)}</option>
+                                            <option key={item.name} title={name} value={item.name}>{name}</option>
                                         );
                                     })}
                                 </select>
