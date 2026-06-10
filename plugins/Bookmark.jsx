@@ -104,7 +104,7 @@ class Bookmark extends React.Component {
     };
 }
 const selector = state => ({
-    bookmarks: state.bookmark?.bookmarks,
+    bookmarks: state.bookmark?.bookmarks ?? [],
     mapCrs: state.map?.projection,
     mapScales: state.map?.scales
 });

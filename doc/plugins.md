@@ -408,7 +408,7 @@ Bottom bar, displaying mouse coordinate, scale, etc.
 | additionalBottomBarLinks | `[{`<br />`  label: string,`<br />`  labelMsgId: string,`<br />`  side: string,`<br />`  url: string,`<br />`  urlTarget: string,`<br />`  icon: string,`<br />`}]` | Additional bottombar links.`side` can be `left` or `right` (default). | `undefined` |
 | coordinateFormatter | `func` | Custom coordinate formatter, as `(coordinate, crs) => string`. | `undefined` |
 | displayCoordinates | `bool` | Whether to display the coordinates in the bottom bar. | `true` |
-| displayQuickSelectDropdown | `bool` | Whether to display a dropdown menu for the selection of user bookmarks and visibility presets in the bottom bar. | `false` |
+| displayQuickSelectDropdown | `bool` | Whether to show a quick-select dropdown for bookmarks and visibility presets of the currently active theme. | `false` |
 | displayScalebar | `bool` | Whether to display the scalebar in the bottom bar. | `true` |
 | displayScales | `bool` | Whether to display the scale in the bottom bar. | `true` |
 | scalebarOptions | `object` | See [OpenLayers API doc](https://openlayers.org/en/latest/apidoc/module-ol_control_ScaleLine-ScaleLine.html) | `undefined` |

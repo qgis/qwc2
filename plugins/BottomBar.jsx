@@ -46,9 +46,10 @@ class BottomBar extends React.Component {
         changeZoomLevel: PropTypes.func,
         /** Custom coordinate formatter, as `(coordinate, crs) => string`. */
         coordinateFormatter: PropTypes.func,
+        currentTheme: PropTypes.object,
         /** Whether to display the coordinates in the bottom bar. */
         displayCoordinates: PropTypes.bool,
-        /** Whether to display a dropdown menu for the selection of user bookmarks and visibility presets in the bottom bar. */
+        /** Whether to show a quick-select dropdown for bookmarks and visibility presets of the currently active theme. */
         displayQuickSelectDropdown: PropTypes.bool,
         /** Whether to display the scalebar in the bottom bar. */
         displayScalebar: PropTypes.bool,
@@ -155,8 +156,8 @@ class BottomBar extends React.Component {
         let quickSelectDropdown = null;
         if (this.props.displayQuickSelectDropdown &&
             ((this.props.bookmarks && this.props.bookmarks.length > 0) || (this.props.visibilityPresets && this.props.visibilityPresets.length > 0))) {
-            const bookmarks = (this.props.bookmarks || []);
-            const visibilityPresets = (this.props.visibilityPresets || []);
+            const bookmarks = this.filterByActiveTheme(this.props.bookmarks || []);
+            const visibilityPresets = this.filterByActiveTheme(this.props.visibilityPresets || []);
             const options = {
                 [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk:" + bm.key, bm.description]),
                 [LocaleUtils.tr("appmenu.items.VisibilityPresets")]: visibilityPresets.map(bm => ["vp:" + bm.key, bm.description])
@@ -230,6 +231,13 @@ class BottomBar extends React.Component {
             console.warn("openBookmarkOrPreset: unexpected key format:", prefixedKey);
         }
     };
+    filterByActiveTheme = (listOfBookmarsOrPresets) => {
+        const currentTheme = this.props.currentTheme?.id ?? null;
+        if (currentTheme == null) return [];
+        return (listOfBookmarsOrPresets || []).filter((vp) =>
+            vp.theme_id != null && String(vp.theme_id) === String(currentTheme)
+        );
+    };
     setScale = (value) => {
         const scale = parseInt(value, 10);
         if (!isNaN(scale)) {
@@ -249,6 +257,7 @@ class BottomBar extends React.Component {
 export default connect((state) => ({
     map: state.map,
     bookmarks: state.bookmark?.bookmarks,
+    currentTheme: state.theme.current,
     visibilityPresets: state.bookmark?.visibilityPresets,
     fullscreen: state.display?.fullscreen,
     mapMargins: state.windows.mapMargins,

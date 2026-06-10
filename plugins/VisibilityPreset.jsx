@@ -44,6 +44,7 @@ class VisibilityPreset extends React.Component {
         setThemeLayersVisibilityPreset: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
+        theme: PropTypes.object,
         visibilityPresets: PropTypes.array
 
     };
@@ -73,10 +74,17 @@ class VisibilityPreset extends React.Component {
             </SideBar>
         );
     }
+    filterByActiveTheme = (visibilityPresets, themeId) => {
+        if (themeId == null) return [];
+        return (visibilityPresets || []).filter((vp) =>
+            vp.theme_id != null && String(vp.theme_id) === String(themeId)
+        );
+    };
     renderBody = () => {
+        const presets = this.filterByActiveTheme(this.props.visibilityPresets, this.props.theme?.id);
         return (
             <BookmarkPanel
-                bookmarks={this.props.visibilityPresets}
+                bookmarks={presets}
                 onAdd={storeVisibilityPreset}
                 onOpen={this.onOpen}
                 onRefresh={this.props.refreshVisibilityPresets}
@@ -100,7 +108,8 @@ class VisibilityPreset extends React.Component {
 
 }
 const selector = state => ({
-    visibilityPresets: state.bookmark?.visibilityPresets
+    theme: state.theme.current,
+    visibilityPresets: state.bookmark?.visibilityPresets ?? []
 });
 export default connect(selector, {
     refreshVisibilityPresets: refreshVisibilityPresets,
