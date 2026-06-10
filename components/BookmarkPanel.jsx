@@ -156,7 +156,7 @@ class BookmarkPanel extends React.Component {
     };
     bookmarkDoubleClicked = (ev, bookmark) => {
         if (!this.state.renameBookmark) {
-            this.open(bookmark.key, false);
+            this.props.onOpen(bookmark.key, false);
         }
     };
     updateBookmarkName = (text) => {
