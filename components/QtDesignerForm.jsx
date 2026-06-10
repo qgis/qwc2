@@ -452,7 +452,7 @@ class QtDesignerForm extends React.Component {
                 return (
                     <EditComboField
                         editIface={this.props.iface} fieldId={widget.name} key={widget.name}
-                        name={elname} placeholder={inputConstraints.placeholder}
+                        mapPrefix={this.props.mapPrefix} name={elname} placeholder={inputConstraints.placeholder}
                         readOnly={inputConstraints.readOnly || inputConstraints.readOnly}
                         required={inputConstraints.required || inputConstraints.required}
                         style={fontStyle} updateField={updateField} value={value} values={values} />
