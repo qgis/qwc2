@@ -199,7 +199,7 @@ export async function createBookmark(description, callback) {
     bookmarkState.url = UrlParams.getFullUrl();
     await executePermalinkDataStoreHooks(bookmarkState);
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-    const themeId = state.theme?.current?.id ?? null
+    const themeId = state.theme?.current?.id ?? null;
     axios.post(permalinkServiceUrl + "/bookmarks/", bookmarkState, {params: {description, theme_id: themeId}})
         .then((response) => callback(response.data?.success, response.data?.key))
         .catch(() => callback(false, null));

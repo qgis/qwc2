@@ -233,9 +233,9 @@ class BottomBar extends React.Component {
     };
     filterByActiveTheme = (listOfBookmarsOrPresets) => {
         const currentTheme = this.props.currentTheme?.id ?? null;
-        if (currentTheme == null) return [];
+        if (currentTheme === null) return [];
         return (listOfBookmarsOrPresets || []).filter((vp) =>
-            vp.theme_id != null && String(vp.theme_id) === String(currentTheme)
+            vp.theme_id !== null && String(vp.theme_id) === String(currentTheme)
         );
     };
     setScale = (value) => {

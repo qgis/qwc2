@@ -75,9 +75,9 @@ class VisibilityPreset extends React.Component {
         );
     }
     filterByActiveTheme = (visibilityPresets, themeId) => {
-        if (themeId == null) return [];
+        if (themeId === null) return [];
         return (visibilityPresets || []).filter((vp) =>
-            vp.theme_id != null && String(vp.theme_id) === String(themeId)
+            vp.theme_id !== null && String(vp.theme_id) === String(themeId)
         );
     };
     renderBody = () => {
