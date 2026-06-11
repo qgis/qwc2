@@ -131,7 +131,12 @@ class Settings extends React.Component {
         }
         const themeNames = ThemeUtils.getThemeNames(this.props.themes);
         const bookmarks = (this.props.bookmarks || []);
-        const visibilityPresets = (this.props.visibilityPresets || []);
+        const defaultThemeId = this.props.themes?.defaultTheme;
+        const visibilityPresets = (this.props.visibilityPresets || []).filter(vp =>
+            defaultThemeId !== null &&
+            vp.theme_id !== null &&
+            String(vp.theme_id) === String(defaultThemeId)
+        );
         const options = {
             [LocaleUtils.tr("settings.themes")]: Object.entries(themeNames).map(([id, name]) => ["t=" + id, name]),
             [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk=" + bm.key, bm.description]),
