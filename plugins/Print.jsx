@@ -627,7 +627,7 @@ class Print extends React.Component {
     };
     changeLayout = (ev) => {
         const layout = this.props.theme.print.find(item => item.name === ev.target.value);
-        this.setState({layout: layout, atlasFeature: null});
+        this.setState({layout: layout, atlasFeatures: []});
     };
     changeScale = (value) => {
         this.setState({scale: Math.max(1, parseInt(value, 10) || 0)});
