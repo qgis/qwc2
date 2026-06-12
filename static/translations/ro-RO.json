@@ -34,6 +34,7 @@
         "Share": "Trimite Link",
         "SunExposure3D": "",
         "ThemeSwitcher": "Hărți tematice",
+        "VisibilityPresets": "",
         "AttributeTable": "Tabela de atribute",
         "AuthenticationLogin": "Conectează-te",
         "AuthenticationLogout": "Deconectează-te - {0}",
@@ -110,7 +111,9 @@
     },
     "bottombar": {
       "mousepos_label": "Coordonate",
+      "quick_select_label": "",
       "scale_label": "Scara",
+      "select": "",
       "terms_label": "Termeni de utilizare",
       "viewertitle_label": "Despre"
     },
@@ -754,7 +757,6 @@
       "title": "Infomrații Temă"
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "Schema de culori",
       "confirmlang": "Aplicația va fi reîncărcată pentru a aplica schimbarea limbii. Continuați?",
       "default": "",
@@ -901,6 +903,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "",

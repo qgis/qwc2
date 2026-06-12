@@ -34,6 +34,7 @@
         "Share": "Partager",
         "SunExposure3D": "Exposition au soleil",
         "ThemeSwitcher": "Thèmes",
+        "VisibilityPresets": "",
         "AttributeTable": "Table d'attributs",
         "AuthenticationLogin": "Connexion",
         "AuthenticationLogout": "Déconnexion - {0}",
@@ -110,7 +111,9 @@
     },
     "bottombar": {
       "mousepos_label": "Coordonnées",
+      "quick_select_label": "",
       "scale_label": "Echelle",
+      "select": "",
       "terms_label": "Conditions d'utilisation",
       "viewertitle_label": "Page d'accueil"
     },
@@ -754,7 +757,6 @@
       "title": "Information sur le thème"
     },
     "settings": {
-      "bookmarks": "Marque-pages",
       "colorscheme": "Apparence",
       "confirmlang": "L'application sera rechargée pour changer la langue. Procéder?",
       "default": "Par défaut",
@@ -901,6 +903,18 @@
     },
     "view3d": {
       "storingstate": "Enregistrement de la vue 3D..."
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "Détacher",

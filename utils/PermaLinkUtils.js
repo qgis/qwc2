@@ -71,7 +71,7 @@ export const UrlParams = {
         }
     },
     clear() {
-        const clearKeys = ['k', 't', 'l', 'bl', 'bk', 'c', 'hc', 'ic', 's', 'e', 'crs', 'st', 'sp', 'f', 'v', 'v3d', 'bl3d', 'task'];
+        const clearKeys = ['k', 't', 'l', 'bl', 'bk', 'c', 'hc', 'ic', 's', 'e', 'crs', 'st', 'sp', 'f', 'v', 'vp', 'v3d', 'bl3d', 'task'];
         this.updateParams(clearKeys.reduce((res, key) => ({...res, [key]: undefined}), {}), true);
     },
     getFullUrl() {
@@ -136,23 +136,35 @@ export function resolvePermaLink(initialParams, callback) {
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
     const key = initialParams.k;
     const bkey = initialParams.bk;
-    if (!permalinkServiceUrl || (!key && !bkey)) {
+    const vpKey = initialParams.vp;
+    if (!permalinkServiceUrl || (!key && !bkey && !vpKey)) {
         callback(initialParams, {}, true);
-    } else {
-        const path = key ? "/resolvepermalink?key=" + key : "/bookmarks/" + bkey;
-        axios.get(permalinkServiceUrl + path)
-            .then(response => {
-                const data = response.data;
-                callback({...initialParams, ...(data.query || {}), ...(data.state.permalinkParams || {})}, data.state || {}, !!data.query);
-            })
-            .catch(() => {
-                callback(initialParams, {}, false);
-            });
+        return;
     }
+
+    if (vpKey) {
+        // eslint-disable-next-line no-use-before-define
+        resolveVisibilityPreset(vpKey, (preset) => {
+            preset
+                ? callback(initialParams, {visibilityPreset: preset}, true)
+                : callback(initialParams, {}, false);
+        });
+        return;
+    }
+
+    const path = key ? "/resolvepermalink?key=" + key : "/bookmarks/" + bkey;
+    axios.get(permalinkServiceUrl + path)
+        .then(response => {
+            const data = response.data;
+            callback({...initialParams, ...(data.query || {}), ...(data.state.permalinkParams || {})}, data.state || {}, !!data.query);
+        })
+        .catch(() => {
+            callback(initialParams, {}, false);
+        });
+
 }
 
 // Bookmarks
-
 export function resolveBookmark(bkey, callback) {
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
     axios.get(permalinkServiceUrl + "/bookmarks/" + bkey)
@@ -187,9 +199,11 @@ export async function createBookmark(description, callback) {
     bookmarkState.url = UrlParams.getFullUrl();
     await executePermalinkDataStoreHooks(bookmarkState);
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-    axios.post(permalinkServiceUrl + "/bookmarks/" + "?description=" + description, bookmarkState)
+    const themeId = state.theme?.current?.id ?? null;
+    axios.post(permalinkServiceUrl + "/bookmarks/", bookmarkState, {params: {description, theme_id: themeId}})
         .then((response) => callback(response.data?.success, response.data?.key))
         .catch(() => callback(false, null));
+
 }
 
 export async function updateBookmark(bkey, description, callback) {
@@ -209,14 +223,17 @@ export async function updateBookmark(bkey, description, callback) {
     bookmarkState.url = UrlParams.getFullUrl();
     await executePermalinkDataStoreHooks(bookmarkState);
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-    axios.put(permalinkServiceUrl + "/bookmarks/" + bkey + "?description=" + description, bookmarkState)
+    const themeId = state.theme?.current?.id ?? null;
+    axios.put(permalinkServiceUrl + "/bookmarks/" + bkey, bookmarkState, {params: {description, theme_id: themeId}})
         .then((response) => callback(response.data?.success))
         .catch(() => callback(false));
 }
 
 export function renameBookmark(bkey, description, callback) {
+    const state = StandardApp.store.getState();
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-    axios.put(permalinkServiceUrl + "/bookmarks/" + bkey + "?description=" + description)
+    const themeId = state.theme?.current?.id ?? null;
+    axios.put(permalinkServiceUrl + "/bookmarks/" + bkey, null, {params: {description, theme_id: themeId}})
         .then((response) => callback(response.data?.success))
         .catch(() => callback(false));
 }
@@ -252,8 +269,10 @@ export function storeVisibilityPreset(description, callback) {
     }
     const state = StandardApp.store.getState();
     const preset = LayerUtils.computeVisibilityPreset(state.layers.flat);
-    axios.post(permalinkServiceUrl + "/visibility_presets/?description=" + description, preset)
-        .then((response) => callback(response.data?.success))
+    const themeId = state.theme?.current?.id ?? null;
+
+    axios.post(permalinkServiceUrl + "/visibility_presets/", preset, {params: {description, theme_id: themeId}})
+        .then((response) => callback(response.data?.success, response.data?.key))
         .catch(() => callback(false));
 }
 
@@ -261,14 +280,18 @@ export function updateVisibilityPreset(key, description, callback) {
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
     const state = StandardApp.store.getState();
     const preset = LayerUtils.computeVisibilityPreset(state.layers.flat);
-    axios.put(permalinkServiceUrl + "/visibility_presets/" + key + "?description=" + description, preset)
+    const themeId = state.theme?.current?.id ?? null;
+
+    axios.put(permalinkServiceUrl + "/visibility_presets/" + key, preset, {params: {description, theme_id: themeId}})
         .then((response) => callback(response.data?.success))
         .catch(() => callback(false));
 }
 
 export function renameVisibilityPreset(key, description, callback) {
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-    axios.put(permalinkServiceUrl + "/visibility_presets/" + key + "?description=" + description)
+    const state = StandardApp.store.getState();
+    const themeId = state.theme?.current?.id ?? null;
+    axios.put(permalinkServiceUrl + "/visibility_presets/" + key, null, {params: {description, theme_id: themeId}})
         .then((response) => callback(response.data?.success))
         .catch(() => callback(false));
 }

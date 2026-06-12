@@ -12,6 +12,7 @@ import {connect, Provider} from 'react-redux';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import * as bookmarkExports from '../actions/bookmark';
 import * as displayExports from '../actions/display';
 import {setViewMode, ViewMode} from '../actions/display';
 import * as layersExports from '../actions/layers';
@@ -42,6 +43,7 @@ import './style/View3D.css';
 class View3D extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        bookmark: PropTypes.object,
         /** The position of the navigation controls. Either `top` or `bottom`. */
         controlsPosition: PropTypes.string,
         /** The default field of view (`20`: min, `100`: max). */
@@ -136,16 +138,18 @@ class View3D extends React.Component {
                 return action.type === syncAction ? action[key] : state;
             }
         };
+        const bookmarkActions = Object.values(bookmarkExports).filter(x => typeof(x) === 'string');
         const displayActions = Object.values(displayExports).filter(x => typeof(x) === 'string');
         const layersActions = Object.values(layersExports).filter(x => typeof(x) === 'string');
         const mapActions = Object.values(mapExports).filter(x => typeof(x) === 'string');
         const themeActions = Object.values(themeExports).filter(x => typeof(x) === 'string');
+        const bookmark = forwardReducer("bookmark", bookmarkActions, "SYNC_BOOKMARK_FROM_PARENT_STORE");
         const display = forwardReducer("display", displayActions, "SYNC_DISPLAY_FROM_PARENT_STORE");
         const layers = forwardReducer("layers", layersActions, "SYNC_LAYERS_FROM_PARENT_STORE");
         const map = forwardReducer("map", mapActions, "SYNC_MAP_FROM_PARENT_STORE");
         const localConfig = forwardReducer("localConfig", [], "SYNC_LOCAL_CONFIG_FROM_PARENT_STORE");
         const theme = forwardReducer("theme", themeActions, "SYNC_THEME_FROM_PARENT_STORE");
-        this.store = createStore({display, layers, localConfig, map, processNotifications, theme, task, windows});
+        this.store = createStore({display, bookmark, layers, localConfig, map, processNotifications, theme, task, windows});
 
         // Set stored state
         const storedState = {
@@ -253,6 +257,9 @@ class View3D extends React.Component {
     syncParentStore(prevProps, force = false) {
         if (this.state.enabledState !== this.EnabledState.ENABLED) {
             return;
+        }
+        if (this.props.bookmark !== prevProps.bookmark || force) {
+            this.store.dispatch({type: "SYNC_BOOKMARK_FROM_PARENT_STORE", bookmark: this.props.bookmark});
         }
         if (this.props.display !== prevProps.display || force) {
             this.store.dispatch({type: "SYNC_DISPLAY_FROM_PARENT_STORE", display: this.props.display});
@@ -449,6 +456,7 @@ class View3D extends React.Component {
 export default (plugins3d) => connect(
     (state) => ({
         plugins3d: plugins3d,
+        bookmark: state.bookmark,
         display: state.display,
         map: state.map,
         layers: state.layers,
