@@ -70,7 +70,7 @@ class Portal extends React.Component {
         menuVisible: false
     };
     componentDidMount() {
-        if (!this.props.startupParams.t && !this.props.startupParams.k && !this.props.startupParams.bk) {
+        if (!this.props.startupParams.t && !this.props.startupParams.k && !this.props.startupParams.bk && !this.props.startupParams.vp) {
             this.props.setCurrentTask("Portal");
         }
     }
