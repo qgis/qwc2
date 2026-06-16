@@ -577,9 +577,9 @@ class API extends React.Component {
         let options = {};
         if (typeof optionsOrBeforeLayerName !== 'object') {
             options.beforeLayerName = optionsOrBeforeLayerName;
-            options.sublayers = sublayers;
         } else {
             options = optionsOrBeforeLayerName;
+            sublayers = options?.sublayers;
         }
         const params = LayerUtils.splitLayerUrlParam(resource);
         ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
