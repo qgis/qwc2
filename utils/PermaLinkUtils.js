@@ -144,10 +144,16 @@ export function resolvePermaLink(initialParams, callback) {
 
     if (vpKey) {
         // eslint-disable-next-line no-use-before-define
-        resolveVisibilityPreset(vpKey, (preset) => {
-            preset
-                ? callback(initialParams, {visibilityPreset: preset}, true)
-                : callback(initialParams, {}, false);
+        resolveVisibilityPreset(vpKey, (preset, themeId) => {
+            if (preset && themeId) {
+                callback(
+                    {...initialParams, t: themeId},
+                    {visibilityPreset: preset},
+                    true
+                );
+            } else {
+                callback(initialParams, {}, false);
+            }
         });
         return;
     }
@@ -250,8 +256,8 @@ export function removeBookmark(bkey, callback) {
 export function resolveVisibilityPreset(vpKey, callback) {
     const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
     axios.get(permalinkServiceUrl + "/visibility_presets/" + vpKey)
-        .then(response => callback(response.data))
-        .catch(() => callback(null));
+        .then(response => callback(response.data?.visibility_preset, response.data?.theme_id))
+        .catch(() => callback(null, null));
 }
 
 export function getVisibilityPresets(callback) {
