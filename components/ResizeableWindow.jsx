@@ -66,6 +66,7 @@ class ResizeableWindow extends React.Component {
         raiseWindow: PropTypes.func,
         registerWindow: PropTypes.func,
         scrollable: PropTypes.bool,
+        setRef: PropTypes.func,
         setSplitScreen: PropTypes.func,
         splitScreenWhenDocked: PropTypes.bool,
         splitTopAndBottomBar: PropTypes.bool,
@@ -161,6 +162,18 @@ class ResizeableWindow extends React.Component {
             this.moveToInternalWindow();
         }
     }
+    updateSize = (size) => {
+        this.rnd.updateSize(size);
+        this.setState(state => ({
+            geometry: {...state.geometry, ...size}
+        }));
+    };
+    updatePosition = (position) => {
+        this.rnd.updatePosition(position);
+        this.setState(state => ({
+            geometry: {...state.geometry, ...position}
+        }));
+    };
     onClose = (ev) => {
         if (this.state.externalWindow) {
             this.state.externalWindow.removeEventListener('beforeunload', this.props.onClose);
@@ -424,6 +437,9 @@ class ResizeableWindow extends React.Component {
             if (this.props.visible) {
                 this.rnd.resizableElement?.current?.querySelector?.('[tabindex="0"]')?.focus?.();
             }
+            this.props.setRef?.(this);
+        } else {
+            this.props.setRef?.(null);
         }
     };
     onDragStart = () => {
