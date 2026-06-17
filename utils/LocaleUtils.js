@@ -75,12 +75,16 @@ const LocaleUtils = {
             }
         });
     },
-    tr(key) {
+    tr(key, ...args) {
         const state = StandardApp.store.getState();
         const text = key in state.locale.messages ? (state.locale.messages[key] || state.locale.fallbackMessages[key] || key) : key;
 
-        const args = Array.prototype.slice.call(arguments, 1);
-        if (args.length > 0) {
+        if (args.length === 1 && args[0] && typeof args[0] === 'object' && !Array.isArray(args[0])) {
+            // Named substitution: {name} replaced from the dictionary
+            const dict = args[0];
+            return text.replace(/{(\w+)}/g, (match, name) => (name in dict ? dict[name] : match));
+        } else if (args.length > 0) {
+            // Positional substitution: {0}, {1}, ...
             return text.replace(/{(\d+)}/g, (match, number) => {
                 return typeof args[number] !== 'undefined' ? args[number] : match;
             });
