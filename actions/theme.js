@@ -157,11 +157,17 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
         const prevLayers = getState().layers?.flat || [];
         const prevTheme = getState().theme.current;
 
+        const defaultExtent = {
+            crs: themes.defaultMapCrs ?? "EPSG:3857",
+            bounds: themes.defaultMapExtent ?? CoordinatesUtils.reproject([-20037508.34, -20048966.10, 20037508.34, 20048966.10], "EPSG:3857", themes.defaultMapCrs ?? "EPSG:3857")
+        };
 
         // Inherit defaults if necessary
         theme = {
             ...theme,
             mapCrs: mapCrs,
+            bbox: theme.bbox ?? defaultExtent,
+            initialBbox: theme.initialBbox ?? defaultExtent,
             version: theme.version ?? themes.defaultWMSVersion ?? "1.3.0",
             scales: theme.scales ?? themes.defaultScales ?? MapUtils.getGoogleMercatorScales(0, 21),
             printScales: theme.printScales ?? themes.defaultPrintScales,
@@ -252,4 +258,8 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
             finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask);
         }
     };
+}
+
+export function setBlankTheme(themes) {
+    return setCurrentTheme({id: ""}, themes);
 }
