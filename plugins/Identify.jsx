@@ -86,6 +86,8 @@ class Identify extends React.Component {
         /** How to handle long attribute names / values. */
         longAttributesDisplay: PropTypes.oneOf(["wrap", "ellipsis"]),
         map: PropTypes.object,
+        /** Whether to only show the results dialog if there are results to display. */
+        onlyShowDialogWithResults: PropTypes.bool,
         /** Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. */
         params: PropTypes.object,
         removeLayer: PropTypes.func,
@@ -174,6 +176,13 @@ class Identify extends React.Component {
                     this.identifyRadius();
                 }
             }
+        }
+        if (
+            this.props.onlyShowDialogWithResults &&
+            this.state.pendingRequests === 0 && this.state.identifyResults !== null && isEmpty(this.state.identifyResults) &&
+            (prevState.pendingRequests > 0 || prevState.identifyResults === null)
+        ) {
+            this.clearResults();
         }
     }
     identifyPoint = (clickPoint) => {
@@ -397,7 +406,9 @@ class Identify extends React.Component {
     };
     render() {
         let resultWindow = null;
-        if (this.state.pendingRequests > 0 || this.state.identifyResults !== null) {
+        if (this.props.onlyShowDialogWithResults && isEmpty(this.state.identifyResults)) {
+            // pass
+        } else if (this.state.pendingRequests > 0 || this.state.identifyResults !== null) {
             let body = null;
             if (isEmpty(this.state.identifyResults)) {
                 if (this.state.pendingRequests > 0) {

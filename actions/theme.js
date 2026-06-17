@@ -46,47 +46,70 @@ export function setThemeLayersList(theme) {
     };
 }
 
-export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialTask, initialVisibilityPreset) {
-    // Create layer
-    const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
-    let layers = [themeLayer];
-
-    // Restore theme layer configuration, create placeholders for missing layers
+export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask, initialVisibilityPreset) {
+    let layers = [];
     const externalLayers = {};
-    if (!isEmpty(permalinkLayers) && ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
-        layers = permalinkLayers;
-    } else {
-        if (layerConfigs) {
-            if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
-                layers = LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
-            } else {
-                layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
-            }
+
+    // Get current background layer if it needs to be preserved
+    if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
+        visibleBgLayer = prevLayers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true)?.name ?? null;
+    }
+
+    // Remove old layers
+    const preserveUserLayers = preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch", theme) === true;
+    let insPos = 0;
+    let bgLayerKept = false;
+    prevLayers.forEach(layer => {
+        if (layer.role === LayerRole.USERLAYER && preserveUserLayers) {
+            ++insPos;
+        } else if (layer.role === LayerRole.BACKGROUND && layer.name === visibleBgLayer) {
+            bgLayerKept = true;
+        } else {
+            dispatch(removeLayer(layer.id));
         }
-        if (isEmpty(layers)) {
-            layers = [{...themeLayer, sublayers: []}];
+    });
+
+    if (theme.url) {
+        // Create layer
+        const themeLayer = ThemeUtils.createThemeLayer(theme, themes);
+        layers.push(themeLayer);
+        // Restore theme layer configuration, create placeholders for missing layers
+        if (!isEmpty(permalinkLayers) && ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
+            layers = permalinkLayers;
+        } else {
+            if (layerConfigs) {
+                if (ConfigUtils.getConfigProp("allowReorderingLayers", theme) !== true) {
+                    layers = LayerUtils.restoreLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+                } else {
+                    layers = LayerUtils.restoreOrderedLayerParams(themeLayer, layerConfigs, permalinkLayers, externalLayers);
+                }
+            }
+            if (isEmpty(layers)) {
+                layers = [{...themeLayer, sublayers: []}];
+            }
         }
     }
 
     // Add background layers for theme
-    let haveVisibleBg = false;
     const bgLayers = ThemeUtils.createThemeBackgroundLayers(theme.backgroundLayers || [], themes, visibleBgLayer, externalLayers);
-    if (initialTheme && visibleBgLayer) {
-        const visibleLayer = bgLayers.find(entry => entry.visibility)?.name;
-        if (visibleLayer !== visibleBgLayer) {
-            dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
-        }
+    const actuallyVisibleBgLayer = bgLayers.find(entry => entry.visibility)?.name;
+    if (!prevTheme && visibleBgLayer && actuallyVisibleBgLayer !== visibleBgLayer) {
+        dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
     }
     for (const bgLayer of bgLayers.reverse()) {
-        haveVisibleBg |= bgLayer.visibility;
-        dispatch(addLayer(bgLayer));
+        // If previous visible BG layer kept, insert other BG layers around that layer
+        if (bgLayer.name === visibleBgLayer && bgLayerKept) {
+            bgLayerKept = false;
+        } else {
+            dispatch(addLayer(bgLayer, bgLayerKept ? 1 : 0));
+        }
     }
-    if (!haveVisibleBg) {
+    if (!actuallyVisibleBgLayer) {
         UrlParams.updateParams({bl: ""});
     }
 
     for (const layer of layers.reverse()) {
-        dispatch(addLayer(layer, insertPos));
+        dispatch(addLayer(layer, insPos));
     }
 
     // Restore external layers
@@ -103,8 +126,10 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
                 // Don't expose sublayers
                 if (layer) {
                     layer.sublayers = null;
+                    dispatch(replacePlaceholderLayer(id, layer));
+                } else {
+                    dispatch(removeLayer(id));
                 }
-                dispatch(replacePlaceholderLayer(id, layer));
             });
         }
     }
@@ -119,7 +144,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
     }
 
     const section = ConfigUtils.isMobile() ? "mobile" : "desktop";
-    const task = initialTask || (theme?.config?.[section]?.startupTask ?? theme?.config?.startupTask) || (initialTheme ? ConfigUtils.getConfigProp("startupTask") : null);
+    const task = initialTask || (theme?.config?.[section]?.startupTask ?? theme?.config?.startupTask) || (!prevTheme ? ConfigUtils.getConfigProp("startupTask") : null);
     if (task) {
         const mapClickAction = ConfigUtils.getPluginConfig(task.key).mapClickAction;
         dispatch(setCurrentTask(task.key, task.mode, mapClickAction, task.data));
@@ -128,51 +153,37 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPo
 
 export function setCurrentTheme(theme, themes, preserve = true, initialExtent = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null, initialTask = null, initialVisibilityPreset = null) {
     return (dispatch, getState) => {
-        const curLayers = getState().layers?.flat || [];
+        dispatch(setSwipe(null));
         const mapCrs = theme.mapCrs || themes.defaultMapCrs || "EPSG:3857";
         if (!(mapCrs in CoordinatesUtils.getAvailableCRS())) {
             dispatch(showNotification("missingprojection", LocaleUtils.tr("app.missingprojection", theme.title, mapCrs), NotificationType.WARN, true));
-            return;
-        }
-        const initialTheme = !getState().theme.current;
-
-        // Get current background layer if it needs to be preserved
-        if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
-            const curBgLayer = curLayers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true);
-            visibleBgLayer = curBgLayer ? curBgLayer.name : null;
-        }
-
-        // Remove old layers
-        let insertPos = 0;
-        if (preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch", theme) === true) {
-            // Compute insertion position of new theme layers by counting how many non-theme layers remain
-            insertPos = curLayers.filter(layer => layer.role === LayerRole.USERLAYER).length;
-
-            const removeLayers = curLayers.filter(layer => layer.role !== LayerRole.USERLAYER).map(layer => layer.id);
-            for (const layerId of removeLayers) {
-                dispatch(removeLayer(layerId));
-            }
-        } else {
             dispatch(removeAllLayers());
-        }
-        dispatch(setSwipe(null));
-        if (!theme) {
             return;
         }
+
+        const prevLayers = getState().layers?.flat || [];
+        const prevTheme = getState().theme.current;
+
+        const defaultExtent = {
+            crs: themes.defaultMapCrs ?? "EPSG:3857",
+            bounds: themes.defaultMapExtent ?? CoordinatesUtils.reproject([-20037508.34, -20048966.10, 20037508.34, 20048966.10], "EPSG:3857", themes.defaultMapCrs ?? "EPSG:3857")
+        };
 
         // Inherit defaults if necessary
         theme = {
             ...theme,
             mapCrs: mapCrs,
-            version: theme.version || themes.defaultWMSVersion || "1.3.0",
-            scales: theme.scales || themes.defaultScales || MapUtils.getGoogleMercatorScales(0, 21),
-            printScales: theme.printScales || themes.defaultPrintScales || undefined,
-            printResolutions: theme.printResolutions || themes.defaultPrintResolutions || undefined,
-            printGrid: theme.printGrid || themes.defaultPrintGrid || undefined,
-            searchProviders: theme.searchProviders || themes.defaultSearchProviders || undefined,
-            backgroundLayers: theme.backgroundLayers || themes.defaultBackgroundLayers || [],
-            mapTips: theme.mapTips ?? themes.defaultMapTips ?? undefined,
-            defaultDisplayCrs: theme.defaultDisplayCrs || themes.defaultDisplayCrs || undefined
+            bbox: theme.bbox ?? defaultExtent,
+            initialBbox: theme.initialBbox ?? defaultExtent,
+            version: theme.version ?? themes.defaultWMSVersion ?? "1.3.0",
+            scales: theme.scales ?? themes.defaultScales ?? MapUtils.getGoogleMercatorScales(0, 21),
+            printScales: theme.printScales ?? themes.defaultPrintScales,
+            printResolutions: theme.printResolutions ?? themes.defaultPrintResolutions,
+            printGrid: theme.printGrid ?? themes.defaultPrintGrid,
+            searchProviders: theme.searchProviders ?? themes.defaultSearchProviders,
+            backgroundLayers: theme.backgroundLayers ?? themes.defaultBackgroundLayers ?? [],
+            mapTips: theme.mapTips ?? themes.defaultMapTips,
+            defaultDisplayCrs: theme.defaultDisplayCrs || themes.defaultDisplayCrs
         };
 
         // Preserve extent if desired and possible
@@ -245,13 +256,17 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
                         dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
                     }
                 }
-                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialTask, initialVisibilityPreset);
+                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask, initialVisibilityPreset);
             });
         } else {
             if (!isEmpty(missingThemeLayers)) {
                 dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", Object.keys(missingThemeLayers).join(", ")), NotificationType.WARN, true));
             }
-            finishThemeSetup(dispatch, theme, themes, layerConfigs, insertPos, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTheme, initialTask, initialVisibilityPreset);
+            finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask, initialVisibilityPreset);
         }
     };
+}
+
+export function setBlankTheme(themes) {
+    return setCurrentTheme({id: ""}, themes);
 }

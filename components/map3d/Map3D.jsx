@@ -269,6 +269,10 @@ class Map3D extends React.Component {
             const quality = Math.max(20, this.state.sceneContext.settings.sceneQuality);
             this.map.segments = Math.pow(2, Math.floor(quality / 20));
             this.instance.notifyChange(this.instance.view.camera);
+            this.instance.getEntities().filter(entity => entity.tiles?.lruCache).forEach(entity => {
+                const gigabyteBytes = 2 ** 30;
+                entity.tiles.lruCache.maxBytesSize = 0.5 * gigabyteBytes * (1 + this.state.sceneContext.settings.sceneQuality / 100);
+            });
         }
     }
     setBaseLayer = (layer, visibility) => {
@@ -526,7 +530,14 @@ class Map3D extends React.Component {
     };
     addSceneObject = (objectId, object, addToLayerTree = false, treeOptions = {}, showEditTool = false, callback = null) => {
         if (object.isEntity3D) {
-            this.instance.add(object).then(() => callback?.());
+            this.instance.add(object).then((entity) => {
+                if (entity.tiles?.lruCache) {
+                    // LRU Cache between .5 GB and 1 GB depending on scene quality
+                    const gigabyteBytes = 2 ** 30;
+                    entity.tiles.lruCache.maxBytesSize = 0.5 * gigabyteBytes * (1 + this.state.sceneContext.settings.sceneQuality / 100);
+                }
+                callback?.();
+            });
         } else {
             this.sceneObjectGroup.add(object);
             callback?.();

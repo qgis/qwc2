@@ -379,7 +379,10 @@ class API extends React.Component {
         click: PropTypes.object,
         mapCrs: PropTypes.string,
         registerCustomPlugin: PropTypes.func,
+        removeLayer: PropTypes.func,
+        replacePlaceholderLayer: PropTypes.func,
         setCurrentTask: PropTypes.func,
+        setLayerLoading: PropTypes.func,
         state: PropTypes.object,
         unregisterCustomPlugin: PropTypes.func
     };
@@ -577,17 +580,28 @@ class API extends React.Component {
         let options = {};
         if (typeof optionsOrBeforeLayerName !== 'object') {
             options.beforeLayerName = optionsOrBeforeLayerName;
-            options.sublayers = sublayers;
         } else {
             options = optionsOrBeforeLayerName;
+            sublayers = options?.sublayers;
         }
         const params = LayerUtils.splitLayerUrlParam(resource);
+        this.props.addLayer({
+            id: params.id,
+            srcid: uuid.v4(),
+            type: "placeholder",
+            name: params.name,
+            title: params.name
+        }, null, options);
+        this.props.setLayerLoading(params.id, true);
         ServiceLayerUtils.findLayers(params.type, params.url, [params], this.props.mapCrs, (id, layer) => {
             if (layer) {
                 if (sublayers === false) {
                     layer.sublayers = null;
                 }
-                this.props.addLayer(layer, null, options);
+                this.props.setLayerLoading(params.id, false);
+                this.props.replacePlaceholderLayer(id, layer);
+            } else {
+                this.props.removeLayer(params.id);
             }
         });
     };

@@ -255,7 +255,8 @@ const VectorLayerUtils = {
             // Make geometry transparent
             opts = {
                 strokeColor: [0, 0, 0, 0],
-                fillColor: [0, 0, 0, 0]
+                fillColor: [0, 0, 0, 0],
+                strokeWidth: 0
             };
         } else if (styleName === 'marker') {
             opts = {

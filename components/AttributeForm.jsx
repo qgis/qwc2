@@ -339,9 +339,9 @@ class AttributeForm extends React.Component {
             let changed = this.props.editContext.changed;
             const relTable = this.state.relationTables[table];
             const fkVal = relTable.pkField ? this.props.editContext.feature.properties[relTable.pkField] : this.props.editContext.feature.id;
-            const fk = this.state.relationTables[table].fk;
-            if (this.props.editContext.action !== "Draw" && feature.properties[fk] !== fkVal) {
-                newRelationValues[table].features[idx].properties[fk] = fkVal;
+            const fkField = this.state.relationTables[table].fkField;
+            if (this.props.editContext.action !== "Draw" && feature.properties[fkField] !== fkVal) {
+                newRelationValues[table].features[idx].properties[fkField] = fkVal;
                 newRelationValues[table].features[idx].__status__ = "changed";
                 changed = true;
             }

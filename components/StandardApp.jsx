@@ -19,7 +19,7 @@ import {refreshBookmarks, refreshVisibilityPresets} from '../actions/bookmark';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {changeLocale} from '../actions/locale';
 import {setCurrentTask} from '../actions/task';
-import {themesLoaded, setCurrentTheme} from '../actions/theme';
+import {themesLoaded, setBlankTheme, setCurrentTheme} from '../actions/theme';
 import {NotificationType, showNotification, setBottombarHeight, setTopbarHeight} from '../actions/windows';
 import ReducerIndex from '../reducers/index';
 import {createStore} from '../stores/StandardStore';
@@ -59,6 +59,7 @@ class AppContainerComponent extends React.Component {
         haveMapSize: PropTypes.bool,
         localConfig: PropTypes.object,
         locale: PropTypes.string,
+        setBlankTheme: PropTypes.func,
         setBottombarHeight: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
@@ -161,6 +162,8 @@ class AppContainerComponent extends React.Component {
                 }
                 const initialTaskParam = (params.task ? JSON.parse(decodeURIComponent(params.task)) : null);
                 this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialTaskParam, state.visibilityPreset);
+            } else if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
+                this.props.setBlankTheme(themes);
             } else if (!ConfigUtils.havePlugin("Portal")) {
                 this.props.showNotification("missingdefaulttheme", LocaleUtils.tr("app.missingdefaulttheme", params.t), NotificationType.WARN, true);
             }
@@ -183,6 +186,7 @@ const AppContainer = connect(state => ({
     localConfig: state.localConfig
 }), {
     themesLoaded: themesLoaded,
+    setBlankTheme: setBlankTheme,
     setCurrentTask: setCurrentTask,
     setCurrentTheme: setCurrentTheme,
     showNotification: showNotification,

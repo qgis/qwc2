@@ -45,6 +45,7 @@ Plugin reference
 * [Share](#share)
 * [StartupMarker](#startupmarker)
 * [TaskButton](#taskbutton)
+* [ThemeBrowser](#themebrowser)
 * [ThemeSwitcher](#themeswitcher)
 * [TimeManager](#timemanager)
 * [TopBar](#topbar)
@@ -601,6 +602,7 @@ for customized queries and templates for the result presentation.
 | highlightAllResults | `bool` | Whether to highlight all results if no result is hovered | `true` |
 | initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. | `'m'` |
 | longAttributesDisplay | `{"wrap", "ellipsis"}` | How to handle long attribute names / values. | `'wrap'` |
+| onlyShowDialogWithResults | `bool` | Whether to only show the results dialog if there are results to display. | `undefined` |
 | params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
 | resultDisplayMode | `{"tree", "flat", "paginated"}` | Result display mode. | `'flat'` |
@@ -957,6 +959,7 @@ Uses the print layouts defined in the QGIS project.
 | layoutHidePrefix | `string` | Hide layouts which begin with this prefix. | `undefined` |
 | layoutSortOrder | `string` | Layout sort order, asc or desc. | `'asc'` |
 | movePrintSeries | `bool` | Whether to allow moving the extent while selecting the print series. | `false` |
+| omitLayoutPathsFromTitle | `bool` | Whether to cut off any layout path prefixes (i.e. as in `subdir/Layout Name`) from the layout titles displayed in selection combo. | `undefined` |
 | printExternalLayers | `bool` | Whether to print external layers. Requires QGIS Server 3.x! | `true` |
 | printMapHighlights | `bool` | Whether to print highlights on the map, e.g. selected features or redlining. | `true` |
 | restrictToPrintScales | `bool` | Restrict print scale to list of predefined print scales, if any. | `undefined` |
@@ -1154,6 +1157,19 @@ The following special values for `task` are suppported:
 | task | `string` | The task name. | `undefined` |
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
+
+## ThemeBrowser<a name="themebrowser"></a>
+
+Theme browser panel.
+
+An alternative to the ThemeSwitcher and LayerTree, allows navigating themes
+and controlling layers in a single interface.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| bboxDependentLegend | `{bool, string}` | Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
+| fallbackDrag | `bool` | Whether to use the fallback logic for drag-and-drop. | `undefined` |
+| scaleDependentLegend | `{bool, string}` | Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
 
 ## ThemeSwitcher<a name="themeswitcher"></a>
 
