@@ -512,7 +512,7 @@ const ServiceLayerUtils = {
             const layers = getLayers(capabilities, requestUrl);
             for (const layerConfig of layerConfigs) {
                 let layer = LayerUtils.matchSubLayer({sublayers: layers}, (l) => {
-                    return l.name === layerConfig.name && (!layerConfig.style || l.style === layerConfig.style);
+                    return l.name === layerConfig.name && (!layerConfig.style || (layerConfig.style in l.styles));
                 });
                 // Some services (i.e. wms.geo.admin.ch) have same-named sublayers
                 layer = LayerUtils.searchSubLayer(layer, "name", layerConfig.name) ?? layer;
