@@ -54,7 +54,6 @@ if (CSRF_TOKEN) {
 class AppContainerComponent extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object,
-        currentTheme: PropTypes.object,
         defaultUrlParams: PropTypes.string,
         haveMapSize: PropTypes.bool,
         localConfig: PropTypes.object,
@@ -63,7 +62,6 @@ class AppContainerComponent extends React.Component {
         setBottombarHeight: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
-        setThemeLayersVisibilityPreset: PropTypes.func,
         setTopbarHeight: PropTypes.func,
         showNotification: PropTypes.func,
         startupConfig: PropTypes.object,
