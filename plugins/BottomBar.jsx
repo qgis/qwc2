@@ -103,7 +103,6 @@ class BottomBar extends React.Component {
             rightBottomLinks.push(this.renderLink(entry));
         }
         const enabledMouseCrs = [...this.props.additionalMouseCrs || [], this.props.map.projection, "EPSG:4326"];
-        // eslint-disable-next-line no-unused-vars
         const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, value]) => {
             return enabledMouseCrs.includes(key);
         }));
