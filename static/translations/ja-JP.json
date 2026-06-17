@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "テーマ",
+        "VisibilityPresets": "",
         "AttributeTable": "属性テーブル",
         "AuthenticationLogin": "ログイン",
         "AuthenticationLogout": "ログアウト - {0}",
@@ -111,7 +112,9 @@
     },
     "bottombar": {
       "mousepos_label": "座標",
+      "quick_select_label": "",
       "scale_label": "縮尺",
+      "select": "",
       "terms_label": "使用許諾条件",
       "viewertitle_label": "QWC2 デモ"
     },
@@ -755,7 +758,6 @@
       "title": "テーマの情報"
     },
     "settings": {
-      "bookmarks": "ブックマーク",
       "colorscheme": "カラー・スキーム",
       "confirmlang": "言語を変更するためにアプリケーションを再ロードします。よろしいか?",
       "default": "デフォルト",
@@ -902,6 +904,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "切り離す",

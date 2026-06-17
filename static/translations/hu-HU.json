@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "Térkép",
+        "VisibilityPresets": "",
         "AttributeTable": "",
         "AuthenticationLogin": "",
         "AuthenticationLogout": "",
@@ -111,7 +112,9 @@
     },
     "bottombar": {
       "mousepos_label": "Koordináták",
+      "quick_select_label": "",
       "scale_label": "Méretarány",
+      "select": "",
       "terms_label": "Használati feltételek",
       "viewertitle_label": ""
     },
@@ -755,7 +758,6 @@
       "title": ""
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",
@@ -902,6 +904,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "",

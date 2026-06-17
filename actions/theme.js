@@ -22,7 +22,8 @@ import MapUtils from '../utils/MapUtils';
 import {UrlParams} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import ThemeUtils from '../utils/ThemeUtils';
-import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe} from './layers';
+import {LayerRole, addLayer, removeLayer, removeAllLayers, replacePlaceholderLayer, setSwipe,
+    setThemeLayersVisibilityPreset} from './layers';
 import {configureMap} from './map';
 import {showNotification, NotificationType} from './windows';
 
@@ -45,7 +46,7 @@ export function setThemeLayersList(theme) {
     };
 }
 
-export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask) {
+export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask, initialVisibilityPreset) {
     let layers = [];
     const externalLayers = {};
 
@@ -138,6 +139,10 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
         theme: theme
     });
 
+    if (initialVisibilityPreset) {
+        dispatch(setThemeLayersVisibilityPreset(initialVisibilityPreset));
+    }
+
     const section = ConfigUtils.isMobile() ? "mobile" : "desktop";
     const task = initialTask || (theme?.config?.[section]?.startupTask ?? theme?.config?.startupTask) || (!prevTheme ? ConfigUtils.getConfigProp("startupTask") : null);
     if (task) {
@@ -146,7 +151,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
     }
 }
 
-export function setCurrentTheme(theme, themes, preserve = true, initialExtent = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null, initialTask = null) {
+export function setCurrentTheme(theme, themes, preserve = true, initialExtent = null, layerParams = null, visibleBgLayer = null, permalinkLayers = null, themeLayerRestorer = null, externalLayerRestorer = null, initialTask = null, initialVisibilityPreset = null) {
     return (dispatch, getState) => {
         dispatch(setSwipe(null));
         const mapCrs = theme.mapCrs || themes.defaultMapCrs || "EPSG:3857";
@@ -251,13 +256,13 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
                         dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", diff.join(", ")), NotificationType.WARN, true));
                     }
                 }
-                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask);
+                finishThemeSetup(dispatch, newTheme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask, initialVisibilityPreset);
             });
         } else {
             if (!isEmpty(missingThemeLayers)) {
                 dispatch(showNotification("missinglayers", LocaleUtils.tr("app.missinglayers", Object.keys(missingThemeLayers).join(", ")), NotificationType.WARN, true));
             }
-            finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask);
+            finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve, prevLayers, prevTheme, permalinkLayers, externalLayerRestorer, visibleBgLayer, initialTask, initialVisibilityPreset);
         }
     };
 }

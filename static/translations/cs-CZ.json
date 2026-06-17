@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "Téma",
+        "VisibilityPresets": "",
         "AttributeTable": "Atributy",
         "AuthenticationLogin": "Přihlášení",
         "AuthenticationLogout": "Odhlášení - {0}",
@@ -111,7 +112,9 @@
     },
     "bottombar": {
       "mousepos_label": "Souřadnice",
+      "quick_select_label": "",
       "scale_label": "Měřítko",
+      "select": "",
       "terms_label": "Podmínky použití",
       "viewertitle_label": ""
     },
@@ -755,7 +758,6 @@
       "title": "Informace o tématu"
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "Barevné schéma",
       "confirmlang": "Pro změnu jazyka je třeba aplikaci znovu načíst. Pokračovat?",
       "default": "",
@@ -902,6 +904,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "",

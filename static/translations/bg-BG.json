@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "Тема",
+        "VisibilityPresets": "",
         "AttributeTable": "Таблица на атрибутите",
         "AuthenticationLogin": "Вход",
         "AuthenticationLogout": "Излизане от системата - {0}",
@@ -111,7 +112,9 @@
     },
     "bottombar": {
       "mousepos_label": "Координати",
+      "quick_select_label": "",
       "scale_label": "Стълбища",
+      "select": "",
       "terms_label": "Условия за ползване",
       "viewertitle_label": "Начална страница"
     },
@@ -755,7 +758,6 @@
       "title": "Информация за темата"
     },
     "settings": {
-      "bookmarks": "Отметки",
       "colorscheme": "Цветова схема",
       "confirmlang": "Приложението ще бъде презаредено, за да се промени езикът. Продължете?",
       "default": "По подразбиране",
@@ -902,6 +904,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "Отделяне на",

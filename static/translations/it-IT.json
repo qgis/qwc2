@@ -35,6 +35,7 @@
         "SunExposure3D": "Esposizione al sole",
         "ThemeBrowser": "Browser dei temi",
         "ThemeSwitcher": "Temi",
+        "VisibilityPresets": "",
         "AttributeTable": "Tabella attributi",
         "AuthenticationLogin": "Accedi",
         "AuthenticationLogout": "Disconnetti - {0}",
@@ -111,7 +112,9 @@
     },
     "bottombar": {
       "mousepos_label": "Coordinate",
+      "quick_select_label": "",
       "scale_label": "Scala",
+      "select": "",
       "terms_label": "Condizioni di uso",
       "viewertitle_label": "Homepage"
     },
@@ -755,7 +758,6 @@
       "title": "Informazioni sul tema"
     },
     "settings": {
-      "bookmarks": "Segnalibri",
       "colorscheme": "Stile",
       "confirmlang": "L'applicazione sarà ricaricata per cambiare la lingua. Procedere?",
       "default": "Predefinito",
@@ -902,6 +904,18 @@
     },
     "view3d": {
       "storingstate": "Salvando vista 3D..."
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "Staccare",

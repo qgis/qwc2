@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "Motyw",
+        "VisibilityPresets": "",
         "AttributeTable": "",
         "AuthenticationLogin": "Zaloguj",
         "AuthenticationLogout": "Wyloguj - {0}",
@@ -111,7 +112,9 @@
     },
     "bottombar": {
       "mousepos_label": "Współrzędne",
+      "quick_select_label": "",
       "scale_label": "Skala",
+      "select": "",
       "terms_label": "Warunki korzystania",
       "viewertitle_label": ""
     },
@@ -755,7 +758,6 @@
       "title": ""
     },
     "settings": {
-      "bookmarks": "",
       "colorscheme": "",
       "confirmlang": "",
       "default": "",
@@ -902,6 +904,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "",

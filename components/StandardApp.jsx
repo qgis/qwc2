@@ -15,6 +15,7 @@ import {register as olProj4Register} from 'ol/proj/proj4';
 import Proj4js from 'proj4';
 import PropTypes from 'prop-types';
 
+import {refreshBookmarks, refreshVisibilityPresets} from '../actions/bookmark';
 import {localConfigLoaded, setStartupParameters, setColorScheme} from '../actions/localConfig';
 import {changeLocale} from '../actions/locale';
 import {setCurrentTask} from '../actions/task';
@@ -158,7 +159,7 @@ class AppContainerComponent extends React.Component {
                     layerParams.reverse();
                 }
                 const initialTaskParam = (params.task ? JSON.parse(decodeURIComponent(params.task)) : null);
-                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialTaskParam);
+                this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialTaskParam, state.visibilityPreset);
             } else if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
                 this.props.setBlankTheme(themes);
             } else if (!ConfigUtils.havePlugin("Portal")) {
@@ -166,6 +167,7 @@ class AppContainerComponent extends React.Component {
             }
         });
     };
+
     render() {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
         const pluginsConf = this.props.localConfig.plugins[device];
@@ -302,6 +304,10 @@ export default class StandardApp extends React.Component {
             const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
             const colorScheme = initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
             StandardApp.store.dispatch(setColorScheme(colorScheme));
+
+            // Load all bookmarks & visiblity presets
+            StandardApp.store.dispatch(refreshBookmarks());
+            StandardApp.store.dispatch(refreshVisibilityPresets());
 
             // Resolve permalink and restore settings
             resolvePermaLink(initialParams, (params, state, success) => {

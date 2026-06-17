@@ -35,6 +35,7 @@
         "SunExposure3D": "Besonnungsanalyse",
         "ThemeBrowser": "Themenbrowser",
         "ThemeSwitcher": "Themen",
+        "VisibilityPresets": "",
         "AttributeTable": "Attributtabelle",
         "AuthenticationLogin": "Anmelden",
         "AuthenticationLogout": "Abmelden - {0}",
@@ -111,7 +112,9 @@
     },
     "bottombar": {
       "mousepos_label": "Koordinaten",
+      "quick_select_label": "",
       "scale_label": "Massstab",
+      "select": "",
       "terms_label": "Nutzungsbedingungen",
       "viewertitle_label": "Homepage"
     },
@@ -755,7 +758,6 @@
       "title": "Informationen zum Thema"
     },
     "settings": {
-      "bookmarks": "Lesezeichen",
       "colorscheme": "Farbschema",
       "confirmlang": "Die Anwendung wird neugeladen, um die Sprache zu wechseln. Fortsetzen?",
       "default": "Standard",
@@ -902,6 +904,18 @@
     },
     "view3d": {
       "storingstate": "3D Ansicht wird gespeichert..."
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "Abkoppeln",

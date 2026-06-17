@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "Tema",
+        "VisibilityPresets": "",
         "AttributeTable": "Öznitelik Tablosu",
         "AuthenticationLogin": "Giriş",
         "AuthenticationLogout": "Çıkış - {0}",
@@ -111,7 +112,9 @@
     },
     "bottombar": {
       "mousepos_label": "Koordinatlar",
+      "quick_select_label": "",
       "scale_label": "Ölçek",
+      "select": "",
       "terms_label": "Kullanım Şartları",
       "viewertitle_label": "QWC"
     },
@@ -755,7 +758,6 @@
       "title": "Tema bilgisi"
     },
     "settings": {
-      "bookmarks": "Yer işaretleri",
       "colorscheme": "Renk şeması",
       "confirmlang": "Dil değişikliği için uygulama yeniden yüklenecek. Devam edilsin mi?",
       "default": "Varsayılan",
@@ -902,6 +904,18 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "visibilitypreset": {
+      "add": "",
+      "addfailed": "",
+      "manage": "",
+      "newpreset": "",
+      "nopresets": "",
+      "notloggedin": "",
+      "open": "",
+      "removefailed": "",
+      "savefailed": "",
+      "update": ""
     },
     "window": {
       "detach": "Çöz",
