@@ -125,8 +125,10 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
                 // Don't expose sublayers
                 if (layer) {
                     layer.sublayers = null;
+                    dispatch(replacePlaceholderLayer(id, layer));
+                } else {
+                    dispatch(removeLayer(id));
                 }
-                dispatch(replacePlaceholderLayer(id, layer));
             });
         }
     }
