@@ -71,7 +71,7 @@ const listDir = (dir, pattern) => {
 };
 
 const updateTsConfig = (topdir, tsconfig, collectedMsgIds = null) => {
-    const files = listDir(topdir, /^.*\.jsx?$/);
+    const files = listDir(topdir, /^.*\.[jt]sx?$/);
     const trRegEx = /LocaleUtils\.tr(?:msg)?\((['"])([A-Za-z0-9._]+)\1/g;
     const msgIds =  new Set();
     for (const file of files) {
@@ -128,7 +128,13 @@ for (const workspace of workspaces) {
 }
 
 // Generate application translations
-updateTsConfig(fs.existsSync(process.cwd() + '/js') ? process.cwd() + '/js' : process.cwd(), '/static/translations/tsconfig.json', collectedMsgIds);
+const basePathArg = process.argv.find((a) => a.startsWith('--basePath='));
+const basePath = basePathArg
+    ? process.cwd() + '/' + basePathArg.slice('--basePath='.length)
+    : fs.existsSync(process.cwd() + '/js')
+        ? process.cwd() + '/js'
+        : process.cwd();
+updateTsConfig(basePath, '/static/translations/tsconfig.json', collectedMsgIds);
 const config = readJSON('/static/translations/tsconfig.json');
 const strings = [
     ...(config.strings || []),
