@@ -63,7 +63,7 @@ export default class EditUploadField extends React.Component {
             accept: (this.props.constraints.accept || "").split(",").map(ext => mime.lookup(ext)).join(",")
         };
         const mediaSupport = 'mediaDevices' in navigator && constraints.accept.split(",").includes("image/jpeg");
-        const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
+        const imageData = this.state.imageData ?? (fileType?.startsWith?.('image/') ? fileUrl : null);
 
         if (imageData) {
             if (this.props.showThumbnails) {
@@ -119,11 +119,11 @@ export default class EditUploadField extends React.Component {
             reader.onload = () => {
                 this.setState({imageData: reader.result, imageFilename: ev.target.files[0].name});
                 this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(reader.result)], ev.target.files[0].name, {type: ev.target.files[0].type}));
-                this.props.updateField(this.props.fieldId, '');
+                this.props.updateField(this.props.fieldId, ev.target.files[0].name);
             };
         } else {
-            this.props.updateField(this.props.fieldId, '');
             this.props.updateFile(this.props.fieldId, ev.target.files[0]);
+            this.props.updateField(this.props.fieldId, ev.target.files[0].name);
         }
     };
     enableCamera = () => {
@@ -153,23 +153,25 @@ export default class EditUploadField extends React.Component {
             const context = canvas.getContext("2d");
             context.drawImage(this.videoElement, 0, 0, width, height);
             const imageData = canvas.toDataURL("image/jpeg");
-            this.setState({imageData: imageData, imageFilename: uuidv4() + ".jpg"});
-            this.props.updateField(this.props.fieldId, '');
-            this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], uuidv4() + ".jpg", {type: "image/jpeg"}));
+            const filename = uuidv4() + ".jpg";
+            this.setState({imageData: imageData, imageFilename: filename});
+            this.props.updateField(this.props.fieldId, filename);
+            this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(imageData)], filename, {type: "image/jpeg"}));
         }
         this.disableCamera();
     };
     imageButtonClicked = (action) => {
         if (action === "Draw") {
-            const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : "";
+            const fileValue = this.props.value.startsWith("attachment:") ? this.props.value.replace(/attachment:\/\//, '') : (this.state.imageFilename ?? "");
             const fileType = mime.lookup(fileValue);
             const fileUrl = this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue);
-            const imageData = fileType && fileType.startsWith('image/') ? fileUrl : this.state.imageData;
+            const imageData = this.state.imageData ?? (fileType?.startsWith?.('image/') ? fileUrl : null);
             import('../utils/ImageEditor').then(({showImageEditor}) => {
                 showImageEditor(imageData, (newImageData) => {
-                    this.setState({imageData: newImageData, imageFilename: fileValue.replace(/.*\//, '')});
-                    this.props.updateField(this.props.fieldId, '');
-                    this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], uuidv4() + ".jpg", {type: "image/jpeg"}));
+                    const fileName = fileValue.replace(/.*\//, '').replace(/\.[^.]+/, '') + ".jpg";
+                    this.setState({imageData: newImageData, imageFilename: fileName});
+                    this.props.updateField(this.props.fieldId, fileName);
+                    this.props.updateFile(this.props.fieldId, new File([this.dataUriToBlob(newImageData)], fileName, {type: "image/jpeg"}));
                 });
             });
         } else if (action === "Clear") {
