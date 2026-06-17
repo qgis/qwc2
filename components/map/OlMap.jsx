@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import isEqual from 'lodash.isequal';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
 
@@ -172,7 +173,7 @@ class OlMap extends React.Component {
         }
     };
     static getDerivedStateFromProps(nextProps, state) {
-        if ((nextProps.projection !== state.projection) || (nextProps.resolutions !== state.resolutions)) {
+        if ((nextProps.projection !== state.projection) || !isEqual(nextProps.resolutions, state.resolutions)) {
             return {
                 rebuildView: true,
                 projection: nextProps.projection,
@@ -193,7 +194,7 @@ class OlMap extends React.Component {
             if (prevProps.bbox.rotation !== this.props.bbox.rotation) {
                 view.setRotation(this.props.bbox.rotation);
             }
-            if (prevProps.fullExtent !== this.props.fullExtent) {
+            if (!isEqual(prevProps.fullExtent, this.props.fullExtent)) {
                 this.setState({rebuildView: true});
             }
         }
