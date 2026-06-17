@@ -152,7 +152,7 @@ class MapExport extends React.Component {
     };
     renderBody = () => {
         if (!this.props.theme || !this.state.selectedFormat) {
-            return null;
+            return (<div className="mapexport-body" role="body">{LocaleUtils.tr("print.notheme")}</div>);
         }
         const formatMap = {
             "image/jpeg": "JPEG",
@@ -309,7 +309,7 @@ class MapExport extends React.Component {
             }
             scale = this.props.allowedScales[closestIdx];
         }
-        let availableFormats = [...this.props.theme.availableFormats];
+        let availableFormats = [...this.props.theme.availableFormats || []];
         (this.props.forceAvailableFormats || []).forEach(format => {
             if (!availableFormats.includes(format)) {
                 availableFormats.push(format);
@@ -319,7 +319,7 @@ class MapExport extends React.Component {
             availableFormats = this.props.allowedFormats.filter(fmt => availableFormats.includes(fmt));
         }
         const selectedFormat = this.props.defaultFormat && availableFormats.includes(this.props.defaultFormat) ? this.props.defaultFormat : availableFormats[0];
-        const formatConfigurations = this.props.formatConfiguration?.[selectedFormat.split(";")[0]] || [];
+        const formatConfigurations = selectedFormat ? this.props.formatConfiguration?.[selectedFormat.split(";")[0]] || [] : [];
         this.setState({
             scale: scale,
             availableFormats: availableFormats,
