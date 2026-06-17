@@ -35,7 +35,7 @@
         "SunExposure3D": "Esposizione al sole",
         "ThemeBrowser": "Browser dei temi",
         "ThemeSwitcher": "Temi",
-        "VisibilityPresets": "",
+        "VisibilityPresets": "Profili di visibilità",
         "AttributeTable": "Tabella attributi",
         "AuthenticationLogin": "Accedi",
         "AuthenticationLogout": "Disconnetti - {0}",
@@ -99,7 +99,7 @@
       "add": "Crea segnalibro",
       "addfailed": "Impossibile creare il segnalibro",
       "lastUpdate": "Ultimo salvataggio",
-      "manage": "Gestisci segnalibri",
+      "manage": "Segnalibri",
       "newbookmark": "Nuovo segnalibro",
       "nobookmarks": "Nessun segnalibro",
       "notloggedin": "È necessario aver effettuato l'accesso per utilizzare i segnalibri",
@@ -112,9 +112,8 @@
     },
     "bottombar": {
       "mousepos_label": "Coordinate",
-      "quick_select_label": "",
+      "quick_select_label": "Selezione rapida",
       "scale_label": "Scala",
-      "select": "",
       "terms_label": "Condizioni di uso",
       "viewertitle_label": "Homepage"
     },
@@ -906,16 +905,16 @@
       "storingstate": "Salvando vista 3D..."
     },
     "visibilitypreset": {
-      "add": "",
-      "addfailed": "",
-      "manage": "",
-      "newpreset": "",
-      "nopresets": "",
-      "notloggedin": "",
-      "open": "",
-      "removefailed": "",
-      "savefailed": "",
-      "update": ""
+      "add": "Salva profilo di visibilità",
+      "addfailed": "Impossibile salvare il profilo di visibilità",
+      "manage": "Profili di visibilità",
+      "newpreset": "Nuovo profilo",
+      "nopresets": "Nessun profilo salvato",
+      "notloggedin": "Devi effettuare l'accesso salvare profili di visibilità",
+      "open": "Apri nella finestra corrente",
+      "removefailed": "Impossibile rimuovere il profilo di visibilità",
+      "savefailed": "Impossibile aggiornare il profilo di visibilità",
+      "update": "Aggiorna il profilo di visibilità"
     },
     "window": {
       "detach": "Staccare",

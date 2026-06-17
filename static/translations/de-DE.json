@@ -35,7 +35,7 @@
         "SunExposure3D": "Besonnungsanalyse",
         "ThemeBrowser": "Themenbrowser",
         "ThemeSwitcher": "Themen",
-        "VisibilityPresets": "Sichtbarkeiten",
+        "VisibilityPresets": "Sichtbarkeitsprofile",
         "AttributeTable": "Attributtabelle",
         "AuthenticationLogin": "Anmelden",
         "AuthenticationLogout": "Abmelden - {0}",
@@ -99,7 +99,7 @@
       "add": "Neues Lesezeichen anlegen",
       "addfailed": "Lesezeichen konnte nicht angelegt werden",
       "lastUpdate": "Zuletzt gespeichert",
-      "manage": "Lesezeichen verwalten",
+      "manage": "Lesezeichen",
       "newbookmark": "Neues Lesezeichen",
       "nobookmarks": "Keine Lesezeichen",
       "notloggedin": "Sie müssen angemeldet sein, um Lesezeichen zu verwenden",
@@ -114,7 +114,6 @@
       "mousepos_label": "Koordinaten",
       "quick_select_label": "Schnellauswahl",
       "scale_label": "Maßstab",
-      "select": "Auswählen...",
       "terms_label": "Nutzungsbedingungen",
       "viewertitle_label": "Homepage"
     },
@@ -906,16 +905,16 @@
       "storingstate": "3D Ansicht wird gespeichert..."
     },
     "visibilitypreset": {
-      "add": "Sichtbarkeit anlegen",
-      "addfailed": "Sichtbarkeit konnte nicht angelegt werden",
-      "manage": "Sichtbarkeiten verwalten",
-      "newpreset": "Neue Sichtbarkeit",
-      "nopresets": "Keine Sichtbarkeiten angelegt",
-      "notloggedin": "Sie müssen angemeldet sein, um Sichtbarkeiten zu verwenden",
+      "add": "Sichtbarkeitsprofil anlegen",
+      "addfailed": "Sichtbarkeitsprofil konnte nicht angelegt werden",
+      "manage": "Sichtbarkeitsprofile",
+      "newpreset": "Neues Sichtbarkeitsprofil",
+      "nopresets": "Keine Sichtbarkeitsprofile angelegt",
+      "notloggedin": "Sie müssen angemeldet sein, um Sichtbarkeitsprofile zu verwenden",
       "open": "In aktuellem Fenster öffnen",
-      "removefailed": "Sichtbarkeit konnte nicht entfernt werden",
-      "savefailed": "Sichtbarkeit konnte nicht aktualisiert werden",
-      "update": "Sichtbarkeit aktualisieren"
+      "removefailed": "Sichtbarkeitsprofil konnte nicht entfernt werden",
+      "savefailed": "Sichtbarkeitsprofil konnte nicht aktualisiert werden",
+      "update": "Sichtbarkeitsprofil aktualisieren"
     },
     "window": {
       "detach": "Abkoppeln",

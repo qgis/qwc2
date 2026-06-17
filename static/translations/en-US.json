@@ -99,7 +99,7 @@
       "add": "Create new bookmark",
       "addfailed": "Failed to create bookmark",
       "lastUpdate": "Last saved",
-      "manage": "Manage bookmarks",
+      "manage": "Bookmarks",
       "newbookmark": "New bookmark",
       "nobookmarks": "No bookmarks",
       "notloggedin": "You need to be logged in to store bookmarks",
@@ -112,9 +112,8 @@
     },
     "bottombar": {
       "mousepos_label": "Coordinates",
-      "quick_select_label": "Quick Select",
+      "quick_select_label": "Quick select",
       "scale_label": "Scale",
-      "select": "Select...",
       "terms_label": "Terms of use",
       "viewertitle_label": "Homepage"
     },
@@ -908,7 +907,7 @@
     "visibilitypreset": {
       "add": "Create new visibility preset",
       "addfailed": "Failed to create visibility preset",
-      "manage": "Manage visibility presets",
+      "manage": "Visibility presets",
       "newpreset": "New visibility preset",
       "nopresets": "No visibility presets",
       "notloggedin": "You need to be logged in to store visibilities",

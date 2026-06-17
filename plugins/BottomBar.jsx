@@ -164,7 +164,7 @@ class BottomBar extends React.Component {
             quickSelectDropdown = (
                 <div>
                     <span className="bottombar-quick-select-label">{LocaleUtils.tr("bottombar.quick_select_label")}:&nbsp;</span>
-                    <GroupSelect onChange={this.openBookmarkOrPreset} options={options} placeholder={LocaleUtils.tr("bottombar.select")} />
+                    <GroupSelect onChange={this.openBookmarkOrPreset} options={options} placeholder={LocaleUtils.tr("common.select")} />
                 </div>
             );
         }
