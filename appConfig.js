@@ -59,6 +59,7 @@ import SettingsPlugin from './plugins/Settings';
 import SharePlugin from './plugins/Share';
 import StartupMarkerPlugin from './plugins/StartupMarker';
 import TaskButtonPlugin from './plugins/TaskButton';
+import ThemeBrowserPlugin from './plugins/ThemeBrowser';
 import ThemeSwitcherPlugin from './plugins/ThemeSwitcher';
 import TimeManagerPlugin from './plugins/TimeManager';
 import TopBarPlugin from './plugins/TopBar';
@@ -127,6 +128,7 @@ export default {
             SharePlugin: SharePlugin,
             StartupMarkerPlugin: StartupMarkerPlugin,
             TaskButtonPlugin: TaskButtonPlugin,
+            ThemeBrowserPlugin: ThemeBrowserPlugin,
             ThemeSwitcherPlugin: ThemeSwitcherPlugin,
             TimeManagerPlugin: TimeManagerPlugin,
             TopBarPlugin: TopBarPlugin({

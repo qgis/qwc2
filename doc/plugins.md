@@ -45,6 +45,7 @@ Plugin reference
 * [Share](#share)
 * [StartupMarker](#startupmarker)
 * [TaskButton](#taskbutton)
+* [ThemeBrowser](#themebrowser)
 * [ThemeSwitcher](#themeswitcher)
 * [TimeManager](#timemanager)
 * [TopBar](#topbar)
@@ -1153,6 +1154,19 @@ The following special values for `task` are suppported:
 | task | `string` | The task name. | `undefined` |
 | themeFlagBlacklist | `[string]` | Omit the button in themes matching one of these flags. | `undefined` |
 | themeFlagWhitelist | `[string]` | Only show the button in themes matching one of these flags. | `undefined` |
+
+## ThemeBrowser<a name="themebrowser"></a>
+
+Theme browser panel.
+
+An alternative to the ThemeSwitcher and LayerTree, allows navigating themes
+and controlling layers in a single interface.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| bboxDependentLegend | `{bool, string}` | Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
+| fallbackDrag | `bool` | Whether to use the fallback logic for drag-and-drop. | `undefined` |
+| scaleDependentLegend | `{bool, string}` | Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
 
 ## ThemeSwitcher<a name="themeswitcher"></a>
 
