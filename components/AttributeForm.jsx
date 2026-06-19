@@ -381,6 +381,9 @@ class AttributeForm extends React.Component {
         }
     };
     validateForm = (feature, validCallback = null, invalidCallback = null) => {
+        if (!this.form) {
+            return;
+        }
         const constraintExpressions = this.props.editContext.editConfig.fields.reduce((res, cur) => {
             if (cur.constraints?.expression) {
                 return [
