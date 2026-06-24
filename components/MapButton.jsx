@@ -33,6 +33,8 @@ export default class MapButton extends React.Component {
         icon: PropTypes.string,
         iconSize: PropTypes.string,
         onClick: PropTypes.func,
+        onMouseEnter: PropTypes.func,
+        onMouseLeave: PropTypes.func,
         position: PropTypes.number,
         tooltip: PropTypes.string
     };
@@ -51,8 +53,10 @@ export default class MapButton extends React.Component {
             <div className="map-button-container" data-slot={position} style={{order: position}}>
                 <button
                     className={`${className} ${this.props.className || ""}`}
-                    onClick={this.props.onClick} ref={this.props.buttonRef}
-                    title={this.props.tooltip}
+                    onClick={this.props.onClick}
+                    onMouseEnter={this.props.onMouseEnter}
+                    onMouseLeave={this.props.onMouseLeave}
+                    ref={this.props.buttonRef} title={this.props.tooltip}
                 >
                     {this.props.busy ? (
                         <Spinner />

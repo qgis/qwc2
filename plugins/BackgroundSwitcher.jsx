@@ -104,6 +104,8 @@ export class BackgroundSwitcher extends React.Component {
                 <MapButton
                     active={this.state.visible} buttonRef={el => {this.buttonEl = el;}}
                     icon="bglayer" onClick={() => this.buttonClicked(nextLayer)}
+                    onMouseEnter={this.props.buttonClickAction === "cycle" ? () => this.setSwitcherVisible(true) : null}
+                    onMouseLeave={this.props.buttonClickAction === "cycle" ? () => this.setSwitcherVisible(false) : null}
                     position={this.props.position} tooltip={LocaleUtils.tr("tooltip.background")}
                 >
                     {this.renderSwitcher(backgroundLayers, visibleBgLayer)}
