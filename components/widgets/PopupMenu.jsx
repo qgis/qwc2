@@ -37,7 +37,7 @@ export default class PopupMenu extends React.PureComponent {
     };
     constructor(props) {
         super(props);
-        this.container = document.createElement("div");
+        this.container = (this.props.anchor?.ownerDocument ?? document).createElement("div");
         this.container.id = 'popup-container';
         this.container.style.position = 'fixed';
         this.container.style.left = 0;
@@ -48,7 +48,7 @@ export default class PopupMenu extends React.PureComponent {
         if (this.props.anchor) {
             this.shields = [];
             for (let i = 0; i < 4; ++i) {
-                this.shields[i] = document.createElement("div");
+                this.shields[i] = (this.props.anchor?.ownerDocument ?? document).createElement("div");
                 this.shields[i].style.position = 'absolute';
                 this.shields[i].style.left = "0px";
                 this.shields[i].style.right = "0px";
@@ -68,7 +68,7 @@ export default class PopupMenu extends React.PureComponent {
             }), 0);
         }
         this.menuEl = null;
-        document.body.appendChild(this.container);
+        (this.props.anchor?.ownerDocument ?? document).body.appendChild(this.container);
     }
     componentDidMount() {
         if (this.props.anchor?.nodeName === "INPUT") {
@@ -76,7 +76,7 @@ export default class PopupMenu extends React.PureComponent {
         }
     }
     componentWillUnmount() {
-        document.body.removeChild(this.container);
+        (this.props.anchor?.ownerDocument ?? document).body.removeChild(this.container);
         if (this.props.anchor?.nodeName === "INPUT") {
             this.props.anchor.removeEventListener('keydown', this.keyNav);
         }
@@ -167,7 +167,7 @@ export default class PopupMenu extends React.PureComponent {
         if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
             const childCount = this.menuEl.children.length;
             const delta = ev.key === 'ArrowUp' ? -1 : 1;
-            let currentIndex = Array.from(this.menuEl.children).findIndex(el => document.activeElement === el || el.contains(document.activeElement));
+            let currentIndex = Array.from(this.menuEl.children).findIndex(el => ev.view.document.activeElement === el || el.contains(ev.view.document.activeElement));
             if (currentIndex === -1) {
                 currentIndex = delta === 1 ? childCount - 1 : 0;
             }
