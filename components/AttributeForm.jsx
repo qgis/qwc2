@@ -159,7 +159,7 @@ class AttributeForm extends React.Component {
                 {readOnlyMsg ? (
                     <div className="attrib-form-geom-readonly">{readOnlyMsg}</div>
                 ) : null}
-                <form action="" className="attrib-form-parent-form" onSubmit={this.onSubmit} ref={el => {this.form = el;}}>
+                <form action="" className="attrib-form-parent-form" onSubmit={this.onSubmit} ref={this.setRef}>
                     {editConfig.form ? (
                         <QtDesignerForm addRelationRecord={this.addRelationRecord} editConfig={editConfig}
                             editRelationRecord={this.editRelationRecord}
@@ -185,6 +185,9 @@ class AttributeForm extends React.Component {
             </div>
 
         );
+    };
+    setRef = (el) => {
+        this.form = el;
     };
     setFormBusy = (busy) => {
         this.setState({busy: busy});
