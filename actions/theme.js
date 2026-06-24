@@ -104,9 +104,7 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
             dispatch(addLayer(bgLayer, bgLayerKept ? 1 : 0));
         }
     }
-    if (!actuallyVisibleBgLayer) {
-        UrlParams.updateParams({bl: ""});
-    }
+    UrlParams.updateParams({bl: actuallyVisibleBgLayer ?? ""});
 
     for (const layer of layers.reverse()) {
         dispatch(addLayer(layer, insPos));
