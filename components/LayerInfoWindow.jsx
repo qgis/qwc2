@@ -25,6 +25,7 @@ import './style/LayerInfoWindow.css';
 class LayerInfoWindow extends React.Component {
     static propTypes = {
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+        extraLegendParameters: PropTypes.string,
         layer: PropTypes.object,
         layerInfoGeometry: PropTypes.object,
         map: PropTypes.object,
@@ -62,7 +63,7 @@ class LayerInfoWindow extends React.Component {
         }
         let legend = null;
         const scale = MapUtils.computeForZoom(this.props.map.scales, this.props.map.zoom);
-        const legendUrl = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, scale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend);
+        const legendUrl = LayerUtils.getLegendUrl(this.props.layer, this.props.sublayer, scale, this.props.map, this.props.bboxDependentLegend, this.props.scaleDependentLegend, this.props.extraLegendParameters);
         if (legendUrl) {
             legend = (<Image className="layer-info-window-legend" src={legendUrl} />);
         } else if (this.props.layer.color) {

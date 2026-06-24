@@ -628,7 +628,7 @@ class LayerTree extends React.Component {
                 </SideBar>
                 {legendTooltip}
                 {this.renderLegendPrintWindow()}
-                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} layerInfoGeometry={this.props.layerInfoGeometry} scaleDependentLegend={this.props.scaleDependentLegend} />
+                <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} extraLegendParameters={this.props.extraLegendParameters} layerInfoGeometry={this.props.layerInfoGeometry} scaleDependentLegend={this.props.scaleDependentLegend} />
                 <ServiceInfoWindow layerInfoGeometry={this.props.layerInfoGeometry} />
             </div>
         );
