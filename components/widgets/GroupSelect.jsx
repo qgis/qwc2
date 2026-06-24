@@ -29,7 +29,7 @@ export default class GroupSelect extends Component {
         return (
             <select onChange={this.onChange} role="input" value={this.props.value}>
                 {this.props.placeholder !== null ? (
-                    <option disabled hidden selected>
+                    <option disabled value="">
                         {this.props.placeholder}
                     </option>
                 ) : null}
