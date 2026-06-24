@@ -46,6 +46,7 @@ class FeatureForm extends React.Component {
         clearEditContext: PropTypes.func,
         click: PropTypes.object,
         currentEditContext: PropTypes.string,
+        currentTask: PropTypes.string,
         editConfigs: PropTypes.object,
         editContext: PropTypes.object,
         enabled: PropTypes.bool,
@@ -256,7 +257,7 @@ class FeatureForm extends React.Component {
     onWindowClose = () => {
         if (!this.props.editContext.changed) {
             this.clearResults();
-            if (this.props.exitTaskOnResultsClose) {
+            if (this.props.exitTaskOnResultsClose && this.props.currentTask === "FeatureForm") {
                 this.props.setCurrentTask(null);
             }
         }
@@ -281,6 +282,7 @@ export default (iface = EditingInterface) => connect((state) => {
         ConfigUtils.getConfigProp("identifyTool", state.theme.current, "Identify") === "FeatureForm"
     );
     return {
+        currentTask: state.task.id,
         click: state.map.click || {modifiers: {}},
         enabled: enabled,
         editContext: state.editing.contexts.FeatureForm || {},
