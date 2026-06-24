@@ -292,14 +292,14 @@ class ThemeBrowser extends React.Component {
             const resizeOverlay = document.createElement('div');
             resizeOverlay.className = 'themebrowser-resize-overlay';
             ev.view.document.body.appendChild(resizeOverlay);
-            // ev.view.document.body.style.userSelect = 'none';
+            ev.view.document.body.style.userSelect = 'none';
             // ev.view.document.body.style.setProperty('cursor', 'ew-resize', 'important');
             arrowsEl.style.display = 'none';
             opacityEl.innerText = Math.round(startOpacity / 255 * 100) + "%";
             ev.view.addEventListener("pointermove", computeNewOpacity);
             ev.view.addEventListener("pointerup", () => {
                 ev.view.document.body.removeChild(resizeOverlay);
-                // ev.view.document.body.style.userSelect = '';
+                ev.view.document.body.style.userSelect = '';
                 // ev.view.document.body.style.removeProperty('cursor');
                 arrowsEl.style.display = '';
                 opacityEl.innerText = '';
