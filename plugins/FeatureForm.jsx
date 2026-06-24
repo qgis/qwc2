@@ -277,7 +277,7 @@ class FeatureForm extends React.Component {
 
 export default (iface = EditingInterface) => connect((state) => {
     const enabled = state.task.id === "FeatureForm" || (
-        state.task.identifyEnabled &&
+        (!state.task.id || state.task.identifyEnabled) &&
         ConfigUtils.getConfigProp("identifyTool", state.theme.current, "Identify") === "FeatureForm"
     );
     return {

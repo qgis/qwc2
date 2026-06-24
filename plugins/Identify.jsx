@@ -469,7 +469,7 @@ class Identify extends React.Component {
 
 export default connect((state) => {
     const enabled = state.task.id === "Identify" || (
-        state.task.identifyEnabled &&
+        (!state.task.id || state.task.identifyEnabled) &&
         ConfigUtils.getConfigProp("identifyTool", state.theme.current, "Identify") === "Identify"
     );
     return {
