@@ -9,6 +9,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
@@ -28,6 +29,8 @@ import './style/NewsPopup.css';
  */
 class NewsPopup extends React.Component {
     static propTypes = {
+        /** Whether to embed the news document in an iframe instead of a div. */
+        embedIframe: PropTypes.bool,
         /** URL to the news HTML document to display in the popup. Can contain `{lang}` as a placeholder which will be replaced with the current viewer language.*/
         newsDocument: PropTypes.string,
         /** Revision of the document. */
@@ -40,7 +43,11 @@ class NewsPopup extends React.Component {
         /** The default width of the sidebar, as a CSS width string. */
         sidebarWidth: PropTypes.string
     };
+    static defaultProps = {
+        embedIframe: true
+    };
     state = {
+        body: '',
         dontShowAgain: false,
         showPopup: false,
         side: 'right',
@@ -55,6 +62,16 @@ class NewsPopup extends React.Component {
             } else {
                 this.state.showPopup = show;
             }
+        }
+    }
+    componentDidMount() {
+        this.componentDidUpdate({});
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.newsDocument && this.props.newsDocument !== prevProps.newsDocument) {
+            axios.get(this.props.newsDocument.replace('{lang}', LocaleUtils.lang())).then(response => {
+                this.setState({body: response.data});
+            }).catch(() => {});
         }
     }
     render() {
@@ -82,7 +99,11 @@ class NewsPopup extends React.Component {
     renderBody = () => {
         return (
             <div className="newspopup-dialog-popup-body" role="body">
-                <iframe src={this.props.newsDocument.replace('{lang}', LocaleUtils.lang())} />
+                {this.props.embedIframe ? (
+                    <iframe src={this.props.newsDocument.replace('{lang}', LocaleUtils.lang())} />
+                ) : (
+                    <div className="newspopup-dialog-popup-content" dangerouslySetInnerHTML={{__html: this.state.body}} />
+                )}
                 <div className="newspopup-dialog-popup-buttonbar">
                     <button onClick={this.closeDialog}>{LocaleUtils.tr("common.close")}</button>
                     <label><input onChange={ev => this.setState({dontShowAgain: ev.target.checked})} type="checkbox" value={this.state.dontShowAgain} /> {LocaleUtils.tr("newspopup.dontshowagain")}</label>
