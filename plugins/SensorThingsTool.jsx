@@ -128,6 +128,8 @@ ChartJS.register(
 class SensorThingsTool extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        /** Remove all Locations and Datastreams when closing the main window. */
+        clearAllOnClose: PropTypes.bool,
         currentTask: PropTypes.string,
         map: PropTypes.object,
         /** Map picking tolerance in pixels */
@@ -155,6 +157,7 @@ class SensorThingsTool extends React.Component {
         zoomRectMinSize: PropTypes.object
     };
     static defaultProps = {
+        clearAllOnClose: false,
         queryTolerance: 16,
         sensorThingsApiUrls: [],
         timeFormats: {
@@ -586,7 +589,7 @@ class SensorThingsTool extends React.Component {
                 <ResizeableWindow icon="sensor_things"
                     initialHeight={this.props.windowSize.height} initialWidth={this.props.windowSize.width}
                     initialX={0} initialY={0} key="SensorThingsInfoWindow"
-                    onClose={() => this.props.setCurrentTask(null)}
+                    onClose={this.closeMainWindow}
                     title={LocaleUtils.tr("sensorthingstool.title")}
                     usePortal={false}
                 >
@@ -1203,6 +1206,24 @@ class SensorThingsTool extends React.Component {
                 [field]: value
             }
         }));
+    };
+    removeAllLocations = () => {
+        this.removeAllDatastreams();
+        this.setState({
+            selectedLocations: {},
+            selectedLocationsOptions: [],
+            currentLocationId: null,
+            currentSensorLocation: null,
+            showLocationInfoWindow: false,
+            currentDatastreamsFilter: {
+                thingId: '-1',
+                sensorId: '-1',
+                observedPropertyId: '-1'
+            },
+            showDatastreamsFilterWindow: false,
+            currentDatastreamId: null,
+            datastreams: {}
+        });
     };
     addSelectedDatastream = () => {
         if (this.state.currentDatastreamId !== undefined) {
@@ -2118,6 +2139,12 @@ class SensorThingsTool extends React.Component {
                 max: now
             });
         }
+    };
+    closeMainWindow = () => {
+        if (this.props.clearAllOnClose) {
+            this.removeAllLocations();
+        }
+        this.props.setCurrentTask(null);
     };
     queryAtPoint = (point) => {
         this.setState({locationsAtPoint: []});
