@@ -18,7 +18,7 @@ import {setCurrentTask} from '../actions/task';
 import {setBlankTheme, setCurrentTheme} from '../actions/theme';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
-import ResizeableWindow from '../components/ResizeableWindow';
+import SideBar from '../components/SideBar';
 import {Image} from '../components/widgets/Primitives';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
@@ -39,13 +39,19 @@ class ThemeBrowser extends React.Component {
     static propTypes = {
         active: PropTypes.bool,
         activeTheme: PropTypes.string,
+        /** Whether to allow removing theme layers. */
+        allowRemovingThemeLayers: PropTypes.bool,
         /** Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         bboxDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         changeLayerProperty: PropTypes.func,
         /** Whether to use the fallback logic for drag-and-drop. */
         fallbackDrag: PropTypes.bool,
+        /** Make panel fill screen width if wider than the specified screen width percentage. */
+        fillIfWiderThanPerc: PropTypes.number,
         layers: PropTypes.array,
         map: PropTypes.object,
+        /** Maximum width of panel (ignored `fillIfWiderThanPerc` is set). */
+        maxWidth: PropTypes.string,
         removeLayer: PropTypes.func,
         reorderLayer: PropTypes.func,
         /** Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
@@ -53,17 +59,24 @@ class ThemeBrowser extends React.Component {
         setBlankTheme: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setCurrentTheme: PropTypes.func,
+        /** The side of the application on which to display the sidebar. */
+        side: PropTypes.string,
         themes: PropTypes.array
+    };
+    static defaultProps = {
+        side: 'right'
     };
     state = {
         active: false,
         expandedEntries: new ToggleSet(),
-        showDelete: false
+        showDelete: false,
+        width: '15em',
+        maxWidth: '50%'
     };
     constructor(props) {
         super(props);
         this.maxLayerTitleLength = undefined;
-        this.rnd = null;
+        this.sidebar = null;
     }
     componentDidMount() {
         this.componentDidUpdate({});
@@ -75,41 +88,33 @@ class ThemeBrowser extends React.Component {
         }
     }
     render() {
-        if (!this.state.active) {
-            return null;
-        }
         this.maxLayerTitleLength = 0;
         this.measureCanvas = document.createElement('canvas');
         this.measureContext = this.measureCanvas.getContext('2d');
         this.measureContext.font = getComputedStyle(document.body).font;
         const result = (
-            <ResizeableWindow detachable={false} dockable="right"
-                hideDockIcon initialHeight={640} initialWidth={640}
-                initialX={0} initialY={0} initiallyDocked maximizeable={false}
-                onClose={this.onClose} scrollable setRef={this.setRndRef}
-                splitScreenWhenDocked title={LocaleUtils.tr("appmenu.items.ThemeBrowser")}
+            <SideBar icon="list-alt"
+                id="ThemeBrowser" maxWidth={this.props.fillIfWiderThanPerc ? undefined : this.props.maxWidth} onHide={this.onClose}
+                side={this.props.side} splitScreen
+                title={LocaleUtils.tr("appmenu.items.ThemeBrowser")}
+                visible={this.state.active} width={this.state.width}
             >
                 <div className="themebrowser-body" role="body">
                     {this.renderThemes(this.props.themes)}
                 </div>
-            </ResizeableWindow>
+            </SideBar>
         );
+        let width = this.maxLayerTitleLength + "px";
+        if (this.props.fillIfWiderThanPerc && this.maxLayerTitleLength > window.innerWidth * this.props.fillIfWiderThanPerc / 100) {
+            width = '100%';
+        }
         this.measureCanvas = undefined;
         this.measureContext = undefined;
-        this.updateWindowSize();
+        if (width !== this.state.width) {
+            this.setState({width});
+        }
         return result;
     }
-    setRndRef = (el) => {
-        this.rnd = el;
-        this.updateWindowSize();
-    };
-    updateWindowSize = () => {
-        if (this.rnd && this.maxLayerTitleLength !== undefined) {
-            const width = this.maxLayerTitleLength + MiscUtils.convertEmToPx(6.5);
-            const sizes = [200, 300, 500];
-            this.rnd.updateSize({width: sizes.find(size => size > width) ?? width});
-        }
-    };
     renderThemes = (group) => {
         const children = (group?.items ?? []).map(item => (
             <div className="themebrowser-theme-container" key={item.id}>
@@ -123,7 +128,7 @@ class ThemeBrowser extends React.Component {
                 ) : null}
             </div>
         ));
-        (group.subdirs ?? []).map(subdir => children.push(...this.renderThemes(subdir)));
+        (group?.subdirs ?? []).map(subdir => children.push(...this.renderThemes(subdir)));
         return children;
     };
     renderLayerTree = (theme) => {
@@ -166,26 +171,26 @@ class ThemeBrowser extends React.Component {
         const opacity = LayerUtils.computeLayerOpacity(entry);
         const entryClasses = classNames({
             "themebrowser-tree-entry": true,
+            "themebrowser-tree-entry-transparent": entry.visibility && opacity < 255,
             "themebrowser-tree-entry-visible": entry.visibility,
             "themebrowser-tree-entry-inactive": !parentVisibility,
             "themebrowser-tree-entry-detailsvisible": this.state.expandedEntries.has(layer.id + ":" + entry.name)
+        });
+        const plusClasses = classNames({
+            "themebrowser-tree-entry-plus": true,
+            "themebrowser-tree-entry-plus-remove": entry.visibility
         });
         const entryStyle = {
             backgroundColor: entry.visibility ? `rgb(from var(--border-color) r g b / ${opacity / 255})` : '',
             color: entry.visibility && opacity > 96 ? "white" : `var(--border-color)`
         };
-        const spacerStyle = {
-            cursor: entry.opacity < 255 ? 'ew-resize' : ''
-        };
-        this.maxLayerTitleLength = Math.max(this.maxLayerTitleLength, this.measureContext.measureText(entry.title).width + path.length * MiscUtils.convertEmToPx(1));
+        this.maxLayerTitleLength = Math.max(this.maxLayerTitleLength, this.measureContext.measureText(entry.title).width + path.length * MiscUtils.convertEmToPx(1) + MiscUtils.convertEmToPx(6));
         return (
             <div className="themebrowser-tree-entry-container" data-id={JSON.stringify({layerId: layer.id, path: path})} key={layer.id + ":" + entry.name}>
                 <div className={entryClasses} onKeyDown={ev => this.adjustEntryOpacity(ev, entry, layer.id, path)} onPointerDown={ev => this.adjustEntryOpacity(ev, entry, layer.id, path)} style={entryStyle} tabIndex={0}>
-                    <Icon icon={entry.visibility ? "remove" : "plus"} onClick={() => this.toggleEntryVisibility(entry, layer.id, path)} />
-                    <span className="themebrowser-tree-entry-title" onKeyDown={MiscUtils.checkKeyActivate} onPointerDown={ev => this.toggleEntryExpanded(ev, entry, layer.id, path)} tabIndex={0}>{entry.title}</span>
-                    <span className="themebrowser-tree-entry-spacer" style={spacerStyle} />
-                    <Icon className="themebrowser-tree-entry-arrows" icon="middle_h" />
-                    <span className="themebrowser-tree-entry-opacity"/>
+                    <Icon className={plusClasses} icon="plus" onPointerDown={() => this.toggleEntryVisibility(entry, layer.id, path)} />
+                    <span className="themebrowser-tree-entry-title" onKeyDown={MiscUtils.checkKeyActivate} onPointerDown={ev => this.toggleEntryExpanded(ev, entry, layer.id, path)} tabIndex={0} title={entry.title}>{entry.title}</span>
+                    {entry.visibility ? (<span className="themebrowser-tree-entry-opacity">{Math.round(opacity / 255 * 100) + "%"}</span>) : null}
                     <span className="themebrowser-tree-entry-drag" onKeyDown={(ev) => this.onKeySort(ev, layer.id, path)} onPointerDown={() => this.onDragStart(layer, path)} onPointerUp={this.onDragEnd} tabIndex={0}><Icon icon="drag" /></span>
                 </div>
                 {entry.sublayers && entry.expanded ? (
@@ -253,11 +258,9 @@ class ThemeBrowser extends React.Component {
             return;
         }
         // Only adjust opacities when dragging from areas other than the opacity arrows icon if entry is not fully opaque
-        if (ev.type === "pointerdown" && entry.opacity === 255 && !ev.target.matches('.themebrowser-tree-entry-arrows')) {
+        if (ev.type === "pointerdown" && entry.opacity === 255 && !ev.target.matches('.themebrowser-tree-entry-opacity')) {
             return;
         }
-        const arrowsEl = ev.currentTarget.getElementsByClassName("themebrowser-tree-entry-arrows")[0];
-        const opacityEl = ev.currentTarget.getElementsByClassName("themebrowser-tree-entry-opacity")[0];
         const startOpacity = LayerUtils.computeLayerOpacity(entry);
         if (ev.type === "keydown" && (ev.key === "ArrowLeft" || ev.key === "ArrowRight")) {
             this.adjusting = true;
@@ -265,17 +268,12 @@ class ThemeBrowser extends React.Component {
             let newOpacity = startOpacity;
             let adjustInterval = null;
             const startTimeout = setTimeout(() => {
-                arrowsEl.style.display = 'none';
-                opacityEl.innerText = Math.round(newOpacity / 255 * 100) + "%";
                 adjustInterval = setInterval(() => {
                     newOpacity = Math.max(0, Math.min(255, newOpacity + delta));
-                    opacityEl.innerText = Math.round(newOpacity / 255 * 100) + "%";
                     this.props.changeLayerProperty(layerId, "opacity", newOpacity, path, "children");
                 }, 15);
             }, 100);
             ev.view.addEventListener('keyup', () => {
-                arrowsEl.style.display = '';
-                opacityEl.innerText = '';
                 clearTimeout(startTimeout);
                 clearInterval(adjustInterval);
                 this.adjusting = false;
@@ -286,23 +284,16 @@ class ThemeBrowser extends React.Component {
             let newOpacity = startOpacity;
             const computeNewOpacity = (event) => {
                 newOpacity = Math.max(0, Math.min(255, startOpacity + (event.clientX - startMouseX)));
-                opacityEl.innerText = Math.round(newOpacity / 255 * 100) + "%";
                 this.props.changeLayerProperty(layerId, "opacity", newOpacity, path, "children");
             };
             const resizeOverlay = document.createElement('div');
             resizeOverlay.className = 'themebrowser-resize-overlay';
             ev.view.document.body.appendChild(resizeOverlay);
             ev.view.document.body.style.userSelect = 'none';
-            // ev.view.document.body.style.setProperty('cursor', 'ew-resize', 'important');
-            arrowsEl.style.display = 'none';
-            opacityEl.innerText = Math.round(startOpacity / 255 * 100) + "%";
             ev.view.addEventListener("pointermove", computeNewOpacity);
             ev.view.addEventListener("pointerup", () => {
                 ev.view.document.body.removeChild(resizeOverlay);
                 ev.view.document.body.style.userSelect = '';
-                // ev.view.document.body.style.removeProperty('cursor');
-                arrowsEl.style.display = '';
-                opacityEl.innerText = '';
                 ev.view.removeEventListener("pointermove", computeNewOpacity);
                 this.adjusting = false;
             }, {once: true});
@@ -317,7 +308,7 @@ class ThemeBrowser extends React.Component {
     };
     onDragStart = (layer, path) => {
         this.dragging = true;
-        if (layer.role !== LayerRole.THEME) {
+        if (layer.role !== LayerRole.THEME || this.props.allowRemovingThemeLayers) {
             this.setState({showDelete: true});
         }
     };

@@ -1167,9 +1167,13 @@ and controlling layers in a single interface.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| allowRemovingThemeLayers | `bool` | Whether to allow removing theme layers. | `undefined` |
 | bboxDependentLegend | `{bool, string}` | Whether to display a BBOX dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
 | fallbackDrag | `bool` | Whether to use the fallback logic for drag-and-drop. | `undefined` |
+| fillIfWiderThanPerc | `number` | Make panel fill screen width if wider than the specified screen width percentage. | `undefined` |
+| maxWidth | `string` | Maximum width of panel (ignored `fillIfWiderThanPerc` is set). | `undefined` |
 | scaleDependentLegend | `{bool, string}` | Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. | `undefined` |
+| side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 ## ThemeSwitcher<a name="themeswitcher"></a>
 

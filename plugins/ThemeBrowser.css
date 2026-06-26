@@ -1,5 +1,6 @@
 div.themebrowser-body {
     background-color: var(--list-bg-color);
+    padding: 0.25em;
 }
 
 div.themebrowser-theme-container {
@@ -13,6 +14,7 @@ div.themebrowser-theme-container:not(:last-child) {
 div.themebrowser-theme {
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
+    border-radius: 0.5em;
     font-weight: bold;
     padding: 0 0.5em;
     display: flex;
@@ -65,22 +67,29 @@ div.themebrowser-tree-entry-detailsvisible {
     border-bottom-right-radius: 0;
 }
 
+.themebrowser-tree-entry-plus {
+    transition: transform 0.25s;
+}
+
+.themebrowser-tree-entry-plus-remove {
+    transform: rotate(45deg);
+}
+
 span.themebrowser-tree-entry-title {
-    cursor: pointer;
     padding-left: 0.5em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-span.themebrowser-tree-entry-spacer {
     flex: 1 1 auto;
-    height: 100%;
 }
 
-span.themebrowser-tree-entry-arrows {
-    display: none;
+div.themebrowser-tree-entry-transparent > span.themebrowser-tree-entry-title {
     cursor: ew-resize;
+}
+
+span.themebrowser-tree-entry-opacity {
+    cursor: ew-resize;
+    display: none;
 }
 
 span.themebrowser-tree-entry-drag {
@@ -88,8 +97,8 @@ span.themebrowser-tree-entry-drag {
     padding: 0 0.5em;
 }
 
-div.themebrowser-tree-entry:focus > span.themebrowser-tree-entry-arrows,
-div.themebrowser-tree-entry:hover > span.themebrowser-tree-entry-arrows {
+div.themebrowser-tree-entry:focus > span.themebrowser-tree-entry-opacity,
+div.themebrowser-tree-entry:hover > span.themebrowser-tree-entry-opacity {
     display: initial;
 }
 
