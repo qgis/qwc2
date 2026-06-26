@@ -1097,6 +1097,7 @@ If you are using `qwc-services`, you will need to explicitly permit the `sensorT
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | autoAddFirstDatastream | `bool` | Automatically add the first Datastream when selecting a Location in the map. | `false` |
+| autoAdjustPeriod | `{`<br />`  intervalBefore: number,`<br />`}` | Automatically adjust the visible period when adding a Datastream. Set `null` to disable.<br />Sets the period begin to `intervalBefore` before the earliest last Observation of all visible Datastreams.<br />Sets the period end to now.<br />- `intervalBefore`: Interval in seconds. | `{}` |
 | clearAllOnClose | `bool` | Remove all Locations and Datastreams when closing the main window. | `false` |
 | queryTolerance | `number` | Map picking tolerance in pixels | `16` |
 | sensorThingsApiUrls | `[{`<br />`  url: string,`<br />`  locationsFilter: string,`<br />`}]` | List of configurations for SensorThings API URLs.<br />These are active for all themes. Theme specific URLs may be added in the `themesConfig.json`.<br />The optional `locationsFilter` is applied to Locations queries. | `[]` |

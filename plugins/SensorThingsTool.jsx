@@ -130,6 +130,14 @@ class SensorThingsTool extends React.Component {
         addLayerFeatures: PropTypes.func,
         /** Automatically add the first Datastream when selecting a Location in the map. */
         autoAddFirstDatastream: PropTypes.bool,
+        /** Automatically adjust the visible period when adding a Datastream. Set `null` to disable.
+         * Sets the period begin to `intervalBefore` before the earliest last Observation of all visible Datastreams.
+         * Sets the period end to now.
+         */
+        autoAdjustPeriod: PropTypes.shape({
+            /** Interval in seconds.*/
+            intervalBefore: PropTypes.number
+        }),
         /** Remove all Locations and Datastreams when closing the main window. */
         clearAllOnClose: PropTypes.bool,
         currentTask: PropTypes.string,
@@ -160,6 +168,7 @@ class SensorThingsTool extends React.Component {
     };
     static defaultProps = {
         autoAddFirstDatastream: false,
+        autoAdjustPeriod: {},
         clearAllOnClose: false,
         queryTolerance: 16,
         sensorThingsApiUrls: [],
@@ -1267,9 +1276,44 @@ class SensorThingsTool extends React.Component {
                     ];
                 }
 
+                let periodAdjustment = {};
+                if (this.props.autoAdjustPeriod.intervalBefore !== undefined) {
+                    // find earliest last Observation of all visible Datastreams incl. this one
+                    let earliestPeriodEnd = state.datastreams[datastreamId].period.end;
+                    state.graph.datastreams.forEach((datastream) => {
+                        if (datastream.observations) {
+                            const datastreamInfo = state.datastreams[datastream.id];
+                            earliestPeriodEnd = Math.min(datastreamInfo.period.end, earliestPeriodEnd || datastreamInfo.period.end);
+                        }
+                    });
+
+                    if (earliestPeriodEnd !== null) {
+                        periodAdjustment = {
+                            // show period from intervalBefore before earliest last Observation up to now
+                            x: {
+                                ...state.graph.x,
+                                min: earliestPeriodEnd - this.props.autoAdjustPeriod.intervalBefore * 1000,
+                                max: Date.now()
+                            },
+                            // NOTE: reset range of y-axes to auto
+                            y: {
+                                ...state.graph.y,
+                                min: null,
+                                max: null
+                            },
+                            y2: {
+                                ...state.graph.y2,
+                                min: null,
+                                max: null
+                            }
+                        };
+                    }
+                }
+
                 return {
                     graph: {
                         ...state.graph,
+                        ...periodAdjustment,
                         datastreams: [
                             ...state.graph.datastreams,
                             {
