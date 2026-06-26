@@ -128,6 +128,8 @@ ChartJS.register(
 class SensorThingsTool extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
+        /** Automatically add the first Datastream when selecting a Location in the map. */
+        autoAddFirstDatastream: PropTypes.bool,
         /** Remove all Locations and Datastreams when closing the main window. */
         clearAllOnClose: PropTypes.bool,
         currentTask: PropTypes.string,
@@ -157,6 +159,7 @@ class SensorThingsTool extends React.Component {
         zoomRectMinSize: PropTypes.object
     };
     static defaultProps = {
+        autoAddFirstDatastream: false,
         clearAllOnClose: false,
         queryTolerance: 16,
         sensorThingsApiUrls: [],
@@ -272,8 +275,8 @@ class SensorThingsTool extends React.Component {
          *  }
          */
         currentSensorLocation: null,
-        // automatically add all Datastreams of currently selected Location if true
-        addCurrentLocationDatastreams: false,
+        // automatically add first or all Datastreams of currently selected Location if 'first' or 'all'
+        addCurrentLocationDatastreamsMode: null,
         // show currently selected Location info window if true
         showLocationInfoWindow: false,
         // currently selected Datastreams filter options
@@ -535,11 +538,16 @@ class SensorThingsTool extends React.Component {
             this.props.removeLayer("sensorThingsSelection");
         }
 
-        if (this.state.addCurrentLocationDatastreams && this.state.currentSensorLocation && this.state.currentSensorLocation.id === this.state.currentLocationId) {
-            // add all Datastreams of current Location
-            this.addDatastreams(this.state.currentSensorLocation.datastreams);
+        if (this.state.addCurrentLocationDatastreamsMode !== null && this.state.currentSensorLocation && this.state.currentSensorLocation.id === this.state.currentLocationId) {
+            if (this.state.addCurrentLocationDatastreamsMode === 'first' && this.state.currentSensorLocation.datastreams.length > 0) {
+                // add first Datastream of current Location
+                this.addDatastream(this.state.currentSensorLocation.datastreams[0]);
+            } else {
+                // add all Datastreams of current Location
+                this.addDatastreams(this.state.currentSensorLocation.datastreams);
+            }
             // reset flag
-            this.setState({addCurrentLocationDatastreams: false});
+            this.setState({addCurrentLocationDatastreamsMode: null});
         }
 
         if (this.state.currentDatastreamsFilter !== prevState.currentDatastreamsFilter) {
@@ -1061,12 +1069,12 @@ class SensorThingsTool extends React.Component {
                                     <tr key={"select-location--" + idx}
                                         onMouseOut={() => this.setState({highlightedLocation: null})}
                                         onMouseOver={() => this.setState({highlightedLocation: location})} >
-                                        <td onClickCapture={() => this.addLocation(location)} title={`${location.name}: ${location.description}`}>
+                                        <td onClickCapture={() => this.addBasicLocation(location)} title={`${location.name}: ${location.description}`}>
                                             {location.name}: {location.description}
                                         </td>
                                         <td>
                                             <div className="sensor-things-location-select-buttons">
-                                                <button className="button" onClick={() => this.addLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocation")}>
+                                                <button className="button" onClick={() => this.addBasicLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocation")}>
                                                     <Icon icon="plus" />
                                                 </button>
                                                 <button className="button" onClick={() => this.addFullLocation(location)} title={LocaleUtils.tr("sensorthingstool.addLocationAndDatastreams")}>
@@ -1117,13 +1125,21 @@ class SensorThingsTool extends React.Component {
             this.setState({currentLocationId: location.id});
         }
     };
+    addBasicLocation = (location) => {
+        // add selected Location
+        this.addLocation(location);
+        if (this.props.autoAddFirstDatastream) {
+            // set flag to automatically add first Datastream of selected Location once ready
+            this.setState({addCurrentLocationDatastreamsMode: 'first'});
+        }
+    };
     addFullLocation = (location) => {
         // remove current Datastreams
         this.removeAllDatastreams();
         // add selected Location
         this.addLocation(location);
         // set flag to automatically add all Datastreams of selected Location once ready
-        this.setState({addCurrentLocationDatastreams: true});
+        this.setState({addCurrentLocationDatastreamsMode: 'all'});
     };
     removeSelectedLocation = () => {
         if (this.state.currentSensorLocation === null) {
