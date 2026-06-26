@@ -161,7 +161,7 @@ class AppContainerComponent extends React.Component {
                 const initialTaskParam = (params.task ? JSON.parse(decodeURIComponent(params.task)) : null);
                 this.props.setCurrentTheme(theme, themes, false, initialExtent, layerParams, params.bl ?? null, state.layers, this.props.appConfig.themeLayerRestorer, this.props.appConfig.externalLayerRestorer, initialTaskParam, state.visibilityPreset);
             } else if (ConfigUtils.getConfigProp("dontLoadDefaultTheme")) {
-                this.props.setBlankTheme(themes);
+                this.props.setBlankTheme(themes, null, params.bl ?? null);
             } else if (!ConfigUtils.havePlugin("Portal")) {
                 this.props.showNotification("missingdefaulttheme", LocaleUtils.tr("app.missingdefaulttheme", params.t), NotificationType.WARN, true);
             }

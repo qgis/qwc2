@@ -265,6 +265,6 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
     };
 }
 
-export function setBlankTheme(themes) {
-    return setCurrentTheme({id: ""}, themes);
+export function setBlankTheme(themes, initialExtent = null, visibleBgLayer = null) {
+    return setCurrentTheme({id: ""}, themes, false, initialExtent, null, visibleBgLayer);
 }
