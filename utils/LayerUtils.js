@@ -1154,11 +1154,11 @@ const LayerUtils = {
     },
     computeVisibilityPreset(layers) {
         const result = {};
-        const collectLayerVisibilities = (layer, path, parentVisible) => {
+        const collectLayerVisibilities = (layer, path) => {
             if (layer.sublayers) {
                 const istoplevel = !!layer.url;
                 layer.sublayers.forEach(sublayer =>
-                    collectLayerVisibilities(sublayer, !istoplevel ? path + layer.name + "/" : "", parentVisible && layer.visibility)
+                    collectLayerVisibilities(sublayer, !istoplevel ? path + layer.name + "/" : "")
                 );
                 if (layer.visibility && !istoplevel) {
                     result[path + layer.name] = {checked: true};
@@ -1167,12 +1167,12 @@ const LayerUtils = {
                     result[path + layer.name] = {...result[path + layer.name], expanded: true};
                 }
             } else {
-                result[path + layer.name] = {checked: layer.visibility, style: layer.style, visible: layer.visibility && parentVisible};
+                result[path + layer.name] = {checked: layer.visibility, style: layer.style};
             }
         };
         layers.forEach(layer => {
             if (layer.role === LayerRole.THEME) {
-                collectLayerVisibilities(layer, "", layer.visibility);
+                collectLayerVisibilities(layer, "");
             }
         });
         return result;
