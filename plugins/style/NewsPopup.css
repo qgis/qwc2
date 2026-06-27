@@ -47,6 +47,7 @@ div.newspopup-dialog-popup-body {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 div.newspopup-dialog-popup-body > iframe {
@@ -55,6 +56,12 @@ div.newspopup-dialog-popup-body > iframe {
     background-color: transparent;
     flex: 1 1 auto;
     height: 0;
+}
+
+div.newspopup-dialog-popup-body > div.newspopup-dialog-popup-content {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 0.5em;
 }
 
 div.newspopup-dialog-popup-body > div.newspopup-dialog-popup-buttonbar {
