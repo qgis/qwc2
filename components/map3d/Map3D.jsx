@@ -91,6 +91,7 @@ class Map3D extends React.Component {
     static contextType = MapContainerPortalContext;
     static propTypes = {
         controlsPosition: PropTypes.string,
+        defaultColorLayerVisibility: PropTypes.bool,
         defaultFov: PropTypes.number,
         defaultPointSize: PropTypes.number,
         defaultSceneQuality: PropTypes.number,
@@ -302,6 +303,7 @@ class Map3D extends React.Component {
     };
     collectColorLayers = (prevColorLayers, prevLayers) => {
         const prevLayerMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
+        const showRootEntry = ConfigUtils.getPluginConfig("LayerTree")?.cfg?.showRootEntry !== false;
         return this.props.layers.reduce((colorLayers, layer) => {
             if (layer.role !== LayerRole.THEME && layer.role !== LayerRole.USERLAYER) {
                 return colorLayers;
@@ -323,17 +325,20 @@ class Map3D extends React.Component {
                             ...child,
                             visibility: prevChild.visibility,
                             opacity: prevChild.opacity,
-                            sublayers: preserveSublayerOptions(child, prevChild)
+                            sublayers: preserveSublayerOptions(child, prevChild, false)
                         };
                     } else {
-                        return child;
+                        return {
+                            ...child,
+                            visibility: entry?.role === LayerRole.THEME && !showRootEntry ? this.props.defaultColorLayerVisibility : child.visibility
+                        };
                     }
                 });
             };
             colorLayers[layer.id] = {
                 ...layer,
                 projection: prevOptions?.projection ?? this.props.theme.mapCrs,
-                visibility: prevOptions?.visibility ?? false,
+                visibility: prevOptions?.visibility ?? (layer.role === LayerRole.THEME && !showRootEntry ? true : this.props.defaultColorLayerVisibility),
                 opacity: prevOptions?.opacity ?? 255,
                 extrusionHeight: prevOptions?.extrusionHeight ?? (layerCreator.createFeatureSource ? 0 : undefined),
                 fields: prevOptions?.fields ?? undefined,

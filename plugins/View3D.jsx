@@ -46,6 +46,8 @@ class View3D extends React.Component {
         bookmark: PropTypes.object,
         /** The position of the navigation controls. Either `top` or `bottom`. */
         controlsPosition: PropTypes.string,
+        /** Whether 2D layers should be visible by default when opening the 3D view. */
+        defaultColorLayerVisibility: PropTypes.bool,
         /** The default field of view (`20`: min, `100`: max). */
         defaultFov: PropTypes.number,
         /** The default point size for point cloud tiles (`0`: min, `20`: max). Automatic size computation when the value is `0`. */
@@ -88,6 +90,7 @@ class View3D extends React.Component {
     };
     static defaultProps = {
         controlsPosition: 'top',
+        defaultColorLayerVisibility: false,
         defaultFov: 30,
         defaultPointSize: 0,
         defaultSceneQuality: 100,
@@ -326,6 +329,7 @@ class View3D extends React.Component {
                             <PluginsContainer pluginsConfig={pluginsConfig}>
                                 <Map3D
                                     controlsPosition={this.props.controlsPosition}
+                                    defaultColorLayerVisibility={this.props.defaultColorLayerVisibility}
                                     defaultFov={this.props.defaultFov}
                                     defaultPointSize={this.props.defaultPointSize}
                                     defaultSceneQuality={this.props.defaultSceneQuality}

@@ -1265,6 +1265,7 @@ See [3D View](../../topics/View3D).
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | controlsPosition | `string` | The position of the navigation controls. Either `top` or `bottom`. | `'top'` |
+| defaultColorLayerVisibility | `bool` | Whether 2D layers should be visible by default when opening the 3D view. | `false` |
 | defaultFov | `number` | The default field of view (`20`: min, `100`: max). | `30` |
 | defaultPointSize | `number` | The default point size for point cloud tiles (`0`: min, `20`: max). Automatic size computation when the value is `0`. | `0` |
 | defaultSceneQuality | `number` | The default scene quality factor (`20`: min, `100`: max). | `100` |
