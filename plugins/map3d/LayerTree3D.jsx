@@ -13,11 +13,13 @@ import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import {LayerRole} from '../../actions/layers';
 import {setCurrentTask} from '../../actions/task';
 import Icon from '../../components/Icon';
 import ImportObjects3D from '../../components/map3d/ImportObjects3D';
 import SideBar from '../../components/SideBar';
 import NumberInput from '../../components/widgets/NumberInput';
+import ConfigUtils from '../../utils/ConfigUtils';
 import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 
@@ -64,9 +66,16 @@ class LayerTree3D extends React.Component {
         );
     }
     renderBody = () => {
+        const showRootEntry = ConfigUtils.getPluginConfig("LayerTree")?.cfg?.showRootEntry !== false;
         const sceneContext = this.props.sceneContext;
         const objectsHaveGroups = sceneContext.objectTree.null.children.some(child => !isEmpty(sceneContext.objectTree[child].children));
-        const layersHaveSublayers = Object.values(sceneContext.colorLayers).some(layer => !isEmpty(layer.sublayers));
+        const layersHaveSublayers = Object.values(sceneContext.colorLayers).some(layer => {
+            if (layer.role === LayerRole.THEME && !showRootEntry) {
+                return layer.sublayers.some(sublayer => !isEmpty(sublayer.sublayers));
+            } else {
+                return !isEmpty(layer.sublayers);
+            }
+        });
         return (
             <div>
                 <div className="layertree3d-layers">
@@ -76,7 +85,13 @@ class LayerTree3D extends React.Component {
                     })}
                     <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.layers")}</div>
                     {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
-                        return this.renderLayerEntry(layerId, entry, null, this.updateColorLayer, false, true, [], layersHaveSublayers);
+                        if (entry.role === LayerRole.THEME && !showRootEntry) {
+                            return entry.sublayers.map((sublayer, idx) =>
+                                this.renderLayerEntry(layerId, sublayer, entry, this.updateColorLayer, false, true, [idx])
+                            );
+                        } else {
+                            return this.renderLayerEntry(layerId, entry, null, this.updateColorLayer, false, true, [], layersHaveSublayers);
+                        }
                     })}
                     <div className="layertree3d-option" onClick={() => this.setState(state => ({importvisible: !state.importvisible}))}>
                         <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
