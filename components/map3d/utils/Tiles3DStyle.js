@@ -20,8 +20,8 @@ styleExpressionParser.functions.color = (name, alpha = 1) => {
     const color = parseCssColor(name);
     return [...color.values.map(c => c / 255), alpha];
 };
-styleExpressionParser.functions.rgb = (r, g, b) => ([r / 255, g / 255, g / 255, 1]);
-styleExpressionParser.functions.rgba = (r, g, b, a) => ([r / 255, g / 255, g / 255, a]);
+styleExpressionParser.functions.rgb = (r, g, b) => ([r / 255, g / 255, b / 255, 1]);
+styleExpressionParser.functions.rgba = (r, g, b, a) => ([r / 255, g / 255, b / 255, a]);
 styleExpressionParser.functions.hsl = (h, s, l) => ([...MiscUtils.hslToRgb(h, s, l), 1]);
 styleExpressionParser.functions.hsla = (h, s, l, a) => ([...MiscUtils.hslToRgb(h, s, l), a]);
 
