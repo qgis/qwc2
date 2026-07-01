@@ -53,6 +53,7 @@ class Identify extends React.Component {
         clearResultsOnClose: PropTypes.bool,
         click: PropTypes.object,
         currentIdentifyTool: PropTypes.string,
+        currentSearchResult: PropTypes.object,
         currentTask: PropTypes.string,
         /** Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         customExporters: PropTypes.array,
@@ -76,8 +77,10 @@ class Identify extends React.Component {
             initiallyDocked: PropTypes.bool,
             side: PropTypes.string
         }),
-        /** Whether to highlight all results if no result is hovered */
+        /** Whether to highlight all results if no result is hovered. */
         highlightAllResults: PropTypes.bool,
+        /** Whether to trigger an identify when selecting a search result. */
+        identifySearchResults: PropTypes.bool,
         iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. */
         initialRadiusUnits: PropTypes.string,
@@ -161,7 +164,10 @@ class Identify extends React.Component {
             }
         }
         if (this.props.enabled) {
-            if (this.state.mode === "Point") {
+            if (this.props.identifySearchResults && this.props.currentSearchResult && this.props.currentSearchResult !== prevProps.currentSearchResult) {
+                const res = this.props.currentSearchResult;
+                this.identifyPoint(CoordinatesUtils.reproject([res.x, res.y], res.crs, this.props.map.projection));
+            } else if (this.state.mode === "Point") {
                 const clickPoint = this.queryPoint(prevProps);
                 this.identifyPoint(clickPoint);
             } else if (this.state.mode === "Region") {
@@ -474,6 +480,7 @@ export default connect((state) => {
     );
     return {
         click: state.map.click || {modifiers: {}},
+        currentSearchResult: state.search.currentResult,
         enabled: enabled,
         layerFilterGeom: state.layers.filter?.filterGeom,
         layers: state.layers.flat,
