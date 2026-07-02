@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
@@ -51,8 +52,13 @@ class ThemeList extends React.Component {
     };
     state = {
         expandedGroups: {},
+        hoveredItemId: null,
         visibleThemeInfoMenu: null
     };
+    constructor(props) {
+        super(props);
+        this.el = {};
+    }
     groupMatchesFilter = (group, filter) => {
         if (group && group.items) {
             for (let i = 0, n = group.items.length; i < n; ++i) {
@@ -123,22 +129,38 @@ class ThemeList extends React.Component {
                             return null;
                         }
                     }
-                    let title = item.abstract;
+                    let title = `<h1>${item.title}</h1>`;
+                    if (title && item.abstract) {
+                        title += item.abstract;
+                    }
                     if (title && item.keywords) {
-                        title += "\n\n";
+                        title += "<br ><br >";
                     }
                     if (item.keywords) {
                         title += LocaleUtils.tr("themeswitcher.match.keywords") + ": " + item.keywords;
                     }
+                    const isCurrentItemHovered = this.state.hoveredItemId === item.id;
                     return (
                         <li className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                             key={item.id}
                             onClick={() => this.setTheme(item)}
-                            title={title}
+                            onMouseEnter={() => this.setState({hoveredItemId: item.id})}
+                            onMouseLeave={() => this.setState({hoveredItemId: null})}
+                            ref={(el) => {this.el[item.id] = el; }}
                         >
-                            <div className="theme-item-title" title={item.title}>
+                            {title && isCurrentItemHovered && this.el[item.id] && (
+                                ReactDOM.createPortal(
+                                    <div
+                                        className="theme-item-tooltip"
+                                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(title)}}
+                                        style={{
+                                            top: this.el[item.id].getBoundingClientRect().top + (this.el[item.id].getBoundingClientRect().height * 0.9)
+                                        }}
+                                    />, this.el[item.id]
+                                )
+                            )}
+                            <div className="theme-item-title">
                                 <span>{item.title}</span>
-
                             </div>
                             {!isEmpty(infoLinks) ? (<div className={"theme-item-info-menu " + (this.state.visibleThemeInfoMenu ? "theme-item-info-menu-active" : "")} onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}>
                                 <Icon icon="info" />
