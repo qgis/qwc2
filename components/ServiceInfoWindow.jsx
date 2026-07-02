@@ -7,12 +7,10 @@
  */
 
 import React from 'react';
-import {connect} from 'react-redux';
 
 import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
 
-import {setActiveServiceInfo} from '../actions/serviceinfo';
 import ResizeableWindow from '../components/ResizeableWindow';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
@@ -22,8 +20,8 @@ import './style/ServiceInfoWindow.css';
 class ServiceInfoWindow extends React.Component {
     static propTypes = {
         layerInfoGeometry: PropTypes.object,
-        service: PropTypes.object,
-        setActiveServiceInfo: PropTypes.func
+        onClose: PropTypes.func,
+        service: PropTypes.object
     };
     renderLink(text, url) {
         if (url) {
@@ -53,7 +51,7 @@ class ServiceInfoWindow extends React.Component {
         return (
             <ResizeableWindow icon="info-sign" initialHeight={this.props.layerInfoGeometry.initialHeight} initialWidth={this.props.layerInfoGeometry.initialWidth}
                 initialX={this.props.layerInfoGeometry.initialX} initialY={this.props.layerInfoGeometry.initialY}
-                initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.onClose}
+                initiallyDocked={this.props.layerInfoGeometry.initiallyDocked} onClose={this.props.onClose}
                 title={LocaleUtils.tr("serviceinfo.title")}>
                 <div className="service-info-window-body">
                     <h4 className="service-info-window-title">{this.props.service.title}</h4>
@@ -75,15 +73,6 @@ class ServiceInfoWindow extends React.Component {
             </ResizeableWindow>
         );
     }
-    onClose = () => {
-        this.props.setActiveServiceInfo(null);
-    };
 }
 
-const selector = state => ({
-    service: state.serviceinfo.service
-});
-
-export default connect(selector, {
-    setActiveServiceInfo: setActiveServiceInfo
-})(ServiceInfoWindow);
+export default ServiceInfoWindow;

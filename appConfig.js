@@ -55,6 +55,7 @@ import RedliningFeatureLabelSupport from './plugins/redlining/RedliningFeatureLa
 import ReportsPlugin from './plugins/Reports';
 import RoutingPlugin from './plugins/Routing';
 import ScratchDrawingPlugin from './plugins/ScratchDrawing';
+import ServiceInfoPlugin from './plugins/ServiceInfo';
 import SettingsPlugin from './plugins/Settings';
 import SharePlugin from './plugins/Share';
 import StartupMarkerPlugin from './plugins/StartupMarker';
@@ -126,6 +127,7 @@ export default {
             FeatureSearchPlugin: FeatureSearchPlugin,
             ScratchDrawingPlugin: ScratchDrawingPlugin,
             SensorThingsToolPlugin: lazy(() => import('./plugins/SensorThingsTool')),
+            ServiceInfoPlugin: ServiceInfoPlugin,
             SettingsPlugin: SettingsPlugin,
             SharePlugin: SharePlugin,
             StartupMarkerPlugin: StartupMarkerPlugin,

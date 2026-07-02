@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {setActiveServiceInfo} from '../actions/serviceinfo';
 import {setCurrentTask} from '../actions/task';
 import MapButton from '../components/MapButton';
 import ConfigUtils from '../utils/ConfigUtils';
@@ -36,7 +35,6 @@ class TaskButton extends React.Component {
         mode: PropTypes.string,
         /** The position slot index of the map button, from the bottom (0: bottom slot). */
         position: PropTypes.number,
-        setActiveServiceInfo: PropTypes.func,
         setCurrentTask: PropTypes.func,
         /** The task name. */
         task: PropTypes.string,
@@ -61,13 +59,8 @@ class TaskButton extends React.Component {
         );
     }
     buttonClicked = () => {
-        // Special cases
-        if (this.props.task === "ServiceInfo") {
-            this.props.setActiveServiceInfo(this.props.theme);
-        } else {
-            const mapClickAction = ConfigUtils.getPluginConfig(this.props.task).mapClickAction;
-            this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, mapClickAction);
-        }
+        const mapClickAction = ConfigUtils.getPluginConfig(this.props.task).mapClickAction;
+        this.props.setCurrentTask(this.props.currentTask === this.props.task ? null : this.props.task, this.props.mode, mapClickAction);
     };
 }
 
@@ -77,6 +70,5 @@ const selector = (state) => ({
 });
 
 export default connect(selector, {
-    setActiveServiceInfo: setActiveServiceInfo,
     setCurrentTask: setCurrentTask
 })(TaskButton);

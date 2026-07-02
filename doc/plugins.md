@@ -41,6 +41,7 @@ Plugin reference
 * [Routing](#routing)
 * [ScratchDrawing](#scratchdrawing)
 * [SensorThingsTool](#sensorthingstool)
+* [ServiceInfo](#serviceinfo)
 * [Settings](#settings)
 * [Share](#share)
 * [StartupMarker](#startupmarker)
@@ -1106,6 +1107,15 @@ If you are using `qwc-services`, you will need to explicitly permit the `sensorT
 | timeFormats | `object` | Formatting patterns for displaying time values | `{`<br />`    tooltip: 'YYYY-MM-DD HH:mm:ss',`<br />`    millisecond: 'HH:mm:ss.SSS',`<br />`    second: 'HH:mm:ss',`<br />`    minute: 'HH:mm',`<br />`    hour: 'HH:mm',`<br />`    day: 'MM-DD',`<br />`    week: 'YYYY-MM-DD',`<br />`    month: 'YYYY-MM',`<br />`    quarter: '[Q]Q - YYYY',`<br />`    year: 'YYYY'`<br />`}` |
 | windowSize | `object` | Default size of the SensorThings Query window | `{width: 800, height: 600}` |
 | zoomFactor | `number` | Zoom factor for chart zoom buttons | `1.5` |
+
+## ServiceInfo<a name="serviceinfo"></a>
+
+Displays Service info window with theme informations.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. A locked window is not closeable and not resizeable. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX).<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined<br />- `side`: undefined | `{`<br />`    initialWidth: 480,`<br />`    initialHeight: 480,`<br />`    initialX: null,`<br />`    initialY: null,`<br />`    initiallyDocked: false`<br />`}` |
+| showLayerTree | `bool` | Whether to show LayerTree alongside the plugin. Default: false. | `false` |
 
 ## Settings<a name="settings"></a>
 
