@@ -59,6 +59,24 @@ div.ThemeList div.theme-item-title > span.icon {
     font-size: large;
 }
 
+div.ThemeList div.theme-item-tooltip {
+    position: fixed;
+    width: auto;
+    height: auto;
+    max-width: calc(50vw - 5em);
+    max-height: calc(50vh - var(--topbar-height) - var(--bottombar-height));
+
+    background-color: var(--tooltip-bg-color);
+    border: 1px solid var(--tooltip-border-color);
+    color: var(--tooltip-text-color);
+    font-weight: normal;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    white-space: normal;
+    overflow: auto;
+    z-index: 3;
+}
+
 div.ThemeList div.theme-item-body {
     height: auto;
     width: 15em;
