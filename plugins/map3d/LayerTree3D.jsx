@@ -89,6 +89,8 @@ class LayerTree3D extends React.Component {
                             return entry.sublayers.map((sublayer, idx) =>
                                 this.renderLayerEntry(layerId, sublayer, entry, this.updateColorLayer, false, true, [idx])
                             );
+                        } else if (entry.role === LayerRole.THEME && showRootEntry && isEmpty(entry.sublayers)) {
+                            return null;
                         } else {
                             return this.renderLayerEntry(layerId, entry, null, this.updateColorLayer, false, true, [], layersHaveSublayers);
                         }
