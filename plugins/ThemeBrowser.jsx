@@ -86,6 +86,15 @@ class ThemeBrowser extends React.Component {
             this.setState(state => ({active: !state.active}));
             this.props.setCurrentTask(null);
         }
+        let width = this.maxLayerTitleLength + "px";
+        if (this.props.fillIfWiderThanPerc && this.maxLayerTitleLength > window.innerWidth * this.props.fillIfWiderThanPerc / 100) {
+            width = '100%';
+        }
+        this.measureCanvas = undefined;
+        this.measureContext = undefined;
+        if (width !== this.state.width) {
+            this.setState({width});
+        }
     }
     render() {
         this.maxLayerTitleLength = 0;
@@ -104,15 +113,6 @@ class ThemeBrowser extends React.Component {
                 </div>
             </SideBar>
         );
-        let width = this.maxLayerTitleLength + "px";
-        if (this.props.fillIfWiderThanPerc && this.maxLayerTitleLength > window.innerWidth * this.props.fillIfWiderThanPerc / 100) {
-            width = '100%';
-        }
-        this.measureCanvas = undefined;
-        this.measureContext = undefined;
-        if (width !== this.state.width) {
-            this.setState({width});
-        }
         return result;
     }
     renderThemes = (group) => {
