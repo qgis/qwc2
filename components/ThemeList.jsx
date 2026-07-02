@@ -122,9 +122,12 @@ class ThemeList extends React.Component {
                             return null;
                         }
                     }
-                    let title = item.abstract;
+                    let title = `<h1>${item.title}</h1>`;
+                    if (title && item.abstract) {
+                        title += item.abstract;
+                    }
                     if (title && item.keywords) {
-                        title += "\n\n";
+                        title += "<br ><br >";
                     }
                     if (item.keywords) {
                         title += LocaleUtils.tr("themeswitcher.match.keywords") + ": " + item.keywords;
@@ -133,11 +136,11 @@ class ThemeList extends React.Component {
                         <li className={activeThemeId === item.id ? "theme-item theme-item-active" : "theme-item"}
                             key={item.id}
                             onClick={() => this.setTheme(item)}
-                            title={title}
+                            onMouseEnter={(ev) => this.showTooltip(ev, title)}
+                            onMouseLeave={(ev) => this.hideTooltip(ev)}
                         >
-                            <div className="theme-item-title" title={item.title}>
+                            <div className="theme-item-title">
                                 <span>{item.title}</span>
-
                             </div>
                             {!isEmpty(infoLinks) ? (<div className={"theme-item-info-menu " + (this.state.visibleThemeInfoMenu ? "theme-item-info-menu-active" : "")} onClick={ev => this.toggleThemeInfoMenu(ev, item.id)}>
                                 <Icon icon="info" />
@@ -282,6 +285,25 @@ class ThemeList extends React.Component {
             /* eslint-disable-next-line */
             alert(LocaleUtils.tr("settings.defaultthemefailed", String(e)));
         });
+    };
+    showTooltip = (ev, content) => {
+        const tooltip = ev.view.document.createElement("div");
+        tooltip.innerHTML = MiscUtils.sanitizeHtml(content);
+        tooltip.className = "theme-item-tooltip";
+        tooltip.popover = "hint";
+        ev.currentTarget.popoverTargetElement = tooltip;
+        ev.currentTarget.appendChild(tooltip);
+        const rect = ev.currentTarget.getBoundingClientRect();
+        tooltip.style.left = `${rect.left}px`;
+        tooltip.style.top = `${rect.bottom}px`;
+        tooltip.showPopover();
+    };
+    hideTooltip = (ev) => {
+        const tooltip = ev.currentTarget.popoverTargetElement;
+        if (tooltip) {
+            tooltip.hidePopover();
+            tooltip.remove();
+        }
     };
 }
 
