@@ -13,6 +13,7 @@ import classNames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
+import {LayerRole} from '../../actions/layers';
 import {setCurrentTask} from '../../actions/task';
 import Icon from '../../components/Icon';
 import ImportObjects3D from '../../components/map3d/ImportObjects3D';
@@ -64,7 +65,11 @@ class LayerTree3D extends React.Component {
                     })}
                     <div className="layertree3d-section">{LocaleUtils.tr("layertree3d.layers")}</div>
                     {Object.entries(sceneContext.colorLayers).map(([layerId, entry]) => {
-                        return this.renderLayerEntry(layerId, entry, sceneContext.updateColorLayer, false);
+                        if (entry.role === LayerRole.THEME && isEmpty(entry.sublayers)) {
+                            return null;
+                        } else {
+                            return this.renderLayerEntry(layerId, entry, sceneContext.updateColorLayer, false);
+                        }
                     })}
                     <div className="layertree3d-option" onClick={() => this.setState(state => ({importvisible: !state.importvisible}))}>
                         <Icon icon={this.state.importvisible ? 'collapse' : 'expand'} /> {LocaleUtils.tr("layertree3d.importobjects")}
