@@ -34,10 +34,12 @@ import '../style/MapExport.css';
  */
 class MapExport3D extends React.Component {
     static propTypes = {
+        bottombarHeight: PropTypes.number,
         hideAutopopulatedFields: PropTypes.bool,
         sceneContext: PropTypes.object,
         setCurrentTask: PropTypes.func,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        topbarHeight: PropTypes.number
     };
     static defaultState = {
         minimized: false,
@@ -53,11 +55,12 @@ class MapExport3D extends React.Component {
     state = MapExport3D.defaultState;
     onShow = () => {
         const rect = this.props.sceneContext.scene.domElement.getBoundingClientRect();
+        const rectHeight = rect.height - this.props.topbarHeight - this.props.bottombarHeight;
         const frame = {
             x: 0.125 * rect.width,
-            y: 0.125 * rect.height,
+            y: 0.125 * rectHeight,
             width: 0.75 * rect.width,
-            height: 0.75 * rect.height
+            height: 0.75 * rectHeight
         };
         if (!isEmpty(this.props.theme?.print)) {
             const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
@@ -401,6 +404,8 @@ class MapExport3D extends React.Component {
 }
 
 export default connect((state) => ({
+    topbarHeight: state.windows.topbarHeight,
+    bottombarHeight: state.windows.bottombarHeight,
     theme: state.theme.current
 }), {
     setCurrentTask: setCurrentTask
