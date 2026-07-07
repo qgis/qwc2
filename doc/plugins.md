@@ -486,6 +486,11 @@ Displays a dialog with a search form for configured QGIS feature searches with o
 
 See [Configuring the QGIS feature search](../../topics/Search/#configuring-the-qgis-feature-search).
 
+A `qgis` entry in `theme.searchProviders` is listed here by default, including entries without an
+explicit `fields` configuration (which are rendered with a single default `TEXT` field). To configure
+a `qgis` provider which is only usable through the TopBar search (i.e. via `SearchBox`/`collectSearchProviders`)
+and should not appear in this dialog, set `params.featuresearch` to `false` on that provider entry.
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. | `true` |
