@@ -28,8 +28,11 @@ import './style/LayerCatalog.css';
  *
  * Configured through a catalog JSON containing a tree of external layer identifiers.
  *
- * For `wms` layers, `sublayers: false` denotes that the sublayer structure of the added layer should not
- * be exposed in the layer tree.
+ * For catalog entries containing a `wms` resource, you can specify `"asGroup": <true|false|"option">`, which behaves as follows:
+ *
+ * * `false`: imports the layer as a flat layer, without sublayer structure. This is the default behaviour for entries without sublayers if `asGroup` is not specified.
+ * * `true`:  imports the layer as a group, with sublayer structure. If the catalog entry has sublayers, the sublayer structure will be filtered to only include these sublayers.
+ * * `"option"`: imports the layer as a flat layer when clicking on the catalog entry, but displays an icon to optionally import the layer as a group layer. This is the default behaviour for entries with sublayers if `asGroup` is not specified.
  *
  * Example:
  * ```json
@@ -38,11 +41,11 @@ import './style/LayerCatalog.css';
  *     {
  *       "title": "Öffentlicher Verkehr swissTLMRegio",
  *       "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.vec200-transportation-oeffentliche-verkehr",
- *       "sublayers": false
+ *       "asGroup": true
  *     },
  *     {
  *       "title": "Gewässerschutz",
- *        "resource": "wms:https://geo.so.ch/api/wms#ch.so.afu.gewaesserschutz[50]"
+ *       "resource": "wms:https://geo.so.ch/api/wms#ch.so.afu.gewaesserschutz[50]"
  *     },
  *     {
  *       "title": "Landeskarten",
@@ -56,6 +59,19 @@ import './style/LayerCatalog.css';
  *           "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.pixelkarte-farbe-pk100.noscale"
  *         }
  *       ]
+ *     },
+ *     {
+ *       "title": "Edit Demo",
+ *       "resource": "wms:https://demo.qwc.app/ows/qwc_demo#edit_demo",
+ *       "sublayers": [{
+ *         "title": "Edit Points",
+ *         "resource": "wms:https://demo.qwc.app/ows/qwc_demo#edit_points"
+ *       },
+ *       {
+ *         "title": "Edit Lines",
+ *         "resource": "wms:https://demo.qwc.app/ows/qwc_demo#edit_lines"
+ *       }],
+ *       "asGroup": "option"
  *     }
  *   ]
  * }
