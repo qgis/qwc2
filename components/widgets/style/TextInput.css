@@ -38,9 +38,11 @@ pre.text-input {
     flex: 1 1 auto;
 }
 
-
-text-input-wrapper-multiline > pre.text-input {
+pre.text-input.text-input-multiline {
+    overflow-x: hidden;
     white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 pre.text-input[contenteditable="true"] a {
