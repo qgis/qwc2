@@ -560,7 +560,7 @@ class QtDesignerForm extends React.Component {
     };
     renderNRelation = (widget) => {
         const parts = widget.name.split("__");
-        if (parts.length < 3) {
+        if (parts.length < 3 || !widget.layout) {
             return null;
         }
         const disabled = String(widget.property?.enabled) === "false";
