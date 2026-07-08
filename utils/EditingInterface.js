@@ -327,7 +327,7 @@ const EditingInterface = {
      */
     getKeyValues(keyvalues, callback, filter = null) {
         const editServiceUrl = ConfigUtils.getConfigProp("editServiceUrl").replace(/\/$/, '');
-        const req = editServiceUrl + '/' + "keyvals?tables=" + keyvalues;
+        const req = editServiceUrl + "/keyvals?tables=" + keyvalues;
         const params = {
             filter: filter ? JSON.stringify(filter) : undefined
         };
