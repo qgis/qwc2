@@ -35,6 +35,7 @@ class LinkFeatureForm extends React.Component {
         iface: PropTypes.object,
         map: PropTypes.object,
         mapPrefix: PropTypes.string,
+        parentContextId: PropTypes.string,
         pickFilter: PropTypes.func,
         readOnly: PropTypes.bool,
         removeLayer: PropTypes.func,
