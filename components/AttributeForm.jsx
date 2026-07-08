@@ -139,6 +139,7 @@ class AttributeForm extends React.Component {
                     <LinkFeatureForm
                         {...this.state.childEdit} finished={this.state.childEdit.finishCallback}
                         iface={this.props.iface} mapPrefix={this.props.editContext.mapPrefix}
+                        parentContextId={this.props.editContext.id}
                         pickFilter={this.props.childPickFilter} readOnly={this.props.readOnly}
                         translations={this.props.translations} />
                 </div>
