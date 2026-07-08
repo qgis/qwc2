@@ -27,10 +27,9 @@ export default class OrbitControls3D extends MapControls {
         this.zoomSpeed = 5;
     }
     connect(sceneContext) {
-        this.domElement = sceneContext.scene.domElement;
         this.sceneContext = sceneContext;
         this.enabled = true;
-        super.connect();
+        super.connect(sceneContext.scene.domElement);
         this.listenToKeyEvents(this.domElement);
         this.domElement.addEventListener('pointerdown', this.stopAnimations);
         this.domElement.addEventListener('wheel', this.stopAnimations);
