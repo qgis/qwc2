@@ -22,7 +22,7 @@ export default class OrbitControls3D extends MapControls {
         this.enableDamping = true;
         this.dampingFactor = 0.2;
         this.keyPanSpeed = 10.0;
-        this.maxPolarAngle = Math.PI * 0.5;
+        this.maxPolarAngle = 89 / 180 * Math.PI;
         this.mouseButtons = mouseButtons;
         this.zoomSpeed = 5;
     }
