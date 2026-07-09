@@ -194,7 +194,7 @@ class LayerCatalogWidget extends React.PureComponent {
         const groupUrl = stripQuery(resource.url);
         const collectSublayers = (entry) => {
             const entryParams = LayerUtils.splitLayerUrlParam(entry.resource ?? "");
-            if (stripQuery(entryParams.url) === groupUrl) {
+            if (isEmpty(entry.sublayers) && stripQuery(entryParams.url) === groupUrl) {
                 sublayers[entryParams.name] = entryParams;
             }
             (entry.sublayers || []).forEach(collectSublayers);
@@ -243,12 +243,15 @@ class LayerCatalogWidget extends React.PureComponent {
                     } else if (sublayerSubset) {
                         const filterSublayers = (sublayers) => {
                             return sublayers.map(sublayer => {
-                                if (sublayer.sublayers) {
-                                    return filterSublayers(sublayer.sublayers);
-                                } else if (sublayer.name in sublayerSubset) {
+                                if (sublayer.name in sublayerSubset) {
                                     return {
                                         ...sublayer,
-                                        ...sublayerSubset
+                                        ...sublayerSubset[sublayer.name]
+                                    };
+                                } else if (sublayer.sublayers) {
+                                    return {
+                                        ...sublayer,
+                                        sublayers: filterSublayers(sublayer.sublayers)
                                     };
                                 } else {
                                     return null;
