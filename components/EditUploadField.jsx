@@ -41,7 +41,8 @@ export default class EditUploadField extends React.Component {
     state = {
         camera: false,
         imageData: null,
-        imageFilename: null
+        imageFilename: null,
+        fileSelected: false
     };
     constructor(props) {
         super(props);
@@ -93,7 +94,7 @@ export default class EditUploadField extends React.Component {
                     </span>
                 );
             }
-        } else if (fileValue) {
+        } else if (fileValue && !this.state.fileSelected) {
             return (
                 <span className={"edit-upload-field edit-upload-field-imagelink" + (this.props.disabled ? " edit-upload-field-disabled" : "")}>
                     <a href={fileUrl} rel="noreferrer" target="_blank">{fileValue.replace(/.*\//, '')}</a>
@@ -122,6 +123,7 @@ export default class EditUploadField extends React.Component {
                 this.props.updateField(this.props.fieldId, ev.target.files[0].name);
             };
         } else {
+            this.setState({fileSelected: true});
             this.props.updateFile(this.props.fieldId, ev.target.files[0]);
             this.props.updateField(this.props.fieldId, ev.target.files[0].name);
         }
