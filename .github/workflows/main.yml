@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Use Node.js
-        uses: actions/setup-node@v6.3.0
+        uses: actions/setup-node@v6.4.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
@@ -70,33 +70,21 @@ jobs:
           # The token is only valid for one hour.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version_number.outputs.version }}
-          release_name: ${{ steps.version_number.outputs.version }}
-          draft: false
-          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
-
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./qwc2-stock-app.zip
-          asset_name: qwc2-stock-app.zip
-          asset_content_type: application/zip
-
       - name: Delete previous release
         run: |
           curl -s -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                 -X DELETE ${{ steps.version_number.outputs.prev_release }}
         if: steps.version_number.outputs.prev_release != ''
 
+      - name: Create release
+        id: create_release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version_number.outputs.version }}
+          draft: false
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./qwc2-stock-app.zip
 
       - name: Publish to NPM
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
