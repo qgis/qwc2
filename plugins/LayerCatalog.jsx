@@ -95,7 +95,8 @@ class LayerCatalog extends React.Component {
         levelBasedIndentSize: PropTypes.bool,
         /** Whether to register a search provider which allows searching catalog layers through the global search field. */
         registerCatalogSearchProvider: PropTypes.bool,
-        setCurrentTask: PropTypes.func
+        setCurrentTask: PropTypes.func,
+        toggle: PropTypes.bool
     };
     static defaultProps = {
         geometry: {
@@ -155,7 +156,7 @@ class LayerCatalog extends React.Component {
                 onClose={this.onClose} title={LocaleUtils.tr("layercatalog.windowtitle")}
             >
                 <div className="layer-catalog">
-                    <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} />
+                    <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} toggle={this.props.toggle} />
                 </div>
             </ResizeableWindow>
         );

@@ -29,7 +29,8 @@ class LayerCatalogWidget extends React.PureComponent {
         pendingRequests: PropTypes.number,
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
-        showNotification: PropTypes.func
+        showNotification: PropTypes.func,
+        toggle: PropTypes.bool
     };
     state = {
         catalog: [],
@@ -88,7 +89,11 @@ class LayerCatalogWidget extends React.PureComponent {
                     this.checkAddServiceLayer(entry, true);
                 }
             } else {
-                this.checkAddServiceLayer(entry, false);
+                if (this.props.toggle && !isEmpty(entry.sublayers)) {
+                    this.toggleLayerListEntry(path);
+                } else {
+                    this.checkAddServiceLayer(entry, false);
+                }
             }
         } else {
             this.toggleLayerListEntry(path);
