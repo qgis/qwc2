@@ -89,7 +89,7 @@ jobs:
       - name: Publish to NPM
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         run: |
-          npm install -g npm@latest
+          npm install -g npm@11
           npm run dist
           pushd dist
           npm publish
