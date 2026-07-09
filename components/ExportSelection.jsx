@@ -39,10 +39,25 @@ export default class ExportSelection extends React.Component {
         }
         if (this.props.frameRatio !== prevProps.frameRatio) {
             this.setState(state => {
-                const newheight = this.props.frameRatio ? Math.round(state.width * this.props.frameRatio) : state.height;
+                const maxWidth = this.exportContainer.offsetWidth;
+                const maxHeight = this.exportContainer.offsetHeight;
+                let newheight = this.props.frameRatio ? Math.round(state.width * this.props.frameRatio) : state.height;
+                let newwidth = state.width;
+                if (this.props.frameRatio) {
+                    if (newwidth > maxWidth) {
+                        newwidth = maxWidth;
+                        newheight = newwidth * this.props.frameRatio;
+                    }
+                    if (newheight > maxHeight) {
+                        newheight = maxHeight;
+                        newwidth = newheight / this.props.frameRatio;
+                    }
+                }
                 return {
                     frameRatio: this.props.frameRatio,
-                    y: state.y + 0.5 * (state.height - newheight),
+                    x: 0.5 * (maxWidth - newwidth),
+                    y: 0.5 * (maxHeight - newheight),
+                    width: newwidth,
                     height: newheight
                 };
             }, () => {
@@ -58,7 +73,7 @@ export default class ExportSelection extends React.Component {
             height: this.state.height + 'px'
         };
         return (
-            <div className="export-selection-container">
+            <div className="export-selection-container" ref={el => {this.exportContainer = el;}}>
                 <div className="export-selection" onContextMenu={MiscUtils.killEvent} onPointerDown={this.startMoveSelection} style={boxStyle}>
                     <span className="export-selection-label">
                         {this.state.width + " x " + this.state.height}
