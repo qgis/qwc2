@@ -29,7 +29,8 @@ class LayerCatalogWidget extends React.PureComponent {
         pendingRequests: PropTypes.number,
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
-        showNotification: PropTypes.func
+        showNotification: PropTypes.func,
+        toggle: PropTypes.bool
     };
     state = {
         catalog: [],
@@ -63,7 +64,13 @@ class LayerCatalogWidget extends React.PureComponent {
                         <span className="layer-catalog-widget-entry-iconspacer" />
                     )}
                     <span
-                        className="layer-catalog-widget-entry-contents" onClick={() => type ? this.checkAddServiceLayer(entry, !hasSublayers) : this.toggleLayerListEntry(path)}
+                        className="layer-catalog-widget-entry-contents" onClick={() => {
+                            if ((this.props.toggle || !type) && hasSublayers) {
+                                this.toggleLayerListEntry(path);
+                            } else {
+                                this.checkAddServiceLayer(entry, !hasSublayers);
+                            }
+                        }}
                         onKeyDown={MiscUtils.checkKeyActivate}
                         tabIndex={0}
                     >

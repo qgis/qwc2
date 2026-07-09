@@ -384,18 +384,18 @@ class SearchBox extends React.Component {
         const key = provider + ":" + group.id + ":" + result.id;
         const addThemes = ConfigUtils.getConfigProp("allowAddingOtherThemes", this.props.theme);
         let icon = null;
+        const toggleLayerGroup = (ev) => {
+            MiscUtils.killEvent(ev);
+            this.setState((state) => ({expandedLayerGroup: state.expandedLayerGroup === key ? null : key}));
+        };
         if (result.sublayers) {
-            const toggleLayerGroup = (ev) => {
-                MiscUtils.killEvent(ev);
-                this.setState((state) => ({expandedLayerGroup: state.expandedLayerGroup === key ? null : key}));
-            };
             icon = (<Icon icon={this.state.expandedLayerGroup === key ? "minus" : "plus"} onClick={ev => toggleLayerGroup(ev)} />);
         } else if (result.thumbnail) {
             icon = (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />);
         }
         const selectResult = result.theme ? this.selectThemeResult : this.selectLayerResult;
         return [(
-            <div className="searchbox-result" key={key} onClick={() => selectResult(provider, group, result)} style={{borderLeft: `${level}em solid transparent`}}>
+            <div className="searchbox-result" key={key} onClick={ConfigUtils.getPluginConfig("LayerCatalog")?.cfg?.toggle && result.sublayers ? toggleLayerGroup : () => selectResult(provider, group, result)} style={{borderLeft: `${level}em solid transparent`}}>
                 {icon}
                 {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
