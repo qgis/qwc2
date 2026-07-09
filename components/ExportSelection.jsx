@@ -46,11 +46,11 @@ export default class ExportSelection extends React.Component {
                 if (this.props.frameRatio) {
                     if (newwidth > maxWidth) {
                         newwidth = maxWidth;
-                        newheight = newwidth * this.props.frameRatio;
+                        newheight = Math.round(newwidth * this.props.frameRatio);
                     }
                     if (newheight > maxHeight) {
                         newheight = maxHeight;
-                        newwidth = newheight / this.props.frameRatio;
+                        newwidth = Math.round(newheight / this.props.frameRatio);
                     }
                 }
                 return {
