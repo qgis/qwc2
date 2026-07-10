@@ -30,7 +30,7 @@ class LayerCatalogWidget extends React.PureComponent {
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
         showNotification: PropTypes.func,
-        toggle: PropTypes.bool
+        toggleGroupOnClick: PropTypes.bool
     };
     state = {
         catalog: [],
@@ -89,7 +89,7 @@ class LayerCatalogWidget extends React.PureComponent {
                     this.checkAddServiceLayer(entry, true);
                 }
             } else {
-                if (this.props.toggle && !isEmpty(entry.sublayers)) {
+                if (this.props.toggleGroupOnClick && !isEmpty(entry.sublayers)) {
                     this.toggleLayerListEntry(path);
                 } else {
                     this.checkAddServiceLayer(entry, false);

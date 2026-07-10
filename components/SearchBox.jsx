@@ -395,7 +395,7 @@ class SearchBox extends React.Component {
         }
         const selectResult = result.theme ? this.selectThemeResult : this.selectLayerResult;
         return [(
-            <div className="searchbox-result" key={key} onClick={ConfigUtils.getPluginConfig("LayerCatalog")?.cfg?.toggle && result.sublayers ? toggleLayerGroup : () => selectResult(provider, group, result)} style={{borderLeft: `${level}em solid transparent`}}>
+            <div className="searchbox-result" key={key} onClick={ConfigUtils.getPluginConfig("LayerCatalog")?.cfg?.toggleGroupOnClick && result.sublayers ? toggleLayerGroup : () => selectResult(provider, group, result)} style={{borderLeft: `${level}em solid transparent`}}>
                 {icon}
                 {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />

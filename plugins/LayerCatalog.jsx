@@ -96,7 +96,8 @@ class LayerCatalog extends React.Component {
         /** Whether to register a search provider which allows searching catalog layers through the global search field. */
         registerCatalogSearchProvider: PropTypes.bool,
         setCurrentTask: PropTypes.func,
-        toggle: PropTypes.bool
+        /** Whether clicking the group name toggles the WMS group rather than loading the grouped layer. */
+        toggleGroupOnClick: PropTypes.bool
     };
     static defaultProps = {
         geometry: {
@@ -108,7 +109,8 @@ class LayerCatalog extends React.Component {
             side: 'left'
         },
         levelBasedIndentSize: true,
-        registerCatalogSearchProvider: true
+        registerCatalogSearchProvider: true,
+        toggleGroupOnClick: false
     };
     state = {
         catalog: null,
@@ -156,7 +158,7 @@ class LayerCatalog extends React.Component {
                 onClose={this.onClose} title={LocaleUtils.tr("layercatalog.windowtitle")}
             >
                 <div className="layer-catalog">
-                    <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} toggle={this.props.toggle} />
+                    <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} toggleGroupOnClick={this.props.toggleGroupOnClick} />
                 </div>
             </ResizeableWindow>
         );
