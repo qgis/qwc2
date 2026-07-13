@@ -189,11 +189,15 @@ const MiscUtils = {
     getFaviconFromIcon(icon, size) {
         let glyph = null;
         for (const sheet of document.styleSheets) {
-            for (const rule of sheet.cssRules) {
-                if (rule.selectorText === `.icon-${icon}::before`) {
-                    glyph = rule.style.content.replace(/["']/g, '');
-                    break;
+            try {
+                for (const rule of sheet.cssRules) {
+                    if (rule.selectorText === `.icon-${icon}::before`) {
+                        glyph = rule.style.content.replace(/["']/g, '');
+                        break;
+                    }
                 }
+            } catch {
+                continue;
             }
         }
         if (glyph === null) {
