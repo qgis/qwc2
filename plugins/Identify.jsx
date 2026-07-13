@@ -362,7 +362,8 @@ class Identify extends React.Component {
             this.props.availableRegionModes.includes('Region') ? {key: "Region", label: LocaleUtils.tr("common.polygon")} : null,
             this.props.availableRegionModes.includes('Radius') ? {key: "Radius", label: LocaleUtils.tr("common.radius")} : null,
             this.props.availableRegionModes.includes('Circle') ? {key: "Circle", label: LocaleUtils.tr("common.circle")} : null,
-            this.props.availableRegionModes.includes('Rectangle') ? {key: "Rectangle", label: LocaleUtils.tr("common.rectangle")} : null
+            this.props.availableRegionModes.includes('Rectangle') ? {key: "Rectangle", label: LocaleUtils.tr("common.rectangle")} : null,
+            {key: "Clear", icon: "clear"}
         ];
         let tooloptions = null;
         if (this.state.mode === "Point") {
@@ -402,10 +403,17 @@ class Identify extends React.Component {
 
         return (
             <div>
-                <ButtonBar active={this.state.mode} buttons={buttons} onClick={(mode) => this.setState({mode})} />
+                <ButtonBar active={this.state.mode} buttons={buttons} onClick={this.switchMode} />
                 {tooloptions}
             </div>
         );
+    };
+    switchMode = (key) => {
+        if (key === "Clear") {
+            this.clearResults();
+        } else {
+            this.setState({mode: key});
+        }
     };
     render() {
         let resultWindow = null;
