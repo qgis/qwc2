@@ -347,9 +347,7 @@ class Identify extends React.Component {
     };
     clearResults = () => {
         this.props.removeMarker('identify');
-        this.props.removeLayer("identifyslection");
-        this.props.removeLayer("identifyradiusbuffer");
-        this.setState({identifyResults: null, pendingRequests: 0});
+        this.setState({identifyResults: null, pendingRequests: 0, filterGeom: null, filterGeomModifiers: {}});
     };
     updateRadius = (radius, units) => {
         this.setState(state => ({
