@@ -141,6 +141,7 @@
       "pick": "",
       "point": "Точка",
       "polygon": "Полігон",
+      "radius": "",
       "rectangle": "",
       "rename": "",
       "resolution": "Роздільна здатність:",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Введіть URL для WMS, WMTS, WFS..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Обведіть об’єкти полігоном для отримання інформації…",
       "clickhelpRadius": "",
       "radius": ""
     },

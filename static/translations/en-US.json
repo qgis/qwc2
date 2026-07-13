@@ -141,6 +141,7 @@
       "pick": "Pick",
       "point": "Point",
       "polygon": "Polygon",
+      "radius": "Radius",
       "rectangle": "Rectangle",
       "rename": "Rename",
       "resolution": "Resolution",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Enter URL to WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "Click a location to identify in the map...",
-      "clickhelpPolygon": "Draw a polygon around the features to identify...",
+      "clickhelpArea": "Select area to identify in the map...",
+      "clickhelpPoint": "Select a location to identify in the map...",
       "clickhelpRadius": "Set a radius and click a location to identify features around the point...",
       "radius": "Radius"
     },

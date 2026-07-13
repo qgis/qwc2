@@ -141,6 +141,7 @@
       "pick": "",
       "point": "Punkt",
       "polygon": "Polygon",
+      "radius": "",
       "rectangle": "",
       "rename": "",
       "resolution": "Oppløsning:",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Skriv inn URL til WMS, WMTS, WFS..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Tegn et polygon rundt objektene som skal identifieres",
       "clickhelpRadius": "",
       "radius": ""
     },

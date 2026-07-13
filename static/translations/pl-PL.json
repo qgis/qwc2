@@ -141,6 +141,7 @@
       "pick": "",
       "point": "Punkt",
       "polygon": "Poligon",
+      "radius": "",
       "rectangle": "",
       "rename": "",
       "resolution": "Rozdzielczość:",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Podaj URL do WMS, WFS, WMTS..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Narysuj poligon wokół obiektów, aby zidentyfikować...",
       "clickhelpRadius": "",
       "radius": ""
     },

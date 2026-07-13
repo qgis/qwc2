@@ -141,6 +141,7 @@
       "pick": "Auswählen",
       "point": "Punkt",
       "polygon": "Polygon",
+      "radius": "Radius",
       "rectangle": "Rechteck",
       "rename": "Unbenennen",
       "resolution": "Auflösung",
@@ -336,8 +337,8 @@
       "urlplaceholder": "WMS, WMTS oder WFS URL eingeben..."
     },
     "infotool": {
+      "clickhelpArea": "Zu identifizierende Fläche in der Karte auswählen...",
       "clickhelpPoint": "Zu identifizierende Position in der Karte auswählen...",
-      "clickhelpPolygon": "Polygon um die zu identifizierende Objekte zeichnen",
       "clickhelpRadius": "Einen Radius setzten und in die Karte klicken, um Objekte um den Punkt zu identifizieren...",
       "radius": "Radius"
     },

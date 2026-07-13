@@ -141,6 +141,7 @@
       "pick": "選択",
       "point": "点",
       "polygon": "ポリゴン",
+      "radius": "",
       "rectangle": "四角形",
       "rename": "",
       "resolution": "解像度",
@@ -336,8 +337,8 @@
       "urlplaceholder": "WMS, WMTS, WFS の URL を入力..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "確認したい地点をクリック...",
-      "clickhelpPolygon": "確認したい領域をポリゴンで囲む...",
       "clickhelpRadius": "中心をクリックして半径を指定し、円内を確認...",
       "radius": "半径"
     },

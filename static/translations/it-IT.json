@@ -141,6 +141,7 @@
       "pick": "Seleziona",
       "point": "Punto",
       "polygon": "Poligono",
+      "radius": "Raggio",
       "rectangle": "Rettangolo",
       "rename": "Rinomina",
       "resolution": "Risoluzione",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Indirizzo WMS, WMTS, WFS..."
     },
     "infotool": {
+      "clickhelpArea": "Seleziona l'area da identificare sulla mappa...",
       "clickhelpPoint": "Seleziona un luogo da identificare sulla mappa...",
-      "clickhelpPolygon": "Disegna un poligono attorno all'area da identificare",
       "clickhelpRadius": "Imposta un raggio e clicca nella mappa per identificare gli oggetti attorno al punto...",
       "radius": "Raggio"
     },

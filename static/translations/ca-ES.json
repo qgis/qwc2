@@ -141,6 +141,7 @@
       "pick": "Escollir",
       "point": "Punt",
       "polygon": "Polígon",
+      "radius": "",
       "rectangle": "Rectangle",
       "rename": "Reanomena",
       "resolution": "Resolució:",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Adreça URL o WMS, WMTS, WFS..."
     },
     "infotool": {
-      "clickhelpPoint": "Fes click en una ubicació per identificar en el mapa...",
-      "clickhelpPolygon": "Traça un polígon al voltant dels elements per a identificar-los...",
+      "clickhelpArea": "Seleccioneu una àrea per identificar al mapa...",
+      "clickhelpPoint": "Seleccioneu una ubicació per identificar al mapa...",
       "clickhelpRadius": "Defineix un radi i fes click en una ubicació per identificar elements al voltant del punt...",
       "radius": "Radi"
     },

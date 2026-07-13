@@ -141,6 +141,7 @@
       "pick": "Selectează",
       "point": "Punct",
       "polygon": "Poligon",
+      "radius": "",
       "rectangle": "Dreptunghi",
       "rename": "Redenumește",
       "resolution": "Rezoluție",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Introdu adresa URL către WMS, WMTS, WFS..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "Click pe o locație pentru identificarea elementelor din hartă...",
-      "clickhelpPolygon": "Încadrează într-un poligon elementele de identificat...",
       "clickhelpRadius": "Setează raza și apoi fă click pe hartă pentru a identifica elementele din jurul punctului...",
       "radius": "Raza"
     },

@@ -141,6 +141,7 @@
       "pick": "",
       "point": "Pont",
       "polygon": "Poligon",
+      "radius": "",
       "rectangle": "",
       "rename": "",
       "resolution": "Felbontás:",
@@ -336,8 +337,8 @@
       "urlplaceholder": "URL a WMS, WMTS, WFS adatokhoz..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Rajzolj egy poligont a lekérdezni kívánt terület köré...",
       "clickhelpRadius": "",
       "radius": ""
     },

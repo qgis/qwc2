@@ -141,6 +141,7 @@
       "pick": "Escolha",
       "point": "Ponto",
       "polygon": "Polígono",
+      "radius": "",
       "rectangle": "Retângulo",
       "rename": "",
       "resolution": "Resolução:",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Insira o endereço URL do WMS, WMTS, WFS..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "Clique numa localização para identificar no mapa",
-      "clickhelpPolygon": "Desenhe um polígono em torno das feiçoes para identificar",
       "clickhelpRadius": "Desenhe um raio em torno das feiçoes para identificar",
       "radius": "Raio"
     },

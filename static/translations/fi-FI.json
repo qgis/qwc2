@@ -141,6 +141,7 @@
       "pick": "",
       "point": "Piste",
       "polygon": "Alue",
+      "radius": "",
       "rectangle": "",
       "rename": "",
       "resolution": "Resoluutio:",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Anna rajapinnoille URL..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "Tunnista kohde klikkaamalla sijaintia kartalla...",
-      "clickhelpPolygon": "Tunnista kohteet piirtämällä alue niiden ympärille...",
       "clickhelpRadius": "",
       "radius": ""
     },

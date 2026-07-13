@@ -173,7 +173,7 @@ class Identify extends React.Component {
                 if (queryPoint) {
                     this.identifyPoint(queryPoint);
                 }
-            } else if (this.state.mode === 'Region') {
+            } else if (["Region", "Rectangle", "Circle"].includes(this.state.mode)) {
                 if (this.state.filterGeom && this.state.filterGeom !== prevState.filterGeom) {
                     const center = [0, 0];
                     this.state.filterGeom.coordinates[0].forEach(p => {
@@ -358,16 +358,19 @@ class Identify extends React.Component {
     renderBody = () => {
         const buttons = [
             {key: "Point", label: LocaleUtils.tr("common.point")},
-            {key: "Region", label: LocaleUtils.tr("common.polygon")}
+            {key: "Region", label: LocaleUtils.tr("common.polygon")},
+            {key: "Radius", label: LocaleUtils.tr("common.radius")},
+            {key: "Circle", label: LocaleUtils.tr("common.circle")},
+            {key: "Rectangle", label: LocaleUtils.tr("common.rectangle")}
         ];
         let tooloptions = null;
         if (this.state.mode === "Point") {
             tooloptions = (
                 <div className="identify-mode-hint">{LocaleUtils.tr("infotool.clickhelpPoint")}</div>
             );
-        } else if (this.state.mode === "Region") {
+        } else if (["Region", "Rectangle", "Circle"].includes(this.state.mode)) {
             tooloptions = (
-                <div className="identify-mode-hint">{LocaleUtils.tr("infotool.clickhelpPolygon")}</div>
+                <div className="identify-mode-hint">{LocaleUtils.tr("infotool.clickhelpArea")}</div>
             );
         } else if (this.state.mode === "Radius") {
             tooloptions = (
@@ -451,7 +454,9 @@ class Identify extends React.Component {
         }
         const geomTypeMap = {
             Region: "Polygon",
-            Radius: "Polygon"
+            Radius: "Polygon",
+            Circle: "Circle",
+            Rectangle: "Box"
         };
         return [resultWindow, (
             <TaskBar key="IdentifyTaskBar" onHide={this.onToolClose} onShow={this.onShow} task="Identify">
@@ -459,12 +464,12 @@ class Identify extends React.Component {
                     body: this.renderBody()
                 })}
             </TaskBar>
-        ), (["Region", "Radius"].includes(this.state.mode)) ? (
+        ), (["Region", "Rectangle", "Radius", "Circle"].includes(this.state.mode)) ? (
             <MapSelection
                 active={this.state.mode !== "Radius"} geomType={geomTypeMap[this.state.mode]}
                 geometry={this.state.filterGeom}
                 geometryChanged={(geom, mod) => this.setState({filterGeom: geom, filterGeomModifiers: mod})} key="MapSelection"
-                measure={this.state.mode === "Radius"}
+                measure={this.state.mode === "Circle"}
             />
         ) : null];
     }

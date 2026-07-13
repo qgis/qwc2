@@ -141,6 +141,7 @@
       "pick": "",
       "point": "Punkt",
       "polygon": "Yta",
+      "radius": "",
       "rectangle": "",
       "rename": "",
       "resolution": "Upplösning:",
@@ -336,8 +337,8 @@
       "urlplaceholder": "Skriv in URL till WMS, WMTS, WFS..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "",
-      "clickhelpPolygon": "Rita en polygon runt objektn som ska identifieras",
       "clickhelpRadius": "",
       "radius": ""
     },
