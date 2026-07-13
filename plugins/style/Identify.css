@@ -1,3 +1,10 @@
+div.identify-mode-hint {
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 div.identify-radius-controls {
     margin-top: 0.25em;
     justify-content: center;

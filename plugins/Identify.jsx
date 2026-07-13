@@ -20,6 +20,7 @@ import IdentifyViewer from '../components/IdentifyViewer';
 import MapSelection from '../components/MapSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
+import ButtonBar from '../components/widgets/ButtonBar';
 import NumberInput from '../components/widgets/NumberInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -141,7 +142,7 @@ class Identify extends React.Component {
         mode: 'Point',
         identifyResults: null,
         pendingRequests: 0,
-        radius: 0,
+        radius: 10,
         radiusUnits: this.props.initialRadiusUnits,
         exitTaskOnResultsClose: null,
         filterGeom: null,
@@ -168,18 +169,31 @@ class Identify extends React.Component {
                 const res = this.props.currentSearchResult;
                 this.identifyPoint(CoordinatesUtils.reproject([res.x, res.y], res.crs, this.props.map.projection));
             } else if (this.state.mode === "Point") {
-                const clickPoint = this.queryPoint(prevProps);
-                this.identifyPoint(clickPoint);
-            } else if (this.state.mode === "Region") {
+                const queryPoint = this.queryPoint(prevProps);
+                if (queryPoint) {
+                    this.identifyPoint(queryPoint);
+                }
+            } else if (this.state.mode === 'Region') {
                 if (this.state.filterGeom && this.state.filterGeom !== prevState.filterGeom) {
-                    this.identifyRegion();
+                    const center = [0, 0];
+                    this.state.filterGeom.coordinates[0].forEach(p => {
+                        center[0] += p[0];
+                        center[1] += p[1];
+                    });
+                    center[0] /= this.state.filterGeom.coordinates[0].length;
+                    center[1] /= this.state.filterGeom.coordinates[0].length;
+                    this.identifyRegion(this.state.filterGeom, center);
                 }
             } else if (this.state.mode === "Radius") {
-                if (this.state.filterGeom && this.state.filterGeom !== prevState.filterGeom) {
-                    this.setState((state) => ({
-                        radius: MeasureUtils.convertLength(state.filterGeom.radius, 'm', state.radiusUnits)
-                    }));
-                    this.identifyRadius();
+                const center = this.queryPoint(prevProps);
+                if (center) {
+                    const radius = MeasureUtils.convertLength(this.state.radius, this.state.radiusUnits, CoordinatesUtils.getUnits(this.props.map.projection));
+                    const deg2rad = Math.PI / 180;
+                    const filterGeom = {type: "Polygon", coordinates: [
+                        Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))
+                    ]};
+                    this.setState({filterGeom});
+                    this.identifyRegion(filterGeom, center);
                 }
             }
         }
@@ -191,53 +205,6 @@ class Identify extends React.Component {
             this.clearResults();
         }
     }
-    identifyPoint = (clickPoint) => {
-        if (clickPoint) {
-            this.setState((state) => {
-                // Remove any search selection layer to avoid confusion
-                this.props.removeLayer("searchselection");
-                let pendingRequests = 0;
-                const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : state.identifyResults;
-
-                let queryableLayers = [];
-                queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
-                queryableLayers.forEach(l => {
-                    const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
-                    ++pendingRequests;
-                    IdentifyUtils.sendRequest(request, (response) => {
-                        this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
-                        if (response) {
-                            this.parseResult(response, l, request.params.info_format, clickPoint, this.props.click.modifiers.ctrl);
-                        }
-                    });
-                });
-
-                if (!isEmpty(this.props.click.features)) {
-                    this.props.click.features.forEach((feature) => {
-                        const layer = this.props.layers.find(l => l.id === feature.layerId);
-                        if (layer?.role === LayerRole.USERLAYER) {
-                            const queryFeature = {...(layer.features?.find?.(f => f.id === feature.id) ?? feature)};
-                            if (!queryFeature?.properties) {
-                                return;
-                            }
-                            if (!identifyResults[layer.name]) {
-                                identifyResults[layer.name] = [];
-                            }
-                            queryFeature.crs = layer.projection ?? this.props.map.projection;
-                            queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
-                            queryFeature.layertitle = layer.title || layer.name || layer.id;
-                            queryFeature.properties = Object.entries(queryFeature.properties).reduce((res, [key, val]) => ({
-                                ...res, [key]: typeof val === "object" ? JSON.stringify(val) : val
-                            }), {});
-                            identifyResults[layer.name].push(queryFeature);
-                        }
-                    });
-                }
-                this.props.addMarker('identify', clickPoint, '', this.props.map.projection);
-                return {identifyResults: identifyResults, pendingRequests: pendingRequests};
-            });
-        }
-    };
     queryPoint = (prevProps) => {
         if (this.props.click.button !== 0 || this.props.click === prevProps.click || (this.props.click.features || []).find(feature => feature.id === 'startupposmarker')) {
             return null;
@@ -248,20 +215,59 @@ class Identify extends React.Component {
         }
         return this.props.click.coordinate;
     };
-    identifyRegion = () => {
+    identifyPoint = (clickPoint) => {
+        this.props.addMarker('identify', clickPoint, '', this.props.map.projection);
+        this.setState((state) => {
+            // Remove any search selection layer to avoid confusion
+            this.props.removeLayer("searchselection");
+            let pendingRequests = 0;
+            const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : state.identifyResults;
+
+            let queryableLayers = [];
+            queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
+            queryableLayers.forEach(l => {
+                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
+                ++pendingRequests;
+                IdentifyUtils.sendRequest(request, (response) => {
+                    this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
+                    if (response) {
+                        this.parseResult(response, l, request.params.info_format, clickPoint, this.props.click.modifiers.ctrl);
+                    }
+                });
+            });
+
+            if (!isEmpty(this.props.click.features)) {
+                this.props.click.features.forEach((feature) => {
+                    const layer = this.props.layers.find(l => l.id === feature.layerId);
+                    if (layer?.role === LayerRole.USERLAYER) {
+                        const queryFeature = {...(layer.features?.find?.(f => f.id === feature.id) ?? feature)};
+                        if (!queryFeature?.properties) {
+                            return;
+                        }
+                        if (!identifyResults[layer.name]) {
+                            identifyResults[layer.name] = [];
+                        }
+                        queryFeature.crs = layer.projection ?? this.props.map.projection;
+                        queryFeature.displayname = queryFeature.properties.name || queryFeature.properties.Name || queryFeature.properties.NAME || queryFeature.properties.label || queryFeature.properties.id || queryFeature.id;
+                        queryFeature.layertitle = layer.title || layer.name || layer.id;
+                        queryFeature.properties = Object.entries(queryFeature.properties).reduce((res, [key, val]) => ({
+                            ...res, [key]: typeof val === "object" ? JSON.stringify(val) : val
+                        }), {});
+                        identifyResults[layer.name].push(queryFeature);
+                    }
+                });
+            }
+            return {identifyResults: identifyResults, pendingRequests: pendingRequests};
+        });
+    };
+    identifyRegion = (filterGeom, center) => {
+        this.props.removeMarker('identify');
         const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
-        const poly = this.state.filterGeom.coordinates[0];
-        if (poly.length < 3 || isEmpty(queryableLayers)) {
+        const poly = filterGeom.coordinates[0];
+        if (poly.length < 3) {
             return;
         }
         const identifyResults = this.state.filterGeomModifiers.ctrl !== true ? {} : this.state.identifyResults;
-        const center = [0, 0];
-        poly.forEach(point => {
-            center[0] += point[0];
-            center[1] += point[1];
-        });
-        center[0] /= poly.length;
-        center[1] /= poly.length;
 
         let pendingRequests = 0;
         const params = {...this.props.params};
@@ -269,8 +275,8 @@ class Identify extends React.Component {
             params.feature_count = this.props.params.region_feature_count;
             delete params.region_feature_count;
         }
+        const requestFilterGeom = this.getRequestFilterGeomWkt(filterGeom);
         queryableLayers.forEach(layer => {
-            const requestFilterGeom = this.getRequestFilterGeomWkt(this.state.filterGeom);
             const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
             ++pendingRequests;
             IdentifyUtils.sendRequest(request, (response) => {
@@ -281,33 +287,6 @@ class Identify extends React.Component {
             });
             this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
         });
-    };
-    identifyRadius = () => {
-        const clickPoint = this.state.filterGeom.center;
-        const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
-        if (isEmpty(queryableLayers)) {
-            return;
-        }
-        const identifyResults = this.state.filterGeomModifiers.ctrl !== true ? {} : this.state.identifyResults;
-        const filter = VectorLayerUtils.geoJSONGeomToWkt(this.state.filterGeom);
-        let pendingRequests = 0;
-        const params = {...this.props.params};
-        if (this.props.params.radius_feature_count) {
-            params.feature_count = this.props.params.radius_feature_count;
-            delete params.radius_feature_count;
-        }
-        queryableLayers.forEach((layer) => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), filter, this.props.map, params);
-            ++pendingRequests;
-            IdentifyUtils.sendRequest(request, (response) => {
-                this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
-                if (response) {
-                    this.parseResult(response, layer, request.params.info_format, clickPoint);
-                }
-            });
-            this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
-        });
-        this.props.addMarker("identify", clickPoint, "", this.props.map.projection);
     };
     getRequestFilterGeomWkt = (identifyGeom) => {
         const sourceFilterGeom = this.props.layerFilterGeom;
@@ -377,21 +356,29 @@ class Identify extends React.Component {
         ));
     };
     renderBody = () => {
+        const buttons = [
+            {key: "Point", label: LocaleUtils.tr("common.point")},
+            {key: "Region", label: LocaleUtils.tr("common.polygon")}
+        ];
+        let tooloptions = null;
         if (this.state.mode === "Point") {
-            return LocaleUtils.tr("infotool.clickhelpPoint");
+            tooloptions = (
+                <div className="identify-mode-hint">{LocaleUtils.tr("infotool.clickhelpPoint")}</div>
+            );
         } else if (this.state.mode === "Region") {
-            return LocaleUtils.tr("infotool.clickhelpPolygon");
+            tooloptions = (
+                <div className="identify-mode-hint">{LocaleUtils.tr("infotool.clickhelpPolygon")}</div>
+            );
         } else if (this.state.mode === "Radius") {
-            const text = LocaleUtils.tr("infotool.clickhelpRadius");
-            return (
+            tooloptions = (
                 <div>
-                    <div>
-                        {text}
+                    <div className="identify-mode-hint">
+                        {LocaleUtils.tr("infotool.clickhelpRadius")}
                     </div>
                     <div className="identify-radius-controls controlgroup">
                         <span>{LocaleUtils.tr("infotool.radius")}:&nbsp;</span>
                         <NumberInput
-                            disabled={!this.state.filterGeom} max={1000000} min={1} mobile
+                            max={1000000} min={1} mobile
                             onChange={rad => this.updateRadius(rad, this.state.radiusUnits)}
                             value={this.state.radius}
                         />
@@ -408,7 +395,13 @@ class Identify extends React.Component {
                 </div>
             );
         }
-        return null;
+
+        return (
+            <div>
+                <ButtonBar active={this.state.mode} buttons={buttons} onClick={(mode) => this.setState({mode})} />
+                {tooloptions}
+            </div>
+        );
     };
     render() {
         let resultWindow = null;
@@ -456,15 +449,19 @@ class Identify extends React.Component {
                 </ResizeableWindow>
             );
         }
+        const geomTypeMap = {
+            Region: "Polygon",
+            Radius: "Polygon"
+        };
         return [resultWindow, (
             <TaskBar key="IdentifyTaskBar" onHide={this.onToolClose} onShow={this.onShow} task="Identify">
                 {() => ({
                     body: this.renderBody()
                 })}
             </TaskBar>
-        ), (this.state.mode === "Region" || this.state.mode === "Radius") ? (
+        ), (["Region", "Radius"].includes(this.state.mode)) ? (
             <MapSelection
-                active geomType={this.state.mode === "Radius" ? "Circle" : "Polygon"}
+                active={this.state.mode !== "Radius"} geomType={geomTypeMap[this.state.mode]}
                 geometry={this.state.filterGeom}
                 geometryChanged={(geom, mod) => this.setState({filterGeom: geom, filterGeomModifiers: mod})} key="MapSelection"
                 measure={this.state.mode === "Radius"}
