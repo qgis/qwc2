@@ -39,24 +39,36 @@ export default class ExportSelection extends React.Component {
         }
         if (this.props.frameRatio !== prevProps.frameRatio) {
             this.setState(state => {
-                const maxWidth = this.exportContainer.offsetWidth;
-                const maxHeight = this.exportContainer.offsetHeight;
-                let newheight = this.props.frameRatio ? Math.round(state.width * this.props.frameRatio) : state.height;
-                let newwidth = state.width;
+                const containerWidth = this.exportContainer.offsetWidth;
+                const containerHeight = this.exportContainer.offsetHeight;
+                const maxWidth = 0.75 * containerWidth;
+                const maxHeight = 0.75 * containerHeight;
+                let newwidth;
+                let newheight;
                 if (this.props.frameRatio) {
-                    if (newwidth > maxWidth) {
+                    if (this.props.frameRatio >= 1) {
                         newwidth = maxWidth;
                         newheight = Math.round(newwidth * this.props.frameRatio);
-                    }
-                    if (newheight > maxHeight) {
+                        if (newheight > maxHeight) {
+                            newheight = maxHeight;
+                            newwidth = Math.round(newheight / this.props.frameRatio);
+                        }
+                    } else {
                         newheight = maxHeight;
                         newwidth = Math.round(newheight / this.props.frameRatio);
+                        if (newwidth > maxWidth) {
+                            newwidth = maxWidth;
+                            newheight = Math.round(newwidth * this.props.frameRatio);
+                        }
                     }
+                } else {
+                    newwidth = state.width;
+                    newheight = state.height;
                 }
                 return {
                     frameRatio: this.props.frameRatio,
-                    x: 0.5 * (maxWidth - newwidth),
-                    y: 0.5 * (maxHeight - newheight),
+                    x: 0.5 * (containerWidth - newwidth),
+                    y: 0.5 * (containerHeight - newheight),
                     width: newwidth,
                     height: newheight
                 };

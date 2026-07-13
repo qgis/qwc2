@@ -1428,6 +1428,10 @@ Displays layer attributions in the bottom right corner of the 3D map.
 
 Export the 3D map image to raster formats.
 
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| formats | `[string]` | Export layout format mimetypes. Only the default values are supported. | `['image/jpeg', 'image/png', 'image/tiff', 'application/pdf']` |
+
 ## MapLight3D<a name="maplight3d"></a>
 
 Control the map illumination.
