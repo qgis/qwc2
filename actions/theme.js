@@ -181,7 +181,7 @@ export function setCurrentTheme(theme, themes, preserve = true, initialExtent = 
             printResolutions: theme.printResolutions ?? themes.defaultPrintResolutions,
             printGrid: theme.printGrid ?? themes.defaultPrintGrid,
             searchProviders: theme.searchProviders ?? themes.defaultSearchProviders,
-            backgroundLayers: theme.backgroundLayers ?? themes.defaultBackgroundLayers ?? [],
+            backgroundLayers: theme.backgroundLayers?.length ? theme.backgroundLayers : (themes.defaultBackgroundLayers ?? []),
             mapTips: theme.mapTips ?? themes.defaultMapTips,
             defaultDisplayCrs: theme.defaultDisplayCrs || themes.defaultDisplayCrs
         };
