@@ -308,14 +308,13 @@ class MapExport3D extends React.Component {
         }
 
         this.setState({exporting: true});
-        const {canvas, context} = this.takeScreenshot(exportScale, this.state.frame);
+        const {canvas, imageData} = this.takeScreenshot(exportScale, this.state.frame);
 
         if (this.state.selectedFormat === "application/pdf") {
             canvas.toBlob((blob) => {
                 blob.arrayBuffer().then(imgBuffer => this.exportToPdf(form, imgBuffer));
             }, "image/png");
         } else if (this.state.selectedFormat === "image/tiff") {
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             const blob = new Blob([utif.encodeImage(imageData.data, canvas.width, canvas.height)], { type: "image/tiff" });
             FileSaver.saveAs(blob, "export." + this.state.selectedFormat.replace(/.*\//, ''));
             this.setState({exporting: false});
