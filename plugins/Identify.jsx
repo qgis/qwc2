@@ -50,6 +50,8 @@ class Identify extends React.Component {
         attributeCalculator: PropTypes.func,
         /** Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         attributeTransform: PropTypes.func,
+        /** Available region identify modes. */
+        availableRegionModes: PropTypes.arrayOf(PropTypes.string),
         /** Whether to clear the identify results when exiting the identify tool. */
         clearResultsOnClose: PropTypes.bool,
         click: PropTypes.object,
@@ -114,6 +116,7 @@ class Identify extends React.Component {
         theme: PropTypes.object
     };
     static defaultProps = {
+        availableRegionModes: ['Region', 'Radius', 'Circle', 'Rectangle'],
         enableAggregatedReports: true,
         enableCompare: true,
         enableExport: true,
@@ -358,10 +361,10 @@ class Identify extends React.Component {
     renderBody = () => {
         const buttons = [
             {key: "Point", label: LocaleUtils.tr("common.point")},
-            {key: "Region", label: LocaleUtils.tr("common.polygon")},
-            {key: "Radius", label: LocaleUtils.tr("common.radius")},
-            {key: "Circle", label: LocaleUtils.tr("common.circle")},
-            {key: "Rectangle", label: LocaleUtils.tr("common.rectangle")}
+            this.props.availableRegionModes.includes('Region') ? {key: "Region", label: LocaleUtils.tr("common.polygon")} : null,
+            this.props.availableRegionModes.includes('Radius') ? {key: "Radius", label: LocaleUtils.tr("common.radius")} : null,
+            this.props.availableRegionModes.includes('Circle') ? {key: "Circle", label: LocaleUtils.tr("common.circle")} : null,
+            this.props.availableRegionModes.includes('Rectangle') ? {key: "Rectangle", label: LocaleUtils.tr("common.rectangle")} : null
         ];
         let tooloptions = null;
         if (this.state.mode === "Point") {
