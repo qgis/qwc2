@@ -105,11 +105,16 @@ class ZoomButton extends React.Component {
         }
     };
     updateZoom = (geom) => {
-        const zoomBox = geom.coordinates[0];
+        const bbox = [
+            geom.coordinates[0][0][0],
+            geom.coordinates[0][0][1],
+            geom.coordinates[0][2][0],
+            geom.coordinates[0][2][1]
+        ];
         if (this.props.direction > 0) {
-            this.props.zoomToExtent(zoomBox, this.props.mapCrs);
+            this.props.zoomToExtent(bbox, this.props.mapCrs);
         } else {
-            const center = [0.5 * (zoomBox[0] + zoomBox[2]), 0.5 * (zoomBox[1] + zoomBox[3])];
+            const center = [0.5 * (bbox[0] + bbox[2]), 0.5 * (bbox[1] + bbox[3])];
             const zoom = Math.max(0, this.props.currentZoom + this.props.direction);
             this.props.zoomToPoint(center, zoom, this.props.mapCrs);
         }
