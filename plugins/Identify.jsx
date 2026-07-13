@@ -195,7 +195,7 @@ class Identify extends React.Component {
                     const filterGeom = {type: "Polygon", coordinates: [
                         Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))
                     ]};
-                    this.setState({filterGeom});
+                    this.setState({filterGeom, filterGeomModifiers: {ctrl: this.props.click.modifiers.ctrl}});
                     this.identifyRegion(filterGeom, center);
                 }
             }
