@@ -46,6 +46,8 @@ class Identify extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         addMarker: PropTypes.func,
+        /** Whether to append results by default (without having to press `CTRL` when clicking). */
+        appendResultsByDefault: PropTypes.bool,
         /** Optional function for computing derived attributes. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         attributeCalculator: PropTypes.func,
         /** Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
@@ -224,7 +226,7 @@ class Identify extends React.Component {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
             let pendingRequests = 0;
-            const identifyResults = this.props.click.modifiers.ctrl !== true ? {} : state.identifyResults;
+            const identifyResults = this.props.click.modifiers.ctrl !== true && !this.props.appendResultsByDefault ? {} : state.identifyResults;
 
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
@@ -270,7 +272,7 @@ class Identify extends React.Component {
         if (poly.length < 3) {
             return;
         }
-        const identifyResults = this.state.filterGeomModifiers.ctrl !== true ? {} : this.state.identifyResults;
+        const identifyResults = this.state.filterGeomModifiers.ctrl !== true && !this.props.appendResultsByDefault ? {} : this.state.identifyResults;
 
         let pendingRequests = 0;
         const params = {...this.props.params};

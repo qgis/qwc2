@@ -589,6 +589,7 @@ for customized queries and templates for the result presentation.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| appendResultsByDefault | `bool` | Whether to append results by default (without having to press `CTRL` when clicking). | `undefined` |
 | attributeCalculator | `func` | Optional function for computing derived attributes. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
 | attributeTransform | `func` | Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
 | availableRegionModes | `[string]` | Available region identify modes. | `['Region', 'Radius', 'Circle', 'Rectangle']` |
