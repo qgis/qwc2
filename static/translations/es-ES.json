@@ -127,6 +127,7 @@
       "close": "Cerrar",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "Error al cargar los datos",
       "date": "",
       "delete": "Eliminar",
       "download": "Descargar",
@@ -534,7 +535,6 @@
       "querying": "Consultando..."
     },
     "plotinfotool": {
-      "failed": "Error al cargar los datos",
       "loading": "Cargando datos..."
     },
     "portal": {

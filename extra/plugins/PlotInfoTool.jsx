@@ -294,7 +294,7 @@ class PlotInfoTool extends React.Component {
     renderError = () => {
         return (
             <div className="plot-info-dialog-query-failed">
-                {this.state.expandedInfoData.failed === true ? LocaleUtils.tr("plotinfotool.failed") : LocaleUtils.tr(this.state.expandedInfoData.failed)}
+                {this.state.expandedInfoData.failed === true ? LocaleUtils.tr("common.dataloadfailed") : LocaleUtils.tr(this.state.expandedInfoData.failed)}
             </div>
         );
     };

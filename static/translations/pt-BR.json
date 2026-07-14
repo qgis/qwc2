@@ -127,6 +127,7 @@
       "close": "Fechar diálogo",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "",
       "date": "",
       "delete": "Eliminar",
       "download": "Descarregar",
@@ -534,7 +535,6 @@
       "querying": ""
     },
     "plotinfotool": {
-      "failed": "",
       "loading": ""
     },
     "portal": {

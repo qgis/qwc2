@@ -127,6 +127,7 @@
       "close": "Kapat",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "",
       "date": "",
       "delete": "Sil",
       "download": "İndir",
@@ -534,7 +535,6 @@
       "querying": "Sorgulanıyor..."
     },
     "plotinfotool": {
-      "failed": "",
       "loading": ""
     },
     "portal": {

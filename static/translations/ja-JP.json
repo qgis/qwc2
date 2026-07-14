@@ -127,6 +127,7 @@
       "close": "閉じる",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "",
       "date": "",
       "delete": "削除",
       "download": "ダウンロード",
@@ -534,7 +535,6 @@
       "querying": "検索中..."
     },
     "plotinfotool": {
-      "failed": "",
       "loading": ""
     },
     "portal": {

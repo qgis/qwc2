@@ -127,6 +127,7 @@
       "close": "Tancar",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "Error en carregar les dades",
       "date": "",
       "delete": "Eliminar",
       "download": "Descarregar",
@@ -534,7 +535,6 @@
       "querying": "Consultant..."
     },
     "plotinfotool": {
-      "failed": "Error en carregar les dades",
       "loading": "Carregant dades..."
     },
     "portal": {

@@ -127,6 +127,7 @@
       "close": "Sluiten",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "",
       "date": "",
       "delete": "",
       "download": "",
@@ -534,7 +535,6 @@
       "querying": "Bezig met opvragen..."
     },
     "plotinfotool": {
-      "failed": "",
       "loading": ""
     },
     "portal": {

@@ -127,6 +127,7 @@
       "close": "Închide",
       "compute": "Calculează",
       "custom": "Personalizat",
+      "dataloadfailed": "Încărcarea datelor a eșuat",
       "date": "Data",
       "delete": "Șterge",
       "download": "Descarcă",
@@ -534,7 +535,6 @@
       "querying": "Se interoghează..."
     },
     "plotinfotool": {
-      "failed": "Încărcarea datelor a eșuat",
       "loading": "Se încarcă datele..."
     },
     "portal": {

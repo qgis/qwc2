@@ -127,6 +127,7 @@
       "close": "Close",
       "compute": "Compute",
       "custom": "Custom",
+      "dataloadfailed": "Failed to load data",
       "date": "Date",
       "delete": "Delete",
       "download": "Download",
@@ -534,7 +535,6 @@
       "querying": "Querying..."
     },
     "plotinfotool": {
-      "failed": "Failed to load data",
       "loading": "Loading data..."
     },
     "portal": {

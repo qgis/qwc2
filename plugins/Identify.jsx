@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 
 import {featureCollection} from '@turf/helpers';
 import intersect from '@turf/intersect';
+import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
@@ -21,6 +22,7 @@ import MapSelection from '../components/MapSelection';
 import ResizeableWindow from '../components/ResizeableWindow';
 import TaskBar from '../components/TaskBar';
 import ButtonBar from '../components/widgets/ButtonBar';
+import MenuButton from '../components/widgets/MenuButton';
 import NumberInput from '../components/widgets/NumberInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -153,6 +155,13 @@ class Identify extends React.Component {
         filterGeom: null,
         filterGeomModifiers: {}
     };
+    constructor(props) {
+        super(props);
+        this.fileinput = document.createElement("input");
+        this.fileinput.type = "file";
+        this.fileinput.accept = "application/json";
+        this.fileinput.addEventListener("change", this.fileSelected);
+    }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && this.props.theme && !prevProps.theme) {
             const startupParams = this.props.startupParams;
@@ -405,7 +414,13 @@ class Identify extends React.Component {
 
         return (
             <div>
-                <ButtonBar active={this.state.mode} buttons={buttons} onClick={this.switchMode} />
+                <div className="identify-toolbar">
+                    <ButtonBar active={this.state.mode} buttons={buttons} onClick={this.switchMode} />
+                    <MenuButton menuIcon="export" tooltip={LocaleUtils.tr("common.export")}>
+                        <div onClick={this.import} value="geojson">Import from JSON</div>
+                        <div onClick={this.export} value="export">Export to JSON</div>
+                    </MenuButton>
+                </div>
                 {tooloptions}
             </div>
         );
@@ -416,6 +431,26 @@ class Identify extends React.Component {
         } else {
             this.setState({mode: key});
         }
+    };
+    export = () => {
+        const data = JSON.stringify(this.state.identifyResults, null, ' ');
+        FileSaver.saveAs(new Blob([data], {type: 'application/json'}), 'results.json');
+    };
+    import = () => {
+        this.fileinput.click();
+    };
+    fileSelected = (ev) => {
+        const reader = new FileReader();
+        reader.readAsText(ev.target.files[0]);
+        reader.onload = () => {
+            try {
+                const identifyResults = JSON.parse(reader.result);
+                this.setState({identifyResults: identifyResults, pendingRequests: 0});
+            } catch {
+                /* eslint-disable-next-line no-alert */
+                alert(LocaleUtils.tr("common.dataloadfailed"));
+            }
+        };
     };
     render() {
         let resultWindow = null;

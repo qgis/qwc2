@@ -127,6 +127,7 @@
       "close": "Schließen",
       "compute": "Berechnen",
       "custom": "Benutzerdefiniert",
+      "dataloadfailed": "Daten konnten nicht geladen werden",
       "date": "Datum",
       "delete": "Löschen",
       "download": "Herunterladen",
@@ -534,7 +535,6 @@
       "querying": "Abfragen..."
     },
     "plotinfotool": {
-      "failed": "Datenabfrage gescheitert",
       "loading": "Daten werden geladen..."
     },
     "portal": {

@@ -127,6 +127,7 @@
       "close": "Затвори",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "",
       "date": "",
       "delete": "Изтриване на",
       "download": "Изтегляне",
@@ -534,7 +535,6 @@
       "querying": "Запитване..."
     },
     "plotinfotool": {
-      "failed": "",
       "loading": ""
     },
     "portal": {

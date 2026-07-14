@@ -127,6 +127,7 @@
       "close": "Fermer",
       "compute": "Calculer",
       "custom": "Personnalisé",
+      "dataloadfailed": "Échec du chargement des données",
       "date": "Date",
       "delete": "Effacer",
       "download": "Télécharger",
@@ -534,7 +535,6 @@
       "querying": "Interrogation"
     },
     "plotinfotool": {
-      "failed": "Échec du chargement des données",
       "loading": "Chargement des données..."
     },
     "portal": {

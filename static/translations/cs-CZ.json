@@ -127,6 +127,7 @@
       "close": "Zavřít",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "",
       "date": "",
       "delete": "",
       "download": "",
@@ -534,7 +535,6 @@
       "querying": ""
     },
     "plotinfotool": {
-      "failed": "",
       "loading": ""
     },
     "portal": {
