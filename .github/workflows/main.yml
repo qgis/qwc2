@@ -20,7 +20,7 @@ jobs:
 
       - name: Install all required dependencies
         run: |
-          yarn install
+          npm install
           sudo apt-get update
           sudo apt-get -y install jq
 
@@ -40,7 +40,7 @@ jobs:
           fi
 
       - name: Compile a deployable application bundle
-        run: yarn run prod
+        run: npm run prod
 
       - name: Create zip
         run: zip -r qwc2-stock-app.zip prod/
