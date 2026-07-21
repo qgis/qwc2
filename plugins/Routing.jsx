@@ -935,7 +935,7 @@ class Routing extends React.Component {
             title: LocaleUtils.tr("routing.reachability"),
             type: 'vector'
         };
-        this.props.addLayerFeatures(layer, [this.collectIsochroneFeatures()]);
+        this.props.addLayerFeatures(layer, this.collectIsochroneFeatures());
         this.props.setCurrentTask("LayerTree");
     };
     onSortChange = (order, sortable, ev) => {
