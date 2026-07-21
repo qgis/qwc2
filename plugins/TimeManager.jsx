@@ -280,7 +280,7 @@ class TimeManager extends React.Component {
                 timeData: timeData,
                 currentTimestamp: state.currentTimestamp ?? (timeData.values.length > 0 ? +timeData.values[0] : null),
                 startTime: startdate,
-                endTime: enddate && enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
+                endTime: enddate && enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : dayjs()
             }));
             this.updateTimeFeatures(timeData);
         } else {
@@ -303,7 +303,7 @@ class TimeManager extends React.Component {
                 }
                 return {
                     startTime: startdate,
-                    endTime: enddate && enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : null
+                    endTime: enddate && enddate.year() !== DUMMY_END_DATE.getFullYear() ? enddate : dayjs()
                 };
             });
         }
@@ -424,7 +424,7 @@ class TimeManager extends React.Component {
             </div>
         );
 
-        const timeSpan = this.state.endTime !== null ? this.state.endTime.diff(this.state.startTime) : dayjs().diff(this.state.startTime);
+        const timeSpan = this.state.endTime.diff(this.state.startTime);
         const Timeline = this.state.timelineMode === 'infinite' ? InfiniteTimeline : FixedTimeline;
         const filterActive = !isEmpty(this.props.filter.filterParams) || !!this.props.filter.filterGeom;
 

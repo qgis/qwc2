@@ -22,15 +22,14 @@ export default class OrbitControls3D extends MapControls {
         this.enableDamping = true;
         this.dampingFactor = 0.2;
         this.keyPanSpeed = 10.0;
-        this.maxPolarAngle = Math.PI * 0.5;
+        this.maxPolarAngle = 89 / 180 * Math.PI;
         this.mouseButtons = mouseButtons;
         this.zoomSpeed = 5;
     }
     connect(sceneContext) {
-        this.domElement = sceneContext.scene.domElement;
         this.sceneContext = sceneContext;
         this.enabled = true;
-        super.connect();
+        super.connect(sceneContext.scene.domElement);
         this.listenToKeyEvents(this.domElement);
         this.domElement.addEventListener('pointerdown', this.stopAnimations);
         this.domElement.addEventListener('wheel', this.stopAnimations);

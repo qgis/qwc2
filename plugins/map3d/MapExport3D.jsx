@@ -34,10 +34,14 @@ import '../style/MapExport.css';
  */
 class MapExport3D extends React.Component {
     static propTypes = {
+        bottombarHeight: PropTypes.number,
+        /** Export layout format mimetypes. Only the default values are supported. */
+        formats: PropTypes.arrayOf(PropTypes.string),
         hideAutopopulatedFields: PropTypes.bool,
         sceneContext: PropTypes.object,
         setCurrentTask: PropTypes.func,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        topbarHeight: PropTypes.number
     };
     static defaultState = {
         minimized: false,
@@ -50,23 +54,34 @@ class MapExport3D extends React.Component {
         exportScaleFactor: 100,
         exportDpi: 300
     };
+    static defaultProps = {
+        formats: ['image/jpeg', 'image/png', 'image/tiff', 'application/pdf']
+    };
+    static formatMap = {
+        "image/jpeg": "JPEG",
+        "image/png": "PNG",
+        "image/tiff": "TIFF",
+        "application/pdf": "PDF"
+    };
     state = MapExport3D.defaultState;
     onShow = () => {
         const rect = this.props.sceneContext.scene.domElement.getBoundingClientRect();
+        const rectHeight = rect.height - this.props.topbarHeight - this.props.bottombarHeight;
         const frame = {
             x: 0.125 * rect.width,
-            y: 0.125 * rect.height,
+            y: 0.125 * rectHeight,
             width: 0.75 * rect.width,
-            height: 0.75 * rect.height
+            height: 0.75 * rectHeight
         };
+        const selectedFormat = this.props.formats[0] || 'image/jpeg';
         if (!isEmpty(this.props.theme?.print)) {
             const layouts = this.props.theme.print.filter(l => l.map).sort((a, b) => {
                 return a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
             });
             const exportDpi = this.props.theme.printResolutions?.find(x => x === 300) ?? this.props.theme.printResolutions?.[0] ?? 300;
-            this.setState({layouts: layouts, exportDpi: exportDpi, frame: frame});
+            this.setState({layouts: layouts, exportDpi: exportDpi, frame: frame, selectedFormat: selectedFormat});
         } else {
-            this.setState({layouts: [], frame: frame});
+            this.setState({layouts: [], frame: frame, selectedFormat: selectedFormat});
         }
     };
     onHide = () => {
@@ -91,12 +106,12 @@ class MapExport3D extends React.Component {
         }));
     };
     renderBody = () => {
-        const formatMap = {
-            "image/jpeg": "JPEG",
-            "image/png": "PNG",
-            "image/tiff": "TIFF",
-            "application/pdf": "PDF"
-        };
+        const formatMap = this.props.formats.reduce((acc, format) => {
+            if (MapExport3D.formatMap[format]) {
+                acc[format] = MapExport3D.formatMap[format];
+            }
+            return acc;
+        }, {});
         const exportDisabled = this.state.exporting || this.state.width === 0 || (
             this.state.selectedFormat === "application/pdf" && !this.state.layout
         );
@@ -293,14 +308,13 @@ class MapExport3D extends React.Component {
         }
 
         this.setState({exporting: true});
-        const {canvas, context} = this.takeScreenshot(exportScale, this.state.frame);
+        const {canvas, imageData} = this.takeScreenshot(exportScale, this.state.frame);
 
         if (this.state.selectedFormat === "application/pdf") {
             canvas.toBlob((blob) => {
                 blob.arrayBuffer().then(imgBuffer => this.exportToPdf(form, imgBuffer));
             }, "image/png");
         } else if (this.state.selectedFormat === "image/tiff") {
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             const blob = new Blob([utif.encodeImage(imageData.data, canvas.width, canvas.height)], { type: "image/tiff" });
             FileSaver.saveAs(blob, "export." + this.state.selectedFormat.replace(/.*\//, ''));
             this.setState({exporting: false});
@@ -401,6 +415,8 @@ class MapExport3D extends React.Component {
 }
 
 export default connect((state) => ({
+    topbarHeight: state.windows.topbarHeight,
+    bottombarHeight: state.windows.bottombarHeight,
     theme: state.theme.current
 }), {
     setCurrentTask: setCurrentTask

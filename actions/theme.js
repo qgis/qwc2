@@ -54,6 +54,14 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
     if (preserve && visibleBgLayer === null && ConfigUtils.getConfigProp("preserveBackgroundOnThemeSwitch", theme) === true) {
         visibleBgLayer = prevLayers.find(layer => layer.role === LayerRole.BACKGROUND && layer.visibility === true)?.name ?? null;
     }
+    // Create theme background layers
+    const bgLayers = ThemeUtils.createThemeBackgroundLayers(theme.backgroundLayers || [], themes, visibleBgLayer, externalLayers);
+    const actuallyVisibleBgLayer = bgLayers.find(entry => entry.visibility)?.name;
+    if (!prevTheme && visibleBgLayer && actuallyVisibleBgLayer !== visibleBgLayer) {
+        dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
+    } else if (actuallyVisibleBgLayer !== visibleBgLayer) {
+        visibleBgLayer = null;
+    }
 
     // Remove old layers
     const preserveUserLayers = preserve && ConfigUtils.getConfigProp("preserveNonThemeLayersOnThemeSwitch", theme) === true;
@@ -91,23 +99,17 @@ export function finishThemeSetup(dispatch, theme, themes, layerConfigs, preserve
     }
 
     // Add background layers for theme
-    const bgLayers = ThemeUtils.createThemeBackgroundLayers(theme.backgroundLayers || [], themes, visibleBgLayer, externalLayers);
-    const actuallyVisibleBgLayer = bgLayers.find(entry => entry.visibility)?.name;
-    if (!prevTheme && visibleBgLayer && actuallyVisibleBgLayer !== visibleBgLayer) {
-        dispatch(showNotification("missingbglayer", LocaleUtils.tr("app.missingbg", visibleBgLayer), NotificationType.WARN, true));
-    }
     for (const bgLayer of bgLayers.reverse()) {
         // If previous visible BG layer kept, insert other BG layers around that layer
-        if (bgLayer.name === visibleBgLayer && bgLayerKept) {
-            bgLayerKept = false;
-        } else {
-            dispatch(addLayer(bgLayer, bgLayerKept ? 1 : 0));
+        if (!(bgLayer.name === visibleBgLayer && bgLayerKept)) {
+            dispatch(addLayer(bgLayer, insPos));
         }
+        ++insPos;
     }
     UrlParams.updateParams({bl: actuallyVisibleBgLayer ?? ""});
 
     for (const layer of layers.reverse()) {
-        dispatch(addLayer(layer, insPos));
+        dispatch(addLayer(layer));
     }
 
     // Restore external layers

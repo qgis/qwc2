@@ -63,7 +63,7 @@ class FeatureSearch extends React.Component {
             let defaultProvider = '';
             const providerGroups = {};
             const searchProviders = (this.props.theme?.searchProviders || []).reduce((res, entry) => {
-                if (entry.provider === "qgis" && entry.params) {
+                if (entry.provider === "qgis" && entry.params && entry.params.featuresearch !== false) {
                     const providerDef = {...entry};
                     if (!providerDef.params.fields) {
                         providerDef.params = {...providerDef.params};

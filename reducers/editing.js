@@ -64,6 +64,18 @@ export default function editing(state = defaultState, action) {
             },
             currentContext: state.currentContext === action.contextId ? action.newActiveContextId : state.currentContext
         };
+        const clearChildContexts = (parentId) => {
+            Object.values(newState.contexts).forEach(context => {
+                if (context.parentContextId === parentId) {
+                    clearChildContexts(context.id);
+                    delete newState.contexts[context.id];
+                    if (newState.currentContext === context.id) {
+                        newState.currentContext = action.newActiveContextId;
+                    }
+                }
+            });
+        };
+        clearChildContexts(action.contextId);
         delete newState.contexts[action.contextId];
         return newState;
     }

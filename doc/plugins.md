@@ -590,8 +590,10 @@ for customized queries and templates for the result presentation.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
+| appendResultsByDefault | `bool` | Whether to append results by default (without having to press `CTRL` when clicking). | `undefined` |
 | attributeCalculator | `func` | Optional function for computing derived attributes. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
 | attributeTransform | `func` | Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
+| availableRegionModes | `[string]` | Available region identify modes. | `['Region', 'Radius', 'Circle', 'Rectangle']` |
 | clearResultsOnClose | `bool` | Whether to clear the identify results when exiting the identify tool. | `true` |
 | customExporters | `array` | Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `[]` |
 | enableAggregatedReports | `bool` | Whether to enable the aggregated report download button. | `true` |
@@ -619,8 +621,11 @@ Displays a pre-configured catalog of external layers in a window.
 
 Configured through a catalog JSON containing a tree of external layer identifiers.
 
-For `wms` layers, `sublayers: false` denotes that the sublayer structure of the added layer should not
-be exposed in the layer tree.
+For catalog entries containing a `wms` resource, you can specify `"asGroup": <true|false|"option">`, which behaves as follows:
+
+* `false`: imports the layer as a flat layer, without sublayer structure. This is the default behaviour for entries without sublayers if `asGroup` is not specified.
+* `true`:  imports the layer as a group, with sublayer structure. If the catalog entry has sublayers, the sublayer structure will be filtered to only include these sublayers.
+* `"option"`: imports the layer as a flat layer when clicking on the catalog entry, but displays an icon to optionally import the layer as a group layer. This is the default behaviour for entries with sublayers if `asGroup` is not specified.
 
 Example:
 ```json
@@ -629,11 +634,11 @@ Example:
     {
       "title": "Öffentlicher Verkehr swissTLMRegio",
       "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.vec200-transportation-oeffentliche-verkehr",
-      "sublayers": false
+      "asGroup": true
     },
     {
       "title": "Gewässerschutz",
-       "resource": "wms:https://geo.so.ch/api/wms#ch.so.afu.gewaesserschutz[50]"
+      "resource": "wms:https://geo.so.ch/api/wms#ch.so.afu.gewaesserschutz[50]"
     },
     {
       "title": "Landeskarten",
@@ -647,6 +652,19 @@ Example:
           "resource": "wms:http://wms.geo.admin.ch#ch.swisstopo.pixelkarte-farbe-pk100.noscale"
         }
       ]
+    },
+    {
+      "title": "Edit Demo",
+      "resource": "wms:https://demo.qwc.app/ows/qwc_demo#edit_demo",
+      "sublayers": [{
+        "title": "Edit Points",
+        "resource": "wms:https://demo.qwc.app/ows/qwc_demo#edit_points"
+      },
+      {
+        "title": "Edit Lines",
+        "resource": "wms:https://demo.qwc.app/ows/qwc_demo#edit_lines"
+      }],
+      "asGroup": "option"
     }
   ]
 }
@@ -658,6 +676,7 @@ Example:
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX).<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined<br />- `side`: undefined | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | levelBasedIndentSize | `bool` | Whether to increase the indent size dynamically according to the current level (`true`) or keep the indent size constant (`false`). | `true` |
 | registerCatalogSearchProvider | `bool` | Whether to register a search provider which allows searching catalog layers through the global search field. | `true` |
+| toggleGroupOnClick | `bool` | Whether clicking the group name toggles the WMS group rather than loading the grouped layer. | `false` |
 
 ## LayerTree<a name="layertree"></a>
 
@@ -1420,6 +1439,10 @@ Displays layer attributions in the bottom right corner of the 3D map.
 ## MapExport3D<a name="mapexport3d"></a>
 
 Export the 3D map image to raster formats.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| formats | `[string]` | Export layout format mimetypes. Only the default values are supported. | `['image/jpeg', 'image/png', 'image/tiff', 'application/pdf']` |
 
 ## MapLight3D<a name="maplight3d"></a>
 

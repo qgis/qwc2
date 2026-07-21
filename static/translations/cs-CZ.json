@@ -128,6 +128,7 @@
       "close": "Zavřít",
       "compute": "",
       "custom": "",
+      "dataloadfailed": "",
       "date": "",
       "delete": "",
       "download": "",
@@ -142,6 +143,7 @@
       "pick": "",
       "point": "Bod",
       "polygon": "Polygon",
+      "radius": "",
       "rectangle": "",
       "rename": "",
       "resolution": "Rozlišení:",
@@ -337,8 +339,8 @@
       "urlplaceholder": "Vložit URL pro WMS, WMTS, WFS..."
     },
     "infotool": {
+      "clickhelpArea": "",
       "clickhelpPoint": "Klikněte na bod, o kterém chcete zobrazit další informace.",
-      "clickhelpPolygon": "Nakreslete polygon okolo prvků, ke kterým chcete zobrazit další informace.",
       "clickhelpRadius": "Nastavte velikost okruhu a klikněte na místo, okolo kterého chcete načíst informace o prvcích.",
       "radius": "Velikost okruhu"
     },
@@ -534,7 +536,6 @@
       "querying": ""
     },
     "plotinfotool": {
-      "failed": "",
       "loading": ""
     },
     "portal": {

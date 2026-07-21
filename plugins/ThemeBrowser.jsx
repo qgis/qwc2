@@ -86,6 +86,15 @@ class ThemeBrowser extends React.Component {
             this.setState(state => ({active: !state.active}));
             this.props.setCurrentTask(null);
         }
+        let width = this.maxLayerTitleLength + "px";
+        if (this.props.fillIfWiderThanPerc && this.maxLayerTitleLength > window.innerWidth * this.props.fillIfWiderThanPerc / 100) {
+            width = '100%';
+        }
+        this.measureCanvas = undefined;
+        this.measureContext = undefined;
+        if (width !== this.state.width) {
+            this.setState({width});
+        }
     }
     render() {
         this.maxLayerTitleLength = 0;
@@ -104,15 +113,6 @@ class ThemeBrowser extends React.Component {
                 </div>
             </SideBar>
         );
-        let width = this.maxLayerTitleLength + "px";
-        if (this.props.fillIfWiderThanPerc && this.maxLayerTitleLength > window.innerWidth * this.props.fillIfWiderThanPerc / 100) {
-            width = '100%';
-        }
-        this.measureCanvas = undefined;
-        this.measureContext = undefined;
-        if (width !== this.state.width) {
-            this.setState({width});
-        }
         return result;
     }
     renderThemes = (group) => {
@@ -191,7 +191,7 @@ class ThemeBrowser extends React.Component {
                     <Icon className={plusClasses} icon="plus" onPointerDown={() => this.toggleEntryVisibility(entry, layer.id, path)} />
                     <span className="themebrowser-tree-entry-title" onKeyDown={MiscUtils.checkKeyActivate} onPointerDown={ev => this.toggleEntryExpanded(ev, entry, layer.id, path)} tabIndex={0} title={entry.title}>{entry.title}</span>
                     {entry.visibility ? (<span className="themebrowser-tree-entry-opacity">{Math.round(opacity / 255 * 100) + "%"}</span>) : null}
-                    <span className="themebrowser-tree-entry-drag" onKeyDown={(ev) => this.onKeySort(ev, layer.id, path)} onPointerDown={() => this.onDragStart(layer, path)} onPointerUp={this.onDragEnd} tabIndex={0}><Icon icon="drag" /></span>
+                    {sortable ? (<span className="themebrowser-tree-entry-drag" onKeyDown={(ev) => this.onKeySort(ev, layer.id, path)} onPointerDown={() => this.onDragStart(layer, path)} onPointerUp={this.onDragEnd} tabIndex={0}><Icon icon="drag" /></span>) : null}
                 </div>
                 {entry.sublayers && entry.expanded ? (
                     <div className="themebrowser-tree-entry-children">

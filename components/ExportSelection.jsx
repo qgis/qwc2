@@ -39,10 +39,37 @@ export default class ExportSelection extends React.Component {
         }
         if (this.props.frameRatio !== prevProps.frameRatio) {
             this.setState(state => {
-                const newheight = this.props.frameRatio ? Math.round(state.width * this.props.frameRatio) : state.height;
+                const containerWidth = this.exportContainer.offsetWidth;
+                const containerHeight = this.exportContainer.offsetHeight;
+                const maxWidth = 0.75 * containerWidth;
+                const maxHeight = 0.75 * containerHeight;
+                let newwidth;
+                let newheight;
+                if (this.props.frameRatio) {
+                    if (this.props.frameRatio >= 1) {
+                        newwidth = maxWidth;
+                        newheight = Math.round(newwidth * this.props.frameRatio);
+                        if (newheight > maxHeight) {
+                            newheight = maxHeight;
+                            newwidth = Math.round(newheight / this.props.frameRatio);
+                        }
+                    } else {
+                        newheight = maxHeight;
+                        newwidth = Math.round(newheight / this.props.frameRatio);
+                        if (newwidth > maxWidth) {
+                            newwidth = maxWidth;
+                            newheight = Math.round(newwidth * this.props.frameRatio);
+                        }
+                    }
+                } else {
+                    newwidth = state.width;
+                    newheight = state.height;
+                }
                 return {
                     frameRatio: this.props.frameRatio,
-                    y: state.y + 0.5 * (state.height - newheight),
+                    x: 0.5 * (containerWidth - newwidth),
+                    y: 0.5 * (containerHeight - newheight),
+                    width: newwidth,
                     height: newheight
                 };
             }, () => {
@@ -58,7 +85,7 @@ export default class ExportSelection extends React.Component {
             height: this.state.height + 'px'
         };
         return (
-            <div className="export-selection-container">
+            <div className="export-selection-container" ref={el => {this.exportContainer = el;}}>
                 <div className="export-selection" onContextMenu={MiscUtils.killEvent} onPointerDown={this.startMoveSelection} style={boxStyle}>
                     <span className="export-selection-label">
                         {this.state.width + " x " + this.state.height}
@@ -81,10 +108,13 @@ export default class ExportSelection extends React.Component {
         }
         const startStateX = this.state.x;
         const startStateY = this.state.y;
+        const maxWidth = ev.target.parentElement.offsetWidth - this.state.width;
+        const maxHeight = ev.target.parentElement.offsetHeight - this.state.height;
+
         const onMouseMove = (event) => {
             this.setState({
-                x: startStateX + event.clientX - ev.clientX,
-                y: startStateY + event.clientY - ev.clientY
+                x: Math.max(0, Math.min(maxWidth, startStateX + event.clientX - ev.clientX)),
+                y: Math.max(0, Math.min(maxHeight, startStateY + event.clientY - ev.clientY))
             });
         };
         ev.view.addEventListener('pointermove', onMouseMove);
@@ -98,6 +128,8 @@ export default class ExportSelection extends React.Component {
         if (ev.ctrlKey) {
             return;
         }
+        const maxWidth = ev.target.parentElement.parentElement.offsetWidth;
+        const maxHeight = ev.target.parentElement.parentElement.offsetHeight;
         const {x, y, width, height, frameRatio} = this.state;
         const onMouseMove = (event) => {
             const dx = event.clientX - ev.clientX;
@@ -118,6 +150,10 @@ export default class ExportSelection extends React.Component {
             }
             if (sy === 0) {
                 newy += 0.5 * (height - newheight);
+            }
+            if (newx < 0 || newy < 0 || newx + newwidth > maxWidth || newy + newheight > maxHeight) {
+                // Don't set new size if it would overflow the container
+                return;
             }
             this.setState({x: newx, y: newy, width: newwidth, height: newheight});
         };

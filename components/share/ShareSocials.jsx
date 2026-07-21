@@ -14,7 +14,6 @@ import {
     TwitterShareButton,
     WhatsappShareButton,
     EmailShareButton,
-    FacebookShareCount,
     FacebookIcon,
     TwitterIcon,
     LinkedinIcon,
@@ -36,9 +35,6 @@ export default class ShareSocials extends React.Component {
         shareUrl: PropTypes.string,
         showSocials: PropTypes.oneOfType([PropTypes.bool, PropTypes.array])
     };
-    static defaultProps = {
-        shareTitle: 'GeoSolutions'
-    };
     render() {
         const countProps = {};
         if (this.props.getCount) {
@@ -53,9 +49,6 @@ export default class ShareSocials extends React.Component {
                     <EmailShareButton subject={title} url={url}>
                         <EmailIcon round size={32} />
                     </EmailShareButton>
-                    <div>
-                        &nbsp;
-                    </div>
                 </div>
             ),
             facebook: (
@@ -63,9 +56,6 @@ export default class ShareSocials extends React.Component {
                     <FacebookShareButton quote={title} url={url}>
                         <FacebookIcon round size={32} />
                     </FacebookShareButton>
-                    <FacebookShareCount url={url} {...countProps}>
-                        {count => count}
-                    </FacebookShareCount>
                 </div>
             ),
             twitter: (
@@ -73,9 +63,6 @@ export default class ShareSocials extends React.Component {
                     <TwitterShareButton title={title} url={url}>
                         <TwitterIcon round size={32} />
                     </TwitterShareButton>
-                    <div>
-                        &nbsp;
-                    </div>
                 </div>
             ),
             linkedin: (
@@ -83,9 +70,6 @@ export default class ShareSocials extends React.Component {
                     <LinkedinShareButton title={title} url={url}>
                         <LinkedinIcon round size={32} />
                     </LinkedinShareButton>
-                    <div>
-                        &nbsp;
-                    </div>
                 </div>
             ),
             whatsapp: (
@@ -93,9 +77,6 @@ export default class ShareSocials extends React.Component {
                     <WhatsappShareButton title={title} url={url}>
                         <WhatsappIcon round size={32} />
                     </WhatsappShareButton>
-                    <div>
-                        &nbsp;
-                    </div>
                 </div>
             )
         };

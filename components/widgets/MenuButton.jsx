@@ -91,7 +91,7 @@ export default class MenuButton extends React.Component {
                             return React.cloneElement(child, {
                                 className: classNames,
                                 disabled: child.props.disabled,
-                                onClick: () => this.onChildClicked(child)
+                                onClick: (ev) => this.onChildClicked(ev, child)
                             });
                         })}
                     </PopupMenu>
@@ -107,18 +107,19 @@ export default class MenuButton extends React.Component {
     onButtonClicked = (ev) => {
         ev.stopPropagation();
         if (this.state.selected) {
-            this.props.onActivate(this.state.selected);
+            this.props.onActivate?.(this.state.selected);
             this.setState({popup: false});
         } else {
             this.onMenuClicked();
         }
     };
-    onChildClicked = (child) => {
+    onChildClicked = (ev, child) => {
         if (!child.props.disabled) {
             if (this.state.selected) {
                 this.setState({selected: child.props.value});
             }
-            this.props.onActivate(child.props.value);
+            this.props.onActivate?.(child.props.value);
+            child.props.onClick?.(ev);
         }
     };
 }

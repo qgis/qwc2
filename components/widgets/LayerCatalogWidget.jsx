@@ -29,7 +29,8 @@ class LayerCatalogWidget extends React.PureComponent {
         pendingRequests: PropTypes.number,
         removeLayer: PropTypes.func,
         replacePlaceholderLayer: PropTypes.func,
-        showNotification: PropTypes.func
+        showNotification: PropTypes.func,
+        toggleGroupOnClick: PropTypes.bool
     };
     state = {
         catalog: [],
@@ -63,15 +64,15 @@ class LayerCatalogWidget extends React.PureComponent {
                         <span className="layer-catalog-widget-entry-iconspacer" />
                     )}
                     <span
-                        className="layer-catalog-widget-entry-contents" onClick={() => type ? this.checkAddServiceLayer(entry, !hasSublayers) : this.toggleLayerListEntry(path)}
+                        className="layer-catalog-widget-entry-contents" onClick={() => this.entryClicked(entry, path)}
                         onKeyDown={MiscUtils.checkKeyActivate}
                         tabIndex={0}
                     >
                         {type ? (<span className="layer-catalog-widget-entry-service">{type}</span>) : null}
                         {entry.title}
                     </span>
-                    {hasSublayers && type === "wms" ? (
-                        <Icon icon="group" onClick={() => this.checkAddServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
+                    {((hasSublayers && !entry.asGroup) || entry.asGroup === "option") && (entry.resource ?? entry.type ?? "").startsWith("wms") ? (
+                        <Icon icon="group" onClick={() => hasSublayers && entry.resource ? this.checkAddGroup(entry) : this.checkAddServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
                     ) : null}
                     {entry.link ? <Icon className="layer-catalog-widget-entry-link" icon="info-sign"  onClick={ev => this.openUrl(ev, entry.link, entry.target)} title={LocaleUtils.tr("layercatalog.openlink")} /> : null}
                 </div>
@@ -79,6 +80,25 @@ class LayerCatalogWidget extends React.PureComponent {
             </div>
         );
     }
+    entryClicked = (entry, path) => {
+        if (entry.type || entry.resource) {
+            if (entry.asGroup === true && (entry.resource ?? entry.type).startsWith("wms")) {
+                if (!isEmpty(entry.sublayers) && entry.resource) {
+                    this.checkAddGroup(entry);
+                } else {
+                    this.checkAddServiceLayer(entry, true);
+                }
+            } else {
+                if (this.props.toggleGroupOnClick && !isEmpty(entry.sublayers)) {
+                    this.toggleLayerListEntry(path);
+                } else {
+                    this.checkAddServiceLayer(entry, false);
+                }
+            }
+        } else {
+            this.toggleLayerListEntry(path);
+        }
+    };
     toggleLayerListEntry = (path) => {
         this.setState((state) => {
             const catalogKey = this.state.filteredCatalog ? "filteredCatalog" : "catalog";
@@ -171,7 +191,45 @@ class LayerCatalogWidget extends React.PureComponent {
             this.addServiceLayer(entry, resource, asGroup);
         }
     };
-    addServiceLayer = (entry, resource, asGroup = false) => {
+    checkAddGroup = (group) => {
+        // Collect sublayers
+        const sublayers = {};
+        const stripQuery = (url) => (url ?? "").split("?")[0];
+        const resource = LayerUtils.splitLayerUrlParam(group.resource);
+        const groupUrl = stripQuery(resource.url);
+        const collectSublayers = (entry) => {
+            const entryParams = LayerUtils.splitLayerUrlParam(entry.resource ?? "");
+            if (isEmpty(entry.sublayers) && stripQuery(entryParams.url) === groupUrl) {
+                sublayers[entryParams.name] = entryParams;
+            }
+            (entry.sublayers || []).forEach(collectSublayers);
+        };
+        collectSublayers(group);
+        // Check if one or more sublayers are already in the map
+        const existingSublayers = this.props.layers.reduce((res, layer) => {
+            if (layer.type === "wms" && stripQuery(layer.url) === stripQuery(groupUrl)) {
+                return [...res, ...LayerUtils.getSublayerNames(layer), layer.name];
+            }
+            return res;
+        }, []);
+        const overlappingSublayers = Object.keys(sublayers).filter(name => existingSublayers.includes(name));
+        if (!isEmpty(overlappingSublayers)) {
+            const text = LocaleUtils.tr("themelayerslist.existinglayers") + ": " + overlappingSublayers.join(", ");
+            const actions = [{
+                name: LocaleUtils.tr("themelayerslist.addanyway"),
+                onClick: () => {
+                    this.addServiceLayer(group, resource, true, sublayers);
+                    return true;
+                }
+            }];
+            this.props.showNotification("existinglayers", text, NotificationType.INFO, false, actions);
+        } else {
+            this.addServiceLayer(group, resource, true, sublayers);
+        }
+
+
+    };
+    addServiceLayer = (entry, resource, asGroup = false, sublayerSubset = null) => {
         this.props.closeWindow("existinglayers");
         if (resource) {
             // Create placeholder layer
@@ -185,8 +243,27 @@ class LayerCatalogWidget extends React.PureComponent {
             });
             ServiceLayerUtils.findLayers(resource.type, resource.url, [resource], this.props.mapCrs, (id, layer) => {
                 if (layer) {
-                    if (entry.sublayers === false || !asGroup) {
+                    if (!asGroup) {
                         layer.sublayers = null;
+                    } else if (sublayerSubset) {
+                        const filterSublayers = (sublayers) => {
+                            return sublayers.map(sublayer => {
+                                if (sublayer.name in sublayerSubset) {
+                                    return {
+                                        ...sublayer,
+                                        ...sublayerSubset[sublayer.name]
+                                    };
+                                } else if (sublayer.sublayers) {
+                                    return {
+                                        ...sublayer,
+                                        sublayers: filterSublayers(sublayer.sublayers)
+                                    };
+                                } else {
+                                    return null;
+                                }
+                            }).filter(Boolean);
+                        };
+                        layer.sublayers = filterSublayers(layer.sublayers);
                     }
                     LayerUtils.propagateLayerProperty(layer, "opacity", resource.opacity);
                     this.props.replacePlaceholderLayer(resource.id, layer);

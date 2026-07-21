@@ -117,7 +117,11 @@ export class BackgroundSwitcher extends React.Component {
         return (
             <div className={"background-switcher " + (this.state.visible ? 'background-switcher-active' : '')} ref={el => { this.listEl = el; }}>
                 {backgroundLayers.filter(entry => !entry?.omitFromSelect).map(entry => {
-                    return Array.isArray(entry) ? this.renderGroupItem(entry, visibleBgLayer) : this.renderLayerItem(entry, visibleBgLayer);
+                    if (Array.isArray(entry)) {
+                        return entry.length > 1 ? this.renderGroupItem(entry, visibleBgLayer) : this.renderLayerItem(entry[0], visibleBgLayer);
+                    } else {
+                        return this.renderLayerItem(entry, visibleBgLayer);
+                    }
                 })}
             </div>
         );
@@ -289,8 +293,8 @@ export class BackgroundSwitcher extends React.Component {
 
 const selector = (state) => {
     const backgroundLayers = Object.values(state.layers.flat.filter(layer => layer.role === LayerRole.BACKGROUND).reduce((res, l) => {
-        return {...res, ["_" + (l.group || l.name)]: l.group ? [...(res["_" + l.group] || []), l] : l};
-    }, {}));
+        return {...res, ["_" + (l.group || l.name)]: l.group ? [l, ...(res["_" + l.group] || [])] : l};
+    }, {})).reverse();
     return {
         backgroundLayers: backgroundLayers
     };

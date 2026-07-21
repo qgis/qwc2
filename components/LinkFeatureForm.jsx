@@ -35,6 +35,7 @@ class LinkFeatureForm extends React.Component {
         iface: PropTypes.object,
         map: PropTypes.object,
         mapPrefix: PropTypes.string,
+        parentContextId: PropTypes.string,
         pickFilter: PropTypes.func,
         readOnly: PropTypes.bool,
         removeLayer: PropTypes.func,
@@ -51,14 +52,16 @@ class LinkFeatureForm extends React.Component {
             if (this.props.feature) {
                 this.props.setEditContext(this.props.editContextId, {
                     action: 'Pick', feature: this.props.feature, geomType: this.props.editConfig.geomType,
-                    editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix
+                    editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix,
+                    parentContextId: this.props.parentContextId
                 });
             } else {
                 this.props.iface.getFeatureById(this.props.editConfig, this.props.featureId, this.props.map.projection, (result) => {
                     if (result) {
                         this.props.setEditContext(this.props.editContextId, {
                             action: 'Pick', feature: result, geomType: this.props.editConfig.geomType,
-                            editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix
+                            editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix,
+                            parentContextId: this.props.parentContextId
                         });
                     }
                 });
@@ -72,11 +75,15 @@ class LinkFeatureForm extends React.Component {
             getFeatureTemplate(this.props.editConfig, featureSkel, this.props.iface, this.props.mapPrefix, this.props.map.projection, feature => {
                 this.props.setEditContext(this.props.editContextId, {
                     action: 'Draw', geomType: this.props.editConfig.geomType, feature: feature,
-                    editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix
+                    editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix,
+                    parentContextId: this.props.parentContextId
                 });
             });
         } else if (this.props.action === 'Pick') {
-            this.props.setEditContext(this.props.editContextId, {editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix});
+            this.props.setEditContext(this.props.editContextId, {
+                editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix,
+                parentContextId: this.props.parentContextId
+            });
         }
     }
     componentDidUpdate(prevProps) {

@@ -13,14 +13,14 @@ jobs:
       - uses: actions/checkout@master
 
       - name: Use Node.js
-        uses: actions/setup-node@v6.3.0
+        uses: actions/setup-node@v7.0.0
         with:
           node-version: '24.x'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install all required dependencies
         run: |
-          yarn install
+          npm install
           sudo apt-get update
           sudo apt-get -y install jq
 
@@ -40,68 +40,66 @@ jobs:
           fi
 
       - name: Compile a deployable application bundle
-        run: yarn run prod
+        run: npm run prod
 
       - name: Create zip
         run: zip -r qwc2-stock-app.zip prod/
 
-      - name: Version number
-        id: version_number
+      - name: Get tags
+        id: get_tags
         run: |
-          if [ ${{ startsWith(github.ref, 'refs/tags/') }} = true ]; then
-            VERSION=$(basename ${{ github.ref }})
-          else
-            VERSION=ci-latest-$(basename ${{ github.ref }})
-            PREV_RELEASE=$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/$VERSION | jq -r .url)
-            # Reset ci-latest tag
-            git config --global user.email "ci@github.com"
-            git config --global user.name "Github CI"
-            # Workaround for "could not read Username for 'https://github.com': No such device or address"
-            git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
-            git tag -d $VERSION || true
-            git push origin :$VERSION || true
-            git tag -m $VERSION $VERSION
-            git push --tags
+          CI_LATEST_TAG=ci-latest-$(basename ${{ github.ref }})
+          # Delete previous release
+          release_url=$(curl -s "https://api.github.com/repos/$GITHUB_REPOSITORY/releases/tags/${CI_LATEST_TAG}" | jq -r .url)
+          if [ -n "$release_url" ] && [ "$release_url" != "null" ]; then
+            curl -s -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -X DELETE ${release_url}
           fi
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "prev_release=${PREV_RELEASE/null/}" >> $GITHUB_OUTPUT
+          # Reset ci-latest tag
+          git config --global user.email "ci@github.com"
+          git config --global user.name "Github CI"
+          # Workaround for "could not read Username for 'https://github.com': No such device or address"
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
+          git tag -d $CI_LATEST_TAG || true
+          git push origin :$CI_LATEST_TAG || true
+          git tag -m $CI_LATEST_TAG $CI_LATEST_TAG
+          git push --tags
+
+          if [ ${{ startsWith(github.ref, 'refs/tags/') }} = true ]; then
+            RELEASE_TAG=$(basename ${{ github.ref }})
+          fi
+
+          echo "ci_latest_tag=${CI_LATEST_TAG}" >> $GITHUB_OUTPUT
+          echo "release_tag=${RELEASE_TAG/null/}" >> $GITHUB_OUTPUT
         env:
           # This token is provided by Actions, you do not need to create your own token.
           # The token is only valid for one hour.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create ci-latest release
+        id: create_ci_latest_release
+        uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ steps.version_number.outputs.version }}
-          release_name: ${{ steps.version_number.outputs.version }}
+          tag_name: ${{ steps.get_tags.outputs.ci_latest_tag }}
           draft: false
-          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          prerelease: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./qwc2-stock-app.zip
 
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create versioned release
+        id: create_versioned_release
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./qwc2-stock-app.zip
-          asset_name: qwc2-stock-app.zip
-          asset_content_type: application/zip
-
-      - name: Delete previous release
-        run: |
-          curl -s -H "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                -X DELETE ${{ steps.version_number.outputs.prev_release }}
-        if: steps.version_number.outputs.prev_release != ''
-
+          tag_name: ${{ steps.get_tags.outputs.release_tag }}
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./qwc2-stock-app.zip
+        if: steps.get_tags.outputs.release_tag != ''
 
       - name: Publish to NPM
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         run: |
-          npm install -g npm@latest
+          npm install -g npm@11
           npm run dist
           pushd dist
           npm publish

@@ -200,8 +200,6 @@ class MapSelection extends React.Component {
         if (!geometry) {
             return;
         }
-        const coords = this.props.geomType === 'Circle' ? null : geometry.getCoordinates();
-
         if (this.props.geomType === "Circle") {
             // Also store poligonized circle
             const center = geometry.getCenter();
@@ -209,16 +207,8 @@ class MapSelection extends React.Component {
             const deg2rad = Math.PI / 180;
             const polycords = [Array.apply(null, Array(91)).map((item, index) => ([center[0] + radius * Math.cos(4 * index * deg2rad), center[1] + radius * Math.sin(4 * index * deg2rad)]))];
             this.setState({geometry: {type: "Polygon", coordinates: polycords, center, radius}});
-        } else if (this.props.geomType === "DragBox" || this.props.geomType === "Box") {
-            const boxcoords = [[
-                Math.min(coords[0][0][0], coords[0][2][0]),
-                Math.min(coords[0][0][1], coords[0][2][1]),
-                Math.max(coords[0][0][0], coords[0][2][0]),
-                Math.max(coords[0][0][1], coords[0][2][1])
-            ]];
-            this.setState({geometry: {type: "Polygon", coordinates: boxcoords}});
         } else {
-            this.setState({geometry: {type: this.props.geomType, coordinates: coords}});
+            this.setState({geometry: {type: geometry.getType(), coordinates: geometry.getCoordinates()}});
         }
     };
     updateMeasurements = (feature) => {
