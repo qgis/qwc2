@@ -64,6 +64,7 @@
         "Redlining": "Dessiner",
         "Routing": "Routage",
         "SensorThingsTool": "Outil SensorThings",
+        "ServiceInfo": "Informations sur le thème",
         "Tools": "Outils",
         "TourGuide": "Visite Guidée",
         "TimeManager": "Ligne du temps",
@@ -755,7 +756,7 @@
       "contactPosition": "Poste",
       "keywords": "mots-clés",
       "onlineResource": "Ressource en ligne",
-      "title": "Information sur le thème"
+      "title": "Informations sur le thème"
     },
     "settings": {
       "colorscheme": "Apparence",

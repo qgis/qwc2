@@ -18,7 +18,6 @@ import PropTypes from 'prop-types';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, changeLayerProperty, removeLayer, reorderLayer, setSwipe, addLayerSeparator, setThemeLayersVisibilityPreset} from '../actions/layers';
 import {toggleMapTips, zoomToExtent} from '../actions/map';
-import {setActiveServiceInfo} from '../actions/serviceinfo';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import ImportLayer from '../components/ImportLayer';
@@ -104,7 +103,6 @@ class LayerTree extends React.Component {
         /** Whether to display a scale dependent legend. Can be `true|false|"theme"`, latter means only for theme layers. */
         scaleDependentLegend: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         setActiveLayerInfo: PropTypes.func,
-        setActiveServiceInfo: PropTypes.func,
         setCurrentTask: PropTypes.func,
         setSwipe: PropTypes.func,
         setThemeLayersVisibilityPreset: PropTypes.func,
@@ -178,7 +176,8 @@ class LayerTree extends React.Component {
         filterinvisiblelayers: false,
         legendPrintVisible: false,
         visibilityMenu: false,
-        activePreset: null
+        activePreset: null,
+        serviceInfoVisible: false
     };
     constructor(props) {
         super(props);
@@ -600,7 +599,7 @@ class LayerTree extends React.Component {
         }
         let serviceInfoIcon = null;
         if (this.props.enableServiceInfo) {
-            serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.props.setActiveServiceInfo(this.props.theme)} title={LocaleUtils.tr("serviceinfo.title")} />);
+            serviceInfoIcon = (<Icon className="layertree-theme-metadata" icon="info-sign" onClick={() => this.setState((state) => ({serviceInfoVisible: true}))} title={LocaleUtils.tr("serviceinfo.title")} />);
         }
 
         const extraBeforeContent = this.props.showTitlebarSettingsMenu ? this.renderVisibilityButton() : null;
@@ -629,7 +628,11 @@ class LayerTree extends React.Component {
                 {legendTooltip}
                 {this.renderLegendPrintWindow()}
                 <LayerInfoWindow bboxDependentLegend={this.props.bboxDependentLegend} extraLegendParameters={this.props.extraLegendParameters} layerInfoGeometry={this.props.layerInfoGeometry} scaleDependentLegend={this.props.scaleDependentLegend} />
-                <ServiceInfoWindow layerInfoGeometry={this.props.layerInfoGeometry} />
+                {this.state.serviceInfoVisible &&
+                    <ServiceInfoWindow layerInfoGeometry={this.props.layerInfoGeometry}
+                        onClose={() => this.setState((state) => ({serviceInfoVisible: false}))}
+                        service={this.props.theme} />
+                }
             </div>
         );
     }
@@ -688,7 +691,7 @@ class LayerTree extends React.Component {
             }
             if (this.props.enableServiceInfo) {
                 menuEntries.push(
-                    <div className={needsep ? "layertree-visibility-menu-sep" : ""} key="removeall" onClick={() => this.props.setActiveServiceInfo(this.props.theme)}>
+                    <div className={needsep ? "layertree-visibility-menu-sep" : ""} key="removeall" onClick={() => this.setState((state) => ({serviceInfoVisible: true}))}>
                         <Icon icon="info-sign" /> {LocaleUtils.tr("serviceinfo.title")}
                     </div>
                 );
@@ -930,7 +933,6 @@ export default connect(selector, {
     toggleMapTips: toggleMapTips,
     setSwipe: setSwipe,
     setActiveLayerInfo: setActiveLayerInfo,
-    setActiveServiceInfo: setActiveServiceInfo,
     setCurrentTask: setCurrentTask,
     setThemeLayersVisibilityPreset: setThemeLayersVisibilityPreset,
     zoomToExtent: zoomToExtent
