@@ -135,12 +135,10 @@ function representValue(attr, editConfig, editIface, promises) {
     }
 }
 
-function overlayIntersects(feature, mapPrefix, mapCrs, args, promises) {
+function overlayIntersects(feature, mapPrefix, mapCrs, layerName, field, promises) {
     overlayIntersects.__cache__ = overlayIntersects.__cache__ ?? {};
     const state = StandardApp.store.getState();
     const layer = state.layers.flat.find(l => l.wms_name === mapPrefix);
-    const layerName = args[0];
-    const filter = args[1] ? `${layerName}:${args[1]}` : undefined;
     let geometry = feature.geometry;
     if (feature.geometry.type.endsWith("Point")) {
         let p = feature.geometry.coordinates;
@@ -160,18 +158,19 @@ function overlayIntersects(feature, mapPrefix, mapCrs, args, promises) {
     }
     const extraParams = {
         with_geometry: false,
-        feature_count: 1,
-        FILTER: filter
+        feature_count: field ? 100 : 1
     };
     const request = IdentifyUtils.buildFilterRequest(layer, layerName, VectorLayerUtils.geoJSONGeomToWkt(geometry), {projection: mapCrs}, extraParams);
-    const key = uuidv5(JSON.stringify(request.params), UUID_NS);
+    const key = uuidv5(JSON.stringify({params: request.params, field: field ?? null}), UUID_NS);
     if (key in overlayIntersects.__cache__) {
         return overlayIntersects.__cache__[key];
     }
     promises.push(new Promise(resolve => {
         IdentifyUtils.sendRequest(request, response => {
-            const features = IdentifyUtils.parseResponse(response, layerName, request.params.info_format, null, mapCrs);
-            overlayIntersects.__cache__[key] = (features[layerName] ?? []).length > 0;
+            const features = IdentifyUtils.parseResponse(response, layerName, request.params.info_format, null, mapCrs)[layerName] ?? [];
+            overlayIntersects.__cache__[key] = field
+                ? features.map(f => f.properties?.[field] ?? null)
+                : features.length > 0;
             resolve();
         });
     }));
@@ -187,7 +186,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
         feature: feature,
         getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapEditConfigs[layerName] ?? {}, mapCrs, [[attr, '=', value]], promises),
         representValue: (attr) => representValue(attr, editConfig, editIface, promises),
-        overlayIntersects: (layer) => overlayIntersects(feature, mapPrefix, mapCrs, layer, promises),
+        overlayIntersects: (layerName, field) => overlayIntersects(feature, mapPrefix, mapCrs, layerName, field, promises),
         formatDate: MiscUtils.formatDate,
         asFilter: asFilter,
         username: ConfigUtils.getConfigProp("username"),
@@ -229,7 +228,7 @@ export function parseExpressionsAsync(fieldExpressions, feature, editConfig, edi
             feature: newfeature,
             getFeature: (layerName, attr, value) => FeatureCache.getSync(editIface, layerName, mapEditConfigs[layerName] ?? {}, mapCrs, [[attr, '=', value]], promises),
             representValue: (attr) => representValue(attr, editConfig, editIface, promises),
-            overlayIntersects: (layer) => overlayIntersects(feature, mapPrefix, mapCrs, layer, promises),
+            overlayIntersects: (layerName, field) => overlayIntersects(feature, mapPrefix, mapCrs, layerName, field, promises),
             asFilter: asFilter,
             username: ConfigUtils.getConfigProp("username"),
             layer: editConfig.layerName,

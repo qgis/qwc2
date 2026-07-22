@@ -33,6 +33,9 @@ global.qwc2ExpressionParserContext = {
         return {1: 'One', 2: 'Two', 3: 'Three', 4: 'Four'}[value] ?? value;
     },
     formatDate: () => "",//formatDate,
+    overlayIntersects: (layerName, field) => {
+        return field ? ["Musterhausen", "Beispieldorf"] : true;
+    },
     asFilter: false,
     username: "testuser",
     layer: "layername"
@@ -200,6 +203,9 @@ checkExpr("regexp_matches('QGIS=>rocks','(.*)=>(.*)')", ['QGIS', 'rocks']);
 checkExpr("regexp_matches('key=>','(.*)=>(.*)','empty value')", ['key', 'empty value']);
 checkExpr("string_to_array('1,2,3',',')", ['1', '2', '3']);
 checkExpr("string_to_array('1,,3',',','0')", ['1', '0', '3']);
+checkExpr("overlay_intersects('Gemarkungen')", true);
+checkExpr("overlay_intersects('Gemarkungen', \"gemarkung\")", ["Musterhausen", "Beispieldorf"]);
+checkExpr("array_first(overlay_intersects('Gemarkungen', \"gemarkung\"))", "Musterhausen");
 console.log("Tests ok!");
 
 
