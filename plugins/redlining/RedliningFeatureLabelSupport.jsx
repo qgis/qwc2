@@ -129,7 +129,7 @@ class RedliningFeatureLabelSupport extends React.Component {
                 properties: {label: text},
                 styleOptions: {
                     ...feature.styleOptions,
-                    strokeWidth: (profile.size ?? null) !== null ? 1 + 0.5 * (profile.size) : feature.styleOptions.stokeWidth
+                    strokeWidth: (profile.size ?? null) !== null ? 1 + 0.5 * (profile.size) : feature.styleOptions.strokeWidth
                 }};
         } else {
             feature = {
