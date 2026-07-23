@@ -18,7 +18,6 @@ import ComboBox from '../../components/widgets/ComboBox';
 import TextInput from '../../components/widgets/TextInput';
 import {parseExpression} from '../../utils/EditingUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
-import VectorLayerUtils from '../../utils/VectorLayerUtils';
 
 
 class RedliningFeatureLabelSupport extends React.Component {
@@ -78,7 +77,7 @@ class RedliningFeatureLabelSupport extends React.Component {
             <PickFeature featurePicked={this.featurePicked} key="FeaturePicker" layerFilterFunc={layer => layer.type === "wms"} />
         )];
     }
-    featurePicked = (layer, feature, map) => {
+    featurePicked = (layer, feature, map, mapPos) => {
         const sellayer = {
             id: "__redliningfeaturelabelhighlight",
             role: LayerRole.SELECTION
@@ -86,7 +85,7 @@ class RedliningFeatureLabelSupport extends React.Component {
         this.props.addLayerFeatures(sellayer, [feature], true);
         const profiles = [...(this.props.layers.find(l => l.wms_name === map)?.labelProfiles?.[layer] ?? [])];
         profiles.push({name: "__custom", expression: "", title: LocaleUtils.tr("common.custom")});
-        this.setState({cur: {layer, feature, map, profiles}, currentProfile: profiles[0].name}, this.updateLabelFeature);
+        this.setState({cur: {layer, feature, map, profiles, mapPos}, currentProfile: profiles[0].name}, this.updateLabelFeature);
     };
     setCurrentProfile = (value) => {
         this.setState({currentProfile: value}, this.updateLabelFeature);
@@ -122,7 +121,7 @@ class RedliningFeatureLabelSupport extends React.Component {
         } else {
             text = String(text);
         }
-        const center = VectorLayerUtils.getFeatureCenter(this.state.cur.feature);
+        const center = cur.mapPos;
         let feature = (this.props.layers.find(l => l.id === this.props.redlining.layer)?.features || []).find(f => f.id === featureId);
         if (feature) {
             feature = {

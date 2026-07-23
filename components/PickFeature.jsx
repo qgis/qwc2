@@ -69,6 +69,7 @@ class PickFeature extends React.Component {
         pickGeom: null,
         pickResults: null,
         clickPos: null,
+        mapPos: null,
         highlightedFeature: null,
         pendingQueries: 0,
         reqId: null
@@ -163,7 +164,7 @@ class PickFeature extends React.Component {
                         });
                     }
                 }
-                return {pickResults: pickResults, clickPos: clickPos, pendingQueries: queryWmsLayers.length, reqId: reqId};
+                return {pickResults: pickResults, clickPos: clickPos, mapPos: [maxX, maxY], pendingQueries: queryWmsLayers.length, reqId: reqId};
             });
         }
     }
@@ -193,7 +194,7 @@ class PickFeature extends React.Component {
             };
             if (newState.pendingQueries === 0) {
                 if (newState.pickResults.length === 1) {
-                    this.props.featurePicked(newState.pickResults[0].layer, newState.pickResults[0].feature, newState.pickResults[0].mapName);
+                    this.props.featurePicked(newState.pickResults[0].layer, newState.pickResults[0].feature, newState.pickResults[0].mapName, state.mapPos);
                     newState.pickResults = null;
                     newState.pickGeom = null;
                 } else if (newState.pickResults.length === 0) {
