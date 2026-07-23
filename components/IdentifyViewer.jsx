@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import clone from 'clone';
-import DOMPurify from 'dompurify';
 import FileSaver from 'file-saver';
 import JSZip from 'jszip';
 import isEmpty from 'lodash.isempty';
@@ -1026,10 +1025,7 @@ class IdentifyViewer extends React.Component {
         return this.parsedContent(text);
     };
     parsedContent = (text) => {
-        text = DOMPurify.sanitize(text, {
-            ADD_ATTR: ['target'], ADD_TAGS: ["iframe"], FORCE_BODY: true,
-            ALLOW_UNKNOWN_PROTOCOLS: true
-        }).replace('&#10;', '<br />');
+        text = MiscUtils.sanitizeHtml(text).replace('&#10;', '<br />');
         const options = {replace: (node) => {
             if (node.name === "a") {
                 return (

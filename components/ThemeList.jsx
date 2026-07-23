@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import {remove as removeDiacritics} from 'diacritics';
-import DOMPurify from 'dompurify';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
@@ -153,7 +152,7 @@ class ThemeList extends React.Component {
                                 ) : null}
                             </div>) : null}
                             <div className="theme-item-body" onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
-                                {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(item.description)}} />) : null}
+                                {item.description ? (<div className="theme-item-description" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(item.description)}} />) : null}
                                 <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
                             </div>
                             {!item.restricted ? (

@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import DOMPurify from 'dompurify';
+
 import ConfigUtils from './ConfigUtils';
 
 const MiscUtils = {
@@ -50,6 +52,12 @@ const MiscUtils = {
         // Reset
         urlRegEx.lastIndex = 0;
         return value;
+    },
+    sanitizeHtml(text) {
+        return DOMPurify.sanitize(text, {
+            ADD_ATTR: ['target'], ADD_TAGS: ["iframe"], FORCE_BODY: true,
+            ALLOW_UNKNOWN_PROTOCOLS: true
+        });
     },
     htmlEncode(text) {
         return text
