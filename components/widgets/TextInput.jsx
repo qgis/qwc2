@@ -207,7 +207,7 @@ export default class TextInput extends React.Component {
     };
     onMouseDown = (ev) => {
         const el = document.elementFromPoint(ev.clientX, ev.clientY);
-        if (el?.nodeName === 'A' && ev.ctrlKey) {
+        if (el?.nodeName === 'A' && (this.props.readOnly || this.props.disabled || ev.ctrlKey)) {
             window.open(el.href, el.target);
         }
     };
