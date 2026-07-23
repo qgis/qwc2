@@ -286,15 +286,15 @@ const LayerUtils = {
         return result.join(",");
 
     },
-    splitLayerUrlParam(entry) {
+    splitLayerUrlParam(entry, undefinedIfUnspecified = false) {
         const opacityPattern = /\[(\d+)\]/;
         const stylePattern = /{([^}]+)}/;
         const extPattern = /^(\w+):(.*)#([^#]+)$/;
         const id = uuidv4();
         let type = 'theme';
         let layerUrl = null;
-        let opacity = 255;
-        let style = '';
+        let opacity = undefinedIfUnspecified ? undefined : 255;
+        let style = undefinedIfUnspecified ? undefined : '';
         let visibility = true;
         let tristate = false;
         if (entry.endsWith('!')) {
