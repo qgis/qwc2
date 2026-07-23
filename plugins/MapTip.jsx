@@ -11,7 +11,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
-import DOMPurify from 'dompurify';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
@@ -22,6 +21,7 @@ import {openExternalUrl} from '../actions/windows';
 import {MapContainerPortalContext} from '../components/PluginsContainer';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import MapUtils from '../utils/MapUtils';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/MapTip.css';
 
@@ -191,7 +191,7 @@ class MapTip extends React.Component {
         return null;
     }
     parsedContent = (text) => {
-        text = DOMPurify.sanitize(text, {ADD_ATTR: ['target']}).replace('&#10;', '<br />');
+        text = MiscUtils.sanitizeHtml(text).replace('&#10;', '<br />');
         const options = {replace: (node) => {
             if (node.name === "a") {
                 return (

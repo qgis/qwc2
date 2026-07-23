@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
-import DOMPurify from 'dompurify';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
@@ -86,7 +85,7 @@ class Identify3D extends React.Component {
                                     {Object.entries(this.state.pickAttrs).map(([key, value]) => (
                                         <tr key={key}>
                                             <td className="identify-attr-title"><i>{key}</i></td>
-                                            <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(DOMPurify.sanitize(value))}} />
+                                            <td className="identify-attr-value" dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(MiscUtils.sanitizeHtml(value))}} />
                                         </tr>
                                     ))}
                                 </tbody>

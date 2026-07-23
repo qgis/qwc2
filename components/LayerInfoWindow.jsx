@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
@@ -47,7 +46,7 @@ class LayerInfoWindow extends React.Component {
                 <tr>
                     <td>{title}:</td>
                     {html ? (
-                        <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(DOMPurify.sanitize(content))}} />
+                        <td dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(MiscUtils.sanitizeHtml(content))}} />
                     ) : (<td>{content}</td>)}
                 </tr>
             );

@@ -10,12 +10,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
-import DOMPurify from 'dompurify';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {MapContainerPortalContext} from '../../components/PluginsContainer';
 import LocaleUtils from '../../utils/LocaleUtils';
+import MiscUtils from '../../utils/MiscUtils';
 
 import '../style/MapCopyright.css';
 
@@ -73,7 +73,7 @@ class MapCopyright3D extends React.Component {
             if (value.title) {
                 return (<span key={key}><a href={key} rel="noreferrer" target="_blank">{this.layerNames(value.layers) + value.title}</a></span>);
             } else {
-                return (<span key={key}>{this.layerNames(value.layers)}<span dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(key)}} /></span>);
+                return (<span key={key}>{this.layerNames(value.layers)}<span dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(key)}} /></span>);
             }
         });
         if (isEmpty(copyrights)) {

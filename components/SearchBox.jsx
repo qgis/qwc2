@@ -11,7 +11,6 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import classnames from 'classnames';
-import DOMPurify from 'dompurify';
 import isEmpty from 'lodash.isempty';
 import pointInPolygon from 'point-in-polygon';
 import polygonIntersectTest from 'polygon-intersect-test';
@@ -375,7 +374,7 @@ class SearchBox extends React.Component {
         return (
             <div className="searchbox-result" key={key} onClick={() => this.selectPlaceResult(provider, group, result)}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
-                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.externalLink ? <Icon icon="info-sign" onClick={ev => this.openUrl(ev, result.externalLink, result.target, result.label ?? result.text)} /> : null}
             </div>
         );
@@ -398,7 +397,7 @@ class SearchBox extends React.Component {
             <div className="searchbox-result" key={key} onClick={ConfigUtils.getPluginConfig("LayerCatalog")?.cfg?.toggleGroupOnClick && result.sublayers ? toggleLayerGroup : () => selectResult(provider, group, result)} style={{borderLeft: `${level}em solid transparent`}}>
                 {icon}
                 {result.theme ? (<Icon className="searchbox-result-openicon" icon="open" />) : null}
-                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result); }} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
                 {this.props.searchOptions.allowAddLayerAsGroup && result.sublayers ? (<Icon icon="group" onClick={(ev) => {MiscUtils.killEvent(ev); this.selectLayerResult(provider, group, result, true); }} title={LocaleUtils.tr("importlayer.asgroup")} />) : null}
                 {result.info ? <Icon icon="info-sign" onClick={(ev) => this.toggleLayerInfo(ev, provider, group, result, key, parent)} /> : null}
@@ -406,7 +405,7 @@ class SearchBox extends React.Component {
             </div>
         ), this.state.activeLayerInfo === key ? (
             <div className="searchbox-result-abstract"
-                dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(DOMPurify.sanitize(result.layer?.abstract || "")) || LocaleUtils.tr("search.nodescription")}}
+                dangerouslySetInnerHTML={{__html: MiscUtils.addLinkAnchors(MiscUtils.sanitizeHtml(result.layer?.abstract || "")) || LocaleUtils.tr("search.nodescription")}}
                 disabled key={key + ":abstract"} style={{borderLeft: `${level}em solid transparent`}}
             />
         ) : null,
@@ -419,7 +418,7 @@ class SearchBox extends React.Component {
             <div className="searchbox-result" key={provider + ":" + group.id + ":" + result.id} onClick={() => this.selectThemeResult(provider, group, result)}>
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
                 <Icon className="searchbox-result-openicon" icon="open" />
-                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
+                <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
                 {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => this.addThemeLayers(result.layer)} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
             </div>
         );

@@ -9,7 +9,6 @@
 import React from 'react';
 
 import classNames from 'classnames';
-import DOMPurify from 'dompurify';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
@@ -69,7 +68,7 @@ export default class TextInput extends React.Component {
             return {
                 value: nextProps.value,
                 valueRev: state.valueRev + 1,
-                curValue: DOMPurify.sanitize(nextProps.value || ""),
+                curValue: MiscUtils.sanitizeHtml(nextProps.value || ""),
                 changed: false
             };
         }
@@ -83,7 +82,7 @@ export default class TextInput extends React.Component {
     }
     setDefaultValue = (value, valueRev, prevValueRef) => {
         if (valueRev > prevValueRef) {
-            this.input.innerHTML = DOMPurify.sanitize((value || "").replaceAll('\n', this.props.multiline ? '<br />' : ''));
+            this.input.innerHTML = MiscUtils.sanitizeHtml((value || "").replaceAll('\n', this.props.multiline ? '<br />' : ''));
         }
     };
     render() {
@@ -180,7 +179,7 @@ export default class TextInput extends React.Component {
         this.input.innerHTML = clearValue;
     };
     onChange = (ev) => {
-        let curValue = DOMPurify.sanitize(ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, ''));
+        let curValue = MiscUtils.sanitizeHtml(ev.target.innerText.replace(/<br\s*\/?>$/, '').replace(/\n$/, ''));
         if (!this.props.multiline) {
             curValue = curValue.replace('\n', '');
         }
