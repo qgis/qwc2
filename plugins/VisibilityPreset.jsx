@@ -26,13 +26,13 @@ import {
 
 
 /**
- *  Allows managing custom user visibility presets, which are storing the currently selected layers without location or
- *  zoom level.
+ * Allows managing custom user visibility presets, which are storing the currently selected layers without location or
+ * zoom level.
  *
- *  Visibility presets are only allowed for authenticated users.
+ * Visibility presets are only allowed for authenticated users.
  *
- *  Requires `permalinkServiceUrl` to point to a `qwc-permalink-service` with tables setup for visibility presets
- *  (see `qwc-permalink-service` documentation for details).
+ * Requires `permalinkServiceUrl` to point to a `qwc-permalink-service` with tables setup for visibility presets
+ * (see `qwc-permalink-service` documentation for details).
  **/
 
 class VisibilityPreset extends React.Component {
