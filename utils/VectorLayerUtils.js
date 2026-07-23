@@ -33,13 +33,19 @@ const VectorLayerUtils = {
             labelOutlineSizes: [],
             labelRotations: [],
             labelSizes: [],
-            labelDist: []
+            labelDist: [],
+            labelFrameColors: [],
+            labelFrameOutlines: [],
+            labelFrameOutlineWidths: [],
+            labelFrameSizes: []
         };
         let ensureHex = null;
+        let ensureHexRgb = null;
         if (qgisServerVersion >= 3) {
-            ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : '#' + [255 - (rgb.length > 3 ? rgb[3] : 1) * 255, ...rgb.slice(0, 3)].map(v => Math.round(v).toString(16).padStart(2, '0')).join(''));
+            ensureHex = (rgba) => (!Array.isArray(rgba) ? rgba : '#' + [255 - (rgba.length > 3 ? rgba[3] : 1) * 255, ...rgba.slice(0, 3)].map(v => Math.round(v).toString(16).padStart(2, '0')).join(''));
+            ensureHexRgb = (rgb) => (!Array.isArray(rgb) ? rgb : '#' + [...rgb.slice(0, 3)].map(v => Math.round(v).toString(16).padStart(2, '0')).join(''));
         } else {
-            ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
+            ensureHexRgb = ensureHex = (rgb) => (!Array.isArray(rgb) ? rgb : ('#' + (0x1000000 + (rgb[2] | (rgb[1] << 8) | (rgb[0] << 16))).toString(16).slice(1)));
         }
 
         for (const layer of layers.slice(0).reverse()) {
@@ -92,15 +98,35 @@ const VectorLayerUtils = {
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                         params.labelDist.push("-5");
                         params.labelRotations.push("0");
+                        params.labelFrameColors.push("white");
+                        params.labelFrameOutlines.push("white");
+                        params.labelFrameOutlineWidths.push("0");
+                        params.labelFrameSizes.push("0");
+
                     }
                 } else if (feature.styleName === "text" || feature.styleName === "textlabel") {
                     const x = geometry.coordinates[0];
                     const y = geometry.coordinates[1];
                     if (feature.styleName === "textlabel") {
-                        if (x !== styleOptions.anchor[0] && y !== styleOptions.anchor[1]) {
-                            params.styles.push(VectorLayerUtils.createSld("LineString", "default", {strokeColor: [0, 0, 0, 1], strokeWidth: styleOptions.strokeWidth}, layer.opacity, dpi, scaleFactor));
+                        if (qgisServerVersion < 4) {
+                            // QGIS 3.x fallback for label frame
+                            const metrics = MiscUtils.measureText(feature.properties.label, `10pt sans`);
+                            const scale = styleOptions.strokeWidth * scaleFactor;
+                            const mapWidth = CoordinatesUtils.pixelsToMapUnits((metrics.width + 12) * scale, 100, mapScale, printCrs);
+                            const mapHeight = CoordinatesUtils.pixelsToMapUnits((metrics.height + 12) * scale, 100, mapScale, printCrs);
+                            const frame = {
+                                type: "Polygon",
+                                coordinates: [[
+                                    [x - 0.5 * mapWidth, y - 0.5 * mapHeight],
+                                    [x + 0.5 * mapWidth, y - 0.5 * mapHeight],
+                                    [x + 0.5 * mapWidth, y + 0.5 * mapHeight],
+                                    [x - 0.5 * mapWidth, y + 0.5 * mapHeight],
+                                    [x - 0.5 * mapWidth, y - 0.5 * mapHeight]
+                                ]]
+                            };
+                            params.styles.push(VectorLayerUtils.createSld("Polygon", "default", {strokeColor: styleOptions.strokeColor, strokeWidth: styleOptions.strokeWidth, fillColor: styleOptions.fillColor}, layer.opacity, dpi, scaleFactor));
                             params.labels.push(" ");
-                            params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt({type: "LineString", coordinates: [[x, y], styleOptions.anchor]}));
+                            params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(frame));
                             params.labelFillColors.push(ensureHex(styleOptions.textFill));
                             params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
                             params.labelOutlineSizes.push("0");
@@ -109,29 +135,22 @@ const VectorLayerUtils = {
                             params.labelRotations.push("0");
                         }
 
-                        const metrics = MiscUtils.measureText(feature.properties.label, `10pt sans`);
-                        const scale = styleOptions.strokeWidth * scaleFactor;
-                        const mapWidth = CoordinatesUtils.pixelsToMapUnits((metrics.width + 12) * scale, 100, mapScale, printCrs);
-                        const mapHeight = CoordinatesUtils.pixelsToMapUnits((metrics.height + 12) * scale, 100, mapScale, printCrs);
-                        const frame = {
-                            type: "Polygon",
-                            coordinates: [[
-                                [x - 0.5 * mapWidth, y - 0.5 * mapHeight],
-                                [x + 0.5 * mapWidth, y - 0.5 * mapHeight],
-                                [x + 0.5 * mapWidth, y + 0.5 * mapHeight],
-                                [x - 0.5 * mapWidth, y + 0.5 * mapHeight],
-                                [x - 0.5 * mapWidth, y - 0.5 * mapHeight]
-                            ]]
-                        };
-                        params.styles.push(VectorLayerUtils.createSld("Polygon", "default", {strokeColor: [0, 0, 0, 1], strokeWidth: styleOptions.strokeWidth, fillColor: [255, 255, 255, 1]}, layer.opacity, dpi, scaleFactor));
-                        params.labels.push(" ");
-                        params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(frame));
-                        params.labelFillColors.push(ensureHex(styleOptions.textFill));
-                        params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
-                        params.labelOutlineSizes.push("0");
-                        params.labelSizes.push("1");
-                        params.labelDist.push("0");
-                        params.labelRotations.push("0");
+                        if (x !== styleOptions.anchor[0] && y !== styleOptions.anchor[1]) {
+                            // Draw leader line
+                            params.styles.push(VectorLayerUtils.createSld("LineString", "default", {strokeColor: styleOptions.strokeColor, strokeWidth: styleOptions.strokeWidth}, layer.opacity, dpi, scaleFactor));
+                            params.labels.push(" ");
+                            params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt({type: "LineString", coordinates: [[x, y], styleOptions.anchor]}));
+                            params.labelFillColors.push(ensureHex(styleOptions.textFill));
+                            params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
+                            params.labelOutlineSizes.push("0");
+                            params.labelSizes.push("1");
+                            params.labelDist.push("0");
+                            params.labelRotations.push("0");
+                            params.labelFrameColors.push("white");
+                            params.labelFrameOutlines.push("white");
+                            params.labelFrameOutlineWidths.push(0);
+                            params.labelFrameSizes.push(0);
+                        }
                     }
                     // Make point a tiny square, so that QGIS server centers the text inside the polygon when labelling
                     const square = {
@@ -148,11 +167,20 @@ const VectorLayerUtils = {
                     params.labels.push(properties.label || " ");
                     params.geoms.push(VectorLayerUtils.geoJSONGeomToWkt(square));
                     if (feature.styleName === "textlabel") {
-                        params.labelFillColors.push(ensureHex([0, 0, 0, 1]));
-                        params.labelOutlineColors.push(ensureHex([255, 255, 255, 1]));
+                        // QGIS 4.x label frame
+                        params.labelFillColors.push(ensureHex(styleOptions.strokeColor));
+                        params.labelOutlineColors.push(ensureHex(MiscUtils.isBrightColor(styleOptions.strokeColor) ? "#333" : "#FFF"));
+                        params.labelFrameColors.push(ensureHexRgb(styleOptions.fillColor));
+                        params.labelFrameOutlines.push(ensureHexRgb(styleOptions.strokeColor));
+                        params.labelFrameOutlineWidths.push(styleOptions.strokeWidth * 0.25);
+                        params.labelFrameSizes.push(qgisServerVersion >= 4 ? 2 : 0);
                     } else {
                         params.labelFillColors.push(ensureHex(styleOptions.textFill));
                         params.labelOutlineColors.push(ensureHex(styleOptions.textStroke));
+                        params.labelFrameColors.push("white");
+                        params.labelFrameOutlines.push("white");
+                        params.labelFrameOutlineWidths.push(0);
+                        params.labelFrameSizes.push(0);
                     }
                     params.labelOutlineSizes.push(scaleFactor * styleOptions.strokeWidth * 0.5);
                     params.labelSizes.push(Math.round(10 * styleOptions.strokeWidth * scaleFactor));
@@ -168,6 +196,10 @@ const VectorLayerUtils = {
                     params.labelSizes.push(Math.round(10 * scaleFactor));
                     params.labelDist.push("-5");
                     params.labelRotations.push("0");
+                    params.labelFrameColors.push("white");
+                    params.labelFrameOutlines.push("white");
+                    params.labelFrameOutlineWidths.push(0);
+                    params.labelFrameSizes.push(0);
                 }
                 if (properties.end_label) {
                     const coo = geometry.coordinates;
@@ -188,6 +220,10 @@ const VectorLayerUtils = {
                         params.labelSizes.push(Math.round(10 * scaleFactor));
                         params.labelDist.push("-5");
                         params.labelRotations.push("0");
+                        params.labelFrameColors.push("white");
+                        params.labelFrameOutlines.push("white");
+                        params.labelFrameOutlineWidths.push(0);
+                        params.labelFrameSizes.push(0);
                     }
                 }
             }

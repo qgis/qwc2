@@ -191,6 +191,10 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             HIGHLIGHT_LABELSIZE: highlightParams.labelSizes.join(";"),
             HIGHLIGHT_LABEL_DISTANCE: highlightParams.labelDist.join(";"),
             HIGHLIGHT_LABEL_ROTATION: highlightParams.labelRotations.join(";"),
+            HIGHLIGHT_LABELFRAMEBACKGROUNDCOLOR: highlightParams.labelFrameColors.join(";"),
+            HIGHLIGHT_LABELFRAMEOUTLINECOLOR: highlightParams.labelFrameOutlines.join(";"),
+            HIGHLIGHT_LABELFRAMESIZE: highlightParams.labelFrameSizes.join(";"),
+            HIGHLIGHT_LABELFRAMEOUTLINEWIDTH: highlightParams.labelFrameOutlineWidths.join(";"),
             csrf_token: MiscUtils.getCsrfToken(),
             ...exportParams
         };

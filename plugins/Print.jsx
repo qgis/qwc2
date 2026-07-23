@@ -699,6 +699,10 @@ class Print extends React.Component {
             formData[mapName + ":HIGHLIGHT_LABELSIZE"] = highlightParams.labelSizes.join(";");
             formData[mapName + ":HIGHLIGHT_LABEL_DISTANCE"] = highlightParams.labelDist.join(";");
             formData[mapName + ":HIGHLIGHT_LABEL_ROTATION"] = highlightParams.labelRotations.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELFRAMEBACKGROUNDCOLOR"] = highlightParams.labelFrameColors.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELFRAMEOUTLINECOLOR"] = highlightParams.labelFrameOutlines.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELFRAMESIZE"] = highlightParams.labelFrameSizes.join(";");
+            formData[mapName + ":HIGHLIGHT_LABELFRAMEOUTLINEWIDTH"] = highlightParams.labelFrameOutlineWidths.join(";");
         }
 
         // Add grid params

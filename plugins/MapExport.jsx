@@ -451,6 +451,10 @@ class MapExport extends React.Component {
         params.HIGHLIGHT_LABELSIZE = highlightParams.labelSizes.join(";");
         params.HIGHLIGHT_LABEL_DISTANCE = highlightParams.labelDist.join(";");
         params.HIGHLIGHT_LABEL_ROTATION = highlightParams.labelRotations.join(";");
+        params.HIGHLIGHT_LABELFRAMEBACKGROUNDCOLOR = highlightParams.labelFrameColors.join(";");
+        params.HIGHLIGHT_LABELFRAMEOUTLINECOLOR = highlightParams.labelFrameOutlines.join(";");
+        params.HIGHLIGHT_LABELFRAMESIZE = highlightParams.labelFrameSizes.join(";");
+        params.HIGHLIGHT_LABELFRAMEOUTLINEWIDTH = highlightParams.labelFrameOutlineWidths.join(";");
 
         // Watermark params
         Object.keys(this.props.theme.watermark || {}).forEach(key => {
