@@ -235,7 +235,7 @@ class Identify extends React.Component {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
             let pendingRequests = 0;
-            const identifyResults = this.props.click.modifiers.ctrl !== true && !this.props.appendResultsByDefault ? {} : state.identifyResults;
+            const identifyResults = this.props.click.modifiers.ctrl !== true && !this.props.appendResultsByDefault ? {} : state.identifyResults ?? {};
 
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
@@ -281,7 +281,7 @@ class Identify extends React.Component {
         if (poly.length < 3) {
             return;
         }
-        const identifyResults = this.state.filterGeomModifiers.ctrl !== true && !this.props.appendResultsByDefault ? {} : this.state.identifyResults;
+        const identifyResults = this.state.filterGeomModifiers.ctrl !== true && !this.props.appendResultsByDefault ? {} : this.state.identifyResults ?? {};
 
         let pendingRequests = 0;
         const params = {...this.props.params};
