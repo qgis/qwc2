@@ -627,6 +627,8 @@ For catalog entries containing a `wms` resource, you can specify `"asGroup": <tr
 * `true`:  imports the layer as a group, with sublayer structure. If the catalog entry has sublayers, the sublayer structure will be filtered to only include these sublayers.
 * `"option"`: imports the layer as a flat layer when clicking on the catalog entry, but displays an icon to optionally import the layer as a group layer. This is the default behaviour for entries with sublayers if `asGroup` is not specified.
 
+You can set a default fallback value for `asGroup` via the  `defaultAsGroupValue` `LayerCatalog` configuration option.
+
 Example:
 ```json
 {
@@ -673,6 +675,7 @@ Example:
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | catalogUrl | `string` | The URL to the catalog JSON file. | `undefined` |
+| defaultAsGroupValue | `{bool, string}` | Optional default value for `asGroup`, with possible values as documented above. | `undefined` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX).<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined<br />- `side`: undefined | `{`<br />`    initialWidth: 320,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left'`<br />`}` |
 | levelBasedIndentSize | `bool` | Whether to increase the indent size dynamically according to the current level (`true`) or keep the indent size constant (`false`). | `true` |
 | registerCatalogSearchProvider | `bool` | Whether to register a search provider which allows searching catalog layers through the global search field. | `true` |

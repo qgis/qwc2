@@ -22,6 +22,7 @@ class LayerCatalogWidget extends React.PureComponent {
         addLayer: PropTypes.func,
         catalog: PropTypes.array,
         closeWindow: PropTypes.func,
+        defaultAsGroupValue: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         layers: PropTypes.array,
         levelBasedIndentSize: PropTypes.bool,
         mapCrs: PropTypes.string,
@@ -55,6 +56,7 @@ class LayerCatalogWidget extends React.PureComponent {
         const type = entry.resource ? entry.resource.slice(0, entry.resource.indexOf(":")) : entry.type;
         const key = (entry.resource || (entry.type + ":" + entry.name)) + ":" + idx;
         const indentSize = !this.props.levelBasedIndentSize && level > 0 ? 1.5 : level;
+        const asGroup = entry.asGroup ?? this.props.defaultAsGroupValue;
         return (
             <div key={key} style={{paddingLeft: (0.5 * indentSize) + 'em'}}>
                 <div className="layer-catalog-widget-entry">
@@ -64,14 +66,14 @@ class LayerCatalogWidget extends React.PureComponent {
                         <span className="layer-catalog-widget-entry-iconspacer" />
                     )}
                     <span
-                        className="layer-catalog-widget-entry-contents" onClick={() => this.entryClicked(entry, path)}
+                        className="layer-catalog-widget-entry-contents" onClick={() => this.entryClicked(entry, path, asGroup)}
                         onKeyDown={MiscUtils.checkKeyActivate}
                         tabIndex={0}
                     >
                         {type ? (<span className="layer-catalog-widget-entry-service">{type}</span>) : null}
                         {entry.title}
                     </span>
-                    {((hasSublayers && !entry.asGroup) || entry.asGroup === "option") && (entry.resource ?? entry.type ?? "").startsWith("wms") ? (
+                    {((hasSublayers && !asGroup) || asGroup === "option") && (entry.resource ?? entry.type ?? "").startsWith("wms") ? (
                         <Icon icon="group" onClick={() => hasSublayers && entry.resource ? this.checkAddGroup(entry) : this.checkAddServiceLayer(entry, true)} title={LocaleUtils.tr("importlayer.asgroup")} />
                     ) : null}
                     {entry.link ? <Icon className="layer-catalog-widget-entry-link" icon="info-sign"  onClick={ev => this.openUrl(ev, entry.link, entry.target)} title={LocaleUtils.tr("layercatalog.openlink")} /> : null}
@@ -80,9 +82,9 @@ class LayerCatalogWidget extends React.PureComponent {
             </div>
         );
     }
-    entryClicked = (entry, path) => {
+    entryClicked = (entry, path, asGroup) => {
         if (entry.type || entry.resource) {
-            if (entry.asGroup === true && (entry.resource ?? entry.type).startsWith("wms")) {
+            if (asGroup === true && (entry.resource ?? entry.type).startsWith("wms")) {
                 if (!isEmpty(entry.sublayers) && entry.resource) {
                     this.checkAddGroup(entry);
                 } else {

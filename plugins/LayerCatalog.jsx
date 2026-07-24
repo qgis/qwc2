@@ -34,6 +34,8 @@ import './style/LayerCatalog.css';
  * * `true`:  imports the layer as a group, with sublayer structure. If the catalog entry has sublayers, the sublayer structure will be filtered to only include these sublayers.
  * * `"option"`: imports the layer as a flat layer when clicking on the catalog entry, but displays an icon to optionally import the layer as a group layer. This is the default behaviour for entries with sublayers if `asGroup` is not specified.
  *
+ * You can set a default fallback value for `asGroup` via the  `defaultAsGroupValue` `LayerCatalog` configuration option.
+ *
  * Example:
  * ```json
  * {
@@ -82,6 +84,8 @@ class LayerCatalog extends React.Component {
         active: PropTypes.bool,
         /** The URL to the catalog JSON file. */
         catalogUrl: PropTypes.string,
+        /** Optional default value for `asGroup`, with possible values as documented above.*/
+        defaultAsGroupValue: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
@@ -158,7 +162,7 @@ class LayerCatalog extends React.Component {
                 onClose={this.onClose} title={LocaleUtils.tr("layercatalog.windowtitle")}
             >
                 <div className="layer-catalog">
-                    <LayerCatalogWidget catalog={this.state.catalog} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} toggleGroupOnClick={this.props.toggleGroupOnClick} />
+                    <LayerCatalogWidget catalog={this.state.catalog} defaultAsGroupValue={this.props.defaultAsGroupValue} levelBasedIndentSize={this.props.levelBasedIndentSize} pendingRequests={0} toggleGroupOnClick={this.props.toggleGroupOnClick} />
                 </div>
             </ResizeableWindow>
         );
