@@ -84,6 +84,7 @@ jobs:
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ./qwc2-stock-app.zip
+        if: github.event_name != 'pull_request'
 
       - name: Create versioned release
         id: create_versioned_release
