@@ -5,18 +5,16 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
 import React from 'react';
 import {connect} from 'react-redux';
-
 import PropTypes from 'prop-types';
 
-import {setCurrentTask} from '../actions/task';
-import AttributeTableWidget from '../components/AttributeTableWidget';
-import ResizeableWindow from '../components/ResizeableWindow';
-import EditingInterface from '../utils/EditingInterface';
-import LocaleUtils from '../utils/LocaleUtils';
+import {setCurrentTask} from 'qwc2/actions/task';
 
+import AttributeTableWidget from 'qwc2/components/AttributeTableWidget';
+import ResizeableWindow from 'qwc2/components/ResizeableWindow';
+import EditingInterface from 'qwc2/utils/EditingInterface';
+import LocaleUtils from 'qwc2/utils/LocaleUtils';
 
 /**
  * Display the attribute table of layers in a dialog.
@@ -34,7 +32,7 @@ class AttributeTable extends React.Component {
         /** Whether to allow adding records for datasets which have a geometry column. */
         allowAddForGeometryLayers: PropTypes.bool,
         blocked: PropTypes.bool,
-        /** Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
+        /** Default window geometry with size, position and docking status. A locked window is not closeable and not resizeable. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX). */
         geometry: PropTypes.shape({
             initialWidth: PropTypes.number,
             initialHeight: PropTypes.number,
@@ -48,6 +46,8 @@ class AttributeTable extends React.Component {
         iface: PropTypes.object,
         /** Whether to limit to the extent by default. */
         limitToExtent: PropTypes.bool,
+        /** Whether the attribute table window remains visible after activation. */
+        lockedWindow: PropTypes.bool,
         setCurrentTask: PropTypes.func,
         /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
         showEditFormButton: PropTypes.bool,
@@ -74,14 +74,26 @@ class AttributeTable extends React.Component {
             side: 'bottom'
         }
     };
+
+    state = {
+            visible: false
+    };
+    
+    componentDidUpdate(prevProps) {
+        if (this.props.active && !prevProps.active) {
+            this.setState({visible: true});
+        }
+    }    
+    
     render() {
-        if (!this.props.active) {
+        if (!this.props.active && (!this.props.lockedWindow || !this.state.visible)) {
             return null;
         }
+
         return (
-            <ResizeableWindow dockable={this.props.geometry.side} icon="editing" initialHeight={this.props.geometry.initialHeight}
+            <ResizeableWindow dockable={this.props.lockedWindow ? false : this.props.geometry.side} icon="editing" initialHeight={this.props.geometry.initialHeight}
                 initialWidth={this.props.geometry.initialWidth} initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
-                initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} splitScreenWhenDocked title={LocaleUtils.tr("attribtable.title")}
+                initiallyDocked={this.props.geometry.initiallyDocked} onClose={this.onClose} splitScreenWhenDocked={!this.props.lockedWindow} title={LocaleUtils.tr("attribtable.title")}
             >
                 <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers} hideIdColumn={this.props.hideIdColumn}
                     iface={this.props.iface} initialLayer={this.props.taskData?.layer} limitToExtent={this.props.limitToExtent}
@@ -91,7 +103,10 @@ class AttributeTable extends React.Component {
             </ResizeableWindow>
         );
     }
+
     onClose = () => {
+        this.setState({visible: false});
+
         if (!this.props.blocked) {
             this.props.setCurrentTask(null);
         }
