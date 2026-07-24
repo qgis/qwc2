@@ -108,8 +108,7 @@ class FeatureForm extends React.Component {
             this.clearResults();
         }
 
-        const isAllowedContext = [null, "FeatureForm"].includes(this.props.currentEditContext);
-        if (this.props.enabled && this.state.pendingRequests === 0 && isAllowedContext && !this.props.editContext.changed) {
+        if (this.props.enabled && this.state.pendingRequests === 0 && !this.props.editContext.changed) {
             const clickPoint = this.queryPoint(prevProps);
             if (clickPoint) {
                 this.queryFeatures(clickPoint);
