@@ -48,8 +48,8 @@ class Identify extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
         addMarker: PropTypes.func,
-        /** Whether to append results by default (without having to press `CTRL` when clicking). */
-        appendResultsByDefault: PropTypes.bool,
+        /** Whether to append results by default (without having to press `CTRL` when clicking). To append results by default only when Identify is run as a task, set to `task`. */
+        appendResultsByDefault: PropTypes.oneOf([false, true, "task"]),
         /** Optional function for computing derived attributes. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
         attributeCalculator: PropTypes.func,
         /** Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
@@ -105,7 +105,7 @@ class Identify extends React.Component {
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
         /** Result display mode. */
-        resultDisplayMode: PropTypes.oneOf(["tree", "flat", "paginated"]),
+        resultDisplayMode: PropTypes.oneOf(["tree", "flat", "paginated", "table"]),
         /** Target cell size of the result grid in comparison mode. */
         resultGridSize: PropTypes.number,
         /** Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. */
@@ -117,6 +117,9 @@ class Identify extends React.Component {
         /** Whether to prefix the identify result titles with the respecitve layer name. */
         showLayerTitles: PropTypes.bool,
         startupParams: PropTypes.object,
+        taskEnabled: PropTypes.bool,
+        /** Result display mode when Identify is run as a task. Defaults to `resultDisplayMode`. */
+        taskResultDisplayMode: PropTypes.oneOf(["tree", "flat", "paginated", "table"]),
         theme: PropTypes.object
     };
     static defaultProps = {
@@ -235,12 +238,19 @@ class Identify extends React.Component {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
             let pendingRequests = 0;
-            const identifyResults = this.props.click.modifiers.ctrl !== true && !this.props.appendResultsByDefault ? {} : state.identifyResults ?? {};
+            const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
+            const identifyResults = this.props.click.modifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
 
+            const params = {...this.props.params};
+            const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
+            if (resultDisplayMode === "table") {
+                params.with_htmlcontent = false;
+                params.with_maptip = false;
+            }
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             queryableLayers.forEach(l => {
-                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
+                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, params);
                 ++pendingRequests;
                 IdentifyUtils.sendRequest(request, (response) => {
                     this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
@@ -281,10 +291,16 @@ class Identify extends React.Component {
         if (poly.length < 3) {
             return;
         }
-        const identifyResults = this.state.filterGeomModifiers.ctrl !== true && !this.props.appendResultsByDefault ? {} : this.state.identifyResults ?? {};
+        const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
+        const identifyResults = this.state.filterGeomModifiers.ctrl !== true && !appendResultsByDefault ? {} : this.state.identifyResults ?? {};
 
         let pendingRequests = 0;
         const params = {...this.props.params};
+        const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
+        if (resultDisplayMode === "table") {
+            params.with_htmlcontent = false;
+            params.with_maptip = false;
+        }
         if (this.props.params.region_feature_count) {
             params.feature_count = this.props.params.region_feature_count;
             delete params.region_feature_count;
@@ -465,6 +481,7 @@ class Identify extends React.Component {
                     body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("identify.noresults")}</span></div>);
                 }
             } else {
+                const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
                 body = (
                     <IdentifyViewer
                         attributeCalculator={this.props.attributeCalculator}
@@ -479,7 +496,7 @@ class Identify extends React.Component {
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
-                        resultDisplayMode={this.props.resultDisplayMode}
+                        resultDisplayMode={resultDisplayMode}
                         resultGridSize={this.props.resultGridSize}
                         resultMultiDisplay={this.props.resultMultiDisplay}
                         showLayerSelector={this.props.showLayerSelector}
@@ -530,6 +547,7 @@ export default connect((state) => {
         click: state.map.click || {modifiers: {}},
         currentSearchResult: state.search.currentResult,
         enabled: enabled,
+        taskEnabled: state.task.id === "Identify",
         layerFilterGeom: state.layers.filter?.filterGeom,
         layers: state.layers.flat,
         map: state.map,

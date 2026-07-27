@@ -590,7 +590,7 @@ for customized queries and templates for the result presentation.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| appendResultsByDefault | `bool` | Whether to append results by default (without having to press `CTRL` when clicking). | `undefined` |
+| appendResultsByDefault | `{false, true, "task"}` | Whether to append results by default (without having to press `CTRL` when clicking). To append results by default only when Identify is run as a task, set to `task`. | `undefined` |
 | attributeCalculator | `func` | Optional function for computing derived attributes. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
 | attributeTransform | `func` | Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
 | availableRegionModes | `[string]` | Available region identify modes. | `['Region', 'Radius', 'Circle', 'Rectangle']` |
@@ -609,11 +609,12 @@ for customized queries and templates for the result presentation.
 | onlyShowDialogWithResults | `bool` | Whether to only show the results dialog if there are results to display. | `undefined` |
 | params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
-| resultDisplayMode | `{"tree", "flat", "paginated"}` | Result display mode. | `'flat'` |
+| resultDisplayMode | `{"tree", "flat", "paginated", "table"}` | Result display mode. | `'flat'` |
 | resultGridSize | `number` | Target cell size of the result grid in comparison mode. | `200` |
 | resultMultiDisplay | `bool` | Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. | `false` |
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
 | showLayerTitles | `bool` | Whether to prefix the identify result titles with the respecitve layer name. | `true` |
+| taskResultDisplayMode | `{"tree", "flat", "paginated", "table"}` | Result display mode when Identify is run as a task. Defaults to `resultDisplayMode`. | `undefined` |
 
 ## LayerCatalog<a name="layercatalog"></a>
 
