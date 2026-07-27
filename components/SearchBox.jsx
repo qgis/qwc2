@@ -419,7 +419,7 @@ class SearchBox extends React.Component {
                 {result.thumbnail ? (<img className="searchbox-result-thumbnail" onError={(ev) => this.loadFallbackResultImage(ev, group.type)} src={result.thumbnail} />) : null}
                 <Icon className="searchbox-result-openicon" icon="open" />
                 <span className="searchbox-result-label" dangerouslySetInnerHTML={{__html: MiscUtils.sanitizeHtml(result.text).replace(/<br\s*\/>/ig, ' ')}} title={result.label ?? result.text} />
-                {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => this.addThemeLayers(result.layer)} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
+                {result.theme && addThemes ? (<Icon icon="plus" onClick={(ev) => {MiscUtils.killEvent(ev); this.addThemeLayers(result.layer);}} title={LocaleUtils.tr("themeswitcher.addtotheme")}/>) : null}
             </div>
         );
     };
