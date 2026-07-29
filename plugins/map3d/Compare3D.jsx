@@ -314,8 +314,18 @@ class Compare3D extends React.Component {
             const newState = {enabled: !state.enabled};
             if (newState.enabled) {
                 // Position plane in current view
-                newState.planeX = this.props.sceneContext.scene.view.controls.target.x;
-                newState.planeY = this.props.sceneContext.scene.view.controls.target.y;
+                let sceneTarget;
+                const intersection = this.props.sceneContext.getSceneIntersection(0, 0);
+                if (intersection) {
+                    sceneTarget = intersection.point;
+                } else {
+                    sceneTarget = this.props.sceneContext.scene.view.controls.target.clone();
+                    sceneTarget.z = this.props.sceneContext.getTerrainHeightFromMap([
+                        sceneTarget.x, sceneTarget.y
+                    ]) ?? 0 + 2;
+                }
+                newState.planeX = sceneTarget.x;
+                newState.planeY = sceneTarget.y;
                 newState.planeA = -this.props.sceneContext.scene.view.controls.getAzimuthalAngle() / Math.PI * 180 + 90;
             }
             return newState;
