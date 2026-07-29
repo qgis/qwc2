@@ -160,7 +160,8 @@ export default {
                 OverviewMap3D: lazy(() => import('./plugins/map3d/OverviewMap3D')),
                 Settings3D: lazy(() => import('./plugins/map3d/Settings3D')),
                 SunExposure3D: lazy(() => import('./plugins/map3d/SunExposure3D')),
-                TopBar3D: lazy(() => import('./plugins/map3d/TopBar3D'))
+                TopBar3D: lazy(() => import('./plugins/map3d/TopBar3D')),
+                Viewshed3D: lazy(() => import('./plugins/map3d/Viewshed3D'))
             }),
             ZoomInPlugin: ZoomInPlugin,
             ZoomOutPlugin: ZoomOutPlugin

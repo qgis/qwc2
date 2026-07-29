@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "テーマ",
+        "Viewshed3D": "",
         "VisibilityPresets": "",
         "AttributeTable": "属性テーブル",
         "AuthenticationLogin": "ログイン",
@@ -905,6 +906,13 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed3d": {
+      "maxDistance": "",
+      "observerpos": "",
+      "occludedcolor": "",
+      "showgizmo": "",
+      "visiblecolor": ""
     },
     "visibilitypreset": {
       "add": "",

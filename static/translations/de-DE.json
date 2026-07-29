@@ -35,6 +35,7 @@
         "SunExposure3D": "Besonnungsanalyse",
         "ThemeBrowser": "Themenbrowser",
         "ThemeSwitcher": "Themen",
+        "Viewshed3D": "Sichtbereich",
         "VisibilityPresets": "Sichtbarkeitsprofile",
         "AttributeTable": "Attributtabelle",
         "AuthenticationLogin": "Anmelden",
@@ -905,6 +906,13 @@
     },
     "view3d": {
       "storingstate": "3D Ansicht wird gespeichert..."
+    },
+    "viewshed3d": {
+      "maxDistance": "Maximale Distanz",
+      "observerpos": "Beobachterposition",
+      "occludedcolor": "Nicht sichtbar",
+      "showgizmo": "Steuerelement anzeigen",
+      "visiblecolor": "Sichtbar"
     },
     "visibilitypreset": {
       "add": "Sichtbarkeitsprofil anlegen",

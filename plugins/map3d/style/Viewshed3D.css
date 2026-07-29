@@ -1,0 +1,26 @@
+div.viewshed3d-body {
+    padding: 0.25em;
+}
+
+table.viewshed3d-optionstable {
+    width: 100%;
+}
+
+div.viewshed3d-posinputs {
+    display: flex;
+}
+
+div.viewshed3d-posinputs > div:nth-child(1) {
+    border: 2px solid #fe2a3b;
+    flex: 1 1 auto;
+}
+
+div.viewshed3d-posinputs > div:nth-child(2) {
+    border: 2px solid #07fe60;
+    flex: 1 1 auto;
+}
+
+div.viewshed3d-posinputs > div:nth-child(3) {
+    border: 2px solid #170eed;
+    flex: 1 1 auto;
+}

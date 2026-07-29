@@ -35,6 +35,7 @@
         "SunExposure3D": "Expunere la soare",
         "ThemeBrowser": "Explorator de teme",
         "ThemeSwitcher": "Hărți tematice",
+        "Viewshed3D": "",
         "VisibilityPresets": "Presetări de vizibilitate",
         "AttributeTable": "Tabela de atribute",
         "AuthenticationLogin": "Conectează-te",
@@ -63,8 +64,8 @@
         "PrintScreen3D": "Export raster",
         "Redlining": "Evidențiere",
         "Routing": "Traseu",
-        "ServiceInfo": "Infomrații Temă",
         "SensorThingsTool": "Interogare SensorThings",
+        "ServiceInfo": "Infomrații Temă",
         "Tools": "Unelte hartă",
         "TourGuide": "Tur ghidat",
         "TimeManager": "Informații temporale",
@@ -905,6 +906,13 @@
     },
     "view3d": {
       "storingstate": "Se salvează starea 3D..."
+    },
+    "viewshed3d": {
+      "maxDistance": "",
+      "observerpos": "",
+      "occludedcolor": "",
+      "showgizmo": "",
+      "visiblecolor": ""
     },
     "visibilitypreset": {
       "add": "Creează presetare de vizibilitate nouă",

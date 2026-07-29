@@ -83,6 +83,7 @@ Plugin reference
 * [Settings3D](#settings3d)
 * [SunExposure3D](#sunexposure3d)
 * [TopBar3D](#topbar3d)
+* [Viewshed3D](#viewshed3d)
 
 [Extra Plugins](#extraPlugins)
 
@@ -1491,6 +1492,10 @@ Top bar of the 3D map, including the search bar, tool bar and menu.
 | menuItems | `array` | The menu items, in the same format as the 2D `TopBar` menu items.<br />You can include entries for the View3D plugins.<br />You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),<br />these will be displayed only in fullsceen 3D mode. | `undefined` |
 | searchOptions | `{`<br />`  minScaleDenom: number,`<br />`}` | Options passed down to the search component.<br />- `minScaleDenom`: Minimum scale denominator when zooming to search result. | `{`<br />`    minScaleDenom: 1000`<br />`}` |
 | toolbarItems | `array` | The toolbar, in the same format as the 2D `TopBar` toolbar items.<br />You can include entries for the View3D plugins.<br />You can also include entries for 2D plugins which are compatible with the 3D view (i.e. `ThemeSwitcher`, `Share`, etc.),<br />these will be displayed only in fullsceen 3D mode. | `undefined` |
+
+## Viewshed3D<a name="viewshed3d"></a>
+
+Compute 3D viewsheds.
 
 ---
 # Extra plugins<a name="extraPlugins"></a>

@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "Kaartselectie",
+        "Viewshed3D": "",
         "VisibilityPresets": "",
         "AttributeTable": "Attributentabel",
         "AuthenticationLogin": "Inloggen",
@@ -905,6 +906,13 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed3d": {
+      "maxDistance": "",
+      "observerpos": "",
+      "occludedcolor": "",
+      "showgizmo": "",
+      "visiblecolor": ""
     },
     "visibilitypreset": {
       "add": "",

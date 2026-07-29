@@ -35,6 +35,7 @@
         "SunExposure3D": "Esposizione al sole",
         "ThemeBrowser": "Browser dei temi",
         "ThemeSwitcher": "Temi",
+        "Viewshed3D": "Area visibile",
         "VisibilityPresets": "Profili di visibilità",
         "AttributeTable": "Tabella attributi",
         "AuthenticationLogin": "Accedi",
@@ -905,6 +906,13 @@
     },
     "view3d": {
       "storingstate": "Salvando vista 3D..."
+    },
+    "viewshed3d": {
+      "maxDistance": "Distanza massima",
+      "observerpos": "Posizione osservatore",
+      "occludedcolor": "Non visibile",
+      "showgizmo": "Mostra elemento di controllo",
+      "visiblecolor": "Visibile"
     },
     "visibilitypreset": {
       "add": "Salva profilo di visibilità",

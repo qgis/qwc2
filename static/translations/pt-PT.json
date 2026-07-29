@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "Tema",
+        "Viewshed3D": "",
         "VisibilityPresets": "",
         "AttributeTable": "Tabela de Atributos",
         "AuthenticationLogin": "Iniciar Sessão",
@@ -905,6 +906,13 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed3d": {
+      "maxDistance": "",
+      "observerpos": "",
+      "occludedcolor": "",
+      "showgizmo": "",
+      "visiblecolor": ""
     },
     "visibilitypreset": {
       "add": "",

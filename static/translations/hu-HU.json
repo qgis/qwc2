@@ -35,6 +35,7 @@
         "SunExposure3D": "",
         "ThemeBrowser": "",
         "ThemeSwitcher": "Térkép",
+        "Viewshed3D": "",
         "VisibilityPresets": "",
         "AttributeTable": "",
         "AuthenticationLogin": "",
@@ -905,6 +906,13 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed3d": {
+      "maxDistance": "",
+      "observerpos": "",
+      "occludedcolor": "",
+      "showgizmo": "",
+      "visiblecolor": ""
     },
     "visibilitypreset": {
       "add": "",
