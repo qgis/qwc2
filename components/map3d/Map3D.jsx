@@ -753,7 +753,7 @@ class Map3D extends React.Component {
         const objectTree = this.state.sceneContext.objectTree;
         const options = objectTree[objectId];
         let isVisible = options.opacity > 0 && options.visibility;
-        for (let curId = options.parent; isVisible && curId !== undefined; curId = objectTree[curId].parent) {
+        for (let curId = options.parent; isVisible && curId !== undefined && objectTree[curId]; curId = objectTree[curId].parent) {
             isVisible &&= objectTree[curId].visibility;
         }
         return isVisible;
