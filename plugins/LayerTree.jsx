@@ -875,10 +875,10 @@ class LayerTree extends React.Component {
             }
         }
     };
-    toggleLayerTreeVisibility = (visibile) => {
+    toggleLayerTreeVisibility = (visible) => {
         for (const layer of this.props.layers) {
             if (layer.role === LayerRole.THEME || layer.role === LayerRole.USERLAYER) {
-                this.props.changeLayerProperty(layer.id, "visibility", visibile, [], this.props.groupTogglesSublayers ? "children" : null);
+                this.props.changeLayerProperty(layer.id, "visibility", visible, [], this.props.groupTogglesSublayers ? "children" : null);
             }
         }
     };

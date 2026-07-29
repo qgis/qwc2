@@ -647,7 +647,7 @@ class Map3D extends React.Component {
         }
         let changed = false;
         if (options.visibility !== prevOptions.visibility || options.opacity !== prevOptions?.opacity) {
-            // Visibile if object is visibile and parents also
+            // Visible if object is visible and parents also
             let isVisible = options.opacity > 0 && options.visibility;
             for (let curId = options.parent; isVisible && curId !== undefined; curId = objectTree[curId].parent) {
                 isVisible &&= objectTree[curId].visibility;

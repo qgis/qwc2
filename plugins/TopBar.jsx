@@ -60,7 +60,7 @@ class TopBar extends React.Component {
         registerTaskSearchProvider: PropTypes.bool,
         /** Options passed down to the search component. */
         searchOptions: PropTypes.shape({
-            /** Whether to show an icon to add a layer result as a group (i.e. with visibile sublayers). */
+            /** Whether to show an icon to add a layer result as a group (i.e. with visible sublayers). */
             allowAddLayerAsGroup: PropTypes.bool,
             /** Whether to show the search filter widget. */
             allowSearchFilters: PropTypes.bool,

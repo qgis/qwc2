@@ -66,7 +66,7 @@ class LocationRecorder extends React.Component {
         } else {
             this.props.drawInteraction.abortDrawing();
             this.props.drawInteraction.setActive(false);
-            // Re-add overlay to map, removed by setActive(false), to ensure traced feature is visibile
+            // Re-add overlay to map, removed by setActive(false), to ensure traced feature is visible
             this.props.drawInteraction.getOverlay().setMap(this.props.map);
 
             this.setState({recording: true});
