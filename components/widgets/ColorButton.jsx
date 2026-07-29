@@ -9,6 +9,7 @@
 import {ColorPicker} from '@vtaits/react-color-picker';
 import '@vtaits/react-color-picker/index.css';
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import PropTypes from 'prop-types';
 
@@ -45,53 +46,54 @@ export default class ColorButton extends React.Component {
         onColorChanged: (/* color */) => {}
     };
     state = {
-        colors: defaultColors
+        colors: defaultColors,
+        pickerPos: null,
+        hexStr: null
     };
     constructor(props) {
         super(props);
-        this.state = {
-            pickerVisible: false,
-            hexStr: null
-        };
-        this.pickerEl = null;
+        this.menuContainer = null;
         this.state.colors = props.defaultColors;
     }
     render() {
-        const pickerStyle = {
-            visibility: this.state.pickerVisible ? 'visible' : 'hidden'
-        };
         const curColor = this.props.color;
+        const pickerStyle = () => ({
+            left: `calc(${this.state.pickerPos[0]}px - 6.5em)`,
+            top: `calc(${this.state.pickerPos[1]}px + 0.7em)`
+        });
         return (
             <div className="ColorButton">
                 <div className="colorbutton-icon" onClick={this.togglePicker} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}>
                     <span style={{backgroundColor: this.cssColor(curColor)}} />
                 </div>
-                <div className="colorbutton-picker" ref={el => { this.pickerEl = el; }} style={pickerStyle}>
-                    <div className="colorbutton-picker-icons">
-                        {this.state.colors.map((color, idx) => (
-                            <div className="colorbutton-icon" key={"color" + idx}
-                                onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}
-                                onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}
-                            >
-                                <span style={{backgroundColor: this.cssColor(color)}} />
-                            </div>
-                        ))}
-                    </div>
-                    <ColorPicker className="colorbutton-picker-spectrum" onDrag={this.changeColor} saturationHeight={150} value={this.cssColorRGB(curColor)} />
-                    <div className="colorbutton-picker-input controlgroup">
-                        <div className="colorbutton-icon">
-                            <span style={{backgroundColor: this.cssColor(curColor)}} />
-                        </div>
-                        <input onChange={ev => this.changeColor(ev.target.value)} type="text" value={this.state.hexStr || this.hexColor(curColor)} />
-                        {this.props.alpha ? (
-                            <div className="colorbutton-picker-alpha">
-                                <div>
-                                    <input max="1" min="0" onChange={ev => this.changeColorAlpha(ev.target.value)} step="0.1" type="range" value={curColor[3]}/>
+                {this.state.pickerPos ? ReactDOM.createPortal((
+                    <div className="colorbutton-picker" style={pickerStyle()}>
+                        <div className="colorbutton-picker-icons">
+                            {this.state.colors.map((color, idx) => (
+                                <div className="colorbutton-icon" key={"color" + idx}
+                                    onClick={() => this.selectColor(idx)} onContextMenu={ev => this.replaceDefaultColor(ev, idx)}
+                                    onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0}
+                                >
+                                    <span style={{backgroundColor: this.cssColor(color)}} />
                                 </div>
+                            ))}
+                        </div>
+                        <ColorPicker className="colorbutton-picker-spectrum" onDrag={this.changeColor} saturationHeight={150} saturationWidth={null} value={this.cssColorRGB(curColor)} />
+                        <div className="colorbutton-picker-input controlgroup">
+                            <div className="colorbutton-icon">
+                                <span style={{backgroundColor: this.cssColor(curColor)}} />
                             </div>
-                        ) : null}
+                            <input onChange={ev => this.changeColor(ev.target.value)} type="text" value={this.state.hexStr || this.hexColor(curColor)} />
+                            {this.props.alpha ? (
+                                <div className="colorbutton-picker-alpha">
+                                    <div>
+                                        <input max="1" min="0" onChange={ev => this.changeColorAlpha(ev.target.value)} step="0.1" type="range" value={curColor[3]}/>
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
                     </div>
-                </div>
+                ), this.menuContainer) : null}
             </div>
         );
     }
@@ -105,18 +107,25 @@ export default class ColorButton extends React.Component {
         return (0x1000000 + (color[2] | (color[1] << 8) | (color[0] << 16))).toString(16).slice(1).toUpperCase();
     }
     togglePicker = (ev) => {
-        if (!this.state.pickerVisible) {
-            document.addEventListener('click', this.checkClosePicker);
-        } else {
-            document.removeEventListener('click', this.checkClosePicker);
+        if (this.menuContainer) {
+            // Should not happen...
+            this.menuContainer.parentElement.removeChild(this.menuContainer);
+            this.menuContainer = null;
         }
+        this.menuContainer = ev.view.document.createElement("div");
+        this.menuContainer.className = "colorbutton-picker-container";
+        ev.view.document.body.appendChild(this.menuContainer);
+        this.menuContainer.addEventListener('click', (ev2) => {
+            if (ev2.currentTarget === ev2.target) {
+                this.setState({pickerPos: null, hexStr: null}, () => {
+                    this.menuContainer.parentElement.removeChild(this.menuContainer);
+                    this.menuContainer = null;
+                });
+            }
+        });
+        const rect = ev.currentTarget.getBoundingClientRect();
+        this.setState({hexStr: null, pickerPos: [rect.left + 0.5 * rect.width, rect.bottom]});
         ev.stopPropagation();
-        this.setState((state) => ({hexStr: null, pickerVisible: !state.pickerVisible}));
-    };
-    checkClosePicker = (ev) => {
-        if (this.pickerEl && !this.pickerEl.contains(ev.target)) {
-            this.togglePicker(ev);
-        }
     };
     selectColor = (idx) => {
         this.setState({hexStr: null});

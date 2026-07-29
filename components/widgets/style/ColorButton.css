@@ -21,11 +21,16 @@ div.colorbutton-icon > span {
     display: inline-block;
 }
 
+div.colorbutton-picker-container {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 10000;
+}
 div.colorbutton-picker {
-    visibility: hidden;
     position: absolute;
-    left: -5.5em;
-    top: 2.75em;
     background-color: white;
     box-shadow: 0px 0px 5px rgba(136, 136, 136, 1);
     border-radius: 0.25em;
@@ -91,8 +96,14 @@ div.colorbutton-picker-spectrum {
     display: flex;
     height: 150px;
     margin: 0 0.25em;
+    gap: 0.25em;
+}
+
+div.colorbutton-picker-spectrum > div.react-color-picker__saturation-spectrum {
+    flex: 1 1 auto;
 }
 
 div.colorbutton-picker-spectrum > div.react-color-picker__hue-spectrum {
-    margin-left: 0.25em!important;
+    margin-left: 0!important;
+    flex: 0 0 2em;
 }
