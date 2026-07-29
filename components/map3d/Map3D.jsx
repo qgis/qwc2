@@ -155,6 +155,9 @@ class Map3D extends React.Component {
             objectIsVisible: (objectId) => {},
             objectContainsPoints: (object) => {},
 
+            addObjectAddedListener: (callback) => {},
+            removeObjectAddedListener: (callback) => {},
+
             getMap: () => {},
 
             computeBoundsTree: (object) => {},
@@ -177,6 +180,7 @@ class Map3D extends React.Component {
         this.sceneObjectGroup = null;
         this.objectMap = {};
         this.tilesetStyles = {};
+        this.objectAddedListeners = [];
         this.state.sceneContext.eventDispatcher = new EventDispatcher();
         this.state.sceneContext.addLayer = this.addLayer;
         this.state.sceneContext.getLayer = this.getLayer;
@@ -189,6 +193,8 @@ class Map3D extends React.Component {
         this.state.sceneContext.getSceneObject = this.getSceneObject;
         this.state.sceneContext.removeSceneObject = this.removeSceneObject;
         this.state.sceneContext.updateSceneObject = this.updateSceneObject;
+        this.state.sceneContext.addObjectAddedListener = (callback) => this.objectAddedListeners.push(callback);
+        this.state.sceneContext.removeObjectAddedListener = (callback) => { this.objectAddedListeners = this.objectAddedListeners.filter(cb => cb !== callback); };
         this.state.sceneContext.zoomToObject = this.zoomToObject;
         this.state.sceneContext.objectIsVisible = this.objectIsVisible;
         this.state.sceneContext.objectContainsPoints = this.objectContainsPoints;
@@ -467,6 +473,7 @@ class Map3D extends React.Component {
             }
             this.computeBoundsTree(scene);
             this.instance.notifyChange(tiles);
+            this.notifyObjectAdded(scene);
         });
         // Show/hide labels when tile visibility changes
         tiles.tiles.addEventListener('tile-visibility-change', ({scene, visible}) => {
@@ -474,6 +481,9 @@ class Map3D extends React.Component {
                 l.labelObject.visible = visible;
                 l.labelObject.element.style.display = visible ? 'initial' : 'none';
             });
+            if (visible) {
+                this.notifyObjectAdded(scene);
+            }
         });
         tiles.castShadow = true;
         tiles.receiveShadow = true;
@@ -545,6 +555,7 @@ class Map3D extends React.Component {
             });
         } else {
             this.sceneObjectGroup.add(object);
+            this.notifyObjectAdded(object);
             callback?.();
         }
         this.objectMap[objectId] = object;
@@ -705,6 +716,9 @@ class Map3D extends React.Component {
                 }
             }
         });
+    };
+    notifyObjectAdded = (obj) => {
+        this.objectAddedListeners.forEach(listener => listener(obj));
     };
     loadTilesetStyle = (objectId, url) => {
         const applyTilesetStyle = (styleurl) => {
