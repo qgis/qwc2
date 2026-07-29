@@ -516,6 +516,7 @@
                 {"key": "MapExport3D", "icon": "rasterexport"},
                 {"key": "ExportObjects3D", "icon": "export"},
                 {"key": "SunExposure3D", "icon": "sunexp"},
+                {"key": "Viewshed3D", "icon": "eye"},
                 {"key": "Settings3D", "icon": "cog"}
               ],
               "toolbarItems": [
