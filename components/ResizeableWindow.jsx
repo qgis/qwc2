@@ -410,7 +410,7 @@ class ResizeableWindow extends React.Component {
                 {this.renderTitleBar()}
                 <div className="resizeable-window-body">
                     {this.portalNode ? (
-                        <div className="resizeable-window-portal-container">
+                        <div className="resizeable-window-portal-container resizeable-window-portal-container-detached">
                             <portals.OutPortal node={this.portalNode} />
                         </div>
                     ) : this.props.children}

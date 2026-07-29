@@ -16,6 +16,16 @@ div.resizeable-window-portal-container > div {
     height: 100%;
 }
 
+div.resizeable-window-portal-container-detached {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 2.5em;
+    padding: 0.25em;
+    background-color: var(--container-bg-color);
+}
+
 div.resizeable-window-contents {
     display: flex;
     flex-direction: column;
