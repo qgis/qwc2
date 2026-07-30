@@ -219,11 +219,13 @@ class Identify extends React.Component {
             }
         }
         if (
-            this.props.onlyShowDialogWithResults &&
-            this.state.pendingRequests === 0 && this.state.identifyResults !== null && isEmpty(this.state.identifyResults) &&
+            this.state.pendingRequests === 0 && this.state.identifyResults !== null &&
             (prevState.pendingRequests > 0 || prevState.identifyResults === null)
         ) {
-            this.clearResults();
+            if (isEmpty(this.state.identifyResults) && this.props.onlyShowDialogWithResults) {
+                this.clearResults();
+            }
+            this.setState({filterGeom: null, filterGeomModifiers: {}});
         }
     }
     queryPoint = (prevProps) => {
