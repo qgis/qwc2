@@ -615,6 +615,7 @@ for customized queries and templates for the result presentation.
 | resultMultiDisplay | `bool` | Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. | `false` |
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
 | showLayerTitles | `bool` | Whether to prefix the identify result titles with the respecitve layer name. | `true` |
+| skipEmptyFeatureAttributes | `bool` | Whether to skip empty feature attributes. | `undefined` |
 | taskResultDisplayMode | `{"tree", "flat", "paginated", "table"}` | Result display mode when Identify is run as a task. Defaults to `resultDisplayMode`. | `undefined` |
 
 ## LayerCatalog<a name="layercatalog"></a>

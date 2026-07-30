@@ -116,6 +116,8 @@ class Identify extends React.Component {
         showLayerSelector: PropTypes.bool,
         /** Whether to prefix the identify result titles with the respecitve layer name. */
         showLayerTitles: PropTypes.bool,
+        /** Whether to skip empty feature attributes. */
+        skipEmptyFeatureAttributes: PropTypes.bool,
         startupParams: PropTypes.object,
         taskEnabled: PropTypes.bool,
         /** Result display mode when Identify is run as a task. Defaults to `resultDisplayMode`. */
@@ -501,6 +503,7 @@ class Identify extends React.Component {
                         resultMultiDisplay={this.props.resultMultiDisplay}
                         showLayerSelector={this.props.showLayerSelector}
                         showLayerTitles={this.props.showLayerTitles}
+                        skipEmptyFeatureAttributes={this.props.skipEmptyFeatureAttributes}
                     />
                 );
             }

@@ -280,6 +280,7 @@ class IdentifyViewer extends React.Component {
         setActiveLayerInfo: PropTypes.func,
         showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
+        skipEmptyFeatureAttributes: PropTypes.bool,
         theme: PropTypes.object,
         zoomToPoint: PropTypes.func
     };
@@ -578,7 +579,7 @@ class IdentifyViewer extends React.Component {
             } else {
                 rows = properties.map(attrib => {
                     if (
-                        this.props.theme.skipEmptyFeatureAttributes &&
+                        (this.props.theme.skipEmptyFeatureAttributes || this.props.skipEmptyFeatureAttributes) &&
                         (feature.properties[attrib] === "" || feature.properties[attrib] === null || feature.properties[attrib] === "NULL")
                     ) {
                         return null;
