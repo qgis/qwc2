@@ -121,6 +121,7 @@ class RedliningFeatureLabelSupport extends React.Component {
         } else {
             text = String(text);
         }
+        text = text.replace(/<\/?br\s*\/?>/gi, '\n').replace(/&#10;/g, '\n');
         const center = cur.mapPos;
         let feature = (this.props.layers.find(l => l.id === this.props.redlining.layer)?.features || []).find(f => f.id === featureId);
         if (feature) {
