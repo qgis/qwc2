@@ -1,4 +1,3 @@
-import htmlReactParser, {domToReact} from 'html-react-parser';
 /**
  * Copyright 2016-2024 Sourcepole AG
  * All rights reserved.
@@ -6,6 +5,7 @@ import htmlReactParser, {domToReact} from 'html-react-parser';
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import htmlReactParser, {domToReact} from 'html-react-parser';
 import React from 'react';
 import {connect} from 'react-redux';
 
@@ -29,6 +29,8 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
+import ButtonBar from './widgets/ButtonBar';
+import FeaturesTable from './widgets/FeaturesTable';
 import NavBar from './widgets/NavBar';
 import Spinner from './widgets/Spinner';
 import ToggleSwitch from './widgets/ToggleSwitch';
@@ -309,7 +311,8 @@ class IdentifyViewer extends React.Component {
         compareEnabled: false,
         multiViewEnabled: false,
         currentPage: 0,
-        pageSize: 1
+        pageSize: 1,
+        tableSelection: {}
     };
     constructor(props) {
         super(props);
@@ -370,7 +373,7 @@ class IdentifyViewer extends React.Component {
         });
     };
     setHighlightedFeatures = (features) => {
-        if (!features && this.props.highlightAllResults) {
+        if (isEmpty(features) && this.props.highlightAllResults) {
             const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
             features = Object.values(resultTree).flat();
         }
@@ -674,6 +677,73 @@ class IdentifyViewer extends React.Component {
             };
         });
     };
+    renderResultsTable = () => {
+        return (
+            <div className="identify-results-tables">
+                {Object.entries(this.state.resultTree).map(([layerid, features]) => {
+                    if (features.length === 0 || (this.state.selectedLayer && layerid !== this.state.selectedLayer)) {
+                        return null;
+                    }
+
+                    const fields = {};
+                    features.map(feature => {
+                        Object.entries(feature.properties).map(([attr, value]) => {
+                            if (!(attr in fields)) {
+                                fields[attr] = {id: attr, name: attr};
+                            }
+                        });
+                    });
+                    const haveSel = !isEmpty(this.state.tableSelection[layerid]);
+                    const buttons = [
+                        {key: "Export", icon: "export"},
+                        {key: "Delete", icon: haveSel ? "trash_checked" : "trash"}
+                    ];
+                    return (
+                        <div className="identify-results-table-container" key={layerid}>
+                            <div className="identify-results-table-titlebar">
+                                <Icon
+                                    icon={this.state.collapsedLayers.has(layerid) ? "expand" : "collapse"}
+                                    onClick={() => this.setState(state => ({collapsedLayers: state.collapsedLayers.toggle(layerid)}))}
+                                />
+                                <span>{features[0].layertitle} ({features.length})</span>
+                                <ButtonBar buttons={buttons} onClick={action => this.tableAction(layerid, action)} />
+                            </div>
+                            {!this.state.collapsedLayers.has(layerid) ? (
+                                <FeaturesTable allowSelectAll
+                                    features={features} fields={Object.values(fields)} hideIdColumn
+                                    highlightFeatures={this.setHighlightedFeatures}
+                                    selectionChanged={(sel) => this.setState(state => ({
+                                        tableSelection: {...state.tableSelection, [layerid]: sel}
+                                    }))}
+                                />
+                            ) : null}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+    tableAction = (layerid, action) => {
+        if (action === "Export") {
+            const features = isEmpty(this.state.tableSelection[layerid]) ? this.state.resultTree[layerid] : Object.values(this.state.tableSelection[layerid]);
+            this.export({layerid: features});
+        } else if (action === "Delete") {
+            this.setState(state => {
+                let tableSelection = state.tableSelection;
+                const selection = state.tableSelection[layerid];
+                const newLayerResults = !isEmpty(selection) ? state.resultTree[layerid].filter(f => !(f.id in selection)) : [];
+                const newResultTree = {...state.resultTree};
+                if (isEmpty(newLayerResults)) {
+                    delete newResultTree[layerid];
+                    tableSelection = {...tableSelection};
+                    delete tableSelection[layerid];
+                } else {
+                    newResultTree[layerid] = newLayerResults;
+                }
+                return {resultTree: newResultTree, tableSelection: tableSelection};
+            });
+        }
+    };
     render() {
         let body = null;
         const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
@@ -725,6 +795,8 @@ class IdentifyViewer extends React.Component {
                     </div>
                 );
             }
+        } else if (this.props.resultDisplayMode === 'table') {
+            body = this.renderResultsTable();
         }
         return (
             <div className="identify-body" ref={this.initBody}>
@@ -783,7 +855,7 @@ class IdentifyViewer extends React.Component {
             <div className="identify-toolbar">
                 {haveSettings ? toggleButton("settingsMenu", "cog", false) : null}
                 {this.state.settingsMenu ? this.renderSettingsMenu(enabledSettings) : null}
-                {this.props.enableCompare ? toggleButton("compareEnabled", "compare", this.state.selectedResults.size() < 2, LocaleUtils.tr("identify.compare")) : null}
+                {this.props.enableCompare && this.props.resultDisplayMode !== "table" ? toggleButton("compareEnabled", "compare", this.state.selectedResults.size() < 2, LocaleUtils.tr("identify.compare")) : null}
                 <span className="identify-toolbar-spacer" />
                 {infoLabel}
                 <span className="identify-toolbar-spacer" />

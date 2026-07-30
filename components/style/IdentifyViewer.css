@@ -219,3 +219,32 @@ div.identify-body td.identify-attr-spacer {
     height: 2px;
     background-color: var(--list-section-bg-color);
 }
+
+div.identify-body div.identify-results-tables {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+div.identify-results-table-container {
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.5em;
+}
+
+div.identify-results-table-titlebar {
+    display: flex;
+    align-items: center;
+    padding: 0.25em;
+    gap: 1em;
+}
+
+div.identify-results-table-titlebar > span:nth-child(2) {
+    flex: 1 1 auto;
+    font-weight: bold;
+    font-size: 110%;
+}
+
+div.identify-results-table-container > div.featurestable-frame {
+    max-height: 15em;
+    margin: 0.25em;
+}

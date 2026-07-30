@@ -1,0 +1,133 @@
+div.featurestable-frame {
+    background-color: var(--list-bg-color);
+    overflow: auto;
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+table.featurestable th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 0;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    box-shadow: inset -1px 0 0 var(--border-color),
+                inset 0 -1px 0 var(--border-color);
+    overflow: hidden;
+}
+
+table.featurestable-selectable th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    width: 2em;
+}
+
+table.featurestable th > span {
+    margin: 0 0 -1px -1px;
+    padding: 0.25em;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+table.featurestable th > span > span.icon {
+    position: absolute;
+    right: 1px;
+    background-color: var(--button-bg-color);
+    height: 100%;
+    flex: 0 0 auto;
+    margin-left: 0.5em;
+}
+
+span.featurestable-headername {
+    flex: 1 1 auto;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+table.featurestable tr:nth-child(even) {
+    background-color: var(--list-item-bg-color-even);
+}
+
+table.featurestable tr:hover:not(.row-disabled) {
+    background-color: var(--list-item-bg-color-hover);
+    color: var(--list-item-text-color-hover);
+}
+
+table.featurestable-selectable td:first-child {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    align-items: center;
+    padding: 0.25em 0.5em;
+    background-clip: padding-box;
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 2.5em;
+}
+
+table.featurestable td {
+    min-width: 2.5em;;
+}
+
+span.featurestable-ldraghandle,
+span.featurestable-rdraghandle {
+    touch-action: none;
+    display: block;
+    position: absolute;
+    width: 4px;
+    top: 0;
+    bottom: 0;
+    cursor: ew-resize;
+}
+
+span.featurestable-ldraghandle {
+    left: -1px;
+}
+
+span.featurestable-rdraghandle {
+    right: 0px;
+}
+
+span.featurestable-tdraghandle,
+span.featurestable-bdraghandle {
+    touch-action: none;
+    display: block;
+    position: absolute;
+    height: 4px;
+    left: 0;
+    right: 0;
+    cursor: ns-resize;
+}
+
+span.featurestable-tdraghandle {
+    top: -1px;
+}
+
+span.featurestable-bdraghandle {
+    bottom: 0px;
+}
+
+table.featurestable {
+    table-layout: fixed;
+    min-width: 100%;
+}
+
+table.featurestable td {
+    border: 1px solid var(--border-color);
+    text-align: center;
+    height: 2em;
+}
+
+table.featurestable td:first-child {
+    border-left-width: 0;
+}
+
+table.featurestable span.icon-checked::before,
+table.featurestable span.icon-unchecked::before,
+table.featurestable span.icon-tristate::before {
+    background-color: white;
+}
