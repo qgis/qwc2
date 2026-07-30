@@ -164,6 +164,7 @@
     "common.export",
     "common.false",
     "common.format",
+    "common.import",
     "common.line",
     "common.loading",
     "common.lock2dview",

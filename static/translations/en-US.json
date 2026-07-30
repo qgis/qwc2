@@ -137,6 +137,7 @@
       "export": "Export",
       "false": "false",
       "format": "Format",
+      "import": "Import",
       "line": "Line",
       "loading": "Loading...",
       "lock2dview": "Move with 2D view",
