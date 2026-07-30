@@ -47,6 +47,10 @@ div.resizeable-window-minimized {
     min-height: 2.5em!important;
 }
 
+div.resizeable-window-minimized div.resizeable-window-body {
+    padding: 0;
+}
+
 div.resizeable-window-docked-left {
     transform: none!important;
     left: 0!important;
