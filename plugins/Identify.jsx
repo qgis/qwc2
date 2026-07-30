@@ -82,7 +82,8 @@ class Identify extends React.Component {
             initialX: PropTypes.number,
             initialY: PropTypes.number,
             initiallyDocked: PropTypes.bool,
-            side: PropTypes.string
+            side: PropTypes.string,
+            minimizeable: PropTypes.bool
         }),
         /** Whether to highlight all results if no result is hovered. */
         highlightAllResults: PropTypes.bool,
@@ -143,7 +144,8 @@ class Identify extends React.Component {
             initialX: 0,
             initialY: 0,
             initiallyDocked: false,
-            side: 'left'
+            side: 'left',
+            minimizeable: false
         },
         initialRadiusUnits: 'm',
         highlightAllResults: true,
@@ -512,7 +514,8 @@ class Identify extends React.Component {
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="IdentifyWindow"
-                    onClose={this.onWindowClose} title={LocaleUtils.tr("identify.title")}
+                    minimizeable={this.props.geometry.minimizeable} onClose={this.onWindowClose}
+                    title={LocaleUtils.tr("identify.title")}
                 >
                     {body}
                 </ResizeableWindow>
