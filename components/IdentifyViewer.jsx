@@ -27,6 +27,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
+import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook} from '../utils/PermaLinkUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
@@ -323,6 +324,7 @@ class IdentifyViewer extends React.Component {
         this.bodyEl = null;
         this.state.exportFormat = !Array.isArray(props.enableExport) ? 'geojson' : props.enableExport[0];
         this.state.multiViewEnabled = props.resultMultiDisplay;
+        registerPermalinkDataStoreHook("identifyresultstate", this.storeIdentifyResults);
     }
     componentDidMount() {
         this.updateResultTree();
@@ -353,7 +355,14 @@ class IdentifyViewer extends React.Component {
     }
     componentWillUnmount() {
         this.props.removeLayer("__identifyviewerhighlight");
+        unregisterPermalinkDataStoreHook("identifyresultstate");
     }
+    storeIdentifyResults = () => {
+        return new Promise((resolve) => resolve({
+            identifyResults: this.state.resultTree,
+            currentResultDisplayMode: this.props.resultDisplayMode
+        }));
+    };
     getCurrentResultFeature = () => {
         return this.state.resultTree[this.state.currentResult?.layerid]?.find?.(feature => feature.id === this.state.currentResult.featureid) ?? null;
     };

@@ -120,6 +120,7 @@ class Identify extends React.Component {
         /** Whether to skip empty feature attributes. */
         skipEmptyFeatureAttributes: PropTypes.bool,
         startupParams: PropTypes.object,
+        startupState: PropTypes.object,
         taskEnabled: PropTypes.bool,
         /** Result display mode when Identify is run as a task. Defaults to `resultDisplayMode`. */
         taskResultDisplayMode: PropTypes.oneOf(["tree", "flat", "paginated", "table"]),
@@ -154,6 +155,7 @@ class Identify extends React.Component {
     };
     state = {
         mode: 'Point',
+        currentResultDisplayMode: "flat",
         identifyResults: null,
         pendingRequests: 0,
         radius: 10,
@@ -177,6 +179,8 @@ class Identify extends React.Component {
             if (haveIc && c.length === 2) {
                 const mapCrs = this.props.theme.mapCrs;
                 this.identifyPoint(CoordinatesUtils.reproject(c, startupParams.crs || mapCrs, mapCrs));
+            } else if (this.props.startupState.identifyresultstate) {
+                this.setState({...this.props.startupState.identifyresultstate});
             }
         } else if (this.props.theme !== prevProps.theme) {
             this.clearResults();
@@ -287,7 +291,7 @@ class Identify extends React.Component {
                     }
                 });
             }
-            return {identifyResults: identifyResults, pendingRequests: pendingRequests};
+            return {identifyResults: identifyResults, pendingRequests: pendingRequests, currentResultDisplayMode: resultDisplayMode};
         });
     };
     identifyRegion = (filterGeom, center) => {
@@ -298,7 +302,6 @@ class Identify extends React.Component {
             return;
         }
         const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
-        const identifyResults = this.state.filterGeomModifiers.ctrl !== true && !appendResultsByDefault ? {} : this.state.identifyResults ?? {};
 
         let pendingRequests = 0;
         const params = {...this.props.params};
@@ -321,7 +324,10 @@ class Identify extends React.Component {
                     this.parseResult(response, layer, request.params.info_format, center);
                 }
             });
-            this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests});
+        });
+        this.setState(state => {
+            const identifyResults = state.filterGeomModifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
+            return {identifyResults: identifyResults, pendingRequests: pendingRequests, currentResultDisplayMode: resultDisplayMode};
         });
     };
     getRequestFilterGeomWkt = (identifyGeom) => {
@@ -487,7 +493,6 @@ class Identify extends React.Component {
                     body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("identify.noresults")}</span></div>);
                 }
             } else {
-                const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
                 body = (
                     <IdentifyViewer
                         attributeCalculator={this.props.attributeCalculator}
@@ -502,7 +507,7 @@ class Identify extends React.Component {
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
-                        resultDisplayMode={resultDisplayMode}
+                        resultDisplayMode={this.state.currentResultDisplayMode}
                         resultGridSize={this.props.resultGridSize}
                         resultMultiDisplay={this.props.resultMultiDisplay}
                         showLayerSelector={this.props.showLayerSelector}
@@ -561,7 +566,8 @@ export default connect((state) => {
         map: state.map,
         selection: state.selection,
         theme: state.theme.current,
-        startupParams: state.localConfig.startupParams
+        startupParams: state.localConfig.startupParams,
+        startupState: state.localConfig.startupState
     };
 }, {
     addLayerFeatures: addLayerFeatures,
