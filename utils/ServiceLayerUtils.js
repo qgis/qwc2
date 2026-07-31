@@ -459,7 +459,7 @@ const ServiceLayerUtils = {
                     parseAttributeValue: true,
                     removeNSPrefix: true,
                     processEntities: {
-                        maxTotalExpansions: 10000
+                        maxTotalExpansions: ConfigUtils.getConfigProp("xmlMaxTotalExpansions", null, 10000)
                     }
                 };
                 resolve({capabilities: (new XMLParser(options)).parse(response.data), requestUrl});
