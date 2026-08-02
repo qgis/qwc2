@@ -193,6 +193,16 @@ class RedliningSupport extends React.Component {
             deletedKeys.forEach(key => {
                 this.selectedFeatures[0].unset(key);
             });
+            if (this.props.redlining.showmeasurements) {
+                const settings = {
+                    displayCrs: this.props.displayCrs,
+                    lenUnit: this.props.redlining.lenUnit,
+                    areaUnit: this.props.redlining.areaUnit
+                };
+                MeasureUtils.updateFeatureMeasurements(
+                    this.selectedFeatures[0], this.selectedFeatures[0].get('shape'), this.props.mapCrs, settings
+                );
+            }
             this.props.changeRedliningState({selectedFeature: feature, geomType: feature.shape});
         }
     };
