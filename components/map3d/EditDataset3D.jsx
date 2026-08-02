@@ -90,7 +90,7 @@ class EditDataset3D extends React.Component {
         this.transformControls.addEventListener('dragging-changed', (event) => {
             this.props.sceneContext.scene.view.controls.enabled = !event.value;
         });
-        this.props.sceneContext.scene.view.controls.addEventListener('change', this.updateTransformHelper);
+        this.props.sceneContext.eventDispatcher.addEventListener('cameraChanged', this.updateTransformHelper);
 
         this.props.sceneContext.scene.notifyChange();
     };
@@ -102,7 +102,7 @@ class EditDataset3D extends React.Component {
 
         const domElement = this.props.sceneContext.scene.renderer.domElement;
         domElement.removeEventListener('keydown', this.onKeyDown);
-        this.props.sceneContext.scene.view.controls.removeEventListener('change', this.updateTransformHelper);
+        this.props.sceneContext.eventDispatcher.removeEventListener('cameraChanged', this.updateTransformHelper);
 
         this.props.sceneContext.scene.notifyChange();
         this.setState(EditDataset3D.defaultState);

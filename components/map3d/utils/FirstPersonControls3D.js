@@ -103,6 +103,9 @@ export default class FirstPersonControls3D extends Controls {
             this.update();
         }
     }
+    getAzimuthalAngle() {
+        return this.yaw;
+    }
     dispose() {
         this.disconnect();
     }

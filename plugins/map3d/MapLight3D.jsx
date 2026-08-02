@@ -98,7 +98,7 @@ export default class MapLight3D extends React.Component {
                 this.props.sceneContext.addSceneObject("__shadowCameraHelper", shadowCameraHelper);
             }
 
-            this.props.sceneContext.scene.view.controls.addEventListener('change', this.setLighting);
+            this.props.sceneContext.eventDispatcher.addEventListener('cameraChanged', this.setLighting);
             this.setLighting();
         } else if (this.state.lightParams !== prevState.lightParams) {
             if (this.state.lightParams.helpersVisible && !prevState.lightParams.helpersVisible) {
@@ -122,6 +122,7 @@ export default class MapLight3D extends React.Component {
         this.props.sceneContext.removeSceneObject("__moonLight");
         this.props.sceneContext.removeSceneObject("__sunLightHelper");
         this.props.sceneContext.removeSceneObject("__shadowCameraHelper");
+        this.props.sceneContext.eventDispatcher.removeEventListener('cameraChanged', this.setLighting);
     }
     onHide = () => {
         clearInterval(this.animationInterval);

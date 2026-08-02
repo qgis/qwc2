@@ -68,7 +68,7 @@ class HeightProfilePrintDialog extends React.PureComponent {
         this.externalWindow.addEventListener('load', this.setWindowContent, false);
         this.externalWindow.addEventListener('resize', this.windowResized, false);
         window.addEventListener('beforeunload', this.closePrintWindow);
-        this.props.sceneContext.scene.view.controls.addEventListener('change', this.scheduleRefreshImage);
+        this.props.sceneContext.eventDispatcher.addEventListener('cameraChanged', this.scheduleRefreshImage);
     }
     componentDidUpdate(prevProps, prevState) {
         if ((this.state.initialized && !prevState.initialized)) {
@@ -78,7 +78,7 @@ class HeightProfilePrintDialog extends React.PureComponent {
     componentWillUnmount() {
         this.closePrintWindow();
         window.removeEventListener('beforeunload', this.closePrintWindow);
-        this.props.sceneContext.scene.view.controls.removeEventListener('change', this.scheduleRefreshImage);
+        this.props.sceneContext.eventDispatcher.removeEventListener('cameraChanged', this.scheduleRefreshImage);
     }
     closePrintWindow = () => {
         this.externalWindow.close();

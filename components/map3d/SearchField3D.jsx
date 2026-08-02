@@ -143,9 +143,9 @@ class SearchField3D extends React.Component {
                     pin.updateMatrixWorld();
                 };
 
-                sceneContext.scene.view.controls.addEventListener('change', scaleSearchMarker);
+                sceneContext.eventDispatcher.addEventListener('cameraChanged', scaleSearchMarker);
                 searchMarker.addEventListener('removed', () => {
-                    sceneContext.scene.view.controls.removeEventListener('change', scaleSearchMarker);
+                    sceneContext.eventDispatcher.removeEventListener('cameraChanged', scaleSearchMarker);
                     // The label DOM element is not removed when the searchMarker group is removed from the instance
                     labelEl.parentNode?.removeChild?.(labelEl);
                 });

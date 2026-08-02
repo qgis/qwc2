@@ -146,14 +146,14 @@ class Compare3D extends React.Component {
     };
     enableArrows = () => {
         this.props.sceneContext.addSceneObject("__compareArrows", this.arrows);
-        this.props.sceneContext.scene.view.controls.addEventListener('change', this.centerArrowsInView);
+        this.props.sceneContext.eventDispatcher.addEventListener('cameraChanged', this.centerArrowsInView);
 
         const renderer = this.props.sceneContext.scene.renderer;
         renderer.domElement.addEventListener("pointerdown", this.dragArrows);
         this.centerArrowsInView();
     };
     disableArrows = () => {
-        this.props.sceneContext.scene.view.controls?.removeEventListener?.('change', this.centerArrowsInView);
+        this.props.sceneContext.eventDispatcher.removeEventListener('cameraChanged', this.centerArrowsInView);
         this.props.sceneContext.removeSceneObject("__compareArrows");
         this.props.sceneContext.scene.renderer.domElement.removeEventListener("pointerdown", this.dragArrows);
     };

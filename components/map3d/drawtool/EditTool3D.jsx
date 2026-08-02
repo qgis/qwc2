@@ -139,7 +139,7 @@ export default class EditTool3D extends React.Component {
             this.props.colorChanged(this.props.selectedObject.material.color.toArray().map(c => c * 255));
             this.setState({label: this.props.selectedObject.userData?.label || "", selectCount: 1});
         }
-        this.props.sceneContext.scene.view.controls.addEventListener('change', this.updateTransformHelper);
+        this.props.sceneContext.eventDispatcher.addEventListener('cameraChanged', this.updateTransformHelper);
         this.props.sceneContext.scene.notifyChange();
     }
     componentDidUpdate(prevProps, prevState) {
@@ -194,7 +194,7 @@ export default class EditTool3D extends React.Component {
         this.props.sceneContext.scene.remove(this.transformControls.getHelper());
         this.transformControls.dispose();
         const domElement = this.props.sceneContext.scene.renderer.domElement;
-        this.props.sceneContext.scene.view.controls.removeEventListener('change', this.updateTransformHelper);
+        this.props.sceneContext.eventDispatcher.removeEventListener('cameraChanged', this.updateTransformHelper);
         domElement.removeEventListener("pointerdown", this.selectShapeOnRelease);
         domElement.removeEventListener('keydown', this.onKeyDown);
         this.props.sceneContext.scene.notifyChange();

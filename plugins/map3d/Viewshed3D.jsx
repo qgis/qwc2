@@ -203,7 +203,7 @@ export default class Viewshed3D extends React.Component {
         this.transformControls.attach(this.observerMesh);
         this.transformControls.getHelper().updateMatrixWorld();
         scene.add(this.transformControls.getHelper());
-        this.props.sceneContext.scene.view.controls.addEventListener('change', this.updateTransformHelper);
+        this.props.sceneContext.eventDispatcher.addEventListener('cameraChanged', this.updateTransformHelper);
 
         this.props.sceneContext.scene.notifyChange();
     };
@@ -213,7 +213,7 @@ export default class Viewshed3D extends React.Component {
         this.transformControls.removeEventListener('dragging-changed', this.onControlDrag);
         this.transformControls.removeEventListener('objectChange', this.onControlChange);
         this.transformControls.removeEventListener('change', this.onControlChange);
-        this.props.sceneContext.scene.view.controls.removeEventListener('change', this.updateTransformHelper);
+        this.props.sceneContext.eventDispatcher.removeEventListener('cameraChanged', this.updateTransformHelper);
         this.overriddenMaterials.forEach(material => {
             material.onBeforeCompile = material.userData.originalOnBeforeCompile;
             delete material.userData.originalOnBeforeCompile;
