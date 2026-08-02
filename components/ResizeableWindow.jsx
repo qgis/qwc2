@@ -97,7 +97,8 @@ class ResizeableWindow extends React.Component {
         usePortal: true
     };
     state = {
-        geometry: null
+        geometry: null,
+        withinMapContainer: false
     };
     constructor(props) {
         super(props);
@@ -265,7 +266,7 @@ class ResizeableWindow extends React.Component {
         const splitTopAndBottomBar = this.props.splitTopAndBottomBar && this.props.splitScreenWhenDocked && (docked || maximized);
         let marginLeft = 0;
         let marginRight = 0;
-        if (!splitTopAndBottomBar) {
+        if (!splitTopAndBottomBar && !this.state.withinMapContainer) {
             marginLeft = this.props.mapMargins.outerLeft + this.props.menuMargins.left;
             marginRight = this.props.mapMargins.outerRight + this.props.menuMargins.right;
         }
@@ -375,6 +376,7 @@ class ResizeableWindow extends React.Component {
         if (!container) {
             return;
         }
+        const withinMapContainer = !!container.closest('.map-container');
         const width = Math.min(this.props.initialWidth, container.offsetWidth);
         const height = Math.min(this.props.initialHeight, container.offsetHeight);
         let geometry = null;
@@ -396,7 +398,7 @@ class ResizeableWindow extends React.Component {
             const dockSize = ["left", "right"].includes(dockSide) ? geometry.width : geometry.height;
             this.props.setSplitScreen(this.id, dockSide, dockSize, this.props.splitTopAndBottomBar);
         }
-        this.setState({geometry: geometry});
+        this.setState({geometry: geometry, withinMapContainer: withinMapContainer});
     };
     computeInitialX = (container, x) => {
         return x > 0 || Object.is(x, 0) ? x : container.offsetWidth - this.props.initialWidth - Math.abs(x);
