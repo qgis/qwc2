@@ -179,10 +179,12 @@ class View3D extends React.Component {
             this.props.setViewMode(ViewMode._3DSplitscreen);
         }
         window.addEventListener('focus', this.trackFocus, true);
+        window.addEventListener('pointerdown', this.trackPointerFocus);
         this.syncParentStore({});
     }
     componentWillUnmount() {
         window.removeEventListener('focus', this.trackFocus);
+        window.removeEventListener('pointerdown', this.trackPointerFocus);
     }
     componentDidUpdate(prevProps, prevState) {
         const is3DViewMode = (viewMode) => [ViewMode._3DFullscreen, ViewMode._3DSplitscreen].includes(viewMode);
@@ -450,6 +452,17 @@ class View3D extends React.Component {
         if (mapEl?.contains?.(document.activeElement)) {
             this.focusedMap = "map";
         } else if (map3dEl?.contains?.(document.activeElement)) {
+            this.focusedMap = "map3d";
+        } else {
+            this.focusedMap = null;
+        }
+    };
+    trackPointerFocus = (ev) => {
+        const mapEl = document.getElementById("map");
+        const map3dEl = document.getElementById("map3d");
+        if (mapEl?.contains?.(ev.target)) {
+            this.focusedMap = "map";
+        } else if (map3dEl?.contains?.(ev.target)) {
             this.focusedMap = "map3d";
         } else {
             this.focusedMap = null;

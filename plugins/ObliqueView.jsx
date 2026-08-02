@@ -116,12 +116,14 @@ class ObliqueView extends React.Component {
     }
     componentDidMount() {
         window.addEventListener('focus', this.trackFocus, true);
+        window.addEventListener('pointerdown', this.trackPointerFocus);
         if (this.props.startupParams.v === "oblique") {
             this.props.setViewMode(ViewMode._Oblique);
         }
     }
     componentWillUnmount() {
         window.removeEventListener('focus', this.trackFocus);
+        window.removeEventListener('pointerdown', this.trackPointerFocus);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.active && !prevProps.active) {
@@ -360,6 +362,17 @@ class ObliqueView extends React.Component {
         if (mapEl?.contains?.(document.activeElement)) {
             this.focusedMap = "map";
         } else if (mapObliqueEl?.contains?.(document.activeElement)) {
+            this.focusedMap = "mapOblique";
+        } else {
+            this.focusedMap = null;
+        }
+    };
+    trackPointerFocus = (ev) => {
+        const mapEl = document.getElementById("map");
+        const mapObliqueEl = this.map?.getTargetElement?.();
+        if (mapEl?.contains?.(ev.target)) {
+            this.focusedMap = "map";
+        } else if (mapObliqueEl?.contains?.(ev.target)) {
             this.focusedMap = "mapOblique";
         } else {
             this.focusedMap = null;
