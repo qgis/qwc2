@@ -61,7 +61,7 @@ export default {
         const crs = CoordinateSystem.get(projection);
         return new StaticFeatureSource({
             coordinateSystem: crs,
-            features: colorlayer.source.source.getFeatures()
+            features: colorlayer.source.source.getFeatures().filter(f => f.getGeometry().getType() === "Polygon")
         });
     }
 };
