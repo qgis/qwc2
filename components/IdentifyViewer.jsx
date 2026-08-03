@@ -38,6 +38,13 @@ import ToggleSwitch from './widgets/ToggleSwitch';
 
 import './style/IdentifyViewer.css';
 
+function xlsxCellValue(value) {
+    if (typeof value === 'string' && value.trim() !== '' && String(Number(value)) === value.trim()) {
+        return Number(value);
+    }
+    return value;
+}
+
 const BuiltinExporters = [
     {
         id: 'json',
@@ -230,7 +237,7 @@ const BuiltinExporters = [
                         dataset[0].push("geometry");
                     }
                     features.forEach(feature => {
-                        const row = exportAttrs.map(attr => feature.properties[attr]);
+                        const row = exportAttrs.map(attr => xlsxCellValue(feature.properties[attr]));
                         if (feature.geometry) {
                             const geomWkt = VectorLayerUtils.geoJSONGeomToWkt(feature.geometry);
                             if (geomWkt.length < 32768) {
