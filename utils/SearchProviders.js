@@ -383,18 +383,27 @@ export class FulltextSearch {
                 titlemsgid: LocaleUtils.trmsg("search.places"),
                 resultCount: placeResultCount,
                 type: SearchResultType.PLACE,
-                items: data.results.filter(entry => entry.feature && entry.feature.bbox).map(entry => ({
-                    id: entry.feature.feature_id,
-                    text: entry.feature.display,
-                    x: 0.5 * (entry.feature.bbox[0] + entry.feature.bbox[2]),
-                    y: 0.5 * (entry.feature.bbox[1] + entry.feature.bbox[3]),
-                    crs: entry.feature.srid ? "EPSG:" + String(entry.feature.srid).replace(/^EPSG:/, '') : null,
-                    bbox: entry.feature.bbox,
-                    thumbnail: iconPath + entry.feature.dataproduct_id + ".svg",
-                    // fulltext specific info
-                    dataproduct_id: entry.feature.dataproduct_id,
-                    id_field_name: entry.feature.id_field_name
-                }))
+                items: data.results.filter(entry => entry.feature && entry.feature.bbox).map(entry => {
+                    let center = entry.feature.center;
+                    if (!center) {
+                        center = [
+                            0.5 * (entry.feature.bbox[0] + entry.feature.bbox[2]),
+                            0.5 * (entry.feature.bbox[1] + entry.feature.bbox[3])
+                        ];
+                    }
+                    return {
+                        id: entry.feature.feature_id,
+                        text: entry.feature.display,
+                        x: center[0],
+                        y: center[1],
+                        crs: entry.feature.srid ? "EPSG:" + String(entry.feature.srid).replace(/^EPSG:/, '') : null,
+                        bbox: entry.feature.bbox,
+                        thumbnail: iconPath + entry.feature.dataproduct_id + ".svg",
+                        // fulltext specific info
+                        dataproduct_id: entry.feature.dataproduct_id,
+                        id_field_name: entry.feature.id_field_name
+                    };
+                })
             });
             callback({results: results, result_counts: data.result_counts});
         }).catch(e => {
