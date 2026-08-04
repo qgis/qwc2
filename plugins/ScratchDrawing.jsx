@@ -47,31 +47,28 @@ class ScratchDrawing extends React.Component {
     constructor(props) {
         super(props);
         this.submitted = false;
+        this.layerId = null;
     }
     componentDidUpdate(prevProps) {
-        // Clear when task changes
-        if (this.props.task.id !== "ScratchDrawing" && prevProps.task.id === "ScratchDrawing") {
+        if (this.props.task.id === "ScratchDrawing" && prevProps.task.id !== "ScratchDrawing") {
+            const data = this.props.task.data;
+            this.layerId = this.createDrawLayer(data);
+            this.props.setSnappingConfig(data.snapping, data.snappingActive);
+            this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: this.layerId, layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
+        } else if (prevProps.task.id === "ScratchDrawing" && this.props.task !== prevProps.task) {
+            this.props.resetRedliningState();
             if (!this.submitted) {
                 prevProps.task.data.callback(null, null);
-                this.submitted = true;
-            }
-            this.props.removeLayer(prevProps.redlining.layer);
-            this.props.resetRedliningState();
-        }
-        // Setup redlining state
-        if (this.props.task !== prevProps.task && this.props.task.id === "ScratchDrawing") {
-            if (prevProps.task.id === "ScratchDrawing") {
-                this.props.removeLayer(prevProps.redlining.layer);
-                if (!this.submitted) {
-                    prevProps.task.data.callback(null, null);
-                    this.submitted = true;
-                }
             }
             this.submitted = false;
-            const data = this.props.task.data;
-            const layerId = this.createDrawLayer(data);
-            this.props.setSnappingConfig(data.snapping, data.snappingActive);
-            this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: layerId, layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
+        } else if (this.props.redlining.layer === null && prevProps.redlining.layer === this.layerId) {
+            this.props.removeLayer(this.layerId);
+            if (this.props.task.id === "ScratchDrawing") {
+                const data = this.props.task.data;
+                this.layerId = this.createDrawLayer(data);
+                this.props.setSnappingConfig(data.snapping, data.snappingActive);
+                this.props.changeRedliningState({action: 'PickDraw', geomType: data.geomType, layer: this.layerId, layerTitle: null, drawMultiple: data.drawMultiple, style: this.drawingStyle(data.style)});
+            }
         }
     }
     createDrawLayer = (data) => {
@@ -124,9 +121,13 @@ class ScratchDrawing extends React.Component {
         );
     }
     submitGeometry = () => {
-        const features = this.props.layers.find(l => l.id === this.props.redlining.layer)?.features || [];
-        this.submitted = true;
+        let features = this.props.layers.find(l => l.id === this.layerId)?.features || [];
+        if (this.props.redlining.selectedFeature) {
+            features = features.filter(f => f.id !== this.props.redlining.selectedFeature.id);
+            features.push(this.props.redlining.selectedFeature);
+        }
         this.props.task.data.callback(features, this.props.projection);
+        this.submitted = true;
         this.props.setCurrentTask(null);
     };
 }
