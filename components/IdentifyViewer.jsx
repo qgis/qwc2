@@ -230,7 +230,10 @@ const BuiltinExporters = [
                         dataset[0].push("geometry");
                     }
                     features.forEach(feature => {
-                        const row = exportAttrs.map(attr => feature.properties[attr]);
+                        const row = exportAttrs.map(attr => {
+                            const value = feature.properties[attr];
+                            return MiscUtils.isNumeric(value) ? Number(value) : value;
+                        });
                         if (feature.geometry) {
                             const geomWkt = VectorLayerUtils.geoJSONGeomToWkt(feature.geometry);
                             if (geomWkt.length < 32768) {

@@ -168,6 +168,9 @@ const MiscUtils = {
     capitalizeFirst(text) {
         return text.slice(0, 1).toUpperCase() + text.slice(1);
     },
+    isNumeric(value) {
+        return typeof value === 'string' && value.trim() !== '' && String(Number(value)) === value.trim();
+    },
     isBrightColor(color) {
         let r;
         let g;
