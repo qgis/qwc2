@@ -26,6 +26,7 @@ export default class OverviewMap3D extends React.Component {
         coneAngle: null
     };
     componentDidMount() {
+        this.updateViewCone();
         this.props.sceneContext.eventDispatcher.addEventListener('cameraChanged', this.updateViewCone);
     }
     componentWillUnmount() {
