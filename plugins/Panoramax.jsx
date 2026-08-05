@@ -114,7 +114,6 @@ class Panoramax extends React.Component {
     };
     onClose = () => {
         this.props.setCurrentTask(null);
-        this.cleanUp();
     };
     render() {
         if (!this.props.active) {
