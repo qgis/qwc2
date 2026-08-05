@@ -92,6 +92,8 @@ class Panoramax extends React.Component {
                     this.addRecordingsMVT();
                 }
             }
+        } else if (prevProps.active && !this.props.active) {
+            this.cleanUp();
         } else if (this.state.selectionGeom && this.state.selectionGeom !== prevState.selectionGeom) {
             this.queryPoint(this.state.selectionGeom);
         }
@@ -104,12 +106,14 @@ class Panoramax extends React.Component {
         document.removeEventListener('keydown', this.handleKeyDown);
         this.onClose();
     }
-    onClose = () => {
-        this.props.setCurrentTask(null);
+    cleanUp = () => {
         this.props.removeLayer('panoramax-recordings');
         this.props.removeLayer('panoramaxselection');
         this.setState({ selectionGeom: null, queryData: null, lon: null, lat: null, selectionActive: null, yaw: null, currentTooltip: '', viewerInitialized: false });
         this.viewer?.select(null, null, true);
+    };
+    onClose = () => {
+        this.props.setCurrentTask(null);
     };
     render() {
         if (!this.props.active) {
