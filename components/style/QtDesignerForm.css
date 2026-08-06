@@ -86,6 +86,7 @@ div.qt-designer-widget-relation {
     display: flex;
     flex-direction: column;
     position: relative;
+    max-height: 6.5em;
 }
 
 div.qt-designer-widget-relation-resize-handle {
@@ -104,8 +105,10 @@ div.qt-designer-widget-relation-resize-handle {
 div.qt-designer-widget-relation-table-container {
     overflow-y: auto;
     flex: 1 1 auto;
-    height: 4.5em;
     position: relative;
+    border-top: 1px solid var(--border-color);
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
 }
 
 div.qt-designer-widget-relation-table-loading {
@@ -128,7 +131,6 @@ div.qt-designer-widget-relation-table-loading > div.spinner {
 
 div.qt-designer-widget-relation-table-container > table {
     width: 100%;
-    border: 1px solid var(--border-color);
 }
 
 div.qt-designer-widget-relation-table-container > table td {
@@ -137,7 +139,7 @@ div.qt-designer-widget-relation-table-container > table td {
 }
 
 div.qt-designer-widget-relation-table-container > table td.qt-designer-widget-relation-record-icon {
-    width: 1px;
+    width: 1.5em;
 }
 
 td.qt-designer-widget-relation-record-icon > span.icon-trash:hover {

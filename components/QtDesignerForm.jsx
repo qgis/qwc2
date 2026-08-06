@@ -670,14 +670,17 @@ class QtDesignerForm extends React.Component {
         this.props.addRelationRecord(datasetname);
     };
     startRelationTableResize = (ev) => {
-        const container = ev.target.parentElement.parentElement;
+        const container = ev.target.parentElement;
         if (!container) {
             return;
         }
+        // Drop max-height as soon as a manual height is set
         const startHeight = container.offsetHeight;
+        container.style.height = container.offsetHeight + 'px';
+        container.style.maxHeight = 'initial';
         const startMouseY = ev.clientY;
         const resizeInput = (event) => {
-            container.style.height = Math.max(30, (startHeight + (event.clientY - startMouseY))) + 'px';
+            container.style.height = Math.max(MiscUtils.convertEmToPx(4.5), (startHeight + (event.clientY - startMouseY))) + 'px';
         };
         ev.view.document.body.style.userSelect = 'none';
         ev.view.addEventListener("pointermove", resizeInput);
