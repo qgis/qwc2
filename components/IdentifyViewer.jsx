@@ -880,7 +880,7 @@ class IdentifyViewer extends React.Component {
     };
     renderSettingsMenu = (enabledSettings) => {
         const exporters = Object.fromEntries(this.getExporters().map(exporter => ([exporter.id, exporter])));
-        const enabledExporters = Array.isArray(this.props.enableExport) ? this.props.enableExport : Object.keys(exporters);
+        const enabledExporters = Array.isArray(this.props.enableExport) ? this.props.enableExport.filter(id => id in exporters) : Object.keys(exporters);
         const clipboardExportDisabled = exporters[this.state.exportFormat]?.allowClipboard !== true;
         return (
             <div className="identify-settings-menu">
