@@ -78,6 +78,9 @@ class EditingSupport extends React.Component {
         }
     }
     render() {
+        if (!this.props.editContext.geomType || this.props.editContext.geomReadOnly || this.props.editContext.geomNonZeroZ) {
+            return null;
+        }
         let toolbar = null;
         let locationRecorder = null;
         let measureSwitcher = null;
@@ -90,7 +93,7 @@ class EditingSupport extends React.Component {
                 <ButtonBar active={this.state.activeEditTool} buttons={editButtons} key="ButtonBar" onClick={this.setEditMode} tooltipPos="top" />
             ), this.context);
         }
-        if (this.state.showRecordLocation && this.props.editContext.geomType) {
+        if (this.state.showRecordLocation) {
             const geomType = this.props.editContext.geomType.replace(/Z$/, '');
             locationRecorder = (
                 <LocationRecorder
