@@ -67,15 +67,16 @@ class AppMenu extends React.Component {
         if (this.props.appMenuShortcut) {
             mousetrap.bind(this.props.appMenuShortcut, this.toggleMenu);
         }
+        document.addEventListener('click', this.checkKillClick, {capture: true});
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.menuVisible && !prevState.menuVisible) {
             // Need to wait until slide in transition is over
             setTimeout(() => { this.filterfield?.focus?.(); }, 400);
             // Delay one cycle
-            setTimeout(() => document.addEventListener('click', this.checkCloseMenu), 0);
+            setTimeout(() => document.addEventListener('pointerdown', this.checkCloseMenu, {capture: true}), 0);
         } else if (prevState.menuVisible && !this.state.menuVisible) {
-            document.removeEventListener('click', this.checkCloseMenu);
+            document.removeEventListener('pointerdown', this.checkCloseMenu, {capture: true});
         }
     }
     componentWillUnmount() {
@@ -83,7 +84,8 @@ class AppMenu extends React.Component {
         if (this.props.appMenuShortcut) {
             mousetrap.unbind(this.props.appMenuShortcut, this.toggleMenu);
         }
-        document.removeEventListener('click', this.checkCloseMenu);
+        document.removeEventListener('pointerdown', this.checkCloseMenu, {capture: true});
+        document.removeEventListener('click', this.checkKillClick, {capture: true});
     }
     addKeyBindings = (items) => {
         items.forEach(item => {
@@ -115,6 +117,13 @@ class AppMenu extends React.Component {
         if (this.menuEl && !this.menuEl.contains(ev.target) && this.props.menuDisplayMode === "normal") {
             this.toggleMenu();
             MiscUtils.killEvent(ev);
+            this.killClick = true;
+        }
+    };
+    checkKillClick = (ev) => {
+        if (this.killClick) {
+            MiscUtils.killEvent(ev);
+            this.killClick = undefined;
         }
     };
     onSubmenuClicked = (key, level) => {
