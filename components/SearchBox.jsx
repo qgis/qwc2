@@ -860,7 +860,7 @@ class SearchBox extends React.Component {
         }
         // Add highlight features and markers
         const mapCrs = this.props.map.projection;
-        const showMarkers = !response.hidemarker && this.props.searchOptions.showHighlightMarker;
+        const showMarkers = !response?.hidemarker && this.props.searchOptions.showHighlightMarker;
         const label = (item.label ?? item.text ?? '').replace(/<\/?\w+\s*\/?>/g, '');
         const layer = {
             id: "searchselection",
