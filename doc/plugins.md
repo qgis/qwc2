@@ -336,6 +336,10 @@ Draw geometries, and return these as GeoJSON to the calling application.
 
 Return the current application state.
 
+**get3dSceneContext()**
+
+Return the current 3d view scene context, if a 3D view is active.
+
 **onMapClick(callback)**
 
 Fires the callback on the next click on the map.

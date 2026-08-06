@@ -214,9 +214,11 @@ class Map3D extends React.Component {
     }
     componentDidMount() {
         this.props.innerRef(this);
+        window.qwc2.__3dscenecontext = () => this.state.sceneContext;
     }
     componentWillUnmount() {
         unregisterPermalinkDataStoreHook("map3d");
+        window.qwc2.__3dscenecontext = undefined;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {

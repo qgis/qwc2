@@ -284,6 +284,7 @@ class API extends React.Component {
         window.qwc2.drawScratch = this.drawScratch;
         window.qwc2.drawGeometry = this.drawGeometry;
         window.qwc2.getState = this.getState;
+        window.qwc2.get3dSceneContext = this.get3dSceneContext;
         window.qwc2.ConfigUtils = ConfigUtils;
         window.qwc2.CoordinatesUtils = CoordinatesUtils;
         window.qwc2.EditingInterface = EditingInterface;
@@ -645,6 +646,12 @@ class API extends React.Component {
      */
     getState = () => {
         return this.props.state;
+    };
+    /**
+     * Return the current 3d view scene context, if a 3D view is active.
+     */
+    get3dSceneContext = () => {
+        return window.qwc2.__3dscenecontext?.();
     };
     /** Fires the callback on the next click on the map.
      *
