@@ -68,11 +68,11 @@ export default class MenuButton extends React.Component {
         const menuClassnames = "menubutton-menu" + (this.props.menuClassName ? " " + this.props.menuClassName : "");
         return (
             <div className={classes}>
-                <div className={buttonClassnames} onClick={this.onMenuClicked} onKeyDown={MiscUtils.checkKeyActivate} ref={el => { this.el = el; }} tabIndex={0}>
+                <div className={buttonClassnames} onKeyDown={MiscUtils.checkKeyActivate} ref={el => { this.el = el; }} tabIndex={0}>
                     <span className="menubutton-button-content" onClick={this.onButtonClicked}>
                         {buttonContents}
                     </span>
-                    <span className="menubotton-button-arrow">
+                    <span className="menubotton-button-arrow" onClick={this.onMenuClicked}>
                         <Icon icon="chevron-down" />
                     </span>
                     {this.props.tooltip ? (
@@ -104,8 +104,7 @@ export default class MenuButton extends React.Component {
             this.setState(state => ({popup: !state.popup}));
         }
     };
-    onButtonClicked = (ev) => {
-        ev.stopPropagation();
+    onButtonClicked = () => {
         if (this.state.selected) {
             this.props.onActivate?.(this.state.selected);
             this.setState({popup: false});
