@@ -17,6 +17,7 @@ import {getFeatureTemplate} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import AttributeForm from './AttributeForm';
+import Icon from './Icon';
 
 import './style/LinkFeatureForm.css';
 
@@ -118,6 +119,7 @@ class LinkFeatureForm extends React.Component {
                     )}
                     {!editContext.changed && (<div className="link-feature-form-close">
                         <button className="button" onClick={this.close}>
+                            <Icon icon="remove" />
                             {LocaleUtils.tr("common.close")}
                         </button>
                     </div>)}
@@ -141,6 +143,7 @@ class LinkFeatureForm extends React.Component {
                     )}
                     {!editContext.changed && (<div className="link-feature-form-close">
                         <button className="button" onClick={this.close}>
+                            <Icon icon="remove" />
                             {editContext.action === 'Draw' ? LocaleUtils.tr("common.cancel") : LocaleUtils.tr("common.close")}
                         </button>
                     </div>)}
