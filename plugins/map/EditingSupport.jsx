@@ -125,13 +125,13 @@ class EditingSupport extends React.Component {
             } else if (f.getGeometry().getType() === "LineString") {
                 return new ol.geom.MultiPoint(f.getGeometry().getCoordinates());
             } else if (f.getGeometry().getType() === "Polygon") {
-                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates().flat());
             } else if (f.getGeometry().getType() === "MultiPoint") {
                 return f.getGeometry();
             } else if (f.getGeometry().getType() === "MultiLineString") {
-                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0]);
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates().flat());
             } else if (f.getGeometry().getType() === "MultiPolygon") {
-                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates()[0][0]);
+                return new ol.geom.MultiPoint(f.getGeometry().getCoordinates().flat(2));
             }
             return f.getGeometry();
         };
