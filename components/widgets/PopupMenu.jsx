@@ -37,7 +37,8 @@ export default class PopupMenu extends React.PureComponent {
     };
     constructor(props) {
         super(props);
-        this.container = (this.props.anchor?.ownerDocument ?? document).createElement("div");
+        const doc = (this.props.anchor?.ownerDocument ?? document);
+        this.container = doc.createElement("div");
         this.container.id = 'popup-container';
         this.container.style.position = 'fixed';
         this.container.style.left = 0;
@@ -45,30 +46,12 @@ export default class PopupMenu extends React.PureComponent {
         this.container.style.top = 0;
         this.container.style.bottom = 0;
         this.container.style.zIndex = 100000;
-        if (this.props.anchor) {
-            this.shields = [];
-            for (let i = 0; i < 4; ++i) {
-                this.shields[i] = (this.props.anchor?.ownerDocument ?? document).createElement("div");
-                this.shields[i].style.position = 'absolute';
-                this.shields[i].style.left = "0px";
-                this.shields[i].style.right = "0px";
-                this.shields[i].style.top = "0px";
-                this.shields[i].style.bottom = "0px";
-                this.shields[i].style.pointerEvents = 'initial';
-                this.shields[i].style.zIndex = 0;
-                setTimeout(() => this.shields[i].addEventListener('click', () => {
-                    this.props.onClose?.();
-                }), 0);
-                this.container.appendChild(this.shields[i]);
-            }
-            this.container.style.pointerEvents = 'none';
-        } else {
-            setTimeout(() => this.container.addEventListener('click', () => {
-                this.props.onClose?.();
-            }), 0);
-        }
+        this.container.style.pointerEvents = 'none';
         this.menuEl = null;
-        (this.props.anchor?.ownerDocument ?? document).body.appendChild(this.container);
+        doc.body.appendChild(this.container);
+        // Delay one cycle
+        setTimeout(() => doc.addEventListener('pointerdown', this.checkCloseMenu, {capture: true}), 0);
+        doc.addEventListener('click', this.checkKillClick, {capture: true});
     }
     componentDidMount() {
         if (this.props.anchor?.nodeName === "INPUT") {
@@ -76,12 +59,31 @@ export default class PopupMenu extends React.PureComponent {
         }
     }
     componentWillUnmount() {
-        (this.props.anchor?.ownerDocument ?? document).body.removeChild(this.container);
+        const doc = (this.props.anchor?.ownerDocument ?? document);
+        doc.body.removeChild(this.container);
         if (this.props.anchor?.nodeName === "INPUT") {
             this.props.anchor.removeEventListener('keydown', this.keyNav);
         }
         this.props.anchor?.focus?.();
+        doc.removeEventListener('pointerdown', this.checkCloseMenu, {capture: true});
+        if (!this.killClick) {
+            doc.removeEventListener('click', this.checkKillClick, {capture: true});
+        }
     }
+    checkCloseMenu = (ev) => {
+        if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.anchor?.contains?.(ev.target)) {
+            this.props.onClose();
+            MiscUtils.killEvent(ev);
+            this.killClick = true;
+        }
+    };
+    checkKillClick = (ev) => {
+        if (this.killClick) {
+            MiscUtils.killEvent(ev);
+            this.killClick = undefined;
+            ev.currentTarget.removeEventListener('click', this.checkKillClick, {capture: true});
+        }
+    };
     render() {
         if (isEmpty(this.props.children)) {
             return null;
@@ -93,14 +95,6 @@ export default class PopupMenu extends React.PureComponent {
             } else {
                 rect = this.props.anchor.getBoundingClientRect();
             }
-            this.shields[0].style.height = rect.top + "px";
-            this.shields[0].style.bottom = 0;
-
-            this.shields[1].style.width = rect.left + "px";
-            this.shields[1].style.right = 0;
-
-            this.shields[2].style.left = rect.right + "px";
-            this.shields[3].style.top = rect.bottom + "px";
         }
         const x = ((this.props.align === 'right' ? rect?.right : rect?.left) ?? this.props.x);
         const y = (rect?.bottom ?? this.props.y) - 1;
