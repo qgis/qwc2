@@ -220,7 +220,6 @@ class EditingSupport extends React.Component {
         }
         this.interaction.setActive(
             this.props.editContext.geomType && this.props.editContext.permissions.updatable &&
-            this.props.editContext.editConfig?.permissions?.updatable === true &&
             !this.props.editContext.geomReadOnly && !this.props.editContext.geomNonZeroZ
         );
     };
