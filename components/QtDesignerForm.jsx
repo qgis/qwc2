@@ -452,10 +452,10 @@ class QtDesignerForm extends React.Component {
                         updateField={updateField} value={value} />
                 );
             } else {
-                const values = MiscUtils.ensureArray(widget.item || []).map((item) => ({
+                const values = widget.item ? MiscUtils.ensureArray(widget.item).map((item) => ({
                     label: item.property.text,
                     value: item.property.value ?? item.property.text
-                }));
+                })) : constraints.values ?? [];
                 return (
                     <EditComboField
                         editIface={this.props.iface} fieldId={widget.name} key={widget.name}
