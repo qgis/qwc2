@@ -60,8 +60,8 @@ export default class EditUploadField extends React.Component {
         const fileType = mime.lookup(fileValue);
         const fileUrl = isAttachment ? this.props.iface.resolveAttachmentUrl(this.props.dataset, fileValue) : fileValue;
         const constraints = {
-            ...this.props.constraints,
-            accept: (this.props.constraints.accept || "").split(",").map(ext => mime.lookup(ext)).join(",")
+            required: this.props.constraints?.required,
+            accept: (this.props.constraints?.accept || "").split(",").map(ext => mime.lookup(ext)).join(",")
         };
         const mediaSupport = 'mediaDevices' in navigator && constraints.accept.split(",").includes("image/jpeg");
         const imageData = this.state.imageData ?? (fileType?.startsWith?.('image/') ? fileUrl : null);
