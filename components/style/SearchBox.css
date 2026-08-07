@@ -10,12 +10,15 @@ div.searchbox-field {
 button.searchbox-filter-button {
     flex: 0 0 auto;
     border-left-width: 0;
-    padding: 0 0.25em 0 0.5em;
+    padding: 0 1em 0 0.5em;
+    position: relative;
 }
 
-button.searchbox-filter-button > span.icon:last-child {
-    font-size: 75%;
-    margin-top: 1em;
+button.searchbox-filter-button > span.icon-chevron-down {
+    font-size: 80%;
+    position: absolute;
+    bottom: 0.25em;
+    right: 0.25em;
 }
 
 div.searchbox-field > div.spinner {
