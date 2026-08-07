@@ -177,6 +177,10 @@ div.qt-designer-form label {
     align-items: center;
 }
 
+div.qt-designer-form div.text-input-wrapper-multiline {
+    height: 100%;
+}
+
 div.qt-designer-form-featurelink-buttons {
     display: flex;
 }

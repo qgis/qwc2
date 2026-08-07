@@ -88,6 +88,7 @@ export default class TextInput extends React.Component {
     render() {
         const wrapperClassName = classNames({
             "TextInput": true,
+            "text-input-wrapper-multiline": this.props.multiline,
             "text-input-wrapper": true,
             "text-input-wrapper-focused": this.state.focus
         });
