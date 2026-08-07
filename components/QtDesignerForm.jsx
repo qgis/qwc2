@@ -680,7 +680,7 @@ class QtDesignerForm extends React.Component {
         container.style.maxHeight = 'initial';
         const startMouseY = ev.clientY;
         const resizeInput = (event) => {
-            container.style.height = Math.max(MiscUtils.convertEmToPx(4.5), (startHeight + (event.clientY - startMouseY))) + 'px';
+            container.style.height = Math.max(MiscUtils.convertEmToPx(2.5), (startHeight + (event.clientY - startMouseY))) + 'px';
         };
         ev.view.document.body.style.userSelect = 'none';
         ev.view.addEventListener("pointermove", resizeInput);
