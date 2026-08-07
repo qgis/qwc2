@@ -57,7 +57,6 @@ export default class TextInput extends React.Component {
     constructor(props) {
         super(props);
         this.focusEnterClick = false;
-        this.initialHeight = null;
         this.input = null;
         this.tooltipEl = null;
         this.tooltipTimeout = null;
@@ -107,7 +106,7 @@ export default class TextInput extends React.Component {
             style.marginRight = '1.5em';
         }
         return (
-            <div className={wrapperClassName + " " + (this.props.className || "")} onClick={MiscUtils.killEvent} ref={this.storeInitialHeight}>
+            <div className={wrapperClassName + " " + (this.props.className || "")} onClick={MiscUtils.killEvent}>
                 {this.props.name ? (
                     <textarea
                         className="text-input-form-el"
@@ -272,11 +271,6 @@ export default class TextInput extends React.Component {
             this.props.onNoChange?.();
         }
     };
-    storeInitialHeight = (el) => {
-        if (el) {
-            this.initialHeight = el.offsetHeight;
-        }
-    };
     startResize = (ev) => {
         const container = ev.target.parentElement;
         if (!container) {
@@ -285,7 +279,7 @@ export default class TextInput extends React.Component {
         const startHeight = container.offsetHeight;
         const startMouseY = ev.clientY;
         const resizeInput = (event) => {
-            container.style.height = Math.max(this.initialHeight, (startHeight + (event.clientY - startMouseY))) + 'px';
+            container.style.height = Math.max(MiscUtils.convertEmToPx(2), (startHeight + (event.clientY - startMouseY))) + 'px';
         };
         document.body.style.userSelect = 'none';
         ev.view.addEventListener("pointermove", resizeInput);
