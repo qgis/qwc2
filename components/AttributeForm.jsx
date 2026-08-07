@@ -502,6 +502,10 @@ class AttributeForm extends React.Component {
                         // Ensure numeric values are numbers and not strings
                         value = Number(value);
                     }
+                    if (nrelFieldConfig.type === 'boolean' && value !== null && typeof value === "string") {
+                        // Ensure boolean values are bools
+                        value = value.trim().toLowerCase() === "true";
+                    }
 
                     // relationValues for table must exist as rows are either pre-existing or were added
                     if (!(field in relationValues[datasetname].features[index].properties)) {
@@ -547,6 +551,10 @@ class AttributeForm extends React.Component {
                     if (fieldConfig.type === 'number' && value !== null) {
                         // Ensure numeric values are numbers and not strings
                         value = Number(value);
+                    }
+                    if (fieldConfig.type === 'boolean' && value !== null && typeof value === "string") {
+                        // Ensure boolean values are bools
+                        value = value.trim().toLowerCase() === "true";
                     }
                     if (!(name in feature.properties)) {
                         feature.defaultedProperties = [
