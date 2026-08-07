@@ -137,6 +137,12 @@ class QtDesignerForm extends React.Component {
             return null;
         }
     }
+    isVertical = (orientation) => {
+        return orientation === "Qt::Vertical" || orientation === "Qt::Orientation::Vertical";
+    };
+    isHorizontal = (orientation) => {
+        return orientation === "Qt::Horizontal" || orientation === "Qt::Orientation::Horizontal";
+    };
     renderLayout = (layout, feature, editConfig, updateField, nametransform = (name) => name, visible = true) => {
         let containerClass = "";
         let itemStyle = () => ({});
@@ -156,6 +162,9 @@ class QtDesignerForm extends React.Component {
             sortKey = (item) => item.row;
         } else if (layout.class === "QVBoxLayout") {
             containerClass = "qt-designer-layout-grid";
+            containerStyle = {
+                gridTemplateRows: this.computeLayoutRows(layout.item, true).join(" ")
+            };
             itemStyle = (item, idx) => ({
                 gridArea: (1 + idx) + "/1/ span 1/ span 1"
             });
@@ -175,7 +184,7 @@ class QtDesignerForm extends React.Component {
         if (!visible) {
             containerStyle.display = 'none';
         }
-        if (layout.item.find(item => item.spacer && (item.spacer.property || {}).orientation === "Qt::Vertical")) {
+        if (layout.item.find(item => item.spacer && this.isVertical(item.spacer.property?.orientation))) {
             containerStyle.height = '100%';
         }
         const fields = (this.props.editConfig.fields ?? []).reduce((res, field) => ({...res, [field.id]: field}), {});
@@ -204,14 +213,13 @@ class QtDesignerForm extends React.Component {
     computeLayoutColumns = (items, useIndex = false) => {
         const columns = [];
         let hasAuto = false;
-        const hasSpacer = items.find(item => item.spacer?.property?.orientation === "Qt::Horizontal");
         items.forEach((item, index) => {
             const col = useIndex ? index : (parseInt(item.column, 10) || 0);
             const colSpan = useIndex ? 1 : (parseInt(item.colspan, 10) || 1);
-            if (item.spacer?.property?.orientation === "Qt::Horizontal") {
-                columns[col] = 'auto';
+            if (this.isHorizontal(item.spacer?.property?.orientation)) {
+                columns[col] = '1fr';
                 hasAuto = true;
-            } else if (!hasSpacer && !hFitWidgets.includes(item.widget?.class) && colSpan === 1) {
+            } else if (!hFitWidgets.includes(item.widget?.class) && colSpan === 1) {
                 columns[col] = 'auto';
                 hasAuto = true;
             } else {
@@ -226,15 +234,16 @@ class QtDesignerForm extends React.Component {
     };
     computeLayoutRows = (items, useIndex = false) => {
         const rows = [];
-        const hasSpacer = items.find(item => item.spacer?.property?.orientation === "Qt::Vertical");
         items.forEach((item, index) => {
             const row = useIndex ? index : (parseInt(item.row, 10) || 0);
             const rowSpan = useIndex ? 1 : (parseInt(item.rowspan, 10) || 1);
-            if (item.spacer?.property?.orientation === "Qt::Vertical" || item.widget?.name?.startsWith?.("nrel_")) {
-                rows[row] = 'auto';
+            if (this.isVertical(item.spacer?.property?.orientation)) {
+                rows[row] = '1fr';
             } else if (item.widget?.layout ?? item.layout) {
                 rows[row] = item.widget?.layout?.verticalFill || item.layout?.verticalFill ? 'auto' : null; // Placeholder replaced by fit-content below
-            } else if (!hasSpacer && !vFitWidgets.includes(item.widget?.class) && rowSpan === 1) {
+            } else if (item.widget?.name?.startsWith?.("nrel_")) {
+                rows[row] = 'auto';
+            } else if (!vFitWidgets.includes(item.widget?.class) && rowSpan === 1) {
                 rows[row] = 'auto';
             } else {
                 rows[row] = rows[row] ?? null; // Placeholder replaced by fit-content below
@@ -315,7 +324,7 @@ class QtDesignerForm extends React.Component {
                 return (<div style={fontStyle}>{text}</div>);
             }
         } else if (widget.class === "Line") {
-            const linetype = widget.property?.orientation === "Qt::Vertical" ? "vline" : "hline";
+            const linetype = this.isVertical(widget.property?.orientation) ? "vline" : "hline";
             return (<div className={"qt-designer-form-" + linetype} />);
         } else if (widget.class === "QFrame") {
             if (widget.property.visibilityExpression) {
@@ -817,7 +826,7 @@ class QtDesignerForm extends React.Component {
                 item.spacer.property = MiscUtils.ensureArray(item.spacer.property).reduce((res, prop) => {
                     return ({...res, [prop.name]: prop[Object.keys(prop).find(key => key !== "name")]});
                 }, {});
-                if (item.spacer.property.orientation === "Qt::Vertical") {
+                if (this.isVertical(item.spacer.property.orientation)) {
                     verticalFill = true;
                 }
             } else if (item.layout) {
