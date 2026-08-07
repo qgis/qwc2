@@ -264,11 +264,10 @@ class QtDesignerForm extends React.Component {
         const attr = widget.attribute || {};
         const fieldname = widget.name.replace(/kvrel__/, '').split("__")[isRelWidget ? 1 : 0];
         const field = fields[fieldname];
-        const fieldConstraints = field?.constraints || {};
-        const inputConstraints = {};
-        inputConstraints.readOnly = this.props.readOnly || String(prop.readOnly) === "true" || String(prop.enabled) === "false" || fieldConstraints.readOnly === true || disabled;
-        inputConstraints.required = !inputConstraints.readOnly && (String(prop.required) === "true" || String(fieldConstraints.required) === "true");
-        inputConstraints.placeholder = prop.placeholderText || fieldConstraints.placeholder || "";
+        const constraints = field?.constraints || {};
+        constraints.readOnly = this.props.readOnly || constraints.readOnly === true || String(prop.readOnly) === "true" || String(prop.enabled) === "false" || disabled;
+        constraints.required = !constraints.readOnly && (constraints.required || String(prop.required) === "true");
+        constraints.placeholder = prop.placeholderText || constraints.placeholder || "";
 
         const fontProps = prop.font || {};
         const fontStyle = {
@@ -297,7 +296,7 @@ class QtDesignerForm extends React.Component {
         if (widget.name.startsWith("ext__")) {
             updateField = null;
             value = this.state.formData.externalFields[widget.name.slice(5)];
-            inputConstraints.readOnly = true;
+            constraints.readOnly = true;
         } else {
             elname = nametransform(widget.name);
         }
@@ -305,9 +304,9 @@ class QtDesignerForm extends React.Component {
         if (widget.component) {
             return (
                 <widget.component
-                    addRelationRecord={this.props.addRelationRecord}
+                    addRelationRecord={this.props.addRelationRecord} constraints={constraints}
                     editConfigs={this.props.editConfigs} feature={this.props.feature}
-                    inputConstraints={inputConstraints} mapPrefix={this.props.mapPrefix}
+                    mapPrefix={this.props.mapPrefix}
                     name={elname} onChange={(val) => updateField(widget.name, val)}
                     readOnly={this.props.readOnly} removeRelationRecord={this.props.removeRelationRecord}
                     reorderRelationRecord={this.props.reorderRelationRecord}
@@ -392,30 +391,30 @@ class QtDesignerForm extends React.Component {
                 return (<div className="qt-designer-form-textarea">{value}</div>);
             } else {
                 const addLinkAnchors = ConfigUtils.getConfigProp("editingAddLinkAnchors") !== false;
-                return (<TextInput addLinkAnchors={addLinkAnchors} multiline name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={String(value)} />);
+                return (<TextInput addLinkAnchors={addLinkAnchors} multiline name={elname} onChange={(val) => updateField(widget.name, val)} placeholder={constraints.placeholder} readOnly={constraints.readOnly} required={constraints.required} style={fontStyle} value={String(value)} />);
             }
         } else if (widget.class === "QLineEdit") {
             if (widget.name.endsWith("__upload")) {
                 const fieldId = widget.name.replace(/__upload/, '');
                 const uploadValue = (feature.properties?.[fieldId] || "");
                 const uploadElName = elname.replace(/__upload/, '');
-                const constraints = {
+                const widgetConstraints = {
                     accept: prop.text || "",
-                    required: inputConstraints.required
+                    required: constraints.required
                 };
-                return (<EditUploadField constraints={constraints} dataset={editConfig.editDataset} disabled={inputConstraints.readOnly} fieldId={fieldId} iface={this.props.iface} name={uploadElName} report={this.props.report} updateField={updateField} value={uploadValue} />);
+                return (<EditUploadField constraints={widgetConstraints} dataset={editConfig.editDataset} disabled={constraints.readOnly} fieldId={fieldId} iface={this.props.iface} name={uploadElName} report={this.props.report} updateField={updateField} value={uploadValue} />);
             } else {
-                if (fieldConstraints.prec !== undefined && typeof value === 'number') {
-                    value = value.toFixed(fieldConstraints.prec);
+                if (constraints.prec !== undefined && typeof value === 'number') {
+                    value = value.toFixed(constraints.prec);
                 } else if (value === "" && (feature.properties?.[widget.name] ?? null) === null) {
                     value = ConfigUtils.getConfigProp("editTextNullValue") ?? "";
                 }
                 if (this.props.report) {
-                    return (<div style={fontStyle}>{value || inputConstraints.placeholder}</div>);
+                    return (<div style={fontStyle}>{value || constraints.placeholder}</div>);
                 } else {
                     const addLinkAnchors = ConfigUtils.getConfigProp("editingAddLinkAnchors") !== false;
                     const editTextNullValue = ConfigUtils.getConfigProp("editTextNullValue");
-                    return (<TextInput addLinkAnchors={addLinkAnchors} clearValue={editTextNullValue} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} style={fontStyle} value={String(value)} />);
+                    return (<TextInput addLinkAnchors={addLinkAnchors} clearValue={editTextNullValue} name={elname} onChange={(val) => updateField(widget.name, val)} placeholder={constraints.placeholder} readOnly={constraints.readOnly} required={constraints.required} style={fontStyle} value={String(value)} />);
                 }
             }
         } else if (widget.class === "QCheckBox" || widget.class === "QRadioButton") {
@@ -424,7 +423,7 @@ class QtDesignerForm extends React.Component {
             const checked = inGroup ? this.props.feature.properties?.[this.groupOrName(widget)] === widget.name : value;
             return (
                 <label style={fontStyle}>
-                    <input checked={checked} disabled={inputConstraints.readOnly} name={nametransform(this.groupOrName(widget))} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} {...inputConstraints} type={type} value={widget.name} />
+                    <input checked={checked} disabled={constraints.readOnly} name={nametransform(this.groupOrName(widget))} onChange={ev => updateField(this.groupOrName(widget), inGroup ? widget.name : ev.target.checked)} required={constraints.required} type={type} value={widget.name} />
                     {widget.property.text}
                 </label>
             );
@@ -446,10 +445,9 @@ class QtDesignerForm extends React.Component {
                         editIface={this.props.iface} fieldId={fieldId} filterExpr={filterExpr} key={fieldId}
                         keyvalrel={keyvalrel} mapPrefix={this.props.mapPrefix}
                         multiSelect={widget.property.allowMulti === true || widget.allowMulti === "true"}
-                        name={nametransform(fieldId)} placeholder={inputConstraints.placeholder}
-                        readOnly={inputConstraints.readOnly || fieldConstraints.readOnly}
-                        required={inputConstraints.required || fieldConstraints.required}
-                        showAdd={fieldConstraints.showAdd} showEdit={fieldConstraints.showEdit}
+                        name={nametransform(fieldId)} placeholder={constraints.placeholder}
+                        readOnly={constraints.readOnly} required={constraints.required}
+                        showAdd={constraints.showAdd} showEdit={constraints.showEdit}
                         style={fontStyle} switchEditContext={this.props.switchEditContext}
                         updateField={updateField} value={value} />
                 );
@@ -461,45 +459,44 @@ class QtDesignerForm extends React.Component {
                 return (
                     <EditComboField
                         editIface={this.props.iface} fieldId={widget.name} key={widget.name}
-                        mapPrefix={this.props.mapPrefix} name={elname} placeholder={inputConstraints.placeholder}
-                        readOnly={inputConstraints.readOnly || inputConstraints.readOnly}
-                        required={inputConstraints.required || inputConstraints.required}
+                        mapPrefix={this.props.mapPrefix} name={elname} placeholder={constraints.placeholder}
+                        readOnly={constraints.readOnly} required={constraints.required}
                         style={fontStyle} updateField={updateField} value={value} values={values} />
                 );
             }
         } else if (widget.class === "QSpinBox" || widget.class === "QDoubleSpinBox" || widget.class === "QSlider") {
             const floatConstraint = (x) => { const f = parseFloat(x); return isNaN(f) ? undefined : f; };
-            const min = floatConstraint(prop.minimum ?? fieldConstraints.min);
-            const max = floatConstraint(prop.maximum ?? fieldConstraints.max);
-            const step = prop.singleStep ?? fieldConstraints.step ?? 1;
+            const min = floatConstraint(prop.minimum ?? constraints.min);
+            const max = floatConstraint(prop.maximum ?? constraints.max);
+            const step = prop.singleStep ?? constraints.step ?? 1;
             const precision = prop.decimals ?? 0;
             if (widget.class === "QSlider") {
-                return (<input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} size={5} step={step} style={fontStyle} type="range" value={value} />);
+                return (<input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={constraints.placeholder} readOnly={constraints.readOnly} required={constraints.required} size={5} step={step} style={fontStyle} type="range" value={value} />);
             } else {
-                return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} {...inputConstraints} step={step} style={fontStyle} value={feature.properties?.[widget.name]} />);
+                return (<NumberInput decimals={precision} max={max} min={min} name={elname} onChange={(val) => updateField(widget.name, val)} placeholder={constraints.placeholder} readOnly={constraints.readOnly} required={constraints.required} step={step} style={fontStyle} value={feature.properties?.[widget.name]} />);
             }
         } else if (widget.class === "QDateEdit") {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1600-01-01";
             const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
             return (
-                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} type="date" value={value.split("T")[0]} />
+                <input max={max} min={min} name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={constraints.placeholder} readOnly={constraints.readOnly} required={constraints.required} style={fontStyle} type="date" value={value.split("T")[0]} />
             );
         } else if (widget.class === "QTimeEdit") {
             return (
-                <input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} {...inputConstraints} style={fontStyle} type="time" value={value} />
+                <input name={elname} onChange={(ev) => updateField(widget.name, ev.target.value)} placeholder={constraints.placeholder} readOnly={constraints.readOnly} required={constraints.required} style={fontStyle} type="time" value={value} />
             );
         } else if (widget.class === "QDateTimeEdit") {
             const min = prop.minimumDate ? this.dateConstraint(prop.minimumDate) : "1600-01-01";
             const max = prop.maximumDate ? this.dateConstraint(prop.maximumDate) : "9999-12-31";
             return (
                 <DateTimeInput maxDate={max} minDate={min} name={elname} onChange={val => updateField(widget.name, val)}
-                    readOnly={inputConstraints.readOnly} required={inputConstraints.required}
+                    readOnly={constraints.readOnly} required={constraints.required}
                     style={fontStyle} value={value} valueHasTz={field.data_type === "timestamp with time zone"} />
             );
         } else if (widget.class === "QListWidget") {
             return (
-                <ListInput onChange={val => updateField(widget.name, val)} readOnly={inputConstraints.readOnly}
-                    required={inputConstraints.required} type={field.type.slice(0, -2)} value={value} />
+                <ListInput onChange={val => updateField(widget.name, val)} readOnly={constraints.readOnly}
+                    required={constraints.required} type={field.type.slice(0, -2)} value={value} />
             );
         } else if (widget.class === "QWidget") {
             if (widget.name.startsWith("nrel__")) {
@@ -511,7 +508,7 @@ class QtDesignerForm extends React.Component {
             }
         } else if (widget.class === "QPushButton") {
             if (widget.name.startsWith("btn__") && widget.onClick) {
-                return (<button className="button" disabled={inputConstraints.readOnly} onClick={() => widget.onClick(this.props.setFormBusy)} type="button">{widget.property.text}</button>);
+                return (<button className="button" disabled={constraints.readOnly} onClick={() => widget.onClick(this.props.setFormBusy)} type="button">{widget.property.text}</button>);
             } else if (widget.name.startsWith("featurelink__")) {
                 const parts = widget.name.split("__");
                 // featurelink__layer__attrname
