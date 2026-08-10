@@ -27,6 +27,7 @@ import NumberInput from '../components/widgets/NumberInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
+import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -162,7 +163,8 @@ class Identify extends React.Component {
         radiusUnits: this.props.initialRadiusUnits,
         exitTaskOnResultsClose: null,
         filterGeom: null,
-        filterGeomModifiers: {}
+        filterGeomModifiers: {},
+        importErrors: null
     };
     constructor(props) {
         super(props);
@@ -170,6 +172,7 @@ class Identify extends React.Component {
         this.fileinput.type = "file";
         this.fileinput.accept = "application/json";
         this.fileinput.addEventListener("change", this.fileSelected);
+        this.viewerRef = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.enabled && this.props.theme && !prevProps.theme) {
@@ -180,7 +183,10 @@ class Identify extends React.Component {
                 const mapCrs = this.props.theme.mapCrs;
                 this.identifyPoint(CoordinatesUtils.reproject(c, startupParams.crs || mapCrs, mapCrs));
             } else if (this.props.startupState.identifyresultstate) {
-                this.setState({...this.props.startupState.identifyresultstate});
+                this.deserializeResults(
+                    {...this.props.startupState.identifyresultstate.identifyResults},
+                    this.props.startupState.identifyresultstate.currentResultDisplayMode
+                );
             }
         } else if (this.props.theme !== prevProps.theme) {
             this.clearResults();
@@ -229,7 +235,21 @@ class Identify extends React.Component {
             if (isEmpty(this.state.identifyResults) && this.props.onlyShowDialogWithResults) {
                 this.clearResults();
             }
-            this.setState({filterGeom: null, filterGeomModifiers: {}});
+            if (!isEmpty(this.state.importErrors)) {
+                const errMsg = Object.entries(this.state.importErrors).map(([layerid, errors]) => {
+                    const [layerUrl, layerName] = layerid.split("#", 2);
+                    const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+                    const layertitle = match?.sublayer?.title ?? layerName;
+                    if (errors === true) {
+                        return `- ${layertitle}: ${LocaleUtils.tr("identify.missinglayer")}`;
+                    } else {
+                        return `- ${layertitle}: ${LocaleUtils.tr("identify.featuresmissing", errors.missing.length, `${errors.key} = {${errors.missing.join(",")}}`)}`;
+                    }
+                }).join("\n");
+                // eslint-disable-next-line no-alert
+                alert(LocaleUtils.tr("identify.importerrors", errMsg));
+            }
+            this.setState({filterGeom: null, filterGeomModifiers: {}, importErrors: null});
         }
     }
     queryPoint = (prevProps) => {
@@ -253,10 +273,6 @@ class Identify extends React.Component {
 
             const params = {...this.props.params};
             const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
-            if (resultDisplayMode === "table") {
-                params.with_htmlcontent = false;
-                params.with_maptip = false;
-            }
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             queryableLayers.forEach(l => {
@@ -306,10 +322,6 @@ class Identify extends React.Component {
         let pendingRequests = 0;
         const params = {...this.props.params};
         const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
-        if (resultDisplayMode === "table") {
-            params.with_htmlcontent = false;
-            params.with_maptip = false;
-        }
         if (this.props.params.region_feature_count) {
             params.feature_count = this.props.params.region_feature_count;
             delete params.region_feature_count;
@@ -365,6 +377,7 @@ class Identify extends React.Component {
             });
             return {identifyResults: identifyResults};
         });
+        return newResults;
     };
     onShow = (mode, data) => {
         this.setState({mode: mode || 'Point', exitTaskOnResultsClose: data?.exitTaskOnResultsClose});
@@ -461,8 +474,11 @@ class Identify extends React.Component {
         }
     };
     export = () => {
-        const data = JSON.stringify(this.state.identifyResults, null, ' ');
-        FileSaver.saveAs(new Blob([data], {type: 'application/json'}), 'results.json');
+        if (this.viewerRef) {
+            const results = this.viewerRef.serializeResults();
+            const data = JSON.stringify(results, null, ' ');
+            FileSaver.saveAs(new Blob([data], {type: 'application/json'}), 'results.json');
+        }
     };
     import = () => {
         this.fileinput.click();
@@ -472,13 +488,49 @@ class Identify extends React.Component {
         reader.readAsText(ev.target.files[0]);
         reader.onload = () => {
             try {
-                const identifyResults = JSON.parse(reader.result);
-                this.setState({identifyResults: identifyResults, pendingRequests: 0});
+                const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
+                this.deserializeResults(JSON.parse(reader.result), resultDisplayMode);
             } catch {
                 /* eslint-disable-next-line no-alert */
                 alert(LocaleUtils.tr("common.dataloadfailed"));
             }
         };
+    };
+    deserializeResults = (identifyResults, resultDisplayMode) => {
+        let pendingRequests = 0;
+        Object.entries(identifyResults).forEach(([layerid, layerresults]) => {
+            if (layerresults.key && layerresults.values) {
+                delete identifyResults[layerid]; // Features will be re-queried
+                const [layerUrl, layerName] = layerid.split("#", 2);
+                const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+                if (match) {
+                    const values = layerresults.values.map(x => (typeof x === "string" ? `"${x}"` : x)).join(" , ");
+                    const filter = {filter: `${layerName}:"${layerresults.key}" IN ( ${values} )`};
+                    const request = IdentifyUtils.buildFilterRequest(match.layer, layerName, undefined, this.props.map, filter);
+                    ++pendingRequests;
+                    IdentifyUtils.sendRequest(request, (response) => {
+                        this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
+                        if (response) {
+                            const results = this.parseResult(response, match.layer, request.params.info_format, [0, 0], false);
+                            const restoredkeys = new Set(results[layerName].map(f => String(f.id)));
+                            const missing = layerresults.values.filter(x => !restoredkeys.has(String(x)));
+                            if (missing.length > 0) {
+                                this.setState(state => ({importErrors: {
+                                    ...state.importErrors,
+                                    [layerid]: {key: layerresults.key, missing: missing}
+                                }}));
+                            }
+                        } else {
+                            this.setState(state => ({importErrors: {
+                                ...state.importErrors,
+                                [layerid]: true
+                            }}));
+                        }
+                    });
+                }
+            }
+        });
+        this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests, importErrors: {}, currentResultDisplayMode: resultDisplayMode});
     };
     render() {
         let resultWindow = null;
@@ -505,6 +557,7 @@ class Identify extends React.Component {
                         highlightAllResults={this.props.highlightAllResults}
                         identifyResults={this.state.identifyResults}
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
+                        innerRef={(el) => { this.viewerRef = el; }}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
                         resultDisplayMode={this.state.currentResultDisplayMode}

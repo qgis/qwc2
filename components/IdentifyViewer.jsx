@@ -272,6 +272,7 @@ class IdentifyViewer extends React.Component {
         highlightAllResults: PropTypes.bool,
         identifyResults: PropTypes.object,
         iframeDialogsInitiallyDocked: PropTypes.bool,
+        innerRef: PropTypes.func,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         map: PropTypes.object,
@@ -331,6 +332,7 @@ class IdentifyViewer extends React.Component {
     }
     componentDidMount() {
         this.updateResultTree();
+        this.props.innerRef(this);
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.identifyResults !== prevProps.identifyResults) {
@@ -357,13 +359,32 @@ class IdentifyViewer extends React.Component {
         }
     }
     componentWillUnmount() {
+        this.props.innerRef(null);
         this.props.removeLayer("__identifyviewerhighlight");
         unregisterPermalinkDataStoreHook("identifyresultstate");
     }
     storeIdentifyResults = () => {
         return new Promise((resolve) => resolve({
-            identifyResults: this.state.resultTree,
+            identifyResults: this.serializeResults(),
             currentResultDisplayMode: this.props.resultDisplayMode
+        }));
+    };
+    serializeResults = () => {
+        return Object.fromEntries(Object.entries(this.state.resultTree).map(([layerid, features]) => {
+            const [layerUrl, layerName] = layerid.split("#", 2);
+            const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+            if (match && match.sublayer.primary_key) {
+                return [
+                    layerid, {
+                        key: match.sublayer.primary_key,
+                        values: features.map(feature => {
+                            return MiscUtils.isNumeric(feature.id) ? Number(feature.id) : feature.id;
+                        })
+                    }
+                ];
+            } else {
+                return [layerid, features];
+            }
         }));
     };
     getCurrentResultFeature = () => {
@@ -701,7 +722,7 @@ class IdentifyViewer extends React.Component {
                     const fields = {};
                     features.map(feature => {
                         Object.entries(feature.properties).map(([attr, value]) => {
-                            if (!(attr in fields)) {
+                            if (!(attr in fields) && !['htmlContent', 'htmlContentInline'].includes(attr)) {
                                 fields[attr] = {id: attr, name: attr};
                             }
                         });
