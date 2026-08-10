@@ -301,6 +301,7 @@ const ServiceLayerUtils = {
             editConfigUrl: editConfigUrl,
             translationsUrl: translationsUrl,
             wms_name: wmsName,
+            primary_key: layer.PrimaryKey?.PrimaryKeyAttribute,
             version: version,
             infoFormats: infoFormats,
             mapFormats: mapFormats,

@@ -187,6 +187,8 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
             # collect visible layers
             visibleLayers.append(name)
 
+        layerEntry['primary_key'] = getChildElementValue(layer, 'PrimaryKey/PrimaryKeyAttribute')
+
         layerEntry["queryable"] = layer.getAttribute("queryable") == "1"
         if layerEntry["queryable"] and layer.getAttribute("displayField"):
             layerEntry["displayField"] = layer.getAttribute("displayField")

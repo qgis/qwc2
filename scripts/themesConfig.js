@@ -171,6 +171,9 @@ function getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, co
             // collect visible layers
             visibleLayers.push(layer.Name);
         }
+        if (layer.PrimaryKey?.PrimaryKeyAttribute) {
+            layerEntry.primary_key = layer.PrimaryKey.PrimaryKeyAttribute;
+        }
         layerEntry.queryable = layer.$_queryable === '1';
         if (layerEntry.queryable) {
             layerEntry.displayField = layer.$_displayField;
