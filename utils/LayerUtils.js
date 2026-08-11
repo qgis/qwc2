@@ -590,9 +590,10 @@ const LayerUtils = {
         if (isEmpty(baselayer.sublayers)) {
             return addlayer;
         }
-        const explodedBase = LayerUtils.explodeLayers([baselayer]);
+        const srcid = baselayer.srcid ?? uuidv4();
+        const explodedBase = LayerUtils.explodeLayers([{...baselayer, srcid: srcid}]);
         const existing = explodedBase.map(entry => entry.sublayer.name);
-        let explodedAdd = LayerUtils.explodeLayers([addlayer]);
+        let explodedAdd = LayerUtils.explodeLayers([{...addlayer, srcid: srcid}]);
         explodedAdd = explodedAdd.filter(entry => !existing.includes(entry.sublayer.name));
         return LayerUtils.implodeLayers(explodedAdd.concat(explodedBase))[0];
     },
