@@ -23,6 +23,7 @@ Plugin reference
 * [Map](#map)
 * [MapCompare](#mapcompare)
 * [MapCopyright](#mapcopyright)
+* [MapDropImport](#mapdropimport)
 * [MapExport](#mapexport)
 * [MapFilter](#mapfilter)
 * [MapInfoTooltip](#mapinfotooltip)
@@ -765,6 +766,12 @@ Displays layer attributions in the bottom right corner of the map.
 |----------|------|-------------|---------------|
 | prefixCopyrightsWithLayerNames | `bool` | Whether to prepend the layer name to the attribution string. | `undefined` |
 | showThemeCopyrightOnly | `bool` | Whether to only display the attribution of the theme, omitting external layers. | `undefined` |
+
+## MapDropImport<a name="mapdropimport"></a>
+
+Adds layers by dropping supported files (KML, KMZ, GeoJSON, zipped Shapefile, GeoPDF) onto the map.
+
+Disabled if `disableImportingLocalLayers` is set in the theme or global config.
 
 ## MapExport<a name="mapexport"></a>
 
