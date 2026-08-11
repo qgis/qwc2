@@ -416,6 +416,9 @@
       "terrain": "Земя",
       "title": "3D изглед"
     },
+    "mapdropimport": {
+      "dropfiles": ""
+    },
     "mapexport": {
       "configuration": "Конфигурация",
       "projection": "",

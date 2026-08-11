@@ -416,6 +416,9 @@
       "terrain": "Terrain",
       "title": "3D View"
     },
+    "mapdropimport": {
+      "dropfiles": "Drop files to import them as map layers"
+    },
     "mapexport": {
       "configuration": "Configuration",
       "projection": "Projection",

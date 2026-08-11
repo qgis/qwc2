@@ -416,6 +416,9 @@
       "terrain": "",
       "title": ""
     },
+    "mapdropimport": {
+      "dropfiles": ""
+    },
     "mapexport": {
       "configuration": "Configuratie",
       "projection": "",

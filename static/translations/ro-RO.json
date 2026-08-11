@@ -416,6 +416,9 @@
       "terrain": "Teren",
       "title": "Vedere 3D"
     },
+    "mapdropimport": {
+      "dropfiles": ""
+    },
     "mapexport": {
       "configuration": "Configurare",
       "projection": "Proiecție",

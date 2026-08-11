@@ -416,6 +416,9 @@
       "terrain": "",
       "title": ""
     },
+    "mapdropimport": {
+      "dropfiles": "Solte arquivos para importá-los como camadas"
+    },
     "mapexport": {
       "configuration": "Configuração",
       "projection": "",
