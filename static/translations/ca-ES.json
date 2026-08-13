@@ -98,17 +98,18 @@
       "nobg": "Sense fons"
     },
     "bookmark": {
-      "add": "Afegir",
       "addfailed": "Error al crear",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "Darrer canvi",
-      "manage": "Gestionar",
       "newbookmark": "Nou marcador",
       "nobookmarks": "Cap marcador",
-      "notloggedin": "No logat",
       "open": "Obrir",
       "openTab": "Obrir en una pestanya",
+      "public": "",
       "removefailed": "Error al eliminar",
       "savefailed": "Error al modificar",
+      "togglePublic": "",
       "update": "Updatejar",
       "zoomToExtent": "Fer zoom a l'extensió"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {

@@ -98,17 +98,18 @@
       "nobg": "Ei taustakarttaa"
     },
     "bookmark": {
-      "add": "Lisää kirjanmerkki nykyiselle kartalle",
       "addfailed": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "",
-      "manage": "Kirjanmerkkien hallinta",
       "newbookmark": "",
       "nobookmarks": "",
-      "notloggedin": "",
       "open": "",
       "openTab": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": "Päivitä kirjanmerkki",
       "zoomToExtent": ""
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {

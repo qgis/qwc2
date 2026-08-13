@@ -98,17 +98,18 @@
       "nobg": "Geen achtergrond"
     },
     "bookmark": {
-      "add": "Nieuwe bladwijzer maken",
       "addfailed": "Bladwijzer maken mislukt",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "Laatst opgeslagen",
-      "manage": "Beheer bladwijzers",
       "newbookmark": "",
       "nobookmarks": "Geen bladwijzers",
-      "notloggedin": "Je moet ingelogd zijn om bladwijzers op te slaan",
       "open": "Bladwijzer openen",
       "openTab": "Bladwijzer in nieuw tabblad openen",
+      "public": "",
       "removefailed": "Bladwijzer verwijderen mislukt",
       "savefailed": "Bladwijzer bijwerken mislukt",
+      "togglePublic": "",
       "update": "Bladwijzer bijwerken",
       "zoomToExtent": "Zoom tot extent"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {

@@ -98,17 +98,18 @@
       "nobg": "No background"
     },
     "bookmark": {
-      "add": "Create new bookmark",
       "addfailed": "Failed to create bookmark",
+      "confirmDelete": "Delete the bookmark?",
+      "confirmOverwrite": "Overwrite the bookmark?",
       "lastUpdate": "Last saved",
-      "manage": "Bookmarks",
       "newbookmark": "New bookmark",
       "nobookmarks": "No bookmarks",
-      "notloggedin": "You need to be logged in to store bookmarks",
       "open": "Open bookmark in current tab",
       "openTab": "Open bookmark in tab",
+      "public": "Public bookmark",
       "removefailed": "Failed to remove bookmark",
       "savefailed": "Failed to update bookmark",
+      "togglePublic": "Toggle public bookmark",
       "update": "Update bookmark",
       "zoomToExtent": "Zoom to extent"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": "Visible color"
     },
     "visibilitypreset": {
-      "add": "Create new visibility preset",
       "addfailed": "Failed to create visibility preset",
-      "manage": "Visibility presets",
+      "confirmDelete": "Delete the visibility preset?",
+      "confirmOverwrite": "Overwrite the visibility preset?",
       "newpreset": "New visibility preset",
       "nopresets": "No visibility presets",
-      "notloggedin": "You need to be logged in to store visibilities",
       "open": "Open visibility in current tab",
+      "public": "Public visibility preset",
       "removefailed": "Failed to remove visibility preset",
       "savefailed": "Failed to update visibility preset",
+      "togglePublic": "Toggle pubblic visibility preset",
       "update": "Update visibility preset"
     },
     "window": {

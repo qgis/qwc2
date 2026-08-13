@@ -98,17 +98,18 @@
       "nobg": "Nessuno sfondo"
     },
     "bookmark": {
-      "add": "Crea segnalibro",
       "addfailed": "Impossibile creare il segnalibro",
+      "confirmDelete": "Eliminare il segnalibro?",
+      "confirmOverwrite": "Sovrascrivere il segnalibro?",
       "lastUpdate": "Ultimo salvataggio",
-      "manage": "Segnalibri",
       "newbookmark": "Nuovo segnalibro",
       "nobookmarks": "Nessun segnalibro",
-      "notloggedin": "È necessario aver effettuato l'accesso per utilizzare i segnalibri",
       "open": "Apri nella finestra corrente",
       "openTab": "Apri in una nuova finestra",
+      "public": "Segnalibro pubblico",
       "removefailed": "Impossibile rimuovere il segnalibro",
       "savefailed": "Impossibile aggiornare il segnalibro",
+      "togglePublic": "Pubblicare il segnalibro",
       "update": "Aggiorna segnalibro",
       "zoomToExtent": "Zoomare sull'estensione"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": "Visibile"
     },
     "visibilitypreset": {
-      "add": "Salva profilo di visibilità",
       "addfailed": "Impossibile salvare il profilo di visibilità",
-      "manage": "Profili di visibilità",
+      "confirmDelete": "Eliminare il profilo di visibilità",
+      "confirmOverwrite": "Sovrascrivere il profilo di visibilità",
       "newpreset": "Nuovo profilo",
       "nopresets": "Nessun profilo salvato",
-      "notloggedin": "Devi effettuare l'accesso salvare profili di visibilità",
       "open": "Apri nella finestra corrente",
+      "public": "Profilo di visibilità pubblico",
       "removefailed": "Impossibile rimuovere il profilo di visibilità",
       "savefailed": "Impossibile aggiornare il profilo di visibilità",
+      "togglePublic": "Pubblicare il profilo di visibilità",
       "update": "Aggiorna il profilo di visibilità"
     },
     "window": {

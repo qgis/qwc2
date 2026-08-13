@@ -98,17 +98,18 @@
       "nobg": "Sem fundo"
     },
     "bookmark": {
-      "add": "Adicionar",
       "addfailed": "Falha ao adicionar",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "Última atualização",
-      "manage": "Gerenciar",
       "newbookmark": "",
       "nobookmarks": "Sem favoritos",
-      "notloggedin": "Não logado",
       "open": "Abrir",
       "openTab": "Abrir aba",
+      "public": "",
       "removefailed": "Falha ao remover",
       "savefailed": "Falha ao salvar",
+      "togglePublic": "",
       "update": "Atualizar",
       "zoomToExtent": ""
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {

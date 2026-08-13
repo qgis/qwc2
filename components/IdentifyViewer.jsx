@@ -365,8 +365,10 @@ class IdentifyViewer extends React.Component {
     }
     storeIdentifyResults = () => {
         return new Promise((resolve) => resolve({
-            identifyResults: this.serializeResults(),
-            currentResultDisplayMode: this.props.resultDisplayMode
+            state: {
+                identifyResults: this.serializeResults(),
+                currentResultDisplayMode: this.props.resultDisplayMode
+            }
         }));
     };
     serializeResults = () => {

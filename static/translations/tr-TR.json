@@ -98,17 +98,18 @@
       "nobg": "Arkaplan Yok"
     },
     "bookmark": {
-      "add": "Yeni yer işareti oluştur",
       "addfailed": "Yer işareti oluşturulamadı",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "Son kaydedilen",
-      "manage": "Yer işaretlerini yönet",
       "newbookmark": "",
       "nobookmarks": "Yer işareti yok",
-      "notloggedin": "Yer işaretlerini kaydedebilmek için giriş yapmalısınız",
       "open": "Yer işaretini geçerli sekmede aç",
       "openTab": "Yer işaretini yeni sekmede aç",
+      "public": "",
       "removefailed": "Yer işareti silinemedi",
       "savefailed": "Yer işareti kaydedilemedi",
+      "togglePublic": "",
       "update": "Yer işaretini güncelle",
       "zoomToExtent": "Kapsama yaklaş"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {

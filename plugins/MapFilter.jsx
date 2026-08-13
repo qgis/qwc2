@@ -16,7 +16,6 @@ import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, setFilter} from '../actions/layers';
-import {setPermalinkParameters} from '../actions/localConfig';
 import {setCurrentTask} from '../actions/task';
 import Icon from '../components/Icon';
 import MapButton from '../components/MapButton';
@@ -33,6 +32,7 @@ import DataServiceExprUtils from '../utils/DataServiceExprUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook} from '../utils/PermaLinkUtils';
 
 import './style/MapFilter.css';
 
@@ -68,7 +68,6 @@ class MapFilter extends React.Component {
         position: PropTypes.number,
         setCurrentTask: PropTypes.func,
         setFilter: PropTypes.func,
-        setPermalinkParameters: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         startupParams: PropTypes.object,
@@ -93,6 +92,12 @@ class MapFilter extends React.Component {
     constructor(props) {
         super(props);
         this.applyFilterTimeout = null;
+    }
+    componentDidMount() {
+        registerPermalinkDataStoreHook("mapfilter", this.serializeMapFilter);
+    }
+    componentWillUnmount() {
+        unregisterPermalinkDataStoreHook("mapfilter");
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme !== prevProps.theme) {
@@ -262,29 +267,33 @@ class MapFilter extends React.Component {
                 this.setState({filterInvalid: true});
             });
         }
-        const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
-            if (value.active) {
-                return {...res, [key]: value.values};
-            } else {
-                return res;
+    };
+    serializeMapFilter = () => {
+        return new Promise((resolve) => {
+            const permalinkState = Object.entries(this.state.filters).reduce((res, [key, value]) => {
+                if (value.active) {
+                    return {...res, [key]: value.values};
+                } else {
+                    return res;
+                }
+            }, {});
+            if (this.state.geomFilter.geom) {
+                permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
             }
-        }, {});
-        if (this.state.geomFilter.geom) {
-            permalinkState.__geomfilter = this.state.geomFilter.geom.coordinates;
-        }
-        permalinkState.__custom = Object.values(this.state.customFilters).map(entry => {
-            if (!entry.active) {
-                return null;
-            }
-            let expr = null;
-            try {
-                expr = JSON.parse(entry.expr);
-            } catch {
-                return null;
-            }
-            return {title: entry.title, layer: entry.layer, expr: expr};
-        }).filter(Boolean);
-        this.props.setPermalinkParameters({f: JSON.stringify(permalinkState)});
+            permalinkState.__custom = Object.values(this.state.customFilters).map(entry => {
+                if (!entry.active) {
+                    return null;
+                }
+                let expr = null;
+                try {
+                    expr = JSON.parse(entry.expr);
+                } catch {
+                    return null;
+                }
+                return {title: entry.title, layer: entry.layer, expr: expr};
+            }).filter(Boolean);
+            resolve({query: {f: JSON.stringify(permalinkState)}});
+        });
     };
     buildTimeFilter = (layer, filters, wmsName) => {
         if (layer.sublayers) {
@@ -638,6 +647,5 @@ export default connect((state) => ({
     startupParams: state.localConfig.startupParams
 }), {
     setFilter: setFilter,
-    setCurrentTask: setCurrentTask,
-    setPermalinkParameters: setPermalinkParameters
+    setCurrentTask: setCurrentTask
 })(MapFilter);

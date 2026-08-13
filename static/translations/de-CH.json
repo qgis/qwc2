@@ -98,17 +98,18 @@
       "nobg": "Kein Hintergrund"
     },
     "bookmark": {
-      "add": "Neues Lesezeichen anlegen",
       "addfailed": "Lesezeichen konnte nicht angelegt werden",
+      "confirmDelete": "Lesezeichen löschen?",
+      "confirmOverwrite": "Lesezeichen überschreiben?",
       "lastUpdate": "Zuletzt gespeichert",
-      "manage": "Lesezeichen",
       "newbookmark": "Neues Lesezeichen",
       "nobookmarks": "Keine Lesezeichen",
-      "notloggedin": "Sie müssen angemeldet sein, um Lesezeichen zu verwenden",
       "open": "In aktuellem Fenster öffnen",
       "openTab": "In neuem Fenster öffnen",
+      "public": "Öffentliches Lesezeichen",
       "removefailed": "Lesezeichen konnte nicht entfernt werden",
       "savefailed": "Lesezeichen konnte nicht aktualisiert werden",
+      "togglePublic": "Lesezeichen öffentlich publizieren",
       "update": "Lesezeichen aktualisieren",
       "zoomToExtent": "Auf Ausschnitt zoomen"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": "Sichtbar"
     },
     "visibilitypreset": {
-      "add": "Sichtbarkeitsprofil anlegen",
       "addfailed": "Sichtbarkeitsprofil konnte nicht angelegt werden",
-      "manage": "Sichtbarkeitsprofile",
+      "confirmDelete": "Sichtbarkeitsprofil löschen?",
+      "confirmOverwrite": "Sichtbarkeitsprofil überschreiben?",
       "newpreset": "Neues Sichtbarkeitsprofil",
       "nopresets": "Keine Sichtbarkeitsprofile angelegt",
-      "notloggedin": "Sie müssen angemeldet sein, um Sichtbarkeitsprofile zu verwenden",
       "open": "In aktuellem Fenster öffnen",
+      "public": "Öffentliches Sichtbarkeitsprofil",
       "removefailed": "Sichtbarkeitsprofil konnte nicht entfernt werden",
       "savefailed": "Sichtbarkeitsprofil konnte nicht aktualisiert werden",
+      "togglePublic": "Sichtbarkeitsprofil öffentlich publizieren",
       "update": "Sichtbarkeitsprofil aktualisieren"
     },
     "window": {

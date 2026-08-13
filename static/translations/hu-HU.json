@@ -98,17 +98,18 @@
       "nobg": "Nincs háttér"
     },
     "bookmark": {
-      "add": "",
       "addfailed": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "",
-      "manage": "",
       "newbookmark": "",
       "nobookmarks": "",
-      "notloggedin": "",
       "open": "",
       "openTab": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": "",
       "zoomToExtent": ""
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {

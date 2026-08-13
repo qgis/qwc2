@@ -21,87 +21,50 @@ import MiscUtils from '../utils/MiscUtils';
 
 import './style/BookmarkPanel.css';
 
-/**
- * Allows managing user bookmarks.
- * or user visibility presets if `visibilityPresetsMode` is true.
- *
- * Bookmarks are only allowed for authenticated users.
- *
- * Requires `permalinkServiceUrl` to point to a `qwc-permalink-service`.
- */
 class BookmarkPanel extends React.Component {
     static availableIn3D = true;
 
     static propTypes = {
+        bookmarkIface: PropTypes.object,
         bookmarks: PropTypes.array,
-        onAdd: PropTypes.func,
         onOpen: PropTypes.func,
-        onRefresh: PropTypes.func,
-        onRemove: PropTypes.func,
-        onRename: PropTypes.func,
-        onUpdate: PropTypes.func,
         onZoomToExtent: PropTypes.func,
-        /** Whether to directly open the bookmark on click / middle click, instead of showing dedicated open buttons. */
         openOnClick: PropTypes.bool,
-        showOpenTab: PropTypes.bool,
-        showZoomToExtent: PropTypes.bool,
+        setList: PropTypes.func,
         translations: PropTypes.objectOf(PropTypes.string)
     };
-    static defaultProps = {
-        showOpenTab: true,
-        showZoomToExtent: false
-    };
     state = {
-        renameBookmark: null,
         currentBookmark: null,
+        rename: false,
         busy: false
     };
-    componentDidUpdate(prevProps) {
-        // Check exact identity of bookmarks array to reset busy state in all cases
-        if (prevProps.bookmarks !== this.props.bookmarks) {
-            this.setState({renameBookmark: null, busy: false});
-            // Select a recently added bookmark
-            const addedBookmark = this.props.bookmarks.find(bookmark =>
-                !prevProps.bookmarks.some(prevBookmark => prevBookmark.key === bookmark.key)
-            );
-            if (addedBookmark) {
-                this.setState({
-                    renameBookmark: addedBookmark.key,
-                    currentBookmark: null
-                });
-            }
-        }
-    }
     render() {
-
         const username = ConfigUtils.getConfigProp("username");
+        const hasPublicBookmarksCap = ConfigUtils.getConfigProp("capabilities", null, []).includes("public_bookmarks");
         const currentBookmark = this.state.currentBookmark;
         const buttonsDisabled = !currentBookmark || this.state.busy;
+        const updatable = currentBookmark?.own;
 
-        return !username ? (
-            <div className="bookmark-body" role="body"> {this.props.translations?.notloggedin}</div>
-        ) : (
+        return (
             <div className="bookmark-body" role="body">
                 <h4 className="bookmark-header">
-                    <span>{this.props.translations?.manage}</span>
-                    <button className="button" onClick={this.addBookmark} title={this.props.translations?.add}><Icon icon="plus" /></button>
+                    <span>{this.props.translations.title}</span>
+                    {username ? (<button className="button" onClick={this.addBookmark} title={this.props.translations.new}><Icon icon="plus" /></button>) : null}
                 </h4>
                 {!this.props.openOnClick ? (
                     <div className="bookmark-actions controlgroup">
-                        <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onOpen(currentBookmark, false)} title={this.props.translations?.open}>
+                        <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onOpen(currentBookmark.key, false)} title={this.props.translations.open}>
                             <Icon icon="folder-open" />
                         </button>
-                        {this.props.showOpenTab ? (
-                            <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onOpen(currentBookmark, true)} title={this.props.translations?.openTab}>
-                                <Icon icon="open_link" />
-                            </button>
-                        ) : null}
-                        {this.props.showZoomToExtent ? (
-                            <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onZoomToExtent(currentBookmark)} title={this.props.translations?.zoomToExtent}>
+                        <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onOpen(currentBookmark.key, true)} title={this.props.translations.openTab}>
+                            <Icon icon="open_link" />
+                        </button>
+                        {this.props.onZoomToExtent ? (
+                            <button className="button" disabled={buttonsDisabled} onClick={() => this.props.onZoomToExtent(currentBookmark.key)} title={this.props.translations.zoomToExtent}>
                                 <Icon icon="zoom" />
                             </button>
                         ) : null}
-                        <button className="button" disabled={buttonsDisabled} onClick={() => this.updateBookmark(currentBookmark)} title={this.props.translations?.update}>
+                        <button className="button" disabled={!updatable} onClick={() => this.updateBookmark(currentBookmark, {}, true)} title={this.props.translations.update}>
                             <Icon icon="save" />
                         </button>
                     </div>
@@ -110,99 +73,117 @@ class BookmarkPanel extends React.Component {
                     {this.props.bookmarks.map((bookmark) => {
                         const itemclasses = classnames({
                             "bookmark-list-item": true,
-                            "bookmark-list-item-active": currentBookmark === bookmark.key
+                            "bookmark-list-item-active": currentBookmark?.key === bookmark.key
                         });
+                        const renaming = currentBookmark?.key === bookmark.key && this.state.rename;
+                        let publicIcon = null;
+                        if (bookmark.own && hasPublicBookmarksCap) {
+                            publicIcon = (
+                                <Icon disabled={this.state.busy} icon="public" inactive={!bookmark.public} onClick={(ev) => {this.updateBookmark(bookmark, {public: !bookmark.public}); MiscUtils.killEvent(ev);}} title={this.props.translations.togglePublic} />
+                            );
+                        } else if (bookmark.public) {
+                            publicIcon = (
+                                <Icon icon="public" title={this.props.translations.public} />
+                            );
+                        }
                         return (
                             <div className={itemclasses} key={bookmark.key}
                                 onAuxClick={(ev) => this.bookmarkClicked(ev, bookmark)}
                                 onClick={(ev) => this.bookmarkClicked(ev, bookmark)}
                                 onDoubleClick={(ev) => this.bookmarkDoubleClicked(ev, bookmark)}
-                                title={this.props.translations?.lastUpdate + ": " + bookmark.date}
+                                title={this.props.translations.lastUpdate + ": " + bookmark.date}
                             >
-                                {this.state.renameBookmark === bookmark.key ? (
+                                {renaming ? (
                                     <InputContainer>
-                                        <TextInput focusOnRef onChange={this.updateBookmarkName} onNoChange={() => this.setState({renameBookmark: null})} role="input" showClear={false} value={bookmark.description} />
+                                        <TextInput focusOnRef onChange={(text) => this.updateBookmark(bookmark, {description: text})} onNoChange={() => this.setState({rename: false})} role="input" showClear={false} value={bookmark.description} />
                                         <Icon icon="ok" onClick={MiscUtils.killEvent} role="suffix" />
                                     </InputContainer>
                                 ) : (
                                     <span>{bookmark.description}</span>
                                 )}
-                                {this.state.renameBookmark !== bookmark.key ? (
-                                    <Icon icon="draw" onClick={(ev) => {this.setState({renameBookmark: bookmark.key, currentBookmark: null}); MiscUtils.killEvent(ev);}} title={LocaleUtils.tr("common.rename")} />
-                                ) : null}
-                                {this.state.renameBookmark !== bookmark.key ? (
-                                    <Icon disabled={this.state.busy} icon="trash" onClick={(ev) => {this.removeBookmark(bookmark.key); MiscUtils.killEvent(ev);}} title={LocaleUtils.tr("common.delete")} />
-                                ) : null}
+                                {!renaming ? publicIcon : null}
+                                {bookmark.own && !renaming ? [(
+                                    <Icon disabled={this.state.busy} icon="draw" key="draw" onClick={(ev) => {this.setState({currentBookmark: bookmark, rename: true}); MiscUtils.killEvent(ev);}} title={LocaleUtils.tr("common.rename")} />
+                                ), (
+                                    <Icon disabled={this.state.busy} icon="trash" key="trash" onClick={(ev) => {this.removeBookmark(bookmark); MiscUtils.killEvent(ev);}} title={LocaleUtils.tr("common.delete")} />
+                                )] : null}
                             </div>
                         );
                     })}
                     {isEmpty(this.props.bookmarks) ? (
-                        <div className="bookmark-list-item-empty">{this.props.translations?.nobookmarks}</div>
+                        <div className="bookmark-list-item-empty">{this.props.translations.noitems}</div>
                     ) : null}
                 </div>
             </div>
         );
     }
     bookmarkClicked = (ev, bookmark) => {
-        if (this.state.renameBookmark) {
+        if (this.state.rename) {
             // pass
         } else if (this.props.openOnClick) {
             this.props.onOpen(bookmark.key, ev.button === 1);
-        } else if (this.state.currentBookmark === bookmark.key) {
+        } else if (this.state.currentBookmark === bookmark) {
             this.setState({currentBookmark: null, description: ""});
         } else {
-            this.setState({currentBookmark: bookmark.key, description: bookmark.description});
+            this.setState({currentBookmark: bookmark, description: bookmark.description});
         }
     };
     bookmarkDoubleClicked = (ev, bookmark) => {
-        if (!this.state.renameBookmark) {
+        if (!this.state.rename) {
             this.props.onOpen(bookmark.key, false);
         }
     };
-    updateBookmarkName = (text) => {
-        this.setState({busy: true});
-
-        this.props.onRename(this.state.renameBookmark, text, (success) => {
-            if (!success) {
-                /* eslint-disable-next-line */
-                alert(this.props.translations?.savefailed);
-            }
-            this.props.onRefresh();
-        });
-    };
     addBookmark = () => {
         this.setState({busy: true});
-
-        this.props.onAdd(this.props.translations?.newbookmark, (success, key) => {
+        this.props.bookmarkIface.create(this.props.translations.new, (success, key) => {
             if (!success) {
                 /* eslint-disable-next-line */
-                alert(this.props.translations?.addfailed);
+                alert(this.props.translations.addfailed);
+                this.setState({busy: false});
+            } else {
+                this.props.bookmarkIface.getList((bookmarks) => {
+                    this.props.setList(bookmarks);
+                    this.setState({rename: true, currentBookmark: bookmarks.find(bk => bk.key === key), busy: false});
+                });
             }
-            this.props.onRefresh();
-        });
-        this.setState({description: "", currentBookmark: null});
-    };
-    updateBookmark = (key) => {
-        this.setState({busy: true});
-        const description = this.props.bookmarks.find(bk => bk.key === key).description;
-
-        this.props.onUpdate(key, description, (success) => {
-            if (!success) {
-                /* eslint-disable-next-line */
-                alert(this.props.translations?.savefailed);
-            }
-            this.props.onRefresh();
         });
     };
-    removeBookmark = (key) => {
+    updateBookmark = (bookmark, params, updateData = false) => {
+        // eslint-disable-next-line no-alert
+        if (updateData && !confirm(this.props.translations.confirmOverwrite)) {
+            return;
+        }
         this.setState({busy: true});
-
-        this.props.onRemove(key, (success) => {
+        this.props.bookmarkIface.update(bookmark.key, params, updateData, (success) => {
             if (!success) {
                 /* eslint-disable-next-line */
-                alert(this.props.translations?.removefailed);
+                alert(this.props.translations.savefailed);
+                this.setState({busy: false});
+            } else {
+                this.props.bookmarkIface.getList((bookmarks) => {
+                    this.props.setList(bookmarks);
+                    this.setState({rename: false, currentBookmark: bookmarks.find(bk => bk.key === bookmark.key), busy: false});
+                });
             }
-            this.props.onRefresh();
+        });
+    };
+    removeBookmark = (bookmark) => {
+        // eslint-disable-next-line no-alert
+        if (!confirm(this.props.translations.confirmDelete)) {
+            return;
+        }
+        this.setState({busy: true});
+
+        this.props.bookmarkIface.delete(bookmark.key, (success) => {
+            if (!success) {
+                /* eslint-disable-next-line */
+                alert(this.props.translations.removefailed);
+                this.setState({busy: false});
+            }
+            this.props.bookmarkIface.getList((bookmarks) => {
+                this.props.setList(bookmarks);
+                this.setState({rename: false, currentBookmark: null, busy: false});
+            });
         });
     };
 }

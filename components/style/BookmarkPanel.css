@@ -37,6 +37,8 @@ div.bookmark-list-item {
 div.bookmark-list-item > div.input-container {
     flex: 1 1 auto;
     border: none;
+    color: var(--text-color);
+    border: 1px solid var(--color-active);
 }
 
 div.bookmark-list-item-empty {

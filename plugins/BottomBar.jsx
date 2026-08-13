@@ -22,7 +22,7 @@ import NumberInput from '../components/widgets/NumberInput';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import {resolveVisibilityPreset} from "../utils/PermaLinkUtils";
+import {VisibilityPresetsInterface} from "../utils/PermaLinkUtils";
 
 import './style/BottomBar.css';
 
@@ -217,7 +217,7 @@ class BottomBar extends React.Component {
     openBookmarkOrPreset = (prefixedKey) => {
         if (prefixedKey.startsWith("vp:")) {
             const key = prefixedKey.slice("vp:".length);
-            resolveVisibilityPreset(key, (preset) => {
+            VisibilityPresetsInterface.resolve(key, (preset) => {
                 if (preset) {
                     this.props.setThemeLayersVisibilityPreset(preset);
                 }

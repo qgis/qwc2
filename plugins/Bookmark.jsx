@@ -3,13 +3,13 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {refreshBookmarks} from '../actions/bookmark';
+import {setBookmarks} from '../actions/bookmark';
 import {zoomToExtent, zoomToPoint} from "../actions/map";
 import BookmarkPanel from '../components/BookmarkPanel';
 import SideBar from '../components/SideBar';
 import LocaleUtils from "../utils/LocaleUtils";
 import MapUtils from "../utils/MapUtils";
-import {createBookmark, removeBookmark, renameBookmark, resolveBookmark, updateBookmark} from '../utils/PermaLinkUtils';
+import {BookmarksInterface} from '../utils/PermaLinkUtils';
 
 
 /**
@@ -27,7 +27,7 @@ class Bookmark extends React.Component {
         mapScales: PropTypes.array,
         /** Whether to directly open the bookmark on click / middle click, instead of showing dedicated open buttons. */
         openOnClick: PropTypes.bool,
-        refreshBookmarks: PropTypes.func,
+        setBookmarks: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         zoomToExtent: PropTypes.func,
@@ -37,20 +37,27 @@ class Bookmark extends React.Component {
         side: 'right'
     };
     translations = {
-        add: LocaleUtils.tr("bookmark.add"),
         addfailed: LocaleUtils.tr("bookmark.addfailed"),
         lastUpdate: LocaleUtils.tr("bookmark.lastUpdate"),
-        manage: LocaleUtils.tr("bookmark.manage"),
-        newbookmark: LocaleUtils.tr("bookmark.newbookmark"),
-        nobookmarks: LocaleUtils.tr("bookmark.nobookmarks"),
-        notloggedin: LocaleUtils.tr("bookmark.notloggedin"),
+        title: LocaleUtils.tr("appmenu.items.Bookmark"),
+        new: LocaleUtils.tr("bookmark.newbookmark"),
+        noitems: LocaleUtils.tr("bookmark.nobookmarks"),
         open: LocaleUtils.tr("bookmark.open"),
         openTab: LocaleUtils.tr("bookmark.openTab"),
         update: LocaleUtils.tr("bookmark.update"),
         zoomToExtent: LocaleUtils.tr("bookmark.zoomToExtent"),
         removefailed: LocaleUtils.tr("bookmark.removefailed"),
-        savefailed: LocaleUtils.tr("bookmark.savefailed")
+        savefailed: LocaleUtils.tr("bookmark.savefailed"),
+        togglePublic: LocaleUtils.tr("bookmark.togglePublic"),
+        public: LocaleUtils.tr("bookmark.public"),
+        confirmOverwrite: LocaleUtils.tr("bookmark.confirmOverwrite"),
+        confirmDelete: LocaleUtils.tr("bookmark.confirmDelete")
     };
+    componentDidMount() {
+        BookmarksInterface.getList((bookmarks) => {
+            this.props.setBookmarks(bookmarks);
+        });
+    }
     render() {
         return (
             <SideBar icon="bookmark" id="Bookmark"
@@ -65,16 +72,12 @@ class Bookmark extends React.Component {
     renderBody = () => {
         return (
             <BookmarkPanel
+                bookmarkIface={BookmarksInterface}
                 bookmarks={this.props.bookmarks}
-                onAdd={createBookmark}
                 onOpen={this.onOpen}
-                onRefresh={this.props.refreshBookmarks}
-                onRemove={removeBookmark}
-                onRename={renameBookmark}
-                onUpdate={updateBookmark}
                 onZoomToExtent={this.zoomToBookmarkExtent}
                 openOnClick={this.props.openOnClick}
-                showZoomToExtent={this.props.mapCrs && this.props.mapScales}
+                setList={this.props.setBookmarks}
                 translations={this.translations}
             />
         );
@@ -90,7 +93,7 @@ class Bookmark extends React.Component {
     };
 
     zoomToBookmarkExtent = (key) => {
-        resolveBookmark(key, (params) => {
+        BookmarksInterface.resolve(key, (params) => {
             if ('c' in params && 's' in params) {
                 const scale = parseFloat(params.s);
                 const zoom = MapUtils.computeZoom(this.props.mapScales, scale);
@@ -109,7 +112,7 @@ const selector = state => ({
     mapScales: state.map?.scales
 });
 export default connect(selector, {
-    refreshBookmarks: refreshBookmarks,
+    setBookmarks: setBookmarks,
     zoomToExtent: zoomToExtent,
     zoomToPoint: zoomToPoint
 })(Bookmark);

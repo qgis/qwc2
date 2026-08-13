@@ -8,7 +8,6 @@
 
 import bookmarkReducer from '../reducers/bookmark';
 import ReducerIndex from '../reducers/index';
-import {getBookmarks, getVisibilityPresets} from '../utils/PermaLinkUtils';
 
 ReducerIndex.register("bookmark", bookmarkReducer);
 
@@ -26,17 +25,5 @@ export function setVisibilityPresets(visibilityPresets) {
     return {
         type: SET_VISIBILITY_PRESETS,
         visibilityPresets
-    };
-}
-
-export function refreshBookmarks() {
-    return (dispatch) => {
-        getBookmarks((bookmarks) => dispatch(setBookmarks(bookmarks)));
-    };
-}
-
-export function refreshVisibilityPresets() {
-    return (dispatch) => {
-        getVisibilityPresets((presets) => dispatch(setVisibilityPresets(presets)));
     };
 }

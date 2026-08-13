@@ -98,17 +98,18 @@
       "nobg": "Pas de fond"
     },
     "bookmark": {
-      "add": "Ajouter un marque-page",
       "addfailed": "Echec de création du marque-page",
+      "confirmDelete": "Supprimer le signet?",
+      "confirmOverwrite": "Remplacer le signet ?",
       "lastUpdate": "Dernier enregistrement",
-      "manage": "Gérer les marque-pages",
       "newbookmark": "Nouveau marque-page",
       "nobookmarks": "Pas de marque-pages",
-      "notloggedin": "Vous avez besoin d'être authentifié pour pouvoir enregistrer des marques-pages",
       "open": "Ouvrir le marque-page dans l'onglet courant",
       "openTab": "Ouvrir le marque-page dans un nouvel onglet",
+      "public": "Signet public",
       "removefailed": "Echec de suppression du marque-page",
       "savefailed": "Echec d'enregistrement du marque-page",
+      "togglePublic": "Publier le signet",
       "update": "Sauvegarder le marque-page",
       "zoomToExtent": "Zommer sur l'étendue"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": "Visible"
     },
     "visibilitypreset": {
-      "add": "Enregistrer un profil de visibilité",
       "addfailed": "Impossible d'enregistrer le profil de visibilité",
-      "manage": "Profils de visibilité",
+      "confirmDelete": "Supprimer le profil de visibilité",
+      "confirmOverwrite": "Remplacer le profil de visibilité",
       "newpreset": "Nouveau profil",
       "nopresets": "Aucun profil enregistré",
-      "notloggedin": "Vous devez être connecté pour enregistrer des profils de visibilité",
       "open": "Ouvrir dans la fenêtre actuelle",
+      "public": "Profil de visibilité public",
       "removefailed": "Impossible de supprimer le profil de visibilité",
       "savefailed": "Impossible de mettre à jour le profil de visibilité",
+      "togglePublic": "Publier le profil de visibilité",
       "update": "Mettre à jour le profil de visibilité"
     },
     "window": {

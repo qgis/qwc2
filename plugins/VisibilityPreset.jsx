@@ -11,18 +11,12 @@ import {connect} from 'react-redux';
 
 import PropTypes from "prop-types";
 
-import {refreshVisibilityPresets} from '../actions/bookmark';
+import {setVisibilityPresets} from '../actions/bookmark';
 import {setThemeLayersVisibilityPreset} from '../actions/layers';
 import BookmarkPanel from '../components/BookmarkPanel';
 import SideBar from "../components/SideBar";
 import LocaleUtils from '../utils/LocaleUtils';
-import {
-    storeVisibilityPreset,
-    updateVisibilityPreset,
-    renameVisibilityPreset,
-    removeVisibilityPreset,
-    resolveVisibilityPreset
-} from '../utils/PermaLinkUtils';
+import {VisibilityPresetsInterface} from '../utils/PermaLinkUtils';
 
 
 /**
@@ -40,8 +34,8 @@ class VisibilityPreset extends React.Component {
     static propTypes = {
         /** Whether to directly open the bookmark on click / middle click, instead of showing dedicated open buttons. */
         openOnClick: PropTypes.bool,
-        refreshVisibilityPresets: PropTypes.func,
         setThemeLayersVisibilityPreset: PropTypes.func,
+        setVisibilityPresets: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         theme: PropTypes.object,
@@ -52,17 +46,24 @@ class VisibilityPreset extends React.Component {
         side: 'right'
     };
     translations =  {
-        add: LocaleUtils.tr("visibilitypreset.add"),
         addfailed: LocaleUtils.tr("visibilitypreset.addfailed"),
-        manage: LocaleUtils.tr("visibilitypreset.manage"),
-        newbookmark: LocaleUtils.tr("visibilitypreset.newpreset"),
-        nobookmarks: LocaleUtils.tr("visibilitypreset.nopresets"),
-        notloggedin: LocaleUtils.tr("visibilitypreset.notloggedin"),
+        title: LocaleUtils.tr("appmenu.items.VisibilityPresets"),
+        new: LocaleUtils.tr("visibilitypreset.newpreset"),
+        noitems: LocaleUtils.tr("visibilitypreset.nopresets"),
         open: LocaleUtils.tr("visibilitypreset.open"),
         update: LocaleUtils.tr("visibilitypreset.update"),
         removefailed: LocaleUtils.tr("visibilitypreset.removefailed"),
-        savefailed: LocaleUtils.tr("visibilitypreset.savefailed")
+        savefailed: LocaleUtils.tr("visibilitypreset.savefailed"),
+        togglePublic: LocaleUtils.tr("visibilitypreset.togglePublic"),
+        public: LocaleUtils.tr("visibilitypreset.public"),
+        confirmOverwrite: LocaleUtils.tr("visibilitypreset.confirmOverwrite"),
+        confirmDelete: LocaleUtils.tr("visibilitypreset.confirmDelete")
     };
+    componentDidMount() {
+        VisibilityPresetsInterface.getList((presets) => {
+            this.props.setVisibilityPresets(presets);
+        });
+    }
     render() {
         return (
             <SideBar icon="eye" id="VisibilityPresets"
@@ -84,26 +85,27 @@ class VisibilityPreset extends React.Component {
         const presets = this.filterByActiveTheme(this.props.visibilityPresets, this.props.theme?.id);
         return (
             <BookmarkPanel
+                bookmarkIface={VisibilityPresetsInterface}
                 bookmarks={presets}
-                onAdd={storeVisibilityPreset}
                 onOpen={this.onOpen}
-                onRefresh={this.props.refreshVisibilityPresets}
-                onRemove={removeVisibilityPreset}
-                onRename={renameVisibilityPreset}
-                onUpdate={updateVisibilityPreset}
                 openOnClick={this.props.openOnClick}
-                showOpenTab={false}
+                setList={this.props.setVisibilityPresets}
                 translations={this.translations}
             />
         );
     };
 
     onOpen = (key, newtab = false) => {
-        resolveVisibilityPreset(key, (preset) => {
-            if (preset) {
-                this.props.setThemeLayersVisibilityPreset(preset);
-            }
-        });
+        if (newtab) {
+            const url = location.href.split("?")[0] + '?vp=' + key;
+            window.open(url, '_blank');
+        } else {
+            VisibilityPresetsInterface.resolve(key, (preset) => {
+                if (preset) {
+                    this.props.setThemeLayersVisibilityPreset(preset);
+                }
+            });
+        }
     };
 
 }
@@ -112,6 +114,6 @@ const selector = state => ({
     visibilityPresets: state.bookmark?.visibilityPresets ?? []
 });
 export default connect(selector, {
-    refreshVisibilityPresets: refreshVisibilityPresets,
+    setVisibilityPresets: setVisibilityPresets,
     setThemeLayersVisibilityPreset: setThemeLayersVisibilityPreset
 })(VisibilityPreset);

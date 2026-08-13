@@ -98,17 +98,18 @@
       "nobg": "Bez podkladu"
     },
     "bookmark": {
-      "add": "Vytvořit novou záložku",
       "addfailed": "Vytváření záložky selhalo",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "Naposledy upraveno",
-      "manage": "Správa záložek",
       "newbookmark": "",
       "nobookmarks": "Zatím žádné záložky",
-      "notloggedin": "Pro vytvoření záložky se musíte přihlásit",
       "open": "Otevřít záložku",
       "openTab": "Otevřít záložku v novém okně",
+      "public": "",
       "removefailed": "Mazání záložky selhalo",
       "savefailed": "Ukládání záložky selhalo",
+      "togglePublic": "",
       "update": "Upravit",
       "zoomToExtent": ""
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {

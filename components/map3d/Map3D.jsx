@@ -1302,12 +1302,14 @@ class Map3D extends React.Component {
                     }
                 }));
                 resolve({
-                    objects: objects,
-                    colorLayers: layers,
-                    baseLayer: this.state.sceneContext.baseLayers.find(layer => layer.visibility === true)?.name || "",
-                    personHeight: this.state.sceneContext.scene.view.controls.personHeight ?? 0,
-                    camera: [camera.x, camera.y, camera.z],
-                    target: [target.x, target.y, target.z]
+                    state: {
+                        objects: objects,
+                        colorLayers: layers,
+                        baseLayer: this.state.sceneContext.baseLayers.find(layer => layer.visibility === true)?.name || "",
+                        personHeight: this.state.sceneContext.scene.view.controls.personHeight ?? 0,
+                        camera: [camera.x, camera.y, camera.z],
+                        target: [target.x, target.y, target.z]
+                    }
                 });
             });
         });

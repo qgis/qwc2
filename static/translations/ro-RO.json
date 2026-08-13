@@ -98,17 +98,18 @@
       "nobg": "Fără fundal"
     },
     "bookmark": {
-      "add": "Adaugă semn de carte",
       "addfailed": "Semnul de carte nu a putut fi creat",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "Ultima actualizare",
-      "manage": "Gestionează ssemnele de carte",
       "newbookmark": "Marcaj nou",
       "nobookmarks": "Nu există semne de carte salvate",
-      "notloggedin": "Pentru a salva semnele de carte trebuie să fii autentificat",
       "open": "Deschide deschide semnul de carte în această pagină",
       "openTab": "Deschide deschide semnul de carte într-o pagină nouă",
+      "public": "",
       "removefailed": "Semnul de carte nu a putut fi șters",
       "savefailed": "Semnul de carte nu a putut fi salvat",
+      "togglePublic": "",
       "update": "Actualizează semnul de carte",
       "zoomToExtent": "Zoom la extindere"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "Creează presetare de vizibilitate nouă",
       "addfailed": "Crearea presetării de vizibilitate a eșuat",
-      "manage": "Presetări de vizibilitate",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "Presetare de vizibilitate nouă",
       "nopresets": "Nicio presetare de vizibilitate",
-      "notloggedin": "Trebuie să fii autentificat pentru a salva vizibilitățile",
       "open": "Deschide vizibilitatea în pagina curentă",
+      "public": "",
       "removefailed": "Eliminarea presetării de vizibilitate a eșuat",
       "savefailed": "Actualizarea presetării de vizibilitate a eșuat",
+      "togglePublic": "",
       "update": "Actualizează presetarea de vizibilitate"
     },
     "window": {

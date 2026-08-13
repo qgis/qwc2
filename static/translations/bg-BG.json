@@ -98,17 +98,18 @@
       "nobg": "Без фон"
     },
     "bookmark": {
-      "add": "Създаване на нов маркер",
       "addfailed": "Неуспешно създаване на отметки",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "Последно запазен",
-      "manage": "Управление на отметките",
       "newbookmark": "",
       "nobookmarks": "Няма отметки",
-      "notloggedin": "Трябва да сте влезли в системата, за да съхранявате отметки",
       "open": "Отваряне на отметки в текущия раздел",
       "openTab": "Отваряне на отметки в раздела",
+      "public": "",
       "removefailed": "Не успя да премахне отметките",
       "savefailed": "Неуспешно актуализиране на отметките",
+      "togglePublic": "",
       "update": "Актуализиране на отметките",
       "zoomToExtent": "Увеличаване на обхвата"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {

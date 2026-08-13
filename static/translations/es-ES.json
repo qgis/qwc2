@@ -98,17 +98,18 @@
       "nobg": "Sin fondo"
     },
     "bookmark": {
-      "add": "Añadir",
       "addfailed": "Error al crear",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "lastUpdate": "Último guardado",
-      "manage": "Administrar",
       "newbookmark": "Nuevo marcador",
       "nobookmarks": "Ningún marcador",
-      "notloggedin": "Se necesita tener sesión iniciada para guardar marcadores",
       "open": "Abrir en la pestaña actual",
       "openTab": "Abrir en pestaña",
+      "public": "",
       "removefailed": "Error al eliminar el marcador",
       "savefailed": "Error al actualizar el marcador",
+      "togglePublic": "",
       "update": "Actualizar marcador",
       "zoomToExtent": "Zoom a la extensión"
     },
@@ -919,15 +920,16 @@
       "visiblecolor": ""
     },
     "visibilitypreset": {
-      "add": "",
       "addfailed": "",
-      "manage": "",
+      "confirmDelete": "",
+      "confirmOverwrite": "",
       "newpreset": "",
       "nopresets": "",
-      "notloggedin": "",
       "open": "",
+      "public": "",
       "removefailed": "",
       "savefailed": "",
+      "togglePublic": "",
       "update": ""
     },
     "window": {
