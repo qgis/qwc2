@@ -33,4 +33,5 @@ div.input-container .input-container-input {
 
 div.input-container .input-container-input {
     height: calc(2em - 2px)!important;
+    min-height: calc(2em - 2px)!important;
 }
