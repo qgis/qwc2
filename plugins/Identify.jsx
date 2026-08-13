@@ -498,6 +498,7 @@ class Identify extends React.Component {
     };
     deserializeResults = (identifyResults, resultDisplayMode) => {
         let pendingRequests = 0;
+        const importErrors = {};
         Object.entries(identifyResults).forEach(([layerid, layerresults]) => {
             if (layerresults.key && layerresults.values) {
                 delete identifyResults[layerid]; // Features will be re-queried
@@ -527,10 +528,12 @@ class Identify extends React.Component {
                             }}));
                         }
                     });
+                } else {
+                    importErrors[layerid] = true;
                 }
             }
         });
-        this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests, importErrors: {}, currentResultDisplayMode: resultDisplayMode});
+        this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests, importErrors: importErrors, currentResultDisplayMode: resultDisplayMode});
     };
     render() {
         let resultWindow = null;
