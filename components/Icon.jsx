@@ -21,6 +21,7 @@ export default class Icon extends React.Component {
         className: PropTypes.string,
         disabled: PropTypes.bool,
         icon: PropTypes.string,
+        inactive: PropTypes.bool,
         onClick: PropTypes.func,
         onMouseDown: PropTypes.func,
         onMouseUp: PropTypes.func,
@@ -36,6 +37,7 @@ export default class Icon extends React.Component {
         const classes = classnames({
             icon: true,
             icon_disabled: this.props.disabled,
+            icon_inactive: this.props.inactive,
             icon_clickable: !!this.props.onClick || !!this.props.onMouseDown || !!this.props.onPointerDown,
             ["icon-" + this.props.icon]: true,
             ["icon_" + this.props.size]: !!this.props.size,

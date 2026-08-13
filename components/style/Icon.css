@@ -25,3 +25,7 @@ span.icon_xlarge:before {
     cursor: default;
     color: var(--text-color-disabled);
 }
+
+.icon_inactive {
+    color: #ccc;
+}
