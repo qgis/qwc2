@@ -18,13 +18,9 @@ export default class InputContainer extends React.Component {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
         className: PropTypes.string
     };
-    state = {
-        focused: false
-    };
     render() {
         const containerClasses = classnames({
             "input-container": true,
-            "input-container-focus": this.state.focused,
             [this.props.className]: !!this.props.className
         });
         const prefix = this.findChild("prefix").map(el => {
@@ -32,9 +28,7 @@ export default class InputContainer extends React.Component {
         });
         const input = this.findChild("input").map(el => {
             return React.cloneElement(el, {
-                className: "input-container-input " + (el.props.className || ""),
-                onBlur: (ev) => this.onInputBlur(ev, el.props.onBlur),
-                onFocus: (ev) => this.onInputFocus(ev, el.props.onFocus)
+                className: "input-container-input " + (el.props.className || "")
             });
         });
         const suffix = this.findChild("suffix").map(el => {
@@ -50,17 +44,5 @@ export default class InputContainer extends React.Component {
     }
     findChild = (role) => {
         return React.Children.toArray(this.props.children).filter((child) => child.props.role === role);
-    };
-    onInputBlur = (ev, origHandler) => {
-        if (origHandler) {
-            origHandler(ev);
-        }
-        this.setState({focused: false});
-    };
-    onInputFocus = (ev, origHandler) => {
-        if (origHandler) {
-            origHandler(ev);
-        }
-        this.setState({focused: true});
     };
 }

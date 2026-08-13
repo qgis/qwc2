@@ -12,7 +12,7 @@ div.input-container div.input-container {
     height: calc(2em - 2px);
 }
 
-div.input-container-focus {
+div.input-container:focus-within {
     outline: var(--focus-outline);
 }
 
