@@ -1167,8 +1167,8 @@ const LayerUtils = {
                 if (layer.expanded && !istoplevel) {
                     result[path + layer.name] = {...result[path + layer.name], expanded: true};
                 }
-            } else {
-                result[path + layer.name] = {checked: layer.visibility, style: layer.style};
+            } else if (layer.visibility) {
+                result[path + layer.name] = {checked: true, style: layer.style};
             }
         };
         layers.forEach(layer => {
@@ -1185,7 +1185,10 @@ const LayerUtils = {
         const currentPreset = LayerUtils.computeVisibilityPreset(layers);
 
         for (const [name, preset] of Object.entries(presets)) {
-            if (isEqual(preset, currentPreset)) {
+            // Omit unchecked entries
+            const filteredPreset = Object.fromEntries(Object.entries(preset).filter(entry => entry[1].checked));
+            const filteredCurrentPreset = Object.fromEntries(Object.entries(currentPreset).filter(entry => entry[1].checked));
+            if (isEqual(filteredPreset, filteredCurrentPreset)) {
                 return name;
             }
         }
