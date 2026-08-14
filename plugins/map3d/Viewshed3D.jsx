@@ -16,8 +16,10 @@ import {
 } from 'three';
 import {TransformControls} from 'three/addons/controls/TransformControls';
 
+import Icon from '../../components/Icon';
 import SideBar from '../../components/SideBar';
 import ColorButton from '../../components/widgets/ColorButton';
+import MenuButton from '../../components/widgets/MenuButton';
 import NumberInput from '../../components/widgets/NumberInput';
 import CoordinatesUtils from '../../utils/CoordinatesUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
@@ -55,6 +57,8 @@ export default class Viewshed3D extends React.Component {
         maxDistance: 500,
         cubeTextureSize: 2048,
         observerPos: {x: 0, y: 0, z: 0},
+        inputHeight: 0,
+        zMode: 'terrain',
         visibleColor: [51, 255, 51, 1],
         occludedColor: [255, 51, 51, 1],
         gizmoVisible: true
@@ -114,7 +118,11 @@ export default class Viewshed3D extends React.Component {
                                 <div className="viewshed3d-posinputs">
                                     <NumberInput onChange={x => this.updateObserverPos({x})} value={this.state.observerPos.x}/>
                                     <NumberInput onChange={y => this.updateObserverPos({y})} value={this.state.observerPos.y}/>
-                                    <NumberInput onChange={z => this.updateObserverPos({z})} value={this.state.observerPos.z} />
+                                    <NumberInput onChange={z => this.updateObserverHeight(z)} value={this.state.inputHeight}/>
+                                    <MenuButton menuIcon={this.state.zMode === 'absolute' ? 'above_zero' : 'above_terr'}>
+                                        <div onClick={() => this.setZMode('absolute')}><Icon icon="above_zero" /></div>
+                                        <div onClick={() => this.setZMode('terrain')}><Icon icon="above_terr" /></div>
+                                    </MenuButton>
                                 </div>
                             </td>
                         </tr>
@@ -233,8 +241,9 @@ export default class Viewshed3D extends React.Component {
     updateObserverPos = (diff) => {
         this.setState(state => {
             const newPos = {...state.observerPos, ...diff};
-            if (diff.z !== undefined) {
-                newPos.z = Math.max(newPos.z, this.props.sceneContext.getTerrainHeightFromMap([newPos.x, newPos.y]) ?? 0);
+            newPos.z = state.inputHeight;
+            if (state.zMode === 'terrain') {
+                newPos.z += this.props.sceneContext.getTerrainHeightFromMap([newPos.x, newPos.y]) ?? 0;
             }
             if (this.observerMesh) {
                 this.observerMesh.position.setX(newPos.x);
@@ -249,6 +258,27 @@ export default class Viewshed3D extends React.Component {
             return {observerPos: newPos};
         });
     };
+    updateObserverHeight = (z) => {
+        if (this.state.zMode === 'absolute') {
+            const p = this.state.observerPos;
+            const terrH = this.props.sceneContext.getTerrainHeightFromMap([p.x, p.y]) ?? 0;
+            z = Math.max(z, terrH);
+        } else {
+            z = Math.max(z, 0);
+        }
+        this.setState({inputHeight: z}, this.updateObserverPos);
+    };
+    setZMode = (mode) => {
+        this.setState(state => {
+            if (state.zMode !== mode) {
+                const p = state.observerPos;
+                const terrH = this.props.sceneContext.getTerrainHeightFromMap([p.x, p.y]) ?? 0;
+                return {zMode: mode, inputHeight: mode === 'absolute' ? state.inputHeight + terrH : state.inputHeight - terrH};
+            } else {
+                return {};
+            }
+        });
+    };
     updateTransformHelper = () => {
         this.transformControls.getHelper().updateMatrixWorld();
         this.props.sceneContext.scene.notifyChange();
@@ -258,8 +288,9 @@ export default class Viewshed3D extends React.Component {
     };
     onControlChange = () => {
         const p = this.observerMesh.position;
-        p.z = Math.max(p.z, this.props.sceneContext.getTerrainHeightFromMap([p.x, p.y]) ?? 0);
-        this.setState({observerPos: {x: p.x, y: p.y, z: p.z}});
+        const terrH = this.props.sceneContext.getTerrainHeightFromMap([p.x, p.y]) ?? 0;
+        p.z = Math.max(p.z, terrH);
+        this.setState(state => ({observerPos: {x: p.x, y: p.y, z: p.z}, inputHeight: state.zMode === 'terrain' ? p.z - terrH : p.z}));
         this.observerMesh.updateMatrixWorld(true);
         this.transformControls.getHelper().updateMatrixWorld();
         this.props.sceneContext.scene.notifyChange(this.observerMesh);
