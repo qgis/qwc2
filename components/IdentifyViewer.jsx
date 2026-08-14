@@ -747,7 +747,7 @@ class IdentifyViewer extends React.Component {
                             {!this.state.collapsedLayers.has(layerid) ? (
                                 <FeaturesTable allowSelectAll
                                     features={features} fields={Object.values(fields)} hideIdColumn
-                                    highlightFeatures={this.setHighlightedFeatures}
+                                    highlightFeatures={this.setHighlightedFeatures} renderField={this.renderTableField}
                                     selectionChanged={(sel) => this.setState(state => ({
                                         tableSelection: {...state.tableSelection, [layerid]: sel}
                                     }))}
@@ -758,6 +758,9 @@ class IdentifyViewer extends React.Component {
                 })}
             </div>
         );
+    };
+    renderTableField = (feature, field) => {
+        return this.attribValue(feature.properties[field.name], field.name, feature.layername, feature);
     };
     tableAction = (layerid, action) => {
         if (action === "Export") {
