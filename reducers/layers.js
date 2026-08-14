@@ -272,7 +272,6 @@ export default function layers(state = defaultState, action) {
             const newLayer = {
                 ...action.layer,
                 id: layerId,
-                srcid: action.layer.srcid ?? uuidv4(),
                 type: 'vector',
                 name: action.layer.name || layerId,
                 features: newFeatures,
