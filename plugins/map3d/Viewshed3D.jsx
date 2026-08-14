@@ -15,6 +15,7 @@ import {
     Vector4, WebGLCubeRenderTarget
 } from 'three';
 import {TransformControls} from 'three/addons/controls/TransformControls';
+import {v4 as uuidv4} from 'uuid';
 
 import Icon from '../../components/Icon';
 import SideBar from '../../components/SideBar';
@@ -225,6 +226,8 @@ export default class Viewshed3D extends React.Component {
         this.overriddenMaterials.forEach(material => {
             material.onBeforeCompile = material.userData.originalOnBeforeCompile;
             delete material.userData.originalOnBeforeCompile;
+            material.customProgramCacheKey = material.userData.originalCustomProgramCacheKey;
+            delete material.userData.originalCustomProgramCacheKey;
             material.needsUpdate = true;
         });
         this.overriddenMaterials = [];
@@ -338,7 +341,9 @@ export default class Viewshed3D extends React.Component {
         obj.children?.forEach?.(this.overrideMaterial);
         if (obj.material && obj.material.onBeforeCompile !== this.injectShader) {
             obj.material.userData.originalOnBeforeCompile = obj.material.onBeforeCompile;
+            obj.material.userData.originalCustomProgramCacheKey = obj.material.customProgramCacheKey;
             obj.material.onBeforeCompile = this.injectShader;
+            obj.material.customProgramCacheKey = () => uuidv4();
             obj.material.needsUpdate = true;
             this.overriddenMaterials.push(obj.material);
         }
