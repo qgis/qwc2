@@ -1,5 +1,5 @@
 /**
- * Copyright 2026 Sourcepole AG
+ * Copyright 2026 Gustavo Werle
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
