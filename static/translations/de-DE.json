@@ -133,6 +133,7 @@
       "dataloadfailed": "Daten konnten nicht geladen werden",
       "date": "Datum",
       "delete": "Löschen",
+      "disabled": "Deaktiviert",
       "download": "Herunterladen",
       "ellipse": "Ellipse",
       "export": "Exportieren",
@@ -142,6 +143,7 @@
       "line": "Linie",
       "loading": "Laden...",
       "lock2dview": "Mit 2D Ansicht bewegen",
+      "mode": "Modus",
       "noresults": "Keine Ergebnisse",
       "pick": "Auswählen",
       "point": "Punkt",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": "3D Ansicht wird gespeichert..."
+    },
+    "viewshed": {
+      "cubemap": "360° Sichtbereich"
     },
     "viewshed3d": {
       "maxDistance": "Maximale Distanz",

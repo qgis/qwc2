@@ -133,6 +133,7 @@
       "dataloadfailed": "Failed to load data",
       "date": "Date",
       "delete": "Delete",
+      "disabled": "Disabled",
       "download": "Download",
       "ellipse": "Ellipse",
       "export": "Export",
@@ -142,6 +143,7 @@
       "line": "Line",
       "loading": "Loading...",
       "lock2dview": "Move with 2D view",
+      "mode": "Mode",
       "noresults": "No results",
       "pick": "Pick",
       "point": "Point",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": "Storing 3D state..."
+    },
+    "viewshed": {
+      "cubemap": "360° viewshed"
     },
     "viewshed3d": {
       "maxDistance": "Maximum distance",

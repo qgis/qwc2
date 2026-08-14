@@ -133,6 +133,7 @@
       "dataloadfailed": "",
       "date": "",
       "delete": "Sil",
+      "disabled": "",
       "download": "İndir",
       "ellipse": "Elips",
       "export": "Ver",
@@ -142,6 +143,7 @@
       "line": "Çizgi",
       "loading": "Yükleniyor...",
       "lock2dview": "",
+      "mode": "",
       "noresults": "Sonuç yok",
       "pick": "Seç",
       "point": "Nokta",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed": {
+      "cubemap": ""
     },
     "viewshed3d": {
       "maxDistance": "",

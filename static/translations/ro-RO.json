@@ -133,6 +133,7 @@
       "dataloadfailed": "Încărcarea datelor a eșuat",
       "date": "Data",
       "delete": "Șterge",
+      "disabled": "",
       "download": "Descarcă",
       "ellipse": "Elipsă",
       "export": "Exportă",
@@ -142,6 +143,7 @@
       "line": "Linie",
       "loading": "Se încarcă",
       "lock2dview": "Mișcă odată cu vederea 2D",
+      "mode": "",
       "noresults": "Niciun rezultat",
       "pick": "Selectează",
       "point": "Punct",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": "Se salvează starea 3D..."
+    },
+    "viewshed": {
+      "cubemap": ""
     },
     "viewshed3d": {
       "maxDistance": "",

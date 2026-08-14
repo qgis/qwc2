@@ -133,6 +133,7 @@
       "dataloadfailed": "",
       "date": "",
       "delete": "Eliminar",
+      "disabled": "",
       "download": "Descarregar",
       "ellipse": "Elipse",
       "export": "Enviar",
@@ -142,6 +143,7 @@
       "line": "Línha",
       "loading": "Carregando",
       "lock2dview": "",
+      "mode": "",
       "noresults": "Sem resultados",
       "pick": "Escolha",
       "point": "Ponto",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed": {
+      "cubemap": ""
     },
     "viewshed3d": {
       "maxDistance": "",

@@ -133,6 +133,7 @@
       "dataloadfailed": "Échec du chargement des données",
       "date": "Date",
       "delete": "Effacer",
+      "disabled": "Désactivé",
       "download": "Télécharger",
       "ellipse": "Ellipse",
       "export": "Exporter",
@@ -142,6 +143,7 @@
       "line": "Ligne",
       "loading": "Chargement en cours...",
       "lock2dview": "Déplacer avec vue 2D",
+      "mode": "Mode",
       "noresults": "Pas de résultats",
       "pick": "Choisir",
       "point": "Point",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": "Enregistrement de la vue 3D..."
+    },
+    "viewshed": {
+      "cubemap": "Champ de visibilité 360°"
     },
     "viewshed3d": {
       "maxDistance": "Distance maximale",

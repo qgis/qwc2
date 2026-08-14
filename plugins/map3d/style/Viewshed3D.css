@@ -6,6 +6,10 @@ table.viewshed3d-optionstable {
     width: 100%;
 }
 
+table.viewshed3d-optionstable td > select {
+    width: 100%
+}
+
 div.viewshed3d-posinputs {
     display: flex;
 }

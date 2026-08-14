@@ -133,6 +133,7 @@
       "dataloadfailed": "",
       "date": "",
       "delete": "削除",
+      "disabled": "",
       "download": "ダウンロード",
       "ellipse": "楕円",
       "export": "エクスポート",
@@ -142,6 +143,7 @@
       "line": "線",
       "loading": "ロード中...",
       "lock2dview": "2Dビューで移動",
+      "mode": "",
       "noresults": "検索結果無し",
       "pick": "選択",
       "point": "点",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed": {
+      "cubemap": ""
     },
     "viewshed3d": {
       "maxDistance": "",

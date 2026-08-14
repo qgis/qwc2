@@ -55,6 +55,8 @@ export default class Viewshed3D extends React.Component {
         sceneContext: PropTypes.object
     };
     state = {
+        mode: 'off',
+        panelVisible: false,
         maxDistance: 500,
         cubeTextureSize: 2048,
         observerPos: {x: 0, y: 0, z: 0},
@@ -70,6 +72,13 @@ export default class Viewshed3D extends React.Component {
         this.visibleColor = new Vector4().fromArray(this.state.visibleColor);
         this.occludedColor = new Vector4().fromArray(this.state.occludedColor);
         this.maxDistance = [this.state.maxDistance, 0];
+
+        this.overriddenMaterials = [];
+        this.observerMesh = null;
+        this.cubemapTarget = null;
+        this.cubeCamera = null;
+        this.distanceMaterial = null;
+        this.transformControls = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (
@@ -92,11 +101,22 @@ export default class Viewshed3D extends React.Component {
             this.maxDistance[0] = this.state.maxDistance;
             this.recompute();
         }
+        if (this.state.panelVisible !== prevState.panelVisible && this.transformControls) {
+            this.transformControls.getHelper().visible = this.state.panelVisible && this.state.gizmoVisible;
+            this.props.sceneContext.scene.notifyChange(this.transformControls.getHelper());
+        }
+        if (this.state.mode !== prevState.mode) {
+            this.reset();
+            if (this.state.mode === "cubemap") {
+                this.setupCubemapViewshed();
+            }
+        }
     }
     render() {
         return (
-            <SideBar icon="eye"
-                id="Viewshed3D" onHide={this.onHide} onShow={this.onShow}
+            <SideBar icon="eye" id="Viewshed3D"
+                onHide={() => this.setState({panelVisible: false})}
+                onShow={() => this.setState({panelVisible: true})}
                 title={LocaleUtils.tr("appmenu.items.Viewshed3D")} width="20em"
             >
                 {() => ({
@@ -112,46 +132,62 @@ export default class Viewshed3D extends React.Component {
                 <table className="viewshed3d-optionstable">
                     <tbody>
                         <tr>
-                            <td colSpan="2">{LocaleUtils.tr("viewshed3d.observerpos")}</td>
-                        </tr>
-                        <tr>
-                            <td colSpan="2">
-                                <div className="viewshed3d-posinputs">
-                                    <NumberInput onChange={x => this.updateObserverPos({x})} value={this.state.observerPos.x}/>
-                                    <NumberInput onChange={y => this.updateObserverPos({y})} value={this.state.observerPos.y}/>
-                                    <NumberInput onChange={z => this.updateObserverHeight(z)} value={this.state.inputHeight}/>
-                                    <MenuButton menuIcon={this.state.zMode === 'absolute' ? 'above_zero' : 'above_terr'}>
-                                        <div onClick={() => this.setZMode('absolute')}><Icon icon="above_zero" /></div>
-                                        <div onClick={() => this.setZMode('terrain')}><Icon icon="above_terr" /></div>
-                                    </MenuButton>
-                                </div>
+                            <td>{LocaleUtils.tr("common.mode")}</td>
+                            <td>
+                                <select onChange={(ev) => this.setState({mode: ev.target.value})} value={this.state.mode}>
+                                    <option value="off">{LocaleUtils.tr("common.disabled")}</option>
+                                    <option value="cubemap">{LocaleUtils.tr("viewshed.cubemap")}</option>
+                                </select>
                             </td>
                         </tr>
-                        <tr>
-                            <td>{LocaleUtils.tr("viewshed3d.visiblecolor")}</td>
-                            <td><ColorButton alpha color={this.state.visibleColor} onColorChanged={(color) => this.setState({visibleColor: color})} /></td>
-                        </tr>
-                        <tr>
-                            <td>{LocaleUtils.tr("viewshed3d.occludedcolor")}</td>
-                            <td><ColorButton alpha color={this.state.occludedColor} onColorChanged={(color) => this.setState({occludedColor: color})} /></td>
-                        </tr>
-                        <tr>
-                            <td>{LocaleUtils.tr("viewshed3d.maxDistance")}</td>
-                            <td><NumberInput min={10} onChange={d => this.setState({maxDistance: d})} suffix={" " + units} value={this.state.maxDistance} /></td>
-                        </tr>
-                        <tr>
-                            <td colSpan="2">
-                                <label>
-                                    <input checked={this.state.gizmoVisible} onChange={ev => this.setState({gizmoVisible: ev.target.checked})} type="checkbox" />
-                                    {' '}{LocaleUtils.tr("viewshed3d.showgizmo")}
-                                </label></td>
-                        </tr>
+                        {this.state.mode === "cubemap" ? [(
+                            <tr key="observerpos">
+                                <td colSpan="2">{LocaleUtils.tr("viewshed3d.observerpos")}</td>
+                            </tr>
+                        ), (
+                            <tr key="observerposinput">
+                                <td colSpan="2">
+                                    <div className="viewshed3d-posinputs">
+                                        <NumberInput onChange={x => this.updateObserverPos({x})} value={this.state.observerPos.x}/>
+                                        <NumberInput onChange={y => this.updateObserverPos({y})} value={this.state.observerPos.y}/>
+                                        <NumberInput onChange={z => this.updateObserverHeight(z)} value={this.state.inputHeight}/>
+                                        <MenuButton menuIcon={this.state.zMode === 'absolute' ? 'above_zero' : 'above_terr'}>
+                                            <div onClick={() => this.setZMode('absolute')}><Icon icon="above_zero" /></div>
+                                            <div onClick={() => this.setZMode('terrain')}><Icon icon="above_terr" /></div>
+                                        </MenuButton>
+                                    </div>
+                                </td>
+                            </tr>
+                        ), (
+                            <tr key="visiblecolor">
+                                <td>{LocaleUtils.tr("viewshed3d.visiblecolor")}</td>
+                                <td><ColorButton alpha color={this.state.visibleColor} onColorChanged={(color) => this.setState({visibleColor: color})} /></td>
+                            </tr>
+                        ), (
+                            <tr key="occludedcolor">
+                                <td>{LocaleUtils.tr("viewshed3d.occludedcolor")}</td>
+                                <td><ColorButton alpha color={this.state.occludedColor} onColorChanged={(color) => this.setState({occludedColor: color})} /></td>
+                            </tr>
+                        ), (
+                            <tr key="maxdist">
+                                <td>{LocaleUtils.tr("viewshed3d.maxDistance")}</td>
+                                <td><NumberInput min={10} onChange={d => this.setState({maxDistance: d})} suffix={" " + units} value={this.state.maxDistance} /></td>
+                            </tr>
+                        ), (
+                            <tr key="gizmo">
+                                <td colSpan="2">
+                                    <label>
+                                        <input checked={this.state.gizmoVisible} onChange={ev => this.setState({gizmoVisible: ev.target.checked})} type="checkbox" />
+                                        {' '}{LocaleUtils.tr("viewshed3d.showgizmo")}
+                                    </label></td>
+                            </tr>
+                        )] : null}
                     </tbody>
                 </table>
             </div>
         );
     }
-    onShow = () => {
+    setupCubemapViewshed = () => {
         this.overriddenMaterials = [];
 
         const scene = this.props.sceneContext.scene;
@@ -216,13 +252,19 @@ export default class Viewshed3D extends React.Component {
 
         this.props.sceneContext.scene.notifyChange();
     };
-    onHide = () => {
+    reset = () => {
         this.props.sceneContext.removeObjectAddedListener(this.overrideMaterial);
 
-        this.transformControls.removeEventListener('dragging-changed', this.onControlDrag);
-        this.transformControls.removeEventListener('objectChange', this.onControlChange);
-        this.transformControls.removeEventListener('change', this.onControlChange);
-        this.props.sceneContext.eventDispatcher.removeEventListener('cameraChanged', this.updateTransformHelper);
+        if (this.transformControls) {
+            this.transformControls.removeEventListener('dragging-changed', this.onControlDrag);
+            this.transformControls.removeEventListener('objectChange', this.onControlChange);
+            this.transformControls.removeEventListener('change', this.onControlChange);
+            this.props.sceneContext.eventDispatcher.removeEventListener('cameraChanged', this.updateTransformHelper);
+            this.props.sceneContext.scene.remove(this.transformControls.getHelper());
+            this.transformControls.detach();
+            this.transformControls = null;
+        }
+
         this.overriddenMaterials.forEach(material => {
             material.onBeforeCompile = material.userData.originalOnBeforeCompile;
             delete material.userData.originalOnBeforeCompile;
@@ -231,19 +273,25 @@ export default class Viewshed3D extends React.Component {
             material.needsUpdate = true;
         });
         this.overriddenMaterials = [];
-        this.transformControls.detach();
-        this.props.sceneContext.scene.remove(this.cubeCamera);
-        this.props.sceneContext.scene.remove(this.transformControls.getHelper());
-        this.props.sceneContext.scene.remove(this.observerMesh);
-        this.cubemapTarget.dispose();
 
-        this.distanceMaterial.dispose();
-        this.distanceMaterial = null;
+        if (this.cubeCamera) {
+            this.props.sceneContext.scene.remove(this.cubeCamera);
+            this.cubeCamera = null;
+        }
+        if (this.cubemapTarget) {
+            this.cubemapTarget.dispose();
+            this.cubemapTarget = null;
+        }
+        if (this.observerMesh) {
+            this.props.sceneContext.scene.remove(this.observerMesh);
+            this.observerMesh = null;
+        }
+        if (this.distanceMaterial) {
+            this.distanceMaterial.dispose();
+            this.distanceMaterial = null;
+        }
 
-        this.cubeCamera = null;
-        this.cubemapTarget = null;
-        this.transformControls = null;
-        this.observerMesh = null;
+        this.props.sceneContext.scene.notifyChange();
     };
     updateObserverPos = (diff) => {
         this.setState(state => {
@@ -323,7 +371,7 @@ export default class Viewshed3D extends React.Component {
         this.cubeCamera.update(renderer, scene);
 
         this.observerMesh.visible = true;
-        this.transformControls.getHelper().visible = this.state.gizmoVisible;
+        this.transformControls.getHelper().visible = this.state.panelVisible && this.state.gizmoVisible;
         scene.overrideMaterial = prevOverrideMaterial;
 
         this.overrideMaterial(scene);

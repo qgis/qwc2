@@ -133,6 +133,7 @@
       "dataloadfailed": "Error al cargar los datos",
       "date": "",
       "delete": "Eliminar",
+      "disabled": "",
       "download": "Descargar",
       "ellipse": "Elipse",
       "export": "Exportar",
@@ -142,6 +143,7 @@
       "line": "Línea",
       "loading": "Cargando...",
       "lock2dview": "Mover con la vista 2D",
+      "mode": "",
       "noresults": "Sin resultados",
       "pick": "Seleccionar",
       "point": "Punto",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": "Guardando estado 3D..."
+    },
+    "viewshed": {
+      "cubemap": ""
     },
     "viewshed3d": {
       "maxDistance": "",

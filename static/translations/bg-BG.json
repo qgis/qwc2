@@ -133,6 +133,7 @@
       "dataloadfailed": "",
       "date": "",
       "delete": "Изтриване на",
+      "disabled": "",
       "download": "Изтегляне",
       "ellipse": "Елипса",
       "export": "Експорт",
@@ -142,6 +143,7 @@
       "line": "Линия",
       "loading": "Зареждане...",
       "lock2dview": "",
+      "mode": "",
       "noresults": "Няма резултати",
       "pick": "Изберете",
       "point": "Точка",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed": {
+      "cubemap": ""
     },
     "viewshed3d": {
       "maxDistance": "",

@@ -133,6 +133,7 @@
       "dataloadfailed": "Error en carregar les dades",
       "date": "",
       "delete": "Eliminar",
+      "disabled": "",
       "download": "Descarregar",
       "ellipse": "El·lipse",
       "export": "Exportar",
@@ -142,6 +143,7 @@
       "line": "Línia",
       "loading": "Carregant",
       "lock2dview": "Moure amb la vista 2D",
+      "mode": "",
       "noresults": "Cap resultat",
       "pick": "Escollir",
       "point": "Punt",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": "Desant l'estat 3D..."
+    },
+    "viewshed": {
+      "cubemap": ""
     },
     "viewshed3d": {
       "maxDistance": "",

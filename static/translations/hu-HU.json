@@ -133,6 +133,7 @@
       "dataloadfailed": "",
       "date": "",
       "delete": "",
+      "disabled": "",
       "download": "",
       "ellipse": "",
       "export": "",
@@ -142,6 +143,7 @@
       "line": "Vonaé",
       "loading": "",
       "lock2dview": "",
+      "mode": "",
       "noresults": "",
       "pick": "",
       "point": "Pont",
@@ -914,6 +916,9 @@
     },
     "view3d": {
       "storingstate": ""
+    },
+    "viewshed": {
+      "cubemap": ""
     },
     "viewshed3d": {
       "maxDistance": "",
