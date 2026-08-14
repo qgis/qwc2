@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import {
     Color, CubeCamera, DoubleSide, HalfFloatType, LinearFilter,
     Mesh, MeshStandardMaterial, ShaderMaterial, SphereGeometry,
-    Vector3, WebGLCubeRenderTarget
+    Vector4, WebGLCubeRenderTarget
 } from 'three';
 import {TransformControls} from 'three/addons/controls/TransformControls';
 
@@ -55,15 +55,15 @@ export default class Viewshed3D extends React.Component {
         maxDistance: 500,
         cubeTextureSize: 2048,
         observerPos: {x: 0, y: 0, z: 0},
-        visibleColor: [51, 255, 51],
-        occludedColor: [255, 51, 51],
+        visibleColor: [51, 255, 51, 1],
+        occludedColor: [255, 51, 51, 1],
         gizmoVisible: true
     };
     constructor(props) {
         super(props);
         this.recomputing = false;
-        this.visibleColor = new Vector3().fromArray(this.state.visibleColor);
-        this.occludedColor = new Vector3().fromArray(this.state.occludedColor);
+        this.visibleColor = new Vector4().fromArray(this.state.visibleColor);
+        this.occludedColor = new Vector4().fromArray(this.state.occludedColor);
         this.maxDistance = [this.state.maxDistance, 0];
     }
     componentDidUpdate(prevProps, prevState) {
@@ -120,11 +120,11 @@ export default class Viewshed3D extends React.Component {
                         </tr>
                         <tr>
                             <td>{LocaleUtils.tr("viewshed3d.visiblecolor")}</td>
-                            <td><ColorButton alpha={false} color={this.state.visibleColor} onColorChanged={(color) => this.setState({visibleColor: color})} /></td>
+                            <td><ColorButton alpha color={this.state.visibleColor} onColorChanged={(color) => this.setState({visibleColor: color})} /></td>
                         </tr>
                         <tr>
                             <td>{LocaleUtils.tr("viewshed3d.occludedcolor")}</td>
-                            <td><ColorButton alpha={false} color={this.state.occludedColor} onColorChanged={(color) => this.setState({occludedColor: color})} /></td>
+                            <td><ColorButton alpha color={this.state.occludedColor} onColorChanged={(color) => this.setState({occludedColor: color})} /></td>
                         </tr>
                         <tr>
                             <td>{LocaleUtils.tr("viewshed3d.maxDistance")}</td>
@@ -334,8 +334,8 @@ export default class Viewshed3D extends React.Component {
             'uniform samplerCube visibilityMap;\n' +
             'uniform vec3 observerPos;\n' +
             'uniform vec2 maxDist;\n' +
-            'uniform vec3 visibleColor;\n' +
-            'uniform vec3 occludedColor;\n' +
+            'uniform vec4 visibleColor;\n' +
+            'uniform vec4 occludedColor;\n' +
             shader.fragmentShader;
 
         shader.fragmentShader = shader.fragmentShader.replace(
@@ -349,9 +349,9 @@ export default class Viewshed3D extends React.Component {
             float stored = enc * maxDist.x;
 
             bool visible = dist <= stored + 0.5;
-            vec3 tint = visible ? visibleColor : occludedColor;
+            vec4 tint = visible ? visibleColor : occludedColor;
 
-            gl_FragColor.rgb = mix(gl_FragColor.rgb, tint / 255.0, 0.8);
+            gl_FragColor.rgb = mix(gl_FragColor.rgb, tint.rgb / 255.0, tint.a);
 
             #include <dithering_fragment>
             `
