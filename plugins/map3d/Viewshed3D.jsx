@@ -62,8 +62,8 @@ export default class Viewshed3D extends React.Component {
         observerPos: {x: 0, y: 0, z: 0},
         inputHeight: 0,
         zMode: 'terrain',
-        visibleColor: [51, 255, 51, 1],
-        occludedColor: [255, 51, 51, 1],
+        visibleColor: [51, 255, 51, 0.9],
+        occludedColor: [255, 51, 51, 0.9],
         gizmoVisible: true
     };
     constructor(props) {
