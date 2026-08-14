@@ -504,7 +504,7 @@ const LayerUtils = {
             const layer = entry.layer;
 
             // Attempt to merge with previous if possible (same srcid when defined)
-            if (prevlayer && prevlayer.srcid !== undefined && prevlayer?.srcid === layer.srcid) {
+            if (prevlayer && prevlayer.srcid !== undefined && prevlayer.srcid === layer.srcid) {
                 if (isEmpty(prevlayer.sublayers)) {
                     prevlayer.sublayers = layer.sublayers;
                 } else if (!isEmpty(layer.sublayers)) {
