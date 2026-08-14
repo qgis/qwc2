@@ -68,11 +68,11 @@ export default class MenuButton extends React.Component {
         const menuClassnames = "menubutton-menu" + (this.props.menuClassName ? " " + this.props.menuClassName : "");
         return (
             <div className={classes}>
-                <div className={buttonClassnames} onKeyDown={MiscUtils.checkKeyActivate} ref={el => { this.el = el; }} tabIndex={0}>
+                <div className={buttonClassnames} onClick={this.onMenuClicked} onKeyDown={MiscUtils.checkKeyActivate} ref={el => { this.el = el; }} tabIndex={0}>
                     <span className="menubutton-button-content" onClick={this.onButtonClicked}>
                         {buttonContents}
                     </span>
-                    <span className="menubotton-button-arrow" onClick={this.onMenuClicked}>
+                    <span className="menubotton-button-arrow">
                         <Icon icon="chevron-down" />
                     </span>
                     {this.props.tooltip ? (
@@ -99,17 +99,17 @@ export default class MenuButton extends React.Component {
             </div>
         );
     }
-    onMenuClicked = () => {
+    onMenuClicked = (ev) => {
         if (!this.props.disabled) {
-            this.setState(state => ({popup: !state.popup}));
+            if (!this.state.selected || !ev.currentTarget.querySelector('.menubutton-button-content').contains(ev.target)) {
+                this.setState(state => ({popup: !state.popup}));
+            }
         }
     };
     onButtonClicked = () => {
         if (this.state.selected) {
             this.props.onActivate?.(this.state.selected);
             this.setState({popup: false});
-        } else {
-            this.onMenuClicked();
         }
     };
     onChildClicked = (ev, child) => {
