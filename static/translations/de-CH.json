@@ -417,6 +417,9 @@
       "terrain": "Gelände",
       "title": "3D Ansicht"
     },
+    "mapdropimport": {
+      "dropfiles": "Dateien hierher ziehen, um sie als Kartenebenen zu importieren"
+    },
     "mapexport": {
       "configuration": "Konfiguration",
       "projection": "Projektion",

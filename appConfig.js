@@ -38,6 +38,7 @@ import RedliningSupport from './plugins/map/RedliningSupport';
 import SnappingSupport from './plugins/map/SnappingSupport';
 import MapComparePlugin from './plugins/MapCompare';
 import MapCopyrightPlugin from './plugins/MapCopyright';
+import MapDropImportPlugin from './plugins/MapDropImport';
 import MapExportPlugin from './plugins/MapExport';
 import MapFilterPlugin from './plugins/MapFilter';
 import MapInfoTooltipPlugin from './plugins/MapInfoTooltip';
@@ -105,6 +106,7 @@ export default {
             LocateButtonPlugin: LocateButtonPlugin,
             MapComparePlugin: MapComparePlugin,
             MapCopyrightPlugin: MapCopyrightPlugin,
+            MapDropImportPlugin: MapDropImportPlugin,
             MapExportPlugin: MapExportPlugin,
             MapFilterPlugin: MapFilterPlugin,
             MapInfoTooltipPlugin: MapInfoTooltipPlugin(),

@@ -417,6 +417,9 @@
       "terrain": "地形",
       "title": "3D ビュー"
     },
+    "mapdropimport": {
+      "dropfiles": ""
+    },
     "mapexport": {
       "configuration": "構成",
       "projection": "投影",

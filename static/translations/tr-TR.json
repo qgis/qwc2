@@ -417,6 +417,9 @@
       "terrain": "Arazi",
       "title": "3 Boyutlu görünüm"
     },
+    "mapdropimport": {
+      "dropfiles": ""
+    },
     "mapexport": {
       "configuration": "Yapılandırma",
       "projection": "",

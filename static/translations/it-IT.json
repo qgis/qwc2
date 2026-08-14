@@ -417,6 +417,9 @@
       "terrain": "Terreno",
       "title": "Visuale 3D"
     },
+    "mapdropimport": {
+      "dropfiles": "Rilascia i file per importarli come livelli"
+    },
     "mapexport": {
       "configuration": "Configurazione",
       "projection": "Proiezione",

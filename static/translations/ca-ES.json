@@ -417,6 +417,9 @@
       "terrain": "Terreny",
       "title": "Vista 3D"
     },
+    "mapdropimport": {
+      "dropfiles": ""
+    },
     "mapexport": {
       "configuration": "Configuració",
       "projection": "Projecció",

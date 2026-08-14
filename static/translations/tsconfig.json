@@ -385,6 +385,7 @@
     "map3d.noterrain",
     "map3d.terrain",
     "map3d.title",
+    "mapdropimport.dropfiles",
     "mapexport.configuration",
     "mapexport.projection",
     "mapexport.scale",

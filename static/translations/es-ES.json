@@ -417,6 +417,9 @@
       "terrain": "Terreno",
       "title": "Vista 3D"
     },
+    "mapdropimport": {
+      "dropfiles": "Suelte archivos para importarlos como capas"
+    },
     "mapexport": {
       "configuration": "Configuración",
       "projection": "Proyección",
