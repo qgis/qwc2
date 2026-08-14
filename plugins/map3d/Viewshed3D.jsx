@@ -232,6 +232,10 @@ export default class Viewshed3D extends React.Component {
         this.props.sceneContext.scene.remove(this.cubeCamera);
         this.props.sceneContext.scene.remove(this.transformControls.getHelper());
         this.props.sceneContext.scene.remove(this.observerMesh);
+        this.cubemapTarget.dispose();
+
+        this.distanceMaterial.dispose();
+        this.distanceMaterial = null;
 
         this.cubeCamera = null;
         this.cubemapTarget = null;
