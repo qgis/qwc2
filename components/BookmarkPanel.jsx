@@ -158,7 +158,7 @@ class BookmarkPanel extends React.Component {
             if (!success) {
                 /* eslint-disable-next-line */
                 alert(this.props.translations.savefailed);
-                this.setState({busy: false});
+                this.setState({busy: false, rename: false});
             } else {
                 this.props.bookmarkIface.getList((bookmarks) => {
                     this.props.setList(bookmarks);
