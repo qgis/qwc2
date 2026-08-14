@@ -349,11 +349,11 @@ export default class Viewshed3D extends React.Component {
         }
     };
     injectShader = (shader) => {
-        shader.uniforms.visibilityMap = { value: this.cubemapTarget.texture };
-        shader.uniforms.observerPos = { value: this.observerMesh.position };
-        shader.uniforms.maxDist = { value: this.maxDistance };
-        shader.uniforms.visibleColor = { value: this.visibleColor };
-        shader.uniforms.occludedColor = { value: this.occludedColor };
+        shader.uniforms.viewshedVisibilityMap = { value: this.cubemapTarget.texture };
+        shader.uniforms.viewshedObserverPos = { value: this.observerMesh.position };
+        shader.uniforms.viewshedMaxDist = { value: this.maxDistance };
+        shader.uniforms.viewshedVisibleColor = { value: this.visibleColor };
+        shader.uniforms.viewshedOccludedColor = { value: this.occludedColor };
 
         shader.vertexShader =
             'varying vec3 vVisWorld;\n' +
@@ -371,25 +371,25 @@ export default class Viewshed3D extends React.Component {
 
         shader.fragmentShader =
             'varying vec3 vVisWorld;\n' +
-            'uniform samplerCube visibilityMap;\n' +
-            'uniform vec3 observerPos;\n' +
-            'uniform vec2 maxDist;\n' +
-            'uniform vec4 visibleColor;\n' +
-            'uniform vec4 occludedColor;\n' +
+            'uniform samplerCube viewshedVisibilityMap;\n' +
+            'uniform vec3 viewshedObserverPos;\n' +
+            'uniform vec2 viewshedMaxDist;\n' +
+            'uniform vec4 viewshedVisibleColor;\n' +
+            'uniform vec4 viewshedOccludedColor;\n' +
             shader.fragmentShader;
 
         shader.fragmentShader = shader.fragmentShader.replace(
             '#include <dithering_fragment>',
             `
-            vec3 dir = vVisWorld - observerPos;
+            vec3 dir = vVisWorld - viewshedObserverPos;
             float dist = length(dir);
             vec3 ray = normalize(dir);
 
-            float enc = textureCube(visibilityMap, ray).r;
-            float stored = enc * maxDist.x;
+            float enc = textureCube(viewshedVisibilityMap, ray).r;
+            float stored = enc * viewshedMaxDist.x;
 
             bool visible = dist <= stored + 0.5;
-            vec4 tint = visible ? visibleColor : occludedColor;
+            vec4 tint = visible ? viewshedVisibleColor : viewshedOccludedColor;
 
             gl_FragColor.rgb = mix(gl_FragColor.rgb, tint.rgb / 255.0, tint.a);
 
