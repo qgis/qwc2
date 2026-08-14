@@ -43,7 +43,7 @@ class BookmarkPanel extends React.Component {
         const hasPublicBookmarksCap = ConfigUtils.getConfigProp("capabilities", null, []).includes("public_bookmarks");
         const currentBookmark = this.state.currentBookmark;
         const buttonsDisabled = !currentBookmark || this.state.busy;
-        const updatable = currentBookmark?.own;
+        const updatable = currentBookmark?.own && !this.state.rename;
 
         return (
             <div className="bookmark-body" role="body">
