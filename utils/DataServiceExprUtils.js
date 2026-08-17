@@ -63,6 +63,22 @@ const DataServiceExprUtils = {
     },
 
     /**
+     * Formats a single right-hand value of a subexpression
+     * @param {string | number | null} value Value
+     * @returns {string} Formatted value
+     */
+    formatFilterValue(value) {
+        if (typeof value === "number") {
+            return String(value);
+        } else if (value === null) {
+            return "NULL";
+        } else {
+            // Escaping as QgsExpression::quotedString does
+            return `'${String(value).replace(/'/g, "''").replace(/\\/g, "\\\\")}'`;
+        }
+    },
+
+    /**
      * Formats a valid expression array into a string
      * @param {DataServiceExpression} expr Expression
      * @returns {string} Formatted expression
@@ -70,14 +86,10 @@ const DataServiceExprUtils = {
     formatFilterExpr(expr) {
         if (this.isSubExpression(expr)) {
             const op = expr[1].toUpperCase();
-            if (typeof expr[2] === "number") {
-                return `"${expr[0]}" ${op} ${expr[2]}`;
-            } else if (expr[2] === null) {
-                return `"${expr[0]}" ${op} NULL`;
-            } else if (Array.isArray(expr[2])) {
-                return `"${expr[0]}" ${op} ( ${expr[2].join(' , ')} )`;
+            if (Array.isArray(expr[2])) {
+                return `"${expr[0]}" ${op} ( ${expr[2].map(value => this.formatFilterValue(value)).join(' , ')} )`;
             } else {
-                return `"${expr[0]}" ${op} '${expr[2].replace("'", "\\'")}'`;
+                return `"${expr[0]}" ${op} ${this.formatFilterValue(expr[2])}`;
             }
         } else {
             return "( " + expr.map((entry, idx) => (idx % 2) === 0 ? this.formatFilterExpr(entry) : entry.toUpperCase()).join(" ") + " )";
