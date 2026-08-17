@@ -327,16 +327,19 @@ class Identify extends React.Component {
             delete params.region_feature_count;
         }
         const requestFilterGeom = this.getRequestFilterGeomWkt(filterGeom);
-        queryableLayers.forEach(layer => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
-            ++pendingRequests;
-            IdentifyUtils.sendRequest(request, (response) => {
-                this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
-                if (response) {
-                    this.parseResult(response, layer, request.params.info_format, center);
-                }
+        // Querying without the filter geometry would match the whole layer
+        if (requestFilterGeom) {
+            queryableLayers.forEach(layer => {
+                const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
+                ++pendingRequests;
+                IdentifyUtils.sendRequest(request, (response) => {
+                    this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
+                    if (response) {
+                        this.parseResult(response, layer, request.params.info_format, center);
+                    }
+                });
             });
-        });
+        }
         this.setState(state => {
             const identifyResults = state.filterGeomModifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
             return {identifyResults: identifyResults, pendingRequests: pendingRequests, currentResultDisplayMode: resultDisplayMode};
