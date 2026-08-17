@@ -138,7 +138,7 @@ const IdentifyUtils = {
         const params = {
             feature_count: 100,
             filter: layer.params.FILTER ?? '',
-            FILTER_GEOM: filterGeom,
+            ...(filterGeom ? {FILTER_GEOM: filterGeom} : {}),
             ...options
         };
         return identifyRequestParams(layer, queryLayers, map.projection, params);
