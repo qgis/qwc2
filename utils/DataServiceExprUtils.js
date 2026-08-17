@@ -10,7 +10,7 @@
 
 const DataServiceExprUtils = {
     isSubExpression(expr) {
-        return Array.isArray(expr) && expr.length === 3 && typeof expr[0] === "string";
+        return Array.isArray(expr) && expr.length === 3 && typeof expr[0] === "string" && typeof expr[1] === "string";
     },
     isJoinOperator(expr) {
         return typeof(expr) === "string" && ["and", "or"].includes(expr.toLowerCase());
