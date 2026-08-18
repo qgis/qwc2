@@ -16,6 +16,7 @@ import {v4 as uuidv4} from 'uuid';
 import {LayerRole} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import DataServiceExprUtils from '../utils/DataServiceExprUtils';
 import LayerUtils from '../utils/LayerUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from './VectorLayerUtils';
@@ -109,6 +110,65 @@ const IdentifyUtils = {
             result = result.concat(layers);
         });
         return result;
+    },
+    resolveIdentifyLayer(queryableLayers, layerRef) {
+        // A layer reference is either a plain sublayer name, or the `<wms_name>#<sublayer>`
+        // form used by the custom filter entries of the `f` parameter
+        const [wmsName, sublayer] = layerRef.includes("#") ? layerRef.split("#") : [null, layerRef];
+        const candidates = queryableLayers.filter(l => l.queryLayers.includes(sublayer) && (!wmsName || l.wms_name === wmsName));
+        if (isEmpty(candidates)) {
+            /* eslint-disable-next-line */
+            console.warn("No queryable layer found for identify features entry: " + layerRef);
+            return null;
+        }
+        // Only layers with a wms_name can carry a filter, see LayerUtils.buildWMSLayerParams
+        const filterable = candidates.filter(l => l.wms_name);
+        if (isEmpty(filterable)) {
+            /* eslint-disable-next-line */
+            console.warn("Layer does not support identifying features by attribute: " + layerRef);
+            return null;
+        }
+        if (filterable.length > 1) {
+            /* eslint-disable-next-line */
+            console.warn("Ambiguous identify features layer '" + layerRef + "', use one of: " + filterable.map(l => l.wms_name + "#" + sublayer).join(", "));
+            return null;
+        }
+        return [filterable[0], sublayer];
+    },
+    parseIdentifyFilter(identifyFilter, layers, map) {
+        let entries;
+        try {
+            entries = JSON.parse(identifyFilter);
+        } catch {
+            /* eslint-disable-next-line */
+            console.warn("Invalid identify features parameter: " + identifyFilter);
+            return [];
+        }
+        if (!entries || typeof entries !== "object" || Array.isArray(entries)) {
+            /* eslint-disable-next-line */
+            console.warn("Identify features parameter must be a layer to expression object: " + identifyFilter);
+            return [];
+        }
+        const queryableLayers = this.getQueryLayers(layers, map);
+        return Object.entries(entries).reduce((layerEntries, [layerRef, expr]) => {
+            if (!DataServiceExprUtils.isValid(expr)) {
+                /* eslint-disable-next-line */
+                console.warn("Invalid identify features expression for layer " + layerRef + ": " + JSON.stringify(expr));
+                return layerEntries;
+            }
+            const resolved = this.resolveIdentifyLayer(queryableLayers, layerRef);
+            if (!resolved) {
+                return layerEntries;
+            }
+            const [layer, sublayer] = resolved;
+            const layerEntry = layerEntries.find(l => l.layer === layer);
+            if (layerEntry) {
+                layerEntry.entries.push({sublayer: sublayer, expr: expr});
+            } else {
+                layerEntries.push({layer: layer, entries: [{sublayer: sublayer, expr: expr}]});
+            }
+            return layerEntries;
+        }, []);
     },
     buildRequest(layer, queryLayers, center, map, options = {}) {
         const size = [101, 101];
