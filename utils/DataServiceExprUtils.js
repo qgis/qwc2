@@ -40,6 +40,17 @@ const DataServiceExprUtils = {
     },
 
     /**
+     * Appends an expression to an expression array
+     * @param {ExpressionArray | null | undefined} current Current expression array, if any
+     * @param {DataServiceExpression} expr Expression to append
+     * @param {JoinOperator} op Join operator
+     * @returns {ExpressionArray} Expression array containing both expressions
+     */
+    joinExpressions(current, expr, op = 'and') {
+        return current ? [...current, op, expr] : [expr];
+    },
+
+    /**
      * Replaces variable placeholders in a Data Service Expression
      * @param {DataServiceExpression} expr Expression
      * @param {Object<string, any>} values Key-values dictionary

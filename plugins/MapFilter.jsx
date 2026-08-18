@@ -207,10 +207,8 @@ class MapFilter extends React.Component {
                     if (replacedExpr === null) {
                         /* eslint-disable-next-line */
                         console.warn("Invalid filter expression: " + JSON.stringify(expression));
-                    } else if (layerExpressions[layer]) {
-                        layerExpressions[layer].push('and', replacedExpr);
                     } else {
-                        layerExpressions[layer] = [replacedExpr];
+                        layerExpressions[layer] = DataServiceExprUtils.joinExpressions(layerExpressions[layer], replacedExpr);
                     }
                 });
             }
@@ -223,11 +221,7 @@ class MapFilter extends React.Component {
                 } catch {
                     return;
                 }
-                if (layerExpressions[entry.layer]) {
-                    layerExpressions[entry.layer].push('and', expr);
-                } else {
-                    layerExpressions[entry.layer] = [expr];
-                }
+                layerExpressions[entry.layer] = DataServiceExprUtils.joinExpressions(layerExpressions[entry.layer], expr);
             }
         });
         const timeRange = this.state.filters.__timefilter?.active ? {
