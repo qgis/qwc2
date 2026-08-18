@@ -98,95 +98,86 @@ class BottomBar extends React.Component {
         }
     }
     render() {
-        if (this.props.fullscreen) {
-            return null;
-        }
-
-        const leftBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side === "left").map(this.renderLink);
-        const rightBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side !== "left").map(this.renderLink);
-        if (this.props.viewertitleUrl) {
-            const entry = {url: this.props.viewertitleUrl, urlTarget: this.props.viewertitleUrlTarget, label: LocaleUtils.tr("bottombar.viewertitle_label"), icon: this.props.viewertitleUrlIcon};
-            rightBottomLinks.push(this.renderLink(entry));
-        }
-        if (this.props.termsUrl) {
-            const entry = {url: this.props.termsUrl, urlTarget: this.props.termsUrlTarget, label: LocaleUtils.tr("bottombar.terms_label"), icon: this.props.termsUrlIcon};
-            rightBottomLinks.push(this.renderLink(entry));
-        }
-        const enabledMouseCrs = [...this.props.additionalMouseCrs || [], this.props.map.projection, "EPSG:4326"];
-        const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, value]) => {
-            return enabledMouseCrs.includes(key);
-        }));
-        let scalebar = null;
+        const widgets = [];
         if (this.props.displayScalebar) {
-            scalebar = (<div className="bottombar-scalebar-container" ref={this.initScaleBar} />);
+            widgets.push((<div className="bottombar-scalebar-container" key="scalebar" ref={this.initScaleBar} />));
         }
-        let coordinates = null;
-        if (this.props.displayCoordinates) {
-            coordinates = (
-                <div className="controlgroup">
-                    <span className="bottombar-mousepos-label">{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
-                    <CoordinateDisplayer className={"bottombar-mousepos"} coordinateFormatter={this.props.coordinateFormatter} displayCrs={this.props.map.displayCrs} mapCrs={this.props.map.projection} />
-                    <select onChange={ev => this.props.setDisplayCrs(ev.target.value)} value={this.props.map.displayCrs}>
-                        {Object.keys(availableCRS).map(crs =>
-                            (<option key={crs} value={crs}>{availableCRS[crs].label}</option>)
-                        )}
-                    </select>
-                </div>
-            );
-        }
-        let scales = null;
-        if (this.props.displayScales) {
-            scales = (
-                <div>
-                    <span className="bottombar-scales-label">{LocaleUtils.tr("bottombar.scale_label")}:&nbsp;</span>
-                    <InputContainer className="bottombar-scale-combo">
-                        <span className="bottombar-scale-combo-prefix" role="prefix"> 1 : </span>
-                        <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} role="input" value={Math.round(this.props.map.zoom)}>
-                            {this.props.map.scales.map((item, index) =>
-                                (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
+        if (!this.props.fullscreen) {
+            const leftBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side === "left").map(this.renderLink);
+            widgets.push((<span className="bottombar-links" key="leftlinks">{leftBottomLinks}</span>));
+            widgets.push((<span className="bottombar-spacer" key="spacer1" />));
+
+            if (this.props.displayCoordinates) {
+                const enabledMouseCrs = [...this.props.additionalMouseCrs || [], this.props.map.projection, "EPSG:4326"];
+                const availableCRS = Object.fromEntries(Object.entries(CoordinatesUtils.getAvailableCRS()).filter(([key, value]) => {
+                    return enabledMouseCrs.includes(key);
+                }));
+                widgets.push((
+                    <div className="controlgroup" key="coordinates">
+                        <span className="bottombar-mousepos-label">{LocaleUtils.tr("bottombar.mousepos_label")}:&nbsp;</span>
+                        <CoordinateDisplayer className={"bottombar-mousepos"} coordinateFormatter={this.props.coordinateFormatter} displayCrs={this.props.map.displayCrs} mapCrs={this.props.map.projection} />
+                        <select onChange={ev => this.props.setDisplayCrs(ev.target.value)} value={this.props.map.displayCrs}>
+                            {Object.keys(availableCRS).map(crs =>
+                                (<option key={crs} value={crs}>{availableCRS[crs].label}</option>)
                             )}
                         </select>
-                        <NumberInput decimals={0} hideArrows onChange={this.setScale} role="input"
-                            value={this.state.scale}/>
-                    </InputContainer>
-                </div>
-            );
+                    </div>
+                ));
+            }
+            if (this.props.displayScales) {
+                widgets.push((
+                    <div key="scales">
+                        <span className="bottombar-scales-label">{LocaleUtils.tr("bottombar.scale_label")}:&nbsp;</span>
+                        <InputContainer className="bottombar-scale-combo">
+                            <span className="bottombar-scale-combo-prefix" role="prefix"> 1 : </span>
+                            <select onChange={ev => this.props.changeZoomLevel(parseInt(ev.target.value, 10))} role="input" value={Math.round(this.props.map.zoom)}>
+                                {this.props.map.scales.map((item, index) =>
+                                    (<option key={index} value={index}>{LocaleUtils.toLocaleFixed(item, 0)}</option>)
+                                )}
+                            </select>
+                            <NumberInput decimals={0} hideArrows onChange={this.setScale} role="input"
+                                value={this.state.scale}/>
+                        </InputContainer>
+                    </div>
+                ));
+            }
+            if (this.props.displayQuickSelectDropdown &&
+                (this.props.bookmarks?.length > 0 || this.props.visibilityPresets?.length > 0)
+            ) {
+                const bookmarks = this.filterByActiveTheme(this.props.bookmarks || []);
+                const visibilityPresets = this.filterByActiveTheme(this.props.visibilityPresets || []);
+                const options = {
+                    [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk:" + bm.key, bm.description]),
+                    [LocaleUtils.tr("appmenu.items.VisibilityPresets")]: visibilityPresets.map(bm => ["vp:" + bm.key, bm.description])
+                };
+                widgets.push((
+                    <div key="quickselect">
+                        <span className="bottombar-quick-select-label">{LocaleUtils.tr("bottombar.quick_select_label")}:&nbsp;</span>
+                        <GroupSelect onChange={this.openBookmarkOrPreset} options={options} placeholder={LocaleUtils.tr("common.select")} />
+                    </div>
+                ));
+            }
+            const rightBottomLinks = (this.props.additionalBottomBarLinks || []).filter(entry => entry.side !== "left").map(this.renderLink);
+            if (this.props.viewertitleUrl) {
+                const entry = {url: this.props.viewertitleUrl, urlTarget: this.props.viewertitleUrlTarget, label: LocaleUtils.tr("bottombar.viewertitle_label"), icon: this.props.viewertitleUrlIcon};
+                rightBottomLinks.push(this.renderLink(entry));
+            }
+            if (this.props.termsUrl) {
+                const entry = {url: this.props.termsUrl, urlTarget: this.props.termsUrlTarget, label: LocaleUtils.tr("bottombar.terms_label"), icon: this.props.termsUrlIcon};
+                rightBottomLinks.push(this.renderLink(entry));
+            }
+            widgets.push((<span className="bottombar-spacer" key="spacer2" />));
+            widgets.push((<span className="bottombar-links" key="rightlinks">{rightBottomLinks}</span>));
         }
-        let quickSelectDropdown = null;
-        if (this.props.displayQuickSelectDropdown &&
-            ((this.props.bookmarks && this.props.bookmarks.length > 0) || (this.props.visibilityPresets && this.props.visibilityPresets.length > 0))) {
-            const bookmarks = this.filterByActiveTheme(this.props.bookmarks || []);
-            const visibilityPresets = this.filterByActiveTheme(this.props.visibilityPresets || []);
-            const options = {
-                [LocaleUtils.tr("appmenu.items.Bookmark")]: bookmarks.map(bm => ["bk:" + bm.key, bm.description]),
-                [LocaleUtils.tr("appmenu.items.VisibilityPresets")]: visibilityPresets.map(bm => ["vp:" + bm.key, bm.description])
-            };
-            quickSelectDropdown = (
-                <div>
-                    <span className="bottombar-quick-select-label">{LocaleUtils.tr("bottombar.quick_select_label")}:&nbsp;</span>
-                    <GroupSelect onChange={this.openBookmarkOrPreset} options={options} placeholder={LocaleUtils.tr("common.select")} />
-                </div>
-            );
-        }
+
         const style = {
             marginLeft: this.props.mapMargins.outerLeft + 'px',
             marginRight: this.props.mapMargins.outerRight + 'px'
         };
 
         return (
-            <div id="BottomBar" ref={this.storeHeight}  style={style}>
-                {scalebar}
-                <span className="bottombar-links">
-                    {leftBottomLinks}
-                </span>
-                <span className="bottombar-spacer" />
-                {coordinates}
-                {scales}
-                {quickSelectDropdown}
-                <span className="bottombar-spacer" />
-                <span className="bottombar-links">
-                    {rightBottomLinks}
-                </span>
+            <div className={this.props.fullscreen ? "bottombar-fullscreen" : ""} id="BottomBar" ref={this.storeHeight} style={style}>
+                {widgets}
             </div>
         );
     }
