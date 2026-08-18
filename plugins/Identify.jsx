@@ -271,8 +271,8 @@ class Identify extends React.Component {
             const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
             const identifyResults = this.props.click.modifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
 
-            const params = {...this.props.params};
             const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
+            const params = this.buildIdentifyParams();
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             queryableLayers.forEach(l => {
@@ -320,12 +320,8 @@ class Identify extends React.Component {
         const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
 
         let pendingRequests = 0;
-        const params = {...this.props.params};
         const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
-        if (this.props.params.region_feature_count) {
-            params.feature_count = this.props.params.region_feature_count;
-            delete params.region_feature_count;
-        }
+        const params = this.buildIdentifyParams("region_feature_count");
         const requestFilterGeom = this.getRequestFilterGeomWkt(filterGeom);
         // Querying without the filter geometry would match the whole layer
         if (requestFilterGeom) {
@@ -344,6 +340,16 @@ class Identify extends React.Component {
             const identifyResults = state.filterGeomModifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
             return {identifyResults: identifyResults, pendingRequests: pendingRequests, currentResultDisplayMode: resultDisplayMode};
         });
+    };
+    buildIdentifyParams = (featureCountParam = null) => {
+        const params = {...this.props.params};
+        if (featureCountParam && params[featureCountParam]) {
+            params.feature_count = params[featureCountParam];
+        }
+        // These are internal params, not GetFeatureInfo params
+        delete params.region_feature_count;
+        delete params.radius_feature_count;
+        return params;
     };
     getRequestFilterGeomWkt = (identifyGeom) => {
         const sourceFilterGeom = this.props.layerFilterGeom;
