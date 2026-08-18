@@ -18,6 +18,7 @@ div.map3d-titlebar > span.icon-remove {
 
 div.map3d-map {
     user-select: none;
+    touch-action: none;
     position: absolute;
     left: 0;
     right: 0;
