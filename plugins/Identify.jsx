@@ -173,8 +173,7 @@ class Identify extends React.Component {
         exitTaskOnResultsClose: null,
         filterGeom: null,
         filterGeomModifiers: {},
-        importErrors: null,
-        pendingIdentifyFilter: null
+        importErrors: null
     };
     constructor(props) {
         super(props);
@@ -183,6 +182,7 @@ class Identify extends React.Component {
         this.fileinput.accept = "application/json";
         this.fileinput.addEventListener("change", this.fileSelected);
         this.viewerRef = null;
+        this.pendingIdentifyFilter = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme && !prevProps.theme) {
@@ -195,7 +195,7 @@ class Identify extends React.Component {
             } else if (startupParams.if) {
                 // Handled even when Identify is not the current identify tool.
                 // Deferred until the map filter is applied, see identifyFeaturesPending
-                this.setState({pendingIdentifyFilter: startupParams.if});
+                this.pendingIdentifyFilter = startupParams.if;
                 UrlParams.updateParams({if: undefined});
             } else if (this.props.enabled && this.props.startupState.identifyresultstate) {
                 this.deserializeResults(
@@ -210,7 +210,7 @@ class Identify extends React.Component {
                 this.clearResults();
             }
         }
-        if (this.state.pendingIdentifyFilter) {
+        if (this.pendingIdentifyFilter) {
             this.identifyFeaturesPending();
         }
         if (this.props.enabled) {
@@ -376,8 +376,8 @@ class Identify extends React.Component {
         if (awaitMapFilter && this.props.layerFilter?.filterParams === null) {
             return;
         }
-        const identifyFilter = this.state.pendingIdentifyFilter;
-        this.setState({pendingIdentifyFilter: null});
+        const identifyFilter = this.pendingIdentifyFilter;
+        this.pendingIdentifyFilter = null;
         this.identifyFeatures(identifyFilter);
     };
     identifyFeatures = (identifyFilter) => {
