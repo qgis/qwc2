@@ -16,6 +16,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import {LayerRole, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
+import {zoomToExtent, zoomToPoint} from '../actions/map';
 import {setCurrentTask} from '../actions/task';
 import IdentifyViewer from '../components/IdentifyViewer';
 import MapSelection from '../components/MapSelection';
@@ -26,10 +27,13 @@ import MenuButton from '../components/widgets/MenuButton';
 import NumberInput from '../components/widgets/NumberInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import DataServiceExprUtils from '../utils/DataServiceExprUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MapUtils from '../utils/MapUtils';
 import MeasureUtils from '../utils/MeasureUtils';
+import {UrlParams} from '../utils/PermaLinkUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Identify.css';
@@ -93,7 +97,7 @@ class Identify extends React.Component {
         iframeDialogsInitiallyDocked: PropTypes.bool,
         /** The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. */
         initialRadiusUnits: PropTypes.string,
-        layerFilterGeom: PropTypes.object,
+        layerFilter: PropTypes.object,
         layers: PropTypes.array,
         /** How to handle long attribute names / values. */
         longAttributesDisplay: PropTypes.oneOf(["wrap", "ellipsis"]),
@@ -125,7 +129,9 @@ class Identify extends React.Component {
         taskEnabled: PropTypes.bool,
         /** Result display mode when Identify is run as a task. Defaults to `resultDisplayMode`. */
         taskResultDisplayMode: PropTypes.oneOf(["tree", "flat", "paginated", "table"]),
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        zoomToExtent: PropTypes.func,
+        zoomToPoint: PropTypes.func
     };
     static defaultProps = {
         availableRegionModes: ['Region', 'Radius', 'Circle', 'Rectangle'],
@@ -173,16 +179,22 @@ class Identify extends React.Component {
         this.fileinput.accept = "application/json";
         this.fileinput.addEventListener("change", this.fileSelected);
         this.viewerRef = null;
+        this.pendingIdentifyFilter = null;
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.enabled && this.props.theme && !prevProps.theme) {
+        if (this.props.theme && !prevProps.theme) {
             const startupParams = this.props.startupParams;
             const haveIc = ["1", "true"].includes((startupParams.ic || "").toLowerCase());
             const c = (startupParams.c || "").split(/[;,]/g).map(x => parseFloat(x) || 0);
-            if (haveIc && c.length === 2) {
+            if (this.props.enabled && haveIc && c.length === 2) {
                 const mapCrs = this.props.theme.mapCrs;
                 this.identifyPoint(CoordinatesUtils.reproject(c, startupParams.crs || mapCrs, mapCrs));
-            } else if (this.props.startupState.identifyresultstate) {
+            } else if (startupParams.if) {
+                // Handled even when Identify is not the current identify tool.
+                // Deferred until the map filter is applied, see identifyFeaturesPending
+                this.pendingIdentifyFilter = startupParams.if;
+                UrlParams.updateParams({if: undefined});
+            } else if (this.props.enabled && this.props.startupState.identifyresultstate) {
                 this.deserializeResults(
                     {...this.props.startupState.identifyresultstate.identifyResults},
                     this.props.startupState.identifyresultstate.currentResultDisplayMode
@@ -194,6 +206,9 @@ class Identify extends React.Component {
             if (this.props.clearResultsOnClose) {
                 this.clearResults();
             }
+        }
+        if (this.pendingIdentifyFilter) {
+            this.identifyFeaturesPending();
         }
         if (this.props.enabled) {
             if (this.props.identifySearchResults && this.props.currentSearchResult && this.props.currentSearchResult !== prevProps.currentSearchResult) {
@@ -271,8 +286,8 @@ class Identify extends React.Component {
             const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
             const identifyResults = this.props.click.modifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
 
-            const params = {...this.props.params};
             const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
+            const params = this.buildIdentifyParams();
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             queryableLayers.forEach(l => {
@@ -320,30 +335,109 @@ class Identify extends React.Component {
         const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
 
         let pendingRequests = 0;
-        const params = {...this.props.params};
         const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
-        if (this.props.params.region_feature_count) {
-            params.feature_count = this.props.params.region_feature_count;
-            delete params.region_feature_count;
-        }
+        const params = this.buildIdentifyParams("region_feature_count");
         const requestFilterGeom = this.getRequestFilterGeomWkt(filterGeom);
-        queryableLayers.forEach(layer => {
-            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
-            ++pendingRequests;
-            IdentifyUtils.sendRequest(request, (response) => {
-                this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
-                if (response) {
-                    this.parseResult(response, layer, request.params.info_format, center);
-                }
+        // Querying without the filter geometry would match the whole layer
+        if (requestFilterGeom) {
+            queryableLayers.forEach(layer => {
+                const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
+                ++pendingRequests;
+                IdentifyUtils.sendRequest(request, (response) => {
+                    this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
+                    if (response) {
+                        this.parseResult(response, layer, request.params.info_format, center);
+                    }
+                });
             });
-        });
+        }
         this.setState(state => {
             const identifyResults = state.filterGeomModifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
             return {identifyResults: identifyResults, pendingRequests: pendingRequests, currentResultDisplayMode: resultDisplayMode};
         });
     };
+    buildIdentifyParams = (featureCountParam = null) => {
+        const params = {...this.props.params};
+        if (featureCountParam && params[featureCountParam]) {
+            params.feature_count = params[featureCountParam];
+        }
+        // These are internal params, not GetFeatureInfo params
+        delete params.region_feature_count;
+        delete params.radius_feature_count;
+        return params;
+    };
+    identifyFeaturesPending = () => {
+        // MapFilter applies the startup filter asynchronously, wait for it so that
+        // the identify filter can be combined with the map filter
+        const awaitMapFilter = this.props.startupParams.f && ConfigUtils.havePlugin("MapFilter");
+        if (awaitMapFilter && this.props.layerFilter?.filterParams === null) {
+            return;
+        }
+        const identifyFilter = this.pendingIdentifyFilter;
+        this.pendingIdentifyFilter = null;
+        this.identifyFeatures(identifyFilter);
+    };
+    identifyFeatures = (identifyFilter) => {
+        const layerEntries = IdentifyUtils.parseIdentifyFilter(identifyFilter, this.props.layers, this.props.map);
+        const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
+        const params = this.buildIdentifyParams("region_feature_count");
+        const requests = layerEntries.map(({layer, entries}) => {
+            // Start from the filters currently active on the layer, so that no feature
+            // which the map filter hides is identified
+            const filterParams = {...this.props.layerFilter?.filterParams};
+            entries.forEach(entry => {
+                const key = layer.wms_name + "#" + entry.sublayer;
+                filterParams[key] = DataServiceExprUtils.joinExpressions(filterParams[key], entry.expr);
+            });
+            // buildWMSLayerParams merges in the layer permission filter
+            const wmsParams = LayerUtils.buildWMSLayerParams(layer, {filterParams: filterParams, filterGeom: this.props.layerFilter?.filterGeom}).params;
+            if (!wmsParams.FILTER) {
+                /* eslint-disable-next-line */
+                console.warn("Cannot build an identify filter for layer: " + layer.name);
+                return null;
+            }
+            const queryLayers = [...new Set(entries.map(entry => entry.sublayer))].join(",");
+            return {layer: layer, request: IdentifyUtils.buildFilterRequest(layer, queryLayers, wmsParams.FILTER_GEOM, this.props.map, {...params, filter: wmsParams.FILTER})};
+        }).filter(Boolean);
+        if (isEmpty(requests)) {
+            return;
+        }
+        const bboxes = [];
+        let remaining = requests.length;
+        requests.forEach(({layer, request}) => {
+            IdentifyUtils.sendRequest(request, (response) => {
+                this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
+                if (response) {
+                    const results = this.parseResult(response, layer, request.params.info_format, null);
+                    // No click position, use the feature center
+                    Object.values(results).flat().forEach(feature => {
+                        if (feature.bbox) {
+                            bboxes.push(feature.bbox);
+                            feature.clickPos = [0.5 * (feature.bbox[0] + feature.bbox[2]), 0.5 * (feature.bbox[1] + feature.bbox[3])];
+                        } else {
+                            feature.clickPos = this.props.map.center;
+                        }
+                    });
+                }
+                if (--remaining === 0 && !isEmpty(bboxes)) {
+                    const extent = bboxes.reduce((res, bbox) => ([
+                        Math.min(res[0], bbox[0]), Math.min(res[1], bbox[1]),
+                        Math.max(res[2], bbox[2]), Math.max(res[3], bbox[3])
+                    ]));
+                    if (extent[0] !== extent[2] || extent[1] !== extent[3]) {
+                        this.props.zoomToExtent(extent, this.props.map.projection);
+                    } else {
+                        // Degenerate extent (single point feature)
+                        const zoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
+                        this.props.zoomToPoint([extent[0], extent[1]], zoom, this.props.map.projection);
+                    }
+                }
+            });
+        });
+        this.setState({identifyResults: {}, pendingRequests: requests.length, currentResultDisplayMode: resultDisplayMode});
+    };
     getRequestFilterGeomWkt = (identifyGeom) => {
-        const sourceFilterGeom = this.props.layerFilterGeom;
+        const sourceFilterGeom = this.props.layerFilter?.filterGeom;
         if (!sourceFilterGeom) return VectorLayerUtils.geoJSONGeomToWkt(identifyGeom);
         try {
             const intersection = intersect(featureCollection([
@@ -617,7 +711,7 @@ export default connect((state) => {
         currentSearchResult: state.search.currentResult,
         enabled: enabled,
         taskEnabled: state.task.id === "Identify",
-        layerFilterGeom: state.layers.filter?.filterGeom,
+        layerFilter: state.layers.filter,
         layers: state.layers.flat,
         map: state.map,
         selection: state.selection,
@@ -630,5 +724,7 @@ export default connect((state) => {
     addMarker: addMarker,
     removeMarker: removeMarker,
     removeLayer: removeLayer,
-    setCurrentTask: setCurrentTask
+    setCurrentTask: setCurrentTask,
+    zoomToExtent: zoomToExtent,
+    zoomToPoint: zoomToPoint
 })(Identify);
