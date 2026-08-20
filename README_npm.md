@@ -34,7 +34,7 @@ See [docs.qwc.app/master/QuickStart/](https://docs.qwc.app/master/QuickStart/).
 
 Some examples of QWC production deployments:
 
-- [QWC demo instance](http://qwc2.sourcepole.ch)
+- [QWC demo instance](https://demo.qwc.app)
 - [GeoViewer Kanton Glarus](https://map.geo.gl.ch/)
 - [Web GIS Client Kanton Solothurn](https://geo.so.ch/map/)
 
