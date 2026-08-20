@@ -33,6 +33,7 @@ class ResizeableWindow extends React.Component {
         bottombarHeight: PropTypes.number,
         busyIcon: PropTypes.bool,
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+        colorScheme: PropTypes.string,
         detachable: PropTypes.bool,
         dockable: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         extraControls: PropTypes.arrayOf(PropTypes.shape({
@@ -139,6 +140,11 @@ class ResizeableWindow extends React.Component {
         if (this.state.geometry !== prevState.geometry) {
             this.props.onGeometryChanged(this.state.geometry);
             WINDOW_GEOMETRIES[this.props.title] = this.state.geometry;
+        }
+        if (this.props.colorScheme !== prevProps.colorScheme && this.state.externalWindow) {
+            const externalWindowRoot = this.state.externalWindow.document.querySelector(':root');
+            externalWindowRoot.classList.remove(prevProps.colorScheme);
+            externalWindowRoot.classList.add(this.props.colorScheme);
         }
         if (this.props.splitScreenWhenDocked && (
             this.props.visible !== prevProps.visible ||
@@ -555,6 +561,9 @@ class ResizeableWindow extends React.Component {
             externalWindow.document.querySelector(':root').style.setProperty('--bottombar-height',
                 document.querySelector(':root').style.getPropertyValue('--bottombar-height')
             );
+            if (this.props.colorScheme) {
+                externalWindow.document.querySelector(':root').classList.add(this.props.colorScheme);
+            }
             // Inherit API
             externalWindow.qwc2 = window.qwc2;
 
@@ -587,6 +596,7 @@ class ResizeableWindow extends React.Component {
 }
 
 export default connect((state) => ({
+    colorScheme: state.localConfig.colorScheme,
     windowStacking: state.windows.stacking,
     topbarHeight: state.windows.topbarHeight,
     bottombarHeight: state.windows.bottombarHeight,
