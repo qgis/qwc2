@@ -503,8 +503,8 @@ const LayerUtils = {
         for (const entry of exploded) {
             const layer = entry.layer;
 
-            // Attempt to merge with previous if possible
-            if (prevlayer?.srcid === layer.srcid) {
+            // Attempt to merge with previous if possible (same srcid when defined)
+            if (layer?.srcid && prevlayer?.srcid === layer.srcid) {
                 if (isEmpty(prevlayer.sublayers)) {
                     prevlayer.sublayers = layer.sublayers;
                 } else if (!isEmpty(layer.sublayers)) {
