@@ -3,6 +3,12 @@ div.featurestable-frame {
     overflow: auto;
     border: 1px solid var(--border-color);
     position: relative;
+    height: 100%;
+}
+
+table.featurestable {
+    table-layout: fixed;
+    min-width: 100%;
 }
 
 table.featurestable th {
@@ -36,7 +42,6 @@ table.featurestable th > span > span.icon {
     position: absolute;
     right: 1px;
     background-color: var(--button-bg-color);
-    height: 100%;
     flex: 0 0 auto;
     margin-left: 0.5em;
 }
@@ -70,7 +75,14 @@ table.featurestable-selectable td:first-child {
 }
 
 table.featurestable td {
-    min-width: 2.5em;;
+    min-width: 2.5em;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    height: 2em;
+}
+
+table.featurestable td:first-child {
+    border-left-width: 0;
 }
 
 span.featurestable-ldraghandle,
@@ -109,21 +121,6 @@ span.featurestable-tdraghandle {
 
 span.featurestable-bdraghandle {
     bottom: 0px;
-}
-
-table.featurestable {
-    table-layout: fixed;
-    min-width: 100%;
-}
-
-table.featurestable td {
-    border: 1px solid var(--border-color);
-    text-align: center;
-    height: 2em;
-}
-
-table.featurestable td:first-child {
-    border-left-width: 0;
 }
 
 table.featurestable span.icon-checked::before,
