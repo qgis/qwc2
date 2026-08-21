@@ -18,7 +18,7 @@ import Icon from '../Icon';
 import './style/FeaturesTable.css';
 
 
-export default class FeaturesTable extends React.Component {
+export default class FeaturesTable extends React.PureComponent {
     static propTypes = {
         allowSelect: PropTypes.bool,
         allowSelectAll: PropTypes.bool,
