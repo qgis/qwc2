@@ -25,7 +25,7 @@ export default class FeaturesTable extends React.Component {
         features: PropTypes.array,
         fields: PropTypes.array,
         hideIdColumn: PropTypes.bool,
-        highlightFeatures: PropTypes.func,
+        hoverChanged: PropTypes.func,
         onSort: PropTypes.func,
         primaryKey: PropTypes.string,
         readOnly: PropTypes.bool,
@@ -42,12 +42,12 @@ export default class FeaturesTable extends React.Component {
     state = {
         sortField: null,
         sortedFeatures: null,
-        hoveredFeature: null,
         selectedFeatures: {}
     };
     constructor(props) {
         super(props);
         this.table = null;
+        this.hoveredFeature = null;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.features !== prevProps.features) {
@@ -64,12 +64,6 @@ export default class FeaturesTable extends React.Component {
                 }
                 return newState;
             });
-        }
-        if (
-            this.state.hoveredFeature !== prevState.hoveredFeature ||
-            this.state.selectedFeatures !== prevState.selectedFeatures
-        ) {
-            this.props.highlightFeatures(this.state.hoveredFeature ? [this.state.hoveredFeature] : Object.values(this.state.selectedFeatures));
         }
         if (this.state.selectedFeatures !== prevState.selectedFeatures) {
             this.props.selectionChanged?.(this.state.selectedFeatures);
@@ -279,9 +273,13 @@ export default class FeaturesTable extends React.Component {
         });
     };
     onFeatureHoverIn = (feature) => {
-        this.setState({hoveredFeature: feature});
+        this.hoveredFeature = feature;
+        this.props.hoverChanged(feature);
     };
     onFeatureHoverLeave = (feature) => {
-        this.setState(state => ({hoveredFeature: state.hoveredFeature === feature ? null : state.hoveredFeature}));
+        if (this.hoveredFeature === feature) {
+            this.hoveredFeature = null;
+            this.props.hoverChanged(null);
+        }
     };
 }

@@ -409,18 +409,16 @@ class IdentifyViewer extends React.Component {
         });
     };
     setHighlightedFeatures = (features) => {
-        if (isEmpty(features) && this.props.highlightAllResults) {
-            const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
-            features = Object.values(resultTree).flat();
+        if (isEmpty(features)) {
+            if (!isEmpty(this.state.tableSelection)) {
+                features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
+            } else if (this.props.highlightAllResults) {
+                const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
+                features = Object.values(resultTree).flat();
+            }
         }
-        features = (features || []).filter(feature => feature.type.toLowerCase() === "feature").map(feature => {
-            const newFeature = {...feature, properties: {}};
-            // Ensure selection style is used
-            delete newFeature.styleName;
-            delete newFeature.styleOptions;
-            return newFeature;
-        });
         if (!isEmpty(features)) {
+            features = features.filter(f => f.geometry).map(f => ({id: f.id, geometry: f.geometry}));
             const layer = {
                 id: "__identifyviewerhighlight",
                 role: LayerRole.SELECTION
@@ -747,10 +745,8 @@ class IdentifyViewer extends React.Component {
                             {!this.state.collapsedLayers.has(layerid) ? (
                                 <FeaturesTable allowSelectAll
                                     features={features} fields={Object.values(fields)} hideIdColumn
-                                    highlightFeatures={this.setHighlightedFeatures} renderField={this.renderTableField}
-                                    selectionChanged={(sel) => this.setState(state => ({
-                                        tableSelection: {...state.tableSelection, [layerid]: sel}
-                                    }))}
+                                    hoverChanged={this.setHoveredFeature} renderField={this.renderTableField}
+                                    selectionChanged={(sel) => this.setTableSelection(sel, layerid)}
                                 />
                             ) : null}
                         </div>
@@ -758,6 +754,20 @@ class IdentifyViewer extends React.Component {
                 })}
             </div>
         );
+    };
+    setTableSelection = (sel, layerid) => {
+        this.setState(state => {
+            const newTableSelection = {...state.tableSelection};
+            if (!isEmpty(sel)) {
+                newTableSelection[layerid] = sel;
+            } else {
+                delete newTableSelection[layerid];
+            }
+            return {tableSelection: newTableSelection};
+        });
+    };
+    setHoveredFeature = (feature) => {
+        this.setHighlightedFeatures(feature ? [feature] : null);
     };
     renderTableField = (feature, field) => {
         return this.attribValue(feature.properties[field.name], field.name, feature.layername, feature);
