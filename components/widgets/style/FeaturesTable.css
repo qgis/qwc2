@@ -18,9 +18,17 @@ table.featurestable th {
     padding: 0;
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
-    box-shadow: inset -1px 0 0 var(--border-color),
-                inset 0 -1px 0 var(--border-color);
+    border: 1px solid var(--border-color);
     overflow: hidden;
+}
+
+table.featurestable th::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-bottom: 1px solid var(--border-color);
 }
 
 table.featurestable-selectable th:first-child {
@@ -65,13 +73,21 @@ table.featurestable tr:hover:not(.row-disabled) {
 table.featurestable-selectable td:first-child {
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
-    align-items: center;
     padding: 0.25em 0.5em;
-    background-clip: padding-box;
     position: sticky;
     left: 0;
     z-index: 1;
     width: 2.5em;
+}
+
+table.featurestable-selectable th:first-child::after,
+table.featurestable-selectable td:first-child::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-right: 1px solid var(--border-color);
 }
 
 table.featurestable td {
@@ -79,10 +95,6 @@ table.featurestable td {
     border: 1px solid var(--border-color);
     text-align: center;
     height: 2em;
-}
-
-table.featurestable td:first-child {
-    border-left-width: 0;
 }
 
 span.featurestable-ldraghandle,
@@ -127,4 +139,22 @@ table.featurestable span.icon-checked::before,
 table.featurestable span.icon-unchecked::before,
 table.featurestable span.icon-tristate::before {
     background-color: white;
+}
+
+
+div.featurestable-resize-line-vert,
+div.featurestable-resize-line-horiz {
+    position: absolute;
+    z-index: 2;
+    background-color: var(--border-color);
+}
+
+div.featurestable-resize-line-vert {
+    width: 4px;
+    top: 0;
+}
+
+div.featurestable-resize-line-horiz {
+    height: 4px;
+    left: 0;
 }

@@ -211,11 +211,13 @@ export default class FeaturesTable extends React.PureComponent {
             const origin = contentsEl.getBoundingClientRect()[resizeCol ? "left" : "top"];
             const resizeLine = document.createElement('div');
             if (resizeCol) {
-                resizeLine.className = 'attribtable-resize-line-vert';
+                resizeLine.className = 'featurestable-resize-line-vert';
                 resizeLine.style.left = (resize.anchor - origin + contentsEl.scrollLeft) + "px";
+                resizeLine.style.height = contentsEl.scrollHeight + "px";
             } else {
-                resizeLine.className = 'attribtable-resize-line-horiz';
+                resizeLine.className = 'featurestable-resize-line-horiz';
                 resizeLine.style.top = (resize.anchor - origin + contentsEl.scrollTop) + "px";
+                resizeLine.style.width = contentsEl.scrollWidth + "px";
             }
             contentsEl.appendChild(resizeLine);
             const resizeDo = resizeCol ? (event) => {
