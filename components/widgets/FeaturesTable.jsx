@@ -71,11 +71,10 @@ export default class FeaturesTable extends React.Component {
     }
     render() {
         const features = this.state.sortedFeatures ?? this.props.features;
-        const fields = this.props.fields;
-        const primaryKey = this.props.primaryKey;
+        const fields = this.props.fields.filter(field => field.id !== this.props.primaryKey);
+        const pkfield = this.props.fields.find(field => field.id === this.props.primaryKey);
         const showSelColumn = this.props.allowSelect;
         const showIdColumn = !this.props.hideIdColumn;
-        const pkfield = this.props.fields.find(field => field.name === pkfield);
         const className = classNames({
             "featurestable": true,
             "featurestable-selectable": showSelColumn
@@ -100,10 +99,10 @@ export default class FeaturesTable extends React.Component {
                         <tr>
                             {showSelColumn ? (<th>{selectAll}</th>) : null}
                             {showIdColumn ? (
-                                <th onClick={() => this.sortBy(primaryKey)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={pkfield.name}>
+                                <th onClick={() => this.sortBy(pkfield.name)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={pkfield.name}>
                                     <span>
                                         <span className="featurestable-headername">{pkfield.name}</span>
-                                        {this.renderSortIndicator(primaryKey)}
+                                        {this.renderSortIndicator(pkfield.name)}
                                         {this.renderColumnResizeHandle(showSelColumn, 'r')}
                                     </span>
                                 </th>
