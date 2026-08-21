@@ -19,11 +19,7 @@ import Icon from '../Icon';
 import './style/TextInput.css';
 
 
-export const TextInputInitContext = React.createContext(null);
-
 export default class TextInput extends React.Component {
-    static contextType = TextInputInitContext;
-
     static propTypes = {
         addLinkAnchors: PropTypes.bool,
         className: PropTypes.string,
@@ -72,9 +68,6 @@ export default class TextInput extends React.Component {
             };
         }
         return null;
-    }
-    componentDidMount() {
-        this.context?.register?.(this.id);
     }
     componentDidUpdate(prevProps, prevState) {
         this.setDefaultValue(this.state.value, this.state.valueRev, prevState.valueRev);
@@ -152,7 +145,6 @@ export default class TextInput extends React.Component {
         if (el) {
             this.input = el;
             this.setDefaultValue(this.state.value, this.state.valueRev, -1);
-            this.context?.notifyReady?.(this.id);
             if (this.props.focusOnRef) {
                 el.focus();
             }
