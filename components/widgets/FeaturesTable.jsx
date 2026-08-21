@@ -22,6 +22,7 @@ export default class FeaturesTable extends React.PureComponent {
     static propTypes = {
         allowSelect: PropTypes.bool,
         allowSelectAll: PropTypes.bool,
+        className: PropTypes.string,
         features: PropTypes.array,
         fields: PropTypes.array,
         hideIdColumn: PropTypes.bool,
@@ -77,7 +78,8 @@ export default class FeaturesTable extends React.PureComponent {
         const showIdColumn = !this.props.hideIdColumn;
         const className = classNames({
             "featurestable": true,
-            "featurestable-selectable": showSelColumn
+            "featurestable-selectable": showSelColumn,
+            [this.props.className]: !!this.props.className
         });
         let selectAll = null;
         if (this.props.allowSelectAll) {
@@ -125,7 +127,7 @@ export default class FeaturesTable extends React.PureComponent {
                         {features.map((feature, idx) => {
                             const disabled = this.props.readOnly || this.props.rowIsDisabled?.(idx);
                             return (
-                                <tr className={disabled && !this.props.readOnly ? "row-disabled" : ""} key={feature.id}
+                                <tr className={disabled && !this.props.readOnly ? "row-disabled" : ""} key={feature.id ?? "new"}
                                     onMouseEnter={() => this.onFeatureHoverIn(feature)}
                                     onMouseLeave={() => this.onFeatureHoverLeave(feature)}
                                 >
@@ -139,11 +141,11 @@ export default class FeaturesTable extends React.PureComponent {
                                         </td>
                                     ) : null}
                                     {showIdColumn ? (
-                                        <td>{feature.id}</td>
+                                        <td>{this.props.renderField(feature, pkfield, idx, disabled)}</td>
                                     ) : null}
                                     {fields.map(field => (
                                         <td key={field.id}>
-                                            {this.props.renderField(feature, field)}
+                                            {this.props.renderField(feature, field, idx, disabled)}
                                         </td>
                                     ))}
                                 </tr>

@@ -23,15 +23,15 @@ import NavBar from '../components/widgets/NavBar';
 import NumberInput from '../components/widgets/NumberInput';
 import ReCaptchaWidget from '../components/widgets/ReCaptchaWidget';
 import Spinner from '../components/widgets/Spinner';
-import TextInput, {TextInputInitContext} from '../components/widgets/TextInput';
+import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {FeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+import FeaturesTable from './widgets/FeaturesTable';
 
 import './style/AttributeTableWidget.css';
 
@@ -85,12 +85,13 @@ class AttributeTableWidget extends React.Component {
         selectedLayer: "",
         loadedLayer: "",
         curEditConfig: null,
+        curFields: null,
         fieldTranslations: null,
         features: [],
-        featureCount: 0,
         allFeatures: null,
-        selectedFeatures: new ToggleSet(),
-        highlightedFeature: null,
+        totFeatureCount: 0,
+        selectedFeatures: {},
+        hoveredFeature: null,
         changedFeatureIdx: null,
         originalFeatureProps: null,
         pageSize: 50,
@@ -100,11 +101,9 @@ class AttributeTableWidget extends React.Component {
         filterVal: "",
         sortField: null,
         deleteTask: null,
-        newFeature: null,
         confirmDelete: false,
         limitToExtent: false,
         captchaResponse: '',
-        clientSideData: false,
         tableReady: false
     };
     constructor(props) {
@@ -123,11 +122,6 @@ class AttributeTableWidget extends React.Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.state.newFeature && !prevState.newFeature) {
-            if (this.attribTableContents) {
-                this.attribTableContents.scrollTop = this.attribTableContents.scrollHeight;
-            }
-        }
         // Reload conditions when limited to extent
         if (this.state.limitToExtent && this.state.loadedLayer && (!prevState.limitToExtent || this.props.mapBbox !== prevProps.mapBbox)) {
             this.reload(this.state.loadedLayer, true, {currentPage: 0});
@@ -135,7 +129,7 @@ class AttributeTableWidget extends React.Component {
             this.reload(this.state.loadedLayer, true, {currentPage: 0});
         }
         // Highlight feature
-        if (this.state.highlightedFeature !== prevState.highlightedFeature || this.state.features !== prevState.features || this.state.selectedFeatures !== prevState.selectedFeatures) {
+        if (this.state.features !== prevState.features || this.state.hoveredFeature !== prevState.hoveredFeature || this.state.selectedFeatures !== prevState.selectedFeatures) {
             this.highlightFeatures();
         }
         if (this.state.loadedLayer !== prevState.loadedLayer && this.props.showDisplayFieldOnly) {
@@ -151,10 +145,10 @@ class AttributeTableWidget extends React.Component {
 
         const curEditConfig = this.state.curEditConfig;
         const editPermissions = curEditConfig?.permissions || {};
-        const readOnly = this.props.readOnly || editPermissions.updatable === false;
+        const readOnly = this.props.readOnly || editPermissions.updatable === false || this.state.confirmDelete;
         const loading = this.state.loading;
-        const editing = this.state.changedFeatureIdx !== null || this.state.newFeature !== null;
-        const selectionEmpty = this.state.selectedFeatures.isEmpty();
+        const editing = this.state.changedFeatureIdx !== null;
+        const selectionEmpty = isEmpty(this.state.selectedFeatures);
         const showIdColumn = !this.props.showDisplayFieldOnly && !this.props.hideIdColumn;
 
         let loadOverlay = null;
@@ -180,107 +174,19 @@ class AttributeTableWidget extends React.Component {
         let table = null;
         let footbar = null;
         if (curEditConfig && this.state.features && this.state.selectedLayer === this.state.loadedLayer) {
-            const primaryKey = curEditConfig.primaryKey ?? "id";
-            const mapPrefix = this.state.curEditConfig.editDataset.split(".")[0];
-            const fields = this.props.showDisplayFieldOnly ? curEditConfig.fields.filter(
-                field => field.name === curEditConfig.displayField
-            ) : curEditConfig.fields.filter(field => (
-                field.id !== primaryKey &&
-                (this.props.showHiddenFields || field.constraints?.hidden !== true)
-            ));
-            const indexOffset = this.state.currentPage * this.state.pageSize;
-            const features = this.state.features.slice(indexOffset, indexOffset + this.state.pageSize);
+            const primaryKey = curEditConfig.primaryKey;
             table = (
-                <TextInputInitContext.Provider value={{
-                    register: (uuid) => this.pendingTextEdits.add(uuid),
-                    notifyReady: (uuid) => {
-                        this.pendingTextEdits.delete(uuid);
-                        if (this.pendingTextEdits.size === 0) {
-                            this.setState({tableReady: true});
-                        }
-                    }
-                }}>
-                    <div style={{display: "none"}}><TextInput onChange={() => {}} value="x" /></div>{/* Just to ensure at least one TextInput is rendered, for the tableReady logic */}
-                    <table className="attribtable-table" ref={el => { this.table = el; }} style={{display: this.state.tableReady ? '' : 'none'}}>
-                        <thead>
-                            <tr>
-                                <th />
-                                {showIdColumn ? (
-                                    <th onClick={() => this.sortBy(primaryKey)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(primaryKey)}>
-                                        <span>
-                                            <span className="attribtable-table-headername">{this.translateFieldName(primaryKey)}</span>
-                                            {this.renderSortIndicator(primaryKey)}
-                                            {this.renderColumnResizeHandle(1, 'r')}
-                                        </span>
-                                    </th>
-                                ) : null}
-                                {fields.map((field, idx) => (
-                                    <th key={field.id} onClick={() => this.sortBy(field.id)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={this.translateFieldName(field.name)}>
-                                        <span>
-                                            {this.renderColumnResizeHandle(idx + 1, 'l')}
-                                            <span className="attribtable-table-headername">
-                                                {this.translateFieldName(field.name)}
-                                                {field.expression ? (<Icon icon="epsilon" title={LocaleUtils.tr("attribtable.calculatedfield")} />) : null}
-                                            </span>
-                                            {this.renderSortIndicator(field.id)}
-                                            {idx < fields.length - 1 ? this.renderColumnResizeHandle(idx + (showIdColumn ? 2 : 1), 'r') : null}
-                                        </span>
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {features.map((feature, sliceidx) => {
-                                const featureidx = indexOffset + sliceidx;
-                                const disabled = readOnly || (editing && this.state.changedFeatureIdx !== featureidx);
-                                const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, fieldid, val, emptynull);
-                                return (
-                                    <tr className={disabled && !this.props.readOnly ? "row-disabled" : ""} key={feature.id}
-                                        onMouseEnter={() => this.setState({highlightedFeature: feature})}
-                                        onMouseLeave={() => this.setState(state => ({highlightedFeature: state.highlightedFeature === feature ? null : state.highlightedFeature}))}
-                                    >
-                                        <td>
-                                            <span>
-                                                {sliceidx > 0 ? this.renderRowResizeHandle(sliceidx, 't') : null}
-                                                {<input checked={this.state.selectedFeatures.has(feature.id)} onChange={() => this.setState((state) => ({selectedFeatures: state.selectedFeatures.toggle(feature.id)}))} type="checkbox" />}
-                                                {this.renderRowResizeHandle(sliceidx + 1, 'b')}
-                                            </span>
-                                        </td>
-                                        {showIdColumn ? (
-                                            <td>{feature.id}</td>
-                                        ) : null}
-                                        {fields.map(field => (
-                                            <td key={field.id}>
-                                                {this.renderField(feature, curEditConfig, mapPrefix, field, updateField, disabled || (!!this.state.filterVal && field.id === this.state.filterField))}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                );
-                            })}
-                            {this.state.newFeature ? (
-                                <tr>
-                                    <td>
-                                        <span>
-                                            {features.length > 0 ? this.renderRowResizeHandle(features.length, 't') : null}
-                                            {<input disabled type="checkbox" />}
-                                            {this.renderRowResizeHandle(features.length + 1, 'b')}
-                                        </span>
-                                    </td>
-                                    {showIdColumn ? (
-                                        <td>{this.state.newFeature.id}</td>
-                                    ) : null}
-                                    {fields.map(field => (
-                                        <td key={field.id}>
-                                            {this.renderField(this.state.newFeature, curEditConfig, mapPrefix, field, this.updateNewFeatureField, false)}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ) : null}
-                        </tbody>
-                    </table>
-                </TextInputInitContext.Provider>
+                <FeaturesTable
+                    className="attribtable-table"
+                    features={this.state.features} fields={this.state.curFields} hideIdColumn={!showIdColumn}
+                    hoverChanged={this.setHoveredFeature}
+                    onSort={this.sortBy} primaryKey={primaryKey} readOnly={readOnly}
+                    renderField={this.renderField}
+                    rowIsDisabled={this.rowIsDisabled}
+                    selectionChanged={this.setSelectedFeatures}
+                />
             );
-            const npages = this.state.featureCount;
+            const npages = Math.ceil(this.state.totFeatureCount / this.state.pageSize);
             const pages = [this.state.currentPage];
             const extraright = Math.max(0, 2 - this.state.currentPage);
             const extraleft = Math.max(0, this.state.currentPage - (npages - 3));
@@ -320,7 +226,7 @@ class AttributeTableWidget extends React.Component {
                     <NavBar
                         currentPage={this.state.currentPage} disabled={footbarDisabled}
                         nPages={npages} pageChanged={currentPage => this.setState({currentPage}, this.reload)}
-                        pageSize={this.state.pageSize} pageSizeChanged={pageSize => this.setState({pageSize, currentPage: 0})} />
+                        pageSize={this.state.pageSize} pageSizeChanged={pageSize => this.reload(this.state.selectedLayer, false, {pageSize, currentPage: 0})} />
 
                     <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
@@ -329,9 +235,12 @@ class AttributeTableWidget extends React.Component {
                             {showIdColumn ? (
                                 <option value="<id>">{this.translateFieldName(primaryKey)}</option>
                             ) : null}
-                            {fields.map(field => (
-                                <option key={field.id} value={field.id}>{this.translateFieldName(field.name)}</option>
-                            ))}
+                            {this.state.curFields.map(field => {
+                                if (field.id !== primaryKey) {
+                                    return (<option key={field.id} value={field.id}>{this.translateFieldName(field.name)}</option>);
+                                }
+                                return null;
+                            })}
                         </select>
                         <select disabled={footbarDisabled} onChange={ev => this.updateFilter("filterOp", ev.target.value)} value={this.state.filterOp}>
                             <option value="~">~</option>
@@ -409,7 +318,7 @@ class AttributeTableWidget extends React.Component {
                         <Icon icon="search" />
                     </button>
                     {showEditButton ? (
-                        <button className="button" disabled={layerChanged || editing || this.state.selectedFeatures.size() !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
+                        <button className="button" disabled={layerChanged || editing || Object.keys(this.state.selectedFeatures).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
                             <Icon icon="editing" />
                         </button>
                     ) : null}
@@ -450,32 +359,26 @@ class AttributeTableWidget extends React.Component {
             </div>
         );
     }
-    renderSortIndicator = (field) => {
-        if (this.state.sortField && this.state.sortField.field === field) {
-            return (<Icon icon={this.state.sortField.dir > 0 ? "chevron-down" : "chevron-up"} />);
-        } else {
-            return null;
-        }
+    rowIsDisabled = (idx) => {
+        return this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== idx;
     };
-    renderColumnResizeHandle = (col, pos) => {
-        return (
-            <span className={"attribtable-table-" + pos + "draghandle"}
-                onPointerDown={(ev) => this.resizeTable(ev, col, true)} />
-        );
+    setSelectedFeatures = (features) => {
+        this.setState({selectedFeatures: features});
     };
-    renderRowResizeHandle = (row, pos) => {
-        return (
-            <span className={"attribtable-table-" + pos + "draghandle"}
-                onPointerDown={(ev) => this.resizeTable(ev, row, false)} />
-        );
+    setHoveredFeature = (feature) => {
+        this.setState({hoveredFeature: feature});
     };
-    renderField = (feature, editConfig, mapPrefix, field, updateField, fielddisabled) => {
+    renderField = (feature, field, featureidx, rowdisabled) => {
+        const editConfig = this.state.curEditConfig;
+        const mapPrefix = editConfig.editDataset.split(".")[0];
+        const updateField = (fieldid, val, emptynull = false) => this.updateField(featureidx, fieldid, val, emptynull);
+
         let value = feature.properties[field.id];
         if (value === undefined || value === null) {
             value = "";
         }
         const constraints = field.constraints || {};
-        const disabled = constraints.readOnly || fielddisabled;
+        const disabled = constraints.readOnly || rowdisabled;
         let input = null;
         if (field.type === "boolean" || field.type === "bool") {
             input = (<input name={field.id} {...constraints} checked={value} disabled={disabled} onChange={ev => updateField(field.id, ev.target.checked)} type="checkbox" />);
@@ -539,16 +442,26 @@ class AttributeTableWidget extends React.Component {
             const [wmsName, layerName] = selectedLayer.split("#");
             const newState = {...state, ...stateChange};
             const editConfig = this.props.editConfigs[wmsName][layerName];
+            const fields = (this.props.showDisplayFieldOnly ? editConfig.fields.filter(
+                field => field.name === editConfig.displayField
+            ) : editConfig.fields.filter(field => (
+                (this.props.showHiddenFields || field.constraints?.hidden !== true)
+            ))).map(field => ({
+                ...field,
+                name: this.translateFieldName(field.name)
+            }));
+
             if (selectedLayer !== state.loadedLayer) {
                 KeyValCache.clear();
                 FeatureCache.clear();
                 Object.assign(newState, AttributeTableWidget.defaultState);
                 newState.limitToExtent = state.limitToExtent;
                 newState.curEditConfig = editConfig;
+                newState.curFields = fields;
                 newState.fieldTranslations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations?.layers?.[layerName]?.fields ?? {};
             }
             newState.selectedLayer = selectedLayer;
-            newState.selectedFeatures = new ToggleSet();
+            newState.selectedFeatures = {};
             newState.tableReady = false;
             this.pendingTextEdits = new Set();
 
@@ -560,12 +473,12 @@ class AttributeTableWidget extends React.Component {
             };
             // If sort or filter field is virtual, query full feature set and sort/filter client side
             const fieldMap = (newState.curEditConfig?.fields || []).reduce((res, field) => ({...res, [field.id]: field}), {});
-            const clientSideFilterSort = newState.clientSideData || (newState.filterVal && fieldMap[newState.filterField]?.expression) || fieldMap[newState.sortField?.field]?.expression;
+            const clientSideFilterSort = (newState.filterVal && fieldMap[newState.filterField]?.expression) || fieldMap[newState.sortField?.field]?.expression;
 
             if (!forceReload && clientSideFilterSort && newState.allFeatures) {
                 return {...newState, features: this.filteredSortedFeatures(newState.allFeatures, newState)};
             } else {
-                Object.assign(newState, {allFeatures: [], features: []});
+                Object.assign(newState, {allFeatures: null, features: []});
                 if (clientSideFilterSort) {
                     /* eslint-disable-next-line no-alert */
                     if (!this.filterWarningShown && !forceReload && !confirm(LocaleUtils.tr("attribtable.fulldatasetload"))) {
@@ -578,7 +491,7 @@ class AttributeTableWidget extends React.Component {
                     } else if (newState.filterVal) {
                         options.filter = [[newState.filterField, newState.filterOp, newState.filterVal]];
                     } else {
-                        // NOTE: Query full feature set when filtering so that filtered geometries can be highlighted
+                        // NOTE: set offset/limit only when not filtering. Query all filtered features so that they can be highlighted.
                         options.offset = newState.currentPage * newState.pageSize;
                         options.limit = newState.pageSize;
                     }
@@ -588,17 +501,12 @@ class AttributeTableWidget extends React.Component {
                 this.props.iface.getFeatures(
                     editConfig, this.props.mapCrs, (result) => {
                         if (result) {
-                            const featuresSlice = result.features || [];
-                            const features = new Array(result.numberMatched ?? featuresSlice.length);
-                            features.splice(options.offset ?? 0, featuresSlice.length, ...featuresSlice);
-                            const sortedFilteredFeatures = clientSideFilterSort ? this.filteredSortedFeatures(features, newState) : features;
                             this.setState({
                                 loading: false,
-                                allFeatures: options.limit === undefined || result.numberMatched === undefined ? features : null,
-                                features: sortedFilteredFeatures,
-                                featureCount: Math.ceil(sortedFilteredFeatures.length / newState.pageSize),
-                                loadedLayer: newState.selectedLayer,
-                                clientSideData: result.numberMatched === undefined
+                                allFeatures: clientSideFilterSort ? result.features : null,
+                                features: clientSideFilterSort ? this.filteredSortedFeatures(result.features, newState) : result.features,
+                                totFeatureCount: result.numberMatched ?? result.features.length,
+                                loadedLayer: newState.selectedLayer
                             });
                         } else {
                             // eslint-disable-next-line
@@ -642,7 +550,8 @@ class AttributeTableWidget extends React.Component {
             }, []);
         }
         if (state.sortField) {
-            const sortFieldValue = state.sortField.field === "id" ? (feature) => feature.id : (feature) => feature.properties[state.sortField.field];
+            const pk = this.state.curEditConfig.primaryKey ?? "id";
+            const sortFieldValue = state.sortField.field === pk ? (feature) => feature.id : (feature) => feature.properties[state.sortField.field];
             return filteredFeatures.sort((f1, f2) => {
                 const v1 = String(sortFieldValue(f1));
                 const v2 = String(sortFieldValue(f2));
@@ -651,10 +560,6 @@ class AttributeTableWidget extends React.Component {
         } else {
             return filteredFeatures;
         }
-    };
-    currentPageFeatures = (state) => {
-        const indexOffset = state.currentPage * state.pageSize;
-        return state.features.slice(indexOffset, indexOffset + state.pageSize);
     };
     updateFilter = (stateField, val) => {
         const newState = {filterField: this.state.filterField, filterOp: this.state.filterOp, filterVal: this.state.filterVal};
@@ -695,23 +600,28 @@ class AttributeTableWidget extends React.Component {
         };
         const mapPrefix = this.state.curEditConfig.editDataset.split(".")[0];
         getFeatureTemplate(this.state.curEditConfig, featureSkel, this.props.iface, mapPrefix, this.props.mapCrs, feature => {
-            this.setState({
-                newFeature: feature,
+            this.setState(state => ({
+                features: [...state.features, feature],
+                changedFeatureIdx: state.features.length,
                 filterVal: ""
+            }), () => {
+                if (this.attribTableContents) {
+                    this.attribTableContents.firstElementChild.scrollTop = this.attribTableContents.firstElementChild.scrollHeight;
+                }
             });
             this.props.setCurrentTaskBlocked(true, LocaleUtils.tr("editing.unsavedchanged"));
         });
     };
     deleteSelectedFeatured = () => {
         this.setState((state) => {
-            const features = this.currentPageFeatures(state).filter(feature => state.selectedFeatures.has(feature.id));
-            features.forEach(feature => {
-                this.props.iface.deleteFeature(state.curEditConfig, feature.id, (success) => {
-                    this.onFeatureDeleted(feature.id, success);
+            const featureIds = Object.keys(state.selectedFeatures);
+            featureIds.forEach(featureId => {
+                this.props.iface.deleteFeature(state.curEditConfig, featureId, (success) => {
+                    this.onFeatureDeleted(featureId, success);
                 }, state.captchaResponse);
             });
             return {deleteTask: {
-                pending: features.map(feature => feature.id),
+                pending: featureIds,
                 failed: [],
                 deleted: []
             }};
@@ -734,7 +644,9 @@ class AttributeTableWidget extends React.Component {
                     alert(LocaleUtils.tr("attribtable.deletefailed"));
                 }
                 // Compute new page taking into account number of deleted features
-                newState.currentPage = Math.max(0, state.currentPage - Math.floor(newState.deleteTask.deleted.length / state.pageSize));
+                if (newState.deleteTask.deleted.length >= state.features.length) {
+                    newState.currentPage = Math.max(0, state.currentPage - 1);
+                }
                 newState.deleteTask = null;
                 newState.confirmDelete = false;
                 reload = true;
@@ -759,14 +671,8 @@ class AttributeTableWidget extends React.Component {
             return {features: newFeatures, changedFeatureIdx: featureidx, originalFeatureProps: originalFeatureProps};
         });
     };
-    updateNewFeatureField = (fieldid, value, emptynull) => {
-        this.setState(state => {
-            value = value === "" && emptynull ? null : value;
-            return {newFeature: {...state.newFeature, properties: {...state.newFeature.properties, [fieldid]: value}}};
-        });
-    };
     commit = () => {
-        const feature = this.state.newFeature ?? {
+        const feature = {
             ...this.state.features[this.state.changedFeatureIdx],
             crs: {
                 type: "name",
@@ -793,7 +699,7 @@ class AttributeTableWidget extends React.Component {
             featureData.set('g-recaptcha-response', this.state.captchaResponse);
         }
 
-        if (this.state.newFeature) {
+        if (!feature.id) {
             this.props.iface.addFeatureMultipart(
                 this.state.curEditConfig, this.props.mapCrs, featureData,
                 (success, result) => this.featureCommited(success, result)
@@ -820,9 +726,11 @@ class AttributeTableWidget extends React.Component {
     discard = () => {
         this.changedFiles = {};
         this.setState((state) => {
+            const featureidx = state.changedFeatureIdx;
             const newFeatures = [...state.features];
-            if (!state.newFeature) {
-                const featureidx = state.changedFeatureIdx;
+            if (!newFeatures[featureidx].id) {
+                newFeatures.pop();
+            } else {
                 newFeatures[featureidx] = {...newFeatures[featureidx]};
                 newFeatures[featureidx].properties = state.originalFeatureProps;
             }
@@ -832,10 +740,10 @@ class AttributeTableWidget extends React.Component {
     };
     highlightFeatures = () => {
         let features = [];
-        if (this.state.highlightedFeature) {
-            features.push(this.state.highlightedFeature);
-        } else if (!this.state.selectedFeatures.isEmpty()) {
-            features = this.currentPageFeatures(this.state).filter(feature => this.state.selectedFeatures.has(feature.id));
+        if (this.state.hoveredFeature) {
+            features = [this.state.hoveredFeature];
+        } else if (!isEmpty(this.state.selectedFeatures)) {
+            features = Object.values(this.state.selectedFeatures);
         } else if (this.state.filterVal) {
             features = this.state.features;
         }
@@ -848,7 +756,7 @@ class AttributeTableWidget extends React.Component {
     zoomToSelection = () => {
         const collection = {
             type: "FeatureCollection",
-            features: this.currentPageFeatures(this.state).filter(feature => this.state.selectedFeatures.has(feature.id))
+            features: Object.values(this.state.selectedFeatures)
         };
         if (!isEmpty(collection.features)) {
             if (collection.features.length === 1 && collection.features[0].geometry.type === "Point") {
@@ -866,55 +774,8 @@ class AttributeTableWidget extends React.Component {
             alert(LocaleUtils.tr("attribtable.nogeomnoform"));
             return;
         }
-        const feature = this.currentPageFeatures(this.state).find(f => this.state.selectedFeatures.has(f.id));
+        const feature = Object.values(this.state.selectedFeatures)[0];
         this.props.setCurrentTask("Editing", null, null, {layer: this.state.loadedLayer, feature: feature});
-    };
-    resizeTable = (ev, index, resizeCol) => {
-        if (this.table) {
-            const element = this.table.getElementsByTagName(resizeCol ? "th" : "tr")[index];
-            let initial = 0;
-            if (resizeCol) {
-                initial = parseFloat(element.style.minWidth.replace(/px$/, '')) || element.clientWidth;
-            } else {
-                initial = parseFloat(element.style.height.replace(/px$/, '')) || element.clientHeight;
-            }
-            const resize = {
-                anchor: resizeCol ? ev.clientX : ev.clientY,
-                element: element,
-                initial: initial,
-                newsize: initial
-            };
-            const contentsEl = element.parentElement.parentElement.parentElement.parentElement;
-            const origin = contentsEl.getBoundingClientRect()[resizeCol ? "left" : "top"];
-            const resizeLine = document.createElement('div');
-            resizeLine.className = resizeCol ? 'attribtable-resize-line-vert' : 'attribtable-resize-line-horiz';
-            resizeLine.style[resizeCol ? "left" : "top"] = (resize.anchor - origin) + "px";
-            contentsEl.appendChild(resizeLine);
-            const resizeDo = resizeCol ? (event) => {
-                resizeLine.style.left = (event.clientX - origin) + "px";
-                resize.newsize = resize.initial + event.clientX - resize.anchor;
-            } : (event) => {
-                resizeLine.style.top = (event.clientY - origin) + "px";
-                resize.newsize = resize.initial + event.clientY - resize.anchor;
-            };
-            const eventShield = ev.view.document.createElement("div");
-            eventShield.className = '__event_shield';
-            ev.view.document.body.appendChild(eventShield);
-            ev.view.document.body.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
-            ev.view.addEventListener("pointermove", resizeDo);
-            ev.view.addEventListener("pointerup", (event) => {
-                event.view.document.body.removeChild(eventShield);
-                contentsEl.removeChild(resizeLine);
-                event.view.removeEventListener("pointermove", resizeDo);
-                event.view.document.body.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
-                if (resizeCol) {
-                    resize.element.style.minWidth = Math.max((resize.newsize), 16) + "px";
-                    resize.element.style.width = Math.max((resize.newsize), 16) + "px";
-                } else {
-                    resize.element.style.height = Math.max((resize.newsize), 16) + "px";
-                }
-            }, {once: true});
-        }
     };
     csvExport = () => {
         const formatCsv = (features) => {
@@ -939,7 +800,8 @@ class AttributeTableWidget extends React.Component {
             FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), this.state.loadedLayer.split("#").slice(-1)[0] + ".csv");
         };
 
-        if (this.state.clientSideData) {
+        // Use full-table-load if available
+        if (this.state.allFeatures) {
             formatCsv(this.state.allFeatures);
         } else {
             const state = this.state;
@@ -947,26 +809,20 @@ class AttributeTableWidget extends React.Component {
                 bbox: state.limitToExtent ? this.props.mapBbox.bounds : null,
                 filter: this.props.filter.filterParams?.[state.loadedLayer],
                 filterGeom: this.props.filter.filterGeom,
-                fields: this.props.showDisplayFieldOnly ? [state.curEditConfig.displayField, "geometry"] : null
+                fields: this.props.showDisplayFieldOnly ? [state.curEditConfig.displayField, "geometry"] : null,
+                sortby: state.sortField ? ((state.sortField.dir < 0 ? "-" : "") + state.sortField.field) : null
             };
-            // If sort or filter field is virtual, query full feature set and sort/filter client side
-            const fieldMap = (state.curEditConfig?.fields || []).reduce((res, field) => ({...res, [field.id]: field}), {});
-            const clientSideFilterSort = state.clientSideData || (state.filterVal && fieldMap[state.filterField]?.expression) || fieldMap[state.sortField?.field]?.expression;
-
-            if (!clientSideFilterSort) {
-                if (this.props.filter.filterParams?.[state.loadedLayer] && state.filterVal) {
-                    options.filter = [this.props.filter.filterParams?.[this.state.loadedLayer], 'and', [state.filterField, state.filterOp, state.filterVal]];
-                } else if (state.filterVal) {
-                    options.filter = [[state.filterField, state.filterOp, state.filterVal]];
-                }
-                options.sortby = state.sortField ? ((state.sortField.dir < 0 ? "-" : "") + state.sortField.field) : null;
+            if (this.props.filter.filterParams?.[state.loadedLayer] && state.filterVal) {
+                options.filter = [this.props.filter.filterParams?.[this.state.loadedLayer], 'and', [state.filterField, state.filterOp, state.filterVal]];
+            } else if (state.filterVal) {
+                options.filter = [[state.filterField, state.filterOp, state.filterVal]];
             }
 
             this.setState({loading: true});
             this.props.iface.getFeatures(
                 this.state.curEditConfig, this.props.mapCrs, (result) => {
                     if (result) {
-                        formatCsv(clientSideFilterSort ? this.filteredSortedFeatures(result.features, this.state) : result.features);
+                        formatCsv(result.features);
                     } else {
                         // eslint-disable-next-line
                         alert(LocaleUtils.tr("attribtable.loadfailed"));
