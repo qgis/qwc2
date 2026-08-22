@@ -102,7 +102,7 @@
         "url": "^0.11.4",
         "utif": "^3.1.0",
         "uuid": "^14.0.0",
-        "xlsx": "^0.18.5"
+        "xlsx": "npm:@stackline/xlsx@^1.0.6"
     },
     "devDependencies": {
         "@babel/cli": "^7.28.6",
