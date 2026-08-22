@@ -17,6 +17,9 @@ div.ThemeList li.theme-group-header > span > span.icon {
 }
 
 div.ThemeList ul.theme-group-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
     padding: 0.25em;
 }
 
@@ -31,7 +34,8 @@ div.ThemeList li.theme-item {
     border: 1px solid var(--border-color);
     margin: 0.5em;
     text-align: center;
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
     width: calc(15em + 2px);
     position: relative;
     border-radius: var(--border-radius);
@@ -55,9 +59,29 @@ div.ThemeList div.theme-item-title > span.icon {
     font-size: large;
 }
 
+div.ThemeList div.theme-item-tooltip {
+    position: fixed;
+    width: auto;
+    height: auto;
+    max-width: calc(50vw - 5em);
+    max-height: calc(50vh - var(--topbar-height) - var(--bottombar-height));
+
+    background-color: var(--tooltip-bg-color);
+    border: 1px solid var(--tooltip-border-color);
+    color: var(--tooltip-text-color);
+    font-weight: normal;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    white-space: normal;
+    overflow: auto;
+    z-index: 3;
+}
+
 div.ThemeList div.theme-item-body {
-    height: 7.5em;
+    height: auto;
     width: 15em;
+    display: flex;
+    flex-direction: column;
 }
 
 div.ThemeList li.theme-item-active div.theme-item-title > span:first-child {
