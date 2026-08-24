@@ -727,6 +727,7 @@ class QtDesignerForm extends React.Component {
             json.fields = fields;
             json.buttons = buttons;
             json.nrels = nrels;
+            json.relationTables = relationTables;
             if (FormPreprocessors[this.props.editConfig.editDataset]) {
                 FormPreprocessors[this.props.editConfig.editDataset](json, this.props.feature, (formData) => {
                     if (this.state.loadingReqId === loadingReqId) {
@@ -736,7 +737,7 @@ class QtDesignerForm extends React.Component {
             } else {
                 this.setState({formData: json, loading: false, loadingReqId: null});
             }
-            this.props.setRelationTables(relationTables);
+            this.props.setRelationTables(json.relationTables);
         });
     };
     reformatWidget = (widget, relationTables, fields, buttons, nrels, externalFields, widgets, counters) => {
