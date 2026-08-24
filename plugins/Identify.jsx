@@ -193,8 +193,7 @@ class Identify extends React.Component {
                 const mapCrs = this.props.theme.mapCrs;
                 this.identifyPoint(CoordinatesUtils.reproject(c, startupParams.crs || mapCrs, mapCrs));
             } else if (startupParams.if) {
-                // Handled even when Identify is not the current identify tool.
-                // Deferred until the map filter is applied, see identifyFeaturesPending
+                // Handled even when Identify is not the current identify tool, see identifyFeaturesPending
                 this.pendingIdentifyFilter = startupParams.if;
                 UrlParams.updateParams({if: undefined});
             } else if (this.props.enabled && this.props.startupState.identifyresultstate) {
@@ -370,8 +369,8 @@ class Identify extends React.Component {
         return params;
     };
     identifyFeaturesPending = () => {
-        // MapFilter applies the startup filter asynchronously, wait for it so that
-        // the identify filter can be combined with the map filter
+        // MapFilter applies the startup filter behind a debounce, wait for it so that the
+        // identify filter is combined with the map filter rather than replacing it
         const awaitMapFilter = this.props.startupParams.f && ConfigUtils.havePlugin("MapFilter");
         if (awaitMapFilter && this.props.layerFilter?.filterParams === null) {
             return;
