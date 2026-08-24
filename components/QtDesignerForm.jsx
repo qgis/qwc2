@@ -310,7 +310,7 @@ class QtDesignerForm extends React.Component {
                     name={elname} onChange={(val, fieldName) => updateField(fieldName ?? widget.name, val)}
                     readOnly={this.props.readOnly} removeRelationRecord={this.props.removeRelationRecord}
                     reorderRelationRecord={this.props.reorderRelationRecord}
-                    updateRelationField={this.props.updateRelationField} widget={widget} />
+                    updateRelationField={this.props.updateRelationField} widget={widget} {...widget.props} />
             );
         } else if (widget.class === "QLabel") {
             if (widget.name.startsWith("img__")) {
