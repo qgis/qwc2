@@ -306,7 +306,7 @@ class QtDesignerForm extends React.Component {
                 <widget.component
                     addRelationRecord={this.props.addRelationRecord} constraints={constraints}
                     editConfigs={this.props.editConfigs} feature={this.props.feature}
-                    mapPrefix={this.props.mapPrefix}
+                    iface={this.props.iface} mapPrefix={this.props.mapPrefix}
                     name={elname} onChange={(val, fieldName) => updateField(fieldName ?? widget.name, val)}
                     readOnly={this.props.readOnly} removeRelationRecord={this.props.removeRelationRecord}
                     reorderRelationRecord={this.props.reorderRelationRecord}
