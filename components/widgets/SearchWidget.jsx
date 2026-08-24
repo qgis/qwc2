@@ -30,6 +30,8 @@ export default class SearchWidget extends React.Component {
         className: PropTypes.string,
         placeholder: PropTypes.string,
         queryGeometries: PropTypes.bool,
+        renderGroupTitle: PropTypes.func,
+        renderItem: PropTypes.func,
         resultSelected: PropTypes.func.isRequired,
         resultTypeFilter: PropTypes.array,
         searchParams: PropTypes.shape({
@@ -87,22 +89,32 @@ export default class SearchWidget extends React.Component {
         );
     }
     renderResults = () => {
+        const renderItem = this.props.renderItem ?? this.renderItem;
+        const renderGroupTitle = this.props.renderGroupTitle ?? this.renderGroupTitle;
         return (
             <PopupMenu anchor={this.input} className="search-widget-results" onClose={() => this.setState({resultsVisible: false})} setMaxWidth spaceKeyActivation={false}>
                 {this.state.results.filter(group => this.props.resultTypeFilter.includes(group.type ?? SearchResultType.PLACE)).map(group => {
-                    return [(
-                        <div className="search-widget-results-group-title" disabled key={group.id}>
-                            <span>{group.title ?? LocaleUtils.tr(group.titlemsgid)}</span>
-                        </div>
-                    ),
-                    group.items.map(item => {
-                        item.text = (item.label !== undefined ? item.label : item.text || '').replace(/<\/?\w+\s*\/?>/g, '');
-                        return (
-                            <div className="search-widget-results-item" key={group.id + ":" + item.id} onClick={() => this.resultSelected(group, item)} title={item.text}>{item.text}</div>
-                        );
-                    })];
+                    return [
+                        renderGroupTitle(group),
+                        group.items.map(item => {
+                            const text = (item.label !== undefined ? item.label : item.text || '').replace(/<\/?\w+\s*\/?>/g, '');
+                            return renderItem(group, {...item, text: text});
+                        })
+                    ];
                 }).flat()}
             </PopupMenu>
+        );
+    };
+    renderGroupTitle = (group) => {
+        return (
+            <div className="search-widget-results-group-title" disabled key={group.id}>
+                <span>{group.title ?? LocaleUtils.tr(group.titlemsgid)}</span>
+            </div>
+        );
+    };
+    renderItem = (group, item) => {
+        return (
+            <div className="search-widget-results-item" key={group.id + ":" + item.id} onClick={() => this.resultSelected(group, item)} title={item.text}>{item.text}</div>
         );
     };
     textChanged = (ev) => {
