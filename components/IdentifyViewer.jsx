@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
-import {zoomToPoint} from '../actions/map';
+import {zoomToPoint, zoomToExtent} from '../actions/map';
 import {openExternalUrl} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
@@ -287,6 +287,7 @@ class IdentifyViewer extends React.Component {
         showLayerTitles: PropTypes.bool,
         skipEmptyFeatureAttributes: PropTypes.bool,
         theme: PropTypes.object,
+        zoomToExtent: PropTypes.func,
         zoomToPoint: PropTypes.func
     };
     static defaultProps = {
@@ -729,6 +730,7 @@ class IdentifyViewer extends React.Component {
                     });
                     const haveSel = !isEmpty(this.state.tableSelection[layerid]);
                     const buttons = [
+                        {key: "Zoom", icon: "zoom", disabled: !haveSel},
                         {key: "Export", icon: "export"},
                         {key: "Delete", icon: haveSel ? "trash_checked" : "trash"}
                     ];
@@ -773,7 +775,11 @@ class IdentifyViewer extends React.Component {
         return this.attribValue(feature.properties[field.name], field.name, feature.layername, feature);
     };
     tableAction = (layerid, action) => {
-        if (action === "Export") {
+        if (action === "Zoom") {
+            const features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
+            const bbox = VectorLayerUtils.computeFeaturesBBox(features);
+            this.props.zoomToExtent(bbox.bounds, bbox.crs);
+        } else if (action === "Export") {
             const features = isEmpty(this.state.tableSelection[layerid]) ? this.state.resultTree[layerid] : Object.values(this.state.tableSelection[layerid]);
             this.export({layerid: features});
         } else if (action === "Delete") {
@@ -1205,5 +1211,6 @@ export default connect(selector, {
     removeLayer: removeLayer,
     setActiveLayerInfo: setActiveLayerInfo,
     openExternalUrl: openExternalUrl,
-    zoomToPoint: zoomToPoint
+    zoomToPoint: zoomToPoint,
+    zoomToExtent: zoomToExtent
 })(IdentifyViewer);
