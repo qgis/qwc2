@@ -103,6 +103,7 @@ class ResizeableWindow extends React.Component {
         this.id = uuidv4();
         this.portalNode = props.usePortal ? portals.createHtmlPortalNode() : null;
         if (this.portalNode) {
+            this.portalNode.element.className = 'resizeable-window-portal-node';
             this.portalNode.element.addEventListener('click', this.raiseWindow);
             this.portalNode.element.addEventListener('focus', this.raiseWindow);
             this.portalNode.element.addEventListener('focusin', this.raiseWindow);
