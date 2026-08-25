@@ -108,6 +108,7 @@ class ResizeableWindow extends React.Component {
         this.id = uuidv4();
         this.portalNode = props.usePortal ? portals.createHtmlPortalNode() : null;
         if (this.portalNode) {
+            this.portalNode.element.className = 'resizeable-window-portal-node';
             this.portalNode.element.addEventListener('click', this.raiseWindow);
             this.portalNode.element.addEventListener('focus', this.raiseWindow);
             this.portalNode.element.addEventListener('focusin', this.raiseWindow);
@@ -418,7 +419,7 @@ class ResizeableWindow extends React.Component {
                 {this.renderTitleBar()}
                 <div className="resizeable-window-body">
                     {this.portalNode ? (
-                        <div className="resizeable-window-portal-container resizeable-window-portal-container-detached">
+                        <div className="resizeable-window-portal-container">
                             <portals.OutPortal node={this.portalNode} />
                         </div>
                     ) : this.props.children}
