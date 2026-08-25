@@ -108,6 +108,19 @@ async function executePermalinkDataStoreHooks(permalinkState, query) {
     }
 }
 
+function serializeLayers(state) {
+    if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
+        return state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
+    } else {
+        // Only store redlining layers
+        const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
+        const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
+            .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
+            .map(entry => ({...entry.layer, pos: entry.pos}));
+        return redliningLayers;
+    }
+}
+
 export async function generatePermaLink(callback, user = false, permittedGroup = "") {
     const state = StandardApp.store.getState();
     const fullUrl = UrlParams.getFullUrl();
@@ -115,17 +128,7 @@ export async function generatePermaLink(callback, user = false, permittedGroup =
         callback(fullUrl);
         return;
     }
-    const permalinkState = {};
-    if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
-        permalinkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
-    } else {
-        // Only store redlining layers
-        const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
-        const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
-            .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
-            .map(entry => ({...entry.layer, pos: entry.pos}));
-        permalinkState.layers = redliningLayers;
-    }
+    const permalinkState = {layers: serializeLayers(state)};
     const urlObj = url.parse(UrlParams.getFullUrl(), true);
     const queryParams = {};
     await executePermalinkDataStoreHooks(permalinkState, queryParams);
@@ -198,17 +201,7 @@ export const BookmarksInterface = {
     },
     async _getState() {
         const state = StandardApp.store.getState();
-        // Only store redlining layers
-        const exploded = LayerUtils.explodeLayers(state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND));
-        const bookmarkState = {};
-        if (ConfigUtils.getConfigProp("storeAllLayersInPermalink")) {
-            bookmarkState.layers = state.layers.flat.filter(layer => layer.role !== LayerRole.BACKGROUND);
-        } else {
-            const redliningLayers = exploded.map((entry, idx) => ({...entry, pos: idx}))
-                .filter(entry => entry.layer.role === LayerRole.USERLAYER && entry.layer.type === 'vector')
-                .map(entry => ({...entry.layer, pos: entry.pos}));
-            bookmarkState.layers = redliningLayers;
-        }
+        const bookmarkState = {layers: serializeLayers(state)};
         const urlObj = url.parse(UrlParams.getFullUrl(), true);
         const queryParams = {};
         await executePermalinkDataStoreHooks(bookmarkState, queryParams);
