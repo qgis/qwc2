@@ -320,7 +320,7 @@ class AttributeTableWidget extends React.Component {
                     <NavBar
                         currentPage={this.state.currentPage} disabled={footbarDisabled}
                         nPages={npages} pageChanged={currentPage => this.setState({currentPage}, this.reload)}
-                        pageSize={this.state.pageSize} pageSizeChanged={pageSize => this.setState({pageSize, currentPage: 0})} />
+                        pageSize={this.state.pageSize} pageSizeChanged={pageSize => this.reload(this.state.selectedLayer, false, {pageSize, currentPage: 0})} />
 
                     <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
