@@ -32,6 +32,7 @@ const LayerUtils = {
                 entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
                 entry.sublayer.tristate = layerConfig.tristate;
                 entry.sublayer.style = layerConfig.style || entry.sublayer.style;
+                entry.sublayer.omitFromQueryLayers = layerConfig.omitFromQueryLayers;
             } else {
                 entry.sublayer.visibility = false;
             }
@@ -65,6 +66,7 @@ const LayerUtils = {
                     entry.sublayer.visibility = layerConfig.visibility || layerConfig.tristate;
                     entry.sublayer.tristate = layerConfig.tristate;
                     entry.sublayer.style = layerConfig.style || entry.sublayer.style;
+                    entry.sublayer.omitFromQueryLayers = layerConfig.omitFromQueryLayers;
                     reordered.push(entry);
                 }
             } else if (layerConfig.type === 'separator') {
@@ -121,6 +123,7 @@ const LayerUtils = {
             name: layerConfig.name,
             opacity: layerConfig.opacity,
             visibility: layerConfig.visibility,
+            omitFromQueryLayers: layerConfig.omitFromQueryLayers,
             style: layerConfig.style,
             title: layerConfig.name,
             role: LayerRole.USERLAYER,
@@ -137,19 +140,20 @@ const LayerUtils = {
             exploded.splice(layer.pos, 0, insLayer);
         }
     },
-    collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryable, visibilities, parentVisibility) {
+    collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryable, omitFromQueryLayers, visibilities, parentVisibility) {
         const layerVisibility = (sublayer.visibility === undefined ? true : sublayer.visibility);
         const visibility = layerVisibility && parentVisibility;
         if (visibility || visibilities) {
             if (!isEmpty(sublayer.sublayers)) {
                 // Is group
                 sublayer.sublayers.map(sublyr => {
-                    LayerUtils.collectWMSSublayerParams(sublyr, layerNames, opacities, styles, queryable, visibilities, visibility);
+                    LayerUtils.collectWMSSublayerParams(sublyr, layerNames, opacities, styles, queryable, omitFromQueryLayers, visibilities, visibility);
                 });
             } else {
                 layerNames.push(sublayer.name);
                 opacities.push(Number.isInteger(sublayer.opacity) ? sublayer.opacity : 255);
                 styles.push(sublayer.style || "");
+                omitFromQueryLayers.push(sublayer.omitFromQueryLayers);
                 if (sublayer.queryable && !sublayer.omitFromQueryLayers) {
                     queryable.push(sublayer.name);
                 }
@@ -187,7 +191,7 @@ const LayerUtils = {
             let opacities = [];
             let styles = [];
             layer.sublayers.map(sublayer => {
-                LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, null, layer.visibility);
+                LayerUtils.collectWMSSublayerParams(sublayer, layerNames, opacities, styles, queryLayers, [], null, layer.visibility);
             });
             layerNames.reverse();
             opacities.reverse();
@@ -242,12 +246,13 @@ const LayerUtils = {
         const styles = [];
         const visibilities = [];
         const queryable = [];
+        const omitFromQueryLayers = [];
         for (const layer of layers) {
             if (layer.role === LayerRole.THEME && !isEmpty(layer.sublayers)) {
-                LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, styles, queryable, visibilities, layer.visibility);
+                LayerUtils.collectWMSSublayerParams(layer, layernames, opacities, styles, queryable, omitFromQueryLayers, visibilities, layer.visibility);
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "wms") {
                 const sublayernames = [];
-                LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, visibilities, layer.visibility);
+                LayerUtils.collectWMSSublayerParams(layer, sublayernames, opacities, styles, queryable, omitFromQueryLayers, visibilities, layer.visibility);
                 let layerurl = layer.url;
                 if (layer.extwmsparams) {
                     layerurl += (layerurl.includes('?') ? '&' : '?') + Object.entries(layer.extwmsparams || {}).map(([key, value]) => 'extwms.' + key + "=" + value).join('&');
@@ -258,11 +263,13 @@ const LayerUtils = {
                 opacities.push(layer.opacity);
                 styles.push(layer.style);
                 visibilities.push(layer.visibility);
+                omitFromQueryLayers.push(layer.omitFromQueryLayers);
             } else if (layer.role === LayerRole.USERLAYER && layer.type === "separator") {
                 layernames.push("sep:" + layer.title);
                 opacities.push(255);
                 styles.push('');
                 visibilities.push(true);
+                omitFromQueryLayers.push(false);
             }
         }
         const result = layernames.map((layername, idx) => {
@@ -277,6 +284,9 @@ const LayerUtils = {
                 param += '!';
             } else if (visibilities[idx] === 0.5) {
                 param += '~';
+            }
+            if (omitFromQueryLayers[idx] === true) {
+                param += '-';
             }
             return param;
         });
@@ -297,12 +307,21 @@ const LayerUtils = {
         let style = undefinedIfUnspecified ? undefined : '';
         let visibility = true;
         let tristate = false;
-        if (entry.endsWith('!')) {
+        let omitFromQueryLayers = false;
+        if (entry.endsWith('-')) {
+            omitFromQueryLayers = true;
+            entry = entry.slice(0, -1);
+        } else if (entry.endsWith('!')) {
             visibility = false;
             entry = entry.slice(0, -1);
         } else if (entry.endsWith('~')) {
             visibility = false;
             tristate = true;
+            entry = entry.slice(0, -1);
+        }
+        // Note: also allow - in second last position
+        if (entry.endsWith('-')) {
+            omitFromQueryLayers = true;
             entry = entry.slice(0, -1);
         }
         let m = null;
@@ -323,7 +342,7 @@ const LayerUtils = {
             type = 'separator';
             name = name.slice(4);
         }
-        return {id, type, url: layerUrl, name, opacity, style, visibility, tristate};
+        return {id, type, url: layerUrl, name, opacity, style, visibility, tristate, omitFromQueryLayers};
     },
     pathEqualOrBelow(parent, child) {
         return isEqual(child.slice(0, parent.length), parent);
