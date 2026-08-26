@@ -232,7 +232,7 @@ class AttributeForm extends React.Component {
             }
         }
     };
-    addRelationRecord = (table, initialProperties = {}) => {
+    addRelationRecord = (table, initialProperties = null) => {
         const newRelationValues = {...this.props.editContext.feature.relationValues};
         const editConfig = this.props.editConfigs[this.props.editContext.mapPrefix][table.split('.').slice(-1)];
         getFeatureTemplate(editConfig, {
