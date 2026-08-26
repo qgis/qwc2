@@ -556,7 +556,7 @@ class Identify extends React.Component {
                 if (this.state.pendingRequests > 0) {
                     body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("identify.querying")}</span></div>);
                 } else {
-                    body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("identify.noresults")}</span></div>);
+                    body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("common.noresults")}</span></div>);
                 }
             } else {
                 body = (

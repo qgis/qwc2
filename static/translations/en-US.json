@@ -313,7 +313,6 @@
       "missinglayer": "Layer could not be queried",
       "multiview": "Multi-view",
       "noattributes": "No attributes",
-      "noresults": "No information available for the selected point",
       "nothingtoimport": "The selection could not be loaded.",
       "querying": "Querying...",
       "reportfail": "Failed to generate report",
