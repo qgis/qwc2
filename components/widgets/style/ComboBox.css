@@ -38,6 +38,7 @@ input.combobox-button-filter {
 div.combobox-button > span.icon {
     font-size: 100%;
     flex: 0 0 1em;
+    margin: 0.25em;
 }
 
 div.combobox-disabled div.combobox-button > span.icon {
@@ -45,7 +46,7 @@ div.combobox-disabled div.combobox-button > span.icon {
 }
 
 div.combobox-menu-entry {
-    padding: 0.25em;
+    padding: 0.25em 0.5em;
 }
 
 div.combobox-menu-entry-active {
