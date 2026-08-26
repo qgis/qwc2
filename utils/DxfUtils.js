@@ -12,6 +12,43 @@ const END_MARKERS = {
     BLOCK: 'ENDBLK'
 };
 
+// Code pages whose $DWGCODEPAGE name does not map to a "windows-<n>" encoding label
+const DWG_CODEPAGE_ENCODINGS = {
+    932: "shift_jis",
+    936: "gbk",
+    949: "euc-kr",
+    950: "big5"
+};
+
+// AutoCAD 2007 (AC1021) and newer write UTF-8, older versions the $DWGCODEPAGE code page
+export function decodeDxf(buffer) {
+    // The header is ASCII in all code pages of interest, so it can be sniffed as latin1
+    const headerBytes = new Uint8Array(buffer, 0, Math.min(buffer.byteLength, 8192));
+    const lines = new TextDecoder("iso-8859-1").decode(headerBytes).split(/\r\n|\r|\n/).map(line => line.trim());
+    // Header variables are stored as name, group code, value
+    const headerValue = (variable) => {
+        const idx = lines.indexOf(variable);
+        return idx >= 0 ? lines[idx + 2] : undefined;
+    };
+    // Version markers are AC<4 digits>, hence they compare lexicographically
+    if ((headerValue("$ACADVER") || "") >= "AC1021") {
+        return new TextDecoder("utf-8").decode(buffer);
+    }
+    const codePage = (headerValue("$DWGCODEPAGE") || "").match(/^ANSI_(\d+)$/)?.[1];
+    const encoding = DWG_CODEPAGE_ENCODINGS[codePage] ?? (codePage ? "windows-" + codePage : "windows-1252");
+    try {
+        return new TextDecoder(encoding).decode(buffer);
+    } catch {
+        // TextDecoder throws on unknown encoding labels
+        return new TextDecoder("windows-1252").decode(buffer);
+    }
+}
+
+// DXF escapes characters the file code page cannot represent as \U+XXXX
+export function unescapeDxfUnicode(text) {
+    return text.replace(/\\U\+([0-9A-Fa-f]{4})/g, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
+}
+
 export function explodeDxf(text) {
     const tuples = text.replace(/\s+$/, '').split(/\r\n|\r|\n/g).flatMap((_, i, a) => i % 2 ? [] : [a.slice(i, i + 2).map(x => x.trim())]);
     let maxHandle = 100; // Value in QGIS

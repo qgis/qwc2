@@ -11,17 +11,24 @@ import Proj4js from 'proj4';
 
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
+import {decodeDxf, unescapeDxfUnicode} from './DxfUtils';
 import LocaleUtils from './LocaleUtils';
 import VectorLayerUtils from './VectorLayerUtils';
 
+// Stroke color for DXF entities without an own color
+const DXF_DEFAULT_COLOR = '#1565C0';
+
 const FileImportUtils = {
     /**
-     * Imports a local file (KML, KMZ, GeoJSON, zipped Shapefile, GeoPDF) as a map layer.
+     * Imports a local file (KML, KMZ, GeoJSON, zipped Shapefile, GeoPDF, DXF) as a map layer.
+     * `options.crs` sets the CRS in which DXF coordinates are interpreted.
      * Returns a promise which resolves when the import completed.
      */
-    importFile(file, mapCrs, addLayer, addLayerFeatures) {
+    importFile(file, mapCrs, addLayer, addLayerFeatures, options = {}) {
         const filename = file.name.toLowerCase();
-        if (filename.endsWith(".pdf")) {
+        if (filename.endsWith(".dxf")) {
+            return file.arrayBuffer().then(buffer => FileImportUtils.addDXFLayer(file.name, decodeDxf(buffer), options.crs || mapCrs, addLayerFeatures));
+        } else if (filename.endsWith(".pdf")) {
             return FileImportUtils.addGeoPDFLayer(file, mapCrs, addLayer);
         } else if (filename.endsWith(".zip")) {
             return FileImportUtils.addSHPLayer(file, mapCrs, addLayerFeatures);
@@ -96,6 +103,56 @@ const FileImportUtils = {
             // eslint-disable-next-line
             alert(LocaleUtils.tr("importlayer.nofeatures"));
         }
+    },
+    // DXF carries no CRS, the coordinates are taken to be in the passed crs. Entities without a
+    // polyline representation (i.e. TEXT/MTEXT) are dropped, splines are approximated.
+    addDXFLayer: async(filename, data, crs, addLayerFeatures) => {
+        const {Helper} = await import('dxf');
+        let polylines = [];
+        try {
+            polylines = new Helper(data).toPolylines().polylines;
+        } catch (e) {
+            /* eslint-disable-next-line */
+            console.warn(e);
+            /* eslint-disable-next-line */
+            alert(LocaleUtils.tr("importlayer.dxfparsefailed"));
+            return;
+        }
+        const features = polylines.filter(polyline => (polyline.vertices || []).length >= 2).map((polyline, idx) => {
+            // Color 0 means "by layer" in DXF and surfaces as black, which is invisible on dark backgrounds
+            const rgb = polyline.rgb || [0, 0, 0];
+            const color = rgb.every(v => v === 0) ? DXF_DEFAULT_COLOR : ("#" + rgb.map(v => v.toString(16).padStart(2, "0")).join(""));
+            return {
+                type: "Feature",
+                id: idx,
+                crs: crs,
+                geometry: {
+                    type: "LineString",
+                    coordinates: polyline.vertices.map(vertex => [vertex[0], vertex[1]])
+                },
+                properties: {
+                    layer: unescapeDxfUnicode(polyline.layer?.name ?? "")
+                },
+                styleName: "default",
+                styleOptions: {
+                    strokeColor: color,
+                    strokeWidth: 1,
+                    strokeDash: [],
+                    fillColor: [0, 0, 0, 0],
+                    circleRadius: 0
+                }
+            };
+        });
+        if (isEmpty(features)) {
+            /* eslint-disable-next-line */
+            alert(LocaleUtils.tr("importlayer.nofeatures"));
+            return;
+        }
+        addLayerFeatures({
+            name: filename,
+            title: filename.replace(/\.[^/.]+$/, ""),
+            zoomToExtent: true
+        }, features, true);
     },
     addGeoPDFLayer(file, mapCrs, addLayer) {
         return new Promise((resolve) => {

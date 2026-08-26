@@ -20,7 +20,9 @@ import './style/MapDropImport.css';
 
 
 /**
- * Adds layers by dropping supported files (KML, KMZ, GeoJSON, zipped Shapefile, GeoPDF) onto the map.
+ * Adds layers by dropping supported files (KML, KMZ, GeoJSON, zipped Shapefile, GeoPDF, DXF) onto the map.
+ *
+ * Dropped DXF files are interpreted in the map CRS, use the ImportLayer panel to pick a different one.
  *
  * Disabled if `disableImportingLocalLayers` is set in the theme or global config.
  */

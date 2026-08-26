@@ -26,3 +26,25 @@ div.ImportLayer button.importlayer-addbutton > div.spinner {
 div.ImportLayer div.layer-catalog-widget {
     max-height: 13em;
 }
+
+div.ImportLayer div.importlayer-file-crs {
+    margin-top: 0.5em;
+}
+
+div.ImportLayer div.importlayer-file-crs-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+div.ImportLayer div.importlayer-file-crs-field > div {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+div.ImportLayer div.importlayer-file-crs-hint {
+    margin-top: 0.25em;
+    font-size: 90%;
+    font-style: italic;
+    opacity: 0.75;
+}
