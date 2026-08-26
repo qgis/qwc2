@@ -15,10 +15,12 @@ import PropTypes from 'prop-types';
 import {addLayer, addLayerFeatures} from '../actions/layers';
 import EditableSelect from '../components/widgets/EditableSelect';
 import ConfigUtils from '../utils/ConfigUtils';
+import CoordinatesUtils from '../utils/CoordinatesUtils';
 import FileImportUtils from '../utils/FileImportUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
+import ComboBox from './widgets/ComboBox';
 import FileSelector from './widgets/FileSelector';
 import LayerCatalogWidget from './widgets/LayerCatalogWidget';
 import Spinner from './widgets/Spinner';
@@ -40,7 +42,8 @@ class ImportLayer extends React.Component {
         url: '',
         pendingRequests: 0,
         serviceLayers: null,
-        addingLayer: false
+        addingLayer: false,
+        fileCrs: null
     };
     renderInputField() {
         const placeholder = LocaleUtils.tr("importlayer.urlplaceholder");
@@ -48,7 +51,7 @@ class ImportLayer extends React.Component {
         if (this.state.type === "Local") {
             return (
                 <FileSelector
-                    accept=".kml,.kmz,.json,.geojson,.pdf,.zip" file={this.state.file}
+                    accept=".kml,.kmz,.json,.geojson,.pdf,.zip,.dxf" file={this.state.file}
                     onFileSelected={this.onFileSelected}
                     title={LocaleUtils.tr("importlayer.supportedformats")} />
             );
@@ -59,6 +62,26 @@ class ImportLayer extends React.Component {
                     placeholder={placeholder} readOnly={this.state.pendingRequests > 0} value={this.state.url} />
             );
         }
+    }
+    renderCrsSelector() {
+        // DXF contains plain numbers, the user needs to specify how to interpret them
+        if (!this.state.file || !this.state.file.name.toLowerCase().endsWith(".dxf")) {
+            return null;
+        }
+        const availableCRS = CoordinatesUtils.getAvailableCRS();
+        return (
+            <div className="importlayer-file-crs">
+                <div className="importlayer-file-crs-field">
+                    <span>{LocaleUtils.tr("importlayer.filecrs")}</span>
+                    <ComboBox filterable onChange={value => this.setState({fileCrs: value})} value={this.state.fileCrs ?? this.props.mapCrs}>
+                        {Object.entries(availableCRS).map(([code, entry]) => (
+                            <div key={code} value={code}>{entry.label}</div>
+                        ))}
+                    </ComboBox>
+                </div>
+                <div className="importlayer-file-crs-hint">{LocaleUtils.tr("importlayer.filecrshint")}</div>
+            </div>
+        );
     }
     render() {
         let button = null;
@@ -91,13 +114,14 @@ class ImportLayer extends React.Component {
                 <div className="importlayer-input-fields controlgroup">
                     <select
                         disabled={this.state.pendingRequests > 0}
-                        onChange={ev => this.setState({type: ev.target.value, file: null, url: "", serviceLayers: null})} value={this.state.type}
+                        onChange={ev => this.setState({type: ev.target.value, file: null, url: "", serviceLayers: null, fileCrs: null})} value={this.state.type}
                     >
                         <option value="URL">{LocaleUtils.tr("importlayer.url")}</option>
                         {!disableLocal ? (<option value="Local">{LocaleUtils.tr("importlayer.localfile")}</option>) : null}
                     </select>
                     {this.renderInputField()}
                 </div>
+                {this.renderCrsSelector()}
                 {button}
                 {layerList}
             </div>
@@ -230,8 +254,9 @@ class ImportLayer extends React.Component {
             return;
         }
         this.setState({addingLayer: true});
-        FileImportUtils.importFile(this.state.file, this.props.mapCrs, this.props.addLayer, this.props.addLayerFeatures).finally(() => {
-            this.setState({file: null, addingLayer: false});
+        const options = {crs: this.state.fileCrs ?? this.props.mapCrs};
+        FileImportUtils.importFile(this.state.file, this.props.mapCrs, this.props.addLayer, this.props.addLayerFeatures, options).finally(() => {
+            this.setState({file: null, addingLayer: false, fileCrs: null});
         });
     };
 }
