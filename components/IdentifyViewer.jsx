@@ -463,8 +463,12 @@ class IdentifyViewer extends React.Component {
         });
     };
     exportResults = (clipboard = false) => {
-        const filteredResults = {};
-        if (this.state.selectedResults.size() > 0) {
+        let filteredResults = {};
+        if (!isEmpty(this.state.tableSelection)) {
+            filteredResults = Object.fromEntries(
+                Object.entries(this.state.tableSelection).map(([layerid, entries]) => ([layerid, Object.values(entries)]))
+            );
+        } else if (this.state.selectedResults.size() > 0) {
             this.state.selectedResults.entries().forEach(key => {
                 const [layerid, featureid] = key.split("$");
                 if (!filteredResults[layerid]) {
