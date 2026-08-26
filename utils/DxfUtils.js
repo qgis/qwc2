@@ -14,10 +14,10 @@ const END_MARKERS = {
 
 // Code pages whose $DWGCODEPAGE name does not map to a "windows-<n>" encoding label
 const DWG_CODEPAGE_ENCODINGS = {
-    "932": "shift_jis",
-    "936": "gbk",
-    "949": "euc-kr",
-    "950": "big5"
+    932: "shift_jis",
+    936: "gbk",
+    949: "euc-kr",
+    950: "big5"
 };
 
 // AutoCAD 2007 (AC1021) and newer write UTF-8, older versions the $DWGCODEPAGE code page
