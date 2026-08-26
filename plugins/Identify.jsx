@@ -14,8 +14,9 @@ import intersect from '@turf/intersect';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {v4 as uuidv4} from 'uuid';
 
-import {LayerRole, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
+import {LayerRole, addLayer, addLayerFeatures, addMarker, removeMarker, removeLayer} from '../actions/layers';
 import {setCurrentTask} from '../actions/task';
 import IdentifyViewer from '../components/IdentifyViewer';
 import MapSelection from '../components/MapSelection';
@@ -30,6 +31,7 @@ import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MeasureUtils from '../utils/MeasureUtils';
+import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Identify.css';
@@ -47,6 +49,7 @@ import './style/Identify.css';
  */
 class Identify extends React.Component {
     static propTypes = {
+        addLayer: PropTypes.func,
         addLayerFeatures: PropTypes.func,
         addMarker: PropTypes.func,
         /** Whether to append results by default (without having to press `CTRL` when clicking). To append results by default only when Identify is run as a task, set to `task`. */
@@ -498,45 +501,66 @@ class Identify extends React.Component {
     };
     deserializeResults = (identifyResults, resultDisplayMode) => {
         let pendingRequests = 0;
-        let importErrors = {};
+        const importErrors = {};
         if (Array.isArray(identifyResults) || identifyResults === null) {
             identifyResults = {};
         }
+        const queryLayer = (layerid, layerresults, layer, layerName) => {
+            const values = layerresults.values.map(x => (typeof x === "string" ? `"${x}"` : x)).join(" , ");
+            const filter = {filter: `${layerName}:"${layerresults.key}" IN ( ${values} )`};
+            const request = IdentifyUtils.buildFilterRequest(layer, layerName, undefined, this.props.map, filter);
+            IdentifyUtils.sendRequest(request, (response) => {
+                if (response) {
+                    const results = this.parseResult(response, layer, request.params.info_format, [0, 0], false);
+                    const restoredkeys = new Set(results[layerName].map(f => String(f.id)));
+                    const missing = layerresults.values.filter(x => !restoredkeys.has(String(x)));
+                    if (missing.length > 0) {
+                        this.setState(state => ({
+                            pendingRequests: state.pendingRequests - 1,
+                            importErrors: {
+                                ...state.importErrors,
+                                [layerid]: {key: layerresults.key, missing: missing}
+                            }
+                        }));
+                    }
+                } else {
+                    this.setState(state => ({
+                        pendingRequests: state.pendingRequests - 1,
+                        importErrors: {...state.importErrors, [layerid]: true}
+                    }));
+                }
+            });
+        };
         Object.entries(identifyResults).forEach(([layerid, layerresults]) => {
             const [layerUrl, layerName] = layerid.split("#", 2);
             const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
-            if (match) {
-                if (layerresults.key && layerresults.values) {
-                    delete identifyResults[layerid]; // Features will be re-queried
-                    const values = layerresults.values.map(x => (typeof x === "string" ? `"${x}"` : x)).join(" , ");
-                    const filter = {filter: `${layerName}:"${layerresults.key}" IN ( ${values} )`};
-                    const request = IdentifyUtils.buildFilterRequest(match.layer, layerName, undefined, this.props.map, filter);
-                    ++pendingRequests;
-                    IdentifyUtils.sendRequest(request, (response) => {
-                        this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
-                        if (response) {
-                            const results = this.parseResult(response, match.layer, request.params.info_format, [0, 0], false);
-                            const restoredkeys = new Set(results[layerName].map(f => String(f.id)));
-                            const missing = layerresults.values.filter(x => !restoredkeys.has(String(x)));
-                            if (missing.length > 0) {
-                                this.setState(state => ({importErrors: {
-                                    ...state.importErrors,
-                                    [layerid]: {key: layerresults.key, missing: missing}
-                                }}));
-                            }
+            if (layerresults.key && layerresults.values) {
+                ++pendingRequests;
+                delete identifyResults[layerid]; // Features will be re-queried
+                if (match) {
+                    queryLayer(layerid, layerresults, match.layer, layerName);
+                } else {
+                    ServiceLayerUtils.findLayers("wms", layerUrl, [{id: uuidv4(), name: layerName}], this.props.map.projection, (id, layer) => {
+                        if (layer) {
+                            this.props.addLayer(layer);
+                            queryLayer(layerid, layerresults, layer, layerName);
                         } else {
-                            this.setState(state => ({importErrors: {
-                                ...state.importErrors,
-                                [layerid]: true
-                            }}));
+                            this.setState(state => ({
+                                pendingRequests: state.pendingRequests - 1,
+                                importErrors: {...state.importErrors, [layerid]: true}
+                            }));
                         }
                     });
-                } else {
-                    identifyResults[layerid] = identifyResults[layerid].filter(f => f.type === "Feature");
                 }
             } else {
-                importErrors[layerid] = true;
-                delete identifyResults[layerid];
+                identifyResults[layerid] = identifyResults[layerid].filter(f => f.type === "Feature");
+                if (!match) {
+                    ServiceLayerUtils.findLayers("wms", layerUrl, [{id: uuidv4(), name: layerName}], this.props.map.projection, (id, layer) => {
+                        if (layer) {
+                            this.props.addLayer(layer);
+                        }
+                    });
+                }
             }
         });
         if (pendingRequests === 0 && isEmpty(identifyResults) && isEmpty(importErrors)) {
@@ -637,6 +661,7 @@ export default connect((state) => {
         startupState: state.localConfig.startupState
     };
 }, {
+    addLayer: addLayer,
     addLayerFeatures: addLayerFeatures,
     addMarker: addMarker,
     removeMarker: removeMarker,
