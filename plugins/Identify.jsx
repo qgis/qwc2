@@ -489,7 +489,7 @@ class Identify extends React.Component {
     };
     onWindowClose = () => {
         this.clearResults();
-        if (this.state.exitTaskOnResultsClose || this.props.exitTaskOnResultsClose) {
+        if (this.props.taskEnabled && (this.state.exitTaskOnResultsClose || this.props.exitTaskOnResultsClose)) {
             this.props.setCurrentTask(null);
         }
     };
