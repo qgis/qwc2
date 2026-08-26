@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "地図上の地物を作図...",
-      "pickhint": "地図上の地物を選択..."
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "フィート",

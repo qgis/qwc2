@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Нарисувайте обекта на картата...",
-      "pickhint": "Изберете елемент от картата..."
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "крака",

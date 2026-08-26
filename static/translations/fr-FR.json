@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Dessiner un objet sur la carte...",
-      "pickhint": "Sélectionner un objet sur la carte..."
+      "picklayerhint": "Sélectionner un objet du couche '{0}' sur la carte..."
     },
     "locate": {
       "feetUnit": "pieds",

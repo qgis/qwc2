@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Haritada bir obje çiziniz...",
-      "pickhint": "Haritadan bir obje seçiniz..."
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "feet",

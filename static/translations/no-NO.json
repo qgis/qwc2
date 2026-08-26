@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "",
-      "pickhint": ""
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "fot",

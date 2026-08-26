@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Mostrar dica",
-      "pickhint": "Escolher dica"
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "pés",

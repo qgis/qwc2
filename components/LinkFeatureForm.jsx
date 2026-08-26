@@ -25,7 +25,6 @@ class LinkFeatureForm extends React.Component {
     static propTypes = {
         action: PropTypes.string,
         addLayerFeatures: PropTypes.func,
-        displayField: PropTypes.string,
         editConfig: PropTypes.object,
         editContextId: PropTypes.string,
         editing: PropTypes.object,
@@ -106,14 +105,14 @@ class LinkFeatureForm extends React.Component {
                 <div className="link-feature-form">
                     {!this.state.pickedFeatures ? (
                         <div className="link-feature-form-hint">
-                            <span>{LocaleUtils.tr("linkfeatureform.pickhint")}</span>
+                            <span>{LocaleUtils.tr("linkfeatureform.picklayerhint", this.props.editConfig.layerTitle)}</span>
                         </div>
                     ) : (
                         <div className="link-feature-form-feature-list">
                             {this.state.pickedFeatures.map(feature => (
                                 <div key={feature.id} onClick={() => this.pickFeatureSelected(feature)}
                                     onMouseOut={() => this.unhoverFeature(feature)} onMouseOver={() => this.hoverFeature(feature)}
-                                >{feature.properties[this.props.displayField] ?? feature.id}</div>
+                                >{feature.properties[this.props.editConfig.displayField] ?? feature.id}</div>
                             ))}
                         </div>
                     )}

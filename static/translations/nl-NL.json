@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Teken object op de kaart...",
-      "pickhint": "Kies object op de kaart..."
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "feet",

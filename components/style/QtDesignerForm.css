@@ -166,10 +166,11 @@ tr.qt-designer-widget-relation-record-deleted {
 
 div.qt-designer-widget-relation-buttons {
     flex: 0 0 auto;
+    display: flex;
 }
 
-button.qt-designer-widget-relation-add {
-    width: 100%;
+div.qt-designer-widget-relation-buttons > button {
+    flex: 1 1 auto;
 }
 
 div.qt-designer-form label {
