@@ -23,6 +23,7 @@ export default class ComboBox extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([PropTypes.node, PropTypes.array]),
         className: PropTypes.string,
+        disabled: PropTypes.bool,
         filterable: PropTypes.bool,
         menuClassName: PropTypes.string,
         onChange: PropTypes.func,
@@ -53,15 +54,20 @@ export default class ComboBox extends React.Component {
                 activeOption = (<span>&nbsp;</span>);
             }
         }
+        const className = classnames({
+            "combobox": true,
+            "combobox-disabled": this.props.disabled,
+            [this.props.className]: true
+        });
         const filter = this.state.filter ? new RegExp(removeDiacritics(this.state.filter).replace(/[-[\]/{}()*+?.\\^$|]/g, "\\$&"), "i") : null;
-        const onClick = this.props.readOnly || isEmpty(children) ? null : () => this.setState(state => ({popup: !state.popup}));
+        const onClick = this.props.readOnly || this.props.disabled || isEmpty(children) ? null : () => this.setState(state => ({popup: !state.popup}));
         return (
-            <div className={"combobox " + (this.props.className || "")}>
+            <div className={className} style={this.props.style}>
                 <div className="combobox-button" onClick={onClick} onKeyDown={MiscUtils.checkKeyActivate} ref={el => { this.el = el; }} tabIndex={0}>
                     <span className="combobox-button-content">
                         {activeOption}
                     </span>
-                    {this.props.filterable && !this.props.readOnly ? (
+                    {this.props.filterable && !this.props.readOnly && !this.props.disabled ? (
                         <input className="combobox-button-filter" onChange={this.filterChanged} type="text" value={this.state.filter} />
                     ) : null}
                     {this.props.readOnly ? null : (<Icon icon="chevron-down" />)}
@@ -69,7 +75,7 @@ export default class ComboBox extends React.Component {
                 {this.el && this.state.popup ? (
                     <PopupMenu anchor={this.el} className={"combobox-menu" + (this.props.menuClassName ? " " + this.props.menuClassName : "")} onClose={() => this.setState({popup: false})}>
                         {children.map((child, idx) => {
-                            const classNames = classnames({
+                            const entryClassName = classnames({
                                 "combobox-menu-entry": true,
                                 "combobox-menu-entry-active": child.props.value === this.props.value && !child.props.disabled,
                                 "combobox-menu-entry-group-header": child.props["data-group-header"] !== undefined
@@ -82,7 +88,7 @@ export default class ComboBox extends React.Component {
                             }
                             const expanderIcon = this.state.expanded.includes(child.props["data-group-header"]) ? "collapse" : "expand";
                             return (
-                                <div className={classNames} disabled={child.props.disabled} key={"child:" + idx} onClick={(ev) => this.onChildClicked(ev, child)}>
+                                <div className={entryClassName} disabled={child.props.disabled} key={"child:" + idx} onClick={(ev) => this.onChildClicked(ev, child)}>
                                     {child.props["data-group-header"] !== undefined ? (
                                         <Icon icon={expanderIcon} />
                                     ) : null}

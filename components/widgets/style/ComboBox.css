@@ -40,6 +40,10 @@ div.combobox-button > span.icon {
     flex: 0 0 1em;
 }
 
+div.combobox-disabled div.combobox-button > span.icon {
+    color: var(--text-color-disabled);
+}
+
 div.combobox-menu-entry {
     padding: 0.25em;
 }
