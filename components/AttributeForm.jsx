@@ -239,7 +239,7 @@ class AttributeForm extends React.Component {
             type: "Feature",
             properties: {...initialProperties}
         }, this.props.iface, this.props.editContext.mapPrefix, this.props.map.projection, newRelFeature => {
-            newRelFeature.__status__ = data ? "new" : "empty"
+            newRelFeature.__status__ = initialProperties ? "new" : "empty"
             if (editConfig.geomType === null) {
                 newRelFeature.geometry = null;
             }
