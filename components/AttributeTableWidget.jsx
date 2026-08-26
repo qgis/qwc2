@@ -31,6 +31,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+import ComboBox from './widgets/ComboBox';
 import FeaturesTable from './widgets/FeaturesTable';
 
 import './style/AttributeTableWidget.css';
@@ -209,12 +210,12 @@ class AttributeTableWidget extends React.Component {
                     values = KeyValCache.getSync(this.props.iface, fieldConfig.constraints.keyvalrel);
                 }
                 valueInput = (
-                    <select className="attribtable-filter-value" disabled={footbarDisabled} onChange={ev => this.updateFilter("filterVal", ev.target.value)} value={this.state.filterVal}>
-                        <option value="">{LocaleUtils.tr("common.select")}</option>
+                    <ComboBox className="attribtable-filter-value" disabled={footbarDisabled} onChange={value => this.updateFilter("filterVal", value)} value={this.state.filterVal}>
+                        <div value="">{LocaleUtils.tr("common.select")}</div>
                         {values.map(entry => (
-                            <option key={entry.value} value={entry.value}>{entry.label}</option>
+                            <div key={entry.value} value={entry.value}>{entry.label}</div>
                         ))}
-                    </select>
+                    </ComboBox>
                 );
             } else {
                 valueInput = (
@@ -230,10 +231,10 @@ class AttributeTableWidget extends React.Component {
 
                     <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
-                        <select disabled={footbarDisabled} onChange={ev => this.updateFilter("filterField", ev.target.value)} value={this.state.filterField}>
-                            <option disabled value="">{LocaleUtils.tr("common.select")}</option>
+                        <ComboBox disabled={footbarDisabled} onChange={value => this.updateFilter("filterField", value)} value={this.state.filterField}>
+                            <div disabled value="">{LocaleUtils.tr("common.select")}</div>
                             {showIdColumn ? (
-                                <option value="<id>">{this.translateFieldName(primaryKey)}</option>
+                                <div value="<id>">{this.translateFieldName(primaryKey)}</div>
                             ) : null}
                             {this.state.curFields.map(field => {
                                 if (field.id !== primaryKey) {
@@ -241,16 +242,16 @@ class AttributeTableWidget extends React.Component {
                                 }
                                 return null;
                             })}
-                        </select>
-                        <select disabled={footbarDisabled} onChange={ev => this.updateFilter("filterOp", ev.target.value)} value={this.state.filterOp}>
-                            <option value="~">~</option>
-                            <option value="=">=</option>
-                            <option value="!=">!=</option>
-                            <option value=">">&gt;</option>
-                            <option value=">=">&gt;=</option>
-                            <option value="<=">&lt;=</option>
-                            <option value="<">&lt;</option>
-                        </select>
+                        </ComboBox>
+                        <ComboBox disabled={footbarDisabled} onChange={value => this.updateFilter("filterOp", value)} value={this.state.filterOp}>
+                            <div value="~">~</div>
+                            <div value="=">=</div>
+                            <div value="!=">!=</div>
+                            <div value=">">&gt;</div>
+                            <div value=">=">&gt;=</div>
+                            <div value="<=">&lt;=</div>
+                            <div value="<">&lt;</div>
+                        </ComboBox>
                         {valueInput}
                     </div>
                     {this.props.showLimitToExtent ? (
@@ -299,12 +300,12 @@ class AttributeTableWidget extends React.Component {
             <div className="AttributeTable">
                 <div className="attribtable-toolbar">
                     {this.props.showLayerSelection ? (
-                        <select disabled={loading || editing} onChange={ev => this.setState({selectedLayer: ev.target.value})} value={this.state.selectedLayer || ""}>
-                            <option disabled value="">{LocaleUtils.tr("common.selectlayer")}</option>
+                        <ComboBox disabled={loading || editing} onChange={value => this.setState({selectedLayer: value})} value={this.state.selectedLayer || ""}>
+                            <div disabled value="">{LocaleUtils.tr("common.selectlayer")}</div>
                             {editLayers.map(entry => (
-                                <option key={entry.value} value={entry.value}>{entry.title}</option>
+                                <div key={entry.value} value={entry.value}>{entry.title}</div>
                             ))}
-                        </select>
+                        </ComboBox>
                     ) : null}
                     <button className="button" disabled={!this.state.selectedLayer || editing || loading} onClick={() => this.reload(this.state.selectedLayer, true)} title={LocaleUtils.tr("attribtable.reload")}>
                         <Icon icon="refresh" />

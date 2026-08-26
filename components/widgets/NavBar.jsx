@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import Icon from '../Icon';
+import ComboBox from './ComboBox';
 
 import './style/NavBar.css';
 
@@ -64,11 +65,11 @@ export default class NavBar extends React.Component {
                     <Icon icon="chevron-right" />
                 </button>
                 {this.props.pageSizes.length > 1 ? (
-                    <select disabled={this.props.disabled} onChange={ev => this.props.pageSizeChanged(parseInt(ev.target.value, 10))} value={this.props.pageSize}>
+                    <ComboBox disabled={this.props.disabled} onChange={value => this.props.pageSizeChanged(parseInt(value, 10))} value={this.props.pageSize}>
                         {this.props.pageSizes.map(pageSize => (
-                            <option key={pageSize} value={pageSize}>{pageSize} {LocaleUtils.tr("navbar.perpage")}</option>
+                            <div key={pageSize} value={pageSize}>{pageSize} {LocaleUtils.tr("navbar.perpage")}</div>
                         ))}
-                    </select>
+                    </ComboBox>
                 ) : null}
             </div>
         );
