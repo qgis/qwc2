@@ -498,13 +498,16 @@ class Identify extends React.Component {
     };
     deserializeResults = (identifyResults, resultDisplayMode) => {
         let pendingRequests = 0;
-        const importErrors = {};
+        let importErrors = {};
+        if (Array.isArray(identifyResults) || identifyResults === null) {
+            identifyResults = {};
+        }
         Object.entries(identifyResults).forEach(([layerid, layerresults]) => {
-            if (layerresults.key && layerresults.values) {
-                delete identifyResults[layerid]; // Features will be re-queried
-                const [layerUrl, layerName] = layerid.split("#", 2);
-                const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
-                if (match) {
+            const [layerUrl, layerName] = layerid.split("#", 2);
+            const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+            if (match) {
+                if (layerresults.key && layerresults.values) {
+                    delete identifyResults[layerid]; // Features will be re-queried
                     const values = layerresults.values.map(x => (typeof x === "string" ? `"${x}"` : x)).join(" , ");
                     const filter = {filter: `${layerName}:"${layerresults.key}" IN ( ${values} )`};
                     const request = IdentifyUtils.buildFilterRequest(match.layer, layerName, undefined, this.props.map, filter);
@@ -529,10 +532,18 @@ class Identify extends React.Component {
                         }
                     });
                 } else {
-                    importErrors[layerid] = true;
+                    identifyResults[layerid] = identifyResults[layerid].filter(f => f.type === "Feature");
                 }
+            } else {
+                importErrors[layerid] = true;
+                delete identifyResults[layerid];
             }
         });
+        if (pendingRequests === 0 && isEmpty(identifyResults) && isEmpty(importErrors)) {
+            /* eslint-disable-next-line no-alert */
+            alert(LocaleUtils.tr("identify.nothingtoimport"));
+            identifyResults = null;
+        }
         this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests, importErrors: importErrors, currentResultDisplayMode: resultDisplayMode});
     };
     render() {

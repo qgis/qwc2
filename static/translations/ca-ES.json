@@ -314,6 +314,7 @@
       "multiview": "Multivista",
       "noattributes": "Sense atributs",
       "noresults": "Sense informació disponible sobre el punt seleccionat",
+      "nothingtoimport": "",
       "querying": "Consultant...",
       "reportfail": "No s'ha pogut generar l'informe",
       "results": "Resultats",

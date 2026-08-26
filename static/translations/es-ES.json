@@ -314,6 +314,7 @@
       "multiview": "Vista múltiple",
       "noattributes": "Sin atributos",
       "noresults": "Sin información disponible sobre el punto seleccionado",
+      "nothingtoimport": "",
       "querying": "Consultando...",
       "reportfail": "No se pudo generar el informe",
       "results": "Resultados",

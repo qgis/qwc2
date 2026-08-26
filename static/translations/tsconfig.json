@@ -311,6 +311,7 @@
     "identify.multiview",
     "identify.noattributes",
     "identify.noresults",
+    "identify.nothingtoimport",
     "identify.querying",
     "identify.reportfail",
     "identify.results",
