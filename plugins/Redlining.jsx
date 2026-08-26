@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
 
-import {LayerRole, addLayer, changeLayerProperty} from '../actions/layers';
+import {LayerRole, addLayer, addLayerFeatures, changeLayerProperty} from '../actions/layers';
 import {setSnappingConfig} from '../actions/map';
 import {changeRedliningState, resetRedliningState} from '../actions/redlining';
 import Icon from '../components/Icon';
@@ -25,6 +25,7 @@ import NumberInput from '../components/widgets/NumberInput';
 import VectorLayerPicker from '../components/widgets/VectorLayerPicker';
 import ConfigUtils from '../utils/ConfigUtils';
 import {END_MARKERS} from '../utils/FeatureStyles';
+import FileImportUtils from '../utils/FileImportUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 
 import './style/Redlining.css';
@@ -36,6 +37,7 @@ import './style/Redlining.css';
 class Redlining extends React.Component {
     static propTypes = {
         addLayer: PropTypes.func,
+        addLayerFeatures: PropTypes.func,
         /** Whether to allow labeling geometric figures. */
         allowGeometryLabels: PropTypes.bool,
         changeLayerProperty: PropTypes.func,
@@ -94,6 +96,10 @@ class Redlining extends React.Component {
         super(props);
         this.labelInput = null;
         this.dashIcons = {};
+        this.fileinput = document.createElement("input");
+        this.fileinput.type = "file";
+        this.fileinput.accept = "application/json,application/vnd.google-earth.kml+xml";
+        this.fileinput.addEventListener("change", this.fileSelected);
     }
     componentDidMount() {
         this.componentDidUpdate({redlining: {}});
@@ -246,9 +252,10 @@ class Redlining extends React.Component {
                     {toolEnabled("Export") ? (
                         <div className="redlining-groupcontrol">
                             <div>&nbsp;</div>
-                            <MenuButton className="redlining-export-menu" disabled={!haveLayer} menuIcon="export" onActivate={this.export} tooltip={LocaleUtils.tr("common.export")}>
-                                <div className="redlining-export-menu-entry" key="GeoJSON" value="geojson">GeoJSON</div>
-                                <div className="redlining-export-menu-entry" key="KML" value="kml">KML</div>
+                            <MenuButton className="redlining-export-menu" menuIcon="export" onActivate={this.importExport} tooltip={LocaleUtils.tr("common.export")}>
+                                <div className="redlining-export-menu-entry" value="import:geojson">{LocaleUtils.tr("common.import")}</div>
+                                <div className="redlining-export-menu-entry" disabled={!haveLayer} value="export:geojson">{LocaleUtils.tr("common.export")} GeoJSON</div>
+                                <div className="redlining-export-menu-entry" disabled={!haveLayer} value="export:kml">{LocaleUtils.tr("common.export")} KML</div>
                             </MenuButton>
                         </div>
                     ) : null}
@@ -257,8 +264,30 @@ class Redlining extends React.Component {
             </div>
         );
     };
-    export = (format) => {
-        this.props.changeRedliningState({action: 'Export', format: format});
+    importExport = (key) => {
+        const parts = key.split(":");
+        if (parts[0] === "import") {
+            this.fileinput.click();
+        } else if (parts[0] === "export") {
+            this.props.changeRedliningState({action: 'Export', format: parts[1]});
+        }
+    };
+    fileSelected = (ev) => {
+        const reader = new FileReader();
+        reader.readAsText(ev.target.files[0]);
+        reader.onload = () => {
+            const file = ev.target.files[0];
+            try {
+                if (file.type === "application/json") {
+                    FileImportUtils.addGeoJSONLayer(file.name, JSON.parse(reader.result), this.props.addLayerFeatures);
+                } else if (file.type === "application/vnd.google-earth.kml+xml") {
+                    FileImportUtils.addKMLLayer(file.name, reader.result, this.props.addLayerFeatures);
+                }
+            } catch {
+                /* eslint-disable-next-line no-alert */
+                alert(LocaleUtils.tr("common.dataloadfailed"));
+            }
+        };
     };
     renderStandardControls = () => {
         let sizeLabel = LocaleUtils.tr("common.line");
@@ -404,6 +433,7 @@ export default (plugins) => {
         changeRedliningState: changeRedliningState,
         changeLayerProperty: changeLayerProperty,
         addLayer: addLayer,
+        addLayerFeatures: addLayerFeatures,
         resetRedliningState: resetRedliningState,
         setSnappingConfig: setSnappingConfig
     })(Redlining);
