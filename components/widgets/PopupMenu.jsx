@@ -96,19 +96,27 @@ export default class PopupMenu extends React.PureComponent {
                 rect = this.props.anchor.getBoundingClientRect();
             }
         }
-        const x = ((this.props.align === 'right' ? rect?.right : rect?.left) ?? this.props.x);
-        const y = (rect?.bottom ?? this.props.y) - 1;
+        const doc = (this.props.anchor?.ownerDocument ?? document);
+        const win = doc.defaultView;
+        const x = ((this.props.align === 'right' ? rect?.right : rect?.left) ?? this.props.x) - 1;
+        let y = (rect?.bottom ?? this.props.y) - 1;
         const minWidth = (rect?.width ?? this.props.width ?? 0);
         const style = {
             position: 'absolute',
-            [this.props.align === "right" ? "right" : "left"]: (this.props.align === "right" ? window.innerWidth - x : x) + 'px',
-            top: y + 'px',
+            [this.props.align === "right" ? "right" : "left"]: (this.props.align === "right" ? win.innerWidth - x : x) + 'px',
             minWidth: minWidth + 'px',
-            maxHeight: (window.innerHeight - y - 5) + 'px',
             overflowY: 'auto',
             zIndex: 1,
             pointerEvents: 'initial'
         };
+        if (win.innerHeight - y < 100) {
+            y = rect?.top ?? this.props.y - 1;
+            style.bottom = (win.innerHeight - y) + 'px';
+            style.maxHeight = (y - 5) + 'px';
+        } else {
+            style.top = y + 'px';
+            style.maxHeight = (win.innerHeight - y - 5) + 'px';
+        }
         if (this.props.setMaxWidth) {
             style.maxWidth = minWidth + 'px';
         }
