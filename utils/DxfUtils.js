@@ -21,7 +21,7 @@ const DWG_CODEPAGE_ENCODINGS = {
 };
 
 // AutoCAD 2007 (AC1021) and newer write UTF-8, older versions the $DWGCODEPAGE code page
-export function decodeDxf(buffer) {
+export function detectDxfEncoding(buffer) {
     // The header is ASCII in all code pages of interest, so it can be sniffed as latin1
     const headerBytes = new Uint8Array(buffer, 0, Math.min(buffer.byteLength, 8192));
     const lines = new TextDecoder("iso-8859-1").decode(headerBytes).split(/\r\n|\r|\n/).map(line => line.trim());
@@ -32,15 +32,39 @@ export function decodeDxf(buffer) {
     };
     // Version markers are AC<4 digits>, hence they compare lexicographically
     if ((headerValue("$ACADVER") || "") >= "AC1021") {
-        return new TextDecoder("utf-8").decode(buffer);
+        return "utf-8";
     }
     const codePage = (headerValue("$DWGCODEPAGE") || "").match(/^ANSI_(\d+)$/)?.[1];
-    const encoding = DWG_CODEPAGE_ENCODINGS[codePage] ?? (codePage ? "windows-" + codePage : "windows-1252");
+    return DWG_CODEPAGE_ENCODINGS[codePage] ?? (codePage ? "windows-" + codePage : "windows-1252");
+}
+
+export function decodeDxf(buffer) {
+    const encoding = detectDxfEncoding(buffer);
     try {
         return new TextDecoder(encoding).decode(buffer);
     } catch {
         // TextDecoder throws on unknown encoding labels
         return new TextDecoder("windows-1252").decode(buffer);
+    }
+}
+
+// Reverse of DWG_CODEPAGE_ENCODINGS, to go from a detectDxfEncoding() label back to a $DWGCODEPAGE value
+const ENCODING_DWG_CODEPAGES = Object.fromEntries(
+    Object.entries(DWG_CODEPAGE_ENCODINGS).map(([codePage, encoding]) => [encoding, "ANSI_" + codePage])
+);
+
+// Rewrite $DWGCODEPAGE to the "ANSI_<n>" form the DXF spec expects (QGIS Server writes the non-standard "8859_1")
+export function setDwgCodepage(document, encoding) {
+    if (encoding === "utf-8") {
+        return;
+    }
+    const codePage = ENCODING_DWG_CODEPAGES[encoding] ?? "ANSI_" + (encoding.match(/^windows-(\d+)$/)?.[1] ?? "1252");
+    const header = document.children.find(child => child.type === 'SECTION' && child.name === 'HEADER');
+    const nameIdx = header.values.findIndex(tuple => tuple[0] === '9' && tuple[1] === '$DWGCODEPAGE');
+    if (nameIdx >= 0) {
+        header.values[nameIdx + 1][1] = codePage;
+    } else {
+        header.values.push(['9', '$DWGCODEPAGE'], ['3', codePage]);
     }
 }
 
@@ -154,14 +178,23 @@ export function mergeDxf(documents) {
     const mergedBlocks =  documents[0].children.find(
         child => child.type === 'SECTION' && child.name === 'BLOCKS'
     );
+    const mergedLtypes = documents[0].children.find(
+        child => child.type === 'SECTION' && child.name === 'TABLES'
+    ).children.find(
+        child => child.type === 'TABLE' && child.name === 'LTYPE'
+    );
     // Reference the common block handles of the first document in subsequent documents
     const commonBlockHandles = {
         "*Model_Space": mergedBlockRecords.children.find(br => br.name === "*Model_Space")?.values?.find(t => t[0] === "5")?.[1],
         "*Paper_Space": mergedBlockRecords.children.find(br => br.name === "*Paper_Space")?.values?.find(t => t[0] === "5")?.[1],
         "*Paper_Space0": mergedBlockRecords.children.find(br => br.name === "*Paper_Space0")?.values?.find(t => t[0] === "5")?.[1]
     };
+    // A layer defined in more than one document is only kept once
+    const existingLayerNames = new Set(mergedLayers.children.map(layer => layer.name));
+    // These linetypes are assumed identical everywhere, everything else is uniquified below
+    const STANDARD_LTYPES = ["ByLayer", "ByBlock", "CONTINUOUS", "DASH", "DOT", "DASHDOT", "DASHDOTDOT"];
     let maxHandle = documents[0].maxHandle;
-    documents.slice(1).forEach(document => {
+    documents.slice(1).forEach((document, docIndex) => {
         // Get items to merge
         const entities =  document.children.find(
             child => child.type === 'SECTION' && child.name === 'ENTITIES'
@@ -179,9 +212,56 @@ export function mergeDxf(documents) {
         const blocks = document.children.find(
             child => child.type === 'SECTION' && child.name === 'BLOCKS'
         );
+        const ltypes = document.children.find(
+            child => child.type === 'SECTION' && child.name === 'TABLES'
+        ).children.find(
+            child => child.type === 'TABLE' && child.name === 'LTYPE'
+        );
         const handleMapping = {};
+        // Block names are only unique within a document, so QGIS symbol blocks collide across merged documents
+        const blockNameMapping = {};
+        // Same problem for non standard linetypes (see STANDARD_LTYPES above)
+        const ltypeNameMapping = {};
 
-        // Merge items, adjusting handles as necessary to avoid conflicting handles
+        // Remap the handle (5) and owner handle reference (330) found in a tuple list, if any are there
+        const remapValueHandles = (values) => {
+            const handleRefTuple = values.find(tuple => tuple[0] === "330");
+            if (handleRefTuple && handleMapping[handleRefTuple[1]] !== undefined) {
+                handleRefTuple[1] = handleMapping[handleRefTuple[1]];
+            }
+            const handleTuple = values.find(tuple => tuple[0] === "5");
+            if (handleTuple) {
+                const newHandle = (++maxHandle).toString(16);
+                handleMapping[handleTuple[1]] = newHandle;
+                handleTuple[1] = newHandle;
+            }
+        };
+        // Recursively remap an item, its children (VERTEX, SEQEND, ...) and its end marker's tailValues
+        const remapHandles = (item) => {
+            remapValueHandles(item.values);
+            item.children.forEach(remapHandles);
+            remapValueHandles(item.tailValues);
+        };
+        // Remap an INSERT entity's block name reference (2) to the uniquified name
+        const remapBlockNameRef = (item) => {
+            if (item.type === 'INSERT') {
+                const nameTuple = item.values.find(tuple => tuple[0] === "2");
+                if (nameTuple && blockNameMapping[nameTuple[1]]) {
+                    nameTuple[1] = blockNameMapping[nameTuple[1]];
+                }
+            }
+            item.children.forEach(remapBlockNameRef);
+        };
+        // Remap any entity's linetype reference (6) to the uniquified name
+        const remapLinetypeRef = (item) => {
+            const linetypeTuple = item.values.find(tuple => tuple[0] === "6");
+            if (linetypeTuple && ltypeNameMapping[linetypeTuple[1]]) {
+                linetypeTuple[1] = ltypeNameMapping[linetypeTuple[1]];
+            }
+            item.children.forEach(remapLinetypeRef);
+        };
+
+        // Merge items, adjusting handles and block names to avoid conflicts
         blockRecords.children.forEach(blockRecord => {
             const handleTuple = blockRecord.values.find(tuple => tuple[0] === "5");
             if (["*Model_Space", "*Paper_Space", "*Paper_Space0"].includes(blockRecord.name)) {
@@ -190,50 +270,63 @@ export function mergeDxf(documents) {
                 const newHandle = (++maxHandle).toString(16);
                 handleMapping[handleTuple[1]] = newHandle;
                 handleTuple[1] = newHandle;
+                const newName = `${blockRecord.name}_m${docIndex + 1}`;
+                blockNameMapping[blockRecord.name] = newName;
+                blockRecord.values.find(tuple => tuple[0] === "2")[1] = newName;
+                blockRecord.name = newName;
                 mergedBlockRecords.children.push(blockRecord);
             }
         });
         blocks.children.forEach(block => {
             // Note: Don't merge common blocks
             if (!["*Model_Space", "*Paper_Space", "*Paper_Space0"].includes(block.name)) {
-                const handleRefTuple = block.values.find(tuple => tuple[0] === "330");
-                if (handleRefTuple) {
-                    handleRefTuple[1] = handleMapping[handleRefTuple[1]];
+                remapValueHandles(block.values);
+                // The ENDBLK's own handle/owner reference end up in the block's tailValues
+                remapValueHandles(block.tailValues);
+                const newName = blockNameMapping[block.name];
+                if (newName) {
+                    // Group codes 2 and 3 both carry the block name
+                    block.values.filter(tuple => tuple[0] === "2" || tuple[0] === "3").forEach(tuple => {
+                        tuple[1] = newName;
+                    });
+                    block.name = newName;
                 }
-                block.values.find(tuple => tuple[0] === "5")[1] = (++maxHandle).toString(16);
+                // Block contents have their own handles and may INSERT other blocks
+                block.children.forEach(remapHandles);
+                block.children.forEach(remapBlockNameRef);
+                block.children.forEach(remapLinetypeRef);
                 mergedBlocks.children.push(block);
             }
         });
+        ltypes.children.forEach(ltype => {
+            if (!STANDARD_LTYPES.includes(ltype.name)) {
+                const newName = `${ltype.name}_m${docIndex + 1}`;
+                ltypeNameMapping[ltype.name] = newName;
+                ltype.values.find(tuple => tuple[0] === "2")[1] = newName;
+                ltype.name = newName;
+                ltype.values.find(tuple => tuple[0] === "5")[1] = (++maxHandle).toString(16);
+                mergedLtypes.children.push(ltype);
+            }
+        });
         layers.children.forEach(layer => {
-            // Note: Don't merge dummy layer 0
-            if (layer.name !== '0') {
+            // Note: Don't merge dummy layer 0, or a layer already defined by an earlier document
+            if (layer.name !== '0' && !existingLayerNames.has(layer.name)) {
+                existingLayerNames.add(layer.name);
                 layer.values.find(tuple => tuple[0] === "5")[1] = (++maxHandle).toString(16);
                 mergedLayers.children.push(layer);
             }
         });
         entities.children.forEach(entity => {
-            const handleRefTuple = entity.values.find(tuple => tuple[0] === "330");
-            if (handleRefTuple) {
-                handleRefTuple[1] = handleMapping[handleRefTuple[1]];
-            }
-            const handleTuple = entity.values.find(tuple => tuple[0] === "5");
-            const newHandle = (++maxHandle).toString(16);
-            handleMapping[handleTuple[1]] = newHandle;
-            handleTuple[1] = newHandle;
-            // VERTEX, SEQEND
-            entity.children.forEach(child => {
-                child.values.find(tuple => tuple[0] === "5")[1] = (++maxHandle).toString(16);
-                const childHandleRefTuple = child.values.find(tuple => tuple[0] === "330");
-                if (childHandleRefTuple) {
-                    childHandleRefTuple[1] = handleMapping[childHandleRefTuple[1]];
-                }
-            });
+            remapHandles(entity);
+            remapBlockNameRef(entity);
+            remapLinetypeRef(entity);
             mergedEntities.children.push(entity);
         });
     });
 
-    // Update layer count
+    // Update layer and linetype counts
     mergedLayers.values.find(tuple => tuple[0] === "70")[1] = String(mergedLayers.children.length);
+    mergedLtypes.values.find(tuple => tuple[0] === "70")[1] = String(mergedLtypes.children.length);
 
     return documents[0];
 }
