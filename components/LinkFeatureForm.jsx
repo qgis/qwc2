@@ -200,11 +200,7 @@ class LinkFeatureForm extends React.Component {
         }
     };
     onDiscard = () => {
-        const editContext = this.props.editing.contexts[this.props.editContextId];
-        if (editContext.action === "Draw") {
-            // Discarded draw = cancel
-            this.props.finished(null);
-        }
+        this.props.finished(null);
     };
 }
 
