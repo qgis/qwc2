@@ -26,7 +26,7 @@ import NumberInput from '../components/widgets/NumberInput';
 import Spinner from '../components/widgets/Spinner';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import {explodeDxf, implodeDxf, mergeDxf} from '../utils/DxfUtils';
+import {decodeDxf, detectDxfEncoding, explodeDxf, implodeDxf, mergeDxf, setDwgCodepage} from '../utils/DxfUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -528,14 +528,18 @@ class MapExport extends React.Component {
             });
         });
         Promise.all(promises).then((responses) => {
-            const decoder = new TextDecoder("iso-8859-1");
-            const dxfDocuments = responses.filter(
+            const dxfResponses = responses.filter(
                 response => response && response.headers['content-type'] === "application/dxf"
-            ).map(response => explodeDxf(decoder.decode(response.data)));
+            );
+            const dxfDocuments = dxfResponses.map(response => explodeDxf(decodeDxf(response.data)));
             if (dxfDocuments.length !== 0) {
                 const dxfDocument = mergeDxf(dxfDocuments);
+                // The merged document keeps the first response's header, so its encoding applies to the whole file
+                const encoding = detectDxfEncoding(dxfResponses[0].data);
+                // QGIS Server writes a non-standard $DWGCODEPAGE value ("8859_1") some readers reject outright
+                setDwgCodepage(dxfDocument, encoding);
                 const result = implodeDxf(dxfDocument);
-                const encoder = new TextEncoder("iso-8859-1");
+                const encoder = new TextEncoder(encoding);
                 FileSaver.saveAs(new Blob([encoder.encode(result)], {type: "application/dxf"}), fileName);
                 /*
                 responses.forEach((response, idx) => {
