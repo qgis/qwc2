@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Desenare obiect spațial în hartă",
-      "pickhint": "Alege un obiect spațial din hartă"
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "picioare",

@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Disegnare l'oggetto sulla mappa...",
-      "pickhint": "Seleziona un oggetto sulla mappa..."
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "piedi",

@@ -91,6 +91,7 @@ class QtDesignerForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = QtDesignerForm.defaultState;
+        this.form = null;
     }
     componentDidMount() {
         this.componentDidUpdate({});
@@ -113,10 +114,14 @@ class QtDesignerForm extends React.Component {
             });
         }
         // As soon as relation value is added, scroll to bottom of list
-        if (this.state.relationAddPressed && this.props.feature.relationValues !== prevProps.feature.relationValues) {
-            const relationWidget = this.state.relationAddPressed.parentNode.previousSibling;
-            relationWidget.scrollTo(0, relationWidget.scrollHeight);
-            this.setState({relationAddPressed: null});
+        if (this.form && this.props.feature?.relationValues && prevProps.feature?.relationValues && this.props.feature.relationValues !== prevProps.feature.relationValues) {
+            Object.entries(this.props.feature.relationValues).forEach(([dataset, entry]) => {
+                const prevFeatures = prevProps.feature.relationValues[dataset]?.features ?? [];
+                if (entry.features.length > prevFeatures.length && prevFeatures.length > 0) {
+                    const widget = this.form.querySelector(`[data-reldataset="${dataset}"]`);
+                    widget?.scrollTo(0, widget?.scrollHeight);
+                }
+            });
         }
     }
     render() {
@@ -129,7 +134,7 @@ class QtDesignerForm extends React.Component {
         } else if (this.state.formData) {
             const root = this.state.formData.ui.widget;
             return (
-                <div className={this.props.report ? "qt-designer-report" : "qt-designer-form"}>
+                <div className={this.props.report ? "qt-designer-report" : "qt-designer-form"} ref={el => {this.form = el;}}>
                     {this.renderLayout(root.layout, this.props.feature, this.props.editConfig, this.props.updateField)}
                 </div>
             );
@@ -515,29 +520,20 @@ class QtDesignerForm extends React.Component {
                 // featurelink__layer__reltable__attrname
                 if (parts.length === 3 || parts.length === 4 ) {
                     const layer = parts[1];
-                    const reltable = parts.length === 4 ? parts[2] : "";
+                    const rellayer = parts.length === 4 ? parts[2] : "";
                     const attrname = parts.slice(2).join("__");
                     value = feature.properties?.[attrname];
-                    if (layer === reltable) {
+                    if (layer === rellayer) {
                         const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
-                        const displayField = attrname.split("__")[1];
-                        if (feature.__status__ !== "empty") {
-                            const featurebuttons = [
-                                {key: 'Edit', icon: 'editing', label: String(value ?? "")}
-                            ];
-                            return (
-                                <div className="qt-designer-form-featurelink-buttons">
-                                    <ButtonBar buttons={featurebuttons} forceLabel onClick={() => this.props.editRelationRecord('Edit', reltable, index, displayField)} />
-                                </div>
-                            );
-                        } else {
-                            const featurebuttons = [];
-                            if (feature.geometry !== null) {
-                                featurebuttons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("common.pick")});
-                            }
-                            featurebuttons.push({key: 'Create', icon: 'editdraw', label: LocaleUtils.tr("editing.create")});
-                            return (<ButtonBar buttons={featurebuttons} forceLabel onClick={(action) => this.props.editRelationRecord(action, reltable, index, displayField)} />);
-                        }
+                        const dataset = this.props.mapPrefix + "." + rellayer;
+                        const featurebuttons = [
+                            {key: 'Edit', icon: 'editing', label: String(value ?? "")}
+                        ];
+                        return (
+                            <div className="qt-designer-form-featurelink-buttons">
+                                <ButtonBar buttons={featurebuttons} forceLabel onClick={() => this.props.editRelationRecord(dataset, index)} />
+                            </div>
+                        );
                     } else {
                         if (value !== null) {
                             const featurebuttons = [
@@ -545,7 +541,7 @@ class QtDesignerForm extends React.Component {
                             ];
                             return (
                                 <div className="qt-designer-form-featurelink-buttons">
-                                    <ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext('Edit', layer, value, (f) => updateField(attrname, f.id), attrname)} />
+                                    <ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext('Edit', layer, value, (f) => updateField(attrname, f.id))} />
                                     <button className="button" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
                                 </div>
                             );
@@ -554,7 +550,7 @@ class QtDesignerForm extends React.Component {
                                 {key: 'Pick', icon: 'pick', label: LocaleUtils.tr("common.pick")},
                                 {key: 'Create', icon: 'editdraw', label: LocaleUtils.tr("editing.create")}
                             ];
-                            return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(action, layer, null, (f) => updateField(attrname, f.id), attrname)} />);
+                            return (<ButtonBar buttons={featurebuttons} onClick={(action) => this.props.switchEditContext(action, layer, null, (f) => updateField(attrname, f.id))} />);
                         }
                     }
                 }
@@ -570,23 +566,35 @@ class QtDesignerForm extends React.Component {
             return null;
         }
         const disabled = String(widget.property?.enabled) === "false";
-        const tablename = parts[1];
+        const layername = parts[1];
         const sortcol = parts[3] || null;
         const noreorder = parts[4] || false;
         const headerItems = widget.layout.item.filter(item => item.widget && item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const widgetItems = widget.layout.item.filter(item => !item.widget || !item.widget.name.startsWith("header__")).sort((a, b) => a.column - b.column);
         const tableFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "QDateTimeEdit", "QDateEdit", "QTimeEdit"];
         const columnStyles = widgetItems.map(item => { return item.widget && tableFitWidgets.includes(item.widget.class) ? {width: '1px'} : {}; });
-        const editConfig = this.props.editConfigs[this.props.mapPrefix][tablename];
+        const editConfig = this.props.editConfigs[this.props.mapPrefix][layername];
         if (!editConfig) {
             // Relation dataset not permitted / no edit config available
             return null;
         }
         const relDataset = editConfig.editDataset;
         const fields = (editConfig.fields ?? []).reduce((res, field) => ({...res, [field.id]: field}), {});
+        const addData = {
+            geomType: editConfig.geomType, dataset: relDataset
+        };
+        const addButtons = this.state.relationAddPressed === relDataset ? [{
+            key: "Pick", icon: "pick", label: LocaleUtils.tr("common.pick"), data: addData
+        }, {
+            key: "Create", icon: "editdraw", label: LocaleUtils.tr("editing.create"), data: addData
+        }, {
+            key: "Cancel", icon: "remove", label: LocaleUtils.tr("common.cancel"), extraClasses: "button-reject"
+        }] : [{
+            key: "Add", icon: "plus", label: LocaleUtils.tr("common.add"), disabled: !this.props.feature.relationValues, data: addData
+        }];
         return (
             <div className="qt-designer-widget-relation">
-                <div className="qt-designer-widget-relation-table-container">
+                <div className="qt-designer-widget-relation-table-container" data-reldataset={relDataset}>
                     {!this.props.feature.relationValues ? (
                         <div className="qt-designer-widget-relation-table-loading">
                             <Spinner />
@@ -603,19 +611,17 @@ class QtDesignerForm extends React.Component {
                             ) : null}
                             {(this.props.feature.relationValues?.[relDataset]?.features || []).map((feature, idx) => {
                                 const updateField = (name, value) => {
-                                    const fieldname = name.slice(tablename.length + 2); // Strip <tablename>__ prefix
+                                    const fieldname = name.slice(layername.length + 2); // Strip <tablename>__ prefix
                                     this.props.updateRelationField(relDataset, idx, fieldname, value);
                                 };
                                 const nametransform = (name) => (name + "__" + idx);
                                 const status = feature.__status__ || "";
                                 const relFeature = {
                                     ...feature,
-                                    properties: Object.entries(feature.properties).reduce((res, [key, value]) => ( {...res, [tablename + "__" + key]: value}), {})
+                                    properties: Object.entries(feature.properties).reduce((res, [key, value]) => ( {...res, [layername + "__" + key]: value}), {})
                                 };
                                 let statusIcon = null;
-                                if (status === "empty") {
-                                    // Pass
-                                } else if (status === "new") {
+                                if (status === "new") {
                                     statusIcon = "new";
                                 } else if (status) {
                                     statusIcon = "edited";
@@ -663,17 +669,28 @@ class QtDesignerForm extends React.Component {
                     </table>
                 </div>
                 {!this.props.readOnly ? (
-                    <div className="qt-designer-widget-relation-buttons">
-                        <button className="button qt-designer-widget-relation-add" disabled={!this.props.feature.relationValues} onClick={(ev) => this.addRelationRecord(ev, relDataset)} type="button">{LocaleUtils.tr("common.add")}</button>
-                    </div>
+                    <ButtonBar buttons={addButtons} onClick={this.addRelationRecordAction} />
                 ) : null}
                 <div className="qt-designer-widget-relation-resize-handle" onPointerDown={this.startRelationTableResize} />
             </div>
         );
     };
-    addRelationRecord = (ev, datasetname) => {
-        this.setState({relationAddPressed: ev.target});
-        this.props.addRelationRecord(datasetname);
+    addRelationRecordAction = (key, data) => {
+        if (key === "Add") {
+            if (data.geomType) {
+                this.setState({relationAddPressed: data.dataset});
+            } else {
+                this.props.addRelationRecord(data.dataset);
+            }
+        } else if (key === "Create") {
+            this.props.addRelationRecord(data.dataset, null, "Create");
+            this.setState({relationAddPressed: null});
+        } else if (key === "Pick") {
+            this.props.addRelationRecord(data.dataset, null, "Pick");
+            this.setState({relationAddPressed: null});
+        } else if (key === "Cancel") {
+            this.setState({relationAddPressed: null});
+        }
     };
     startRelationTableResize = (ev) => {
         const container = ev.target.parentElement;

@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Draw the feature on the map...",
-      "pickhint": "Pick a feature on the map..."
+      "picklayerhint": "Pick a feature from the layer '{0}' on the map..."
     },
     "locate": {
       "feetUnit": "feet",

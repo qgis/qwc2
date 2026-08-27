@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Dibuixar element en el mapa...",
-      "pickhint": "Escollir element en el mapa..."
+      "picklayerhint": "Escollir element de capa '{0}' en el mapa..."
     },
     "locate": {
       "feetUnit": "feet",

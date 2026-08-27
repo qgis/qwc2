@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Desenhe um retângulo para selecionar um recurso...",
-      "pickhint": "Clique no mapa para selecionar um recurso..."
+      "picklayerhint": ""
     },
     "locate": {
       "feetUnit": "pés",

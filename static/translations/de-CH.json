@@ -395,7 +395,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Objekt auf der Karte zeichnen...",
-      "pickhint": "Objekt auf der Karte auswählen..."
+      "picklayerhint": "Objekt der Ebene '{0}' auf der Karte auswählen..."
     },
     "locate": {
       "feetUnit": "Fuss",
