@@ -97,7 +97,7 @@ class LocateSupport extends React.Component {
         const startupMode = this.props.startupMode.toUpperCase();
         const startupParams = this.props.startupParams;
         const highlightCenter = ["true", "1"].includes((startupParams.hc || "").toLowerCase());
-        const searchParams = startupParams.hp || startupParams.hf || startupParams.st;
+        const searchParams = startupParams.hp || startupParams.hf || startupParams.st || startupParams.if;
         if (startupMode !== "DISABLED" && !searchParams && !highlightCenter) {
             this.requestedMode = startupMode;
             this.start();
