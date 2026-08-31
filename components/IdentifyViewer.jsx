@@ -20,6 +20,7 @@ import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../
 import {zoomToPoint, zoomToExtent} from '../actions/map';
 import {openExternalUrl} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
+import {defaultHighlightStyle} from '../utils/FeatureStyles';
 import {IdentifyExporters} from '../utils/IdentifyExporters';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -130,10 +131,19 @@ class IdentifyViewer extends React.Component {
             this.scrollIntoView = false;
             this.currentResultElRef = null;
         }
-        // Ensure currentPage is in range
         if (this.state.resultTree !== prevState.resultTree || this.state.selectedLayer !== prevState.selectedLayer) {
+            // Ensure currentPage is in range
             const count = Object.values(this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree).flat().length;
             this.setState(state => ({currentPage: Math.max(0, Math.min(state.currentPage, count - 1))}));
+            // Highlight features
+            if (this.props.highlightAllResults) {
+                const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
+                const layer = {
+                    id: "__identifyselection",
+                    role: LayerRole.SELECTION
+                };
+                this.props.addLayerFeatures(layer, Object.values(resultTree).flat(), true);
+            }
         }
         if (this.state.multiViewEnabled !== prevState.multiViewEnabled) {
             this.computePageSize(this.bodyEl.getBoundingClientRect());
@@ -141,7 +151,8 @@ class IdentifyViewer extends React.Component {
     }
     componentWillUnmount() {
         this.props.innerRef(null);
-        this.props.removeLayer("__identifyviewerhighlight");
+        this.props.removeLayer("__identifyselection");
+        this.props.removeLayer("__identifyhighlight");
         unregisterPermalinkDataStoreHook("identifyresultstate");
     }
     storeIdentifyResults = () => {
@@ -190,23 +201,19 @@ class IdentifyViewer extends React.Component {
         });
     };
     setHighlightedFeatures = (features) => {
-        if (isEmpty(features)) {
-            if (!isEmpty(this.state.tableSelection)) {
-                features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
-            } else if (this.props.highlightAllResults) {
-                const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
-                features = Object.values(resultTree).flat();
-            }
+        if (isEmpty(features) && !isEmpty(this.state.tableSelection)) {
+            features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
         }
         if (!isEmpty(features)) {
             features = features.filter(f => f.geometry).map(f => ({id: f.id, geometry: f.geometry}));
             const layer = {
-                id: "__identifyviewerhighlight",
-                role: LayerRole.SELECTION
+                id: "__identifyhighlight",
+                role: LayerRole.SELECTION,
+                styleOptions: defaultHighlightStyle()
             };
             this.props.addLayerFeatures(layer, features, true);
         } else {
-            this.props.removeLayer("__identifyviewerhighlight");
+            this.props.removeLayer("__identifyhighlight");
         }
     };
     removeResultLayer = (layerid) => {

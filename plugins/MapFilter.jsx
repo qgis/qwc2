@@ -29,6 +29,7 @@ import TextInput from '../components/widgets/TextInput';
 import ToggleSwitch from '../components/widgets/ToggleSwitch';
 import ConfigUtils from '../utils/ConfigUtils';
 import DataServiceExprUtils from '../utils/DataServiceExprUtils';
+import {defaultHighlightStyle} from '../utils/FeatureStyles';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
@@ -76,11 +77,7 @@ class MapFilter extends React.Component {
     static defaultProps = {
         allowFilterByTime: true,
         position: 5,
-        predefinedFilters: [],
-        highlightStyle: {
-            strokeColor: [0, 0, 0],
-            fillColor: [255, 255, 0, 0.25]
-        }
+        predefinedFilters: []
     };
     state = {
         filters: {},
@@ -333,7 +330,11 @@ class MapFilter extends React.Component {
                 </SideBar>
             ),
             this.state.geomFilter.picking ? (
-                <PickFeature featureFilter={feature => ["Polygon", "LineString"].find(type => (feature?.geometry?.type || "").includes(type))} featurePicked={this.filterGeomPicked} highlightStyle={this.props.highlightStyle} key="FeaturePicker" />
+                <PickFeature
+                    featureFilter={feature => ["Polygon", "LineString"].find(type => (feature?.geometry?.type || "").includes(type))}
+                    featurePicked={this.filterGeomPicked}
+                    highlightStyle={{...defaultHighlightStyle(), ...this.props.highlightStyle}}
+                    key="FeaturePicker" />
             ) : null,
             <MapSelection
                 active={taskActive && !!selGeomType}

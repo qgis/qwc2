@@ -28,6 +28,7 @@ import {openExternalUrl, showNotification} from '../actions/windows';
 import searchProvidersSelector from '../selectors/searchproviders';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
+import {defaultHighlightStyle} from '../utils/FeatureStyles';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -874,7 +875,7 @@ class SearchBox extends React.Component {
                     ...feature,
                     properties: {...(!showMarkers && !this.props.searchOptions.hideResultLabels && {label: label})},
                     styleName: 'default',
-                    styleOptions: this.props.searchOptions.highlightStyle || {}
+                    styleOptions: {...defaultHighlightStyle(), ...this.props.searchOptions.highlightStyle}
                 });
             }
             if (showMarkers) {
