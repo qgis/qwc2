@@ -14,6 +14,7 @@ import clone from 'clone';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {v4 as uuidv4} from 'uuid';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
@@ -111,6 +112,8 @@ class IdentifyViewer extends React.Component {
         this.bodyEl = null;
         this.state.exportFormat = !Array.isArray(props.enableExport) ? 'geojson' : props.enableExport[0];
         this.state.multiViewEnabled = props.resultMultiDisplay;
+        this.selectionLayerId = uuidv4();
+        this.highlightLayerId = uuidv4();
         registerPermalinkDataStoreHook("identifyresultstate", this.storeIdentifyResults);
     }
     componentDidMount() {
@@ -140,7 +143,7 @@ class IdentifyViewer extends React.Component {
             if (this.props.highlightAllResults) {
                 const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
                 const layer = {
-                    id: "__identifyselection",
+                    id: this.selectionLayerId,
                     role: LayerRole.SELECTION
                 };
                 this.props.addLayerFeatures(layer, Object.values(resultTree).flat(), true);
@@ -152,8 +155,8 @@ class IdentifyViewer extends React.Component {
     }
     componentWillUnmount() {
         this.props.innerRef(null);
-        this.props.removeLayer("__identifyselection");
-        this.props.removeLayer("__identifyhighlight");
+        this.props.removeLayer(this.selectionLayerId);
+        this.props.removeLayer(this.highlightLayerId);
         unregisterPermalinkDataStoreHook("identifyresultstate");
     }
     storeIdentifyResults = () => {
@@ -208,13 +211,13 @@ class IdentifyViewer extends React.Component {
         if (!isEmpty(features)) {
             features = features.filter(f => f.geometry).map(f => ({id: f.id, geometry: f.geometry}));
             const layer = {
-                id: "__identifyhighlight",
+                id: this.highlightLayerId,
                 role: LayerRole.SELECTION,
                 styleOptions: defaultHighlightStyle()
             };
             this.props.addLayerFeatures(layer, features, true);
         } else {
-            this.props.removeLayer("__identifyhighlight");
+            this.props.removeLayer(this.highlightLayerId);
         }
     };
     removeResultLayer = (layerid) => {
