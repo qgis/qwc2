@@ -63,9 +63,7 @@ class Identify extends React.Component {
         /** Whether to clear the identify results when exiting the identify tool. */
         clearResultsOnClose: PropTypes.bool,
         click: PropTypes.object,
-        currentIdentifyTool: PropTypes.string,
         currentSearchResult: PropTypes.object,
-        currentTask: PropTypes.string,
         /** Whether to enable the aggregated report download button. */
         enableAggregatedReports: PropTypes.bool,
         /** Whether to enable the possibility select results for comparison. */
@@ -113,7 +111,6 @@ class Identify extends React.Component {
         resultGridSize: PropTypes.number,
         /** Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. */
         resultMultiDisplay: PropTypes.bool,
-        selection: PropTypes.object,
         setCurrentTask: PropTypes.func,
         /** Whether to show a layer selector to filter the identify results by layer. */
         showLayerSelector: PropTypes.bool,
@@ -408,9 +405,6 @@ class Identify extends React.Component {
         } catch {
             return VectorLayerUtils.geoJSONGeomToWkt(identifyGeom);
         }
-    };
-    changeBufferUnit = (ev) => {
-        this.setState({ radiusUnits: ev.target.value });
     };
     handleResponse = (reqId, response, layer, format, clickPoint, ctrlPick = false) => {
         if (!this.state.pendingRequests.includes(reqId)) {
@@ -728,7 +722,6 @@ export default connect((state) => {
         layerFilter: state.layers.filter,
         layers: state.layers.flat,
         map: state.map,
-        selection: state.selection,
         theme: state.theme.current,
         startupParams: state.localConfig.startupParams,
         startupState: state.localConfig.startupState
