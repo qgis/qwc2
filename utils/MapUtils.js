@@ -97,12 +97,9 @@ const MapUtils = {
         const yResolution = Math.abs(hExtent / mapSize.height);
         const extentResolution = Math.max(xResolution, yResolution);
 
-        const zoom = this.computeZoom(resolutions, extentResolution);
-        if (ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
-            return Math.max(minZoom, Math.min(zoom, maxZoom));
-        } else {
-            return Math.max(minZoom, Math.min(Math.round(zoom), maxZoom));
-        }
+        const fractionalZoom = this.computeFractionalZoom(resolutions, extentResolution);
+        const fittingZoom = ConfigUtils.getConfigProp("allowFractionalZoom") === true ? fractionalZoom : Math.floor(fractionalZoom);
+        return Math.max(minZoom, Math.min(fittingZoom, maxZoom));
     },
     /**
      * Calculates the extent for the provided center and zoom level
@@ -168,6 +165,22 @@ const MapUtils = {
         return list[lower] * (1 - frac) + list[upper] * frac;
     },
     /**
+     * Compute the exact, fractional zoom level matching the specified scale or resolution.
+     *
+     * @param list {Array} List of scales or resolutions.
+     * @param value (number) Scale or resolution.
+     * @return Fractional zoom level matching the specified scale or resolution.
+     */
+    computeFractionalZoom(list, value) {
+        let index = 0;
+        for (let i = 1; i < list.length - 1; ++i) {
+            if (value <= list[i]) {
+                index = i;
+            }
+        }
+        return index + (value - list[index]) / (list[index + 1] - list[index]);
+    },
+    /**
      * Compute the (possibly fractional) zoom level matching the specified scale or resolution.
      *
      * @param list {Array} List of scales or resolutions.
@@ -176,13 +189,7 @@ const MapUtils = {
      */
     computeZoom(list, value) {
         if (ConfigUtils.getConfigProp("allowFractionalZoom") === true) {
-            let index = 0;
-            for (let i = 1; i < list.length - 1; ++i) {
-                if (value <= list[i]) {
-                    index = i;
-                }
-            }
-            return index + (value - list[index]) / (list[index + 1] - list[index]);
+            return this.computeFractionalZoom(list, value);
         } else {
             let closestVal = Math.abs(value - list[0]);
             let closestIdx = 0;
