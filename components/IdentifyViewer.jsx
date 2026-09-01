@@ -77,6 +77,7 @@ class IdentifyViewer extends React.Component {
         attributeCalculator: (/* layer, feature */) => { return []; },
         attributeTransform: (name, value /* , layer, feature */) => value,
         enableAggregatedReports: true,
+        innerRef: () => {},
         resultDisplayMode: 'flat',
         resultGridSize: 200,
         resultMultiDisplay: false,
