@@ -597,8 +597,6 @@ for customized queries and templates for the result presentation.
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | appendResultsByDefault | `{false, true, "task"}` | Whether to append results by default (without having to press `CTRL` when clicking). To append results by default only when Identify is run as a task, set to `task`. | `undefined` |
-| attributeCalculator | `func` | Optional function for computing derived attributes. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
-| attributeTransform | `func` | Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
 | availableRegionModes | `[string]` | Available region identify modes. | `['Region', 'Radius', 'Circle', 'Rectangle']` |
 | clearResultsOnClose | `bool` | Whether to clear the identify results when exiting the identify tool. | `true` |
 | enableAggregatedReports | `bool` | Whether to enable the aggregated report download button. | `true` |

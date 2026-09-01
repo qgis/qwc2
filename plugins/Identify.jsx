@@ -58,10 +58,6 @@ class Identify extends React.Component {
         addMarker: PropTypes.func,
         /** Whether to append results by default (without having to press `CTRL` when clicking). To append results by default only when Identify is run as a task, set to `task`. */
         appendResultsByDefault: PropTypes.oneOf([false, true, "task"]),
-        /** Optional function for computing derived attributes. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
-        attributeCalculator: PropTypes.func,
-        /** Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
-        attributeTransform: PropTypes.func,
         /** Available region identify modes. */
         availableRegionModes: PropTypes.arrayOf(PropTypes.string),
         /** Whether to clear the identify results when exiting the identify tool. */
@@ -675,8 +671,6 @@ class Identify extends React.Component {
             } else {
                 body = (
                     <IdentifyViewer
-                        attributeCalculator={this.props.attributeCalculator}
-                        attributeTransform={this.props.attributeTransform}
                         enableAggregatedReports={this.props.enableAggregatedReports}
                         enableCompare={this.props.enableCompare}
                         enableExport={this.props.enableExport}

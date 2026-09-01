@@ -42,8 +42,6 @@ import './style/IdentifyViewer.css';
 class IdentifyViewer extends React.Component {
     static propTypes = {
         addLayerFeatures: PropTypes.func,
-        attributeCalculator: PropTypes.func,
-        attributeTransform: PropTypes.func,
         changeLayerProperty: PropTypes.func,
         collapsible: PropTypes.bool,
         enableAggregatedReports: PropTypes.bool,
@@ -73,8 +71,6 @@ class IdentifyViewer extends React.Component {
     };
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
-        attributeCalculator: (/* layer, feature */) => { return []; },
-        attributeTransform: (name, value /* , layer, feature */) => value,
         enableAggregatedReports: true,
         innerRef: () => {},
         resultDisplayMode: 'flat',
@@ -441,7 +437,7 @@ class IdentifyViewer extends React.Component {
                 </div>
             );
         }
-        if (!inlineExtaAttribs && (this.props.attributeCalculator || !isEmpty(this.state.reports[layerid]))) {
+        if (!inlineExtaAttribs && !isEmpty(this.state.reports[layerid])) {
             extraattribs = (
                 <div className="identify-result-box">
                     <table className="attribute-list"><tbody>
@@ -829,9 +825,6 @@ class IdentifyViewer extends React.Component {
                 ));
             }
         });
-        if (this.props.attributeCalculator) {
-            rows.push(...this.props.attributeCalculator(layer, result));
-        }
         return rows;
     };
     getExporters = () => {
@@ -945,7 +938,6 @@ class IdentifyViewer extends React.Component {
                 return text;
             }
         }
-        text = this.props.attributeTransform(attrName, text, layer, result);
         text = MiscUtils.addLinkAnchors(text);
         return this.parsedContent(text);
     };
