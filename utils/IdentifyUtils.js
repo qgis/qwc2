@@ -60,6 +60,8 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
         ...res, [lyr]: styles[idx] ?? ''
     }));
     const queryStyles = queryLayers.split(',').map(lyr => styleMap[lyr] ?? '').join(",");
+    const cleanParams = {...params};
+    delete cleanParams.region_feature_count;
     return {
         url: layer.featureInfoUrl.split("?")[0],
         params: {
@@ -78,7 +80,7 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
             with_geometry: true,
             with_maptip: false,
             ...layer.dimensionValues,
-            ...params
+            ...cleanParams
         },
         id: uuidv4()
     };
@@ -197,7 +199,7 @@ const IdentifyUtils = {
     },
     buildFilterRequest(layer, queryLayers, filterGeom, map, options = {}) {
         const params = {
-            feature_count: 100,
+            feature_count: options.region_feature_count ?? 100,
             filter: layer.params.FILTER ?? '',
             ...(filterGeom ? {FILTER_GEOM: filterGeom} : {}),
             ...options

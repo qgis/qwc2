@@ -101,7 +101,7 @@ class Identify extends React.Component {
         map: PropTypes.object,
         /** Whether to only show the results dialog if there are results to display. */
         onlyShowDialogWithResults: PropTypes.bool,
-        /** Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. */
+        /** Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` is supported. */
         params: PropTypes.object,
         removeLayer: PropTypes.func,
         removeMarker: PropTypes.func,
@@ -271,11 +271,10 @@ class Identify extends React.Component {
             const identifyResults = this.props.click.modifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
 
             const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
-            const params = this.buildIdentifyParams();
             let queryableLayers = [];
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             queryableLayers.forEach(l => {
-                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, params);
+                const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, this.props.params);
                 pendingRequests.push(request.id);
                 IdentifyUtils.sendRequest(request, (response) => {
                     this.handleResponse(request.id, response, l, request.params.info_format, clickPoint, this.props.click.modifiers.ctrl);
@@ -317,32 +316,22 @@ class Identify extends React.Component {
 
         const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
         const pendingRequests = [];
-        const params = this.buildIdentifyParams("region_feature_count");
         const requestFilterGeom = this.getRequestFilterGeomWkt(filterGeom);
         // Querying without the filter geometry would match the whole layer
-        if (requestFilterGeom) {
-            queryableLayers.forEach(layer => {
-                const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
-                pendingRequests.push(request.id);
-                IdentifyUtils.sendRequest(request, (response) => {
-                    this.handleResponse(request.id, response, layer, request.params.info_format, center);
-                });
-            });
+        if (!requestFilterGeom) {
+            return;
         }
+        queryableLayers.forEach(layer => {
+            const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, this.props.params);
+            pendingRequests.push(request.id);
+            IdentifyUtils.sendRequest(request, (response) => {
+                this.handleResponse(request.id, response, layer, request.params.info_format, center);
+            });
+        });
         this.setState(state => {
             const identifyResults = state.filterGeomModifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
             return {identifyResults: identifyResults, pendingRequests: pendingRequests, currentResultDisplayMode: resultDisplayMode};
         });
-    };
-    buildIdentifyParams = (featureCountParam = null) => {
-        const params = {...this.props.params};
-        if (featureCountParam && params[featureCountParam]) {
-            params.feature_count = params[featureCountParam];
-        }
-        // These are internal params, not GetFeatureInfo params
-        delete params.region_feature_count;
-        delete params.radius_feature_count;
-        return params;
     };
     identifyFeaturesPending = () => {
         // MapFilter applies the startup filter behind a debounce, wait for it so that the
@@ -358,7 +347,6 @@ class Identify extends React.Component {
     identifyFeaturesFilter = (identifyFilter) => {
         const layerEntries = IdentifyUtils.parseIdentifyFilter(identifyFilter, this.props.layers, this.props.map);
         const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
-        const params = this.buildIdentifyParams("region_feature_count");
         let pendingRequests = [];
         const bboxes = [];
         layerEntries.forEach(({layer, entries}) => {
@@ -377,7 +365,7 @@ class Identify extends React.Component {
                 return;
             }
             const queryLayers = [...new Set(entries.map(entry => entry.sublayer))].join(",");
-            const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, wmsParams.FILTER_GEOM, this.props.map, {...params, filter: wmsParams.FILTER});
+            const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, wmsParams.FILTER_GEOM, this.props.map, {...this.props.params, filter: wmsParams.FILTER});
             pendingRequests.push(request.id);
             IdentifyUtils.sendRequest(request, (response) => {
                 const results = this.handleResponse(request.id, response, layer, request.params.info_format, null);
