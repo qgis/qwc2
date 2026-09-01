@@ -34,6 +34,14 @@ const DEFAULT_FEATURE_STYLE = {
     textFont: "11pt sans-serif"
 };
 
+const DEFAULT_HIGHLIGHT_STYLE = {
+    ...DEFAULT_FEATURE_STYLE,
+    strokeColor: [255, 255, 0, 1],
+    strokeWidth: 2,
+    strokeDash: [],
+    fillColor: [255, 255, 0, 0.25]
+};
+
 const DEFAULT_MARKER_STYLE = {
     iconAnchor: [0.5, 1],
     opacity: 1,
@@ -81,12 +89,24 @@ export const END_MARKERS = {
     LINE: {src: measurehead, anchor: [0.05, 0.5], baserotation: 0}
 };
 
+export function defaultFeatureStyle() {
+    return {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle")};
+}
+
+export function defaultHighlightStyle() {
+    return {...DEFAULT_HIGHLIGHT_STYLE, ...ConfigUtils.getConfigProp("defaultHighlightStyle")};
+}
+
+export function defaultInteractionStyle() {
+    return {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle")};
+}
+
 export function computeFeatureStyle(layer, feature) {
-    return {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...layer.styleOptions, ...feature.styleOptions};
+    return {...defaultFeatureStyle(), ...layer.styleOptions, ...feature.styleOptions};
 }
 
 export function computeMeasureFeatureStyle(markerOpts) {
-    const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...markerOpts};
+    const opts = {...defaultInteractionStyle(), ...markerOpts};
     return {
         circleRadius: opts.measurePointRadius,
         strokeColor: opts.measureStrokeColor,
@@ -102,7 +122,7 @@ export function computeMeasureFeatureStyle(markerOpts) {
 }
 
 const defaultStyle = (feature, options) => {
-    const opts = {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle"), ...options};
+    const opts = {...defaultFeatureStyle(), ...options};
     const styles = [];
     styles.push(
         new ol.style.Style({
@@ -256,7 +276,7 @@ export default {
         ];
     },
     interaction: (feature, options, isSnap) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         const styleOptions = isSnap ? {
             strokeColor: opts.snapStrokeColor,
             strokeWidth: opts.snapStrokeWidth,
@@ -271,7 +291,7 @@ export default {
         return defaultStyle(feature, styleOptions);
     },
     interactionVertex: (options, isSnap) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         let strokeWidth = opts.strokeWidth;
         let vertexFill = opts.vertexFillColor;
         let vertexStroke = opts.vertexStrokeColor;
@@ -298,7 +318,7 @@ export default {
         });
     },
     measureInteractionVertex: (options) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         return new ol.style.Style({
             image: new ol.style.Circle({
                 radius: opts.measurePointRadius,
@@ -309,7 +329,7 @@ export default {
         });
     },
     sketchInteraction: (options) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         return new ol.style.Style({
             image: new ol.style.Circle({
                 fill: new ol.style.Fill({color: opts.sketchPointFillColor}),
@@ -319,7 +339,7 @@ export default {
         });
     },
     printInteraction: (options) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         return new ol.style.Style({
             geometry: opts.geometryFunction,
             fill: new ol.style.Fill({
@@ -332,7 +352,7 @@ export default {
         });
     },
     printInteractionVertex: (options) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         return new ol.style.Style({
             geometry: opts.geometryFunction,
             image: new ol.style.Circle({
@@ -348,7 +368,7 @@ export default {
         });
     },
     printInteractionBackground: (options) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         return new ol.style.Style({
             geometry: opts.geometryFunction,
             fill: new ol.style.Fill({
@@ -357,7 +377,7 @@ export default {
         });
     },
     printInteractionSeries: (options) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         return new ol.style.Style({
             geometry: opts.geometryFunction,
             stroke: new ol.style.Stroke({
@@ -367,7 +387,7 @@ export default {
         });
     },
     printInteractionSeriesIcon: (options) => {
-        const opts = {...DEFAULT_INTERACTION_STYLE, ...ConfigUtils.getConfigProp("defaultInteractionStyle"), ...options};
+        const opts = {...defaultInteractionStyle(), ...options};
         return [
             new ol.style.Style({
                 geometry: opts.geometryFunction,

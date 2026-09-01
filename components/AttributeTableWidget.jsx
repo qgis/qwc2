@@ -87,7 +87,6 @@ class AttributeTableWidget extends React.Component {
         loadedLayer: "",
         curEditConfig: null,
         curFields: null,
-        fieldTranslations: null,
         features: [],
         allFeatures: null,
         totFeatureCount: 0,
@@ -234,11 +233,11 @@ class AttributeTableWidget extends React.Component {
                         <ComboBox disabled={footbarDisabled} onChange={value => this.updateFilter("filterField", value)} value={this.state.filterField}>
                             <div disabled value="">{LocaleUtils.tr("common.select")}</div>
                             {showIdColumn ? (
-                                <div value="<id>">{this.translateFieldName(primaryKey)}</div>
+                                <div value="<id>">{this.state.curFields.find(field => field.id === primaryKey).name}</div>
                             ) : null}
                             {this.state.curFields.map(field => {
                                 if (field.id !== primaryKey) {
-                                    return (<option key={field.id} value={field.id}>{this.translateFieldName(field.name)}</option>);
+                                    return (<option key={field.id} value={field.id}>{field.name}</option>);
                                 }
                                 return null;
                             })}
@@ -443,13 +442,14 @@ class AttributeTableWidget extends React.Component {
             const [wmsName, layerName] = selectedLayer.split("#");
             const newState = {...state, ...stateChange};
             const editConfig = this.props.editConfigs[wmsName][layerName];
+            const fieldTranslations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations?.layers?.[layerName]?.fields ?? {};
             const fields = (this.props.showDisplayFieldOnly ? editConfig.fields.filter(
                 field => field.name === editConfig.displayField
             ) : editConfig.fields.filter(field => (
                 (this.props.showHiddenFields || field.constraints?.hidden !== true)
             ))).map(field => ({
                 ...field,
-                name: this.translateFieldName(field.name)
+                name: fieldTranslations?.[field.name] ?? field.name
             }));
 
             if (selectedLayer !== state.loadedLayer) {
@@ -459,7 +459,6 @@ class AttributeTableWidget extends React.Component {
                 newState.limitToExtent = state.limitToExtent;
                 newState.curEditConfig = editConfig;
                 newState.curFields = fields;
-                newState.fieldTranslations = this.props.layers.find(layer => layer.wms_name === wmsName)?.translations?.layers?.[layerName]?.fields ?? {};
             }
             newState.selectedLayer = selectedLayer;
             newState.selectedFeatures = {};
@@ -832,9 +831,6 @@ class AttributeTableWidget extends React.Component {
                 }, options
             );
         }
-    };
-    translateFieldName = (fieldName) => {
-        return this.state.fieldTranslations?.[fieldName] ?? fieldName;
     };
 }
 
