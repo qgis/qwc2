@@ -32,7 +32,7 @@ function strcmp(a, b) {
 }
 
 const ServiceLayerUtils = {
-    getWMTSLayers(capabilities, capabilitiesUrl, mapCrs) {
+    getWMTSLayers(capabilities, capabilitiesUrl) {
         if (!capabilities?.Contents) {
             return [];
         }
@@ -501,7 +501,7 @@ const ServiceLayerUtils = {
         let getLayers = null;
         if (type === "wmts") {
             getCapabilities = ServiceLayerUtils.getWMTSCapabilities;
-            getLayers = (capabilites, requestUrl) => ServiceLayerUtils.getWMTSLayers(capabilites, requestUrl, mapCrs);
+            getLayers = (capabilites, requestUrl) => ServiceLayerUtils.getWMTSLayers(capabilites, requestUrl);
         } else if (type === "wms") {
             getCapabilities = ServiceLayerUtils.getWMSCapabilities;
             getLayers = (capabilites, requestUrl) => ServiceLayerUtils.getWMSLayers(capabilites, requestUrl, true);
