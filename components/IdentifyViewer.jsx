@@ -27,7 +27,6 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
-import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook} from '../utils/PermaLinkUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
@@ -108,7 +107,6 @@ class IdentifyViewer extends React.Component {
         this.state.multiViewEnabled = props.resultMultiDisplay;
         this.selectionLayerId = uuidv4();
         this.highlightLayerId = uuidv4();
-        registerPermalinkDataStoreHook("identifyresultstate", this.storeIdentifyResults);
     }
     componentDidMount() {
         this.updateResultTree();
@@ -151,7 +149,6 @@ class IdentifyViewer extends React.Component {
         this.props.innerRef(null);
         this.props.removeLayer(this.selectionLayerId);
         this.props.removeLayer(this.highlightLayerId);
-        unregisterPermalinkDataStoreHook("identifyresultstate");
     }
     storeIdentifyResults = () => {
         return new Promise((resolve) => resolve({

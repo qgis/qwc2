@@ -34,7 +34,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MeasureUtils from '../utils/MeasureUtils';
-import {UrlParams} from '../utils/PermaLinkUtils';
+import {UrlParams, registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
@@ -176,6 +176,10 @@ class Identify extends React.Component {
         this.fileinput.addEventListener("change", this.fileSelected);
         this.viewerRef = null;
         this.pendingIdentifyFilter = null;
+        registerPermalinkDataStoreHook("identifyresultstate", this.storeIdentifyResults);
+    }
+    componentWillUnmount() {
+        unregisterPermalinkDataStoreHook("identifyresultstate");
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.theme && !prevProps.theme) {
@@ -585,7 +589,15 @@ class Identify extends React.Component {
             }
         };
     };
-    deserializeResults = (identifyResults, resultDisplayMode) => {
+    storeIdentifyResults = () => {
+        return new Promise((resolve) => resolve({
+            state: {
+                identifyResults: this.viewerRef.serializeResults(),
+                currentResultDisplayMode: this.props.resultDisplayMode
+            }
+        }));
+    };
+    deserializeResults = (identifyResults) => {
         let pendingRequests = 0;
         const importErrors = {};
         if (Array.isArray(identifyResults) || identifyResults === null) {
