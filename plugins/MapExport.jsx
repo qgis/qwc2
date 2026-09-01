@@ -38,6 +38,10 @@ import "@kayahr/text-encoding/encodings/windows-1252";
 
 /**
  * Allows exporting a selected portion of the map to a variety of formats.
+ *
+ * Unless a fixed `pageSizes` entry is selected, the export extent is drawn freely on the map and
+ * the corner handles resize it in both directions independently. Hold `Shift` while dragging a
+ * corner to preserve the aspect ratio of the selection.
  */
 class MapExport extends React.Component {
     static propTypes = {

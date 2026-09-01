@@ -90,6 +90,7 @@ export default class PrintSelection extends React.Component {
 
         this.isInteracting = false;
         this.overHandle = false;
+        this.keepAspectRatio = false;
     }
     componentDidUpdate(prevProps) {
         if (
@@ -167,16 +168,22 @@ export default class PrintSelection extends React.Component {
         this.geometryChanged();
     }
     componentDidMount() {
+        this.map.on(['pointermove', 'pointerdrag'], this.trackAspectRatioModifier);
         this.map.on('pointermove', this.setViewportCursor);
         this.map.addLayer(this.selectionLayer);
         this.addInteractions();
         this.recomputeFeature();
     }
     componentWillUnmount() {
+        this.map.un(['pointermove', 'pointerdrag'], this.trackAspectRatioModifier);
         this.map.un('pointermove', this.setViewportCursor);
         this.map.removeLayer(this.selectionLayer);
         this.removeInteractions();
     }
+    trackAspectRatioModifier = (ev) => {
+        // shift constrains a free resize to the current aspect ratio
+        this.keepAspectRatio = ev.originalEvent.shiftKey;
+    };
     setViewportCursor = (ev) => {
         if (this.isInteracting) {
             return;
@@ -589,17 +596,39 @@ export default class PrintSelection extends React.Component {
                 const center = ol.extent.getCenter(modifyGeometry.initialGeometry.getExtent());
                 const [rotation, scale] = this.calculateRotationScale(modifyGeometry.point, point, center);
 
-                const geometry = modifyGeometry.initialGeometry.clone();
+                let geometry = modifyGeometry.initialGeometry.clone();
                 if (this.props.allowRotation && isRotationVertex) {
                     geometry.rotate(rotation, center);
                 } else if (this.props.allowScaling) {
-                    geometry.scale(scale, undefined, center);
+                    if (this.props.fixedFrame === null) {
+                        // free selections resize, fixed frames scale
+                        geometry = this.resizeGeometry(modifyGeometry.initialGeometry, modifyGeometry.point, point);
+                    } else {
+                        geometry.scale(scale, undefined, center);
+                    }
                 }
                 modifyGeometry.geometry = geometry;
             }
         });
 
         return null;
+    };
+    resizeGeometry = (initialGeometry, initialPoint, point) => {
+        const extent = initialGeometry.getExtent();
+        const center = ol.extent.getCenter(extent);
+        // the corner opposite to the dragged one stays fixed
+        const anchor = [
+            initialPoint[0] > center[0] ? extent[0] : extent[2],
+            initialPoint[1] > center[1] ? extent[1] : extent[3]
+        ];
+        let corner = point;
+        if (this.keepAspectRatio && ol.extent.getWidth(extent) > 0 && ol.extent.getHeight(extent) > 0) {
+            // scaling the initial corner offset preserves the aspect ratio
+            const offset = [initialPoint[0] - anchor[0], initialPoint[1] - anchor[1]];
+            const factor = Math.max((point[0] - anchor[0]) / offset[0], (point[1] - anchor[1]) / offset[1]);
+            corner = [anchor[0] + factor * offset[0], anchor[1] + factor * offset[1]];
+        }
+        return ol.geom.polygonFromExtent(ol.extent.boundingExtent([anchor, corner]));
     };
     isPrintSeriesSelected = (entry) => {
         return this.props.printSeriesSelected.includes(entry.index.join(','));
