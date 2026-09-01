@@ -779,6 +779,10 @@ Disabled if `disableImportingLocalLayers` is set in the theme or global config.
 
 Allows exporting a selected portion of the map to a variety of formats.
 
+Unless a fixed `pageSizes` entry is selected, the export extent is drawn freely on the map and
+the corner handles resize it in both directions independently. Hold `Shift` while dragging a
+corner to preserve the aspect ratio of the selection.
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | allowedFormats | `[string]` | Whitelist of allowed export format mimetypes. If empty, supported formats are listed. Formats are sorted according to this list, and the first entry becomes the default format. Supported mimetypes are: `image/jpeg`, `image/png`, `image/png; mode=16bit`, `image/png; mode=8bit`, `image/png; mode=1bit`, `image/geotiff`, `image/tiff`, `application/dxf`, `application/pdf`. | `undefined` |
