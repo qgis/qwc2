@@ -79,7 +79,8 @@ function identifyRequestParams(layer, queryLayers, projection, params) {
             with_maptip: false,
             ...layer.dimensionValues,
             ...params
-        }
+        },
+        id: uuidv4()
     };
 }
 
@@ -236,6 +237,9 @@ const IdentifyUtils = {
         }
     },
     parseResponse(response, layer, format, clickPoint, projection) {
+        if (!response) {
+            return {};
+        }
         const decimals = CoordinatesUtils.getPrecision(projection);
         const posstr = clickPoint ? clickPoint[0].toFixed(decimals) + ", " + clickPoint[1].toFixed(decimals) : "";
         let results = {};

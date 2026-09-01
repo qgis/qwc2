@@ -160,13 +160,12 @@ class Identify extends React.Component {
         mode: 'Point',
         currentResultDisplayMode: "flat",
         identifyResults: null,
-        pendingRequests: 0,
+        pendingRequests: [],
         radius: 10,
         radiusUnits: this.props.initialRadiusUnits,
         exitTaskOnResultsClose: null,
         filterGeom: null,
-        filterGeomModifiers: {},
-        importErrors: null
+        filterGeomModifiers: {}
     };
     constructor(props) {
         super(props);
@@ -243,27 +242,13 @@ class Identify extends React.Component {
             }
         }
         if (
-            this.state.pendingRequests === 0 && this.state.identifyResults !== null &&
-            (prevState.pendingRequests > 0 || prevState.identifyResults === null)
+            this.state.pendingRequests.length === 0 && this.state.identifyResults !== null &&
+            (prevState.pendingRequests.length > 0 || prevState.identifyResults === null)
         ) {
             if (isEmpty(this.state.identifyResults) && this.props.onlyShowDialogWithResults) {
                 this.clearResults();
             }
-            if (!isEmpty(this.state.importErrors)) {
-                const errMsg = Object.entries(this.state.importErrors).map(([layerid, errors]) => {
-                    const [layerUrl, layerName] = layerid.split("#", 2);
-                    const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
-                    const layertitle = match?.sublayer?.title ?? layerName;
-                    if (errors === true) {
-                        return `- ${layertitle}: ${LocaleUtils.tr("identify.missinglayer")}`;
-                    } else {
-                        return `- ${layertitle}: ${LocaleUtils.tr("identify.featuresmissing", errors.missing.length, `${errors.key} = {${errors.missing.join(",")}}`)}`;
-                    }
-                }).join("\n");
-                // eslint-disable-next-line no-alert
-                alert(LocaleUtils.tr("identify.importerrors", errMsg));
-            }
-            this.setState({filterGeom: null, filterGeomModifiers: {}, importErrors: null});
+            this.setState({filterGeom: null, filterGeomModifiers: {}});
         }
     }
     queryPoint = (prevProps) => {
@@ -281,7 +266,7 @@ class Identify extends React.Component {
         this.setState((state) => {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
-            let pendingRequests = 0;
+            const pendingRequests = [];
             const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
             const identifyResults = this.props.click.modifiers.ctrl !== true && !appendResultsByDefault ? {} : state.identifyResults ?? {};
 
@@ -291,12 +276,9 @@ class Identify extends React.Component {
             queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
             queryableLayers.forEach(l => {
                 const request = IdentifyUtils.buildRequest(l, l.queryLayers.join(","), clickPoint, this.props.map, params);
-                ++pendingRequests;
+                pendingRequests.push(request.id);
                 IdentifyUtils.sendRequest(request, (response) => {
-                    this.setState((state2) => ({pendingRequests: state2.pendingRequests - 1}));
-                    if (response) {
-                        this.parseResult(response, l, request.params.info_format, clickPoint, this.props.click.modifiers.ctrl);
-                    }
+                    this.handleResponse(request.id, response, l, request.params.info_format, clickPoint, this.props.click.modifiers.ctrl);
                 });
             });
 
@@ -333,20 +315,17 @@ class Identify extends React.Component {
         }
         const appendResultsByDefault = this.props.appendResultsByDefault === true || (this.props.taskEnabled && this.props.appendResultsByDefault === "task");
 
-        let pendingRequests = 0;
         const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
+        const pendingRequests = [];
         const params = this.buildIdentifyParams("region_feature_count");
         const requestFilterGeom = this.getRequestFilterGeomWkt(filterGeom);
         // Querying without the filter geometry would match the whole layer
         if (requestFilterGeom) {
             queryableLayers.forEach(layer => {
                 const request = IdentifyUtils.buildFilterRequest(layer, layer.queryLayers.join(","), requestFilterGeom, this.props.map, params);
-                ++pendingRequests;
+                pendingRequests.push(request.id);
                 IdentifyUtils.sendRequest(request, (response) => {
-                    this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
-                    if (response) {
-                        this.parseResult(response, layer, request.params.info_format, center);
-                    }
+                    this.handleResponse(request.id, response, layer, request.params.info_format, center);
                 });
             });
         }
@@ -374,13 +353,15 @@ class Identify extends React.Component {
         }
         const identifyFilter = this.pendingIdentifyFilter;
         this.pendingIdentifyFilter = null;
-        this.identifyFeatures(identifyFilter);
+        this.identifyFeaturesFilter(identifyFilter);
     };
-    identifyFeatures = (identifyFilter) => {
+    identifyFeaturesFilter = (identifyFilter) => {
         const layerEntries = IdentifyUtils.parseIdentifyFilter(identifyFilter, this.props.layers, this.props.map);
         const resultDisplayMode = this.props.taskEnabled ? (this.props.taskResultDisplayMode ?? this.props.resultDisplayMode) : this.props.resultDisplayMode;
         const params = this.buildIdentifyParams("region_feature_count");
-        const requests = layerEntries.map(({layer, entries}) => {
+        let pendingRequests = [];
+        const bboxes = [];
+        layerEntries.forEach(({layer, entries}) => {
             // Start from the filters currently active on the layer, so that no feature
             // which the map filter hides is identified
             const filterParams = {...this.props.layerFilter?.filterParams};
@@ -393,32 +374,24 @@ class Identify extends React.Component {
             if (!wmsParams.FILTER) {
                 /* eslint-disable-next-line */
                 console.warn("Cannot build an identify filter for layer: " + layer.name);
-                return null;
+                return;
             }
             const queryLayers = [...new Set(entries.map(entry => entry.sublayer))].join(",");
-            return {layer: layer, request: IdentifyUtils.buildFilterRequest(layer, queryLayers, wmsParams.FILTER_GEOM, this.props.map, {...params, filter: wmsParams.FILTER})};
-        }).filter(Boolean);
-        if (isEmpty(requests)) {
-            return;
-        }
-        const bboxes = [];
-        let remaining = requests.length;
-        requests.forEach(({layer, request}) => {
+            const request = IdentifyUtils.buildFilterRequest(layer, queryLayers, wmsParams.FILTER_GEOM, this.props.map, {...params, filter: wmsParams.FILTER});
+            pendingRequests.push(request.id);
             IdentifyUtils.sendRequest(request, (response) => {
-                this.setState((state) => ({pendingRequests: state.pendingRequests - 1}));
-                if (response) {
-                    const results = this.parseResult(response, layer, request.params.info_format, null);
-                    // No click position, use the feature center
-                    Object.values(results).flat().forEach(feature => {
-                        if (feature.bbox) {
-                            bboxes.push(feature.bbox);
-                            feature.clickPos = [0.5 * (feature.bbox[0] + feature.bbox[2]), 0.5 * (feature.bbox[1] + feature.bbox[3])];
-                        } else {
-                            feature.clickPos = this.props.map.center;
-                        }
-                    });
-                }
-                if (--remaining === 0 && !isEmpty(bboxes)) {
+                const results = this.handleResponse(request.id, response, layer, request.params.info_format, null);
+                pendingRequests = pendingRequests.filter(x => x !== request.id);
+                // No click position, use the feature center
+                Object.values(results).flat().forEach(feature => {
+                    if (feature.bbox) {
+                        bboxes.push(feature.bbox);
+                        feature.clickPos = [0.5 * (feature.bbox[0] + feature.bbox[2]), 0.5 * (feature.bbox[1] + feature.bbox[3])];
+                    } else {
+                        feature.clickPos = this.props.map.center;
+                    }
+                });
+                if (pendingRequests.length === 0 && !isEmpty(bboxes)) {
                     const extent = bboxes.reduce((res, bbox) => ([
                         Math.min(res[0], bbox[0]), Math.min(res[1], bbox[1]),
                         Math.max(res[2], bbox[2]), Math.max(res[3], bbox[3])
@@ -451,7 +424,10 @@ class Identify extends React.Component {
     changeBufferUnit = (ev) => {
         this.setState({ radiusUnits: ev.target.value });
     };
-    parseResult = (response, layer, format, clickPoint, ctrlPick = false) => {
+    handleResponse = (reqId, response, layer, format, clickPoint, ctrlPick = false) => {
+        if (!this.state.pendingRequests.includes(reqId)) {
+            return {};
+        }
         const newResults = IdentifyUtils.parseResponse(response, layer, format, clickPoint, this.props.map.projection);
         // Merge with previous
         this.setState((state) => {
@@ -468,7 +444,10 @@ class Identify extends React.Component {
                     return result;
                 }, identifyResults[key] || []);
             });
-            return {identifyResults: identifyResults};
+            return {
+                identifyResults: identifyResults,
+                pendingRequests: state.pendingRequests.filter(x => x !== reqId)
+            };
         });
         return newResults;
     };
@@ -492,7 +471,7 @@ class Identify extends React.Component {
     };
     clearResults = () => {
         this.props.removeMarker('identify');
-        this.setState({identifyResults: null, pendingRequests: 0, filterGeom: null, filterGeomModifiers: {}});
+        this.setState({identifyResults: null, pendingRequests: [], filterGeom: null, filterGeomModifiers: {}});
     };
     updateRadius = (radius, units) => {
         this.setState(state => ({
@@ -598,56 +577,67 @@ class Identify extends React.Component {
         }));
     };
     deserializeResults = (identifyResults) => {
-        let pendingRequests = 0;
+        let pendingRequests = [];
         const importErrors = {};
         if (Array.isArray(identifyResults) || identifyResults === null) {
             identifyResults = {};
         }
-        const queryLayer = (layerid, layerresults, layer, layerName) => {
+        const displayErrorsIfDone = (finishedRequest) => {
+            pendingRequests = pendingRequests.filter(x => x !== finishedRequest);
+            if (pendingRequests.length === 0 && !isEmpty(importErrors)) {
+                const errMsg = Object.entries(importErrors).map(([layerid, errors]) => {
+                    const [layerUrl, layerName] = layerid.split("#", 2);
+                    const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+                    const layertitle = match?.sublayer?.title ?? layerName;
+                    if (errors === true) {
+                        return `- ${layertitle}: ${LocaleUtils.tr("identify.missinglayer")}`;
+                    } else {
+                        return `- ${layertitle}: ${LocaleUtils.tr("identify.featuresmissing", errors.missing.length, `${errors.key} = {${errors.missing.join(",")}}`)}`;
+                    }
+                }).join("\n");
+                // eslint-disable-next-line no-alert
+                alert(LocaleUtils.tr("identify.importerrors", errMsg));
+            }
+        };
+        const queryLayer = (reqId, layerid, layerresults, layer, layerName) => {
             const values = layerresults.values.map(x => (typeof x === "string" ? `"${x}"` : x)).join(" , ");
             const filter = {filter: `${layerName}:"${layerresults.key}" IN ( ${values} )`};
             const request = IdentifyUtils.buildFilterRequest(layer, layerName, undefined, this.props.map, filter);
             IdentifyUtils.sendRequest(request, (response) => {
-                if (response) {
-                    const results = this.parseResult(response, layer, request.params.info_format, [0, 0], false);
-                    const restoredkeys = new Set(results[layerName].map(f => String(f.id)));
+                const results = this.handleResponse(reqId, response, layer, request.params.info_format, [0, 0], false);
+                if (layerName in results) {
+                    const restoredkeys = new Set((results[layerName]).map(f => String(f.id)));
                     const missing = layerresults.values.filter(x => !restoredkeys.has(String(x)));
                     if (missing.length > 0) {
-                        this.setState(state => ({
-                            pendingRequests: state.pendingRequests - 1,
-                            importErrors: {
-                                ...state.importErrors,
-                                [layerid]: {key: layerresults.key, missing: missing}
-                            }
-                        }));
+                        importErrors[layerid] = {key: layerresults.key, missing: missing};
                     }
                 } else {
-                    this.setState(state => ({
-                        pendingRequests: state.pendingRequests - 1,
-                        importErrors: {...state.importErrors, [layerid]: true}
-                    }));
+                    importErrors[layerid] = true;
                 }
+                displayErrorsIfDone(reqId);
             });
         };
         Object.entries(identifyResults).forEach(([layerid, layerresults]) => {
             const [layerUrl, layerName] = layerid.split("#", 2);
             const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
             if (layerresults.key && layerresults.values) {
-                ++pendingRequests;
                 delete identifyResults[layerid]; // Features will be re-queried
                 if (match) {
-                    queryLayer(layerid, layerresults, match.layer, layerName);
+                    const reqId = uuidv4();
+                    pendingRequests.push(reqId);
+                    queryLayer(reqId, layerid, layerresults, match.layer, layerName);
                 } else {
+                    const loadLayerReqId = uuidv4();
+                    pendingRequests.push(loadLayerReqId);
                     ServiceLayerUtils.findLayers("wms", layerUrl, [{id: uuidv4(), name: layerName}], this.props.map.projection, (id, layer) => {
                         if (layer) {
                             this.props.addLayer(layer);
-                            queryLayer(layerid, layerresults, layer, layerName);
+                            queryLayer(loadLayerReqId, layerid, layerresults, layer, layerName);
                         } else {
-                            this.setState(state => ({
-                                pendingRequests: state.pendingRequests - 1,
-                                importErrors: {...state.importErrors, [layerid]: true}
-                            }));
+                            importErrors[layerid] = true;
+                            this.setState(state => ({pendingRequests: state.pendingRequests.filter(x => x !== loadLayerReqId)}));
                         }
+                        displayErrorsIfDone(loadLayerReqId);
                     });
                 }
             } else {
@@ -661,21 +651,21 @@ class Identify extends React.Component {
                 }
             }
         });
-        if (pendingRequests === 0 && isEmpty(identifyResults) && isEmpty(importErrors)) {
+        if (pendingRequests.length === 0 && isEmpty(identifyResults) && isEmpty(importErrors)) {
             /* eslint-disable-next-line no-alert */
             alert(LocaleUtils.tr("identify.nothingtoimport"));
             identifyResults = null;
         }
-        this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests, importErrors: importErrors, currentResultDisplayMode: resultDisplayMode});
+        this.setState({identifyResults: identifyResults, pendingRequests: pendingRequests, currentResultDisplayMode: resultDisplayMode});
     };
     render() {
         let resultWindow = null;
         if (this.props.onlyShowDialogWithResults && isEmpty(this.state.identifyResults)) {
             // pass
-        } else if (this.state.pendingRequests > 0 || this.state.identifyResults !== null) {
+        } else if (this.state.pendingRequests.length > 0 || this.state.identifyResults !== null) {
             let body = null;
             if (isEmpty(this.state.identifyResults)) {
-                if (this.state.pendingRequests > 0) {
+                if (this.state.pendingRequests.length > 0) {
                     body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("identify.querying")}</span></div>);
                 } else {
                     body = (<div className="identify-body"><span className="identify-body-message">{LocaleUtils.tr("common.noresults")}</span></div>);
@@ -703,7 +693,7 @@ class Identify extends React.Component {
                 );
             }
             resultWindow = (
-                <ResizeableWindow busyIcon={this.state.pendingRequests > 0} dockable={this.props.geometry.side} icon="info-sign"
+                <ResizeableWindow busyIcon={this.state.pendingRequests.length > 0} dockable={this.props.geometry.side} icon="info-sign"
                     initialHeight={this.props.geometry.initialHeight} initialWidth={this.props.geometry.initialWidth}
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="IdentifyWindow"
