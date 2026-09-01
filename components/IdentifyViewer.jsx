@@ -971,7 +971,7 @@ class IdentifyViewer extends React.Component {
         let zoom = 0;
         const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
         if (result.bbox[0] !== result.bbox[2] && result.bbox[1] !== result.bbox[3]) {
-            zoom = Math.max(0, MapUtils.getZoomForExtent(result.bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
+            zoom = MapUtils.getZoomForExtent(result.bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom);
         } else {
             zoom = maxZoom;
         }

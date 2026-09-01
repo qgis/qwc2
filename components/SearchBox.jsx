@@ -932,7 +932,7 @@ class SearchBox extends React.Component {
         } else {
             const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || this.props.searchOptions.minScaleDenom);
             if (bbox[0] !== bbox[2] && bbox[1] !== bbox[3]) {
-                zoom = Math.max(0, MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom + 1) - 1);
+                zoom = MapUtils.getZoomForExtent(bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom);
             } else {
                 zoom = maxZoom;
             }
