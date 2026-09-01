@@ -11,11 +11,11 @@ import Proj4js from 'proj4';
 
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
-import {decodeDxf, unescapeDxfUnicode} from './DxfUtils';
+import {createDxfColorResolver, decodeDxf, unescapeDxfUnicode} from './DxfUtils';
 import LocaleUtils from './LocaleUtils';
 import VectorLayerUtils from './VectorLayerUtils';
 
-// Stroke color for DXF entities without an own color
+// Stroke color for DXF entities left at the ACI default color
 const DXF_DEFAULT_COLOR = '#1565C0';
 
 const FileImportUtils = {
@@ -105,12 +105,17 @@ const FileImportUtils = {
         }
     },
     // DXF carries no CRS, the coordinates are taken to be in the passed crs. Entities without a
-    // polyline representation (i.e. TEXT/MTEXT) are dropped, splines are approximated.
+    // polyline representation (i.e. TEXT/MTEXT and HATCH) are dropped, splines are approximated.
     addDXFLayer: async(filename, data, crs, addLayerFeatures) => {
-        const {Helper} = await import('dxf');
+        const {colors, Helper} = await import('dxf');
         let polylines = [];
+        let entities = [];
+        let resolveColor = null;
         try {
-            polylines = new Helper(data).toPolylines().polylines;
+            const helper = new Helper(data);
+            polylines = helper.toPolylines().polylines;
+            entities = helper.denormalised;
+            resolveColor = createDxfColorResolver(data, helper.parsed, colors, DXF_DEFAULT_COLOR);
         } catch (e) {
             /* eslint-disable-next-line */
             console.warn(e);
@@ -118,20 +123,23 @@ const FileImportUtils = {
             alert(LocaleUtils.tr("importlayer.dxfparsefailed"));
             return;
         }
-        const features = polylines.filter(polyline => (polyline.vertices || []).length >= 2).map((polyline, idx) => {
-            // Color 0 means "by layer" in DXF and surfaces as black, which is invisible on dark backgrounds
-            const rgb = polyline.rgb || [0, 0, 0];
-            const color = rgb.every(v => v === 0) ? DXF_DEFAULT_COLOR : ("#" + rgb.map(v => v.toString(16).padStart(2, "0")).join(""));
+        // toPolylines() maps the denormalised entities one to one
+        const entitiesAligned = entities.length === polylines.length;
+        const features = polylines.map((polyline, idx) => ({
+            entity: entitiesAligned ? entities[idx] : null,
+            polyline: polyline
+        })).filter(entry => (entry.polyline.vertices || []).length >= 2).map((entry, idx) => {
+            const color = entry.entity ? resolveColor(entry.entity) : DXF_DEFAULT_COLOR;
             return {
                 type: "Feature",
                 id: idx,
                 crs: crs,
                 geometry: {
                     type: "LineString",
-                    coordinates: polyline.vertices.map(vertex => [vertex[0], vertex[1]])
+                    coordinates: entry.polyline.vertices.map(vertex => [vertex[0], vertex[1]])
                 },
                 properties: {
-                    layer: unescapeDxfUnicode(polyline.layer?.name ?? "")
+                    layer: unescapeDxfUnicode(entry.polyline.layer?.name ?? "")
                 },
                 styleName: "default",
                 styleOptions: {

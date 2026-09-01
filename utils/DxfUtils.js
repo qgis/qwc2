@@ -73,6 +73,55 @@ export function unescapeDxfUnicode(text) {
     return text.replace(/\\U\+([0-9A-Fa-f]{4})/g, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
 }
 
+const COLOR_BYBLOCK = 0;
+const COLOR_BYLAYER = 256;
+
+const rgbToHex = (rgb) => "#" + rgb.map(v => v.toString(16).padStart(2, "0")).join("");
+
+// AutoCAD draws on black, so an ACI black or white mostly means "no color was chosen"
+const isDefaultAciColor = (rgb) => rgb.every(v => v === 0) || rgb.every(v => v === 255);
+
+// dxf has no handler for group code 420 (24 bit true color), so it has to be read off the raw file
+function extractTrueColors(text) {
+    const lines = text.split(/\r\n|\r|\n/);
+    const trueColors = {};
+    let handle = null;
+    for (let i = 0; i + 1 < lines.length; i += 2) {
+        const code = lines[i].trim();
+        if (code === "0") {
+            handle = null;
+        } else if (code === "5") {
+            handle = lines[i + 1].trim();
+        } else if (code === "420" && handle !== null) {
+            const value = parseInt(lines[i + 1].trim(), 10);
+            if (value >= 0) {
+                trueColors[handle] = [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+            }
+        }
+    }
+    return trueColors;
+}
+
+// Returns a resolveColor(entity) yielding the hex color to draw an entity in
+export function createDxfColorResolver(text, parsed, colors, defaultColor) {
+    const trueColors = extractTrueColors(text);
+    const layerTables = parsed.tables?.layers ?? {};
+    return (entity) => {
+        // An own 24 bit color is a deliberate choice and is used verbatim, black included
+        const trueColor = trueColors[entity.handle];
+        if (trueColor) {
+            return rgbToHex(trueColor);
+        }
+        let colorNumber = entity.colorNumber;
+        // BYBLOCK should take the color of the placing INSERT, which denormalise() drops, so it falls back to the layer as well
+        if (colorNumber === undefined || colorNumber === COLOR_BYLAYER || colorNumber === COLOR_BYBLOCK) {
+            colorNumber = layerTables[entity.layer]?.colorNumber;
+        }
+        const rgb = colors[colorNumber] ?? colors[0];
+        return isDefaultAciColor(rgb) ? defaultColor : rgbToHex(rgb);
+    };
+}
+
 export function explodeDxf(text) {
     const tuples = text.replace(/\s+$/, '').split(/\r\n|\r|\n/g).flatMap((_, i, a) => i % 2 ? [] : [a.slice(i, i + 2).map(x => x.trim())]);
     let maxHandle = 100; // Value in QGIS
