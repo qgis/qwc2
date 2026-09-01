@@ -70,8 +70,6 @@ class Identify extends React.Component {
         currentIdentifyTool: PropTypes.string,
         currentSearchResult: PropTypes.object,
         currentTask: PropTypes.string,
-        /** Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. */
-        customExporters: PropTypes.array,
         /** Whether to enable the aggregated report download button. */
         enableAggregatedReports: PropTypes.bool,
         /** Whether to enable the possibility select results for comparison. */
@@ -143,7 +141,6 @@ class Identify extends React.Component {
         enableExport: true,
         exportGeometry: true,
         clearResultsOnClose: true,
-        customExporters: [],
         longAttributesDisplay: 'wrap',
         resultDisplayMode: 'flat',
         resultGridSize: 200,
@@ -680,7 +677,6 @@ class Identify extends React.Component {
                     <IdentifyViewer
                         attributeCalculator={this.props.attributeCalculator}
                         attributeTransform={this.props.attributeTransform}
-                        customExporters={this.props.customExporters}
                         enableAggregatedReports={this.props.enableAggregatedReports}
                         enableCompare={this.props.enableCompare}
                         enableExport={this.props.enableExport}

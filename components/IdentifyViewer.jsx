@@ -46,7 +46,6 @@ class IdentifyViewer extends React.Component {
         attributeTransform: PropTypes.func,
         changeLayerProperty: PropTypes.func,
         collapsible: PropTypes.bool,
-        customExporters: PropTypes.array,
         enableAggregatedReports: PropTypes.bool,
         enableCompare: PropTypes.bool,
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
@@ -74,7 +73,6 @@ class IdentifyViewer extends React.Component {
     };
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
-        customExporters: [],
         attributeCalculator: (/* layer, feature */) => { return []; },
         attributeTransform: (name, value /* , layer, feature */) => value,
         enableAggregatedReports: true,
@@ -839,7 +837,6 @@ class IdentifyViewer extends React.Component {
     getExporters = () => {
         return [
             ...IdentifyExporters,
-            ...this.props.customExporters,
             ...Object.values(window.qwc2?.__identifyExportes || [])
         ];
     };

@@ -601,7 +601,6 @@ for customized queries and templates for the result presentation.
 | attributeTransform | `func` | Optional function for transforming attribute values. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `undefined` |
 | availableRegionModes | `[string]` | Available region identify modes. | `['Region', 'Radius', 'Circle', 'Rectangle']` |
 | clearResultsOnClose | `bool` | Whether to clear the identify results when exiting the identify tool. | `true` |
-| customExporters | `array` | Optional list of custom exporters to offer along with the built-in exporters. See js/IdentifyExtensions.js for details. This prop can be specified in the appConfig.js cfg section. | `[]` |
 | enableAggregatedReports | `bool` | Whether to enable the aggregated report download button. | `true` |
 | enableCompare | `bool` | Whether to enable the possibility select results for comparison. | `true` |
 | enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. | `true` |
