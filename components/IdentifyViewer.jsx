@@ -117,9 +117,6 @@ class IdentifyViewer extends React.Component {
             this.updateResultTree();
         }
 
-        if (prevState.currentResult !== this.state.currentResult || prevState.resultTree !== this.state.resultTree || this.state.currentPage !== prevState.currentPage) {
-            this.setHighlightedFeatures(this.state.currentResult ? [this.getCurrentResultFeature()] : null);
-        }
         // Scroll to selected result
         if (this.state.currentResult && this.state.currentResult !== prevState.currentResult &&
         this.resultsTreeRef && this.currentResultElRef && this.scrollIntoView) {
@@ -140,6 +137,10 @@ class IdentifyViewer extends React.Component {
                 };
                 this.props.addLayerFeatures(layer, Object.values(resultTree).flat(), true);
             }
+        }
+        if (this.state.currentResult !== prevState.currentResult) {
+            // Update current result highlighting
+            this.setHighlightedFeatures(null);
         }
         if (this.state.multiViewEnabled !== prevState.multiViewEnabled) {
             this.computePageSize(this.bodyEl.getBoundingClientRect());
@@ -196,8 +197,12 @@ class IdentifyViewer extends React.Component {
         });
     };
     setHighlightedFeatures = (features) => {
-        if (isEmpty(features) && !isEmpty(this.state.tableSelection)) {
-            features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
+        if (isEmpty(features)) {
+            if (!isEmpty(this.state.tableSelection)) {
+                features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
+            } else if (this.state.currentResult) {
+                features = [this.getCurrentResultFeature()];
+            }
         }
         if (!isEmpty(features)) {
             features = features.filter(f => f.geometry).map(f => ({id: f.id, geometry: f.geometry}));
@@ -301,7 +306,7 @@ class IdentifyViewer extends React.Component {
                     <div key={layerid}>
                         <div className="identify-results-tree-entry"
                             onMouseEnter={() => this.setHighlightedFeatures(features)}
-                            onMouseLeave={() => this.setHighlightedFeatures(this.state.currentResult ? [this.getCurrentResultFeature()] : null)}
+                            onMouseLeave={() => this.setHighlightedFeatures(null)}
                         >
                             <span onClick={() => this.toggleExpanded(layerid)}>
                                 <Icon icon={this.state.collapsedLayers.has(layerid) ? "expand" : "collapse"} /> {features[0].layertitle}
@@ -318,7 +323,7 @@ class IdentifyViewer extends React.Component {
                                     return (
                                         <div className="identify-results-tree-entry" key={feature.id}
                                             onMouseEnter={() => this.setHighlightedFeatures([feature])}
-                                            onMouseLeave={() => this.setHighlightedFeatures(this.state.currentResult ? [this.getCurrentResultFeature()] : null)}
+                                            onMouseLeave={() => this.setHighlightedFeatures(null)}
                                         >
                                             <span className={active ? "identify-results-tree-entry-active" : ""} onClick={()=> this.setCurrentResult(layerid, feature.id)} ref={ref}>
                                                 {feature.displayname}
