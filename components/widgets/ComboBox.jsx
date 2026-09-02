@@ -66,7 +66,7 @@ export default class ComboBox extends React.Component {
         const onClick = this.props.readOnly || this.props.disabled || isEmpty(children) ? null : () => this.setState(state => ({popup: !state.popup}));
         return (
             <div className={className} style={this.props.style}>
-                {this.props.name && (<input name={this.props.name} required={this.props.required} type="hidden" value={this.props.value} />)}
+                {this.props.name && (<input name={this.props.name} required={this.props.required} value={this.props.value} />)}
                 <div className="combobox-button" onClick={onClick} onKeyDown={MiscUtils.checkKeyActivate} ref={el => { this.el = el; }} tabIndex={0}>
                     <span className="combobox-button-content">
                         {activeOption}
