@@ -151,14 +151,6 @@ class IdentifyViewer extends React.Component {
         this.props.removeLayer(this.selectionLayerId);
         this.props.removeLayer(this.highlightLayerId);
     }
-    storeIdentifyResults = () => {
-        return new Promise((resolve) => resolve({
-            state: {
-                identifyResults: this.serializeResults(),
-                currentResultDisplayMode: this.props.resultDisplayMode
-            }
-        }));
-    };
     serializeResults = () => {
         return Object.fromEntries(Object.entries(this.state.resultTree).map(([layerid, features]) => {
             const [layerUrl, layerName] = layerid.split("#", 2);
