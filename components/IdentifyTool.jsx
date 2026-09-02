@@ -248,6 +248,7 @@ class IdentifyTool extends React.Component {
         const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
         const poly = filterGeom.coordinates[0];
         if (poly.length < 3) {
+            this.setState({filterGeom: null, filterGeomModifiers: {}});
             return;
         }
 
@@ -255,6 +256,7 @@ class IdentifyTool extends React.Component {
         const requestFilterGeom = this.getRequestFilterGeomWkt(filterGeom);
         // Querying without the filter geometry would match the whole layer
         if (!requestFilterGeom) {
+            this.setState({filterGeom: null, filterGeomModifiers: {}});
             return;
         }
         queryableLayers.forEach(layer => {
