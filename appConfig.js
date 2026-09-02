@@ -24,6 +24,7 @@ import CookiePopupPlugin from './plugins/CookiePopup';
 import EditingPlugin from './plugins/Editing';
 import FeatureFormPlugin from './plugins/FeatureForm';
 import FeatureSearchPlugin from './plugins/FeatureSearch';
+import FeatureSelectionPlugin from './plugins/FeatureSelection';
 import HelpPlugin from './plugins/Help';
 import HomeButtonPlugin from './plugins/HomeButton';
 import IdentifyPlugin from './plugins/Identify';
@@ -96,6 +97,7 @@ export default {
             CyclomediaPlugin: lazy(() => import('./plugins/Cyclomedia')),
             EditingPlugin: EditingPlugin(/* CustomEditingInterface */),
             FeatureFormPlugin: FeatureFormPlugin(/* CustomEditingInterface */),
+            FeatureSelectionPlugin: FeatureSelectionPlugin,
             GeometryDigitizerPlugin: lazy(() => import('./plugins/GeometryDigitizer')),
             HeightProfilePlugin: lazy(() => import('./plugins/HeightProfile')),
             HelpPlugin: HelpPlugin(),

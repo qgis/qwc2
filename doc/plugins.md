@@ -12,6 +12,7 @@ Plugin reference
 * [Editing](#editing)
 * [FeatureForm](#featureform)
 * [FeatureSearch](#featuresearch)
+* [FeatureSelection](#featureselection)
 * [GeometryDigitizer](#geometrydigitizer)
 * [HeightProfile](#heightprofile)
 * [Help](#help)
@@ -497,6 +498,38 @@ See [Configuring the QGIS feature search](../../topics/Search/#configuring-the-q
 |----------|------|-------------|---------------|
 | enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
+
+## FeatureSelection<a name="featureselection"></a>
+
+Displays queried feature attributes.
+
+This plugin offers basically the same functionality as the Identify plugin, but as dedicated tool.
+In particular with `clearResultsOnClose: false`, it allows managing a persistent list of selected features,
+while still allowing to transiently identify features with the Identify plugin.
+
+| Property | Type | Description | Default value |
+|----------|------|-------------|---------------|
+| appendResultsByDefault | `bool` | Whether to append results by default (without having to press `CTRL` when clicking). | `undefined` |
+| availableRegionModes | `[string]` | Available region identify modes. | `['Region', 'Radius', 'Circle', 'Rectangle']` |
+| clearResultsOnClose | `bool` | Whether to clear the identify results when exiting the identify tool. | `true` |
+| enableAggregatedReports | `bool` | Whether to enable the aggregated report download button. | `true` |
+| enableCompare | `bool` | Whether to enable the possibility select results for comparison. | `true` |
+| enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. | `true` |
+| exitTaskOnResultsClose | `bool` | Whether to clear the task when the results window is closed. | `undefined` |
+| exportGeometry | `bool` | Whether to include the geometry in exported features. Default: `true`. | `true` |
+| geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`  minimizeable: bool,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX).<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined<br />- `side`: undefined<br />- `minimizeable`: undefined | `{`<br />`    initialWidth: 240,`<br />`    initialHeight: 320,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: false,`<br />`    side: 'left',`<br />`    minimizeable: false`<br />`}` |
+| highlightAllResults | `bool` | Whether to highlight all results if no result is hovered. | `true` |
+| initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. | `'m'` |
+| longAttributesDisplay | `{"wrap", "ellipsis"}` | How to handle long attribute names / values. | `'wrap'` |
+| onlyShowDialogWithResults | `bool` | Whether to only show the results dialog if there are results to display. | `undefined` |
+| params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` is supported. | `undefined` |
+| replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
+| resultDisplayMode | `{"tree", "flat", "paginated", "table"}` | Result display mode. | `'flat'` |
+| resultGridSize | `number` | Target cell size of the result grid in comparison mode. | `200` |
+| resultMultiDisplay | `bool` | Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. | `false` |
+| showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
+| showLayerTitles | `bool` | Whether to prefix the identify result titles with the respecitve layer name. | `true` |
+| skipEmptyFeatureAttributes | `bool` | Whether to skip empty feature attributes. | `undefined` |
 
 ## GeometryDigitizer<a name="geometrydigitizer"></a>
 
