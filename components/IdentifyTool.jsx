@@ -106,6 +106,8 @@ class IdentifyTool extends React.Component {
         showLayerSelector: PropTypes.bool,
         /** Whether to prefix the identify result titles with the respecitve layer name. */
         showLayerTitles: PropTypes.bool,
+        /** Whether to show the point query marker.  */
+        showPointQueryMarker: PropTypes.bool,
         /** Whether to skip empty feature attributes. */
         skipEmptyFeatureAttributes: PropTypes.bool,
         startupParams: PropTypes.object,
@@ -119,7 +121,8 @@ class IdentifyTool extends React.Component {
         zoomToPoint: PropTypes.func
     };
     static defaultProps = {
-        setToolRef: () => {}
+        setToolRef: () => {},
+        showPointQueryMarker: true
     };
     state = {
         mode: 'Point',
@@ -139,6 +142,7 @@ class IdentifyTool extends React.Component {
         this.viewerRef = null;
         this.pendingIdentifyFilter = null;
         this.permalinkStateKey = this.props.taskId.toLowerCase() + "resultstate";
+        this.markerid = uuidv4();
         registerPermalinkDataStoreHook(this.permalinkStateKey, this.storeIdentifyResults);
         props.setToolRef(this);
     }
@@ -202,7 +206,9 @@ class IdentifyTool extends React.Component {
         return this.props.click.coordinate;
     };
     identifyPoint = (clickPoint) => {
-        this.props.addMarker('identify', clickPoint, '', this.props.map.projection);
+        if (this.props.showPointQueryMarker) {
+            this.props.addMarker(this.markerid, clickPoint, '', this.props.map.projection);
+        }
         this.setState((state) => {
             // Remove any search selection layer to avoid confusion
             this.props.removeLayer("searchselection");
@@ -244,7 +250,9 @@ class IdentifyTool extends React.Component {
         });
     };
     identifyRegion = (filterGeom, center) => {
-        this.props.removeMarker('identify');
+        if (this.props.showPointQueryMarker) {
+            this.props.removeMarker(this.markerid);
+        }
         const queryableLayers = IdentifyUtils.getQueryLayers(this.props.layers, this.props.map);
         const poly = filterGeom.coordinates[0];
         if (poly.length < 3) {
@@ -385,7 +393,9 @@ class IdentifyTool extends React.Component {
         }
     };
     clearResults = () => {
-        this.props.removeMarker('identify');
+        if (this.props.showPointQueryMarker) {
+            this.props.removeMarker(this.markerid);
+        }
         this.setState({identifyResults: null, pendingRequests: [], filterGeom: null, filterGeomModifiers: {}});
     };
     updateRadius = (radius, units) => {

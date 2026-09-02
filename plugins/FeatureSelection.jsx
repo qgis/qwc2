@@ -126,6 +126,7 @@ class FeatureSelection extends React.Component {
                 resultMultiDisplay={this.props.resultMultiDisplay}
                 showLayerSelector={this.props.showLayerSelector}
                 showLayerTitles={this.props.showLayerTitles}
+                showPointQueryMarker={false}
                 skipEmptyFeatureAttributes={this.props.skipEmptyFeatureAttributes}
                 taskId="FeatureSelection"
                 toolIcon="selectbox"
