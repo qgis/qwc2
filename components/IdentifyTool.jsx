@@ -90,6 +90,8 @@ class IdentifyTool extends React.Component {
         onlyShowDialogWithResults: PropTypes.bool,
         /** Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` is supported. */
         params: PropTypes.object,
+        /** Whether to persist the results when the window is closed. Only relevant if `clearResultsOnClose` is `false`. */
+        persistResultsOnWindowClose: PropTypes.bool,
         removeLayer: PropTypes.func,
         removeMarker: PropTypes.func,
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
@@ -125,6 +127,7 @@ class IdentifyTool extends React.Component {
         showPointQueryMarker: true
     };
     state = {
+        resultsVisible: false,
         mode: 'Point',
         identifyResults: null,
         pendingRequests: [],
@@ -246,7 +249,7 @@ class IdentifyTool extends React.Component {
                     }
                 });
             }
-            return {identifyResults: identifyResults, pendingRequests: pendingRequests};
+            return {identifyResults: identifyResults, pendingRequests: pendingRequests, resultsVisible: true};
         });
     };
     identifyRegion = (filterGeom, center) => {
@@ -280,7 +283,7 @@ class IdentifyTool extends React.Component {
         });
         this.setState(state => {
             const identifyResults = (state.filterGeomModifiers.ctrl || this.props.appendResultsByDefault) ? (state.identifyResults ?? {}) : {};
-            return {identifyResults: identifyResults, pendingRequests: [...pendingRequests]};
+            return {identifyResults: identifyResults, pendingRequests: [...pendingRequests], resultsVisible: true};
         });
     };
     identifyFeaturesFilter = (identifyFilter) => {
@@ -332,7 +335,7 @@ class IdentifyTool extends React.Component {
                 }
             });
         });
-        this.setState({identifyResults: {}, pendingRequests: pendingRequests});
+        this.setState({identifyResults: {}, pendingRequests: pendingRequests, resultsVisible: true});
     };
     getRequestFilterGeomWkt = (identifyGeom) => {
         const sourceFilterGeom = this.props.layerFilter?.filterGeom;
@@ -373,13 +376,14 @@ class IdentifyTool extends React.Component {
             }
             return {
                 identifyResults: identifyResults,
-                pendingRequests: state.pendingRequests.filter(x => x !== reqId)
+                pendingRequests: pendingRequests,
+                resultsVisible: true
             };
         });
         return newResults;
     };
     onShow = (mode, data) => {
-        this.setState({mode: mode || 'Point'});
+        this.setState({mode: mode || 'Point', resultsVisible: true});
         if (mode === "Point" && data?.pos) {
             this.identifyPoint(data.pos);
         }
@@ -391,7 +395,11 @@ class IdentifyTool extends React.Component {
         }
     };
     onWindowClose = () => {
-        this.clearResults();
+        if (this.props.persistResultsOnWindowClose) {
+            this.setState({resultsVisible: false});
+        } else {
+            this.clearResults();
+        }
         if (this.props.task.id === this.props.taskId && (this.props.task.data?.exitTaskOnResultsClose || this.props.exitTaskOnResultsClose)) {
             this.props.setCurrentTask(null);
         }
@@ -523,7 +531,7 @@ class IdentifyTool extends React.Component {
             alert(LocaleUtils.tr("identify.nothingtoimport"));
             identifyResults = null;
         }
-        this.setState({identifyResults: identifyResults, pendingRequests: [...pendingRequests]});
+        this.setState({identifyResults: identifyResults, pendingRequests: [...pendingRequests], resultsVisible: true});
     };
     renderBody = () => {
         const buttons = [
@@ -590,7 +598,7 @@ class IdentifyTool extends React.Component {
         let resultWindow = null;
         if (this.props.onlyShowDialogWithResults && isEmpty(this.state.identifyResults)) {
             // pass
-        } else if (this.state.pendingRequests.length > 0 || this.state.identifyResults !== null) {
+        } else if (this.state.identifyResults) {
             let body = null;
             if (isEmpty(this.state.identifyResults)) {
                 if (this.state.pendingRequests.length > 0) {
@@ -614,6 +622,7 @@ class IdentifyTool extends React.Component {
                         resultDisplayMode={this.props.resultDisplayMode}
                         resultGridSize={this.props.resultGridSize}
                         resultMultiDisplay={this.props.resultMultiDisplay}
+                        showHighlight={this.state.resultsVisible}
                         showLayerSelector={this.props.showLayerSelector}
                         showLayerTitles={this.props.showLayerTitles}
                         skipEmptyFeatureAttributes={this.props.skipEmptyFeatureAttributes}
@@ -626,7 +635,7 @@ class IdentifyTool extends React.Component {
                     initialX={this.props.geometry.initialX} initialY={this.props.geometry.initialY}
                     initiallyDocked={this.props.geometry.initiallyDocked} key="IdentifyResultsWindow"
                     minimizeable={this.props.geometry.minimizeable} onClose={this.onWindowClose}
-                    title={this.props.toolTitle}
+                    title={this.props.toolTitle} visible={this.state.resultsVisible}
                 >
                     {body}
                 </ResizeableWindow>

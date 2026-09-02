@@ -61,6 +61,8 @@ class FeatureSelection extends React.Component {
         onlyShowDialogWithResults: PropTypes.bool,
         /** Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` is supported. */
         params: PropTypes.object,
+        /** Whether to persist the results when the window is closed. Only relevant if `clearResultsOnClose` is `false`. */
+        persistResultsOnWindowClose: PropTypes.bool,
         /** Whether to replace an attribute value containing an URL to an image with an inline image. */
         replaceImageUrls: PropTypes.bool,
         /** Result display mode. */
@@ -120,6 +122,7 @@ class FeatureSelection extends React.Component {
                 longAttributesDisplay={this.props.longAttributesDisplay}
                 onlyShowDialogWithResults={this.props.onlyShowDialogWithResults}
                 params={this.props.params}
+                persistResultsOnWindowClose={this.props.persistResultsOnWindowClose}
                 replaceImageUrls={this.props.replaceImageUrls}
                 resultDisplayMode={this.props.resultDisplayMode}
                 resultGridSize={this.props.resultGridSize}

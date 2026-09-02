@@ -523,6 +523,7 @@ while still allowing to transiently identify features with the Identify plugin.
 | longAttributesDisplay | `{"wrap", "ellipsis"}` | How to handle long attribute names / values. | `'wrap'` |
 | onlyShowDialogWithResults | `bool` | Whether to only show the results dialog if there are results to display. | `undefined` |
 | params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` is supported. | `undefined` |
+| persistResultsOnWindowClose | `bool` | Whether to persist the results when the window is closed. Only relevant if `clearResultsOnClose` is `false`. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
 | resultDisplayMode | `{"tree", "flat", "paginated", "table"}` | Result display mode. | `'flat'` |
 | resultGridSize | `number` | Target cell size of the result grid in comparison mode. | `200` |
