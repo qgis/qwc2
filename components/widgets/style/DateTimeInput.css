@@ -1,7 +1,17 @@
+div.DateTimeInput {
+    position: relative;
+}
+
 div.DateTimeInput > input[type=date] {
     min-width: 16ch;
 }
 
 div.DateTimeInput > input[type=time] {
     min-width: 11ch;
+}
+
+div.DateTimeInput > input[type=text] {
+    position: absolute;
+    inset: 0;
+    z-index: -10000;
 }
