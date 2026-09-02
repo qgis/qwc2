@@ -61,6 +61,7 @@ class IdentifyViewer extends React.Component {
         resultGridSize: PropTypes.number,
         resultMultiDisplay: PropTypes.bool,
         setActiveLayerInfo: PropTypes.func,
+        showHighlight: PropTypes.bool,
         showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
         skipEmptyFeatureAttributes: PropTypes.bool,
@@ -77,6 +78,7 @@ class IdentifyViewer extends React.Component {
         resultMultiDisplay: false,
         showLayerTitles: true,
         showLayerSelector: true,
+        showHighlight: true,
         highlightAllResults: true
     };
     state = {
@@ -124,12 +126,16 @@ class IdentifyViewer extends React.Component {
             this.scrollIntoView = false;
             this.currentResultElRef = null;
         }
+        // Ensure currentPage is in range
         if (this.state.resultTree !== prevState.resultTree || this.state.selectedLayer !== prevState.selectedLayer) {
-            // Ensure currentPage is in range
             const count = Object.values(this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree).flat().length;
             this.setState(state => ({currentPage: Math.max(0, Math.min(state.currentPage, count - 1))}));
+        }
+        if (this.state.resultTree !== prevState.resultTree || this.state.selectedLayer !== prevState.selectedLayer || this.props.showHighlight !== prevProps.showHighlight) {
             // Highlight features
-            if (this.props.highlightAllResults) {
+            if (!this.props.showHighlight) {
+                this.props.removeLayer(this.selectionLayerId);
+            } else if (this.props.highlightAllResults && this.props.showHighlight) {
                 const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
                 const layer = {
                     id: this.selectionLayerId,
@@ -138,7 +144,7 @@ class IdentifyViewer extends React.Component {
                 this.props.addLayerFeatures(layer, Object.values(resultTree).flat(), true);
             }
         }
-        if (this.state.currentResult !== prevState.currentResult) {
+        if (this.state.currentResult !== prevState.currentResult || this.props.showHighlight !== prevProps.showHighlight) {
             // Update current result highlighting
             this.setHighlightedFeatures(null);
         }
@@ -189,6 +195,10 @@ class IdentifyViewer extends React.Component {
         });
     };
     setHighlightedFeatures = (features) => {
+        if (!this.props.showHighlight) {
+            this.props.removeLayer(this.highlightLayerId);
+            return;
+        }
         if (isEmpty(features)) {
             if (!isEmpty(this.state.tableSelection)) {
                 features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
