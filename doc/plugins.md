@@ -596,7 +596,7 @@ for customized queries and templates for the result presentation.
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
-| appendResultsByDefault | `{false, true, "task"}` | Whether to append results by default (without having to press `CTRL` when clicking). To append results by default only when Identify is run as a task, set to `task`. | `undefined` |
+| appendResultsByDefault | `bool` | Whether to append results by default (without having to press `CTRL` when clicking). | `undefined` |
 | availableRegionModes | `[string]` | Available region identify modes. | `['Region', 'Radius', 'Circle', 'Rectangle']` |
 | clearResultsOnClose | `bool` | Whether to clear the identify results when exiting the identify tool. | `true` |
 | enableAggregatedReports | `bool` | Whether to enable the aggregated report download button. | `true` |
@@ -610,7 +610,7 @@ for customized queries and templates for the result presentation.
 | initialRadiusUnits | `string` | The initial radius units of the identify dialog in radius mode. One of 'm', 'ft', 'km', 'mi'. | `'m'` |
 | longAttributesDisplay | `{"wrap", "ellipsis"}` | How to handle long attribute names / values. | `'wrap'` |
 | onlyShowDialogWithResults | `bool` | Whether to only show the results dialog if there are results to display. | `undefined` |
-| params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` and `radius_feature_count` are supported. | `undefined` |
+| params | `object` | Extra params to append to the GetFeatureInfo request (i.e. `FI_POINT_TOLERANCE`, `FI_LINE_TOLERANCE`, `feature_count`, ...). Additionally, `region_feature_count` is supported. | `undefined` |
 | replaceImageUrls | `bool` | Whether to replace an attribute value containing an URL to an image with an inline image. | `true` |
 | resultDisplayMode | `{"tree", "flat", "paginated", "table"}` | Result display mode. | `'flat'` |
 | resultGridSize | `number` | Target cell size of the result grid in comparison mode. | `200` |
@@ -618,7 +618,6 @@ for customized queries and templates for the result presentation.
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
 | showLayerTitles | `bool` | Whether to prefix the identify result titles with the respecitve layer name. | `true` |
 | skipEmptyFeatureAttributes | `bool` | Whether to skip empty feature attributes. | `undefined` |
-| taskResultDisplayMode | `{"tree", "flat", "paginated", "table"}` | Result display mode when Identify is run as a task. Defaults to `resultDisplayMode`. | `undefined` |
 
 ## LayerCatalog<a name="layercatalog"></a>
 
