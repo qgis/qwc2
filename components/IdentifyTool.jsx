@@ -262,7 +262,7 @@ class IdentifyTool extends React.Component {
             pendingRequests.push(request.id);
             IdentifyUtils.sendRequest(request, (response) => {
                 this.handleResponse(request.id, response, layer, request.params.info_format, center);
-                pendingRequests.slice(pendingRequests.indexOf(request.id), 1);
+                pendingRequests.splice(pendingRequests.indexOf(request.id), 1);
                 if (pendingRequests.length === 0) {
                     this.setState({filterGeom: null, filterGeomModifiers: {}});
                 }
