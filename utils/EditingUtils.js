@@ -274,8 +274,11 @@ export function getFeatureTemplate(editConfig, feature, editIface, mapPrefix, ma
     }
     // Apply default values
     const defaultFieldExpressions = editConfig.fields.reduce((res, field) => {
-        if (field.defaultValue && !(field.id in feature.properties)) {
-            return [...res, {field: field.id, expression: field.defaultValue.replace(/^expr:/, '')}];
+        if (field.defaultValue !== undefined && !(field.id in feature.properties)) {
+            return [...res, {
+                field: field.id,
+                expression: String(field.defaultValue).replace(/^expr:/, '')
+            }];
         }
         return res;
     }, []);
