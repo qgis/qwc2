@@ -367,6 +367,10 @@ class IdentifyTool extends React.Component {
                     return result;
                 }, identifyResults[key] || []);
             });
+            const pendingRequests = state.pendingRequests.filter(x => x !== reqId);
+            if (pendingRequests.length === 0 && isEmpty(identifyResults) && this.props.showPointQueryMarker && this.props.onlyShowDialogWithResults) {
+                this.props.removeMarker(this.markerid);
+            }
             return {
                 identifyResults: identifyResults,
                 pendingRequests: state.pendingRequests.filter(x => x !== reqId)
