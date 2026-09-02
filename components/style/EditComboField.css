@@ -3,6 +3,11 @@ div.edit-single-select {
     align-items: center;
 }
 
+div.edit-single-select-item {
+    min-height: 1.5em;
+    line-height: 1.5em;
+}
+
 div.edit-multi-select {
     border: 1px solid var(--border-color);
     padding: 0.25em;

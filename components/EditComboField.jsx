@@ -124,7 +124,7 @@ export default class EditComboField extends React.Component {
                     {this.state.values.map((item, index) => {
                         const {value, label} = this.itemValueLabel(item);
                         return (
-                            <div key={this.props.fieldId + index} value={String(value)}>{label}</div>
+                            <div className="edit-single-select-item" key={this.props.fieldId + index} value={String(value)}>{label}</div>
                         );
                     })}
                 </ComboBox>
