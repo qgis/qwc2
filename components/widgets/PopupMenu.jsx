@@ -52,6 +52,8 @@ export default class PopupMenu extends React.PureComponent {
         // Delay one cycle
         setTimeout(() => doc.addEventListener('pointerdown', this.checkCloseMenu, {capture: true}), 0);
         doc.addEventListener('click', this.checkKillClick, {capture: true});
+        doc.addEventListener('wheel', this.preventScroll, {passive: false});
+        doc.addEventListener('touchmove', this.preventScroll, {passive: false});
     }
     componentDidMount() {
         if (this.props.anchor?.nodeName === "INPUT") {
@@ -69,7 +71,14 @@ export default class PopupMenu extends React.PureComponent {
         if (!this.killClick) {
             doc.removeEventListener('click', this.checkKillClick, {capture: true});
         }
+        doc.removeEventListener('wheel', this.preventScroll, {passive: false});
+        doc.removeEventListener('touchmove', this.preventScroll, {passive: false});
     }
+    preventScroll = (ev) => {
+        if (!this.menuEl || !this.menuEl.contains(ev.target)) {
+            ev.preventDefault();
+        }
+    };
     checkCloseMenu = (ev) => {
         if (this.menuEl && !this.menuEl.contains(ev.target) && !this.props.anchor?.contains?.(ev.target)) {
             this.props.onClose();
