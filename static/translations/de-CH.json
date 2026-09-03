@@ -324,7 +324,7 @@
       "title": "Objektinformationen"
     },
     "imageeditor": {
-      "confirmclose": "Schließen, ohne zu speichern?",
+      "confirmclose": "Schliessen, ohne zu speichern?",
       "title": "Bildbearbeitung"
     },
     "import3d": {
@@ -336,10 +336,10 @@
       "addlayer": "Ebene hinzufügen",
       "asgroup": "Als Gruppe hinzufügen",
       "connect": "Verbinden",
-      "dxflarge": "Diese DXF-Datei ist {size} MB groß. Der Import kann eine Weile dauern und viel Arbeitsspeicher belegen. Fortfahren?",
+      "dxflarge": "Diese DXF-Datei ist {size} MB gross. Der Import kann eine Weile dauern und viel Arbeitsspeicher belegen. Fortfahren?",
       "dxfparsefailed": "Die DXF-Datei konnte nicht gelesen werden.",
       "dxfsymbolscollapsed": "{count} Punktsymbole wurden als einfache Marker statt mit ihrer Kontur importiert. Der DXF-Export von QGIS Server schreibt Punktsymbole als fein aufgelöste Flächen mit mehreren hundert Stützpunkten, was weit mehr Detail ist als darstellbar und die Karte deutlich verlangsamen würde.",
-      "dxftoolarge": "Diese DXF-Datei ist {size} MB groß und damit zu groß für den Browser. Bitte zuerst auf einen kleineren Ausschnitt oder ein anderes Format umwandeln.",
+      "dxftoolarge": "Diese DXF-Datei ist {size} MB gross und damit zu gross für den Browser. Bitte zuerst auf einen kleineren Ausschnitt oder ein anderes Format umwandeln.",
       "filecrs": "Koordinatensystem",
       "filecrshint": "DXF-Dateien enthalten keine Angabe zum Koordinatensystem. Die Koordinaten der Datei müssen im gewählten System georeferenziert sein, sie werden dann in die Kartenprojektion umprojiziert.",
       "filter": "Filter...",
