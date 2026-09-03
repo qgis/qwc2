@@ -11,12 +11,19 @@ import Proj4js from 'proj4';
 
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
-import {createDxfColorResolver, decodeDxf, unescapeDxfUnicode} from './DxfUtils';
+import {dxfToFeatures} from './DxfImportUtils';
+import {decodeDxf} from './DxfUtils';
 import LocaleUtils from './LocaleUtils';
 import VectorLayerUtils from './VectorLayerUtils';
 
-// Stroke color for DXF entities left at the ACI default color
-const DXF_DEFAULT_COLOR = '#1565C0';
+// A browser caps a single string at 512 MB, and decoding needs the file and its text in memory at once, so
+// beyond this a DXF cannot be read at all
+const DXF_MAX_SIZE = 256 * 1024 * 1024;
+
+// Below that it still works, but seconds of parsing and hundreds of megabytes are worth asking about first
+const DXF_LARGE_SIZE = 40 * 1024 * 1024;
+
+const megabytes = (bytes) => Math.round(bytes / (1024 * 1024));
 
 const FileImportUtils = {
     /**
@@ -27,6 +34,15 @@ const FileImportUtils = {
     importFile(file, mapCrs, addLayer, addLayerFeatures, options = {}) {
         const filename = file.name.toLowerCase();
         if (filename.endsWith(".dxf")) {
+            if (file.size > DXF_MAX_SIZE) {
+                /* eslint-disable-next-line */
+                alert(LocaleUtils.tr("importlayer.dxftoolarge", {size: megabytes(file.size)}));
+                return Promise.resolve();
+            }
+            /* eslint-disable-next-line */
+            if (file.size > DXF_LARGE_SIZE && !confirm(LocaleUtils.tr("importlayer.dxflarge", {size: megabytes(file.size)}))) {
+                return Promise.resolve();
+            }
             return file.arrayBuffer().then(buffer => FileImportUtils.addDXFLayer(file.name, decodeDxf(buffer), options.crs || mapCrs, addLayerFeatures));
         } else if (filename.endsWith(".pdf")) {
             return FileImportUtils.addGeoPDFLayer(file, mapCrs, addLayer);
@@ -104,18 +120,11 @@ const FileImportUtils = {
             alert(LocaleUtils.tr("importlayer.nofeatures"));
         }
     },
-    // DXF carries no CRS, the coordinates are taken to be in the passed crs. Entities without a
-    // polyline representation (i.e. TEXT/MTEXT and HATCH) are dropped, splines are approximated.
+    // DXF carries no CRS, the coordinates are taken to be in the passed crs
     addDXFLayer: async(filename, data, crs, addLayerFeatures) => {
-        const {colors, Helper} = await import('dxf');
-        let polylines = [];
-        let entities = [];
-        let resolveColor = null;
+        let imported = null;
         try {
-            const helper = new Helper(data);
-            polylines = helper.toPolylines().polylines;
-            entities = helper.denormalised;
-            resolveColor = createDxfColorResolver(data, helper.parsed, colors, DXF_DEFAULT_COLOR);
+            imported = await dxfToFeatures(data, crs);
         } catch (e) {
             /* eslint-disable-next-line */
             console.warn(e);
@@ -123,35 +132,7 @@ const FileImportUtils = {
             alert(LocaleUtils.tr("importlayer.dxfparsefailed"));
             return;
         }
-        // toPolylines() maps the denormalised entities one to one
-        const entitiesAligned = entities.length === polylines.length;
-        const features = polylines.map((polyline, idx) => ({
-            entity: entitiesAligned ? entities[idx] : null,
-            polyline: polyline
-        })).filter(entry => (entry.polyline.vertices || []).length >= 2).map((entry, idx) => {
-            const color = entry.entity ? resolveColor(entry.entity) : DXF_DEFAULT_COLOR;
-            return {
-                type: "Feature",
-                id: idx,
-                crs: crs,
-                geometry: {
-                    type: "LineString",
-                    coordinates: entry.polyline.vertices.map(vertex => [vertex[0], vertex[1]])
-                },
-                properties: {
-                    layer: unescapeDxfUnicode(entry.polyline.layer?.name ?? "")
-                },
-                styleName: "default",
-                styleOptions: {
-                    strokeColor: color,
-                    strokeWidth: 1,
-                    strokeDash: [],
-                    fillColor: [0, 0, 0, 0],
-                    circleRadius: 0
-                }
-            };
-        });
-        if (isEmpty(features)) {
+        if (isEmpty(imported.features)) {
             /* eslint-disable-next-line */
             alert(LocaleUtils.tr("importlayer.nofeatures"));
             return;
@@ -160,7 +141,11 @@ const FileImportUtils = {
             name: filename,
             title: filename.replace(/\.[^/.]+$/, ""),
             zoomToExtent: true
-        }, features, true);
+        }, imported.features, true);
+        if (imported.symbolCount > 0) {
+            /* eslint-disable-next-line */
+            alert(LocaleUtils.tr("importlayer.dxfsymbolscollapsed", {count: imported.symbolCount}));
+        }
     },
     addGeoPDFLayer(file, mapCrs, addLayer) {
         return new Promise((resolve) => {
