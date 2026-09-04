@@ -120,6 +120,9 @@ class RedliningSupport extends React.Component {
             this.props.redlining.action !== prevProps.redlining.action ||
             this.props.redlining.layer !== prevProps.redlining.layer ||
             (['Draw', 'PickDraw'].includes(this.props.redlining.action) && this.props.redlining.geomType !== prevProps.redlining.geomType) ||
+            // Recreate, so the point already drawn is committed rather than restyled. Draw only - under
+            // PickDraw the picked feature's shape feeds back here and would immediately deselect it.
+            (this.props.redlining.action === 'Draw' && this.props.redlining.geomType === 'Point' && this.props.redlining.style?.pointShape !== prevProps.redlining.style?.pointShape) ||
             this.props.redlining.freehand !== prevProps.redlining.freehand ||
             this.props.redlining.drawMultiple !== prevProps.redlining.drawMultiple
         );
@@ -213,6 +216,7 @@ class RedliningSupport extends React.Component {
             strokeDash: styleProps.strokeDash,
             fillColor: isText ? styleProps.textFillColor : styleProps.fillColor,
             circleRadius: 5 + styleProps.size,
+            pointShape: styleProps.pointShape,
             headmarker: styleProps.headmarker,
             tailmarker: styleProps.tailmarker
         };
@@ -227,6 +231,8 @@ class RedliningSupport extends React.Component {
             size: (styleOptions.strokeWidth - 1) * 2,
             [isText ? "textFillColor" : "fillColor"]: styleOptions.fillColor,
             text: label,
+            // Reported back, else selecting a pre-existing point adopts the shape left in the redlining state
+            pointShape: styleOptions.pointShape || 'circle',
             headmarker: styleOptions.headmarker,
             tailmarker: styleOptions.tailmarker
         };
