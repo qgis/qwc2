@@ -406,7 +406,7 @@ class Map3D extends React.Component {
                     parent.sublayers = parent.sublayers.map(sublayer => sublayer === subentry ? subentry : ({...sublayer, visibility: false}));
                 }
             }
-            if (subentry.opacity !== prevOptions.opacity) {
+            if (subentry.opacity !== prevOptions.opacity && !isEmpty(subentry.sublayers)) {
                 // Propagate opacity to children
                 const setChildOpacities = (child) => {
                     child.sublayers = child.sublayers.map(gchild => {
