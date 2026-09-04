@@ -17,7 +17,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
-import {END_MARKERS, computeFeatureStyle} from '../utils/FeatureStyles';
+import {END_MARKERS, POINT_SHAPES, computeFeatureStyle} from '../utils/FeatureStyles';
 import MiscUtils from './MiscUtils';
 
 
@@ -329,14 +329,17 @@ const VectorLayerUtils = {
 
         let rule = null;
         if (geometrytype.endsWith("Point")) {
+            // POINT_SHAPES keys are valid SLD WellKnownNames, but validate before interpolating into XML
+            const wellKnownName = Object.hasOwn(POINT_SHAPES, opts.pointShape) ? opts.pointShape : 'circle';
             rule = '<se:PointSymbolizer>' +
                    '<se:Graphic>' +
                    '<se:Mark>' +
-                   '<se:WellKnownName>circle</se:WellKnownName>' +
+                   '<se:WellKnownName>' + wellKnownName + '</se:WellKnownName>' +
                    '<se:Stroke>' +
                    '<se:SvgParameter name="stroke">' + ensureHex(opts.strokeColor) + '</se:SvgParameter>' +
                    '<se:SvgParameter name="stroke-opacity">' + opacity(opts.strokeColor) + '</se:SvgParameter>' +
                    '<se:SvgParameter name="stroke-width">' + (opts.strokeWidth * dpiScale) + '</se:SvgParameter>' +
+                   '<se:SvgParameter name="stroke-linejoin">round</se:SvgParameter>' +
                    '</se:Stroke>' +
                    fill +
                    '</se:Mark>' +

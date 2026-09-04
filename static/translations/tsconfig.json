@@ -184,6 +184,7 @@
     "common.select",
     "common.selectlayer",
     "common.square",
+    "common.star",
     "common.sync2dview",
     "common.text",
     "common.true",

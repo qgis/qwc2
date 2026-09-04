@@ -17,6 +17,7 @@ const defaultState = {
         fillColor: [255, 255, 255, 1],
         strokeDash: [],
         size: 2,
+        pointShape: "circle",
         text: "",
         textOutlineColor: [255, 255, 255, 1],
         textFillColor: [0, 0, 0, 1]
