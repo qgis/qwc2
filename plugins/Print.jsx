@@ -71,8 +71,8 @@ class Print extends React.Component {
         /** Whether to display the print output in an inline dialog instead triggering a download. */
         inlinePrintOutput: PropTypes.bool,
         layers: PropTypes.array,
-        /** Hide layouts which begin with this prefix. */
-        layoutHidePrefix: PropTypes.string,
+        /** Hide layouts which begin with this prefix, or with any of the prefixes in the specified list. */
+        layoutHidePrefix: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
         /** Layout sort order, asc or desc. */
         layoutSortOrder: PropTypes.string,
         map: PropTypes.object,
@@ -146,8 +146,10 @@ class Print extends React.Component {
         if (prevProps.theme !== this.props.theme) {
             if (this.props.theme && !isEmpty(this.props.theme.print)) {
                 const sortDir = this.props.layoutSortOrder === "desc" ? -1 : 1;
+                const hidePrefixes = [this.props.layoutHidePrefix ?? []].flat();
                 const layouts = this.props.theme.print.filter(l => {
-                    return l.map && !l.name.split('/').pop().startsWith(this.props.layoutHidePrefix);
+                    const name = l.name.split('/').pop();
+                    return l.map && !hidePrefixes.some(prefix => name.startsWith(prefix));
                 }).sort((a, b) => {
                     return sortDir * a.name.split('/').pop().localeCompare(b.name.split('/').pop(), undefined, {numeric: true});
                 });
