@@ -19,10 +19,6 @@ div.map3d-nav-rotate > span {
     flex: 0 0 1.25em;
 }
 
-div.map3d-nav-pan > span.icon-home {
-    font-size: 120%;
-}
-
 div.map3d-nav-zoom {
     pointer-events: initial;
     width: 2em;
