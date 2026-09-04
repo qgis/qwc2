@@ -135,8 +135,8 @@ class PickFeature extends React.Component {
                             const layerid = layer?.get?.('id');
                             if (layerid in layerMap) {
                                 const featureObj = format.writeFeatureObject(feature);
-                                const layername = layerMap[layerid].name;
-                                pickResults.push({layer: layername, feature: featureObj});
+                                const layerentry = layerMap[layerid];
+                                pickResults.push({layer: layerentry.name, layertitle: layerentry.title, feature: featureObj});
                             }
                         });
                     } else if (this.props.pickGeomType === 'Polygon') {
@@ -158,8 +158,8 @@ class PickFeature extends React.Component {
                                     return;
                                 }
                                 const featureObj = format.writeFeatureObject(feature);
-                                const layername = layerMap[layer.get('id')].name;
-                                pickResults.push({layer: layername, feature: featureObj});
+                                const layerentry = layerMap[layer.get('id')];
+                                pickResults.push({layer: layerentry.name, layertitle: layerentry.title, feature: featureObj});
                             });
                         });
                     }
@@ -187,7 +187,7 @@ class PickFeature extends React.Component {
                 pickResults: [
                     ...state.pickResults,
                     ...Object.entries(result).map(([layername, features]) => {
-                        return features.map(feature => ({layer: layername, feature: feature, mapName: layer.wms_name}));
+                        return features.map(feature => ({layer: layername, layertitle: feature.layertitle, feature: feature, mapName: layer.wms_name}));
                     }).flat()
                 ],
                 pendingQueries: state.pendingQueries - 1
@@ -225,7 +225,7 @@ class PickFeature extends React.Component {
                                     onMouseOut={() => this.clearHighlight(key, entry.feature)}
                                     onMouseOver={() => this.highlightFeature(key, entry.feature)}
                                 >
-                                    {entry.layer + ": " + (entry.feature.displayname ?? entry.feature.id)}
+                                    {(entry.layertitle ?? entry.layer) + ": " + (entry.feature.displayname ?? entry.feature.id)}
                                 </div>
                             );
                         })
