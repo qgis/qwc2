@@ -1031,7 +1031,7 @@ Uses the print layouts defined in the QGIS project.
 | gridInitiallyEnabled | `bool` | Whether the grid is enabled by default. | `false` |
 | hideAutopopulatedFields | `bool` | Whether to hide form fields which contain autopopulated values (i.e. search result label). | `undefined` |
 | inlinePrintOutput | `bool` | Whether to display the print output in an inline dialog instead triggering a download. | `false` |
-| layoutHidePrefix | `string` | Hide layouts which begin with this prefix. | `undefined` |
+| layoutHidePrefix | `{string, [string]}` | Hide layouts which begin with this prefix, or with any of the prefixes in the specified list. | `undefined` |
 | layoutSortOrder | `string` | Layout sort order, asc or desc. | `'asc'` |
 | movePrintSeries | `bool` | Whether to allow moving the extent while selecting the print series. | `false` |
 | omitLayoutPathsFromTitle | `bool` | Whether to cut off any layout path prefixes (i.e. as in `subdir/Layout Name`) from the layout titles displayed in selection combo. | `undefined` |
