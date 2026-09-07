@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
+import mime from 'mime-to-extensions';
 import PropTypes from 'prop-types';
 
 import {LayerRole, addLayerFeatures, clearLayer, changeLayerProperty} from '../actions/layers';
@@ -224,8 +225,10 @@ class Reports extends React.Component {
         };
         const url = serviceUrl + "/" + report.template + "." + (report.format || "pdf");
         axios.get(url, {responseType: "arraybuffer", params}).then(response => {
-            const filename = (report.filename || report.title.replace(" ", "_")) + "." + (report.format || "pdf");
-            FileSaver.saveAs(new Blob([response.data], {type: "application/pdf"}), filename);
+            const format = report.format || "pdf";
+            const filename = (report.filename || report.title.replace(" ", "_")) + "." + format;
+            const mimeType = mime.lookup(filename) || "application/octet-stream";
+            FileSaver.saveAs(new Blob([response.data], {type: mimeType}), filename);
             this.setState({generatingReport: false});
         }).catch(() => {
             /* eslint-disable-next-line */
