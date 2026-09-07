@@ -612,12 +612,16 @@ const VectorLayerUtils = {
             }
         });
         const bboxCrs = featureCrs.size === 1 ? [...featureCrs.keys()][0] : "EPSG:4326";
+        const collectionFeatures = features.filter(feature => feature.geometry).map(feature => ({
+            ...feature,
+            geometry: feature.crs ? VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, bboxCrs) : feature.geometry
+        }));
+        if (isEmpty(collectionFeatures)) {
+            return null;
+        }
         let bounds = geojsonBbox({
             type: "FeatureCollection",
-            features: features.filter(feature => feature.geometry).map(feature => ({
-                ...feature,
-                geometry: feature.crs ? VectorLayerUtils.reprojectGeometry(feature.geometry, feature.crs, bboxCrs) : feature.geometry
-            }))
+            features: collectionFeatures
         });
         // Discard z component
         if (bounds.length === 6) {
