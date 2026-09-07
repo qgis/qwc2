@@ -10,8 +10,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
-import mime from 'mime-to-extensions';
 import FileSaver from 'file-saver';
+import mime from 'mime-to-extensions';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
