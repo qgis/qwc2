@@ -247,8 +247,9 @@ export default class StandardApp extends React.Component {
         }, {});
         ConfigUtils.loadConfiguration(configParams).then((config) => {
             // Merge common config into mobile/desktop config, merge config from appConfig
+            // An explicit entry `key` allows configuring multiple instances of the same plugin
             const renameTaskButtons = (res, entry) => {
-                const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg?.task ?? "") : "");
+                const key = entry.key ?? (entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg?.task ?? "") : ""));
                 return {...res, [key]: entry};
             };
             const commonConfig = [

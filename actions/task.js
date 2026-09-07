@@ -23,7 +23,7 @@ export function setCurrentTask(task, mode = null, mapClickAction = null, data = 
         // Attempt to read mapClickAction from plugin configuration block if not set
         if (!mapClickAction) {
             const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
-            mapClickAction = (getState().localConfig?.plugins?.[device] || []).find(config => config.name === task)?.mapClickAction;
+            mapClickAction = (getState().localConfig?.plugins?.[device] || []).find(config => config.key === task)?.mapClickAction;
         }
         dispatch({
             type: SET_CURRENT_TASK,
