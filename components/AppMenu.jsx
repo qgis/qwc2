@@ -236,7 +236,7 @@ class AppMenu extends React.Component {
                                     <Icon icon={"search"} size="xlarge"/>
                                     <InputContainer>
                                         <input onChange={ev => this.setState({filter: ev.target.value, curEntry: null})}
-                                            placeholder={LocaleUtils.tr("appmenu.filter")} ref={this.setFilterField}
+                                            placeholder={LocaleUtils.tr("common.filter")} ref={this.setFilterField}
                                             role="input"
                                             type="text"
                                             value={this.state.filter}/>

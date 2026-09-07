@@ -10,7 +10,6 @@
       "missingtheme": ""
     },
     "appmenu": {
-      "filter": "Hledat v menu...",
       "items": {
         "Bookmark": "Záložky",
         "Compare3D": "",
@@ -139,6 +138,7 @@
       "ellipse": "",
       "export": "Export",
       "false": "",
+      "filter": "Filtr...",
       "format": "Formát:",
       "import": "",
       "line": "Linie",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filtr...",
       "localfile": "Soubor z počítače",
       "nofeatures": "Žádné prvku nebyly importovány.",
       "noresults": "Bez výsledku nebo nevalidní URL",
@@ -832,7 +831,7 @@
       "addtotheme": "Přidat k aktuálnímu tématu",
       "changedefaulttheme": "",
       "confirmswitch": "Vrstvy které nejsou součástí tématu budou při přepnutí tématu ztraceny. Pokračovat?",
-      "filter": "Filtr...",
+      "filter": "",
       "match": {
         "abstract": "Abstrakt",
         "keywords": "Klíčová slova",

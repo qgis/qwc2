@@ -10,7 +10,6 @@
       "missingtheme": "Tema \"{0}\" nu a putut fi găsită, se încarcă tema implicită."
     },
     "appmenu": {
-      "filter": "Filtrează meniul...",
       "items": {
         "Bookmark": "Marcaj",
         "Compare3D": "Compară",
@@ -139,6 +138,7 @@
       "ellipse": "Elipsă",
       "export": "Exportă",
       "false": "fals",
+      "filter": "Filtrare",
       "format": "Format",
       "import": "",
       "line": "Linie",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filtrare...",
       "localfile": "Fișier local",
       "nofeatures": "Nu s-a putut importa niciun obiect spațial",
       "noresults": "Fără rezultat sau adresă URL invalidă",
@@ -832,7 +831,7 @@
       "addtotheme": "Adaugă în hartă",
       "changedefaulttheme": "Selectează această temă ca temă implicită",
       "confirmswitch": "Straturile tematice care nu fac parte din temă vor fi pierdute la schimbarea temei curente. Continui?",
-      "filter": "Filtrare",
+      "filter": "",
       "match": {
         "abstract": "Abstract",
         "keywords": "Cuvinte cheie",

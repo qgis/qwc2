@@ -10,7 +10,6 @@
       "missingtheme": ""
     },
     "appmenu": {
-      "filter": "",
       "items": {
         "Bookmark": "",
         "Compare3D": "",
@@ -139,6 +138,7 @@
       "ellipse": "",
       "export": "",
       "false": "",
+      "filter": "Фільтр...",
       "format": "Формат:",
       "import": "",
       "line": "Лінія",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Фільтрувати...",
       "localfile": "",
       "nofeatures": "Жоден об’єкт не доступний для імпорту",
       "noresults": "",
@@ -832,7 +831,7 @@
       "addtotheme": "",
       "changedefaulttheme": "",
       "confirmswitch": "",
-      "filter": "Фільтр...",
+      "filter": "",
       "match": {
         "abstract": "",
         "keywords": "",

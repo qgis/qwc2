@@ -10,7 +10,6 @@
       "missingtheme": ""
     },
     "appmenu": {
-      "filter": "",
       "items": {
         "Bookmark": "",
         "Compare3D": "",
@@ -139,6 +138,7 @@
       "ellipse": "",
       "export": "",
       "false": "",
+      "filter": "Szűrés...",
       "format": "Formátum:",
       "import": "",
       "line": "Vonaé",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Szűrés...",
       "localfile": "",
       "nofeatures": "Nem sikerült az importálás.",
       "noresults": "",
@@ -832,7 +831,7 @@
       "addtotheme": "",
       "changedefaulttheme": "",
       "confirmswitch": "",
-      "filter": "Szűrés...",
+      "filter": "",
       "match": {
         "abstract": "",
         "keywords": "",

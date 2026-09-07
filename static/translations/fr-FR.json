@@ -10,7 +10,6 @@
       "missingtheme": "Impossible de trouver le thème \"{0}\", chargement du thème par défaut."
     },
     "appmenu": {
-      "filter": "Filtrer le menu...",
       "items": {
         "Bookmark": "Marque-pages",
         "Compare3D": "Comparer",
@@ -139,6 +138,7 @@
       "ellipse": "Ellipse",
       "export": "Exporter",
       "false": "faux",
+      "filter": "Filtre...",
       "format": "Format",
       "import": "Importer",
       "line": "Ligne",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filtrer",
       "localfile": "Fichier local",
       "nofeatures": "Aucune entité ne peut être importée.",
       "noresults": "Pas de résultat ou URL non valide",
@@ -832,7 +831,7 @@
       "addtotheme": "Ajouter au thème actuel",
       "changedefaulttheme": "Sélectionner ce thème comme thème par défaut",
       "confirmswitch": "Les couches ajoutées par vos soins seront perdues en changeant de thème. Voulez-vous continuer ?",
-      "filter": "Filtre...",
+      "filter": "",
       "match": {
         "abstract": "Résumé",
         "keywords": "Mots-clés",

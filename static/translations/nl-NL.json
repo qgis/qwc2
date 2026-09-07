@@ -10,7 +10,6 @@
       "missingtheme": "Kan de kaart \"{0}\" niet vinden, default kaart wordt geladen."
     },
     "appmenu": {
-      "filter": "Filter menu...",
       "items": {
         "Bookmark": "Bladwijzers",
         "Compare3D": "",
@@ -139,6 +138,7 @@
       "ellipse": "Ellips",
       "export": "Export",
       "false": "",
+      "filter": "Filteren...",
       "format": "Format",
       "import": "",
       "line": "Lijn",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filteren...",
       "localfile": "Lokaal bestand",
       "nofeatures": "Objecten konden niet geïmporteerd worden",
       "noresults": "Geen resultaten of ongeldige URL",
@@ -832,7 +831,7 @@
       "addtotheme": "Toevoegen aan huidig kaart",
       "changedefaulttheme": "Deze kaart selecteren als standaardkaart",
       "confirmswitch": "Niet-thematische lagen gaan verloren bij het wisselen van kaart. Doorgaan?",
-      "filter": "Filteren...",
+      "filter": "",
       "match": {
         "abstract": "Samenvatting",
         "keywords": "Trefwoorden",

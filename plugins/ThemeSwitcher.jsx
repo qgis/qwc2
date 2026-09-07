@@ -78,7 +78,7 @@ class ThemeSwitcher extends React.Component {
         const themeFilter = this.props.showThemeFilter ? (
             <InputContainer className="theme-switcher-filter">
                 <input onChange={ev => this.setState({filter: ev.target.value})}
-                    placeholder={LocaleUtils.tr("themeswitcher.filter")}
+                    placeholder={LocaleUtils.tr("common.filter")}
                     ref={this.focusFilterField} role="input"
                     type="text" value={this.state.filter}/>
                 <Icon icon="remove" onClick={() => this.setState({filter: ""})} role="suffix" />

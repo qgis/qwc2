@@ -10,7 +10,6 @@
       "missingtheme": ""
     },
     "appmenu": {
-      "filter": "",
       "items": {
         "Bookmark": "Kirjanmerkit",
         "Compare3D": "",
@@ -139,6 +138,7 @@
       "ellipse": "",
       "export": "",
       "false": "",
+      "filter": "Suodatus...",
       "format": "Formaatti:",
       "import": "",
       "line": "Viiva",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Suodatus...",
       "localfile": "Paikallinen tiedosto",
       "nofeatures": "Ominaisuustietoja ei voitu tuoda.",
       "noresults": "Tuloksia ei ole tai virheellinen URL-osoite",
@@ -832,7 +831,7 @@
       "addtotheme": "Lisää nykyiseen teemaan",
       "changedefaulttheme": "",
       "confirmswitch": "",
-      "filter": "Suodatus...",
+      "filter": "",
       "match": {
         "abstract": "Tiivistelmä",
         "keywords": "Avainsanat",

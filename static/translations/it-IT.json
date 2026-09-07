@@ -10,7 +10,6 @@
       "missingtheme": "Impossibile trovare il tema \"{0}\", è stato caricato il tema predefinito."
     },
     "appmenu": {
-      "filter": "Filtra menù...",
       "items": {
         "Bookmark": "Segnalibri",
         "Compare3D": "Confronta",
@@ -139,6 +138,7 @@
       "ellipse": "Ellisse",
       "export": "Esporta",
       "false": "Falso",
+      "filter": "Filtra...",
       "format": "Formato",
       "import": "Importa",
       "line": "Linea",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filtro",
       "localfile": "File locale",
       "nofeatures": "Non è stato importato nessun oggetto ",
       "noresults": "Nessun risultato o URL non valido",
@@ -832,7 +831,7 @@
       "addtotheme": "Aggiungere al tema corrente",
       "changedefaulttheme": "Imposta come tema predefinito",
       "confirmswitch": "Layer che non fanno parte del tema saranno rimossi. Procedere?",
-      "filter": "Filtra...",
+      "filter": "",
       "match": {
         "abstract": "Riassunto",
         "keywords": "Parole chiavi",

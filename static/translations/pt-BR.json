@@ -10,7 +10,6 @@
       "missingtheme": "Faltando tema"
     },
     "appmenu": {
-      "filter": "Filtro",
       "items": {
         "Bookmark": "Bookmark",
         "Compare3D": "",
@@ -139,6 +138,7 @@
       "ellipse": "Elipse",
       "export": "Enviar",
       "false": "",
+      "filter": "Filtro...",
       "format": "Formato:",
       "import": "",
       "line": "Línha",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filtro...",
       "localfile": "Arquivo local",
       "nofeatures": "Nenhum recurso poder ser importado.",
       "noresults": "Sem resultados ou URL inválido",
@@ -832,7 +831,7 @@
       "addtotheme": "Adicione ao tema atual",
       "changedefaulttheme": "",
       "confirmswitch": "",
-      "filter": "Filtro...",
+      "filter": "",
       "match": {
         "abstract": "Resumo",
         "keywords": "Palavras-chave",

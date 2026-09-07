@@ -10,7 +10,6 @@
       "missingtheme": "No se pudo encontrar el tema \"{0}\", cargando el tema predeterminado."
     },
     "appmenu": {
-      "filter": "Menú de filtros...",
       "items": {
         "Bookmark": "Marcadores",
         "Compare3D": "Comparar",
@@ -139,6 +138,7 @@
       "ellipse": "Elipse",
       "export": "Exportar",
       "false": "",
+      "filter": "Filtrar...",
       "format": "Formato:",
       "import": "",
       "line": "Línea",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filtrar...",
       "localfile": "Archivo local",
       "nofeatures": "No se pudieron importar elementos.",
       "noresults": "Sin resultados o la dirección URL no es válida",
@@ -832,7 +831,7 @@
       "addtotheme": "Agregar al actual tema",
       "changedefaulttheme": "Seleccionar este tema como tema predeterminado",
       "confirmswitch": "Las capas sin tema se perderán al cambiar de tema. Continuar?",
-      "filter": "Filtrar...",
+      "filter": "",
       "match": {
         "abstract": "Resumen",
         "keywords": "Palabras clave",

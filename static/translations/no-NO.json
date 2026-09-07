@@ -10,7 +10,6 @@
       "missingtheme": ""
     },
     "appmenu": {
-      "filter": "",
       "items": {
         "Bookmark": "",
         "Compare3D": "",
@@ -139,6 +138,7 @@
       "ellipse": "",
       "export": "",
       "false": "",
+      "filter": "Filtrer...",
       "format": "Format:",
       "import": "",
       "line": "Linje",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filter...",
       "localfile": "Lokal fil",
       "nofeatures": "Ingen objekt kunne importeres",
       "noresults": "Ingen svar eller ugyldig URL",
@@ -832,7 +831,7 @@
       "addtotheme": "Legg til nåværende tema",
       "changedefaulttheme": "",
       "confirmswitch": "",
-      "filter": "Filtrer...",
+      "filter": "",
       "match": {
         "abstract": "Sammendrag",
         "keywords": "Nøkkelord",

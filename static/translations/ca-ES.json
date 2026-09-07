@@ -10,7 +10,6 @@
       "missingtheme": "No s'ha pogut trobar el tema \"{0}\", es carrega el tema per defecte."
     },
     "appmenu": {
-      "filter": "Menú de filtres...",
       "items": {
         "Bookmark": "Marcador",
         "Compare3D": "Comparar",
@@ -139,6 +138,7 @@
       "ellipse": "El·lipse",
       "export": "Exportar",
       "false": "",
+      "filter": "Filtrant...",
       "format": "Format:",
       "import": "",
       "line": "Línia",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filtrant...",
       "localfile": "Arxiu local",
       "nofeatures": "No s'han pogut importar els elements.",
       "noresults": "Sense resultats o l'adreça URL no és vàlida",
@@ -832,7 +831,7 @@
       "addtotheme": "Afegir al actual tema",
       "changedefaulttheme": "Seleccionar aquest tema com a tema per defecte",
       "confirmswitch": "Confirmar canvi",
-      "filter": "Filtrant...",
+      "filter": "",
       "match": {
         "abstract": "Resumen",
         "keywords": "Paraula clau",

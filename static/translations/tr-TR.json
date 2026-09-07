@@ -10,7 +10,6 @@
       "missingtheme": "Tema bulunamadı \"{0}\", varsayılan tema yükleniyor."
     },
     "appmenu": {
-      "filter": "Filtre menüsü...",
       "items": {
         "Bookmark": "Yer işaretleri",
         "Compare3D": "Karşılaştır",
@@ -139,6 +138,7 @@
       "ellipse": "Elips",
       "export": "Ver",
       "false": "",
+      "filter": "Filtre...",
       "format": "Format:",
       "import": "",
       "line": "Çizgi",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "Filtre...",
       "localfile": "Yerel dosya",
       "nofeatures": "Herhangi bir obje içeriye aktarılamadı.",
       "noresults": "Sonuç yok ya da geçersiz URL",
@@ -832,7 +831,7 @@
       "addtotheme": "Geçerli temaya ekle",
       "changedefaulttheme": "Bu temayı varsayılan yap",
       "confirmswitch": "Tema değiştirildiğinde temaya ait olmayan katmanlar kaldırılacaktır. Devam edilsin mi?",
-      "filter": "Filtre...",
+      "filter": "",
       "match": {
         "abstract": "Özet",
         "keywords": "Anahtar kelimeler",

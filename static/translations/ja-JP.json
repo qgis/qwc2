@@ -10,7 +10,6 @@
       "missingtheme": "テーマが見付かりません \"{0}\"、デフォルトのテーマをロードします。"
     },
     "appmenu": {
-      "filter": "メニューをフィルタ...",
       "items": {
         "Bookmark": "ブックマーク",
         "Compare3D": "比較",
@@ -139,6 +138,7 @@
       "ellipse": "楕円",
       "export": "エクスポート",
       "false": "",
+      "filter": "フィルタ...",
       "format": "形式",
       "import": "",
       "line": "線",
@@ -342,7 +342,6 @@
       "dxftoolarge": "",
       "filecrs": "",
       "filecrshint": "",
-      "filter": "フィルタ...",
       "localfile": "ローカル・ファイル",
       "nofeatures": "地物をインポート出来ませんでした。",
       "noresults": "検索結果無し、または無効な URL",
@@ -832,7 +831,7 @@
       "addtotheme": "現在のテーマに追加",
       "changedefaulttheme": "このテーマをデフォルト・テーマとして選択する",
       "confirmswitch": "テーマに無いレイヤはテーマを切替えると失われます。よろしいか?",
-      "filter": "フィルタ...",
+      "filter": "",
       "match": {
         "abstract": "概要",
         "keywords": "キーワード",

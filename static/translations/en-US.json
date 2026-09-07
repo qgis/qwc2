@@ -10,7 +10,6 @@
       "missingtheme": "Unable to find the theme \"{0}\", loading the default theme."
     },
     "appmenu": {
-      "filter": "Filter menu...",
       "items": {
         "Bookmark": "Bookmarks",
         "Compare3D": "Compare",
@@ -139,6 +138,7 @@
       "ellipse": "Ellipse",
       "export": "Export",
       "false": "false",
+      "filter": "Filter...",
       "format": "Format",
       "import": "Import",
       "line": "Line",
@@ -342,7 +342,6 @@
       "dxftoolarge": "This DXF file is {size} MB, which is too large to open in the browser. Please convert it to a smaller extract or to another format first.",
       "filecrs": "Coordinate system",
       "filecrshint": "DXF files contain no coordinate system information. The file coordinates must be georeferenced in the selected system, they are then reprojected to the map projection.",
-      "filter": "Filter...",
       "localfile": "Local file",
       "nofeatures": "No features could be imported.",
       "noresults": "No results or invalid URL",
@@ -832,7 +831,7 @@
       "addtotheme": "Add to current theme",
       "changedefaulttheme": "Select this theme as default theme",
       "confirmswitch": "Non-theme layers will be lost when switching theme. Proceed?",
-      "filter": "Filter...",
+      "filter": "",
       "match": {
         "abstract": "Abstract",
         "keywords": "Keywords",

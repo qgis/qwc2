@@ -126,7 +126,7 @@ class LayerCatalogWidget extends React.PureComponent {
                 <div className="layer-catalog-placeholder">{LocaleUtils.tr("common.loading")}</div>
             );
         }
-        const filterplaceholder = LocaleUtils.tr("importlayer.filter");
+        const filterplaceholder = LocaleUtils.tr("common.filter");
         const catalog = this.state.filteredCatalog ?? this.state.catalog;
         return (
             <div className="layer-catalog-widget">

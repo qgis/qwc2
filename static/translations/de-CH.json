@@ -10,7 +10,6 @@
       "missingtheme": "Das Thema \"{0}\" konnte nicht gefunden werden, das Standardthema wurde geladen."
     },
     "appmenu": {
-      "filter": "Menü filtern...",
       "items": {
         "Bookmark": "Lesezeichen",
         "Compare3D": "Vergleichen",
@@ -139,6 +138,7 @@
       "ellipse": "Ellipse",
       "export": "Exportieren",
       "false": "Nein",
+      "filter": "Filter",
       "format": "Format",
       "import": "Importieren",
       "line": "Linie",
@@ -342,7 +342,6 @@
       "dxftoolarge": "Diese DXF-Datei ist {size} MB gross und damit zu gross für den Browser. Bitte zuerst auf einen kleineren Ausschnitt oder ein anderes Format umwandeln.",
       "filecrs": "Koordinatensystem",
       "filecrshint": "DXF-Dateien enthalten keine Angabe zum Koordinatensystem. Die Koordinaten der Datei müssen im gewählten System georeferenziert sein, sie werden dann in die Kartenprojektion umprojiziert.",
-      "filter": "Filter...",
       "localfile": "Lokale Datei",
       "nofeatures": "Keine Objekte konnten importiert werden",
       "noresults": "Keine Resultate oder ungültige URL",
@@ -832,7 +831,7 @@
       "addtotheme": "Dem aktuellen Thema hinzufügen",
       "changedefaulttheme": "Als Standardthema setzen",
       "confirmswitch": "Ebenen, die nicht Teil des Themas sind, werden entfernt. Fortsetzen?",
-      "filter": "Filter",
+      "filter": "",
       "match": {
         "abstract": "Zusammenfassung",
         "keywords": "Schlüsselwörter",
