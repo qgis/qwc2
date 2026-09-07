@@ -573,7 +573,9 @@ class IdentifyViewer extends React.Component {
         if (action === "Zoom") {
             const features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
             const bbox = VectorLayerUtils.computeFeaturesBBox(features);
-            this.props.zoomToExtent(bbox.bounds, bbox.crs);
+            if (bbox) {
+                this.props.zoomToExtent(bbox.bounds, bbox.crs);
+            }
         } else if (action === "Export") {
             const features = isEmpty(this.state.tableSelection[layerid]) ? this.state.resultTree[layerid] : Object.values(this.state.tableSelection[layerid]);
             this.export({layerid: features});
