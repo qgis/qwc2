@@ -252,12 +252,8 @@ class IdentifyViewer extends React.Component {
         });
     };
     exportResults = (clipboard = false) => {
-        let filteredResults = {};
-        if (!isEmpty(this.state.tableSelection)) {
-            filteredResults = Object.fromEntries(
-                Object.entries(this.state.tableSelection).map(([layerid, entries]) => ([layerid, Object.values(entries)]))
-            );
-        } else if (this.state.selectedResults.size() > 0) {
+        const filteredResults = {};
+        if (this.state.selectedResults.size() > 0) {
             this.state.selectedResults.entries().forEach(key => {
                 const [layerid, featureid] = key.split("$");
                 if (!filteredResults[layerid]) {
@@ -266,9 +262,14 @@ class IdentifyViewer extends React.Component {
                 filteredResults[layerid].push(this.state.resultTree[layerid].find(feature => feature.id === featureid));
             });
         } else {
-            Object.keys(this.state.selectedLayer !== '' ? { [this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer] } : this.state.resultTree).map(key => {
-                if (!isEmpty(this.state.resultTree[key])) {
-                    filteredResults[key] = this.state.resultTree[key];
+            const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
+            Object.keys(resultTree).map(layerid => {
+                if (isEmpty(this.state.resultTree[layerid])) {
+                    return;
+                } else if (!isEmpty(this.state.tableSelection[layerid])) {
+                    filteredResults[layerid] = Object.values(this.state.tableSelection[layerid]);
+                } else {
+                    filteredResults[layerid] = this.state.resultTree[layerid];
                 }
             });
         }
