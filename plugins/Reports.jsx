@@ -11,8 +11,8 @@ import {connect} from 'react-redux';
 
 import axios from 'axios';
 import FileSaver from 'file-saver';
-import mime from 'mime-to-extensions';
 import isEmpty from 'lodash.isempty';
+import mime from 'mime-to-extensions';
 import PropTypes from 'prop-types';
 
 import {LayerRole, addLayerFeatures, clearLayer, changeLayerProperty} from '../actions/layers';
