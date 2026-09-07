@@ -16,12 +16,7 @@ div.resizeable-window-portal-container > div {
     height: 100%;
 }
 
-div.resizeable-window-portal-container-detached {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 2.5em;
+div.resizeable-window-portal-container {
     padding: 0.25em;
     background-color: var(--container-bg-color);
 }
@@ -163,7 +158,6 @@ span.resizeable-window-titlebar-extra-control-active {
 }
 
 div.resizeable-window-body {
-    padding: 0.25em;
     overflow: hidden;
     flex: 1 1 auto;
     cursor: default;
