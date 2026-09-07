@@ -9,11 +9,13 @@
 import React from 'react';
 
 import classNames from 'classnames';
+import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import Icon from '../Icon';
+import TextInput from './TextInput';
 
 import './style/FeaturesTable.css';
 
@@ -27,12 +29,14 @@ export default class FeaturesTable extends React.PureComponent {
         fields: PropTypes.array,
         hideIdColumn: PropTypes.bool,
         hoverChanged: PropTypes.func,
+        onFilter: PropTypes.func,
         onSort: PropTypes.func,
         primaryKey: PropTypes.string,
         readOnly: PropTypes.bool,
         renderField: PropTypes.func,
         rowIsDisabled: PropTypes.func,
         selectionChanged: PropTypes.func,
+        showColumnFilters: PropTypes.bool,
         style: PropTypes.object
     };
     static defaultProps = {
@@ -41,22 +45,22 @@ export default class FeaturesTable extends React.PureComponent {
         primaryKey: "id"
     };
     state = {
+        columnFilters: {},
         sortField: null,
-        sortedFeatures: null,
+        sortedFilteredFeatures: [],
         selectedFeatures: {}
     };
     constructor(props) {
         super(props);
         this.table = null;
         this.hoveredFeature = null;
+        this.state.sortedFilteredFeatures = props.features;
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.features !== prevProps.features) {
             this.setState(state => {
                 const newState = {};
-                if (!this.props.onSort && state.sortField) {
-                    newState.sortedFeatures = this.sortedFeatures(state.sortField);
-                }
+                newState.sortedFilteredFeatures = this.sortedFilteredFeatures(state.sortField, state.columnFilters);
                 if (state.selectedFeatures) {
                     const newFeatureIds = new Set([...this.props.features.map(f => f.id)]);
                     newState.selectedFeatures = Object.fromEntries(
@@ -71,7 +75,7 @@ export default class FeaturesTable extends React.PureComponent {
         }
     }
     render() {
-        const features = this.state.sortedFeatures ?? this.props.features;
+        const features = this.state.sortedFilteredFeatures;
         const fields = this.props.fields.filter(field => field.id !== this.props.primaryKey);
         const pkfield = this.props.fields.find(field => field.id === this.props.primaryKey);
         const showSelColumn = this.props.allowSelect;
@@ -98,7 +102,7 @@ export default class FeaturesTable extends React.PureComponent {
             <div className="featurestable-frame">
                 <table className={className} ref={el => { this.table = el; }} style={this.props.style}>
                     <thead>
-                        <tr>
+                        <tr className="featurestable-header">
                             {showSelColumn ? (<th>{selectAll}</th>) : null}
                             {showIdColumn ? (
                                 <th onClick={() => this.sortBy(pkfield.name)} onKeyDown={MiscUtils.checkKeyActivate} tabIndex={0} title={pkfield.name}>
@@ -122,6 +126,27 @@ export default class FeaturesTable extends React.PureComponent {
                                 </th>
                             ))}
                         </tr>
+                        {this.props.showColumnFilters ? (
+                            <tr className="featurestable-filterheader">
+                                {showSelColumn ? (<th />) : null}
+                                {showIdColumn ? (
+                                    <th>
+                                        <TextInput
+                                            onChange={text => this.setColumnFilter(pkfield.id, text)}
+                                            placeholder={LocaleUtils.tr("common.filter")}
+                                            value={this.state.columnFilters[pkfield.id] ?? ""} />
+                                    </th>
+                                ) : null}
+                                {fields.map((field, idx) => (
+                                    <th key={field.id}>
+                                        <TextInput
+                                            onChange={text => this.setColumnFilter(field.id, text)}
+                                            placeholder={LocaleUtils.tr("common.filter")}
+                                            value={this.state.columnFilters[field.id] ?? ""} />
+                                    </th>
+                                ))}
+                            </tr>
+                        ) : null}
                     </thead>
                     <tbody>
                         {features.map((feature, idx) => {
@@ -164,13 +189,26 @@ export default class FeaturesTable extends React.PureComponent {
             } else {
                 sortField = {field: field, dir: 1};
             }
-            let sortedFeatures = null;
             if (this.props.onSort) {
-                this.props.onSort(field);
-            } else {
-                sortedFeatures = this.sortedFeatures(sortField);
+                this.props.onSort(sortField);
             }
-            return {sortField, sortedFeatures};
+            const sortedFilteredFeatures = this.sortedFilteredFeatures(sortField, state.columnFilters);
+            return {sortField, sortedFilteredFeatures};
+        });
+    };
+    setColumnFilter = (field, text) => {
+        this.setState(state => {
+            const columnFilters = {...state.columnFilters};
+            if (text) {
+                columnFilters[field] = text;
+            } else {
+                delete columnFilters[field];
+            }
+            if (this.props.onFilter) {
+                this.props.onFilter(columnFilters);
+            }
+            const sortedFilteredFeatures = this.sortedFilteredFeatures(state.sortField, columnFilters);
+            return {columnFilters, sortedFilteredFeatures};
         });
     };
     renderSortIndicator = (field) => {
@@ -266,14 +304,26 @@ export default class FeaturesTable extends React.PureComponent {
             }
         });
     };
-    sortedFeatures = (sortField) => {
+    sortedFilteredFeatures = (sortField, columnFilters) => {
+        let features = this.props.features;
         const pk = this.props.primaryKey;
-        const sortFieldValue = sortField.field === pk ? (f) => f.id : (f) => f.properties[sortField.field];
-        return [...this.props.features].sort((f1, f2) => {
-            const v1 = String(sortFieldValue(f1));
-            const v2 = String(sortFieldValue(f2));
-            return v1.localeCompare(v2, undefined, {numeric: true, sensitivity: 'base'}) * sortField.dir;
-        });
+        if (!this.props.onFilter && !isEmpty(columnFilters)) {
+            features = features.filter(feature =>
+                Object.entries(columnFilters).find(([field, text]) => {
+                    const prop = field === pk ? feature.id : feature.properties[field];
+                    return String(prop ?? "").toLowerCase().includes(text.toLowerCase())
+                }) !== undefined
+            );
+        }
+        if (!this.props.onSort && sortField) {
+            const sortFieldValue = sortField.field === pk ? (f) => f.id : (f) => f.properties[sortField.field];
+            features = features.sort((f1, f2) => {
+                const v1 = String(sortFieldValue(f1));
+                const v2 = String(sortFieldValue(f2));
+                return v1.localeCompare(v2, undefined, {numeric: true, sensitivity: 'base'}) * sortField.dir;
+            });
+        }
+        return features;
     };
     onFeatureHoverIn = (feature) => {
         this.hoveredFeature = feature;

@@ -11,10 +11,26 @@ table.featurestable {
     min-width: 100%;
 }
 
-table.featurestable th {
+tr.featurestable-header th {
     position: sticky;
     top: 0;
     z-index: 2;
+    height: 2em;
+}
+
+tr.featurestable-filterheader th {
+    position: sticky;
+    top: calc(2em - 1px);
+    z-index: 2;
+    font-weight: normal;
+    text-align: left;
+}
+
+tr.featurestable-filterheader th div.TextInput {
+    border: none!important;
+}
+
+table.featurestable th {
     padding: 0;
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
