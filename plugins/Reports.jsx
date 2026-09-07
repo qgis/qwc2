@@ -229,12 +229,13 @@ class Reports extends React.Component {
                 pdf: "application/pdf",
                 csv: "text/csv",
                 txt: "text/plain",
+                rtf: "application/rtf",
                 html: "text/html",
                 odt: "application/vnd.oasis.opendocument.text",
                 ods: "application/vnd.oasis.opendocument.spreadsheet",
                 docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                json: "application/json",
+                pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
                 xml: "application/xml"
             };
             const mimeType = mimeTypes[format] || "application/octet-stream";
