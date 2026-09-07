@@ -454,6 +454,10 @@ class IdentifyTool extends React.Component {
     deserializeResults = (identifyResults) => {
         const pendingRequests = [];
         const importErrors = {};
+        const startupLayers = (this.props.startupParams.l ?? "").split(",").map(entry => {
+            const params = LayerUtils.splitLayerUrlParam(entry);
+            return params.url + "#" + params.name;
+        });
         if (Array.isArray(identifyResults) || identifyResults === null) {
             identifyResults = {};
         }
@@ -506,7 +510,9 @@ class IdentifyTool extends React.Component {
                     pendingRequests.push(loadLayerReqId);
                     ServiceLayerUtils.findLayers("wms", layerUrl, [{id: uuidv4(), name: layerName}], this.props.map.projection, (id, layer) => {
                         if (layer) {
-                            this.props.addLayer(layer);
+                            if (!startupLayers.includes(layerid)) {
+                                this.props.addLayer(layer);
+                            }
                             queryLayer(loadLayerReqId, layerid, layerresults, layer, layerName);
                         } else {
                             importErrors[layerid] = true;
@@ -517,7 +523,7 @@ class IdentifyTool extends React.Component {
                 }
             } else {
                 identifyResults[layerid] = identifyResults[layerid].filter(f => f.type === "Feature");
-                if (!match) {
+                if (!match && !startupLayers.includes(layerid)) {
                     ServiceLayerUtils.findLayers("wms", layerUrl, [{id: uuidv4(), name: layerName}], this.props.map.projection, (id, layer) => {
                         if (layer) {
                             this.props.addLayer(layer);
