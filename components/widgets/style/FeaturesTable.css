@@ -11,17 +11,23 @@ table.featurestable {
     min-width: 100%;
 }
 
-tr.featurestable-header th {
+table.featurestable th {
     position: sticky;
-    top: 0;
     z-index: 2;
+    padding: 0;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+tr.featurestable-header th {
+    top: 0;
     height: 2em;
 }
 
 tr.featurestable-filterheader th {
-    position: sticky;
     top: calc(2em - 1px);
-    z-index: 2;
     font-weight: normal;
     text-align: left;
 }
@@ -30,28 +36,21 @@ tr.featurestable-filterheader th div.TextInput {
     border: none!important;
 }
 
-table.featurestable th {
-    padding: 0;
-    background-color: var(--button-bg-color);
-    color: var(--button-text-color);
-    border: 1px solid var(--border-color);
-    overflow: hidden;
+table.featurestable-selectable tr.featurestable-header th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    width: 2em;
 }
 
 table.featurestable th::after {
     content: "";
     position: absolute;
+    pointer-events: none;
     bottom: 0;
     left: 0;
     right: 0;
     border-bottom: 1px solid var(--border-color);
-}
-
-table.featurestable-selectable th:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 3;
-    width: 2em;
 }
 
 table.featurestable th > span {
@@ -100,6 +99,7 @@ table.featurestable-selectable th:first-child::after,
 table.featurestable-selectable td:first-child::after {
     content: "";
     position: absolute;
+    pointer-events: none;
     right: 0;
     top: 0;
     bottom: 0;
