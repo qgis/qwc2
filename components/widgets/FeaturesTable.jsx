@@ -311,7 +311,7 @@ export default class FeaturesTable extends React.PureComponent {
             features = features.filter(feature =>
                 Object.entries(columnFilters).find(([field, text]) => {
                     const prop = field === pk ? feature.id : feature.properties[field];
-                    return String(prop ?? "").toLowerCase().includes(text.toLowerCase())
+                    return String(prop ?? "").toLowerCase().includes(text.toLowerCase());
                 }) !== undefined
             );
         }
