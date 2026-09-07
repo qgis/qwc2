@@ -10,6 +10,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
+import mime from 'mime-to-extensions';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
@@ -225,21 +226,8 @@ class Reports extends React.Component {
         const url = serviceUrl + "/" + report.template + "." + (report.format || "pdf");
         axios.get(url, {responseType: "arraybuffer", params}).then(response => {
             const format = report.format || "pdf";
-            const mimeTypes = {
-                pdf: "application/pdf",
-                csv: "text/csv",
-                txt: "text/plain",
-                rtf: "application/rtf",
-                html: "text/html",
-                odt: "application/vnd.oasis.opendocument.text",
-                ods: "application/vnd.oasis.opendocument.spreadsheet",
-                docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-                xml: "application/xml"
-            };
-            const mimeType = mimeTypes[format] || "application/octet-stream";
             const filename = (report.filename || report.title.replace(" ", "_")) + "." + format;
+            const mimeType = mime.lookup(filename) || "application/octet-stream";
             FileSaver.saveAs(new Blob([response.data], {type: mimeType}), filename);
             this.setState({generatingReport: false});
         }).catch(() => {
