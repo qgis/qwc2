@@ -501,7 +501,7 @@ class IdentifyViewer extends React.Component {
                     });
                     const haveSel = !isEmpty(this.state.tableSelection[layerid]);
                     const buttons = [
-                        {key: "Zoom", icon: "zoom", disabled: !haveSel},
+                        {key: "Zoom", icon: "zoom"},
                         {key: "Export", icon: "export"},
                         {key: "Delete", icon: haveSel ? "trash_checked" : "trash"}
                     ];
@@ -547,7 +547,7 @@ class IdentifyViewer extends React.Component {
     };
     tableAction = (layerid, action) => {
         if (action === "Zoom") {
-            const features = Object.values(this.state.tableSelection).map(sel => Object.values(sel)).flat();
+            const features = isEmpty(this.state.tableSelection[layerid]) ? this.props.identifyResults[layerid] : Object.values(this.state.tableSelection[layerid]);
             const bbox = VectorLayerUtils.computeFeaturesBBox(features);
             if (bbox) {
                 this.props.zoomToExtent(bbox.bounds, bbox.crs);
