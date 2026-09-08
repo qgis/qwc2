@@ -49,6 +49,8 @@ class AttributeTable extends React.Component {
         /** Whether to limit to the extent by default. */
         limitToExtent: PropTypes.bool,
         setCurrentTask: PropTypes.func,
+        /** Whether to show column filter fields. */
+        showColumnFilters: PropTypes.bool,
         /** Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. */
         showEditFormButton: PropTypes.bool,
         /** Whether to show hidden fields. */
@@ -85,8 +87,8 @@ class AttributeTable extends React.Component {
             >
                 <AttributeTableWidget allowAddForGeometryLayers={this.props.allowAddForGeometryLayers} hideIdColumn={this.props.hideIdColumn}
                     iface={this.props.iface} initialLayer={this.props.taskData?.layer} limitToExtent={this.props.limitToExtent}
-                    showEditFormButton={this.props.showEditFormButton} showHiddenFields={this.props.showHiddenFields}
-                    showLimitToExtent={this.props.showLimitToExtent} zoomLevel={this.props.zoomLevel}
+                    showColumnFilters={this.props.showColumnFilters} showEditFormButton={this.props.showEditFormButton}
+                    showHiddenFields={this.props.showHiddenFields} showLimitToExtent={this.props.showLimitToExtent} zoomLevel={this.props.zoomLevel}
                 />
             </ResizeableWindow>
         );

@@ -365,6 +365,7 @@ This plugin queries the dataset via the editing service specified by
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`  side: string,`<br />`}` | Default window geometry with size, position and docking status. Positive position values (including '0') are related to top (InitialY) and left (InitialX), negative values (including '-0') to bottom (InitialY) and right (InitialX).<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined<br />- `side`: undefined | `{`<br />`    initialWidth: 800,`<br />`    initialHeight: 480,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true,`<br />`    side: 'bottom'`<br />`}` |
 | hideIdColumn | `bool` | Whether to hide the id (primary key) column. | `undefined` |
 | limitToExtent | `bool` | Whether to limit to the extent by default. | `false` |
+| showColumnFilters | `bool` | Whether to show column filter fields. | `undefined` |
 | showEditFormButton | `bool` | Whether to show a button to open the edit form for selected layer. Requires the Editing plugin to be enabled. | `true` |
 | showHiddenFields | `bool` | Whether to show hidden fields. | `true` |
 | showLimitToExtent | `bool` | Whether to show the "Limit to extent" checkbox | `true` |
