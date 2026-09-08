@@ -87,10 +87,17 @@ export default function map(state = defaultState, action) {
         bounds[2] += padding * width;
         bounds[1] -= padding * height;
         bounds[3] += padding * height;
+        let zoom = MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1) + action.zoomOffset;
+        if (action.maxZoom !== undefined) {
+            zoom = Math.min(zoom, action.maxZoom);
+        }
+        if (action.minZoom !== undefined) {
+            zoom = Math.max(zoom, action.minZoom);
+        }
         const newState = {
             ...state,
             center: [0.5 * (bounds[0] + bounds[2]), 0.5 * (bounds[1] + bounds[3])],
-            zoom: MapUtils.getZoomForExtent(bounds, state.resolutions, state.size, 0, state.scales.length - 1) + action.zoomOffset,
+            zoom: zoom,
             bbox: {...state.bbox, bounds: bounds}
         };
         MapUtils.updateMapUrlParams(newState);
