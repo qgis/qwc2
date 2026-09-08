@@ -111,6 +111,8 @@ class IdentifyTool extends React.Component {
         showLayerTitles: PropTypes.bool,
         /** Whether to show the point query marker.  */
         showPointQueryMarker: PropTypes.bool,
+        /** Show zoom to all results button. */
+        showZoomToResults: PropTypes.bool,
         /** Whether to skip empty feature attributes. */
         skipEmptyFeatureAttributes: PropTypes.bool,
         startupParams: PropTypes.object,
@@ -125,7 +127,8 @@ class IdentifyTool extends React.Component {
     };
     static defaultProps = {
         setToolRef: () => {},
-        showPointQueryMarker: true
+        showPointQueryMarker: true,
+        showZoomToResults: true
     };
     state = {
         resultsVisible: false,
@@ -647,6 +650,7 @@ class IdentifyTool extends React.Component {
                         showHighlight={this.state.resultsVisible}
                         showLayerSelector={this.props.showLayerSelector}
                         showLayerTitles={this.props.showLayerTitles}
+                        showZoomToResults={this.props.showZoomToResults}
                         skipEmptyFeatureAttributes={this.props.skipEmptyFeatureAttributes}
                     />
                 );

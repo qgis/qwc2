@@ -321,7 +321,8 @@
       "results": "",
       "selectforcompare": "",
       "selectreport": "",
-      "title": "Objektinformation"
+      "title": "Objektinformation",
+      "zoom": ""
     },
     "imageeditor": {
       "confirmclose": "",

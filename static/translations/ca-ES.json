@@ -321,7 +321,8 @@
       "results": "Resultats",
       "selectforcompare": "Selecciona per comparar",
       "selectreport": "Seleccionar informe...",
-      "title": "Informació del element"
+      "title": "Informació del element",
+      "zoom": ""
     },
     "imageeditor": {
       "confirmclose": "Tancar sense guardar?",

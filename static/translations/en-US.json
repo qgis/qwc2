@@ -321,7 +321,8 @@
       "results": "Results",
       "selectforcompare": "Select for comparison",
       "selectreport": "Select report..",
-      "title": "Feature Info"
+      "title": "Feature Info",
+      "zoom": "Zoom to features"
     },
     "imageeditor": {
       "confirmclose": "Close without saving?",

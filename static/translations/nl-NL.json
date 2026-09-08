@@ -321,7 +321,8 @@
       "results": "",
       "selectforcompare": "",
       "selectreport": "",
-      "title": "Objectgegevens"
+      "title": "Objectgegevens",
+      "zoom": ""
     },
     "imageeditor": {
       "confirmclose": "Sluiten zonder op te slaan?",

@@ -321,7 +321,8 @@
       "results": "",
       "selectforcompare": "",
       "selectreport": "",
-      "title": "Информация об объекте"
+      "title": "Информация об объекте",
+      "zoom": ""
     },
     "imageeditor": {
       "confirmclose": "",

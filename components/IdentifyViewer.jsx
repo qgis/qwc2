@@ -64,6 +64,7 @@ class IdentifyViewer extends React.Component {
         showHighlight: PropTypes.bool,
         showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
+        showZoomToResults: PropTypes.bool,
         skipEmptyFeatureAttributes: PropTypes.bool,
         theme: PropTypes.object,
         zoomToExtent: PropTypes.func
@@ -675,6 +676,9 @@ class IdentifyViewer extends React.Component {
                 {haveSettings ? toggleButton("settingsMenu", "cog", false) : null}
                 {this.state.settingsMenu ? this.renderSettingsMenu(enabledSettings) : null}
                 {this.props.enableCompare && this.props.resultDisplayMode !== "table" ? toggleButton("compareEnabled", "compare", this.state.selectedResults.size() < 2, LocaleUtils.tr("identify.compare")) : null}
+                {this.props.showZoomToResults && (
+                    <button className="button" onClick={() => this.zoomTo(this.props.identifyResults)} title={LocaleUtils.tr("identify.zoom")}><Icon icon="zoom" /></button>
+                )}
                 <span className="identify-toolbar-spacer" />
                 {infoLabel}
                 <span className="identify-toolbar-spacer" />

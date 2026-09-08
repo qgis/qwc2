@@ -321,7 +321,8 @@
       "results": "Rezultate",
       "selectforcompare": "Selectează pentru comparare",
       "selectreport": "Selectează raportul..",
-      "title": "Informații obiect spațial"
+      "title": "Informații obiect spațial",
+      "zoom": ""
     },
     "imageeditor": {
       "confirmclose": "Închizi fără să salvezi modificările?",

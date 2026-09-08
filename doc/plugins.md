@@ -497,6 +497,7 @@ See [Configuring the QGIS feature search](../../topics/Search/#configuring-the-q
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | enableExport | `{bool, array}` | Whether to enable the export functionality. Either `true|false` or a list of single allowed formats (builtin formats: `json`, `geojson`, `csv`, `csvzip`, `shapefile`, `xlsx`). If a list is provided, the export formats will be sorted according to that list, and the default format will be the first format of the list. | `true` |
+| showZoomToResults | `bool` | Show zoom to all results button. | `undefined` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 
 ## FeatureSelection<a name="featureselection"></a>
@@ -530,6 +531,7 @@ while still allowing to transiently identify features with the Identify plugin.
 | resultMultiDisplay | `bool` | Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. | `false` |
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
 | showLayerTitles | `bool` | Whether to prefix the identify result titles with the respecitve layer name. | `true` |
+| showZoomToResults | `bool` | Show zoom to all results button. | `true` |
 | skipEmptyFeatureAttributes | `bool` | Whether to skip empty feature attributes. | `undefined` |
 
 ## GeometryDigitizer<a name="geometrydigitizer"></a>
@@ -651,6 +653,7 @@ for customized queries and templates for the result presentation.
 | resultMultiDisplay | `bool` | Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. | `false` |
 | showLayerSelector | `bool` | Whether to show a layer selector to filter the identify results by layer. | `true` |
 | showLayerTitles | `bool` | Whether to prefix the identify result titles with the respecitve layer name. | `true` |
+| showZoomToResults | `bool` | Show zoom to all results button. | `undefined` |
 | skipEmptyFeatureAttributes | `bool` | Whether to skip empty feature attributes. | `undefined` |
 
 ## LayerCatalog<a name="layercatalog"></a>

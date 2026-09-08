@@ -321,7 +321,8 @@
       "results": "Résultats",
       "selectforcompare": "Sélectionner pour comparison",
       "selectreport": "Sélectionner rapport...",
-      "title": "Informations sur l'objet"
+      "title": "Informations sur l'objet",
+      "zoom": "Zoomer sur les objets"
     },
     "imageeditor": {
       "confirmclose": "Fermer sans enregistrer?",

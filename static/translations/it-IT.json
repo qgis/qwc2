@@ -321,7 +321,8 @@
       "results": "Risultati",
       "selectforcompare": "Seleziona per confronto",
       "selectreport": "Seleziona rapporto...",
-      "title": "Titolo"
+      "title": "Titolo",
+      "zoom": "Zooma sugli oggetti"
     },
     "imageeditor": {
       "confirmclose": "Chiudere senza salvare?",

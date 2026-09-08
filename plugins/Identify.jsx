@@ -83,6 +83,8 @@ class Identify extends React.Component {
         showLayerSelector: PropTypes.bool,
         /** Whether to prefix the identify result titles with the respecitve layer name. */
         showLayerTitles: PropTypes.bool,
+        /** Show zoom to all results button. */
+        showZoomToResults: PropTypes.bool,
         /** Whether to skip empty feature attributes. */
         skipEmptyFeatureAttributes: PropTypes.bool,
         startupParams: PropTypes.object,
@@ -173,6 +175,7 @@ class Identify extends React.Component {
                 setToolRef={el => { this.toolRef = el; }}
                 showLayerSelector={this.props.showLayerSelector}
                 showLayerTitles={this.props.showLayerTitles}
+                showZoomToResults={this.props.showZoomToResults}
                 skipEmptyFeatureAttributes={this.props.skipEmptyFeatureAttributes}
                 taskId="Identify"
                 toolIcon="info-sign"

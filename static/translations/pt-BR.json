@@ -321,7 +321,8 @@
       "results": "",
       "selectforcompare": "",
       "selectreport": "",
-      "title": "Informação do recurso"
+      "title": "Informação do recurso",
+      "zoom": ""
     },
     "imageeditor": {
       "confirmclose": "Confirmar fechamento",

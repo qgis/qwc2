@@ -321,7 +321,8 @@
       "results": "",
       "selectforcompare": "",
       "selectreport": "レポートを選択...",
-      "title": "地物情報"
+      "title": "地物情報",
+      "zoom": ""
     },
     "imageeditor": {
       "confirmclose": "保存せずに閉じますか?",

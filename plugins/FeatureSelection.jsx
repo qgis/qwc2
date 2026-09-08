@@ -75,6 +75,8 @@ class FeatureSelection extends React.Component {
         showLayerSelector: PropTypes.bool,
         /** Whether to prefix the identify result titles with the respecitve layer name. */
         showLayerTitles: PropTypes.bool,
+        /** Show zoom to all results button. */
+        showZoomToResults: PropTypes.bool,
         /** Whether to skip empty feature attributes. */
         skipEmptyFeatureAttributes: PropTypes.bool
     };
@@ -102,7 +104,8 @@ class FeatureSelection extends React.Component {
         initialRadiusUnits: 'm',
         highlightAllResults: true,
         showLayerSelector: true,
-        showLayerTitles: true
+        showLayerTitles: true,
+        showZoomToResults: true
     };
     render() {
         return (
@@ -130,6 +133,7 @@ class FeatureSelection extends React.Component {
                 showLayerSelector={this.props.showLayerSelector}
                 showLayerTitles={this.props.showLayerTitles}
                 showPointQueryMarker={false}
+                showZoomToResults={this.props.showZoomToResults}
                 skipEmptyFeatureAttributes={this.props.skipEmptyFeatureAttributes}
                 taskId="FeatureSelection"
                 toolIcon="selectbox"

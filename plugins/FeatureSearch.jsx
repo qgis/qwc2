@@ -41,6 +41,8 @@ class FeatureSearch extends React.Component {
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
         layers: PropTypes.array,
         map: PropTypes.object,
+        /** Show zoom to all results button. */
+        showZoomToResults: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
         theme: PropTypes.object
@@ -213,7 +215,8 @@ class FeatureSearch extends React.Component {
                         collapsible displayResultTree={false} enableExport={this.props.enableExport}
                         identifyResults={this.state.searchResults}
                         resultsChanged={results => this.setState({searchResults: results})}
-                        showLayerTitles={!provider.params.resultTitle} />
+                        showLayerTitles={!provider.params.resultTitle}
+                        showZoomToResults={this.props.showZoomToResults} />
                 )}
             </div>
         );
