@@ -74,6 +74,9 @@ export default class FeaturesTable extends React.PureComponent {
             this.props.selectionChanged?.(this.state.selectedFeatures);
         }
     }
+    componentWillUnmount() {
+        this.props.selectionChanged({});
+    }
     render() {
         const features = this.state.sortedFilteredFeatures;
         const fields = this.props.fields.filter(field => field.id !== this.props.primaryKey);
