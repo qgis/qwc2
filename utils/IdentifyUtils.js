@@ -199,10 +199,10 @@ const IdentifyUtils = {
     },
     buildFilterRequest(layer, queryLayers, filterGeom, map, options = {}) {
         const params = {
-            feature_count: options.region_feature_count ?? 100,
             filter: layer.params.FILTER ?? '',
             ...(filterGeom ? {FILTER_GEOM: filterGeom} : {}),
-            ...options
+            ...options,
+            feature_count: options.region_feature_count ?? options.feature_count ?? 100
         };
         return identifyRequestParams(layer, queryLayers, map.projection, params);
     },
