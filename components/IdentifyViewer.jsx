@@ -18,7 +18,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
-import {zoomToPoint, zoomToExtent} from '../actions/map';
+import {zoomToExtent} from '../actions/map';
 import {openExternalUrl} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import {defaultHighlightStyle} from '../utils/FeatureStyles';
@@ -66,8 +66,7 @@ class IdentifyViewer extends React.Component {
         showLayerTitles: PropTypes.bool,
         skipEmptyFeatureAttributes: PropTypes.bool,
         theme: PropTypes.object,
-        zoomToExtent: PropTypes.func,
-        zoomToPoint: PropTypes.func
+        zoomToExtent: PropTypes.func
     };
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
@@ -442,7 +441,7 @@ class IdentifyViewer extends React.Component {
         }
         let zoomToFeatureButton = null;
         if (feature.bbox && feature.crs) {
-            zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.zoomToResult(feature)} />);
+            zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.zoomTo({[layerid]: [feature]})} />);
         }
         const key = layerid + "$" + feature.id;
         const expanded = this.state.expandedResults.has(key);
@@ -548,10 +547,7 @@ class IdentifyViewer extends React.Component {
     tableAction = (layerid, action) => {
         if (action === "Zoom") {
             const features = isEmpty(this.state.tableSelection[layerid]) ? this.props.identifyResults[layerid] : Object.values(this.state.tableSelection[layerid]);
-            const bbox = VectorLayerUtils.computeFeaturesBBox(features);
-            if (bbox) {
-                this.props.zoomToExtent(bbox.bounds, bbox.crs);
-            }
+            this.zoomTo({[layerid]: features});
         } else if (action === "Export") {
             const features = isEmpty(this.state.tableSelection[layerid]) ? this.props.identifyResults[layerid] : Object.values(this.state.tableSelection[layerid]);
             this.export({layerid: features});
@@ -940,27 +936,19 @@ class IdentifyViewer extends React.Component {
         this.props.openExternalUrl(ev.currentTarget.href, ev.currentTarget.target, {docked: this.props.iframeDialogsInitiallyDocked});
         ev.preventDefault();
     };
-    zoomToResult = (result) => {
-        let zoom = 0;
-        const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
-        if (result.bbox[0] !== result.bbox[2] && result.bbox[1] !== result.bbox[3]) {
-            zoom = MapUtils.getZoomForExtent(result.bbox, this.props.map.resolutions, this.props.map.size, 0, maxZoom);
-        } else {
-            zoom = maxZoom;
+    zoomTo = (results) => {
+        const bbox = VectorLayerUtils.computeFeaturesBBox(Object.values(results).flat());
+        if (bbox) {
+            const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
+            this.props.zoomToExtent(bbox.bounds, bbox.crs, 0, undefined, maxZoom);
         }
-
-        const x = 0.5 * (result.bbox[0] + result.bbox[2]);
-        const y = 0.5 * (result.bbox[1] + result.bbox[3]);
-        this.props.zoomToPoint([x, y], zoom, this.props.map.projection);
-
-        const path = [];
-        let sublayer = null;
-        const layer = this.props.layers.find(l => {
-            return l.role === LayerRole.THEME && (sublayer = LayerUtils.searchSubLayer(l, 'name', result.layername, path));
+        Object.keys(results).forEach(layerId => {
+            const [layerUrl, layerName] = layerId.split('#');
+            const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+            if (match) {
+                this.props.changeLayerProperty(match.layer.id, "visibility", true, match.path);
+            }
         });
-        if (layer && sublayer) {
-            this.props.changeLayerProperty(layer.id, "visibility", true, path);
-        }
     };
 }
 
@@ -976,6 +964,5 @@ export default connect(selector, {
     removeLayer: removeLayer,
     setActiveLayerInfo: setActiveLayerInfo,
     openExternalUrl: openExternalUrl,
-    zoomToPoint: zoomToPoint,
     zoomToExtent: zoomToExtent
 })(IdentifyViewer);
