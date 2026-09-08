@@ -59,6 +59,7 @@ table.featurestable th > span {
     display: flex;
     align-items: center;
     position: relative;
+    white-space: nowrap;
 }
 
 table.featurestable th > span > span.icon {
