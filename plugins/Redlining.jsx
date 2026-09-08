@@ -31,6 +31,12 @@ import LocaleUtils from '../utils/LocaleUtils';
 import './style/Redlining.css';
 
 
+const POINT_SHAPE_BUTTONS = {
+    circle: "Point",
+    square: "PointSquare",
+    star: "PointStar"
+};
+
 /**
  * Allows drawing figures and text labels on the map.
  */
@@ -54,7 +60,7 @@ class Redlining extends React.Component {
         defaultTextFillColor: PropTypes.array,
         /** Default text outline color. In format `[r, g, b, a]`. */
         defaultTextOutlineColor: PropTypes.array,
-        /** Tools to hide. Available tools: `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `FeatureLabel`, `Export`. */
+        /** Tools to hide. Available tools: `PointSquare`, `PointStar`, `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `FeatureLabel`, `Export`. */
         hiddenTools: PropTypes.array,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
@@ -172,9 +178,18 @@ class Redlining extends React.Component {
     };
     renderBody = () => {
         const toolEnabled = (tool) => !this.props.hiddenTools.includes(tool);
-        const activeButton = this.props.redlining.action === "Draw" ? this.props.redlining.geomType : this.props.redlining.action;
+        let activeButton = this.props.redlining.action === "Draw" ? this.props.redlining.geomType : this.props.redlining.action;
+        if (activeButton === "Point") {
+            // All point shapes share the Point geomType, so the active entry is determined by the current shape
+            const pointShape = this.props.redlining.style.pointShape;
+            activeButton = Object.hasOwn(POINT_SHAPE_BUTTONS, pointShape) ? POINT_SHAPE_BUTTONS[pointShape] : "Point";
+        }
         let drawButtons = [
-            {key: "Point", tooltip: LocaleUtils.tr("common.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: ""}},
+            [
+                {key: "Point", tooltip: LocaleUtils.tr("common.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "circle"}}},
+                toolEnabled("PointSquare") ? {key: "PointSquare", tooltip: LocaleUtils.tr("common.square"), icon: "square", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "square"}}} : null,
+                toolEnabled("PointStar") ? {key: "PointStar", tooltip: LocaleUtils.tr("common.star"), icon: "star", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "star"}}} : null
+            ].filter(Boolean),
             {key: "LineString", tooltip: LocaleUtils.tr("common.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
             [
                 {key: "Polygon", tooltip: LocaleUtils.tr("common.polygon"), icon: "polygon", data: {action: "Draw", geomType: "Polygon", text: ""}},
@@ -409,9 +424,10 @@ class Redlining extends React.Component {
     };
     actionChanged = (data) => {
         if (data.action === "Draw" && data.geomType === "Text") {
-            data = {...data, style: {text: LocaleUtils.tr("common.text")}};
+            data = {...data, style: {...data.style, text: LocaleUtils.tr("common.text")}};
         } else if (!this.props.allowGeometryLabels || this.props.redlining.geomType === "Text" && data.action === "Draw" && data.geomType !== "Text") {
-            data = {...data, style: {text: ''}};
+            // Merge, so the style carried by the button (the point shape) is not dropped
+            data = {...data, style: {...data.style, text: ''}};
         }
         this.props.changeRedliningState(data);
     };

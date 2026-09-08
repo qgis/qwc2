@@ -89,6 +89,14 @@ export const END_MARKERS = {
     LINE: {src: measurehead, anchor: [0.05, 0.5], baserotation: 0}
 };
 
+// Point symbols, per feature as styleOptions.pointShape. Keys must stay valid SLD WellKnownNames:
+// VectorLayerUtils.createSld emits them into the print SLD. radiusFactor keeps shapes the same width.
+export const POINT_SHAPES = {
+    circle: {},
+    square: {points: 4, angle: Math.PI / 4, radiusFactor: Math.SQRT2},
+    star: {points: 5, angle: 0, radiusFactor: 1 / Math.cos(Math.PI / 10), radius2Factor: 0.38}
+};
+
 export function defaultFeatureStyle() {
     return {...DEFAULT_FEATURE_STYLE, ...ConfigUtils.getConfigProp("defaultFeatureStyle")};
 }
@@ -121,6 +129,27 @@ export function computeMeasureFeatureStyle(markerOpts) {
     };
 }
 
+const pointImage = (opts) => {
+    if (!(opts.circleRadius > 0)) {
+        return null;
+    }
+    const fill = new ol.style.Fill({ color: opts.fillColor });
+    const stroke = new ol.style.Stroke({color: opts.strokeColor, width: opts.strokeWidth});
+    const params = POINT_SHAPES[opts.pointShape];
+    if (!params?.points) {
+        return new ol.style.Circle({radius: opts.circleRadius, fill: fill, stroke: stroke});
+    }
+    const radius = opts.circleRadius * params.radiusFactor;
+    return new ol.style.RegularShape({
+        fill: fill,
+        stroke: stroke,
+        points: params.points,
+        angle: params.angle,
+        radius: radius,
+        radius2: params.radius2Factor ? radius * params.radius2Factor : undefined
+    });
+};
+
 const defaultStyle = (feature, options) => {
     const opts = {...defaultFeatureStyle(), ...options};
     const styles = [];
@@ -135,11 +164,7 @@ const defaultStyle = (feature, options) => {
                 lineDash: opts.strokeDash,
                 lineCap: 'butt'
             }),
-            image: opts.circleRadius > 0 ? new ol.style.Circle({
-                radius: opts.circleRadius,
-                fill: new ol.style.Fill({ color: opts.fillColor }),
-                stroke: new ol.style.Stroke({color: opts.strokeColor, width: opts.strokeWidth})
-            }) : null
+            image: pointImage(opts)
         })
     );
     if (feature.getProperties().label) {
