@@ -495,7 +495,7 @@ class IdentifyTool extends React.Component {
             }
         };
         const queryLayer = (reqId, layerid, layerresults, layer, layerName) => {
-            const values = layerresults.values.map(x => (typeof x === "string" ? `"${x}"` : x)).join(" , ");
+            const values = layerresults.values.map(x => (typeof x === "string" ? `'${x}'` : x)).join(" , ");
             const filter = {filter: `${layerName}:"${layerresults.key}" IN ( ${values} )`};
             const request = IdentifyUtils.buildFilterRequest(layer, layerName, undefined, this.props.map, filter);
             IdentifyUtils.sendRequest(request, (response) => {
