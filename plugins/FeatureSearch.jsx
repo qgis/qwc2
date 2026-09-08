@@ -209,7 +209,11 @@ class FeatureSearch extends React.Component {
                 {isEmpty(this.state.searchResults) ? (
                     <div className="feature-search-noresults">{LocaleUtils.tr("common.noresults")}</div>
                 ) : (
-                    <IdentifyViewer collapsible displayResultTree={false} enableExport={this.props.enableExport} identifyResults={this.state.searchResults} showLayerTitles={!provider.params.resultTitle} />
+                    <IdentifyViewer
+                        collapsible displayResultTree={false} enableExport={this.props.enableExport}
+                        identifyResults={this.state.searchResults}
+                        resultsChanged={results => this.setState({searchResults: results})}
+                        showLayerTitles={!provider.params.resultTitle} />
                 )}
             </div>
         );

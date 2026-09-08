@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import axios from 'axios';
-import clone from 'clone';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import mime from 'mime-to-extensions';
@@ -51,7 +50,6 @@ class IdentifyViewer extends React.Component {
         highlightAllResults: PropTypes.bool,
         identifyResults: PropTypes.object,
         iframeDialogsInitiallyDocked: PropTypes.bool,
-        innerRef: PropTypes.func,
         layers: PropTypes.array,
         longAttributesDisplay: PropTypes.oneOf(['ellipsis', 'wrap']),
         map: PropTypes.object,
@@ -61,6 +59,7 @@ class IdentifyViewer extends React.Component {
         resultDisplayMode: PropTypes.string,
         resultGridSize: PropTypes.number,
         resultMultiDisplay: PropTypes.bool,
+        resultsChanged: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
         showHighlight: PropTypes.bool,
         showLayerSelector: PropTypes.bool,
@@ -73,7 +72,6 @@ class IdentifyViewer extends React.Component {
     static defaultProps = {
         longAttributesDisplay: 'ellipsis',
         enableAggregatedReports: true,
-        innerRef: () => {},
         resultDisplayMode: 'flat',
         resultGridSize: 200,
         resultMultiDisplay: false,
@@ -86,7 +84,6 @@ class IdentifyViewer extends React.Component {
         collapsedLayers: new ToggleSet(),
         expandedResults: new ToggleSet(),
         selectedResults: new ToggleSet(),
-        resultTree: {},
         reports: {},
         currentResult: null,
         settingsMenu: false,
@@ -112,12 +109,11 @@ class IdentifyViewer extends React.Component {
         this.highlightLayerId = uuidv4();
     }
     componentDidMount() {
-        this.updateResultTree();
-        this.props.innerRef(this);
+        this.onResultsUpdated({});
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.identifyResults !== prevProps.identifyResults) {
-            this.updateResultTree();
+            this.onResultsUpdated(prevProps.identifyResults);
         }
 
         // Scroll to selected result
@@ -128,71 +124,71 @@ class IdentifyViewer extends React.Component {
             this.currentResultElRef = null;
         }
         // Ensure currentPage is in range
-        if (this.state.resultTree !== prevState.resultTree || this.state.selectedLayer !== prevState.selectedLayer) {
-            const count = Object.values(this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree).flat().length;
+        if (this.props.identifyResults !== prevProps.identifyResults || this.state.selectedLayer !== prevState.selectedLayer) {
+            const results = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.props.identifyResults[this.state.selectedLayer]} : this.props.identifyResults;
+            const count = Object.values(results).flat().length;
             this.setState(state => ({currentPage: Math.max(0, Math.min(state.currentPage, count - 1))}));
         }
-        if (this.state.resultTree !== prevState.resultTree || this.state.selectedLayer !== prevState.selectedLayer || this.props.showHighlight !== prevProps.showHighlight) {
-            // Highlight features
+        // Highlight features
+        if (this.props.identifyResults !== prevProps.identifyResults || this.state.selectedLayer !== prevState.selectedLayer || this.props.showHighlight !== prevProps.showHighlight) {
             if (!this.props.showHighlight) {
                 this.props.removeLayer(this.selectionLayerId);
             } else if (this.props.highlightAllResults && this.props.showHighlight) {
-                const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
+                const results = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.props.identifyResults[this.state.selectedLayer]} : this.props.identifyResults;
                 const layer = {
                     id: this.selectionLayerId,
                     role: LayerRole.SELECTION
                 };
-                this.props.addLayerFeatures(layer, Object.values(resultTree).flat(), true);
+                this.props.addLayerFeatures(layer, Object.values(results).flat(), true);
             }
         }
+        // Update current result highlighting
         if (this.state.currentResult !== prevState.currentResult || this.props.showHighlight !== prevProps.showHighlight) {
-            // Update current result highlighting
             this.setHighlightedFeatures(null);
         }
+        // Update page size when toggling multi-view
         if (this.state.multiViewEnabled !== prevState.multiViewEnabled) {
             this.computePageSize(this.bodyEl.getBoundingClientRect());
         }
     }
     componentWillUnmount() {
-        this.props.innerRef(null);
         this.props.removeLayer(this.selectionLayerId);
         this.props.removeLayer(this.highlightLayerId);
     }
-    serializeResults = () => {
-        return Object.fromEntries(Object.entries(this.state.resultTree).map(([layerid, features]) => {
-            const [layerUrl, layerName] = layerid.split("#", 2);
-            const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
-            if (match && match.sublayer.primary_key) {
-                return [
-                    layerid, {
-                        key: match.sublayer.primary_key,
-                        values: features.map(feature => {
-                            return MiscUtils.isNumeric(feature.id) ? Number(feature.id) : feature.id;
-                        })
-                    }
-                ];
-            } else {
-                return [layerid, features];
-            }
-        }));
-    };
     getCurrentResultFeature = () => {
-        return this.state.resultTree[this.state.currentResult?.layerid]?.find?.(feature => feature.id === this.state.currentResult.featureid) ?? null;
+        return this.props.identifyResults[this.state.currentResult?.layerid]?.find?.(feature => feature.id === this.state.currentResult.featureid) ?? null;
     };
-    updateResultTree = () => {
-        const layers = Object.keys(this.props.identifyResults);
-        let currentResult = null;
-        if (layers.length === 1 && this.props.identifyResults[layers[0]].length === 1) {
-            currentResult = {
-                layerid: layers[0],
-                featureid: this.props.identifyResults[layers[0]][0].id
-            };
-        }
-
-        this.setState({
-            resultTree: clone(this.props.identifyResults),
-            currentResult: currentResult,
-            reports: LayerUtils.collectFeatureReports(this.props.layers)
+    onResultsUpdated = (prevResults) => {
+        this.setState(state => {
+            const prevLayers = new Set(Object.keys(prevResults));
+            const layers = new Set(Object.keys(this.props.identifyResults));
+            const resultIds = new Set(Object.entries(this.props.identifyResults).map(([layerid, features]) => {
+                return features.map(f => `${layerid}${f.id}`);
+            }).flat());
+            let currentResult = state.currentResult;
+            // Set current result if only one result available
+            if (layers.size === 1 && this.props.identifyResults[[...layers][0]].length === 1) {
+                currentResult = {
+                    layerid: [...layers][0],
+                    featureid: this.props.identifyResults[[...layers][0]][0].id
+                };
+            } else if (!this.props.identifyResults[currentResult?.layerid]?.find?.(f => f.id === currentResult.featureid)) {
+                currentResult = null;
+            }
+            // If identified layers change, recollect the feature reports. There might be a new layer which has since been added
+            let reports = state.reports;
+            if (prevLayers.size !== layers.size || !([...layers].every(x => prevLayers.has(x)))) {
+                reports = LayerUtils.collectFeatureReports(this.props.layers);
+            }
+            // Adjust state for removed layers/features
+            let selectedLayer = state.selectedLayer;
+            if (!(selectedLayer in this.props.identifyResults)) {
+                selectedLayer = '';
+            }
+            const selectedResults = state.selectedResults.filtered(x => resultIds.has(x));
+            const expandedResults = state.expandedResults.filtered(x => resultIds.has(x));
+            const collapsedLayers = state.collapsedLayers.filtered(x => layers.has(x));
+            return {currentResult, reports, selectedLayer, selectedResults, expandedResults, collapsedLayers};
         });
     };
     setHighlightedFeatures = (features) => {
@@ -220,37 +216,17 @@ class IdentifyViewer extends React.Component {
         }
     };
     removeResultLayer = (layerid) => {
-        this.setState((state) => {
-            const newResultTree = {...state.resultTree};
-            delete newResultTree[layerid];
-            return {
-                resultTree: newResultTree,
-                collapsedLayers: state.collapsedLayers.delete(layerid),
-                currentResult: state.currentResult?.layerid === layerid ? null : state.currentResult
-            };
-        });
+        const newResults = {...this.props.identifyResults};
+        delete newResults[layerid];
+        this.props.resultsChanged(newResults);
     };
     removeResult = (layerid, feature) => {
-        this.setState((state) => {
-            const newResultTree = {...state.resultTree};
-            const collapsedLayers = state.collapsedLayers;
-            newResultTree[layerid] = state.resultTree[layerid].filter(item => item !== feature);
-            if (isEmpty(newResultTree[layerid])) {
-                delete newResultTree[layerid];
-                collapsedLayers.delete(layerid);
-            }
-            const selectedLayer = isEmpty(newResultTree[layerid]) ? '' : state.selectedLayer;
-            const selectedResults = state.selectedResults.delete(layerid + "$" + feature.id);
-            return {
-                resultTree: newResultTree,
-                currentResult: state.currentResult?.featureid === feature.id ? null : state.currentResult,
-                selectedLayer: selectedLayer,
-                selectedResults: selectedResults,
-                expandedResults: state.expandedResults.delete(layerid + "$" + feature.id),
-                collapsedLayers: collapsedLayers,
-                compareEnabled: state.compareEnabled && selectedResults.size > 1
-            };
-        });
+        const newResults = {...this.props.identifyResults};
+        newResults[layerid] = newResults[layerid].filter(item => item !== feature);
+        if (isEmpty(newResults[layerid])) {
+            delete newResults[layerid];
+        }
+        this.props.resultsChanged(newResults);
     };
     exportResults = (clipboard = false) => {
         const filteredResults = {};
@@ -260,24 +236,24 @@ class IdentifyViewer extends React.Component {
                 if (!filteredResults[layerid]) {
                     filteredResults[layerid] = [];
                 }
-                filteredResults[layerid].push(this.state.resultTree[layerid].find(feature => feature.id === featureid));
+                filteredResults[layerid].push(this.props.identifyResults[layerid].find(feature => feature.id === featureid));
             });
         } else {
-            const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
-            Object.keys(resultTree).map(layerid => {
-                if (isEmpty(this.state.resultTree[layerid])) {
+            const results = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.props.identifyResults[this.state.selectedLayer]} : this.props.identifyResults;
+            Object.keys(results).map(layerid => {
+                if (isEmpty(results[layerid])) {
                     return;
                 } else if (!isEmpty(this.state.tableSelection[layerid])) {
                     filteredResults[layerid] = Object.values(this.state.tableSelection[layerid]);
                 } else {
-                    filteredResults[layerid] = this.state.resultTree[layerid];
+                    filteredResults[layerid] = results[layerid];
                 }
             });
         }
         this.export(filteredResults, clipboard);
     };
     exportResultLayer = (layer) => {
-        this.export({[layer]: this.state.resultTree[layer]});
+        this.export({[layer]: this.props.identifyResults[layer]});
     };
     exportResult = (layer, result) => {
         this.export({[layer]: [result]});
@@ -302,7 +278,7 @@ class IdentifyViewer extends React.Component {
     renderResultTree = () => {
         const exportEnabled = this.props.enableExport === true || !isEmpty(this.props.enableExport);
         return (<div className="identify-results-tree" key="results-container" ref={el => { this.resultsTreeRef = el; }} style={{maxHeight: this.state.currentResult ? '10em' : 'initial'}}>
-            {Object.entries(this.state.resultTree).map(([layerid, features]) => {
+            {Object.entries(this.props.identifyResults).map(([layerid, features]) => {
                 if (features.length === 0) {
                     return null;
                 }
@@ -510,7 +486,7 @@ class IdentifyViewer extends React.Component {
     renderResultsTable = () => {
         return (
             <div className="identify-results-tables">
-                {Object.entries(this.state.resultTree).map(([layerid, features]) => {
+                {Object.entries(this.props.identifyResults).map(([layerid, features]) => {
                     if (features.length === 0 || (this.state.selectedLayer && layerid !== this.state.selectedLayer)) {
                         return null;
                     }
@@ -577,29 +553,24 @@ class IdentifyViewer extends React.Component {
                 this.props.zoomToExtent(bbox.bounds, bbox.crs);
             }
         } else if (action === "Export") {
-            const features = isEmpty(this.state.tableSelection[layerid]) ? this.state.resultTree[layerid] : Object.values(this.state.tableSelection[layerid]);
+            const features = isEmpty(this.state.tableSelection[layerid]) ? this.props.identifyResults[layerid] : Object.values(this.state.tableSelection[layerid]);
             this.export({layerid: features});
         } else if (action === "Delete") {
             this.setState(state => {
-                let tableSelection = state.tableSelection;
                 const selection = state.tableSelection[layerid];
-                const newLayerResults = !isEmpty(selection) ? state.resultTree[layerid].filter(f => !(f.id in selection)) : [];
-                const newResultTree = {...state.resultTree};
-                if (isEmpty(newLayerResults)) {
-                    delete newResultTree[layerid];
-                    tableSelection = {...tableSelection};
-                    delete tableSelection[layerid];
-                } else {
-                    newResultTree[layerid] = newLayerResults;
+                const newResults = {...this.props.identifyResults};
+                newResults[layerid] = !isEmpty(selection) ? newResults[layerid].filter(f => !(f.id in selection)) : [];
+                if (isEmpty(newResults[layerid])) {
+                    delete newResults[layerid];
                 }
-                return {resultTree: newResultTree, tableSelection: tableSelection};
+                this.props.resultsChanged(newResults);
             });
         }
     };
     render() {
         let body = null;
-        const resultTree = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.state.resultTree[this.state.selectedLayer]} : this.state.resultTree;
-        const flatResults = Object.entries(resultTree).map(([layerid, features]) => features.map(feature => ([layerid, feature]))).flat();
+        const results = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.props.identifyResults[this.state.selectedLayer]} : this.props.identifyResults;
+        const flatResults = Object.entries(results).map(([layerid, features]) => features.map(feature => ([layerid, feature]))).flat();
         if (this.state.compareEnabled) {
             const style = {
                 gridTemplateColumns: `repeat(auto-fit, minmax(${this.props.resultGridSize - 2}px, 1fr))`
@@ -608,7 +579,7 @@ class IdentifyViewer extends React.Component {
                 <div className="identify-compare-results" style={style}>
                     {this.state.selectedResults.entries().map(key => {
                         const [layerid, featureid] = key.split("$");
-                        const feature = this.state.resultTree[layerid].find(f => f.id === featureid);
+                        const feature = this.props.identifyResults[layerid].find(f => f.id === featureid);
                         return this.renderResultAttributes(layerid, feature, "identify-result-frame");
                     })}
                 </div>
@@ -621,20 +592,20 @@ class IdentifyViewer extends React.Component {
         } else if (this.props.resultDisplayMode === 'flat') {
             body = (
                 <div className="identify-flat-results-list">
-                    {Object.entries(resultTree).map(([layerid, features]) => features.map(feature => (
+                    {Object.entries(results).map(([layerid, features]) => features.map(feature => (
                         this.renderResultAttributes(layerid, feature, 'identify-result-frame')
                     )))}
                 </div>
             );
         } else if (this.props.resultDisplayMode === 'paginated') {
             if (this.state.multiViewEnabled) {
-                const results = flatResults.slice(this.state.currentPage * this.state.pageSize, (this.state.currentPage + 1) * this.state.pageSize);
+                const pageResults = flatResults.slice(this.state.currentPage * this.state.pageSize, (this.state.currentPage + 1) * this.state.pageSize);
                 const style = {
                     gridTemplateColumns: `repeat(auto-fit, minmax(${this.props.resultGridSize - 2}px, 1fr))`
                 };
                 body = (
                     <div className="identify-compare-results" style={style}>
-                        {results.map(([layerid, feature]) => (
+                        {pageResults.map(([layerid, feature]) => (
                             this.renderResultAttributes(layerid, feature, 'identify-result-frame')
                         ))}
                     </div>
@@ -732,10 +703,10 @@ class IdentifyViewer extends React.Component {
                                     <div className="controlgroup">
                                         <select className="controlgroup-expanditem" onChange={ev => this.setSelectedLayer(ev.target.value)}>
                                             <option value=''>{LocaleUtils.tr("identify.layerall")}</option>
-                                            {Object.keys(this.state.resultTree).filter(key => this.state.resultTree[key].length).map(
+                                            {Object.keys(this.props.identifyResults).filter(key => this.props.identifyResults[key].length).map(
                                                 layer => (
                                                     <option key={layer} value={layer}>
-                                                        {this.state.resultTree[layer][0].layertitle}
+                                                        {this.props.identifyResults[layer][0].layertitle}
                                                     </option>
                                                 ))}
                                         </select>
@@ -901,7 +872,7 @@ class IdentifyViewer extends React.Component {
     downloadAggregatedReport = () => {
         const [layername, idx] = this.state.selectedAggregatedReport.split("::");
         const report = this.state.reports[layername][idx];
-        const results = this.state.resultTree[layername];
+        const results = this.props.identifyResults[layername];
         const serviceUrl = ConfigUtils.getConfigProp("documentServiceUrl").replace(/\/$/, "");
         const params = {
             feature: results.map(result => result.id).join(","),

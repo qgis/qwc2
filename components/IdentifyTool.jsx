@@ -33,6 +33,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MeasureUtils from '../utils/MeasureUtils';
+import MiscUtils from '../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook} from '../utils/PermaLinkUtils';
 import ServiceLayerUtils from '../utils/ServiceLayerUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
@@ -142,7 +143,6 @@ class IdentifyTool extends React.Component {
         this.fileinput.type = "file";
         this.fileinput.accept = "application/json";
         this.fileinput.addEventListener("change", this.fileSelected);
-        this.viewerRef = null;
         this.pendingIdentifyFilter = null;
         this.permalinkStateKey = this.props.taskId.toLowerCase() + "resultstate";
         this.markerid = uuidv4();
@@ -425,11 +425,9 @@ class IdentifyTool extends React.Component {
         }
     };
     export = () => {
-        if (this.viewerRef) {
-            const results = this.viewerRef.serializeResults();
-            const data = JSON.stringify(results, null, ' ');
-            FileSaver.saveAs(new Blob([data], {type: 'application/json'}), 'results.json');
-        }
+        const results = this.serializeResults();
+        const data = JSON.stringify(results, null, ' ');
+        FileSaver.saveAs(new Blob([data], {type: 'application/json'}), 'results.json');
     };
     import = () => {
         this.fileinput.click();
@@ -447,9 +445,27 @@ class IdentifyTool extends React.Component {
         };
     };
     storeIdentifyResults = () => {
-        return new Promise((resolve) => resolve(this.viewerRef ? {
-            state: {identifyResults: this.viewerRef.serializeResults()}
+        return new Promise((resolve) => resolve(this.state.identifyResults ? {
+            state: {identifyResults: this.serializeResults()}
         } : {}));
+    };
+    serializeResults = () => {
+        return Object.fromEntries(Object.entries(this.state.identifyResults).map(([layerid, features]) => {
+            const [layerUrl, layerName] = layerid.split("#", 2);
+            const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+            if (match && match.sublayer.primary_key) {
+                return [
+                    layerid, {
+                        key: match.sublayer.primary_key,
+                        values: features.map(feature => {
+                            return MiscUtils.isNumeric(feature.id) ? Number(feature.id) : feature.id;
+                        })
+                    }
+                ];
+            } else {
+                return [layerid, features];
+            }
+        }));
     };
     deserializeResults = (identifyResults) => {
         const pendingRequests = [];
@@ -622,12 +638,12 @@ class IdentifyTool extends React.Component {
                         highlightAllResults={this.props.highlightAllResults}
                         identifyResults={this.state.identifyResults}
                         iframeDialogsInitiallyDocked={this.props.iframeDialogsInitiallyDocked}
-                        innerRef={(el) => { this.viewerRef = el; }}
                         longAttributesDisplay={this.props.longAttributesDisplay}
                         replaceImageUrls={this.props.replaceImageUrls}
                         resultDisplayMode={this.props.resultDisplayMode}
                         resultGridSize={this.props.resultGridSize}
                         resultMultiDisplay={this.props.resultMultiDisplay}
+                        resultsChanged={results => this.setState({identifyResults: results})}
                         showHighlight={this.state.resultsVisible}
                         showLayerSelector={this.props.showLayerSelector}
                         showLayerTitles={this.props.showLayerTitles}
