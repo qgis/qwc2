@@ -352,6 +352,7 @@ class AttributeTableWidget extends React.Component {
                     ) : null}
                     <MenuButton menuIcon="export" onActivate={this.export} tooltip={LocaleUtils.tr("common.export")}>
                         <div value="csv">CSV</div>
+                        <div value="xlsx">XLSX</div>
                     </MenuButton>
                 </div>
                 {captchaBar}
@@ -796,8 +797,31 @@ class AttributeTableWidget extends React.Component {
 
             FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), this.state.loadedLayer.split("#").slice(-1)[0] + ".csv");
         };
+        const formatXlsx = (features) => {
+            import('xlsx').then(xlsx => {
+                const document = xlsx.utils.book_new();
+
+                const dataset = [[primaryKey, ...fields.map(field => field.name)]];
+                features.forEach(feature => {
+                    const row = [
+                        MiscUtils.isNumeric(feature.id) ? Number(feature.id) : feature.id,
+                        ...fields.map(field => {
+                            const value = feature.properties[field.id];
+                            return MiscUtils.isNumeric(value) ? Number(value) : value;
+                        })
+                    ];
+                    dataset.push(row);
+                });
+                const worksheet = xlsx.utils.aoa_to_sheet(dataset);
+                const sheetName = this.state.loadedLayer.slice(0, 30).replace(/[\\/?*[]]?/g, '_');
+                xlsx.utils.book_append_sheet(document, worksheet, sheetName);
+                const data = xlsx.write(document, {type: "buffer"});
+                FileSaver.saveAs(new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}), this.state.loadedLayer.split("#").slice(-1)[0] + ".xlsx");
+            });
+        };
         const formatters = {
-            csv: formatCsv
+            csv: formatCsv,
+            xlsx: formatXlsx
         };
         this.setState({loading: true});
         this.getFeatures(this.state, this.state.loadedLayer, false, (result) => {
