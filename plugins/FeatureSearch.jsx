@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, changeLayerProperty} from '../actions/layers';
+import {zoomToExtent} from '../actions/map';
 import Icon from '../components/Icon';
 import IdentifyViewer from '../components/IdentifyViewer';
 import SideBar from '../components/SideBar';
@@ -24,7 +25,9 @@ import Spinner from '../components/widgets/Spinner';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
-import { QgisSearch } from '../utils/SearchProviders';
+import MapUtils from '../utils/MapUtils';
+import {QgisSearch} from '../utils/SearchProviders';
+import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import "./style/FeatureSearch.css";
 
@@ -45,7 +48,8 @@ class FeatureSearch extends React.Component {
         showZoomToResults: PropTypes.bool,
         /** The side of the application on which to display the sidebar. */
         side: PropTypes.string,
-        theme: PropTypes.object
+        theme: PropTypes.object,
+        zoomToExtent: PropTypes.func
     };
     static defaultProps = {
         enableExport: true,
@@ -270,6 +274,11 @@ class FeatureSearch extends React.Component {
                     });
                 });
             }
+            const bbox = VectorLayerUtils.computeFeaturesBBox(Object.values(results).flat());
+            if (bbox) {
+                const maxZoom = MapUtils.computeZoom(this.props.map.scales, this.props.theme.minSearchScaleDenom || 1000);
+                this.props.zoomToExtent(bbox.bounds, bbox.crs, 0, undefined, maxZoom);
+            }
             this.setState({busy: false, searchResults: results});
         }).catch(() => {
             this.setState({busy: false, searchResults: {}});
@@ -328,5 +337,6 @@ export default connect((state) => ({
     map: state.map,
     theme: state.theme.current
 }), {
-    changeLayerProperty: changeLayerProperty
+    changeLayerProperty: changeLayerProperty,
+    zoomToExtent: zoomToExtent
 })(FeatureSearch);
