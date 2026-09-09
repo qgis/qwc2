@@ -33,11 +33,13 @@ export default {
     getDefaults() {
         return config;
     },
-    loadConfiguration(configParams = {}) {
-        let configFile = 'config.json';
-        const urlQuery = url.parse(window.location.href, true).query;
-        if (urlQuery.localConfig) {
-            configFile = urlQuery.localConfig + '.json';
+    loadConfiguration(configParams = {}, configPath = null) {
+        let configFile = configPath || 'config.json';
+        if (!configPath) {
+            const urlQuery = url.parse(window.location.href, true).query;
+            if (urlQuery.localConfig) {
+                configFile = urlQuery.localConfig + '.json';
+            }
         }
         return axios.get(configFile, {params: configParams}).then(response => {
             if (typeof response.data === 'object') {

@@ -208,9 +208,12 @@ export default class TextInput extends React.Component {
         clearTimeout(this.tooltipTimeout);
         const editable = !this.props.disabled && !this.props.readOnly;
         if (!isTouch && editable && ev.target.nodeName === 'A') {
+            // Position within the application, rather than in a possibly host owned document
+            const container = ev.target.closest('.plugins-container') ?? document.body;
             const rect = ev.target.getBoundingClientRect();
-            const left = rect.left + window.scrollX;
-            const bottom = rect.bottom + window.scrollY + 2;
+            const containerRect = container.getBoundingClientRect();
+            const left = rect.left - containerRect.left;
+            const bottom = rect.bottom - containerRect.top + 2;
             this.tooltipTimeout = setTimeout(() => {
                 if (!this.tooltipEl) {
                     this.tooltipEl = document.createElement("span");
@@ -218,21 +221,21 @@ export default class TextInput extends React.Component {
                     this.tooltipEl.innerHTML = LocaleUtils.tr("misc.ctrlclickhint");
                     this.tooltipEl.style.position = 'absolute';
                     this.tooltipEl.style.zIndex = 10000000000;
-                    document.body.appendChild(this.tooltipEl);
+                    container.appendChild(this.tooltipEl);
                 }
                 this.tooltipEl.style.left = left + 'px';
                 this.tooltipEl.style.top = bottom + 'px';
                 this.tooltipTimeout = null;
             }, 250);
         } else if (this.tooltipEl) {
-            document.body.removeChild(this.tooltipEl);
+            this.tooltipEl.remove();
             this.tooltipEl = null;
         }
     };
     onMouseLeave = () => {
         clearTimeout(this.tooltipTimeout);
         if (this.tooltipEl) {
-            document.body.removeChild(this.tooltipEl);
+            this.tooltipEl.remove();
             this.tooltipEl = null;
         }
     };

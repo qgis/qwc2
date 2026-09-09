@@ -21,7 +21,7 @@ import {setCurrentTask} from '../actions/task';
 import {themesLoaded, setBlankTheme, setCurrentTheme} from '../actions/theme';
 import {NotificationType, showNotification, setBottombarHeight, setTopbarHeight} from '../actions/windows';
 import ReducerIndex from '../reducers/index';
-import {createStore} from '../stores/StandardStore';
+import {createStore, getStore, setStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -54,6 +54,7 @@ class AppContainerComponent extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object,
         defaultUrlParams: PropTypes.string,
+        embedded: PropTypes.bool,
         haveMapSize: PropTypes.bool,
         localConfig: PropTypes.object,
         locale: PropTypes.string,
@@ -95,7 +96,7 @@ class AppContainerComponent extends React.Component {
         }
 
         // Load themes.json
-        axios.get("themes.json", {params: {lang: this.props.locale}}).then(response => {
+        axios.get(ConfigUtils.getConfigProp("themesUrl", null, "themes.json"), {params: {lang: this.props.locale}}).then(response => {
             const themes = response.data.themes || {};
             this.props.appConfig.themePreprocessor?.(themes);
             this.props.themesLoaded(themes);
@@ -170,8 +171,9 @@ class AppContainerComponent extends React.Component {
     render() {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
         const pluginsConf = this.props.localConfig.plugins[device];
+        const rootClass = this.props.embedded ? "qwc-root-embedded" : "qwc-root-toplevel";
         return (
-            <PluginsContainer pluginsConfig={pluginsConf} />
+            <PluginsContainer className={rootClass} pluginsConfig={pluginsConf} />
         );
     }
 }
@@ -193,9 +195,16 @@ const AppContainer = connect(state => ({
 
 
 export default class StandardApp extends React.Component {
-    static store = null;
+    // Alias for the store singleton in stores/StandardStore, for backward compatibility
+    static get store() {
+        return getStore();
+    }
+    static set store(store) {
+        setStore(store);
+    }
     static propTypes = {
-        appConfig: PropTypes.object
+        appConfig: PropTypes.object,
+        embedded: PropTypes.bool
     };
     state = {
         startupConfig: null,
@@ -205,7 +214,7 @@ export default class StandardApp extends React.Component {
     constructor(props) {
         super(props);
         const initialState = this.props.appConfig.initialState || {};
-        StandardApp.store = createStore(ReducerIndex.reducers, initialState, this.props.appConfig.actionLogger);
+        setStore(createStore(ReducerIndex.reducers, initialState, this.props.appConfig.actionLogger));
         this.init();
         this.touchY = null;
     }
@@ -225,8 +234,8 @@ export default class StandardApp extends React.Component {
             return null;
         }
         return (
-            <Provider store={StandardApp.store}>
-                <AppContainer appConfig={this.props.appConfig} startupConfig={this.state.startupConfig}/>
+            <Provider store={getStore()}>
+                <AppContainer appConfig={this.props.appConfig} embedded={this.props.embedded} startupConfig={this.state.startupConfig}/>
             </Provider>
         );
     }
@@ -245,7 +254,7 @@ export default class StandardApp extends React.Component {
             }
             return res;
         }, {});
-        ConfigUtils.loadConfiguration(configParams).then((config) => {
+        ConfigUtils.loadConfiguration(configParams, this.props.appConfig.configPath).then((config) => {
             // Merge common config into mobile/desktop config, merge config from appConfig
             const renameTaskButtons = (res, entry) => {
                 const key = entry.name + (entry.name === "TaskButton" ? "#" + (entry.cfg?.task ?? "") : "");
@@ -289,24 +298,24 @@ export default class StandardApp extends React.Component {
                 CoordinatesUtils.setCrsLabels({[proj.code]: proj.label});
             }
             olProj4Register(Proj4js);
-            StandardApp.store.dispatch(localConfigLoaded(config));
+            getStore().dispatch(localConfigLoaded(config));
             this.setState({haveConfig: true});
 
             // Load locale
             const lang = this.props.appConfig.getDefaultLocale?.() ?? initialParams.lang ?? config.defaultLocale ?? navigator.language;
             LocaleUtils.loadLocale(lang, this.props.appConfig.defaultLocaleData).then(localeData => {
-                StandardApp.store.dispatch(changeLocale(localeData, this.props.appConfig.defaultLocaleData));
+                getStore().dispatch(changeLocale(localeData, this.props.appConfig.defaultLocaleData));
                 this.setState({haveLocale: true});
             });
 
             // Set color scheme
             const storedColorScheme = ConfigUtils.havePlugin("Settings") ? localStorage.getItem('qwc2-color-scheme') : null;
             const colorScheme = initialParams.style || storedColorScheme || ConfigUtils.getConfigProp("defaultColorScheme");
-            StandardApp.store.dispatch(setColorScheme(colorScheme));
+            getStore().dispatch(setColorScheme(colorScheme));
 
             // Resolve permalink and restore settings
             resolvePermaLink(initialParams, (params, state, success) => {
-                StandardApp.store.dispatch(setStartupParameters(params, state));
+                getStore().dispatch(setStartupParameters(params, state));
                 this.setState({startupConfig: {
                     params, state, permalinkInvalid: !success
                 }});

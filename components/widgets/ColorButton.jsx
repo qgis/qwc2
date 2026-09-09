@@ -112,9 +112,11 @@ export default class ColorButton extends React.Component {
             this.menuContainer.parentElement.removeChild(this.menuContainer);
             this.menuContainer = null;
         }
+        // Contain the picker in the application, rather than in a possibly host owned document
+        const container = ev.currentTarget.closest('.plugins-container') ?? ev.view.document.body;
         this.menuContainer = ev.view.document.createElement("div");
         this.menuContainer.className = "colorbutton-picker-container";
-        ev.view.document.body.appendChild(this.menuContainer);
+        container.appendChild(this.menuContainer);
         this.menuContainer.addEventListener('click', (ev2) => {
             if (ev2.currentTarget === ev2.target) {
                 this.setState({pickerPos: null, hexStr: null}, () => {
@@ -124,7 +126,8 @@ export default class ColorButton extends React.Component {
             }
         });
         const rect = ev.currentTarget.getBoundingClientRect();
-        this.setState({hexStr: null, pickerPos: [rect.left + 0.5 * rect.width, rect.bottom]});
+        const containerRect = container.getBoundingClientRect();
+        this.setState({hexStr: null, pickerPos: [rect.left - containerRect.left + 0.5 * rect.width, rect.bottom - containerRect.top]});
         ev.stopPropagation();
     };
     selectColor = (idx) => {

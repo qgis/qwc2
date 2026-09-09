@@ -10,7 +10,7 @@ import nearley from 'nearley';
 import toposort from 'toposort';
 import {v5 as uuidv5} from 'uuid';
 
-import StandardApp from '../components/StandardApp';
+import {getStore} from '../stores/StandardStore';
 import ConfigUtils from './ConfigUtils';
 import grammar from './expr_grammar/grammar';
 import IdentifyUtils from './IdentifyUtils';
@@ -137,7 +137,7 @@ function representValue(attr, editConfig, editIface, promises) {
 
 function overlayIntersects(feature, mapPrefix, mapCrs, layerName, field, promises) {
     overlayIntersects.__cache__ = overlayIntersects.__cache__ ?? {};
-    const state = StandardApp.store.getState();
+    const state = getStore().getState();
     const layer = state.layers.flat.find(l => l.wms_name === mapPrefix);
     let geometry = feature.geometry;
     if (feature.geometry.type.endsWith("Point")) {
@@ -180,7 +180,7 @@ function overlayIntersects(feature, mapPrefix, mapCrs, layerName, field, promise
 export function parseExpression(expr, feature, editConfig, editIface, mapPrefix, mapCrs, reevaluateCallback, asFilter = false, reevaluate = false) {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
     const promises = [];
-    const mapEditConfigs = StandardApp.store.getState().layers.editConfigs[mapPrefix];
+    const mapEditConfigs = getStore().getState().layers.editConfigs[mapPrefix];
 
     window.qwc2ExpressionParserContext = {
         feature: feature,
@@ -221,7 +221,7 @@ export function parseExpression(expr, feature, editConfig, editIface, mapPrefix,
 
 export function parseExpressionsAsync(fieldExpressions, feature, editConfig, editIface, mapPrefix, mapCrs, asFilter) {
     const promises = [];
-    const mapEditConfigs = StandardApp.store.getState().layers.editConfigs[mapPrefix];
+    const mapEditConfigs = getStore().getState().layers.editConfigs[mapPrefix];
     return new Promise((resolve) => {
         const newfeature = {...feature, properties: {...feature.properties}};
         window.qwc2ExpressionParserContext = {
