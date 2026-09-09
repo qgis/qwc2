@@ -445,11 +445,11 @@ class IdentifyViewer extends React.Component {
         }
         let zoomToFeatureButton = null;
         if (feature.bbox && feature.crs) {
-            zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.zoomTo({[layerid]: [feature]})} />);
+            zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.zoomTo({[layerid]: [feature]})} title={LocaleUtils.tr("identify.zoomtofeature")} />);
         }
         let editButton = null;
         if (ConfigUtils.havePlugin("Editing") && this.props.editConfigs[feature.wms_name]?.[feature.layername]) {
-            editButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, feature: feature.id})} />);
+            editButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, feature: feature.id})} title={LocaleUtils.tr("identify.editform")} />);
         }
         const key = layerid + "$" + feature.id;
         const expanded = this.state.expandedResults.has(key);
@@ -470,8 +470,8 @@ class IdentifyViewer extends React.Component {
                     <span>{[this.props.showLayerTitles ? feature.layertitle : "", feature.displayname].filter(Boolean).join(": ")}</span>
                     {zoomToFeatureButton}
                     {editButton}
-                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layerid, feature.layerinfo)} />
-                    <Icon icon="trash" onClick={() => this.removeResult(layerid, feature)} />
+                    <Icon icon="info-sign" onClick={() => this.showLayerInfo(layerid, feature.layerinfo)} title={LocaleUtils.tr("identify.layerinfo")} />
+                    <Icon icon="trash" onClick={() => this.removeResult(layerid, feature)} title={LocaleUtils.tr("identify.removeresult")} />
                 </div>
                 {this.props.collapsible && !expanded ? null : (
                     <div className="identify-result-container">
