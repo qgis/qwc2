@@ -175,7 +175,11 @@ class ThemeList extends React.Component {
                                 <img className="theme-item-thumbnail" src={assetsPath + "/" + item.thumbnail} />
                             </div>
                             {!item.restricted ? (
-                                <div className="theme-item-icons">
+                                <div className="theme-item-icons"
+                                    onMouseEnter={() => this.setState({hoveredItemId: null})}
+                                    onMouseLeave={() => this.setState({hoveredItemId: item.id})}
+                                    onMouseMove={() => this.setState({hoveredItemId: null})}
+                                >
                                     {this.props.allowAddingOtherThemeLayers ? (<Icon icon="layers" onClick={ev => this.getThemeLayersToList(ev, item)} title={addLayersTitle} />) : null}
                                     {this.props.allowAddingOtherThemes ? (<Icon icon="plus" onClick={ev => this.addThemeLayers(ev, item)} title={addTitle} />) : null}
                                     <Icon icon="open_link" onClick={ev => this.openInTab(ev, item.id)} title={openTabTitle} />
