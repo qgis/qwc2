@@ -155,7 +155,7 @@
       "select": "Seleziona...",
       "selectlayer": "Seleziona livello...",
       "square": "Quadrato",
-      "star": "",
+      "star": "Stella",
       "sync2dview": "Sincronizza con visuale 2D",
       "text": "Testo",
       "true": "Vero",
@@ -340,12 +340,12 @@
       "addlayer": "Aggiungi livello",
       "asgroup": "Aggiungi come gruppo",
       "connect": "Connetti",
-      "dxflarge": "",
-      "dxfparsefailed": "",
-      "dxfsymbolscollapsed": "",
-      "dxftoolarge": "",
-      "filecrs": "",
-      "filecrshint": "",
+      "dxflarge": "Questo file DXF ha una dimensione di {size} MB. L'importazione potrebbe richiedere molto tempo e utilizzare molta memoria. Continuare?",
+      "dxfparsefailed": "Impossibile analizzare il file DXF.",
+      "dxfsymbolscollapsed": "Sono stati importati {count} simboli puntuali come semplici marcatori anziché come contorni. L'esportazione DXF di QGIS Server rappresenta i simboli puntuali come aree densamente tassellate composte da diverse centinaia di punti ciascuna, un livello di dettaglio molto superiore a quello visualizzabile e che rallenterebbe notevolmente la mappa.",
+      "dxftoolarge": "Questo file DXF ha una dimensione di {size} MB, pertanto è troppo grande per essere aperto nel browser. Convertirlo prima in un estratto di dimensioni inferiori o in un altro formato.",
+      "filecrs": "Sistema di coordinate",
+      "filecrshint": "I file DXF non contengono informazioni sul sistema di coordinate. Le coordinate del file devono essere georeferenziate nel sistema selezionato; verranno quindi riproiettate nella proiezione della mappa.",
       "localfile": "File locale",
       "nofeatures": "Non è stato importato nessun oggetto ",
       "noresults": "Nessun risultato o URL non valido",
@@ -403,7 +403,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Disegnare l'oggetto sulla mappa...",
-      "picklayerhint": ""
+      "picklayerhint": "Selezionare un oggetto dal livello '{0}' sulla map..."
     },
     "locate": {
       "feetUnit": "piedi",
