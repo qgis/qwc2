@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Copyright 2016-2024 Sourcepole AG
+ * Copyright Sourcepole AG
  * All rights reserved.
  *
  * This source code is licensed under the BSD-style license found in the
