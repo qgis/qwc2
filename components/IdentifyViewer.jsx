@@ -113,6 +113,14 @@ class IdentifyViewer extends React.Component {
     }
     componentDidMount() {
         this.onResultsUpdated({});
+        if (this.props.highlightAllResults && this.props.showHighlight) {
+            const results = this.state.selectedLayer !== '' ? {[this.state.selectedLayer]: this.props.identifyResults[this.state.selectedLayer]} : this.props.identifyResults;
+            const layer = {
+                id: this.selectionLayerId,
+                role: LayerRole.SELECTION
+            };
+            this.props.addLayerFeatures(layer, Object.values(results).flat(), true);
+        }
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.props.identifyResults !== prevProps.identifyResults) {
