@@ -19,6 +19,7 @@ import {v4 as uuidv4} from 'uuid';
 import {setActiveLayerInfo} from '../actions/layerinfo';
 import {LayerRole, addLayerFeatures, removeLayer, changeLayerProperty} from '../actions/layers';
 import {zoomToExtent} from '../actions/map';
+import {setCurrentTask} from '../actions/task';
 import {openExternalUrl} from '../actions/windows';
 import ConfigUtils from '../utils/ConfigUtils';
 import {defaultHighlightStyle} from '../utils/FeatureStyles';
@@ -43,6 +44,7 @@ class IdentifyViewer extends React.Component {
         addLayerFeatures: PropTypes.func,
         changeLayerProperty: PropTypes.func,
         collapsible: PropTypes.bool,
+        editConfigs: PropTypes.object,
         enableAggregatedReports: PropTypes.bool,
         enableCompare: PropTypes.bool,
         enableExport: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
@@ -61,6 +63,7 @@ class IdentifyViewer extends React.Component {
         resultMultiDisplay: PropTypes.bool,
         resultsChanged: PropTypes.func,
         setActiveLayerInfo: PropTypes.func,
+        setCurrentTask: PropTypes.func,
         showHighlight: PropTypes.bool,
         showLayerSelector: PropTypes.bool,
         showLayerTitles: PropTypes.bool,
@@ -444,6 +447,10 @@ class IdentifyViewer extends React.Component {
         if (feature.bbox && feature.crs) {
             zoomToFeatureButton = (<Icon icon="zoom" onClick={() => this.zoomTo({[layerid]: [feature]})} />);
         }
+        let editButton = null;
+        if (ConfigUtils.havePlugin("Editing") && this.props.editConfigs[feature.wms_name]?.[feature.layername]) {
+            editButton = (<Icon icon="editing" onClick={() => this.props.setCurrentTask("Editing", null, null, {layer: `${feature.wms_name}#${feature.layername}`, feature: feature.id})} />);
+        }
         const key = layerid + "$" + feature.id;
         const expanded = this.state.expandedResults.has(key);
         const selected = this.state.selectedResults.has(key);
@@ -462,6 +469,7 @@ class IdentifyViewer extends React.Component {
                     ) : null}
                     <span>{[this.props.showLayerTitles ? feature.layertitle : "", feature.displayname].filter(Boolean).join(": ")}</span>
                     {zoomToFeatureButton}
+                    {editButton}
                     <Icon icon="info-sign" onClick={() => this.showLayerInfo(layerid, feature.layerinfo)} />
                     <Icon icon="trash" onClick={() => this.removeResult(layerid, feature)} />
                 </div>
@@ -957,6 +965,7 @@ class IdentifyViewer extends React.Component {
 }
 
 const selector = (state) => ({
+    editConfigs: state.layers.editConfigs,
     theme: state.theme.current,
     layers: state.layers.flat,
     map: state.map
@@ -967,6 +976,7 @@ export default connect(selector, {
     changeLayerProperty: changeLayerProperty,
     removeLayer: removeLayer,
     setActiveLayerInfo: setActiveLayerInfo,
+    setCurrentTask: setCurrentTask,
     openExternalUrl: openExternalUrl,
     zoomToExtent: zoomToExtent
 })(IdentifyViewer);
