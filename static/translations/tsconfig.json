@@ -698,6 +698,7 @@
     "share.showpin",
     "share.socialIntro",
     "snapping.edge",
+    "snapping.intersection",
     "snapping.loading",
     "snapping.snappingenabled",
     "snapping.vertex",

@@ -809,6 +809,7 @@
     },
     "snapping": {
       "edge": "Kenarları yakala",
+      "intersection": "",
       "loading": "Yakalanan geometriler yükleniyor...",
       "snappingenabled": "Yakalama",
       "vertex": "Kırık noktalarını yakala"

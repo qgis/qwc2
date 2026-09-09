@@ -809,6 +809,7 @@
     },
     "snapping": {
       "edge": "An Kanten einrasten",
+      "intersection": "Auf Schnittpunkte einrasten",
       "loading": "Einrastungsgeometrien werden geladen...",
       "snappingenabled": "Einrasten",
       "vertex": "An Ecken einrasten"

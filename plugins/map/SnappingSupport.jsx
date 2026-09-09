@@ -54,8 +54,9 @@ class SnappingSupport extends React.Component {
         this.source = new ol.source.Vector();
         this.snapInteraction = new SnapInteraction({
             source: this.source,
-            edge: this.snapToEdge(props.mapObj.snapping),
-            vertex: this.snapToVertex(props.mapObj.snapping)
+            edge: this.snapModeActive(props.mapObj.snapping, 'edge'),
+            vertex: this.snapModeActive(props.mapObj.snapping, 'vertex'),
+            intersection: this.snapModeActive(props.mapObj.snapping, 'intersection')
         });
         this.snapInteraction.setActive(this.props.mapObj.snapping.active);
         this.featureInfoCache = {};
@@ -92,8 +93,9 @@ class SnappingSupport extends React.Component {
         }
         if (this.props.mapObj.snapping.active !== prevProps.mapObj.snapping.active || this.state.drawing !== prevState.drawing) {
             this.snapInteraction.setActive(this.props.mapObj.snapping.active !== false);
-            this.snapInteraction.setSnapEdge(this.snapToEdge(this.props.mapObj.snapping));
-            this.snapInteraction.setSnapVertex(this.snapToVertex(this.props.mapObj.snapping));
+            this.snapInteraction.setSnapEdge(this.snapModeActive(this.props.mapObj.snapping, 'edge'));
+            this.snapInteraction.setSnapVertex(this.snapModeActive(this.props.mapObj.snapping, 'vertex'));
+            this.snapInteraction.setSnapIntersection(this.snapModeActive(this.props.mapObj.snapping, 'intersection'));
             if (this.props.mapObj.snapping.active) {
                 this.refreshFeatureCache();
             }
@@ -108,8 +110,9 @@ class SnappingSupport extends React.Component {
             "snapping-toolbar": true,
             "snapping-toolbar-inactive": disabled
         });
-        const snapEdge = this.snapToEdge(this.props.mapObj.snapping);
-        const snapVertex = this.snapToVertex(this.props.mapObj.snapping);
+        const snapEdge = this.snapModeActive(this.props.mapObj.snapping, 'edge');
+        const snapVertex = this.snapModeActive(this.props.mapObj.snapping, 'vertex');
+        const snapIntersection = this.snapModeActive(this.props.mapObj.snapping, 'intersection');
         return ReactDOM.createPortal((
             <div className={className}>
                 {this.state.reqId !== null ? (
@@ -122,6 +125,9 @@ class SnappingSupport extends React.Component {
                         <button className={"button" + (snapEdge ? " pressed" : "")} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
                             <Icon icon="snap_edge" size="large" />
                         </button>
+                        <button className={"button " + (snapIntersection ? " pressed" : "")} onClick={() => this.toggleSnap('intersection')} title={LocaleUtils.tr("snapping.intersection")}>
+                            <Icon icon="snap_intersection" size="large" />
+                        </button>
                     </span>
                 )}
                 &nbsp;
@@ -129,34 +135,21 @@ class SnappingSupport extends React.Component {
             </div>
         ), this.context);
     }
-    snapToEdge = (snappingConfig) => {
-        return snappingConfig.active === true || snappingConfig.active === 'edge';
-    };
-    snapToVertex = (snappingConfig) => {
-        return snappingConfig.active === true || snappingConfig.active === 'vertex';
+    snapModeActive = (snappingConfig, mode) => {
+        const active = snappingConfig.active;
+        return active === true || (Array.isArray(active) && active.includes(mode));
     };
     toggleSnap = (mode) => {
         let active = this.props.mapObj.snapping.active;
-        if (mode === 'edge') {
-            if (active === true) {
-                active = 'vertex';
-            } else if (active === 'edge') {
-                active = false;
-            } else if (active === 'vertex') {
-                active = true;
-            } else {
-                active = 'edge';
-            }
-        } else if (mode === 'vertex') {
-            if (active === true) {
-                active = 'edge';
-            } else if (active === 'vertex') {
-                active = false;
-            } else if (active === 'edge') {
-                active = true;
-            } else {
-                active = 'vertex';
-            }
+        if (active === true) {
+            active = ['edge', 'vertex', 'intersection'];
+        } else if (active === false) {
+            active = [];
+        }
+        if (active.includes(mode)) {
+            active = active.filter(x => x !== mode);
+        } else {
+            active = [...active, mode];
         }
         this.props.setSnappingConfig(true, active);
     };

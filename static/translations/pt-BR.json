@@ -809,6 +809,7 @@
     },
     "snapping": {
       "edge": "",
+      "intersection": "",
       "loading": "Carregando...",
       "snappingenabled": "Ajuste ativado",
       "vertex": ""

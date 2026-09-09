@@ -809,6 +809,7 @@
     },
     "snapping": {
       "edge": "Prinde de margini",
+      "intersection": "",
       "loading": "Geometriile se încarcă...",
       "snappingenabled": "Sari la punct",
       "vertex": "Prinde de noduri"

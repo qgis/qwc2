@@ -143,7 +143,7 @@ export default function map(state = defaultState, action) {
         return {...state, maptips: action.active};
     }
     case SET_SNAPPING_CONFIG: {
-        return {...state, snapping: {enabled: action.enabled, active: action.active}};
+        return {...state, snapping: {enabled: action.enabled, active: typeof action.active === 'string' ? [action.active] : action.active}};
     }
     case SET_DISPLAY_CRS: {
         return {...state, displayCrs: action.displayCrs};

@@ -74,8 +74,8 @@ class Editing extends React.Component {
         /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
         /** Whether snapping is enabled by default when editing.
-         *  Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). */
-        snappingActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+         *  Either `edge`, `vertex`, `intersection`, a combination of these as an array, or `false` or `true` (i.e. all snapping modes disabled or enabled). */
+        snappingActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, PropTypes.array]),
         taskData: PropTypes.object,
         theme: PropTypes.object,
         /** The default width of the editing sidebar, as a CSS width string. */

@@ -466,7 +466,7 @@ This plugin queries the dataset via the editing service specified by
 | showAttributeTableButton | `bool` | Whether to show a button to open the AttributeTable (if the plugin is available). | `true` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
-| snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
+| snappingActive | `{bool, string, array}` | Whether snapping is enabled by default when editing.<br /> Either `edge`, `vertex`, `intersection`, a combination of these as an array, or `false` or `true` (i.e. all snapping modes disabled or enabled). | `true` |
 | width | `string` | The default width of the editing sidebar, as a CSS width string. | `"30em"` |
 
 ## FeatureForm<a name="featureform"></a>
@@ -935,7 +935,7 @@ Allows measuring points/lines/areas on the map.
 | showMeasureModeSwitcher | `bool` | Whether to show the widget to switch between measure modes. | `true` |
 | showPerimeterLength | `bool` | Whether to show the perimeter length of area measurements. | `undefined` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
-| snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
+| snappingActive | `{bool, string, array}` | Whether snapping is enabled by default when editing.<br /> Either `edge`, `vertex`, `intersection`, a combination of these as an array, or `false` or `true` (i.e. all snapping modes disabled or enabled). | `true` |
 
 ## NewsPopup<a name="newspopup"></a>
 
@@ -1063,7 +1063,7 @@ Allows drawing figures and text labels on the map.
 | predefinedDashPatterns | `[array]` | Predefined dash patterns. In format `[<dash-array>, ...]`, where a dash-array is list of alternating dash and gap widths, i.e. `[8 4]` for long dashes followed by shorter gaps. | `[[], [4], [8, 8], [1, 8], [8, 8, 1, 8]]` |
 | predefinedFillColors | `[array]` | Predefined fill colors. In format `[[r, g, b, a], ...]`. | `undefined` |
 | snapping | `bool` | Whether snapping is available when editing. | `true` |
-| snappingActive | `{bool, string}` | Whether snapping is enabled by default when editing.<br /> Either `false`, `edge`, `vertex` or `true` (i.e. both vertex and edge). | `true` |
+| snappingActive | `{bool, string, array}` | Whether snapping is enabled by default when editing.<br /> Either `edge`, `vertex`, `intersection`, a combination of these as an array, or `false` or `true` (i.e. all snapping modes disabled or enabled). | `true` |
 
 ## Reports<a name="reports"></a>
 

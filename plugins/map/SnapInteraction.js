@@ -61,4 +61,7 @@ export default class SnapInteraction extends ol.interaction.Snap {
     setSnapVertex(snap) {
         this.vertex_ = snap;
     }
+    setSnapIntersection(snap) {
+        this.intersection_ = snap;
+    }
 }

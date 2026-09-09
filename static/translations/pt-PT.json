@@ -809,6 +809,7 @@
     },
     "snapping": {
       "edge": "Borda",
+      "intersection": "",
       "loading": "A carregar",
       "snappingenabled": "Ativar Ajuste",
       "vertex": "Vértice"

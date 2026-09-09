@@ -809,6 +809,7 @@
     },
     "snapping": {
       "edge": "Snap to edges",
+      "intersection": "Snap to intersections",
       "loading": "Loading snapping geometries...",
       "snappingenabled": "Snapping",
       "vertex": "Snap to vertices"

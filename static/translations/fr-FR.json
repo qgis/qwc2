@@ -809,6 +809,7 @@
     },
     "snapping": {
       "edge": "Snapping aux bords",
+      "intersection": "Snapping aux intersections",
       "loading": "Chargement",
       "snappingenabled": "Snapping activé",
       "vertex": "Snapping aux sommets"
