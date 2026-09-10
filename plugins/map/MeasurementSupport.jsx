@@ -20,6 +20,7 @@ import {changeMeasurementState} from '../../actions/measurement';
 import FeatureStyles, {computeMeasureFeatureStyle} from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
+import DrawInteraction from './DrawInteraction';
 
 /**
  * Measurement support for the map component.
@@ -92,7 +93,7 @@ class MeasurementSupport extends React.Component {
         const drawInteractionPos = this.drawInteraction ?
             this.props.map.getInteractions().getArray().findIndex(item => item === this.drawInteraction) : null;
 
-        this.drawInteraction = new ol.interaction.Draw({
+        this.drawInteraction = new DrawInteraction({
             stopClick: true,
             source: this.measureLayer.getSource(),
             condition: (event) => { return event.originalEvent.buttons === 1; },

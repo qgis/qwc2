@@ -811,6 +811,7 @@
       "edge": "Ajustar a los bordes",
       "intersection": "",
       "loading": "Cargando geometrías de snapping...",
+      "perpendicular": "",
       "snappingenabled": "Snapping",
       "vertex": "Ajustar a los vértices"
     },

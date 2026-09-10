@@ -811,6 +811,7 @@
       "edge": "Snap to edges",
       "intersection": "Snap to intersections",
       "loading": "Loading snapping geometries...",
+      "perpendicular": "Perpendicular snapping",
       "snappingenabled": "Snapping",
       "vertex": "Snap to vertices"
     },

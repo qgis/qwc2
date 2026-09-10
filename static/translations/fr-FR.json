@@ -811,6 +811,7 @@
       "edge": "Snapping aux bords",
       "intersection": "Snapping aux intersections",
       "loading": "Chargement",
+      "perpendicular": "Snapping perpendiculaire",
       "snappingenabled": "Snapping activé",
       "vertex": "Snapping aux sommets"
     },

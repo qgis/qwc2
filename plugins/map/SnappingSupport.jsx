@@ -56,7 +56,8 @@ class SnappingSupport extends React.Component {
             source: this.source,
             edge: this.snapModeActive(props.mapObj.snapping, 'edge'),
             vertex: this.snapModeActive(props.mapObj.snapping, 'vertex'),
-            intersection: this.snapModeActive(props.mapObj.snapping, 'intersection')
+            intersection: this.snapModeActive(props.mapObj.snapping, 'intersection'),
+            perpendicular: this.snapModeActive(props.mapObj.snapping, 'perpendicular'),
         });
         this.snapInteraction.setActive(this.props.mapObj.snapping.active);
         this.featureInfoCache = {};
@@ -96,6 +97,7 @@ class SnappingSupport extends React.Component {
             this.snapInteraction.setSnapEdge(this.snapModeActive(this.props.mapObj.snapping, 'edge'));
             this.snapInteraction.setSnapVertex(this.snapModeActive(this.props.mapObj.snapping, 'vertex'));
             this.snapInteraction.setSnapIntersection(this.snapModeActive(this.props.mapObj.snapping, 'intersection'));
+            this.snapInteraction.setSnapPerpendicular(this.snapModeActive(this.props.mapObj.snapping, 'perpendicular'));
             if (this.props.mapObj.snapping.active) {
                 this.refreshFeatureCache();
             }
@@ -113,6 +115,7 @@ class SnappingSupport extends React.Component {
         const snapEdge = this.snapModeActive(this.props.mapObj.snapping, 'edge');
         const snapVertex = this.snapModeActive(this.props.mapObj.snapping, 'vertex');
         const snapIntersection = this.snapModeActive(this.props.mapObj.snapping, 'intersection');
+        const snapPerpendicular = this.snapModeActive(this.props.mapObj.snapping, 'perpendicular');
         return ReactDOM.createPortal((
             <div className={className}>
                 {this.state.reqId !== null ? (
@@ -120,13 +123,16 @@ class SnappingSupport extends React.Component {
                 ) : (
                     <span>
                         <button className={"button" + (snapVertex ? " pressed" : "")} onClick={() => this.toggleSnap('vertex')} title={LocaleUtils.tr("snapping.vertex")}>
-                            <Icon icon="snap_vertex" size="large" />
+                            <Icon icon="snap_vertex" />
                         </button>
                         <button className={"button" + (snapEdge ? " pressed" : "")} onClick={() => this.toggleSnap('edge')} title={LocaleUtils.tr("snapping.edge")}>
-                            <Icon icon="snap_edge" size="large" />
+                            <Icon icon="snap_edge" />
                         </button>
                         <button className={"button " + (snapIntersection ? " pressed" : "")} onClick={() => this.toggleSnap('intersection')} title={LocaleUtils.tr("snapping.intersection")}>
-                            <Icon icon="snap_intersection" size="large" />
+                            <Icon icon="snap_intersection" />
+                        </button>
+                        <button className={"button " + (snapPerpendicular ? " pressed" : "")} onClick={() => this.toggleSnap('perpendicular')} title={LocaleUtils.tr("snapping.perpendicular")}>
+                            <Icon icon="snap_perpendicular" />
                         </button>
                     </span>
                 )}
@@ -142,7 +148,7 @@ class SnappingSupport extends React.Component {
     toggleSnap = (mode) => {
         let active = this.props.mapObj.snapping.active;
         if (active === true) {
-            active = ['edge', 'vertex', 'intersection'];
+            active = ['edge', 'vertex', 'intersection', 'perpendicular'];
         } else if (active === false) {
             active = [];
         }
@@ -178,6 +184,7 @@ class SnappingSupport extends React.Component {
         this.featureInfoCache = {};
         // Just to be sure
         interactions.remove(this.snapInteraction);
+        this.snapInteraction.detach();
         // If there is any draw or modify interaction, add snapping interaction
         let added = false;
         if (this.props.mapObj.snapping.enabled) {
@@ -185,6 +192,7 @@ class SnappingSupport extends React.Component {
                 const interaction = interactions.item(i);
                 if ((interaction instanceof ol.interaction.Draw) || (interaction instanceof ol.interaction.Modify) || (interaction instanceof ol.interaction.Select)) {
                     interactions.push(this.snapInteraction);
+                    this.snapInteraction.attach();
                     added = true;
                     break;
                 }

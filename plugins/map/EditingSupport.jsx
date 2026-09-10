@@ -21,6 +21,7 @@ import ButtonBar from '../../components/widgets/ButtonBar';
 import FeatureStyles from "../../utils/FeatureStyles";
 import LocaleUtils from '../../utils/LocaleUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
+import DrawInteraction from './DrawInteraction';
 
 /**
  * Editing support for the map component.
@@ -155,7 +156,7 @@ class EditingSupport extends React.Component {
         this.reset();
         this.setCurrentLayer();
         const geomType = this.props.editContext.geomType.replace(/Z$/, '');
-        const drawInteraction = new ol.interaction.Draw({
+        const drawInteraction = new DrawInteraction({
             stopClick: true,
             type: geomType,
             source: this.currentLayer.getSource(),

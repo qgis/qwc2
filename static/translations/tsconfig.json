@@ -700,6 +700,7 @@
     "snapping.edge",
     "snapping.intersection",
     "snapping.loading",
+    "snapping.perpendicular",
     "snapping.snappingenabled",
     "snapping.vertex",
     "sunexposure3d.end",

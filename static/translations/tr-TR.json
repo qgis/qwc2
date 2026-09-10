@@ -811,6 +811,7 @@
       "edge": "Kenarları yakala",
       "intersection": "",
       "loading": "Yakalanan geometriler yükleniyor...",
+      "perpendicular": "",
       "snappingenabled": "Yakalama",
       "vertex": "Kırık noktalarını yakala"
     },

@@ -54,7 +54,7 @@ class Measure extends React.Component {
         /** Whether snapping is available when editing. */
         snapping: PropTypes.bool,
         /** Whether snapping is enabled by default when editing.
-         *  Either `edge`, `vertex`, `intersection`, a combination of these as an array, or `false` or `true` (i.e. all snapping modes disabled or enabled). */
+         *  Either `edge`, `vertex`, `intersection`, `perpendicular`, a combination of these as an array, or `false` or `true` (i.e. all snapping modes disabled or enabled). */
         snappingActive: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, PropTypes.array])
     };
     static defaultProps = {

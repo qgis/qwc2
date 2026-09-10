@@ -811,6 +811,7 @@
       "edge": "An Kanten einrasten",
       "intersection": "Auf Schnittpunkte einrasten",
       "loading": "Einrastungsgeometrien werden geladen...",
+      "perpendicular": "Lotrecht einrasten",
       "snappingenabled": "Einrasten",
       "vertex": "An Ecken einrasten"
     },
