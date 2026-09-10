@@ -171,7 +171,7 @@ class AppContainerComponent extends React.Component {
     render() {
         const device = ConfigUtils.isMobile() ? 'mobile' : 'desktop';
         const pluginsConf = this.props.localConfig.plugins[device];
-        const rootClass = this.props.embedded ? "qwc-root-embedded" : "qwc-root-toplevel";
+        const rootClass = "qwc-root " + (this.props.embedded ? "qwc-root-embedded" : "qwc-root-toplevel");
         return (
             <PluginsContainer className={rootClass} pluginsConfig={pluginsConf} />
         );

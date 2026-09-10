@@ -16,6 +16,7 @@ import {v4 as uuidv4} from 'uuid';
 
 import {setCurrentTask} from '../actions/task';
 import {setSplitScreen} from '../actions/windows';
+import MiscUtils from '../utils/MiscUtils';
 import Icon from './Icon';
 import {MapContainerPortalContext} from './PluginsContainer';
 import {Swipeable} from './Swipeable';
@@ -193,11 +194,12 @@ class SideBar extends React.Component {
         const resizeSidebar = (event) => {
             this.setState({width: (startWidth + sign * (startMouseX - event.clientX)) + "px"});
         };
-        ev.view.document.body.style.userSelect = 'none';
+        const container = MiscUtils.appContainer(ev.target);
+        container.style.userSelect = 'none';
         ev.view.addEventListener("pointermove", resizeSidebar);
         ev.view.addEventListener("pointerup", () => {
             this.sidebar.style.transition = '';
-            ev.view.document.body.style.userSelect = '';
+            container.style.userSelect = '';
             ev.view.removeEventListener("pointermove", resizeSidebar);
         }, {once: true});
     };
@@ -207,10 +209,11 @@ class SideBar extends React.Component {
         const resizeSidebar = (event) => {
             this.setState({height: Math.max(64, (startHeight + (event.clientY - startMouseY))) + "px"});
         };
-        ev.view.document.body.style.userSelect = 'none';
+        const container = MiscUtils.appContainer(ev.target);
+        container.style.userSelect = 'none';
         ev.view.addEventListener("pointermove", resizeSidebar);
         ev.view.addEventListener("pointerup", () => {
-            ev.view.document.body.style.userSelect = '';
+            container.style.userSelect = '';
             ev.view.removeEventListener("pointermove", resizeSidebar);
         }, {once: true});
     };

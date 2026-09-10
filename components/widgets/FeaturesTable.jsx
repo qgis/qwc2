@@ -229,8 +229,7 @@ export default class FeaturesTable extends React.PureComponent {
             };
             const eventShield = ev.view.document.createElement("div");
             eventShield.className = '__event_shield';
-            // Shield the application, not the whole document, which may belong to a host application
-            const shieldParent = contentsEl.closest('.plugins-container') ?? ev.view.document.body;
+            const shieldParent = MiscUtils.appContainer(contentsEl);
             shieldParent.appendChild(eventShield);
             shieldParent.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
             ev.view.addEventListener("pointermove", resizeDo);

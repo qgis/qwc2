@@ -49,7 +49,6 @@ export function showImageEditor(imageData, imageDataCallback) {
 
     modalDialogContainer.appendChild(modalDialog);
 
-    document.body.appendChild(modalDialogContainer);
     (document.querySelector('.plugins-container') ?? document.body).appendChild(modalDialogContainer);
 
     // eslint-disable-next-line

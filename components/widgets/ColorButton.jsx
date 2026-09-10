@@ -112,8 +112,7 @@ export default class ColorButton extends React.Component {
             this.menuContainer.parentElement.removeChild(this.menuContainer);
             this.menuContainer = null;
         }
-        // Contain the picker in the application, rather than in a possibly host owned document
-        const container = ev.currentTarget.closest('.plugins-container') ?? ev.view.document.body;
+        const container = MiscUtils.appContainer(ev.currentTarget);
         this.menuContainer = ev.view.document.createElement("div");
         this.menuContainer.className = "colorbutton-picker-container";
         container.appendChild(this.menuContainer);

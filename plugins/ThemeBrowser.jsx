@@ -288,8 +288,7 @@ class ThemeBrowser extends React.Component {
             };
             const resizeOverlay = document.createElement('div');
             resizeOverlay.className = 'themebrowser-resize-overlay';
-            // Cover the application, not the whole document, which may belong to a host application
-            const overlayParent = ev.target.closest('.plugins-container') ?? ev.view.document.body;
+            const overlayParent = MiscUtils.appContainer(ev.target);
             overlayParent.appendChild(resizeOverlay);
             overlayParent.style.userSelect = 'none';
             ev.view.addEventListener("pointermove", computeNewOpacity);

@@ -208,8 +208,7 @@ export default class TextInput extends React.Component {
         clearTimeout(this.tooltipTimeout);
         const editable = !this.props.disabled && !this.props.readOnly;
         if (!isTouch && editable && ev.target.nodeName === 'A') {
-            // Position within the application, rather than in a possibly host owned document
-            const container = ev.target.closest('.plugins-container') ?? document.body;
+            const container = MiscUtils.appContainer(ev.target);
             const rect = ev.target.getBoundingClientRect();
             const containerRect = container.getBoundingClientRect();
             const left = rect.left - containerRect.left;
@@ -276,10 +275,11 @@ export default class TextInput extends React.Component {
         const resizeInput = (event) => {
             container.style.height = Math.max(MiscUtils.convertEmToPx(2), (startHeight + (event.clientY - startMouseY))) + 'px';
         };
-        document.body.style.userSelect = 'none';
+        const appContainer = MiscUtils.appContainer(ev.target);
+        appContainer.style.userSelect = 'none';
         ev.view.addEventListener("pointermove", resizeInput);
         ev.view.addEventListener("pointerup", () => {
-            document.body.style.userSelect = '';
+            appContainer.style.userSelect = '';
             ev.view.removeEventListener("pointermove", resizeInput);
         }, {once: true});
     };
