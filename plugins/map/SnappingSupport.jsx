@@ -57,7 +57,7 @@ class SnappingSupport extends React.Component {
             edge: this.snapModeActive(props.mapObj.snapping, 'edge'),
             vertex: this.snapModeActive(props.mapObj.snapping, 'vertex'),
             intersection: this.snapModeActive(props.mapObj.snapping, 'intersection'),
-            perpendicular: this.snapModeActive(props.mapObj.snapping, 'perpendicular'),
+            perpendicular: this.snapModeActive(props.mapObj.snapping, 'perpendicular')
         });
         this.snapInteraction.setActive(this.props.mapObj.snapping.active);
         this.featureInfoCache = {};

@@ -149,7 +149,7 @@ export default class SnapInteraction extends ol.interaction.Snap {
     }
     setSnapPerpendicular(snap) {
         this.perpendicular_ = snap;
-    };
+    }
     attach() {
         this.perpendicularSnapReferences = [];
         if (this.currentMap) {
