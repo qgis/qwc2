@@ -811,6 +811,7 @@
       "edge": "周縁にスナップ",
       "intersection": "",
       "loading": "スナップしたジオメトリをロード中...",
+      "perpendicular": "",
       "snappingenabled": "スナップ有効",
       "vertex": "頂点にスナップ"
     },

@@ -811,6 +811,7 @@
       "edge": "Ajustar a les vores",
       "intersection": "",
       "loading": "Carregant geometries de snapping",
+      "perpendicular": "",
       "snappingenabled": "Snapping",
       "vertex": "Ajustar als vèrtexs"
     },

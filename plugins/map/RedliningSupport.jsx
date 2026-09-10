@@ -26,15 +26,16 @@ import FeatureStyles, {computeFeatureStyle} from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
+import DrawInteraction from './DrawInteraction';
 
 const GeomTypeConfig = {
-    Text: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
-    Point: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true},
-    LineString: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "LineString"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true},
-    Polygon: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Polygon"}), editTool: 'Pick', drawNodes: true},
-    Circle: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Circle"}), editTool: 'Pick', drawNodes: true, regular: true},
+    Text: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
+    Point: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true},
+    LineString: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "LineString"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true},
+    Polygon: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Polygon"}), editTool: 'Pick', drawNodes: true},
+    Circle: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Circle"}), editTool: 'Pick', drawNodes: true, regular: true},
     Ellipse: {drawInteraction: (opts) => new ol.interaction.DrawRegular({...opts, sides: 0}), editTool: 'Transform', drawNodes: false},
-    Box: {drawInteraction: (opts) => new ol.interaction.Draw({...opts, type: "Circle", geometryFunction: ol.interaction.createBox()}), editTool: 'Transform', drawNodes: true},
+    Box: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Circle", geometryFunction: ol.interaction.createBox()}), editTool: 'Transform', drawNodes: true},
     Square: {drawInteraction: (opts) => new ol.interaction.DrawRegular({...opts, sides: 4, squareCondition: () => true }), editTool: 'Transform', regular: true}
 };
 

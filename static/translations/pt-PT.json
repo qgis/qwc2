@@ -811,6 +811,7 @@
       "edge": "Borda",
       "intersection": "",
       "loading": "A carregar",
+      "perpendicular": "",
       "snappingenabled": "Ativar Ajuste",
       "vertex": "Vértice"
     },

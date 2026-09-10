@@ -811,6 +811,7 @@
       "edge": "Naar randen snappen",
       "intersection": "",
       "loading": "Snapping-geometrieën laden...",
+      "perpendicular": "",
       "snappingenabled": "Snapping ingeschakeld",
       "vertex": "Naar hoekpunten snappen"
     },

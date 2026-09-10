@@ -16,6 +16,7 @@ import OlControlOverviewMap from 'ol/control/OverviewMap';
 import OlControlScaleLine from 'ol/control/ScaleLine';
 import OlControlZoom from 'ol/control/Zoom';
 import * as OlEventsCondition from 'ol/events/condition';
+import OlEvent from 'ol/events/Event';
 import * as OlExtent from 'ol/extent';
 import OlFeature from 'ol/Feature';
 import OlFormatGeoJSON from 'ol/format/GeoJSON';
@@ -101,6 +102,7 @@ export default {
         ScaleLine: OlControlScaleLine,
         Zoom: OlControlZoom
     },
+    Event: OlEvent,
     events: {
         condition: OlEventsCondition
     },
