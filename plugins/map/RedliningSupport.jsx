@@ -97,9 +97,11 @@ class RedliningSupport extends React.Component {
         if (this.props.redlining.action && !prevProps.redlining.action) {
             Mousetrap.bind('del', this.triggerDelete);
             Mousetrap.bind('backspace', this.triggerDelete);
+            Mousetrap.bind('escape', this.abortCurrent);
         } else if (!this.props.redlining.action && prevProps.redlining.action) {
             Mousetrap.unbind('del', this.triggerDelete);
             Mousetrap.unbind('backspace', this.triggerDelete);
+            Mousetrap.unbind('escape', this.abortCurrent);
         }
         // Handle delete action immediately and reset the redlining state to the previous action
         if (this.props.redlining.action === 'Delete') {
@@ -130,15 +132,7 @@ class RedliningSupport extends React.Component {
         if (recreateInteraction) {
             // Commit to previous layer in case layer changed
             this.reset(prevProps.redlining);
-            if (this.props.redlining.action === 'Draw') {
-                this.addDrawInteraction();
-            } else if (this.props.redlining.action === 'Transform') {
-                this.addTransformInteraction();
-            } else if (this.props.redlining.action === 'Pick' || this.props.redlining.action === 'Buffer') {
-                this.addPickInteraction();
-            } else if (this.props.redlining.action === 'PickDraw') {
-                this.waitForFeatureAndLayer(this.props.redlining.layer, null, () => this.addPickInteraction());
-            }
+            this.createInteraction();
         }
         if (this.selectedFeatures) {
             // Update feature style
@@ -157,6 +151,17 @@ class RedliningSupport extends React.Component {
             }
         }
     }
+    createInteraction = () => {
+        if (this.props.redlining.action === 'Draw') {
+            this.addDrawInteraction();
+        } else if (this.props.redlining.action === 'Transform') {
+            this.addTransformInteraction();
+        } else if (this.props.redlining.action === 'Pick' || this.props.redlining.action === 'Buffer') {
+            this.addPickInteraction();
+        } else if (this.props.redlining.action === 'PickDraw') {
+            this.waitForFeatureAndLayer(this.props.redlining.layer, null, () => this.addPickInteraction());
+        }
+    };
     render() {
         const widgets = [];
         if (this.props.redlining.extraAction === "NumericInput") {
@@ -561,6 +566,10 @@ class RedliningSupport extends React.Component {
             this.props.removeLayerFeatures(this.props.redlining.layer, this.selectedFeatures.map(f => f.getId()), true);
             this.selectedFeatures = [];
         }
+    };
+    abortCurrent = () => {
+        this.reset(this.props.redlining);
+        this.createInteraction();
     };
     cloneCurrentFeatures = () => {
         if (isEmpty(this.selectedFeatures)) {
