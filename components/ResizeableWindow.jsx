@@ -564,6 +564,8 @@ class ResizeableWindow extends React.Component {
             if (this.props.colorScheme) {
                 externalWindow.document.querySelector(':root').classList.add(this.props.colorScheme);
             }
+            // The application styles are scoped below the application root
+            externalWindow.document.body.classList.add('qwc-root');
             // Inherit API
             externalWindow.qwc2 = window.qwc2;
 

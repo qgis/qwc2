@@ -48,8 +48,6 @@ export default class EditUploadField extends React.Component {
         super(props);
         this.cameraStream = null;
         this.videoElement = null;
-        this.portal = document.createElement("div");
-        document.body.appendChild(this.portal);
     }
     componentWillUnmount() {
         this.disableMediaStream();

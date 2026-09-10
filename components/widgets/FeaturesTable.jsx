@@ -270,14 +270,15 @@ export default class FeaturesTable extends React.PureComponent {
             };
             const eventShield = ev.view.document.createElement("div");
             eventShield.className = '__event_shield';
-            ev.view.document.body.appendChild(eventShield);
-            ev.view.document.body.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
+            const shieldParent = MiscUtils.appContainer(contentsEl);
+            shieldParent.appendChild(eventShield);
+            shieldParent.classList.add(resizeCol ? 'ewresizing' : 'nsresizing');
             ev.view.addEventListener("pointermove", resizeDo);
             ev.view.addEventListener("pointerup", (event) => {
-                event.view.document.body.removeChild(eventShield);
+                shieldParent.removeChild(eventShield);
                 contentsEl.removeChild(resizeLine);
                 event.view.removeEventListener("pointermove", resizeDo);
-                event.view.document.body.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
+                shieldParent.classList.remove(resizeCol ? 'ewresizing' : 'nsresizing');
                 if (resizeCol) {
                     resize.element.style.minWidth = Math.max((resize.newsize), 16) + "px";
                     resize.element.style.width = Math.max((resize.newsize), 16) + "px";

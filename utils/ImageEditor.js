@@ -49,7 +49,7 @@ export function showImageEditor(imageData, imageDataCallback) {
 
     modalDialogContainer.appendChild(modalDialog);
 
-    document.body.appendChild(modalDialogContainer);
+    (document.querySelector('.plugins-container') ?? document.body).appendChild(modalDialogContainer);
 
     // eslint-disable-next-line
     window.ptro = Painterro({
@@ -69,7 +69,7 @@ export function showImageEditor(imageData, imageDataCallback) {
             delete window.ptro;
             // Delay to next iteration to ensure ptro event handlers have executed
             setTimeout(() => {
-                document.body.removeChild(modalDialogContainer);
+                modalDialogContainer.remove();
             }, 0);
         },
         saveHandler: (image, done) => {
@@ -79,7 +79,7 @@ export function showImageEditor(imageData, imageDataCallback) {
             delete window.ptro;
             // Delay to next iteration to ensure ptro event handlers have executed
             setTimeout(() => {
-                document.body.removeChild(modalDialogContainer);
+                modalDialogContainer.remove();
             }, 0);
         }
     }).show(imageData);
@@ -91,7 +91,7 @@ export function showImageEditor(imageData, imageDataCallback) {
             delete window.ptro;
             // Delay to next iteration to ensure ptro event handlers have executed
             setTimeout(() => {
-                document.body.removeChild(modalDialogContainer);
+                modalDialogContainer.remove();
             }, 0);
         }
     });

@@ -1,6 +1,6 @@
 div.newspopup-dialog-container {
     z-index: 202;
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     top: 0;
