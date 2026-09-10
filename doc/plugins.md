@@ -605,10 +605,21 @@ Displays a custom help dialog in a sidebar.
 
 Define the help contents by specifying the `bodyContentsFragmentUrl` prop.
 
+By overriding `id`, `icon` and `title`, multiple instances of this plugin can be configured
+in parallel, i.e. one for the help contents and one for a privacy policy. To do so, give the
+additional entries in the `plugins` block of `config.json` a distinct `key`:
+
+    {"name": "Help", "key": "Privacy", "cfg": {"id": "Privacy", "title": "Privacy policy", "bodyContentsFragmentUrl": "assets/privacy.html"}}
+
+and use the configured `id` as `key` of the corresponding app menu entry.
+
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | bodyContentsFragmentUrl | `string` | URL to a document containing a HTML fragment to display in the Help sidebar. | `undefined` |
+| icon | `string` | The icon to display in the sidebar title bar. | `'info'` |
+| id | `string` | The task identifier of this plugin instance, i.e. the `key` of the corresponding app menu entry. Change it to configure multiple Help instances in parallel. | `'Help'` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
+| title | `string` | The translation message id of the sidebar title. | `'appmenu.items.Help'` |
 
 ## HomeButton<a name="homebutton"></a>
 
