@@ -19,6 +19,7 @@ import WindowManager from './WindowManager';
 import './style/PluginsContainer.css';
 
 
+export const AppRootPortalContext = React.createContext(null);
 export const MapButtonPortalContext = React.createContext(null);
 export const MapContainerPortalContext = React.createContext(null);
 export const AppInfosPortalContext = React.createContext(null);
@@ -34,6 +35,7 @@ class PluginsContainer extends React.Component {
         theme: PropTypes.object
     };
     state = {
+        rootRef: null,
         mapButtonsContainerRef: null,
         mapContainerRef: null,
         appInfosContainerRef: null,
@@ -68,19 +70,21 @@ class PluginsContainer extends React.Component {
             right: 'calc(' + right + 'px)',
             bottom: 'calc(var(--bottombar-height) + ' + bottom + 'px)'
         };
-        const haveRefs = this.state.mapButtonsContainerRef && this.state.mapContainerRef && this.state.appInfosContainerRef && this.state.bottomToolContainerRef;
+        const haveRefs = this.state.rootRef && this.state.mapButtonsContainerRef && this.state.mapContainerRef && this.state.appInfosContainerRef && this.state.bottomToolContainerRef;
         return (
             <div className={"plugins-container " + (this.props.className ?? "")} ref={this.setupTouchEvents}>
-                <AppInfosPortalContext.Provider value={this.state.appInfosContainerRef}>
-                    <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
-                        <MapContainerPortalContext.Provider value={this.state.mapContainerRef}>
-                            <BottomToolPortalContext.Provider value={this.state.bottomToolContainerRef}>
-                                {haveRefs ? this.renderPlugins() : null}
-                                {haveRefs ? this.props.children : null}
-                            </BottomToolPortalContext.Provider>
-                        </MapContainerPortalContext.Provider>
-                    </MapButtonPortalContext.Provider>
-                </AppInfosPortalContext.Provider>
+                <AppRootPortalContext.Provider value={this.state.rootRef}>
+                    <AppInfosPortalContext.Provider value={this.state.appInfosContainerRef}>
+                        <MapButtonPortalContext.Provider value={this.state.mapButtonsContainerRef}>
+                            <MapContainerPortalContext.Provider value={this.state.mapContainerRef}>
+                                <BottomToolPortalContext.Provider value={this.state.bottomToolContainerRef}>
+                                    {haveRefs ? this.renderPlugins() : null}
+                                    {haveRefs ? this.props.children : null}
+                                </BottomToolPortalContext.Provider>
+                            </MapContainerPortalContext.Provider>
+                        </MapButtonPortalContext.Provider>
+                    </AppInfosPortalContext.Provider>
+                </AppRootPortalContext.Provider>
                 <WindowManager />
                 <div className="map-buttons-container" ref={this.setButtonContainerRef} style={mapContainerStyle} />
                 <div className="map-container" ref={this.setMapContainerRef} style={mapContainerStyle}>
@@ -94,6 +98,7 @@ class PluginsContainer extends React.Component {
         );
     }
     setupTouchEvents = (el) => {
+        this.setState({rootRef: el});
         if (el) {
             el.addEventListener('touchstart', ev => {
                 this.touchY = ev.targetTouches[0].clientY;

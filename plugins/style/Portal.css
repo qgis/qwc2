@@ -1,6 +1,6 @@
 div.portal-topbar {
     background-color: var(--titlebar-bg-color);
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     top: 0;
@@ -53,7 +53,7 @@ div.portal-topbar span.appmenu-icon > span.icon {
 
 div.portal-body {
     background-color: var(--container-bg-color);
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     bottom: 2.25em;
@@ -75,7 +75,7 @@ div.portal-body div.ThemeList {
 div.portal-bottombar {
     background-color: var(--titlebar-bg-color);
     color: var(--titlebar-text-color);
-    position: fixed;
+    position: absolute;
     left: 0;
     right: 0;
     bottom: 0;

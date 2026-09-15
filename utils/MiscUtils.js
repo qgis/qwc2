@@ -11,6 +11,12 @@ import DOMPurify from 'dompurify';
 import ConfigUtils from './ConfigUtils';
 
 const MiscUtils = {
+    /**
+     * The application container the specified element lives in, or the document body as fallback
+     */
+    appContainer(el) {
+        return el?.closest?.('.plugins-container') ?? el?.ownerDocument?.body ?? document.body;
+    },
     addLinkAnchors(text) {
         // If text already contains tags, do nothing
         const tagRegEx = /(<.[^(><.)]+>)/;

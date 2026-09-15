@@ -22,11 +22,10 @@ import * as mapExports from '../actions/map';
 import * as themeExports from '../actions/theme';
 import PluginsContainer from '../components/PluginsContainer';
 import ResizeableWindow from '../components/ResizeableWindow';
-import StandardApp from '../components/StandardApp';
 import Spinner from '../components/widgets/Spinner';
 import ReducerIndex from '../reducers/index';
 import personIcon from '../resources/person.png';
-import {createStore} from '../stores/StandardStore';
+import {createStore, getStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -135,7 +134,7 @@ class View3D extends React.Component {
         const forwardReducer = (key, forwardActions, syncAction) => (state = {}, action) => {
             if (forwardActions.includes(action.type)) {
                 // Forward to parent store
-                StandardApp.store.dispatch(action);
+                getStore().dispatch(action);
                 return state;
             } else {
                 return action.type === syncAction ? action[key] : state;

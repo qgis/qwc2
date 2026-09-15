@@ -34,6 +34,7 @@ import IdentifyUtils from '../utils/IdentifyUtils';
 import markerIcon from '../utils/img/marker-icon.png';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/TimeManager.css';
@@ -438,7 +439,7 @@ class TimeManager extends React.Component {
         }
 
         return (
-            <div className="time-manager-body">
+            <div className="time-manager-body" ref={el => {this.bodyEl = el;}}>
                 <div className="time-manager-toolbar">
                     <div className="time-manager-toolbar-controls">
                         <span className="time-manager-toolbar-block">
@@ -504,7 +505,7 @@ class TimeManager extends React.Component {
         );
     };
     dialogGeomChanged = (geom) => {
-        this.setState({dialogWidth: geom.docked ? document.body.offsetWidth : geom.width});
+        this.setState({dialogWidth: geom.docked && this.bodyEl ? MiscUtils.appContainer(this.bodyEl).offsetWidth : geom.width});
     };
     toggleTimeEnabled = (enabled) => {
         clearInterval(this.animationTimer);

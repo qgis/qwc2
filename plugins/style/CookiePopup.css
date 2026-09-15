@@ -1,6 +1,6 @@
 div.CookiePopup {
     z-index: 1000;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 33%;
     right: 33%;

@@ -10,7 +10,7 @@
 import axios from 'axios';
 import deepmerge from 'deepmerge';
 
-import StandardApp from '../components/StandardApp';
+import {getStore} from '../stores/StandardStore';
 import ConfigUtils from './ConfigUtils';
 
 
@@ -76,7 +76,7 @@ const LocaleUtils = {
         });
     },
     tr(key, ...args) {
-        const state = StandardApp.store.getState();
+        const state = getStore().getState();
         const text = key in state.locale.messages ? (state.locale.messages[key] || state.locale.fallbackMessages[key] || key) : key;
 
         if (args.length === 1 && args[0] && typeof args[0] === 'object' && !Array.isArray(args[0])) {
@@ -97,11 +97,11 @@ const LocaleUtils = {
         return key;
     },
     trWithFallback(key, fallback) {
-        const state = StandardApp.store.getState();
+        const state = getStore().getState();
         return state.locale.messages[key] || fallback;
     },
     lang() {
-        const state = StandardApp.store.getState();
+        const state = getStore().getState();
         return state.locale.current;
     },
     toLocaleFixed(number, decimals) {
@@ -112,7 +112,7 @@ const LocaleUtils = {
         }
     },
     commonTranslations() {
-        return StandardApp.store.getState().locale.messagesTree.maptranslations || {};
+        return getStore().getState().locale.messagesTree.maptranslations || {};
     }
 };
 

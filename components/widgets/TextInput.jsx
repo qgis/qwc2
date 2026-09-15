@@ -208,9 +208,11 @@ export default class TextInput extends React.Component {
         clearTimeout(this.tooltipTimeout);
         const editable = !this.props.disabled && !this.props.readOnly;
         if (!isTouch && editable && ev.target.nodeName === 'A') {
+            const container = MiscUtils.appContainer(ev.target);
             const rect = ev.target.getBoundingClientRect();
-            const left = rect.left + window.scrollX;
-            const bottom = rect.bottom + window.scrollY + 2;
+            const containerRect = container.getBoundingClientRect();
+            const left = rect.left - containerRect.left;
+            const bottom = rect.bottom - containerRect.top + 2;
             this.tooltipTimeout = setTimeout(() => {
                 if (!this.tooltipEl) {
                     this.tooltipEl = document.createElement("span");
@@ -218,21 +220,21 @@ export default class TextInput extends React.Component {
                     this.tooltipEl.innerHTML = LocaleUtils.tr("misc.ctrlclickhint");
                     this.tooltipEl.style.position = 'absolute';
                     this.tooltipEl.style.zIndex = 10000000000;
-                    document.body.appendChild(this.tooltipEl);
+                    container.appendChild(this.tooltipEl);
                 }
                 this.tooltipEl.style.left = left + 'px';
                 this.tooltipEl.style.top = bottom + 'px';
                 this.tooltipTimeout = null;
             }, 250);
         } else if (this.tooltipEl) {
-            document.body.removeChild(this.tooltipEl);
+            this.tooltipEl.remove();
             this.tooltipEl = null;
         }
     };
     onMouseLeave = () => {
         clearTimeout(this.tooltipTimeout);
         if (this.tooltipEl) {
-            document.body.removeChild(this.tooltipEl);
+            this.tooltipEl.remove();
             this.tooltipEl = null;
         }
     };
@@ -273,10 +275,11 @@ export default class TextInput extends React.Component {
         const resizeInput = (event) => {
             container.style.height = Math.max(MiscUtils.convertEmToPx(2), (startHeight + (event.clientY - startMouseY))) + 'px';
         };
-        document.body.style.userSelect = 'none';
+        const appContainer = MiscUtils.appContainer(ev.target);
+        appContainer.style.userSelect = 'none';
         ev.view.addEventListener("pointermove", resizeInput);
         ev.view.addEventListener("pointerup", () => {
-            document.body.style.userSelect = '';
+            appContainer.style.userSelect = '';
             ev.view.removeEventListener("pointermove", resizeInput);
         }, {once: true});
     };

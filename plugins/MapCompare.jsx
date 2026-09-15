@@ -15,6 +15,7 @@ import PropTypes from 'prop-types';
 import {setSwipe} from '../actions/layers';
 import Icon from '../components/Icon';
 import {MapContainerPortalContext} from '../components/PluginsContainer';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/MapCompare.css';
 
@@ -55,10 +56,11 @@ class MapCompare extends React.Component {
             perc = Math.min(100, Math.max(0, perc));
             this.props.setSwipe(perc);
         };
-        ev.view.document.body.style.userSelect = 'none';
+        const container = MiscUtils.appContainer(ev.currentTarget);
+        container.style.userSelect = 'none';
         ev.view.addEventListener("pointermove", moveHandle);
         ev.view.addEventListener("pointerup", () => {
-            ev.view.document.body.style.userSelect = '';
+            container.style.userSelect = '';
             ev.view.removeEventListener("pointermove", moveHandle);
         }, {once: true});
     };

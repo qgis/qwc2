@@ -90,12 +90,12 @@ div.attribtable-filter .attribtable-filter-value {
     max-width: 15em;
 }
 
-body.ewresizing, body.ewresizing * {
+.ewresizing, .ewresizing * {
     cursor: ew-resize!important;
     user-select: none;
 }
 
-body.nsresizing, body.nsresizing * {
+.nsresizing, .nsresizing * {
     cursor: ns-resize!important;
     user-select: none;
 }

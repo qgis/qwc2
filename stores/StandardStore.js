@@ -12,6 +12,16 @@ import {combineReducers} from 'redux';
 import {logger} from 'redux-logger';
 
 
+// The application store singleton, registered by the application shell (see StandardApp),
+// so that non-component modules can reach the store without importing the shell
+let standardStore = null;
+
+export const getStore = () => standardStore;
+
+export const setStore = (store) => {
+    standardStore = store;
+};
+
 export const createStore = (reducers, initialState = {}, actionLogger = null) => {
     const allReducers = combineReducers(reducers);
 

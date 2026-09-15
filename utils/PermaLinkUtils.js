@@ -10,17 +10,31 @@ import axios from 'axios';
 import url from 'url';
 
 import {LayerRole} from '../actions/layers';
-import StandardApp from '../components/StandardApp';
+import {getStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
 
 let UrlQuery = {};
 let historyUpdateTimeout = null;
 let pendingParams = {};
+let detached = false;
+let detachedBaseUrl = "";
 
 export const UrlParams = {
+    /**
+     * Detaches the parameter store from the document location, for embedding QWC2 into a
+     * host application which owns the location. Call before initializing the application.
+     *
+     * @param initialParams The initial parameters, i.e. the state to start with
+     * @param baseUrl The base URL for generated permalinks, defaults to the document location
+     */
+    detach(initialParams = {}, baseUrl = "") {
+        detached = true;
+        detachedBaseUrl = baseUrl;
+        UrlQuery = {...initialParams};
+    },
     updateParams(dict, forceLocationUrl = false) {
-        if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
+        if (detached || ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
             UrlQuery = Object.assign(UrlQuery, dict);
             const propNames = Object.getOwnPropertyNames(UrlQuery);
 
@@ -29,7 +43,7 @@ export const UrlParams = {
                     delete UrlQuery[propName];
                 }
             }
-            if (!forceLocationUrl) {
+            if (detached || !forceLocationUrl) {
                 return;
             }
         }
@@ -55,6 +69,9 @@ export const UrlParams = {
         }, 250);
     },
     getParam(key) {
+        if (detached) {
+            return UrlQuery[key];
+        }
         const urlObj = url.parse(window.location.href, true);
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
             return urlObj.query[key] ?? UrlQuery[key];
@@ -63,6 +80,9 @@ export const UrlParams = {
         }
     },
     getParams() {
+        if (detached) {
+            return {...UrlQuery};
+        }
         const query = url.parse(window.location.href, true).query;
         if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
             return {...UrlQuery, ...query};
@@ -75,8 +95,8 @@ export const UrlParams = {
         this.updateParams(clearKeys.reduce((res, key) => ({...res, [key]: undefined}), {}), true);
     },
     getFullUrl() {
-        if (ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
-            const urlObj = url.parse(window.location.href, true);
+        if (detached || ConfigUtils.getConfigProp("omitUrlParameterUpdates") === true) {
+            const urlObj = url.parse(detachedBaseUrl || window.location.href, true);
             urlObj.query = UrlQuery;
             delete urlObj.search;
             return url.format(urlObj);
@@ -122,7 +142,7 @@ function serializeLayers(state) {
 }
 
 export async function generatePermaLink(callback, user = false, permittedGroup = "") {
-    const state = StandardApp.store.getState();
+    const state = getStore().getState();
     const fullUrl = UrlParams.getFullUrl();
     if (!ConfigUtils.getConfigProp("permalinkServiceUrl")) {
         callback(fullUrl);
@@ -200,7 +220,7 @@ export const BookmarksInterface = {
             .catch(() => callback([]));
     },
     async _getState() {
-        const state = StandardApp.store.getState();
+        const state = getStore().getState();
         const bookmarkState = {layers: serializeLayers(state)};
         const urlObj = url.parse(UrlParams.getFullUrl(), true);
         const queryParams = {};
@@ -212,7 +232,7 @@ export const BookmarksInterface = {
     },
     async create(description, callback) {
         const bookmarkState = await(BookmarksInterface._getState());
-        const themeId = StandardApp.store.getState().theme?.current?.id ?? null;
+        const themeId = getStore().getState().theme?.current?.id ?? null;
         const params = {description, theme_id: themeId};
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
         axios.post(permalinkServiceUrl + "/bookmarks/", bookmarkState, {params})
@@ -248,7 +268,7 @@ export const VisibilityPresetsInterface = {
             .catch(() => callback([]));
     },
     create(description, callback) {
-        const state = StandardApp.store.getState();
+        const state = getStore().getState();
         const preset = LayerUtils.computeVisibilityPreset(state.layers.flat);
         const themeId = state.theme?.current?.id ?? null;
         const params = {description, theme_id: themeId};
@@ -258,7 +278,7 @@ export const VisibilityPresetsInterface = {
             .catch(() => callback(false));
     },
     update(vpkey, params_, updateData, callback) {
-        const state = StandardApp.store.getState();
+        const state = getStore().getState();
         const preset = updateData ? LayerUtils.computeVisibilityPreset(state.layers.flat) : null;
         const themeId = state.theme?.current?.id ?? null;
         const params = {...params_, theme_id: themeId};

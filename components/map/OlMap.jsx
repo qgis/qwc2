@@ -135,25 +135,27 @@ class OlMap extends React.Component {
         this.map = map;
         this.registerHooks();
 
+        // Keyboard pan steps are relative to the map size, which changes with the map container
+        map.on('change:size', this.recreateKeyboardInteractions);
         this.recreateKeyboardInteractions();
-        window.addEventListener('resize', this.recreateKeyboardInteractions);
     }
     componentDidMount() {
         this.map.setTarget(this.props.id);
         this.updateMapInfoState();
     }
     componentWillUnmount() {
-        window.removeEventListener('resize', this.recreateKeyboardInteractions);
+        this.map.un('change:size', this.recreateKeyboardInteractions);
     }
     recreateKeyboardInteractions = () => {
         this.keyboardPanInteractions.forEach(interaction => {
             this.map.removeInteraction(interaction);
         });
+        const [width, height] = this.map.getSize() ?? [0, 0];
         this.keyboardPanInteractions = [
-            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panStepSize * document.body.offsetWidth, condition: this.panHStepCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panStepSize * document.body.offsetHeight, condition: this.panVStepCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panPageSize * document.body.offsetWidth, condition: this.panHPageCondition}),
-            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panPageSize * document.body.offsetHeight, condition: this.panVPageCondition})
+            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panStepSize * width, condition: this.panHStepCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panStepSize * height, condition: this.panVStepCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panPageSize * width, condition: this.panHPageCondition}),
+            new ol.interaction.KeyboardPan({pixelDelta: this.state.mapOptions.panPageSize * height, condition: this.panVPageCondition})
         ];
         this.keyboardPanInteractions.forEach(interaction => {
             this.map.addInteraction(interaction);

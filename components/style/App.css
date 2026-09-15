@@ -1,23 +1,25 @@
-* {
+/* The application styles are scoped below the application root, so that they don't reach into
+   the document, which may belong to a host application the viewer is embedded in. The scope is
+   :where(), which contributes no specificity, so that the cascade is unaffected. */
+:where(.qwc-root), :where(.qwc-root) *, :where(.qwc-root):after, :where(.qwc-root):before, :where(.qwc-root) *:after, :where(.qwc-root) *:before {
+    box-sizing: border-box;
+}
+
+:where(.qwc-root), :where(.qwc-root) * {
     cursor: inherit;
-    box-sizing: border-box;
 }
 
-:after, :before {
-    box-sizing: border-box;
-}
-
-html, body {
-    overflow: hidden;
+:where(.qwc-root) {
     cursor: default;
     color: var(--text-color);
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 14px;
-    margin: 0;
-    padding: 0;
 }
 
-html, body, #container {
+html:has(div.qwc-root-toplevel), html:has(div.qwc-root-toplevel) body {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
     position: fixed;
     top: 0;
     left: 0;
@@ -25,38 +27,47 @@ html, body, #container {
     height: 100%;
 }
 
-a {
+div.plugins-container.qwc-root-toplevel {
+    position: fixed;
+}
+
+div.plugins-container.qwc-root-embedded {
+    /* Keep the z-index stack of the viewer to itself, rather than competing with the host page */
+    isolation: isolate;
+}
+
+:where(.qwc-root) a {
     cursor: pointer;
     color: var(--text-color-link);
     text-decoration: none;
 }
 
-a:hover {
+:where(.qwc-root) a:hover {
     text-decoration: underline;
 }
 
-h1, h2, h3, h4 {
+:where(.qwc-root) h1, :where(.qwc-root) h2, :where(.qwc-root) h3, :where(.qwc-root) h4 {
     font-weight: 500;
     margin: 0.5em 0;
 }
 
-h1 { font-size: 160%; }
-h2 { font-size: 150%; }
-h3 { font-size: 140%; }
-h4 { font-size: 130%; }
-h5 { font-size: 120%; }
-h6 { font-size: 110%; }
+:where(.qwc-root) h1 { font-size: 160%; }
+:where(.qwc-root) h2 { font-size: 150%; }
+:where(.qwc-root) h3 { font-size: 140%; }
+:where(.qwc-root) h4 { font-size: 130%; }
+:where(.qwc-root) h5 { font-size: 120%; }
+:where(.qwc-root) h6 { font-size: 110%; }
 
-table {
+:where(.qwc-root) table {
     border-collapse: collapse;
     font-size: 14px;
 }
 
-ul {
+:where(.qwc-root) ul {
     margin: 0;
 }
 
-input, select, button, textarea {
+:where(.qwc-root) input, :where(.qwc-root) select, :where(.qwc-root) button, :where(.qwc-root) textarea {
     border-radius: 0;
     color: inherit;
     font-family: inherit;
@@ -64,41 +75,41 @@ input, select, button, textarea {
     margin: 0;
 }
 
-input:focus, select:focus, button:focus, textarea:focus {
+:where(.qwc-root) input:focus, :where(.qwc-root) select:focus, :where(.qwc-root) button:focus, :where(.qwc-root) textarea:focus {
     outline: var(--focus-outline);
 }
 
-textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]), select {
+:where(.qwc-root) textarea, :where(.qwc-root) input:not([type=checkbox]):not([type=radio]):not([type=range]), :where(.qwc-root) select {
     padding: 0.25em;
     border: 1px solid var(--border-color);
     background-color: var(--input-bg-color);
     color: var(--text-color);
 }
 
-input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), select {
+:where(.qwc-root) input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), :where(.qwc-root) select {
     height: 2em;
     border-radius: var(--border-radius);
 }
 
-textarea, input:not([type=checkbox]):not([type=radio]):not([type=range]) {
+:where(.qwc-root) textarea, :where(.qwc-root) input:not([type=checkbox]):not([type=radio]):not([type=range]) {
     cursor: text;
 }
 
-input:read-only, textarea:read-only, input:not([type=checkbox]):not([type=radio]):not([type=range]):read-only {
+:where(.qwc-root) input:read-only, :where(.qwc-root) textarea:read-only, :where(.qwc-root) input:not([type=checkbox]):not([type=radio]):not([type=range]):read-only {
     color: var(--text-color-disabled);
 }
 
-input:disabled, select:disabled, textarea:disabled {
+:where(.qwc-root) input:disabled, :where(.qwc-root) select:disabled, :where(.qwc-root) textarea:disabled {
     background-color: var(--input-bg-color-disabled);
     color: var(--text-color-disabled);
 }
 
-input:invalid, select:invalid, textarea:invalid, input:not([type=checkbox]):not([type=radio]):not([type=range]):invalid {
+:where(.qwc-root) input:invalid, :where(.qwc-root) select:invalid, :where(.qwc-root) textarea:invalid, :where(.qwc-root) input:not([type=checkbox]):not([type=radio]):not([type=range]):invalid {
     background-color: #FFAAAA;
 }
 
 /** Button **/
-button.button {
+:where(.qwc-root) button.button {
     background-color: var(--button-bg-color);
     color: var(--button-text-color);
     border: 1px solid var(--border-color);
@@ -112,76 +123,76 @@ button.button {
     outline: none;
 }
 
-button.button:focus {
+:where(.qwc-root) button.button:focus {
     outline: var(--focus-outline);
 }
 
-button.button:disabled {
+:where(.qwc-root) button.button:disabled {
     background-color: var(--button-bg-color-disabled);
     color: var(--button-text-color-disabled);
     cursor: default;
 }
 
-button.button:not(:disabled):hover {
+:where(.qwc-root) button.button:not(:disabled):hover {
     background-color: var(--button-bg-color-hover);
     color: var(--button-text-color-hover);
 }
 
-button.button.pressed:not(:disabled):hover {
+:where(.qwc-root) button.button.pressed:not(:disabled):hover {
     background-color: var(--button-bg-color-active-hover);
     color: var(--button-text-color-active-hover);
 }
 
-button.button.pressed:not(:disabled) {
+:where(.qwc-root) button.button.pressed:not(:disabled) {
     background-color: var(--button-bg-color-active);
     color: var(--button-text-color-active);
 }
 
-button.button-accept {
+:where(.qwc-root) button.button-accept {
     background-color: rgb(127,255,127);
 }
 
-button.button-warning {
+:where(.qwc-root) button.button-warning {
     background-color: #ffd979;
 }
 
-button.button-reject {
+:where(.qwc-root) button.button-reject {
     background-color: rgb(255,127,127);
 }
 
-button.button-warning:not(:disabled):hover {
+:where(.qwc-root) button.button-warning:not(:disabled):hover {
     background-color: #f5ce74;
 }
 
-button.button-accept:not(:disabled):hover {
+:where(.qwc-root) button.button-accept:not(:disabled):hover {
     background-color: rgb(127,225,127);
 }
 
-button.button-reject:not(:disabled):hover {
+:where(.qwc-root) button.button-reject:not(:disabled):hover {
     background-color: rgb(225,127,127);
 }
 
-button.button > * {
+:where(.qwc-root) button.button > * {
     flex: 0 0 auto;
 }
 
-button.button:not(:disabled):active > * {
+:where(.qwc-root) button.button:not(:disabled):active > * {
     transform: translateX(1px) translateY(1px);
 }
 
-button.button > span:not(.icon) {
+:where(.qwc-root) button.button > span:not(.icon) {
     margin: 0 0.25em;
 }
 
-button.button > div.spinner {
+:where(.qwc-root) button.button > div.spinner {
     width: 1.5em;
     height: 1.5em;
 }
 
-button.selected {
+:where(.qwc-root) button.selected {
     position: relative;
 }
-button.selected:after {
+:where(.qwc-root) button.selected:after {
     position: absolute;
     left: 0;
     right: 0;
@@ -192,43 +203,43 @@ button.selected:after {
     content: "";
 }
 
-div.controlgroup {
+:where(.qwc-root) div.controlgroup {
     display: flex;
     align-items: center;
 }
 
-div.controlgroup > .controlgroup-fillitem {
+:where(.qwc-root) div.controlgroup > .controlgroup-fillitem {
     flex: 1 1 auto;
     width: 0;
 }
 
-div.controlgroup > .controlgroup-expanditem {
+:where(.qwc-root) div.controlgroup > .controlgroup-expanditem {
     flex: 1 0 auto;
 }
 
-div.controlgroup > *:not(:last-child):not(span) {
+:where(.qwc-root) div.controlgroup > *:not(:last-child):not(span) {
     margin-right: -1px;
 }
 
 /** Range slider **/
-input[type=range] {
+:where(.qwc-root) input[type=range] {
     -webkit-appearance: none;
     appearance: none;
     background-color: transparent;
     height: 2em;
 }
 
-input[type=range]::-moz-range-track {
+:where(.qwc-root) input[type=range]::-moz-range-track {
     background: #ddd;
     height: 4px;
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+:where(.qwc-root) input[type=range]::-webkit-slider-runnable-track {
     background: #ddd;
     height: 4px;
 }
 
-input[type=range]::-moz-range-thumb {
+:where(.qwc-root) input[type=range]::-moz-range-thumb {
     appearance: none;
     -webkit-appearance: none;
     border: 1px solid var(--border-color);
@@ -240,7 +251,7 @@ input[type=range]::-moz-range-thumb {
     margin-top: -3.5px;
 }
 
-input[type=range]::-webkit-slider-thumb {
+:where(.qwc-root) input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: 1px solid var(--border-color);
     border-radius: 50%;
@@ -251,8 +262,8 @@ input[type=range]::-webkit-slider-thumb {
     margin-top: -3.5px;
 }
 
-div.__event_shield {
-    position: fixed;
+:where(.qwc-root) div.__event_shield {
+    position: absolute;
     left: 0;
     right: 0;
     top: 0;
