@@ -602,21 +602,18 @@ Displays a custom help dialog in a sidebar.
 
 Define the help contents by specifying the `bodyContentsFragmentUrl` prop.
 
-By overriding `id`, `icon` and `title`, multiple instances of this plugin can be configured
-in parallel, i.e. one for the help contents and one for a privacy policy. To do so, give the
-additional entries in the `plugins` block of `config.json` a distinct `key`:
+Further variants can be configured through the `modes` prop, selected by the `mode` of the
+app menu or toolbar entry which opens them, i.e. to display a privacy policy next to the
+regular help contents:
 
-    {"name": "Help", "key": "Privacy", "cfg": {"id": "Privacy", "title": "Privacy policy", "bodyContentsFragmentUrl": "assets/privacy.html"}}
-
-and use the configured `id` as `key` of the corresponding app menu entry.
+    {"name": "Help", "cfg": {"bodyContentsFragmentUrl": "assets/help.html", "modes": {"Privacy": {"icon": "lock", "bodyContentsFragmentUrl": "assets/privacy.html"}}}}
+    {"key": "Help", "mode": "Privacy", "icon": "lock"}
 
 | Property | Type | Description | Default value |
 |----------|------|-------------|---------------|
 | bodyContentsFragmentUrl | `string` | URL to a document containing a HTML fragment to display in the Help sidebar. | `undefined` |
-| icon | `string` | The icon to display in the sidebar title bar. | `'info'` |
-| id | `string` | The task identifier of this plugin instance, i.e. the `key` of the corresponding app menu entry. Change it to configure multiple Help instances in parallel. | `'Help'` |
+| modes | `<key>: {`<br />`  bodyContentsFragmentUrl: string,`<br />`  icon: string,`<br />`  title: string,`<br />`}` | Alternative help contents, keyed by the `mode` of the app menu or toolbar entry which opens them.<br /> `icon` defaults to `info`, `title` to the `appmenu.items.Help<mode>` message. | `{}` |
 | side | `string` | The side of the application on which to display the sidebar. | `'right'` |
-| title | `string` | The translation message id of the sidebar title. | `'appmenu.items.Help'` |
 
 ## HomeButton<a name="homebutton"></a>
 

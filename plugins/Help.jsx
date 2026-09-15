@@ -21,61 +21,77 @@ import LocaleUtils from '../utils/LocaleUtils';
  *
  * Define the help contents by specifying the `bodyContentsFragmentUrl` prop.
  *
- * By overriding `id`, `icon` and `title`, multiple instances of this plugin can be configured
- * in parallel, i.e. one for the help contents and one for a privacy policy. To do so, give the
- * additional entries in the `plugins` block of `config.json` a distinct `key`:
+ * Further variants can be configured through the `modes` prop, selected by the `mode` of the
+ * app menu or toolbar entry which opens them, i.e. to display a privacy policy next to the
+ * regular help contents:
  *
- *     {"name": "Help", "key": "Privacy", "cfg": {"id": "Privacy", "title": "Privacy policy", "bodyContentsFragmentUrl": "assets/privacy.html"}}
- *
- * and use the configured `id` as `key` of the corresponding app menu entry.
+ *     {"name": "Help", "cfg": {"bodyContentsFragmentUrl": "assets/help.html", "modes": {"Privacy": {"icon": "lock", "bodyContentsFragmentUrl": "assets/privacy.html"}}}}
+ *     {"key": "Help", "mode": "Privacy", "icon": "lock"}
  */
 class Help extends React.Component {
     static availableIn3D = true;
     static propTypes = {
         /** URL to a document containing a HTML fragment to display in the Help sidebar. */
         bodyContentsFragmentUrl: PropTypes.string,
-        /** The icon to display in the sidebar title bar. */
-        icon: PropTypes.string,
-        /** The task identifier of this plugin instance, i.e. the `key` of the corresponding app menu entry. Change it to configure multiple Help instances in parallel. */
-        id: PropTypes.string,
+        currentTask: PropTypes.object,
+        /** Alternative help contents, keyed by the `mode` of the app menu or toolbar entry which opens them.
+         *  `icon` defaults to `info`, `title` to the `appmenu.items.Help<mode>` message. */
+        modes: PropTypes.objectOf(PropTypes.shape({
+            /** URL to a document containing a HTML fragment to display in the Help sidebar. */
+            bodyContentsFragmentUrl: PropTypes.string,
+            /** The icon to display in the sidebar title bar. */
+            icon: PropTypes.string,
+            /** The title of the sidebar. Defaults to the `appmenu.items.Help<mode>` message, as for the menu entry. */
+            title: PropTypes.string
+        })),
         renderBody: PropTypes.func,
         /** The side of the application on which to display the sidebar. */
-        side: PropTypes.string,
-        /** The translation message id of the sidebar title. */
-        title: PropTypes.string
+        side: PropTypes.string
     };
     static defaultProps = {
-        icon: 'info',
-        id: 'Help',
+        modes: {},
         renderBody: () => { return null; },
-        side: 'right',
-        title: 'appmenu.items.Help'
+        side: 'right'
     };
     state = {
-        body: ''
+        bodies: {}
     };
+    // Fragments are cached by url, so that switching modes back and forth does not refetch
+    fetched = new Set();
     componentDidMount() {
-        this.componentDidUpdate({});
+        this.componentDidUpdate();
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.bodyContentsFragmentUrl && this.props.bodyContentsFragmentUrl !== prevProps.bodyContentsFragmentUrl) {
-            axios.get(this.props.bodyContentsFragmentUrl).then(response => {
-                this.setState({body: response.data.replace('$VERSION$', process.env.BuildDate)});
+    componentDidUpdate() {
+        const url = this.modeConfig().bodyContentsFragmentUrl;
+        if (url && !this.fetched.has(url)) {
+            this.fetched.add(url);
+            axios.get(url).then(response => {
+                this.setState((state) => ({bodies: {...state.bodies, [url]: response.data.replace('$VERSION$', process.env.BuildDate)}}));
             }).catch(() => {});
         }
     }
+    modeConfig = () => {
+        const mode = this.props.currentTask?.id === "Help" ? this.props.currentTask.mode : null;
+        return {
+            bodyContentsFragmentUrl: this.props.bodyContentsFragmentUrl,
+            icon: "info",
+            title: "appmenu.items.Help" + (mode || ""),
+            ...this.props.modes[mode]
+        };
+    };
     render() {
+        const config = this.modeConfig();
         return (
-            <SideBar icon={this.props.icon} id={this.props.id} side={this.props.side} title={LocaleUtils.tr(this.props.title)} width="20em">
+            <SideBar icon={config.icon} id="Help" side={this.props.side} title={LocaleUtils.tr(config.title)} width="20em">
                 {() => ({
-                    body: this.renderBody()
+                    body: this.renderBody(config)
                 })}
             </SideBar>
         );
     }
-    renderBody = () => {
-        if (this.props.bodyContentsFragmentUrl) {
-            return (<div dangerouslySetInnerHTML={{__html: this.state.body}} />);
+    renderBody = (config) => {
+        if (config.bodyContentsFragmentUrl) {
+            return (<div dangerouslySetInnerHTML={{__html: this.state.bodies[config.bodyContentsFragmentUrl] ?? ''}} />);
         } else {
             return this.props.renderBody();
         }
@@ -83,7 +99,8 @@ class Help extends React.Component {
 }
 
 export default (renderHelp) => {
-    return connect(() => ({
+    return connect((state) => ({
+        currentTask: state.task,
         renderBody: renderHelp
     }), {})(Help);
 };
