@@ -54,7 +54,7 @@ const DEFAULT_MARKER_STYLE = {
 };
 
 const DEFAULT_INTERACTION_STYLE = {
-    fillColor: [255, 0, 0, 0.5],
+    fillColor: [255, 0, 0, 0.33],
     strokeColor: "red",
     strokeWidth: 1.5,
     vertexFillColor: "white",
