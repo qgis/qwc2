@@ -539,7 +539,6 @@ class QtDesignerForm extends React.Component {
                                 <button className="button" onClick={() => this.props.editRelationRecord(dataset, index)} onMouseEnter={() => this.setHighlight(dataset + ":" + index, feature)} onMouseLeave={() => this.clearHighlight(dataset + ":" + index)} type="button">
                                     <Icon icon="editing" /><span>{String(value ?? "")}</span>
                                 </button>
-                                <button className="button qt-designer-form-featurelink-clear" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
                             </div>
                         );
                     } else {
