@@ -15,6 +15,7 @@ import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
 
+import {LayerRole, addLayerFeatures, removeLayer} from '../actions/layers';
 import ConfigUtils from '../utils/ConfigUtils';
 import {parseExpression} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
@@ -57,6 +58,7 @@ const vFitWidgets = ["QLabel", "QCheckBox", "QRadioButton", "Line", "QDateTimeEd
 
 class QtDesignerForm extends React.Component {
     static propTypes = {
+        addLayerFeatures: PropTypes.func,
         addRelationRecord: PropTypes.func,
         editConfig: PropTypes.object,
         editConfigs: PropTypes.object,
@@ -68,6 +70,7 @@ class QtDesignerForm extends React.Component {
         mapCrs: PropTypes.string,
         mapPrefix: PropTypes.string,
         readOnly: PropTypes.bool,
+        removeLayer: PropTypes.func,
         removeRelationRecord: PropTypes.func,
         reorderRelationRecord: PropTypes.func,
         report: PropTypes.bool,
@@ -92,9 +95,14 @@ class QtDesignerForm extends React.Component {
         super(props);
         this.state = QtDesignerForm.defaultState;
         this.form = null;
+        this.highlightLayerId = uuidv4();
+        this.highlightedFeature = null;
     }
     componentDidMount() {
         this.componentDidUpdate({});
+    }
+    componentWillUnmount() {
+        this.props.removeLayer(this.highlightLayerId);
     }
     componentDidUpdate(prevProps) {
         // Query form
@@ -526,23 +534,22 @@ class QtDesignerForm extends React.Component {
                     if (layer === rellayer) {
                         const index = parseInt(nametransform("").split("__")[1], 10); // Ugh..
                         const dataset = this.props.mapPrefix + "." + rellayer;
-                        const featurebuttons = [
-                            {key: 'Edit', icon: 'editing', label: String(value ?? "")}
-                        ];
                         return (
                             <div className="qt-designer-form-featurelink-buttons">
-                                <ButtonBar buttons={featurebuttons} forceLabel onClick={() => this.props.editRelationRecord(dataset, index)} />
+                                <button className="button" onClick={() => this.props.editRelationRecord(dataset, index)} onMouseEnter={() => this.setHighlight(dataset + ":" + index, feature)} onMouseLeave={() => this.clearHighlight(dataset + ":" + index)} type="button">
+                                    <Icon icon="editing" /><span>{String(value ?? "")}</span>
+                                </button>
+                                <button className="button qt-designer-form-featurelink-clear" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
                             </div>
                         );
                     } else {
                         if (value !== null) {
-                            const featurebuttons = [
-                                {key: 'Edit', icon: 'editing', label: String(value ?? "")}
-                            ];
                             return (
                                 <div className="qt-designer-form-featurelink-buttons">
-                                    <ButtonBar buttons={featurebuttons} onClick={() => this.props.switchEditContext('Edit', layer, value, (f) => updateField(attrname, f.id))} />
-                                    <button className="button" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
+                                    <button className="button" onClick={() => this.props.switchEditContext('Edit', layer, value, (f) => updateField(attrname, f.id))} onMouseEnter={() => this.setHighlight(layer + ":" + feature.id, feature)} onMouseLeave={() => this.clearHighlight(layer + ":" + feature.id)} type="button">
+                                        <Icon icon="editing" /><span>{String(value ?? "")}</span>
+                                    </button>
+                                    <button className="button qt-designer-form-featurelink-clear" onClick={() => updateField(attrname, null)} type="button"><Icon icon="clear" /></button>
                                 </div>
                             );
                         } else {
@@ -874,10 +881,26 @@ class QtDesignerForm extends React.Component {
     translateFieldName = (fieldName, layerName) => {
         return this.props.translations?.layers?.[layerName]?.fields?.[fieldName] ?? fieldName;
     };
+    setHighlight = (key, feature) => {
+        this.highlightedFeature = key;
+        const layer = {
+            id: this.highlightLayerId,
+            role: LayerRole.SELECTION
+        };
+        this.props.addLayerFeatures(layer, [feature], true);
+    };
+    clearHighlight = (key) => {
+        if (this.highlightedFeature === key) {
+            this.highlightedFeature = null;
+            this.props.removeLayer(this.highlightLayerId);
+        }
+    };
 }
 
 export default connect((state) => ({
     locale: state.locale.current,
     editConfigs: state.layers.editConfigs
 }), {
+    addLayerFeatures: addLayerFeatures,
+    removeLayer: removeLayer
 })(QtDesignerForm);

@@ -184,14 +184,16 @@ div.qt-designer-form div.text-input-wrapper-multiline {
 
 div.qt-designer-form-featurelink-buttons {
     display: flex;
-}
-
-div.qt-designer-form-featurelink-buttons > div.ButtonBar {
-    flex: 1 1 auto;
+    align-items: center;
 }
 
 div.qt-designer-form-featurelink-buttons > button.button {
-    margin: 0.25em 0;
+    flex: 1 1 auto;
+}
+
+div.qt-designer-form-featurelink-buttons > button.qt-designer-form-featurelink-clear {
+    flex: 0 0 auto;
+    margin: 0 0.25em;
 }
 
 div.qt-designer-report {
