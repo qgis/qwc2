@@ -111,7 +111,7 @@ class Draw3D extends React.Component {
             <div>
                 <div className="redlining-controlsbar">
                     <div className="redlining-groupcontrol">
-                        <div>{LocaleUtils.tr("redlining.layer")}</div>
+                        <div>{LocaleUtils.tr("common.layer")}</div>
                         <div className="controlgroup">
                             <select onChange={ev => this.setActiveDrawGroup(ev.target.value)} value={this.state.drawGroupId}>
                                 {drawGroupEntries.map(entry => (
@@ -122,11 +122,11 @@ class Draw3D extends React.Component {
                         </div>
                     </div>
                     <div className="redlining-groupcontrol">
-                        <div>{LocaleUtils.tr("redlining.draw")}</div>
+                        <div>{LocaleUtils.tr("common.draw")}</div>
                         <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
                     </div>
                     <div className="redlining-groupcontrol">
-                        <div>{LocaleUtils.tr("redlining.edit")}</div>
+                        <div>{LocaleUtils.tr("common.edit")}</div>
                         <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                     </div>
                 </div>

@@ -233,11 +233,11 @@ class GeometryDigitizer extends React.Component {
         return (
             <div className="redlining-controlsbar">
                 <div className="redlining-groupcontrol">
-                    <div>{LocaleUtils.tr("redlining.draw")}</div>
+                    <div>{LocaleUtils.tr("common.draw")}</div>
                     <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
                 </div>
                 <div className="redlining-groupcontrol">
-                    <div>{LocaleUtils.tr("redlining.edit")}</div>
+                    <div>{LocaleUtils.tr("common.edit")}</div>
                     <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                 </div>
                 <div className="redlining-groupcontrol">

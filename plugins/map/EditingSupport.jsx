@@ -87,7 +87,7 @@ class EditingSupport extends React.Component {
         let measureSwitcher = null;
         if (this.props.editContext.feature?.geometry) {
             const editButtons = [
-                {key: "Node", tooltip: LocaleUtils.tr("redlining.draw"), icon: "nodetool"},
+                {key: "Node", tooltip: LocaleUtils.tr("common.draw"), icon: "nodetool"},
                 {key: "Transform", tooltip: LocaleUtils.tr("redlining.transform"), icon: "transformtool"}
             ];
             toolbar = ReactDOM.createPortal((

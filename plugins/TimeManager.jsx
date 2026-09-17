@@ -463,7 +463,7 @@ class TimeManager extends React.Component {
                 </div>
                 {filterActive ? (
                     <div className="time-manager-filter-warning">
-                        <Icon icon="warning" /> {LocaleUtils.tr("timemanager.filterwarning")} <button className="button" onClick={() => this.props.setCurrentTask("MapFilter")} type="button">{LocaleUtils.tr("timemanager.edit")}</button>
+                        <Icon icon="warning" /> {LocaleUtils.tr("timemanager.filterwarning")} <button className="button" onClick={() => this.props.setCurrentTask("MapFilter")} type="button">{LocaleUtils.tr("common.edit")}</button>
                     </div>
                 ) : null}
                 <div className="time-manager-timeline">

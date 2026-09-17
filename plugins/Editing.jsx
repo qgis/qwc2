@@ -231,7 +231,7 @@ class Editing extends React.Component {
         const actionButtons = [];
         actionButtons.push({key: 'Pick', icon: 'pick', label: LocaleUtils.tr("common.pick"), data: {action: 'Pick', feature: null}});
         if ( editPermissions.creatable !== false && !this.props.editContext.geomReadOnly) {
-            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.tr("editing.draw"), data: {action: 'Draw'}});
+            actionButtons.push({key: 'Draw', icon: 'editdraw', label: LocaleUtils.tr("common.draw"), data: {action: 'Draw'}});
         }
         if (ConfigUtils.havePlugin("AttributeTable") && this.props.showAttributeTableButton) {
             actionButtons.push({key: 'AttribTable', icon: 'editing', label: LocaleUtils.tr("editing.attrtable"), data: {action: 'AttrTable'}});

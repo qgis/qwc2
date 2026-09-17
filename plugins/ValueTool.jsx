@@ -201,7 +201,7 @@ class ValueTool extends React.Component {
                 <table className="valuetool-table-selection" key="table">
                     <tbody>
                         <tr>
-                            <th>{LocaleUtils.tr("valuetool.layer")}</th>
+                            <th>{LocaleUtils.tr("common.layer")}</th>
                             {this.state.showBands === "selected" ? (
                                 <th>{LocaleUtils.tr("valuetool.bands")}</th>
                             ) : null}

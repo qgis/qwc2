@@ -244,13 +244,13 @@ class Redlining extends React.Component {
             <div>
                 <div className="redlining-controlsbar">
                     <div className="redlining-groupcontrol">
-                        <div>{LocaleUtils.tr("redlining.layer")}</div>
+                        <div>{LocaleUtils.tr("common.layer")}</div>
                         <VectorLayerPicker
                             addLayer={this.props.addLayer} layers={vectorLayers}
                             onChange={this.changeRedliningLayer} value={this.props.redlining.layer} />
                     </div>
                     <div className="redlining-groupcontrol">
-                        <div>{LocaleUtils.tr("redlining.draw")}</div>
+                        <div>{LocaleUtils.tr("common.draw")}</div>
                         <div className="controlgroup">
                             <ButtonBar active={activeButton} buttons={drawButtons} onClick={(key, data) => this.actionChanged(data)} />
                             {this.props.redlining.action === "Draw" && (this.props.redlining.geomType === "LineString" || this.props.redlining.geomType === "Polygon") ?
@@ -259,7 +259,7 @@ class Redlining extends React.Component {
                         </div>
                     </div>
                     <div className="redlining-groupcontrol">
-                        <div>{LocaleUtils.tr("redlining.edit")}</div>
+                        <div>{LocaleUtils.tr("common.edit")}</div>
                         <ButtonBar active={activeButton} buttons={editButtons} onClick={(key, data) => this.actionChanged(data)} />
                     </div>
                     <div className="redlining-groupcontrol">
