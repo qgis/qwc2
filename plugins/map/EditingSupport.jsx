@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import {setEditContext} from '../../actions/editing';
 import LocationRecorder from '../../components/LocationRecorder';
 import MeasureSwitcher from '../../components/MeasureSwitcher';
+import PickFeature from '../../components/PickFeature';
 import {BottomToolPortalContext} from '../../components/PluginsContainer';
 import ButtonBar from '../../components/widgets/ButtonBar';
 import FeatureStyles from "../../utils/FeatureStyles";
@@ -85,6 +86,7 @@ class EditingSupport extends React.Component {
         let toolbar = null;
         let locationRecorder = null;
         let measureSwitcher = null;
+        let picker = null;
         if (this.props.editContext.feature?.geometry) {
             const editButtons = [
                 {key: "Node", tooltip: LocaleUtils.tr("common.draw"), icon: "nodetool"},
@@ -111,8 +113,21 @@ class EditingSupport extends React.Component {
                 />
             ), this.context);
         }
-        return [toolbar, measureSwitcher, locationRecorder];
+        if (this.props.editContext.action === "PickGeometry") {
+            picker = (
+                <PickFeature
+                    featureFilter={f => f.geometry?.type === this.props.editContext.geomType}
+                    featurePicked={this.geomFeaturePicked}
+                    key="FeaturePicker"
+                />
+            );
+        }
+        return [toolbar, measureSwitcher, locationRecorder, picker];
     }
+    geomFeaturePicked = (pickLayer, pickFeature) => {
+        const feature = {type: "Feature", properties: {}, ...this.props.editContext.feature, geometry: pickFeature.geometry};
+        this.props.setEditContext(this.props.editContext.id, {action: 'Draw', feature: feature, changed: true});
+    };
     setEditMode = (action) => {
         this.setState({activeEditTool: action}, this.setEditInteraction);
     };
