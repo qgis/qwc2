@@ -17,48 +17,10 @@ table.AutoEditForm td:nth-child(2) {
     width: 99%;
 }
 
-table.AutoEditForm select.editing-layer-select,
-table.AutoEditForm select.editing-feature-select,
-table.AutoEditForm span.input-frame select {
-    width: 100%;
-    border: 1px solid var(--border-color);
-    background-color: var(--input-bg-color);
-    padding: 0.25em;
-}
-
-table.AutoEditForm table.fields-table label {
-    display: flex;
-    height: 2em;
-    align-items: center;
-}
-
 table.AutoEditForm label > input {
     margin-right: 0.5em;
 }
 
-table.AutoEditForm textarea {
+table.AutoEditForm td:nth-child(2) > * {
     width: 100%;
-    border: 1px solid var(--border-color);
-}
-
-table.AutoEditForm span.input-frame input {
-    outline: none;
-    background: none;
-}
-
-table.AutoEditForm span.input-frame {
-    border: 1px solid var(--border-color);
-    padding: 0.25em;
-    background-color: var(--input-bg-color);
-    display: flex;
-    align-items: center;
-    height: 2em;
-}
-
-table.AutoEditForm span.input-frame input,
-table.AutoEditForm span.input-frame select {
-    border: 0;
-    flex: 1;
-    min-width: 0;
-    width: 0;
 }
