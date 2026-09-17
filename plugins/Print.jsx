@@ -705,6 +705,48 @@ class Print extends React.Component {
             delete formData.COLORS;
         }
 
+        // Frozen layout maps: the server drops any layout map the request carries no
+        // extent for, so send each one the extent stored in the layout
+        (this.state.layout.fixedMaps || []).forEach(fixedMap => {
+            let extent = fixedMap.extent;
+            // A map item with its own CRS keeps that CRS on the server, which assigns
+            // the extent to it verbatim, so the saved extent is sent unchanged
+            if (!fixedMap.ownCrs && fixedMap.crs && fixedMap.crs !== mapCrs) {
+                extent = CoordinatesUtils.reprojectBboxDensified(extent, fixedMap.crs, mapCrs);
+                if (!extent) {
+                    /* eslint-disable-next-line */
+                    console.warn("Print: cannot reproject the extent of " + fixedMap.name + " from " + fixedMap.crs + " to " + mapCrs + ", the map will be omitted from the printed layout");
+                    return;
+                }
+                // The server resizes the layout item to the aspect of the extent it
+                // receives, so restore the aspect of the authored on-page rectangle
+                // by growing the deficient axis about the centre
+                const targetAspect = fixedMap.height / fixedMap.width;
+                const width = extent[2] - extent[0];
+                const height = extent[3] - extent[1];
+                if (height / width > targetAspect) {
+                    const delta = (height / targetAspect - width) / 2;
+                    extent = [extent[0] - delta, extent[1], extent[2] + delta, extent[3]];
+                } else {
+                    const delta = (width * targetAspect - height) / 2;
+                    extent = [extent[0], extent[1] - delta, extent[2], extent[3] + delta];
+                }
+            }
+            formData[fixedMap.name + ":EXTENT"] = this.formatExtent(extent);
+            const preset = this.presetLayersAndStyles(fixedMap.followPresetName);
+            if (preset) {
+                // Frozen on a map theme rather than on a locked layer set: without explicit
+                // layers the server would render this map with the interactive map's layers
+                formData[fixedMap.name + ":LAYERS"] = preset.layers;
+                formData[fixedMap.name + ":STYLES"] = preset.styles;
+            }
+            // The server resets a layout map's grid interval unless the request resends it
+            if (fixedMap.gridIntervalX && fixedMap.gridIntervalY) {
+                formData[fixedMap.name + ":GRID_INTERVAL_X"] = fixedMap.gridIntervalX;
+                formData[fixedMap.name + ":GRID_INTERVAL_Y"] = fixedMap.gridIntervalY;
+            }
+        });
+
         // Add highlight params
         const printDpi = parseInt(this.state.dpi, 10) || 0;
 
