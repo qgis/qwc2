@@ -295,7 +295,7 @@ const IdentifyUtils = {
                 return properties[propertyCaseMap[field]];
             }
         }
-        return "";
+        return item.id ?? "";
     },
     parseXmlFeature(feature, geometrycrs, id, featurereport, displayfield, layername, layertitle, layerinfo, translations) {
         const featureResult = {};
