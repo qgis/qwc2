@@ -384,6 +384,7 @@
     "layertree3d.supportedformats",
     "layertree3d.zoomtoobject",
     "linkfeatureform.drawhint",
+    "linkfeatureform.pickhint",
     "linkfeatureform.picklayerhint",
     "locate.feetUnit",
     "locate.metersUnit",

@@ -406,6 +406,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Teken object op de kaart...",
+      "pickhint": "",
       "picklayerhint": ""
     },
     "locate": {

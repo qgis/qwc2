@@ -161,7 +161,7 @@
       "star": "Stella",
       "sync2dview": "Sincronizza con visuale 2D",
       "text": "Testo",
-      "triangle": "",
+      "triangle": "Triangolo",
       "true": "Vero",
       "wait": "Attendere...",
       "zoomin": "Ingrandisci",
@@ -406,7 +406,8 @@
     },
     "linkfeatureform": {
       "drawhint": "Disegnare l'oggetto sulla mappa...",
-      "picklayerhint": "Selezionare un oggetto dal livello '{0}' sulla map..."
+      "pickhint": "Selezionare un oggetto sulla mappa...",
+      "picklayerhint": "Selezionare un oggetto dal livello '{0}' sulla mappa..."
     },
     "locate": {
       "feetUnit": "piedi",

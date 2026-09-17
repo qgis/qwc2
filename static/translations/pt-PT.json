@@ -406,6 +406,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Desenhe um retângulo para selecionar um recurso...",
+      "pickhint": "",
       "picklayerhint": ""
     },
     "locate": {

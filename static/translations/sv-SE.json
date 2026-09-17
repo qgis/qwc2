@@ -406,6 +406,7 @@
     },
     "linkfeatureform": {
       "drawhint": "",
+      "pickhint": "",
       "picklayerhint": ""
     },
     "locate": {

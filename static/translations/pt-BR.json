@@ -406,6 +406,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Mostrar dica",
+      "pickhint": "",
       "picklayerhint": ""
     },
     "locate": {

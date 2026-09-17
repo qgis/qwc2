@@ -406,6 +406,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Desenare obiect spațial în hartă",
+      "pickhint": "",
       "picklayerhint": ""
     },
     "locate": {

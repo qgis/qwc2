@@ -406,6 +406,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Haritada bir obje çiziniz...",
+      "pickhint": "",
       "picklayerhint": ""
     },
     "locate": {

@@ -406,6 +406,7 @@
     },
     "linkfeatureform": {
       "drawhint": "地図上の地物を作図...",
+      "pickhint": "",
       "picklayerhint": ""
     },
     "locate": {

@@ -406,6 +406,7 @@
     },
     "linkfeatureform": {
       "drawhint": "Нарисувайте обекта на картата...",
+      "pickhint": "",
       "picklayerhint": ""
     },
     "locate": {
