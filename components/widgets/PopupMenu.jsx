@@ -48,12 +48,13 @@ export default class PopupMenu extends React.PureComponent {
         this.container.style.zIndex = 100000;
         this.container.style.pointerEvents = 'none';
         this.menuEl = null;
-        doc.body.appendChild(this.container);
+        const root = MiscUtils.appContainer(this.props.anchor);
+        root.appendChild(this.container);
         // Delay one cycle
         setTimeout(() => doc.addEventListener('pointerdown', this.checkCloseMenu, {capture: true}), 0);
-        doc.addEventListener('click', this.checkKillClick, {capture: true});
-        doc.addEventListener('wheel', this.preventScroll, {passive: false});
-        doc.addEventListener('touchmove', this.preventScroll, {passive: false});
+        root.addEventListener('click', this.checkKillClick, {capture: true});
+        root.addEventListener('wheel', this.preventScroll, {passive: false});
+        root.addEventListener('touchmove', this.preventScroll, {passive: false});
     }
     componentDidMount() {
         if (this.props.anchor?.nodeName === "INPUT") {
@@ -61,18 +62,18 @@ export default class PopupMenu extends React.PureComponent {
         }
     }
     componentWillUnmount() {
-        const doc = (this.props.anchor?.ownerDocument ?? document);
-        doc.body.removeChild(this.container);
+        const root = MiscUtils.appContainer(this.props.anchor);
+        root.removeChild(this.container);
         if (this.props.anchor?.nodeName === "INPUT") {
             this.props.anchor.removeEventListener('keydown', this.keyNav);
         }
         this.props.anchor?.focus?.();
-        doc.removeEventListener('pointerdown', this.checkCloseMenu, {capture: true});
+        root.removeEventListener('pointerdown', this.checkCloseMenu, {capture: true});
         if (!this.killClick) {
-            doc.removeEventListener('click', this.checkKillClick, {capture: true});
+            root.removeEventListener('click', this.checkKillClick, {capture: true});
         }
-        doc.removeEventListener('wheel', this.preventScroll, {passive: false});
-        doc.removeEventListener('touchmove', this.preventScroll, {passive: false});
+        root.removeEventListener('wheel', this.preventScroll, {passive: false});
+        root.removeEventListener('touchmove', this.preventScroll, {passive: false});
     }
     preventScroll = (ev) => {
         if (!this.menuEl || !this.menuEl.contains(ev.target)) {
