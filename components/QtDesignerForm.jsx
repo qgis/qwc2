@@ -598,7 +598,7 @@ class QtDesignerForm extends React.Component {
         }, {
             key: "Cancel", icon: "remove", label: LocaleUtils.tr("common.cancel"), extraClasses: "button-reject"
         }] : [{
-            key: "Add", icon: "plus", label: LocaleUtils.tr("common.add"), disabled: !this.props.feature.relationValues, data: addData
+            key: "Add", icon: "plus", label: LocaleUtils.tr("common.add"), disabled: !this.props.feature.relationValues?.[relDataset], data: addData
         }];
         return (
             <div className="qt-designer-widget-relation">

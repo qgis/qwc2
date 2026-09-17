@@ -263,7 +263,7 @@ class AttributeForm extends React.Component {
             } else {
                 const newRelationValues = {...this.props.editContext.feature.relationValues};
                 newRelationValues[dataset] = {...newRelationValues[dataset]};
-                newRelationValues[dataset].features = newRelationValues[dataset].features.concat([newRelFeature]);
+                newRelationValues[dataset].features = (newRelationValues[dataset].features ?? []).concat([newRelFeature]);
                 const newFeature = {...this.props.editContext.feature, relationValues: newRelationValues};
                 this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
             }
