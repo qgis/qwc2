@@ -580,6 +580,7 @@ class QtDesignerForm extends React.Component {
         }
         const relDataset = editConfig.editDataset;
         const fields = (editConfig.fields ?? []).reduce((res, field) => ({...res, [field.id]: field}), {});
+        const editPermissions = editConfig.permissions || {};
         const addData = {
             geomType: editConfig.geomType, dataset: relDataset
         };
@@ -657,7 +658,7 @@ class QtDesignerForm extends React.Component {
                                                 <Icon icon="chevron-down" onClick={() => this.props.reorderRelationRecord(relDataset, idx, 1)} />
                                             </td>
                                         ) : null}
-                                        {!this.props.readOnly && !disabled ? (
+                                        {!this.props.readOnly && !disabled && editPermissions.deletable !== false ? (
                                             <td className="qt-designer-widget-relation-record-icon">
                                                 <Icon icon="trash" onClick={() => this.props.removeRelationRecord(relDataset, idx)} />
                                             </td>
@@ -668,7 +669,7 @@ class QtDesignerForm extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                {!this.props.readOnly ? (
+                {!this.props.readOnly && editPermissions.creatable !== false ? (
                     <ButtonBar buttons={addButtons} onClick={this.addRelationRecordAction} />
                 ) : null}
                 <div className="qt-designer-widget-relation-resize-handle" onPointerDown={this.startRelationTableResize} />
