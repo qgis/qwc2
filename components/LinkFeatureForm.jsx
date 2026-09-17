@@ -136,7 +136,7 @@ class LinkFeatureForm extends React.Component {
                     ) : (
                         <AttributeForm
                             editContext={editContext} hideDelete={this.props.hideDelete}
-                            iface={this.props.iface} nested onDiscard={this.onDiscard}
+                            iface={this.props.iface} nested onCommit={this.onCommit} onDiscard={this.onDiscard}
                             readOnly={this.props.readOnly} translations={this.props.translations}
                         />
                     )}
@@ -199,8 +199,13 @@ class LinkFeatureForm extends React.Component {
             }
         }
     };
+    onCommit = (result) => {
+        this.props.finished(result);
+        return true;
+    };
     onDiscard = () => {
         this.props.finished(null);
+        return true;
     };
 }
 
