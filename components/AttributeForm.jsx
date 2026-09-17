@@ -66,6 +66,7 @@ class AttributeForm extends React.Component {
     constructor(props) {
         super(props);
         this.form = null;
+        this.needRelationValueReload = false;
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.editContext.changed !== this.props.editContext.changed) {
@@ -75,15 +76,8 @@ class AttributeForm extends React.Component {
             this.setState({deleteClicked: false});
         }
         // Reload relation values if necessary
-        const feature = this.props.editContext.feature;
-        const prevFeature = prevProps.editContext.feature;
-        if (
-            (!this.props.editContext.changed || !feature.relationValues) &&
-            (this.state.relationTables !== prevState.relationTables || feature.id !== (prevFeature || {}).id)
-        ) {
-            this.loadRelationValues(this.props.editContext.feature, (newFeature) => {
-                this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
-            });
+        if (this.props.editContext.feature !== prevProps.editContext.feature?.id) {
+            this.needRelationValueReload = true;
         }
         if (this.props.editContext.feature !== prevProps.editContext.feature) {
             this.validateForm(this.props.editContext.feature);
@@ -202,7 +196,14 @@ class AttributeForm extends React.Component {
         this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: true});
     };
     setRelationTables = (relationTables) => {
-        this.setState({relationTables: relationTables});
+        this.setState({relationTables: relationTables}, () => {
+            if (this.needRelationValueReload) {
+                this.needRelationValueReload = false;
+                this.loadRelationValues(this.props.editContext.feature, (newFeature) => {
+                    this.props.setEditContext(this.props.editContext.id, {feature: newFeature});
+                });
+            }
+        });
     };
     loadRelationValues = (feature, callback) => {
         if (!isEmpty(this.state.relationTables)) {
@@ -230,6 +231,8 @@ class AttributeForm extends React.Component {
                 const newFeature = {...feature, relationValues: relationValues};
                 callback(newFeature);
             }
+        } else {
+            callback(feature);
         }
     };
     addRelationRecord = (dataset, initialProperties = {}, action = null) => {
@@ -362,14 +365,10 @@ class AttributeForm extends React.Component {
                     this.setState({busy: true});
                     this.props.iface.getFeatureById(this.props.editContext.editConfig, this.props.editContext.feature.id, this.props.map.projection, (feature) => {
                         this.setState({busy: false});
-                        if (!isEmpty(this.state.relationTables)) {
-                            // Re-load relation values
-                            this.loadRelationValues(feature, (newFeature) => {
-                                this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: false});
-                            });
-                        } else {
-                            this.props.setEditContext(this.props.editContext.id, {feature: feature, changed: false});
-                        }
+                        // Re-load relation values
+                        this.loadRelationValues(feature, (newFeature) => {
+                            this.props.setEditContext(this.props.editContext.id, {feature: newFeature, changed: false});
+                        });
                     });
                 } else {
                     const featureSkel = {
@@ -640,19 +639,27 @@ class AttributeForm extends React.Component {
             }
         }
     };
-    featureCommited = (success, result) => {
-        if (!success) {
-            this.commitFinished(false, result);
-            return;
-        }
-        // Check for relation records which failed to commit
-        const relationValueErrors = Object.values(result.relationValues || []).find(entry => (entry.features || []).find(f => f.error)) !== undefined;
-        if (relationValueErrors) {
-            // Relation values commit failed, switch to pick to avoid adding feature again on next attempt
-            this.commitFinished(false, LocaleUtils.tr("editing.relationcommitfailed"));
-            this.props.setEditContext(this.props.editContext.id, {action: "Pick", feature: result, changed: true});
+    featureCommited = (success, featureOrErrmsg) => {
+        this.setState({busy: false});
+        if (success) {
+            this.props.refreshLayer(layer => layer.wms_name === this.props.editContext.mapPrefix);
+            this.props.setCurrentTaskBlocked(false);
+            // Check for relation records which failed to commit
+            const relationValueErrors = Object.values(featureOrErrmsg.relationValues || []).find(entry => (entry.features || []).find(f => f.error)) !== undefined;
+            if (relationValueErrors) {
+                // eslint-disable-next-line
+                alert(LocaleUtils.tr("editing.relationcommitfailed"));
+                // Switch to Pick mode to avoid recommitting new feature
+                this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: featureOrErrmsg, changed: true});
+            } else {
+                this.loadRelationValues(featureOrErrmsg, (newFeature) => {
+                    this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: newFeature, changed: false});
+                    this.props.onCommit?.(newFeature);
+                });
+            }
         } else {
-            this.commitFinished(true, result);
+            // eslint-disable-next-line
+            alert(featureOrErrmsg);
         }
     };
     deleteClicked = () => {
@@ -672,26 +679,6 @@ class AttributeForm extends React.Component {
         } else {
             this.setState({deleteClicked: false});
             this.props.setCurrentTaskBlocked(false);
-        }
-    };
-    commitFinished = (success, result) => {
-        this.setState({busy: false});
-        if (success) {
-            this.props.refreshLayer(layer => layer.wms_name === this.props.editContext.mapPrefix);
-            this.props.setCurrentTaskBlocked(false);
-            if (!this.props.onCommit || !this.props.onCommit(result)) {
-                if (!isEmpty(this.state.relationTables)) {
-                    // Re-load relation values
-                    this.loadRelationValues(result, (newFeature) => {
-                        this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: newFeature, changed: false});
-                    });
-                } else {
-                    this.props.setEditContext(this.props.editContext.id, {action: 'Pick', feature: result, changed: false});
-                }
-            }
-        } else {
-            // eslint-disable-next-line
-            alert(result);
         }
     };
     deleteFinished = (success, result) => {
