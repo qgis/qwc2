@@ -34,7 +34,8 @@ import './style/Redlining.css';
 const POINT_SHAPE_BUTTONS = {
     circle: "Point",
     square: "PointSquare",
-    star: "PointStar"
+    star: "PointStar",
+    triangle: "PointTriangle"
 };
 
 /**
@@ -60,7 +61,7 @@ class Redlining extends React.Component {
         defaultTextFillColor: PropTypes.array,
         /** Default text outline color. In format `[r, g, b, a]`. */
         defaultTextOutlineColor: PropTypes.array,
-        /** Tools to hide. Available tools: `PointSquare`, `PointStar`, `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `FeatureLabel`, `Export`. */
+        /** Tools to hide. Available tools: `PointSquare`, `PointStar`, `PointTriangle`, `Circle`, `Ellipse`, `Square`, `Box`, `HandDrawing`, `Transform`, `NumericInput`, `Buffer`, `FeatureLabel`, `Export`. */
         hiddenTools: PropTypes.array,
         layers: PropTypes.array,
         mapCrs: PropTypes.string,
@@ -188,7 +189,8 @@ class Redlining extends React.Component {
             [
                 {key: "Point", tooltip: LocaleUtils.tr("common.point"), icon: "point", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "circle"}}},
                 toolEnabled("PointSquare") ? {key: "PointSquare", tooltip: LocaleUtils.tr("common.square"), icon: "square", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "square"}}} : null,
-                toolEnabled("PointStar") ? {key: "PointStar", tooltip: LocaleUtils.tr("common.star"), icon: "star", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "star"}}} : null
+                toolEnabled("PointStar") ? {key: "PointStar", tooltip: LocaleUtils.tr("common.star"), icon: "star", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "star"}}} : null,
+                toolEnabled("PointTriangle") ? {key: "PointTriangle", tooltip: LocaleUtils.tr("common.triangle"), icon: "triangle", data: {action: "Draw", geomType: "Point", text: "", style: {pointShape: "triangle"}}} : null
             ].filter(Boolean),
             {key: "LineString", tooltip: LocaleUtils.tr("common.line"), icon: "line", data: {action: "Draw", geomType: "LineString", text: ""}},
             [

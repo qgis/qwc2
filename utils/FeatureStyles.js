@@ -94,7 +94,8 @@ export const END_MARKERS = {
 export const POINT_SHAPES = {
     circle: {},
     square: {points: 4, angle: Math.PI / 4, radiusFactor: Math.SQRT2},
-    star: {points: 5, angle: 0, radiusFactor: 1 / Math.cos(Math.PI / 10), radius2Factor: 0.38}
+    star: {points: 5, angle: 0, radiusFactor: 1 / Math.cos(Math.PI / 10), radius2Factor: 0.38},
+    triangle: {points: 3, angle: 0, radiusFactor: 2 / Math.sqrt(3)}
 };
 
 export function defaultFeatureStyle() {
