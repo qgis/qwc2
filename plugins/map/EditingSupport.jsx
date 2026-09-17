@@ -136,10 +136,13 @@ class EditingSupport extends React.Component {
             }
             return f.getGeometry();
         };
-        return [
-            FeatureStyles.interaction(feature, this.props.editContext.geometryStyle),
-            FeatureStyles.interactionVertex({geometryFunction, ...this.props.editContext.vertexStyle})
-        ].flat();
+        const styles = [
+            FeatureStyles.interaction(feature, this.props.editContext.geometryStyle)
+        ];
+        if (this.interaction?.getActive?.()) {
+            styles.push(FeatureStyles.interactionVertex({geometryFunction, ...this.props.editContext.vertexStyle}));
+        }
+        return styles.flat();
     };
     setCurrentLayer = () => {
         if (!(this.props.editContext.id in this.layers)) {
