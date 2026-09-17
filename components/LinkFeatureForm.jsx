@@ -66,15 +66,16 @@ class LinkFeatureForm extends React.Component {
                     }
                 });
             }
-        } else if (this.props.action === 'Create') {
+        } else if (this.props.action === 'Create' || this.props.action === 'PickGeometry') {
             const featureSkel = {
                 type: "Feature",
                 properties: {},
                 ...this.props.feature
             };
+            const editAction = this.props.action === 'Create' ? 'Draw' : this.props.action;
             getFeatureTemplate(this.props.editConfig, featureSkel, this.props.iface, this.props.mapPrefix, this.props.map.projection, feature => {
                 this.props.setEditContext(this.props.editContextId, {
-                    action: 'Draw', geomType: this.props.editConfig.geomType, feature: feature,
+                    action: editAction, geomType: this.props.editConfig.geomType, feature: feature,
                     editConfig: this.props.editConfig, mapPrefix: this.props.mapPrefix,
                     parentContextId: this.props.parentContextId
                 });
@@ -122,6 +123,20 @@ class LinkFeatureForm extends React.Component {
                             {LocaleUtils.tr("common.close")}
                         </button>
                     </div>)}
+                </div>
+            );
+        } else if (editContext.action === 'PickGeometry') {
+            return (
+                <div className="link-feature-form">
+                    <div className="link-feature-form-hint">
+                        <span>{LocaleUtils.tr("linkfeatureform.pickhint")}</span>
+                    </div>
+                    <div className="link-feature-form-close">
+                        <button className="button" onClick={this.close}>
+                            <Icon icon="remove" />
+                            {LocaleUtils.tr("common.cancel")}
+                        </button>
+                    </div>
                 </div>
             );
         } else if (editContext.feature) {
@@ -172,7 +187,7 @@ class LinkFeatureForm extends React.Component {
     };
     close = () => {
         const editContext = this.props.editing.contexts[this.props.editContextId];
-        this.props.finished(editContext.action === 'Draw' ? null : editContext.feature);
+        this.props.finished(editContext.action === 'Pick' ? editContext.feature : null);
     };
     hoverFeature = (feature) => {
         const layer = {

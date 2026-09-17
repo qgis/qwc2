@@ -592,7 +592,7 @@ class QtDesignerForm extends React.Component {
             geomType: editConfig.geomType, dataset: relDataset
         };
         const addButtons = this.state.relationAddPressed === relDataset ? [{
-            key: "Pick", icon: "pick", label: LocaleUtils.tr("common.pick"), data: addData
+            key: editConfig.pickMode ?? "Pick", icon: "pick", label: LocaleUtils.tr("common.pick"), data: addData
         }, {
             key: "Create", icon: "editdraw", label: LocaleUtils.tr("editing.create"), data: addData
         }, {
@@ -695,6 +695,9 @@ class QtDesignerForm extends React.Component {
             this.setState({relationAddPressed: null});
         } else if (key === "Pick") {
             this.props.addRelationRecord(data.dataset, null, "Pick");
+            this.setState({relationAddPressed: null});
+        } else if (key === "PickGeometry") {
+            this.props.addRelationRecord(data.dataset, null, "PickGeometry");
             this.setState({relationAddPressed: null});
         } else if (key === "Cancel") {
             this.setState({relationAddPressed: null});
