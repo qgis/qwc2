@@ -116,7 +116,7 @@ class EditingSupport extends React.Component {
         if (this.props.editContext.action === "PickGeometry") {
             picker = (
                 <PickFeature
-                    featureFilter={f => f.geometry?.type === this.props.editContext.geomType}
+                    featureFilter={f => (f.geometry?.type === this.props.editContext.geomType || (f.geometry?.type === 'Multi' + this.props.editContext.geomType && f.geometry.coordinates.length === 1))}
                     featurePicked={this.geomFeaturePicked}
                     key="FeaturePicker"
                 />
@@ -125,7 +125,14 @@ class EditingSupport extends React.Component {
         return [toolbar, measureSwitcher, locationRecorder, picker];
     }
     geomFeaturePicked = (pickLayer, pickFeature) => {
-        const feature = {type: "Feature", properties: {}, ...this.props.editContext.feature, geometry: pickFeature.geometry};
+        let geom = pickFeature.geometry;
+        if (geom.type === "Multi" + this.props.editContext.geomType) {
+            geom = {
+                type: this.props.editContext.geomType,
+                coordinates: geom.coordinates[0]
+            };
+        }
+        const feature = {type: "Feature", properties: {}, ...this.props.editContext.feature, geometry: geom};
         this.props.setEditContext(this.props.editContext.id, {action: 'Draw', feature: feature, changed: true});
     };
     setEditMode = (action) => {
