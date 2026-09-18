@@ -650,6 +650,27 @@ class Print extends React.Component {
     formatChanged = (ev) => {
         this.setState({selectedFormat: ev.target.value});
     };
+    presetLayersAndStyles = (presetName) => {
+        const preset = (this.props.theme.visibilityPresets ?? {})[presetName];
+        if (!preset) {
+            return null;
+        }
+        // Desktop resolves a theme through mapThemeVisibleLayers, which orders the
+        // theme's layers by the project layer order rather than by the order they
+        // were captured in. Entries without a style are checked group nodes, which
+        // are not requestable layers.
+        const themeLayer = this.props.layers.find(layer => layer.role === LayerRole.THEME);
+        const layerOrder = LayerUtils.getSublayerNames(themeLayer ?? {});
+        const entries = Object.entries(preset)
+            .filter(([, options]) => options.checked && options.style !== undefined)
+            .map(([layerPath, options]) => [layerPath.split("/").slice(-1)[0], options.style])
+            .sort((a, b) => layerOrder.indexOf(a[0]) - layerOrder.indexOf(b[0]))
+            .reverse();
+        return {
+            layers: entries.map(entry => entry[0]).join(","),
+            styles: entries.map(entry => entry[1]).join(",")
+        };
+    };
     print = (ev) => {
         ev.preventDefault();
         this.setState({ printing: true });
@@ -671,20 +692,17 @@ class Print extends React.Component {
         formData[mapName + ":FILTER"] = printParams.FILTER;
         formData[mapName + ":FILTER_GEOM"] = printParams.FILTER_GEOM;
 
-        if (this.state.layout.map.followPresetName in (this.props.theme.visibilityPresets ?? {})) {
-            const preset = this.props.theme.visibilityPresets[this.state.layout.map.followPresetName];
-            const layers = [];
-            const styles = [];
-            Object.entries(preset).forEach(([layerPath, options]) => {
-                if (options.visible) {
-                    layers.push(layerPath.split("/").slice(-1)[0]);
-                    styles.push(options.style);
-                }
-            });
-            formData.LAYERS = layers.join(",");
-            formData.STYLES = styles.join(",");
-            formData[mapName + ":LAYERS"] = layers.join(",");
-            formData[mapName + ":STYLES"] = styles.join(",");
+        const mainPreset = this.presetLayersAndStyles(this.state.layout.map.followPresetName);
+        if (mainPreset) {
+            formData.LAYERS = mainPreset.layers;
+            formData.STYLES = mainPreset.styles;
+            formData[mapName + ":LAYERS"] = mainPreset.layers;
+            formData[mapName + ":STYLES"] = mainPreset.styles;
+            // The theme's own styles carry the opacity, as they do on the desktop.
+            // The opacities collected from the client layer tree describe a different
+            // layer list and are applied positionally by the server, so drop them.
+            delete formData.OPACITIES;
+            delete formData.COLORS;
         }
 
         // Add highlight params
