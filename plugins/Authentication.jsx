@@ -11,11 +11,11 @@ import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
 import PropTypes from 'prop-types';
-import url from 'url';
 
 import Icon from '../components/Icon';
 import {AppInfosPortalContext} from '../components/PluginsContainer';
 import ConfigUtils from '../utils/ConfigUtils';
+import MiscUtils from '../utils/MiscUtils';
 
 import './style/Authentication.css';
 
@@ -47,9 +47,6 @@ class Authentication extends React.Component {
     }
     componentDidMount() {
         const username = ConfigUtils.getConfigProp("username");
-        if (this.props.requireLogin && !username) {
-            this.showLogin();
-        }
         if (this.props.idleTimeout && username) {
             this.idleTimer = setTimeout(this.idleAutologout, this.props.idleTimeout * 1000);
             window.addEventListener('keydown', this.resetIdleTimer, {passive: true});
@@ -70,12 +67,7 @@ class Authentication extends React.Component {
         }
     }
     showLogin = () => {
-        const urlObj = url.parse(window.location.href, true);
-        if (this.props.clearLayerParam) {
-            delete urlObj.query.l;
-        }
-        urlObj.search = undefined;
-        window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
+        window.location.href = MiscUtils.loginUrl(this.props.clearLayerParam);
     };
     resetIdleTimer = () => {
         if (this.idleTimer) {
@@ -84,9 +76,7 @@ class Authentication extends React.Component {
         }
     };
     idleAutologout = () => {
-        const urlObj = url.parse(window.location.href, true);
-        urlObj.search = undefined;
-        const loginUrl = ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(url.format(urlObj));
+        const loginUrl = MiscUtils.loginUrl();
         window.location.href = ConfigUtils.getConfigProp("authServiceUrl") + "logout?url=" + encodeURIComponent(loginUrl);
     };
     render() {

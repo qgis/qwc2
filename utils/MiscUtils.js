@@ -17,6 +17,13 @@ const MiscUtils = {
     appContainer(el) {
         return el?.closest?.('.plugins-container') ?? el?.ownerDocument?.body ?? document.body;
     },
+    loginUrl(clearLayerParam = false) {
+        const target = new URL(window.location.href);
+        if (clearLayerParam) {
+            target.searchParams.delete('l');
+        }
+        return ConfigUtils.getConfigProp("authServiceUrl") + "login?url=" + encodeURIComponent(target.href);
+    },
     addLinkAnchors(text) {
         // If text already contains tags, do nothing
         const tagRegEx = /(<.[^(><.)]+>)/;
