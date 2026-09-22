@@ -11,7 +11,6 @@ import {Line} from "react-chartjs-2";
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -40,6 +39,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import MiscUtils from '../utils/MiscUtils';
+import RequestUtils from '../utils/RequestUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/HeightProfile.css';
@@ -209,7 +209,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             headers: {'content-type': 'application/x-www-form-urlencoded'},
             responseType: "blob"
         };
-        axios.post(baseUrl, query, options).then(response => {
+        RequestUtils.post(baseUrl, query, options).then(response => {
             const reader = new FileReader();
             reader.readAsDataURL(response.data);
             reader.onload = () => {

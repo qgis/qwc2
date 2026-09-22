@@ -36,20 +36,6 @@ import './style/App.css';
 import './style/DefaultColorScheme.css';
 
 
-const CSRF_TOKEN = MiscUtils.getCsrfToken();
-
-if (CSRF_TOKEN) {
-    axios.interceptors.request.use((config) => {
-        if (["POST", "PUT", "PATCH", "DELETE"].includes(config.method.toUpperCase())) {
-            config.headers["X-CSRF-TOKEN"] = CSRF_TOKEN;
-        }
-        return config;
-    }, (error) => {
-        return Promise.reject(error);
-    });
-}
-
-
 class AppContainerComponent extends React.Component {
     static propTypes = {
         appConfig: PropTypes.object,

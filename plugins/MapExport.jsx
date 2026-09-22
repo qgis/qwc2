@@ -10,7 +10,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import {TextEncoder, TextDecoder} from "@kayahr/text-encoding";
-import axios from 'axios';
 import dayjs from 'dayjs';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
@@ -30,6 +29,7 @@ import {decodeDxf, detectDxfEncoding, explodeDxf, implodeDxf, mergeDxf, setDwgCo
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import RequestUtils from '../utils/RequestUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/MapExport.css';
@@ -472,7 +472,7 @@ class MapExport extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: "arraybuffer"
         };
-        axios.post(formatConfiguration?.serviceUrl ?? this.props.theme.url, data, config).then(response => {
+        RequestUtils.post(formatConfiguration?.serviceUrl ?? this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
 
@@ -522,7 +522,7 @@ class MapExport extends React.Component {
                 responseType: "arraybuffer"
             };
             return new Promise((resolve, reject) => {
-                axios.post(formatConfiguration?.serviceUrl ?? layer.url, data, config).then(response => {
+                RequestUtils.post(formatConfiguration?.serviceUrl ?? layer.url, data, config).then(response => {
                     resolve(response);
                 }).catch((e) => {
                     /* eslint-disable-next-line */

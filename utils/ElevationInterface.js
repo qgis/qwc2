@@ -6,9 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from "axios";
-
 import ConfigUtils from "./ConfigUtils";
+import RequestUtils from "./RequestUtils";
 
 /**
  * Interface for querying elevations/height profiles
@@ -31,7 +30,7 @@ const ElevationInterface = {
                 reject(null);
                 return;
             }
-            axios.get(serviceUrl + '/getelevation', {params: {pos: pos.join(","), crs}}).then(response => {
+            RequestUtils.get(serviceUrl + '/getelevation', {params: {pos: pos.join(","), crs}}).then(response => {
                 resolve(response.data.elevation ?? { list: response.data.elevation_list });
             }).catch((e) => {
                 reject(String(e));
@@ -57,7 +56,7 @@ const ElevationInterface = {
                 reject(null);
                 return;
             }
-            axios.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection: crs, samples}).then(response => {
+            RequestUtils.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection: crs, samples}).then(response => {
                 resolve(response.data.elevations || { list: response.data.elevations_list });
             }).catch((e) => {
                 const error = e.response?.data?.error ? e.response.data.error : e;
