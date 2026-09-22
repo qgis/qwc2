@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import dayjs from 'dayjs';
 import FileSaver from 'file-saver';
 import formDataEntries from 'formdata-json';
@@ -35,6 +34,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
+import RequestUtils from '../utils/RequestUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Print.css';
@@ -818,7 +818,7 @@ class Print extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: 'arraybuffer'
         };
-        const response = await axios.post(this.props.theme.printUrl, data, config);
+        const response = await RequestUtils.post(this.props.theme.printUrl, data, config);
         const contentType = response.headers['content-type'];
         return {
             name: formData.name,

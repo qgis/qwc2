@@ -26,7 +26,6 @@ import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import MiscUtils from '../utils/MiscUtils';
 import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
 import PluginStore from '../utils/PluginStore';
 import ThemeUtils from '../utils/ThemeUtils';
@@ -34,20 +33,6 @@ import PluginsContainer from './PluginsContainer';
 
 import './style/App.css';
 import './style/DefaultColorScheme.css';
-
-
-const CSRF_TOKEN = MiscUtils.getCsrfToken();
-
-if (CSRF_TOKEN) {
-    axios.interceptors.request.use((config) => {
-        if (["POST", "PUT", "PATCH", "DELETE"].includes(config.method.toUpperCase())) {
-            config.headers["X-CSRF-TOKEN"] = CSRF_TOKEN;
-        }
-        return config;
-    }, (error) => {
-        return Promise.reject(error);
-    });
-}
 
 
 class AppContainerComponent extends React.Component {
