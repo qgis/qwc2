@@ -92,6 +92,33 @@ const CoordinatesUtils = {
         const ne = CoordinatesUtils.reproject([bbox[2], bbox[3]], source, dest);
         return [...sw, ...ne];
     },
+    /**
+     * Reprojects a bounding box, sampling along its edges rather than just the corners.
+     *
+     * @param bbox {array} [minx, miny, maxx, maxy]
+     * @param source {string} SRS of the given bbox
+     * @param dest {string} SRS of the returned bbox
+     * @param stops {number} number of sampling points per edge
+     *
+     * @return {array} [minx, miny, maxx, maxy], or null if the transform failed
+     */
+    reprojectBboxDensified(bbox, source, dest, stops = 8) {
+        if (source === dest) {
+            return [...bbox];
+        }
+        try {
+            const result = ol.proj.transformExtent(bbox, source, dest, stops);
+            if (!result || !result.every(value => Number.isFinite(value))) {
+                return null;
+            }
+            if (result[2] - result[0] <= 0 || result[3] - result[1] <= 0) {
+                return null;
+            }
+            return result;
+        } catch {
+            return null;
+        }
+    },
     calculateAzimuth(p1, p2, pj) {
         const p1proj = CoordinatesUtils.reproject(p1, pj, 'EPSG:4326');
         const p2proj = CoordinatesUtils.reproject(p2, pj, 'EPSG:4326');
