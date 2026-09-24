@@ -7,13 +7,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import ol from 'openlayers';
 import url from 'url';
 
 import ConfigUtils from '../../../utils/ConfigUtils';
 import CoordinatesUtils from '../../../utils/CoordinatesUtils';
 import MiscUtils from '../../../utils/MiscUtils';
+import RequestUtils from '../../../utils/RequestUtils';
 
 
 export function wmsImageLoadFunction(image, src) {
@@ -28,7 +28,7 @@ export function wmsImageLoadFunction(image, src) {
             headers: {'content-type': 'application/x-www-form-urlencoded'},
             responseType: "blob"
         };
-        axios.post(urlParts[0], urlParts[1], options).then(response => {
+        RequestUtils.post(urlParts[0], urlParts[1], options).then(response => {
             const reader = new FileReader();
             reader.readAsDataURL(response.data);
             reader.onload = () => {

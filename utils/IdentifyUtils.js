@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import geojsonBbox from 'geojson-bounding-box';
 import isEmpty from 'lodash.isempty';
 import ol from 'openlayers';
@@ -19,6 +18,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import DataServiceExprUtils from '../utils/DataServiceExprUtils';
 import LayerUtils from '../utils/LayerUtils';
 import MapUtils from '../utils/MapUtils';
+import RequestUtils from './RequestUtils';
 import VectorLayerUtils from './VectorLayerUtils';
 
 
@@ -221,17 +221,17 @@ const IdentifyUtils = {
             const options = {
                 headers: {'content-type': 'application/x-www-form-urlencoded'}
             };
-            axios.post(reqUrlParts[0], reqUrlParts[1], options).then(postResp => {
+            RequestUtils.post(reqUrlParts[0], reqUrlParts[1], options).then(postResp => {
                 responseHandler(postResp.data);
             }).catch(() => {
-                axios.get(request.url, {params: request.params}).then(getResp => {
+                RequestUtils.get(request.url, {params: request.params}).then(getResp => {
                     responseHandler(getResp.data);
                 }).catch(() => {
                     responseHandler(null);
                 });
             });
         } else {
-            axios.get(request.url, {params: request.params}).then(getResp => {
+            RequestUtils.get(request.url, {params: request.params}).then(getResp => {
                 responseHandler(getResp.data);
             }).catch(() => {
                 responseHandler(null);

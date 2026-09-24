@@ -10,13 +10,13 @@
  * NOTE: This sample editing interface is designed to work with the counterpart at
  *       https://github.com/qwc-services/qwc-data-service
  */
-import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 
 import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import {computeExpressionFields} from './EditingUtils';
 import LocaleUtils from './LocaleUtils';
+import RequestUtils from './RequestUtils';
 
 
 const EditingInterface = {
@@ -92,7 +92,7 @@ const EditingInterface = {
         const headers = {
             "Accept-Language": LocaleUtils.lang()
         };
-        axios.get(requestUrl, {headers, params}).then(response => {
+        RequestUtils.get(requestUrl, {headers, params}).then(response => {
             if (!isEmpty(response?.data?.features)) {
                 const version = +new Date();
                 const promises = response.data.features.map(feature => {
@@ -127,7 +127,7 @@ const EditingInterface = {
         const headers = {
             "Accept-Language": LocaleUtils.lang()
         };
-        axios.get(requestUrl, {headers, params}).then(response => {
+        RequestUtils.get(requestUrl, {headers, params}).then(response => {
             computeExpressionFields(editConfig, response.data, EditingInterface, mapCrs, newfeature => callback({
                 ...newfeature, __version__: +new Date()
             }));
@@ -165,7 +165,7 @@ const EditingInterface = {
         const headers = {
             "Accept-Language": LocaleUtils.lang()
         };
-        axios.get(requestUrl, {headers, params}).then(response => {
+        RequestUtils.get(requestUrl, {headers, params}).then(response => {
             if (Array.isArray(response?.data?.features)) {
                 const version = +new Date();
                 const promises = response.data.features.map(feature => {
@@ -200,7 +200,7 @@ const EditingInterface = {
         const headers = {
             "Accept-Language": LocaleUtils.lang()
         };
-        axios.get(requestUrl, {headers, params}).then(response => {
+        RequestUtils.get(requestUrl, {headers, params}).then(response => {
             callback(response.data);
         }).catch(() => {
             callback(null);
@@ -224,7 +224,7 @@ const EditingInterface = {
             "Content-Type": "multipart/form-data",
             "Accept-Language": LocaleUtils.lang()
         };
-        axios.post(requestUrl, featureData, {headers}).then(response => {
+        RequestUtils.post(requestUrl, featureData, {headers}).then(response => {
             computeExpressionFields(editConfig, response.data, EditingInterface, mapCrs, newfeature => callback(
                 true, {...newfeature, __version__: +new Date()}
             ));
@@ -251,7 +251,7 @@ const EditingInterface = {
             "Content-Type": "multipart/form-data",
             "Accept-Language": LocaleUtils.lang()
         };
-        axios.put(requestUrl, featureData, {headers}).then(response => {
+        RequestUtils.put(requestUrl, featureData, {headers}).then(response => {
             computeExpressionFields(editConfig, response.data, EditingInterface, mapCrs, newfeature => callback(
                 true, {...newfeature, __version__: +new Date()}
             ));
@@ -283,7 +283,7 @@ const EditingInterface = {
             data['g-recaptcha-response'] = recaptchaResponse;
         }
 
-        axios.delete(req, {headers, data}).then(() => {
+        RequestUtils.delete(req, {headers, data}).then(() => {
             callback(true, featureId);
         }).catch(err => {
             callback(false, EditingInterface.buildErrMsg(err));
@@ -306,7 +306,7 @@ const EditingInterface = {
         const headers = {
             "Accept-Language": LocaleUtils.lang()
         };
-        axios.get(req, {headers, params}).then(response => {
+        RequestUtils.get(req, {headers, params}).then(response => {
             Promise.all(Object.entries(response.data).map(([reldataset, relvalues]) => {
                 return new Promise((resolveTable) => {
                     Promise.all(relvalues.features.map(feature => {
@@ -334,7 +334,7 @@ const EditingInterface = {
         const headers = {
             "Accept-Language": LocaleUtils.lang()
         };
-        axios.get(req, {headers, params}).then(response => {
+        RequestUtils.get(req, {headers, params}).then(response => {
             callback(response.data);
         }).catch(() => callback({}));
     },

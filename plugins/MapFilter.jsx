@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
@@ -34,6 +33,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook} from '../utils/PermaLinkUtils';
+import RequestUtils from '../utils/RequestUtils';
 
 import './style/MapFilter.css';
 
@@ -252,7 +252,7 @@ class MapFilter extends React.Component {
                 headers: {'content-type': 'application/x-www-form-urlencoded'},
                 responseType: "blob"
             };
-            axios.post(themeLayer.url, new URLSearchParams(reqParams).toString(), options).then(() => {
+            RequestUtils.post(themeLayer.url, new URLSearchParams(reqParams).toString(), options).then(() => {
                 this.setState({filterInvalid: false});
             }).catch(() => {
                 this.setState({filterInvalid: true});
