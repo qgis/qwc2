@@ -228,9 +228,9 @@ def getLayerTree(layer, resultLayers, visibleLayers, printLayers, level, collaps
         
         styles = {}
         for style in layer.getElementsByTagName("Style"):
-            name = getChildElementValue(style, "Name")
-            title = getChildElementValue(style, "Title")
-            styles[name] = title
+            style_name = getChildElementValue(style, "Name")
+            style_title = getChildElementValue(style, "Title")
+            styles[style_name] = style_title
         layerEntry["styles"] = styles
         layerEntry['style'] = 'default' if 'default' in styles else (list(styles)[0] if len(styles) > 0 else '')
 
