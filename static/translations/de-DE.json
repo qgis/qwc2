@@ -606,6 +606,7 @@
       "layertitle": "Zeichnung",
       "markers": "Spitzen",
       "numericinput": "Numerische Eingabe",
+      "segmentdistance": "Distanz",
       "size": "Größe",
       "transform": "Transformieren"
     },

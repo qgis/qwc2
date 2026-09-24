@@ -284,6 +284,25 @@ const MeasureUtils = {
             const conv = units === 'feet' ? 0.3048 : 1;
             return geometry.getArea() * conv * conv;
         }
+    },
+    computeOffsetCoordinate(base, target, distance, featureCrs, geodesic) {
+        const dx = target[0] - base[0];
+        const dy = target[1] - base[1];
+        const length = Math.sqrt(dx * dx + dy * dy);
+        if (length === 0) {
+            return null;
+        }
+        if (geodesic || CoordinatesUtils.getUnits(featureCrs) === 'degrees') {
+            const azimuth = CoordinatesUtils.calculateAzimuth(base, target, featureCrs) * Math.PI / 180;
+            const wgsCoo = ol.sphere.offset(CoordinatesUtils.reproject(base, featureCrs, "EPSG:4326"), distance, azimuth);
+            return CoordinatesUtils.reproject(wgsCoo, "EPSG:4326", featureCrs);
+        }
+        const metersPerUnit = ol.proj.get(featureCrs).getMetersPerUnit();
+        if (!metersPerUnit) {
+            return null;
+        }
+        const scale = distance / metersPerUnit / length;
+        return [base[0] + dx * scale, base[1] + dy * scale];
     }
 };
 

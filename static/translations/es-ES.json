@@ -606,6 +606,7 @@
       "layertitle": "Línea de demarcación",
       "markers": "Marcadores",
       "numericinput": "Entrada numérica",
+      "segmentdistance": "",
       "size": "Tamaño",
       "transform": "Transformar"
     },
