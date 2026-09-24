@@ -293,6 +293,13 @@ export default class StandardApp extends React.Component {
             config.plugins.mobile = completePluginConfig(deepmerge(commonConfig, mobileConfig));
             delete config.plugins.common;
 
+            // Redirect to login before rendering, so the viewer never flashes
+            const authConfig = ConfigUtils.getPluginConfig("Authentication").cfg;
+            if (authConfig?.requireLogin && !ConfigUtils.getConfigProp("username")) {
+                window.location.href = MiscUtils.loginUrl(authConfig.clearLayerParam);
+                return;
+            }
+
             // Add projections from config
             for (const proj of config.projections || []) {
                 if (Proj4js.defs(proj.code) === undefined) {
