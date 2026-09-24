@@ -29,7 +29,7 @@ import {VisibilityPresetsInterface} from '../utils/PermaLinkUtils';
  * (see `qwc-permalink-service` documentation for details).
  **/
 
-class VisibilityPreset extends React.Component {
+class VisibilityPresets extends React.Component {
     static availableIn3D = true;
     static propTypes = {
         /** Whether to directly open the bookmark on click / middle click, instead of showing dedicated open buttons. */
@@ -116,4 +116,4 @@ const selector = state => ({
 export default connect(selector, {
     setVisibilityPresets: setVisibilityPresets,
     setThemeLayersVisibilityPreset: setThemeLayersVisibilityPreset
-})(VisibilityPreset);
+})(VisibilityPresets);

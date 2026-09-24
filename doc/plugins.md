@@ -55,7 +55,7 @@ Plugin reference
 * [TourGuide](#tourguide)
 * [ValueTool](#valuetool)
 * [View3D](#view3d)
-* [VisibilityPreset](#visibilitypreset)
+* [VisibilityPresets](#visibilitypresets)
 * [ZoomButton](#zoombutton)
 
 [Map support plugins](#mapSupportPlugins)
@@ -1369,7 +1369,7 @@ See [3D View](../../topics/View3D).
 | mouseButtons | `{`<br />`  left: string,`<br />`  middle: string,`<br />`  right: string,`<br />`}` | Mouse buttons assignment. You can assign `pan`, `rotate`, `zoom` to each button.<br />- `left`: undefined<br />- `middle`: undefined<br />- `right`: undefined | `{`<br />`    left: 'pan',`<br />`    middle: 'zoom',`<br />`    right: 'rotate'`<br />`}` |
 | pluginOptions | `object` | Options to pass to the 3D plugins, in the form `{"<PluginName>": {<options>}}`.<br />Refer to the documentation of the <a href="#plugins3d">3D plugins</a> for settable options. | `{}` |
 
-## VisibilityPreset<a name="visibilitypreset"></a>
+## VisibilityPresets<a name="visibilitypresets"></a>
 
 Allows managing custom user visibility presets, which are storing the currently selected layers without location or
 zoom level.
