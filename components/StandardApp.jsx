@@ -224,6 +224,9 @@ export default class StandardApp extends React.Component {
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.computeVh);
+        UrlParams.cancelPendingUpdates();
+        PluginStore.reset();
+        ConfigUtils.reset();
     }
     computeVh = () => {
         // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/

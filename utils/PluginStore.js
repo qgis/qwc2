@@ -16,6 +16,10 @@ export default {
     removeCustomPlugin(name) {
         delete CustomPlugins[name];
     },
+    reset() {
+        Object.keys(BuiltInPlugins).forEach(name => delete BuiltInPlugins[name]);
+        Object.keys(CustomPlugins).forEach(name => delete CustomPlugins[name]);
+    },
     getPlugins() {
         return {
             ...BuiltInPlugins,

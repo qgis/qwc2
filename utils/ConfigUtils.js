@@ -11,7 +11,7 @@ import axios from 'axios';
 import isMobile from 'ismobilejs';
 import url from 'url';
 
-let config = {
+const defaultConfig = () => ({
     assetsPath: "assets",
     translationsPath: "translations",
     defaultFeatureStyle: {
@@ -23,7 +23,9 @@ let config = {
         textFill: 'black',
         textStroke: 'white'
     }
-};
+});
+
+let config = defaultConfig();
 
 const sessionConfig = {
 
@@ -32,6 +34,14 @@ const sessionConfig = {
 export default {
     getDefaults() {
         return config;
+    },
+    /**
+     * Resets the configuration to its defaults, so that a subsequent loadConfiguration
+     * does not merge onto the configuration of a previous application instance.
+     */
+    reset() {
+        config = defaultConfig();
+        Object.keys(sessionConfig).forEach(key => delete sessionConfig[key]);
     },
     loadConfiguration(configParams = {}, configPath = null) {
         const configFile = configPath || ((url.parse(window.location.href, true).query.localConfig || 'config') + '.json');

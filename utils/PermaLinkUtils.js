@@ -90,6 +90,15 @@ export const UrlParams = {
             return query;
         }
     },
+    /**
+     * Cancels a pending location update, so that it does not fire after the application
+     * has been torn down.
+     */
+    cancelPendingUpdates() {
+        clearTimeout(historyUpdateTimeout);
+        historyUpdateTimeout = null;
+        pendingParams = {};
+    },
     clear() {
         const clearKeys = ['k', 't', 'l', 'bl', 'bk', 'c', 'hc', 'ic', 'if', 's', 'e', 'crs', 'st', 'sp', 'f', 'v', 'vp', 'v3d', 'bl3d', 'task'];
         this.updateParams(clearKeys.reduce((res, key) => ({...res, [key]: undefined}), {}), true);
