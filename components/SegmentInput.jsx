@@ -39,7 +39,7 @@ export default class SegmentInput extends React.Component {
         return ReactDOM.createPortal((
             <div className="segment-input">
                 <span className="segment-input-label">{label}</span>
-                <div className="segment-input-controls">
+                <div className="controlgroup">
                     <button className={"button" + (this.state.enabled ? " pressed" : "")} onClick={this.toggle} title={label}>
                         <Icon icon="measure_line" />
                     </button>
