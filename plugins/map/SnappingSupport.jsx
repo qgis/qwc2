@@ -118,6 +118,9 @@ class SnappingSupport extends React.Component {
         const snapPerpendicular = this.snapModeActive(this.props.mapObj.snapping, 'perpendicular');
         return ReactDOM.createPortal((
             <div className={className}>
+                <span className="snapping-toolbar-label">
+                    {this.state.reqId ? LocaleUtils.tr("snapping.loading") : LocaleUtils.tr("snapping.snappingenabled")}
+                </span>
                 {this.state.reqId !== null ? (
                     <Spinner/>
                 ) : (
@@ -136,8 +139,6 @@ class SnappingSupport extends React.Component {
                         </button>
                     </span>
                 )}
-                &nbsp;
-                {this.state.reqId ? LocaleUtils.tr("snapping.loading") : LocaleUtils.tr("snapping.snappingenabled")}
             </div>
         ), this.context);
     }

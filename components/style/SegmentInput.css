@@ -1,0 +1,11 @@
+div.segment-input {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+span.segment-input-label {
+    font-size: 85%;
+    white-space: nowrap;
+}
