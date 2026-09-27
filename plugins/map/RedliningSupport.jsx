@@ -22,17 +22,19 @@ import FeatureAttributesWindow from '../../components/FeatureAttributesWindow';
 import LocationRecorder from '../../components/LocationRecorder';
 import {OlLayerAdded, OlLayerUpdated} from '../../components/map/OlLayer';
 import NumericInputWindow from '../../components/NumericInputWindow';
+import SegmentInput from '../../components/SegmentInput';
 import FeatureStyles, {computeFeatureStyle} from '../../utils/FeatureStyles';
 import MapUtils from '../../utils/MapUtils';
 import MeasureUtils from '../../utils/MeasureUtils';
 import VectorLayerUtils from '../../utils/VectorLayerUtils';
+import ConstraintInteraction from './ConstraintInteraction';
 import DrawInteraction from './DrawInteraction';
 
 const GeomTypeConfig = {
     Text: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true},
     Point: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Point"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true},
-    LineString: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "LineString"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true},
-    Polygon: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Polygon"}), editTool: 'Pick', drawNodes: true},
+    LineString: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "LineString"}), editTool: 'Pick', drawNodes: true, showRecordLocation: true, constrainSegments: true},
+    Polygon: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Polygon"}), editTool: 'Pick', drawNodes: true, constrainSegments: true},
     Circle: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Circle"}), editTool: 'Pick', drawNodes: true, regular: true},
     Ellipse: {drawInteraction: (opts) => new ol.interaction.DrawRegular({...opts, sides: 0}), editTool: 'Transform', drawNodes: false},
     Box: {drawInteraction: (opts) => new DrawInteraction({...opts, type: "Circle", geometryFunction: ol.interaction.createBox()}), editTool: 'Transform', drawNodes: true},
@@ -58,7 +60,8 @@ class RedliningSupport extends React.Component {
         redlining: {}
     };
     state = {
-        showRecordLocation: false
+        showRecordLocation: false,
+        showSegmentInput: false
     };
     constructor(props) {
         super(props);
@@ -186,6 +189,13 @@ class RedliningSupport extends React.Component {
             widgets.push(
                 <LocationRecorder
                     drawInteraction={drawInteraction} geomType={this.props.redlining.geomType} key="LocationRecorder" map={this.props.map} />
+            );
+        }
+        // Clone clears the interactions without reset(), so check the constraint still exists
+        const constraintInteraction = this.state.showSegmentInput && this.interactions.find(interaction => (interaction instanceof ConstraintInteraction));
+        if (constraintInteraction) {
+            widgets.push(
+                <SegmentInput constraintInteraction={constraintInteraction} key="SegmentInput" lenUnit={this.props.redlining.lenUnit} />
             );
         }
         return widgets;
@@ -369,7 +379,13 @@ class RedliningSupport extends React.Component {
         }, this);
         this.props.map.addInteraction(drawInteraction);
         this.interactions.push(drawInteraction);
-        this.setState({showRecordLocation: geomTypeConfig.showRecordLocation});
+        const constrainSegments = geomTypeConfig.constrainSegments && !isFreeHand;
+        if (constrainSegments) {
+            const constraintInteraction = new ConstraintInteraction({drawInteraction: drawInteraction});
+            this.props.map.addInteraction(constraintInteraction);
+            this.interactions.push(constraintInteraction);
+        }
+        this.setState({showRecordLocation: geomTypeConfig.showRecordLocation, showSegmentInput: constrainSegments});
     };
     enterTemporaryEditMode = (featureId, layerId, editTool) => {
         this.waitForFeatureAndLayer(layerId, featureId, (redliningLayer, feature) => {
@@ -690,7 +706,7 @@ class RedliningSupport extends React.Component {
         return featureObjects;
     };
     reset = (redliningProps) => {
-        this.setState({showRecordLocation: false});
+        this.setState({showRecordLocation: false, showSegmentInput: false});
         while (this.interactions.length > 0) {
             this.props.map.removeInteraction(this.interactions.shift());
         }

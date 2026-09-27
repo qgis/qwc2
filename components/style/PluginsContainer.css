@@ -39,6 +39,7 @@ div.map-bottom-tool-container > div {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: flex-end;
     margin-bottom: -1px;
     pointer-events: initial;
     padding: 0.25em 0.5em;

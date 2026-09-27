@@ -530,6 +530,7 @@
     "redlining.layertitle",
     "redlining.markers",
     "redlining.numericinput",
+    "redlining.segmentdistance",
     "redlining.size",
     "redlining.transform",
     "reports.region",

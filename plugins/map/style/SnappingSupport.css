@@ -1,6 +1,12 @@
 div.snapping-toolbar {
     display: flex;
+    flex-direction: column;
     align-items: center;
+}
+
+span.snapping-toolbar-label {
+    font-size: 85%;
+    white-space: nowrap;
 }
 
 div.snapping-toolbar-container div.spinner {
