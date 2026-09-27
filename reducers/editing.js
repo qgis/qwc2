@@ -29,7 +29,7 @@ const checkNonZeroZ = (oldState, newState, fallback) => {
 
 const checkGeomReadOnly = (editConfig) => {
     const simpleGeomType = (editConfig?.geomType ?? "").replace(/^Multi/, '').replace(/Z$/, '');
-    return editConfig?.geomType && !['Point', 'LineString', 'Polygon'].includes(simpleGeomType);
+    return editConfig?.permissions?.geomreadonly || editConfig?.geomType && !['Point', 'LineString', 'Polygon'].includes(simpleGeomType);
 };
 
 export default function editing(state = defaultState, action) {

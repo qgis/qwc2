@@ -675,7 +675,7 @@ class QtDesignerForm extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                {!this.props.readOnly && editPermissions.creatable !== false ? (
+                {!this.props.readOnly && editPermissions.creatable !== false && editPermissions.geomreadonly !== true ? (
                     <ButtonBar buttons={addButtons} onClick={this.addRelationRecordAction} />
                 ) : null}
                 <div className="qt-designer-widget-relation-resize-handle" onPointerDown={this.startRelationTableResize} />
