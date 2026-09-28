@@ -1366,6 +1366,7 @@ See [3D View](../../topics/View3D).
 | defaultFov | `number` | The default field of view (`20`: min, `100`: max). | `30` |
 | defaultPointSize | `number` | The default point size for point cloud tiles (`0`: min, `20`: max). Automatic size computation when the value is `0`. | `0` |
 | defaultSceneQuality | `number` | The default scene quality factor (`20`: min, `100`: max). | `100` |
+| defaultSync2dLayers | `bool` | Whether to enable synchronization of 2D layer states (visibility, opacity) to the 3D view by default. | `undefined` |
 | forceAllowInspector | `bool` | Whether to allow opening the inspector in production environment. | `false` |
 | geometry | `{`<br />`  initialWidth: number,`<br />`  initialHeight: number,`<br />`  initialX: number,`<br />`  initialY: number,`<br />`  initiallyDocked: bool,`<br />`}` | Default window geometry.<br />- `initialWidth`: undefined<br />- `initialHeight`: undefined<br />- `initialX`: undefined<br />- `initialY`: undefined<br />- `initiallyDocked`: undefined | `{`<br />`    initialWidth: 600,`<br />`    initialHeight: 800,`<br />`    initialX: 0,`<br />`    initialY: 0,`<br />`    initiallyDocked: true`<br />`}` |
 | mouseButtons | `{`<br />`  left: string,`<br />`  middle: string,`<br />`  right: string,`<br />`}` | Mouse buttons assignment. You can assign `pan`, `rotate`, `zoom` to each button.<br />- `left`: undefined<br />- `middle`: undefined<br />- `right`: undefined | `{`<br />`    left: 'pan',`<br />`    middle: 'zoom',`<br />`    right: 'rotate'`<br />`}` |

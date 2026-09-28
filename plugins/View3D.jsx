@@ -53,6 +53,8 @@ class View3D extends React.Component {
         defaultPointSize: PropTypes.number,
         /** The default scene quality factor (`20`: min, `100`: max). */
         defaultSceneQuality: PropTypes.number,
+        /** Whether to enable synchronization of 2D layer states (visibility, opacity) to the 3D view by default. */
+        defaultSync2dLayers: PropTypes.bool,
         display: PropTypes.object,
         /** Whether to allow opening the inspector in production environment. */
         forceAllowInspector: PropTypes.bool,
@@ -334,6 +336,7 @@ class View3D extends React.Component {
                                     defaultFov={this.props.defaultFov}
                                     defaultPointSize={this.props.defaultPointSize}
                                     defaultSceneQuality={this.props.defaultSceneQuality}
+                                    defaultSync2dLayers={this.props.defaultSync2dLayers}
                                     forceAllowInspector={this.props.forceAllowInspector}
                                     innerRef={this.setRef}
                                     mouseButtons={this.props.mouseButtons}

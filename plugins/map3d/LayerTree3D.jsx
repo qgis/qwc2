@@ -53,8 +53,17 @@ class LayerTree3D extends React.Component {
         importvisible: false
     };
     render() {
+        const iconclasses = classNames({
+            "layertree3d-titlebar-icon": true,
+            "layertree3d-titlebar-icon-active": this.props.sceneContext.settings.sync2dlayers
+        });
+        const extraTitlebarContent = (
+            <Icon className={iconclasses} icon="sync2d" onClick={this.toggleSync2d} />
+        );
         return (
-            <SideBar icon="layers" id="LayerTree3D"
+            <SideBar
+                extraTitlebarContent={extraTitlebarContent}
+                icon="layers" id="LayerTree3D"
                 side={this.props.side}
                 title={LocaleUtils.tr("appmenu.items.LayerTree3D")}
                 width={this.state.sidebarwidth || this.props.width}
@@ -250,6 +259,9 @@ class LayerTree3D extends React.Component {
     };
     updateColorLayer = (objectId, options, flags = {}) => {
         this.props.sceneContext.updateColorLayer(objectId, options, {groupTogglesSublayers: this.props.groupTogglesSublayers, ...flags});
+    };
+    toggleSync2d = () => {
+        this.props.sceneContext.setSetting("sync2dlayers", !this.props.sceneContext.settings.sync2dlayers);
     };
 }
 

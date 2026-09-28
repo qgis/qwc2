@@ -95,6 +95,7 @@ class Map3D extends React.Component {
         defaultFov: PropTypes.number,
         defaultPointSize: PropTypes.number,
         defaultSceneQuality: PropTypes.number,
+        defaultSync2dLayers: PropTypes.bool,
         forceAllowInspector: PropTypes.bool,
         innerRef: PropTypes.func,
         layers: PropTypes.array,
@@ -209,6 +210,7 @@ class Map3D extends React.Component {
         this.state.sceneContext.settings.fov = props.defaultFov;
         this.state.sceneContext.settings.pointSize = props.defaultPointSize;
         this.state.sceneContext.settings.sceneQuality = props.defaultSceneQuality;
+        this.state.sceneContext.settings.sync2dlayers = props.defaultSync2dLayers;
 
         registerPermalinkDataStoreHook("map3d", this.store3dState);
     }
@@ -230,11 +232,18 @@ class Map3D extends React.Component {
                     }
                 }));
             }
-        } else if (this.props.layers !== prevProps.layers && this.instance) {
+        }
+        if (!this.instance) {
+            return;
+        }
+
+        // Update 2D color layers
+        const sync2denabled = this.state.sceneContext.settings.sync2dlayers && !prevState.sceneContext.settings.sync2dlayers;
+        if (this.props.layers !== prevProps.layers || sync2denabled) {
             this.setState((state) => ({
                 sceneContext: {
                     ...state.sceneContext,
-                    colorLayers: this.collectColorLayers(state.sceneContext.colorLayers, prevProps.layers)
+                    colorLayers: this.collectColorLayers(state.sceneContext.colorLayers, prevProps.layers, sync2denabled)
                 }
             }));
         }
@@ -309,7 +318,7 @@ class Map3D extends React.Component {
             }
         }));
     };
-    collectColorLayers = (prevColorLayers, prevLayers) => {
+    collectColorLayers = (prevColorLayers, prevLayers, force = false) => {
         const prevLayerMap = prevLayers.reduce((res, layer) => ({...res, [layer.id]: layer}), {});
         const showRootEntry = ConfigUtils.getPluginConfig("LayerTree")?.cfg?.showRootEntry !== false;
         return this.props.layers.reduce((colorLayers, layer) => {
@@ -317,7 +326,7 @@ class Map3D extends React.Component {
                 return colorLayers;
             }
             const prevOptions = prevColorLayers[layer.id];
-            if (prevOptions && layer === prevLayerMap[layer.id]) {
+            if (prevOptions && layer === prevLayerMap[layer.id] && !force) {
                 colorLayers[layer.id] = prevOptions;
                 return colorLayers;
             }
@@ -328,17 +337,21 @@ class Map3D extends React.Component {
             const preserveSublayerOptions = (entry, prevEntry) => {
                 return entry.sublayers?.map?.(child => {
                     const prevChild = prevEntry?.sublayers?.find?.(x => x.name === child.name);
-                    if (prevChild?.name === child.name) {
-                        return {
-                            ...child,
-                            visibility: prevChild.visibility,
-                            opacity: prevChild.opacity,
-                            sublayers: preserveSublayerOptions(child, prevChild, false)
-                        };
+                    if (prevChild) {
+                        if (this.state.sceneContext.settings.sync2dlayers) {
+                            return {...child};
+                        } else {
+                            return {
+                                ...child,
+                                visibility: prevChild.visibility,
+                                opacity: prevChild.opacity,
+                                sublayers: preserveSublayerOptions(child, prevChild, false)
+                            };
+                        }
                     } else {
                         return {
                             ...child,
-                            visibility: entry?.role === LayerRole.THEME && !showRootEntry ? this.props.defaultColorLayerVisibility : child.visibility
+                            visibility: entry?.role === LayerRole.THEME && !showRootEntry && !this.state.sceneContext.settings.sync2dlayers ? this.props.defaultColorLayerVisibility : child.visibility
                         };
                     }
                 });
