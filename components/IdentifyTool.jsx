@@ -622,7 +622,7 @@ class IdentifyTool extends React.Component {
             <div>
                 <div className="identify-toolbar">
                     <ButtonBar active={this.state.mode} buttons={buttons} onClick={this.switchMode} />
-                    <MenuButton menuIcon="export" tooltip={LocaleUtils.tr("common.export")}>
+                    <MenuButton menuIcon="export" tooltip={LocaleUtils.tr("identify.exportselection")}>
                         <div onClick={this.import} value="geojson">{LocaleUtils.tr("common.import")}</div>
                         <div onClick={this.export} value="export">{LocaleUtils.tr("common.export")}</div>
                     </MenuButton>

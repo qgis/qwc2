@@ -517,9 +517,9 @@ class IdentifyViewer extends React.Component {
                     });
                     const haveSel = !isEmpty(this.state.tableSelection[layerid]);
                     const buttons = [
-                        {key: "Zoom", icon: "zoom"},
-                        {key: "Export", icon: "export"},
-                        {key: "Delete", icon: haveSel ? "trash_checked" : "trash"}
+                        {key: "Zoom", icon: "zoom", tooltip: LocaleUtils.tr("identify.zoom")},
+                        {key: "Export", icon: "export", tooltip: LocaleUtils.tr("identify.exportobjects")},
+                        {key: "Delete", icon: haveSel ? "trash_checked" : "trash", tooltip: LocaleUtils.tr("identify.removeresults")}
                     ];
                     return (
                         <div className="identify-results-table-container" key={layerid}>
