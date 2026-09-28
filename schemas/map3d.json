@@ -1,0 +1,298 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/qgis/qwc2/raw/master/schemas/map3d.json",
+    "title": "Theme 3D view",
+    "description": "3D view configuration of a theme. When present, a map button switching to the 3D view is displayed.",
+    "definitions": {
+        "entry": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Unique name, also used for the 3D object permissions."
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Title, defaults to the name."
+                },
+                "visibility": {
+                    "type": "boolean",
+                    "description": "Initial visibility.",
+                    "default": true
+                }
+            }
+        },
+        "position": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "Position as [x, y, z]."
+        },
+        "tilesetEntry": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/entry"
+                }
+            ],
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "description": "URL of the tileset.json."
+                },
+                "snap": {
+                    "type": "boolean",
+                    "description": "Include the tileset in the snappable scene objects when drawing.",
+                    "default": true
+                },
+                "baseColor": {
+                    "type": "string",
+                    "description": "Fallback color of the tile objects, as CSS color, white if another style attribute is set."
+                },
+                "idAttr": {
+                    "type": "string",
+                    "description": "Feature attribute storing the object ID.",
+                    "default": "id"
+                },
+                "styles": {
+                    "type": "object",
+                    "description": "Available tileset styles, tileset style URL keyed by style name. Takes precedence over colorAttr, alphaAttr and labelAttr.",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "style": {
+                    "type": "string",
+                    "description": "Tileset style enabled by default, defaults to the first style."
+                },
+                "colorAttr": {
+                    "type": "string",
+                    "description": "Feature attribute storing the feature color as 0xRRGGBB integer."
+                },
+                "alphaAttr": {
+                    "type": "string",
+                    "description": "Feature attribute storing the feature alpha as integer between 0 and 255."
+                },
+                "labelAttr": {
+                    "type": "string",
+                    "description": "Feature attribute storing the feature label, displayed above the geometry."
+                },
+                "infoAttrBlacklist": {
+                    "type": "array",
+                    "description": "Feature attributes to omit from the identify results.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "url"
+            ]
+        },
+        "gltfEntry": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/entry"
+                }
+            ],
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "description": "URL of the GLTF file."
+                },
+                "snap": {
+                    "type": "boolean",
+                    "description": "Include the object in the snappable scene objects when drawing.",
+                    "default": true
+                }
+            },
+            "required": [
+                "name",
+                "url"
+            ]
+        },
+        "tileset": {
+            "title": "3D tiles",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/tilesetEntry"
+                }
+            ],
+            "properties": {
+                "type": {
+                    "const": "tiles3d",
+                    "description": "Entry type."
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        "gltf": {
+            "title": "GLTF object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/gltfEntry"
+                }
+            ],
+            "properties": {
+                "type": {
+                    "const": "object3d",
+                    "description": "Entry type."
+                }
+            },
+            "required": [
+                "type"
+            ]
+        },
+        "group": {
+            "title": "Group",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/entry"
+                }
+            ],
+            "properties": {
+                "type": {
+                    "const": "group",
+                    "description": "Entry type."
+                },
+                "expanded": {
+                    "type": "boolean",
+                    "description": "Initially expand the group.",
+                    "default": true
+                },
+                "mutuallyExclusive": {
+                    "type": "boolean",
+                    "description": "Allow only one visible child.",
+                    "default": false
+                },
+                "items": {
+                    "type": "array",
+                    "description": "Child entries.",
+                    "items": {
+                        "$ref": "#/definitions/object"
+                    }
+                }
+            },
+            "required": [
+                "type",
+                "items"
+            ]
+        },
+        "object": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/tileset"
+                },
+                {
+                    "$ref": "#/definitions/gltf"
+                },
+                {
+                    "$ref": "#/definitions/group"
+                }
+            ]
+        }
+    },
+    "type": "object",
+    "properties": {
+        "dtm": {
+            "type": "object",
+            "description": "Terrain model.",
+            "properties": {
+                "url": {
+                    "type": "string",
+                    "description": "URL of a cloud optimized GeoTIFF."
+                },
+                "crs": {
+                    "type": "string",
+                    "description": "CRS of the terrain model.",
+                    "default": "EPSG:3857"
+                },
+                "min": {
+                    "type": "number",
+                    "description": "Minimum elevation, used together with max."
+                },
+                "max": {
+                    "type": "number",
+                    "description": "Maximum elevation, used together with min."
+                }
+            }
+        },
+        "basemaps": {
+            "type": "array",
+            "description": "Background layers of the 3D view.",
+            "items": {
+                "$ref": "themeBackgroundLayer.json"
+            }
+        },
+        "extent": {
+            "type": "object",
+            "description": "Extent of the 3D view, defaults to the initial extent of the theme.",
+            "properties": {
+                "bounds": {
+                    "description": "Extent as [xmin, ymin, xmax, ymax].",
+                    "allOf": [
+                        {
+                            "$ref": "theme.json#/definitions/bbox"
+                        }
+                    ]
+                },
+                "crs": {
+                    "type": "string",
+                    "description": "CRS of the bounds."
+                }
+            }
+        },
+        "initialView": {
+            "type": "object",
+            "description": "Initial view of the 3D view. If not set, the 3D view follows the 2D view.",
+            "properties": {
+                "camera": {
+                    "description": "Camera position as [x, y, z].",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/position"
+                        }
+                    ]
+                },
+                "target": {
+                    "description": "Camera target as [x, y, z].",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/position"
+                        }
+                    ]
+                },
+                "personHeight": {
+                    "type": "number",
+                    "description": "Person height, activates the first person view when greater than 0."
+                }
+            }
+        },
+        "objects": {
+            "type": "array",
+            "description": "Scene objects: 3D tiles, GLTF objects and groups.",
+            "items": {
+                "$ref": "#/definitions/object"
+            }
+        },
+        "tiles3d": {
+            "type": "array",
+            "description": "Deprecated, use objects entries of type tiles3d.",
+            "items": {
+                "$ref": "#/definitions/tilesetEntry"
+            }
+        },
+        "objects3d": {
+            "type": "array",
+            "description": "Deprecated, use objects entries of type object3d.",
+            "items": {
+                "$ref": "#/definitions/gltfEntry"
+            }
+        }
+    }
+}

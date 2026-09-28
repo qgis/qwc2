@@ -1,0 +1,171 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/qgis/qwc2/raw/master/schemas/themesConfig.json",
+    "title": "QWC2 themes configuration",
+    "description": "Configuration of the QWC2 themes (themesConfig.json), processed into themes.json by the qwc2 scripts or the config generator.",
+    "definitions": {
+        "themeGroup": {
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string",
+                    "description": "Group title."
+                },
+                "titleMsgId": {
+                    "type": "string",
+                    "description": "Translation message ID of the group title, alternative to title."
+                },
+                "items": {
+                    "type": "array",
+                    "description": "Themes of the group.",
+                    "items": {
+                        "$ref": "theme.json"
+                    }
+                },
+                "groups": {
+                    "type": "array",
+                    "description": "Nested groups.",
+                    "items": {
+                        "$ref": "#/definitions/themeGroup"
+                    }
+                }
+            }
+        }
+    },
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "title": "JSON Schema",
+            "description": "Reference to the JSON schema of this configuration.",
+            "type": "string",
+            "format": "uri",
+            "default": "https://github.com/qgis/qwc2/raw/master/schemas/themesConfig.json"
+        },
+        "themes": {
+            "type": "object",
+            "description": "Themes, theme groups and the definitions they reference.",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "description": "Themes.",
+                    "items": {
+                        "$ref": "theme.json"
+                    }
+                },
+                "groups": {
+                    "type": "array",
+                    "description": "Theme groups.",
+                    "items": {
+                        "$ref": "#/definitions/themeGroup"
+                    }
+                },
+                "backgroundLayers": {
+                    "type": "array",
+                    "description": "Background layer definitions.",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "externalLayers": {
+                    "type": "array",
+                    "description": "External layer definitions.",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "themeInfoLinks": {
+                    "type": "array",
+                    "description": "Theme info link definitions.",
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "pluginData": {
+                    "type": "object",
+                    "description": "Plugin data resources, keyed by plugin name."
+                }
+            }
+        },
+        "defaultTheme": {
+            "type": "string",
+            "description": "ID of the default theme."
+        },
+        "defaultBackgroundLayers": {
+            "type": "array",
+            "description": "Background layers of the themes that define none.",
+            "items": {
+                "$ref": "themeBackgroundLayer.json"
+            }
+        },
+        "defaultSearchProviders": {
+            "type": "array",
+            "description": "Search providers of the themes that define none.",
+            "items": {
+                "$ref": "searchProvider.json"
+            }
+        },
+        "defaultWMSVersion": {
+            "type": "string",
+            "description": "WMS version of the themes, e.g. 1.3.0."
+        },
+        "defaultMapCrs": {
+            "type": "string",
+            "description": "Map projection of the empty theme and of the themes without mapCrs.",
+            "default": "EPSG:3857"
+        },
+        "defaultMapExtent": {
+            "description": "Extent of the empty theme as [xmin, ymin, xmax, ymax] in defaultMapCrs.",
+            "allOf": [
+                {
+                    "$ref": "theme.json#/definitions/bbox"
+                }
+            ]
+        },
+        "defaultDisplayCrs": {
+            "type": "string",
+            "description": "Default CRS for the coordinates in the bottom bar and in measurements."
+        },
+        "defaultScales": {
+            "type": "array",
+            "description": "Map scale denominators of the themes that define none.",
+            "items": {
+                "type": "number"
+            }
+        },
+        "defaultPrintScales": {
+            "type": "array",
+            "description": "Print scale denominators of the themes that define none.",
+            "items": {
+                "type": "number"
+            }
+        },
+        "defaultPrintResolutions": {
+            "type": "array",
+            "description": "Print resolutions of the themes that define none.",
+            "items": {
+                "type": "number"
+            }
+        },
+        "defaultPrintGrid": {
+            "$ref": "theme.json#/definitions/printGrid"
+        },
+        "defaultMapTips": {
+            "type": [
+                "boolean",
+                "null"
+            ],
+            "description": "Whether map tips are enabled by default."
+        },
+        "defaultLabelProfiles": {
+            "description": "Labelling profiles of the Redlining plugin for all themes. The profiles a theme defines for a layer replace these.",
+            "allOf": [
+                {
+                    "$ref": "theme.json#/definitions/labelProfiles"
+                }
+            ]
+        }
+    },
+    "required": [
+        "themes"
+    ]
+}

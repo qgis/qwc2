@@ -1,0 +1,140 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://github.com/qgis/qwc2/raw/master/schemas/predefinedFilter.json",
+    "title": "Predefined filter",
+    "description": "Predefined filter of the MapFilter plugin, as listed in the predefinedFilters of a theme.",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Filter ID, also used in the f URL parameter."
+        },
+        "title": {
+            "type": "string",
+            "description": "Filter title."
+        },
+        "titlemsgid": {
+            "type": "string",
+            "description": "Translation message ID of the filter title, alternative to title."
+        },
+        "filter": {
+            "type": "object",
+            "description": "Data service filter expression per layer name, where $<field_id>$ placeholders are replaced by the field values, e.g. [\"<name>\", \"<op>\", \"$<field_id>$\"] or [[...], \"and\", [...]].",
+            "additionalProperties": {
+                "type": "array"
+            }
+        },
+        "fields": {
+            "type": "array",
+            "description": "Input fields of the filter.",
+            "items": {
+                "type": "object",
+                "description": "Input field.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Field ID, used as $<id>$ placeholder in the filter expressions."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Field title."
+                    },
+                    "titlemsgid": {
+                        "type": "string",
+                        "description": "Translation message ID of the field title, alternative to title."
+                    },
+                    "defaultValue": {
+                        "description": "Default value.",
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "title": "Text"
+                            },
+                            {
+                                "type": "number",
+                                "title": "Number"
+                            },
+                            {
+                                "type": "boolean",
+                                "title": "Yes/no"
+                            },
+                            {
+                                "type": "null",
+                                "title": "None"
+                            }
+                        ]
+                    },
+                    "inputConfig": {
+                        "type": "object",
+                        "description": "Input configuration: any HTML input element property, e.g. {\"type\": \"number\", \"min\": 0}, with type select for a combo box or datetime for a date and time input.",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "description": "HTML input type, or select, or datetime."
+                            },
+                            "options": {
+                                "type": "array",
+                                "description": "Options of a select input, either values or value/label pairs.",
+                                "items": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string",
+                                            "title": "Text value"
+                                        },
+                                        {
+                                            "type": "number",
+                                            "title": "Number value"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "title": "Value and label",
+                                            "properties": {
+                                                "value": {
+                                                    "description": "Option value.",
+                                                    "oneOf": [
+                                                        {
+                                                            "type": "string",
+                                                            "title": "Text"
+                                                        },
+                                                        {
+                                                            "type": "number",
+                                                            "title": "Number"
+                                                        }
+                                                    ]
+                                                },
+                                                "label": {
+                                                    "type": "string",
+                                                    "description": "Option label."
+                                                },
+                                                "labelmsgid": {
+                                                    "type": "string",
+                                                    "description": "Translation message ID of the option label, alternative to label."
+                                                }
+                                            },
+                                            "required": [
+                                                "value"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "inputConfig"
+                ]
+            }
+        },
+        "defaultValues": {
+            "type": "object",
+            "description": "Values used for the fields left empty, keyed by field ID."
+        }
+    },
+    "required": [
+        "id",
+        "filter",
+        "fields"
+    ]
+}
