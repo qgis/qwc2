@@ -79,6 +79,8 @@ class Identify extends React.Component {
         resultGridSize: PropTypes.number,
         /** Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. */
         resultMultiDisplay: PropTypes.bool,
+        /** Lookup of `{"<layerUrl#layerName>": "<key>"}` of keys (i.e. the feature attribute name) used when serializing selections. If `selectionSerializeKeys` is set, only the layers listed will be exported. */
+        selectionSerializeKeys: PropTypes.object,
         /** Whether to show a layer selector to filter the identify results by layer. */
         showLayerSelector: PropTypes.bool,
         /** Whether to prefix the identify result titles with the respecitve layer name. */
@@ -172,6 +174,7 @@ class Identify extends React.Component {
                 resultDisplayMode={this.props.resultDisplayMode}
                 resultGridSize={this.props.resultGridSize}
                 resultMultiDisplay={this.props.resultMultiDisplay}
+                selectionSerializeKeys={this.props.selectionSerializeKeys}
                 setToolRef={el => { this.toolRef = el; }}
                 showLayerSelector={this.props.showLayerSelector}
                 showLayerTitles={this.props.showLayerTitles}

@@ -103,6 +103,8 @@ class IdentifyTool extends React.Component {
         resultGridSize: PropTypes.number,
         /** Whether multi-display mode should be enabled by default, only relevant if `resultDisplayMode` is `paginated`. */
         resultMultiDisplay: PropTypes.bool,
+        /** Lookup of `{"<layerUrl#layerName>": "<key>"}` of keys (i.e. the feature attribute name) used when serializing selections. If `selectionSerializeKeys` is set, only the layers listed will be exported. */
+        selectionSerializeKeys: PropTypes.object,
         setCurrentTask: PropTypes.func,
         setToolRef: PropTypes.func,
         /** Whether to show a layer selector to filter the identify results by layer. */
@@ -456,19 +458,27 @@ class IdentifyTool extends React.Component {
         return Object.fromEntries(Object.entries(this.state.identifyResults).map(([layerid, features]) => {
             const [layerUrl, layerName] = layerid.split("#", 2);
             const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
-            if (match && match.sublayer.primary_key) {
+            if (!match) {
+                return [layerid, features];
+            }
+            if (this.props.selectionSerializeKeys && !(layerid in this.props.selectionSerializeKeys)) {
+                return null;
+            }
+            const key = this.props.selectionSerializeKeys?.[layerid] ?? match.sublayer.primary_key;
+            if (key) {
                 return [
                     layerid, {
-                        key: match.sublayer.primary_key,
+                        key: key,
                         values: features.map(feature => {
-                            return MiscUtils.isNumeric(feature.id) ? Number(feature.id) : feature.id;
+                            const attr = key === match.sublayer.primary_key ? feature.id : feature.properties?.[key];
+                            return MiscUtils.isNumeric(attr) ? Number(attr) : attr;
                         })
                     }
                 ];
             } else {
                 return [layerid, features];
             }
-        }));
+        }).filter(Boolean));
     };
     deserializeResults = (identifyResults) => {
         const pendingRequests = [];
@@ -497,14 +507,14 @@ class IdentifyTool extends React.Component {
                 alert(LocaleUtils.tr("identify.importerrors", errMsg));
             }
         };
-        const queryLayer = (reqId, layerid, layerresults, layer, layerName) => {
+        const queryLayer = (reqId, layerid, layerresults, layer, layerName, getkeyattr) => {
             const values = layerresults.values.map(x => (typeof x === "string" ? `'${x}'` : x)).join(" , ");
             const filter = {filter: `${layerName}:"${layerresults.key}" IN ( ${values} )`};
             const request = IdentifyUtils.buildFilterRequest(layer, layerName, undefined, this.props.map, filter);
             IdentifyUtils.sendRequest(request, (response) => {
                 const results = this.handleResponse(reqId, response, layer, request.params.info_format, [0, 0], false);
                 if (layerName in results) {
-                    const restoredkeys = new Set((results[layerName]).map(f => String(f.id)));
+                    const restoredkeys = new Set((results[layerName]).map(f => String(getkeyattr(f))));
                     const missing = layerresults.values.filter(x => !restoredkeys.has(String(x)));
                     if (missing.length > 0) {
                         importErrors[layerid] = {key: layerresults.key, missing: missing};
@@ -517,13 +527,15 @@ class IdentifyTool extends React.Component {
         };
         Object.entries(identifyResults).forEach(([layerid, layerresults]) => {
             const [layerUrl, layerName] = layerid.split("#", 2);
-            const match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
+            let match = LayerUtils.searchLayer(this.props.layers, 'url', layerUrl, 'name', layerName);
             if (layerresults.key && layerresults.values) {
                 delete identifyResults[layerid]; // Features will be re-queried
                 if (match) {
                     const reqId = uuidv4();
                     pendingRequests.push(reqId);
-                    queryLayer(reqId, layerid, layerresults, match.layer, layerName);
+                    const key = this.props.selectionSerializeKeys?.[layerid] ?? match.sublayer.primary_key;
+                    const getkeyattr = key === match.sublayer.primary_key ? (f) => f.id : (f) => f.properties?.[key];
+                    queryLayer(reqId, layerid, layerresults, match.layer, layerName, getkeyattr);
                 } else {
                     const loadLayerReqId = uuidv4();
                     pendingRequests.push(loadLayerReqId);
@@ -532,7 +544,10 @@ class IdentifyTool extends React.Component {
                             if (!startupLayers.includes(layerid)) {
                                 this.props.addLayer(layer);
                             }
-                            queryLayer(loadLayerReqId, layerid, layerresults, layer, layerName);
+                            match = LayerUtils.searchLayer([layer], 'url', layerUrl, 'name', layerName);
+                            const key = this.props.selectionSerializeKeys?.[layerid] ?? match.sublayer.primary_key;
+                            const getkeyattr = key === match.sublayer.primary_key ? (f) => f.id : (f) => f.properties?.[key];
+                            queryLayer(loadLayerReqId, layerid, layerresults, layer, layerName, getkeyattr);
                         } else {
                             importErrors[layerid] = true;
                             this.setState(state => ({pendingRequests: state.pendingRequests.filter(x => x !== loadLayerReqId)}));
