@@ -40,7 +40,7 @@ span.buttonbar-button-tooltip {
     white-space: nowrap;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 2;
+    z-index: 1000;
 }
 
 span.buttonbar-button-tooltip-top {
