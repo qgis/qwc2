@@ -209,6 +209,7 @@ class AttributeTableWidget extends React.Component {
             const primaryKey = curEditConfig.primaryKey;
             table = (
                 <FeaturesTable
+                    allowSelectAll={!isEmpty(this.state.selectedFeatures)}
                     className="attribtable-table"
                     features={this.state.features} fields={this.state.curFields} hideIdColumn={!showIdColumn}
                     hoverChanged={this.setHoveredFeature} onFilter={this.filterColumns}
