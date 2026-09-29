@@ -9,6 +9,8 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import {featureCollection} from '@turf/helpers';
+import intersect from '@turf/intersect';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
@@ -414,23 +416,29 @@ class AttributeTableWidget extends React.Component {
         }));
     };
     selectFeatures = (geom) => {
-        this.props.iface.getFeatures(
-            this.state.curEditConfig, this.props.mapCrs, (result) => {
-                if (result) {
-                    this.setState(state => ({
-                        selectionGeom: null,
-                        selectedFeatures: {
-                            ...state.selectedFeatures,
-                            ...result.features.reduce((res, f) => ({
-                                ...res, [f.id]: f
-                            }),  {})
-                        }
-                    }));
-                } else {
-                    this.setState({selectionGeom: null});
-                }
-            }, {filterGeom: geom}
-        );
+        this.getFeatures(this.state, this.state.loadedLayer, false, geom, (result) => {
+            if (result) {
+                this.setState(state => {
+                    if (state.selectMode === 'Point' && result.features.length === 1 && state.selectedFeatures[result.features[0].id]) {
+                        /* eslint-disable-next-line no-unused-vars */
+                        const {[result.features[0].id]: _, ...selectedFeatures} = state.selectedFeatures;
+                        return {selectionGeom: null, selectedFeatures};
+                    } else {
+                        return {
+                            selectionGeom: null,
+                            selectedFeatures: {
+                                ...state.selectedFeatures,
+                                ...result.features.reduce((res, f) => ({
+                                    ...res, [f.id]: f
+                                }),  {})
+                            }
+                        };
+                    }
+                });
+            } else {
+                this.setState({selectionGeom: null});
+            }
+        });
         this.setState({selectionGeom: geom});
     };
     setSelectedFeatures = (features) => {
@@ -533,7 +541,7 @@ class AttributeTableWidget extends React.Component {
                 newState.curFields = fields;
             }
             newState.loading = true;
-            this.getFeatures(newState, loadLayer, true, (result) => {
+            this.getFeatures(newState, loadLayer, true, null, (result) => {
                 if (result) {
                     this.setState({
                         loading: false,
@@ -549,7 +557,7 @@ class AttributeTableWidget extends React.Component {
             return newState;
         });
     };
-    getFeatures = (state, loadedLayer, paginate, callback) => {
+    getFeatures = (state, loadedLayer, paginate, filterGeom, callback) => {
         // If sort or filter field is virtual, query non-paginated features and apply additional sorting/filtering client side
         const fieldMap = (state.curEditConfig?.fields || []).reduce((res, field) => ({...res, [field.id]: field}), {});
         const clientSideFilterSort = (state.filterVal && fieldMap[state.filterField]?.expression) || fieldMap[state.sortField?.field]?.expression;
@@ -581,6 +589,17 @@ class AttributeTableWidget extends React.Component {
             // NOTE: set offset/limit only when not filtering. Query all filtered features so that they can be highlighted.
             options.offset = state.currentPage * state.pageSize;
             options.limit = state.pageSize;
+        }
+        if (filterGeom) {
+            if (options.filterGeom) {
+                const intersection = intersect(featureCollection([
+                    {type: "Feature", properties: {}, geometry: options.filterGeom},
+                    {type: "Feature", properties: {}, geometry: filterGeom}
+                ]));
+                options.filterGeom = intersection?.geometry ? VectorLayerUtils.geoJSONGeomToWkt(intersection.geometry) : null;
+            } else {
+                options.filterGeom = filterGeom;
+            }
         }
         this.props.iface.getFeatures(
             state.curEditConfig, this.props.mapCrs, (result) => {
@@ -874,7 +893,7 @@ class AttributeTableWidget extends React.Component {
             xlsx: formatXlsx
         };
         this.setState({loading: true});
-        this.getFeatures(this.state, this.state.loadedLayer, false, (result) => {
+        this.getFeatures(this.state, this.state.loadedLayer, false, null, (result) => {
             if (result) {
                 formatters[format](result.features);
             } else {
