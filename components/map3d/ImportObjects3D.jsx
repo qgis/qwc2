@@ -15,7 +15,7 @@ import {v4 as uuidv4} from 'uuid';
 import {processStarted, processFinished} from '../../actions/processNotifications';
 import ConfigUtils from '../../utils/ConfigUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
-import RequestUtils from '../../utils/RequestUtils';
+import Request from '../../utils/Request';
 import FileSelector from '../widgets/FileSelector';
 import Spinner from '../widgets/Spinner';
 
@@ -104,7 +104,7 @@ class ImportObjects3D extends React.Component {
             this.props.processFinished(taskid, false, LocaleUtils.tr("import3d.noprocessesserver"));
             return;
         }
-        RequestUtils.post(ogcProcessesUrl.replace(/\/$/, '') + '/modelimport/execution_multipart', formData, {headers}).then(response => {
+        Request.post(ogcProcessesUrl.replace(/\/$/, '') + '/modelimport/execution_multipart', formData, {headers}).then(response => {
             const tilesetUrl = this.props.importedTilesBaseUrl + response.data.result.value;
             this.props.sceneContext.importTiles3D(tilesetUrl, taskid, true, {title: file.name, imported: true}, true);
             this.setState({selectedfile: null, importing: false});

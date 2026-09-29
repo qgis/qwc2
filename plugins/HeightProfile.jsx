@@ -39,7 +39,7 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MeasureUtils from '../utils/MeasureUtils';
 import MiscUtils from '../utils/MiscUtils';
-import RequestUtils from '../utils/RequestUtils';
+import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/HeightProfile.css';
@@ -209,7 +209,7 @@ class HeightProfilePrintDialog_ extends React.PureComponent {
             headers: {'content-type': 'application/x-www-form-urlencoded'},
             responseType: "blob"
         };
-        RequestUtils.post(baseUrl, query, options).then(response => {
+        Request.post(baseUrl, query, options).then(response => {
             const reader = new FileReader();
             reader.readAsDataURL(response.data);
             reader.onload = () => {

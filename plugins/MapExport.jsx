@@ -29,7 +29,7 @@ import {decodeDxf, detectDxfEncoding, explodeDxf, implodeDxf, mergeDxf, setDwgCo
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
-import RequestUtils from '../utils/RequestUtils';
+import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/MapExport.css';
@@ -472,7 +472,7 @@ class MapExport extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded' },
             responseType: "arraybuffer"
         };
-        RequestUtils.post(formatConfiguration?.serviceUrl ?? this.props.theme.url, data, config).then(response => {
+        Request.post(formatConfiguration?.serviceUrl ?? this.props.theme.url, data, config).then(response => {
             this.setState({exporting: false});
             const contentType = response.headers["content-type"];
 
@@ -522,7 +522,7 @@ class MapExport extends React.Component {
                 responseType: "arraybuffer"
             };
             return new Promise((resolve, reject) => {
-                RequestUtils.post(formatConfiguration?.serviceUrl ?? layer.url, data, config).then(response => {
+                Request.post(formatConfiguration?.serviceUrl ?? layer.url, data, config).then(response => {
                     resolve(response);
                 }).catch((e) => {
                     /* eslint-disable-next-line */

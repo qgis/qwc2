@@ -7,6 +7,8 @@ import MiscUtils from './MiscUtils';
  * instance, which may belong to a host application the viewer is embedded in.
  */
 const client = axios.create();
+// Inherit the axios statics (isCancel, CancelToken, all, ...) the instance is missing
+Object.setPrototypeOf(client, axios);
 
 client.interceptors.request.use((config) => {
     const csrfToken = MiscUtils.getCsrfToken();

@@ -33,7 +33,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook} from '../utils/PermaLinkUtils';
-import RequestUtils from '../utils/RequestUtils';
+import Request from '../utils/Request';
 
 import './style/MapFilter.css';
 
@@ -252,7 +252,7 @@ class MapFilter extends React.Component {
                 headers: {'content-type': 'application/x-www-form-urlencoded'},
                 responseType: "blob"
             };
-            RequestUtils.post(themeLayer.url, new URLSearchParams(reqParams).toString(), options).then(() => {
+            Request.post(themeLayer.url, new URLSearchParams(reqParams).toString(), options).then(() => {
                 this.setState({filterInvalid: false});
             }).catch(() => {
                 this.setState({filterInvalid: true});

@@ -18,7 +18,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import DataServiceExprUtils from '../utils/DataServiceExprUtils';
 import LayerUtils from '../utils/LayerUtils';
 import MapUtils from '../utils/MapUtils';
-import RequestUtils from './RequestUtils';
+import Request from './Request';
 import VectorLayerUtils from './VectorLayerUtils';
 
 
@@ -221,17 +221,17 @@ const IdentifyUtils = {
             const options = {
                 headers: {'content-type': 'application/x-www-form-urlencoded'}
             };
-            RequestUtils.post(reqUrlParts[0], reqUrlParts[1], options).then(postResp => {
+            Request.post(reqUrlParts[0], reqUrlParts[1], options).then(postResp => {
                 responseHandler(postResp.data);
             }).catch(() => {
-                RequestUtils.get(request.url, {params: request.params}).then(getResp => {
+                Request.get(request.url, {params: request.params}).then(getResp => {
                     responseHandler(getResp.data);
                 }).catch(() => {
                     responseHandler(null);
                 });
             });
         } else {
-            RequestUtils.get(request.url, {params: request.params}).then(getResp => {
+            Request.get(request.url, {params: request.params}).then(getResp => {
                 responseHandler(getResp.data);
             }).catch(() => {
                 responseHandler(null);

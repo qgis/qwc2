@@ -7,7 +7,7 @@
  */
 
 import ConfigUtils from "./ConfigUtils";
-import RequestUtils from "./RequestUtils";
+import Request from "./Request";
 
 /**
  * Interface for querying elevations/height profiles
@@ -30,7 +30,7 @@ const ElevationInterface = {
                 reject(null);
                 return;
             }
-            RequestUtils.get(serviceUrl + '/getelevation', {params: {pos: pos.join(","), crs}}).then(response => {
+            Request.get(serviceUrl + '/getelevation', {params: {pos: pos.join(","), crs}}).then(response => {
                 resolve(response.data.elevation ?? { list: response.data.elevation_list });
             }).catch((e) => {
                 reject(String(e));
@@ -56,7 +56,7 @@ const ElevationInterface = {
                 reject(null);
                 return;
             }
-            RequestUtils.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection: crs, samples}).then(response => {
+            Request.post(serviceUrl + '/getheightprofile', {coordinates, distances, projection: crs, samples}).then(response => {
                 resolve(response.data.elevations || { list: response.data.elevations_list });
             }).catch((e) => {
                 const error = e.response?.data?.error ? e.response.data.error : e;

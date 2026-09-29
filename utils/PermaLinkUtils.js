@@ -12,7 +12,7 @@ import {LayerRole} from '../actions/layers';
 import {getStore} from '../stores/StandardStore';
 import ConfigUtils from '../utils/ConfigUtils';
 import LayerUtils from '../utils/LayerUtils';
-import RequestUtils from './RequestUtils';
+import Request from './Request';
 
 let UrlQuery = {};
 let historyUpdateTimeout = null;
@@ -168,7 +168,7 @@ export async function generatePermaLink(callback, user = false, permittedGroup =
         permitted_group: permittedGroup || null
     };
     const route = user ? "userpermalink" : "createpermalink";
-    RequestUtils.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState, {params})
+    Request.post(ConfigUtils.getConfigProp("permalinkServiceUrl").replace(/\/$/, '') + "/" + route, permalinkState, {params})
         .then(response => callback(response.data.permalink || fullUrl, response.data.expires || null))
         .catch(() => callback(fullUrl));
 }
@@ -200,7 +200,7 @@ export function resolvePermaLink(initialParams, callback) {
     }
 
     const path = key ? "/resolvepermalink?key=" + key : "/bookmarks/" + bkey;
-    RequestUtils.get(permalinkServiceUrl + path)
+    Request.get(permalinkServiceUrl + path)
         .then(response => {
             const data = response.data;
             callback({...initialParams, ...data.query}, data.state || {}, !!data.query);
@@ -215,7 +215,7 @@ export function resolvePermaLink(initialParams, callback) {
 export const BookmarksInterface = {
     resolve(bkey, callback) {
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.get(permalinkServiceUrl + "/bookmarks/" + bkey)
+        Request.get(permalinkServiceUrl + "/bookmarks/" + bkey)
             .then(response => {
                 const data = response.data;
                 callback(data.query || {}, data.state || {}, !!data.query);
@@ -224,7 +224,7 @@ export const BookmarksInterface = {
     },
     getList(callback) {
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.get(permalinkServiceUrl + "/bookmarks/")
+        Request.get(permalinkServiceUrl + "/bookmarks/")
             .then(response => callback(response.data || []))
             .catch(() => callback([]));
     },
@@ -244,20 +244,20 @@ export const BookmarksInterface = {
         const themeId = getStore().getState().theme?.current?.id ?? null;
         const params = {description, theme_id: themeId};
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.post(permalinkServiceUrl + "/bookmarks/", bookmarkState, {params})
+        Request.post(permalinkServiceUrl + "/bookmarks/", bookmarkState, {params})
             .then((response) => callback(response.data?.success, response.data?.key))
             .catch(() => callback(false, null));
     },
     async update(bkey, params, updateData, callback) {
         const bookmarkState = updateData ? await(BookmarksInterface._getState()) : null;
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.put(permalinkServiceUrl + "/bookmarks/" + bkey, bookmarkState, {params})
+        Request.put(permalinkServiceUrl + "/bookmarks/" + bkey, bookmarkState, {params})
             .then((response) => callback(response.data?.success))
             .catch(() => callback(false));
     },
     delete(bkey, callback) {
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.delete(permalinkServiceUrl + "/bookmarks/" + bkey)
+        Request.delete(permalinkServiceUrl + "/bookmarks/" + bkey)
             .then((response) => callback(response.data?.success))
             .catch(() => callback(false));
     }
@@ -266,13 +266,13 @@ export const BookmarksInterface = {
 export const VisibilityPresetsInterface = {
     resolve(vpkey, callback) {
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.get(permalinkServiceUrl + "/visibility_presets/" + vpkey)
+        Request.get(permalinkServiceUrl + "/visibility_presets/" + vpkey)
             .then(response => callback(response.data?.visibility_preset, response.data?.theme_id))
             .catch(() => callback(null, null));
     },
     getList(callback) {
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.get(permalinkServiceUrl + "/visibility_presets/")
+        Request.get(permalinkServiceUrl + "/visibility_presets/")
             .then(response => callback(response.data || []))
             .catch(() => callback([]));
     },
@@ -282,7 +282,7 @@ export const VisibilityPresetsInterface = {
         const themeId = state.theme?.current?.id ?? null;
         const params = {description, theme_id: themeId};
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.post(permalinkServiceUrl + "/visibility_presets/", preset, {params})
+        Request.post(permalinkServiceUrl + "/visibility_presets/", preset, {params})
             .then((response) => callback(response.data?.success, response.data?.key))
             .catch(() => callback(false));
     },
@@ -292,13 +292,13 @@ export const VisibilityPresetsInterface = {
         const themeId = state.theme?.current?.id ?? null;
         const params = {...params_, theme_id: themeId};
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.put(permalinkServiceUrl + "/visibility_presets/" + vpkey, preset, {params})
+        Request.put(permalinkServiceUrl + "/visibility_presets/" + vpkey, preset, {params})
             .then((response) => callback(response.data?.success))
             .catch(() => callback(false));
     },
     delete(vpkey, callback) {
         const permalinkServiceUrl = ConfigUtils.getConfigProp("permalinkServiceUrl")?.replace?.(/\/$/, '');
-        RequestUtils.delete(permalinkServiceUrl + "/visibility_presets/" + vpkey)
+        Request.delete(permalinkServiceUrl + "/visibility_presets/" + vpkey)
             .then((response) => callback(response.data?.success))
             .catch(() => callback(false));
     }

@@ -24,7 +24,7 @@ import NumberInput from '../../components/widgets/NumberInput';
 import Spinner from '../../components/widgets/Spinner';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
-import RequestUtils from '../../utils/RequestUtils';
+import Request from '../../utils/Request';
 
 import '../style/MapExport.css';
 
@@ -337,7 +337,7 @@ class MapExport3D extends React.Component {
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             responseType: "arraybuffer"
         };
-        const response = await RequestUtils.post(this.props.theme.printUrl, data, config);
+        const response = await Request.post(this.props.theme.printUrl, data, config);
         if (response) {
             const {PDFDocument} = await import('pdf-lib');
             const doc = await PDFDocument.load(response.data);
