@@ -265,16 +265,16 @@ export default function layers(state = defaultState, action) {
         const layerId = action.layer.id || uuidv4();
         const newLayers = (state.flat || []).concat();
         const idx = newLayers.findIndex(layer => layer.id === layerId);
+        const addFeatures = action.features.map((f) => {
+            return !f.id ? {...f, id: f.id ?? uuidv4()} : f;
+        });
         if (idx === -1) {
-            const newFeatures = action.features.map(function(f) {
-                return {...f, id: f.id || (f.properties || {}).id || uuidv4()};
-            });
             const newLayer = {
                 ...action.layer,
                 id: layerId,
                 type: 'vector',
                 name: action.layer.name || layerId,
-                features: newFeatures,
+                features: addFeatures,
                 role: action.layer.role || LayerRole.USERLAYER,
                 queryable: action.layer.queryable || false,
                 visibility: action.layer.visibility || true,
@@ -287,9 +287,6 @@ export default function layers(state = defaultState, action) {
             for (; inspos < newLayers.length && newLayer.role < newLayers[inspos].role; ++inspos);
             newLayers.splice(inspos, 0, newLayer);
         } else {
-            const addFeatures = action.features.map(f => ({
-                ...f, id: f.id || (f.properties || {}).id || uuidv4()
-            }));
             const newFeatures = action.clear ? addFeatures : [
                 ...(newLayers[idx].features || []).filter(f => !addFeatures.find(g => g.id === f.id)),
                 ...addFeatures
