@@ -113,7 +113,8 @@ class AttributeTableWidget extends React.Component {
         confirmDelete: false,
         limitToExtent: false,
         captchaResponse: '',
-        selectMode: null
+        selectMode: null,
+        selectionGeom: null
     };
     constructor(props) {
         super(props);
@@ -336,7 +337,7 @@ class AttributeTableWidget extends React.Component {
             <div className="AttributeTable">
                 <MapSelection
                     active={this.state.selectMode !== null} geomType={this.state.selectMode}
-                    geometryChanged={this.selectFeatures}
+                    geometry={this.state.selectionGeom} geometryChanged={this.selectFeatures}
                 />
                 <div className="attribtable-toolbar">
                     {this.props.showLayerSelection ? (
@@ -407,7 +408,8 @@ class AttributeTableWidget extends React.Component {
     };
     setSelectMode = (mode) => {
         this.setState(state => ({
-            selectMode: state.selectMode === mode ? null : mode
+            selectMode: state.selectMode === mode ? null : mode,
+            selectionGeom: null
         }));
     };
     selectFeatures = (geom) => {
@@ -415,6 +417,7 @@ class AttributeTableWidget extends React.Component {
             this.state.curEditConfig, this.props.mapCrs, (result) => {
                 if (result) {
                     this.setState(state => ({
+                        selectionGeom: null,
                         selectedFeatures: {
                             ...state.selectedFeatures,
                             ...result.features.reduce((res, f) => ({
@@ -422,9 +425,12 @@ class AttributeTableWidget extends React.Component {
                             }),  {})
                         }
                     }));
+                } else {
+                    this.setState({selectionGeom: null});
                 }
             }, {filterGeom: geom}
         );
+        this.setState({selectionGeom: geom});
     };
     setSelectedFeatures = (features) => {
         this.setState({selectedFeatures: features});
