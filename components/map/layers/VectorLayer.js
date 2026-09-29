@@ -48,22 +48,19 @@ export function createFeatures(options, mapCrs, segmentize = false) {
 
 export function updateFeatures(source, newOptions, oldOptions, mapCrs, segmentize = false) {
     const format = new ol.format.GeoJSON();
-
-    const oldFeaturesMap = (oldOptions.features || []).reduce((res, f) => {
-        res[f.id] = f; return res;
-    }, {});
     const newIds = new Set(newOptions.features.map(f => f.id));
-    const removed = Object.keys(oldFeaturesMap).filter(id => !newIds.has(id));
+    const oldIds = new Set(oldOptions.features.map(f => f.id));
 
     // Remove removed features
-    for (const id of removed) {
+    [...oldIds].filter(id => !newIds.has(id)).forEach(id => {
         const feature = source.getFeatureById(id);
         if (feature) {
             source.removeFeature(feature);
         }
-    }
+    });
 
     // Add / update features
+    const oldFeaturesMap = (oldOptions.features || []).reduce((res, f) => ({...res, [f.id]: f}), {});
     const newFeatures = [];
     for (const featureObj of newOptions.features) {
         if (oldFeaturesMap[featureObj.id] && oldFeaturesMap[featureObj.id] === featureObj) {
