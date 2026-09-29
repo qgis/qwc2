@@ -177,14 +177,16 @@ class IdentifyViewer extends React.Component {
                 return features.map(f => `${layerid}${f.id}`);
             }).flat());
             let currentResult = state.currentResult;
-            // Set current result if only one result available
-            if (layers.size === 1 && this.props.identifyResults[[...layers][0]].length === 1) {
-                currentResult = {
-                    layerid: [...layers][0],
-                    featureid: this.props.identifyResults[[...layers][0]][0].id
-                };
-            } else if (!this.props.identifyResults[currentResult?.layerid]?.find?.(f => f.id === currentResult.featureid)) {
-                currentResult = null;
+            if (this.props.resultDisplayMode === "tree") {
+                // Set current result if only one result available
+                if (layers.size === 1 && this.props.identifyResults[[...layers][0]].length === 1) {
+                    currentResult = {
+                        layerid: [...layers][0],
+                        featureid: this.props.identifyResults[[...layers][0]][0].id
+                    };
+                } else if (!this.props.identifyResults[currentResult?.layerid]?.find?.(f => f.id === currentResult.featureid)) {
+                    currentResult = null;
+                }
             }
             // If identified layers change, recollect the feature reports. There might be a new layer which has since been added
             let reports = state.reports;
