@@ -10,7 +10,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {v4 as uuidv4} from 'uuid';
@@ -26,6 +25,7 @@ import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import Request from '../utils/Request';
 import {QgisSearch} from '../utils/SearchProviders';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
@@ -249,7 +249,7 @@ class FeatureSearch extends React.Component {
         const params = QgisSearch.buildFeatureInfoUrlParams(searchParams, filter, values);
 
         this.setState({busy: true, searchResults: null});
-        axios.get(this.props.theme.featureInfoUrl, {params}).then(response => {
+        Request.get(this.props.theme.featureInfoUrl, {params}).then(response => {
             const results = IdentifyUtils.parseResponse(response.data, this.props.theme, 'text/xml', null, this.props.map.projection);
             // Enable the layers
             Object.keys(results).forEach(layername => {
@@ -297,7 +297,7 @@ class FeatureSearch extends React.Component {
                         url = url.replace(`$${key}$`, value);
                     });
                     if (this.state.providerSelectOptions[name]?.source !== url) {
-                        axios.get(url).then(response => {
+                        Request.get(url).then(response => {
                             let options = [];
                             if (response.data.type === "FeatureCollection") {
                                 options = Object.entries(response.data.features.reduce((res, feature) => {

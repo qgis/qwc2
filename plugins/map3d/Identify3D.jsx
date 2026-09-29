@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import {BufferGeometry, Float32BufferAttribute, Mesh, MeshStandardMaterial, Raycaster, Vector2} from 'three';
@@ -18,6 +17,7 @@ import {TileMeshHelper} from '../../components/map3d/utils/MiscUtils3D';
 import ResizeableWindow from '../../components/ResizeableWindow';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
+import Request from '../../utils/Request';
 
 import '../../components/style/IdentifyViewer.css';
 
@@ -181,7 +181,7 @@ class Identify3D extends React.Component {
             ).replace(
                 '{objectid}', featureAttrs[featureIdAttr]
             );
-            axios.get(url).then(response => {
+            Request.get(url).then(response => {
                 response.data.forEach(attr => {
                     if (attr.name in infoAttrs && infoAttrs[attr.name] === attr.value) {
                         // Use attribute alias

@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import mime from 'mime-to-extensions';
@@ -27,6 +26,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import IdentifyUtils from '../utils/IdentifyUtils';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 
 import './style/Reports.css';
@@ -224,7 +224,7 @@ class Reports extends React.Component {
             single_report: report.single_report || false
         };
         const url = serviceUrl + "/" + report.template + "." + (report.format || "pdf");
-        axios.get(url, {responseType: "arraybuffer", params}).then(response => {
+        Request.get(url, {responseType: "arraybuffer", params}).then(response => {
             const format = report.format || "pdf";
             const filename = (report.filename || report.title.replace(" ", "_")) + "." + format;
             const mimeType = mime.lookup(filename) || "application/octet-stream";

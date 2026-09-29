@@ -20,7 +20,6 @@ import Map from '@giro3d/giro3d/entities/Map.js';
 import Tiles3D from "@giro3d/giro3d/entities/Tiles3D.js";
 import Inspector from "@giro3d/giro3d/gui/Inspector.js";
 import GeoTIFFSource from "@giro3d/giro3d/sources/GeoTIFFSource.js";
-import axios from 'axios';
 import {fromUrl} from "geotiff";
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
@@ -42,6 +41,7 @@ import LayerUtils from '../../utils/LayerUtils';
 import LocaleUtils from '../../utils/LocaleUtils';
 import MiscUtils from '../../utils/MiscUtils';
 import {registerPermalinkDataStoreHook, unregisterPermalinkDataStoreHook, UrlParams} from '../../utils/PermaLinkUtils';
+import Request from '../../utils/Request';
 import ServiceLayerUtils from '../../utils/ServiceLayerUtils';
 import ThemeUtils from '../../utils/ThemeUtils';
 import {MapContainerPortalContext} from '../PluginsContainer';
@@ -748,7 +748,7 @@ class Map3D extends React.Component {
             applyTilesetStyle(url);
         } else if (url) {
             const fullUrl = MiscUtils.resolveAssetsPath(url);
-            axios.get(fullUrl).then(response => {
+            Request.get(fullUrl).then(response => {
                 this.tilesetStyles[url] = response.data;
                 applyTilesetStyle(url);
             }).catch(() => {

@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import classnames from 'classnames';
 import isEmpty from 'lodash.isempty';
 import pointInPolygon from 'point-in-polygon';
@@ -145,7 +144,7 @@ class SearchBox extends React.Component {
         if (Array.isArray(searchRegions)) {
             this.setState({searchFilterRegions: searchRegions});
         } else if (typeof searchRegions === 'string') {
-            axios.get(searchRegions).then(response => {
+            Request.get(searchRegions).then(response => {
                 this.setState({searchFilterRegions: response.data});
             }).catch(() => {
                 this.setState({searchFilterRegions: null});

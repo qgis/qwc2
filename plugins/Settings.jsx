@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
 import url from 'url';
@@ -19,6 +18,7 @@ import SideBar from '../components/SideBar';
 import GroupSelect from "../components/widgets/GroupSelect";
 import ConfigUtils from '../utils/ConfigUtils';
 import LocaleUtils from '../utils/LocaleUtils';
+import Request from '../utils/Request';
 import ThemeUtils from '../utils/ThemeUtils';
 
 import './style/Settings.css';
@@ -157,7 +157,7 @@ class Settings extends React.Component {
             default_url_params: value
         };
         const baseurl = location.href.split("?")[0].replace(/\/$/, '');
-        axios.get(baseurl + "/setuserinfo", {params}).then(response => {
+        Request.get(baseurl + "/setuserinfo", {params}).then(response => {
             if (!response.data.success) {
                 /* eslint-disable-next-line */
                 alert(LocaleUtils.tr("settings.defaultthemefailed", response.data.error));

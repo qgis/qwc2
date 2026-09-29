@@ -7,7 +7,6 @@
  */
 
 
-import axios from 'axios';
 import yaml from 'js-yaml';
 import polygonIntersectTest from 'polygon-intersect-test';
 
@@ -18,6 +17,7 @@ import DataServiceExprUtils from './DataServiceExprUtils';
 import IdentifyUtils from './IdentifyUtils';
 import LayerUtils from './LayerUtils';
 import LocaleUtils from './LocaleUtils';
+import Request from './Request';
 
 
 export const SearchResultType = {
@@ -96,7 +96,7 @@ class NominatimSearch {
             viewboxParams.viewbox = CoordinatesUtils.reprojectBbox(searchParams.filterBBox, searchParams.mapcrs, "EPSG:4326").join(",");
             viewboxParams.bounded = 1;
         }
-        axios.get("https://nominatim.openstreetmap.org/search", {params: {
+        Request.get("https://nominatim.openstreetmap.org/search", {params: {
             'q': text,
             'addressdetails': 1,
             'polygon_geojson': 1,
@@ -188,13 +188,13 @@ class NominatimSearch {
     }
     static loadLocale(locale) {
         return new Promise((resolve) => {
-            axios.get('https://raw.githubusercontent.com/openstreetmap/openstreetmap-website/master/config/locales/' + locale + '.yml')
+            Request.get('https://raw.githubusercontent.com/openstreetmap/openstreetmap-website/master/config/locales/' + locale + '.yml')
                 .then(resp2 => {
                     NominatimSearch.TRANSLATIONS[locale] = {strings: NominatimSearch.parseLocale(resp2.data, locale)};
                     resolve(true);
                 }).catch(() => {
                     NominatimSearch.TRANSLATIONS[locale] = {
-                        promise: axios.get('https://raw.githubusercontent.com/openstreetmap/openstreetmap-website/master/config/locales/' + locale.slice(0, 2) + '.yml')
+                        promise: Request.get('https://raw.githubusercontent.com/openstreetmap/openstreetmap-website/master/config/locales/' + locale.slice(0, 2) + '.yml')
                             .then(resp3 => {
                                 NominatimSearch.TRANSLATIONS[locale] = {strings: NominatimSearch.parseLocale(resp3.data, locale.slice(0, 2))};
                                 resolve(true);
@@ -276,7 +276,7 @@ export class QgisSearch {
 
     static search(text, searchParams, callback) {
         const params = QgisSearch.buildFeatureInfoUrlParams(searchParams, {...searchParams.cfgParams.expression}, {TEXT: text}, false);
-        axios.get(searchParams.theme.featureInfoUrl, {params}).then(response => {
+        Request.get(searchParams.theme.featureInfoUrl, {params}).then(response => {
             callback(QgisSearch.searchResults(
                 IdentifyUtils.parseResponse(response.data, searchParams.theme, 'text/xml', null, searchParams.mapcrs),
                 searchParams.cfgParams.title, searchParams.cfgParams.resultTitle
@@ -350,7 +350,7 @@ export class FulltextSearch {
             limit: searchParams.limit
         };
         const iconPath = ConfigUtils.getAssetsPath() + '/img/search/';
-        axios.get(searchServiceUrl, {params}).then(response => {
+        Request.get(searchServiceUrl, {params}).then(response => {
             const data = FulltextSearch.filterFulltextResults(response.data, searchParams.filterPoly, searchParams.mapcrs);
             const placeResultCount = (data.result_counts || []).reduce((res, entry) => {
                 if (entry.dataproduct_id === 'dataproduct') {
@@ -437,7 +437,7 @@ export class FulltextSearch {
         // URL example: /api/data/v1/ch.so.afu.fliessgewaesser.netz/?filter=[["gewissnr","=",1179]]
         const quot = typeof(resultItem.id) === 'string' ? '"' : '';
         const filter = `[["${resultItem.id_field_name}","=", ${quot}${resultItem.id}${quot}]]`;
-        axios.get(dataServiceUrl.replace(/\/?$/, "/") + resultItem.dataproduct_id + "/?filter=" + filter).then(response => {
+        Request.get(dataServiceUrl.replace(/\/?$/, "/") + resultItem.dataproduct_id + "/?filter=" + filter).then(response => {
             const feature = response.data;
             const bbox = response.data.bbox;
             callback({bbox, center: null, feature: feature, crs: feature.crs.properties.name});
@@ -455,7 +455,7 @@ export class FulltextSearch {
         const params = {
             filter: resultItem.id
         };
-        axios.get(dataProductServiceUrl.replace(/\/?$/, "/") + "weblayers", {params}).then(response => {
+        Request.get(dataProductServiceUrl.replace(/\/?$/, "/") + "weblayers", {params}).then(response => {
             callback(response.data[resultItem.id]?.[0]);
         }).catch(() => {
             callback(null);
@@ -468,7 +468,7 @@ export class FulltextSearch {
             return;
         }
         const queryFeature = (filter) => {
-            axios.get(dataServiceUrl.replace(/\/?$/, "/") + hp + "/?filter=" + filter).then(response => {
+            Request.get(dataServiceUrl.replace(/\/?$/, "/") + hp + "/?filter=" + filter).then(response => {
                 const bbox = response.data.bbox;
                 const item = {
                     x: 0.5 * [bbox[0] + bbox[2]],
@@ -488,7 +488,7 @@ export class FulltextSearch {
                 filter: hp,
                 limit: 1
             };
-            axios.get(searchServiceUrl, {params}).then(response => {
+            Request.get(searchServiceUrl, {params}).then(response => {
                 if (response.data.results && response.data.results.length === 1) {
                     const result = response.data.results[0].feature;
                     const quot = typeof(result.feature_id) === 'string' ? '"' : '';

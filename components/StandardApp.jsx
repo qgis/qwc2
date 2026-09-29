@@ -9,7 +9,6 @@
 import React from 'react';
 import {Provider, connect} from 'react-redux';
 
-import axios from 'axios';
 import deepmerge from 'deepmerge';
 import {register as olProj4Register} from 'ol/proj/proj4';
 import Proj4js from 'proj4';
@@ -29,6 +28,7 @@ import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import {UrlParams, resolvePermaLink} from '../utils/PermaLinkUtils';
 import PluginStore from '../utils/PluginStore';
+import Request from '../utils/Request';
 import ThemeUtils from '../utils/ThemeUtils';
 import PluginsContainer from './PluginsContainer';
 
@@ -82,7 +82,7 @@ class AppContainerComponent extends React.Component {
         }
 
         // Load themes.json
-        axios.get(ConfigUtils.getConfigProp("themesUrl", null, "themes.json"), {params: {lang: this.props.locale}}).then(response => {
+        Request.get(ConfigUtils.getConfigProp("themesUrl", null, "themes.json"), {params: {lang: this.props.locale}}).then(response => {
             const themes = response.data.themes || {};
             this.props.appConfig.themePreprocessor?.(themes);
             this.props.themesLoaded(themes);

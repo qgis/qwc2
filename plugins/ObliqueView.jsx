@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import isEqual from 'lodash.isequal';
 import ol from 'openlayers';
 import PropTypes from 'prop-types';
@@ -27,6 +26,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
+import Request from '../utils/Request';
 
 import './style/ObliqueView.css';
 
@@ -264,7 +264,7 @@ class ObliqueView extends React.Component {
         const obliqueImageryServiceUrl = ConfigUtils.getConfigProp('obliqueImageryServiceUrl');
         if (this.state.selectedDataset && obliqueImageryServiceUrl) {
             const reqUrl = obliqueImageryServiceUrl.replace(/\/$/, '') + `/${this.state.selectedDataset}/config`;
-            axios.get(reqUrl).then(response => {
+            Request.get(reqUrl).then(response => {
                 const datasetConfig = response.data;
                 const direction = 'n' in datasetConfig.image_centers ? 'n' : Object.keys(datasetConfig.image_centers)[0];
                 this.setState({datasetConfig: datasetConfig, currentDirection: direction});

@@ -9,7 +9,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import {XMLParser} from 'fast-xml-parser';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
@@ -20,6 +19,7 @@ import ConfigUtils from '../utils/ConfigUtils';
 import {parseExpression} from '../utils/EditingUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MiscUtils from '../utils/MiscUtils';
+import Request from '../utils/Request';
 import EditComboField from './EditComboField';
 import EditUploadField from './EditUploadField';
 import Icon from './Icon';
@@ -114,7 +114,7 @@ class QtDesignerForm extends React.Component {
             let url = MiscUtils.resolveAssetsPath(this.props.editConfig.form);
             url += (url.includes('?') ? '&' : '?') + "lang=" + this.props.locale;
 
-            axios.get(url).then(response => {
+            Request.get(url).then(response => {
                 this.parseForm(response.data);
             }).catch(e => {
                 // eslint-disable-next-line

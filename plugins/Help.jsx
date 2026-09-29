@@ -9,11 +9,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import SideBar from '../components/SideBar';
 import LocaleUtils from '../utils/LocaleUtils';
+import Request from '../utils/Request';
 
 
 /**
@@ -65,7 +65,7 @@ class Help extends React.Component {
         const url = this.modeConfig().bodyContentsFragmentUrl;
         if (url && !this.fetched.has(url)) {
             this.fetched.add(url);
-            axios.get(url).then(response => {
+            Request.get(url).then(response => {
                 this.setState((state) => ({bodies: {...state.bodies, [url]: response.data.replace('$VERSION$', process.env.BuildDate)}}));
             }).catch(() => {});
         }

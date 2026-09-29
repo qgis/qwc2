@@ -6,7 +6,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import deepmerge from 'deepmerge';
 import {XMLParser} from 'fast-xml-parser';
 import isEmpty from 'lodash.isempty';
@@ -19,6 +18,7 @@ import ConfigUtils from './ConfigUtils';
 import CoordinatesUtils from './CoordinatesUtils';
 import LayerUtils from './LayerUtils';
 import MiscUtils from './MiscUtils';
+import Request from './Request';
 
 function strcmp(a, b) {
     const al = a.toLowerCase();
@@ -452,7 +452,7 @@ const ServiceLayerUtils = {
         }
         const requestUrl = url.format(urlParts);
         return new Promise((resolve, reject) => {
-            axios.get(requestUrl).then(response => {
+            Request.get(requestUrl).then(response => {
                 const options = {
                     attributeNamePrefix: "",
                     ignoreAttributes: false,
@@ -472,7 +472,7 @@ const ServiceLayerUtils = {
     getWMTSCapabilities(serviceUrl) {
         return new Promise((resolve, reject) => {
             const requestUrl = MiscUtils.adjustProtocol(serviceUrl);
-            axios.get(requestUrl).then(response => {
+            Request.get(requestUrl).then(response => {
                 const wmtsFormat = new ol.format.WMTSCapabilities();
                 resolve({capabilities: wmtsFormat.read(response.data), requestUrl});
             }).catch(reject);

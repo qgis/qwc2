@@ -9,7 +9,6 @@ import htmlReactParser, {domToReact} from 'html-react-parser';
 import React from 'react';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import mime from 'mime-to-extensions';
@@ -28,6 +27,7 @@ import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils, {ToggleSet} from '../utils/MiscUtils';
+import Request from '../utils/Request';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
 import Icon from './Icon';
 import ButtonBar from './widgets/ButtonBar';
@@ -902,7 +902,7 @@ class IdentifyViewer extends React.Component {
         };
         this.setState({generatingReport: true});
         const url = serviceUrl + "/" + report.template;
-        axios.get(url, {params, responseType: "arraybuffer"}).then(response => {
+        Request.get(url, {params, responseType: "arraybuffer"}).then(response => {
             const format = report.format || "pdf";
             const filename = (report.filename || report.title.replace(" ", "_")) + "." + format;
             const mimeType = mime.lookup(filename) || "application/octet-stream";

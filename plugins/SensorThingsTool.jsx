@@ -10,7 +10,6 @@ import React from 'react';
 import {Line} from 'react-chartjs-2';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import {Buffer} from 'buffer';
 import {
     Chart as ChartJS,
@@ -40,6 +39,7 @@ import Spinner from '../components/widgets/Spinner';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import Request from '../utils/Request';
 
 import 'chartjs-adapter-dayjs-4';
 import './style/SensorThingsTool.css';
@@ -2259,7 +2259,7 @@ class SensorThingsTool extends React.Component {
                 $orderBy: "name,description"
             };
 
-            axios.get(url, {params}).then(response => {
+            Request.get(url, {params}).then(response => {
                 queriesPending -= 1;
 
                 // collect Locations
@@ -2291,7 +2291,7 @@ class SensorThingsTool extends React.Component {
         const params = {
             $expand: "Things($expand=Datastreams($expand=Sensor($select=@iot.id,name,description),ObservedProperty($select=@iot.id,name,description)))"
         };
-        axios.get(selectedLocation.link, {params}).then(response => {
+        Request.get(selectedLocation.link, {params}).then(response => {
             if (locationId !== this.state.currentLocationId) {
                 // skip results, as a different Location has been selected in the meantime while this request was still loading
                 return;
@@ -2509,7 +2509,7 @@ class SensorThingsTool extends React.Component {
         if (filter) {
             params.$filter = filter;
         }
-        axios.get(observationsUrl, {params}).then(response => {
+        Request.get(observationsUrl, {params}).then(response => {
             if (datastreamId !== this.state.graph.datastreams[datastreamIndex].id) {
                 // skip results, as a different Datastream has been selected in the meantime while this request was still loading
                 return;

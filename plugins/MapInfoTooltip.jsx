@@ -10,7 +10,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import {setCurrentTask} from '../actions/task';
@@ -22,6 +21,7 @@ import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {getElevationInterface} from '../utils/ElevationInterface';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
+import Request from '../utils/Request';
 
 import './style/MapInfoTooltip.css';
 
@@ -102,7 +102,7 @@ class MapInfoTooltip extends React.Component {
                 }).catch(() => {});
                 const mapInfoService = ConfigUtils.getConfigProp("mapInfoServiceUrl") || ConfigUtils.getConfigProp("mapInfoService");
                 if (mapInfoService) {
-                    axios.get(mapInfoService, {params: {pos: pos.join(","), crs}}).then(response => {
+                    Request.get(mapInfoService, {params: {pos: pos.join(","), crs}}).then(response => {
                         this.setState({extraInfo: response.data.results});
                     }).catch(() => {});
                 }

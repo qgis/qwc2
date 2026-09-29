@@ -7,11 +7,11 @@
  */
 
 
-import axios from 'axios';
 import {v4 as uuidv4} from 'uuid';
 
 import ConfigUtils from './ConfigUtils';
 import LocaleUtils from './LocaleUtils';
+import Request from './Request';
 import VectorLayerUtils from './VectorLayerUtils';
 
 const ValhallaSession = {
@@ -137,7 +137,7 @@ function computeRoute(costing, locations, options, callback) {
     const params = getValhallaParams(costing, locations, options, extraOptions);
     const serviceUrl = ConfigUtils.getConfigProp("routingServiceUrl").replace(/\/$/, '');
     const endpoint = options.optimized_route ? 'optimized_route' : 'route';
-    axios.get(serviceUrl + '/' + endpoint, {params}).then(response => {
+    Request.get(serviceUrl + '/' + endpoint, {params}).then(response => {
         if (!response.data || !response.data.trip) {
             callback(false, {errorMsgId: LocaleUtils.trmsg("routing.computefailed")});
             return;
@@ -214,7 +214,7 @@ function computeIsochrone(costing, locations, contourOptions, options, callback)
     locations.forEach(location => {
         const params = getValhallaParams(costing, [location], options, extraOptions);
 
-        axios.get(serviceUrl + '/isochrone', {params}).then(response => {
+        Request.get(serviceUrl + '/isochrone', {params}).then(response => {
             if (reqId !== ValhallaSession.reqId) {
                 return;
             }

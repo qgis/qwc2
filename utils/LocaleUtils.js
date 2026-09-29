@@ -7,11 +7,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import axios from 'axios';
 import deepmerge from 'deepmerge';
 
 import {getStore} from '../stores/StandardStore';
 import ConfigUtils from './ConfigUtils';
+import Request from './Request';
 
 
 const LocaleUtils = {
@@ -41,7 +41,7 @@ const LocaleUtils = {
             const translationsPath = ConfigUtils.getTranslationsPath();
             const resolveLang = (locale, messages) => {
                 if (ConfigUtils.getConfigProp("loadTranslationOverrides")) {
-                    axios.get(translationsPath + '/' + locale + '_overrides.json', config).then(response => {
+                    Request.get(translationsPath + '/' + locale + '_overrides.json', config).then(response => {
                         const overrideMessages = response.data.messages;
                         resolve({
                             locale: locale,
@@ -65,7 +65,7 @@ const LocaleUtils = {
                 console.warn("No suitable translations available for " + lang + ", defaulting to " + fallbackLangData.locale);
                 resolveLang(fallbackLangData.locale, fallbackLangData.messages);
             } else {
-                axios.get(translationsPath + '/' + loadLang + '.json', config).then(response => {
+                Request.get(translationsPath + '/' + loadLang + '.json', config).then(response => {
                     resolveLang(loadLang, response.data.messages);
                 }).catch(() => {
                     // eslint-disable-next-line
