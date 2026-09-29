@@ -98,7 +98,6 @@ class AttributeTableWidget extends React.Component {
         curEditConfig: null,
         curFields: null,
         features: [],
-        allFeatures: null,
         totFeatureCount: 0,
         selectedFeatures: {},
         hoveredFeature: null,
