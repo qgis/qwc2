@@ -89,6 +89,8 @@
       "nogeomnoform": "Wijzigformulier is niet beschikbaar voor lagen zonder geometrie",
       "pleasereload": "Druk op 'Herladen' om attributentabel te laden...",
       "reload": "Herladen",
+      "selectatpoint": "",
+      "selectinregion": "",
       "title": "Attributentabel",
       "zoomtoselection": "Inzoomen op geselecteerde objecten"
     },

@@ -89,6 +89,8 @@
       "nogeomnoform": "El formulari d'edició no està disponible per a capes sense geometria",
       "pleasereload": "Si us plau, torni a carregar",
       "reload": "Carregar",
+      "selectatpoint": "",
+      "selectinregion": "",
       "title": "Títol",
       "zoomtoselection": "Fer zoom als elements seleccionats"
     },

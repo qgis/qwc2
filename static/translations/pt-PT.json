@@ -89,6 +89,8 @@
       "nogeomnoform": "Sem geometria e sem formulário",
       "pleasereload": "Por favor, recarregue",
       "reload": "Recarregar",
+      "selectatpoint": "",
+      "selectinregion": "",
       "title": "Tabela de Atributos",
       "zoomtoselection": "Zoom para a Seleção"
     },

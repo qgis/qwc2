@@ -89,6 +89,8 @@
       "nogeomnoform": "El formulario de edición no está disponible para capas sin geometría",
       "pleasereload": "Presione 'Recargar' para cargar la tabla de atributos",
       "reload": "Recargar",
+      "selectatpoint": "",
+      "selectinregion": "",
       "title": "Tabla de Atributos",
       "zoomtoselection": "Hacer zoom a elementos seleccionado"
     },

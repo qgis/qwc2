@@ -89,6 +89,8 @@
       "nogeomnoform": "Die Formularansicht ist für geometrielose Ebenen nicht verfügbar",
       "pleasereload": "Auf 'Neu laden' drücken, um die Attributtabelle zu laden...",
       "reload": "Neu laden",
+      "selectatpoint": "Objekte an Position auswählen",
+      "selectinregion": "Objekte in Region auswählen",
       "title": "Attributtabelle",
       "zoomtoselection": "Auf ausgewählte Objekte zoomen"
     },

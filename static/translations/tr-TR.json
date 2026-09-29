@@ -89,6 +89,8 @@
       "nogeomnoform": "geometrisi olmayan katmanlar için düzenleme formu kullanılamaz",
       "pleasereload": "Öznitelik tablosunu yüklemek için 'Yeniden yükle' butonuna basınız...",
       "reload": "Yeniden yükle",
+      "selectatpoint": "",
+      "selectinregion": "",
       "title": "Öznitelik Tablosu",
       "zoomtoselection": "Seçili objelere yaklaş"
     },

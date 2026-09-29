@@ -89,6 +89,8 @@
       "nogeomnoform": "Formularul de editare nu este disponibil pentru straturi fără geometrie",
       "pleasereload": "Apasă butonul 'Reîncarcă' pentru a încărca tabela de atribute...",
       "reload": "Reîncarcă",
+      "selectatpoint": "",
+      "selectinregion": "",
       "title": "Tabelul de atribute",
       "zoomtoselection": "Vezi obiecte spațiale selectate"
     },

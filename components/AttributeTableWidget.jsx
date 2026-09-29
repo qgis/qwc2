@@ -32,6 +32,8 @@ import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
 import MiscUtils from '../utils/MiscUtils';
 import VectorLayerUtils from '../utils/VectorLayerUtils';
+import MapSelection from './MapSelection';
+import ButtonBar from './widgets/ButtonBar';
 import ComboBox from './widgets/ComboBox';
 import FeaturesTable from './widgets/FeaturesTable';
 import MenuButton from './widgets/MenuButton';
@@ -108,7 +110,8 @@ class AttributeTableWidget extends React.Component {
         deleteTask: null,
         confirmDelete: false,
         limitToExtent: false,
-        captchaResponse: ''
+        captchaResponse: '',
+        selectMode: null
     };
     constructor(props) {
         super(props);
@@ -300,8 +303,16 @@ class AttributeTableWidget extends React.Component {
                 return {value: wmsName + "#" + layerName, title: layerTitle};
             })
         )).flat().filter(Boolean).sort((a, b) => a.title.localeCompare(b.title));
+        const pickButtons = [
+            {key: 'Point', icon: 'pick_point', title: LocaleUtils.tr("attribtable.selectatpoint")},
+            {key: 'Polygon', icon: 'pick_region', title: LocaleUtils.tr("attribtable.selectinregion")}
+        ];
         return (
             <div className="AttributeTable">
+                <MapSelection
+                    active={this.state.selectMode !== null} geomType={this.state.selectMode}
+                    geometryChanged={this.selectFeatures}
+                />
                 <div className="attribtable-toolbar">
                     {this.props.showLayerSelection ? (
                         <ComboBox disabled={loading || editing} onChange={value => this.setState({selectedLayer: value})} value={this.state.selectedLayer || ""}>
@@ -322,6 +333,7 @@ class AttributeTableWidget extends React.Component {
                     <button className="button" disabled={layerChanged || selectionEmpty} onClick={this.zoomToSelection} title={LocaleUtils.tr("attribtable.zoomtoselection")}>
                         <Icon icon="search" />
                     </button>
+                    <ButtonBar active={this.state.selectMode} buttons={pickButtons} disabled={nolayer} onClick={this.setSelectMode} />
                     {showEditButton ? (
                         <button className="button" disabled={layerChanged || editing || Object.keys(this.state.selectedFeatures).length !== 1} onClick={this.switchToFormEditMode} title={LocaleUtils.tr("attribtable.formeditmode")}>
                             <Icon icon="editing" />
@@ -367,6 +379,27 @@ class AttributeTableWidget extends React.Component {
     }
     rowIsDisabled = (idx) => {
         return this.state.changedFeatureIdx !== null && this.state.changedFeatureIdx !== idx;
+    };
+    setSelectMode = (mode) => {
+        this.setState(state => ({
+            selectMode: state.selectMode === mode ? null : mode
+        }));
+    };
+    selectFeatures = (geom) => {
+        this.props.iface.getFeatures(
+            this.state.curEditConfig, this.props.mapCrs, (result) => {
+                if (result) {
+                    this.setState(state => ({
+                        selectedFeatures: {
+                            ...state.selectedFeatures,
+                            ...result.features.reduce((res, f) => ({
+                                ...res, [f.id]: f
+                            }),  {})
+                        }
+                    }));
+                }
+            }, {filterGeom: geom}
+        );
     };
     setSelectedFeatures = (features) => {
         this.setState({selectedFeatures: features});
@@ -467,7 +500,6 @@ class AttributeTableWidget extends React.Component {
                 newState.curEditConfig = editConfig;
                 newState.curFields = fields;
             }
-            newState.selectedFeatures = {};
             newState.loading = true;
             this.getFeatures(newState, loadLayer, true, (result) => {
                 if (result) {

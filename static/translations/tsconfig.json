@@ -123,6 +123,8 @@
     "attribtable.nogeomnoform",
     "attribtable.pleasereload",
     "attribtable.reload",
+    "attribtable.selectatpoint",
+    "attribtable.selectinregion",
     "attribtable.title",
     "attribtable.zoomtoselection",
     "bgswitcher.nobg",

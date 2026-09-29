@@ -89,6 +89,8 @@
       "nogeomnoform": "The edit form is not available for geometryless layers",
       "pleasereload": "Press 'Reload' to load the attribute table...",
       "reload": "Reload",
+      "selectatpoint": "Select features at point",
+      "selectinregion": "Select features in region",
       "title": "Attribute Table",
       "zoomtoselection": "Zoom to selected features"
     },

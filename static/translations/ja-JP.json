@@ -89,6 +89,8 @@
       "nogeomnoform": "ジオメトリの無いレイヤに対して編集フォームは使用できません",
       "pleasereload": "「再ロード」を押して属性テーブルをロードして下さい...",
       "reload": "再ロード",
+      "selectatpoint": "",
+      "selectinregion": "",
       "title": "属性テーブル",
       "zoomtoselection": "選択された地物にズーム"
     },

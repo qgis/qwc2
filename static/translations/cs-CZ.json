@@ -89,6 +89,8 @@
       "nogeomnoform": "Editační formulář není dostupný pro vrstvy bez geometrie",
       "pleasereload": "Kliknutím na 'Obnovit' načtete tabulku atributů",
       "reload": "Obnovit",
+      "selectatpoint": "",
+      "selectinregion": "",
       "title": "Tabulka atributů",
       "zoomtoselection": "Přiblížit na vybrané prvky"
     },
