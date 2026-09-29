@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import FileSaver from 'file-saver';
 import isEmpty from 'lodash.isempty';
 import PropTypes from 'prop-types';
+import {v4 as uuidv4} from 'uuid';
 
 import {LayerRole, addLayerFeatures, removeLayer, refreshLayer} from '../actions/layers';
 import {zoomToExtent, zoomToPoint} from '../actions/map';
@@ -27,6 +28,7 @@ import TextInput from '../components/widgets/TextInput';
 import ConfigUtils from '../utils/ConfigUtils';
 import CoordinatesUtils from '../utils/CoordinatesUtils';
 import {FeatureCache, KeyValCache, parseExpression, getFeatureTemplate} from '../utils/EditingUtils';
+import {defaultHighlightStyle} from '../utils/FeatureStyles';
 import LayerUtils from '../utils/LayerUtils';
 import LocaleUtils from '../utils/LocaleUtils';
 import MapUtils from '../utils/MapUtils';
@@ -121,6 +123,8 @@ class AttributeTableWidget extends React.Component {
         this.attribTableContents = null;
         this.state.limitToExtent = props.limitToExtent;
         this.filterWarningShown = false;
+        this.selectionLayerId = uuidv4();
+        this.highlightLayerId = uuidv4();
     }
     componentDidMount() {
         if (this.props.initialLayer) {
@@ -135,15 +139,36 @@ class AttributeTableWidget extends React.Component {
             this.reload({currentPage: 0});
         }
         // Highlight feature
-        if (this.state.features !== prevState.features || this.state.hoveredFeature !== prevState.hoveredFeature || this.state.selectedFeatures !== prevState.selectedFeatures) {
-            this.highlightFeatures();
+        if (this.state.selectedFeatures !== prevState.selectedFeatures || (this.state.filterVal && this.state.features !== prevState.features)) {
+            let features = [];
+            if (!isEmpty(this.state.selectedFeatures)) {
+                features = Object.values(this.state.selectedFeatures);
+            } else if (this.state.filterVal) {
+                features = this.state.features;
+            }
+            const layer = {
+                id: this.highlightLayerId,
+                role: LayerRole.SELECTION,
+                zIndex: 100000
+            };
+            this.props.addLayerFeatures(layer, features, true);
+        }
+        if (this.state.hoveredFeature !== prevState.hoveredFeature) {
+            const layer = {
+                id: this.selectionLayerId,
+                role: LayerRole.SELECTION,
+                styleOptions: defaultHighlightStyle(),
+                zIndex: 100001
+            };
+            this.props.addLayerFeatures(layer, this.state.hoveredFeature ? [this.state.hoveredFeature] : [], true);
         }
         if (this.state.loadedLayer !== prevState.loadedLayer && this.props.showDisplayFieldOnly) {
             this.setState(state => ({filterField: state.curEditConfig.displayField}));
         }
     }
     componentWillUnmount() {
-        this.props.removeLayer("__attributetablehighlight");
+        this.props.removeLayer(this.highlightLayerId);
+        this.props.removeLayer(this.selectionLayerId);
     }
     render() {
         const captchaRequired = ConfigUtils.getConfigProp("editServiceCaptchaSiteKey") && !ConfigUtils.getConfigProp("username");
@@ -767,21 +792,6 @@ class AttributeTableWidget extends React.Component {
             return {features: newFeatures, changedFeatureIdx: null, originalFeatureProps: null, newFeature: null};
         });
         this.props.setCurrentTaskBlocked(false);
-    };
-    highlightFeatures = () => {
-        let features = [];
-        if (this.state.hoveredFeature) {
-            features = [this.state.hoveredFeature];
-        } else if (!isEmpty(this.state.selectedFeatures)) {
-            features = Object.values(this.state.selectedFeatures);
-        } else if (this.state.filterVal) {
-            features = this.state.features;
-        }
-        const layer = {
-            id: "__attributetablehighlight",
-            role: LayerRole.SELECTION
-        };
-        this.props.addLayerFeatures(layer, features.map(f => ({id: f.id, geometry: f.geometry})), true);
     };
     zoomToSelection = () => {
         const collection = {
