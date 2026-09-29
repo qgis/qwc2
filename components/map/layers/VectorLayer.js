@@ -12,38 +12,38 @@ import ol from 'openlayers';
 import FeatureStyles from '../../../utils/FeatureStyles';
 
 
+function featureFromFeatureObj(format, featureObj, options, mapCrs, segmentize) {
+    const feature = format.readFeature({...featureObj, type: "Feature"});
+    let featureCrs = featureObj.crs ?? options.projection ?? mapCrs;
+    if (featureCrs.type === "name") {
+        featureCrs = featureCrs.properties.name;
+    }
+    if (featureCrs !== mapCrs) {
+        feature.getGeometry()?.transform(featureCrs, mapCrs);
+    }
+    if (featureObj.circleParams && !segmentize) {
+        feature.setGeometry(
+            new ol.geom.Circle(featureObj.circleParams.center, featureObj.circleParams.radius)
+        );
+    }
+    const featureStyleName = featureObj.styleName || options.styleName;
+    const featureStyleOptions = {...options.styleOptions, ...featureObj.styleOptions};
+    feature.set('styleName', featureStyleName);
+    feature.set('styleOptions', featureStyleOptions);
+    feature.set('circleParams', featureObj.circleParams);
+    feature.set('shape', featureObj.shape);
+    feature.set('measurements', featureObj.measurements);
+    if (featureStyleName) {
+        feature.setStyle(FeatureStyles[featureStyleName](feature, featureStyleOptions));
+    }
+    return feature;
+}
+
 export function createFeatures(options, mapCrs, segmentize = false) {
     const format = new ol.format.GeoJSON();
-    return (options.features || []).reduce((collection, featureObj) => {
-        const feature = format.readFeature({...featureObj, type: "Feature"});
-        let featureCrs = featureObj.crs ?? options.projection ?? mapCrs;
-        if (featureCrs.type === "name") {
-            featureCrs = featureCrs.properties.name;
-        }
-        if (featureCrs !== mapCrs) {
-            feature.getGeometry()?.transform(featureCrs, mapCrs);
-        }
-        const featureStyleName = featureObj.styleName || options.styleName;
-        const featureStyleOptions = {...options.styleOptions, ...featureObj.styleOptions};
-        feature.set('styleName', featureStyleName);
-        feature.set('styleOptions', featureStyleOptions);
-        if (featureObj.circleParams && !segmentize) {
-            feature.set('circleParams', featureObj.circleParams);
-            feature.setGeometry(
-                new ol.geom.Circle(featureObj.circleParams.center, featureObj.circleParams.radius)
-            );
-        }
-        if (featureObj.shape) {
-            feature.set('shape', featureObj.shape);
-        }
-        if (featureObj.measurements) {
-            feature.set('measurements', featureObj.measurements);
-        }
-        if (featureStyleName) {
-            feature.setStyle(FeatureStyles[featureStyleName](feature, featureStyleOptions));
-        }
-        return [...collection, feature];
-    }, []);
+    return (options.features || []).map(featureObj => {
+        return featureFromFeatureObj(format, featureObj, options, mapCrs, segmentize);
+    });
 }
 
 export function updateFeatures(source, newOptions, oldOptions, mapCrs, segmentize = false) {
@@ -75,30 +75,7 @@ export function updateFeatures(source, newOptions, oldOptions, mapCrs, segmentiz
             }
         }
         // Add new
-        const feature = format.readFeature({...featureObj, type: "Feature"});
-        let featureCrs = featureObj.crs ?? newOptions.projection ?? mapCrs;
-        if (featureCrs.type === "name") {
-            featureCrs = featureCrs.properties.name;
-        }
-        if (featureCrs !== mapCrs) {
-            feature.getGeometry()?.transform(featureCrs, mapCrs);
-        }
-        if (featureObj.circleParams && !segmentize) {
-            feature.setGeometry(
-                new ol.geom.Circle(featureObj.circleParams.center, featureObj.circleParams.radius)
-            );
-        }
-        const featureStyleName = featureObj.styleName || newOptions.styleName;
-        const featureStyleOptions = {...newOptions.styleOptions, ...featureObj.styleOptions};
-        feature.set('styleName', featureStyleName);
-        feature.set('styleOptions', featureStyleOptions);
-        feature.set('circleParams', featureObj.circleParams);
-        feature.set('shape', featureObj.shape);
-        feature.set('measurements', featureObj.measurements);
-        if (featureStyleName) {
-            feature.setStyle(FeatureStyles[featureStyleName](feature, featureStyleOptions));
-        }
-        newFeatures.push(feature);
+        newFeatures.push(featureFromFeatureObj(format, featureObj, newOptions, mapCrs, segmentize));
     }
     if (newFeatures) {
         source.addFeatures(newFeatures);
