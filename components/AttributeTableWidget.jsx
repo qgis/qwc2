@@ -116,7 +116,17 @@ class AttributeTableWidget extends React.Component {
         limitToExtent: false,
         captchaResponse: '',
         selectMode: null,
-        selectionGeom: null
+        selectionGeom: null,
+        selectedOnly: false
+    };
+    filterFunctions = {
+        '~': (attr, filterVal) => (String(attr).toLowerCase().includes(filterVal)),
+        '=': (attr, filterVal) => (String(attr).toLowerCase() === filterVal),
+        '!=': (attr, filterVal) => (String(attr).toLowerCase() !== filterVal),
+        '>': (attr, filterVal) => (Number(attr) > Number(filterVal)),
+        '>=': (attr, filterVal) => (Number(attr) >= Number(filterVal)),
+        '<': (attr, filterVal) => (Number(attr) < Number(filterVal)),
+        '<=': (attr, filterVal) => (Number(attr) <= Number(filterVal))
     };
     constructor(props) {
         super(props);
@@ -136,9 +146,11 @@ class AttributeTableWidget extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         // Reload conditions when limited to extent
-        if (this.state.limitToExtent && this.state.loadedLayer && (!prevState.limitToExtent || this.props.mapBbox !== prevProps.mapBbox)) {
-            this.reload({currentPage: 0});
-        } else if (!this.state.limitToExtent && prevState.limitToExtent) {
+        if (this.state.loadedLayer && (
+            (this.state.limitToExtent && (!prevState.limitToExtent || this.props.mapBbox !== prevProps.mapBbox)) ||
+            !this.state.limitToExtent && prevState.limitToExtent ||
+            this.state.selectedOnly !== prevState.selectedOnly
+        )) {
             this.reload({currentPage: 0});
         }
         // Highlight feature
@@ -543,11 +555,12 @@ class AttributeTableWidget extends React.Component {
             newState.loading = true;
             this.getFeatures(newState, loadLayer, true, null, (result) => {
                 if (result) {
-                    this.setState({
+                    this.setState(state2 => ({
                         loading: false,
                         loadedLayer: loadLayer,
+                        selectedFeatures: this.filterSelectedFeatures(state2),
                         ...result
-                    });
+                    }));
                 } else {
                     // eslint-disable-next-line
                     alert(LocaleUtils.tr("attribtable.loadfailed"));
@@ -617,23 +630,14 @@ class AttributeTableWidget extends React.Component {
         );
     };
     filteredSortedFeatures = (features, state, fieldMap) => {
-        const filterFunctions = {
-            '~': (attr, filterVal) => (String(attr).toLowerCase().includes(filterVal)),
-            '=': (attr, filterVal) => (String(attr).toLowerCase() === filterVal),
-            '!=': (attr, filterVal) => (String(attr).toLowerCase() !== filterVal),
-            '>': (attr, filterVal) => (Number(attr) > Number(filterVal)),
-            '>=': (attr, filterVal) => (Number(attr) >= Number(filterVal)),
-            '<': (attr, filterVal) => (Number(attr) < Number(filterVal)),
-            '<=': (attr, filterVal) => (Number(attr) <= Number(filterVal))
-        };
         if (state.filterVal && fieldMap[state.filterField]?.expression) {
             const filterVal = state.filterVal.toLowerCase();
-            const test = filterFunctions[state.filterOp];
+            const test = this.filterFunctions[state.filterOp];
             features = features.filter(feature => test(feature.properties[state.filterField], filterVal));
         }
         Object.entries(state.columnFilters).forEach(([field, value]) => {
             if (fieldMap[field]?.expression) {
-                features = features.filter(feature => filterFunctions['~'](feature.properties[field], value));
+                features = features.filter(feature => this.filterFunctions['~'](feature.properties[field], value));
             }
         });
         if (state.sortField && fieldMap[state.sortField?.field]?.expression) {
@@ -644,6 +648,25 @@ class AttributeTableWidget extends React.Component {
             });
         }
         return features;
+    };
+    filterSelectedFeatures = (state) => {
+        // Apply client side filtering to selected features...
+        return Object.entries(state.selectedFeatures).reduce((res, [fid, f]) => {
+            if (state.filterVal) {
+                const filterVal = state.filterVal.toLowerCase();
+                const test = this.filterFunctions[state.filterOp];
+                if (!test(f.properties[state.filterField], filterVal)) {
+                    return res;
+                }
+            }
+            for (const [field, value] of Object.entries(state.columnFilters)) {
+                const test = this.filterFunctions['~'];
+                if (!test(f.properties[field], value)) {
+                    return res;
+                }
+            }
+            return {...res, [fid]: f};
+        }, {});
     };
     updateFilter = (stateField, val) => {
         const newState = {filterField: this.state.filterField, filterOp: this.state.filterOp, filterVal: this.state.filterVal};
@@ -719,6 +742,11 @@ class AttributeTableWidget extends React.Component {
                     deleted: !success ? state.deleteTask.deleted : [...state.deleteTask.deleted, featureid]
                 }
             };
+            if (featureid in state.selectedFeatures) {
+                /* eslint-disable-next-line no-unused-vars */
+                const {[featureid]: _, newSelectedFeatures} = state.selectedFeatures;
+                newState.selectedFeatures = newSelectedFeatures;
+            }
             if (isEmpty(newState.deleteTask.pending)) {
                 if (!isEmpty(newState.deleteTask.failed)) {
                     // eslint-disable-next-line
@@ -797,6 +825,9 @@ class AttributeTableWidget extends React.Component {
             // eslint-disable-next-line
             alert(result);
         } else {
+            if (this.state.selectedFeatures[result.id]) {
+                this.setState(state => ({selectedFeatures: {...state.selectFeatures, [result.id]: result}}));
+            }
             this.changedFiles = {};
             const mapPrefix = this.state.curEditConfig.editDataset.split(".")[0];
             this.props.refreshLayer(layer => layer.wms_name === mapPrefix);
