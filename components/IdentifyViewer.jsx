@@ -535,6 +535,7 @@ class IdentifyViewer extends React.Component {
                                 <FeaturesTable allowSelectAll
                                     features={features} fields={Object.values(fields)} hideIdColumn
                                     hoverChanged={this.setHoveredFeature} renderField={this.renderTableField}
+                                    selection={this.state.tableSelection[layerid] ?? {}}
                                     selectionChanged={(sel) => this.setTableSelection(sel, layerid)}
                                 />
                             ) : null}

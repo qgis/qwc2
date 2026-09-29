@@ -35,6 +35,7 @@ export default class FeaturesTable extends React.PureComponent {
         readOnly: PropTypes.bool,
         renderField: PropTypes.func,
         rowIsDisabled: PropTypes.func,
+        selection: PropTypes.func,
         selectionChanged: PropTypes.func,
         showColumnFilters: PropTypes.bool,
         style: PropTypes.object
@@ -42,13 +43,13 @@ export default class FeaturesTable extends React.PureComponent {
     static defaultProps = {
         allowSelect: true,
         renderField: (feature, field) => feature.properties[field.name],
-        primaryKey: "id"
+        primaryKey: "id",
+        selection: {}
     };
     state = {
         columnFilters: {},
         sortField: null,
-        sortedFilteredFeatures: [],
-        selectedFeatures: {}
+        sortedFilteredFeatures: []
     };
     constructor(props) {
         super(props);
@@ -59,19 +60,10 @@ export default class FeaturesTable extends React.PureComponent {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.features !== prevProps.features) {
             this.setState(state => {
-                const newState = {};
-                newState.sortedFilteredFeatures = this.sortedFilteredFeatures(state.sortField, state.columnFilters);
-                if (state.selectedFeatures) {
-                    const newFeatureIds = new Set([...this.props.features.map(f => f.id)]);
-                    newState.selectedFeatures = Object.fromEntries(
-                        Object.entries(state.selectedFeatures).filter(([key]) => newFeatureIds.has(key))
-                    );
-                }
-                return newState;
+                return {
+                    sortedFilteredFeatures: this.sortedFilteredFeatures(state.sortField, state.columnFilters)
+                };
             });
-        }
-        if (this.state.selectedFeatures !== prevState.selectedFeatures) {
-            this.props.selectionChanged?.(this.state.selectedFeatures);
         }
     }
     componentWillUnmount() {
@@ -91,7 +83,7 @@ export default class FeaturesTable extends React.PureComponent {
         let selectAll = null;
         if (this.props.allowSelectAll) {
             let icon;
-            const nSelectedFeatures = Object.keys(this.state.selectedFeatures).length;
+            const nSelectedFeatures = Object.keys(this.props.selection).length;
             if (nSelectedFeatures === this.props.features.length) {
                 icon = "checked";
             } else if (nSelectedFeatures > 0) {
@@ -163,7 +155,7 @@ export default class FeaturesTable extends React.PureComponent {
                                         <td>
                                             <span>
                                                 {idx > 0 ? this.renderRowResizeHandle(idx, 't') : null}
-                                                <Icon icon={feature.id in this.state.selectedFeatures ? "checked" : "unchecked"} onClick={() => this.toggleFeatureSelected(feature)} />
+                                                <Icon icon={feature.id in this.props.selection ? "checked" : "unchecked"} onClick={() => this.toggleFeatureSelected(feature)} />
                                                 {this.renderRowResizeHandle(idx + 1, 'b')}
                                             </span>
                                         </td>
@@ -289,24 +281,20 @@ export default class FeaturesTable extends React.PureComponent {
         }
     };
     toggleSelectAll = () => {
-        this.setState(state => {
-            if (Object.keys(state.selectedFeatures).length > 0) {
-                return {selectedFeatures: {}};
-            } else {
-                return {selectedFeatures: this.props.features.reduce((res, f) => ({...res, [f.id]: f}), {})};
-            }
-        });
+        if (Object.keys(this.props.selection).length > 0) {
+            this.props.selectionChanged({});
+        } else {
+            this.props.selectionChanged(this.props.features.reduce((res, f) => ({...res, [f.id]: f}), {}));
+        }
     };
     toggleFeatureSelected = (feature) => {
-        this.setState(state => {
-            if (feature.id in state.selectedFeatures) {
-                // eslint-disable-next-line no-unused-vars
-                const {[feature.id]: _, ...selectedFeatures} = state.selectedFeatures;
-                return {selectedFeatures};
-            } else {
-                return {selectedFeatures: {...state.selectedFeatures, [feature.id]: feature}};
-            }
-        });
+        if (feature.id in this.props.selection) {
+            // eslint-disable-next-line no-unused-vars
+            const {[feature.id]: _, ...selectedFeatures} = this.props.selection;
+            this.props.selectionChanged(selectedFeatures);
+        } else {
+            this.props.selectionChanged({...this.props.selection, [feature.id]: feature});
+        }
     };
     sortedFilteredFeatures = (sortField, columnFilters) => {
         let features = this.props.features;

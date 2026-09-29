@@ -186,6 +186,7 @@ class AttributeTableWidget extends React.Component {
                     onSort={this.sortBy} primaryKey={primaryKey} readOnly={readOnly}
                     renderField={this.renderField}
                     rowIsDisabled={this.rowIsDisabled}
+                    selection={this.state.selectedFeatures}
                     selectionChanged={this.setSelectedFeatures}
                     showColumnFilters={this.props.showColumnFilters}
                 />
