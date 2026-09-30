@@ -90,7 +90,7 @@
       "pleasereload": "Press 'Reload' to load the attribute table...",
       "reload": "Reload",
       "selectatpoint": "Select features at point",
-      "selectedonly": "",
+      "selectedonly": "Show selected features only",
       "selectinregion": "Select features in region",
       "title": "Attribute Table",
       "zoomtoselection": "Zoom to selected features"
