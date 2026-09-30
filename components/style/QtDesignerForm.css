@@ -64,6 +64,9 @@ div.qt-designer-form-frame {
     padding: 0.25em;
     flex: 1 1 auto;
     width: 100%;
+}
+
+div.qt-designer-form-frame-box {
     border: 1px solid var(--border-color);
 }
 
@@ -92,18 +95,15 @@ div.qt-designer-widget-relation-resize-handle {
     cursor: ns-resize;
 }
 
-div.qt-designer-form-frame > div.qt-designer-widget-relation > div.qt-designer-widget-relation-resize-handle {
-    right: calc(-0.25em + 1px);
-    bottom: calc(-0.25em + 1px);
+div.qt-designer-widget-relation > div.ButtonBar {
+    margin-top: -1px;
 }
 
 div.qt-designer-widget-relation-table-container {
     overflow-y: auto;
     flex: 1 1 auto;
     position: relative;
-    border-top: 1px solid var(--border-color);
-    border-left: 1px solid var(--border-color);
-    border-right: 1px solid var(--border-color);
+    border: 1px solid var(--border-color);
 }
 
 div.qt-designer-widget-relation-table-loading {

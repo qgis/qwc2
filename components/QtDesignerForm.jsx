@@ -293,16 +293,25 @@ class QtDesignerForm extends React.Component {
             fontSize: Math.round((fontProps.pointsize || 9) / 9 * 100) + "%",
             textAlign: 'left'
         };
-        const frameStyle = {};
-        if (prop.flat) {
-            frameStyle.border = '0';
-        }
         if (prop.alignment) {
             if (prop.alignment.includes("Qt::AlignRight")) {
                 fontStyle.textAlign = 'right';
             } else if (prop.alignment.includes("Qt::AlignCenter")) {
                 fontStyle.textAlign = 'center';
             }
+        }
+        let frameShapeClass = '';
+        if (prop.frameShape) {
+            const frameStyleClassMap = {
+                "QFrame::Shape::Box": "qt-designer-form-frame-box",
+                "QFrame::Shape::StyledPanel": "qt-designer-form-frame-box",
+                "QFrame::Shape::Panel": "qt-designer-form-frame-box",
+                "QFrame::Shape::HLine": "qt-designer-form-frame-hline",
+                "QFrame::Shape::VLine": "qt-designer-form-frame-vline"
+            };
+            frameShapeClass = frameStyleClassMap[prop.frameShape] ?? '';
+        } else if (!prop.flat) {
+            frameShapeClass = "qt-designer-form-frame-box";
         }
 
         let elname = undefined;
@@ -347,7 +356,7 @@ class QtDesignerForm extends React.Component {
             }
             return (
                 <div className="qt-designer-form-container">
-                    <div className="qt-designer-form-frame" style={frameStyle}>
+                    <div className={"qt-designer-form-frame " + frameShapeClass}>
                         {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, editConfig, updateField, nametransform)}
                     </div>
                 </div>
@@ -364,7 +373,7 @@ class QtDesignerForm extends React.Component {
                     <div className="qt-designer-form-frame-title" style={fontStyle}>
                         {this.translateFormString(prop.title, editConfig.layerName)}
                     </div>
-                    <div className="qt-designer-form-frame" style={frameStyle}>
+                    <div className={"qt-designer-form-frame " + frameShapeClass}>
                         {widget.name.startsWith("nrel__") ? this.renderNRelation(widget) : this.renderLayout(widget.layout, feature, editConfig, updateField, nametransform)}
                     </div>
                 </div>
@@ -389,7 +398,7 @@ class QtDesignerForm extends React.Component {
                 <div className="qt-designer-form-container">
                     <ButtonBar active={activetab} buttons={tabs} className="qt-designer-form-tabbar"
                         onClick={(key) => this.setState((state) => ({activetabs: {...state.activetabs, [widget.name]: key}}))} />
-                    <div className="qt-designer-form-frame qt-designer-form-tab" style={frameStyle}>
+                    <div className={"qt-designer-form-frame qt-designer-form-tab " + frameShapeClass}>
                         {tabwidgets.filter(child => child.layout).map(child => (
                             this.renderLayout(child.layout, feature, editConfig, updateField, nametransform, child.name === activetab)
                         ))}
