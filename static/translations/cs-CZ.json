@@ -90,6 +90,7 @@
       "pleasereload": "Kliknutím na 'Obnovit' načtete tabulku atributů",
       "reload": "Obnovit",
       "selectatpoint": "",
+      "selectedonly": "",
       "selectinregion": "",
       "title": "Tabulka atributů",
       "zoomtoselection": "Přiblížit na vybrané prvky"

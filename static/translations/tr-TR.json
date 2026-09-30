@@ -90,6 +90,7 @@
       "pleasereload": "Öznitelik tablosunu yüklemek için 'Yeniden yükle' butonuna basınız...",
       "reload": "Yeniden yükle",
       "selectatpoint": "",
+      "selectedonly": "",
       "selectinregion": "",
       "title": "Öznitelik Tablosu",
       "zoomtoselection": "Seçili objelere yaklaş"

@@ -90,6 +90,7 @@
       "pleasereload": "Presione 'Recargar' para cargar la tabla de atributos",
       "reload": "Recargar",
       "selectatpoint": "",
+      "selectedonly": "",
       "selectinregion": "",
       "title": "Tabla de Atributos",
       "zoomtoselection": "Hacer zoom a elementos seleccionado"

@@ -90,6 +90,7 @@
       "pleasereload": "Premere 'Ricarica' per caricare la tabella attributi...",
       "reload": "Ricarica",
       "selectatpoint": "Seleziona oggetti in un punto",
+      "selectedonly": "",
       "selectinregion": "Seleziona oggetti in una regione",
       "title": "Tabella attributi",
       "zoomtoselection": "Zoomare sugli oggetti selezionati"

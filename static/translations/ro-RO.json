@@ -90,6 +90,7 @@
       "pleasereload": "Apasă butonul 'Reîncarcă' pentru a încărca tabela de atribute...",
       "reload": "Reîncarcă",
       "selectatpoint": "",
+      "selectedonly": "",
       "selectinregion": "",
       "title": "Tabelul de atribute",
       "zoomtoselection": "Vezi obiecte spațiale selectate"

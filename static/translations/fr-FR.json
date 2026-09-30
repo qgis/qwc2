@@ -90,6 +90,7 @@
       "pleasereload": "Veuillez cliquer sur 'Actualiser' pour charger la table d'attributs",
       "reload": "Actualiser",
       "selectatpoint": "Sélectionner des objets en un point",
+      "selectedonly": "Afficher uniquement les objets sélectionnés",
       "selectinregion": "Sélectionner des objets dans une région",
       "title": "Table d'attributs",
       "zoomtoselection": "Zommer sur les objets sélectionnés"

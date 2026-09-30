@@ -148,7 +148,8 @@ class AttributeTableWidget extends React.Component {
         if (this.state.loadedLayer && (
             (this.state.limitToExtent && (!prevState.limitToExtent || this.props.mapBbox !== prevProps.mapBbox)) ||
             !this.state.limitToExtent && prevState.limitToExtent ||
-            this.state.selectedOnly !== prevState.selectedOnly
+            this.state.selectedOnly !== prevState.selectedOnly ||
+            (this.state.selectedOnly && (this.state.selectedFeatures !== prevState.selectedFeatures))
         )) {
             this.reload({currentPage: 0});
         }
@@ -231,7 +232,7 @@ class AttributeTableWidget extends React.Component {
                     rowIsDisabled={this.rowIsDisabled}
                     selection={this.state.selectedFeatures}
                     selectionChanged={this.setSelectedFeatures}
-                    showColumnFilters={this.props.showColumnFilters}
+                    showColumnFilters={!this.state.selectedOnly && this.props.showColumnFilters}
                 />
             );
             const npages = Math.ceil(this.state.totFeatureCount / this.state.pageSize);
@@ -257,7 +258,7 @@ class AttributeTableWidget extends React.Component {
                     values = KeyValCache.getSync(this.props.iface, fieldConfig.constraints.keyvalrel);
                 }
                 valueInput = (
-                    <ComboBox className="attribtable-filter-value" disabled={footbarDisabled} onChange={value => this.updateFilter("filterVal", value)} value={this.state.filterVal}>
+                    <ComboBox className="attribtable-filter-value" disabled={footbarDisabled || this.state.selectedOnly} onChange={value => this.updateFilter("filterVal", value)} value={this.state.filterVal}>
                         <div value="">{LocaleUtils.tr("common.select")}</div>
                         {values.map(entry => (
                             <div key={entry.value} value={entry.value}>{entry.label}</div>
@@ -266,7 +267,7 @@ class AttributeTableWidget extends React.Component {
                 );
             } else {
                 valueInput = (
-                    <TextInput className="attribtable-filter-value" disabled={footbarDisabled} onChange={value => this.updateFilter("filterVal", value)} value={this.state.filterVal} />
+                    <TextInput className="attribtable-filter-value" disabled={footbarDisabled || this.state.selectedOnly} onChange={value => this.updateFilter("filterVal", value)} value={this.state.filterVal} />
                 );
             }
             footbar = (
@@ -278,7 +279,7 @@ class AttributeTableWidget extends React.Component {
 
                     <div className="attribtable-filter controlgroup">
                         <Icon icon="filter" />
-                        <ComboBox disabled={footbarDisabled} onChange={value => this.updateFilter("filterField", value)} value={this.state.filterField}>
+                        <ComboBox disabled={footbarDisabled || this.state.selectedOnly} onChange={value => this.updateFilter("filterField", value)} value={this.state.filterField}>
                             <div disabled value="">{LocaleUtils.tr("common.select")}</div>
                             {showIdColumn ? (
                                 <div value={primaryKey}>{this.state.curFields.find(field => field.id === primaryKey).name}</div>
@@ -290,7 +291,7 @@ class AttributeTableWidget extends React.Component {
                                 return null;
                             })}
                         </ComboBox>
-                        <ComboBox disabled={footbarDisabled} onChange={value => this.updateFilter("filterOp", value)} value={this.state.filterOp}>
+                        <ComboBox disabled={footbarDisabled || this.state.selectedOnly} onChange={value => this.updateFilter("filterOp", value)} value={this.state.filterOp}>
                             <div value="~">~</div>
                             <div value="=">=</div>
                             <div value="!=">!=</div>
@@ -300,6 +301,9 @@ class AttributeTableWidget extends React.Component {
                             <div value="<">&lt;</div>
                         </ComboBox>
                         {valueInput}
+                        <button className={"button " + (this.state.selectedOnly ? "pressed" : "")} disabled={isEmpty(this.state.selectedFeatures)} onClick={() => this.setState(state => ({selectedOnly: !state.selectedOnly}))} title={LocaleUtils.tr("attribtable.selectedonly")} type="button">
+                            <Icon icon="checked" />
+                        </button>
                     </div>
                     {this.props.showLimitToExtent ? (
                         <div>
@@ -452,8 +456,8 @@ class AttributeTableWidget extends React.Component {
         });
         this.setState({selectionGeom: geom});
     };
-    setSelectedFeatures = (features) => {
-        this.setState({selectedFeatures: features});
+    setSelectedFeatures = (selection) => {
+        this.setState(state => ({selectedFeatures: selection, selectedOnly: state.selectedOnly && !isEmpty(selection)}));
     };
     setHoveredFeature = (feature) => {
         this.setState({hoveredFeature: feature});
@@ -550,6 +554,20 @@ class AttributeTableWidget extends React.Component {
                 newState.limitToExtent = state.limitToExtent;
                 newState.curEditConfig = editConfig;
                 newState.curFields = fields;
+                newState.selectedFeatures = {};
+                newState.selectedOnly = false;
+            }
+            if (newState.selectedOnly) {
+                // Note: if selectedOnly is set, all selected features have already been fetched from the service, no reload is necessary
+                const features = newState.sortField ? Object.values(newState.selectedFeatures).sort((f1, f2) => {
+                    const v1 = String(f1.properties[newState.sortField.field]);
+                    const v2 = String(f2.properties[newState.sortField.field]);
+                    return v1.localeCompare(v2, undefined, {numeric: true, sensitivity: 'base'}) * newState.sortField.dir;
+                }) : Object.values(newState.selectedFeatures);
+                return {
+                    features: features,
+                    totFeatureCount: features
+                };
             }
             newState.loading = true;
             this.getFeatures(newState, loadLayer, true, null, (result) => {
@@ -922,16 +940,20 @@ class AttributeTableWidget extends React.Component {
             csv: formatCsv,
             xlsx: formatXlsx
         };
-        this.setState({loading: true});
-        this.getFeatures(this.state, this.state.loadedLayer, false, null, (result) => {
-            if (result) {
-                formatters[format](result.features);
-            } else {
-                // eslint-disable-next-line
-                alert(LocaleUtils.tr("attribtable.loadfailed"));
-            }
-            this.setState({loading: false});
-        });
+        if (this.state.selectedOnly) {
+            formatters[format](this.state.features);
+        } else {
+            this.setState({loading: true});
+            this.getFeatures(this.state, this.state.loadedLayer, false, null, (result) => {
+                if (result) {
+                    formatters[format](result.features);
+                } else {
+                    // eslint-disable-next-line
+                    alert(LocaleUtils.tr("attribtable.loadfailed"));
+                }
+                this.setState({loading: false});
+            });
+        }
     };
 }
 

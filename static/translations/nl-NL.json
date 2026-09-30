@@ -90,6 +90,7 @@
       "pleasereload": "Druk op 'Herladen' om attributentabel te laden...",
       "reload": "Herladen",
       "selectatpoint": "",
+      "selectedonly": "",
       "selectinregion": "",
       "title": "Attributentabel",
       "zoomtoselection": "Inzoomen op geselecteerde objecten"
